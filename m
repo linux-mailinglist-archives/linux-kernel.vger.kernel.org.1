@@ -2,218 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE652A2FE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AE22A2FE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgKBQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:34:42 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:48765 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgKBQel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:34:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604334880; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qoHSfxYPyQkbDeavIuA2orpDrUmLrd6gFSt6I1Q8VVk=;
- b=ZvPb+8+vcY2TS5zad8aju0TS4p5jDawXudpz4R2OrfR4W42d4tjxNc5YT1F2iwhWRD7nZm9v
- XBeASB8ON+d7SXypabQtA9hfnmJHkcWrDvuL7iliPboJ1vut3IDIcRy2PiCPPcFKL0etefpa
- Jxk46vhveTmwqEhZdKwFvYrvmxs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fa035089f889442bb7ef326 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 16:34:16
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F0427C433F0; Mon,  2 Nov 2020 16:34:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACBD0C433C6;
-        Mon,  2 Nov 2020 16:34:14 +0000 (UTC)
+        id S1727118AbgKBQet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727051AbgKBQes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:34:48 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90453C0617A6;
+        Mon,  2 Nov 2020 08:34:48 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id j18so11581243pfa.0;
+        Mon, 02 Nov 2020 08:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vrmeGdXXI4MmZipYNwnT4bkxk/6PwnXu3FmDdm+QL5Q=;
+        b=lDwEZpJe0OZUjLBKgW6z3x/gIEXQni7wy2DG8D8WKYtPIaL+0lzsto5NeV/mnp0Ir8
+         iTSCQQmtjwq1oQQld0ljOPwgTpTbqV+P0m83MS0R+ZpMBuxtq2mxxwt2z7DQvKK5LZm3
+         +nEYX2riVV1ZYm1l8ZmlKYMqg8jaTW8ok9N0Glndfv+v+5IMxIExujZET/j5s+CMtC2g
+         3AAP9IofuKgKrceicupEGzb+XGNKiBS2PHTtHyBS5ftLuYhCO1xjzcRLmXsaET7qk2wi
+         JuQhwbzygFkCmLdVsRcNzAhzg0ye2b4hdMNF2cITPWrFUyazJu7OZz7pAl41vofSPbl1
+         naXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vrmeGdXXI4MmZipYNwnT4bkxk/6PwnXu3FmDdm+QL5Q=;
+        b=DkYr3Aa3urKqAcQD+CtiyjpV4g2PHHsfLLFxOlb0ep4WoZZJ1Je4M0zAkYvd/ktNr2
+         chfmn2+Syf1WJ3Ah1qHwVl0Dd8qryVdLdNR5eOp32z7InOeFKOKuv/w+RpBmD5FSvglp
+         Jjz597bCy5W4J3bPAwVW2m00m4iY8wNZscph/uT+yXXC/CjgemmGYBnFKpVJZOAPoqFH
+         gRHpDBVTsv8ga5F1qVhPpW6a+P1Pi8Udpz6sOutpH3SA6dK94QExD9uARKkvKPfdAlXP
+         4Ywg8QI1iJ7nQ41KVkz65qnzoKNd7mjGfjVjYiYb2uezcqRTCa/UuvS8fT1momFodqoE
+         TzpQ==
+X-Gm-Message-State: AOAM532GNQXxqg4gLe/LRqesYW8JQo2QaIN8bEbnkaTswZAffaL0D6yz
+        IA3ZCx/giH6ayPinr8YGf1eJuZ/FvV0T
+X-Google-Smtp-Source: ABdhPJx+jyJTp6DLFWtMejtjdB1PY1zUTyEadHf/pR4R5ukGNYfSA18vjkglrf/Edbjof+qGg1WvQw==
+X-Received: by 2002:a63:4960:: with SMTP id y32mr13876111pgk.369.1604334888171;
+        Mon, 02 Nov 2020 08:34:48 -0800 (PST)
+Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id 194sm4242354pgf.72.2020.11.02.08.34.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 08:34:47 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:34:39 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
+ qualifier
+Message-ID: <20201102163439.GA1564189@PWN>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
+ <20201102110916.GK4127@dell>
+ <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
+ <20201102113034.GL4127@dell>
+ <CAKMK7uHo2MMmBUic9EiFqcUh8mJeu1+=ZQfH7bWA=zdJTyRyvA@mail.gmail.com>
+ <20201102161734.GA1563823@PWN>
+ <20201102162447.GE4488@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Nov 2020 08:34:14 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     carl.yin@quectel.com
-Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
-        sfr@canb.auug.org.au, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, naveen.kumar@quectel.com
-Subject: Re: [PATCH v2] bus: mhi: core: Add support MHI EE FP for download
- firmware
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20201102122756.23452-1-carl.yin@quectel.com>
-References: <20201102122756.23452-1-carl.yin@quectel.com>
-Message-ID: <9693bd0918956ec489fec9d2b36cb4d6@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102162447.GE4488@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-02 04:27, carl.yin@quectel.com wrote:
-> From: "carl.yin" <carl.yin@quectel.com>
+On Mon, Nov 02, 2020 at 04:24:47PM +0000, Lee Jones wrote:
+> On Mon, 02 Nov 2020, Peilin Ye wrote:
 > 
-> MHI wwan modems support download firmware to nand or emmc
-> by firehose protocol, process as next:
-> 1. modem boot up and enter EE AMSS, create DIAG channels (4, 5) device
-> 2. user space tool send EDL command via DIAG channel,
->    then modem enter EE EDL
-> 3. boot.c download 'flash programmer image' via BHI interface
-> 4. modem enter EE FP, and create EDL channels (34, 35) device
-> 5. user space tool download 'firmware image' to modem via EDL channels
->    by firehose protocol
+> > On Mon, Nov 02, 2020 at 03:50:49PM +0100, Daniel Vetter wrote:
+> > > Maybe Peilin is going to include the full re-cosntification in a
+> > > cleanup series, dunno.
+> > 
+> > Sure, I will do it in a separate patch.
 > 
-> Signed-off-by: carl.yin <carl.yin@quectel.com>
-> ---
->  drivers/bus/mhi/core/init.c     |  2 ++
->  drivers/bus/mhi/core/internal.h |  1 +
->  drivers/bus/mhi/core/main.c     |  5 ++++-
->  drivers/bus/mhi/core/pm.c       | 13 ++++++++++++-
->  include/linux/mhi.h             |  4 +++-
->  5 files changed, 22 insertions(+), 3 deletions(-)
+> Are you happy to conduct a proper clean-up on top of this patch?
 > 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index ac4aa5c..e34616b 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -26,6 +26,7 @@ const char * const mhi_ee_str[MHI_EE_MAX] = {
->  	[MHI_EE_WFW] = "WFW",
->  	[MHI_EE_PTHRU] = "PASS THRU",
->  	[MHI_EE_EDL] = "EDL",
-> +	[MHI_EE_FP] = "FLASH PROGRAMMER",
->  	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
->  	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
->  };
-> @@ -35,6 +36,7 @@ const char * const
-> dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
->  	[DEV_ST_TRANSITION_READY] = "READY",
->  	[DEV_ST_TRANSITION_SBL] = "SBL",
->  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
-> +	[DEV_ST_TRANSITION_FP] = "FLASH_PROGRAMMER",
->  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
->  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
->  };
-> diff --git a/drivers/bus/mhi/core/internal.h 
-> b/drivers/bus/mhi/core/internal.h
-> index 4abf0cf..6ae897a 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -386,6 +386,7 @@ enum dev_st_transition {
->  	DEV_ST_TRANSITION_READY,
->  	DEV_ST_TRANSITION_SBL,
->  	DEV_ST_TRANSITION_MISSION_MODE,
-> +	DEV_ST_TRANSITION_FP,
->  	DEV_ST_TRANSITION_SYS_ERR,
->  	DEV_ST_TRANSITION_DISABLE,
->  	DEV_ST_TRANSITION_MAX,
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 3950792..a1e1561 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -422,7 +422,7 @@ irqreturn_t mhi_intvec_threaded_handler(int
-> irq_number, void *priv)
->  		wake_up_all(&mhi_cntrl->state_event);
-> 
->  		/* For fatal errors, we let controller decide next step */
-> -		if (MHI_IN_PBL(ee))
-> +		if (MHI_IN_PBL(mhi_cntrl->ee))
-Let's please have this as a separate patch with a fixes tag, as it fixes 
-a
-pre-existing bug. I am sure Mani would want this.
->  			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
->  		else
->  			mhi_pm_sys_err_handler(mhi_cntrl);
-> @@ -782,6 +782,9 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller
-> *mhi_cntrl,
->  			case MHI_EE_SBL:
->  				st = DEV_ST_TRANSITION_SBL;
->  				break;
-> +			case MHI_EE_FP:
-> +				st = DEV_ST_TRANSITION_FP;
-> +				break;
-When do you get this EE event on the control event ring? Does it come by 
-after you
-have detected EE as FP from mhi_sync_power_up() and move to ready and 
-then M0?
->  			case MHI_EE_WFW:
->  			case MHI_EE_AMSS:
->  				st = DEV_ST_TRANSITION_MISSION_MODE;
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 3de7b16..2d68812 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -658,6 +658,12 @@ void mhi_pm_st_worker(struct work_struct *work)
->  		case DEV_ST_TRANSITION_MISSION_MODE:
->  			mhi_pm_mission_mode_transition(mhi_cntrl);
->  			break;
-> +		case DEV_ST_TRANSITION_FP:
-> +			write_lock_irq(&mhi_cntrl->pm_lock);
-> +			mhi_cntrl->ee = MHI_EE_FP;
-> +			write_unlock_irq(&mhi_cntrl->pm_lock);
-> +			mhi_create_devices(mhi_cntrl);
-> +			break;
->  		case DEV_ST_TRANSITION_READY:
->  			mhi_ready_state_transition(mhi_cntrl);
->  			break;
-> @@ -1077,10 +1083,15 @@ int mhi_sync_power_up(struct mhi_controller 
-> *mhi_cntrl)
-> 
->  	wait_event_timeout(mhi_cntrl->state_event,
->  			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
-> +			   mhi_cntrl->ee == MHI_EE_FP ||
->  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
->  			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> 
-> -	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> +	if (mhi_cntrl->ee == MHI_EE_FP)
-> +		mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_READY);
-> +	else
-> +		ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> +
->  	if (ret)
->  		mhi_power_down(mhi_cntrl, false);
-> 
-We should come up with a better design for this later on.
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 6e1122c..4620af8 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -120,6 +120,7 @@ struct mhi_link_info {
->   * @MHI_EE_WFW: WLAN firmware mode
->   * @MHI_EE_PTHRU: Passthrough
->   * @MHI_EE_EDL: Embedded downloader
-> + * @MHI_EE_FP, Flash Programmer Environment
->   */
->  enum mhi_ee_type {
->  	MHI_EE_PBL,
-> @@ -129,7 +130,8 @@ enum mhi_ee_type {
->  	MHI_EE_WFW,
->  	MHI_EE_PTHRU,
->  	MHI_EE_EDL,
-> -	MHI_EE_MAX_SUPPORTED = MHI_EE_EDL,
-> +	MHI_EE_FP,
-> +	MHI_EE_MAX_SUPPORTED = MHI_EE_FP,
->  	MHI_EE_DISABLE_TRANSITION, /* local EE, not related to mhi spec */
->  	MHI_EE_NOT_SUPPORTED,
->  	MHI_EE_MAX,
+> This is currently broken in all of the LTS kernels, which I would like
+> to have fixed post-haste.
 
-Thanks,
-Bhaumik
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Sure I will do it now. Thank you,
+
+Peilin Ye
+
