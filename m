@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5362A3754
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42162A375B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgKBXwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:52:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725841AbgKBXwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:52:25 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05712207C4;
-        Mon,  2 Nov 2020 23:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604361144;
-        bh=f7s3D49TOtYE8QyV/cjeavqKhcKCcZ3+a8aGAtJXWl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UA92Oc8qZHT67MNv/dtw8V952ib+nKyWbMvJ7pP+Y6mpC8m5tVYWYmgUPJ4oBhYDT
-         BkVTX0bExp1pifjBSFvywAyE7wZLGG5w3eVDFpaHKKVj7N6o6TvIc4DmrrkSrnumEo
-         /NAtSo/fwViV618kSDk9oCdk+opBXJrY8alSsciI=
-Date:   Tue, 3 Nov 2020 07:52:19 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] clk: imx: scu: Fix compile error with module build of
- clk-scu.o
-Message-ID: <20201102235218.GY31601@dragon>
-References: <208469.1604318525@turing-police>
- <6e5a8fdb-0a02-5eae-ca1f-37df8a454e34@infradead.org>
- <238534.1604350899@turing-police>
- <0b61c4f4-b389-c853-6e09-ee603455e583@infradead.org>
+        id S1727128AbgKBX4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbgKBX4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:56:19 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129E3C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:56:17 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id e16so225883ile.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:56:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sm6IgOnNa9rL1k7HvPRAgo27kLP+0TFF8lJM9YiGNEE=;
+        b=JjIGdVg4BedDJfsejEBRa5XaLRTxlj+0HTZf8vHXjaHwnaK6d6DlDpN7oh/kPuOCrE
+         I9XnqbIjiasVevs7L+Kc1TSeRKw/Vw2hVgy5OUFhZ46V7AZJe2iEE2idaIu4+qt944qr
+         oH+JsD8otVJfRER7bTcZBWuvLnhKYbGnjlTPaotYlLKdMzskd9uruDoyhCodY00giq3C
+         1fUpzKtxgey4EvsfjBjEpOedYGxq5pX29kCBAS8wdR0iwXI89dtqlrnbFriOLBAS6jln
+         oLbh6eVYNiteWIcG9GEfUOE23M2borTG7AEIcdLwz56i6EcVOTeJlxpjP0/8yxYnthH8
+         NgRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sm6IgOnNa9rL1k7HvPRAgo27kLP+0TFF8lJM9YiGNEE=;
+        b=bNbxdJ5dit8IwMkYSOnCHjp+kbO/grYzLnsaNX+KCHSPYQLAAVYx/zrBxgkhLa0hIX
+         IKHLrqibW3pf6aVkRxfGfoo/a1zB3IqgqC+6ZdSPk95ZXdmVObL9Z61yhBwNSI5rYO0p
+         br/JXCKMxZPDtRmRzgRXlje35OEXR3JbYAwekSmq7NdyZ/+zUYLYHaeHIskU47WRvwNb
+         DvcHxbeR+OaS44N1+UCp4jQ7gVrOXHrneGvU8755A8+rOh6lpi9T/rZIj1YPAfvToKVD
+         E4RgQHlZw97lmdD1hJOEBDD7/7E7oxwHK7TBEabexeNv178JHpNlh81gjXmDrLmS4M5S
+         agJQ==
+X-Gm-Message-State: AOAM5305RWXALKVhlN0lVbKUGMi0jMbdJtRQMk6ej0dMrFHWyHvIHuMt
+        IPgu1os83Hnssx5xEt+RTLpxRleAXqv5KEYCwYX8dPGxps4=
+X-Google-Smtp-Source: ABdhPJzESLbH7IukdhE0c2SHbORU9TpNho3M4x3JfTHxS9TfRoXoEvRSn7ylxG3eRUy0O71zPgLYcvCv5HMn+sWX9NU=
+X-Received: by 2002:a05:6e02:bcb:: with SMTP id c11mr12280324ilu.285.1604361376007;
+ Mon, 02 Nov 2020 15:56:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0b61c4f4-b389-c853-6e09-ee603455e583@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201027233733.1484855-1-bgardon@google.com> <20201027233733.1484855-6-bgardon@google.com>
+ <20201102222102.GE20600@xz-x1>
+In-Reply-To: <20201102222102.GE20600@xz-x1>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 2 Nov 2020 15:56:05 -0800
+Message-ID: <CANgfPd_sLtqFb3sdpBpd6FWLV4MWKHXH8TSzDbPthzVSQPMJ+A@mail.gmail.com>
+Subject: Re: [PATCH 5/5] KVM: selftests: Introduce the dirty log perf test
+To:     Peter Xu <peterx@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 01:31:59PM -0800, Randy Dunlap wrote:
-> On 11/2/20 1:01 PM, Valdis Klētnieks wrote:
-> > On Mon, 02 Nov 2020 09:15:20 -0800, Randy Dunlap said:
-> > 
-> >> also
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >>
-> >> However, this driver does not directly use <linux/module.h>.
-> > 
-> > Just my luck - I looked at 3 or 4 other things that include of_platform.h
-> > and they all *did* include module.h.
-> > 
-> >> platform_device.h #includes <linux/device.h>, which is where the
-> >> problem lies:
-> >>
-> >> <linux/device.h> uses macros that are provided by <linux/module.h>
-> >> so <linux/device.h> should #include <linux/module.h>.
-> >>
-> >> and that fixes this commit:
-> >>
-> >> commit 4c002c978b7f2f2306d53de051c054504af920a9
-> >> Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >> Date:   Mon Dec 9 20:33:03 2019 +0100
-> >>
-> >>     device.h: move 'struct driver' stuff out to device/driver.h
-> > 
-> > OK.. who's going to do that? Me, or Randy, or Greg?
-> 
-> You could go ahead... I began on it yesterday but didn't finish
-> testing, although I did see the same build error that the 0day
-> bot reported, so I don't know what it's going to take to fix that.
+On Mon, Nov 2, 2020 at 2:21 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Tue, Oct 27, 2020 at 04:37:33PM -0700, Ben Gardon wrote:
+> > The dirty log perf test will time verious dirty logging operations
+> > (enabling dirty logging, dirtying memory, getting the dirty log,
+> > clearing the dirty log, and disabling dirty logging) in order to
+> > quantify dirty logging performance. This test can be used to inform
+> > future performance improvements to KVM's dirty logging infrastructure.
+>
+> One thing to mention is that there're a few patches in the kvm dirty ring
+> series that reworked the dirty log test quite a bit (to add similar test for
+> dirty ring).  For example:
+>
+>   https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
+>
+> Just a FYI if we're going to use separate test programs.  Merging this tests
+> should benefit in many ways, of course (e.g., dirty ring may directly runnable
+> with the perf tests too; so we can manually enable this "perf mode" as a new
+> parameter in dirty_log_test, if possible?), however I don't know how hard -
+> maybe there's some good reason to keep them separate...
 
-It's a driver problem which is being addressed by Dong's patch[1].
+Absolutely, we definitely need a performance test for both modes. I'll
+take a look at the patch you linked and see what it would take to
+support dirty ring in this test.
+Do you think that should be done in this series, or would it make
+sense to add as a follow up?
 
-Shawn
+>
+> [...]
+>
+> > +static void run_test(enum vm_guest_mode mode, unsigned long iterations,
+> > +                  uint64_t phys_offset, int vcpus,
+> > +                  uint64_t vcpu_memory_bytes, int wr_fract)
+> > +{
+>
+> [...]
+>
+> > +     /* Start the iterations */
+> > +     iteration = 0;
+> > +     host_quit = false;
+> > +
+> > +     clock_gettime(CLOCK_MONOTONIC, &start);
+> > +     for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++) {
+> > +             pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
+> > +                            &perf_test_args.vcpu_args[vcpu_id]);
+> > +     }
+> > +
+> > +     /* Allow the vCPU to populate memory */
+> > +     pr_debug("Starting iteration %lu - Populating\n", iteration);
+> > +     while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
+> > +             pr_debug("Waiting for vcpu_last_completed_iteration == %lu\n",
+> > +                     iteration);
+>
+> Isn't array vcpu_last_completed_iteration[] initialized to all zeros?  If so, I
+> feel like this "while" won't run as expected to wait for populating mem.
 
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201030153733.30160-1-aisheng.dong@nxp.com/
+I think you are totally right. The array should be initialized to -1,
+which I realize isn't a uint and unsigned integer overflow is bad, so
+the array should be converted to ints too.
+I suppose I didn't catch this because it would just make the
+populating pass 0 look really short and pass 1 really long. I remember
+seeing that behavior but not realizing that it was caused by a test
+bug. I will correct this, thank you for pointing that out.
+
+>
+> The flooding pr_debug() seems a bit scary too if the mem size is huge..  How
+> about a pr_debug() after the loop (so if we don't see that it means it hanged)?
+
+I don't think the number of messages on pr_debug will be proportional
+to the size of memory, but rather the product of iterations and vCPUs.
+That said, that's still a lot of messages.
+My assumption was that if you've gone to the trouble to turn on debug
+logging, it's easier to comment log lines out than add them, but I'm
+also happy to just move this to a single message after the loop.
+
+>
+> (There's another similar pr_debug() after this point too within a loop)
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
