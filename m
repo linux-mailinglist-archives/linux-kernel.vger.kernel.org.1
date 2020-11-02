@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC4E2A26C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914092A26CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgKBJRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:17:43 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53477 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727870AbgKBJRm (ORCPT
+        id S1728313AbgKBJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727818AbgKBJSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:17:42 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5882E58016F;
-        Mon,  2 Nov 2020 04:17:41 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 04:17:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=tRRcWPfLlcFd2I7QGyWsS+7dvdI
-        OTZe+96Cma1Ta4CQ=; b=cL3G91KomNggWKjP+ee8mXpLK4G1z9pJ8bTx5eXKhis
-        GamLNW5oJtfQL0KtTKdk4XkprWZy/NilCX9Oy4p0HgelbPXJ4UUmx/34oIMv0ly1
-        LN8unJdsZ05w4OZpPpO1R5o3JqESgXEEXJ7h6bQep0+tWmBwunfBU5E2JKqpCABa
-        GwSBhcMVfJaSut73Z493aIU/QumPfhV+8YapZbkfC5sMOVSGvRQkx5yUkhB5ZnLc
-        +jpyblW9JgwtPgqgQMSs4u0SWqvE9a582+EMUeAu3/T/KG3ju2Cn4Cn1dlgVGr7R
-        q36fwpDgg/WtYNZC+EUYIk5nX9gTB6nKh250LgSG5VQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tRRcWP
-        fLlcFd2I7QGyWsS+7dvdIOTZe+96Cma1Ta4CQ=; b=l8qcekuw3PsZNepLpODZWn
-        LhdpoORDReM4sQkchoftknnU6XmVE/up2/vmwIG3v0gYyejTScLCD1mt5MkfgDyQ
-        l9431eQQOP6dbWZdljCqyesRT5DO0nL7bNmI5UfOUB/oECEyR7pN9F8SeECBRNd7
-        CWyfsEJ5QQvYCu2W5gH9ay9IJHSkjz2B3XhXJiltRIK+hnvaAN3fbdehd2br5Grg
-        ksHwf5gj0R9ttQdkCQRl+R41qnGZxmRIjqC/fV7rVQ5ErtQ0vg5h14nbyC+gph2H
-        CYRhLqvU2dCG1yBIs2cTPCp25H7bcd+ZDaVVCVJfs77I3WlW6tSbYe5altqJxvWw
-        ==
-X-ME-Sender: <xms:s86fX658A0K5A2ZGjNJbX175WWmBJjW4YsGIk5ePGuKNn-wqSnVEIg>
-    <xme:s86fXz6G3lmZpysw5zHmrDIm0lYhEOVKeUBriRN5hnKEOHrP6Ce1ys1ejaOD2jQDk
-    qpnSZ5XILFBv1zFgsc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:s86fX5c046zh68969VRsxzsJ2VniePom1osuz3j_uGOQykv7jwxuEw>
-    <xmx:s86fX3J6FHCE70poP38xr42k2BHuE3xzZwfaz7X7f5h71VYZmCRwbA>
-    <xmx:s86fX-JSFhgTZx8GTIyFNN5fTRrVD3kwW-eMi0k0D0uUYqaDmuOGmg>
-    <xmx:tc6fXzDZ7JmADY70-TxDUkQx84AW2roweM4r__W7SuSpQDJF2YfQTg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2FC423280060;
-        Mon,  2 Nov 2020 04:17:39 -0500 (EST)
-Date:   Mon, 2 Nov 2020 10:17:37 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
-Message-ID: <20201102091737.pszii6znryssyh2e@gilmour.lan>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
+        Mon, 2 Nov 2020 04:18:50 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582E2C0617A6;
+        Mon,  2 Nov 2020 01:18:50 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id r10so10245970pgb.10;
+        Mon, 02 Nov 2020 01:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=C6EWmjCYcjXlVuyLZRKUgfoLilwqmfMB+owPMFBnb9c=;
+        b=lqbbb1CuBH5eNHB+N9qLO4cm8cvi81NiGiv31bIGOb9Z0OAU3l/5nuLwb0vZO5VAnc
+         FEDcOl0s69baIoU66mtPLi4ns3NtJZEeV7tDuQgSWtKg/w6Uy4gsdeKKFNIMegHiwmmY
+         N1X3ePnP/HkuORodQnZZt4m9DBgpWfPfap1fji64okr+4Wr3Xt/gdHEhZX2LFsg6Yb3f
+         6yUIQRr/KxFvD0on0D87mkrrHctXOTUFCbVxIAnkH1Y2Ym+8RP07Ke8Ai/GNOyLnlSe0
+         07a3qX4l36fPErokAgiyKupIL8ICK/Ec6soFM9Kka1GSbGes/buF+kVlYgDlvlrV+j3h
+         EHOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=C6EWmjCYcjXlVuyLZRKUgfoLilwqmfMB+owPMFBnb9c=;
+        b=lz4TM7G424ITt2fH50bbLymL7POe6VcmiOFPkRmhHf5M7/Jz5OG+UzNk/i+lhtGDCn
+         VHZDndhjWIH5qJlL1e5Z3BouBs0SBfA2b9XxKr5GAzBEv5HGGmrQps5tvY/8lcy2z4Ky
+         dvT/4Wd/IpFUgeoV7f3ZDSCNms0AKB/Ha5hKI7KG7+ciA6vEi+3JT1Fwv1hrEFXkIcWh
+         oJ1yMUJffnHRazMO5nAuxm+cfKpItKfkdn4mX7w+oC3NswEIxNAIwzCUFlC4roiHulce
+         A6GlKwpQNVxkO8bl913oZ0CXLlfyIzj7itqeVy44TG9P1vbvz1QobVDRcAnA5kUFQc7z
+         29Vg==
+X-Gm-Message-State: AOAM532FOSiYA9g+lFlmC/HV72uJtfdsqqkI0AZXnXY3UaUWCD1RBfVS
+        /Dv14I/R1px6LeBFNCE2IxM=
+X-Google-Smtp-Source: ABdhPJwzD+VbIsMSXDRvOKgyBYSwbhoC1uwCxcueL1tYtFiAGqBfS4tnG1G/k6VNjo4gFo61zBqJAA==
+X-Received: by 2002:a17:90a:7886:: with SMTP id x6mr16220678pjk.21.1604308729837;
+        Mon, 02 Nov 2020 01:18:49 -0800 (PST)
+Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id nh24sm10707447pjb.44.2020.11.02.01.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 01:18:49 -0800 (PST)
+Message-ID: <47e149dfbf84e685f8b81e4561b8c9fd375cbcb4.camel@gmail.com>
+Subject: Re: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>, verdre@v0yd.nl
+Date:   Mon, 02 Nov 2020 18:18:44 +0900
+In-Reply-To: <20201030110246.GM4077@smile.fi.intel.com>
+References: <20201028142433.18501-1-kitakar@gmail.com>
+         <20201028142433.18501-3-kitakar@gmail.com>
+         <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
+         <837d7ecd6f8a810153d219ec0b4995856abbe458.camel@gmail.com>
+         <20201030110246.GM4077@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="g7kesbwqqdzmkw7c"
-Content-Disposition: inline
-In-Reply-To: <d15d724b-6af7-3e51-1316-7bdde5a42c60@collabora.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-10-30 at 13:02 +0200, Andy Shevchenko wrote:
+> On Fri, Oct 30, 2020 at 04:58:33PM +0900, Tsuchiya Yuto wrote:
+> > On Wed, 2020-10-28 at 15:04 -0700, Brian Norris wrote:
+> 
+> ...
+> 
+> > On the other hand, I agree that I don't want to break the existing users.
+> > As you mentioned in the reply to the first patch, I can set the default
+> > value of this parameter depending on the chip id (88W8897) or DMI matching.
+> 
+> Since it's a PCIe device you already have ID table where you may add a
+> driver_data with what ever quirks are needed.
 
---g7kesbwqqdzmkw7c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry that my comment was misleading. I meant using the quirk framework
+(that is based on DMI matching) I sent in another series. This applies
+to the other replies from me.
 
-Hi
+However, thanks to your comment, I remembered that currently, the quirk
+framework can be used only within pcie.c file. For example, the quirk
+initialization is currently done in pcie.c file. The mwifiex driver is
+divided into interface-specific modules (PCIe, SDIO, USB) (e.g.,
+mwifiex_pcie module for PCIe interface) + common module (mwifiex module).
 
-On Fri, Oct 30, 2020 at 07:44:28PM -0300, Helen Koike wrote:
-> On thing that is confusing me is the name csi2 with csi (that makes me
-> think of csi vesun6i-csirsion one, which is not the case), I would
-> rename it to sun6i-video (or maybe it is just me who gets confused).
->
-> I know this driver is already upstream and not part of this series,
-> but on the other hand it doesn't seem to be used.
+So, I need to extend the quirk framework so that it can be used by the
+mwifiex module globally.
 
-It's definitely confusing but CSI is the name of the IP, but it supports
-more than just MIPI-CSI :)
+I'll make a v2 version of this series with using the updated quirk
+framework so that it won't change behaviors for existing users.
 
-Maxime
 
---g7kesbwqqdzmkw7c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/OsQAKCRDj7w1vZxhR
-xf40AP0Yj4OpO5elQY4ecnN07dkmmp1tsjYm1SISQvGp6/ForwD/QpGFBl/5JOHe
-7sDR7zxwSn34cDklaiJF3Yw2jWuu6gA=
-=ETbw
------END PGP SIGNATURE-----
-
---g7kesbwqqdzmkw7c--
