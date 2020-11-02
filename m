@@ -2,124 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2E12A36E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A602A36E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgKBXCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:02:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58948 "EHLO mail.kernel.org"
+        id S1726388AbgKBXFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:05:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725829AbgKBXCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:02:37 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        id S1725829AbgKBXFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:05:30 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B3A622275;
-        Mon,  2 Nov 2020 23:02:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A863F22280;
+        Mon,  2 Nov 2020 23:05:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604358156;
-        bh=UetnTkfxmIeigSUnTzIy4Yhiiax8tZDtOAfnjNIIyzY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PogIUT2LNonVuaoI7ZyRkDQtUiAyGTT/ikFUhgJFk7bB2+AcOKC5yP02VQMVRzWoz
-         fnA6EVQwgVgfz/HZN8WlZgw1DpvwuoJFyXhs493aQ6WVaw1iGS3p3NEkNIeXq/RoPH
-         bAvn3I/ttprRXzzQ+Af4TOJsqh9gge64Xn++WYfA=
-Date:   Mon, 2 Nov 2020 17:02:34 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        amurray@thegoodpenguin.co.uk, robh@kernel.org, treding@nvidia.com,
-        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-Message-ID: <20201102230234.GA62945@bjorn-Precision-5520>
+        s=default; t=1604358330;
+        bh=x+q6Bm5flcZvll36ZgtzcGehsn+wDBCSLDHxqKZxz3E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Go3NZD3gR76smYAvSHk8Od63rMsSUQ8nQuWTfYp0AcYIhi8yFeTXruNyRqjGJRAT2
+         TeHnqR7CiHeMaO8zAF7fnPbuMFWxTcR0+J6f/mxsgE3177NvjV2ezB7S0++/Syal9f
+         s6rJP3tmUHx2epSp/Rh9UPXRSE5DO8aDfrE2VMi8=
+Date:   Mon, 2 Nov 2020 15:05:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     Petr Malat <oss@malat.biz>, linux-sctp@vger.kernel.org,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on
+ big-endian platforms
+Message-ID: <20201102150528.59f13386@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201102132717.GI11030@localhost.localdomain>
+References: <20201030132633.7045-1-oss@malat.biz>
+        <20201102132717.GI11030@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029053959.31361-3-vidyas@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
-> DesignWare core has a TLP digest (TD) override bit in one of the control
-> registers of ATU. This bit also needs to be programmed for proper ECRC
-> functionality. This is currently identified as an issue with DesignWare
-> IP version 4.90a. This patch does the required programming in ATU upon
-> querying the system policy for ECRC.
-
-I guess this is a hardware defect, right?
-
-How much of a problem would it be if we instead added a "no_ecrc"
-quirk for this hardware so we never enabled ECRC?
-
-IIUC, the current Linux support of ECRC is a single choice at
-boot-time: by default ECRC is not enabled, but if you boot with
-"pci=ecrc=on", we turn on ECRC for every device.
-
-That seems like the minimal support, but I think the spec allows ECRC
-to be enabled selectively, on individual devices.  I can imagine a
-sysfs knob that would allow us to enable/disable ECRC per-device at
-run-time.
-
-If we had such a sysfs knob, it would be pretty ugly and maybe
-impractical to work around this hardware issue.  So I'm a little bit
-hesitant to add functionality that might have to be removed in the
-future.
-
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
-> ---
-> V3:
-> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
+On Mon, 2 Nov 2020 10:27:17 -0300 Marcelo Ricardo Leitner wrote:
+> On Fri, Oct 30, 2020 at 02:26:33PM +0100, Petr Malat wrote:
+> > Commit 978aa0474115 ("sctp: fix some type cast warnings introduced since
+> > very beginning")' broke err reading from sctp_arg, because it reads the
+> > value as 32-bit integer, although the value is stored as 16-bit integer.
+> > Later this value is passed to the userspace in 16-bit variable, thus the
+> > user always gets 0 on big-endian platforms. Fix it by reading the __u16
+> > field of sctp_arg union, as reading err field would produce a sparse
+> > warning.  
 > 
-> V2:
-> * Addressed Jingoo's review comment
-> * Removed saving 'td' bit information in 'dw_pcie' structure
+> Makes sense.
 > 
->  drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
->  drivers/pci/controller/dwc/pcie-designware.h | 1 +
->  2 files changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > Signed-off-by: Petr Malat <oss@malat.biz>  
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index b5e438b70cd5..cbd651b219d2 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->  				 upper_32_bits(pci_addr));
->  	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	if (pci->version == 0x490A)
-> +		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->  	val = upper_32_bits(size - 1) ?
->  		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
-> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->  			   lower_32_bits(pci_addr));
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->  			   upper_32_bits(pci_addr));
-> -	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> -			   PCIE_ATU_FUNC_NUM(func_no));
-> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	if (pci->version == 0x490A)
-> +		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
-> +	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->  
->  	/*
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index e7f441441db2..b01ef407fd52 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -89,6 +89,7 @@
->  #define PCIE_ATU_TYPE_IO		0x2
->  #define PCIE_ATU_TYPE_CFG0		0x4
->  #define PCIE_ATU_TYPE_CFG1		0x5
-> +#define PCIE_ATU_TD_SHIFT		8
->  #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
->  #define PCIE_ATU_CR2			0x908
->  #define PCIE_ATU_ENABLE			BIT(31)
-> -- 
-> 2.17.1
+> Then, it also needs:
+> Fixes: 978aa0474115 ("sctp: fix some type cast warnings introduced since very beginning")'
 > 
+> Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+> (If the maintainers can't add the Fixes tag above, please keep the ack
+> on the v2)
+
+Applied, thanks!
