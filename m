@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94A82A30B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8783E2A30CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgKBRAq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 12:00:46 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:57173 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgKBRAq (ORCPT
+        id S1727364AbgKBREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:04:55 -0500
+Received: from 5.mo52.mail-out.ovh.net ([188.165.45.220]:42143 "EHLO
+        5.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727150AbgKBREy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:00:46 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 2B6131BF20A;
-        Mon,  2 Nov 2020 17:00:41 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 18:00:39 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Yifeng <yifeng.zhao@rock-chips.com>, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        heiko@sntech.de, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
- RK2928 and others
-Message-ID: <20201102180039.757d3234@xps13>
-In-Reply-To: <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
-References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
-        <20201028095326.15562-3-yifeng.zhao@rock-chips.com>
-        <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>
-        <e02e13a0-769d-6b73-c87e-5b7d75fd4254@rock-chips.com>
-        <0b417fc2-3503-9bf6-914d-0f8b38df1914@gmail.com>
-        <20201102140725.66e7dcb1@xps13>
-        <5ad70fa0-05a9-e1e7-32cc-32933ff25ae9@gmail.com>
-        <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 2 Nov 2020 12:04:54 -0500
+X-Greylist: delayed 6604 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 12:04:53 EST
+Received: from mxplan5.mail.ovh.net (unknown [10.108.1.149])
+        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id 4C11D202E3A;
+        Mon,  2 Nov 2020 15:39:30 +0100 (CET)
+Received: from kaod.org (37.59.142.104) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 2 Nov 2020
+ 15:39:28 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0056532ddeb-85b3-4075-ace5-1479fb1b9dae,
+                    8DD5A59BB4BDDF13F63AE8D0997EBD433013A0F2) smtp.auth=clg@kaod.org
+Subject: Re: [PATCH v2] powerpc/pci: unmap legacy INTx interrupts when a PHB
+ is removed
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, Qian Cai <cai@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     Oliver O'Halloran <oohall@gmail.com>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        <linux-next@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200807101854.844619-1-clg@kaod.org>
+ <9c5eca863c63e360662fae7597213e8927c2a885.camel@redhat.com>
+ <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org>
+ <89726af2-00ca-9d47-f417-4bea8d5b8b1f@ozlabs.ru>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <3497b725-9108-9f63-9cc2-ac7b1dd06c09@kaod.org>
+Date:   Mon, 2 Nov 2020 15:39:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <89726af2-00ca-9d47-f417-4bea8d5b8b1f@ozlabs.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.104]
+X-ClientProxiedBy: DAG3EX2.mxp5.local (172.16.2.22) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 572cb46b-2a68-40ca-8586-e75424dab774
+X-Ovh-Tracer-Id: 1882504645398334316
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgieejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepffekffefvdfgtdduvefhveegjeevgffgjeehleeihfdvueegkeevkeduvdehfefhnecuffhomhgrihhnpehgihhtlhgrsgdrtghomhenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtoheprghikhesohiilhgrsghsrdhruh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
-
-Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 17:31:18
-+0100:
-
-> On 11/2/20 2:11 PM, Johan Jonker wrote:
-> > Hi,
-> > 
-> > On 11/2/20 2:07 PM, Miquel Raynal wrote:
-> >> Hi Johan, Yifeng
-> >>
-> >> Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 13:57:56
-> >> +0100:
-> >>
-> >>> Hi Yifeng,
-> >>>
-> >>> Don't poke with "ecc->bytes" ones it is set in rk_nfc_ecc_init(). It
-> >>> will not be noted by the MTD frame work or userspace. I think there's
-> >>> currently no way to let the user know that a different ECC must be used.
-> >>> Neither can the user set ECC on the fly.
-> >>>
-> >>> Example R/W flow:
-> >>>
-> >>>         nand_select_target()
-> >>> 	chip->ecc.write_page_raw()
-> >>> 	chip->ecc.write_page()
-> >>>
-> >>> [..]
-> >>>
-> >>> 	chip->ecc.read_page_raw()
-> >>> 	chip->ecc.read_page()
-> >>>         nand_deselect_target()
-> >>>
-> >>> A write/read with:
-> >>>
-> >>> rk_nfc_read_page_hwecc()
-> >>> rk_nfc_write_page_hwecc()
-> >>>
-> >>> or
-> >>>
-> >>> rk_nfc_read_page_raw()
-> >>> rk_nfc_write_page_raw()
-> >>>
-> >>> must end up with the same result. If we can't archive that, then we
-> >>> shouldn't offer RAW mode to the user for now. If Miquel agrees you
-> >>> should just get the driver ready now without these 2 functions and round
-> >>> things up.
-> >>
-> >> What about just not supporting the BootROM area if it was marked
-> >> "reserved" by the BRom in the DT?
-> > 
-> > Should we just fill the buffers with '0xff' for boot blocks?
-> 
-> (part 2) ;)
-> My fault....
-> Better use:
-> 
->     if ((chip->options & NAND_IS_BOOT_MEDIUM) &&
->         (page < (pages_per_blk * rknand->boot_blks))) {
-> 
-> 	return -EIO;
-> 
->     }
-
-Yup, I was about to tell you that I would prefer returning a nice
-error, this is fine I guess.
-
-Anyway, I think reading bad block markers is done in raw mode, so if
-raw accessors refuse to return valid values for boot blocks, you won't
-be able to access it neither with raw nor corrected hooks.
-
-Perhaps refusing the access to the regular page access is ok, but maybe
-we should be able to at least read these pages in raw mode
-(and move the BBM to its right location). What do you think?
-
-Thanks,
-Miquèl
-
+On 10/14/20 4:55 AM, Alexey Kardashevskiy wrote:
 > 
 > 
-> > 
-> >>
-> >> Raw accessors is really a nice and basic feature that I would like to
-> >> have in every new driver.
-> >>
-> >> Thanks,
-> >> Miquèl
-> >>
-> > 
+> On 23/09/2020 17:06, Cédric Le Goater wrote:
+>> On 9/23/20 2:33 AM, Qian Cai wrote:
+>>> On Fri, 2020-08-07 at 12:18 +0200, Cédric Le Goater wrote:
+>>>> When a passthrough IO adapter is removed from a pseries machine using
+>>>> hash MMU and the XIVE interrupt mode, the POWER hypervisor expects the
+>>>> guest OS to clear all page table entries related to the adapter. If
+>>>> some are still present, the RTAS call which isolates the PCI slot
+>>>> returns error 9001 "valid outstanding translations" and the removal of
+>>>> the IO adapter fails. This is because when the PHBs are scanned, Linux
+>>>> maps automatically the INTx interrupts in the Linux interrupt number
+>>>> space but these are never removed.
+>>>>
+>>>> To solve this problem, we introduce a PPC platform specific
+>>>> pcibios_remove_bus() routine which clears all interrupt mappings when
+>>>> the bus is removed. This also clears the associated page table entries
+>>>> of the ESB pages when using XIVE.
+>>>>
+>>>> For this purpose, we record the logical interrupt numbers of the
+>>>> mapped interrupt under the PHB structure and let pcibios_remove_bus()
+>>>> do the clean up.
+>>>>
+>>>> Since some PCI adapters, like GPUs, use the "interrupt-map" property
+>>>> to describe interrupt mappings other than the legacy INTx interrupts,
+>>>> we can not restrict the size of the mapping array to PCI_NUM_INTX. The
+>>>> number of interrupt mappings is computed from the "interrupt-map"
+>>>> property and the mapping array is allocated accordingly.
+>>>>
+>>>> Cc: "Oliver O'Halloran" <oohall@gmail.com>
+>>>> Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
+>>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>>
+>>> Some syscall fuzzing will trigger this on POWER9 NV where the traces pointed to
+>>> this patch.
+>>>
+>>> .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+>>
+>> OK. The patch is missing a NULL assignement after kfree() and that
+>> might be the issue.
+>>
+>> I did try PHB removal under PowerNV, so I would like to understand
+>> how we managed to remove twice the PCI bus and possibly reproduce.
+>> Any chance we could grab what the syscall fuzzer (syzkaller) did ?
 > 
+> 
+> How do you remove PHBs exactly? There is no such thing in the powernv platform, I thought someone added this and you are fixing it but no. PHBs on powernv are created at the boot time and there is no way to remove them, you can only try removing all the bridges.
+
+yes. I noticed that later when proposing the fix for the double 
+free.
+
+> So what exactly are you doing?
+
+What you just said above, with the commands : 
+
+  echo 1 >  /sys/devices/pci0031\:00/0031\:00\:00.0/remove
+  echo 1 >  /sys/devices/pci0031\:00/pci_bus/0031\:00/rescan
+
+
+C. 
+
