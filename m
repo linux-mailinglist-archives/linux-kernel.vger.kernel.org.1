@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF802A25FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7072A25FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgKBIU1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 03:20:27 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:42807 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727802AbgKBIU1 (ORCPT
+        id S1728219AbgKBIUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:20:39 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:45736 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgKBIUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:20:27 -0500
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 50205200015;
-        Mon,  2 Nov 2020 08:20:22 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 09:20:21 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?6LW15Luq5bOw?= <yifeng.zhao@rock-chips.com>
-Cc:     "Johan Jonker" <jbx6244@gmail.com>, richard <richard@nod.at>,
-        vigneshr <vigneshr@ti.com>, robh+dt <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SGVpa29TdMO8Ym5lcg==?= <heiko@sntech.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rockchip <linux-rockchip@lists.infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
- RK2928 and others
-Message-ID: <20201102092021.14159c03@xps13>
-In-Reply-To: <20201102161300764203144@rock-chips.com>
-References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
-        <20201028095326.15562-3-yifeng.zhao@rock-chips.com>
-        <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>
-        <0dabd80e-b281-be65-b8e2-da00f46964fb@gmail.com>
-        <20201102114503679684135@rock-chips.com>
-        <20201102083258.3a748c44@xps13>
-        <20201102161300764203144@rock-chips.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 2 Nov 2020 03:20:38 -0500
+Received: by mail-ed1-f65.google.com with SMTP id dg9so13410667edb.12;
+        Mon, 02 Nov 2020 00:20:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JFdWs1n+nOMQPwW9LaFw1RnZSb9E99wPePrYCo/tsdE=;
+        b=ATsXiJXGkylTV3evoIEbdeq+ViyYagu4gG5Gy+8Tn449wqhHUZ+bVYBSdSQLPN8eh0
+         p4ZqNTwX1VeQyUj9zGVrPNdYdYrMNzvBvUp5UwTWXAjcIXHFBrDS3ZSxb5beI520arNU
+         0aPd+frWcNssFmwLJW5AsLpHeIjvSjtVDEjtn5R5sg5l+O2JWV4mIVeuAWdh9MNV4f1Y
+         qFda+zcDlnpbIEYtYA3vD6WgJACu1Ik/o26IhaVg2Q3EtTOEd+oV1OK9i4iZv88aBQWw
+         BogVo5fzuTnP16jUHoGNe2G/32fgs+pNjlTUDJ7CfZlya80fMkgvSVMGY6wNlg9qrCF4
+         Do3g==
+X-Gm-Message-State: AOAM533xlGuGZ14Aecxalgp7Jsu1z2V7S7fw61w6GkYjN/JXzJ6gQsSI
+        c5x1sp1srQe2XfR/NW6+YafpI5yvROA=
+X-Google-Smtp-Source: ABdhPJy5/j95eHs+Q7mErgm1AEVXD0PAOp8St/ciecRQIdQ/VEQdW1FSk7WFVB3euMEfT5w3vhUDhA==
+X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr15831823edy.82.1604305236211;
+        Mon, 02 Nov 2020 00:20:36 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id f24sm770365edx.90.2020.11.02.00.20.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 00:20:35 -0800 (PST)
+Subject: Re: [PATCH] serial: mctrl_gpio: Fix passing zero to 'ERR_PTR' warning
+To:     YueHaibing <yuehaibing@huawei.com>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201031030530.1304-1-yuehaibing@huawei.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <e8d9c560-dfd4-8419-a768-6a832114e7ea@kernel.org>
+Date:   Mon, 2 Nov 2020 09:20:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201031030530.1304-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yifeng,
-
-赵仪峰 <yifeng.zhao@rock-chips.com> wrote on Mon, 2 Nov 2020 16:14:01
-+0800:
-
-> Hi Miquel,
+On 31. 10. 20, 4:05, YueHaibing wrote:
+> drivers/tty/serial/serial_mctrl_gpio.c:214
+>   mctrl_gpio_init() warn: passing zero to 'ERR_PTR'
 > 
-> The nand_base.c will call nand_deselect_target after NAND read/program... ops done, and set variable chip->cur_cs = -1,
-> but the nand controller do nothing and the cs of the NAND device is still selected, 
-> so the NAND device  will not enter auto power save mode.
+> gpiod_to_irq() never return 0, so remove the useless test
+> and make code more clear.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Yes, I need to think about it again.
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-What I am saying is that this has *nothing* to do with the controller
-driver your are trying to merge. Please focus on the bare features.
-Once these will be merged, it will be easier to propose changes on top
-of it to bring more fine grained features.
+> ---
+>   drivers/tty/serial/serial_mctrl_gpio.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/serial_mctrl_gpio.c b/drivers/tty/serial/serial_mctrl_gpio.c
+> index fb4781292d40..c41d8911ce95 100644
+> --- a/drivers/tty/serial/serial_mctrl_gpio.c
+> +++ b/drivers/tty/serial/serial_mctrl_gpio.c
+> @@ -207,7 +207,7 @@ struct mctrl_gpios *mctrl_gpio_init(struct uart_port *port, unsigned int idx)
+>   			continue;
+>   
+>   		ret = gpiod_to_irq(gpios->gpio[i]);
+> -		if (ret <= 0) {
+> +		if (ret < 0) {
+>   			dev_err(port->dev,
+>   				"failed to find corresponding irq for %s (idx=%d, err=%d)\n",
+>   				mctrl_gpios_desc[i].name, idx, ret);
+> 
 
-It's v13 already, please focus on the controller's basic features,
-implement them correctly and in a second time we'll think about the
-power consumption, what do you think?
 
-Thanks,
-Miquèl
+-- 
+js
+suse labs
