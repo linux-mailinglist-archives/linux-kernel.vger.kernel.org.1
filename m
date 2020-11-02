@@ -2,159 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390C52A354C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7682A3557
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgKBUmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S1727139AbgKBUqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKBUmD (ORCPT
+        with ESMTP id S1726881AbgKBUqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:42:03 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B71C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:42:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ZNSdlUO+BdQE/AgESRHfidZ2756QotpLAzXef4JePuo=; b=Y1STMur+V2jlefJWeRKuMf2MaV
-        jUGCm4/scCsftVDErOePAMSnumzRhp4BOcVMdiELdHIiwD5EKSVuncAqm1vhWPhmVxHV5EZw4twwK
-        aqYzeEdzs8hKguZHtvLBoKVBTn1PIAK91Suq92sbuP3Bg9slgatHCqszDN20bYQhCKbTYFMSYcvu5
-        NG/i0Zc3vvAKgLmBe0Kt3L2+24kO9/1TIFm6/v0JW3Uiq1os8xCq2Z/8U1nayo3RSAsWkaYqrGi9y
-        +D0m/safeWJjC70dQopyeAKVq+3aWbH5A8lQX6BmEDSYPlIRUUSgPgyskY8SIAWS4Z+IAwmyjEYwR
-        XYrMAiHg==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZgeM-0000El-8Z; Mon, 02 Nov 2020 20:41:58 +0000
-Subject: Re: Linux 5.10-rc2 (docs build)
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <CAHk-=wiGc62spBHh+i1yH9sVLpCqZBznUF8QdO7H5772qO1xqQ@mail.gmail.com>
- <ff1301ed-6040-3aac-c057-7f37184604d3@infradead.org>
- <20201102085841.5490f6da@coco.lan> <20201102093305.34ba4ff5@coco.lan>
- <d9b5a400-0dbb-3be8-66f2-f629ffe4a6b8@infradead.org>
- <20201102175922.4ed74e7a@coco.lan>
- <4a538b19-2bfd-5c7c-047c-7ed4292b89c8@infradead.org>
- <20201102213532.4d0706c4@coco.lan>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fccc0ef0-e96a-0e0d-69d9-f72f6a31a201@infradead.org>
-Date:   Mon, 2 Nov 2020 12:41:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 2 Nov 2020 15:46:02 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFEBC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:46:00 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id h12so10159887qtc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:46:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gB2e508EdlwqwocPMg7gSFq3mG+QyX2QZ372rPOjJ/0=;
+        b=GkYdoJDP3SQawBGQzX6f6vlVSfuqoKuZi6YHT2czkvxud7XGR/gxb7pT8E9JRX0BM7
+         AvNke3kr4copQpUNeKato3NWktKZn1lTJDOtigAcUl2jZbZ9bjT/vOoyEMuOLG1qDpg8
+         GOM7xz+0GZBVO+TPEwNSNzSbvcfbflDoxFA4zLtKuH3uO3oqHajPdTEAVlB9bHCruMNX
+         fW4rf3TPJJhY2i/p0WdoPnGZRHioMKc53ApqR1SLSSKZHh4ZR76W9xVQ7P9PiCjF1iFw
+         S+fOHmuwKkLPOZ9wtu80sukk1jYcLnFOjCAIj8TxGvfQlIb/LfI7K0YOmmFMR6D97BOw
+         7iJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gB2e508EdlwqwocPMg7gSFq3mG+QyX2QZ372rPOjJ/0=;
+        b=gQX1X8zbWbZbHds8VTgNWT33neypeTqdlYM79Ol9zcrr7it2MZQLo8FU4fogxMPCw5
+         R1vRe5P7us0JI8cBqnBlqjwPkHpVjTYTmdFaS2Wbw+SpTuTm9DXg7sNL707OD3eKnldY
+         LsgEf9e+nEUtoxX9W6/mEScPjgmgnEEFGnBDeMFmmRTI6wlGM3yvNdLBNKcrFpzYAkzm
+         agd68GE/QpqEypRFyIGdOOj2FQXvCmHWuhomh70nCEweefd7ByG05hed9sxJAZxtQEbb
+         23NDAD8s4mBvQcjfM/711HhERBEIuZmlSq3Fud5c2Fpn9dR5wP/Y54lTLZvVJQ2cYHfW
+         EXqw==
+X-Gm-Message-State: AOAM5310ppSNiQ7UXM/jPw2SuyJsFaw9ryRAJeVrhkCC5dQX9xiAXjBz
+        dLGz+asOVY7Q9qIjO4tLoAK6Ow==
+X-Google-Smtp-Source: ABdhPJxudlJHRrYzOFWNo8jeGkzWZZdZucQ6P+YEDzHlTPpQ1eFVaOSr7/XsAs+QhppEnZoVEhob5g==
+X-Received: by 2002:ac8:6045:: with SMTP id k5mr15221157qtm.216.1604349959591;
+        Mon, 02 Nov 2020 12:45:59 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id 67sm8636195qkd.14.2020.11.02.12.45.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 12:45:58 -0800 (PST)
+Date:   Mon, 2 Nov 2020 15:44:13 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: Re: [PATCH v20 19/20] mm/lru: introduce the relock_page_lruvec
+ function
+Message-ID: <20201102204413.GC740958@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-20-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20201102213532.4d0706c4@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603968305-8026-20-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 12:35 PM, Mauro Carvalho Chehab wrote:
-> Em Mon, 2 Nov 2020 11:23:25 -0800
-> Randy Dunlap <rdunlap@infradead.org> escreveu:
+On Thu, Oct 29, 2020 at 06:45:04PM +0800, Alex Shi wrote:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 > 
->> On 11/2/20 8:59 AM, Mauro Carvalho Chehab wrote:
->>> Em Mon, 2 Nov 2020 08:02:34 -0800
->>> Randy Dunlap <rdunlap@infradead.org> escreveu:
->>>   
->>>> On 11/2/20 12:33 AM, Mauro Carvalho Chehab wrote:  
->>>>> Em Mon, 2 Nov 2020 08:58:41 +0100
->>>>> Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
->>>>>     
->>>>>> Hi Randy,
->>>>>>
->>>>>> Em Sun, 1 Nov 2020 16:01:54 -0800
->>>>>> Randy Dunlap <rdunlap@infradead.org> escreveu:
->>>>>>    
->>>>>>> Something broke the docs build (SEVERE):
->>>>>>>
->>>>>>>
->>>>>>> Sphinx parallel build error:
->>>>>>> docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-bus-rapidio:2: (SEVERE/4) Title level inconsistent:
->>>>>>>
->>>>>>> Attributes Common for All RapidIO Devices
->>>>>>> -----------------------------------------
->>>>>>>
->>>>>>>    
->>>>>>
->>>>>> On what tree did you notice this? Linux-next or upstream?    
->>>>
->>>> See $Subject:  5.10-rc2
->>>>
->>>>  
->>>>> Also: on what Sphinx version are you getting it? I'm not
->>>>> able to reproduce the issue here, neither with Sphinx 2.4.4
->>>>> nor with Sphinx 3.2.1.    
->>>>
->>>> That could be one source of the problem:  ;)
->>>>
->>>> from my docs build:
->>>>
->>>> Sphinx version: 1.7.6
->>>> Warning: It is recommended at least Sphinx version 1.7.9.
->>>>          If you want pdf, you need at least 2.4.4.  
->>>
->>> Could be... From 1.7.6 to 1.7.9, there were bug fixes ;-)
->>>
->>> Also, on Sphinx, they stop maintaining old versions once newer
->>> stable ones are launched. So, any bug on 1.7.x (up to 3.2.x) will
->>> remain unfixed[1].
->>>
->>> In any case, could you please check if this patch solves the
->>> issue?
->>>
->>> 	https://lore.kernel.org/lkml/6c62ef5c01d39dee8d891f8390c816d2a889670a.1604312590.git.mchehab+huawei@kernel.org/  
->>
->> Nope, sorry, with that patch applied to v5.10-rc2, I get:
->>
->> reading sources... [ 93%] userspace-api/media/v4l/pixfmt-y8i .. userspace-api/media/v4l/vidioc-querybuf
->> reading sources... [ 96%] userspace-api/media/v4l/vidioc-querycap .. vm/transhuge
->> reading sources... [100%] vm/unevictable-lru .. xtensa/mmu
->>
->> waiting for workers...
->>
->> {hangs; enter ^C}
->>
->> Sphinx parallel build error:
->> docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-class-led-trigger-pattern.orig:16: (SEVERE/4) Unexpected section title.
+> Use this new function to replace repeated same code, no func change.
 > 
-> Hmm...
-> 	sysfs-class-led-trigger-pattern.orig
+> When testing for relock we can avoid the need for RCU locking if we simply
+> compare the page pgdat and memcg pointers versus those that the lruvec is
+> holding. By doing this we can avoid the extra pointer walks and accesses of
+> the memory cgroup.
 > 
-> That doesn't sound right! It seems you have a backup of an old file
-> there ;-)
+> In addition we can avoid the checks entirely if lruvec is currently NULL.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
 
-Ha! I didn't even notice that.  :(
-
-Anyway, it's not illegal to have such files, so Documentation builds
-should ignore them (IMO).
-
-
-> -
-> 
-> In order to double-check, I tested it here with:
-> 
-> 	$ /usr/bin/python3 -m venv sphinx_1.7.6
-> 	$ pip install docutils sphinx_rtd_theme Sphinx==1.7.6
-> 	$ pip install docutils==0.15 sphinx_rtd_theme Sphinx==1.7.6
-> 
-> 
-> And then built the docs with:
-> 
-> 	$ time make O="sphinx1.7" SPHINXOPTS="-w new_warnings --no-color" cleandocs htmldocs
-> 
-> Everything build fine (except for a huge amount of warnings that seem
-> to indicate some bug at the cross-reference logic with 1.7.6).
-
-OK, I'll wait to see how things are in -rc2 or so.
-
-thanks.
--- 
-~Randy
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
