@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7072A25FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198EB2A2603
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgKBIUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:20:39 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:45736 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728104AbgKBIUi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:20:38 -0500
-Received: by mail-ed1-f65.google.com with SMTP id dg9so13410667edb.12;
-        Mon, 02 Nov 2020 00:20:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JFdWs1n+nOMQPwW9LaFw1RnZSb9E99wPePrYCo/tsdE=;
-        b=ATsXiJXGkylTV3evoIEbdeq+ViyYagu4gG5Gy+8Tn449wqhHUZ+bVYBSdSQLPN8eh0
-         p4ZqNTwX1VeQyUj9zGVrPNdYdYrMNzvBvUp5UwTWXAjcIXHFBrDS3ZSxb5beI520arNU
-         0aPd+frWcNssFmwLJW5AsLpHeIjvSjtVDEjtn5R5sg5l+O2JWV4mIVeuAWdh9MNV4f1Y
-         qFda+zcDlnpbIEYtYA3vD6WgJACu1Ik/o26IhaVg2Q3EtTOEd+oV1OK9i4iZv88aBQWw
-         BogVo5fzuTnP16jUHoGNe2G/32fgs+pNjlTUDJ7CfZlya80fMkgvSVMGY6wNlg9qrCF4
-         Do3g==
-X-Gm-Message-State: AOAM533xlGuGZ14Aecxalgp7Jsu1z2V7S7fw61w6GkYjN/JXzJ6gQsSI
-        c5x1sp1srQe2XfR/NW6+YafpI5yvROA=
-X-Google-Smtp-Source: ABdhPJy5/j95eHs+Q7mErgm1AEVXD0PAOp8St/ciecRQIdQ/VEQdW1FSk7WFVB3euMEfT5w3vhUDhA==
-X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr15831823edy.82.1604305236211;
-        Mon, 02 Nov 2020 00:20:36 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id f24sm770365edx.90.2020.11.02.00.20.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 00:20:35 -0800 (PST)
-Subject: Re: [PATCH] serial: mctrl_gpio: Fix passing zero to 'ERR_PTR' warning
-To:     YueHaibing <yuehaibing@huawei.com>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201031030530.1304-1-yuehaibing@huawei.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <e8d9c560-dfd4-8419-a768-6a832114e7ea@kernel.org>
-Date:   Mon, 2 Nov 2020 09:20:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1728220AbgKBIVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:21:30 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:58298 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727818AbgKBIVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:21:30 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 4646F204FD;
+        Mon,  2 Nov 2020 09:21:28 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xf-tTB2zwMVo; Mon,  2 Nov 2020 09:21:24 +0100 (CET)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id B6ADA2026E;
+        Mon,  2 Nov 2020 09:21:24 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 2 Nov 2020 09:21:24 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 2 Nov 2020
+ 09:21:24 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id A365531844C7; Mon,  2 Nov 2020 09:21:23 +0100 (CET)
+Date:   Mon, 2 Nov 2020 09:21:23 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Dmitry Safonov <dima@arista.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hillf Danton <hdanton@sina.com>, <netdev@vger.kernel.org>,
+        <syzbot+a7e701c8385bd8543074@syzkaller.appspotmail.com>,
+        <syzbot+c43831072e7df506a646@syzkaller.appspotmail.com>
+Subject: Re: [PATCH 0/3] xfrm/compat: syzbot-found fixes
+Message-ID: <20201102082123.GC8805@gauss3.secunet.de>
+References: <20201030022600.724932-1-dima@arista.com>
 MIME-Version: 1.0
-In-Reply-To: <20201031030530.1304-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201030022600.724932-1-dima@arista.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31. 10. 20, 4:05, YueHaibing wrote:
-> drivers/tty/serial/serial_mctrl_gpio.c:214
->   mctrl_gpio_init() warn: passing zero to 'ERR_PTR'
+On Fri, Oct 30, 2020 at 02:25:57AM +0000, Dmitry Safonov wrote:
+> WARN_ON() for XFRMA_UNSPEC translation which likely no-one except
+> syzkaller uses; properly zerofy tail-padding for 64-bit attribute;
+> don't use __GFP_ZERO as the memory is initialized during translation.
 > 
-> gpiod_to_irq() never return 0, so remove the useless test
-> and make code more clear.
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Hillf Danton <hdanton@sina.com>
+> Cc: netdev@vger.kernel.org
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-
-> ---
->   drivers/tty/serial/serial_mctrl_gpio.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Thanks,
+>          Dmitry
 > 
-> diff --git a/drivers/tty/serial/serial_mctrl_gpio.c b/drivers/tty/serial/serial_mctrl_gpio.c
-> index fb4781292d40..c41d8911ce95 100644
-> --- a/drivers/tty/serial/serial_mctrl_gpio.c
-> +++ b/drivers/tty/serial/serial_mctrl_gpio.c
-> @@ -207,7 +207,7 @@ struct mctrl_gpios *mctrl_gpio_init(struct uart_port *port, unsigned int idx)
->   			continue;
->   
->   		ret = gpiod_to_irq(gpios->gpio[i]);
-> -		if (ret <= 0) {
-> +		if (ret < 0) {
->   			dev_err(port->dev,
->   				"failed to find corresponding irq for %s (idx=%d, err=%d)\n",
->   				mctrl_gpios_desc[i].name, idx, ret);
-> 
+> Dmitry Safonov (3):
+>   xfrm/compat: Translate by copying XFRMA_UNSPEC attribute
+>   xfrm/compat: memset(0) 64-bit padding at right place
+>   xfrm/compat: Don't allocate memory with __GFP_ZERO
 
+Can you please add 'Fixes' tags to all the patches.
 
--- 
-js
-suse labs
+Thanks!
