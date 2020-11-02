@@ -2,110 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300412A28C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81DE2A28C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgKBLJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:09:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
+        id S1728472AbgKBLKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbgKBLJW (ORCPT
+        with ESMTP id S1728288AbgKBLKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:09:22 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906C2C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:09:20 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id x7so14104394wrl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:09:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VNKBzuaah0h5Gb4hoIVZS3da51nQlrhYLCe3rboP11A=;
-        b=SFTaJqUZtfkkrRI+Q9PY7VNO+a17R1kSjOtcGWcaK+CHErqUB/F2Sa3e/th8FMVcft
-         TmgOCOTjq94XbgaUawLyPonyp5k6zXmfsTXV2c5U2H+oduVvMBHQfZoavcR4nCSVOAxY
-         e9miCE9Iipq2MYWzeP+MDbIykjcYJY+WAAjOiKwHs2xr6UcrxbOO0I4ouSqA68j46mYC
-         azb5mdF9wHULmZ2Cz6u54K2cSvx11STFdyPcDl9bInHXHq70Q98O+NKEk1Fq5YRZnsyK
-         jacisaqaE9vTEUxs00HqwMo7MjuVoK8RkPC2yy5gcPU41D7lRiAA0z6d6utzoX9PXCjd
-         w/bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VNKBzuaah0h5Gb4hoIVZS3da51nQlrhYLCe3rboP11A=;
-        b=IirRacX0UQcMjKfy87RSgE0fICBHO6GV1fQzKnTj6bpIN43bZR6eQpdoXmi5i0y1uq
-         Yxkjj1ONiEYHF2rsiKsq998OMU10bOyPG/cXXlbVjUd8Q3f6vCKcgKFC6U0J488ACZdS
-         qxtv88S1J4HDpNCauRujJDgem69ROjH5JmZFXR3rTk6mR359VnkDraQErFph6luOyCHN
-         fViCW/QsYdDaRycSvV7reFvwsLJx2C7TOh8+MnIDB1++KR9HHpG8KkelIIb/pYzgv2GW
-         iUtbKAbHwimatYiOD0vStdA8tSdLCtoQKOZUzVNLQjgOYhfYA5tYPGNkMuqOHbIW5V4m
-         njPg==
-X-Gm-Message-State: AOAM531kDmG4gbFsiSmbcluI2MZM1TdIWzuOlF00REI29G2zefb4/2X2
-        N1KAaIrsmv+/nWeGuIXPDKIRMg==
-X-Google-Smtp-Source: ABdhPJxNCPU3ugtaw5SbDq9bRqIQsbfrQpZvvzXXHChVJFEpTyYgy/+pQ1unhh72pfJOI5cuZzTiTw==
-X-Received: by 2002:adf:df91:: with SMTP id z17mr18923542wrl.379.1604315359142;
-        Mon, 02 Nov 2020 03:09:19 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id y185sm14706772wmb.29.2020.11.02.03.09.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:09:18 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:09:16 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
- qualifier
-Message-ID: <20201102110916.GK4127@dell>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
+        Mon, 2 Nov 2020 06:10:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9201C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:10:21 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kZXjA-00056c-EY; Mon, 02 Nov 2020 12:10:20 +0100
+Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
+ warnings for pwm-leds
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        hardware@linux-automation.com
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-11-post@lespocky.de>
+ <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
+ <20201027100536.cpfizc67gwrolp2z@falbala.internal.home.lespocky.de>
+ <f6ed201d-51b6-f278-7a95-3e3e49dc19ee@pengutronix.de>
+ <20201031135408.lgpiy5goa7l4cg2k@falbala.internal.home.lespocky.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <786c297d-d3c5-4a5c-ffc1-f6a8af1b7758@pengutronix.de>
+Date:   Mon, 2 Nov 2020 12:10:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
+In-Reply-To: <20201031135408.lgpiy5goa7l4cg2k@falbala.internal.home.lespocky.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Daniel Vetter wrote:
+Hello,
 
-> On Fri, Oct 30, 2020 at 7:18 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
-> > built-in fonts") introduced the following error when building
-> > rpc_defconfig (only this build appears to be affected):
-> >
-> >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-> >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-> >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
-> >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
-> >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
-> >
-> > The .data section is discarded at link time.  Reinstating
-> > acorndata_8x8 as const ensures it is still available after linking.
-> >
-> > Cc: <stable@vger.kernel.org>
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On 10/31/20 2:54 PM, Alexander Dahl wrote:
+> Hei hei,
 > 
-> Shouldn't we add the const to all of them, for consistency?
+> On Tue, Oct 27, 2020 at 11:58:10AM +0100, Ahmad Fatoum wrote:
+>> Hello,
+>>
+>> On 10/27/20 11:05 AM, Alexander Dahl wrote:
+>>> Hello Ahmad,
+>>>
+>>> thanks for your feedback, comments below.
+>>>
+>>
+>>>>> -	led-rgb {
+>>>>> +	led-controller-2 {
+>>>>
+>>>> Is a single RGB LED really a controller?
+>>>
+>>> I just followed the recommendations by Rob here.
+>>
+>> Do you happen to know if the new multicolor LED support could be used here?
+>>
+>> I find it unfortunate that the device tree loses information relevant to humans
+>> to adhere to a fixed nomenclature. Apparently led-controller isn't even codified
+>> in the YAML binding (It's just in the examples). If you respin, please add a
+>> comment that this is a single RGB led. I'd prefer to keep the information
+>> in the DTB as well though.
+> 
+> Slightly off-topic, but while I was working on the patch based on your
+> feedback I tried to find some information on that Linux Automation
+> MC-1 board.  However I could not find any? Is there some website, some
+> datasheet or maybe a schematic online?  The vendor prefix says "Linux
+> Automation GmbH", but I find only that USB-SD-Mux on their page?
+Besides the test automation gadgets, Linux Automation offers engineering services
+("Design for mainline"; custom design with off-the-shelf components well-supported
+by mainline Linux) and the MC-1 was the Embedded World fair demonstrator for the
+concept.
 
-The thought did cross my mind.  However, I do not see any further
-issues which need addressing.  Nor do I have any visibility into what
-issues may be caused by doing so.  The only thing I know for sure is
-that this patch fixes the compile error pertained to in the commit
-message, and I'd like for this fix to be as atomic as possible, as
-it's designed to be routed through the Stable/LTS trees.
+There is a blog post[0], a BSP[1] and even a Youtube video[2] on it,
+but as the MC-1 itself is not what's being sold, there is no technical documentation
+of the HW publicly available.
+
+If you got any questions regarding the device tree though, just send me an email. :-)
+
+[0]: https://www.pengutronix.de/en/software/distrokit.html
+[1]: https://www.pengutronix.de/de/blog/2020-02-26-embedded_world_2020.html
+[2]: https://www.youtube.com/watch?v=qs0ljuH3ZkQ
+
+Cheers,
+Ahmad
+
+
+> 
+> Greets
+> Alex
+> 
+>>
+>>
+>>
+>>>
+>>>>>  		compatible = "pwm-leds";
+>>>>>  
+>>>>> -		led-red {
+>>>>> +		led-2 {
+>>>>
+>>>> Shouldn't this have been led-1 as well or is the numbering "global" ?
+>>>
+>>> Also good question. This numbering is for dts only, it usually does
+>>> not correspond with LEDs on the board, so it could be numbered per
+>>> led-controller as well?
+>>
+>> I'd prefer that it starts by 1. That way it's aligned with PWM channel
+>> ID.
+>>
+>> Thanks for fixing the dtschema warnings by the way!
+>>
+>> Cheers,
+>> Ahmad
+>>
+>>>
+>>> Greets
+>>> Alex
+>>>
+>>>>
+>>>>>  			label = "mc1:red:rgb";
+>>>>>  			pwms = <&leds_pwm 1 1000000 0>;
+>>>>>  			max-brightness = <255>;
+>>>>>  			active-low;
+>>>>>  		};
+>>>>>  
+>>>>> -		led-green {
+>>>>> +		led-3 {
+>>>>>  			label = "mc1:green:rgb";
+>>>>>  			pwms = <&leds_pwm 2 1000000 0>;
+>>>>>  			max-brightness = <255>;
+>>>>>  			active-low;
+>>>>>  		};
+>>>>>  
+>>>>> -		led-blue {
+>>>>> +		led-4 {
+>>>>>  			label = "mc1:blue:rgb";
+>>>>>  			pwms = <&leds_pwm 3 1000000 0>;
+>>>>>  			max-brightness = <255>;
+>>>>>
+>>>>
+>>>> -- 
+>>>> Pengutronix e.K.                           |                             |
+>>>> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+>>>> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+>>>> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>>>
+>>
+>> -- 
+>> Pengutronix e.K.                           |                             |
+>> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+>> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+>> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
