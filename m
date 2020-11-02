@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743692A34A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2092A34AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbgKBTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:54:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727145AbgKBTyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:54:05 -0500
-Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A9052225E;
-        Mon,  2 Nov 2020 19:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604346844;
-        bh=XSKqsn3P2/pXv/MCbKfRw59VxuoIrUSEkA+QHvC1urI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=C65vDUFHBMWfeWycrASThmwyc1A4ZuKeBz9o7K1SMK8F6XuZTnJKsdQWUBnmdEscZ
-         Owae24HwhDTm8OvKN08Z+833e1Y+yWXQS6WkXj8PJ5tlPbrv+W6BmuE67o6QqWuS6c
-         1OAO1fyJQwLeJcxMFr/6shNzfDPfnElEC/ij8E+o=
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH] selftests/x86: Use __builtin_ia32_read/writeeflags
-Date:   Mon,  2 Nov 2020 11:54:02 -0800
-Message-Id: <aee4b1cdfc56083eb779ce927b7d3459aad2af76.1604346818.git.luto@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726864AbgKBT4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:56:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgKBTyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:54:43 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C71C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:54:42 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id f21so7361658plr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g4ZxLGbZAH9QpwNm6ZRnurDjpa1h//fgROghHVw24OQ=;
+        b=yf0U0iun06zfbK7Cnuqcth6fCp7a8lCxpobpBe+kmTP4SyoXbbUO2K3TYCK6UyDLoj
+         ooPYjS4cznerRqU0lXrjLZCVpGCpPjd6Sn+ZNDbEjsdUHgnUiuCOiXXXcxl25lstTQJG
+         tmcUn2mbPmmgM9njQGrxNbnj4QroRySYb0+a1/882d/2pjRY/D8LnjJp6l6lMudGtW5l
+         WQab6USbKTmTM9oIjp5ESaE+M0vuJq1eJDjJCPIIqKtYMZlvA+lpI665wyc4MzyKlu3s
+         kTVXUcgePa/052LwP1SMAb2vgEgBZB0k8BfsD4mulTlNDODd+8fQGcPEGpsaAJAy6WPG
+         y+uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g4ZxLGbZAH9QpwNm6ZRnurDjpa1h//fgROghHVw24OQ=;
+        b=jxmfw5Kw+3IWmfzq51Y/ipNuSWw5DE3ah8JcBEhDerCK0YgecmUsl9bgVQPaVArod6
+         hB5EP4OJ+fUqVcfAqfEdn6vaOzh/LM64NmFL4u8ByERhvoD9R3bpsM2cqM6NC8KQj3r8
+         VlkHo+IPUSQhZgUrnbBfo8jCbfB64ZopCjZfm1FscdetjKbW/FtmS4JRr59SoYGDFhiJ
+         Web1eHxPzN7oyRqKvu+4/ABS+oJxfJNFM6NxMmF3bh+QtTXSGrafeQIA5DPxrUr6ocVz
+         G0U0rdrSfStOYL2S369YkYTTkVnpmUdJMzBKjsr1kB1tuCm+Cx2v+Ztgxbb4df1d9kQe
+         7LcA==
+X-Gm-Message-State: AOAM533PrHTVEgXAdRZXYcIKO6B3Vb1nVHTqPuTpEBTwq2+T/pkQfTCj
+        LO2lRQnjTKzU/ITCUA4sehfbA/cEgnVL/Q==
+X-Google-Smtp-Source: ABdhPJx4OQKRrGqzCD36YPhLdEtoW51FRwM41PHLjI8T2B1Z88FwOtyf99yHIQdpRZQFmBq9iDKmQg==
+X-Received: by 2002:a17:902:fe0f:b029:d6:9fa1:eee0 with SMTP id g15-20020a170902fe0fb02900d69fa1eee0mr143358plj.24.1604346881997;
+        Mon, 02 Nov 2020 11:54:41 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id b6sm269265pjq.42.2020.11.02.11.54.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 11:54:41 -0800 (PST)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201030152407.43598-1-cai@redhat.com>
+ <20201030184255.GP3576660@ZenIV.linux.org.uk>
+ <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
+ <20201030184918.GQ3576660@ZenIV.linux.org.uk>
+ <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
+ <20201030222213.GR3576660@ZenIV.linux.org.uk>
+ <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
+ <87eelba7ai.fsf@x220.int.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f33a6b5e-ecc9-2bef-ab40-6bd8cc2030c2@kernel.dk>
+Date:   Mon, 2 Nov 2020 12:54:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87eelba7ai.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The asm to read and write EFLAGS from userspace is horrible.  The
-compiler builtins are now available on all supported compilers, so
-use them instead.
+On 11/2/20 12:27 PM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 10/30/20 4:22 PM, Al Viro wrote:
+>>> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
+>>>> On 10/30/20 12:49 PM, Al Viro wrote:
+>>>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
+>>>>>
+>>>>>> See other reply, it's being posted soon, just haven't gotten there yet
+>>>>>> and it wasn't ready.
+>>>>>>
+>>>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
+>>>>>> instead. The intent is not to have any functional changes in that prep
+>>>>>> patch. But once we can pass in filenames instead of user pointers, it's
+>>>>>> usable from io_uring.
+>>>>>
+>>>>> You do realize that pathname resolution is *NOT* offloadable to helper
+>>>>> threads, I hope...
+>>>>
+>>>> How so? If we have all the necessary context assigned, what's preventing
+>>>> it from working?
+>>>
+>>> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
+>>> *do* pass through that, /dev/stdin included)
+>>
+>> Don't we just need ->thread_pid for that to work?
+> 
+> No.  You need ->signal.
+> 
+> You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
+> that ->thread_pid is needed.
+> 
+> Even more so than ->thread_pid, it is a kernel invariant that ->signal
+> does not change.
 
-(The compiler builtins are also unnecessarily ugly, but that's a
- more manageable level of ugliness.)
+I don't care about the pid itself, my suggestion was to assign ->thread_pid
+over the lookup operation to ensure that /proc/self/ worked the way that
+you'd expect.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- tools/testing/selftests/x86/helpers.h | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/helpers.h b/tools/testing/selftests/x86/helpers.h
-index f5ff2a2615df..4ef42c4559a9 100644
---- a/tools/testing/selftests/x86/helpers.h
-+++ b/tools/testing/selftests/x86/helpers.h
-@@ -6,36 +6,20 @@
- 
- static inline unsigned long get_eflags(void)
- {
--	unsigned long eflags;
--
--	asm volatile (
- #ifdef __x86_64__
--		"subq $128, %%rsp\n\t"
--		"pushfq\n\t"
--		"popq %0\n\t"
--		"addq $128, %%rsp"
-+	return __builtin_ia32_readeflags_u64();
- #else
--		"pushfl\n\t"
--		"popl %0"
-+	return __builtin_ia32_readeflags_u32();
- #endif
--		: "=r" (eflags) :: "memory");
--
--	return eflags;
- }
- 
- static inline void set_eflags(unsigned long eflags)
- {
--	asm volatile (
- #ifdef __x86_64__
--		"subq $128, %%rsp\n\t"
--		"pushq %0\n\t"
--		"popfq\n\t"
--		"addq $128, %%rsp"
-+	__builtin_ia32_writeeflags_u64(eflags);
- #else
--		"pushl %0\n\t"
--		"popfl"
-+	__builtin_ia32_writeeflags_u32(eflags);
- #endif
--		:: "r" (eflags) : "flags", "memory");
- }
- 
- #endif /* __SELFTESTS_X86_HELPERS_H */
 -- 
-2.28.0
+Jens Axboe
 
