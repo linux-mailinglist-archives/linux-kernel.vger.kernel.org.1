@@ -2,186 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1772A29ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F042A29EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgKBLtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:49:03 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:29232 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728610AbgKBLtC (ORCPT
+        id S1728884AbgKBLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728733AbgKBLtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:49:02 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0A2BkvlE018820;
-        Mon, 2 Nov 2020 05:48:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=s2A7WUt4Mr2xZx6mptd12oJEYonECrMm+g5WqblPk8k=;
- b=Kk8Qhq7oIq9XW5JVR1719vqTkwUv97A/zoUkr7lXLamP/+2HEGD10pHb+42I5R8JUzvH
- aSEv7MpSvpvYNwO0bQKHBS6GeVk47R7yHmDQpqZ6sxr0KQGEr3VQRpbp+/d62FoMysBi
- oyqd6lOekpNFNEIFAHCnn7nGFfLX32wOwGC1UAKITgxBxG8VVjwnxXwLxYUGhhW5H2+7
- p4ejePmdXC9G6qPTTNNCVkcqE0WgDNVpMsAFOUrnw12QdCn6XiLlbBUW3YSn97nXA/LA
- C6FkK+PkmbcVDBniBEr0FFHBvOBpRzRr44ysocQB0pIsZr44ZT8wXJaJxOcUf2p3yjGp Qw== 
-Received: from ediex02.ad.cirrus.com ([5.172.152.52])
-        by mx0a-001ae601.pphosted.com with ESMTP id 34h5b226hr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 02 Nov 2020 05:48:48 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 2 Nov 2020
- 11:48:46 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 2 Nov 2020 11:48:46 +0000
-Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.191])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0769B2A1;
-        Mon,  2 Nov 2020 11:48:45 +0000 (UTC)
-Subject: Re: [PATCH v2 2/7] ASoC: audio-graph-card: Add plls and sysclks DT
- bindings
-To:     Rob Herring <robh@kernel.org>
-CC:     <broonie@kernel.org>, <nsaenzjulienne@suse.de>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>
-References: <20201016173541.21180-1-rf@opensource.cirrus.com>
- <20201016173541.21180-3-rf@opensource.cirrus.com>
- <20201026132704.GA19204@bogus>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <c4630b44-b242-5ca9-3d7c-8da41f13e1f1@opensource.cirrus.com>
-Date:   Mon, 2 Nov 2020 11:48:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 2 Nov 2020 06:49:07 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521EEC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:49:07 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id w14so14205522wrs.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+nfxQCCmJXEo7KncMNyKTjvgt98qI81zIUKCv1ZGk7A=;
+        b=gRVuPI8Mfv4ZFGLYGPQhACenu9vVDG903vkWLHVy+/1o+8b+naTJnraP4Dpoj5wEkl
+         hNJ6VFcZKLu7kk/zbxDCOgcPkK0I7OiqTGkWOxZHvmCWYJO1jrjsSzoSwDq5xVm4Un3U
+         LROLW/77WC0GhEobCwK6DjkRmLH4MUmYo0TW7+8YABnCp4zoLfq4DeyQ6Dm2lAfAn1vK
+         9Vvj5PaXynwPrJOPCfI1N7l1hcuesyRz+5S6P3wld5tpLaQpCsnJiYruwrfu1d2jW/Ug
+         S87MI1SRGXt0/JcB/2fEFOI+gFidAWIDfUYiUbfP/KIVuKOaTRR+nbB9oNyMFiZscKIG
+         vCcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+nfxQCCmJXEo7KncMNyKTjvgt98qI81zIUKCv1ZGk7A=;
+        b=jT+DWDEgLGLjhxI1SQv9LU4nQfsGrGyzdTZ1LYJlqKT2I5JU5vcCmg0aWRsNi7o9pA
+         o7G6UZT1kueYbVJDM+bYQ97YNP+Hn9Y6X36ctxyIFIoNAO/+fh+AHifFt+MjXB4l8LmX
+         I/s8yFTxn8J2ZjEMBEc8QhfaxM4oozuOteC0c9OQQtke2mx+U2JuShhWV6S6mLFOGDtu
+         Lnfn3rAk0UtTO7WF6w4JohwLG71S3XBUKC9ZgphrEPdxge7zDIipOYyVZJ4yK7GDl+XI
+         2W2qsZXvgo5DhUuj72hPwzkYl2y0XlwV6qGapC7/75gJ163cDIS9nMrfh+ptpzE4xttl
+         EWIw==
+X-Gm-Message-State: AOAM532chEJ5BtNVI+yYtsIYxMs6U2+Sm5vUj+XECC1Zl5F7m1dZh25A
+        Y16VFiFzY4Y2GPEoxCraq+ZVxxY0mzXFpQ==
+X-Google-Smtp-Source: ABdhPJzlXOMnvvRSFKCIMDXT1E5IRJdfL+GZYEdvDsrxITEEnF5V1jDXACBqO2oZw8A8ePwmsXjtdQ==
+X-Received: by 2002:adf:ab50:: with SMTP id r16mr19080712wrc.235.1604317746019;
+        Mon, 02 Nov 2020 03:49:06 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id a3sm14865167wmb.46.2020.11.02.03.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 03:49:05 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:49:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rodolfo Giometti <giometti@enneenne.com>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
+ more secure
+Message-ID: <20201102114903.GN4127@dell>
+References: <20201102111211.1047972-1-lee.jones@linaro.org>
+ <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026132704.GA19204@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1011
- impostorscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011020095
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2020 13:27, Rob Herring wrote:
-> On Fri, Oct 16, 2020 at 06:35:36PM +0100, Richard Fitzgerald wrote:
->> This adds the two new properties 'plls' and 'sysclks' to the dt bindings.
->> These add the ability to set values that will be
->> passed to snd_soc_component_set_sysclk() and snd_soc_component_set_pll().
+On Mon, 02 Nov 2020, David Laight wrote:
+
+> From: Lee Jones
+> > Sent: 02 November 2020 11:12
+> > 
+> > strncpy() may not provide a NUL terminator, which means that a 1-byte
+> > leak would be possible *if* this was ever copied to userspace.  Ensure
+> > the buffer will always be NUL terminated by using the kernel's
+> > strscpy() which a) uses the destination (instead of the source) size
+> > as the bytes to copy and b) is *always* NUL terminated.
+> > 
+> > Cc: Rodolfo Giometti <giometti@enneenne.com>
+> > Cc: "Eurotech S.p.A" <info@eurotech.it>
+> > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/misc/c2port/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+> > index 80d87e8a0bea9..b96444ec94c7e 100644
+> > --- a/drivers/misc/c2port/core.c
+> > +++ b/drivers/misc/c2port/core.c
+> > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+> >  	}
+> >  	dev_set_drvdata(c2dev->dev, c2dev);
+> > 
+> > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+> > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
 > 
-> I worry this looks like Linux implementation details leaking into the
-> binding.
->
-
-I guess what you mean is referring to a function to explain the cells.
-I thought it would simplify the description but it yes, it does mean
-that the binding is tied to details of the kernel APIs. I can rewrite
-this description to be explicit about the cells instead of being in
-terms of kernel APIs.
-
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> ---
->>   .../bindings/sound/audio-graph-card.txt       | 44 +++++++++++++++++++
->>   1 file changed, 44 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->> index d5f6919a2d69..59bbd5b55b59 100644
->> --- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->> +++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->> @@ -32,6 +32,19 @@ Required properties:
->>   Optional properties:
->>   - pa-gpios: GPIO used to control external amplifier.
->>   
->> +- plls: A list of component pll settings that will be applied with
->> +      snd_soc_component_set_pll. Each entry is a phandle to the node of the
->> +      codec or cpu component, followed by the four arguments id, source,
->> +      frequency_in, frequency_out. Multiple entries can have the same phandle
->> +      so that several plls can be set in the same component.
+> strscpy() doesn't zero fill so if the memory isn't zeroed
+> and a 'blind' copy to user of the structure is done
+> then more data is leaked.
 > 
-> Where do the values of id and source come from?
->
+> strscpy() may be better, but rational isn't right.
 
-They are specific to each codec driver, and ultimately depend on the
-hardware inside the codec. Compare with for example GPIO numbers being
-specific to hardware. I didn't say that because the description refers
-to the underlying kernel API, but if I update to not be in terms of an
-API I'll also add some more info about the fields.
+The original patch zeroed the data too, but I was asked to remove that
+part [0].  In your opinion, should it be reinstated?
 
->> +
->> +- sysclks: A list of component sysclk settings that will be applied with
->> +      snd_soc_component_set_sysclk. Each entry is a phandle to the node of
->> +      the codec or cpu component, followed by the four arguments id, source,
->> +      frequency, direction. Direction is 0 if the clock is an input, 1 if it
->> +      is an output. Multiple entries can have the same phandle so that several
->> +      clocks can be set in the same component.
-> 
-> Are these really common properties? They seem kind of Cirrus specific
-> and perhaps should be located in the codec node(s).
-> 
+[0] https://lore.kernel.org/patchwork/patch/1272290/
 
-I'm not sure what about this description makes you think it is Cirrus
-specific. They are standard ALSA ASoC subsystem APIs. I can find them
-used in drivers for Analog Devices, Dialog, Realtek and others, and this
-binding could be used for an audio-graph-card driver using those codecs.
-
-It is the ASoC machine driver (in this case audio-graph-card) that
-handles this stuff so makes sense for them to be in its node, not the
-codec driver. The ASoC structure is somewhat complex but in short the
-codec driver provides an implementation for setting the hardware
-registers but doesn't know about use-cases or other audio components, so
-can't decide clocking. The "machine driver" sits above all the audio
-drivers and has a view of the whole audio subsystem so can decide on
-use-cases and clocking.
-
-Having said that, we wouldn't need to do this if the kernel clock
-framework could support clock controllers on I2C/SPI buses. But years
-have gone by and nobody has managed to fix that yet.
-
->> +
->>   -----------------------
->>   Example: Single DAI case
->>   -----------------------
->> @@ -335,3 +348,34 @@ Example: Multi DAI with DPCM
->>   			};
->>   		};
->>   	};
->> +
->> +-----------------------
->> +Example: Set component sysclks and PLLs
->> +-----------------------
->> +
->> +	sound {
->> +		compatible = "audio-graph-card";
->> +
->> +		sysclks = <
->> +			&cs47l15 1 4 98304000 0
->> +			&cs47l15 8 4 147456000 0
->> +		>;
->> +		plls = <
->> +			&cs47l15 1 0 24576000 98304000
->> +		>;
->> +
->> +		dais = <&cpu_i2s_port>;
->> +	};
->> +
->> +	cs47l15: codec@0 {
->> +		...
->> +		ports {
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +			cs47l15_aif1_port: port@0 {
->> +				reg = <0>;
->> +				cs47l15_aif1: endpoint {
->> +					remote-endpoint = <&cpu_i2s_endpoint>;
->> +				};
->> +			};
->> +	};
->> -- 
->> 2.20.1
->>
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
