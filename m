@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9872A2CDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442BC2A2CEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgKBO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:26:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726104AbgKBO0M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:26:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604327171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l2zRKLgNsnXTGjSSS56WpLlhmJPfrlhiyUVGzUpqBHE=;
-        b=fdEAAQVJoKmcLt0lzRJrptxqXC8yKPyI/UxaQCQYAQ69G0lNT46Xg7p55eIF3JuSAOwWEI
-        dbgrm5VcuiGzJ48pXmPuIfktqLAJNYEBt2Vr/uf+Cnv5bb3PU+Apw7qouJIO56VMnmlBx0
-        n5J6rvm51eBlVEWygo0toXPyBAW+yuc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-L8aQTOltN0aPgeK5VZD5WQ-1; Mon, 02 Nov 2020 09:26:10 -0500
-X-MC-Unique: L8aQTOltN0aPgeK5VZD5WQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726051AbgKBO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:27:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgKBO1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:27:01 -0500
+Received: from localhost (unknown [122.179.37.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A83FA18BA283;
-        Mon,  2 Nov 2020 14:26:08 +0000 (UTC)
-Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A5EB05DA6B;
-        Mon,  2 Nov 2020 14:25:57 +0000 (UTC)
-Message-ID: <77529e99ca9c2d228a67dd8d789d83afdcd1ace3.camel@redhat.com>
-Subject: Re: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
-From:   Qian Cai <cai@redhat.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>
-Date:   Mon, 02 Nov 2020 09:25:57 -0500
-In-Reply-To: <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com>
-References: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
-         <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
-         <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        by mail.kernel.org (Postfix) with ESMTPSA id EFE91206B7;
+        Mon,  2 Nov 2020 14:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604327221;
+        bh=2+l7P/0+p7hN/S7HNVXHorSTp3zzZhgUb+08NYI58js=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CHmWA0MojcJF0vb0SGVbAGNxdttGr4Vo3Tjmkd/X/Vz+ykG0YCYOBx/LMEeo74SCu
+         vhktKwycEPB6+MXGag93yaNjQrsVUH5QP+sp1dV3186lRdrrVgAxrepnlJ3jNCpccA
+         olcuAe9jx57opAeAtxYgXQQH7/2Dis6i49/mJzN4=
+Date:   Mon, 2 Nov 2020 19:56:55 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RESEND 2 PATCH v3 0/3] phy: Add USB HSIC PHY driver for Marvell
+ MMP3 SoC
+Message-ID: <20201102142655.GB2621@vkoul-mobl>
+References: <20200925235828.228626-1-lkundrak@v3.sk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925235828.228626-1-lkundrak@v3.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-29 at 16:20 +0100, Miklos Szeredi wrote:
-> On Thu, Oct 29, 2020 at 4:02 PM Qian Cai <cai@redhat.com> wrote:
-> > On Wed, 2020-10-07 at 16:08 -0400, Qian Cai wrote:
-> > > Running some fuzzing by a unprivileged user on virtiofs could trigger the
-> > > warning below. The warning was introduced not long ago by the commit
-> > > c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
-> > > insertion").
-> > > 
-> > > From the logs, the last piece of the fuzzing code is:
-> > > 
-> > > fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
-> > 
-> > I can still reproduce it on today's linux-next. Any idea on how to debug it
-> > further?
+On 26-09-20, 01:58, Lubomir Rintel wrote:
+> Hi,
 > 
-> Can you please try the attached patch?
+> please consider applying this patch set. It adds the HSIC PHY driver for
+> Marvell MMP3 along with related DT binding changes.
+> 
+> In response to previous submission it was suggested that a cast of
+> private data be removed, but it actually serves a purpose:
+> https://lore.kernel.org/lkml/20200903201404.GA115604@demiurge.local/
 
-It has survived the testing over the weekend. There is a issue that virtiofsd
-hung, but it looks like a separate issue.
+Applied, thanks
 
+-- 
+~Vinod
