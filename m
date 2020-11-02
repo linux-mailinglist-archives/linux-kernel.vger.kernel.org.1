@@ -2,67 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB28C2A2C48
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C452A2C4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgKBOIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKBOIp (ORCPT
+        id S1725902AbgKBOKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:10:21 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60265 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725616AbgKBOKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:08:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188EDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:08:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rXbYTzMH5+21up+d520jyOeCTieBV+RqI0Jv3IRaYFc=; b=gmSIVHcNIL4p11AY1fEnKWj9v8
-        eLFcihyAiXIwhxD2Yt90R4yd7VeN/sp3UjX2iAmc+Vdjp6qRK2kLAfvYX/GKf3GZU9OBlETYGlfIF
-        9py3qr9JwnMX8SyERDWt+lSYSsTZfk2x3+Hl9wGr5vFJpA3oROSmifFRA/sQLPQY9yjcp0AJP6MWP
-        Fvo/x8qsvnovciQ4/h2707YJukPhixmvGAx4U1hFM71qsNwsU235fsf2JdylJrMN6s9Gazy4EiHf8
-        3gvgmgYhcT1is0C/gjk66wi107NUoEU2gslaM2IdBWzEP0Zl9u0AX0I8LTLaM+3K/iwG8sKCuLOs0
-        DpQkFtDw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZaVg-0004gC-W5; Mon, 02 Nov 2020 14:08:37 +0000
-Date:   Mon, 2 Nov 2020 14:08:36 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-Message-ID: <20201102140836.GJ27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
- <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
- <20201101204834.GF27442@casper.infradead.org>
- <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
- <20201101211910.GG27442@casper.infradead.org>
- <bc1a4a2a7ff69eeee131744881e1e8c72444be01.camel@perches.com>
- <20201101220604.GI27442@casper.infradead.org>
- <20201102133343.GA1011963@kroah.com>
+        Mon, 2 Nov 2020 09:10:20 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 11971E97;
+        Mon,  2 Nov 2020 09:10:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 09:10:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=dpGVrUN7sbNNdMBO00Igg8XQCXh
+        zbGHZw4VAOKfwtSc=; b=NmIr3HRzYMgzYCEbdESzMfYJrU0Kj1SUWwCRnJtt5zR
+        jfh8sWJSWn4TQuZ7pE7QHkuvOvueILyAfVVu2OS71kXvkth71JEZzBO9A19ZZyqC
+        3CEAOmHWKwA5zqcJIQAVnRGJI7HPdlAXZnu9PH+PBe3E9+UzYOtkoFccnSyPAu2e
+        0dNKwMEaNevi0N2kPWed3DxLJRTqHZ3K0c6H61Vi3jcHXVY/2p5gSBKn/JW4lYSU
+        bTT24OyxdMPvFEOMrgzi9qT0WHQRUJF3JXaQu5NPDrx75JdeBYWf0/+pJ3Nfr3Ss
+        be9kmWXbkGGgxhhwpGT2pNo+4kR4P7ngBSekV3u6gDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dpGVrU
+        N7sbNNdMBO00Igg8XQCXhzbGHZw4VAOKfwtSc=; b=n+eij2smEm+gpDH/36irax
+        f4cxCovblUmCwqoUCVaTeyb9uVB0MKv13uX7/BQecurOhlTv0VBRkl9O9xgESpkS
+        X3ADUHnF7K5yft2Liop4cajF1HQNV9CJt6FXxJycLoVF9KOSw4A6/Iw8ZRICt9WL
+        5FQ5jSpB2l9UpQTteQcQ+ZRWZ04UcbwQ3DhlW1CQ08LkbzVdmGJA3TaIf/57t0FV
+        C6x2PALBjaZdQmhz8SX9568mOndcX5KmtdcozCONCvkqprFFx7iKu52BJvgNAEMV
+        PlhpraziMng6E0J/DS1QrupKTS5+U9K9mjbJ9ppqPVV4e7kLafJbxF2x1BC+kLsg
+        ==
+X-ME-Sender: <xms:SBOgX7PDFooeO1NL6btsjZAHTuk8UVh6hjszBojzxHxBJq5FBHfn0A>
+    <xme:SBOgX19Bfir03GnNUyEiTF813ylJzQNN1cmcu1JsAdDqvfPvl9Ugck0-xu9xAtzwt
+    jtEWH56lsdfQaBGkR4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepjeekkefftdffhffhvedvudetgfdtleejveffvedvvdetgeeltdfggefhhedv
+    ieffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
+    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:SBOgX6SHcSPoY_wEJqU-NmcW6S1TtcgfKpalIuvY7QDswYVrBv0DUg>
+    <xmx:SBOgX_uER5-XQGPo8b-LlXWy1orsnOiugPQEWQg4LtNaocbbB5ZsSw>
+    <xmx:SBOgXzfllJDBGbHns1rKca56SrnffiyyLW00pxFlmjK4Xs11Jo8I2w>
+    <xmx:ShOgX0Uz6-x_bCwi8N806SFF0Qp3WXlS84phQiXbpUV0vhKCA3syKm7ksiE>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8CAE33064683;
+        Mon,  2 Nov 2020 09:10:16 -0500 (EST)
+Date:   Mon, 2 Nov 2020 15:10:15 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Marcus Cooper <codekipper@gmail.com>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 00/15] Add Allwinner H3/H5/H6/A64 HDMI audio
+Message-ID: <20201102141015.dfxrkd3tultmmqij@gilmour.lan>
+References: <20201030144648.397824-1-peron.clem@gmail.com>
+ <160408688151.11950.1284919768798155829.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ubfn37nzngxzsnsr"
 Content-Disposition: inline
-In-Reply-To: <20201102133343.GA1011963@kroah.com>
+In-Reply-To: <160408688151.11950.1284919768798155829.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 02:33:43PM +0100, Greg Kroah-Hartman wrote:
-> > Oh, ugh, sysfs_emit() should be able to work on a buffer that isn't
-> > page aligned.  Greg, how about this?
-> 
-> How can sysfs_emit() be called on a non-page-aligned buffer?  It's being
-> used on the buffer that was passed to the sysfs call.
-> 
-> And if you are writing multiple values to a single sysfs file output,
-> well, not good...
 
-See shmem_enabled_show() in mm/shmem.c (output at
-/sys/kernel/mm/transparent_hugepage/shmem_enabled on your machine).
+--ubfn37nzngxzsnsr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't claim it's a good interface, but it exists.
+On Fri, Oct 30, 2020 at 07:41:21PM +0000, Mark Brown wrote:
+> On Fri, 30 Oct 2020 15:46:33 +0100, Cl=E9ment P=E9ron wrote:
+> > This series add H6 I2S support and the I2S node missing to support
+> > HDMI audio in different Allwinner SoC.
+> >=20
+> > As we first use some TDM property to make the I2S working with the
+> > simple soundcard. We have now drop this simple sound card and a
+> > proper dedicated soundcard will be introduce later.
+> >=20
+> > [...]
+>=20
+> Applied to
+>=20
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-=
+next
+>=20
+> Thanks!
+>=20
+> [01/11] ASoC: sun4i-i2s: Fix lrck_period computation for I2S justified mo=
+de
+>         commit: 93c0210671d8f3ec2262da703fab93a1497158a8
+> [02/11] ASoC: sun4i-i2s: Change set_chan_cfg() params
+>         commit: c779e2de0ac6156bea63e759481ee383587336cc
+> [03/11] ASoC: sun4i-i2s: Add support for H6 I2S
+>         commit: 73adf87b7a5882408b0a17da59e69df4be12a968
+> [04/11] ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+>         commit: 9c2d255f0e63f8e54bd8345f9c59c4060cf4bbd4
+> [05/11] ASoC: sun4i-i2s: Set sign extend sample
+>         commit: d8659dd9a13ce7a92c017c352aea1c390f300937
+> [06/11] ASoC: sun4i-i2s: Add 20 and 24 bit support
+>         commit: 6ad7ca6297f8679162ee62ed672b603e8d004146
+> [07/11] ASoC: sun4i-i2s: Fix sun8i volatile regs
+>         commit: 64359246abe4421ad409be5b0bc9a534caa18b7d
+> [08/11] ASoC: sun4i-i2s: Fix setting of FIFO modes
+>         commit: 38d7adc0a003298013786cfffe5f4cc907009d30
+> [09/11] ASoC: sun4i-i2s: fix coding-style for callback definition
+>         commit: 08c7b7d546fddce76d500e5e5767aa08836f7cae
+> [10/11] ASoC: sun4i-i2s: Add H6 compatible
+>         commit: e84f44ba4604e55a51e7caf01464f220d0eabef4
+> [11/11] ASoC: sun4i-i2s: Document H3 with missing RX channel possibility
+>         commit: 0bc1bf241de551842535c3d0b080e0f38c11aed1
+
+Applied the rest, thanks!
+Maxime
+
+--ubfn37nzngxzsnsr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6ATRwAKCRDj7w1vZxhR
+xSeUAP409mFvtehJOKw6zjbq/EI3VuiLjVcok4IzPRcqjtogAQEA98Jf5ouRTvsr
+D9YlV4LZU6igTx7Wr3X/CXNsXsmHEgM=
+=FLzW
+-----END PGP SIGNATURE-----
+
+--ubfn37nzngxzsnsr--
