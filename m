@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29D22A28B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F442A28B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbgKBLFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:05:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55720 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728253AbgKBLFV (ORCPT
+        id S1728513AbgKBLF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:05:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728253AbgKBLF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:05:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604315119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r+Q0QGef/Chloit35akJAvp2UK5y4+Yr2p6vISWEuwM=;
-        b=K3mlqsA/dkP5D4qaZi6cjFjeil2ud2jZUJhbaka55N8L2QdIg/vDMuebea1xzE/5iJ3kHn
-        GTJjxrU/uuFh7UT4H+xIalfgFoPptvzzgznfwZJ7ZDNIq8391qbNxKP8fPa9kTWxY0nLRV
-        z51Lwgsz+zW0Jaefhrw3budLwDqAiMQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-0ik42Tk4MOiTulEbFFGWFw-1; Mon, 02 Nov 2020 06:05:18 -0500
-X-MC-Unique: 0ik42Tk4MOiTulEbFFGWFw-1
-Received: by mail-wm1-f70.google.com with SMTP id b68so1755515wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:05:17 -0800 (PST)
+        Mon, 2 Nov 2020 06:05:58 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A878C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:05:57 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id u62so14527195iod.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=aqQVu0GT7Rgd7rY6mxlnN1d+SyVmZQYgHq1EBqNB6S+ZXSl4YbMxP01L0Q65vC2kxM
+         rSQsKCbUbBO7OosUi/7kOYo5ectDuCk2RgHF/7qOZdEFv0ge6vTO/pZPz0Ixut6Q9ZrG
+         IbSBi9+EnPPGEb2N9SaqkTTKd4KrpAt1m8qoDTFlMr1PVuSgmgoyxoyctjZH59/DFb6v
+         M65J9SPfhaZyQcdrjTvTZPpwuSyIBSdrjLuDuBGIth+n2YR8uyfiZip8/cP5NqI677N9
+         G1oOPWd/owics1meRsQtOOu6gqla27fV8MRrmRb78smZv5Wz2fa5P1GDQ+8Maxei38il
+         4MDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r+Q0QGef/Chloit35akJAvp2UK5y4+Yr2p6vISWEuwM=;
-        b=Pug4IUtTbxFQ2nQn8xExlD9z6hij0xp4Kfrx4E8JZvUHfZSKV4XqO/4FwKTVbxQDtG
-         xWsaB6lTMmSu99ttrWQAJ0/RuTvtzR1bkQ3NdxzJJQSXhbBjFEB/MZaa93ZiTV60qu0U
-         rLTnEcuaWrZFrtPSy1yAbt1Jd8QQ0HZ5HHP8/ras+pcw4X3ng+XFzETZB2TEtA/MqjhP
-         Vd90T1Pr0slZU4WuqXXNZzrQkZP6zp4H9WX0eSoWUrnIOBFfjbdNc6JlsSTTQ0bVt7m/
-         GOFu8sy2N5YkBNIhG/OCLgrvF8wv60xIWJ/l5GGktuXuw+/8S76i25+QuJy6+VewWkBT
-         U/KQ==
-X-Gm-Message-State: AOAM530rxJRlcn436hFLdt5usfN8YBJC0xFB+LBHf6iyCksWgcZNhPWY
-        kgOvanVl95KycNuFrHMhBHWJFKA0CxQ/coze6cmy738COl54nyF3vzewEw2NUotm+adaK11FOJn
-        Szrk4qb+P2h/Wi85wA82v99F6
-X-Received: by 2002:a1c:4054:: with SMTP id n81mr12021233wma.48.1604315117006;
-        Mon, 02 Nov 2020 03:05:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxmEIqLJMyDiiIjNpv7lb80eabtXHYd5HB0MoVHivQmdUJd1PBVcw8MORSBRsifC7fHtfm/vg==
-X-Received: by 2002:a1c:4054:: with SMTP id n81mr12021212wma.48.1604315116864;
-        Mon, 02 Nov 2020 03:05:16 -0800 (PST)
-Received: from redhat.com (bzq-79-181-134-187.red.bezeqint.net. [79.181.134.187])
-        by smtp.gmail.com with ESMTPSA id y4sm21531180wrp.74.2020.11.02.03.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:05:16 -0800 (PST)
-Date:   Mon, 2 Nov 2020 06:05:12 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Christian K??nig <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201102060422-mutt-send-email-mst@kernel.org>
-References: <20201102124327.2f82b2a7@canb.auug.org.au>
- <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
- <20201102102711.GA28511@infradead.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=kNDQ6dG2L8mrUOp3Ih3r8Yps3jbULXrHaPRlXEzmThKc6CQ3d1A9sz4QGd35EuymOZ
+         6CXgmohkw+JjHpfuM3sunsy6mL64Rq+LNkQZpdeQSjYLBHnFzNVii96/yVuuDmV6Nf31
+         ljvoERYEcVDJB2DEUExZa+nNwC8zAOuPUvqAXXU54SP5DEQqwKqoeE/xZ5jj3YKvmhnV
+         WlJML+G1EvWzOhqwwpaVwDRN6rTEbDKmKiJHCqUvHqYP6EV5Gr8TpzcspmAMgVr3GraA
+         l3h+L3xmkO66SXGBLRLRzsE5VoiwjWEo2PtuS6b6pcEgWe/rydGx1hJZLoj9Vy3LHmuW
+         9zmQ==
+X-Gm-Message-State: AOAM533xxDJJGVqT7W3cY1dWlg8Awh8rm/9TOlMIITRVHt7RWrG/3h7l
+        izUJ2u6+RmzSgZIMdi3MR9yPxq8PfY2zACbY0cA=
+X-Google-Smtp-Source: ABdhPJzmc87YQ/K0A8Wdqp6gt54BKvBEK5hyGKDPMpF7b/u78UHjWErwZWLJaKLBIImnym2AUD/0oVlKBlG6iSObSzU=
+X-Received: by 2002:a5d:87c7:: with SMTP id q7mr9981660ios.162.1604315156884;
+ Mon, 02 Nov 2020 03:05:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102102711.GA28511@infradead.org>
+Received: by 2002:a05:6e02:8ec:0:0:0:0 with HTTP; Mon, 2 Nov 2020 03:05:56
+ -0800 (PST)
+Reply-To: michellegoodman035@gmail.com
+From:   michelle goodman <goodmanmichelle700@gmail.com>
+Date:   Mon, 2 Nov 2020 11:05:56 +0000
+Message-ID: <CAL=4yxfMZ-Yi-+Ep=J+3p6B8az0M7Oq8yv8WoovfWuGTDiqAeA@mail.gmail.com>
+Subject: Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:27:11AM +0000, Christoph Hellwig wrote:
-> On Mon, Nov 02, 2020 at 10:28:34AM +0100, Daniel Vetter wrote:
-> > > --- a/include/linux/swiotlb.h
-> > > +++ b/include/linux/swiotlb.h
-> > > @@ -5,6 +5,9 @@
-> > >  #include <linux/dma-direction.h>
-> > >  #include <linux/init.h>
-> > >  #include <linux/types.h>
-> > > +#ifndef CONFIG_SWIOTLB
-> > > +#include <linux/limits.h>
-> > > +#endif
-> 
-> No conditional includes please.  And the proper fix for the reported
-> issue is to stop poking into swiotlb internals in random drivers..
-
-Meaning?
-
+Hallo Liebes, bitte hoffe du hast meine Nachricht bekommen
+Ich brauche dringend eine Antwort
+Vielen Dank
+Michelle
