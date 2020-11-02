@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C77A2A3313
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F222A331C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgKBSen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        id S1725817AbgKBSim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgKBSel (ORCPT
+        with ESMTP id S1725789AbgKBSim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:34:41 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FDBC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:34:41 -0800 (PST)
-Received: from zn.tnic (p200300ec2f086a00fa513bf50e741c79.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6a00:fa51:3bf5:e74:1c79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 091CF1EC0249;
-        Mon,  2 Nov 2020 19:34:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604342079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6gyIuFjrxWqj7ZZQ8QrJgmiKLdEe27h5YwOXM77j2B0=;
-        b=Y5tPVUz30nIF1a/NLWGSYuzdeEtjRmjfIS2zr2mOfn/90LLk8rG/+Ei3EmriT1pnznuP+E
-        VFRKV8Q/7a0W8zWjD9XKIzjLdPr187+Z7Ok0wRqv7i9bMJ8bl8C+FqbXT6rjs6kNOsOHCa
-        nm3xYADoRBvHTFpZQXKmQZ/gh6WTpPM=
-Date:   Mon, 2 Nov 2020 19:34:30 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     shuo.a.liu@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20201102183430.GG15392@zn.tnic>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-5-shuo.a.liu@intel.com>
- <20201102145657.GD15392@zn.tnic>
- <20201102160901.GU2672@gate.crashing.org>
- <20201102171950.GF15392@zn.tnic>
- <20201102181000.GX2672@gate.crashing.org>
+        Mon, 2 Nov 2020 13:38:42 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB29C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:38:42 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id o9so18185564ejg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:38:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2FmL/u76HpkWkIZ1lwZI2iKFfaATl6YIc/lrOPunHtE=;
+        b=iBCQpoj52+oKBw/iSV8FEFEkhYmnTwpF0br3WaoOFmTDjMW1+3hQ12M9dZN0CaXESu
+         OcPeyy7Z0a9bj1F9+XO/6JUSte9AcZr0pTj1O6ILZG5xUH0JkKFQAXGn4FFTImta43aI
+         1sOTcaLgNT7cl5O13xJpxlRnFNLVc4pqyLctA1Lo9xIWYNxLHnj4WLI8edc2azsjAn0o
+         qjEVVk9MnknDjl5ervc8CncdTWsNFUr8yj6Fab8chkK7djZ/VnhI1OWj5etCAuZEcBRP
+         O86qLh16dGIiFzTWWx9wMf9+DsXdC+DrUBTQ7zJw2+0bd5mbLD7y+G+z6W9ULbVJH9yM
+         YepQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2FmL/u76HpkWkIZ1lwZI2iKFfaATl6YIc/lrOPunHtE=;
+        b=HRIL12/e/R3fVCW5ehHpaxuyubyDajyON0TgMQwlWhqqW/AeWOXSuy8rkxlK2Lekl/
+         ZaSE0qusHaniJZ1aFfpepaCxOSIx8F6GppufK2RwfsDEDALgvIJmNbCfLeauMyE9rw3T
+         BpbHtyfP7N6lWTJsiNpuXOyttdVLus1WmY3PFIgDBvAdSg0PgnDUv843CIEheRa8f8Hu
+         KFwNLGC8vudMwIHQoxvqq/SqevaawNqZ6bVuOiP6zVGKA+KdsFV50BcKcjDSfJJCYOTv
+         MEqFQXmcbt9GniqDaoVgeLelDW3+Twt25ZSfHghe7nR1YP/gJBQQq8Wds9r9Tw9yL1Xl
+         7C7Q==
+X-Gm-Message-State: AOAM532I0vBmNc68mgP1xjHalOiIv/X8Novv/Xg2yKRnvnffVpjdcZYp
+        H6Pp5bzmwAD1nMTqVg6J6tf9zjMrNmsYrPZ6V3fStQ==
+X-Google-Smtp-Source: ABdhPJwQt34VTljApUbAXh9zKA1SYJQyXEKz8ZoZ6ADLDk85uBrkBnOH9rKyleaA7zCjqWT1Vx/TpJVBdUll6q7UWQs=
+X-Received: by 2002:a17:906:70cf:: with SMTP id g15mr16162410ejk.323.1604342320700;
+ Mon, 02 Nov 2020 10:38:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102181000.GX2672@gate.crashing.org>
+References: <20201030191706.GK2620339@nvidia.com> <20201030192325.GA105832@otc-nc-03>
+ <20201030193045.GM2620339@nvidia.com> <20201030204307.GA683@otc-nc-03>
+ <87h7qbkt18.fsf@nanos.tec.linutronix.de> <20201031235359.GA23878@araj-mobl1.jf.intel.com>
+ <20201102132036.GX2620339@nvidia.com> <20201102162043.GB20783@otc-nc-03>
+ <20201102171909.GF2620339@nvidia.com> <20d7c5fc-91b0-d673-d41a-335d91ca2dce@intel.com>
+ <20201102182632.GH2620339@nvidia.com>
+In-Reply-To: <20201102182632.GH2620339@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 2 Nov 2020 10:38:28 -0800
+Message-ID: <CAPcyv4h8O+boTo-MpGRSC8RpjrsvU-P3AU7_kwbrfDkEp8bH1w@mail.gmail.com>
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>, maz@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Yi L Liu <yi.l.liu@intel.com>, Baolu Lu <baolu.lu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Sanjay K Kumar <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, Jing Lin <jing.lin@intel.com>,
+        kwankhede@nvidia.com, eric.auger@redhat.com,
+        Parav Pandit <parav@mellanox.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, netanelg@mellanox.com,
+        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Samuel Ortiz <samuel.ortiz@intel.com>,
+        Mona Hossain <mona.hossain@intel.com>,
+        Megha Dey <megha.dey@linux.intel.com>,
+        dmaengine@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 12:10:00PM -0600, Segher Boessenkool wrote:
-> movl works for moving anything g->r.
+On Mon, Nov 2, 2020 at 10:26 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Mon, Nov 02, 2020 at 11:18:33AM -0700, Dave Jiang wrote:
+> >
+> >
+> > On 11/2/2020 10:19 AM, Jason Gunthorpe wrote:
+> > > On Mon, Nov 02, 2020 at 08:20:43AM -0800, Raj, Ashok wrote:
+> > > > Creating these private interfaces for intra-module are just 1-1 and not
+> > > > general purpose and every accelerator needs to create these instances.
+> > >
+> > > This is where we are going, auxillary bus should be merged soon which
+> > > is specifically to connect these kinds of devices across subsystems
+> >
+> > I think this resolves the aux device probe/remove issue via a common bus.
+> > But it does not help with the mdev device needing a lot of the device
+> > handling calls from the parent driver as it share the same handling as the
+> > parent device.
+>
+> The intention of auxiliary bus is that the two parts will tightly
+> couple across some exported function interface.
+>
+> > My plan is to export all the needed call via EXPORT_SYMBOL_NS() so
+> > the calls can be shared in its own namespace between the modules. Do
+> > you have any objection with that?
+>
+> I think you will be the first to use the namespace stuff for this, it
+> seems like a good idea and others should probably do so as well.
 
-Right.
-
-> This is not true for most insns, and not for most architectures at
-> all (usually loading from memory has a separate mnemonic; moving an
-> immediate number often as well (and it does not usually allow *every*
-> immediate anyway, not even all numbers!)
-
-So I've heard from other architectures. Every arch has its own problems.
-:-)
-
-> Most people do not read the documentation, they just copy from (bad)
-> examples (and arguably, any example you do not really understand is a
-> bad example).
-
-Unfortunately.
-
-> (It does not allow *all* memory and *all* constants, btw...  And the
-> condition for registers is not really "general register", whatever that
-> means...
-
-I think that means general purpose registers. I.e., it won't use, say
-FPU, XMM or whatever special regs.
-
-What does the asm() parsing code in gcc do for "g"? There should be
-some logic which constraints what register is valid...
-
-> I hope no one ever told you our documentation does not have white
-> lies!)
-
-I have convinced myself of this a couple of times already so I either go
-ask our gcc friends or go look straight at gcc source. It is useful to
-know folks which hack on it so that I can ask them stupid questions and
-not go off into the weeds, trying to figure out what the documentation
-says.
-
-But hey, if that gets the documentation improved, that's a win-win
-situation right there. Might even make people copying from bad examples
-to go look at the docs first...
-
-:-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I was thinking either EXPORT_SYMBOL_NS, or auxiliary bus, because you
+should be able to export an ops structure with all the necessary
+callbacks. Aux bus seems cleaner because the lifetime rules and
+ownership concerns are clearer.
