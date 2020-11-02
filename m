@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A259F2A34E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C632A34DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgKBUEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S1726820AbgKBUGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgKBUEv (ORCPT
+        with ESMTP id S1726299AbgKBUFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:04:51 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E187C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:04:50 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id b1so18993596lfp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:04:50 -0800 (PST)
+        Mon, 2 Nov 2020 15:05:18 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C6FC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:05:18 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id e3so8165848vsr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:05:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
-        b=IenDEOwcE7acdWlt3upinLTTJLqi4UdRIK+PzIcZHwuf5PctnsoAcu0L8yOZf6HI57
-         vlaLdkuBhc5qdDVb0YDoMMcI+rHBUzP1McRaXIovcqGA3X5wyw0sq1O9rJjQTyvAFkj4
-         861P7yLhcvBsg8AEdFaV57Edi1EdHZvsLJOIhT0vSnbaUEmhGJo+AL4jNz0rqo8af+d7
-         cYAj0ZM/aUC4Y3Lce948K0l4awqBXzXiDZrI1AgyGl4zivZne7XLXGpiLRjzEdn9aDzo
-         98Kq0yEKIoz8niqnACP7ZZTeuT7fEmNkLrHA5ATKyJZvfX9PycBSL5wJNWljhEo8JtAX
-         fcFA==
+        bh=m2IVMowfbqKKUzrL12c02A/SfsiLLJUjZ9rRbpPh21U=;
+        b=qPebbXEEdo3NGJQKQOqe8mVzflazVESbXBdlpN5WnTbvvtBh8duuNo4JUucHN2K71P
+         qTghfWs5nRjb4dyCK2OdUGeMMZwjLGA97W4egpGeMMx2V4Lt8ryvYkBvOt4s8CBYODpD
+         a8JZtvEzqWX6alXIB/dT/ZWf0L8qCxP7evNgxXNJKDyY7goBJIxsaKFnVV3MofZ9BSOh
+         vvuHWblS5foxbcZ2kOgyvUAtyGb3dV5hjcXT8ZN23jwKW4tLAfibT0cJxXGrdtYz78Jv
+         UKgGkEHmj8PdDvPIrIDMycBy1FvEW3cFs6mBgznq0aEOVc2afGifnYZDVEtX2wJRChCq
+         WuiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
-        b=lu6y3WRKf5w6JDCjsaQi2uCjpqAFWiiwDWvkBav9ulS8LjXk8O+qeT0yUxaCeUD/kc
-         TE76HDdofO1ipf+VsqULuDAKMIJRjdlX+aukUDCXo1nAWd9f4v9DDR2ZpZRjhjyBiN6X
-         79HlBurz5lKDeyv8Fkftf3PjGsWLkk1hSE2dUw1m4tudwHFDhZyMUgaKYMUH7XUbw4HB
-         NNhQEpUmLrTWo7eRVXmJLivBZb26JesyYFt3L9VjDGAZ6wrsXpbVh37W0Cts/oN5JKUU
-         ZKC/qf3hg3XOf0TTm17YFABx3iolf0zFx/Mn1BSgkruhEzReZ06y4AibN6AdFyTqmEvR
-         ECkw==
-X-Gm-Message-State: AOAM530b2jNUNW9KkPwzdNj/YJl+MN04usW96ctC/N/iBuab53lQlqcS
-        EohaHtoLYEGgQyMcTIWG0nk34FkzURIjE7Mszw211A==
-X-Google-Smtp-Source: ABdhPJxFX44DEsMSrcm7kaqxDUVJ2f5DqziIyHEn1UgPjdye5o9apeArOqF6mOkc2usLmVXmtr2vu76cCQnMUTiCBGM=
-X-Received: by 2002:a19:c357:: with SMTP id t84mr5844550lff.34.1604347488712;
- Mon, 02 Nov 2020 12:04:48 -0800 (PST)
+        bh=m2IVMowfbqKKUzrL12c02A/SfsiLLJUjZ9rRbpPh21U=;
+        b=COo0X/7hJmTNXwkXWPEYmkKqHbsSgR0WqRK4YOno6QgREn7hEoplBDWxeX7c9SnH/F
+         W4iXfFYyYnbGBXmUQhF5N0fSbKAvRt5cc6EBtHrpzVd9NEPpQ8bMc9aNQTVoRhseY6a0
+         IAMTLz4E+ecSAe5gjZb4Xl4ks+qTRGZ0M18fQHupCTzwKqnAEQy02q565h8wgfSEAV1f
+         juHDU9mPih1tXuHoVGP5P0i3zb8eSWBcKFLyOWVOSiBq9S6/i5vOqAcUVLe77pBL1Ife
+         8rZi4we0w9kx01a6eVy/lnf9xjoKVQ7DuF00/n9QCMNXoiawYxVqwarp1Au3IhAX0+z7
+         ObIw==
+X-Gm-Message-State: AOAM532vSQrKjfZKYV9YfFo54cInCsm88JZThOdPjkFOip6cNamge0QB
+        8Ye5jf2jy7q9wVKrfinhoKrd9AKm12g=
+X-Google-Smtp-Source: ABdhPJweUUzhMgXzv4ohTc6oEEe1wb8Oy/r2evuDa9AvuSiuzN4nle8rspHnjBkeiKnMWrNwavmacQ==
+X-Received: by 2002:a67:f157:: with SMTP id t23mr16128682vsm.12.1604347516604;
+        Mon, 02 Nov 2020 12:05:16 -0800 (PST)
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
+        by smtp.gmail.com with ESMTPSA id 14sm1719336uaf.15.2020.11.02.12.05.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 12:05:15 -0800 (PST)
+Received: by mail-vs1-f49.google.com with SMTP id u7so8138921vsq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:05:14 -0800 (PST)
+X-Received: by 2002:a05:6102:240f:: with SMTP id j15mr6241145vsi.22.1604347514191;
+ Mon, 02 Nov 2020 12:05:14 -0800 (PST)
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
- <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com> <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
- <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com> <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
- <964c2191-db78-ff4d-5664-1d80dc382df4@gmail.com> <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
-In-Reply-To: <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 2 Nov 2020 21:04:22 +0100
-Message-ID: <CAG48ez2vPUCiZX-swrE2oWx8j-6QCzCRiFGnCPFoGMN+oBFGQw@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
+References: <GtgHtyGO5jHKHT6zGMAzg3TDejXZT0HMQVoqNERZRdM@cp3-web-024.plabs.ch>
+ <CA+FuTSd1H6+NjSDcin6KQo9y1KEsDACeAvyr0p5JuDWc-aEh+A@mail.gmail.com> <4e2CSI69yKQIvZp3Wwo9pC9lHNAz4osj7w8OdhYUdE@cp7-web-042.plabs.ch>
+In-Reply-To: <4e2CSI69yKQIvZp3Wwo9pC9lHNAz4osj7w8OdhYUdE@cp7-web-042.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 2 Nov 2020 15:04:37 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSeY7cMKqU_KGoxGJGp1vSiLJ9vUxrh9hoJHQg31W6fYtA@mail.gmail.com>
+Message-ID: <CA+FuTSeY7cMKqU_KGoxGJGp1vSiLJ9vUxrh9hoJHQg31W6fYtA@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next 2/2] net: bonding, dummy, ifb, team: advertise NETIF_F_GSO_SOFTWARE
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 8:50 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> On Mon, Nov 2, 2020 at 11:45 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> >    Caveats regarding blocking system calls
-> >        Suppose that the target performs a blocking system call (e.g.,
-> >        accept(2)) that the supervisor should handle.  The supervisor
-> >        might then in turn execute the same blocking system call.
+On Mon, Nov 2, 2020 at 2:26 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Date: Mon, 2 Nov 2020 11:30:17 -0500
+>
+> Hi!
+> Thanks for the Ack.
+>
+> > On Sun, Nov 1, 2020 at 8:17 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> >>
+> >> Virtual netdevs should use NETIF_F_GSO_SOFTWARE to forward GSO skbs
+> >> as-is and let the final drivers deal with them when supported.
+> >> Also remove NETIF_F_GSO_UDP_L4 from bonding and team drivers as it's
+> >> now included in the "software" list.
 > >
-> >        In this scenario, it is important to note that if the target's
-> >        system call is now interrupted by a signal, the supervisor is not
-> >        informed of this.  If the supervisor does not take suitable steps
-> >        to actively discover that the target's system call has been
-> >        canceled, various difficulties can occur.  Taking the example of
-> >        accept(2), the supervisor might remain blocked in its accept(2)
-> >        holding a port number that the target (which, after the
-> >        interruption by the signal handler, perhaps closed  its listening
-> >        socket) might expect to be able to reuse in a bind(2) call.
+> > The rationale is that it is okay to advertise these features with
+> > software fallback as bonding/teaming "hardware" features, because
+> > there will always be a downstream device for which they will be
+> > implemented, possibly in the software fallback, correct?
 > >
-> >        Therefore, when the supervisor wishes to emulate a blocking system
-> >        call, it must do so in such a way that it gets informed if the
-> >        target's system call is interrupted by a signal handler.  For
-> >        example, if the supervisor itself executes the same blocking
-> >        system call, then it could employ a separate thread that uses the
-> >        SECCOMP_IOCTL_NOTIF_ID_VALID operation to check if the target is
-> >        still blocked in its system call.  Alternatively, in the accept(2)
-> >        example, the supervisor might use poll(2) to monitor both the
-> >        notification file descriptor (so as as to discover when the
-> >        target's accept(2) call has been interrupted) and the listening
-> >        file descriptor (so as to know when a connection is available).
-> >
-> >        If the target's system call is interrupted, the supervisor must
-> >        take care to release resources (e.g., file descriptors) that it
-> >        acquired on behalf of the target.
-> >
-> > Does that seem okay?
-> >
-> This is far clearer than my explanation. The one thing is that *just*
-> poll is not good enough, you would poll, with some timeout, and when
-> that timeout is hit, check if all the current notifications are valid,
-> as poll isn't woken up when an in progress notification goes off
-> AFAIK.
+> > That does not apply to dummy or IFB. I guess dummy is fine, because
+> > xmit is a black hole, and IFB because ingress can safely handle these
+> > packets? How did you arrive at the choice of changing these two, of
+> > all virtual devices?
+>
+> Two points:
+> 1. Exactly, dummy is just dummy, while ifb is an intermediate netdev to
+>    share resources, so it should be as fine as with other virtual devs.
+> 2. They both advertise NETIF_F_ALL_TSO | NETIF_F_GSO_ENCAP_ALL, which
+>    assumes that they handle all GSO skbs just like the others (pass
+>    them as is to the real drivers in case with ifb).
 
-Arguably that's so terrible that it qualifies for being in the BUGS
-section of the manpage.
+There is no real driver in the case of ifb if it forwards to the
+ingress path. But as discussed before, that can handle gso packets for
+all these protocols, too.
 
-If you want this to be fixed properly, I recommend that someone
-implements my proposal from
-<https://lore.kernel.org/lkml/CAG48ez1O2H5HDikPO-_o-toXTheU8GnZot9woGDsNRNJqSWesA@mail.gmail.com/>,
-unless you can come up with something better.
+> >>
+> >> Suggested-by: Willem de Bruijn <willemb@google.com>
+> >> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+
+Acked-by: Willem de Bruijn <willemb@google.com>
