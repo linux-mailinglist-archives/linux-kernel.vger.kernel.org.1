@@ -2,350 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F572A273E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3894A2A2757
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgKBJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:44:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728226AbgKBJoI (ORCPT
+        id S1728358AbgKBJsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:48:01 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:44269 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728156AbgKBJsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:44:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604310246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kn31uEVM3N2sjYmZw9PL6ElgXwL4Hs7/D2Hi6HLxB6k=;
-        b=C0PH3gOVCjqfkdPX3VF2y8Ln+/KZQ3MXAguVACtlKJ7gMoc+dDiB3tyR+7QPKFf96C39du
-        vaX7f4nIoGAVqacTGqbL+CgHnafGYwPL8foGGgXt6jwSNWnL7tDHpWFbqevnYp6BCDd80B
-        jQu9y19+nJHcd7m7BHqBkpci9Fr1w78=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-OFKv3v7rMuiwfziyc0lf8Q-1; Mon, 02 Nov 2020 04:44:01 -0500
-X-MC-Unique: OFKv3v7rMuiwfziyc0lf8Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C345F809DC6;
-        Mon,  2 Nov 2020 09:43:57 +0000 (UTC)
-Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CEA460CCC;
-        Mon,  2 Nov 2020 09:43:51 +0000 (UTC)
-Subject: Re: [PATCH v2 08/13] arm: remove CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <20201101170454.9567-9-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <81410b81-b773-b4a2-5f03-e9f1a6a8e8e9@redhat.com>
-Date:   Mon, 2 Nov 2020 10:43:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 2 Nov 2020 04:48:00 -0500
+Received: by mail-ej1-f66.google.com with SMTP id j24so17958517ejc.11;
+        Mon, 02 Nov 2020 01:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aBL58c34rn6nb4fMXeoXHFwH4EN0oABK7+YoRvnww4A=;
+        b=FVehcp7B6jXGPG4/aN81kjLJETFIFCmrbhc5fml2g4dyLdCGhON77jh5+XiD66KtyU
+         /n/kaO0rxUIJHy8SBcxyseo6/JEKhdOtk/UrbabSxUSKTWcGIC9XZkS/EZs+5R2LQ9WX
+         mTtV7KbNritZLToxLA5S6qTcuYBCveNeYgwwiCdN7u00reusjUjp9rqnQzKvMIUFX9q2
+         UuyhpepNsbwpjXiKA5vz+4RYe2cPmwYhJsYBYM5ElC844aPYlWh7foyQfAgXbVSTHWFs
+         bUK6BHD4KOx24pC50qUuj+KsbfL3WYWCsSpvZEmgYDYPgu2XLhz0yqRP1+PPcR5qma1s
+         pxeg==
+X-Gm-Message-State: AOAM531jiRG5hXvYxyysZpFFyTfb0Hq6i+neqPQOlWXh9RxpSmy8IcPq
+        +GxEfQCH0+VFOlg9a1TFkIKKoUC1B7c2JA==
+X-Google-Smtp-Source: ABdhPJyT6Zvze4YHMIYPFL++Xloau/cxO3dOk0KGmbVTqK3nh34aV7jQ6EYhRNwau95TEnaQlTZSvQ==
+X-Received: by 2002:a17:906:580e:: with SMTP id m14mr14018843ejq.237.1604310477608;
+        Mon, 02 Nov 2020 01:47:57 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id e13sm8525101ejh.65.2020.11.02.01.47.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 01:47:56 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] console: Remove dummy con_font_op() callback
+ implementations
+To:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+References: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604128639.git.yepeilin.cs@gmail.com>
+ <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a8157089-bc72-c409-c7cc-2fd7eb087ebc@kernel.org>
+Date:   Mon, 2 Nov 2020 10:47:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201101170454.9567-9-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.20 18:04, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> ARM is the only architecture that defines CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
-> which in turn enables memmap_valid_within() function that is intended to
-> verify existence  of struct page associated with a pfn when there are holes
-> in the memory map.
-> 
-> However, the ARCH_HAS_HOLES_MEMORYMODEL also enables HAVE_ARCH_PFN_VALID
-> and arch-specific pfn_valid() implementation that also deals with the holes
-> in the memory map.
-> 
-> The only two users of memmap_valid_within() call this function after
-> a call to pfn_valid() so the memmap_valid_within() check becomes redundant.
-> 
-> Remove CONFIG_ARCH_HAS_HOLES_MEMORYMODEL and memmap_valid_within() and rely
-> entirely on ARM's implementation of pfn_valid() that is now enabled
-> unconditionally.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+On 02. 11. 20, 10:36, Peilin Ye wrote:
+> `struct console_font` is a UAPI structure, thus ideally should not be
+> used for kernel internal abstraction. Remove some dummy .con_font_set,
+> .con_font_default and .con_font_copy `struct consw` callback
+> implementations, to make it cleaner.
+
+ESEMANTIC_ERROR.
+
+1) What do you refer to with the last "it"?
+
+2) What's the purpose of mentioning struct console_font at all?
+
+3) Could you clarify whether you checked it is safe to remove the hooks?
+
+4) All the hooks now return ENOSYS for both consoles (and not 0). Is 
+this intentional?
+
+I know answers to the first 3 questions, but you need to elaborate a bit 
+in the commit log to connect those sentences. Esp. for people not 
+dealing with the code on a daily basis. Ad 4) I am not sure.
+
+> Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 > ---
->   Documentation/vm/memory-model.rst |  3 +--
->   arch/arm/Kconfig                  |  8 ++------
->   arch/arm/mach-bcm/Kconfig         |  1 -
->   arch/arm/mach-davinci/Kconfig     |  1 -
->   arch/arm/mach-exynos/Kconfig      |  1 -
->   arch/arm/mach-highbank/Kconfig    |  1 -
->   arch/arm/mach-omap2/Kconfig       |  1 -
->   arch/arm/mach-s5pv210/Kconfig     |  1 -
->   arch/arm/mach-tango/Kconfig       |  1 -
->   fs/proc/kcore.c                   |  2 --
->   include/linux/mmzone.h            | 31 -------------------------------
->   mm/mmzone.c                       | 14 --------------
->   mm/vmstat.c                       |  4 ----
->   13 files changed, 3 insertions(+), 66 deletions(-)
+> Change in v2:
+>    - [v2 2/2] no longer Cc: stable, so do not Cc: stable
 > 
-> diff --git a/Documentation/vm/memory-model.rst b/Documentation/vm/memory-model.rst
-> index 9daadf9faba1..ce398a7dc6cd 100644
-> --- a/Documentation/vm/memory-model.rst
-> +++ b/Documentation/vm/memory-model.rst
-> @@ -51,8 +51,7 @@ call :c:func:`free_area_init` function. Yet, the mappings array is not
->   usable until the call to :c:func:`memblock_free_all` that hands all the
->   memory to the page allocator.
->   
-> -If an architecture enables `CONFIG_ARCH_HAS_HOLES_MEMORYMODEL` option,
-> -it may free parts of the `mem_map` array that do not cover the
-> +An architecture may free parts of the `mem_map` array that do not cover the
->   actual physical pages. In such case, the architecture specific
->   :c:func:`pfn_valid` implementation should take the holes in the
->   `mem_map` into account.
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index fe2f17eb2b50..83adc46c1e67 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -25,7 +25,7 @@ config ARM
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->   	select ARCH_HAVE_CUSTOM_GPIO_H
->   	select ARCH_HAS_GCOV_PROFILE_ALL
-> -	select ARCH_KEEP_MEMBLOCK if HAVE_ARCH_PFN_VALID || KEXEC
-> +	select ARCH_KEEP_MEMBLOCK
->   	select ARCH_MIGHT_HAVE_PC_PARPORT
->   	select ARCH_NO_SG_CHAIN if !ARM_HAS_SG_CHAIN
->   	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
-> @@ -519,7 +519,6 @@ config ARCH_S3C24XX
->   config ARCH_OMAP1
->   	bool "TI OMAP1"
->   	depends on MMU
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARCH_OMAP
->   	select CLKDEV_LOOKUP
->   	select CLKSRC_MMIO
-> @@ -1479,9 +1478,6 @@ config OABI_COMPAT
->   	  UNPREDICTABLE (in fact it can be predicted that it won't work
->   	  at all). If in doubt say N.
->   
-> -config ARCH_HAS_HOLES_MEMORYMODEL
-> -	bool
-> -
->   config ARCH_SELECT_MEMORY_MODEL
->   	bool
->   
-> @@ -1493,7 +1489,7 @@ config ARCH_SPARSEMEM_ENABLE
->   	select SPARSEMEM_STATIC if SPARSEMEM
->   
->   config HAVE_ARCH_PFN_VALID
-> -	def_bool ARCH_HAS_HOLES_MEMORYMODEL || !SPARSEMEM
-> +	def_bool y
->   
->   config HIGHMEM
->   	bool "High Memory Support"
-> diff --git a/arch/arm/mach-bcm/Kconfig b/arch/arm/mach-bcm/Kconfig
-> index ae790908fc74..9b594ae98153 100644
-> --- a/arch/arm/mach-bcm/Kconfig
-> +++ b/arch/arm/mach-bcm/Kconfig
-> @@ -211,7 +211,6 @@ config ARCH_BRCMSTB
->   	select BCM7038_L1_IRQ
->   	select BRCMSTB_L2_IRQ
->   	select BCM7120_L2_IRQ
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ZONE_DMA if ARM_LPAE
->   	select SOC_BRCMSTB
->   	select SOC_BUS
-> diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
-> index f56ff8c24043..de11030748d0 100644
-> --- a/arch/arm/mach-davinci/Kconfig
-> +++ b/arch/arm/mach-davinci/Kconfig
-> @@ -5,7 +5,6 @@ menuconfig ARCH_DAVINCI
->   	depends on ARCH_MULTI_V5
->   	select DAVINCI_TIMER
->   	select ZONE_DMA
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select PM_GENERIC_DOMAINS if PM
->   	select PM_GENERIC_DOMAINS_OF if PM && OF
->   	select REGMAP_MMIO
-> diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
-> index d2d249706ebb..56d272967fc0 100644
-> --- a/arch/arm/mach-exynos/Kconfig
-> +++ b/arch/arm/mach-exynos/Kconfig
-> @@ -8,7 +8,6 @@
->   menuconfig ARCH_EXYNOS
->   	bool "Samsung Exynos"
->   	depends on ARCH_MULTI_V7
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARCH_SUPPORTS_BIG_ENDIAN
->   	select ARM_AMBA
->   	select ARM_GIC
-> diff --git a/arch/arm/mach-highbank/Kconfig b/arch/arm/mach-highbank/Kconfig
-> index 1bc68913d62c..9de38ce8124f 100644
-> --- a/arch/arm/mach-highbank/Kconfig
-> +++ b/arch/arm/mach-highbank/Kconfig
-> @@ -2,7 +2,6 @@
->   config ARCH_HIGHBANK
->   	bool "Calxeda ECX-1000/2000 (Highbank/Midway)"
->   	depends on ARCH_MULTI_V7
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARCH_SUPPORTS_BIG_ENDIAN
->   	select ARM_AMBA
->   	select ARM_ERRATA_764369 if SMP
-> diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kconfig
-> index 3ee7bdff86b2..89fe1572c142 100644
-> --- a/arch/arm/mach-omap2/Kconfig
-> +++ b/arch/arm/mach-omap2/Kconfig
-> @@ -94,7 +94,6 @@ config SOC_DRA7XX
->   config ARCH_OMAP2PLUS
->   	bool
->   	select ARCH_HAS_BANDGAP
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARCH_HAS_RESET_CONTROLLER
->   	select ARCH_OMAP
->   	select CLKSRC_MMIO
-> diff --git a/arch/arm/mach-s5pv210/Kconfig b/arch/arm/mach-s5pv210/Kconfig
-> index 95d4e8284866..d644b45bc29d 100644
-> --- a/arch/arm/mach-s5pv210/Kconfig
-> +++ b/arch/arm/mach-s5pv210/Kconfig
-> @@ -8,7 +8,6 @@
->   config ARCH_S5PV210
->   	bool "Samsung S5PV210/S5PC110"
->   	depends on ARCH_MULTI_V7
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARM_VIC
->   	select CLKSRC_SAMSUNG_PWM
->   	select COMMON_CLK_SAMSUNG
-> diff --git a/arch/arm/mach-tango/Kconfig b/arch/arm/mach-tango/Kconfig
-> index 25b2fd434861..a9eeda36aeb1 100644
-> --- a/arch/arm/mach-tango/Kconfig
-> +++ b/arch/arm/mach-tango/Kconfig
-> @@ -3,7 +3,6 @@ config ARCH_TANGO
->   	bool "Sigma Designs Tango4 (SMP87xx)"
->   	depends on ARCH_MULTI_V7
->   	# Cortex-A9 MPCore r3p0, PL310 r3p2
-> -	select ARCH_HAS_HOLES_MEMORYMODEL
->   	select ARM_ERRATA_754322
->   	select ARM_ERRATA_764369 if SMP
->   	select ARM_ERRATA_775420
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index e502414b3556..4d2e64e9016c 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -193,8 +193,6 @@ kclist_add_private(unsigned long pfn, unsigned long nr_pages, void *arg)
->   		return 1;
->   
->   	p = pfn_to_page(pfn);
-> -	if (!memmap_valid_within(pfn, p, page_zone(p)))
-> -		return 1;
->   
->   	ent = kmalloc(sizeof(*ent), GFP_KERNEL);
->   	if (!ent)
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 876600a6e891..7385871768d4 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1440,37 +1440,6 @@ void sparse_init(void);
->   #define pfn_valid_within(pfn) (1)
->   #endif
->   
-> -#ifdef CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
-> -/*
-> - * pfn_valid() is meant to be able to tell if a given PFN has valid memmap
-> - * associated with it or not. This means that a struct page exists for this
-> - * pfn. The caller cannot assume the page is fully initialized in general.
-> - * Hotplugable pages might not have been onlined yet. pfn_to_online_page()
-> - * will ensure the struct page is fully online and initialized. Special pages
-> - * (e.g. ZONE_DEVICE) are never onlined and should be treated accordingly.
-> - *
-> - * In FLATMEM, it is expected that holes always have valid memmap as long as
-> - * there is valid PFNs either side of the hole. In SPARSEMEM, it is assumed
-> - * that a valid section has a memmap for the entire section.
-> - *
-> - * However, an ARM, and maybe other embedded architectures in the future
-> - * free memmap backing holes to save memory on the assumption the memmap is
-> - * never used. The page_zone linkages are then broken even though pfn_valid()
-> - * returns true. A walker of the full memmap must then do this additional
-> - * check to ensure the memmap they are looking at is sane by making sure
-> - * the zone and PFN linkages are still valid. This is expensive, but walkers
-> - * of the full memmap are extremely rare.
-> - */
-> -bool memmap_valid_within(unsigned long pfn,
-> -					struct page *page, struct zone *zone);
-> -#else
-> -static inline bool memmap_valid_within(unsigned long pfn,
-> -					struct page *page, struct zone *zone)
-> -{
-> -	return true;
-> -}
-> -#endif /* CONFIG_ARCH_HAS_HOLES_MEMORYMODEL */
-> -
->   #endif /* !__GENERATING_BOUNDS.H */
->   #endif /* !__ASSEMBLY__ */
->   #endif /* _LINUX_MMZONE_H */
-> diff --git a/mm/mmzone.c b/mm/mmzone.c
-> index 4686fdc23bb9..f337831affc2 100644
-> --- a/mm/mmzone.c
-> +++ b/mm/mmzone.c
-> @@ -72,20 +72,6 @@ struct zoneref *__next_zones_zonelist(struct zoneref *z,
->   	return z;
+> Context: https://lore.kernel.org/lkml/CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com/
+> 
+>   drivers/usb/misc/sisusbvga/sisusb_con.c | 21 ---------------------
+>   drivers/video/console/dummycon.c        | 20 --------------------
+>   2 files changed, 41 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/sisusbvga/sisusb_con.c b/drivers/usb/misc/sisusbvga/sisusb_con.c
+> index c63e545fb105..dfa0d5ce6012 100644
+> --- a/drivers/usb/misc/sisusbvga/sisusb_con.c
+> +++ b/drivers/usb/misc/sisusbvga/sisusb_con.c
+> @@ -1345,24 +1345,6 @@ static int sisusbdummycon_blank(struct vc_data *vc, int blank, int mode_switch)
+>   	return 0;
 >   }
 >   
-> -#ifdef CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
-> -bool memmap_valid_within(unsigned long pfn,
-> -					struct page *page, struct zone *zone)
+> -static int sisusbdummycon_font_set(struct vc_data *vc,
+> -				   struct console_font *font,
+> -				   unsigned int flags)
 > -{
-> -	if (page_to_pfn(page) != pfn)
-> -		return false;
-> -
-> -	if (page_zone(page) != zone)
-> -		return false;
-> -
-> -	return true;
+> -	return 0;
 > -}
-> -#endif /* CONFIG_ARCH_HAS_HOLES_MEMORYMODEL */
 > -
->   void lruvec_init(struct lruvec *lruvec)
->   {
->   	enum lru_list lru;
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 698bc0bc18d1..e292e63afebf 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1503,10 +1503,6 @@ static void pagetypeinfo_showblockcount_print(struct seq_file *m,
->   		if (!page)
->   			continue;
+> -static int sisusbdummycon_font_default(struct vc_data *vc,
+> -				       struct console_font *font, char *name)
+> -{
+> -	return 0;
+> -}
+> -
+> -static int sisusbdummycon_font_copy(struct vc_data *vc, int con)
+> -{
+> -	return 0;
+> -}
+> -
+>   static const struct consw sisusb_dummy_con = {
+>   	.owner =		THIS_MODULE,
+>   	.con_startup =		sisusbdummycon_startup,
+> @@ -1375,9 +1357,6 @@ static const struct consw sisusb_dummy_con = {
+>   	.con_scroll =		sisusbdummycon_scroll,
+>   	.con_switch =		sisusbdummycon_switch,
+>   	.con_blank =		sisusbdummycon_blank,
+> -	.con_font_set =		sisusbdummycon_font_set,
+> -	.con_font_default =	sisusbdummycon_font_default,
+> -	.con_font_copy =	sisusbdummycon_font_copy,
+>   };
 >   
-> -		/* Watch for unexpected holes punched in the memmap */
-> -		if (!memmap_valid_within(pfn, page, zone))
-> -			continue;
+>   int
+> diff --git a/drivers/video/console/dummycon.c b/drivers/video/console/dummycon.c
+> index 2a0d0bda7faa..f1711b2f9ff0 100644
+> --- a/drivers/video/console/dummycon.c
+> +++ b/drivers/video/console/dummycon.c
+> @@ -124,23 +124,6 @@ static int dummycon_switch(struct vc_data *vc)
+>   	return 0;
+>   }
+>   
+> -static int dummycon_font_set(struct vc_data *vc, struct console_font *font,
+> -			     unsigned int flags)
+> -{
+> -	return 0;
+> -}
 > -
+> -static int dummycon_font_default(struct vc_data *vc,
+> -				 struct console_font *font, char *name)
+> -{
+> -	return 0;
+> -}
+> -
+> -static int dummycon_font_copy(struct vc_data *vc, int con)
+> -{
+> -	return 0;
+> -}
+> -
+>   /*
+>    *  The console `switch' structure for the dummy console
+>    *
+> @@ -159,8 +142,5 @@ const struct consw dummy_con = {
+>   	.con_scroll =	dummycon_scroll,
+>   	.con_switch =	dummycon_switch,
+>   	.con_blank =	dummycon_blank,
+> -	.con_font_set =	dummycon_font_set,
+> -	.con_font_default =	dummycon_font_default,
+> -	.con_font_copy =	dummycon_font_copy,
+>   };
+>   EXPORT_SYMBOL_GPL(dummy_con);
+> 
 
-Right, pfn_to_online_page() -> pfn_valid() / pfn_valid_within() should 
-handle that.
-
-Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Thanks,
-
-David / dhildenb
-
+js
+suse labs
