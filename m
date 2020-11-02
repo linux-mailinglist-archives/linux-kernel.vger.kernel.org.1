@@ -2,57 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941792A23F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F371D2A23F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgKBFIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:08:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34488 "EHLO mail.kernel.org"
+        id S1727161AbgKBFLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 00:11:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbgKBFIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:08:13 -0500
+        id S1725208AbgKBFLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 00:11:43 -0500
 Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7729A2236F;
-        Mon,  2 Nov 2020 05:08:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9492921D91;
+        Mon,  2 Nov 2020 05:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604293692;
-        bh=m/9zUCvIf3JTkdFrQkDdnBtKdFTIDYPsbNGs5wF8+Gg=;
+        s=default; t=1604293902;
+        bh=WBqK3hQfaLDnY6xifFw2NtALyoUiphjppFurxkLVyq4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wmaKn66eyG7DdxBNp3woyjsNBbcKCNMT5BXtRYK5uHDybdf84Vuo33dVEj68pgCEa
-         a4GYjkFtiGG7+lHzFWRBZmNIE+RGiHVTydvzkACnyK3W7yvAhL7eLA1E8hnzYHHHD4
-         53bc4HdqfM1V58x4NrQrpJIjS1DP6An/VTbSrpXo=
-Date:   Mon, 2 Nov 2020 14:08:07 +0900
+        b=Aa+ldGx4dqa2NQewkBzftlMRzPR7K6Jh/SmXv09lHJPUnJdUPhNDBzgh/fOv/h2g2
+         /0itfM3ZFOKYleV/aF+tJdq10DVGiYfbEtSebB+qB7KlFSplI3acgZ1cXzAT0l3oPn
+         Gj6uLL0Nxw+cdA2Uc1kIKYmxCWsVYTgsYw6iqng8=
+Date:   Mon, 2 Nov 2020 14:11:38 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 5/9] kprobes/ftrace: Add recursion protection to the
- ftrace callback
-Message-Id: <20201102140807.05ca1c9e33a96b34d3fffd35@kernel.org>
-In-Reply-To: <20201029094001.0cfab7aa@gandalf.local.home>
-References: <20201028115244.995788961@goodmis.org>
-        <20201028115613.140212174@goodmis.org>
-        <20201029165803.5f6b401e5bccca4e57c70181@kernel.org>
-        <20201029094001.0cfab7aa@gandalf.local.home>
+        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
+Message-Id: <20201102141138.1fa825113742f3bea23bc383@kernel.org>
+In-Reply-To: <20201030213831.04e81962@oasis.local.home>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+        <159870615628.1229682.6087311596892125907.stgit@devnote2>
+        <20201030213831.04e81962@oasis.local.home>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -61,123 +46,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 09:40:01 -0400
+On Fri, 30 Oct 2020 21:38:31 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Thu, 29 Oct 2020 16:58:03 +0900
+> On Sat, 29 Aug 2020 22:02:36 +0900
 > Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> > Hi Steve,
+> > Since the commit 9b38cc704e84 ("kretprobe: Prevent triggering
+> > kretprobe from within kprobe_flush_task") sets a dummy current
+> > kprobe in the trampoline handler by kprobe_busy_begin/end(),
+> > it is not possible to run a kretprobe pre handler in kretprobe
+> > trampoline handler context even with the NMI. If the NMI interrupts
+> > a kretprobe_trampoline_handler() and it hits a kretprobe, the
+> > 2nd kretprobe will detect recursion correctly and it will be
+> > skipped.
+> > This means we have almost no double-lock issue on kretprobes by NMI.
 > > 
-> > On Wed, 28 Oct 2020 07:52:49 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > The last one point is in cleanup_rp_inst() which also takes
+> > kretprobe_table_lock without setting up current kprobes.
+> > So adding kprobe_busy_begin/end() there allows us to remove
+> > in_nmi() check.
 > > 
-> > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > > 
-> > > If a ftrace callback does not supply its own recursion protection and
-> > > does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-> > > make a helper trampoline to do so before calling the callback instead of
-> > > just calling the callback directly.  
-> > 
-> > So in that case the handlers will be called without preempt disabled?
-> > 
-> > 
-> > > The default for ftrace_ops is going to assume recursion protection unless
-> > > otherwise specified.  
-> > 
-> > This seems to skip entier handler if ftrace finds recursion.
-> > I would like to increment the missed counter even in that case.
+> > The above commit applies kprobe_busy_begin/end() on x86, but
+> > now all arch implementation are unified to generic one, we can
+> > safely remove the in_nmi() check from arch independent code.
+> >
 > 
-> Note, this code does not change the functionality at this point, because
-> without having the FL_RECURSION flag set (which kprobes does not even in
-> this patch), it always gets called from the helper function that does this:
+> So are you saying that lockdep is lying?
 > 
-> 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
-> 	if (bit < 0)
-> 		return;
+> Kprobe smoke test: started
 > 
-> 	preempt_disable_notrace();
+> ================================
+> WARNING: inconsistent lock state
+> 5.10.0-rc1-test+ #29 Not tainted
+> --------------------------------
+> inconsistent {INITIAL USE} -> {IN-NMI} usage.
+> swapper/0/1 [HC1[1]:SC0[0]:HE0:SE1] takes:
+> ffffffff82b07118 (&rp->lock){....}-{2:2}, at: pre_handler_kretprobe+0x4b/0x193
+> {INITIAL USE} state was registered at:
+>   lock_acquire+0x280/0x325
+>   _raw_spin_lock+0x30/0x3f
+>   recycle_rp_inst+0x3f/0x86
+>   __kretprobe_trampoline_handler+0x13a/0x177
+>   trampoline_handler+0x48/0x57
+>   kretprobe_trampoline+0x2a/0x4f
+>   kretprobe_trampoline+0x0/0x4f
+>   init_kprobes+0x193/0x19d
+>   do_one_initcall+0xf9/0x27e
+>   kernel_init_freeable+0x16e/0x2b6
+>   kernel_init+0xe/0x109
+>   ret_from_fork+0x22/0x30
+> irq event stamp: 1670
+> hardirqs last  enabled at (1669): [<ffffffff811cc344>] slab_free_freelist_hook+0xb4/0xfd
+> hardirqs last disabled at (1670): [<ffffffff81da0887>] exc_int3+0xae/0x10a
+> softirqs last  enabled at (1484): [<ffffffff82000352>] __do_softirq+0x352/0x38d
+> softirqs last disabled at (1471): [<ffffffff81e00f82>] asm_call_irq_on_stack+0x12/0x20
 > 
-> 	op->func(ip, parent_ip, op, regs);
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
 > 
-> 	preempt_enable_notrace();
-> 	trace_clear_recursion(bit);
+>        CPU0
+>        ----
+>   lock(&rp->lock);
+>   <Interrupt>
+>     lock(&rp->lock);
 > 
-> Where this function gets called by op->func().
+>  *** DEADLOCK ***
 > 
-> In other words, you don't get that count anyway, and I don't think you want
-> it. Because it means you traced something that your callback calls.
+> no locks held by swapper/0/1.
+> 
+> stack backtrace:
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-test+ #29
+> Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
+> Call Trace:
+>  dump_stack+0x7d/0x9f
+>  print_usage_bug+0x1c0/0x1d3
+>  lock_acquire+0x302/0x325
+>  ? pre_handler_kretprobe+0x4b/0x193
+>  ? stop_machine_from_inactive_cpu+0x120/0x120
+>  _raw_spin_lock_irqsave+0x43/0x58
+>  ? pre_handler_kretprobe+0x4b/0x193
+>  pre_handler_kretprobe+0x4b/0x193
+>  ? stop_machine_from_inactive_cpu+0x120/0x120
+>  ? kprobe_target+0x1/0x16
+>  kprobe_int3_handler+0xd0/0x109
+>  exc_int3+0xb8/0x10a
+>  asm_exc_int3+0x31/0x40
+> RIP: 0010:kprobe_target+0x1/0x16
+>  5d c3 cc
+> RSP: 0000:ffffc90000033e00 EFLAGS: 00000246
+> RAX: ffffffff8110ea77 RBX: 0000000000000001 RCX: ffffc90000033cb4
+> RDX: 0000000000000231 RSI: 0000000000000000 RDI: 000000003ca57c35
+> RBP: ffffc90000033e20 R08: 0000000000000000 R09: ffffffff8111d207
+> R10: ffff8881002ab480 R11: ffff8881002ab480 R12: 0000000000000000
+> R13: ffffffff82a52af0 R14: 0000000000000200 R15: ffff888100331130
+>  ? register_kprobe+0x43c/0x492
+>  ? stop_machine_from_inactive_cpu+0x120/0x120
+>  ? kprobe_target+0x1/0x16
+>  ? init_test_probes+0x2c6/0x38a
+>  init_kprobes+0x193/0x19d
+>  ? debugfs_kprobe_init+0xb8/0xb8
+>  do_one_initcall+0xf9/0x27e
+>  ? rcu_read_lock_sched_held+0x3e/0x75
+>  ? init_mm_internals+0x27b/0x284
+>  kernel_init_freeable+0x16e/0x2b6
+>  ? rest_init+0x152/0x152
+>  kernel_init+0xe/0x109
+>  ret_from_fork+0x22/0x30
+> Kprobe smoke test: passed successfully
+> 
+> Config attached.
 
-Got it. So nmissed count increment will be an improvement.
-
-> 
-> That bit check is basically a nop, because the last patch in this series
-> will make the default that everything has recursion protection, but at this
-> patch the test does this:
-> 
-> 	/* A previous recursion check was made */
-> 	if ((val & TRACE_CONTEXT_MASK) > max)
-> 		return 0;
-> 
-> Which would always return true, because this function is called via the
-> helper that already did the trace_test_and_set_recursion() which, if it
-> made it this far, the val would always be greater than max.
-
-OK, let me check the last patch too.
-
-> 
-> > 
-> > [...]
-> > e.g.
-> > 
-> > > diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-> > > index 5264763d05be..5eb2604fdf71 100644
-> > > --- a/arch/csky/kernel/probes/ftrace.c
-> > > +++ b/arch/csky/kernel/probes/ftrace.c
-> > > @@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
-> > >  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
-> > >  			   struct ftrace_ops *ops, struct pt_regs *regs)
-> > >  {
-> > > +	int bit;
-> > >  	bool lr_saver = false;
-> > >  	struct kprobe *p;
-> > >  	struct kprobe_ctlblk *kcb;
-> > >  
-> > > -	/* Preempt is disabled by ftrace */
-> > > +	bit = ftrace_test_recursion_trylock();  
-> > 
-> > > +
-> > > +	preempt_disable_notrace();
-> > >  	p = get_kprobe((kprobe_opcode_t *)ip);
-> > >  	if (!p) {
-> > >  		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
-> > >  		if (unlikely(!p) || kprobe_disabled(p))
-> > > -			return;
-> > > +			goto out;
-> > >  		lr_saver = true;
-> > >  	}  
-> > 
-> > 	if (bit < 0) {
-> > 		kprobes_inc_nmissed_count(p);
-> > 		goto out;
-> > 	}
-> 
-> If anything called in get_kprobe() or kprobes_inc_nmissed_count() gets
-> traced here, you have zero recursion protection, and this will crash the
-> machine with a likely reboot (triple fault).
-
-Oops, ok, those can be traced. 
-
-> 
-> Note, the recursion handles interrupts and wont stop them. bit < 0 only
-> happens if you recurse because this function called something that ends up
-> calling itself. Really, why would you care about missing a kprobe on the
-> same kprobe?
-
-Usually, sw-breakpoint based kprobes will count that case. Moreover, kprobes
-shares one ftrace_ops among all kprobes. I guess in that case any kprobes
-in kprobes (e.g. recursive call inside kprobe pre_handlers) will be skipped
-by ftrace_test_recursion_trylock(), is that correct?
+Thanks for the report! Let me check what happen.
 
 Thank you,
 
