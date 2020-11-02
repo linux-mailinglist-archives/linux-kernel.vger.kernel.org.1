@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48E42A2BB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADB02A2BB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgKBNko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:40:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKBNko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:40:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604324442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5taM+xYm/roqABSXKkx0AaxQ/mE9w6z11tF73TDYO34=;
-        b=JwyFhGWnOj6rr9Fro8QmODOHDgJOMbxn6yIXAsMWqDTcuesi6SbZAjEn7eF2VcAPsNbe7x
-        0IECPDduSukxbA9TbUaoqewrUTyTTu0SmE5pU18LUYzdhtzX5X7yKv//X/bwX3mDD3jpj9
-        EOchAN8zcDJtMpMjFLMvpil4kE8sDjk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC9F4ACB5;
-        Mon,  2 Nov 2020 13:40:42 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 14:40:42 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Luis R . Rodriguez" <mcgrof@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] init/Kconfig: Fix CPU number in
- LOG_CPU_MAX_BUF_SHIFT description
-Message-ID: <20201102134042.GH20201@alley>
-References: <20200811092924.6256-1-pmenzel@molgen.mpg.de>
- <d7cad0f8-5831-7730-42d5-fa6d8c46edbb@molgen.mpg.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7cad0f8-5831-7730-42d5-fa6d8c46edbb@molgen.mpg.de>
+        id S1725916AbgKBNlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:41:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKBNlw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:41:52 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE07CC0617A6;
+        Mon,  2 Nov 2020 05:41:52 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c20so11139915pfr.8;
+        Mon, 02 Nov 2020 05:41:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=O7ajfVJhA/2SrZ1qqXiraNpNRGFUerSLYYMnKjCNxEE=;
+        b=Ha+siYDn0Yozgsc/1FY0xnDPTq4nF44CFktiLyT0Rzsak8O8Aukpvexcx+cWPv21ta
+         xCec7BEaTZwhlEaIh3FDMcajCravZ99TxEDlpMf5dNrFKxk6NzY1hw7YfamtLOT9lOwt
+         zf7PP+fNt2s9sX0BZ5d6t5gkQg6dFl5KLtuqqdBVPEK5K0GQRQtRvzAlHCpVVu1tAAfk
+         NAAfMSVm4LEcT18KupgcNlw/KFe3p8NUey7/f9bbYAJj8u69b4rAPdXgm3++klH5QHZz
+         rWu03cKJQFcn+OvWiyuA08E85JUOtVDKFD4hC9bEV92Vh+E0VXluytZFrjKUccQg8PWU
+         PufA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=O7ajfVJhA/2SrZ1qqXiraNpNRGFUerSLYYMnKjCNxEE=;
+        b=qbu3KwWmdgWzhUH9Xpws/2YwsL9j1otUn+08deJ67rKqZvYFeNsPpYldFsWyAmr+jJ
+         gh1OP5RD4HW3i4F0Afn+deO/QPniJUtxf/fkUgT06HGPEijMLZ7X7mixOSIvPtC2UY6C
+         MTTONlriDyykXwJIB/2NxqxF61D5YWEQq1XCx3VRG2XyGgwTl9bS1IirE26I31Tfq0v+
+         T5pOkYXV3oRhxm2oUTafdrXR9KY8Fk9gkKGtRZvyaqntsp+KkcNPiDMCx55OZAtys1yY
+         0xsp7aSoXqw0DA6TUD6ZBEhU2gViSA64+DY74e6nduu3JKJznHCmynf2vnUENIUZC4u4
+         xQmg==
+X-Gm-Message-State: AOAM53216EFOlqiujFv+YvSL35Cd5X9vKTe70LcoFPqnWaE8X+DmlLtU
+        8obSXOM/Q8oT0sdq4cYfTQ==
+X-Google-Smtp-Source: ABdhPJzfq1UM6eOhcpRFCa8jiJHoGmM/KTFV4jY2NDis/q5pg0iSnGBdJGIYE6gJvpzM1SVaopG/lA==
+X-Received: by 2002:a63:1825:: with SMTP id y37mr13208841pgl.284.1604324512329;
+        Mon, 02 Nov 2020 05:41:52 -0800 (PST)
+Received: from localhost.localdomain ([8.210.180.83])
+        by smtp.gmail.com with ESMTPSA id k9sm14233438pfi.188.2020.11.02.05.41.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 05:41:51 -0800 (PST)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pujin Shi <shipujin.t@gmail.com>
+Subject: [PATCH] net: ethernet: mscc: fix missing brace warning for old compilers
+Date:   Mon,  2 Nov 2020 21:41:36 +0800
+Message-Id: <20201102134136.2565-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-30 17:00:18, Paul Menzel wrote:
-> Dear Petr,
-> 
-> 
-> Am 11.08.20 um 11:29 schrieb Paul Menzel:
-> > Currently, LOG_BUF_SHIFT defaults to 17, which is 2 ^ 17 bytes = 128 KB,
-> > and LOG_CPU_MAX_BUF_SHIFT defaults to 12, which is 2 ^ 12 bytes = 4 KB.
-> > 
-> > Half of 128 KB is 64 KB, so more than 16 CPUs are required for the value
-> > to be used, as then the sum of contributions is greater than 64 KB for
-> > the first time. My guess is, that the description was written with the
-> > configuration values used in the SUSE in mind.
-> > 
-> > Fixes: 23b2899f7f ("printk: allow increasing the ring buffer depending on the number of CPUs")
-> > Cc: Luis R. Rodriguez <mcgrof@suse.com>
-> > Cc: linux-kernel@vger.kernel.org
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
-> > Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> > ---
-> > v2: Add Reviewed-by tag
-> > 
-> >   init/Kconfig | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index d6a0b31b13dc..9dc607e3806f 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -718,7 +718,7 @@ config LOG_CPU_MAX_BUF_SHIFT
-> >   	  with more CPUs. Therefore this value is used only when the sum of
-> >   	  contributions is greater than the half of the default kernel ring
-> >   	  buffer as defined by LOG_BUF_SHIFT. The default values are set
-> > -	  so that more than 64 CPUs are needed to trigger the allocation.
-> > +	  so that more than 16 CPUs are needed to trigger the allocation.
-> >   	  Also this option is ignored when "log_buf_len" kernel parameter is
-> >   	  used as it forces an exact (power of two) size of the ring buffer.
-> 
-> Could you please apply this trivial patch from the two patches already, so I
-> do not have to resend it?
+For older versions of gcc, the array = {0}; will cause warnings:
 
-The patch is committed in printk/linux.git, branch for-5.10-trivial.
+drivers/net/ethernet/mscc/ocelot_vcap.c: In function 'is1_entry_set':
+drivers/net/ethernet/mscc/ocelot_vcap.c:755:11: warning: missing braces around initializer [-Wmissing-braces]
+    struct ocelot_vcap_u16 etype = {0};
+           ^
+drivers/net/ethernet/mscc/ocelot_vcap.c:755:11: warning: (near initialization for 'etype.value') [-Wmissing-braces]
 
-I am not going to create pull request just for this trivial fix.
-I will push it for-5.10 only together with eventual more urgent fix.
-It is very likely that it will have to wait for 5.11.
+1 warnings generated
 
-Best Regards,
-Petr
+Fixes: 75944fda1dfe ("net: mscc: ocelot: offload ingress skbedit and vlan actions to VCAP IS1")
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+---
+ drivers/net/ethernet/mscc/ocelot_vcap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mscc/ocelot_vcap.c b/drivers/net/ethernet/mscc/ocelot_vcap.c
+index d8c778ee6f1b..b96eab4583e7 100644
+--- a/drivers/net/ethernet/mscc/ocelot_vcap.c
++++ b/drivers/net/ethernet/mscc/ocelot_vcap.c
+@@ -752,7 +752,7 @@ static void is1_entry_set(struct ocelot *ocelot, int ix,
+ 					     dport);
+ 		} else {
+ 			/* IPv4 "other" frame */
+-			struct ocelot_vcap_u16 etype = {0};
++			struct ocelot_vcap_u16 etype = {};
+ 
+ 			/* Overloaded field */
+ 			etype.value[0] = proto.value[0];
+-- 
+2.18.1
+
