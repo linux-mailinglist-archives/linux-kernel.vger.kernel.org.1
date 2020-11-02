@@ -2,89 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1060C2A2A67
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2112A2AA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728697AbgKBMI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:08:57 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7401 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728487AbgKBMI5 (ORCPT
+        id S1728583AbgKBMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:23:33 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:47974 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728444AbgKBMXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:08:57 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPsCB4NGFz72Bl;
-        Mon,  2 Nov 2020 20:08:54 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 20:08:44 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/nouveu: remove unused variable
-Date:   Mon, 2 Nov 2020 20:20:39 +0800
-Message-ID: <1604319639-12227-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 2 Nov 2020 07:23:32 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201102122320euoutp0269058869ce392276b5e659be101be149~DsFvQq6vy0254702547euoutp02T
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:23:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201102122320euoutp0269058869ce392276b5e659be101be149~DsFvQq6vy0254702547euoutp02T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604319800;
+        bh=q7+ilGGLT18/vuSxWDQthCN3467HY9jEgT+ik8brKQk=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=nJ70JShet0S2a6Dqq8HgE/zaqAzGsrHM/nI+F5Iu7rDjZjC9ey0YXT3F8lRphW91K
+         zagjVTkvu79AYGpDb7zgRtPlsJfW+U7opWVjDZTQ831O6gLBXBAGxG4fW/9V+7/ONk
+         PKRtl4TBLewbaysAyJO2Rm47it72RrHttiZOswd0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201102122311eucas1p10c5ad39eb4e356d254f268fbda6ad4b4~DsFmsUMu80490104901eucas1p1R;
+        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 77.30.06456.F2AFF9F5; Mon,  2
+        Nov 2020 12:23:11 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201102122311eucas1p1805e9f745babaa133d80418bddf108a7~DsFmSwRB-2982429824eucas1p1e;
+        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201102122311eusmtrp2d1c125a97c0549688cb333b9b5616db6~DsFmRWqTd2919729197eusmtrp2G;
+        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-eb-5f9ffa2f975d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 85.B2.06314.E2AFF9F5; Mon,  2
+        Nov 2020 12:23:10 +0000 (GMT)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201102122309eusmtip27199189c706b9bdf043f5960224f430e~DsFlQd0A40348203482eusmtip2a;
+        Mon,  2 Nov 2020 12:23:09 +0000 (GMT)
+Subject: Re: [PATCH v7 2/6] interconnect: Add generic interconnect driver
+ for Exynos SoCs
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <9ef1cf71-0729-d4f7-6a15-eb4ba1ffbefc@samsung.com>
+Date:   Mon, 2 Nov 2020 13:23:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201031121747.GB9399@kozik-lap>
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTm3e7ursPZdSo7zFKY/iihmSVxyTATi0EU/q3IufKmK522qaUQ
+        +JGl+cFwhbrMjQK1lZjDWX5iMlshurBIScWyofkxxKaFWpp3V8l/z3PO85xznpeX4IqGeRJC
+        pc6kNWplqhQXYG1vVx0Hw9eMikNl0xJqsq4IUS3VzTxqZHmGRxltQzzq08oiTlV1W3CqclKH
+        UQ7HSz71saMWp9zlNkRVO3o4VJNtgk+N5TfiVFG3jU9V62fxmD1yi7kEl49/7sLlk6V2jryi
+        1YzkbktQPO+C4HgSnarKpjXh0YmClM6pN5yM7163GrosvDzk5t9HXgSQkbDont/CAkJENiJY
+        sM/xWLKM4GFPPZclbgQlw1P4jsX1dHVb1YBgetyJsWQJgaG316PyIy/CN30Hl8H+5AEY+fvb
+        4+CS6xwoNA96tuNkBJT3VyAGC8lo6P9T66ljZCg4n1V5zAFkAuha7mCsxhfe1zDbCMKLlMEL
+        61GmzCXF8MVp5LA4GAqtjzxnA7nEhy5dDWL0QMZB04SCTeAHc/bW7QfYC5vtjJfRFyIo6xzj
+        s0SHYNJuQqwqCsaH1nBmEHcrTXNHODvzJAzb9rPQB0ZdvuwJPlDZxlzPlIVQfFfEzgiFdXMV
+        h8USKHVuYjokNezKZdgVxrArjOH/WhPCzEhMZ2nTkmlthJq+KdMq07RZ6mTZlfQ0C9r6aQMb
+        9p+v0crw5T5EEkjqLez1MypEPGW2NietDwHBlfoLYwcHEkTCJGVOLq1JV2iyUmltHwokMKlY
+        eOTJ7CURmazMpK/TdAat2elyCC9JHuoOmLlmDBtzxmwcjiwMOX2GPmtNVp9vedBW8UGc5Doh
+        vl3T/C6GLtgXJ5Wd+iHo94uOqss6duPVeEHfdL2+4B6uShxMUKktgbEb0K6vQ93eY7+C1kcf
+        W0OCu75GufV6k8l17mp121pxfMBa8fPR3IWm+WJBTcGm0wTL+fcVzVJMm6KMCONqtMp/5Yoh
+        qWUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xe7p6v+bHG/x9ZWlxf14ro8XGGetZ
+        La5/ec5qMf/IOVaLK1/fs1lM37uJzWLS/QksFufPb2C3uLxrDpvF594jjBYzzu9jslh75C67
+        xe3GFWwWrXuPsFvMmPySzYHfY9OqTjaPO9f2sHnc7z7O5NG3ZRWjx+dNcgGsUXo2RfmlJakK
+        GfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZux8dZCp4zFmxfM8m
+        1gbGz+xdjJwcEgImEm8X/2TtYuTiEBJYyiixv3sqWxcjB1BCSmJ+ixJEjbDEn2tdbBA17xkl
+        JixZyQJSIywQLTH1gyNIjYiApsT1v9/B5jAL/GaSOHDvMgtEw2NGibVzj4BtYxMwlOg92scI
+        YvMK2Ekc/TMHLM4ioCLxZOV0ZhBbVCBO4sfEXjaIGkGJkzOfgC3jFNCTWLPVDCTMLKAu8Wfe
+        JWYIW1zi1pP5TBC2vETz1tnMExiFZiHpnoWkZRaSlllIWhYwsqxiFEktLc5Nzy021CtOzC0u
+        zUvXS87P3cQIjOFtx35u3sF4aWPwIUYBDkYlHt4DwvPjhVgTy4orcw8xSnAwK4nwOp09HSfE
+        m5JYWZValB9fVJqTWnyI0RTot4nMUqLJ+cD0klcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9
+        sSQ1OzW1ILUIpo+Jg1OqgVFaYvOjLJ00Fn9z52VvVtq+ZPEvP/6Wx/q2QHrLFfcdZsI7Zj/6
+        djMzcNr9yRZX381ill9aZlY70ex3QlVLzKHQL7+KPu5YG6cm7PV/37uQ5Pr7cTZxlgw1LMmh
+        sWsy+Ga9vTJHVFeyKu5uPcfsFbav7qst71yQK71cwOOK4lFW4d0e9ak5lkosxRmJhlrMRcWJ
+        AHWDOub3AgAA
+X-CMS-MailID: 20201102122311eucas1p1805e9f745babaa133d80418bddf108a7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
+References: <20201030125149.8227-1-s.nawrocki@samsung.com>
+        <CGME20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9@eucas1p2.samsung.com>
+        <20201030125149.8227-3-s.nawrocki@samsung.com>
+        <20201031121747.GB9399@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix variables set but not used compilation warnings:
+On 31.10.2020 13:17, Krzysztof Kozlowski wrote:
+> On Fri, Oct 30, 2020 at 01:51:45PM +0100, Sylwester Nawrocki wrote:
+>> This patch adds a generic interconnect driver for Exynos SoCs in order
+>> to provide interconnect functionality for each "samsung,exynos-bus"
+>> compatible device.
 
-./nouveau_bo.c:1313:17: warning: variable ‘dev’ set but not used [-Wunused-but-set-variable]
-  struct device *dev;
-                 ^~~
-./nouveau_bo.c:1337:17: warning: variable ‘dev’ set but not used [-Wunused-but-set-variable]
-  struct device *dev;
-                 ^~~
+>> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
+>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
- 1 file changed, 4 deletions(-)
+>>  drivers/interconnect/Kconfig         |   1 +
+>>  drivers/interconnect/Makefile        |   1 +
+>>  drivers/interconnect/exynos/Kconfig  |   6 ++
+>>  drivers/interconnect/exynos/Makefile |   4 +
+>>  drivers/interconnect/exynos/exynos.c | 198 +++++++++++++++++++++++++++++++++++
+> 
+> How about naming the directory as "samsung"? I don't expect interconnect
+> drivers for the old Samsung S3C or S5P platforms, but it would be
+> consisteny with other names (memory, clk, pinctrl).
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index 8133377..96f00b5 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -1310,7 +1310,6 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bdev,
- {
- 	struct ttm_tt *ttm_dma = (void *)ttm;
- 	struct nouveau_drm *drm;
--	struct device *dev;
- 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
- 
- 	if (ttm_tt_is_populated(ttm))
-@@ -1324,7 +1323,6 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bdev,
- 	}
- 
- 	drm = nouveau_bdev(bdev);
--	dev = drm->dev->dev;
- 
- 	return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
- }
-@@ -1334,14 +1332,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_bo_device *bdev,
- 			  struct ttm_tt *ttm)
- {
- 	struct nouveau_drm *drm;
--	struct device *dev;
- 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
- 
- 	if (slave)
- 		return;
- 
- 	drm = nouveau_bdev(bdev);
--	dev = drm->dev->dev;
- 
- 	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
- }
+Sure, I will rename the directory.
+
+> How about adding separate maintainers entry for the driver with you and
+> Artur (if he still works on this)?
+
+I'm not sure what's the preference in the subsystem, I'm going to add
+a patch introducing such a maintainers entry as it might be helpful 
+for reviews/testing.  
+
 -- 
-2.6.2
-
+Regards,
+Sylwester
