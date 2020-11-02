@@ -2,263 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6842C2A26A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F422A26AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgKBJI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:08:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7398 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgKBJI1 (ORCPT
+        id S1728294AbgKBJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:09:32 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39236 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBJJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:08:27 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPnBr3hhJz7257;
-        Mon,  2 Nov 2020 17:08:20 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 17:08:13 +0800
-Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Vishwanath Pai <vpai@akamai.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-CC:     "Hunt, Joshua" <johunt@akamai.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
- <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
- <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
- <CAP12E-+3DY-dgzVercKc-NYGPExWO1NjTOr1Gf3tPLKvp6O6+g@mail.gmail.com>
- <AE096F70-4419-4A67-937A-7741FBDA6668@akamai.com>
- <CAM_iQpX0XzNDCzc2U5=g6aU-HGYs3oryHx=rmM3ue9sH=Jd4Gw@mail.gmail.com>
- <19f888c2-8bc1-ea56-6e19-4cb4841c4da0@akamai.com>
- <93ab7f0f-7b5a-74c3-398d-a572274a4790@huawei.com>
- <248e5a32-a102-0ced-1462-aa2bc5244252@akamai.com>
- <de690c67-6e9f-8885-10c1-f47313de7b62@huawei.com>
- <cd4b2482-c3dc-fba6-6287-1218dc4bed6e@akamai.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ab88bf4e-e022-dafe-4150-7314bf70c817@huawei.com>
-Date:   Mon, 2 Nov 2020 17:08:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 2 Nov 2020 04:09:32 -0500
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1kZVqD-0003Dv-8C
+        for linux-kernel@vger.kernel.org; Mon, 02 Nov 2020 09:09:29 +0000
+Received: by mail-wr1-f71.google.com with SMTP id t17so6187682wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 01:09:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hQMKBcXp2eZ9AT0PGM2yxAWX5qPqVtcgTKTo8TS7k6U=;
+        b=KlYTMt7fkDwAIGHU6kNO+Zffdv/BPscVdE04FFaWaYs19Hq6B5Y3A5x8klntG6zNFS
+         llbZ/cL4Y7lWLAbaxzdWDLL/Myu9s85uAzN0HB87nam0hhmo6OGqiZ08jzPR0QpKAoL9
+         Jb7TIgnvZsQTwQ8Th371W4YdPbK6zAJpMMiUfnTdWCLesNCYJoBEBqY5IC1QwZ5BwThs
+         MS1k64otWlU8Ovelns9/D2t14aI5pHmYEiA2cNUYnTNWUrnfLsLOvytGo052zKWHnmhn
+         G0WHlAjgRSfv8XO8SFnZDGD7KzLkA/1P3fCTp9uXzN75Xp3sdoajBObmUFCjTwLhBHPA
+         6R5g==
+X-Gm-Message-State: AOAM533nnIEmfzB2l7UV3yX4d3LcnSngUEU188G6GqaHz9aI0skM+tXe
+        EKgOuS7am5po8rhDcnv6L421yF0EZg3D2wF98WcPE2czq1FDW4FwvujT4tA6aMDpEp1oBiRnzQx
+        BvUY+A5KTskt4fyUhqpFixPh7JDgHLraHeTn4NNaRcQ==
+X-Received: by 2002:a1c:8095:: with SMTP id b143mr16992830wmd.147.1604308168909;
+        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw+xtOFQaw7ajhnbyWjEXQUwCztboqe2+/S9rajf5CJ8nYEbk1Er6Lz9P8P16bcQ3RR+6RMnA==
+X-Received: by 2002:a1c:8095:: with SMTP id b143mr16992806wmd.147.1604308168618;
+        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
+Received: from localhost (host-79-33-123-6.retail.telecomitalia.it. [79.33.123.6])
+        by smtp.gmail.com with ESMTPSA id r10sm5171413wmg.16.2020.11.02.01.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
+Date:   Mon, 2 Nov 2020 10:09:27 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: lockdep: possible irq lock inversion dependency detected
+ (trig->leddev_list_lock)
+Message-ID: <20201102090927.GC9930@xps-13-7390>
+References: <20201101092614.GB3989@xps-13-7390>
+ <20201031101740.GA1875@boqun-laptop.fareast.corp.microsoft.com>
+ <20201102073328.GA9930@xps-13-7390>
+ <20201102085658.GA5506@amd>
 MIME-Version: 1.0
-In-Reply-To: <cd4b2482-c3dc-fba6-6287-1218dc4bed6e@akamai.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102085658.GA5506@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/30 1:20, Vishwanath Pai wrote:
-> On 10/29/20 6:24 AM, Yunsheng Lin wrote:
->> On 2020/10/29 12:50, Vishwanath Pai wrote:
->>> On 10/28/20 10:37 PM, Yunsheng Lin wrote:
->>>> On 2020/10/29 4:04, Vishwanath Pai wrote:
->>>>> On 10/28/20 1:47 PM, Cong Wang wrote:
->>>>>> On Wed, Oct 28, 2020 at 8:37 AM Pai, Vishwanath <vpai@akamai.com> wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> We noticed some problems when testing the latest 5.4 LTS kernel and traced it
->>>>>>> back to this commit using git bisect. When running our tests the machine stops
->>>>>>> responding to all traffic and the only way to recover is a reboot. I do not see
->>>>>>> a stack trace on the console.
->>>>>>
->>>>>> Do you mean the machine is still running fine just the network is down?
->>>>>>
->>>>>> If so, can you dump your tc config with stats when the problem is happening?
->>>>>> (You can use `tc -s -d qd show ...`.)
->>>>>>
->>>>>>>
->>>>>>> This can be reproduced using the packetdrill test below, it should be run a
->>>>>>> few times or in a loop. You should hit this issue within a few tries but
->>>>>>> sometimes might take up to 15-20 tries.
->>>>>> ...
->>>>>>> I can reproduce the issue easily on v5.4.68, and after reverting this commit it
->>>>>>> does not happen anymore.
->>>>>>
->>>>>> This is odd. The patch in this thread touches netdev reset path, if packetdrill
->>>>>> is the only thing you use to trigger the bug (that is netdev is always active),
->>>>>> I can not connect them.
->>>>>>
->>>>>> Thanks.
->>>>>
->>>>> Hi Cong,
->>>>>
->>>>>> Do you mean the machine is still running fine just the network is down?
->>>>>
->>>>> I was able to access the machine via serial console, it looks like it is
->>>>> up and running, just that networking is down.
->>>>>
->>>>>> If so, can you dump your tc config with stats when the problem is happening?
->>>>>> (You can use `tc -s -d qd show ...`.)
->>>>>
->>>>> If I try running tc when the machine is in this state the command never
->>>>> returns. It doesn't print anything but doesn't exit either.
->>>>>
->>>>>> This is odd. The patch in this thread touches netdev reset path, if packetdrill
->>>>>> is the only thing you use to trigger the bug (that is netdev is always active),
->>>>>> I can not connect them.
->>>>>
->>>>> I think packetdrill creates a tun0 interface when it starts the
->>>>> test and tears it down at the end, so it might be hitting this code path
->>>>> during teardown.
->>>>
->>>> Hi, Is there any preparation setup before running the above packetdrill test
->>>> case, I run the above test case in 5.9-rc4 with this patch applied without any
->>>> preparation setup, did not reproduce it.
->>>>
->>>> By the way, I am newbie to packetdrill:), it would be good to provide the
->>>> detail setup to reproduce it,thanks.
->>>>
->>>>>
->>>>> P.S: My mail server is having connectivity issues with vger.kernel.org
->>>>> so messages aren't getting delivered to netdev. It'll hopefully get
->>>>> resolved soon.
->>>>>
->>>>> Thanks,
->>>>> Vishwanath
->>>>>
->>>>>
->>>>> .
->>>>>
->>>
->>> I can't reproduce it on v5.9-rc4 either, it is probably an issue only on
->>> 5.4 then (and maybe older LTS versions). Can you give it a try on
->>> 5.4.68?
->>>
->>> For running packetdrill, download the latest version from their github
->>> repo, then run it in a loop without any special arguments. This is what
->>> I do to reproduce it:
->>>
->>> while true; do ./packetdrill <test-file>; done
->>>
->>> I don't think any other setup is necessary.
->>
->> Hi, run the above test for above an hour using 5.4.68, still did not
->> reproduce it, as below:
->>
->>
->> root@(none)$ cd /home/root/
->> root@(none)$ ls
->> creat_vlan.sh  packetdrill    test.pd
->> root@(none)$ cat test.pd
->> 0 `echo 4 > /proc/sys/net/ipv4/tcp_min_tso_segs`
->>
->> 0.400 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
->> 0.400 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
->>
->> // set maxseg to 1000 to work with both ipv4 and ipv6
->> 0.500 setsockopt(3, SOL_TCP, TCP_MAXSEG, [1000], 4) = 0
->> 0.500 bind(3, ..., ...) = 0
->> 0.500 listen(3, 1) = 0
->>
->> // Establish connection
->> 0.600 < S 0:0(0) win 32792 <mss 1000,sackOK,nop,nop,nop,wscale 5>
->> 0.600 > S. 0:0(0) ack 1 <...>
->>
->> 0.800 < . 1:1(0) ack 1 win 320
->> 0.800 accept(3, ..., ...) = 4
->>
->> // Send 4 data segments.
->> +0 write(4, ..., 4000) = 4000
->> +0 > P. 1:4001(4000) ack 1
->>
->> // Receive a SACK
->> +.1 < . 1:1(0) ack 1 win 320 <sack 1001:2001,nop,nop>
->>
->> +.3 %{ print "TCP CA state: ",tcpi_ca_state  }%
->> root@(none)$ cat creat_vlan.sh
->> #!/bin/sh
->>
->> for((i=0; i<10000; i++))
->> do
->>     ./packetdrill test.pd
->> done
->> root@(none)$ ./creat_vlan.sh
->> TCP CA state:  3
->> ^C
->> root@(none)$ ifconfig
->> eth0      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ed
->>           inet addr:192.168.1.93  Bcast:192.168.1.255 Mask:255.255.255.0
->>           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->>           RX packets:3570 errors:0 dropped:0 overruns:0 frame:0
->>           TX packets:3190 errors:0 dropped:0 overruns:0 carrier:0
->>           collisions:0 txqueuelen:1000
->>           RX bytes:1076349 (1.0 MiB)  TX bytes:414874 (405.1 KiB)
->>
->> eth2      Link encap:Ethernet  HWaddr 5c:e8:83:0d:f7:ec
->>           inet addr:192.168.100.1  Bcast:192.168.100.255 Mask:255.255.255.0
->>           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->>           RX packets:81848576 errors:0 dropped:0 overruns:0 frame:78
->>           TX packets:72497816 errors:0 dropped:0 overruns:0 carrier:0
->>           collisions:0 txqueuelen:1000
->>           RX bytes:2044282289568 (1.8 TiB)  TX bytes:2457441698852 (2.2 TiB)
->>
->> lo        Link encap:Local Loopback
->>           inet addr:127.0.0.1  Mask:255.0.0.0
->>           UP LOOPBACK RUNNING  MTU:65536  Metric:1
->>           RX packets:1 errors:0 dropped:0 overruns:0 frame:0
->>           TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
->>           collisions:0 txqueuelen:1000
->>           RX bytes:68 (68.0 B)  TX bytes:68 (68.0 B)
->>
->> root@(none)$ ./creat_vlan.sh
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> TCP CA state:  3
->> ^C
->> root@(none)$ cat /proc/cmdline
->> BOOT_IMAGE=/linyunsheng/Image.5.0 rdinit=/init console=ttyAMA0,115200 earlycon=pl011,mmio32,0x94080000 iommu.strict=1
->> root@(none)$ cat /proc/version
->> Linux version 5.4.68 (linyunsheng@ubuntu) (gcc version 5.4.0 20160609 (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.12)) #1 SMP PREEMPT Thu Oct 29 16:59:37 CST 2020
->> root@(none)$
->>
->>
->>
->>>
->>> -Vishwanath
->>>
->>> .
->>>
-> I couldn't get it to reproduce on a ubuntu VM, maybe something is
-> different with the way we setup our machines. We do have some scripts in
-> /etc/network/{if-up.d,if-post-down.d} etc, or probably something else.
-> I'll let you know when I can reliably reproduce it on the VM.
-
-Hi, Vishwanath
-    Please see if the patch in the below link fix your problem, thanks.
-https://www.spinics.net/lists/netdev/msg695908.html
-
+On Mon, Nov 02, 2020 at 09:56:58AM +0100, Pavel Machek wrote:
+> Hi!
 > 
-> .
+> > > > I'm getting the following lockdep splat (see below).
+> > > > 
+> > > > Apparently this warning starts to be reported after applying:
+> > > > 
+> > > >  e918188611f0 ("locking: More accurate annotations for read_lock()")
+> > > > 
+> > > > It looks like a false positive to me, but it made me think a bit and
+> > > > IIUC there can be still a potential deadlock, even if the deadlock
+> > > > scenario is a bit different than what lockdep is showing.
+> > > > 
+> > > > In the assumption that read-locks are recursive only in_interrupt()
+> > > > context (as stated in e918188611f0), the following scenario can still
+> > > > happen:
+> > > > 
+> > > >  CPU0                                     CPU1
+> > > >  ----                                     ----
+> > > >  read_lock(&trig->leddev_list_lock);
+> > > >                                           write_lock(&trig->leddev_list_lock);
+> > > >  <soft-irq>
+> > > >  kbd_bh()
+> > > >    -> read_lock(&trig->leddev_list_lock);
+> > > > 
+> > > >  *** DEADLOCK ***
+> > > > 
+> > > > The write-lock is waiting on CPU1 and the second read_lock() on CPU0
+> > > > would be blocked by the write-lock *waiter* on CPU1 => deadlock.
+> > > > 
+> > > 
+> > > No, this is not a deadlock, as a write-lock waiter only blocks
+> > > *non-recursive* readers, so since the read_lock() in kbd_bh() is called
+> > > in soft-irq (which in_interrupt() returns true), so it's a recursive
+> > > reader and won't get blocked by the write-lock waiter.
+> > 
+> > That's right, I was missing that in_interrupt() returns true also from
+> > soft-irq context.
+> > 
+> > > > In that case we could prevent this deadlock condition using a workqueue
+> > > > to call kbd_propagate_led_state() instead of calling it directly from
+> > > > kbd_bh() (even if lockdep would still report the false positive).
+> > > > 
+> > > 
+> > > The deadlock senario reported by the following splat is:
+> > > 
+> > > 	
+> > > 	CPU 0:				CPU 1:					CPU 2:
+> > > 	-----				-----					-----
+> > > 	led_trigger_event():
+> > > 	  read_lock(&trig->leddev_list_lock);
+> > > 					<work queue processing>
+> > > 	  				ata_hsm_qs_complete():
+> > > 					  spin_lock_irqsave(&host->lock);
+> > > 					  					write_lock(&trig->leddev_list_lock);
+> > > 					  ata_port_freeze():
+> > > 					    ata_do_link_abort():
+> > > 					      ata_qc_complete():
+> > > 					        ledtrig_disk_activity():
+> > > 						  led_trigger_blink_oneshot():
+> > > 						    read_lock(&trig->leddev_list_lock);
+> > > 						    // ^ not in in_interrupt() context, so could get blocked by CPU 2
+> > > 	<interrupt>
+> > > 	  ata_bmdma_interrupt():
+> > > 	    spin_lock_irqsave(&host->lock);
+> > > 	  
+> > > , where CPU 0 is blocked by CPU 1 because of the spin_lock_irqsave() in
+> > > ata_bmdma_interrupt() and CPU 1 is blocked by CPU 2 because of the
+> > > read_lock() in led_trigger_blink_oneshot() and CPU 2 is blocked by CPU 0
+> > > because of an arbitrary writer on &trig->leddev_list_lock.
+> > > 
+> > > So I don't think it's false positive, but I might miss something
+> > > obvious, because I don't know what the code here actually does ;-)
+> > 
+> > With the CPU2 part it all makes sense now and lockdep was right. :)
+> > 
+> > At this point I think we could just schedule a separate work to do the
+> > led trigger and avoid calling it with host->lock held and that should
+> > prevent the deadlock. I'll send a patch to do that.
 > 
+> Let's... not do that, unless we have no choice.
+> 
+> Would it help if leddev_list_lock used _irqsave() locking?
+
+Using read_lock_irqsave/irqrestore() in led_trigger_event() would be
+enough to prevent the deadlock. If it's an acceptable solution I can
+send a patch (already tested it and lockdep doesn't complain :)).
+
+Thanks,
+-Andrea
