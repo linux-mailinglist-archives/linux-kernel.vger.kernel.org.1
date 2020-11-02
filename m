@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7162A324C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 170722A31D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgKBRxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:53:07 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:18058 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgKBRxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:53:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1604339587; x=1635875587;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=vt6Hn24mtkMCKwofJ0jwQ4BLGvIOVVWmcLAhyM7iPJQ=;
-  b=FZ/rzQwCmFQ4d8HfyoxsH5+hkkAU5cw0Z/cuEaoY4TRhSmxrg+NRDuyc
-   gteGYz47rpjkBhNocbXjKze/MOlcie0MGqAgGaAk3Y2iOW0ap191rG9N5
-   u8tlKvWNM7tUYLufay221HnC4kGL3tIEOj7vp6qcUEpKm2/uvK9iXLS3q
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,445,1596499200"; 
-   d="scan'208";a="89788432"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 02 Nov 2020 17:42:31 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id 99959B390C;
-        Mon,  2 Nov 2020 17:42:30 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.241) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 2 Nov 2020 17:42:20 +0000
-Subject: Re: [PATCH v1] nitro_enclaves: Fixup type of the poll result assigned
- value
-To:     Alexander Graf <graf@amazon.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20201014090500.75678-1-andraprs@amazon.com>
- <e4a34429-1b25-00d5-9bf1-045ca49acb8d@amazon.de>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <1ca4cd54-5ffd-621d-acb1-925bccb06066@amazon.com>
-Date:   Mon, 2 Nov 2020 19:42:09 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        id S1725852AbgKBRnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:43:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgKBRnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:43:23 -0500
+Received: from kernel.org (unknown [87.71.17.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F163621D91;
+        Mon,  2 Nov 2020 17:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604339002;
+        bh=4lTOK6nJwjmoOAObnnRBOTKd0fl9eQpxyGZlvj7NIPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WaQHhcNIPlO/3Y1BDKIiRptwVm/gNfTOsggLuTFWgEEfzGk4JpghqGJiTK1uJXPww
+         xcrmfo2wowW6SunTYD97zxQcWOPYPEwCUuK+Opbf1HTskJ6CenmFJitmkrFyumA+RF
+         614VdGzOVlHHOfs2z6uhOZXESicNeUeTW56l5apA=
+Date:   Mon, 2 Nov 2020 19:43:08 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20201102174308.GF4879@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <e4a34429-1b25-00d5-9bf1-045ca49acb8d@amazon.de>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.241]
-X-ClientProxiedBy: EX13D22UWB003.ant.amazon.com (10.43.161.76) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 10:11:12AM +0100, David Hildenbrand wrote:
+> On 24.09.20 15:28, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Hi,
+> > 
+> > This is an implementation of "secret" mappings backed by a file descriptor.
+> > I've dropped the boot time reservation patch for now as it is not strictly
+> > required for the basic usage and can be easily added later either with or
+> > without CMA.
+> 
+> Hi Mike,
+> 
+> I'd like to stress again that I'd prefer *any* secretmem allocations going
+> via CMA as long as these pages are unmovable. The user can allocate a
+> non-significant amount of unmovable allocations only fenced by the mlock
+> limit, which behave very different to mlocked pages - they are not movable
+> for page compaction/migration.
+> 
+> Assume you have a system with quite some ZONE_MOVABLE memory (esp. in
+> virtualized environments), eating up a significant amount of !ZONE_MOVABLE
+> memory dynamically at runtime can lead to non-obvious issues. It looks like
+> you have plenty of free memory, but the kernel might still OOM when trying
+> to do kernel allocations e.g., for pagetables. With CMA we at least know
+> what we're dealing with - it behaves like ZONE_MOVABLE except for the owner
+> that can place unmovable pages there. We can use it to compute statically
+> the amount of ZONE_MOVABLE memory we can have in the system without doing
+> harm to the system.
 
+Why would you say that secretmem allocates from !ZONE_MOVABLE?
+If we put boot time reservations aside, the memory allocation for
+secretmem follows the same rules as the memory allocations for any file
+descriptor. That means we allocate memory with GFP_HIGHUSER_MOVABLE.
+After the allocation the memory indeed becomes unmovable but it's not
+like we are eating memory from other zones here.
 
-On 02/11/2020 18:16, Alexander Graf wrote:
->
->
-> On 14.10.20 11:05, Andra Paraschiv wrote:
->> Update the assigned value of the poll result to be EPOLLHUP instead of
->> POLLHUP to match the __poll_t type.
->>
->> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->> =A0 drivers/virt/nitro_enclaves/ne_misc_dev.c | 2 +-
->> =A0 1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c =
+Maybe I'm missing something, but it seems to me that using CMA for any
+secretmem allocation would needlessly complicate things.
 
->> b/drivers/virt/nitro_enclaves/ne_misc_dev.c
->> index f06622b48d69..9148566455e8 100644
->> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
->> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
->> @@ -1508,7 +1508,7 @@ static __poll_t ne_enclave_poll(struct file =
+> Ideally, we would want to support page migration/compaction and allow for
+> allocation from ZONE_MOVABLE as well. Would involve temporarily mapping,
+> copying, unmapping. Sounds feasible, but not sure which roadblocks we would
+> find on the way.
 
->> *file, poll_table *wait)
->> =A0=A0=A0=A0=A0 if (!ne_enclave->has_event)
->> =A0=A0=A0=A0=A0=A0=A0=A0=A0 return mask;
->> =A0 -=A0=A0=A0 mask =3D POLLHUP;
->> +=A0=A0=A0 mask =3D EPOLLHUP;
->
-> That whole function looks a bit ... convoluted? How about this? I =
+We can support migration/compaction with temporary mapping. The first
+roadblock I've hit there was that migration allocates 4K destination
+page and if we use it in secret map we are back to scrambling the direct
+map into 4K pieces. It still sounds feasible but not as trivial :)
 
-> guess you could trim it down even further, but this looks quite =
+But again, there is nothing in the current form of secretmem that
+prevents allocation from ZONE_MOVABLE.
 
-> readable to me:
->
-> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c =
+> [...]
+> 
+> > I've hesitated whether to continue to use new flags to memfd_create() or to
+> > add a new system call and I've decided to use a new system call after I've
+> > started to look into man pages update. There would have been two completely
+> > independent descriptions and I think it would have been very confusing.
+> 
+> This was also raised on lwn.net by "dullfire" [1]. I do wonder if it would
+> be the right place as well.
 
-> b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-> index f06622b48d69..5b7f45e2eb4c 100644
-> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-> @@ -1505,10 +1505,8 @@ static __poll_t ne_enclave_poll(struct file =
+I lean towards a dedicated syscall because, as I said, to me it would
+seem less confusing.
 
-> *file, poll_table *wait)
->
-> =A0=A0=A0=A0 poll_wait(file, &ne_enclave->eventq, wait);
->
-> -=A0=A0=A0 if (!ne_enclave->has_event)
-> -=A0=A0=A0=A0=A0=A0=A0 return mask;
-> -
-> -=A0=A0=A0 mask =3D POLLHUP;
-> +=A0=A0=A0 if (ne_enclave->has_event)
-> +=A0=A0=A0=A0=A0=A0=A0 mask |=3D POLLHUP;
->
-> =A0=A0=A0=A0 return mask;
-> =A0}
->
+> [1] https://lwn.net/Articles/835342/#Comments
+> 
+> > 
+> > Hiding secret memory mappings behind an anonymous file allows (ab)use of
+> > the page cache for tracking pages allocated for the "secret" mappings as
+> > well as using address_space_operations for e.g. page migration callbacks.
+> > 
+> > The anonymous file may be also used implicitly, like hugetlb files, to
+> > implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+> > ABIs in the future.
+> > 
+> > As the fragmentation of the direct map was one of the major concerns raised
+> > during the previous postings, I've added an amortizing cache of PMD-size
+> > pages to each file descriptor that is used as an allocation pool for the
+> > secret memory areas.
 
-Good point, I updated the logic and sent the v2 of the patch.
-
-https://lore.kernel.org/lkml/20201102173622.32169-1-andraprs@amazon.com/
-
-Thank you.
-
-Andra
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
- Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
-omania. Registration number J22/2621/2005.
+-- 
+Sincerely yours,
+Mike.
 
