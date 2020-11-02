@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3717D2A3695
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752C72A3699
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgKBWfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:35:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        id S1726713AbgKBWgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:36:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbgKBWfh (ORCPT
+        with ESMTP id S1725807AbgKBWgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:35:37 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01125C0617A6;
-        Mon,  2 Nov 2020 14:35:37 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id w13so7618026eju.13;
-        Mon, 02 Nov 2020 14:35:36 -0800 (PST)
+        Mon, 2 Nov 2020 17:36:51 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893C9C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 14:36:51 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id v18so14464863ilg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 14:36:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J7nOY/CMBrCc1yEj5RA267szHi6fVAQcuYVsfxRG2l4=;
-        b=MyC2MLo3fY+8+mqhUMbKTmdekGYgyuUib/UPpK5ahWOjDMEMJZTv6Jf8qy2hweyWym
-         ZNGogdWY9PHc64A6YjzmB/p9Lgcg2x/Hp8zYISyAFDnuWG2oERhnL5b43raKXso3PzKA
-         QyJ+uELWNrK8RGqOXNbhWsHO+SYXDiPdDdfz0CLXqwXFtnT2MzuMxnocY8MPRsJVmM9/
-         qQus2vl1ujBWbFirBzOOkUg/JkLRN4f6enrOhU3L3pYzdtzjbqtbM62WpJAblPUVM/zR
-         59SYp0LJf9PCpgwfeoE4+o060lCjPUPvXCjjdFfKwA9C8CMoqaNNR/8Xg5vtatDzpdjy
-         EYcw==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l5uJS/jEKGLUY7/54yb7PsXjkj4P5AmY3KEzFYsfwHE=;
+        b=n6SP1ZMbkWoENlJDPiZ38Zcls5wfXCuU3IkRB7Xtq2Wp8wZHPQcxUvJSIZkszw4Jn7
+         o12UhWs69zVLd3cN1Az8bfLmqi3RLv5zGfKQ9JY/54iLiTr2Cb9cVvRQwts1P90eOXHm
+         0gdiC6U2wt/rGxcRuQE6OioCzZOtIbJDlWWH87qSyG9qU2JpEjrFmoUovx7eLVQ0tCt9
+         93W+hxDdSMJXhnuT8n62qY3ogMh+BxPSanvS2UoEa+rO2eorIxW/yzrtWszx6Gb9Ar6/
+         hV8bnN/akU4cFVnW6o+qLwYIs6lwmPmzv/CED8tOSn91Uvn8/RplY6TWm3cpuo20Uhgi
+         NdIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J7nOY/CMBrCc1yEj5RA267szHi6fVAQcuYVsfxRG2l4=;
-        b=bSekBdOio6IR+gufp8XllM5i4qLtHqDUAdE6/G59XEzafRWx3jNlVz40Z39fIpJOZ2
-         yNn6n3WNeV/474MUs/+9Z796yZ3zModhBfrk8H7lWNe/FP/5QAqMBubMxcrU5u6wd+4C
-         jVX1tIASmA18e89oX5ltKVEsWJK4qNkUcgaMDEOP7aSRZ0GoenSFQTJIzkRnz941TQNe
-         aKiICLE8JOHadgggl2gB2EFXG1jJziXm5CjnCynr/dvc5eNWiV1Ws3eYkZb2vuVoV6wz
-         2LB6QdSgItr6LWv7Nwyu+b25gjPbptmVZvFEt3CgD1Q1CFPwx0AJNMhx9WSebJk3zqnN
-         wmdQ==
-X-Gm-Message-State: AOAM530alJTAy555PJpQZT0MTJS43EO4RnCeantOuCBmsFALCOET54a+
-        zZ4hATxykoiSCw8RgGM4RXVRZuEIEnV5jw==
-X-Google-Smtp-Source: ABdhPJzf4mBvdfYdod1Rw2hhb5Xvo8/yAKwUJZbnBZdgLyZvf1m34Ub7JEwQD9YeiTwePAGsMc2CuQ==
-X-Received: by 2002:a17:906:840e:: with SMTP id n14mr5266686ejx.147.1604356535728;
-        Mon, 02 Nov 2020 14:35:35 -0800 (PST)
-Received: from necip-pc.vpn.ucf.edu ([85.153.224.24])
-        by smtp.gmail.com with ESMTPSA id la9sm1550707ejb.121.2020.11.02.14.35.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 14:35:35 -0800 (PST)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     jic23@kernel.org
-Cc:     pn@denx.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] iio: light: fix kconfig dependency bug for VCNL4035
-Date:   Tue,  3 Nov 2020 01:35:24 +0300
-Message-Id: <20201102223523.572461-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l5uJS/jEKGLUY7/54yb7PsXjkj4P5AmY3KEzFYsfwHE=;
+        b=bYwBaqLd0lDWiQJM8irWSVvw++7AS0bprl5ahIm0HDH/nguRKvvmY93pUxX3c9FOrG
+         t7i0jw8XZW9D/tHI6YYaa/f1BUxwRbxEOh/R5TTTb25uOl76qDNCj4kAsPJB28nw7jiZ
+         mUGt1CfK6KFIXXHy+BNeLFRI4ybvsaT+uleqcPXwaAQ1VVdVw2pu2jNR+b6BduEjbSe3
+         Fp2QdTcG4jMdiwt7qvvPylHdx+O1uzeaBo4WjF6M6VW+2d1r5KXxKocFcPzbQexu2Gkb
+         EeMWQ2iQgfqQzeVuKIRSI+xOLP78xDn2gj3/ll/UTO+vSUwPck/Kw1ZJ1+I2YQ2crOrL
+         i9+w==
+X-Gm-Message-State: AOAM5308N2PJYGylc2msyWfVl8xsGUm/2jXt6S/ICzTfYacwiNSAaaUU
+        YjZXYq9A7XXZZ6MzxR7GD94uUgqvHwJ5NltZshUA2A==
+X-Google-Smtp-Source: ABdhPJxyEOymgPpG0rZw8fAZSubOjDL6U1YtbHy3VgZ5EYhSsP0I8io3+caw3bttxxZDVONhTIHsurRHMlzScADBZPo=
+X-Received: by 2002:a92:41cf:: with SMTP id o198mr12656899ila.262.1604356610897;
+ Mon, 02 Nov 2020 14:36:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201025005916.64747-7-luka.kovacic@sartura.hr>
+ <20201025005916.64747-6-luka.kovacic@sartura.hr> <20201025005916.64747-5-luka.kovacic@sartura.hr>
+ <20201025005916.64747-4-luka.kovacic@sartura.hr> <20201025005916.64747-3-luka.kovacic@sartura.hr>
+ <20201025005916.64747-2-luka.kovacic@sartura.hr> <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201029180105.GD26053@duo.ucw.cz> <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
+ <7821443b-ddbc-fc92-b990-14d116dda853@ti.com>
+In-Reply-To: <7821443b-ddbc-fc92-b990-14d116dda853@ti.com>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Mon, 2 Nov 2020 23:36:39 +0100
+Message-ID: <CADZsf3atet+Y7xfCey=R6hk+hQ0Za5Om8PFD7KcS6m3fVaLLFA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] Add support for the IEI WT61P803 PUZZLE MCU
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Behun <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When VCNL4035 is enabled and IIO_BUFFER is disabled, it results in the
-following Kbuild warning:
+Hello,
 
-WARNING: unmet direct dependencies detected for IIO_TRIGGERED_BUFFER
-  Depends on [n]: IIO [=y] && IIO_BUFFER [=n]
-  Selected by [y]:
-  - VCNL4035 [=y] && IIO [=y] && I2C [=y]
+On Mon, Nov 2, 2020 at 7:30 PM Dan Murphy <dmurphy@ti.com> wrote:
+>
+> Hello
+>
+> On 11/1/20 3:56 AM, Luka Kovacic wrote:
+> > Hello Pavel,
+> >
+> > On Thu, Oct 29, 2020 at 7:01 PM Pavel Machek <pavel@ucw.cz> wrote:
+> >> Hi!
+> >>
+> >>> +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
+> >>> +Date:                September 2020
+> >>> +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> >>> +Description: (RO) Power status indicates the host platform power on method.
+> >>> +             Value mapping (bitwise list):
+> >>> +             0x80 - Null
+> >>> +             0x40 - Firmware flag
+> >>> +             0x20 - Power loss detection flag (powered off)
+> >>> +             0x10 - Power loss detection flag (AC mode)
+> >>> +             0x08 - Button power on
+> >>> +             0x04 - WOL power on
+> >>> +             0x02 - RTC alarm power on
+> >>> +             0x01 - AC recover power on
+> >> It would be nice to put this into standard place somewhere. Many
+> >> machines will want to expose this information.
+> > As this is specific to this microcontroller and to how it encodes
+> > these values, I don't see a need to change this.
+> > This isn't used anywhere else.
+> >
+> >> If not, at least spell out WoL, as it is not that common of acronym.
+> > Okay.
+>
+> WoL is a very common acronym especially in the networking space
 
-The reason is that VCNL4035 selects IIO_TRIGGERED_BUFFER without depending
-on or selecting IIO_BUFFER while IIO_TRIGGERED_BUFFER depends on
-IIO_BUFFER. This can also fail building the kernel.
+By WOL I meant Wake-on-LAN, I will spell out the whole acronym.
 
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
+>
+> But the overall this section does not make sense
+>
+> The description says that it indicates platform power on method but what
+> is NULL power on? There are flags for power loss detection.
 
-Fixes: 55707294c4eb ("iio: light: Add support for vishay vcnl4035")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209883
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/iio/light/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+I will clarify the value mapping and try to replicate some of these states
+so I can write a better description.
 
-diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
-index cade6dc0305b..33ad4dd0b5c7 100644
---- a/drivers/iio/light/Kconfig
-+++ b/drivers/iio/light/Kconfig
-@@ -544,6 +544,7 @@ config VCNL4000
- 
- config VCNL4035
- 	tristate "VCNL4035 combined ALS and proximity sensor"
-+	select IIO_BUFFER
- 	select IIO_TRIGGERED_BUFFER
- 	select REGMAP_I2C
- 	depends on I2C
--- 
-2.25.1
+>
+> Does the RTC mean that the processor real time clock woke up the uC? Or
+> that the internal RTC woke up the controller?
 
+These are all related to the platform as a whole.
+So the Marvell SoC and all of the required peripherals are turned on.
+
+>
+> And for the
+> /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status
+> what are those values?
+
+These values indicate whether the board has been shut down gracefully and
+whether it has been powered on automatically (when power came back) or by
+pressing the power button.
+I will also extend the documentation with the value mapping for this.
+
+>
+> It seems like some ABI's are documented well with formats and others are
+> just described without a format.
+>
+> For instance
+>
+> /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/version the format
+> of this version is not described but
+> /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/build_info is.
+
+I left out the version format descriptions as they are in the recognizable
+format and all of them are quite arbitrary (e.g. v1.000).
+
+>
+>
+> Dan
+>
+
+Kind regards,
+Luka
