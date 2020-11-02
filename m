@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2642A2637
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4B82A2639
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgKBIhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:37:54 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41080 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgKBIhx (ORCPT
+        id S1728250AbgKBIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:38:34 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:62137
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727953AbgKBIid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:37:53 -0500
-Received: by mail-wr1-f67.google.com with SMTP id s9so13496839wro.8;
-        Mon, 02 Nov 2020 00:37:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VVhomTmtvbzVx2bMdt893B87MhgFoZTd/hUdnA5vKvs=;
-        b=iU1NKoch1OxTbLmf5oMuh3ANi8vZk/9rEunXcDvI0dE38Zq3lwafrXGjT423q1pBqO
-         SOSPMCpyK8+YGeWdy6i49ddg18OoX7OZB7iveCf4ftyz394PVcLLB0nmZHHX5DWdRjcT
-         Dm86wnIUVXH9vfKelr+4VQ6gcp8Z29AhKamXVg1XKVmscN+3GmmktGzqDLTks/IRPVtu
-         shMoZ9cErBWETtZmPEBTI69bt/aAd7X47fmAduac0NNK/F7L3CE1BSWEIIUotby/DpHD
-         9sZuzOX7XBmfmikTn/qqQgbM+b4w4Z4cQhIRLF3pirwgApSXAA12XhlSbbXe58c/aynG
-         xflQ==
-X-Gm-Message-State: AOAM530mkqLn+jCwj5BBnfxVb+EqaLj9by24c7DKvNUsiTi1bafB96s9
-        iJCIvuxD7rJAzIUxR6M89XQcesjGW/UiqQ==
-X-Google-Smtp-Source: ABdhPJxhShAXHalgEE8zz8m3/7lalmV4v3jp8yxdlmvTTIji/b2ZykzbDkPbv3wXkVQTV/pRn41vjA==
-X-Received: by 2002:a05:6000:36f:: with SMTP id f15mr18603306wrf.78.1604306271958;
-        Mon, 02 Nov 2020 00:37:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g17sm21590203wrw.37.2020.11.02.00.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 00:37:50 -0800 (PST)
-Date:   Mon, 2 Nov 2020 09:37:49 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Wolfram Sang <wsa@kernel.org>, Andrzej Hajda <a.hajda@samsung.com>,
-        linux-i2c@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] i2c: exynos5: remove duplicate error message
-Message-ID: <20201102083749.GB6986@kozik-lap>
-References: <20201027214257.8099-1-martin@kaiser.cx>
- <20201101171807.8182-1-martin@kaiser.cx>
+        Mon, 2 Nov 2020 03:38:33 -0500
+X-IronPort-AV: E=Sophos;i="5.77,444,1596492000"; 
+   d="scan'208";a="363344944"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 09:38:31 +0100
+Date:   Mon, 2 Nov 2020 09:38:30 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Rain River <rain.1986.08.12@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>, kbuild-all@lists.01.org
+Subject: [PATCH] forcedeth: fix excluded_middle.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2011020936100.3077@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201101171807.8182-1-martin@kaiser.cx>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 06:18:05PM +0100, Martin Kaiser wrote:
-> platform_get_irq already prints an error message if the requested irq
-> was not found. Don't print another message in the driver.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
-> changes in v2
-> - split the patch in three parts
-> 
->  drivers/i2c/busses/i2c-exynos5.c | 1 -
->  1 file changed, 1 deletion(-)
+From: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Condition !A || A && B is equivalent to !A || B.
 
-Best regards,
-Krzysztof
+Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+
+Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
+CC: Denis Efremov <efremov@linux.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
+commit: b76f0ea013125358d1b4ca147a6f9b6883dd2493 coccinelle: misc: add excluded_middle.cocci script
+:::::: branch date: 7 hours ago
+:::::: commit date: 6 weeks ago
+
+ forcedeth.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/drivers/net/ethernet/nvidia/forcedeth.c
++++ b/drivers/net/ethernet/nvidia/forcedeth.c
+@@ -1043,8 +1043,7 @@ static int using_multi_irqs(struct net_d
+ 	struct fe_priv *np = get_nvpriv(dev);
+
+ 	if (!(np->msi_flags & NV_MSI_X_ENABLED) ||
+-	    ((np->msi_flags & NV_MSI_X_ENABLED) &&
+-	     ((np->msi_flags & NV_MSI_X_VECTORS_MASK) == 0x1)))
++	    ((np->msi_flags & NV_MSI_X_VECTORS_MASK) == 0x1))
+ 		return 0;
+ 	else
+ 		return 1;
