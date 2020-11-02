@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CA82A333D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E592A3345
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgKBSny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgKBSnx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:43:53 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E38C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:43:53 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so12400505qki.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
-        b=mlUxWUYczJS33fR/iEwt/7WalH3MyWBBWGTZPF3zH1DpEprnioF1fYaxu2gUKfLdKw
-         1WMZTm5lKn3mAjOa41gApSWGp+MEayPPgZTLRwmfUBDhuWArFWjsSASOHXFb+IfhiElE
-         SmHeEPC+CaEHSaIUeDgtVjphVl0ukNHXln5sE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
-        b=k692CoAwJraimqle2rUQJL0fUEquqV945JbL8TGUA0u7w+v+yi2ZipiJdZV8xWp0Zf
-         CeEjy3vguJOlI/xsJw54HDzM5U0s+23KZcollngXuSuDZCDCoJbxb9/FDgVBM8R4nETo
-         q982F6CAAlm3f2Jc1eqO/grWDt/C9R04+Cr7bBHPndlZqRWmy53KlLY6pg0BzGlHJNNR
-         erx8VsIQwLh+IuJNlt+i446woPqPMEmnRqe9KyPyAmjw2K9XiJPnh6C1CSqGNlErQkNt
-         8t9GnzzEzANCsw3L6eAB3cFY6F8p+neCOZ27HSHops+ngllcU0k8xwhxSPOIYq+m+1MU
-         SUeA==
-X-Gm-Message-State: AOAM532NAsUgb5KKVR27YZ14j5goBhn3wA62fjZw8OSzvK2f5ou6sWck
-        0yN8mN2VUL1yQ64vFO7ml7P93Q==
-X-Google-Smtp-Source: ABdhPJxhYLiuNq2MONOb69Pm6DrknVY7dG6jwS8GHGFR1nX80wOdGTryPPiTHxLvnkYi9O5IVdbUng==
-X-Received: by 2002:a05:620a:2144:: with SMTP id m4mr16144470qkm.269.1604342632790;
-        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id 71sm8719856qko.55.2020.11.02.10.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:43:51 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
-Message-ID: <20201102184351.GA595952@google.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
- <20201023195352.26269-7-mjeanson@efficios.com>
- <20201023211359.GC3563800@google.com>
- <20201026082010.GC2628@hirez.programming.kicks-ass.net>
- <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
+        id S1726137AbgKBSsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:48:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:36206 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725846AbgKBSsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:48:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CF47139F;
+        Mon,  2 Nov 2020 10:48:05 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C94AA3F719;
+        Mon,  2 Nov 2020 10:48:03 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: [PATCH v4 0/3] sched: Get rid of select_task_rq()'s sd_flag parameter
+Date:   Mon,  2 Nov 2020 18:45:11 +0000
+Message-Id: <20201102184514.2733-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:28:07AM -0400, Mathieu Desnoyers wrote:
-> ----- On Oct 26, 2020, at 4:20 AM, Peter Zijlstra peterz@infradead.org wrote:
-> 
-> > On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
-> >> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
-> >> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >> > 
-> >> > Considering that tracer callbacks expect RCU to be watching (for
-> >> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
-> >> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
-> >> > no point in using SRCU anymore given that rcuidle tracepoints need to
-> >> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
-> >> > tracepoints for rcuidle tracepoints.
-> >> 
-> >> High level question:
-> >> 
-> >> IIRC, doing this increases overhead for general tracing that does not use
-> >> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
-> >> tracepoints. I remember adding SRCU because of this reason.
-> >> 
-> >> Can the 'rcuidle' information not be pushed down further, such that perf does
-> >> it because it requires RCU to be watching, so that it does not effect, say,
-> >> trace events?
-> > 
-> > There's very few trace_.*_rcuidle() users left. We should eradicate them
-> > and remove the option. It's bugs to begin with.
-> 
-> I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
-> API and fixing all callers to ensure they trace from a context where RCU is
-> watching would simplify instrumentation of the Linux kernel, thus making it harder
-> for subtle bugs to hide and be unearthed only when tracing is enabled. This is
-> AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
-> think it is a good thing.
-> 
-> So if we consider this our target, and that the current state of things is that
-> we need to have RCU watching around callback invocation, then removing the
-> dependency on SRCU seems like an overall simplification which does not regress
-> feature-wise nor speed-wise compared with what we have upstream today. The next
-> steps would then be to audit all rcuidle tracepoints and make sure the context
-> where they are placed has RCU watching already, so we can remove the tracepoint
-> rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
-> from the tracepoint code.
-> 
-> This is however beyond the scope of the proposed patch set.
+Hi folks,
 
-You are right, it doesn't regress speedwise - I got confused since the code
-was modified to call rcu_enter_irqson() even for the rcuidle case (which I
-had avoided when I added SRCU). So in current code, SRCU is kind of
-pointless. I think keep the patch in the series.
+This is v4 of that one series I've had stashed for a while [1]. I haven't
+revisited the outstanding discussion bits, the most interesting part being that
+we could get rid of the for_each_domain() loop in select_task_rq_fair() (or at
+the very least simplify it). In any case, the first few patches are IMO a decent
+cleanup on their own, hence me resubmitting them. 
 
-thanks,
+Links
+=====
 
- - Joel
+[1]: https://lore.kernel.org/lkml/20200415210512.805-1-valentin.schneider@arm.com/
+
+Revisions
+=========
+
+v3 -> v4
+--------
+o Dropped want_affine related patches
+o Made WF_{TTWU, FORK, EXEC} and SD_BALANCE_{WAKE, FORK, EXEC} share a nibble
+  (Peter)
+
+v2 -> v3
+--------
+o Rebased on top of v5.7-rc1 (didn't re-run performance tests)
+o Collected Reviewed-by (Dietmar)
+o Updated changelog of 3/9 (Dietmar)
+
+v1 -> v2
+--------
+o Removed the 'RFC' tag
+o Made the sd_flags syctl read-only
+o Removed the SD_LOAD_BALANCE flag
+o Cleaned up ugly changes thanks to the above
+
+Valentin Schneider (3):
+  sched: Add WF_TTWU, WF_EXEC wakeup flags
+  sched: Remove select_task_rq()'s sd_flag parameter
+  sched/fair: Dissociate wakeup decisions from SD flag value
+
+ kernel/sched/core.c      | 10 +++++-----
+ kernel/sched/deadline.c  |  4 ++--
+ kernel/sched/fair.c      | 13 +++++++------
+ kernel/sched/idle.c      |  2 +-
+ kernel/sched/rt.c        |  4 ++--
+ kernel/sched/sched.h     | 23 +++++++++++++++--------
+ kernel/sched/stop_task.c |  2 +-
+ 7 files changed, 33 insertions(+), 25 deletions(-)
+
+--
+2.27.0
 
