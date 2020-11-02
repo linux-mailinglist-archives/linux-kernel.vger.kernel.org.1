@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60E62A2F85
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FAF2A2F88
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgKBQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:18:36 -0500
-Received: from mail-vi1eur05on2075.outbound.protection.outlook.com ([40.107.21.75]:31195
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726587AbgKBQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:18:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O+/VsncUlsaIGFPd/96na8iu+5rWBr7pqzF3S6De345nlcw573FKSv5f9XthXRstvxnIzMggQl0mfRfy6dQ/H+HASruD2eIKjbsqb2aWqhwQ3nIU2EcS72bXoNGY9VdOjsfkgzTViYw99eOnAXg6VDxNx5vb4PCPYyaFwgfWzvmZz75gNC+MvNck+AzdJQ+s/oT2NEiWHvQO+MG0IihjjyOpKpkYy8tUSykJBfOUZAmdCoC2+QcJt8uPCD2jhqRF8dSt/8skQ+npoJMveG+Z7VsqwXjzTXNT4n6PARiYW5uZDvbDdrAAivS9Ts6D3hOW779R6qzQH7Jn9IzcstoJww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQucECVRfJAiUp25lU24CH6Tl5fSUwJsWHxeid69ixk=;
- b=PMcYKArHds22Mj6lfY3oeK5NInY8+IDxqXsVxVxqKPr28NhNEk8kMzUhQXtYLKuhMq4iV0DPnqiw0UYDRmr/XOvKtHi8A2Yi1sQJg9bht0OeRn4q4RU1sDiZbwJL8tgEu/Y9aE6wJyTtNGzD5fqZ62B/NGPR66myTY/YFCWt+17jjleow2hb2+coCYKSeFy0WSnMbg74BMUcwtqSOdR7vznznSMWfRooz19aNKfVwH0KNumpwQXuVBjGoiFAdvgbSRk5T0OAgONIrhSruIRNq2PJe7lKcgFIrjpxzkHjI1lnyuTmhzhnJVnMWZD2yc7HpO5gxp/VSl5PLz168dqUEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CQucECVRfJAiUp25lU24CH6Tl5fSUwJsWHxeid69ixk=;
- b=Db/sB/6RU6mDITGxBjrIJ8fO7SKjr++74mmL3tBLdpgkOs26p8KpFQlCUW+CmWRQvb4WG0oh+n34ehRRPFL5fL/oBiH2FLtk79EO1tSGpFKVq4ze6sdcmEVTjR9ECPA9keq7LZ8mIIruphd9BjZ/AdrwkIXmJ/mp8yAsG1Dkyhw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12) by VI1PR04MB5517.eurprd04.prod.outlook.com
- (2603:10a6:803:d9::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
- 2020 16:18:30 +0000
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 16:18:29 +0000
-From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-To:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Viorel Suman <viorel.suman@nxp.com>
-Subject: [PATCH] ASoC: fsl_xcvr: fix break condition
-Date:   Mon,  2 Nov 2020 18:18:10 +0200
-Message-Id: <20201102161810.902464-1-viorel.suman@oss.nxp.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [5.12.106.221]
-X-ClientProxiedBy: VI1PR02CA0048.eurprd02.prod.outlook.com
- (2603:10a6:802:14::19) To VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12)
+        id S1726881AbgKBQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgKBQTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:19:01 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9C3C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:19:01 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id w25so7746017vsk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:19:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ucUZbGTTJZ2A+pmmh62lxQnSfQrQByyqZCyVaS0GnE=;
+        b=nS+eIPFzs8lalHYmoDlSPmIimpnifAzfi+4EBIILxr4b0LU/HWYjA/0P/PZ15lFWF+
+         1rpF35AW43xqYxc4dIdl8bDaBRcrGYzgOCOZ1SnUBZVePCe38dZHgiJ+ww7nIZwdVh2v
+         2NWHhkzk5YC9dM6gXQvbBQeu7AVVzv8/SoLyc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ucUZbGTTJZ2A+pmmh62lxQnSfQrQByyqZCyVaS0GnE=;
+        b=hK36TSZKeIo7IKWKVyXnyNOkBwmm+FftgLKmaZ+xOddB139VqgyxPiRVHpETEaAbGu
+         bZsCXmWxCMwXNpPIIgJCwaRNCxK3k0rZEUlzaAJCJCdcyscF4+AoFTbrbG/96ddWeJn2
+         njnpQ1WHq/VcfQSAKvNQgCh1XD6EFtK/HKv31MgYlGTaLAGHMnMqqwlwqlUBIJu/35Hk
+         cIxFn0deZyBrmnxXLigcTozvwjEm7V4rKxbT2M8+Fr/RSHuMtLEggbBbzyF2NFCeqvss
+         DLmAJjE3SFnGawyYHGCAKhxBpdN+t+tmJNxywFAvmF1/H8JCA6MldSdhlXP5dkK+O/ts
+         oLAw==
+X-Gm-Message-State: AOAM531XRBHCR42fkBRuFu6lZitIaN7OYfwlqzItm93FTs7z5FnFYDao
+        wDkhU+2MtJ0ix6nYwPdOVJmm9zoIb2dqbw==
+X-Google-Smtp-Source: ABdhPJwY4LVqfHKEHY1yWhF4KMsq0EGK6w5lf2vExz65Kcj0w33hgU+U65KMPqXwYB9HLXaG436Sag==
+X-Received: by 2002:a67:f716:: with SMTP id m22mr15880070vso.12.1604333939946;
+        Mon, 02 Nov 2020 08:18:59 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id z200sm1872402vkd.52.2020.11.02.08.18.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 08:18:59 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id e3so7759603vsr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:18:58 -0800 (PST)
+X-Received: by 2002:a67:ef98:: with SMTP id r24mr1060059vsp.37.1604333938604;
+ Mon, 02 Nov 2020 08:18:58 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (5.12.106.221) by VI1PR02CA0048.eurprd02.prod.outlook.com (2603:10a6:802:14::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22 via Frontend Transport; Mon, 2 Nov 2020 16:18:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1d589a03-ab26-44a4-9000-08d87f4aef77
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5517:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5517A193B9DBF14A27A5C1DFD3100@VI1PR04MB5517.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l3cAyd6fULIaxPeSizHExz2tnDAgbuCCGNRaJdN/pywFuxcwj98wi1hQR5M0rSzOdlYMmLkAFNkOJNMu18PMoGCF+e4h4ynAl5t9RUj9+ZkDRlEf4nZK6aoNJqsNCE9VEmKOMJlkvq+krnfTSkG1ej1X+HG/Y1KsIlth0ohZQXaRhfTDSg/SgGMq/DjdS4PQrfbI4s82VkiCsgobCem+M3Jkl+nSK/jhK/rK+gBb7dMq1i3VavFYMX09CBSEJHvMqyMpMNN4FdpUSZOad058TbMRZO8ZJHlvJZYZz7NXDBSv08Wboqn953O0YmgwVA/phB/hBbuYM+pPyxvULOTSRJUCu5ZY/vIq3vEBm5r1Mpiqdu0GlzfAAGLLXBVdsH0TrgWVTUGQT+YOybDp09yi9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(69590400008)(26005)(956004)(186003)(83380400001)(2616005)(110136005)(66476007)(66946007)(478600001)(66556008)(16526019)(316002)(6506007)(4326008)(52116002)(8676002)(6486002)(6512007)(86362001)(8936002)(4744005)(6666004)(2906002)(5660300002)(7416002)(1076003)(921003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 4hweiy+ZCeRCV0hpTv09ywtj+D1NLx9vvNeLMEHfesh1Xw5KNrMwwKrRHI3RnQTK3ywFcAtkjxCJjyBoJWTZwc0244W6R72CPL1tHedzfrymQAHRL8NsvslRIgQHnPrT2ytm9ivoeohGDG2eEwrY3Jv4rlxJyPXQUWm8agVzzFTbVhlmyX5/PUIw/t44x+o0qp/lZX1vGkQxoHlFWevSUophu11oZWrrQNL+lRpU1UB1nsfQyO5jbeZQGEW8ZSv/jTw8gwRKA1PkPzqWhQfzpnop5CZkPsp0kEMTEoc1A5497r0XOzKNF5qO4YJjIR0bARTW8eaNrashuSoZ7BVGSZ/whqxHDXjGYgaRMxZVpILHnSNAslGJ6GmPCiOCG4PP0CIu7zYFuBCWdbJmEyzfLgeKZmEOiErLyJeFL8xXJWS4mC9Q8nDOy08qaj+rt/en2SJhbVHC9Wm0CySRF7WM+Uz92hn9MIhEycHenBNz3zMRiEGf367H3OuVIEk5gT2CibaCJP03CMbr9aW5rGRAx/uJjwbFQQsrMMpKzrIiMQMhu97NsECAN6RyGN56LX/uLVWHF0gnIPEN6T2RJHbEpKmvRO1CbLSAXp49DpR4gZtF+o3yHilgC/8PmO1yISIyiTD/+LIdyYNZxRmVpfnefg==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d589a03-ab26-44a4-9000-08d87f4aef77
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 16:18:29.6981
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +XvervRLink86RRMOrbDVnmPbNWmNZjYNCwKhQoVvETDkxws25wuh8MMO0ddrmaxBts4WfGu41Z/bXjPpnjlRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5517
+References: <20201030011738.2028313-1-swboyd@chromium.org> <20201030011738.2028313-2-swboyd@chromium.org>
+In-Reply-To: <20201030011738.2028313-2-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 2 Nov 2020 08:18:47 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VHvL4A3U==CECbgkfvRcy51v4cSBjodvRGA2463L+CZQ@mail.gmail.com>
+Message-ID: <CAD=FV=VHvL4A3U==CECbgkfvRcy51v4cSBjodvRGA2463L+CZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] drm/bridge: ti-sn65dsi86: Combine register
+ accesses in ti_sn_aux_transfer()
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sean Paul <seanpaul@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viorel Suman <viorel.suman@nxp.com>
+Hi,
 
-The break condition copied by mistake as same
-as loop condition in the previous version, but must
-be the opposite. So fix it.
+On Thu, Oct 29, 2020 at 6:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> These register reads and writes are sometimes directly next to each
+> other in the register address space. Let's use regmap bulk read/write
+> APIs to get the data with one transfer instead of multiple i2c
+> transfers. This helps cut down on the number of transfers in the case of
+> something like reading an EDID where we read in blocks of 16 bytes at a
+> time and the last for loop here is sending an i2c transfer for each of
+> those 16 bytes, one at a time. Ouch!
+>
+> Changes in v2:
+>  - Combined AUX_CMD register write
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
----
- sound/soc/fsl/fsl_xcvr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The change from v1 to v2 makes me slightly nervous, though I guess
+it's fine.  Specifically, all the examples in the datasheet show
+programming the CMD before the ADDR and LEN.  This change will make it
+programmed after.  Since there's a separate START bit I guess it's OK,
+though.  Nothing in the datasheet explicitly says that the order in
+the examples is the only order that will work...
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index c055179e6d11..2a28810d0e29 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -247,7 +247,7 @@ static int fsl_xcvr_ai_write(struct fsl_xcvr *xcvr, u8 reg, u32 data, bool phy)
- 	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_TOG, idx);
- 
- 	ret = regmap_read_poll_timeout(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL, val,
--				       (val & idx) != ((val & tidx) >> 1),
-+				       (val & idx) == ((val & tidx) >> 1),
- 				       10, 10000);
- 	if (ret)
- 		dev_err(dev, "AI timeout: failed to set %s reg 0x%02x=0x%08x\n",
--- 
-2.26.2
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
