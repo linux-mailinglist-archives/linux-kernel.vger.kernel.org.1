@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9082A368E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569822A3692
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgKBWav convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 17:30:51 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:42979 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725785AbgKBWau (ORCPT
+        id S1726165AbgKBWfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKBWfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:30:50 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-3-j6bXPPu-Nl6LRhxQXu1CQQ-1; Mon, 02 Nov 2020 22:30:46 +0000
-X-MC-Unique: j6bXPPu-Nl6LRhxQXu1CQQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 2 Nov 2020 22:30:45 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 2 Nov 2020 22:30:45 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Greg KH' <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexdeucher@gmail.com>
-CC:     Deepak R Varma <mh12gx2825@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Maling list - DRI developers" <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        "Daniel Vetter" <daniel.vetter@ffwll.ch>
-Subject: RE: [PATCH] drm/amdgpu: do not initialise global variables to 0 or
- NULL
-Thread-Topic: [PATCH] drm/amdgpu: do not initialise global variables to 0 or
- NULL
-Thread-Index: AQHWsVQzuHsYTLqYC0GrzZhKR8oU56m1aalA
-Date:   Mon, 2 Nov 2020 22:30:45 +0000
-Message-ID: <d415d3297e1e4475adb4e1093fea5aca@AcuMS.aculab.com>
-References: <20201102184147.GA42288@localhost>
- <CADnq5_OnA3T_p4pTEOpoqQ=NZyso2VFoDiOHu=+h7dKOeKHq-A@mail.gmail.com>
- <20201102201040.GA2433494@kroah.com>
-In-Reply-To: <20201102201040.GA2433494@kroah.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 2 Nov 2020 17:35:01 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E4DC061A47
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 14:35:00 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id k3so2318206otp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 14:35:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=giKh0EftA82tuJhV/2S7wBVQ3F/DRKViWRoogNmdeAs=;
+        b=bMjC70YDFNzxoYlzw3H4miSI+md12fBuXXRV+rwrxZNgxWyRnMyTM+RWdzZ6Ttz749
+         qIIdxenAT6JyLXCwFjJitCGNE6NtAlVOcEEtfTUjNVkaVwsAoeI3RaqPS4D/rQ41mRK8
+         z3nwRyBpd8Ml+jwQDxOK/7nlBFt0Djs9ILL65ZgnvMynhhR27O398RD3vR5DnLjyu/Ie
+         0deUipDZvLwmfe+gEyooVVrypE5oA2lbHsfTFWrWkiEIJWAq+v5z3MAKaUgfd1hrZSN1
+         bHZcEhtLfdvM6dOu16hu7EtkxCguPo4OJbabmtS2AIJDZ6yMJDWAD2EOTlApdxVN4KJz
+         5jsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=giKh0EftA82tuJhV/2S7wBVQ3F/DRKViWRoogNmdeAs=;
+        b=a0JXvRnAHL+TVTLZ2CSleAam44uSNLtpBhZga4DGYyJvTKSP9/eESwbQARmpLJqjGx
+         2PXcYk8jHt+FzE0VcxfG8YZQsSRB71ypb7+dooja0ctbAr0mrY4jCBoiNl8izwbWWd89
+         Z7dtRkrxmOELjpI8Eww4oEANvrmIghD5I6E4OlVaioZrL6emfulR9KtL79NbSrQBz3Pi
+         xpIkz8LOfpU/n6xXGuHb874xj8SeMBdBeVYabyG/kZHSr69ox00k8xK+PTPezDOiyrli
+         X9f1vjfQKR/NxRBNuNnxB84wS3GhELiXW5O4wpewRBsINboLu+rWm5qO+pjasrtFglvY
+         vDRA==
+X-Gm-Message-State: AOAM532gIsogSVbPEUB7A0pvQid5QVaB8EN3Wm3mmInqkjpBck5F5csb
+        7WI6FcI5bBmVhzZoddWgj91DxQ==
+X-Google-Smtp-Source: ABdhPJwkR59N/fd3voUgFTNORY4EDE77itPKKZtqgX4oFS6zefiiLytSDfijNYsgP9sr1OFQXdN3CA==
+X-Received: by 2002:a9d:5d15:: with SMTP id b21mr13973004oti.25.1604356499596;
+        Mon, 02 Nov 2020 14:34:59 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b16sm3929519oti.4.2020.11.02.14.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 14:34:58 -0800 (PST)
+Date:   Mon, 2 Nov 2020 16:34:57 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Evan Green <evgreen@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] nvmem: qfprom: Avoid untouchable regions
+Message-ID: <20201102223457.GA65067@builder.lan>
+References: <20201029002827.1729915-1-evgreen@chromium.org>
+ <0a7d86ee-96b0-eff8-e315-ff65086661ee@linaro.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a7d86ee-96b0-eff8-e315-ff65086661ee@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg KH
-> Sent: 02 November 2020 20:11
+On Mon 02 Nov 09:58 CST 2020, Srinivas Kandagatla wrote:
+
 > 
-> On Mon, Nov 02, 2020 at 02:43:45PM -0500, Alex Deucher wrote:
-> > On Mon, Nov 2, 2020 at 1:42 PM Deepak R Varma <mh12gx2825@gmail.com> wrote:
-> > >
-> > > Initializing global variable to 0 or NULL is not necessary and should
-> > > be avoided. Issue reported by checkpatch script as:
-> > > ERROR: do not initialise globals to 0 (or NULL).
-> >
-> > I agree that this is technically correct, but a lot of people don't
-> > seem to know that so we get a lot of comments about this code for the
-> > variables that are not explicitly set.  Seems less confusing to
-> > initialize them even if it not necessary.  I don't have a particularly
-> > strong opinion on it however.
 > 
-> The kernel coding style is to do it this way.  You even save space and
-> time by doing it as well :)
+> On 29/10/2020 00:28, Evan Green wrote:
+> > Certain fuses are protected by the XPU such that the AP cannot
+> > access them. Attempting to do so causes an SError. Introduce an
+> > SoC-specific compatible string, and introduce support into the
+> > nvmem core to avoid accessing specified regions. Then use those
+> > new elements in the qfprom driver to avoid SErrors when usermode
+> > accesses certain registers.
+> > 
+> > Changes in v3:
+> >   - Fixed example (Doug and rob-bot)
+> >   - Use min()/max() macros instead of defining my own (Doug)
+> >   - Comment changes to indicate sorting (Doug)
+> >   - Add function to validate keepouts are proper (Doug)
+> > 
+> > Changes in v2:
+> >   - Add other soc compatible strings (Doug)
+> >   - Fix compatible string definition (Doug)
+> >   - Introduced keepout regions into the core (Srini)
+> >   - Use new core support in qfprom (Srini)
+> > 
+> > Evan Green (4):
+> >    dt-bindings: nvmem: Add soc qfprom compatible strings
+> >    arm64: dts: qcom: sc7180: Add soc-specific qfprom compat string
+> >    nvmem: core: Add support for keepout regions
+> >    nvmem: qfprom: Don't touch certain fuses
+> 
+> Except dts patch, I have applied all the patches, dts patch should go via
+> arm-soc tree!
+> 
 
-Uninitialised globals end up as 'named common' (variables that are
-their own code section - from FORTRAN) until the final link puts
-them into the .bss.
-Globals initialised to 0 go into the .bss of the object file
-being created.
+And I've picked the dts patch.
 
-So both end up in the final .bss.
+Thank you,
+Bjorn
 
-If the code goes into a module you aren't allowed 'common' data
-in a module to every global must be initialised.
-
-I'm surprised checkpatch complains.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> 
+> --srini
+> 
+> > 
+> >   .../bindings/nvmem/qcom,qfprom.yaml           |  17 +-
+> >   arch/arm64/boot/dts/qcom/sc7180.dtsi          |   2 +-
+> >   drivers/nvmem/core.c                          | 153 +++++++++++++++++-
+> >   drivers/nvmem/qfprom.c                        |  30 ++++
+> >   include/linux/nvmem-provider.h                |  17 ++
+> >   5 files changed, 211 insertions(+), 8 deletions(-)
+> > 
