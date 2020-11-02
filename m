@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E639F2A3689
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9082A368E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgKBW3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbgKBW3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:29:33 -0500
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0B602084C;
-        Mon,  2 Nov 2020 22:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604356173;
-        bh=vgrwy0iif/zfUH5W0QwiDlRFpUGSrjVFDagmDSNOjTk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KhMDkz4Rm+nHJ7kxJJgwy3rM/BDg0xMRZbw+jzPrroi5aLZzXqPofqhUkjAk+26m9
-         wIMOHeZpCsdOVbpt8Zxwiw3DU+rFnqETl8LzDGESn0xtTAJgix6STw1iDsNYjXoeUO
-         sLil+xiyxoGCRRwlye7hMWFCwdMtEwKFeANSK0K0=
-Received: by mail-wr1-f45.google.com with SMTP id s9so16363213wro.8;
-        Mon, 02 Nov 2020 14:29:32 -0800 (PST)
-X-Gm-Message-State: AOAM530elnjKg/a2GnNd1Q5qnX9m7rhyOO0Uj2hh6cqyh8iLu2gI9GYo
-        MUvElyeOAwtaKMTzZGx6tEETntLFoyZdvS4PnS0=
-X-Google-Smtp-Source: ABdhPJzNva6GR+sZYSg7O8WrzaYdrgPHJcMRi6tR4zAYJKbScVeSsRIfBeLJT2A1pExuYy1QE1Ai59H9xNPMMAd7bww=
-X-Received: by 2002:a5d:54c8:: with SMTP id x8mr21719103wrv.286.1604356171388;
- Mon, 02 Nov 2020 14:29:31 -0800 (PST)
+        id S1726460AbgKBWav convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 17:30:51 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:42979 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725785AbgKBWau (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 17:30:50 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-3-j6bXPPu-Nl6LRhxQXu1CQQ-1; Mon, 02 Nov 2020 22:30:46 +0000
+X-MC-Unique: j6bXPPu-Nl6LRhxQXu1CQQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 2 Nov 2020 22:30:45 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 2 Nov 2020 22:30:45 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Greg KH' <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexdeucher@gmail.com>
+CC:     Deepak R Varma <mh12gx2825@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "Maling list - DRI developers" <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        "Daniel Vetter" <daniel.vetter@ffwll.ch>
+Subject: RE: [PATCH] drm/amdgpu: do not initialise global variables to 0 or
+ NULL
+Thread-Topic: [PATCH] drm/amdgpu: do not initialise global variables to 0 or
+ NULL
+Thread-Index: AQHWsVQzuHsYTLqYC0GrzZhKR8oU56m1aalA
+Date:   Mon, 2 Nov 2020 22:30:45 +0000
+Message-ID: <d415d3297e1e4475adb4e1093fea5aca@AcuMS.aculab.com>
+References: <20201102184147.GA42288@localhost>
+ <CADnq5_OnA3T_p4pTEOpoqQ=NZyso2VFoDiOHu=+h7dKOeKHq-A@mail.gmail.com>
+ <20201102201040.GA2433494@kroah.com>
+In-Reply-To: <20201102201040.GA2433494@kroah.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201026213040.3889546-1-arnd@kernel.org> <20201026213040.3889546-8-arnd@kernel.org>
- <87tuu7ohbo.fsf@codeaurora.org> <47b04bd1da38a2356546284eb3576156899965de.camel@sipsolutions.net>
-In-Reply-To: <47b04bd1da38a2356546284eb3576156899965de.camel@sipsolutions.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 2 Nov 2020 23:29:15 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0_6zigntTWQs2vhJNwagmYyVHPQE2HggVVTmn+2u8siw@mail.gmail.com>
-Message-ID: <CAK8P3a0_6zigntTWQs2vhJNwagmYyVHPQE2HggVVTmn+2u8siw@mail.gmail.com>
-Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc warning
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 7:01 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> On Mon, 2020-11-02 at 18:26 +0200, Kalle Valo wrote:
-> > Arnd Bergmann <arnd@kernel.org> writes:
-> > > From: Arnd Bergmann <arnd@arndb.de>
+From: Greg KH
+> Sent: 02 November 2020 20:11
+> 
+> On Mon, Nov 02, 2020 at 02:43:45PM -0500, Alex Deucher wrote:
+> > On Mon, Nov 2, 2020 at 1:42 PM Deepak R Varma <mh12gx2825@gmail.com> wrote:
+> > >
+> > > Initializing global variable to 0 or NULL is not necessary and should
+> > > be avoided. Issue reported by checkpatch script as:
+> > > ERROR: do not initialise globals to 0 (or NULL).
 > >
-> > Isn't there a better way to handle this? I really would not want
-> > checking for GCC versions become a common approach in drivers.
-> >
-> > I even think that using memcpy() always is better than the ugly ifdef.
->
-> If you put memcpy() always somebody will surely go and clean it up to
-> use ether_addr_copy() soon ...
->
-> That said, if there's a gcc issue with ether_addr_copy() then how come
-> it's specific to this place?
+> > I agree that this is technically correct, but a lot of people don't
+> > seem to know that so we get a lot of comments about this code for the
+> > variables that are not explicitly set.  Seems less confusing to
+> > initialize them even if it not necessary.  I don't have a particularly
+> > strong opinion on it however.
+> 
+> The kernel coding style is to do it this way.  You even save space and
+> time by doing it as well :)
 
-I have not been able to figure this out, hopefully some gcc developer
-eventually looks at the bug in more detail.
+Uninitialised globals end up as 'named common' (variables that are
+their own code section - from FORTRAN) until the final link puts
+them into the .bss.
+Globals initialised to 0 go into the .bss of the object file
+being created.
 
-Presumably it has something to do with the specific way the five levels
-of structures are nested here, and how things get inlined in this driver.
-If the bug happened everywhere, it would likely have been found and
-fixed earlier.
+So both end up in the final .bss.
 
-       Arnd
+If the code goes into a module you aren't allowed 'common' data
+in a module to every global must be initialised.
+
+I'm surprised checkpatch complains.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
