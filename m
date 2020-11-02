@@ -2,79 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9142A3322
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03E32A3325
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgKBSjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S1726189AbgKBSlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKBSjp (ORCPT
+        with ESMTP id S1725797AbgKBSlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:39:45 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001A8C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:39:44 -0800 (PST)
-Received: from zn.tnic (p200300ec2f086a00fa513bf50e741c79.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6a00:fa51:3bf5:e74:1c79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DC75C1EC03E3;
-        Mon,  2 Nov 2020 19:39:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604342383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FLP70qoh5kAmrF/6KuJfhAOFXzyl2bzl5a8ANq8xUcw=;
-        b=apXaaFrUnh9TxIUo+HZFvSLhb3h+/yifgZDEqYrXVDGaI+Oj34+jd5NXyLS0wiUPLvEuop
-        a5LJAvXx28+fzLzZvl2GXD1iSRrg/OoJTjk9pT2OJZbBbwjkqjyHuh5Qjf/RvdqlVkDQ8d
-        YtGk9YxD+OjkYWC5m7nkO1RAG3N3qL8=
-Date:   Mon, 2 Nov 2020 19:39:38 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: How should we handle illegal task FPU state?
-Message-ID: <20201102183938.GA10749@zn.tnic>
-References: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
- <71682bce-a925-d3bd-18ef-d2e4eb8ebc8e@intel.com>
- <20201001205857.GH7474@linux.intel.com>
- <f1835c1f-31bc-16a9-ffa5-896b1aeb895a@intel.com>
- <CALCETrWswWdgXO2J6nRjXW_4JRsK1TzzVZ62EDsF+d_79O+6Sw@mail.gmail.com>
+        Mon, 2 Nov 2020 13:41:55 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FE5C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:41:55 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id h6so11550817pgk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:41:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=uX2j6BTsDsDmpfeekKFS6duLUjm424lsGMqXT4y60ag=;
+        b=rMqgtwuy5gD+utEZVzx4U+OKxKZfzgAso2fI0Yr74Ryq8G65Frfn8pbfHJGvou9bpj
+         Tyr9mGQeXJvFwGgx0kkoNsNbrWfqOYrxKlCEdnDPfXxb/o2IAkkMudeNW40oeLl0zqVQ
+         PS/DMw1hMbXNNYNxolpYZMGp68QDxM6LCuRWgf7XMoKr/RYUByZLoVPyc3OplZV43zTo
+         0YwgOq5ZGArljQ9pobSQz1RJCVPceQ4Jng/w4ycgeNRCYEaO34wS7pBA+du948kHUxnS
+         7od99l/cs9GhooDEaI58YHPUfMQBsxs/KfkstQg2B+p22G4jFDbFedq9r/uy4Fipo4Qf
+         Xaxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=uX2j6BTsDsDmpfeekKFS6duLUjm424lsGMqXT4y60ag=;
+        b=IQ3LPq1fFjngOplJP5JoTN6RnKP0PMJNQH9M/74sTs53hgwE25SjbxfwDM6xpROUpJ
+         tJeequz7CfsooMGse+ZjWWwvSFSjXdv1wCxQQjQLCCfDj545VlCZfRrMxC0tmXq1Tt2e
+         ry/ZYPQzzn7x/dGYsiHncaMmvUHRkWRFhtlx06hCL1t3WAHm80jYldoKEzzMdmhfBfiU
+         7a1X/nDeUtW5+4sEqoJNBNtAmQ1L6U5L/8f2QMbmrBfscn6NfeXJc1vDnimGwDlEpbfv
+         kXULnVeZyrgPIrz+QT8ffRnO3gR8PmuDxz7i4HsnayNIkpbM4nUBFgSf9CaZpqoD+/6o
+         RBLg==
+X-Gm-Message-State: AOAM53165LmJ2dX/v6ozRXJRq8+Z3mmYWVSTZVlXm+96z7yl2INgZfOf
+        2y5XVlcYEhXpLeviWa/tqZQ=
+X-Google-Smtp-Source: ABdhPJxVTiek04noTjU9GhU1+83S9V6Fm2v8nawdUGGy18yNrKkctDFNKL3bNrq+vflGQ1SHFhJt7g==
+X-Received: by 2002:a17:90b:ec9:: with SMTP id gz9mr2068967pjb.105.1604342514622;
+        Mon, 02 Nov 2020 10:41:54 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id v24sm13205004pgi.91.2020.11.02.10.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 10:41:54 -0800 (PST)
+Date:   Tue, 3 Nov 2020 00:11:47 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, gregkh@linuxfoundation.org,
+        melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH] drm/amdgpu: do not initialise global variables to 0 or NULL
+Message-ID: <20201102184147.GA42288@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrWswWdgXO2J6nRjXW_4JRsK1TzzVZ62EDsF+d_79O+6Sw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 03:04:48PM -0700, Andy Lutomirski wrote:
-> On Thu, Oct 1, 2020 at 2:50 PM Dave Hansen <dave.hansen@intel.com> wrote:
-> > I'm not sure we should ever keep running userspace after an XRSTOR*
-> > failure.  For MPX, this might have provided a nice, additional vector
-> > for an attacker to turn off MPX.  Same for pkeys if we didn't correctly
-> > differentiate between the hardware init state versus the "software init"
-> > state that we keep in init_task.
-> >
-> > What's the advantage of letting userspace keep running after we init its
-> > state?  That it _might_ be able to recover?
-> 
-> I suppose we can kill userspace and change that behavior only if
-> someone complains.  I still think it would be polite to try to dump
-> core, but that could be tricky with the current code structure.  I'll
-> try to whip up a patch.  Maybe I'll add a debugfs file to trash MXCSR
-> for testing.
+Initializing global variable to 0 or NULL is not necessary and should
+be avoided. Issue reported by checkpatch script as:
+ERROR: do not initialise globals to 0 (or NULL).
 
-Just for the record, I like this: safe and simple. We can always do
-smarter shenanigans later, if at all needed, that is.
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 46 ++++++++++++-------------
+ drivers/gpu/drm/amd/amdgpu/atom.c       |  4 +--
+ 2 files changed, 25 insertions(+), 25 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index 8ab6126ff70c..6de94c46bc91 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -94,16 +94,16 @@
+ #define KMS_DRIVER_MINOR	40
+ #define KMS_DRIVER_PATCHLEVEL	0
+ 
+-int amdgpu_vram_limit = 0;
+-int amdgpu_vis_vram_limit = 0;
++int amdgpu_vram_limit;
++int amdgpu_vis_vram_limit;
+ int amdgpu_gart_size = -1; /* auto */
+ int amdgpu_gtt_size = -1; /* auto */
+ int amdgpu_moverate = -1; /* auto */
+-int amdgpu_benchmarking = 0;
+-int amdgpu_testing = 0;
++int amdgpu_benchmarking;
++int amdgpu_testing;
+ int amdgpu_audio = -1;
+-int amdgpu_disp_priority = 0;
+-int amdgpu_hw_i2c = 0;
++int amdgpu_disp_priority;
++int amdgpu_hw_i2c;
+ int amdgpu_pcie_gen2 = -1;
+ int amdgpu_msi = -1;
+ char amdgpu_lockup_timeout[AMDGPU_MAX_TIMEOUT_PARAM_LENGTH];
+@@ -113,43 +113,43 @@ int amdgpu_aspm = -1;
+ int amdgpu_runtime_pm = -1;
+ uint amdgpu_ip_block_mask = 0xffffffff;
+ int amdgpu_bapm = -1;
+-int amdgpu_deep_color = 0;
++int amdgpu_deep_color;
+ int amdgpu_vm_size = -1;
+ int amdgpu_vm_fragment_size = -1;
+ int amdgpu_vm_block_size = -1;
+-int amdgpu_vm_fault_stop = 0;
+-int amdgpu_vm_debug = 0;
++int amdgpu_vm_fault_stop;
++int amdgpu_vm_debug;
+ int amdgpu_vm_update_mode = -1;
+-int amdgpu_exp_hw_support = 0;
++int amdgpu_exp_hw_support;
+ int amdgpu_dc = -1;
+ int amdgpu_sched_jobs = 32;
+ int amdgpu_sched_hw_submission = 2;
+-uint amdgpu_pcie_gen_cap = 0;
+-uint amdgpu_pcie_lane_cap = 0;
++uint amdgpu_pcie_gen_cap;
++uint amdgpu_pcie_lane_cap;
+ uint amdgpu_cg_mask = 0xffffffff;
+ uint amdgpu_pg_mask = 0xffffffff;
+ uint amdgpu_sdma_phase_quantum = 32;
+-char *amdgpu_disable_cu = NULL;
+-char *amdgpu_virtual_display = NULL;
++char *amdgpu_disable_cu;
++char *amdgpu_virtual_display;
+ /* OverDrive(bit 14) disabled by default*/
+ uint amdgpu_pp_feature_mask = 0xffffbfff;
+-uint amdgpu_force_long_training = 0;
+-int amdgpu_job_hang_limit = 0;
++uint amdgpu_force_long_training;
++int amdgpu_job_hang_limit;
+ int amdgpu_lbpw = -1;
+ int amdgpu_compute_multipipe = -1;
+ int amdgpu_gpu_recovery = -1; /* auto */
+-int amdgpu_emu_mode = 0;
+-uint amdgpu_smu_memory_pool_size = 0;
++int amdgpu_emu_mode;
++uint amdgpu_smu_memory_pool_size;
+ /* FBC (bit 0) disabled by default*/
+-uint amdgpu_dc_feature_mask = 0;
+-uint amdgpu_dc_debug_mask = 0;
++uint amdgpu_dc_feature_mask;
++uint amdgpu_dc_debug_mask;
+ int amdgpu_async_gfx_ring = 1;
+-int amdgpu_mcbp = 0;
++int amdgpu_mcbp;
+ int amdgpu_discovery = -1;
+-int amdgpu_mes = 0;
++int amdgpu_mes;
+ int amdgpu_noretry = -1;
+ int amdgpu_force_asic_type = -1;
+-int amdgpu_tmz = 0;
++int amdgpu_tmz;
+ int amdgpu_reset_method = -1; /* auto */
+ int amdgpu_num_kcq = -1;
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
+index 696e97ab77eb..46c00ee580b1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/atom.c
++++ b/drivers/gpu/drm/amd/amdgpu/atom.c
+@@ -66,7 +66,7 @@ typedef struct {
+ 	bool abort;
+ } atom_exec_context;
+ 
+-int amdgpu_atom_debug = 0;
++int amdgpu_atom_debug;
+ static int amdgpu_atom_execute_table_locked(struct atom_context *ctx, int index, uint32_t * params);
+ int amdgpu_atom_execute_table(struct atom_context *ctx, int index, uint32_t * params);
+ 
+@@ -88,7 +88,7 @@ static int atom_dst_to_src[8][4] = {
+ };
+ static int atom_def_dst[8] = { 0, 0, 1, 2, 0, 1, 2, 3 };
+ 
+-static int debug_depth = 0;
++static int debug_depth;
+ #ifdef ATOM_DEBUG
+ static void debug_print_spaces(int n)
+ {
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
