@@ -2,73 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A632A3493
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2BC2A3498
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgKBTw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:52:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726855AbgKBTvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:51:15 -0500
-Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97DB120731;
-        Mon,  2 Nov 2020 19:51:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604346674;
-        bh=GHgrqrZC9saaja+OzUUhbi6fJEQlVSb7/fyvPZXEx6g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7QGQFGKYZgnL1CsRgcfXVEJvGkahE5IE4nzejf579kzL6B8XT7ZdxEhVxbHLOHU7
-         MAuwKup1AUq//kIiOQKGwxQCgXQqnb1QxEzZB0MryPCZhiGoz3m2/+0AAs3vC7QziW
-         jLvQQ7kEIVxh0NhHZ13ei69dtOzjLXtJMbwVnixg=
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 2/2] selftests/x86: Add missing .note.GNU-stack sections
-Date:   Mon,  2 Nov 2020 11:51:11 -0800
-Message-Id: <6f043c03e9e0e4557e1e975a63b07a4d18965a68.1604346596.git.luto@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604346596.git.luto@kernel.org>
-References: <cover.1604346596.git.luto@kernel.org>
+        id S1727124AbgKBTwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:52:42 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:35465 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727085AbgKBTwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:52:40 -0500
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 02 Nov 2020 11:52:39 -0800
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 02 Nov 2020 11:52:39 -0800
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 11736188E; Mon,  2 Nov 2020 11:52:39 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:52:39 -0800
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: mfd: Add QCOM PM8008 MFD bindings
+Message-ID: <20201102195238.GB29492@codeaurora.org>
+References: <cover.1603402280.git.gurus@codeaurora.org>
+ <b224632c03055a92022edb5929f22f26db66bc6d.1603402280.git.gurus@codeaurora.org>
+ <20201030154900.GA3896697@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030154900.GA3896697@bogus>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several of the x86 selftests end up with executable stacks because
-the asm was missing the annotation that says that they are modern
-and don't need executable stacks.  Add the annotations.
+On Fri, Oct 30, 2020 at 10:49:00AM -0500, Rob Herring wrote:
+> On Thu, Oct 22, 2020 at 02:35:41PM -0700, Guru Das Srinagesh wrote:
+> > Add device tree bindings for the driver for Qualcomm Technology Inc.'s
+> > PM8008 MFD PMIC.
+> > 
+> > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > ---
+> >  .../bindings/mfd/qcom,pm8008-irqchip.yaml          | 102 +++++++++++++++++++++
+> >  1 file changed, 102 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
+> > new file mode 100644
+> > index 0000000..31d7b68
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
+> > @@ -0,0 +1,102 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/qcom,pm8008-irqchip.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies, Inc. PM8008 Multi-Function Device PMIC
+> > +
+> > +maintainers:
+> > +  - Guru Das Srinagesh <gurus@codeaurora.org>
+> > +
+> > +description: |
+> > +  PM8008 is a PMIC that contains 7 LDOs, 2 GPIOs, temperature monitoring, and
+> > +  can be interfaced over I2C.
+> 
+> No bindings for all those functions? Bindings should be complete.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- tools/testing/selftests/x86/raw_syscall_helper_32.S | 2 ++
- tools/testing/selftests/x86/thunks.S                | 2 ++
- 2 files changed, 4 insertions(+)
+While pushing out this patchset, I accidentally dropped the "RFC" tag in
+the mail subjects. This driver and binding document are meant to be just
+an exemplar for how the framework changes would be used, and hence I
+felt adding only a single node would suffice for illustration purposes.
 
-diff --git a/tools/testing/selftests/x86/raw_syscall_helper_32.S b/tools/testing/selftests/x86/raw_syscall_helper_32.S
-index 94410fa2b5ed..a10d36afdca0 100644
---- a/tools/testing/selftests/x86/raw_syscall_helper_32.S
-+++ b/tools/testing/selftests/x86/raw_syscall_helper_32.S
-@@ -45,3 +45,5 @@ int80_and_ret:
- 
- 	.type int80_and_ret, @function
- 	.size int80_and_ret, .-int80_and_ret
-+
-+.section .note.GNU-stack,"",%progbits
-diff --git a/tools/testing/selftests/x86/thunks.S b/tools/testing/selftests/x86/thunks.S
-index 1bb5d62c16a4..a2d47d8344d4 100644
---- a/tools/testing/selftests/x86/thunks.S
-+++ b/tools/testing/selftests/x86/thunks.S
-@@ -57,3 +57,5 @@ call32_from_64:
- 	ret
- 
- .size call32_from_64, .-call32_from_64
-+
-+.section .note.GNU-stack,"",%progbits
--- 
-2.28.0
+> 
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: qcom,pm8008-irqchip
+> 
+> Why irqchip?
 
+Since the driver's main functions are to register with the regmap-irq
+framework and to pass a regmap to the child nodes it populates. Would
+"qcom,pm8008-mfd" be more appropriate?
+
+> 
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupt-names:
+> > +    items:
+> > +      - const: pm8008
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +    description: Must be specified if child nodes are specified.
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +    description: Must be specified if child nodes are specified.
+> > +
+> > +  "#interrupt-cells":
+> > +    const: 2
+> > +    description: |
+> > +      The first cell is the IRQ number, the second cell is the IRQ trigger flag.
+> > +
+> > +patternProperties:
+> > +  "^.*@[0-9a-f]+$":
+> 
+> '^.*' can be dropped. That's redundant.
+
+Done.
+
+> 
+> > +    type: object
+> > +    # Each peripheral in PM8008 must be represented as a child node with an
+> > +    # optional label for referencing as phandle elsewhere. This is optional.
+> > +    properties:
+> > +      compatible:
+> > +        description: The compatible string for the peripheral's driver.
+> > +
+> > +      reg:
+> > +        maxItems: 1
+> 
+> What does the address represent? It's non-standard, so it needs to be 
+> defined.
+
+Will add description.
+
+> 
+> > +
+> > +      interrupts:
+> > +        maxItems: 1
+> > +
+> > +    required:
+> > +      - compatible
+> > +      - reg
+> > +      - interrupts
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - "#interrupt-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    qupv3_se13_i2c {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +
+> > +            pm8008i@8 {
+> > +                    compatible = "qcom,pm8008-irqchip";
+> > +                    reg = <0x8>;
+> > +                    #address-cells = <1>;
+> > +                    #size-cells = <0>;
+> > +                    interrupt-controller;
+> > +                    #interrupt-cells = <2>;
+> > +
+> > +                    interrupt-names = "pm8008";
+> > +                    interrupt-parent = <&tlmm>;
+> > +                    interrupts = <32 IRQ_TYPE_EDGE_RISING>;
+> > +
+> > +                    pm8008_tz: qcom,temp-alarm@2400 {
+> 
+> Must be documented.
+> 
+> And don't use vendor prefixes in node names. 
+
+Done.
+
+> 
+> > +                            compatible = "qcom,spmi-temp-alarm";
+> > +                            reg = <0x2400>;
+> > +                            interrupts = <0x5 IRQ_TYPE_EDGE_BOTH>;
+> > +                            #thermal-sensor-cells = <0>;
+> > +                    };
+> > +            };
+> > +    };
+> > +
+> > +...
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> > 
