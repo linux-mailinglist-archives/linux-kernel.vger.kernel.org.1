@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576F12A2C26
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1612A2C15
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgKBNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgKBNtb (ORCPT
+        id S1726045AbgKBNvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:51:37 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43755 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgKBNuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:49:31 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B5BC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:49:31 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id b1so17492090lfp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=crmhEgzkOmERlRibdWJQ5fJu4CKk3cly9oNaCdoNCWg=;
-        b=e6rC0R5eB3PGQ+ozTxEoHwxYIrjTzj/lowbcSttME14YVqM0lIps4VooUuhm29uIFE
-         q8sNXcIJGw1ny8hoRglYxZ9KpzrARGaG8u/N9tg9+2fxDLajahu8D7ztqKBx0+P+97wD
-         4+7gApcowelSqDo/j7gBpM0LF9LMwoRBhHlWlLF0AWUWkY6K823EIHiJsubXmHK+E3xk
-         lOAWs2Oo413J9KNPAL17FSBQ2PIaDC1vMh4rOc652o/EuV589g2E4DXpKlkXZkO6XhAc
-         gzqCT04f7oiU+lnIkGSrqs7iuqhzD+uA6V/Vg3+E84dav23WLkJXEsQtCLEKQAUdGu0f
-         o0cA==
+        Mon, 2 Nov 2020 08:50:13 -0500
+Received: by mail-wr1-f67.google.com with SMTP id g12so14660501wrp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:50:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=crmhEgzkOmERlRibdWJQ5fJu4CKk3cly9oNaCdoNCWg=;
-        b=c26plOGfoQs1ts9hS3mn+gBQ+EKk5S0oVAorSUsLr98LA2SEgLV8yX5bAXO4H0YN80
-         UIQ6wAutHHFdJn9LjuDgviUs5qfdO6uqk0oL7kO0VYzCCjUy405ODFNTaHH8ER4cfAKa
-         M0K1U21RNTyNhcQ76n1f6oy92vBlpbQ7rVuqOV+zsflv7l4n8foRj/9VhxkESxN2uNcA
-         hQX+spTVjMaOW8ZU7DXc1xRPMuhdiMUZfO7N65NmURff3vqKjGj2G4R8pMGYAcoT+j5a
-         mJFms6P7bVaZ6sjDfgm8jNUs6IpUsOBLJ1qBOkCXfh0Ojjjq5+nmwWo+9s/BAGzZ7+LY
-         3zvA==
-X-Gm-Message-State: AOAM530064vaI/5cc05MMshXLpia3nh1xaV23p0jdAOjRzpzC3YSw6RC
-        jZnt2Ew8CO9EL0IwjZnL63vs+Fmh6UBviis56GAEFA==
-X-Google-Smtp-Source: ABdhPJzGqIM5asHLIuy+EbHVmr9RXtwczq03HEhFi/zVkHIauFUcnrDjghLCaRPEjzU8Vbt4y8sReBCfx7RX76nxcBo=
-X-Received: by 2002:a05:6512:51a:: with SMTP id o26mr5441083lfb.381.1604324969162;
- Mon, 02 Nov 2020 05:49:29 -0800 (PST)
+        bh=xVBtoPGtKzYaS9wEKCN8wBa6S2O6XSpyqUEVYMDvcfQ=;
+        b=f+dunj4aAqhOO0cF254sBuolOBVYaBqL8Ov9e+y+1Hy5rIVpiwJIABJPDcJdECNwgx
+         93xWTZWk/WTa/AKNt3fzFvYKjHfU2wx2W5Ouu44UlNiKvS33ifg7dqy7F9UrYyqyeXAm
+         +ug4e+hQmv8sLJdGbGK5MR6hwDbDp6SHhdNvymV6/bSjKoWFyqB/GbgdhDMnMcgzVrFD
+         LuGGViestGS+HnSoTVDOEP8o6RiMzPPklYml3I9iSX9MlODdAzHNwvgqQ/5KWFr/OgRx
+         GlJER2bvVA9cJ+g3+ZSly4qvSt9j52duHXYWQdHQtebF+WUirk+ZwVkGQiLs1walRHLY
+         xvtg==
+X-Gm-Message-State: AOAM530dbDzxKEqBE/7GrbC6jN9eJMr1WfFPc0SyQ78Juzr+3Aj63wod
+        UJy0Wxj/EH972GAI/mGIxz66IW9PyEE8wMT9LPF//qVg
+X-Google-Smtp-Source: ABdhPJwws6MZuAbVRxSlKIXEa+bv85IvLfnFP5HWuDOQM5g8Vb2aSubYdWLmOeC0561ZQgOkExcV8JNLBSU/e5vtSUs=
+X-Received: by 2002:adf:a553:: with SMTP id j19mr20264615wrb.349.1604325011683;
+ Mon, 02 Nov 2020 05:50:11 -0800 (PST)
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
- <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com> <CAG48ez3qKg-ReY4R=S_thQ6tOzv2ZHV=xW5qBxpqs0iSjH_oFQ@mail.gmail.com>
- <9f9b8b86-6e49-17ef-e414-82e489b0b99a@gmail.com>
-In-Reply-To: <9f9b8b86-6e49-17ef-e414-82e489b0b99a@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 2 Nov 2020 14:49:01 +0100
-Message-ID: <CAG48ez0W2zye2KeNiVaKq9RPtUhcUtzP0zOjULRQZbOuRyz+9w@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
+References: <20201101233103.3537427-1-jolsa@kernel.org>
+In-Reply-To: <20201101233103.3537427-1-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 2 Nov 2020 22:50:00 +0900
+Message-ID: <CAM9d7cj6mfLuZYsXzAP+JBTuRC9F74AxmGbCL2_wyxRWoau-tA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf tools: Initialize output buffer in build_id__sprintf
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 9:31 AM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/30/20 8:14 PM, Jann Horn wrote:
-> > With the caveat that a cancelled syscall
-> > could've also led to the memory being munmap()ed, so the nread==0 case
-> > could also happen legitimately - so you might want to move this check
-> > up above the nread==0 (mm went away) and nread==-1 (mm still exists,
-> > but read from address failed, errno EIO) checks if the error message
-> > shouldn't appear spuriously.
->
-> In any case, I've been refactoring (simplifying) that code a little.
-> I haven't so far rearranged the order of the checks, but I already
-> log message for the nread==0 case. (Instead, there will eventually
-> be an error when the response is sent.)
->
-> I also haven't exactly tested the scenario you describe in the
-> seccomp unotify scenario, but I think the above is not correct. Here
-> are two scenarios I did test, simply with mmap() and /proc/PID/mem
-> (no seccomp involved):
->
-> Scenario 1:
-> A creates a mapping at address X
-> B opens /proc/A/mem and and lseeks on resulting FD to offset X
-> A terminates
-> B reads from FD ==> read() returns 0 (EOF)
->
-> Scenario 2:
-> A creates a mapping at address X
-> B opens /proc/A/mem and and lseeks on resulting FD to offset X
-> A unmaps mapping at address X
-> B reads from FD ==> read() returns -1 / EIO.
->
-> That last scenario seems to contradict what you say, since I
-> think you meant that in this case read() should return 0 in
-> that case. Have I misunderstood you?
+Hi Jiri,
 
-Sorry, I messed up the description when I wrote that. Yes, this looks
-as expected - EIO if the VMA is gone, 0 if the mm_users of the
-mm_struct have dropped to zero because all tasks that use the mm have
-exited.
+On Mon, Nov 2, 2020 at 8:31 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> We display garbage for undefined build_id objects,
+> because we don't initialize the output buffer.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks
+Namhyung
+
+
+> ---
+>  tools/perf/util/build-id.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> index 8763772f1095..6b410c3d52dc 100644
+> --- a/tools/perf/util/build-id.c
+> +++ b/tools/perf/util/build-id.c
+> @@ -102,6 +102,8 @@ int build_id__sprintf(const struct build_id *build_id, char *bf)
+>         const u8 *raw = build_id->data;
+>         size_t i;
+>
+> +       bf[0] = 0x0;
+> +
+>         for (i = 0; i < build_id->size; ++i) {
+>                 sprintf(bid, "%02x", *raw);
+>                 ++raw;
+> --
+> 2.26.2
+>
