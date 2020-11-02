@@ -2,140 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AAF2A2AE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B8E2A2AE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgKBMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728562AbgKBMnG (ORCPT
+        id S1728785AbgKBMpT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 07:45:19 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57709 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgKBMpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:43:06 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9939EC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:43:05 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id a9so14399015wrg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:43:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rgJj9AlHJO4Oanhoj3DS+Ov+LQevmNCMaj3cCH85YMI=;
-        b=TMPifpHuYtodX1XSB2q94xDo0bscL6j7GrSU5Mt2ywlh+qzxowNfWP1JbBX2vSDSrP
-         zV1a4gzBnBb+EntrHQwlom2Sk18ZF19FRiKYWm4daEw9vgEaSVAhqM6jqsF6CdpylFCr
-         pwqJvclyghxu0EPaI3yMUc8eCbSg7HZr0+1JsXF7KFqDeD/YrGrZMRAjlVQLnkmJXc+W
-         FJ8cil1UGCRjXeGzr0vMtbah4Ca6E9qBoPcAC2zvvk3gc/Rr51vIBu0GgLkVSVMjV1XA
-         dS7/Ub3v+rGyPoAcjDz5U58SdNEN71udYCdwKcrSS8me7VTTKxyuMXUPTf94iJVGwibM
-         g84Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rgJj9AlHJO4Oanhoj3DS+Ov+LQevmNCMaj3cCH85YMI=;
-        b=a+yMiuu9EOSMTYBV9eVF6/YJSe4XI2scugkKv/Hoaa4usbg7r/uOwCauRY5bSHd6IC
-         YEKl8e6Jvn3Nzehii0hUrTlJwgnuGu97c6T91JrvIEPsUnhdQi9qTAbCmRDveDzimikP
-         VLeBotU6eKB0CwkB7XTkDteLPC4xVMia7CoUFdt89qtcLucoXLFbG4at9DX88sONm3hh
-         cwEps7HoHaJwYA3dmjmpgLcGItM1242rkKYGVAF+7vejy8i8IsYyWjCXNrDadDNycAXn
-         al1iGjekv5SpPlvMk7CB53ZSuzXWSV5j37ellfmjrZEqHzJRx3eIMpEIfRWzqur+4u8s
-         clLw==
-X-Gm-Message-State: AOAM5319YktWMW9hoXuNVqbrfOWrssEOMZL1sKbsivo2Bd4OWUSQtVJx
-        hOtmS7r4EU5D1gVzybWgF6vevA==
-X-Google-Smtp-Source: ABdhPJwCA2cn8gTG5ycfI1cG4QbaxB42eGDjdkceAiYBMx+M49kqCKnOobr20b0ICHB0tDrkv2PFgQ==
-X-Received: by 2002:a5d:4ad0:: with SMTP id y16mr19284523wrs.22.1604320984364;
-        Mon, 02 Nov 2020 04:43:04 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id 3sm15873554wmd.19.2020.11.02.04.43.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 04:43:03 -0800 (PST)
-Date:   Mon, 2 Nov 2020 12:43:01 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20201102124301.GC4488@dell>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
- <20201102114903.GN4127@dell>
- <20201102121150.GA663356@kroah.com>
+        Mon, 2 Nov 2020 07:45:19 -0500
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id CCA71E0014;
+        Mon,  2 Nov 2020 12:44:45 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 13:44:44 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     vigneshr@ti.com, linux-kernel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Jian Zhang <jzhang@ti.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 19/23] mtd: nand: raw: omap2: Fix a bunch of kernel-doc
+ misdemeanours
+Message-ID: <20201102134444.29696598@xps13>
+In-Reply-To: <20201102115406.1074327-20-lee.jones@linaro.org>
+References: <20201102115406.1074327-1-lee.jones@linaro.org>
+        <20201102115406.1074327-20-lee.jones@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102121150.GA663356@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+Hi Lee,
 
-> On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
-> > On Mon, 02 Nov 2020, David Laight wrote:
-> > 
-> > > From: Lee Jones
-> > > > Sent: 02 November 2020 11:12
-> > > > 
-> > > > strncpy() may not provide a NUL terminator, which means that a 1-byte
-> > > > leak would be possible *if* this was ever copied to userspace.  Ensure
-> > > > the buffer will always be NUL terminated by using the kernel's
-> > > > strscpy() which a) uses the destination (instead of the source) size
-> > > > as the bytes to copy and b) is *always* NUL terminated.
-> > > > 
-> > > > Cc: Rodolfo Giometti <giometti@enneenne.com>
-> > > > Cc: "Eurotech S.p.A" <info@eurotech.it>
-> > > > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >  drivers/misc/c2port/core.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> > > > index 80d87e8a0bea9..b96444ec94c7e 100644
-> > > > --- a/drivers/misc/c2port/core.c
-> > > > +++ b/drivers/misc/c2port/core.c
-> > > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
-> > > >  	}
-> > > >  	dev_set_drvdata(c2dev->dev, c2dev);
-> > > > 
-> > > > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> > > > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
-> > > 
-> > > strscpy() doesn't zero fill so if the memory isn't zeroed
-> > > and a 'blind' copy to user of the structure is done
-> > > then more data is leaked.
-> > > 
-> > > strscpy() may be better, but rational isn't right.
-> > 
-> > The original patch zeroed the data too, but I was asked to remove that
-> > part [0].  In your opinion, should it be reinstated?
-> > 
-> > [0] https://lore.kernel.org/patchwork/patch/1272290/
+Lee Jones <lee.jones@linaro.org> wrote on Mon,  2 Nov 2020 11:54:02
++0000:
+
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Just keep the kzalloc() part of the patch, this portion makes no sense
-> to me.
+>  drivers/mtd/nand/raw/omap2.c:191: warning: Function parameter or member 'info' not described in 'omap_prefetch_enable'
+>  drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'cs' not described in 'omap_prefetch_reset'
+>  drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'info' not described in 'omap_prefetch_reset'
+>  drivers/mtd/nand/raw/omap2.c:946: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc'
+>  drivers/mtd/nand/raw/omap2.c:946: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc'
+>  drivers/mtd/nand/raw/omap2.c:1017: warning: Function parameter or member 'chip' not described in 'omap_dev_ready'
+>  drivers/mtd/nand/raw/omap2.c:1017: warning: Excess function parameter 'mtd' description in 'omap_dev_ready'
+>  drivers/mtd/nand/raw/omap2.c:1036: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc_bch'
+>  drivers/mtd/nand/raw/omap2.c:1036: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc_bch'
+>  drivers/mtd/nand/raw/omap2.c:1142: warning: Function parameter or member 'ecc_calc' not described in '_omap_calculate_ecc_bch'
+>  drivers/mtd/nand/raw/omap2.c:1142: warning: Excess function parameter 'ecc_code' description in '_omap_calculate_ecc_bch'
+>  drivers/mtd/nand/raw/omap2.c:1270: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_sw'
+>  drivers/mtd/nand/raw/omap2.c:1270: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_sw'
+>  drivers/mtd/nand/raw/omap2.c:1284: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_multi'
+>  drivers/mtd/nand/raw/omap2.c:1284: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_multi'
+>  drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'info' not described in 'is_elm_present'
+>  drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'elm_node' not described in 'is_elm_present'
+>  drivers/mtd/nand/raw/omap2.c:1681: warning: Excess function parameter 'omap_nand_info' description in 'is_elm_present'
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Jian Zhang <jzhang@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/omap2.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+[...]
 
-Can do.
+> @@ -1130,7 +1131,7 @@ static u8  bch8_polynomial[] = {0xef, 0x51,
+0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
+>   * _omap_calculate_ecc_bch - Generate ECC bytes for one sector
+>   * @mtd:	MTD device structure
+>   * @dat:	The pointer to data on which ecc is computed
+> - * @ecc_code:	The ecc_code buffer
+> + * @ecc_calc:	The ecc_code buffer
+>   * @i:		The sector number (for a multi sector page)
+>   *
+>   * Support calculating of BCH4/8/16 ECC vectors for one sector
+> @@ -1258,7 +1259,7 @@ static int _omap_calculate_ecc_bch(struct mtd_info *mtd,
+>   * omap_calculate_ecc_bch_sw - ECC generator for sector for SW based correction
+>   * @chip:	NAND chip object
+>   * @dat:	The pointer to data on which ecc is computed
+> - * @ecc_code:	The ecc_code buffer
+> + * @ecc_calc:	The ecc_code buffer
 
-> But if you REALLY want to get it correct, call dev_set_name()
-> instead please, as that is what it is there for.
+Could you please use as description:
+"Buffer storing the calculated ECC bytes"
 
-The line above isn't setting the 'struct device' name.  It looks as
-though 'struct c2port' has it's own member, also called 'name'.  As to
-how they differ, I'm not currently aware.  Nor do I wish to mess
-around with the semantics all that much.
+>   *
+>   * Support calculating of BCH4/8/16 ECC vectors for one sector. This is used
+>   * when SW based correction is required as ECC is required for one sector
+> @@ -1274,7 +1275,7 @@ static int omap_calculate_ecc_bch_sw(struct nand_chip *chip,
+>   * omap_calculate_ecc_bch_multi - Generate ECC for multiple sectors
+>   * @mtd:	MTD device structure
+>   * @dat:	The pointer to data on which ecc is computed
+> - * @ecc_code:	The ecc_code buffer
+> + * @ecc_calc:	The ecc_code buffer
 
-Going with suggestion #1.
+Ditto
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>   *
+>   * Support calculating of BCH4/8/16 ecc vectors for the entire page in one go.
+>   */
+> @@ -1673,7 +1674,8 @@ static int omap_read_page_bch(struct nand_chip *chip, uint8_t *buf,
+>  
+>  /**
+>   * is_elm_present - checks for presence of ELM module by scanning DT nodes
+> - * @omap_nand_info: NAND device structure containing platform data
+> + * @info: NAND device structure containing platform data
+> + * @elm_node: ELM's DT node
+>   */
+>  static bool is_elm_present(struct omap_nand_info *info,
+>  			   struct device_node *elm_node)
+
+Thanks,
+Miquèl
