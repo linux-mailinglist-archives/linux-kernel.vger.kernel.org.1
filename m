@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57212A2809
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1933B2A2811
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728452AbgKBKRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:17:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S1728465AbgKBKRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:17:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728438AbgKBKRD (ORCPT
+        with ESMTP id S1728132AbgKBKRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:17:03 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BBBC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:17:02 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id n12so2718419ioc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:17:02 -0800 (PST)
+        Mon, 2 Nov 2020 05:17:30 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A764C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:17:28 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id n15so13925000wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:17:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s3EJ9zobkh7FYHYJWSJDM7encrABN6RP9bpyhE8NGbI=;
-        b=vEmXBY9dyPl+ljdMhUmIW2LKV0ba1J1zZlsugDHx2dY99d0324GJIheFAEtdgQseMO
-         tRcYTqVxFNP0MfypcMJ7Fs6o2mdQZsjEngK6hT7gOw9fbD4NbZZoo25UJskAdy22yCNM
-         xD43spaFairJobEdSKHqSJaCNDOkQvEWx+xh9Mr4x891njbSAklrvrVXPmxsSzZvTymz
-         cFBXGOT72WabirOs3enhLXHKe+kVn5eErsoNCxDHMhY1H/A9Znwh+JPyJzOk+bkDLoNt
-         UTw6fwA5DT90+cs1RREtRV1lip4/HtV23y0QLm1Q6M0IeM/2/1IiYQufnfBFeMM0JCEV
-         QVOA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5hSoUnmWrkIiPJtBur2bCaJkJBa+PcbPE5F/qKNSDyM=;
+        b=Hbm0iIk5gdB9MgZjt+GPwBb0j9HoSSFSxRO8xqvyR0S0gyQ7etZZtcEpWTliJjXs/2
+         KSQtIHuyQsaw/f2JT6c0QlC/y1wfBo2jcXZlMHJ2nmkVYpwJNbIWZDlqzJKRtGS7Vk0b
+         4BJtj8uREqzMd09CLR8t2fyiM03WK3SgGCZlY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s3EJ9zobkh7FYHYJWSJDM7encrABN6RP9bpyhE8NGbI=;
-        b=kc/IPHrg+aismMLH5qNT31XOmgtc6deXnZ5Owg3pCGo1H/nOLMHldrCahQTrCmBn2t
-         GovAMIE/9mJnxi5GcuUBWesrVhowD0NoM+unFvyuHU9p/sOhWjeTqMW1PYhrT7r17C17
-         +lwUMr1iFMKDaUY9nciPaDbWuIXGJ/0J4nfTOGhQPjfKTn6O5rwvmVXbY53O6rVJunFY
-         gwByavuLwDEPmSgSkvuNFlia6d53neo/G8kAE7YbwjgHuYc8+ZIMlSZxt3IEXhEwZSDr
-         s6fsiqVY/iJFz3P8DrftMZWRpP7Kph/8MBVoba/vQXhssyMZsW0Rc8oPjk6K4S9PUVKh
-         KEEw==
-X-Gm-Message-State: AOAM533itdRC8+CtSJoEBa1QME5C9YoI7/q07EelWdwlBwFtwjwbmlvH
-        wYFFBeRgjV7gqmqPjtfW5ycS6nbLxZtJo0pyinuByg==
-X-Google-Smtp-Source: ABdhPJzgobcLyYX/fO0IziN9mm1MrqVoy3KRvaMJEUFjlH3w09pvUa223LBKiwM8gVMy9IWdcibg0zItd8FKWMmQiXU=
-X-Received: by 2002:a05:6638:15a:: with SMTP id y26mr909829jao.57.1604312222257;
- Mon, 02 Nov 2020 02:17:02 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=5hSoUnmWrkIiPJtBur2bCaJkJBa+PcbPE5F/qKNSDyM=;
+        b=BMsSIIH8u5EMIEUwQ92xDq/N/7+N2nWh1kZ2qKLJt0TBcTOPU7mxTGxyTARPYt/uP7
+         1TU7UxJ0KlCCayMzHi1dGO22q4xb8QA4svtUINWJfv0xnPH1sfiGHd+Jt+o746gfXll7
+         fmwKFdlN8pp6S4NixVwI6BUnDM7FXFerqPEScudnUh6DZ0xLbX0WLGUym1H/pWe95L/+
+         Rbys92jPBQEbuKI8UAYfo19TsIJmg4kt0L7kPdad52YYEE5eJvZ7JlumaubSoy3e4eH6
+         qiJv1az90DVhB70EE53G65EkwkCsupP1PbLEfk6X2hr8Kn+kB6UVQRa7O0QWUsiIPWlS
+         Bcug==
+X-Gm-Message-State: AOAM532s6h2ArZtE66z89MorAd7NO6z+9llSn2B9ddQiXrFCGD07LHXs
+        /QpFoRJz8swBnGeVFpszLBx9zQ==
+X-Google-Smtp-Source: ABdhPJwQMZvHwWKFlVeyO1nurWVIUzcbyGEq6qVyO4SdeqmbiIAn6Kkm37lB4XaCkCNv1schQER+Ew==
+X-Received: by 2002:adf:dd89:: with SMTP id x9mr19144821wrl.284.1604312247227;
+        Mon, 02 Nov 2020 02:17:27 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j13sm22285058wru.86.2020.11.02.02.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 02:17:26 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:17:24 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH] gpu/drm: make crtc check before new_connector circle
+Message-ID: <20201102101724.GO401619@phenom.ffwll.local>
+Mail-Followup-To: Bernard Zhao <bernard@vivo.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+References: <20201102025851.3613-1-bernard@vivo.com>
 MIME-Version: 1.0
-References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-6-brgl@bgdev.pl>
- <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
-In-Reply-To: <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 2 Nov 2020 11:16:51 +0100
-Message-ID: <CAMRc=MdtM-zVmvSbxjkPyLN1YTqcS7P=aYXxzWEk0xQiu8WZjQ@mail.gmail.com>
-Subject: Re: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset computation
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102025851.3613-1-bernard@vivo.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 3:51 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Oct 26, 2020 at 4:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Provide and use helpers for calculating the register address and bit
-> > offset instead of hand coding it in every function.
->
-> Can you check code generation on x86, for example?
->
-> Sometimes compilers are eager to use idiv assembly instruction which
-> does simultaneously / and %.
-> I dunno if a) it's used for / 8 and % 8 since 8 is 2^3, b) splitting
-> to functions makes the above optimisation impossible.
->
+On Sun, Nov 01, 2020 at 06:58:51PM -0800, Bernard Zhao wrote:
+> In function prepare_signaling, crtc check (c==0) is not related
+> with the next new_connector circle, maybe we can put the crtc
+> check just after the crtc circle and before new_connector circle.
+> This change is to make the code to run a bit first.
 
-Is this optimization really needed though? It's not like it's a hot
-path if it's protected by a mutex anyway. I prefer cleaner code here.
+I'm a bit confused here with your explanation, I'm not understanding why
+you do this change ... Can you pls elaborate? Maybe give an example or
+something of the problem this patch solves, that often helps.
 
-Bartosz
+Thanks, Daniel
+
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/gpu/drm/drm_atomic_uapi.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> index 25c269bc4681..566110996474 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -1182,6 +1182,12 @@ static int prepare_signaling(struct drm_device *dev,
+>  
+>  		c++;
+>  	}
+> +	/*
+> +	 * Having this flag means user mode pends on event which will never
+> +	 * reach due to lack of at least one CRTC for signaling
+> +	 */
+> +	if (c == 0 && (arg->flags & DRM_MODE_PAGE_FLIP_EVENT))
+> +		return -EINVAL;
+>  
+>  	for_each_new_connector_in_state(state, conn, conn_state, i) {
+>  		struct drm_writeback_connector *wb_conn;
+> @@ -1220,13 +1226,6 @@ static int prepare_signaling(struct drm_device *dev,
+>  		conn_state->writeback_job->out_fence = fence;
+>  	}
+>  
+> -	/*
+> -	 * Having this flag means user mode pends on event which will never
+> -	 * reach due to lack of at least one CRTC for signaling
+> -	 */
+> -	if (c == 0 && (arg->flags & DRM_MODE_PAGE_FLIP_EVENT))
+> -		return -EINVAL;
+> -
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.29.0
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
