@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB272A29EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8710C2A29FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgKBLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:48:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41302 "EHLO mail.kernel.org"
+        id S1728639AbgKBLxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:53:41 -0500
+Received: from mga05.intel.com ([192.55.52.43]:25194 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728610AbgKBLs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:48:57 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 385D821D91;
-        Mon,  2 Nov 2020 11:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604317736;
-        bh=+iwZp4hz8Ac+ih2R+PIMnjM3wfsZ6NHD+wtMijUtFSo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R5c5fWp8keTvEfGO5J6e9XUE0aaIT+pfFquuQdLSWzdeLc3rsCYkUYVSFuUw/egEx
-         CJddh4EPYpUjJWmUynG0GdV8KVOcBhUvLQuVB553AZjJNTNA8QD5dlxEu0ULnXsx/R
-         46bPSVVs9r0wymE9C+cTVJzkhusfHT7Oly3YtrvA=
-Date:   Mon, 2 Nov 2020 12:49:52 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
-Message-ID: <20201102114952.GA661633@kroah.com>
-References: <20201027135430.632029009@linuxfoundation.org>
- <20201028171035.GD118534@roeck-us.net>
- <20201028195619.GC124982@roeck-us.net>
- <20201031094500.GA271135@eldamar.lan>
- <7608060e-f48b-1a7c-1a92-9c41d81d9a40@roeck-us.net>
- <20201102113648.GB9840@duo.ucw.cz>
+        id S1728589AbgKBLxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:53:41 -0500
+IronPort-SDR: 0Tv7kiZ49BzUzxCwXBK+oJum1LWTColThUXKK0Fu2BMQG69zHq2h0bW7fOAR6RjZeexRFww/kz
+ Oxv3XmxQ5Evw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="253579073"
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="253579073"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 03:53:41 -0800
+IronPort-SDR: JujtdMfOAx3lNDW4tWz544fQ5QF9JJIDoMZ1lf8+fKS5PmuQGjIhFOcxZTdD/KDiDTP3LzV1Wf
+ mgNpMhSxp92w==
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="537991316"
+Received: from obarniv1-mobl.ger.corp.intel.com (HELO [10.214.212.214]) ([10.214.212.214])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 03:53:37 -0800
+Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
+ api
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>, Intel-gfx@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+ <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
+ <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
+ <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
+ <3f5694f3-62f9-cc2b-1c2b-f9e99a4788c1@linux.intel.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <1ce5b94a-38b3-548e-3b1a-a68390b93953@linux.intel.com>
+Date:   Mon, 2 Nov 2020 11:52:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <3f5694f3-62f9-cc2b-1c2b-f9e99a4788c1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102113648.GB9840@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 12:36:48PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > >>> perf failures are as usual. powerpc:
-> > > 
-> > > Regarding the perf failures, do you plan to revert b801d568c7d8 ("perf
-> > > cs-etm: Move definition of 'traceid_list' global variable from header
-> > > file") included in 4.19.152 or is a bugfix underway?
-> > > 
-> > 
-> > The problem is:
-> > 
-> > In file included from util/evlist.h:15:0,
-> >                  from util/evsel.c:30:
-> > util/evsel.c: In function ‘perf_evsel__exit’:
-> > util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
-> > /usr/include/stdlib.h:563:13: note: expected ‘void *’ but argument is of type ‘const char *’
-> >  extern void free (void *__ptr) __THROW;
-> > 
-> > This is seen with older versions of gcc (6.5.0 in my case). I have no idea why
-> > newer versions of gcc/glibc accept this (afaics free() still expects a char *,
-> > not a const char *). The underlying problem is that pmu_name should not be
-> > declared const char *, but char *, since it is allocated. The upstream version
-> > of perf no longer uses the same definition of zfree(). It was changed from
-> > 	#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-> > to
-> > 	#define zfree(ptr) __zfree((void **)(ptr))
-> > which does the necessary typecast. The fix would be to either change the definition
-> > of zfree to add the typecast, or to change the definition of pmu_name to drop the const.
-> > Both would only apply to v4.19.y. I don't know if either would be acceptable.
-> 
-> As the problem is already fixed in the mainline, either solution
-> should be acceptable for -stable.
-> 
-> Probably the one adjusting the zfree() is more suitable, as that is
-> the way it was solved in the mainline.
 
-If you can provide the proper patches backported to 4.19, I will gladly
-take them.  I tried to figure it out and couldn't, so good luck!
+On 02/11/2020 02:00, Lu Baolu wrote:
+> Hi Tvrtko,
+> On 10/12/20 4:44 PM, Tvrtko Ursulin wrote:
+>>
+>> On 29/09/2020 01:11, Lu Baolu wrote:
+>>> Hi Tvrtko,
+>>>
+>>> On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
+>>>>
+>>>> On 27/09/2020 07:34, Lu Baolu wrote:
+>>>>> Hi,
+>>>>>
+>>>>> The previous post of this series could be found here.
+>>>>>
+>>>>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
+>>>>>
+>>>>>
+>>>>> This version introduce a new patch [4/7] to fix an issue reported 
+>>>>> here.
+>>>>>
+>>>>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
+>>>>>
+>>>>>
+>>>>> There aren't any other changes.
+>>>>>
+>>>>> Please help to test and review.
+>>>>>
+>>>>> Best regards,
+>>>>> baolu
+>>>>>
+>>>>> Lu Baolu (3):
+>>>>>    iommu: Add quirk for Intel graphic devices in map_sg
+>>>>
+>>>> Since I do have patches to fix i915 to handle this, do we want to 
+>>>> co-ordinate the two and avoid having to add this quirk and then 
+>>>> later remove it? Or you want to go the staged approach?
+>>>
+>>> I have no preference. It depends on which patch goes first. Let the
+>>> maintainers help here.
+>>
+>> FYI we have merged the required i915 patches to out tree last week or 
+>> so. I *think* this means they will go into 5.11. So the i915 specific 
+>> workaround patch will not be needed in Intel IOMMU.
+> 
+> Do you mind telling me what's the status of this fix patch? I tried this
+> series on v5.10-rc1 with the graphic quirk patch dropped. I am still
+> seeing dma faults from graphic device.
 
-greg k-h
+Hmm back then I thought i915 fixes for this would land in 5.11 so I will 
+stick with that. :) (See my quoted text a paragraph above yours.)
+
+Regards,
+
+Tvrtko
