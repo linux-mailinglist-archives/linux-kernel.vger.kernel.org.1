@@ -2,190 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE952A2C67
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905FE2A2C58
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726031AbgKBOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:14:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        id S1725949AbgKBON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgKBOOC (ORCPT
+        with ESMTP id S1725768AbgKBON5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:14:02 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E822DC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:14:00 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id 2so15095775ljj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:14:00 -0800 (PST)
+        Mon, 2 Nov 2020 09:13:57 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CBEC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:13:57 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id a7so17619347lfk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:13:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UWSN6pUmUHVvmlI9O9ME30to/SMhrDIMong6ljJZfek=;
-        b=mH8M9jpsGa3f9fcWJHPca/931KX2U+XkxbOX64TG8Zhi5C/ZcESSCqI25qknkzRBLO
-         noKBzIlTe+kkzgJhAG7wFIWJHKb+7Biel9RAR2wvFwoQ8awGXak5DIOL/gSrErk8V9Le
-         vlO7D9AMDRl3i5YY711AIk6T0Y/LyvuwzQGcNyl4w01onM/Gmvo0d0ZnirRD4P47OtY2
-         tzxcRqUU+MRRVpIAht7p86HHVpCbRPuFXM6Wp6qrioc/0YN/b7/4RkUf4BGA22vRsC28
-         ayKlOnSmhsPnPgbQkfW35DjULd5kYMYQ9XAPr8m5Wvyv0vFY8DY7k6OmPeCE5GBKo4Wr
-         ts3A==
+        bh=KxbCraeiLdRhhJpaK4sNkK6tPwuu92CTTqqZ8+wCJio=;
+        b=ZM4LaTgzml5bUPWSYTKj3diGMPNamkdpShH5l8t1VMnmUehipaDrX71br6RaGOveNc
+         /yl8Xzi0wn8Cxlsb498dQw5DOCL5LLMqIUxozIqEL8Jv/Dfj/H+Bb9yIVxfgwO2Qgwq3
+         eUytQo5ExrWGWR6O4ZESs3SNl+spxTGTn5gsYW9CwiSsMuMHxhVbhV+NhCgL3wDzIWn4
+         Ht6OUKJNYAkn1Hfq3yRM9OUyYjva3aGEPid7gLU80nOcfW8sb4adbwyvbbNYDBFH4WqG
+         26EaYiNDR9YIwdHeFIDLSJilMRqoe/8Z2OeUaLrrI1jXOwP2uh3xV7We0sPiS4LFhUPm
+         1lxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UWSN6pUmUHVvmlI9O9ME30to/SMhrDIMong6ljJZfek=;
-        b=AH0yjyh+3l3Mvlej4YFLUyd6/KQHi/t8x4zQOC7kjGAX3zw6t2ih/lDNF6K1WKn/Ex
-         Iqc5GJ9ianiYrPuG3zn+XqRCIchRG9NvW5DmX7cOloAzgJ/d0eEuTDEx9m+QfmvEV3At
-         3Kf/uZahglaX9mb+m2bpmd4hkSeBOHJzpg7aizxmvUUI2NzoqxqESNSzElgx8e+7kOSW
-         i8rysVnj934MtLU8qKyFgqiCTEL303Cy4WxKMMdT4e/+R21eIy/Adf0Ncb6FWamoxr1U
-         QK996R0/IvOSxq+Z8M4EjJfCO3+2UUnYakS+Au4Ls8CLJ/RndzVIagUlHRTX9B6tawTL
-         ADEw==
-X-Gm-Message-State: AOAM532xW6cdRSbWgaC5mb2xZ+d1weHLowGt4ec6SlKTjo5nZoUBhfnC
-        IpQQauuxRS1v0IRlTULoVoGRV0upMU5ABTlWNb2wWw==
-X-Google-Smtp-Source: ABdhPJybPO8qgl/H4+fZNekPwvUlTXpeBbE0gJrFEKhorJDspmNB/asdWQ1rEsPeRWv77CUoxL2pOk6JOxoYlGfUPn4=
-X-Received: by 2002:a2e:b888:: with SMTP id r8mr6414174ljp.138.1604326439180;
- Mon, 02 Nov 2020 06:13:59 -0800 (PST)
+        bh=KxbCraeiLdRhhJpaK4sNkK6tPwuu92CTTqqZ8+wCJio=;
+        b=c+DAvQ5r4XMG0yGRPX640IsGPLd56uzwRrMSNs/mfqovEtaKa7tHmkkRrsSMmenxot
+         nwjXoNZKRLKstjCTFSbF1dxC3C0MANcI+su5dLTYxF08K8FkY6EIePaO7pUHbzorQ7C9
+         2vIE9njZ8QHgRH8bM7hz3nS6kI+4ViUPWM+DtMmGJDIUB9oedRJZGhSLno8dLsIzLdF8
+         wSfrjqAYQH98BJxRqLkVUB/+S5HQpjUrHyr5ekaKGFQI1ojlVgLjvZVoyFxiNDsIVyH+
+         1fQ0lewhqedbmMlGh1YCPhnMwc3Mitc5+zroUx21GONnuUHf0/SYSmmgTeioa09QZbfz
+         SATA==
+X-Gm-Message-State: AOAM531SML8bf85DbX6MGawKFR15PGMhr/h2TvOFXh5x03583uLUoDNL
+        qh0zqIrL4y7IVzQC54wo+a8h9K1Z5VW6kzQKZpeZzw==
+X-Google-Smtp-Source: ABdhPJzqeipx/W1I0SHKEcjfqh+sscD2n/q6sWL0P3hkangcPzWHpBBKHArZunBT2LjnW+rq6DfD3qni7BR6JlMFOpE=
+X-Received: by 2002:a19:a56:: with SMTP id 83mr4927665lfk.131.1604326435967;
+ Mon, 02 Nov 2020 06:13:55 -0800 (PST)
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
- <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com> <CAG48ez3nH2Oiz9wMSpvUxxX_TRYTT98d3Nj1vnCuJOj9CCXH8Q@mail.gmail.com>
- <b43b50a2-fa5c-419d-ad24-3fd40bc26dba@gmail.com>
-In-Reply-To: <b43b50a2-fa5c-419d-ad24-3fd40bc26dba@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 2 Nov 2020 15:13:31 +0100
-Message-ID: <CAG48ez000V-5KEpdHd3mNZrqvYYydJcdjZvZxeVph7AFgcxfHA@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
+References: <20201102062408.331572-1-ajye_huang@compal.corp-partner.google.com>
+ <20201102062408.331572-3-ajye_huang@compal.corp-partner.google.com> <CA+Px+wV9Lmdphp4iMgF1d72vewb2m9aiZzywvavLGgtkAczCDQ@mail.gmail.com>
+In-Reply-To: <CA+Px+wV9Lmdphp4iMgF1d72vewb2m9aiZzywvavLGgtkAczCDQ@mail.gmail.com>
+From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date:   Mon, 2 Nov 2020 22:13:45 +0800
+Message-ID: <CALprXBZ-nO5NtgEeS+G4bhE=EHcwvtZOOa67ea4k=CXyT+JpJg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Ajye Huang <ajye.huang@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 9:51 AM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/30/20 8:20 PM, Jann Horn wrote:
-> > On Thu, Oct 29, 2020 at 8:14 PM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> >> On 10/29/20 2:42 AM, Jann Horn wrote:
-> >>> As discussed at
-> >>> <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
-> >>> we need to re-check checkNotificationIdIsValid() after reading remote
-> >>> memory but before using the read value in any way. Otherwise, the
-> >>> syscall could in the meantime get interrupted by a signal handler, the
-> >>> signal handler could return, and then the function that performed the
-> >>> syscall could free() allocations or return (thereby freeing buffers on
-> >>> the stack).
-> >>>
-> >>> In essence, this pread() is (unavoidably) a potential use-after-free
-> >>> read; and to make that not have any security impact, we need to check
-> >>> whether UAF read occurred before using the read value. This should
-> >>> probably be called out elsewhere in the manpage, too...
-> >>>
-> >>> Now, of course, **reading** is the easy case. The difficult case is if
-> >>> we have to **write** to the remote process... because then we can't
-> >>> play games like that. If we write data to a freed pointer, we're
-> >>> screwed, that's it. (And for somewhat unrelated bonus fun, consider
-> >>> that /proc/$pid/mem is originally intended for process debugging,
-> >>> including installing breakpoints, and will therefore happily write
-> >>> over "readonly" private mappings, such as typical mappings of
-> >>> executable code.)
-> >>>
-> >>> So, uuuuh... I guess if anyone wants to actually write memory back to
-> >>> the target process, we'd better come up with some dedicated API for
-> >>> that, using an ioctl on the seccomp fd that magically freezes the
-> >>> target process inside the syscall while writing to its memory, or
-> >>> something like that? And until then, the manpage should have a big fat
-> >>> warning that writing to the target's memory is simply not possible
-> >>> (safely).
-> >>
-> >> Thank you for your very clear explanation! It turned out to be
-> >> trivially easy to demonstrate this issue with a slightly modified
-> >> version of my program.
-> >>
-> >> As well as the change to the code example that I already mentioned
-> >> my reply of a few hours ago, I've added the following text to the
-> >> page:
-> >>
-> >>    Caveats regarding the use of /proc/[tid]/mem
-> >>        The discussion above noted the need to use the
-> >>        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) when opening the
-> >>        /proc/[tid]/mem file of the target to avoid the possibility of
-> >>        accessing the memory of the wrong process in the event that the
-> >>        target terminates and its ID is recycled by another (unrelated)
-> >>        thread.  However, the use of this ioctl(2) operation is also
-> >>        necessary in other situations, as explained in the following
-> >>        pargraphs.
+On Mon, Nov 2, 2020 at 6:46 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Mon, Nov 2, 2020 at 2:24 PM Ajye Huang <ajye.huang@gmail.com> wrote:
 > >
-> > (nit: paragraphs)
->
-> I spotted that one also already. But thanks for reading carefully!
->
-> >>        Consider the following scenario, where the supervisor tries to
-> >>        read the pathname argument of a target's blocked mount(2) system
-> >>        call:
-> > [...]
-> >> Seem okay?
+> > In addition, having mixer control to switch between DMICs by
+> > using "dmic-gpios" property.
 > >
-> > Yeah, sounds good.
+> > Refer to this one as an example,
+> > commit b7a742cff3f6 ("ASoC: AMD: Use mixer control to switch between DMICs")
 > >
-> >> By the way, is there any analogous kind of issue concerning
-> >> pidfd_getfd()? I'm thinking not, but I wonder if I've missed
-> >> something.
-> >
-> > When it is used by a seccomp supervisor, you mean? I think basically
-> > the same thing applies - when resource identifiers (such as memory
-> > addresses or file descriptors) are passed to a syscall, it generally
-> > has to be assumed that those identifiers may become invalid and be
-> > reused as soon as the syscall has returned.
+> > Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 >
-> I probably needed to be more explicit. Would the following (i.e., a
-> single cookie check) not be sufficient to handle the above scenario.
-> Here, the target is making a syscall a system call that employs the
-> file descriptor 'tfd':
+> I am not sure if it would be better if you use another email (e.g.
+> @gmail) for signoff.
 >
-> T: makes syscall that triggers notification
-> S: Get notification
-> S: pidfd = pidfd_open(T, 0);
-> S: sfd = pifd_getfd(pidfd, tfd, 0)
-> S: check that the cookie is still valid
-> S: do operation with sfd [*]
+hi, Tzung-Bi
+Thank you for your review, it's our company's rule to use  this PD account
+
+> > +static int dmic_get(struct snd_kcontrol *kcontrol,
+> > +                   struct snd_ctl_elem_value *ucontrol)
+> > +{
+> > +       struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
+> > +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(dapm->card);
+> > +
+> > +       if (data)
 >
-> By contrast, I can see that we might want to do multiple cookie
-> checks in the /proc/PID/mem case, since the supervisor might do
-> multiple reads.
+> You don't need to check for NULL.  If snd_soc_card_get_drvdata()
+> returns NULL, it shouldn't run into here.  See other
+> snd_soc_card_get_drvdata() calls in the file.
+>
+your are right, I will remove on v4
 
-Aaah, okay. I didn't really understand the question at first.
+> > +static int dmic_set(struct snd_kcontrol *kcontrol,
+> > +                   struct snd_ctl_elem_value *ucontrol)
+> > +{
+> > +       struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
+> > +       struct sc7180_snd_data *data = snd_soc_card_get_drvdata(dapm->card);
+> > +
+> > +       if (data) {
+>
+> Ditto.
+>
+I will remove it on v4
 
-> Or, do you mean: there really needs to be another cookie check after
-> the point [*], since, if the the target's syscall was interrupted
-> and 'tfd' was closed/resused, then the supervisor would be operating
-> with a file descriptor that refers to an open file description
-> (a "struct file") that is no longer meaningful in the target?
-> (Thinking about it, I think this probably is what you mean, but
-> I want to confirm.)
-
-I wasn't thinking about your actual question when I wrote that. :P
-
-I think you could argue that leaving out the first cookie check does
-not make this incorrect if it was correct before; but you could also
-argue that it's hazardous either way (because programs might rely on
-synchronous actions that happen when closing an fd that they assume is
-the only one associated with a file description, e.g. assuming that
-close() will synchronously release an flock() lock). And if we do two
-checks, we can at least limit such potentially hazardous interference
-to processes that performed syscalls subject to interception, instead
-of risking triggering them all over the place.
+> > +               if (IS_ERR(data->dmic_sel)) {
+> > +                       dev_err(&pdev->dev, "DMIC gpio failed err=%d\n",
+> > +                               PTR_ERR(data->dmic_sel));
+> > +                               return PTR_ERR(data->dmic_sel);
+>
+> Remove 1 level indent.
+Your are really attentive, I will remove the indent on v4, thank you so much.
