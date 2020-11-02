@@ -2,110 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD982A3612
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EF32A3617
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgKBVhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
+        id S1726388AbgKBVjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBVhg (ORCPT
+        with ESMTP id S1725841AbgKBVjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:37:36 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1741EC0617A6;
-        Mon,  2 Nov 2020 13:37:36 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQ5qJ5WTBz9sTD;
-        Tue,  3 Nov 2020 08:37:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604353053;
-        bh=7rpW1Mb32DfOkhwiOa7Tx0Ai8GDdJ/hmk946rvTZ72c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Fyvvoi6gwAAjJxJfkqG4Ao64zEW3MBOL6Jr4FDPe/tOxfDoYoUV4bm5J4pGdg2QFt
-         iDedyscCakmbD+Mns3+UUegKNHsdo9nk9pO7qnmLKcCsIkadZx0sL6O8wbh4EBPhFl
-         6OzGVj/1Dx9H8lq7m99GEJTn7EWOfhetuypxUrcqMDqXAWZnw6Jj7/ZJGDKsMf2jyG
-         RBsUtHhiSsDQEynPVqeWyOdDd7baa1Graf2QOmIKrBXwy+lgRODIxPTbRGOKIkEa9C
-         c7uZfO+3aIGUBLhoFrhKO0IBap3WRuYANn5DMgmtZBYAQxRRkyhCSqGIY9UwYo68Ad
-         2ghsn6sGWT/TA==
-Date:   Tue, 3 Nov 2020 08:37:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the rdma tree
-Message-ID: <20201103083730.539fe81c@canb.auug.org.au>
+        Mon, 2 Nov 2020 16:39:36 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2489C061A47
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:39:35 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w65so12323371pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FtSibvsdvA5rUVREdfoxJ1vc1kri00NcSUIMa32id/s=;
+        b=ycjCRV279Di6GZducEQavbrEZb8VCpkB+B+XTo94i7BUa+daWWB+xqYhjBBgKK4fh/
+         8cEojishyWBfJt4Ky2n8BpKLe9NV8dDt8NCJaZ8zEKTcXNmgtqkDRjNnY7A/duwn32hJ
+         hTodV7RxYvyoCoz915HcGS5p+bdQANEW5X3bIHy0Ys5NpQgE2KpLYbuEhVPFEqgqU2mT
+         mUO+wUtaTmJLopzszFpyNpl5oClyoULw+3Y6QbAQwhFviBWyvsgUFete4SGPDZZuzUzd
+         iCLnrY1KDd+CuXo6iosCuWvM2ifwbL6qmrg5elVsJXA5kYy1W8Q7PPjv0PbR5x5a/jV8
+         j+4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FtSibvsdvA5rUVREdfoxJ1vc1kri00NcSUIMa32id/s=;
+        b=lYpWTjeMC41mbTS9+Dx84F6wSamtc1jlyqlc0WOqWu/OI1oFcOV1NQ8M2UJninfxZz
+         U4eAVsNiVGvHBaHVZCme1sAcgAM2IREgoRaSlIX+n79EGdu5mV9bMfzj0EpdOIm6e8pO
+         XmdNh5CYSCivHPJtcCX0zj/RIRQlYA9i0eVDv0JuadIWYVX3q78CNEisg7wDQRAjwXim
+         He/YAGAuHkxmqWK4+o4WGsi3tiQN7iYnT6xHeDU3ZR/YBHeN7DRkmWECMU7p29eR6nE5
+         ICRGkjYNKFxgLZmP0p3a1+YTK+nixczZ7uw6INoPq35TTsupcvVnzVJmD1x0gmLWM1cN
+         /Wbw==
+X-Gm-Message-State: AOAM530aAW6hSpAocOoy2ZNlc7SFrP8AwcOJNUN+uacxwWFC3tZafMR1
+        H4vFWyOWi6r4ztUvVHNmhJD4YBNjqyejAQ==
+X-Google-Smtp-Source: ABdhPJwIWV5qLDMLpsaxZ1JpfY8hZganSzwNcbYL9T+70ZBF+NS40V/oYgHHkjldaZleNZmuf/jaNg==
+X-Received: by 2002:a17:90a:a595:: with SMTP id b21mr184058pjq.3.1604353174988;
+        Mon, 02 Nov 2020 13:39:34 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id z10sm403283pjz.49.2020.11.02.13.39.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 13:39:34 -0800 (PST)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+From:   Jens Axboe <axboe@kernel.dk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201030152407.43598-1-cai@redhat.com>
+ <20201030184255.GP3576660@ZenIV.linux.org.uk>
+ <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
+ <20201030184918.GQ3576660@ZenIV.linux.org.uk>
+ <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
+ <20201030222213.GR3576660@ZenIV.linux.org.uk>
+ <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
+ <87eelba7ai.fsf@x220.int.ebiederm.org>
+ <f33a6b5e-ecc9-2bef-ab40-6bd8cc2030c2@kernel.dk>
+ <87k0v38qlw.fsf@x220.int.ebiederm.org>
+ <d77e2d82-22da-a7a0-54e0-f5d315f32a75@kernel.dk>
+Message-ID: <3abc1742-733e-c682-5476-c6337a630e05@kernel.dk>
+Date:   Mon, 2 Nov 2020 14:39:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lk.ZAxSxMhtzy7dof_tlO9n";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <d77e2d82-22da-a7a0-54e0-f5d315f32a75@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lk.ZAxSxMhtzy7dof_tlO9n
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 11/2/20 1:31 PM, Jens Axboe wrote:
+> On 11/2/20 1:12 PM, Eric W. Biederman wrote:
+>> Jens Axboe <axboe@kernel.dk> writes:
+>>
+>>> On 11/2/20 12:27 PM, Eric W. Biederman wrote:
+>>>> Jens Axboe <axboe@kernel.dk> writes:
+>>>>
+>>>>> On 10/30/20 4:22 PM, Al Viro wrote:
+>>>>>> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
+>>>>>>> On 10/30/20 12:49 PM, Al Viro wrote:
+>>>>>>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
+>>>>>>>>
+>>>>>>>>> See other reply, it's being posted soon, just haven't gotten there yet
+>>>>>>>>> and it wasn't ready.
+>>>>>>>>>
+>>>>>>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
+>>>>>>>>> instead. The intent is not to have any functional changes in that prep
+>>>>>>>>> patch. But once we can pass in filenames instead of user pointers, it's
+>>>>>>>>> usable from io_uring.
+>>>>>>>>
+>>>>>>>> You do realize that pathname resolution is *NOT* offloadable to helper
+>>>>>>>> threads, I hope...
+>>>>>>>
+>>>>>>> How so? If we have all the necessary context assigned, what's preventing
+>>>>>>> it from working?
+>>>>>>
+>>>>>> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
+>>>>>> *do* pass through that, /dev/stdin included)
+>>>>>
+>>>>> Don't we just need ->thread_pid for that to work?
+>>>>
+>>>> No.  You need ->signal.
+>>>>
+>>>> You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
+>>>> that ->thread_pid is needed.
+>>>>
+>>>> Even more so than ->thread_pid, it is a kernel invariant that ->signal
+>>>> does not change.
+>>>
+>>> I don't care about the pid itself, my suggestion was to assign ->thread_pid
+>>> over the lookup operation to ensure that /proc/self/ worked the way that
+>>> you'd expect.
+>>
+>> I understand that.
+>>
+>> However /proc/self/ refers to the current process not to the current
+>> thread.  So ->thread_pid is not what you need to assign to make that
+>> happen.  What the code looks at is: ->signal->pids[PIDTYPE_TGID].
+>>
+>> It will definitely break invariants to assign to ->signal.
+>>
+>> Currently only exchange_tids assigns ->thread_pid and it is nasty.  It
+>> results in code that potentially results in infinite loops in
+>> kernel/signal.c
+>>
+>> To my knowledge nothing assigns ->signal->pids[PIDTYPE_TGID].  At best
+>> it might work but I expect the it would completely confuse something in
+>> the pid to task or pid to process mappings.  Which is to say even if it
+>> does work it would be an extremely fragile solution.
+> 
+> Thanks Eric, that's useful. Sounds to me like we're better off, at least
+> for now, to just expressly forbid async lookup of /proc/self/. Which
+> isn't really the end of the world as far as I'm concerned.
 
-Hi all,
+Alternatively, we just teach task_pid_ptr() where to look for an
+alternate, if current->flags & PF_IO_WORKER is true. Then we don't have
+to assign anything that's visible in task_struct, and in fact the async
+worker can retain this stuff on the stack. As all requests are killed
+before a task is allowed to exit, that should be safe.
 
-In commit
 
-  32fabd9b163b ("RDMA/rxe: Compute PSN windows correctly")
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 74ddbff1a6ba..5fd421a4864c 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -42,6 +42,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/sched/task.h>
+ #include <linux/idr.h>
++#include <linux/io_uring.h>
+ #include <net/sock.h>
+ #include <uapi/linux/pidfd.h>
+ 
+@@ -320,6 +321,12 @@ EXPORT_SYMBOL_GPL(find_vpid);
+ 
+ static struct pid **task_pid_ptr(struct task_struct *task, enum pid_type type)
+ {
++	if ((task->flags & PF_IO_WORKER) && task->io_uring) {
++		return (type == PIDTYPE_PID) ?
++			&task->io_uring->thread_pid :
++			&task->io_uring->pids[type];
++	}
++
+ 	return (type == PIDTYPE_PID) ?
+ 		&task->thread_pid :
+ 		&task->signal->pids[type];
 
-Fixes tag
+-- 
+Jens Axboe
 
-  Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
-Maybe you meant
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-
-In commit
-
-  b67ffe884bdd ("RDMA/bnxt_re: Fix entry size during SRQ create")
-
-Fixes tag
-
-  Fixes: 2bb3c32c5c5f ("RDMA/bnxt_re: Change wr posting logic to accommodat=
-e  variable wqes")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lk.ZAxSxMhtzy7dof_tlO9n
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+gfBoACgkQAVBC80lX
-0GxKxgf9EGuPZmL8Y1T7ZKCJSAjwrirsRLTTcXzJqOOwt5bKvFAd8Jo/0oOYbN7f
-ZQwziLicXN9W7S8spCbfXTgAcfTfRlu7NZDHJ1hIuVTeMO7sOsIDMJUjouv5cfdq
-WUXrW4jTFXQjXuk3IPFDnDfKAs5c1RxRj6lItX1Hl/Q7vqGbA5+B7qK2npD8GuQJ
-FYzKXY8OymETbv4FJthndsb6E9lt1azzKOTyrphKakiiAhrj16/KiJDoPzxN1GXg
-rcxjAMTIago6rFlQZb+J9IwJt/AhibwQxRpDmBUY6kP5VgAIWQDqErt+BpnqZou7
-SDP4e1iWWtrJYaLE1XXvbjec0nx/ng==
-=it1J
------END PGP SIGNATURE-----
-
---Sig_/lk.ZAxSxMhtzy7dof_tlO9n--
