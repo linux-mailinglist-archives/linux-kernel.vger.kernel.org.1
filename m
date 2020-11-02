@@ -2,148 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529E12A3353
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452E72A3356
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgKBSv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKBSv3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:51:29 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFBDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:51:28 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id r7so12456944qkf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:51:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rxilry/ji3nfiO3JLB2z5Ve/eVy0zWt8AyEvNUngD2c=;
-        b=dKtG6LmAlh3COooqJe2opsc1vsdAPado7jNhzT70IvKawfZtenI/Woq5VZgoB0+zZ1
-         m6OKk6LlKYnTnR6JxLDAm7d42kdgHj268lvzUjwxWfTYn5ds2bZAC9IgCf0sbhuiKKyl
-         HxSiwHd5jFd/3DD72IanvqHDuEWCb2grAqguE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rxilry/ji3nfiO3JLB2z5Ve/eVy0zWt8AyEvNUngD2c=;
-        b=Q+TucLtMquXNTAFhK03+d9NkvM5IdZ6s1J5o1QtoI3F1H/EpRHJmG0zp5QXDyTtzTy
-         8iFWQel06rFUZrZV2QHtBCVGCPrFFClaK1Yo1G6AYapbbe5qvRyuGi7jTfoxmoIs73l1
-         6AUOgXkSJe3m7AjZ5Vz9EskS91/jKnljnMbPJfDK64D15jaT4gzKINSZweAI3lmUSbHL
-         OywQUSzvJc9Sf2YEnDit0YNAu/I9+0/4NFHsFi0Amo6Fz9fqnSW9BEoi5pQ+lNe4b4bE
-         jH6bfSRW6qrLGdEXB8ge6FUFM46PQPDnyFy9PHuWRXeUfpT8HWhxTagxH7Ai+pKU1nTb
-         ml9w==
-X-Gm-Message-State: AOAM53030CVHVn7DR1/LNF/IS724wSpdGhpeKl4Sg1XkBkw738W9UFR3
-        xpqj4ZQrvrFxoS+xSCS6+XenWw==
-X-Google-Smtp-Source: ABdhPJzV3CsOTGlK/Pijavy7T/2537LjiZA3HhuqFIwRJyt8vCTUlZuhQJM8aH8pir7Z8yJb9pi6Qg==
-X-Received: by 2002:a37:9a46:: with SMTP id c67mr16146337qke.292.1604343087896;
-        Mon, 02 Nov 2020 10:51:27 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id x22sm8543868qki.104.2020.11.02.10.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:51:27 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:51:26 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
-Message-ID: <20201102185126.GB595952@google.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
- <20201023195352.26269-2-mjeanson@efficios.com>
- <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
- <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726493AbgKBSvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:51:39 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:5588 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726206AbgKBSvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:51:38 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa055380000>; Tue, 03 Nov 2020 02:51:36 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
+ 2020 18:51:35 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 2 Nov 2020 18:51:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wlnpy8exy6gRW9AU/1YTywJrc+TLfGRPrlvMFDYou56qrBU3hY2SnR81x1wgfJRHNq0aOYjQ/BFuu/H7O6F2/paQYRORIRT1JGne9E8UsX6/htcN4Phn5QAHphch8efJJX3YbaVEq3PH1sSFpjrFSvGBNi09WpTl1NedzhKOpSmgLtr2AFkRWbU+nYD8A+T3Tbi2m9Qv3Sxv3vsv/T9lBGOmOPDEvJcOhweiZr0+x5vSpaCaBn/lesmxKOcUG2hsxOdA0kmuKqWASQbO8k4J/xsQQSjswuV3fGP4bHC4Lf6CcwFK9kyXpHr7O3W+TeXmIHPp0Foa29e3MO/uqjcOzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Afw655/llzzLOfVWWTyt/IVjZ826sj/GF4kenspUmMY=;
+ b=M6yirDY4/dwqu7ZwNu5h0z4ChPxlW5I8VgTGUPCtpYngwFhFWdQPsqDceYTWMyk+zFfMxBFAPoH7OKG8hfdvarYrQCSpLSyplxSgDgU2tfHELS5heZ2VflMRsPhBdNGknE/WEOwsduk54HB48h7ltbBDkMpsf2kr+dCoBL++9F791dyjiKJzXvadl+J+s4VGxQ6pkqra1FmmFWrqbefeUxhnqg1g9+lFlSYaC2vo3gzO6T9CjdOSL2GptK5Px8/hHIR2XgfWgKIBmhqiQ5mBMTJ9lkFg8krRcYOhB55qL1hxlobNOOHQdYUqy7aJTd+BAbyWJ/qgmzEW3LtGu12KDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4356.namprd12.prod.outlook.com (2603:10b6:5:2aa::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 18:51:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 18:51:32 +0000
+Date:   Mon, 2 Nov 2020 14:51:30 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Dave Jiang <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>, <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Jacob jun Pan" <jacob.jun.pan@intel.com>,
+        Yi L Liu <yi.l.liu@intel.com>, Baolu Lu <baolu.lu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Sanjay K Kumar <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, Jing Lin <jing.lin@intel.com>,
+        <kwankhede@nvidia.com>, <eric.auger@redhat.com>,
+        "Parav Pandit" <parav@mellanox.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Samuel Ortiz" <samuel.ortiz@intel.com>,
+        Mona Hossain <mona.hossain@intel.com>,
+        Megha Dey <megha.dey@linux.intel.com>,
+        <dmaengine@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+Message-ID: <20201102185130.GB3600342@nvidia.com>
+References: <20201030193045.GM2620339@nvidia.com>
+ <20201030204307.GA683@otc-nc-03> <87h7qbkt18.fsf@nanos.tec.linutronix.de>
+ <20201031235359.GA23878@araj-mobl1.jf.intel.com>
+ <20201102132036.GX2620339@nvidia.com> <20201102162043.GB20783@otc-nc-03>
+ <20201102171909.GF2620339@nvidia.com>
+ <20d7c5fc-91b0-d673-d41a-335d91ca2dce@intel.com>
+ <20201102182632.GH2620339@nvidia.com>
+ <CAPcyv4h8O+boTo-MpGRSC8RpjrsvU-P3AU7_kwbrfDkEp8bH1w@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CAPcyv4h8O+boTo-MpGRSC8RpjrsvU-P3AU7_kwbrfDkEp8bH1w@mail.gmail.com>
+X-ClientProxiedBy: MN2PR04CA0033.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::46) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0033.namprd04.prod.outlook.com (2603:10b6:208:d4::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 2 Nov 2020 18:51:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZevS-00FSUS-Pl; Mon, 02 Nov 2020 14:51:30 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604343096; bh=Afw655/llzzLOfVWWTyt/IVjZ826sj/GF4kenspUmMY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=rMC5O6cMyjDQa1CQPTi/IhODP5InUMGg4CyNZ9xsl7IgSGJNKo1Qwjw6TySt79ERC
+         AvlzWDHAu9Qf2yj+BRzhA6c5ITlwHGdTKgQ80Y0p05ReZdsxLMBO9X/WJ9taAu2rOj
+         lpfptxL+ezsje0dkRvfegqBezfYhnvZxiaMyxl06D6iel8v0k+fJqQ7sen7OCi2Tw8
+         /wiDKduFgtMTjnr2mHMMpKjM4/3JfX9uzcUQHejGNYf8xzAD9rKNixfqj9zfZo7CyR
+         DBsRsjOkJlMDjNBPLgxyMEuhohZLHmFmzRk5nWyR1aLY2qFySXwBPGKbt71pwOxDNS
+         +e/opjNzQDY/Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:37:08AM -0400, Mathieu Desnoyers wrote:
-> 
-> ----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
-> 
-> > On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
-> >> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
-> >> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
-> >>  	do {								\
-> >>  		struct tracepoint_func *it_func_ptr;			\
-> >>  		void *it_func;						\
-> >>  		void *__data;						\
-> >>  		int __maybe_unused __idx = 0;				\
-> >> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
-> >>  									\
-> >>  		if (!(cond))						\
-> >>  			return;						\
-> >> @@ -170,8 +178,13 @@ static inline struct tracepoint
-> >> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> >>  		/* srcu can't be used from NMI */			\
-> >>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
-> >>  									\
-> >> -		/* keep srcu and sched-rcu usage consistent */		\
-> >> -		preempt_disable_notrace();				\
-> >> +		if (maysleep) {						\
-> >> +			might_sleep();					\
-> > 
-> > The main purpose of the patch set is to access user memory in tracepoints,
-> > right?
-> 
-> Yes, exactly.
-> 
-> > In such case I suggest to use stronger might_fault() here.
-> > We used might_sleep() in sleepable bpf and it wasn't enough to catch
-> > a combination where sleepable hook was invoked while mm->mmap_lock was
-> > taken which may cause a deadlock.
-> 
-> Good point! We will do that for the next round.
-> 
-> By the way, we named this "sleepable" tracepoint (with flag TRACEPOINT_MAYSLEEP),
-> but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive ?
-> (a "faultable" tracepoint sounds weird though)
+On Mon, Nov 02, 2020 at 10:38:28AM -0800, Dan Williams wrote:
 
-What about keeping it might_sleep() here and then adding might_fault() in the
-probe handler? Since the probe handler knows that it may cause page fault, it
-could itself make sure about it.
-
-One more thought: Should we make _all_ tracepoints sleepable, and then move
-the preempt_disable() bit to the probe handler as needed? That could simplify
-the tracepoint API as well. Steven said before that whoever registers probes
-knows what they are doing so I am ok with that.
-
-No strong feelings one way or the other, for either of these though.
-
-thanks,
-
- - Joel
-
+> > I think you will be the first to use the namespace stuff for this, it
+> > seems like a good idea and others should probably do so as well.
 > 
-> Thanks,
-> 
-> Mathieu
-> 
-> > 
-> >> +			rcu_read_lock_trace();				\
-> >> +		} else {						\
-> >> +			/* keep srcu and sched-rcu usage consistent */	\
-> >> +			preempt_disable_notrace();			\
-> > > +		}							\
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+> I was thinking either EXPORT_SYMBOL_NS, or auxiliary bus, because you
+> should be able to export an ops structure with all the necessary
+> callbacks. 
+
+'or'? 
+
+Auxiliary bus should not be used with huge arrays of function
+pointers... The module providing the device should export a normal
+linkable function interface. Putting that in a namespace makes a lot
+of sense.
+
+Jason
