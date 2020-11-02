@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9187F2A360B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F592A3609
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgKBVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBVee (ORCPT
+        id S1726055AbgKBVeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:34:21 -0500
+Received: from mout.kundenserver.de ([212.227.126.133]:49525 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgKBVeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:34:34 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C0CC0617A6;
-        Mon,  2 Nov 2020 13:34:33 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id cw8so7325739ejb.8;
-        Mon, 02 Nov 2020 13:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbufLgqiyIIbCZK3mBvFwqqjvux2J/0hEM6rbWN5xzk=;
-        b=TJFiOQMtl8XoozaF4vgsO/YTQhAiAIqRV25Z/KYPOTgdIbLz3AgGPVdtZWnYiC6uTC
-         qW3BWtPbMeZVhOHiukak0XOpNJtlZceHBTe/7fvPxQe+oMxvLAo07uygi8UqvTgOHhan
-         bYlJZyIGMmfaTQK2VOrDVsFGYSO4xnnStMIax70+aWuPORRYzdQx+igLIHWDQUvMR2c5
-         FGdqi/tqOq6BznfqE+m76t1MxHxwDvVycgvu6JpKPsrjRn/JytOu+0nveyTPx+787OqP
-         0agbnoQt6F7d4M1PGht5ReiZ8adn3SAEWtL48hn6Fvp+9V/27zpHbYUeHcztxkYzuiJW
-         8Glw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbufLgqiyIIbCZK3mBvFwqqjvux2J/0hEM6rbWN5xzk=;
-        b=t40V9qih0qQ3l6lLvOU1COwNJ0CCgzjmn1CBd7kWVxc5zI3Lrmr4shUCMfpmg7/mDt
-         HpMbgEqEDz1+s5C5YCRUI8IU9PJT0jz8MCWEkQdarsWn5osMibTHolcUNdF0CSb3ZPbr
-         u/SHrWXH1BFAlqUlzCnwZNX5d+ot1NeYUisV73O+bVbfJAkMPXAlfoYvVsSa2OsJ5V6B
-         /y2nxHcM6x/3O49MrXBoZaehWXrKrQ4gpxygOuqjM/gfbNZ4pNhozMiAdsYmiF3fKXZh
-         qEdN7RGFShgwsHYDozKHQ1uz+5fcVk06QkcdkDqJMBPpN0G5FudHLK+UDKcobV9Cz1Oi
-         goTQ==
-X-Gm-Message-State: AOAM530ezPlZqejVJEmCQwROA/dgKWplkIhLqoBS8XQ3vjGVrLP0eTZq
-        nRKZIDTGCWdsOF9F3bS37+vZxAikZ9Jksw==
-X-Google-Smtp-Source: ABdhPJyxBXeO5UZXcYcQlsT9kE/rY+XRUZL/IQvV6PJTy6Iz0jey5Ktjxya9vz0/8Jrme6uh1TAwiA==
-X-Received: by 2002:a17:906:adcd:: with SMTP id lb13mr7223544ejb.362.1604352871990;
-        Mon, 02 Nov 2020 13:34:31 -0800 (PST)
-Received: from necip-pc.vpn.ucf.edu ([85.153.224.24])
-        by smtp.gmail.com with ESMTPSA id nu20sm9913087ejb.109.2020.11.02.13.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 13:34:31 -0800 (PST)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     zajec5@gmail.com
-Cc:     hauke@hauke-m.de, ralf@linux-mips.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
-Date:   Tue,  3 Nov 2020 00:34:01 +0300
-Message-Id: <20201102213400.356591-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Nov 2020 16:34:21 -0500
+Received: from 'smile.earth' ([95.89.3.76]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MAOeB-1kTsaM0jEJ-00Bw3Y; Mon, 02 Nov 2020 22:34:13 +0100
+X-Virus-Scanned: amavisd at 'smile.earth'
+From:   Hans-Peter Jansen <hpj@urpla.net>
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 5.9 24/74] x86,
+ powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()
+Date:   Mon, 02 Nov 2020 22:34:08 +0100
+Message-ID: <5149714.arhZky3dcl@xrated>
+In-Reply-To: <20201031113501.207349375@linuxfoundation.org>
+References: <20201031113500.031279088@linuxfoundation.org>
+ <20201031113501.207349375@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Provags-ID: V03:K1:fCln/6GVs0RmP5szWXiMyIMh1DBFBsohmVL/zpZTQM0hYf4jycU
+ f2QX/ujtwzDaXvcyQC+5uA203zV6yUUETEDkhP1wCYllCUaBlFpzVajOmnoLkG0uf5bU3Xy
+ PAKtk8lFgcFO2ymtXn7W0/CEeHEdMhIQ4IjyMplDEZC1T115EUhsFDDhehvQaJeyoiB1slY
+ /C+BUeK2leL1c/HXdBB0A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d2FUqD3q9Hw=:xvbzKxSdAoL6yiS1afqNG1
+ VHpKnHiYaz0gQ8LQr4tZ3HTmJeE+ZOH7KQZ1nSwo70wLLFvFID70qW73yF0J0mAqMimdWJCa8
+ TTQ88zjRHRPBrRDRj6X2XyTMho2wk4xV10r9lkid79UIXm23gcqPLKZxfVY940Ujg3tIMov6k
+ xf8a9zggGvJQdHcj6L8mv2XabAyD9Zo6auKaaGk5LyYwT4nyAKpebccjm9jPGDcJtq6o9yUpp
+ v20NnZJssP0zTnogjvIWM8TQ0wX5zIoZ1vZUmn9iMgTftQ9BYilJlZgvZ/PVr+Yvjbk7MxyA9
+ puV6XI3DHNCylamsE2Ln0Au35bnxqaqFh2InuKzq46xwpkCNR6CTmeXFBC8ym592Q9B5aaEDH
+ NQ0EFxnOIgZunM47J15makMSkwLIjhKjcpa3ywTxEXppBw9EFPfkU4rFyLuS3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
-in the following Kbuild warning:
+Hi Greg, hi Dan,
 
-WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
-  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
-  Selected by [y]:
-  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
+Am Samstag, 31. Oktober 2020, 12:36:06 CET schrieb Greg Kroah-Hartman:
+> From: Dan Williams <dan.j.williams@intel.com>
+> 
+> commit ec6347bb43395cb92126788a1a5b25302543f815 upstream.
+> 
+> In reaction to a proposal to introduce a memcpy_mcsafe_fast()
+> implementation Linus points out that memcpy_mcsafe() is poorly named
+> relative to communicating the scope of the interface. Specifically what
+> addresses are valid to pass as source, destination, and what faults /
+> exceptions are handled.
+> 
+> 
+> Introduce an x86 copy_mc_fragile() name as the rename for the
+> low-level x86 implementation formerly named memcpy_mcsafe(). It is used
+> as the slow / careful backend that is supplanted by a fast
+> copy_mc_generic() in a follow-on patch.
+> 
+> One side-effect of this reorganization is that separating copy_mc_64.S
+> to its own file means that perf no longer needs to track dependencies
+> for its memcpy_64.S benchmarks.
+> 
+> ---
+> arch/powerpc/lib/copy_mc_64.S                          |  242 +++++++++++++++++
+> arch/powerpc/lib/memcpy_mcsafe_64.S                    |  242 -----------------
 
-The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
-depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
-depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
+> tools/testing/selftests/powerpc/copyloops/copy_mc_64.S |  242 +++++++++++++++++ 
 
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
+This change leaves a dangling symlink in 
+tools/testing/selftests/powerpc/copyloops behind. At least, this is, what I 
+could track down, when building 5.9.3 within an environment, that bails out 
+on this:
 
-Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- arch/mips/bcm47xx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+[ 2908s] calling /usr/lib/rpm/brp-suse.d/brp-25-symlink
+[ 2908s] ERROR: link target doesn't exist (neither in build root nor in installed system):
+[ 2908s]   /usr/src/linux-5.9.3-lp152.3-vanilla/tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S -> /usr/src/linux-5.9.3-lp152.3-vanilla/arch/powerpc/lib/memcpy_mcsafe_64.S
+[ 2908s] Add the package providing the target to BuildRequires and Requires
+[ 2909s] INFO: relinking /usr/src/linux-5.9.3-lp152.3-vanilla/tools/testing/selftests/powerpc/primitives/asm/asm-compat.h -> ../../../../../../arch/powerpc/include/asm/asm-compat.h (was ../.././../../../../arch/powerpc/include/asm/asm-compat.h)
 
-diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
-index 6889f74e06f5..490bb6da74b7 100644
---- a/arch/mips/bcm47xx/Kconfig
-+++ b/arch/mips/bcm47xx/Kconfig
-@@ -27,6 +27,7 @@ config BCM47XX_BCMA
- 	select BCMA
- 	select BCMA_HOST_SOC
- 	select BCMA_DRIVER_MIPS
-+	select BCMA_DRIVER_PCI if PCI
- 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
- 	select BCMA_DRIVER_GPIO
- 	default y
--- 
-2.25.1
+Linus` tree seems to not suffer from this, though.
+
+Cheers,
+Pete
+
 
