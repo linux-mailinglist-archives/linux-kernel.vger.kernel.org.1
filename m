@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAB92A2575
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF2C2A257E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgKBHnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:43:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728078AbgKBHnK (ORCPT
+        id S1728162AbgKBHoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:44:37 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7396 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbgKBHog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:43:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604302989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qWIfKd9ZiQU29ZqGSlOhjKSzRATAwUeg5+eE8ZDGiys=;
-        b=GqDV48Dtc7Rfq0MVHduzQEoK9Py95xu86UufvOx2om7ult8FFyCIKOElYVWBoi7d+EhxIa
-        WKpuceSdA0SZlu7ThKucsvpOrHyve0coC19d3y1u2YecjoUM7ZpUNLqAX7XC+862cpMu75
-        656vz5udgZBIfBCuc43cScVmtjACtYA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-83-N2pcUwMWNBSe0q4XT1NJLg-1; Mon, 02 Nov 2020 02:43:05 -0500
-X-MC-Unique: N2pcUwMWNBSe0q4XT1NJLg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 034C71018F80;
-        Mon,  2 Nov 2020 07:43:04 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AA305B4AF;
-        Mon,  2 Nov 2020 07:43:01 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] md superblock write alignment on 512e devices
-To:     Christopher Unkel <cunkel@drivescale.com>,
-        linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20201029201358.29181-1-cunkel@drivescale.com>
-From:   Xiao Ni <xni@redhat.com>
-Message-ID: <265efd48-b0c6-cba5-c77e-5efb0e6b9e00@redhat.com>
-Date:   Mon, 2 Nov 2020 15:42:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Mon, 2 Nov 2020 02:44:36 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPlL76NNBz7231;
+        Mon,  2 Nov 2020 15:44:31 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 15:44:22 +0800
+From:   Wang Wensheng <wangwensheng4@huawei.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <rui.xiang@huawei.com>, <guohanjun@huawei.com>
+Subject: [PATCH -next] watchdog: Fix potential dereferencing of null pointer
+Date:   Mon, 2 Nov 2020 07:44:13 +0000
+Message-ID: <20201102074413.69552-1-wangwensheng4@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20201029201358.29181-1-cunkel@drivescale.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A reboot notifier, which stops the WDT by calling the stop hook without
+any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
 
+Howerer we allow the WDT driver to omit the stop hook since commit
+"d0684c8a93549" ("watchdog: Make stop function optional") and provide
+a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+control reboot policy"). Together that commits make user potential to
+insert a watchdog driver that don't provide a stop hook but with the
+stop_on_reboot parameter set, then dereferencing of null pointer occurs
+on system reboot.
 
-On 10/30/2020 04:13 AM, Christopher Unkel wrote:
-> Hello,
->
-> Thanks for the feedback on the previous patch series.
->
-> A updated patch series with the same function as the first patch
-> (https://lkml.org/lkml/2020/10/22/1058 "md: align superblock writes to
-> physical blocks") follows.
->
-> As suggested, it introduces a helper function, which can be used to
-> reduce some code duplication.  It handles the case in super_1_sync()
-> where the superblock is extended by the addition of new component
-> devices.
->
-> I think it also fixes a bug where the existing code in super_1_load()
-> ought to be rejecting the array with EINVAL: if the superblock padded
-> out to the *logical* block length runs into the bitmap.  For example, if
-> the bitmap offset is 2 (bitmap 1K after superblock) and the logical
-> block size is 4K, the superblock padded out to 4K runs into the bitmap.
-> This case may be unusual (perhaps only happens if the array is created
-> on a 512n device and then raw contents are copied onto a 4kn device) but
-> I think it is possible.
-Hi Chris
-For super1.1 and super1.2 bitmap offset is 8. It's a fixed value. So it 
-should
-not have the risk?
+Check the stop hook before registering the reboot notifier to fix the
+issue.
 
-But for future maybe it has this problem. If the disk logical or 
-physical block size
-is larger than 4K in future, it has data corruption risk.
->
-> With respect to the option of simply replacing
-> queue_logical_block_size() with queue_physical_block_size(), I think
-> this can result in the code rejecting devices that can be loaded, but
-In mdadm it defines the max super size of super1 is 4096
-#define MAX_SB_SIZE 4096
-/* bitmap super size is 256, but we round up to a sector for alignment */
-#define BM_SUPER_SIZE 512
-#define MAX_DEVS ((int)(MAX_SB_SIZE - sizeof(struct mdp_superblock_1)) / 2)
-#define SUPER1_SIZE     (MAX_SB_SIZE + BM_SUPER_SIZE \
-                          + sizeof(struct misc_dev_info))
+Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+---
+ drivers/watchdog/watchdog_core.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
-It should be ok to replace queue_logical_block_size with 
-queue_physical_block_size?
-Now it doesn't check physical block size and super block size. For 
-super1, we can add
-a check that if physical block size is larger than MAX_SB_SIZE, then we 
-reject to create/assmble
-the raid device.
-> for which the physical block alignment can't be respected--the longer
-> padded size would trigger the EINVAL cases testing against
-> data_offset/new_data_offset.  I think it's better to proceed in such
-> cases, just with unaligned superblock writes as would presently happen.
-> Also if I'm right about the above bug, then I think this subsitution
-> would be more likely to trigger it.
->
-> Thanks,
->
->    --Chris
->
->
-> Christopher Unkel (3):
->    md: factor out repeated sb alignment logic
->    md: align superblock writes to physical blocks
->    md: reuse sb length-checking logic
->
->   drivers/md/md.c | 69 +++++++++++++++++++++++++++++++++++++------------
->   1 file changed, 52 insertions(+), 17 deletions(-)
->
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 423844757812..5269761ba072 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -252,10 +252,8 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 		wdd->id = id;
+ 
+ 		ret = watchdog_dev_register(wdd);
+-		if (ret) {
+-			ida_simple_remove(&watchdog_ida, id);
+-			return ret;
+-		}
++		if (ret)
++			goto id_remove;
+ 	}
+ 
+ 	/* Module parameter to force watchdog policy on reboot. */
+@@ -267,15 +265,17 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	}
+ 
+ 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+-		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
++		if (!wdd->ops->stop) {
++			ret = -EINVAL;
++			goto dev_unregister;
++		}
+ 
++		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+ 		ret = register_reboot_notifier(&wdd->reboot_nb);
+ 		if (ret) {
+ 			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+ 			       wdd->id, ret);
+-			watchdog_dev_unregister(wdd);
+-			ida_simple_remove(&watchdog_ida, id);
+-			return ret;
++			goto dev_unregister;
+ 		}
+ 	}
+ 
+@@ -289,6 +289,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	}
+ 
+ 	return 0;
++
++dev_unregister:
++	watchdog_dev_unregister(wdd);
++id_remove:
++	ida_simple_remove(&watchdog_ida, id);
++
++	return ret;
+ }
+ 
+ /**
+-- 
+2.25.0
 
