@@ -2,378 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA1C2A2454
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6405B2A245B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgKBFau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:30:50 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:58981 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727029AbgKBFau (ORCPT
+        id S1727882AbgKBFcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 00:32:02 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:16862 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725208AbgKBFcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:30:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1604295046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XedrgsPWHSVjUUGO8ZU81QjTkXW6pQHWB272YdGVruc=;
-        b=DpDVGJyXeDkFG1DumF+WPhH4Cd+xyqxx10lhVMVdl+xwNf6L0JpqcCEhJgKkeudlsPSRJT
-        SrQfU8hIB/kQ8jiMvojRKiFTPSTSurEIbaaj0vpI2oIdbg0a97l7XnTQhCF+w7VAascWxD
-        NkIz6JWivbvdt45TXA/2iXCyvmOsXCM=
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02lp2058.outbound.protection.outlook.com [104.47.6.58]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-13-y9Isd1hJNseHwfZTyl_4QA-1; Mon, 02 Nov 2020 06:30:45 +0100
-X-MC-Unique: y9Isd1hJNseHwfZTyl_4QA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UmOtjZBVB4yfVADobCb9lx4VDBBlMF+FumbiZG2SMD+e+brZVdyF0soGcDUyJVNFX2G1REPthXCUmhaVvLj58S8Er65LHBpLVxvAiar4sBzBUgoGQO1G+uTjmG94Cxem4QSuXatt+RhgqRUX9wZlA03VEiDVZrAt7DkUrh8nGrZnqwtJXzw+HQFktl2cYdKcc6mlQBmgHDK0rJWyRvCGQ7VN2yQPNdtbU9IDoP7y7ZrnWVb+bSjxP+q9WN4GQeVDsn0YYU3PyWNH5agpXwqlOcMPUIjQE4U9tLaqSpflwJbItOG87Iosm2bFJcgwHkaiVHvTdx0mHIaMbud7OwUfOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XedrgsPWHSVjUUGO8ZU81QjTkXW6pQHWB272YdGVruc=;
- b=Z4wroomFwBQ/8kPTzzmSXDspYbiZRJXVI8RTcbjGo4zBIdG8q6XEtcL1DB9efDYhtgKLvoQCFQE1nhoAfGx9Xy9s8PmGS32O+yD5R59mGozn7w1rTrGi9ld7NfMSVmBxV9g02MnPL3VOWXYEFXt1ToWiD8G9BRb/AzjOLrUWadvBNHn4oGURNrWddS+qFoEsZyIJd0urrl+Xy8puvLSd7coiPlCW2N5oSg+pt5xIjH4gJJp1clvNGyJ3QT86jowWwJHjAqdqXNcJfauSahue4Vrb2c2qtLlbowsrUD5KFaafTrqSDMgZyt1mBM+U9tVDEg493FhLmtm2zHIGmnD0aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB4928.eurprd04.prod.outlook.com (2603:10a6:803:57::13)
- by VI1PR04MB4286.eurprd04.prod.outlook.com (2603:10a6:803:46::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
- 2020 05:30:42 +0000
-Received: from VI1PR04MB4928.eurprd04.prod.outlook.com
- ([fe80::255b:d25c:3a2b:1e8f]) by VI1PR04MB4928.eurprd04.prod.outlook.com
- ([fe80::255b:d25c:3a2b:1e8f%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 05:30:42 +0000
-Date:   Mon, 2 Nov 2020 13:30:25 +0800
-From:   Chester Lin <clin@suse.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Mon, 2 Nov 2020 00:32:02 -0500
+X-UUID: 3b0aed76e2bc4c81b33745fc93cfc3f2-20201102
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=cV4gOZgbQyw9goU3SziyAlEvKvp/S9N1fy8pc7rAB3Q=;
+        b=ZLVHo+aSzV7qBB4sT5EPJ6lYGQMoM8axFc3P0DOPQyBwMXNwurcX5c+kMX9sHrfkciM8Zq4GoVdxFNzRRqA9Qg1/CeeqVX+whkjVkZT0TEHh0RQ1slxanAUWtz+vOy6mXa9djUH7enMM/fSv9ftdvH4fp5zj1ollUO1rZQdY0vE=;
+X-UUID: 3b0aed76e2bc4c81b33745fc93cfc3f2-20201102
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1499802131; Mon, 02 Nov 2020 13:31:41 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 2 Nov
+ 2020 13:31:20 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 2 Nov 2020 13:31:17 +0800
+Message-ID: <1604295074.26323.107.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 1/3] dt-bindings: memory: mediatek: Convert SMI to DT
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     <youlin.pei@mediatek.com>, <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <iommu@lists.linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <ming-fan.chen@mediatek.com>, <anan.sun@mediatek.com>,
         Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, X86 ML <x86@kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [PATCH v3 1/3] efi: generalize efi_get_secureboot
-Message-ID: <20201102052907.GA31148@linux-8mug>
-References: <20201030060840.1810-1-clin@suse.com>
- <20201030060840.1810-2-clin@suse.com>
- <CAMj1kXFaARnhvnSKSFvAXXY1TKfv=_hG3z=B2j=G3p7qLeQaYw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFaARnhvnSKSFvAXXY1TKfv=_hG3z=B2j=G3p7qLeQaYw@mail.gmail.com>
-X-Originating-IP: [118.166.48.44]
-X-ClientProxiedBy: AM4PR0701CA0042.eurprd07.prod.outlook.com
- (2603:10a6:200:42::52) To VI1PR04MB4928.eurprd04.prod.outlook.com
- (2603:10a6:803:57::13)
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 2 Nov 2020 13:31:14 +0800
+In-Reply-To: <20201031113623.GA4019@kozik-lap>
+References: <20201030091254.26382-1-yong.wu@mediatek.com>
+         <20201030091254.26382-2-yong.wu@mediatek.com>
+         <20201031113623.GA4019@kozik-lap>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-8mug (118.166.48.44) by AM4PR0701CA0042.eurprd07.prod.outlook.com (2603:10a6:200:42::52) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Mon, 2 Nov 2020 05:30:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a516c1f8-f034-49f0-7b5f-08d87ef07081
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4286:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4286318FC6E9D387C9CD87AEAD100@VI1PR04MB4286.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EaalbUSbgYOjpuIQ5wVdgze7usyJu+OSoBZ5vBGDMhgiX749AL3H4QihPWAt4f/M6qFxfBjCICAc7X49EfpHlRnN5GejTZMTGeomn+3uBK8xQh2L+ultOEhQ8uwVZEtuKnNUslk/4oP3ImKOTQUWF+nNpwdUEI2XgyHmNOz0631ipVNI2noIYK+YAX+9zn6WGVglZYr96u+1zYTlu5sp+DmAAIZx92ayjILl4wNAOnMLscejQvUNr8xnvy3Od9wORJBPueXL96tpyCadAkPdkETp92tKAEaXZhKiTHYcNTYNEzKFdQUf0wK0Qfy/DNYoF9SZoUC2TLVaLvfca+5/+g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4928.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(366004)(346002)(376002)(8936002)(956004)(55016002)(66476007)(16526019)(7416002)(4326008)(83380400001)(66556008)(1076003)(8676002)(6916009)(55236004)(478600001)(45080400002)(5660300002)(6666004)(52116002)(33656002)(26005)(186003)(86362001)(54906003)(9686003)(316002)(2906002)(33716001)(6496006)(66946007)(107886003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 3NzWc5yUPGemi0SFl1yRPSTQbBfzYducL39IfcLmNmPI5kaznMKdTGALKqz4YVUJz6JlYcc83KglhK9cgM3u+yTz1fXbKFtTZC6URjfBVhBcsY1wSon/8JylBd0LYNJ2dOGTo6KI6bOKkQp4kBS8nP7hOLP/oD8CHzLbuokm3s2VE/undNSljJ8ps4Tu6T0s1nI/AoiDoQO8smziU7ollo1xs6SZqLbhtDTIZ6lbMJ0N5JhoRd+5x92d696p+bEKYNFQruVWk5hjVnrOck9M52d6L1Yeq2e6ASlJOwUws+Bp6wnsQ0NaSotFpMhrJMjwz6J1juETtu0GjeKFgCa4R66gWpTvNhuNKYXyJ05XhNCfR0J9eOiIFX2IZi6k12WsPmlfkOPX9cm9DGM8NPfgifbq6WYbQsE0mSTlUtvFKk0pGJGLHjvszG2+1PG2RIiwKTyamnLjThSCpxa00Y588q9+R5tJucLuGSX7Y3qUyVfdJ8n6DWHPjuHS4VLbZuKLEIaUb8OT0e27nPgYD0ijaaQUTssLQdn+d091YiVTjExAqyOEKt7VWvJml/Q852nIjSjoJ9W6FEQ7T0CHAHfR0qXWY0Wz15YnxQTnNE+HDkBAjy1Ocddjvlo0s0+K108M/y99ifKEijoGJ5/9zj5h3Q==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a516c1f8-f034-49f0-7b5f-08d87ef07081
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4928.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 05:30:42.6664
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w3VL8/k6SjTkDU2dfTvXnwf67nE2Pvj941YBUtiOidZ15eBCgvnf0/Dpk/tn0LKj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4286
+X-TM-SNTS-SMTP: F09DDD80041E9D994DD9A643C184363ABF8BFAD0A5D980107E056744C25E11032000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
-
-Thanks for your time and reviewing.
-
-On Fri, Oct 30, 2020 at 12:51:10PM +0100, Ard Biesheuvel wrote:
-> Hello Chester,
-> 
-> Thanks again for looking into this.
-> 
-> On Fri, 30 Oct 2020 at 07:09, Chester Lin <clin@suse.com> wrote:
-> >
-> > Generalize the efi_get_secureboot() function so not only efistub but also
-> > other subsystems can use it.
-> >
-> > Signed-off-by: Chester Lin <clin@suse.com>
-> > ---
-> >  drivers/firmware/efi/libstub/Makefile     |  2 +-
-> >  drivers/firmware/efi/libstub/efi-stub.c   |  2 +-
-> >  drivers/firmware/efi/libstub/efistub.h    | 22 ++++---
-> >  drivers/firmware/efi/libstub/secureboot.c | 76 -----------------------
-> >  drivers/firmware/efi/libstub/x86-stub.c   |  2 +-
-> >  include/linux/efi.h                       | 41 +++++++++++-
-> >  6 files changed, 57 insertions(+), 88 deletions(-)
-> >  delete mode 100644 drivers/firmware/efi/libstub/secureboot.c
-> >
-> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> > index 8a94388e38b3..88e47b0ca09d 100644
-> > --- a/drivers/firmware/efi/libstub/Makefile
-> > +++ b/drivers/firmware/efi/libstub/Makefile
-> > @@ -49,7 +49,7 @@ OBJECT_FILES_NON_STANDARD     := y
-> >  # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
-> >  KCOV_INSTRUMENT                        := n
-> >
-> > -lib-y                          := efi-stub-helper.o gop.o secureboot.o tpm.o \
-> > +lib-y                          := efi-stub-helper.o gop.o tpm.o \
-> >                                    file.o mem.o random.o randomalloc.o pci.o \
-> >                                    skip_spaces.o lib-cmdline.o lib-ctype.o \
-> >                                    alignedmem.o relocate.o vsprintf.o
-> > diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
-> > index 914a343c7785..ad96f1d786a9 100644
-> > --- a/drivers/firmware/efi/libstub/efi-stub.c
-> > +++ b/drivers/firmware/efi/libstub/efi-stub.c
-> > @@ -196,7 +196,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
-> >         /* Ask the firmware to clear memory on unclean shutdown */
-> >         efi_enable_reset_attack_mitigation();
-> >
-> > -       secure_boot = efi_get_secureboot();
-> > +       secure_boot = efi_get_secureboot(get_efi_var);
-> >
-> >         /*
-> >          * Unauthenticated device tree data is a security hazard, so ignore
-> > diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-> > index 2d7abcd99de9..b1833b51e6d6 100644
-> > --- a/drivers/firmware/efi/libstub/efistub.h
-> > +++ b/drivers/firmware/efi/libstub/efistub.h
-> > @@ -91,14 +91,6 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
-> >         fdt_setprop((fdt), (node_offset), (name), &(var), sizeof(var))
-> >  #endif
-> >
-> > -#define get_efi_var(name, vendor, ...)                         \
-> > -       efi_rt_call(get_variable, (efi_char16_t *)(name),       \
-> > -                   (efi_guid_t *)(vendor), __VA_ARGS__)
-> > -
-> > -#define set_efi_var(name, vendor, ...)                         \
-> > -       efi_rt_call(set_variable, (efi_char16_t *)(name),       \
-> > -                   (efi_guid_t *)(vendor), __VA_ARGS__)
-> > -
-> >  #define efi_get_handle_at(array, idx)                                  \
-> >         (efi_is_native() ? (array)[idx]                                 \
-> >                 : (efi_handle_t)(unsigned long)((u32 *)(array))[idx])
-> > @@ -112,6 +104,20 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
-> >                 ((handle = efi_get_handle_at((array), i)) || true);     \
-> >              i++)
-> >
-> > +static inline
-> > +efi_status_t get_efi_var(efi_char16_t *name, efi_guid_t *vendor, u32 *attr,
-> > +                        unsigned long *size, void *data)
-> > +{
-> > +       return efi_rt_call(get_variable, name, vendor, attr, size, data);
-> > +}
-> > +
-> > +static inline
-> > +efi_status_t set_efi_var(efi_char16_t *name, efi_guid_t *vendor, u32 attr,
-> > +                        unsigned long size, void *data)
-> > +{
-> > +       return efi_rt_call(set_variable, name, vendor, attr, size, data);
-> > +}
-> > +
-> >  static inline
-> >  void efi_set_u64_split(u64 data, u32 *lo, u32 *hi)
-> >  {
-> > diff --git a/drivers/firmware/efi/libstub/secureboot.c b/drivers/firmware/efi/libstub/secureboot.c
-> > deleted file mode 100644
-> > index 5efc524b14be..000000000000
-> > --- a/drivers/firmware/efi/libstub/secureboot.c
-> > +++ /dev/null
-> 
-> Please keep this file (see below)
-> 
-> > @@ -1,76 +0,0 @@
-> > -// SPDX-License-Identifier: GPL-2.0
-> > -/*
-> > - * Secure boot handling.
-> > - *
-> > - * Copyright (C) 2013,2014 Linaro Limited
-> > - *     Roy Franz <roy.franz@linaro.org
-> > - * Copyright (C) 2013 Red Hat, Inc.
-> > - *     Mark Salter <msalter@redhat.com>
-> > - */
-> > -#include <linux/efi.h>
-> > -#include <asm/efi.h>
-> > -
-> > -#include "efistub.h"
-> > -
-> > -/* BIOS variables */
-> > -static const efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
-> > -static const efi_char16_t efi_SecureBoot_name[] = L"SecureBoot";
-> > -static const efi_char16_t efi_SetupMode_name[] = L"SetupMode";
-> > -
-> > -/* SHIM variables */
-> > -static const efi_guid_t shim_guid = EFI_SHIM_LOCK_GUID;
-> > -static const efi_char16_t shim_MokSBState_name[] = L"MokSBState";
-> > -
-> > -/*
-> > - * Determine whether we're in secure boot mode.
-> > - *
-> > - * Please keep the logic in sync with
-> > - * arch/x86/xen/efi.c:xen_efi_get_secureboot().
-> > - */
-> > -enum efi_secureboot_mode efi_get_secureboot(void)
-> > -{
-> > -       u32 attr;
-> > -       u8 secboot, setupmode, moksbstate;
-> > -       unsigned long size;
-> > -       efi_status_t status;
-> > -
-> > -       size = sizeof(secboot);
-> > -       status = get_efi_var(efi_SecureBoot_name, &efi_variable_guid,
-> > -                            NULL, &size, &secboot);
-> > -       if (status == EFI_NOT_FOUND)
-> > -               return efi_secureboot_mode_disabled;
-> > -       if (status != EFI_SUCCESS)
-> > -               goto out_efi_err;
-> > -
-> > -       size = sizeof(setupmode);
-> > -       status = get_efi_var(efi_SetupMode_name, &efi_variable_guid,
-> > -                            NULL, &size, &setupmode);
-> > -       if (status != EFI_SUCCESS)
-> > -               goto out_efi_err;
-> > -
-> > -       if (secboot == 0 || setupmode == 1)
-> > -               return efi_secureboot_mode_disabled;
-> > -
-> > -       /*
-> > -        * See if a user has put the shim into insecure mode. If so, and if the
-> > -        * variable doesn't have the runtime attribute set, we might as well
-> > -        * honor that.
-> > -        */
-> > -       size = sizeof(moksbstate);
-> > -       status = get_efi_var(shim_MokSBState_name, &shim_guid,
-> > -                            &attr, &size, &moksbstate);
-> > -
-> 
-> MokSBState is a boot time variable, so we cannot access it when
-> running under the OS. Xen also has a code flow similar to this one,
-> but it looks at MokSbStateRt instead (which may be a mistake but let's
-> forget about that for now)
-> 
-> So what we will need to do is factor out only the top part of this
-> function (which, incidentally, is the only part that IMA uses in the
-i> first place)
-> 
-
-Thanks for the reminder. I will take this change into next revision.
-
-> > -       /* If it fails, we don't care why. Default to secure */
-> > -       if (status != EFI_SUCCESS)
-> > -               goto secure_boot_enabled;
-> > -       if (!(attr & EFI_VARIABLE_RUNTIME_ACCESS) && moksbstate == 1)
-> > -               return efi_secureboot_mode_disabled;
-> > -
-> > -secure_boot_enabled:
-> > -       efi_info("UEFI Secure Boot is enabled.\n");
-> > -       return efi_secureboot_mode_enabled;
-> > -
-> > -out_efi_err:
-> > -       efi_err("Could not determine UEFI Secure Boot status.\n");
-> > -       return efi_secureboot_mode_unknown;
-> > -}
-> 
-> So let's keep this file, and also, let's put a wrapper function around
-> get_efi_var() here, of which you can take the address and pass to the
-> static inline function.
-
-If I understand correctly, that means it's better to define a new wrapper
-function around the get_efi_var() rather than changing it from a macro to
-an inline function. Please feel free to let me know if I misunderstand it.
-
-> 
-> > diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> > index 3672539cb96e..3f9b492c566b 100644
-> > --- a/drivers/firmware/efi/libstub/x86-stub.c
-> > +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> > @@ -781,7 +781,7 @@ unsigned long efi_main(efi_handle_t handle,
-> >          * otherwise we ask the BIOS.
-> >          */
-> >         if (boot_params->secure_boot == efi_secureboot_mode_unset)
-> > -               boot_params->secure_boot = efi_get_secureboot();
-> > +               boot_params->secure_boot = efi_get_secureboot(get_efi_var);
-> >
-> >         /* Ask the firmware to clear memory on unclean shutdown */
-> >         efi_enable_reset_attack_mitigation();
-> > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > index d7c0e73af2b9..cc2d3de39031 100644
-> > --- a/include/linux/efi.h
-> > +++ b/include/linux/efi.h
-> > @@ -1089,7 +1089,46 @@ enum efi_secureboot_mode {
-> >         efi_secureboot_mode_disabled,
-> >         efi_secureboot_mode_enabled,
-> >  };
-> > -enum efi_secureboot_mode efi_get_secureboot(void);
-> > +
-> > +static inline enum efi_secureboot_mode efi_get_secureboot(efi_get_variable_t *get_var)
-> > +{
-> > +       efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
-> > +       efi_guid_t shim_guid = EFI_SHIM_LOCK_GUID;
-> > +       efi_status_t status;
-> > +       unsigned long size;
-> > +       u8 secboot, setupmode, moksbstate;
-> > +       u32 attr;
-> > +
-> > +       size = sizeof(secboot);
-> > +       status = get_var(L"SecureBoot", &var_guid, NULL, &size, &secboot);
-> > +
-> > +       if (status == EFI_NOT_FOUND)
-> > +               return efi_secureboot_mode_disabled;
-> > +       if (status != EFI_SUCCESS)
-> > +               return efi_secureboot_mode_unknown;
-> > +
-> > +       size = sizeof(setupmode);
-> > +       status = get_var(L"SetupMode", &var_guid, NULL, &size, &setupmode);
-> > +
-> > +       if (status != EFI_SUCCESS)
-> > +               return efi_secureboot_mode_unknown;
-> > +       if (secboot == 0 || setupmode == 1)
-> > +               return efi_secureboot_mode_disabled;
-> > +
-> 
-> So keep until here and move the rest back into the .c file
-> 
-> > +       /*
-> > +        * See if a user has put the shim into insecure mode. If so, and if the
-> > +        * variable doesn't have the runtime attribute set, we might as well
-> > +        * honor that.
-> > +        */
-> > +       size = sizeof(moksbstate);
-> > +       status = get_var(L"MokSBState", &shim_guid, &attr, &size, &moksbstate);
-> > +       /* If it fails, we don't care why. Default to secure */
-> > +       if (status == EFI_SUCCESS && moksbstate == 1
-> > +           && !(attr & EFI_VARIABLE_RUNTIME_ACCESS))
-> > +               return efi_secureboot_mode_disabled;
-> > +
-> > +       return efi_secureboot_mode_enabled;
-> > +}
-> >
-> >  #ifdef CONFIG_RESET_ATTACK_MITIGATION
-> >  void efi_enable_reset_attack_mitigation(void);
-> > --
-> > 2.28.0
-> >
-> 
+T24gU2F0LCAyMDIwLTEwLTMxIGF0IDEyOjM2ICswMTAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KPiBPbiBGcmksIE9jdCAzMCwgMjAyMCBhdCAwNToxMjo1MlBNICswODAwLCBZb25nIFd1
+IHdyb3RlOg0KPiA+IENvbnZlcnQgTWVkaWFUZWsgU01JIHRvIERUIHNjaGVtYS4NCj4gPiANCj4g
+PiBDQzogRmFiaWVuIFBhcmVudCA8ZnBhcmVudEBiYXlsaWJyZS5jb20+DQo+ID4gQ0M6IE1pbmct
+RmFuIENoZW4gPG1pbmctZmFuLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiA+IENDOiBNYXR0aGlhcyBC
+cnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcg
+V3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vbWVkaWF0ZWssc21p
+LWNvbW1vbi50eHQgICAgICAgICAgICAgICAgICAgfCAgNTAgLS0tLS0tLQ0KPiA+ICAuLi4vbWVk
+aWF0ZWssc21pLWNvbW1vbi55YW1sICAgICAgICAgICAgICAgICAgfCAxNDAgKysrKysrKysrKysr
+KysrKysrDQo+ID4gIC4uLi9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxhcmIudHh0
+ICB8ICA1MCAtLS0tLS0tDQo+ID4gIC4uLi9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21p
+LWxhcmIueWFtbCB8IDEyOSArKysrKysrKysrKysrKysrDQo+ID4gIDQgZmlsZXMgY2hhbmdlZCwg
+MjY5IGluc2VydGlvbnMoKyksIDEwMCBkZWxldGlvbnMoLSkNCj4gPiAgZGVsZXRlIG1vZGUgMTAw
+NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMv
+bWVkaWF0ZWssc21pLWNvbW1vbi50eHQNCj4gDQo+ICtDYyBIb25naHVpIFpoYW5nLA0KDQpBcyBj
+b21tZW50IFsxXSwgSG9uZ2h1aSdzIGFkZHJlc3MgaXMgbm90IHZhbGlkIG5vdy4gSSB3aWxsIGFj
+dCBmb3IgaGltLg0KDQo+IA0KPiBZb3VyIEFjayBpcyBuZWVkZWQgYXMgeW91IGNvbnRyaWJ1dGVk
+IGRlc2NyaXB0aW9ucyB0byB0aGUgYmluZGluZ3MgYW5kDQo+IHdvcmsgaXMgYmVpbmcgcmVsaWNl
+bnNlZCB0byBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlLg0KDQoiR1BMLTIuMC1vbmx5IE9S
+IEJTRC0yLUNsYXVzZSIgaXMgcmVxdWlyZWQgd2hlbiB3ZSBydW4gY2hlY2stcGF0Y2guDQoNCklm
+IEkgc3RpbGwgdXNlICJHUEwtMi4wLW9ubHkiLCB0aGVuIHRoZSBjb250cmlidXRvcnMnIEFjay9T
+b0IgaXMgbm90DQpuZWVkZWQsIHJpZ2h0Pw0KDQpbMV0NCmh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
+L2xpbnV4LWlvbW11LzE2MDQwNTEyNTYuMjYzMjMuMTAwLmNhbWVsQG1oZnNkY2FwMDMvVC8jdQ0K
+DQo+IA0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCj4gDQo+IA0KPiANCj4gDQo+
+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24ueWFtbA0KPiA+ICBkZWxldGUg
+bW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250
+cm9sbGVycy9tZWRpYXRlayxzbWktbGFyYi50eHQNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0
+ZWssc21pLWxhcmIueWFtbA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24u
+dHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVy
+cy9tZWRpYXRlayxzbWktY29tbW9uLnR4dA0KPiA+IGRlbGV0ZWQgZmlsZSBtb2RlIDEwMDY0NA0K
+PiA+IGluZGV4IGRiYWZmZmUzZjQxZS4uMDAwMDAwMDAwMDAwDQo+ID4gLS0tIGEvRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWkt
+Y29tbW9uLnR4dA0KPiA+ICsrKyAvZGV2L251bGwNCj4gPiBAQCAtMSw1MCArMCwwIEBADQo+ID4g
+LVNNSSAoU21hcnQgTXVsdGltZWRpYSBJbnRlcmZhY2UpIENvbW1vbg0KPiA+IC0NCj4gPiAtVGhl
+IGhhcmR3YXJlIGJsb2NrIGRpYWdyYW0gcGxlYXNlIGNoZWNrIGJpbmRpbmdzL2lvbW11L21lZGlh
+dGVrLGlvbW11LnR4dA0KPiA+IC0NCj4gPiAtTWVkaWF0ZWsgU01JIGhhdmUgdHdvIGdlbmVyYXRp
+b25zIG9mIEhXIGFyY2hpdGVjdHVyZSwgaGVyZSBpcyB0aGUgbGlzdA0KPiA+IC13aGljaCBnZW5l
+cmF0aW9uIHRoZSBTb0NzIHVzZToNCj4gPiAtZ2VuZXJhdGlvbiAxOiBtdDI3MDEgYW5kIG10NzYy
+My4NCj4gPiAtZ2VuZXJhdGlvbiAyOiBtdDI3MTIsIG10Njc3OSwgbXQ4MTY3LCBtdDgxNzMgYW5k
+IG10ODE4My4NCj4gPiAtDQo+ID4gLVRoZXJlJ3Mgc2xpZ2h0IGRpZmZlcmVuY2VzIGJldHdlZW4g
+dGhlIHR3byBTTUksIGZvciBnZW5lcmF0aW9uIDIsIHRoZQ0KPiA+IC1yZWdpc3RlciB3aGljaCBj
+b250cm9sIHRoZSBpb21tdSBwb3J0IGlzIGF0IGVhY2ggbGFyYidzIHJlZ2lzdGVyIGJhc2UuIEJ1
+dA0KPiA+IC1mb3IgZ2VuZXJhdGlvbiAxLCB0aGUgcmVnaXN0ZXIgaXMgYXQgc21pIGFvIGJhc2Uo
+c21pIGFsd2F5cyBvbiByZWdpc3Rlcg0KPiA+IC1iYXNlKS4gQmVzaWRlcyB0aGF0LCB0aGUgc21p
+IGFzeW5jIGNsb2NrIHNob3VsZCBiZSBwcmVwYXJlZCBhbmQgZW5hYmxlZCBmb3INCj4gPiAtU01J
+IGdlbmVyYXRpb24gMSB0byB0cmFuc2Zvcm0gdGhlIHNtaSBjbG9jayBpbnRvIGVtaSBjbG9jayBk
+b21haW4sIGJ1dCB0aGF0IGlzDQo+ID4gLW5vdCBuZWVkZWQgZm9yIFNNSSBnZW5lcmF0aW9uIDIu
+DQo+ID4gLQ0KPiA+IC1SZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+IC0tIGNvbXBhdGlibGUgOiBt
+dXN0IGJlIG9uZSBvZiA6DQo+ID4gLQkibWVkaWF0ZWssbXQyNzAxLXNtaS1jb21tb24iDQo+ID4g
+LQkibWVkaWF0ZWssbXQyNzEyLXNtaS1jb21tb24iDQo+ID4gLQkibWVkaWF0ZWssbXQ2Nzc5LXNt
+aS1jb21tb24iDQo+ID4gLQkibWVkaWF0ZWssbXQ3NjIzLXNtaS1jb21tb24iLCAibWVkaWF0ZWss
+bXQyNzAxLXNtaS1jb21tb24iDQo+ID4gLQkibWVkaWF0ZWssbXQ4MTY3LXNtaS1jb21tb24iDQo+
+ID4gLQkibWVkaWF0ZWssbXQ4MTczLXNtaS1jb21tb24iDQo+ID4gLQkibWVkaWF0ZWssbXQ4MTgz
+LXNtaS1jb21tb24iDQo+ID4gLS0gcmVnIDogdGhlIHJlZ2lzdGVyIGFuZCBzaXplIG9mIHRoZSBT
+TUkgYmxvY2suDQo+ID4gLS0gcG93ZXItZG9tYWlucyA6IGEgcGhhbmRsZSB0byB0aGUgcG93ZXIg
+ZG9tYWluIG9mIHRoaXMgbG9jYWwgYXJiaXRlci4NCj4gPiAtLSBjbG9ja3MgOiBNdXN0IGNvbnRh
+aW4gYW4gZW50cnkgZm9yIGVhY2ggZW50cnkgaW4gY2xvY2stbmFtZXMuDQo+ID4gLS0gY2xvY2st
+bmFtZXMgOiBtdXN0IGNvbnRhaW4gMyBlbnRyaWVzIGZvciBnZW5lcmF0aW9uIDEgc21pIEhXIGFu
+ZCAyIGVudHJpZXMNCj4gPiAtICBmb3IgZ2VuZXJhdGlvbiAyIHNtaSBIVyBhcyBmb2xsb3dzOg0K
+PiA+IC0gIC0gImFwYiIgOiBBZHZhbmNlZCBQZXJpcGhlcmFsIEJ1cyBjbG9jaywgSXQncyB0aGUg
+Y2xvY2sgZm9yIHNldHRpbmcNCj4gPiAtCSAgICB0aGUgcmVnaXN0ZXIuDQo+ID4gLSAgLSAic21p
+IiA6IEl0J3MgdGhlIGNsb2NrIGZvciB0cmFuc2ZlciBkYXRhIGFuZCBjb21tYW5kLg0KPiA+IC0J
+ICAgIFRoZXkgbWF5IGJlIHRoZSBzYW1lIGlmIGJvdGggc291cmNlIGNsb2NrcyBhcmUgdGhlIHNh
+bWUuDQo+ID4gLSAgLSAiYXN5bmMiIDogYXN5bmNocm9ub3VzIGNsb2NrLCBpdCBoZWxwIHRyYW5z
+Zm9ybSB0aGUgc21pIGNsb2NrIGludG8gdGhlIGVtaQ0KPiA+IC0JICAgICAgY2xvY2sgZG9tYWlu
+LCB0aGlzIGNsb2NrIGlzIG9ubHkgbmVlZGVkIGJ5IGdlbmVyYXRpb24gMSBzbWkgSFcuDQo+ID4g
+LSAgYW5kIHRoZXNlIDIgb3B0aW9uIGNsb2NrcyBmb3IgZ2VuZXJhdGlvbiAyIHNtaSBIVzoNCj4g
+PiAtICAtICJnYWxzMCI6IHRoZSBwYXRoMCBjbG9jayBvZiBHQUxTKEdsb2JhbCBBc3luYyBMb2Nh
+bCBTeW5jKS4NCj4gPiAtICAtICJnYWxzMSI6IHRoZSBwYXRoMSBjbG9jayBvZiBHQUxTKEdsb2Jh
+bCBBc3luYyBMb2NhbCBTeW5jKS4NCj4gPiAtICBIZXJlIGlzIHRoZSBsaXN0IHdoaWNoIGhhcyB0
+aGlzIEdBTFM6IG10Njc3OSBhbmQgbXQ4MTgzLg0KPiA+IC0NCj4gPiAtRXhhbXBsZToNCj4gPiAt
+CXNtaV9jb21tb246IHNtaUAxNDAyMjAwMCB7DQo+ID4gLQkJY29tcGF0aWJsZSA9ICJtZWRpYXRl
+ayxtdDgxNzMtc21pLWNvbW1vbiI7DQo+ID4gLQkJcmVnID0gPDAgMHgxNDAyMjAwMCAwIDB4MTAw
+MD47DQo+ID4gLQkJcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE3M19QT1dFUl9ET01BSU5f
+TU0+Ow0KPiA+IC0JCWNsb2NrcyA9IDwmbW1zeXMgQ0xLX01NX1NNSV9DT01NT04+LA0KPiA+IC0J
+CQkgPCZtbXN5cyBDTEtfTU1fU01JX0NPTU1PTj47DQo+ID4gLQkJY2xvY2stbmFtZXMgPSAiYXBi
+IiwgInNtaSI7DQo+ID4gLQl9Ow0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24ueWFt
+bCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMv
+bWVkaWF0ZWssc21pLWNvbW1vbi55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBp
+bmRleCAwMDAwMDAwMDAwMDAuLmUwNTBhMGMyYWVkNg0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiAr
+KysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJz
+L21lZGlhdGVrLHNtaS1jb21tb24ueWFtbA0KPiA+IEBAIC0wLDAgKzEsMTQwIEBADQo+ID4gKyMg
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQ0K
+PiA+ICsjIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRlayBJbmMuDQo+ID4gKyVZQU1MIDEuMg0K
+PiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tZW1vcnkt
+Y29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWNvbW1vbi55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRw
+Oi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3Rp
+dGxlOiBTTUkgKFNtYXJ0IE11bHRpbWVkaWEgSW50ZXJmYWNlKSBDb21tb24NCj4gPiArDQo+ID4g
+K21haW50YWluZXJzOg0KPiA+ICsgIC0gWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRlay5jb20+DQo+
+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfCsNCj4gPiArICBUaGUgaGFyZHdhcmUgYmxvY2sgZGlh
+Z3JhbSBwbGVhc2UgY2hlY2sgYmluZGluZ3MvaW9tbXUvbWVkaWF0ZWssaW9tbXUueWFtbA0KPiA+
+ICsNCj4gPiArICBNZWRpYVRlayBTTUkgaGF2ZSB0d28gZ2VuZXJhdGlvbnMgb2YgSFcgYXJjaGl0
+ZWN0dXJlLCBoZXJlIGlzIHRoZSBsaXN0DQo+ID4gKyAgd2hpY2ggZ2VuZXJhdGlvbiB0aGUgU29D
+cyB1c2U6DQo+ID4gKyAgZ2VuZXJhdGlvbiAxOiBtdDI3MDEgYW5kIG10NzYyMy4NCj4gPiArICBn
+ZW5lcmF0aW9uIDI6IG10MjcxMiwgbXQ2Nzc5LCBtdDgxNjcsIG10ODE3MyBhbmQgbXQ4MTgzLg0K
+PiA+ICsNCj4gPiArICBUaGVyZSdzIHNsaWdodCBkaWZmZXJlbmNlcyBiZXR3ZWVuIHRoZSB0d28g
+U01JLCBmb3IgZ2VuZXJhdGlvbiAyLCB0aGUNCj4gPiArICByZWdpc3RlciB3aGljaCBjb250cm9s
+IHRoZSBpb21tdSBwb3J0IGlzIGF0IGVhY2ggbGFyYidzIHJlZ2lzdGVyIGJhc2UuIEJ1dA0KPiA+
+ICsgIGZvciBnZW5lcmF0aW9uIDEsIHRoZSByZWdpc3RlciBpcyBhdCBzbWkgYW8gYmFzZShzbWkg
+YWx3YXlzIG9uIHJlZ2lzdGVyDQo+ID4gKyAgYmFzZSkuIEJlc2lkZXMgdGhhdCwgdGhlIHNtaSBh
+c3luYyBjbG9jayBzaG91bGQgYmUgcHJlcGFyZWQgYW5kIGVuYWJsZWQgZm9yDQo+ID4gKyAgU01J
+IGdlbmVyYXRpb24gMSB0byB0cmFuc2Zvcm0gdGhlIHNtaSBjbG9jayBpbnRvIGVtaSBjbG9jayBk
+b21haW4sIGJ1dCB0aGF0IGlzDQo+ID4gKyAgbm90IG5lZWRlZCBmb3IgU01JIGdlbmVyYXRpb24g
+Mi4NCj4gPiArDQo+ID4gK3Byb3BlcnRpZXM6DQo+ID4gKyAgY29tcGF0aWJsZToNCj4gPiArICAg
+IG9uZU9mOg0KPiA+ICsgICAgICAtIGVudW06DQo+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10
+MjcwMS1zbWktY29tbW9uDQo+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10MjcxMi1zbWktY29t
+bW9uDQo+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10Njc3OS1zbWktY29tbW9uDQo+ID4gKyAg
+ICAgICAgICAtIG1lZGlhdGVrLG10ODE2Ny1zbWktY29tbW9uDQo+ID4gKyAgICAgICAgICAtIG1l
+ZGlhdGVrLG10ODE3My1zbWktY29tbW9uDQo+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10ODE4
+My1zbWktY29tbW9uDQo+ID4gKw0KPiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBmb3IgbXQ3NjIz
+DQo+ID4gKyAgICAgICAgaXRlbXM6DQo+ID4gKyAgICAgICAgICAtIGNvbnN0OiBtZWRpYXRlayxt
+dDc2MjMtc21pLWNvbW1vbg0KPiA+ICsgICAgICAgICAgLSBjb25zdDogbWVkaWF0ZWssbXQyNzAx
+LXNtaS1jb21tb24NCj4gPiArDQo+ID4gKyAgcmVnOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4g
+PiArDQo+ID4gKyAgcG93ZXItZG9tYWluczoNCj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0K
+PiA+ICsgIGNsb2NrczoNCj4gPiArICAgIGRlc2NyaXB0aW9uOiB8DQo+ID4gKyAgICAgIGFwYiBh
+bmQgc21pIGFyZSBtYW5kYXRvcnkuIHRoZSBhc3luYyBpcyBvbmx5IGZvciBnZW5lcmF0aW9uIDEg
+c21pIEhXLg0KPiA+ICsgICAgICBnYWxzKGdsb2JhbCBhc3luYyBsb2NhbCBzeW5jKSBhbHNvIGlz
+IG9wdGlvbmFsLCBzZWUgYmVsb3cuDQo+ID4gKyAgICBtaW5JdGVtczogMg0KPiA+ICsgICAgbWF4
+SXRlbXM6IDQNCj4gPiArICAgIGl0ZW1zOg0KPiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBhcGIg
+aXMgQWR2YW5jZWQgUGVyaXBoZXJhbCBCdXMgY2xvY2ssIEl0J3MgdGhlIGNsb2NrIGZvcg0KPiA+
+ICsgICAgICAgICAgc2V0dGluZyB0aGUgcmVnaXN0ZXIuDQo+ID4gKyAgICAgIC0gZGVzY3JpcHRp
+b246IHNtaSBpcyB0aGUgY2xvY2sgZm9yIHRyYW5zZmVyIGRhdGEgYW5kIGNvbW1hbmQuDQo+ID4g
+KyAgICAgIC0gZGVzY3JpcHRpb246IGFzeW5jIGlzIGFzeW5jaHJvbm91cyBjbG9jaywgaXQgaGVs
+cCB0cmFuc2Zvcm0gdGhlIHNtaSBjbG9jaw0KPiA+ICsgICAgICAgICAgaW50byB0aGUgZW1pIGNs
+b2NrIGRvbWFpbi4NCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogZ2FsczAgaXMgdGhlIHBhdGgw
+IGNsb2NrIG9mIGdhbHMuDQo+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IGdhbHMxIGlzIHRoZSBw
+YXRoMSBjbG9jayBvZiBnYWxzLg0KPiA+ICsNCj4gPiArICBjbG9jay1uYW1lczoNCj4gPiArICAg
+IG1pbkl0ZW1zOiAyDQo+ID4gKyAgICBtYXhJdGVtczogNA0KPiA+ICsNCj4gPiArcmVxdWlyZWQ6
+DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4gKyAgLSByZWcNCj4gPiArICAtIHBvd2VyLWRvbWFp
+bnMNCj4gPiArICAtIGNsb2Nrcw0KPiA+ICsgIC0gY2xvY2stbmFtZXMNCj4gPiArDQo+ID4gK2Fs
+bE9mOg0KPiA+ICsgIC0gaWY6ICNvbmx5IGZvciBnZW4xIEhXDQo+ID4gKyAgICAgIHByb3BlcnRp
+ZXM6DQo+ID4gKyAgICAgICAgY29tcGF0aWJsZToNCj4gPiArICAgICAgICAgIGNvbnRhaW5zOg0K
+PiA+ICsgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgIC0gbWVkaWF0ZWssbXQy
+NzAxLXNtaS1jb21tb24NCj4gPiArICAgIHRoZW46DQo+ID4gKyAgICAgICBwcm9wZXJ0aWVzOg0K
+PiA+ICsgICAgICAgICBjbG9jazoNCj4gPiArICAgICAgICAgICBpdGVtczoNCj4gPiArICAgICAg
+ICAgICAgIG1pbkl0ZW1zOiAzDQo+ID4gKyAgICAgICAgICAgICBtYXhJdGVtczogMw0KPiA+ICsg
+ICAgICAgICBjbG9jay1uYW1lczoNCj4gPiArICAgICAgICAgICBpdGVtczoNCj4gPiArICAgICAg
+ICAgICAgIC0gY29uc3Q6IGFwYg0KPiA+ICsgICAgICAgICAgICAgLSBjb25zdDogc21pDQo+ID4g
+KyAgICAgICAgICAgICAtIGNvbnN0OiBhc3luYw0KPiA+ICsNCj4gPiArICAtIGlmOiAjZm9yIGdl
+bjIgSFcgdGhhdCBoYXZlIGdhbHMNCj4gPiArICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAg
+ICBjb21wYXRpYmxlOg0KPiA+ICsgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAg
+IC0gbWVkaWF0ZWssbXQ2Nzc5LXNtaS1jb21tb24NCj4gPiArICAgICAgICAgICAgICAtIG1lZGlh
+dGVrLG10ODE4My1zbWktY29tbW9uDQo+ID4gKw0KPiA+ICsgICAgdGhlbjoNCj4gPiArICAgICAg
+cHJvcGVydGllczoNCj4gPiArICAgICAgICBjbG9jazoNCj4gPiArICAgICAgICAgIGl0ZW1zOg0K
+PiA+ICsgICAgICAgICAgICBtaW5JdGVtczogNA0KPiA+ICsgICAgICAgICAgICBtYXhJdGVtczog
+NA0KPiA+ICsgICAgICAgIGNsb2NrLW5hbWVzOg0KPiA+ICsgICAgICAgICAgaXRlbXM6DQo+ID4g
+KyAgICAgICAgICAgIC0gY29uc3Q6IGFwYg0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBzbWkN
+Cj4gPiArICAgICAgICAgICAgLSBjb25zdDogZ2FsczANCj4gPiArICAgICAgICAgICAgLSBjb25z
+dDogZ2FsczENCj4gPiArDQo+ID4gKyAgICBlbHNlOiAjZm9yIGdlbjIgSFcgdGhhdCBkb24ndCBo
+YXZlIGdhbHMNCj4gPiArICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICBjbG9jazoNCj4g
+PiArICAgICAgICAgIGl0ZW1zOg0KPiA+ICsgICAgICAgICAgICBtaW5JdGVtczogMg0KPiA+ICsg
+ICAgICAgICAgICBtYXhJdGVtczogMg0KPiA+ICsgICAgICAgIGNsb2NrLW5hbWVzOg0KPiA+ICsg
+ICAgICAgICAgaXRlbXM6DQo+ID4gKyAgICAgICAgICAgIC0gY29uc3Q6IGFwYg0KPiA+ICsgICAg
+ICAgICAgICAtIGNvbnN0OiBzbWkNCj4gPiArDQo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBm
+YWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICAjaW5jbHVk
+ZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTczLWNsay5oPg0KPiA+ICsgICAgI2luY2x1ZGUgPGR0
+LWJpbmRpbmdzL3Bvd2VyL210ODE3My1wb3dlci5oPg0KPiA+ICsNCj4gPiArICAgIHNtaV9jb21t
+b246IHNtaUAxNDAyMjAwMCB7DQo+ID4gKyAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0
+ZWssbXQ4MTczLXNtaS1jb21tb24iOw0KPiA+ICsgICAgICAgICAgICByZWcgPSA8MHgxNDAyMjAw
+MCAweDEwMDA+Ow0KPiA+ICsgICAgICAgICAgICBwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4
+MTczX1BPV0VSX0RPTUFJTl9NTT47DQo+ID4gKyAgICAgICAgICAgIGNsb2NrcyA9IDwmbW1zeXMg
+Q0xLX01NX1NNSV9DT01NT04+LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICA8Jm1tc3lzIENM
+S19NTV9TTUlfQ09NTU9OPjsNCj4gPiArICAgICAgICAgICAgY2xvY2stbmFtZXMgPSAiYXBiIiwg
+InNtaSI7DQo+ID4gKyAgICB9Ow0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJiLnR4dCBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVk
+aWF0ZWssc21pLWxhcmIudHh0DQo+ID4gZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5k
+ZXggMGM1ZGUxMmI1NDk2Li4wMDAwMDAwMDAwMDANCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJiLnR4
+dA0KPiA+ICsrKyAvZGV2L251bGwNCj4gPiBAQCAtMSw1MCArMCwwIEBADQo+ID4gLVNNSSAoU21h
+cnQgTXVsdGltZWRpYSBJbnRlcmZhY2UpIExvY2FsIEFyYml0ZXINCj4gPiAtDQo+ID4gLVRoZSBo
+YXJkd2FyZSBibG9jayBkaWFncmFtIHBsZWFzZSBjaGVjayBiaW5kaW5ncy9pb21tdS9tZWRpYXRl
+ayxpb21tdS50eHQNCj4gPiAtDQo+ID4gLVJlcXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gLS0gY29t
+cGF0aWJsZSA6IG11c3QgYmUgb25lIG9mIDoNCj4gPiAtCQkibWVkaWF0ZWssbXQyNzAxLXNtaS1s
+YXJiIg0KPiA+IC0JCSJtZWRpYXRlayxtdDI3MTItc21pLWxhcmIiDQo+ID4gLQkJIm1lZGlhdGVr
+LG10Njc3OS1zbWktbGFyYiINCj4gPiAtCQkibWVkaWF0ZWssbXQ3NjIzLXNtaS1sYXJiIiwgIm1l
+ZGlhdGVrLG10MjcwMS1zbWktbGFyYiINCj4gPiAtCQkibWVkaWF0ZWssbXQ4MTY3LXNtaS1sYXJi
+Ig0KPiA+IC0JCSJtZWRpYXRlayxtdDgxNzMtc21pLWxhcmIiDQo+ID4gLQkJIm1lZGlhdGVrLG10
+ODE4My1zbWktbGFyYiINCj4gPiAtLSByZWcgOiB0aGUgcmVnaXN0ZXIgYW5kIHNpemUgb2YgdGhp
+cyBsb2NhbCBhcmJpdGVyLg0KPiA+IC0tIG1lZGlhdGVrLHNtaSA6IGEgcGhhbmRsZSB0byB0aGUg
+c21pX2NvbW1vbiBub2RlLg0KPiA+IC0tIHBvd2VyLWRvbWFpbnMgOiBhIHBoYW5kbGUgdG8gdGhl
+IHBvd2VyIGRvbWFpbiBvZiB0aGlzIGxvY2FsIGFyYml0ZXIuDQo+ID4gLS0gY2xvY2tzIDogTXVz
+dCBjb250YWluIGFuIGVudHJ5IGZvciBlYWNoIGVudHJ5IGluIGNsb2NrLW5hbWVzLg0KPiA+IC0t
+IGNsb2NrLW5hbWVzOiBtdXN0IGNvbnRhaW4gMiBlbnRyaWVzLCBhcyBmb2xsb3dzOg0KPiA+IC0g
+IC0gImFwYiIgOiBBZHZhbmNlZCBQZXJpcGhlcmFsIEJ1cyBjbG9jaywgSXQncyB0aGUgY2xvY2sg
+Zm9yIHNldHRpbmcNCj4gPiAtCSAgICB0aGUgcmVnaXN0ZXIuDQo+ID4gLSAgLSAic21pIiA6IEl0
+J3MgdGhlIGNsb2NrIGZvciB0cmFuc2ZlciBkYXRhIGFuZCBjb21tYW5kLg0KPiA+IC0gIGFuZCB0
+aGlzIG9wdGlvbmFsIGNsb2NrIG5hbWU6DQo+ID4gLSAgLSAiZ2FscyI6IHRoZSBjbG9jayBmb3Ig
+R0FMUyhHbG9iYWwgQXN5bmMgTG9jYWwgU3luYykuDQo+ID4gLSAgSGVyZSBpcyB0aGUgbGlzdCB3
+aGljaCBoYXMgdGhpcyBHQUxTOiBtdDgxODMuDQo+ID4gLQ0KPiA+IC1SZXF1aXJlZCBwcm9wZXJ0
+eSBmb3IgbXQyNzAxLCBtdDI3MTIsIG10Njc3OSwgbXQ3NjIzIGFuZCBtdDgxNjc6DQo+ID4gLS0g
+bWVkaWF0ZWssbGFyYi1pZCA6dGhlIGhhcmR3YXJlIGlkIG9mIHRoaXMgbGFyYi4NCj4gPiAtDQo+
+ID4gLUV4YW1wbGU6DQo+ID4gLQlsYXJiMTogbGFyYkAxNjAxMDAwMCB7DQo+ID4gLQkJY29tcGF0
+aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtc21pLWxhcmIiOw0KPiA+IC0JCXJlZyA9IDwwIDB4MTYw
+MTAwMDAgMCAweDEwMDA+Ow0KPiA+IC0JCW1lZGlhdGVrLHNtaSA9IDwmc21pX2NvbW1vbj47DQo+
+ID4gLQkJcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE3M19QT1dFUl9ET01BSU5fVkRFQz47
+DQo+ID4gLQkJY2xvY2tzID0gPCZ2ZGVjc3lzIENMS19WREVDX0NLRU4+LA0KPiA+IC0JCQkgPCZ2
+ZGVjc3lzIENMS19WREVDX0xBUkJfQ0tFTj47DQo+ID4gLQkJY2xvY2stbmFtZXMgPSAiYXBiIiwg
+InNtaSI7DQo+ID4gLQl9Ow0KPiA+IC0NCj4gPiAtRXhhbXBsZSBmb3IgbXQyNzAxOg0KPiA+IC0J
+bGFyYjA6IGxhcmJAMTQwMTAwMDAgew0KPiA+IC0JCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQy
+NzAxLXNtaS1sYXJiIjsNCj4gPiAtCQlyZWcgPSA8MCAweDE0MDEwMDAwIDAgMHgxMDAwPjsNCj4g
+PiAtCQltZWRpYXRlayxzbWkgPSA8JnNtaV9jb21tb24+Ow0KPiA+IC0JCW1lZGlhdGVrLGxhcmIt
+aWQgPSA8MD47DQo+ID4gLQkJY2xvY2tzID0gPCZtbXN5cyBDTEtfTU1fU01JX0xBUkIwPiwNCj4g
+PiAtCQkJIDwmbW1zeXMgQ0xLX01NX1NNSV9MQVJCMD47DQo+ID4gLQkJY2xvY2stbmFtZXMgPSAi
+YXBiIiwgInNtaSI7DQo+ID4gLQkJcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UMjcwMV9QT1dF
+Ul9ET01BSU5fRElTUD47DQo+ID4gLQl9Ow0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJi
+LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xs
+ZXJzL21lZGlhdGVrLHNtaS1sYXJiLnlhbWwNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+
+IGluZGV4IDAwMDAwMDAwMDAwMC4uYTExYTEwNWU4NzJmDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+
+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxl
+cnMvbWVkaWF0ZWssc21pLWxhcmIueWFtbA0KPiA+IEBAIC0wLDAgKzEsMTI5IEBADQo+ID4gKyMg
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQ0K
+PiA+ICsjIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRlayBJbmMuDQo+ID4gKyVZQU1MIDEuMg0K
+PiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tZW1vcnkt
+Y29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxhcmIueWFtbCMNCj4gPiArJHNjaGVtYTogaHR0cDov
+L2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gKw0KPiA+ICt0aXRs
+ZTogU01JIChTbWFydCBNdWx0aW1lZGlhIEludGVyZmFjZSkgTG9jYWwgQXJiaXRlcg0KPiA+ICsN
+Cj4gPiArbWFpbnRhaW5lcnM6DQo+ID4gKyAgLSBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNv
+bT4NCj4gPiArDQo+ID4gK2Rlc2NyaXB0aW9uOiB8Kw0KPiA+ICsgIFRoZSBoYXJkd2FyZSBibG9j
+ayBkaWFncmFtIHBsZWFzZSBjaGVjayBiaW5kaW5ncy9pb21tdS9tZWRpYXRlayxpb21tdS55YW1s
+DQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICBv
+bmVPZjoNCj4gPiArICAgICAgLSBlbnVtOg0KPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDI3
+MDEtc21pLWxhcmINCj4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQyNzEyLXNtaS1sYXJiDQo+
+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10Njc3OS1zbWktbGFyYg0KPiA+ICsgICAgICAgICAg
+LSBtZWRpYXRlayxtdDgxNjctc21pLWxhcmINCj4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQ4
+MTczLXNtaS1sYXJiDQo+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10ODE4My1zbWktbGFyYg0K
+PiA+ICsNCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogZm9yIG10NzYyMw0KPiA+ICsgICAgICAg
+IGl0ZW1zOg0KPiA+ICsgICAgICAgICAgLSBjb25zdDogbWVkaWF0ZWssbXQ3NjIzLXNtaS1sYXJi
+DQo+ID4gKyAgICAgICAgICAtIGNvbnN0OiBtZWRpYXRlayxtdDI3MDEtc21pLWxhcmINCj4gPiAr
+DQo+ID4gKyAgcmVnOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgY2xvY2tz
+Og0KPiA+ICsgICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgYXBiIGFuZCBzbWkgYXJlIG1h
+bmRhdG9yeS4gZ2FscyhnbG9iYWwgYXN5bmMgbG9jYWwgc3luYykgaXMgb3B0aW9uYWwuDQo+ID4g
+KyAgICBtaW5JdGVtczogMg0KPiA+ICsgICAgbWF4SXRlbXM6IDMNCj4gPiArICAgIGl0ZW1zOg0K
+PiA+ICsgICAgICAgLSBkZXNjcmlwdGlvbjogYXBiIGlzIEFkdmFuY2VkIFBlcmlwaGVyYWwgQnVz
+IGNsb2NrLCBJdCdzIHRoZSBjbG9jayBmb3INCj4gPiArICAgICAgICAgICBzZXR0aW5nIHRoZSBy
+ZWdpc3Rlci4NCj4gPiArICAgICAgIC0gZGVzY3JpcHRpb246IHNtaSBpcyB0aGUgY2xvY2sgZm9y
+IHRyYW5zZmVyIGRhdGEgYW5kIGNvbW1hbmQuDQo+ID4gKyAgICAgICAtIGRlc2NyaXB0aW9uOiB0
+aGUgY2xvY2sgZm9yIGdhbHMuDQo+ID4gKw0KPiA+ICsgIGNsb2NrLW5hbWVzOg0KPiA+ICsgICAg
+bWluSXRlbXM6IDINCj4gPiArICAgIG1heEl0ZW1zOiAzDQo+ID4gKw0KPiA+ICsgIHBvd2VyLWRv
+bWFpbnM6DQo+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICBtZWRpYXRlayxzbWk6
+DQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxl
+LWFycmF5DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogYSBwaGFuZGxlIHRvIHRoZSBzbWlfY29tbW9u
+IG5vZGUuDQo+ID4gKw0KPiA+ICsgIG1lZGlhdGVrLGxhcmItaWQ6DQo+ID4gKyAgICAkcmVmOiAv
+c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCj4gPiArICAgIG1pbmltdW06
+IDANCj4gPiArICAgIG1heGltdW06IDMxDQo+ID4gKyAgICBkZXNjcmlwdGlvbjogdGhlIGhhcmR3
+YXJlIGlkIG9mIHRoaXMgbGFyYi4NCj4gPiArDQo+ID4gK3JlcXVpcmVkOg0KPiA+ICsgIC0gY29t
+cGF0aWJsZQ0KPiA+ICsgIC0gcmVnDQo+ID4gKyAgLSBjbG9ja3MNCj4gPiArICAtIGNsb2NrLW5h
+bWVzDQo+ID4gKyAgLSBwb3dlci1kb21haW5zDQo+ID4gKw0KPiA+ICthbGxPZjoNCj4gPiArICAt
+IGlmOiAjIEhXIGhhcyBnYWxzDQo+ID4gKyAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAg
+Y29tcGF0aWJsZToNCj4gPiArICAgICAgICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgIC0gbWVk
+aWF0ZWssbXQ4MTgzLXNtaS1sYXJiDQo+ID4gKw0KPiA+ICsgICAgdGhlbjoNCj4gPiArICAgICAg
+cHJvcGVydGllczoNCj4gPiArICAgICAgICBjbG9jazoNCj4gPiArICAgICAgICAgIGl0ZW1zOg0K
+PiA+ICsgICAgICAgICAgICBtaW5JdGVtczogMw0KPiA+ICsgICAgICAgICAgICBtYXhJdGVtczog
+Mw0KPiA+ICsgICAgICAgIGNsb2NrLW5hbWVzOg0KPiA+ICsgICAgICAgICAgaXRlbXM6DQo+ID4g
+KyAgICAgICAgICAgIC0gY29uc3Q6IGFwYg0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBzbWkN
+Cj4gPiArICAgICAgICAgICAgLSBjb25zdDogZ2Fscw0KPiA+ICsNCj4gPiArICAgIGVsc2U6DQo+
+ID4gKyAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgY2xvY2s6DQo+ID4gKyAgICAgICAg
+ICBpdGVtczoNCj4gPiArICAgICAgICAgICAgbWluSXRlbXM6IDINCj4gPiArICAgICAgICAgICAg
+bWF4SXRlbXM6IDINCj4gPiArICAgICAgICBjbG9jay1uYW1lczoNCj4gPiArICAgICAgICAgIGl0
+ZW1zOg0KPiA+ICsgICAgICAgICAgICAtIGNvbnN0OiBhcGINCj4gPiArICAgICAgICAgICAgLSBj
+b25zdDogc21pDQo+ID4gKw0KPiA+ICsgIC0gaWY6DQo+ID4gKyAgICAgIHByb3BlcnRpZXM6DQo+
+ID4gKyAgICAgICAgY29tcGF0aWJsZToNCj4gPiArICAgICAgICAgIGNvbnRhaW5zOg0KPiA+ICsg
+ICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgIC0gbWVkaWF0ZWssbXQyNzAxLXNt
+aS1sYXJiDQo+ID4gKyAgICAgICAgICAgICAgLSBtZWRpYXRlayxtdDI3MTItc21pLWxhcmINCj4g
+PiArICAgICAgICAgICAgICAtIG1lZGlhdGVrLG10Njc3OS1zbWktbGFyYg0KPiA+ICsgICAgICAg
+ICAgICAgIC0gbWVkaWF0ZWssbXQ4MTY3LXNtaS1sYXJiDQo+ID4gKw0KPiA+ICsgICAgdGhlbjoN
+Cj4gPiArICAgICAgcmVxdWlyZWQ6DQo+ID4gKyAgICAgICAgLSBtZWRpYXRlayxsYXJiLWlkDQo+
+ID4gKw0KPiA+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4gPiArDQo+ID4gK2V4YW1w
+bGVzOg0KPiA+ICsgIC0gfA0KPiA+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Nsb2NrL210
+ODE3My1jbGsuaD4NCj4gPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9wb3dlci9tdDgxNzMt
+cG93ZXIuaD4NCj4gPiArDQo+ID4gKyAgICBsYXJiMTogbGFyYkAxNjAxMDAwMCB7DQo+ID4gKyAg
+ICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLXNtaS1sYXJiIjsNCj4gPiArICAgICAg
+cmVnID0gPDB4MTYwMTAwMDAgMHgxMDAwPjsNCj4gPiArICAgICAgbWVkaWF0ZWssc21pID0gPCZz
+bWlfY29tbW9uPjsNCj4gPiArICAgICAgcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE3M19Q
+T1dFUl9ET01BSU5fVkRFQz47DQo+ID4gKyAgICAgIGNsb2NrcyA9IDwmdmRlY3N5cyBDTEtfVkRF
+Q19DS0VOPiwNCj4gPiArICAgICAgICAgICAgICAgPCZ2ZGVjc3lzIENMS19WREVDX0xBUkJfQ0tF
+Tj47DQo+ID4gKyAgICAgIGNsb2NrLW5hbWVzID0gImFwYiIsICJzbWkiOw0KPiA+ICsgICAgfTsN
+Cj4gPiAtLSANCj4gPiAyLjE4LjANCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQo+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51
+eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWsNCg0K
 
