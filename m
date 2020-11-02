@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDB72A2D74
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04A32A2D64
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgKBOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:55:18 -0500
-Received: from lhrrgout.huawei.com ([185.176.76.210]:3016 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725925AbgKBOzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:55:17 -0500
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 6A71CAEFCEE373ACA7D2;
-        Mon,  2 Nov 2020 14:55:15 +0000 (GMT)
-Received: from [10.210.168.82] (10.210.168.82) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 2 Nov 2020 14:55:13 +0000
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-To:     Qian Cai <cai@redhat.com>, <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
-        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <dgilbert@interlog.com>,
-        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
-CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
-        Hannes Reinecke <hare@suse.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-18-git-send-email-john.garry@huawei.com>
- <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
-Date:   Mon, 2 Nov 2020 14:51:48 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726051AbgKBOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgKBOwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:52:30 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D513C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:52:30 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id k9so9270355pgt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:52:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aUzlgHjCNYZph1yS+8m6KnYKTiNBZbplUqx6FtBjVjU=;
+        b=csJWRdD1sbeRdikJMiHryEWVPv6Whuanfrwn7ExUkEHpr0dCZi27D5+8t1PzBIU0MF
+         8StlO2+KZkzv01moaLPdt5lH54JxQ681jE3ValKU4UwYFI0hnd/NBRVmLdYzRYTouce2
+         /RQIRDTal4ad93/5LbSqG5dsgxg4ke3B71zcsJqxHso8QxZZb+xMjzGLjU3yNlbpQF2p
+         l/gb4RHMhDr9gWYiadwmAEv543hcSaDoU1nm7BsMY5RuC09+Li8bGmWVPWEKMqmo4EuZ
+         MimrM8dc+K6FPORO1OaebsVObfXWbw/tGB5YKFBi0tSqYMJ27rWKQB8dFgJISRJC11PI
+         dMdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=aUzlgHjCNYZph1yS+8m6KnYKTiNBZbplUqx6FtBjVjU=;
+        b=E5oghObYiNrb21LCUqQibwkpmdqsStLGC2zSZmfguGXQUPM2k4frXxrfQmU9o15aRL
+         N5YjCrDd1nOxbPOlW5RFjP4Q920DNrQoJDAH81HVoLdFh4nu9ibDsi9m+V+29lAYrpCn
+         su7IvA+WhzhGXmMgV1UEhMu84LjsDedGO47GkIIYuTWVGQm+1z58qs2o+DS09KF8JGsq
+         p/HkKLujfjBwYBrR3heOH8q9rsWkt693Mx2iM3Rw2EulCdZnfZ/didicaX9SbyYfvr0j
+         jHoG6Tk+K3lmJDqftrTQ/NiDlYSbHQyp8WvsweY2N2rXsQQMQqKCC9iejfQ0lGljljlo
+         Sm0g==
+X-Gm-Message-State: AOAM531a2fcxvTiXXXxuQFHycRV7aeTnQ9lRbmGh5XRjaKQH/0EGS74A
+        G0s2mV4rFl4RlZ0O4TOyyCU=
+X-Google-Smtp-Source: ABdhPJzFKBCjNxVbUjl11JQtuJ2/5uZh4S+3X59wYEHFUWsNeJydEdwWPDv1KQYecQPezkNpwEiRdg==
+X-Received: by 2002:a17:90a:1903:: with SMTP id 3mr18247773pjg.74.1604328749885;
+        Mon, 02 Nov 2020 06:52:29 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id y4sm13513091pjc.53.2020.11.02.06.52.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 06:52:29 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Gabriel Marin <gmx@google.com>
+Subject: [RFC 0/2] perf/core: Invoke pmu::sched_task callback for cpu events
+Date:   Mon,  2 Nov 2020 23:52:19 +0900
+Message-Id: <20201102145221.309001-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-In-Reply-To: <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.82]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2020 14:17, Qian Cai wrote:
-> [  251.961152][  T330] INFO: task systemd-udevd:567 blocked for more than 122 seconds.
-> [  251.968876][  T330]       Not tainted 5.10.0-rc1-next-20201102 #1
-> [  251.975003][  T330] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  251.983546][  T330] task:systemd-udevd   state:D stack:27224 pid:  567 ppid:   506 flags:0x00004324
-> [  251.992620][  T330] Call Trace:
-> [  251.995784][  T330]  __schedule+0x71d/0x1b60
-> [  252.000067][  T330]  ? __sched_text_start+0x8/0x8
-> [  252.004798][  T330]  schedule+0xbf/0x270
-> [  252.008735][  T330]  schedule_timeout+0x3fc/0x590
-> [  252.013464][  T330]  ? usleep_range+0x120/0x120
-> [  252.018008][  T330]  ? wait_for_completion+0x156/0x250
-> [  252.023176][  T330]  ? lock_downgrade+0x700/0x700
-> [  252.027886][  T330]  ? rcu_read_unlock+0x40/0x40
-> [  252.032530][  T330]  ? do_raw_spin_lock+0x121/0x290
-> [  252.037412][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
-> [  252.043268][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
-> [  252.048331][  T330]  wait_for_completion+0x15e/0x250
-> [  252.053323][  T330]  ? wait_for_completion_interruptible+0x320/0x320
-> [  252.059687][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
-> [  252.065543][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
-> [  252.070606][  T330]  __flush_work+0x42a/0x900
-> [  252.074989][  T330]  ? queue_delayed_work_on+0x90/0x90
-> [  252.080139][  T330]  ? __queue_work+0x463/0xf40
-> [  252.084700][  T330]  ? init_pwq+0x320/0x320
-> [  252.088891][  T330]  ? queue_work_on+0x5e/0x80
-> [  252.093364][  T330]  ? trace_hardirqs_on+0x1c/0x150
-> [  252.098255][  T330]  work_on_cpu+0xe7/0x130
-> [  252.102461][  T330]  ? flush_delayed_work+0xc0/0xc0
-> [  252.107342][  T330]  ? __mutex_unlock_slowpath+0xd4/0x670
-> [  252.112764][  T330]  ? work_debug_hint+0x30/0x30
-> [  252.117391][  T330]  ? pci_device_shutdown+0x80/0x80
-> [  252.122378][  T330]  ? cpumask_next_and+0x57/0x80
-> [  252.127094][  T330]  pci_device_probe+0x500/0x5c0
-> [  252.131824][  T330]  ? pci_device_remove+0x1f0/0x1f0
+Hello,
 
-Is CONFIG_DEBUG_TEST_DRIVER_REMOVE enabled? I figure it is, with this call.
+It was reported that system-wide events with precise_ip set have a lot
+of unknown symbols on Intel machines.  Depending on the system load I
+can see more than 30% of total symbols are not resolved (actually
+don't have DSO mappings).
 
-Or please share the .config
+I found that it's only large PEBS is enabled - using call-graph or the
+frequency mode will disable it and have valid results.  I've verified
+it by checking intel_pmu_pebs_sched_task() is called like below:
 
-Cheers,
-John
+  # perf probe -a intel_pmu_pebs_sched_task
 
-> [  252.136805][  T330]  really_probe+0x207/0xad0
-> [  252.141191][  T330]  ? device_driver_attach+0x120/0x120
-> [  252.146428][  T330]  driver_probe_device+0x1f1/0x370
-> [  252.151424][  T330]  device_driver_attach+0xe5/0x120
-> [  252.156399][  T330]  __driver_attach+0xf0/0x260
-> [  252.160953][  T330]  bus_for_each_dev+0x117/0x1a0
-> [  252.165669][  T330]  ? subsys_dev_iter_exit+0x10/0x10
-> [  252.170731][  T330]  bus_add_driver+0x399/0x560
-> [  252.175289][  T330]  driver_register+0x189/0x310
-> [  252.179919][  T330]  ? 0xffffffffc05c1000
-> [  252.183960][  T330]  megasas_init+0x117/0x1000 [megaraid_sas]
-> [  252.189713][  T330]  do_one_initcall+0xf6/0x510
-> [  252.194267][  T330]  ? perf_trace_initcall_level+0x490/0x490
-> [  252.199940][  T330]  ? kasan_unpoison_shadow+0x30/0x40
-> [  252.205104][  T330]  ? __kasan_kmalloc.constprop.11+0xc1/0xd0
-> [  252.210859][  T330]  ? do_init_module+0x49/0x6c0
-> [  252.215500][  T330]  ? kmem_cache_alloc_trace+0x11f/0x1e0
-> [  252.220925][  T330]  ? kasan_unpoison_shadow+0x30/0x40
-> [  252.226068][  T330]  do_init_module+0x1ed/0x6c0
-> [  252.230608][  T330]  load_module+0x4a59/0x5d20
-> [  252.235081][  T330]  ? layout_and_allocate+0x2770/0x2770
-> [  252.240404][  T330]  ? __vmalloc_node+0x8d/0x100
-> [  252.245046][  T330]  ? kernel_read_file+0x485/0x5a0
-> [  252.249934][  T330]  ? kernel_read_file+0x305/0x5a0
-> [  252.254839][  T330]  ? __x64_sys_fsconfig+0x970/0x970
-> [  252.259903][  T330]  ? __do_sys_finit_module+0xff/0x180
-> [  252.265153][  T330]  __do_sys_finit_module+0xff/0x180
-> [  252.270216][  T330]  ? __do_sys_init_module+0x1d0/0x1d0
-> [  252.275465][  T330]  ? __fget_files+0x1c3/0x2e0
-> [  252.280010][  T330]  do_syscall_64+0x33/0x40
-> [  252.284304][  T330]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  252.290054][  T330] RIP: 0033:0x7fbb3e2fa78d
-> [  252.294348][  T330] Code: Unable to access opcode bytes at RIP 0x7fbb3e2fa763.
-> [  252.301584][  T330] RSP: 002b:00007ffe572e8d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [  252.309855][  T330] RAX: ffffffffffffffda RBX: 000055c7795d90f0 RCX: 00007fbb3e2fa78d
-> [  252.317703][  T330] RDX: 0000000000000000 RSI: 00007fbb3ee6c82d RDI: 0000000000000006
-> [  252.325553][  T330] RBP: 00007fbb3ee6c82d R08: 0000000000000000 R09: 00007ffe572e8e40
-> [  252.333402][  T330] R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000000
-> [  252.341257][  T330] R13: 000055c7795930e0 R14: 0000000000020000 R15: 0000000000000000
-> [  252.349117][  T330]
+  # perf stat -a -e probe:intel_pmu_pebs_sched_task \
+  >   perf record -a -e cycles:ppp -c 100001 sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 2.625 MB perf.data (10345 samples) ]
+
+   Performance counter stats for 'system wide':
+
+                 0      probe:intel_pmu_pebs_sched_task                                   
+
+       2.157533991 seconds time elapsed
+
+
+Looking at the code, I found out that the pmu::sched_task callback was
+changed recently that it's called only for task events.  So cpu events
+with large PEBS didn't flush the buffer and they are attributed to
+unrelated tasks later resulted in unresolved symbols.
+
+This patch reverts it and keeps the optimization for task events.
+While at it, I also found the context switch callback was not enabled
+for cpu events from the beginning.  So I've added it too.  With this
+applied, I can see the above callbacks are hit as expected and perf
+report has valid symbols.
+
+Thanks
+Namhyung
+
+
+Namhyung Kim (2):
+  perf/core: Enable sched_task callbacks if PMU has it
+  perf/core: Invoke pmu::sched_task callback for per-cpu events
+
+ include/linux/perf_event.h |  1 +
+ kernel/events/core.c       | 42 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
