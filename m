@@ -2,149 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1422A2F9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564862A2FAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKBQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726653AbgKBQVN (ORCPT
+        id S1727035AbgKBQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:22:51 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:38170 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgKBQWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:21:13 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F839C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:21:13 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so11949694qki.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:21:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2Lpr4CBLha20HQqxlhXNSA8BtMmymsEInJVoKBpe5r0=;
-        b=jiNIyQ/3PFCSdLX6ugfJegoJfHHnVBTjhaw81/66xW0rZL3RjMbV7RgPF7572ECozM
-         u2/cQEMXeCTptr+OQ+oJxCEy63cRiG3E6LfpGQ212ge6VOpQllkh28hXirv+8g34+2us
-         bLi0V71XOcL50R2UO/mhjwp+RdwSG0LR5GoTAUdGQQNrvL1Yc/U8Y+s4UUFUD/7WdbiT
-         pykwiXMb50V/bbCfK+oRW0FPHJRw8Mui/Iip2JfaXep/9CFqFyVDDrQs2iNJploIkFUK
-         pX5iIJp5Kwk8Kk3nOyxVD2s+IApkGSfYp7pIDbDBqWjrM2138/jJjZLZbQTcDRU98K5L
-         kBtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Lpr4CBLha20HQqxlhXNSA8BtMmymsEInJVoKBpe5r0=;
-        b=VFWm9YcfKVjB15lRd/riKvvHb3iitgA+wp01JJdMOwfsISYu+AYaeYKBb4IBsrBUX7
-         Dxce9DL9d4i9UbMQOZut8WxaMxcwht+dBnYJk8RYf4ql7EhjEFYnbK0PgMNcg3C8IMsd
-         7f662WMgA16KbZpcBX8T1CX2Po787in3g7nn73y4D0uEGDi3r3NBpnmhYCWHaJne0HT1
-         L1IwSzmUltrFcnnD0mHQmw811lF0s6b8Q4eZGCXAPREs3DFyodA52R7KGg2bdgMF4qPI
-         TMD7J/+uf5gxQuWTQ4GHJAWlwxhP9rF+fzc0pRxpifwAA24n5Np/MJF56nh/bmCUJbeU
-         GvQw==
-X-Gm-Message-State: AOAM530HFnIiMf9JlS0YjWy6zcA9UH9/uJZ4XECN5fvZGI38gouj3eLA
-        WkvwxPywxE7oNUm8aZWYjw==
-X-Google-Smtp-Source: ABdhPJwwOFt8TQzK9DM2mazQemEZvdOg6ct13ts4qWeveZlNnq65HE/KB2TcMcsxEQCiLV9ocByz1w==
-X-Received: by 2002:a37:7104:: with SMTP id m4mr15673359qkc.252.1604334072928;
-        Mon, 02 Nov 2020 08:21:12 -0800 (PST)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id t8sm8466845qtb.97.2020.11.02.08.21.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 02 Nov 2020 08:21:12 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:21:10 -0500
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        daniel.thompson@linaro.org, linux-arm-kernel@lists.infradead.org,
-        tglx@linutronix.de, jason@lakedaemon.net, linux@armlinux.org.uk,
-        tsbogend@alpha.franken.de, mpe@ellerman.id.au, davem@davemloft.net,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        mark.rutland@arm.com, julien.thierry.kdev@gmail.com,
-        dianders@chromium.org, jason.wessel@windriver.com,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/7] arm64: ipi_nmi: Add support for NMI backtrace
-Message-ID: <20201102162110.vmedu2g63yvdwh7m@gabell>
-References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
- <1604317487-14543-6-git-send-email-sumit.garg@linaro.org>
+        Mon, 2 Nov 2020 11:22:50 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201102162238euoutp02241c3aff7af685710efe88671c2cd7ba~DvWq9Sc461485714857euoutp02g
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:22:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201102162238euoutp02241c3aff7af685710efe88671c2cd7ba~DvWq9Sc461485714857euoutp02g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604334158;
+        bh=Bgg3uuMxFaQqcy+bWukxkeEsZN+mUG0FeeQiozXgDTA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=FaLpe9gxSTe/MAAS9E7K6qTzFyrnopv7fLjj53AiVzxpA+ljB5Hh/mk2yaqSMwUsd
+         hyMuPGmkMUUYBh/LKe2fPlj6wAfoCS8AhMeN5ckWTgGyjibuCL5ZFuZ2VbbRDYiOiW
+         NELDQmW+tXlhgsHpYkKx2eS+ZklyrHZry20Td9Vc=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201102162228eucas1p268bed6f69c9345e9b372692d01b12502~DvWhh_gIz2271222712eucas1p2U;
+        Mon,  2 Nov 2020 16:22:28 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id CD.AB.06456.44230AF5; Mon,  2
+        Nov 2020 16:22:28 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201102162227eucas1p11317000bee8117a3319cdfde281b3ebf~DvWhGKXXF1324913249eucas1p1_;
+        Mon,  2 Nov 2020 16:22:27 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201102162227eusmtrp1f5a7423b42ca5d55a8e00fd77035afb6~DvWhFdv6-2105521055eusmtrp1Y;
+        Mon,  2 Nov 2020 16:22:27 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-10-5fa0324481a0
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 39.F7.06314.34230AF5; Mon,  2
+        Nov 2020 16:22:27 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201102162227eusmtip206c5570a4c27dc457d985fe34998c6f2~DvWgjgkXI0500405004eusmtip2X;
+        Mon,  2 Nov 2020 16:22:27 +0000 (GMT)
+Subject: Re: [PATCH v2] ARM: dts: exynos: Add a placeholder for a MAC
+ address
+To:     Anand Moon <linux.amoon@gmail.com>,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <5ecd2e6d-6aaf-bff5-c000-2c56086ed95b@samsung.com>
+Date:   Mon, 2 Nov 2020 17:22:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604317487-14543-6-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <CANAwSgSvH+q21Tj9NijPa87ju+1LOJ07-is1Sucx1y5ggT6zCA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djPc7ouRgviDZa28VpsnLGe1WL+kXOs
+        Fv2PXzNbnD+/gd3i5qEVjBabHl9jtbi8aw6bxYzz+5gs1m28xW7RuvcIuwOXx85Zd9k9Nq3q
+        ZPPYvKTeo2/LKkaPz5vkAlijuGxSUnMyy1KL9O0SuDLu3Kwt6BOt+HV5BXMD40f+LkZODgkB
+        E4nfzXeYQWwhgRWMEj/npXYxcgHZXxgl3n7rZodwPjNK9DyaDlTFAdZx9IQ9RMNyoKLZ6RA1
+        7xkltjV+ZAVJCAv4S2xsu8oEYosIJEucfb8EbBCzwB0mia7Xu1hAEmwChhJdb7vYQGxeATuJ
+        Q+9mg53BIqAi0XBgLtggUYEkib+f/zBD1AhKnJz5BKyXUyBQ4vzbZWBxZgF5ieats6FscYlb
+        T+YzgSyTEDjGLrFp83JGiD9dJM5fXsEEYQtLvDq+hR3ClpE4PbmHBaKhmVHi4bm17BBOD6PE
+        5aYZUN3WEnfO/WID+Z9ZQFNi/S59iLCjRPvVLayQYOGTuPFWEOIIPolJ22ChxSvR0SYEUa0m
+        Mev4Ori1By9cYp7AqDQLyWuzkLwzC8k7sxD2LmBkWcUonlpanJueWmyYl1quV5yYW1yal66X
+        nJ+7iRGYnE7/O/5pB+PXS0mHGAU4GJV4eA8Iz48XYk0sK67MPcQowcGsJMLrdPZ0nBBvSmJl
+        VWpRfnxRaU5q8SFGaQ4WJXFe40UvY4UE0hNLUrNTUwtSi2CyTBycUg2My/vqL33//0xXgqOo
+        dNMHQ+FNXDHbp7C/lJ29ib9WlD1XdbNar81rr1VHJx97GzbPJmcvJ+ulaSyBpaZ/N9zOT5pn
+        vElkrZ7R4pPWp+W/GSpGftr1I7fd6XWpefc8Y678JbKJUap7V/zaZnbp1gu+0JkNxt3/hUrO
+        +N0LUE399lo19rdQU89jJZbijERDLeai4kQAkfMDKEoDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRmVeSWpSXmKPExsVy+t/xe7rORgviDY490bfYOGM9q8X8I+dY
+        Lfofv2a2OH9+A7vFzUMrGC02Pb7GanF51xw2ixnn9zFZrNt4i92ide8Rdgcuj52z7rJ7bFrV
+        yeaxeUm9R9+WVYwenzfJBbBG6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp
+        29mkpOZklqUW6dsl6GXcuVlb0Cda8evyCuYGxo/8XYwcHBICJhJHT9h3MXJxCAksZZR4Ous2
+        cxcjJ1BcRuLktAZWCFtY4s+1LjaIoreMEj9WzwNLCAv4Svy5tIcNxBYRSJZofv2LFaSIWeAe
+        k8T15U0sEB0dTBJPpnWyg1SxCRhKdL3tAuvgFbCTOPRuNtg6FgEViYYDc8GmigokSby8MJUJ
+        okZQ4uTMJywgNqdAoMT5t8vA6pkFzCTmbX4IZctLNG+dDWWLS9x6Mp9pAqPQLCTts5C0zELS
+        MgtJywJGllWMIqmlxbnpucWGesWJucWleel6yfm5mxiBEbnt2M/NOxgvbQw+xCjAwajEw3tA
+        eH68EGtiWXFl7iFGCQ5mJRFep7On44R4UxIrq1KL8uOLSnNSiw8xmgI9N5FZSjQ5H5gs8kri
+        DU0NzS0sDc2NzY3NLJTEeTsEDsYICaQnlqRmp6YWpBbB9DFxcEo1MMZ9/1R4n+M549qGjBVe
+        2gU7dL59rswxeHi24KfQy9xEjYLl2mYvvTYziVre1/I0dDm1gbPNJIa99UVwiGWKnbzbmdSD
+        +wUy4v6++Fx8T+HXI++Juyb5snlcmu/ezu6+ZPq27zZM4dOmr2I6uLZzSWfH+f6UBzzzXKYH
+        eexYcObLEqHub9FPVJVYijMSDbWYi4oTAZmhYUbeAgAA
+X-CMS-MailID: 20201102162227eucas1p11317000bee8117a3319cdfde281b3ebf
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0
+References: <CGME20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0@eucas1p2.samsung.com>
+        <20200930143151.23961-1-l.stelmach@samsung.com>
+        <20201001135254.28178-1-l.stelmach@samsung.com>
+        <CANAwSgSvH+q21Tj9NijPa87ju+1LOJ07-is1Sucx1y5ggT6zCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 05:14:45PM +0530, Sumit Garg wrote:
-> Enable NMI backtrace support on arm64 using IPI turned as an NMI
-> leveraging pseudo NMIs support. It is now possible for users to get a
-> backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  arch/arm64/include/asm/irq.h |  6 ++++++
->  arch/arm64/kernel/ipi_nmi.c  | 18 ++++++++++++++++--
->  2 files changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-> index b2b0c64..ef018a8 100644
-> --- a/arch/arm64/include/asm/irq.h
-> +++ b/arch/arm64/include/asm/irq.h
-> @@ -6,6 +6,12 @@
->  
->  #include <asm-generic/irq.h>
->  
-> +#ifdef CONFIG_SMP
-> +extern bool arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-> +					   bool exclude_self);
-> +#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-> +#endif
-> +
->  struct pt_regs;
->  
->  static inline int nr_legacy_irqs(void)
-> diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
-> index a945dcf..597dcf7 100644
-> --- a/arch/arm64/kernel/ipi_nmi.c
-> +++ b/arch/arm64/kernel/ipi_nmi.c
-> @@ -8,6 +8,7 @@
->  
->  #include <linux/interrupt.h>
->  #include <linux/irq.h>
-> +#include <linux/nmi.h>
->  #include <linux/smp.h>
->  
->  #include <asm/nmi.h>
-> @@ -31,11 +32,24 @@ void arm64_send_nmi(cpumask_t *mask)
->  	__ipi_send_mask(ipi_nmi_desc, mask);
->  }
->  
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +{
-> +	if (!ipi_nmi_desc)
-> +		return false;
-> +
-> +	nmi_trigger_cpumask_backtrace(mask, exclude_self, arm64_send_nmi);
-> +
-> +	return true;
-> +}
-> +
->  static irqreturn_t ipi_nmi_handler(int irq, void *data)
->  {
-> -	/* nop, NMI handlers for special features can be added here. */
-> +	irqreturn_t ret = IRQ_NONE;
-> +
-> +	if (nmi_cpu_backtrace(get_irq_regs()))
-> +		ret = IRQ_HANDLED;
->  
-> -	return IRQ_NONE;
-> +	return ret;
->  }
->  
->  void dynamic_ipi_setup(int cpu)
-> -- 
+Hi Anand,
 
-It works well with sysrq l trigger.
-Please feel free to add:
+On 01.11.2020 15:07, Anand Moon wrote:
+> Hi Lukasz,
+>
+> On Thu, 1 Oct 2020 at 19:25, Łukasz Stelmach <l.stelmach@samsung.com> wrote:
+>> Add a placeholder for a MAC address. A bootloader may fill it
+>> to set the MAC address and override EEPROM settings.
+>>
+>> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+>> ---
+>> Changes in v2:
+>>   - use local-mac-address and leave mac-address to be added by a bootloader
+>>
+>>   arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>> index db0bc17a667b..d0f6ac5fa79d 100644
+>> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+>> @@ -70,3 +70,21 @@ &pwm {
+>>   &usbdrd_dwc3_1 {
+>>          dr_mode = "peripheral";
+>>   };
+>> +
+>> +&usbhost2 {
+>> +       #address-cells = <1>;
+>> +       #size-cells = <0>;
+>> +
+>> +       hub@1 {
+>> +               compatible = "usb8087,0024";
+>> +               reg = <1>;
+>> +               #address-cells = <1>;
+>> +               #size-cells = <0>;
+>> +
+>> +               ethernet: usbether@1 {
+>> +                       compatible = "usb0c45,6310";
+>> +                       reg = <1>;
+>> +                       local-mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
+>> +               };
+>> +       };
+>> +};
+>> --
+>> 2.26.2
+>>
+> Thanks for this patch, can you share some example on how to set the
+> mac address via u-boot bootargs
 
-	Tested-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+A little bit hacky script to set permanent board unique MAC address:
 
-Thanks!
-Masa
+# setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2 
+*0x10000016; setexp.b u3 *0x10000017; setenv ethaddr 
+0:0:${u0}:${u1}:${u2}:${u3}; setenv usbethaddr ${ethaddr};
+
+Then if there is proper ethernet0 alias set, u-boot will then 
+automatically save the configured MAC address to the device tree. I've 
+just check this on recent u-boot v2020.10 and Odroid U3 board.
+
+Lukasz will send updated patch soon (with proper alias entry).
+
+If you want to hack setting MAC address manually, this will work with 
+the current patch:
+
+# setexp.b u0 *0x10000014; setexp.b u1 *0x10000015; setexp.b u2 
+*0x10000016; setexp.b u3 *0x10000017; fdt addr ${fdtaddr}; fdt set 
+/soc/usb@12110000/hub@1/usbether@1 local-mac-address [ 0 0 ${u0} ${u1} 
+${u2} ${u3} ]
+
+> also can you update this patch for exynos5422-odroidxu3-lite.dts and
+> exynos4412-odroidu3.dts.
+
+Also odroid-x2 and odroid-xu. Lukasz will take care of them.
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
