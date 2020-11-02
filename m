@@ -2,56 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EAC2A32A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624AC2A32AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgKBSNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:13:32 -0500
-Received: from verein.lst.de ([213.95.11.211]:34272 "EHLO verein.lst.de"
+        id S1726189AbgKBSRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:17:21 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:58113 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgKBSNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:13:31 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 51EEC68B05; Mon,  2 Nov 2020 19:13:27 +0100 (CET)
-Date:   Mon, 2 Nov 2020 19:13:27 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jongpil Jung <jongpuls@gmail.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gloria.tsai@ssstc.com, jongpil19.jung@samsung.com,
-        jongheony.kim@samsung.com, dj54.sohn@samsung.com
-Subject: Re: [PATCH V3 1/1] nvme: Add quirk for LiteON CL1 devices running
- FW 220TQ,22001
-Message-ID: <20201102181327.GD20182@lst.de>
-References: <20201028091421.GA667673@image-900X5T-900X5U> <20201029145529.GA19011@lst.de>
+        id S1725797AbgKBSRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:17:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604341040; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=nS7fTYel1RkJvIVetfpxWCWaUmGRrDbjg87RLUX+kic=;
+ b=WUwAXySLLD80/TRy6Nr3iC2eTVV4K3ICrKLCsnIaXwvMnnbHy2xazCZ+7ak5YS82cG5UpmPB
+ 8VfzX+LDT7QOnc0CZygz+kY6NTaANG0P7cEjgpfGiHrzxeX9MXPqtzmvbbIO2bCwBo30ZnYM
+ WLUEmyGA4sKIn0CC3xX5hn1YBrs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5fa04d15978460d05b8ef3c5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 18:16:53
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A854C433F0; Mon,  2 Nov 2020 18:16:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EFC12C433C6;
+        Mon,  2 Nov 2020 18:16:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EFC12C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029145529.GA19011@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+Subject: Re: rtw88: fix fw_fifo_addr check
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201011155438.15892-1-trix@redhat.com>
+References: <20201011155438.15892-1-trix@redhat.com>
+To:     trix@redhat.com
+Cc:     yhchuang@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Tom Rix <trix@redhat.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201102181653.8A854C433F0@smtp.codeaurora.org>
+Date:   Mon,  2 Nov 2020 18:16:53 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:55:29PM +0100, Christoph Hellwig wrote:
-> I'm still worried about this.
-> 
-> If power state based suspend does always work despite a HMB and is
-> preferred for the specific Google board we should have purely a DMI
-> based quirk for the board independent of the NVMe controller used with
-> it.
-> 
-> But if these LiteON devices can't properly handle nvme_dev_disable
-> calls we have much deeper problems, because it can be called in all
-> kinds of places, including suspending when not on this specific board.
-> 
-> That being said, I still really do not understand this sentence and thus
-> the problem at all:
-> 
-> > When NVMe device receive D3hot from host, NVMe firmware will do
-> > garbage collection. While NVMe device do Garbage collection,
-> > firmware has chance to going incorrect address.
+trix@redhat.com wrote:
 
-Any progress in describing the problem a little better?
+> From: Tom Rix <trix@redhat.com>
+> 
+> The clang build reports this warning
+> 
+> fw.c:1485:21: warning: address of array 'rtwdev->chip->fw_fifo_addr'
+>   will always evaluate to 'true'
+>         if (!rtwdev->chip->fw_fifo_addr) {
+> 
+> fw_fifo_addr is an array in rtw_chip_info so it is always
+> nonzero.  A better check is if the first element of the array is
+> nonzero.  In the cases where fw_fifo_addr is initialized by rtw88b
+> and rtw88c, the first array element is 0x780.
+> 
+> Fixes: 0fbc2f0f34cc ("rtw88: add dump firmware fifo support")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Acked-by: Tzu-En Huang <tehuang@realtek.com>
+
+Patch applied to wireless-drivers.git, thanks.
+
+ddcd945e556e rtw88: fix fw_fifo_addr check
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201011155438.15892-1-trix@redhat.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
