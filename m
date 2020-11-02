@@ -2,247 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1922A2508
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB7F2A251D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgKBHLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727743AbgKBHLU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:11:20 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F0EC061A04
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 23:11:20 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kZTzj-0001JA-27; Mon, 02 Nov 2020 08:11:11 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:1e4c:3972:f69f:4bf4] (unknown [IPv6:2a03:f580:87bc:d400:1e4c:3972:f69f:4bf4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D266A587C5A;
-        Mon,  2 Nov 2020 07:11:03 +0000 (UTC)
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-References: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH] net: can: prevent potential access of uninitialized value
- in canfd_rcv()
-Message-ID: <1817819d-3aeb-8034-a4ec-7c70040b0cf0@pengutronix.de>
-Date:   Mon, 2 Nov 2020 08:10:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ewozx9n6urGFNZ3BZbFyyP7RqJv8rAyn4"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1728096AbgKBHVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:21:25 -0500
+Received: from zerg.cs.ucr.edu ([169.235.26.103]:53406 "EHLO zerg.cs.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727848AbgKBHVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:21:25 -0500
+X-Greylist: delayed 567 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 02:21:25 EST
+Received: by zerg.cs.ucr.edu (Postfix, from userid 69049)
+        id 9ADE41C20851; Sun,  1 Nov 2020 23:11:57 -0800 (PST)
+From:   Yu Hao <yuhaobehappy@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     yuhaobehappy@gmail.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] sound/core/seq: remove dead code
+Date:   Sun,  1 Nov 2020 23:11:54 -0800
+Message-Id: <20201102071154.23563-1-yuhaobehappy@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ewozx9n6urGFNZ3BZbFyyP7RqJv8rAyn4
-Content-Type: multipart/mixed; boundary="ja28KKD9T02vFCeiXOuCFFfjP9k3lxMKX";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org,
- syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Message-ID: <1817819d-3aeb-8034-a4ec-7c70040b0cf0@pengutronix.de>
-Subject: Re: [PATCH] net: can: prevent potential access of uninitialized value
- in canfd_rcv()
-References: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
-In-Reply-To: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
+The function snd_seq_queue_client_termination() is only called from
+function seq_free_client1(). The seq_free_client1() calls function
+snd_seq_queue_client_leave(), which deletes all objects whose owner
+equals to client->number in global array queue_list, before the function
+snd_seq_queue_client_termination(), which checks whether there are
+any objects in global array queue_list whose owner equals to
+client->number, with the same argument client->number. So
+the checking code in function snd_seq_queue_client_termination() is
+dead code. Remove those dead code.
 
---ja28KKD9T02vFCeiXOuCFFfjP9k3lxMKX
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Yu Hao <yuhaobehappy@gmail.com>
+---
+ sound/core/seq/seq_queue.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-On 11/2/20 4:13 AM, Anant Thazhemadam wrote:
-> In canfd_rcv(), cfd->len is uninitialized when skb->len =3D 0, and this=
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index 71a6ea62c3be..91b3f3295d0b 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -545,21 +545,10 @@ void snd_seq_queue_client_termination(int client)
+ 	unsigned long flags;
+ 	int i;
+ 	struct snd_seq_queue *q;
+-	bool matched;
+ 
+ 	for (i = 0; i < SNDRV_SEQ_MAX_QUEUES; i++) {
+ 		if ((q = queueptr(i)) == NULL)
+ 			continue;
+-		spin_lock_irqsave(&q->owner_lock, flags);
+-		matched = (q->owner == client);
+-		if (matched)
+-			q->klocked = 1;
+-		spin_unlock_irqrestore(&q->owner_lock, flags);
+-		if (matched) {
+-			if (q->timer->running)
+-				snd_seq_timer_stop(q->timer);
+-			snd_seq_timer_reset(q->timer);
+-		}
+ 		queuefree(q);
+ 	}
+ }
+-- 
+2.17.1
 
-> uninitialized cfd->len is accessed nonetheless by pr_warn_once().
->=20
-> Fix this uninitialized variable access by checking cfd->len's validity
-> condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's
-> condition is checked, and appropriately modify the log messages that
-> are generated as well.
-> In case either of the required conditions fail, the skb is freed and
-> NET_RX_DROP is returned, same as before.
->=20
-> Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-> Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
-> This patch was locally tested using the reproducer and .config file=20
-> generated by syzbot.
->=20
->  net/can/af_can.c | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
->=20
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index ea29a6d97ef5..1b9f2e50f065 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -694,16 +694,25 @@ static int canfd_rcv(struct sk_buff *skb, struct =
-net_device *dev,
-
-Can you create a similar patch for "can_rcv()"?
-
->  {
->  	struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
-> =20
-> -	if (unlikely(dev->type !=3D ARPHRD_CAN || skb->len !=3D CANFD_MTU ||
-> -		     cfd->len > CANFD_MAX_DLEN)) {
-> -		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d,=
- len %d, datalen %d\n",
-> +	if (unlikely(dev->type !=3D ARPHRD_CAN || skb->len !=3D CANFD_MTU)) {=
-
-> +		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d=
-, len %d\n",
-> +			     dev->type, skb->len);
-> +		goto free_skb;
-> +	}
-> +
-> +	// This check is made separately since cfd->len would be uninitialize=
-d if skb->len =3D 0.
-
-Please don't use C++ comment style in the kernel.
-
-> +	else if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
-
-Please move the "else" right after the closing curly bracket: "} else if =
-() {"
-or convert it into an "if () {"
-
-> +		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d=
-, len %d, datalen %d\n",
->  			     dev->type, skb->len, cfd->len);
-> -		kfree_skb(skb);
-> -		return NET_RX_DROP;
-> +		goto free_skb;
->  	}
-> =20
->  	can_receive(skb, dev);
->  	return NET_RX_SUCCESS;
-> +
-> +free_skb:
-> +	kfree_skb(skb);
-> +	return NET_RX_DROP;
->  }
-> =20
->  /* af_can protocol functions */
->=20
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---ja28KKD9T02vFCeiXOuCFFfjP9k3lxMKX--
-
---ewozx9n6urGFNZ3BZbFyyP7RqJv8rAyn4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+fsQMACgkQqclaivrt
-76nZfAgAgXV9z8x/ItX1gWyjHdlGO4q1Y3gl0dPIt3afO67g1MEx1j5e3ZAExxNL
-0r9jmkOELFrqI9lyNyOdLdm22Ic9DxYZYPMrbmv5cX1QzeJcCe5HdhOj2m+fTY1x
-qCDqVgAMHfXyOghXxwW6/AYQagJEp+OAHKdboEi7B6qsZvjiYjQFSg6g9/YyIShN
-Wagmu7UI9G4TZ/A/NxeqDr0zC3v7SLMatcDWbVMKqEUkhu9NCEY+7fFtf8SCpduG
-/zlqMgC7MoeqSI2HAurnpQW0DV9WKm9+uJ9TtJaTPcd1CC9iL7YLCN9xWkkoK2CR
-PlBx3qYoxTTlhWvaSt7CNa+xY8pRpQ==
-=pn6S
------END PGP SIGNATURE-----
-
---ewozx9n6urGFNZ3BZbFyyP7RqJv8rAyn4--
