@@ -2,231 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE62A22E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DCF2A22F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727650AbgKBCHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:07:52 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7392 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727620AbgKBCHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:07:52 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPbsY57sBz71Cx;
-        Mon,  2 Nov 2020 10:07:45 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 2 Nov 2020
- 10:07:42 +0800
-Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20201030041035.394565-1-daeho43@gmail.com>
- <20201030041035.394565-2-daeho43@gmail.com>
- <25d164b5-278a-1065-e9ab-4da3232b3b97@huawei.com>
- <CACOAw_wMBeMjQaXCyueX4m4+Xun-k-7kg2QYqe9svMAdVoE3Pg@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <158671ed-9f77-ebbc-d269-db39a047589c@huawei.com>
-Date:   Mon, 2 Nov 2020 10:07:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <CACOAw_wMBeMjQaXCyueX4m4+Xun-k-7kg2QYqe9svMAdVoE3Pg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+        id S1727657AbgKBCRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:17:10 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:42570 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727461AbgKBCRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 21:17:10 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3804A201446;
+        Mon,  2 Nov 2020 03:17:09 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 80AD3201439;
+        Mon,  2 Nov 2020 03:17:05 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9F3294029C;
+        Mon,  2 Nov 2020 03:17:00 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 1/2] arm64: dts: imx8mq: Configure clock rate for audio plls
+Date:   Mon,  2 Nov 2020 10:11:16 +0800
+Message-Id: <1604283077-27012-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/2 7:42, Daeho Jeong wrote:
-> Oh, even if those are patchset, then I have to send just changed ones?
+Configure clock rate for audio plls. audio pll1 is used
+as parent clock for clocks that is multiple of 8kHz.
+audio pll2 is used as parent clock for clocks that is
+multiple of 11kHz.
 
-There is no strict constraint condition, and I'm okay with both ways, however,
-I prefer the way just sending changed one because IMO it can help to save
-review time on those unchanged patches. :P
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2:
+- none
 
-Thanks,
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-> Got it.
-> 
-> 2020년 10월 30일 (금) 오후 3:13, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> Daeho,
->>
->> If there is no change, we are used to not resend the patch with updated
->> version.
->>
->> Thanks,
->>
->> On 2020/10/30 12:10, Daeho Jeong wrote:
->>> From: Daeho Jeong <daehojeong@google.com>
->>>
->>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
->>> compression option of a file.
->>>
->>> struct f2fs_comp_option {
->>>       u8 algorithm;         => compression algorithm
->>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
->>>       u8 log_cluster_size;  => log scale cluster size
->>>                             => 2 ~ 8
->>> };
->>>
->>> struct f2fs_comp_option option;
->>>
->>> option.algorithm = 1;
->>> option.log_cluster_size = 7;
->>>
->>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
->>>
->>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>> ---
->>>
->>> v6: changed the function name of checking compression algorithm validity.
->>> v5: allowed to set algorithm which is not currently enabled by kernel.
->>> v4: changed commit message.
->>> v3: changed the error number more specific.
->>>       folded in fix for build breakage reported by kernel test robot
->>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
->>> v2: added ioctl description.
->>> ---
->>>    fs/f2fs/compress.c |  5 +++++
->>>    fs/f2fs/f2fs.h     |  7 ++++++
->>>    fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
->>>    3 files changed, 66 insertions(+)
->>>
->>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>> index 7895186cc765..b0144670d320 100644
->>> --- a/fs/f2fs/compress.c
->>> +++ b/fs/f2fs/compress.c
->>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
->>>    }
->>>
->>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
->>> +{
->>> +     return f2fs_cops[algorithm] != NULL;
->>> +}
->>> +
->>>    static mempool_t *compress_page_pool;
->>>    static int num_compress_pages = 512;
->>>    module_param(num_compress_pages, uint, 0444);
->>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>> index a33c90cf979b..70a8a2196888 100644
->>> --- a/fs/f2fs/f2fs.h
->>> +++ b/fs/f2fs/f2fs.h
->>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
->>>                                                struct f2fs_sectrim_range)
->>>    #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21,      \
->>>                                                struct f2fs_comp_option)
->>> +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
->>> +                                             struct f2fs_comp_option)
->>>
->>>    /*
->>>     * should be same as XFS_IOC_GOINGDOWN.
->>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
->>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
->>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
->>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
->>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
->>>    int f2fs_init_compress_mempool(void);
->>>    void f2fs_destroy_compress_mempool(void);
->>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
->>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>        /* not support compression */
->>>        return false;
->>>    }
->>> +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
->>> +{
->>> +     return false;
->>> +}
->>>    static inline struct page *f2fs_compress_control_page(struct page *page)
->>>    {
->>>        WARN_ON_ONCE(1);
->>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>> index bd52df84219d..be56702e4939 100644
->>> --- a/fs/f2fs/file.c
->>> +++ b/fs/f2fs/file.c
->>> @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
->>>        return 0;
->>>    }
->>>
->>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
->>> +{
->>> +     struct inode *inode = file_inode(filp);
->>> +     struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>> +     struct f2fs_comp_option option;
->>> +     int ret = 0;
->>> +
->>> +     if (!f2fs_sb_has_compression(sbi))
->>> +             return -EOPNOTSUPP;
->>> +
->>> +     if (!(filp->f_mode & FMODE_WRITE))
->>> +             return -EBADF;
->>> +
->>> +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
->>> +                             sizeof(option)))
->>> +             return -EFAULT;
->>> +
->>> +     if (!f2fs_compressed_file(inode) ||
->>> +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
->>> +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
->>> +                     option.algorithm >= COMPRESS_MAX)
->>> +             return -EINVAL;
->>> +
->>> +     file_start_write(filp);
->>> +     inode_lock(inode);
->>> +
->>> +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
->>> +             ret = -EBUSY;
->>> +             goto out;
->>> +     }
->>> +
->>> +     if (inode->i_size != 0) {
->>> +             ret = -EFBIG;
->>> +             goto out;
->>> +     }
->>> +
->>> +     F2FS_I(inode)->i_compress_algorithm = option.algorithm;
->>> +     F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
->>> +     F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
->>> +     f2fs_mark_inode_dirty_sync(inode, true);
->>> +
->>> +     if (!f2fs_is_compress_algorithm_valid(option.algorithm))
->>> +             f2fs_warn(sbi, "compression algorithm is successfully set, "
->>> +                     "but current kernel doesn't support this algorithm.");
->>> +out:
->>> +     inode_unlock(inode);
->>> +     file_end_write(filp);
->>> +
->>> +     return ret;
->>> +}
->>> +
->>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>    {
->>>        if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
->>> @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->>>                return f2fs_sec_trim_file(filp, arg);
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>>                return f2fs_ioc_get_compress_option(filp, arg);
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>> +             return f2fs_ioc_set_compress_option(filp, arg);
->>>        default:
->>>                return -ENOTTY;
->>>        }
->>> @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>>        case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
->>>        case F2FS_IOC_SEC_TRIM_FILE:
->>>        case F2FS_IOC_GET_COMPRESS_OPTION:
->>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
->>>                break;
->>>        default:
->>>                return -ENOIOCTLCMD;
->>>
-> .
-> 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 5e0e7d0f1bc4..49cc79246288 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -606,11 +606,25 @@ clk: clock-controller@30380000 {
+ 				              "clk_ext3", "clk_ext4";
+ 				assigned-clocks = <&clk IMX8MQ_CLK_A53_SRC>,
+ 						  <&clk IMX8MQ_CLK_A53_CORE>,
+-						  <&clk IMX8MQ_CLK_NOC>;
++						  <&clk IMX8MQ_CLK_NOC>,
++						  <&clk IMX8MQ_CLK_AUDIO_AHB>,
++						  <&clk IMX8MQ_AUDIO_PLL1_BYPASS>,
++						  <&clk IMX8MQ_AUDIO_PLL2_BYPASS>,
++						  <&clk IMX8MQ_AUDIO_PLL1>,
++						  <&clk IMX8MQ_AUDIO_PLL2>;
+ 				assigned-clock-rates = <0>, <0>,
+-						       <800000000>;
++						       <800000000>,
++						       <0>,
++						       <0>,
++						       <0>,
++						       <786432000>,
++						       <722534400>;
+ 				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_800M>,
+-							 <&clk IMX8MQ_ARM_PLL_OUT>;
++							 <&clk IMX8MQ_ARM_PLL_OUT>,
++							 <0>,
++							 <&clk IMX8MQ_SYS2_PLL_500M>,
++							 <&clk IMX8MQ_AUDIO_PLL1>,
++							 <&clk IMX8MQ_AUDIO_PLL2>;
+ 			};
+ 
+ 			src: reset-controller@30390000 {
+-- 
+2.27.0
+
