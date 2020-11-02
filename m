@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8782A2723
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AC12A271D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgKBJhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:37:22 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7007 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728317AbgKBJhU (ORCPT
+        id S1728309AbgKBJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727992AbgKBJhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:37:20 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CPnrG0cfZzhf8M;
-        Mon,  2 Nov 2020 17:37:18 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 17:37:07 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>,
-        kitestramuort <kitestramuort@autistici.org>
-Subject: [PATCH] f2fs: fix to seek incorrect data offset in inline data file
-Date:   Mon, 2 Nov 2020 17:36:58 +0800
-Message-ID: <20201102093658.37206-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+        Mon, 2 Nov 2020 04:37:12 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A0DC0617A6;
+        Mon,  2 Nov 2020 01:37:12 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id w1so12542395edv.11;
+        Mon, 02 Nov 2020 01:37:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6+Y+v0mf5SvNQeLGUI6zmXJKmFCPE8MP5k1v0xa403Q=;
+        b=T0IiFkoGw/VutmwGqmNfU32mueLGJj0iuYjWgcxrv2K4fC8vDS2cq/gyeP5CFKI2X0
+         Q7GyrPCodpPtidHLcjgrw0DSvwarhkgh0smTPV8XOfuFuU4S2PsjR6H0oOnjTRf/iaE1
+         stUIe95sYdoislI54rkk8QudNRyNV9TevNOjyKr3Gx07o6KszYHqkRfGlp3aZRCf+DfJ
+         ninx03dPB5ywJ97FX7zj+/AviXdSk068IqD+SFwQD9q0n2u1jmXNmyl/sej3oN12l6xN
+         CU2FdWFqjmjw16sPFaLVMR8V15iMdZQVuIOx7kuYo8MbCuxJZnhsv3J4tU++InF4nEfT
+         /5lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6+Y+v0mf5SvNQeLGUI6zmXJKmFCPE8MP5k1v0xa403Q=;
+        b=aGqVgr44FlTj8AhoyYDU4rQFeq93QD8aCBPO93mP5ug1KP8nGmgRpIJ/ddSLp/9tLe
+         twZOtF9pknYyKk/ZObndFsf4vFMSE7UKDWFnWaRhbMOD16Yrkied0PksbKRQrywNFOOg
+         kJGw+Ly1yChx8qnHyXa/qelcRqy4r4wmLvg+6t8/esfWuIWi57VEXQtkyR70PIzlkoj/
+         cnuvCWIPciVhWo8FeW/ygj735x5nQd2APoexz+1XwIbElpceiPC22bM1qUr5KN3PzN+l
+         Ow4a4kTCic7PUE1ErMpV7kpUa4qibLt3yivX5KSU4fGwjfrFcR6m50QWMTUJdJDBmuVM
+         Pn8g==
+X-Gm-Message-State: AOAM533XTd4UXySfQOynszj2FmHyG1B5JAu1pw28rjSLe07WX24a9t1O
+        S5CI1Z7/+QpZFc9eiI3Xi5J5zUgc7XltIA==
+X-Google-Smtp-Source: ABdhPJx6W+MqfydSGNKb1O3iuE8j3JN20EMQixH/SZXtccxAAFRSK/NUaB7tHa5Fdpgym41WevBedg==
+X-Received: by 2002:a50:fb18:: with SMTP id d24mr16107554edq.43.1604309831173;
+        Mon, 02 Nov 2020 01:37:11 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d08:5700:a4fc:57d8:461e:80f1])
+        by smtp.gmail.com with ESMTPSA id d23sm5961922eds.48.2020.11.02.01.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 01:37:10 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Keguang Zhang <keguang.zhang@gmail.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@linux-mips.org
+Cc:     Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: replace non-matching patterns for loongson{2,3}
+Date:   Mon,  2 Nov 2020 10:37:02 +0100
+Message-Id: <20201102093702.15512-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As kitestramuort reported:
+Commit ffe1f9356fbe ("MAINTAINERS: Add Loongson-2/Loongson-3 maintainers")
+adds quite generic file entries for drivers/*/*loongson{2,3}* and
+drivers/*/*/*loongson{2,3}* to be informed on changes to all loongson{2,3}
+files in drivers.
 
-F2FS-fs (nvme0n1p4): access invalid blkaddr:1598541474
-[   25.725898] ------------[ cut here ]------------
-[   25.725903] WARNING: CPU: 6 PID: 2018 at f2fs_is_valid_blkaddr+0x23a/0x250
-[   25.725923] Call Trace:
-[   25.725927]  ? f2fs_llseek+0x204/0x620
-[   25.725929]  ? ovl_copy_up_data+0x14f/0x200
-[   25.725931]  ? ovl_copy_up_inode+0x174/0x1e0
-[   25.725933]  ? ovl_copy_up_one+0xa22/0xdf0
-[   25.725936]  ? ovl_copy_up_flags+0xa6/0xf0
-[   25.725938]  ? ovl_aio_cleanup_handler+0xd0/0xd0
-[   25.725939]  ? ovl_maybe_copy_up+0x86/0xa0
-[   25.725941]  ? ovl_open+0x22/0x80
-[   25.725943]  ? do_dentry_open+0x136/0x350
-[   25.725945]  ? path_openat+0xb7e/0xf40
-[   25.725947]  ? __check_sticky+0x40/0x40
-[   25.725948]  ? do_filp_open+0x70/0x100
-[   25.725950]  ? __check_sticky+0x40/0x40
-[   25.725951]  ? __check_sticky+0x40/0x40
-[   25.725953]  ? __x64_sys_openat+0x1db/0x2c0
-[   25.725955]  ? do_syscall_64+0x2d/0x40
-[   25.725957]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+However, only the pattern 'drivers/*/*loongson2*' matches to one file in
+the repository, i.e., drivers/cpufreq/loongson2_cpufreq.c; all other
+patterns have no file matches.
 
-llseek() reports invalid block address access, the root cause is if
-file has inline data, f2fs_seek_block() will access inline data regard
-as block address index in inode block, which should be wrong, fix it.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-Reported-by: kitestramuort <kitestramuort@autistici.org>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+  warning: no file matches    F:    drivers/*/*/*loongson2*
+  warning: no file matches    F:    drivers/*/*/*loongson3*
+  warning: no file matches    F:    drivers/*/*loongson3*
+
+As in the last two and half years, no further files and drivers have
+showed up to match those patterns, just name the one file that matches
+explicitly and delete the others without a match.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- fs/f2fs/file.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+applies cleanly on current master and next-20201102
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index d898f1e2764b..89c451f09344 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -413,9 +413,14 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
- 		goto fail;
+Keguang, Huacai, Jiaxun, please ack.
+
+Thomas, please pick this minor non-urgent cleanup patch.
+
+ MAINTAINERS | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b4197e9da495..fc08f628e196 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11719,8 +11719,7 @@ L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	arch/mips/include/asm/mach-loongson2ef/
+ F:	arch/mips/loongson2ef/
+-F:	drivers/*/*/*loongson2*
+-F:	drivers/*/*loongson2*
++F:	drivers/cpufreq/loongson2_cpufreq.c
  
- 	/* handle inline data case */
--	if (f2fs_has_inline_data(inode) && whence == SEEK_HOLE) {
--		data_ofs = isize;
--		goto found;
-+	if (f2fs_has_inline_data(inode)) {
-+		if (whence == SEEK_HOLE) {
-+			data_ofs = isize;
-+			goto found;
-+		} else if (whence == SEEK_DATA) {
-+			data_ofs = offset;
-+			goto found;
-+		}
- 	}
+ MIPS/LOONGSON64 ARCHITECTURE
+ M:	Huacai Chen <chenhc@lemote.com>
+@@ -11729,8 +11728,6 @@ L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	arch/mips/include/asm/mach-loongson64/
+ F:	arch/mips/loongson64/
+-F:	drivers/*/*/*loongson3*
+-F:	drivers/*/*loongson3*
+ F:	drivers/irqchip/irq-loongson*
+ F:	drivers/platform/mips/cpu_hwmon.c
  
- 	pgofs = (pgoff_t)(offset >> PAGE_SHIFT);
 -- 
-2.26.2
+2.17.1
 
