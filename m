@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980662A30D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 003582A30DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgKBRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbgKBRGn (ORCPT
+        id S1727479AbgKBRGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:06:54 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:44779 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727150AbgKBRGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:06:43 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDBBC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:06:41 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id u2so1182468pls.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:06:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=ESh9xtdAgdP17+IlQOl8SchaQP1wByfvx2mtwCrql2Q=;
-        b=X4DuJJO0/gEJdfLQm0/YE9Y2l9ZhKtY5Whhq2yImpVUTGKCiG2r0WVGyUFoVbJELm0
-         LPmnoj1qViMSnbrVTZa3YlJxORw9Cxk4h/6jPyeDD7BV6b3PHq4EyLWx721+H44mT1+K
-         ZBy4zvIIkSSMS0k9A5cRioGINRzvU1KBwGgS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=ESh9xtdAgdP17+IlQOl8SchaQP1wByfvx2mtwCrql2Q=;
-        b=rain0cnb+eg3dYGp2zDMSYWIvRAyhpBwqf2n4bL9D6KS4CyHAZgjoyTA9hj7C7T2oI
-         +7Cjef09t9UPbazwELPsmrwp4YSGyWC6VjKYAcCD/l5oKtQzMYQsqpFkLpJdVjfU9mAn
-         2LVkl0VV3356K4fXT5tQ3qvodqLrPvQRwt/HNV5SgQuIpknO6SjhkAq7BcM8K6AuL8n9
-         rwPvjgcyKNPwwkbxPMA2E1RaqPCKY6XFWfGSTRQS9svkaTeWbWj14M/vS/0JvUUMh7g4
-         iW0j4UlJqL1HmiiSxx2nQxkrR1IXQCgAvV0glOBJBZso0R/8P7ePdwB73UFUWI6XxQ97
-         /Y/A==
-X-Gm-Message-State: AOAM531M/x8l/fOEp4FxTGW9F7+sxHh+dq1uNpaKbKWbj6Q/80Ra3ZfH
-        +PRraiQDHvqv8EItcsVfCNpOJA==
-X-Google-Smtp-Source: ABdhPJxYfBE1SCamXj3nnapq9Wu8zWTv9R/9QOz630Xs5i8P2iZSQmvZci0pOSsNYwW2B9nmgp+aZA==
-X-Received: by 2002:a17:902:8649:b029:d6:d1e7:e78b with SMTP id y9-20020a1709028649b02900d6d1e7e78bmr4135219plt.63.1604336801123;
-        Mon, 02 Nov 2020 09:06:41 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id 12sm5476052pfh.88.2020.11.02.09.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:06:40 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=VHvL4A3U==CECbgkfvRcy51v4cSBjodvRGA2463L+CZQ@mail.gmail.com>
-References: <20201030011738.2028313-1-swboyd@chromium.org> <20201030011738.2028313-2-swboyd@chromium.org> <CAD=FV=VHvL4A3U==CECbgkfvRcy51v4cSBjodvRGA2463L+CZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] drm/bridge: ti-sn65dsi86: Combine register accesses in ti_sn_aux_transfer()
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
+        Mon, 2 Nov 2020 12:06:53 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 67953EB1;
+        Mon,  2 Nov 2020 12:06:52 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 12:06:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=uLJUrvpF319aY4AhzM7riVobLoy
+        Kzicn9yfJOYNVd1o=; b=k4nWLTvgApzLaYFjOL5MXWO/B1gMmrqlGiWxjcOgyC0
+        v+wN4m6kDFfVv2Qju/11ebFNPPHyZK2c+6qiOyCpfW9+vYzJ+4tNAH26S2TxxmvB
+        7JcJIWJC+1c6iBhGH0NWvEaFLfcvXw0nWzGwSpmmuWLz3yIWMlICXeAoIThGv8r+
+        p5+7ilOeFRRG2J3BoDOSN1vo5XXTac3U1UTiuWUlZDTY2gNLDTfXL9mDZvc2/wd3
+        X5nigwSnKefZG5lDMN+6vfdDIuqSVACi/M2E6t8AwIaEnzgUNkxe5UrniR9sZLXK
+        VAAvWGdpd/ainEM69qD/dt1esHKT53lxxgaAAD8uCMg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uLJUrv
+        pF319aY4AhzM7riVobLoyKzicn9yfJOYNVd1o=; b=MB6qZxQVv/8NG2yhowVe32
+        l902PSY7ftZs0k4VGjJt63OiRGm4GHE2ynxv6ketc5wIIWLeXqk24PsADOa7ZKVK
+        8mP0sLcP/zPEfcpPUIsNkVIo2+Y/x0EclVVZPErlWPnanSj9wiH+6Zr3Lf6YrluT
+        rEH7XlScdOIbe5daDrXJ9GetFx/U+mmu+a5V0CuVXSNCjjHwMaba/Oe9+oYH/JXw
+        mCLnDKK90dIWsJHtkHCydy7qK2punDJG3ZFgANkeJd2QBNW+s412IsTifmyfyXSZ
+        ZZiBtWQ5o4SN5AebJzQCZMGPDnE571o4KI91KGQX/vchmwTDN9BL0KrgTHtHhPUg
+        ==
+X-ME-Sender: <xms:qjygXxuspPppaRy1TAFQCVh3MFpqMmA-NwvMH0TAa69k5HzIB-z3Rw>
+    <xme:qjygX6ellwWq-0Q4p1ctqLTeuyvw54XFpIi8hwrLEjCCvK71y7lnyjuG0lIj-QB0V
+    wruUY1RQCzlSSUCutA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:qjygX0zquR9PgtWS12THzA9zlqjVjcp_CZDfCRddpwyEEKZGjvobvQ>
+    <xmx:qjygX4N2nLUbD3T7dLNbO2U3SIKcBCCQAjJNtjVMkb98XyQPUUbdPg>
+    <xmx:qjygXx_sH_0dMWO3gi_m8SRRMcgqo4MqTGGM_caV1Dgij9wPTL0irw>
+    <xmx:rDygXxxO0bSgPUXA04EWEQ37JVt-jenQeVQayDqOlSO356Sc5W3PRw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CD8EE328005A;
+        Mon,  2 Nov 2020 12:06:49 -0500 (EST)
+Date:   Mon, 2 Nov 2020 18:06:48 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Pablo Greco <pgreco@centosproject.org>
+Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sean Paul <seanpaul@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Mon, 02 Nov 2020 09:06:38 -0800
-Message-ID: <160433679882.884498.16765038474501300057@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Hans de Goede <hdegoede@redhat.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on
+ Ethernet PHY
+Message-ID: <20201102170648.64w3annfe72ppakn@gilmour.lan>
+References: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="coo27kwkpohhsfqz"
+Content-Disposition: inline
+In-Reply-To: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-11-02 08:18:47)
-> Hi,
+
+--coo27kwkpohhsfqz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Nov 02, 2020 at 11:16:40AM -0300, Pablo Greco wrote:
+> The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
+> the PHY, using pull-ups on the RXDLY and TXDLY pins.
 >=20
-> On Thu, Oct 29, 2020 at 6:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > These register reads and writes are sometimes directly next to each
-> > other in the register address space. Let's use regmap bulk read/write
-> > APIs to get the data with one transfer instead of multiple i2c
-> > transfers. This helps cut down on the number of transfers in the case of
-> > something like reading an EDID where we read in blocks of 16 bytes at a
-> > time and the last for loop here is sending an i2c transfer for each of
-> > those 16 bytes, one at a time. Ouch!
-> >
-> > Changes in v2:
-> >  - Combined AUX_CMD register write
+> Fix the phy-mode description to correct reflect this so that the
+> implementation doesn't reconfigure the delays incorrectly. This
+> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+> rx/tx delay config").
 >=20
-> The change from v1 to v2 makes me slightly nervous, though I guess
-> it's fine.  Specifically, all the examples in the datasheet show
-> programming the CMD before the ADDR and LEN.  This change will make it
-> programmed after.  Since there's a separate START bit I guess it's OK,
-> though.  Nothing in the datasheet explicitly says that the order in
-> the examples is the only order that will work...
+> Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
+> Signed-off-by: Pablo Greco <pgreco@centosproject.org>
 
-Hmmm now that you mention it the SEND bit is explicitly being cleared in
-the programming sequence by being there at the start. If I want to
-combine that with the adjacent register writes then I should make sure
-that the SEND bit is cleared at the beginning. Otherwise the hardware
-may be in the middle of a transaction if the previous transaction is
-still running, i.e. a timeout where the SEND bit never cleared.
+Applied thanks!
+Maxime
 
-I think we should go back to the previous patch I had here. Combining
-this register write is wrong. If anything, we should clear the SEND bit
-on a timeout and make sure during probe that this bit is clear and then
-drop the programming of this register from this function entirely. That
-would reduce the sequence by one register, but is more complicated vs.
-just making sure it has the clear bit here to begin with.
+--coo27kwkpohhsfqz
+Content-Type: application/pgp-signature; name="signature.asc"
 
->=20
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-----BEGIN PGP SIGNATURE-----
 
-Thanks, but I'll send another round picking up acks and such and your
-previous review tag on the v1 of this patch.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6A8pwAKCRDj7w1vZxhR
+xX+yAP4nc1OpLwJbroeYz9j10cZwGP2/JJSHUW9IPS8fBqtVcQD9Fm8DM/6XZDeK
+N7iU/x6BV0xH6+LdIdLypwqEDKkpEg8=
+=PFUp
+-----END PGP SIGNATURE-----
+
+--coo27kwkpohhsfqz--
