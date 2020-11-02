@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482602A282E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B832A2831
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgKBKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbgKBKZD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:25:03 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7CC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:25:03 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id b3so8002073wrx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=LccT21b8oHSdfBVYfrJ2538ilnsVhQhEKgEPP8Af9QI=;
-        b=e6CC0DHj91kam2bMcbp9IrayZuE8nIjy0Z3Ez39mp5B973cKikekNrdRQWGKZ+XzKr
-         x1Z8ZcqhMHcnqKsAkBF8d7SRyMqB8EniMZ1UeoIwsYVEmSJTQp4YTnTz1AusysEoIaai
-         xWdeC9UmltCB3mbsKsu9qTDJGLyd5RibdO8H9Rq6gtp1jWlSgp/eCRns7IgGzLjT6o3o
-         mQ+a1Bis9VlBgBQWZpdOKlPUuknhPngi2CBu9U61n7M4S7ZNxJl57gghUcxoM8YyqrVZ
-         YhHmyBQjyq9W4nRaM4U/L0WA8c3j5hfOOn/CjiPoDi6ck2Sc4rD1cJBD5rxXWhIsDYa5
-         nXTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LccT21b8oHSdfBVYfrJ2538ilnsVhQhEKgEPP8Af9QI=;
-        b=umo7aCeapoOlbhRjJma6RMDhYxpPt73un5gBRJ59tZsiHoWgGbauw6niz4ADOokqVt
-         BFRKB66elkdLYnlCz7QLqsCdJNTWxVID13fxb0I28TuyQWJhKwZq7Q8yA+pUtNvZJ1c0
-         Pz5X1mamZ/ita/qh8y+P1cwynS/YJDwSNHIVpivYvlUxQtofzSV1gh57merQ//gaQkg3
-         H61diJJJvf8h7gyTQbMvoR47RMP+AHwaikteZ/jlMbsSN4vX0vr0cIvu2mkdBm4etmqt
-         xbKNCEcrxQaAdvLTlfEyGZ1/cuovvqJCPj0Iqg6U5hX0v7PlRNxnabGQkduEORfG+Ywp
-         t/ZA==
-X-Gm-Message-State: AOAM531eK6Eq1H4ULX8uDhPMXSQYYbrHoW7vJnDBYGMz6skIdxT27y27
-        xl8g7bJrWaq0hxSKFYAK+nALcg==
-X-Google-Smtp-Source: ABdhPJzePWtMiy3DvbqfzdBhT3bMxRrcQu8Scn8eC4Q9XfrpVv/waTj8EYysh3UrMIhQJc3s2MZs7A==
-X-Received: by 2002:a5d:448b:: with SMTP id j11mr19091890wrq.129.1604312702103;
-        Mon, 02 Nov 2020 02:25:02 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:b16a:2491:d72d:caf1])
-        by smtp.gmail.com with ESMTPSA id r18sm23696698wrj.50.2020.11.02.02.25.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 02:25:01 -0800 (PST)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org, riel@surriel.com,
-        clm@fb.com
-Cc:     hannes@cmpxchg.org, Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH] sched/fair: ensure tasks spreading in LLC during LB
-Date:   Mon,  2 Nov 2020 11:24:57 +0100
-Message-Id: <20201102102457.28808-1-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728489AbgKBKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:25:33 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:56318 "EHLO leonov.paulk.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728005AbgKBKZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 05:25:32 -0500
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id B79A4C0121;
+        Mon,  2 Nov 2020 11:25:28 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id 048E3C1D6F; Mon,  2 Nov 2020 11:25:27 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
+        autolearn=disabled version=3.4.2
+Received: from aptenodytes (unknown [192.168.1.1])
+        by gagarine.paulk.fr (Postfix) with ESMTPSA id 220ACC1D6C;
+        Mon,  2 Nov 2020 11:25:23 +0100 (CET)
+Date:   Mon, 2 Nov 2020 11:25:22 +0100
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH 6/9] ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
+Message-ID: <20201102102522.GB11809@aptenodytes>
+References: <20201031182137.1879521-1-contact@paulk.fr>
+ <20201031182137.1879521-7-contact@paulk.fr>
+ <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-schbench shows latency increase for 95 percentile above since:
-  commit 0b0695f2b34a ("sched/fair: Rework load_balance()")
+Hi,
 
-Align the behavior of the load balancer with the wake up path, which tries
-to select an idle CPU which belongs to the LLC for a waking task.
+On Mon 02 Nov 20, 11:12, Maxime Ripard wrote:
+> On Sat, Oct 31, 2020 at 07:21:34PM +0100, Paul Kocialkowski wrote:
+> > The V3s/V3 has a NMI interrupt controller, mainly used for the AXP209.
+> > Its address follows the sytsem controller block, which was previously
+> > incorrectly described as spanning over 0x1000 address bytes.
+> 
+> Is it after, or right in the middle of it?
 
-calculate_imbalance() will use nr_running instead of the spare
-capacity when CPUs share resources (ie cache) at the domain level. This
-will ensure a better spread of tasks on idle CPUs.
+That's up for interpretation actually:
+- The V3 datasheet mentions that System Control is 0x01C00000 --- 0x01C00FFF;
+- In practice, sunxi_sram.c uses a regmap with max_reg set to 0x30 for the
+  V3s/H3 so this gives us some room.
 
-Running schbench on a hikey (8cores arm64) shows the problem:
+Looking at other SoCs with the same setup (take sun8i-r40 for instance),
+system-control is limited to 0x30 and the NMI controller follows it.
+In the case of R40, the SRAM controlled is also said to be 4K-long in the
+Allwinner docs.
 
-tip/sched/core :
-schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
-Latency percentiles (usec)
-	50.0th: 33
-	75.0th: 45
-	90.0th: 51
-	95.0th: 4152
-	*99.0th: 14288
-	99.5th: 14288
-	99.9th: 14288
-	min=0, max=14276
+So all in all, this leads me to believe that the system-controller instance
+stops well before 0x1c000d0 on the V3s as well. Otherwise, we should also
+make the R40 consistent.
 
-tip/sched/core + patch :
-schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
-Latency percentiles (usec)
-	50.0th: 34
-	75.0th: 47
-	90.0th: 52
-	95.0th: 78
-	*99.0th: 94
-	99.5th: 94
-	99.9th: 94
-	min=0, max=94
+Cheers,
 
-Fixes: 0b0695f2b34a ("sched/fair: Rework load_balance()")
-Reported-by: Chris Mason <clm@fb.com>
-Suggested-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Paul
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index aa4c6227cd6d..210b15f068a6 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9031,7 +9031,8 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
- 	 * emptying busiest.
- 	 */
- 	if (local->group_type == group_has_spare) {
--		if (busiest->group_type > group_fully_busy) {
-+		if ((busiest->group_type > group_fully_busy) &&
-+		    !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
- 			/*
- 			 * If busiest is overloaded, try to fill spare
- 			 * capacity. This might end up creating spare capacity
 -- 
-2.17.1
+Developer of free digital technology and hardware support.
 
+Website: https://www.paulk.fr/
+Coding blog: https://code.paulk.fr/
+Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
