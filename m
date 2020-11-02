@@ -2,248 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D267D2A2AA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C6D2A2AA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgKBMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:25:18 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7574 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728421AbgKBMZS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:25:18 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPsZ06Qs7zLsjr;
-        Mon,  2 Nov 2020 20:25:12 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 20:25:05 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: compress: support chksum
-Date:   Mon, 2 Nov 2020 20:23:33 +0800
-Message-ID: <20201102122333.76667-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728650AbgKBM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:26:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728359AbgKBM0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:26:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8F070AFE1;
+        Mon,  2 Nov 2020 12:26:38 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3A9C21E12FB; Mon,  2 Nov 2020 13:26:38 +0100 (CET)
+Date:   Mon, 2 Nov 2020 13:26:38 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        jack@suse.cz, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
+Message-ID: <20201102122638.GB23988@quack2.suse.cz>
+References: <20201101212738.GA16924@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201101212738.GA16924@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch supports to store chksum value with compressed
-data, and verify the integrality of compressed data while
-reading the data.
+On Sun 01-11-20 22:27:38, Paweł Jasiak wrote:
+> I am trying to run examples from man fanotify.7 but fanotify_mark always
+> fail with errno = EFAULT.
+> 
+> fanotify_mark declaration is
+> 
+> SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
+> 			      __u64, mask, int, dfd,
+> 			      const char  __user *, pathname)
+> 
+> When 
+> 
+> fanotify_mark(4, FAN_MARK_ADD | FAN_MARK_ONLYDIR,
+>               FAN_CREATE | FAN_ONDIR, AT_FDCWD, 0xdeadc0de)
+> 
+> is called on kernel side I can see in do_syscall_32_irqs_on that CPU
+> context is
+>     bx = 0x4        = 4
+>     cx = 0x9        = FAN_MARK_ADD | FAN_MARK_ONLYDIR,
+>     dx = 0x40000100 = FAN_CREATE | FAN_ONDIR
+>     si = 0x0
+>     di = 0xffffff9c = AT_FDCWD
+>     bp = 0xdeadc0de
+>     ax = 0xffffffda
+>     orix_ax = 0x153
+> 
+> I am not sure if it is ok because third argument is uint64_t so if I
+> understand correctly mask should be divided into two registers (dx and
+> si).
+> 
+> But in fanotify_mark we get
+>     fanotify_fd = 4          = bx
+>     flags       = 0x9        = cx
+>     mask        = 0x40000100 = dx
+>     dfd         = 0          = si
+>     pathname    = 0xffffff9c = di
+> 
+> I believe that correct order is
+>     fanotify_fd = 4          = bx
+>     flags       = 0x9        = cx
+>     mask        = 0x40000100 = (si << 32) | dx
+>     dfd         = 0xffffff9c = di
+>     pathname    = 0xdeadc0de = bp
+> 
+> I think that we should call COMPAT version of fanotify_mark here
+> 
+> COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> 				int, fanotify_fd, unsigned int, flags,
+> 				__u32, mask0, __u32, mask1, int, dfd,
+> 				const char  __user *, pathname)
+> 
+> or something wrong is with 64-bits arguments.
+> 
+> I am running Linux 5.9.2 i686 on Pentium III (Coppermine).
+> For tests I am using Debian sid on qemu with 5.9.2 and default kernel
+> from repositories.
+> 
+> Everything works fine on 5.5 and 5.4.
 
-The feature can be enabled through specifying mount option
-'compress_chksum'.
+Strange. Thanks for report. Looks like some issue got created / exposed
+somewhere between 5.5 and 5.9 (actually probably between 5.5 and 5.7
+because the Linaro report you mentioned [1] is from 5.7-rc6). There were
+no changes in this area in fanotify, I think it must have been some x86
+change that triggered this. Hum, looking into x86 changelog in that time
+range there was a series rewriting 32-bit ABI [2] that got merged into
+5.7-rc1. Can you perhaps check whether 5.6 is good and 5.7-rc1 is bad?
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- Documentation/filesystems/f2fs.rst |  1 +
- fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
- fs/f2fs/f2fs.h                     | 13 ++++++++++++-
- fs/f2fs/inode.c                    |  3 +++
- fs/f2fs/super.c                    |  9 +++++++++
- include/linux/f2fs_fs.h            |  2 +-
- 6 files changed, 46 insertions(+), 2 deletions(-)
+Brian, any idea whether your series could regress fanotify_mark(2) syscall?
+Do we have somewhere documented which syscalls need compat wrappers and how
+they should look like?
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index b8ee761c9922..985ae7d35066 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
- 			 For other files, we can still enable compression via ioctl.
- 			 Note that, there is one reserved special extension '*', it
- 			 can be set to enable compression for all files.
-+compress_chksum		 Support verifying chksum of raw data in compressed cluster.
- inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
- 			 files using the blk-crypto framework rather than
- 			 filesystem-layer encryption. This allows the use of
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 14262e0f1cd6..a4e0d2c745b6 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 				f2fs_cops[fi->i_compress_algorithm];
- 	unsigned int max_len, new_nr_cpages;
- 	struct page **new_cpages;
-+	u32 chksum = 0;
- 	int i, ret;
- 
- 	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-@@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 
- 	cc->cbuf->clen = cpu_to_le32(cc->clen);
- 
-+	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-+		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-+					cc->cbuf->cdata, cc->clen);
-+	cc->cbuf->chksum = cpu_to_le32(chksum);
-+
- 	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
- 		cc->cbuf->reserved[i] = cpu_to_le32(0);
- 
-@@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 			(struct decompress_io_ctx *)page_private(page);
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
- 	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
- 	const struct f2fs_compress_ops *cops =
- 			f2fs_cops[fi->i_compress_algorithm];
- 	int ret;
-@@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 
- 	ret = cops->decompress_pages(dic);
- 
-+	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
-+		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-+		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
-+
-+		if (provided != calculated) {
-+			printk_ratelimited(
-+				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-+				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-+				provided, calculated);
-+			ret = -EFSCORRUPTED;
-+		}
-+	}
-+
- out_vunmap_cbuf:
- 	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
- out_vunmap_rbuf:
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 99bcf4b44a9c..2ae254ab7b7d 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -147,7 +147,8 @@ struct f2fs_mount_info {
- 
- 	/* For compression */
- 	unsigned char compress_algorithm;	/* algorithm type */
--	unsigned compress_log_size;		/* cluster log size */
-+	unsigned char compress_log_size;	/* cluster log size */
-+	bool compress_chksum;			/* compressed data chksum */
- 	unsigned char compress_ext_cnt;		/* extension count */
- 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
- };
-@@ -731,6 +732,7 @@ struct f2fs_inode_info {
- 	atomic_t i_compr_blocks;		/* # of compressed blocks */
- 	unsigned char i_compress_algorithm;	/* algorithm type */
- 	unsigned char i_log_cluster_size;	/* log of cluster size */
-+	unsigned short i_compress_flag;		/* compress flag */
- 	unsigned int i_cluster_size;		/* cluster size */
- };
- 
-@@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
- 	COMPRESS_MAX,
- };
- 
-+enum compress_flag {
-+	COMPRESS_CHKSUM,
-+	COMPRESS_MAX_FLAG,
-+};
-+
- #define COMPRESS_DATA_RESERVED_SIZE		5
- struct compress_data {
- 	__le32 clen;			/* compressed data size */
-+	__le32 chksum;			/* compressed data chksum */
- 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
- 	u8 cdata[];			/* compressed data */
- };
-@@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
- 			F2FS_OPTION(sbi).compress_algorithm;
- 	F2FS_I(inode)->i_log_cluster_size =
- 			F2FS_OPTION(sbi).compress_log_size;
-+	F2FS_I(inode)->i_compress_flag =
-+			F2FS_OPTION(sbi).compress_chksum ?
-+				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
- 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 657db2fb6739..de8f7fc89efa 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
- 					le64_to_cpu(ri->i_compr_blocks));
- 			fi->i_compress_algorithm = ri->i_compress_algorithm;
- 			fi->i_log_cluster_size = ri->i_log_cluster_size;
-+			fi->i_compress_flag = ri->i_compress_flag;
- 			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
- 			set_inode_flag(inode, FI_COMPRESSED_FILE);
- 		}
-@@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
- 					&F2FS_I(inode)->i_compr_blocks));
- 			ri->i_compress_algorithm =
- 				F2FS_I(inode)->i_compress_algorithm;
-+			ri->i_compress_flag =
-+				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
- 			ri->i_log_cluster_size =
- 				F2FS_I(inode)->i_log_cluster_size;
- 		}
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 00eff2f51807..f8de4d83a5be 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -146,6 +146,7 @@ enum {
- 	Opt_compress_algorithm,
- 	Opt_compress_log_size,
- 	Opt_compress_extension,
-+	Opt_compress_chksum,
- 	Opt_atgc,
- 	Opt_err,
- };
-@@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
- 	{Opt_compress_algorithm, "compress_algorithm=%s"},
- 	{Opt_compress_log_size, "compress_log_size=%u"},
- 	{Opt_compress_extension, "compress_extension=%s"},
-+	{Opt_compress_chksum, "compress_chksum"},
- 	{Opt_atgc, "atgc"},
- 	{Opt_err, NULL},
- };
-@@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			F2FS_OPTION(sbi).compress_ext_cnt++;
- 			kfree(name);
- 			break;
-+		case Opt_compress_chksum:
-+			F2FS_OPTION(sbi).compress_chksum = true;
-+			break;
- #else
- 		case Opt_compress_algorithm:
- 		case Opt_compress_log_size:
- 		case Opt_compress_extension:
-+		case Opt_compress_chksum:
- 			f2fs_info(sbi, "compression options not supported");
- 			break;
- #endif
-@@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 		seq_printf(seq, ",compress_extension=%s",
- 			F2FS_OPTION(sbi).extensions[i]);
- 	}
-+
-+	if (F2FS_OPTION(sbi).compress_chksum)
-+		seq_puts(seq, ",compress_chksum");
- }
- 
- static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index a5dbb57a687f..7dc2a06cf19a 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -273,7 +273,7 @@ struct f2fs_inode {
- 			__le64 i_compr_blocks;	/* # of compressed blocks */
- 			__u8 i_compress_algorithm;	/* compress algorithm */
- 			__u8 i_log_cluster_size;	/* log of cluster size */
--			__le16 i_padding;		/* padding */
-+			__le16 i_compress_flag;		/* compress flag */
- 			__le32 i_extra_end[0];	/* for attribute size calculation */
- 		} __packed;
- 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+								Honza
+
+[1] https://lists.linux.it/pipermail/ltp/2020-June/017436.html
+[2] https://lore.kernel.org/lkml/20200313195144.164260-1-brgerst@gmail.com/
+
 -- 
-2.26.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
