@@ -2,61 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFF32A2A7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9628B2A2A7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgKBMQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:16:20 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:46600 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728484AbgKBMQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:16:20 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kZYkx-0000OA-Fi; Mon, 02 Nov 2020 12:16:15 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: dev_ioctl: remove redundant initialization of variable err
-Date:   Mon,  2 Nov 2020 12:16:15 +0000
-Message-Id: <20201102121615.695196-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728737AbgKBMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:16:49 -0500
+Received: from mga03.intel.com ([134.134.136.65]:28865 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728359AbgKBMQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:16:49 -0500
+IronPort-SDR: o0aHOT3rPfclYcOXhsalnykM8+A1FQUIMiiE4ukVkYQXjUZiQ0iArDK3cGnC/FiM5MPHXavl/0
+ bPx3Vh0JH8kQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="168972646"
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="168972646"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 04:16:48 -0800
+IronPort-SDR: bM3ptaXzkv/iFqswyOPD70Rz4tqdTi+PMKIg5vi40sI67LQ4/qPXSa60A2xRHnj27/iaPcCfRE
+ o0NPBu98S4NQ==
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="305420857"
+Received: from jpanina-mobl2.ger.corp.intel.com (HELO linux.intel.com) ([10.252.49.91])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 04:16:42 -0800
+Date:   Mon, 2 Nov 2020 14:16:37 +0200
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     "Daniel P. Smith" <dpsmith@apertussolutions.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-integrity@vger.kernel.org, ross.philipson@oracle.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@amacapital.net, trenchboot-devel@googlegroups.com
+Subject: Re: [RFC PATCH 3/4] tpm: Conditionally use static buffer in TPM
+ buffer management
+Message-ID: <20201102121637.GB5242@linux.intel.com>
+References: <20201031165122.21539-1-dpsmith@apertussolutions.com>
+ <20201031165122.21539-4-dpsmith@apertussolutions.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031165122.21539-4-dpsmith@apertussolutions.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Oct 31, 2020 at 12:51:21PM -0400, Daniel P. Smith wrote:
+> Memory management calls cannot be made in the compressed kernel
+> environment to dynamically allocate TPM buffer space. For the Secure
+> Launch early PCR extend code, use a static buffer instead.
+> 
+> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
 
-The variable err is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+This patch is not necessary.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/core/dev_ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just assign tb->data to the static buffer where you use the static
+buffer and use tpm_buf_reset().
 
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index 205e92e604ef..db8a0ff86f36 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -230,7 +230,7 @@ static int dev_do_ioctl(struct net_device *dev,
- 			struct ifreq *ifr, unsigned int cmd)
- {
- 	const struct net_device_ops *ops = dev->netdev_ops;
--	int err = -EOPNOTSUPP;
-+	int err;
- 
- 	err = dsa_ndo_do_ioctl(dev, ifr, cmd);
- 	if (err == 0 || err != -EOPNOTSUPP)
--- 
-2.27.0
+tpm_buf_init() and tpm_buf_destroy() are optional.
 
+/Jarkko
+
+>  include/linux/tpm_buffer.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/include/linux/tpm_buffer.h b/include/linux/tpm_buffer.h
+> index 8144a52fbc0a..c9482edf6618 100644
+> --- a/include/linux/tpm_buffer.h
+> +++ b/include/linux/tpm_buffer.h
+> @@ -18,6 +18,10 @@
+>  #ifndef __LINUX_TPM_BUFFER_H__
+>  #define __LINUX_TPM_BUFFER_H__
+>  
+> +#ifdef COMPRESSED_KERNEL
+> +static u8 _tpm_buffer[PAGE_SIZE] = {0};
+> +#endif
+> +
+>  struct tpm_header {
+>  	__be16 tag;
+>  	__be32 length;
+> @@ -52,7 +56,11 @@ static inline void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
+>  
+>  static inline int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
+>  {
+> +#ifdef COMPRESSED_KERNEL
+> +	buf->data = _tpm_buffer;
+> +#else
+>  	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
+> +#endif
+>  	if (!buf->data)
+>  		return -ENOMEM;
+>  
+> @@ -63,7 +71,9 @@ static inline int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
+>  
+>  static inline void tpm_buf_destroy(struct tpm_buf *buf)
+>  {
+> +#ifndef COMPRESSED_KERNEL
+>  	free_page((unsigned long)buf->data);
+> +#endif
+>  }
+>  
+>  static inline u32 tpm_buf_length(struct tpm_buf *buf)
+> @@ -92,7 +102,9 @@ static inline void tpm_buf_append(struct tpm_buf *buf,
+>  		return;
+>  
+>  	if ((len + new_len) > PAGE_SIZE) {
+> +#ifndef COMPRESSED_KERNEL
+>  		WARN(1, "tpm_buf: overflow\n");
+> +#endif
+>  		buf->flags |= TPM_BUF_OVERFLOW;
+>  		return;
+>  	}
+> -- 
+> 2.11.0
+> 
+
+/Jarkko
