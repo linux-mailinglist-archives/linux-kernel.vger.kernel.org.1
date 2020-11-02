@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DE02A370B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029FD2A370E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgKBXRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:17:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgKBXRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:17:09 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E53092225E;
-        Mon,  2 Nov 2020 23:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604359029;
-        bh=biCUf2cUK9m86UfR7bxkBHVCbJwZo+y2Vceg1KkmJrE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=grXap7UGdDL0yZ+h8E49WNyBO5LPij3L+M4P3YIH+ydYIXCIyzh2Rfem111ZJ+O4p
-         5/Lug/TrJtvI53zgv++REM9yEppgNTVZ84dv5xdRO18CNGyXN0V8N2MiQDU32jet4n
-         7n5Gd9EKREM6l0ey61fAG6guIO6tLmv0QJqmWCAk=
-Date:   Mon, 2 Nov 2020 15:17:07 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Jonathan McDowell <noodles@earth.li>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: qca8k: Fix port MTU setting
-Message-ID: <20201102151707.2357185b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201030184733.GB1042051@lunn.ch>
-References: <20201030183315.GA6736@earth.li>
-        <20201030184733.GB1042051@lunn.ch>
+        id S1726881AbgKBXRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgKBXRv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:17:51 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C94C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:17:51 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id u62so16631027iod.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:17:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=76wzgH+ulnX5dR7fbtCrLUNwOup4/JPWu6FMZzfCIOY=;
+        b=bqcl/LODVNFwQWdCMXEmfVx956kuOJ7q6V4JOMev+jj5q9X0qocVWbgE4WGybS0/1D
+         8ZnSR/Cd9u6tVYu6qwndIhjZU7L0iLKCZMbkQnhPNg2fNHqGW0lWeL8R5/Du1JLThd4x
+         shSIPEnUjnASC1NEkcDxHi+ejeJxHfckSd5DnXqwIELHgOMaJI8cQTlO5JX25XRtOP+F
+         Covz5Zd+ZNdjVMN6vqws5GN9DA9G+3+8QPzl2GKcp1QaRyr/hJIhGN+2j2fmoVb43ORR
+         8lLdo3FR/QzNo8xtEv4dDgmlGxzRkWXFTb6gjlkxi80yiff5n9878GRQO8YHCy76/G9A
+         16XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=76wzgH+ulnX5dR7fbtCrLUNwOup4/JPWu6FMZzfCIOY=;
+        b=dqTS1Y5TYFFAnuGDLFdeqKeH1W+1UfBnCQfkPsrOpYGgOaFwLfqXWwJnb/8rmE3B4A
+         7l7LL9v3RLPLKL06XS8aHsxdyV87QaH6k/2KdxohOR5hdAR2x9rSpT3zlqF93MoQgh8m
+         Q7WKU/VKGFDcEWIXhcziWQ7hI3C+XwTFELY1mgpAwzDYxsqeJ6Ucrmf1+Pea3wWBVHgT
+         asoNPo3NpUaFyMNhz7DzovTY1r2aOmeXKlY/3y42x4ovsFUjRYKKcnmJngTJ/51BjvPb
+         F2TiFnnDO1aMo+zhXhmBbnQf8mLT5FvhhwNZ7lWnTggbilLnQZ/eYrJ9AisHoRN/6H3O
+         REEg==
+X-Gm-Message-State: AOAM530/7/SkaplLBCR5GG4T3frqHIT7wbdKnkUErpWsaYVmvNoeKZxc
+        IHiWg13nvW2ydGNKIgBjMZsidVWbsOKeNXu0e28ITBpi1Wk=
+X-Google-Smtp-Source: ABdhPJzsaYcp6dQkNcXPIwxhTOw6uYO5/GycJnkjpUvp9aCzNokRv8kOazLBfEv9xf8+jhnZPb1fxbsHURbsSW9AA/8=
+X-Received: by 2002:a05:6638:d7:: with SMTP id w23mr2439989jao.131.1604359071323;
+ Mon, 02 Nov 2020 15:17:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1966437.kWHqOGhHGQ@alarsen.net> <20201102201536.1267680-1-ztong0001@gmail.com>
+ <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
+In-Reply-To: <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Mon, 2 Nov 2020 18:17:40 -0500
+Message-ID: <CAA5qM4DC25+o1kJ_+3pMDHYsDfEeim=_3fLVsJ3pqSUAGZpdvw@mail.gmail.com>
+Subject: Re: [PATCH v2] qnx4: do not interpret -EIO as a correct address
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Anders Larsen <al@alarsen.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 19:47:33 +0100 Andrew Lunn wrote:
-> On Fri, Oct 30, 2020 at 06:33:15PM +0000, Jonathan McDowell wrote:
-> > The qca8k only supports a switch-wide MTU setting, and the code to take
-> > the max of all ports was only looking at the port currently being set.
-> > Fix to examine all ports.
-> > 
-> > Reported-by: DENG Qingfang <dqfext@gmail.com>
-> > Fixes: f58d2598cf70 ("net: dsa: qca8k: implement the port MTU callbacks")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Jonathan McDowell <noodles@earth.li>  
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-Applied, thanks!
+Thanks David,
+Please take a look at v3 patch to see if it makes more sense.
+Thanks,
+- Tong
