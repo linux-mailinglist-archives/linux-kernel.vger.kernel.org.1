@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAAC2A2F55
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57202A2F73
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgKBQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:08:04 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:24193 "EHLO z5.mailgun.us"
+        id S1726891AbgKBQPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:15:49 -0500
+Received: from gate.crashing.org ([63.228.1.57]:40305 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgKBQID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:08:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604333282; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=0UCpEuMOoCHB1MG1en0aAbbu7QfLzWhBLrgBOS21emM=; b=Drf7nOG6lS7QxThZxjJtyOqYLqNDvG7AT+CTHjwBrro84Sct1xrtYFOR3RF3iCh3K20p/PVT
- 95Xmbl9Ugaw+iRJqH6b4BXGdR5fvV4/CyDGdagnZeXtkPXVBlqS/ctAYJidAU44AP0XtvrL9
- Fi03k22iXKcB3NdqDjqa5l2LCms=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fa02eaf1037425ce1c4ca5d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 16:07:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1F64C3858C; Mon,  2 Nov 2020 16:07:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E825BC3852D;
-        Mon,  2 Nov 2020 16:07:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E825BC3852D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Daisy Zhang251 <daisy.zhang251@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Daisy Zhang1 <daisy.zhang1@unisoc.com>
-Subject: Re: [PATCH] cfg80211: make wifi driver probe
-References: <1602833787-4206-1-git-send-email-daisy.zhang251@gmail.com>
-Date:   Mon, 02 Nov 2020 18:07:02 +0200
-In-Reply-To: <1602833787-4206-1-git-send-email-daisy.zhang251@gmail.com>
-        (Daisy Zhang's message of "Fri, 16 Oct 2020 15:36:27 +0800")
-Message-ID: <87a6vzpwt5.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726473AbgKBQPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:15:49 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0A2G928B025286;
+        Mon, 2 Nov 2020 10:09:02 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0A2G918Z025285;
+        Mon, 2 Nov 2020 10:09:01 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 2 Nov 2020 10:09:01 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     shuo.a.liu@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201102160901.GU2672@gate.crashing.org>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com> <20201019061803.13298-5-shuo.a.liu@intel.com> <20201102145657.GD15392@zn.tnic>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102145657.GD15392@zn.tnic>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daisy Zhang251 <daisy.zhang251@gmail.com> writes:
+On Mon, Nov 02, 2020 at 03:56:57PM +0100, Borislav Petkov wrote:
+> On Mon, Oct 19, 2020 at 02:17:50PM +0800, shuo.a.liu@intel.com wrote:
+> > +static inline long acrn_hypercall0(unsigned long hcall_id)
+> > +{
+> > +	long result;
+> > +
+> > +	asm volatile("movl %1, %%r8d\n\t"
+> > +		     "vmcall\n\t"
+> > +		     : "=a" (result)
+> > +		     : "ir" (hcall_id)
+> 			^^
+> 
+> Not "irm"? Or simply "g" in that case?
 
-> From: Daisy Zhang1 <daisy.zhang1@unisoc.com>
->
-> Register a WiFi driver of IEEE80211 WLAN for the Unisoc Marlin3
-> chipsets. The following code is a simple architecture for probing
-> driver.
->
-> Signed-off-by: Daisy Zhang1 <daisy.zhang1@unisoc.com>
+I think that will work for x86_64.  But it won't matter much, most of
+the time you give an immediate number.  It is a tiny bit neater of
+course (if anyone still remembers what "g" is, you cannot use it much
+these days).
 
-Can you clarify what this driver actually does? The commit log is very
-confusing to me.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Segher
