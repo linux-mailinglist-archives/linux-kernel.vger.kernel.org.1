@@ -2,221 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ED82A2FF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB5B2A2FFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgKBQja convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 11:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726834AbgKBQj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:39:29 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A87A22268;
-        Mon,  2 Nov 2020 16:39:28 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 11:39:26 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kernel-janitors@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [bug report] tracing, synthetic events: Replace buggy strcat()
- with seq_buf operations
-Message-ID: <20201102113926.3f43531b@gandalf.local.home>
-In-Reply-To: <20201102074524.GA4040095@mwanda>
-References: <20201102074524.GA4040095@mwanda>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727158AbgKBQjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:39:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727087AbgKBQjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:39:48 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED97FC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:39:47 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id o9so17684675ejg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:39:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=B/opXhjxVMn7dgQCgM7LMi0cf/+TlZIo/peykaGDUVo=;
+        b=Gg8NJGKq96Wv5WC/mk6lOMHNlv2IEakY+2VmUyrKm82ZxPIM1gk4glArjTsiA7w3NL
+         baoFCODuW1dfrDl1CYxJ1zcmV3PxBE2pSY5e1xAcv1wDyt5v6T/31bj+YSWilYtzQ/9S
+         QaWlbLEnwzrd2wzKDMzwqRA103H097kNusfaa1cLgUpAFVyl+WCVTOUwdr5mSpQZAmkV
+         oG6GEH0wGBPgRFxmfJy0z8b4vnDCGkUUxZJKbLj1/E9WJaX+bQiyRmtMNd5zEr58cr1N
+         /OdhlDaxW7QS1e7Ryc+EnfOys6nuDZ+aWkFb3fmXSMG2ChjAlCScWoU+wcpfLc0V3bOY
+         bmbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=B/opXhjxVMn7dgQCgM7LMi0cf/+TlZIo/peykaGDUVo=;
+        b=rTNS1QCqEC4tu1TtCcfJ2jzHl8b6P/LcP2zDBGDo71LyMnqnCDauAwNdR00BzvWDU7
+         HRDT4GYRCmZIHxYmJ6BVC8x0//Sn+QRvEpVdbAiJ8yUtn7ADpDzSHncyV8xq4nvnJ079
+         OV5XqG5Rrkovm7z8RTrCscI9Xfw3aYUc+FbpJj8wrxmDFzz/2tt/PkQvaJbCWpiRnO1g
+         MePeQonEFrS1Dc0IJarYduScClaPu7YOAYCNK3QuZ347ig47/jGVA7GtYIpKPKQ8xI9M
+         /G9oSZyR0aMxGyQ5sg7hnERhZLzvGpc9O2ZJ3iIr13F3WWm3NTImctt3QKKgADDu5OYk
+         5TIw==
+X-Gm-Message-State: AOAM530U7VlW/gUKz2EUHNiuC1ZWLNN9KVOFaoZivlipj8VTo3kFBHoQ
+        i/f7seMm6t3iin9UU4TinE78DlBFQWFSxw6ZdmA=
+X-Google-Smtp-Source: ABdhPJzYWyBWQeE/ZzYre2IhqnKkQJMMpFCMDRwy6L0pz6BdCd/4La6FwRYvJMyInwzd05osDe4AVvuF1oGKfm7UOZA=
+X-Received: by 2002:a17:906:814:: with SMTP id e20mr3050113ejd.514.1604335186678;
+ Mon, 02 Nov 2020 08:39:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+References: <20201029200435.3386066-1-zi.yan@sent.com> <20201030094308.GG1478@dhcp22.suse.cz>
+ <6CAAB1FC-2B41-490B-A67A-93063629C19B@nvidia.com> <20201030133625.GJ1478@dhcp22.suse.cz>
+ <CAHbLzkqnmXqB-UThT9dMOwVpuweE6XwA78SF-_qD9=1EVpMSUg@mail.gmail.com>
+ <BE903088-CF3E-4264-A9CA-8A27AC12EF65@nvidia.com> <CAHbLzkoSChyP4Jjz_LNxP3Maf-eVH0cfqRoN9=s75V0SMLEL-w@mail.gmail.com>
+ <eb3be332-8fed-af88-b060-c710f6245f7d@suse.cz>
+In-Reply-To: <eb3be332-8fed-af88-b060-c710f6245f7d@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 2 Nov 2020 08:39:33 -0800
+Message-ID: <CAHbLzkr9Ar-+_DiAL-0PZ6FXLSfDEgXrNsh+vFUaDeg58j7f8A@mail.gmail.com>
+Subject: Re: [PATCH] mm/compaction: count pages and stop correctly during page isolation.
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>, Rik van Riel <riel@surriel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 10:45:24 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Mon, Nov 2, 2020 at 5:03 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 10/30/20 7:55 PM, Yang Shi wrote:
+> > On Fri, Oct 30, 2020 at 11:39 AM Zi Yan <ziy@nvidia.com> wrote:
+> >>
+> >> On 30 Oct 2020, at 14:33, Yang Shi wrote:
+> >>
+> >> > On Fri, Oct 30, 2020 at 6:36 AM Michal Hocko <mhocko@suse.com> wrote=
+:
+> >> >>
+> >> >> On Fri 30-10-20 08:20:50, Zi Yan wrote:
+> >> >>> On 30 Oct 2020, at 5:43, Michal Hocko wrote:
+> >> >>>
+> >> >>>> [Cc Vlastimil]
+> >> >>>>
+> >> >>>> On Thu 29-10-20 16:04:35, Zi Yan wrote:
+> >> >>>>> From: Zi Yan <ziy@nvidia.com>
+> >> >>>>>
+> >> >>>>> In isolate_migratepages_block, when cc->alloc_contig is true, we=
+ are
+> >> >>>>> able to isolate compound pages, nr_migratepages and nr_isolated =
+did not
+> >> >>>>> count compound pages correctly, causing us to isolate more pages=
+ than we
+> >> >>>>> thought. Use thp_nr_pages to count pages. Otherwise, we might be=
+ trapped
+> >> >>>>> in too_many_isolated while loop, since the actual isolated pages=
+ can go
+> >> >>>>> up to COMPACT_CLUSTER_MAX*512=3D16384, where COMPACT_CLUSTER_MAX=
+ is 32,
+> >> >>>>> since we stop isolation after cc->nr_migratepages reaches to
+> >> >>>>> COMPACT_CLUSTER_MAX.
+> >> >>>>>
+> >> >>>>> In addition, after we fix the issue above, cc->nr_migratepages c=
+ould
+> >> >>>>> never be equal to COMPACT_CLUSTER_MAX if compound pages are isol=
+ated,
+> >> >>>>> thus page isolation could not stop as we intended. Change the is=
+olation
+> >> >>>>> stop condition to >=3D.
+> >> >>>>>
+> >> >>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >> >>>>> ---
+> >> >>>>>  mm/compaction.c | 8 ++++----
+> >> >>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >> >>>>>
+> >> >>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+> >> >>>>> index ee1f8439369e..0683a4999581 100644
+> >> >>>>> --- a/mm/compaction.c
+> >> >>>>> +++ b/mm/compaction.c
+> >> >>>>> @@ -1012,8 +1012,8 @@ isolate_migratepages_block(struct compact_=
+control *cc, unsigned long low_pfn,
+> >> >>>>>
+> >> >>>>>  isolate_success:
+> >> >>>>>            list_add(&page->lru, &cc->migratepages);
+> >> >>>>> -          cc->nr_migratepages++;
+> >> >>>>> -          nr_isolated++;
+> >> >>>>> +          cc->nr_migratepages +=3D thp_nr_pages(page);
+> >> >>>>> +          nr_isolated +=3D thp_nr_pages(page);
+> >> >>>>
+> >> >>>> Does thp_nr_pages work for __PageMovable pages?
+> >> >>>
+> >> >>> Yes. It is the same as compound_nr() but compiled
+> >> >>> to 1 when THP is not enabled.
+> >> >>
+> >> >> I am sorry but I do not follow. First of all the implementation of =
+the
+> >> >> two is different and also I was asking about __PageMovable which sh=
+ould
+> >> >> never be THP IIRC. Can they be compound though?
+> >> >
+> >> > I have the same question, can they be compound? If they can be
+> >> > compound, PageTransHuge() can't tell from THP and compound movable
+> >> > page, right?
+> >>
+> >> Right. I have updated the patch and use compound_nr instead.
+> >
+> > Thanks. Actually I'm wondering what kind of movable page could be
+> > compound. Any real examples?
+>
+> Looks like there's currently none. Compaction also wouldn't work properly=
+ with
+> movable pages with order>0 as the free page scanner looks for order-0 pag=
+es
+> only. But it won't hurt to use compound_nr() anyway.
 
-> Hello Steven Rostedt (VMware),
-> 
-> The patch 761a8c58db6b: "tracing, synthetic events: Replace buggy
-> strcat() with seq_buf operations" from Oct 23, 2020, leads to the
-> following static checker warning:
-> 
-> 	kernel/trace/trace_events_synth.c:703 parse_synth_field()
-> 	warn: passing zero to 'ERR_PTR'
-> 
-> kernel/trace/trace_events_synth.c
->    582  static struct synth_field *parse_synth_field(int argc, const char **argv,
->    583                                               int *consumed)
->    584  {
->    585          struct synth_field *field;
->    586          const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
->    587          int len, ret = 0;
->    588          struct seq_buf s;
->    589          ssize_t size;
->    590  
->    591          if (field_type[0] == ';')
->    592                  field_type++;
->    593  
->    594          if (!strcmp(field_type, "unsigned")) {
->    595                  if (argc < 3) {
->    596                          synth_err(SYNTH_ERR_INCOMPLETE_TYPE, errpos(field_type));
->    597                          return ERR_PTR(-EINVAL);
->    598                  }
->    599                  prefix = "unsigned ";
->    600                  field_type = argv[1];
->    601                  field_name = argv[2];
->    602                  *consumed = 3;
->    603          } else {
->    604                  field_name = argv[1];
->    605                  *consumed = 2;
->    606          }
->    607  
->    608          field = kzalloc(sizeof(*field), GFP_KERNEL);
->    609          if (!field)
->    610                  return ERR_PTR(-ENOMEM);
->    611  
->    612          len = strlen(field_name);
->    613          array = strchr(field_name, '[');
->    614          if (array)
->    615                  len -= strlen(array);
->    616          else if (field_name[len - 1] == ';')
->    617                  len--;
->    618  
->    619          field->name = kmemdup_nul(field_name, len, GFP_KERNEL);
->    620          if (!field->name) {
->    621                  ret = -ENOMEM;
->    622                  goto free;
->    623          }
->    624          if (!is_good_name(field->name)) {
->    625                  synth_err(SYNTH_ERR_BAD_NAME, errpos(field_name));
->    626                  ret = -EINVAL;
->    627                  goto free;
->    628          }
->    629  
->    630          if (field_type[0] == ';')
->    631                  field_type++;
->    632          len = strlen(field_type) + 1;
->    633  
->    634          if (array)
->    635                  len += strlen(array);
->    636  
->    637          if (prefix)
->    638                  len += strlen(prefix);
->    639  
->    640          field->type = kzalloc(len, GFP_KERNEL);
->    641          if (!field->type) {
->    642                  ret = -ENOMEM;
->    643                  goto free;
->    644          }
->    645          seq_buf_init(&s, field->type, len);
->    646          if (prefix)
->    647                  seq_buf_puts(&s, prefix);
->    648          seq_buf_puts(&s, field_type);
->    649          if (array) {
->    650                  seq_buf_puts(&s, array);
->    651                  if (s.buffer[s.len - 1] == ';')
->    652                          s.len--;
->    653          }
->    654          if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
->    655                  goto free;
-> 
-> This was originally reported by kbuild-bot, but it was somehow
-> overlooked so now it's on my system.  The missing error code will lead
-> to a NULL dereference in the caller.
+Thanks, yes this is what I thought otherwise we have troubles in
+migration path too.
 
-
-I misread the original report, modified it to fix something else, and
-didn't see the real problem.
-
-Having to initialize ret for *every* error path is ridiculous. Here's the
-fix.
-
--- Steve
-
-From 2980f226a7fb08e37fd3948e206854fe5a1a8c50 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Mon, 2 Nov 2020 11:28:39 -0500
-Subject: [PATCH] tracing: Make -ENOMEM the default error for
- parse_synth_field()
-
-parse_synth_field() returns a pointer and requires that errors get
-surrounded by ERR_PTR(). The ret variable is initialized to zero, but should
-never be used as zero, and if it is, it could cause a false return code and
-produce a NULL pointer dereference. It makes no sense to set ret to zero.
-
-Set ret to -ENOMEM (the most common error case), and have any other errors
-set it to something else. This removes the need to initialize ret on *every*
-error branch.
-
-Fixes: 761a8c58db6b ("tracing, synthetic events: Replace buggy strcat() with seq_buf operations")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_synth.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 84b7cab55291..881df991742a 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -584,7 +584,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- {
- 	struct synth_field *field;
- 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
--	int len, ret = 0;
-+	int len, ret = -ENOMEM;
- 	struct seq_buf s;
- 	ssize_t size;
- 
-@@ -617,10 +617,9 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		len--;
- 
- 	field->name = kmemdup_nul(field_name, len, GFP_KERNEL);
--	if (!field->name) {
--		ret = -ENOMEM;
-+	if (!field->name)
- 		goto free;
--	}
-+
- 	if (!is_good_name(field->name)) {
- 		synth_err(SYNTH_ERR_BAD_NAME, errpos(field_name));
- 		ret = -EINVAL;
-@@ -638,10 +637,9 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		len += strlen(prefix);
- 
- 	field->type = kzalloc(len, GFP_KERNEL);
--	if (!field->type) {
--		ret = -ENOMEM;
-+	if (!field->type)
- 		goto free;
--	}
-+
- 	seq_buf_init(&s, field->type, len);
- 	if (prefix)
- 		seq_buf_puts(&s, prefix);
-@@ -653,6 +651,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 	}
- 	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
- 		goto free;
-+
- 	s.buffer[s.len] = '\0';
- 
- 	size = synth_field_size(field->type);
-@@ -666,10 +665,8 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 
- 			len = sizeof("__data_loc ") + strlen(field->type) + 1;
- 			type = kzalloc(len, GFP_KERNEL);
--			if (!type) {
--				ret = -ENOMEM;
-+			if (!type)
- 				goto free;
--			}
- 
- 			seq_buf_init(&s, type, len);
- 			seq_buf_puts(&s, "__data_loc ");
--- 
-2.25.4
-
-
+>
+> >>
+> >> =E2=80=94
+> >> Best Regards,
+> >> Yan Zi
+> >
+>
