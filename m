@@ -2,120 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9F42A2C46
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB28C2A2C48
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgKBOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:07:21 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:52271 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbgKBOHU (ORCPT
+        id S1725852AbgKBOIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:08:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKBOIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:07:20 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 73135E26;
-        Mon,  2 Nov 2020 09:07:19 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 09:07:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=6pjAAzn4bGnUGxwS8ieUNt5m6qs
-        NflBdQvF5aGF2P2w=; b=Hjdn924FFnWuPRB4F8/+FSCWRyeX/JhjEKRXwhnQs5k
-        Hgm1L5m5MpPr1IG8ycIfgPrPEf4cGXajTe7mAMeMqYuqgHrYOjhk7bx06yJ/WTMo
-        WntZjCF/rZqySIo6nDb/qsXF7xb+kYvxvzBVsUohk7Z5EfvHuPILZ706HEnO1OtX
-        iahPA7RIkpq/cTpdaisF5LaGBX/727mWZeupFRrb6+LZt43tUzZ+UUMJAQQTbZ7E
-        9hOw9JO+qSxtCUiEG1/VWPGNh46vyZtJPAns7qTP6IaC2dLQU9IEuN6vgBLnrouL
-        fXy2TfxBVqGCXR1oj/ZnhFCnwf4jjBG11VZfRAQipTw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6pjAAz
-        n4bGnUGxwS8ieUNt5m6qsNflBdQvF5aGF2P2w=; b=bB5eOpq61J2TIvAkMChz7Q
-        lI4/aJyt6NpIT+TCBWFXtgtzaeMfQ1kAaOYnfufPluqu+aXti6WZkZe0keT7ZhoD
-        xVLI9CxnqqZzxLYovJJRNK1EUkpDi1mVQDdGBVLTpsR/ElMkkxwOxpDwJuWK7BAm
-        //WThqKRCRtdUk0XnZBZjfLF45AGPdFuLWrHE8EBlKtNehCUw1Qbwf8jVk1MQxaw
-        uk9EqN+Ct2eyH5DpDBQduQJBi3H6FtNluJqr7qffV/xLIPeLVnwtX649Fms1+dr4
-        Q9g2mxF7xryZhGKbzqFpLd+UXKNq0K3rmLUH0cVsZlLqkTYUnWEiw05kznhmgj7g
-        ==
-X-ME-Sender: <xms:lBKgX1VJJyVoeHNmeTlQBhqtzz8hvAG76d7jnn_h_wndadh_jzuZ_g>
-    <xme:lBKgX1mz7rVRcJNq5K69LlcTARUwucHaoHLC8TYtaF32w9C741gdME65-tUpuBM9i
-    QR6evK_vmiJ3JAj8DA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:lRKgXxarMGc060ANBcd63kZDzeqVsdayly4WKqqLH-B3AD31m2Rfrw>
-    <xmx:lRKgX4UImrp6Z-hCNAuLD_6S8dde13dtHQDIepaPccs8DkN-WxrgNg>
-    <xmx:lRKgX_niHEQhqAfTsykk1jcQK3ug7uavN9_BpkDyxILizdgxwR7ERg>
-    <xmx:lxKgX9XFv6U-tVIW9nczrIJ1kujyHr_JptUSgmARHIUp7w9l05mxWw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AACA93280059;
-        Mon,  2 Nov 2020 09:07:16 -0500 (EST)
-Date:   Mon, 2 Nov 2020 15:07:15 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Pablo Greco <pgreco@centosproject.org>
-Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on
- Ethernet PHY
-Message-ID: <20201102140715.r72yz7jx3usuhqi7@gilmour.lan>
-References: <1604190857-3078-1-git-send-email-pgreco@centosproject.org>
+        Mon, 2 Nov 2020 09:08:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188EDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rXbYTzMH5+21up+d520jyOeCTieBV+RqI0Jv3IRaYFc=; b=gmSIVHcNIL4p11AY1fEnKWj9v8
+        eLFcihyAiXIwhxD2Yt90R4yd7VeN/sp3UjX2iAmc+Vdjp6qRK2kLAfvYX/GKf3GZU9OBlETYGlfIF
+        9py3qr9JwnMX8SyERDWt+lSYSsTZfk2x3+Hl9wGr5vFJpA3oROSmifFRA/sQLPQY9yjcp0AJP6MWP
+        Fvo/x8qsvnovciQ4/h2707YJukPhixmvGAx4U1hFM71qsNwsU235fsf2JdylJrMN6s9Gazy4EiHf8
+        3gvgmgYhcT1is0C/gjk66wi107NUoEU2gslaM2IdBWzEP0Zl9u0AX0I8LTLaM+3K/iwG8sKCuLOs0
+        DpQkFtDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZaVg-0004gC-W5; Mon, 02 Nov 2020 14:08:37 +0000
+Date:   Mon, 2 Nov 2020 14:08:36 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Joe Perches <joe@perches.com>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
+ sysfs_emit_at
+Message-ID: <20201102140836.GJ27442@casper.infradead.org>
+References: <cover.1604261483.git.joe@perches.com>
+ <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
+ <20201101204834.GF27442@casper.infradead.org>
+ <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
+ <20201101211910.GG27442@casper.infradead.org>
+ <bc1a4a2a7ff69eeee131744881e1e8c72444be01.camel@perches.com>
+ <20201101220604.GI27442@casper.infradead.org>
+ <20201102133343.GA1011963@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jqpl26c6tdknkwl4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604190857-3078-1-git-send-email-pgreco@centosproject.org>
+In-Reply-To: <20201102133343.GA1011963@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 02:33:43PM +0100, Greg Kroah-Hartman wrote:
+> > Oh, ugh, sysfs_emit() should be able to work on a buffer that isn't
+> > page aligned.  Greg, how about this?
+> 
+> How can sysfs_emit() be called on a non-page-aligned buffer?  It's being
+> used on the buffer that was passed to the sysfs call.
+> 
+> And if you are writing multiple values to a single sysfs file output,
+> well, not good...
 
---jqpl26c6tdknkwl4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+See shmem_enabled_show() in mm/shmem.c (output at
+/sys/kernel/mm/transparent_hugepage/shmem_enabled on your machine).
 
-Hi,
-
-On Sat, Oct 31, 2020 at 09:34:15PM -0300, Pablo Greco wrote:
-> The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
-> the PHY, using pull-ups on the RXDLY and TXDLY pins.
->=20
-> Fix the phy-mode description to correct reflect this so that the
-> implementation doesn't reconfigure the delays incorrectly. This
-> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> rx/tx delay config").
->=20
-> Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
-> Signed-off-by: Pablo Greco <pgreco@centosproject.org>
-
-Thanks for sending those patches.
-
-However, I'm not entirely sure how you sent it but the odd threading you
-used (each other patches being in reply to this one without 0/N in the
-name) seem to confuse the tools we use to apply the patches.
-
-Can you resend it properly?
-Thanks!
-Maxime
-
---jqpl26c6tdknkwl4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6ASkwAKCRDj7w1vZxhR
-xZeSAPoCDlgzwSbXeAApsmFdr2R9H+CLTz5aAts/EOsxs3PZnQD/bp1BJHX57Ud8
-uMjSs/37Mfb81/ALV5ejMqQVAAdCfAw=
-=rUm3
------END PGP SIGNATURE-----
-
---jqpl26c6tdknkwl4--
+I don't claim it's a good interface, but it exists.
