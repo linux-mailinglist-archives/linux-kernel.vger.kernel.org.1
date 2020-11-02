@@ -2,243 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D092A279C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366512A279F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgKBJ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:59:50 -0500
-Received: from hera.aquilenet.fr ([185.233.100.1]:47784 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgKBJ7u (ORCPT
+        id S1728375AbgKBKAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:00:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgKBKAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:59:50 -0500
-X-Greylist: delayed 55233 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 04:59:49 EST
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 32C31B32;
-        Mon,  2 Nov 2020 10:59:48 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1LKR1ss1F6nn; Mon,  2 Nov 2020 10:59:47 +0100 (CET)
-Received: from function.home (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 12F7D29E;
-        Mon,  2 Nov 2020 10:59:47 +0100 (CET)
-Received: from samy by function.home with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kZWcr-00COzy-Lr; Mon, 02 Nov 2020 10:59:45 +0100
-Date:   Mon, 2 Nov 2020 10:59:45 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: [PATCH] speakup: document the usage of enum values
-Message-ID: <20201102095945.ap4pdff2dn47hijh@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        speakup@linux-speakup.org
+        Mon, 2 Nov 2020 05:00:10 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F34BC0617A6;
+        Mon,  2 Nov 2020 02:00:10 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id v4so13777865edi.0;
+        Mon, 02 Nov 2020 02:00:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UY3MthU4udPkILXkEz8t2ilMTvX9TvJsbAavbFnp6Ao=;
+        b=r22ZYdTzU5+2nQ0E50b34vkvAY4UnS/nL2T8R1+pjdZScjEbYtS62qW8sJwS/YtSNR
+         tvpumXaIR3zpmEbniHClks8ueV/VCIPw9gVaarlScd1Aev/+tDsqG8hv+2zS3+7QiFyh
+         fJ+6e7hifdoaya+HHVIai5CUrvZUhrh/1Lyi8QNMOsZexiEhHuvgtzplcqV5fjXfR5bS
+         pxf6uf7IrZjZty69f6v7YGYBPInJAE2ay9DWs6ik3StECBBXqimqe3rOcN1azjGz7vIO
+         AH48Y6+PpXbhBsbpslsh8c7eZ80Iq1g44E4XATmKmu57RsgbbpCSbBcK/Ro3C0evujmw
+         Ei0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UY3MthU4udPkILXkEz8t2ilMTvX9TvJsbAavbFnp6Ao=;
+        b=UdtVQCZAJe4xoKpUVRJl2ztjyKsPPnUgh3YCmD7hWzIklL3uxzV1o2uPd6Td77uPIX
+         RPA89bHMXFVM0WeotzsLqtcuUqJLh1XbCrqNHBv9D7IiqQrAPKMUQtae5bAaBKa6oBLN
+         l65UJ6foHzcW4ywOTWGklvy8Muqxjqz+Gdlfv4gDYNtU/x5SVN+XFOC2SNWkarvmWU+T
+         qh3lmaYgCRLwIWOl6J5xvYf+k9sUGfZdyeVCqmkC6jOOecJFZNXwbwXroi+Gx9OIayPe
+         KJHTr2IrXKleO64lSEGgftLKW5qTmHT9CPyN07b2cdyONsDk2YLL0oNt379ZxHnO3GQp
+         G3eQ==
+X-Gm-Message-State: AOAM532NicMky+RaHUEwnGcmPZM/V5bd/BmdapFpMHnygIfS0HlrY+ID
+        FTB9BZ2z04WKwTq5EoZ7SaP6sE9eteUma4rz5u0=
+X-Google-Smtp-Source: ABdhPJxsei8/kISPv99GBwFXu38kymaUPeEkIC97DvGJx8TQKw+vmABwtWO8rS8Ls9AxaoOi49ynrM4nNNSSNlDMhCI=
+X-Received: by 2002:a05:6402:b45:: with SMTP id bx5mr15105696edb.193.1604311208670;
+ Mon, 02 Nov 2020 02:00:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+References: <cover.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <2faef6f884aae9ae92e57e7c6a88a6195553c684.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAKF3qh1J=_nxFTztyEjMBJav_W+JY60gzf27dvantMeKU+Aatg@mail.gmail.com> <ee679e38-dd8a-7d43-8715-a4e454664f89@linux.intel.com>
+In-Reply-To: <ee679e38-dd8a-7d43-8715-a4e454664f89@linux.intel.com>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Mon, 2 Nov 2020 17:59:57 +0800
+Message-ID: <CAKF3qh3ozCp7EsOA0X7kaKH2MGLHZWTAu0ZNTwhQiY6UD=M3Hg@mail.gmail.com>
+Subject: Re: [PATCH v11 4/5] PCI/portdrv: Remove redundant pci_aer_available()
+ check in DPC enable logic
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>, knsathya@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cursor tracking modes enum, the edge enum, and the read_all commands
-enum should be used as such in the source code, to make it more readable
-and make gcc catch missing values in switches.
+The current logic is
+if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+    pci_aer_available() &&
+    (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
+services |=3D PCIE_PORT_SERVICE_DPC;
 
-Also, some values of enums are coupled with others, we at least need to
-document these.
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+    pci_aer_available() &&
+    (pcie_ports_dpc_native))
+ services |=3D PCIE_PORT_SERVICE_DPC;
 
----
- drivers/accessibility/speakup/i18n.h |    6 +++
- drivers/accessibility/speakup/main.c |   64 ++++++++++++++++++-----------------
- 2 files changed, 39 insertions(+), 31 deletions(-)
+or
 
---- a/drivers/accessibility/speakup/i18n.h
-+++ b/drivers/accessibility/speakup/i18n.h
-@@ -23,12 +23,15 @@ enum msg_index_t {
- 	MSG_OFF = MSG_STATUS_START,
- 	MSG_ON,
- 	MSG_NO_WINDOW,
-+
-+	/* These must be ordered the same as enum cursor_track */
- 	MSG_CURSOR_MSGS_START,
- 	MSG_CURSORING_OFF = MSG_CURSOR_MSGS_START,
- 	MSG_CURSORING_ON,
- 	MSG_HIGHLIGHT_TRACKING,
- 	MSG_READ_WINDOW,
- 	MSG_READ_ALL,
-+
- 	MSG_EDIT_DONE,
- 	MSG_WINDOW_ALREADY_SET,
- 	MSG_END_BEFORE_START,
-@@ -41,11 +44,14 @@ enum msg_index_t {
- 	MSG_LEAVING_HELP,
- 	MSG_IS_UNASSIGNED,
- 	MSG_HELP_INFO,
-+
-+	/* These must be ordered the same as enum edge */
- 	MSG_EDGE_MSGS_START,
- 	MSG_EDGE_TOP  = MSG_EDGE_MSGS_START,
- 	MSG_EDGE_BOTTOM,
- 	MSG_EDGE_LEFT,
- 	MSG_EDGE_RIGHT,
-+
- 	MSG_NUMBER,
- 	MSG_SPACE,
- 	MSG_START, /* A little confusing, given our convention. */
---- a/drivers/accessibility/speakup/main.c
-+++ b/drivers/accessibility/speakup/main.c
-@@ -90,19 +90,18 @@ const u_char spk_key_defaults[] = {
- #include "speakupmap.h"
- };
- 
--/* Speakup Cursor Track Variables */
--static int cursor_track = 1, prev_cursor_track = 1;
--
--/* cursor track modes, must be ordered same as cursor_msgs */
--enum {
-+/* cursor track modes, must be ordered same as cursor_msgs in enum msg_index_t */
-+enum cursor_track {
- 	CT_Off = 0,
- 	CT_On,
- 	CT_Highlight,
- 	CT_Window,
--	CT_Max
-+	CT_Max,
-+	read_all_mode = CT_Max,
- };
- 
--#define read_all_mode CT_Max
-+/* Speakup Cursor Track Variables */
-+static enum cursor_track cursor_track = 1, prev_cursor_track = 1;
- 
- static struct tty_struct *tty;
- 
-@@ -405,15 +404,17 @@ static void say_attributes(struct vc_dat
- 	synth_printf("%s\n", spk_msg_get(MSG_COLORS_START + bg));
- }
- 
--enum {
--	edge_top = 1,
-+/* must be ordered same as edge_msgs in enum msg_index_t */
-+enum edge {
-+	edge_none = 0,
-+	edge_top,
- 	edge_bottom,
- 	edge_left,
- 	edge_right,
- 	edge_quiet
- };
- 
--static void announce_edge(struct vc_data *vc, int msg_id)
-+static void announce_edge(struct vc_data *vc, enum edge msg_id)
- {
- 	if (spk_bleeps & 1)
- 		bleep(spk_y);
-@@ -608,7 +609,8 @@ static void say_prev_word(struct vc_data
- {
- 	u_char temp;
- 	u16 ch;
--	u_short edge_said = 0, last_state = 0, state = 0;
-+	enum edge edge_said = edge_none;
-+	u_short last_state = 0, state = 0;
- 
- 	spk_parked |= 0x01;
- 
-@@ -653,7 +655,7 @@ static void say_prev_word(struct vc_data
- 	}
- 	if (spk_x == 0 && edge_said == edge_quiet)
- 		edge_said = edge_left;
--	if (edge_said > 0 && edge_said < edge_quiet)
-+	if (edge_said > edge_none && edge_said < edge_quiet)
- 		announce_edge(vc, edge_said);
- 	say_word(vc);
- }
-@@ -662,7 +664,8 @@ static void say_next_word(struct vc_data
- {
- 	u_char temp;
- 	u16 ch;
--	u_short edge_said = 0, last_state = 2, state = 0;
-+	enum edge edge_said = edge_none;
-+	u_short last_state = 2, state = 0;
- 
- 	spk_parked |= 0x01;
- 	if (spk_x == vc->vc_cols - 1 && spk_y == vc->vc_rows - 1) {
-@@ -694,7 +697,7 @@ static void say_next_word(struct vc_data
- 		spk_pos += 2;
- 		last_state = state;
- 	}
--	if (edge_said > 0)
-+	if (edge_said > edge_none)
- 		announce_edge(vc, edge_said);
- 	say_word(vc);
- }
-@@ -1366,31 +1369,30 @@ static void speakup_deallocate(struct vc
- 	speakup_console[vc_num] = NULL;
- }
- 
-+enum read_all_command {
-+	RA_NEXT_SENT = KVAL(K_DOWN)+1,
-+	RA_PREV_LINE = KVAL(K_LEFT)+1,
-+	RA_NEXT_LINE = KVAL(K_RIGHT)+1,
-+	RA_PREV_SENT = KVAL(K_UP)+1,
-+	RA_DOWN_ARROW,
-+	RA_TIMER,
-+	RA_FIND_NEXT_SENT,
-+	RA_FIND_PREV_SENT,
-+};
-+
- static u_char is_cursor;
- static u_long old_cursor_pos, old_cursor_x, old_cursor_y;
- static int cursor_con;
- 
- static void reset_highlight_buffers(struct vc_data *);
- 
--static int read_all_key;
-+static enum read_all_command read_all_key;
- 
- static int in_keyboard_notifier;
- 
--static void start_read_all_timer(struct vc_data *vc, int command);
--
--enum {
--	RA_NOTHING,
--	RA_NEXT_SENT,
--	RA_PREV_LINE,
--	RA_NEXT_LINE,
--	RA_PREV_SENT,
--	RA_DOWN_ARROW,
--	RA_TIMER,
--	RA_FIND_NEXT_SENT,
--	RA_FIND_PREV_SENT,
--};
-+static void start_read_all_timer(struct vc_data *vc, enum read_all_command command);
- 
--static void kbd_fakekey2(struct vc_data *vc, int command)
-+static void kbd_fakekey2(struct vc_data *vc, enum read_all_command command)
- {
- 	del_timer(&cursor_timer);
- 	speakup_fake_down_arrow();
-@@ -1427,7 +1429,7 @@ static void stop_read_all(struct vc_data
- 	spk_do_flush();
- }
- 
--static void start_read_all_timer(struct vc_data *vc, int command)
-+static void start_read_all_timer(struct vc_data *vc, enum read_all_command command)
- {
- 	struct var_t *cursor_timeout;
- 
-@@ -1438,7 +1440,7 @@ static void start_read_all_timer(struct
- 		  jiffies + msecs_to_jiffies(cursor_timeout->u.n.value));
- }
- 
--static void handle_cursor_read_all(struct vc_data *vc, int command)
-+static void handle_cursor_read_all(struct vc_data *vc, enum read_all_command command)
- {
- 	int indcount, sentcount, rv, sn;
- 
+if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+    pci_aer_available() &&(services & PCIE_PORT_SERVICE_AER)=EF=BC=89
+  services |=3D PCIE_PORT_SERVICE_DPC;
+
+do you mean one of the possible is
+if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+    (pcie_ports_dpc_native))
+ services |=3D PCIE_PORT_SERVICE_DPC;
+
+after your patch ? nothing about AER ?
+
+Thanks,
+Ethan
+
+On Thu, Oct 29, 2020 at 1:14 AM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 10/27/20 11:00 PM, Ethan Zhao wrote:
+> > On Tue, Oct 27, 2020 at 10:00 PM Kuppuswamy Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> >>
+> >> In DPC service enable logic, check for
+> >> services & PCIE_PORT_SERVICE_AER implies pci_aer_available()
+> > How about PCIE_PORT_SERVICE_AER is not configured, but
+> > pcie_aer_disable =3D=3D 0 =EF=BC=9F
+> Its not possible in current code flow. DPC service is configured
+> following AER service configuration.
+> >> is true. So there is no need to explicitly check it again.
+> >>
+> >> Also, passing pcie_ports=3Ddpc-native in kernel command line
+> >> implies DPC needs to be enabled in native mode irrespective
+> >> of AER ownership status. So checking for pci_aer_available()
+> >> without checking for pcie_ports status is incorrect.
+> >>
+> >> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@=
+linux.intel.com>
+> >> ---
+> >>   drivers/pci/pcie/portdrv_core.c | 1 -
+> >>   1 file changed, 1 deletion(-)
+> >>
+> >> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdr=
+v_core.c
+> >> index 2c0278f0fdcc..e257a2ca3595 100644
+> >> --- a/drivers/pci/pcie/portdrv_core.c
+> >> +++ b/drivers/pci/pcie/portdrv_core.c
+> >> @@ -252,7 +252,6 @@ static int get_port_device_capability(struct pci_d=
+ev *dev)
+> >>           * permission to use AER.
+> >>           */
+> >>          if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+> >> -           pci_aer_available() &&
+> >>              (host->native_dpc || (services & PCIE_PORT_SERVICE_AER)))
+> >>                  services |=3D PCIE_PORT_SERVICE_DPC;
+> >>
+> >> --
+> >> 2.17.1
+> >>
+>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
