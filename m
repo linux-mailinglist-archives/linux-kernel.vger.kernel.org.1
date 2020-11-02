@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02502A2FC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BB32A2FD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgKBQ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:27:23 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:63229 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726633AbgKBQ1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:27:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604334441; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=9EbglJUVZ4bi/re4PUXJJtXP6+9xKrG6cwTTB0fB9Nw=; b=tvsNIhLaXVfFxbelujTq+96x2+D4pP133AiPihfTAtce82hNwW3lM6E8Kp3M+oR2upBtJ64z
- Rtd4w1NQxaeAJBpCxxgY39/SQOfRCg4wLHrYiINgxWd0MpIx2cZCx69VO8bHV3DB43ldq+Lq
- C77BBe7cOuq8CSYJ8q4gujsqKmQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fa033518646b0f26839e586 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 16:26:57
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5145AC433F0; Mon,  2 Nov 2020 16:26:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CF09C433C9;
-        Mon,  2 Nov 2020 16:26:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CF09C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc warning
-References: <20201026213040.3889546-1-arnd@kernel.org>
-        <20201026213040.3889546-8-arnd@kernel.org>
-Date:   Mon, 02 Nov 2020 18:26:51 +0200
-In-Reply-To: <20201026213040.3889546-8-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 26 Oct 2020 22:29:55 +0100")
-Message-ID: <87tuu7ohbo.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726938AbgKBQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgKBQat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:30:49 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF4DC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:30:49 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id l22so3404vsa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:30:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sREWGA01ccOZZ+Ac51fB5ORg2kfgSZpXJMerDUOeHQU=;
+        b=QYCxrHXxOIzJRxoAyAIb0dG0Gl0FXPKT7ruPaIvINw1xlkDTkX4uUBFDqf2YFMeZOI
+         9mcgE/JXeOyT2MlShJ4MxRdtqhxjf6do0o6f7koqGRhIfzaXzKXlKHkx9WDf5pYYVP2i
+         uEuI7tqTsgV9KOGrWFC00ME+3sIQYj9ymedsc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sREWGA01ccOZZ+Ac51fB5ORg2kfgSZpXJMerDUOeHQU=;
+        b=na7bAoGffqHKN+QHBvnMuiQxoitdiL5NSkF4FS6dlaTCuRCYryIqGICt7K50ZYSn0s
+         Lx/mEspt1TI8/GrTSaL3jS+Msiw3LTLyeaNp624OQH1M/YgsRmqtlX1OXPlT4OD9MgN1
+         sCBiTAegl17KPYspYJ17Ml9L6Y1PSIohdp/nxJIhFrylVHjOFSVf7KRCd5lBqPRsKGTP
+         GsvmrxF54XI7e70+mcJhgJvcSh7IzJHKCjmhcRSDkKj3Dpv/LGTWfEP1jG6FQTlBjJDp
+         qAB6vDi6IhhbJAMW20KXWTJ5F8pOpCf33cySHZ+UmMzuCD4r+p1/KggG6eNZV0KpmOXy
+         nD3g==
+X-Gm-Message-State: AOAM53123gytQaWWrpMbVS2jeOgLwkUrmQObPkBjY2j5plTTggXYFiao
+        g421yYTN23hdzZO9yVgJjcTE/OQrXTlAIQ==
+X-Google-Smtp-Source: ABdhPJzQLWvqgpT2Qa7/pqtA1cruaKEuUEEUFlxtyxOeQ4iIp38VbfKY0RvtjhI4+RXGDDy7qnTmxw==
+X-Received: by 2002:a67:6f06:: with SMTP id k6mr15239773vsc.20.1604334648210;
+        Mon, 02 Nov 2020 08:30:48 -0800 (PST)
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
+        by smtp.gmail.com with ESMTPSA id c21sm1621326vsh.31.2020.11.02.08.30.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 08:30:47 -0800 (PST)
+Received: by mail-vk1-f170.google.com with SMTP id k125so3068496vka.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:30:47 -0800 (PST)
+X-Received: by 2002:a1f:8a:: with SMTP id 132mr3074242vka.17.1604334646803;
+ Mon, 02 Nov 2020 08:30:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201030011738.2028313-1-swboyd@chromium.org> <20201030011738.2028313-5-swboyd@chromium.org>
+In-Reply-To: <20201030011738.2028313-5-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 2 Nov 2020 08:30:35 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UgFBiRNY7mJtciPt21=G4Em564z6p9VhLF-n-3DcQtJg@mail.gmail.com>
+Message-ID: <CAD=FV=UgFBiRNY7mJtciPt21=G4Em564z6p9VhLF-n-3DcQtJg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] drm/bridge: ti-sn65dsi86: Update reply on aux failures
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sean Paul <seanpaul@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+Hi,
 
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Oct 29, 2020 at 6:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> gcc-10 shows a false-positive warning with CONFIG_KASAN:
+> We should be setting the drm_dp_aux_msg::reply field if a NACK or a
+> SHORT reply happens. Update the error bit handling logic in
+> ti_sn_aux_transfer() to handle these cases and notify upper layers that
+> such errors have happened. This helps the retry logic understand that a
+> timeout has happened, or to shorten the read length if the panel isn't
+> able to handle the longest read possible.
 >
-> drivers/net/wireless/ath/ath9k/dynack.c: In function 'ath_dynack_sample_tx_ts':
-> include/linux/etherdevice.h:290:14: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
->   290 |  *(u32 *)dst = *(const u32 *)src;
->       |  ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> Note: I don't have any hardware that exhibits these code paths so this
+> is written based on reading the datasheet for this bridge and inspecting
+> the code and how this is called.
 >
-> Until gcc is fixed, work around this by using memcpy() in place
-> of ether_addr_copy(). Hopefully gcc-11 will not have this problem.
+> Changes in v2:
+>  - Handle WRITE_STATUS_UPDATE properly
 >
-> Link: https://godbolt.org/z/sab1MK
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Cc: Sean Paul <seanpaul@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  drivers/net/wireless/ath/ath9k/dynack.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath9k/dynack.c b/drivers/net/wireless/ath/ath9k/dynack.c
-> index fbeb4a739d32..e4eb96b26ca4 100644
-> --- a/drivers/net/wireless/ath/ath9k/dynack.c
-> +++ b/drivers/net/wireless/ath/ath9k/dynack.c
-> @@ -247,8 +247,14 @@ void ath_dynack_sample_tx_ts(struct ath_hw *ah, struct sk_buff *skb,
->  	ridx = ts->ts_rateindex;
->  
->  	da->st_rbf.ts[da->st_rbf.t_rb].tstamp = ts->ts_tstamp;
-> +#if defined(CONFIG_KASAN) && (CONFIG_GCC_VERSION >= 100000) && (CONFIG_GCC_VERSION < 110000)
-> +	/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490 */
-> +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1, ETH_ALEN);
-> +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2, ETH_ALEN);
-> +#else
->  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1);
->  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2);
-> +#endif
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 36 ++++++++++++++++++++++++---
+>  1 file changed, 32 insertions(+), 4 deletions(-)
 
-Isn't there a better way to handle this? I really would not want
-checking for GCC versions become a common approach in drivers.
+This looks right to me, now.  Hopefully if/when someone ends up with
+hardware that exercises these codepaths they'll at least be in a
+better state and maybe they will all just work!  :-)
 
-I even think that using memcpy() always is better than the ugly ifdef.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
