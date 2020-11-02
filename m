@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1D02A3482
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7102A3488
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgKBTrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:47:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
+        id S1726851AbgKBTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:48:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgKBTqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:46:23 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726744AbgKBTrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:47:25 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D39620731;
-        Mon,  2 Nov 2020 19:46:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D594C2072C;
+        Mon,  2 Nov 2020 19:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604346382;
-        bh=UZnKM1AUb7EaqBHgj4FCULLOWCXRSjMNVc4G/ObDoNE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M3dR8bkZJ7Laknb2qofkVg5aGLiVWt9nvAIWZKcTpT92j7cVfnXnzMmfCbP9VCMnu
-         pFQ7akhZ7qFOtdNrRPfY4cKZ9igZS14uy6NWzJEgL+ZY+BXnxUzux4NjIOxb4InMC9
-         SZKtZGB+PLGvBEQ7ANwG9Drkr25hmvCopGV47IKM=
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH] habanalabs/gaudi: move mmu_prepare to context init
-Date:   Mon,  2 Nov 2020 21:46:16 +0200
-Message-Id: <20201102194616.27893-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1604346445;
+        bh=7ZGOwAOPwqS8DzA3ybazC0/S7OIj9MQZxcvy8LdRx20=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SW8hA3RN+ysK8KYGsidvGCSnHjDO0NYRzynEvtNpsFhTWAvwQMzfYrc09zgkuGNOr
+         Z/0vcwDZUN4auG8PQpp+vMr3MBWMtqgO6EwrQqtk3oIPKAi8l405AnKx3si8TXNWEF
+         Ut1dUo5x0xRNPhLlBsEwsYOJ5EjlXJWvftl/xZ5g=
+Date:   Mon, 2 Nov 2020 11:47:18 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hayes Wang <hayeswang@realtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
+ RTL8153
+Message-ID: <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+        <1394712342-15778-388-Taiwan-albertk@realtek.com>
+        <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+On Mon, 2 Nov 2020 07:20:15 +0000 Hayes Wang wrote:
+> Jakub Kicinski <kuba@kernel.org>
+> > Can you describe the use case in more detail?
+> > 
+> > AFAICT r8152 defines a match for the exact same device.
+> > Does it not mean that which driver is used will be somewhat random
+> > if both are built?  
+> 
+> I export rtl_get_version() from r8152. It would return none zero
+> value if r8152 could support this device. Both r8152 and r8153_ecm
+> would check the return value of rtl_get_version() in porbe().
+> Therefore, if rtl_get_version() return none zero value, the r8152
+> is used for the device with vendor mode. Otherwise, the r8153_ecm
+> is used for the device with ECM mode.
 
-Currently mmu_prepare is located at context switch.
-Since we support a single context, no reason to reconfigure
-the MMU registers every context switch.
+Oh, I see, I missed that the rtl_get_version() checking is the inverse
+of r8152.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/gaudi/gaudi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > > +/* Define these values to match your device */
+> > > +#define VENDOR_ID_REALTEK		0x0bda
+> > > +#define VENDOR_ID_MICROSOFT		0x045e
+> > > +#define VENDOR_ID_SAMSUNG		0x04e8
+> > > +#define VENDOR_ID_LENOVO		0x17ef
+> > > +#define VENDOR_ID_LINKSYS		0x13b1
+> > > +#define VENDOR_ID_NVIDIA		0x0955
+> > > +#define VENDOR_ID_TPLINK		0x2357  
+> > 
+> > $ git grep 0x2357 | grep -i tplink
+> > drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
+> > drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
+> > drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
+> > 
+> > $ git grep 0x17ef | grep -i lenovo
+> > drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
+> > drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
+> > drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
+> > drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
+> > 
+> > Time to consolidate those vendor id defines perhaps?  
+> 
+> It seems that there is no such header file which I could include
+> or add the new vendor IDs.
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 5f65a1691551..2910f427c716 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4505,8 +4505,6 @@ static int gaudi_context_switch(struct hl_device *hdev, u32 asid)
- 		return rc;
- 	}
- 
--	gaudi_mmu_prepare(hdev, asid);
--
- 	gaudi_restore_user_registers(hdev);
- 
- 	return 0;
-@@ -6359,6 +6357,8 @@ static enum hl_device_hw_state gaudi_get_hw_state(struct hl_device *hdev)
- 
- static int gaudi_ctx_init(struct hl_ctx *ctx)
- {
-+	gaudi_mmu_prepare(ctx->hdev, ctx->asid);
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+Please create one. (Adding Greg KH to the recipients, in case there is
+a reason that USB subsystem doesn't have a common vendor id header.)
 
+Also please make sure to add Oliver to the CC for v3, to make sure the
+reuse of CDC_ETHER is okay.
