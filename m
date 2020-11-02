@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953262A25CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFAE2A25CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgKBIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727806AbgKBIFM (ORCPT
+        id S1728084AbgKBIFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:05:30 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58140 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727802AbgKBIFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:05:12 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655D3C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:05:11 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 133so10394899pfx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:05:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gcdv4aKrlxLT+L8OMCxLupfQoFPx0rrIAPSpJAAsrOA=;
-        b=eVwiEveNUcb/KZSTY2IfTZycLYQPTXOci4ywat0pjd/QQMWqBwh7yAMXmJCFS3Utb8
-         W+vIZl999fSnpjptA90W3kvVtLSoGn/ZFrLCT+lIIwLmaOKRYBDWHEEIP5tXdtoTd34t
-         zTIbfRJidtX57/Pge5wsjZ00+JaFBAetbqLT+ksCBYVhtIEAP/Z+GSl/FbbacTLr6TGt
-         ckvchRmg9mGvDQwAaqXj+znHuctQQgMq5ijn7SADORzQC21fpK5FanYJxIy5kDQCE3NM
-         Hn6cp9Ho2+kKA1x4pr8T3yXGKuaNtj4j+rehG2sKkUxFl9gpSIdpSJ4cCa3znoL0xacI
-         +TFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gcdv4aKrlxLT+L8OMCxLupfQoFPx0rrIAPSpJAAsrOA=;
-        b=eGLxu9hkuwH2ixyQsWjpwNqWWDIZCogmfsrn3gI5LXDjqKUCVZc4G7Pvsjr0qBsOdx
-         8/xpfAoUiBXLvy5rdqaFbFioJc/ZHUGRttwCahpi7X+ZfnaqZQJG3yt/vfs6yxYtCMfj
-         M6pVjsL9HA0Av1NYIZtXDg/LdQgGZ9Gz1f8R/Gt1/hbrKsoNB42am5YUFLacVtiDEGV0
-         M2WV+ofhcT97NjI33LthBB26k6ZoUcG+/3nfBZtadfG/dCd/X8LLzj2TwVHtFfbkReko
-         WhLtsjwKOCV0Gn2KAc3y0AHASLvE+zECPeOMI10rbY37gHmJa+OQeDLlokq8awPhSNoA
-         qiPQ==
-X-Gm-Message-State: AOAM5335w06FaLlRQ+Cgxg29swLFYxT3Hvq6z56yubiWpAWIeCkHM1Nw
-        z/RQjBzwNkM0dvPZtSyZ5znCnuIh4gQ=
-X-Google-Smtp-Source: ABdhPJwdMAUMs6F8ZuP3W5ZcoeQIi27+FU6GEAq549igBZNDHm/Xg0QSf0tXNfhEbuSM0Bl/he6JkQ==
-X-Received: by 2002:aa7:9607:0:b029:155:2b85:93f5 with SMTP id q7-20020aa796070000b02901552b8593f5mr20768001pfg.36.1604304310585;
-        Mon, 02 Nov 2020 00:05:10 -0800 (PST)
-Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
-        by smtp.gmail.com with ESMTPSA id p17sm11811164pgn.28.2020.11.02.00.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 00:05:09 -0800 (PST)
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        konrad.wilk@oracle.com, Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Subject: [PATCH] x86/iommu: fix a typo in printk
-Date:   Mon,  2 Nov 2020 16:04:37 +0800
-Message-Id: <20201102080437.929-1-zhenzhong.duan@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Nov 2020 03:05:30 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 29BA01F44AE2;
+        Mon,  2 Nov 2020 08:05:29 +0000 (GMT)
+Date:   Mon, 2 Nov 2020 09:05:26 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Steven Price <steven.price@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20201102090526.39c7a38c@collabora.com>
+In-Reply-To: <20201102124637.1e846861@canb.auug.org.au>
+References: <20201102124637.1e846861@canb.auug.org.au>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In check_iommu_entries(), p->detect depends on q->detect, so q->detect
-should be called before p->detect.
+Hi Stephen,
 
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
----
- arch/x86/kernel/pci-iommu_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 2 Nov 2020 12:46:37 +1100
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-diff --git a/arch/x86/kernel/pci-iommu_table.c b/arch/x86/kernel/pci-iommu_table.c
-index 2e9006c1e240..c69b55436f7d 100644
---- a/arch/x86/kernel/pci-iommu_table.c
-+++ b/arch/x86/kernel/pci-iommu_table.c
-@@ -68,7 +68,7 @@ void __init check_iommu_entries(struct iommu_table_entry *start,
- 		q = find_dependents_of(p, finish, p);
- 		if (q && q > p) {
- 			printk(KERN_ERR "EXECUTION ORDER INVALID! %pS should be called before %pS!\n",
--			       p->detect, q->detect);
-+			       q->detect, p->detect);
- 		}
- 	}
- }
--- 
-2.25.1
+> Hi all,
+> 
+> After merging the imx-drm tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+> 
+> drivers/gpu/drm/panfrost/panfrost_job.c: In function 'panfrost_job_close':
+> drivers/gpu/drm/panfrost/panfrost_job.c:617:28: warning: unused variable 'js' [-Wunused-variable]
+>   617 |  struct panfrost_job_slot *js = pfdev->js;
+>       |                            ^~
+> 
+> Introduced by commit
+> 
+>   a17d609e3e21 ("drm/panfrost: Don't corrupt the queue mutex on open/close")
+> 
 
+Thanks for this report. I posted a patch [1] to fix that yesterday, and
+I plan to apply it soon.
+
+Regards,
+
+Boris
+
+[1]https://patchwork.kernel.org/project/dri-devel/patch/20201101173817.831769-1-boris.brezillon@collabora.com/
