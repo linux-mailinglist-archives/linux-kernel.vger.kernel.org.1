@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1472A28D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C982A28E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgKBLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728545AbgKBLM6 (ORCPT
+        id S1728532AbgKBLSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:18:03 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:35860 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728460AbgKBLSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:12:58 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC88DC061A04;
-        Mon,  2 Nov 2020 03:12:57 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id o129so10826729pfb.1;
-        Mon, 02 Nov 2020 03:12:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qCgiqZXGNwvNh2nZMtUDnqrlrZqGGd0+W48CRCFS5Bo=;
-        b=g3oyj/8BectFHMWdpOJLUmTdLl6ao46UPyBqt4FGqyBVKmWGt5uTsIVrZlIeUg1kKp
-         BBgtWX3kj4FS86SKaIeAwtMdHwt92nFpIAVanSryUOtS79J+OMzAjXRuwKG7yRz4Q2Jd
-         2YqA+/Rr5omjYftodpgfkeo2fVcimWdr9Jty4R5BaiXWsIpYYbdvxyxNOt83QtgY1Em8
-         nkFfjzgRFv1w4XLjnRsfzoTnaxg0gl6R+7Kt4wD0XKpn9prfm6SeaZyIjvU+i9TjGvvR
-         mKotJYuoYwAmT7GuZn9jTBKaZtrrWzYZMqWdL9nsHHVapaaDei+Htw61qhtLV7EF9d8E
-         5+QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qCgiqZXGNwvNh2nZMtUDnqrlrZqGGd0+W48CRCFS5Bo=;
-        b=QILySlQ2EtXNFxv2wIK7vP4O4AEI6ADBOP808x72I96t2ulO7WuKEAI8j+3c84TH2Z
-         Us/x7lnlbqTXmTix3ycDJ510v01jS1Am5kFTB5+YspHXQrdw1HqoNHdeetjVmR8JS2aU
-         RySwNyWtB9GWFVuTy1Y8PKHR8ZRqF0MfPftTTOr4vqyGCk4p1rKSjokXWXCL0MAaeKii
-         vp3FLh7tp4KTtjUGQXComEZp5ujwWQU1MXccrvHtL06dot+cWoXyhwqg0cl/Cl+t+7LP
-         ZIt2G6e+4XwcKV/Y04BZXNHBsT32b0pA45t+kHKFFaT6yHnAfulOi6tm3kpQZFfh0dHD
-         ux+w==
-X-Gm-Message-State: AOAM533cIvaa4ujxrssK7LTXkUfar6WigrI0YY8D+EuHZNLAg+jFWO9y
-        fj8S4JUqXuPx0shahXCqyg==
-X-Google-Smtp-Source: ABdhPJyKj6yz7vBgyoh7xhGNMnD24Vj1loJ7dkpZAbbMnfJNoJPPQas76a/fl61lg2hFJOnMRs6fDg==
-X-Received: by 2002:a62:64d1:0:b029:161:ffdb:e07d with SMTP id y200-20020a6264d10000b0290161ffdbe07dmr20737550pfb.71.1604315577377;
-        Mon, 02 Nov 2020 03:12:57 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id m2sm13516592pfh.44.2020.11.02.03.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:12:56 -0800 (PST)
-Date:   Mon, 2 Nov 2020 06:12:48 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] tty/vt: Avoid passing struct console_font_op to
- con_font_copy()
-Message-ID: <20201102111248.GA1558630@PWN>
-References: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
- <72c954371ed9b1d050901b2d498a979017de8a3c.1604306433.git.yepeilin.cs@gmail.com>
- <20201102101044.GM401619@phenom.ffwll.local>
+        Mon, 2 Nov 2020 06:18:03 -0500
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 0A2BHYWq023778;
+        Mon, 2 Nov 2020 20:17:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0A2BHYWq023778
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1604315855;
+        bh=ud8yc1c1O6tA/BXytd1hI5e/Hbr1qdlkXTLOb3pvaHc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OwlTYvVDbe2Jnxgi0SIOoVWAfEGzNvrvskBuP3w6tDkCsevgRtPvs1jgaodEiOqIZ
+         jax3zFfT7UR/Y1n7GV5uUz1Mu6OBtgQyfzzfPgUJhCkS2J5YufjP5C7NRdHnm5N7x9
+         bhOw7k1U0Qu9NGgm8o99KPHh6XadlF5BF1J6uCUADW/68q9n7FyCOztMVTctwxjqBD
+         anx+BvyIyzRGQIK6bupi1swjf67fJFB4tbsyGj9qb12AXlMyj6Bn3FcV24H8xcMQJj
+         eu+mpZcyxduJF2lDcthgq0ab1c8WH7khvTb1m0ziG3vb/RpRTkqSvll0pFT5pNwVru
+         w0ctTNtVUui2w==
+X-Nifty-SrcIP: [209.85.210.182]
+Received: by mail-pf1-f182.google.com with SMTP id 133so10816384pfx.11;
+        Mon, 02 Nov 2020 03:17:34 -0800 (PST)
+X-Gm-Message-State: AOAM530NPkTfj41TwZnhXDRHqQAMErlZdkdekaP76j/Oxu6yOo7+RQSM
+        p1BhPVM7dO6DFcpHEABdhOEYc+1VtYPsnSAg1ZI=
+X-Google-Smtp-Source: ABdhPJy0y47wEsDylTk4buJtvphQRe+Gjxcny80RfpJyROfkl4dM3BnbSFpSzAMMw7ekYi50OeO/aw1FPXyFMPX0ODs=
+X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr17512949pjb.153.1604315853970;
+ Mon, 02 Nov 2020 03:17:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102101044.GM401619@phenom.ffwll.local>
+References: <20201029112112.21285-1-dzagorui@cisco.com>
+In-Reply-To: <20201029112112.21285-1-dzagorui@cisco.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 2 Nov 2020 20:16:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATb3z3ctGJD4b4+JxdsiF-9ecDOUDuTmLTvQ1UgRC5LnQ@mail.gmail.com>
+Message-ID: <CAK7LNATb3z3ctGJD4b4+JxdsiF-9ecDOUDuTmLTvQ1UgRC5LnQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use -fmacro-prefix-map for .S sources compilation
+To:     Denys Zagorui <dzagorui@cisco.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:10:44AM +0100, Daniel Vetter wrote:
-> I'm not sure switching from int to unsigned just here makes much sense.
-> All the console code is still using int con to index all the various
-> arrays (I just checked fbcon.c code), and using int to index arrays is
-> pretty standard. As long as we have the con < 0 check to catch evil
-> userspace.
-> 
-> There's still the switch from op to int for con_font_copy, but I think
-> that's better done as part of the larger cleanup we already discussed. And
-> then maybe also include patch 1 from this series in that rework.
+On Thu, Oct 29, 2020 at 8:22 PM Denys Zagorui <dzagorui@cisco.com> wrote:
+>
+> Follow-up to a73619a845d5 ("kbuild: use -fmacro-prefix-map to make
+> __FILE__ a relative path") commit. Assembler sources also use __FILE__
+> macro so this flag should be also apllied to that sources.
+>
+> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
+> ---
+>  Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Makefile b/Makefile
+> index ee2284a5cad2..26c4294f6e25 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -947,6 +947,7 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
+>
+>  # change __FILE__ to the relative path from the srctree
+>  KBUILD_CFLAGS  += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+> +KBUILD_AFLAGS  += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
 
-I see. I think at the moment there's not much we can do for
-con_font_get/set/default(). _get() and _default() use *op, and _set()
-uses all except one field of *op. Maybe we can change the type of *op
-from console_font_op to font_desc, after cleaning up everything else?
 
-Peilin
 
+-fmacro-prefix-map is a preprocessor option.
+
+https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Preprocessor-Options.html#Preprocessor-Options
+
+
+
+I think it makes more sense to replace
+
+KBUILD_CFLAGS  += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+
+with
+
+KBUILD_CPPFLAGS        += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+
+
+Then, this flag will be passed to .S files as well as .c files.
+
+
+
+
+
+
+
+
+>  # ensure -fcf-protection is disabled when using retpoline as it is
+>  # incompatible with -mindirect-branch=thunk-extern
+> --
+> 2.19.0.dirty
+>
+
+
+--
+Best Regards
+Masahiro Yamada
