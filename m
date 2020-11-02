@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955A42A2A1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E4D2A2A06
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgKBLyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:54:24 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:44865 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728716AbgKBLyT (ORCPT
+        id S1728710AbgKBLyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:54:22 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:52606 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728720AbgKBLyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:54:19 -0500
-Received: by mail-il1-f197.google.com with SMTP id s70so6347957ili.11
+        Mon, 2 Nov 2020 06:54:20 -0500
+Received: by mail-io1-f69.google.com with SMTP id i19so8173824ioa.19
         for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Sqg30VMwJSZq5RzUJ0TKC6IYhWARWZMMQaebzmFa2Bs=;
-        b=e2A3E868lTseep2rsgFD+UPvEp/ez12IWfsDwVwQX5RHxgMlH3lTFZJAp07g9TxBp/
-         +qtlZABjOzjwwYm5ZQQn8SR2d+6xSPedfW1r7GV84zXMZneMMAdhtVToDseAifJhHteG
-         j6fKIn6V2eaXCkdFAdKn5kusY6kcEHgQ76FzFcIVb8vElgpgvQLFke0Jm6kbFtQo4sZP
-         zppvBzkhxHALaX/kMDVuYas1hgsct9RQjVjvscJ5pyi3G/ntuLrqWGOcqK0xUtH7wOu3
-         TIltpLnBdGFPVUt63K1eTP18cScIv+d70Dx9XK07q0ZG8VK0t5wW/Ytdcjp/Ja52uFfK
-         wTOQ==
-X-Gm-Message-State: AOAM532xVCFdWTHeGoZISYgI6RJrljKIYPUUc7StPTv4uPRvZbi7nMcb
-        KI/nqSUPnYEIN0THV6bKWco6MIWQHcTIM75ha63PyYP/4xvX
-X-Google-Smtp-Source: ABdhPJzeAjcJdN0YGKzTLSqfQrOARKnqcntkz+9kHIx7O7P/lTjX7+lWTsd7tuJKF/DOg2/FJXdyMafZt4L+yNRUHK0I8dVFfFet
+        bh=Jif07879xIdqk8preXUlJynIzSJslPiVsHNblnvjy0g=;
+        b=TdrZPjsMhGYx0XRtYFxfwl5uygafamsUNKRyMAM2WtfIoCtEOYTQdIvZae2PGcVMAY
+         8By45ZDUbSNGaumfnvU61rWGLTyc5+gXhete4k6ZQVKRy89MHMdUDjchO79DhR2BQiMS
+         wrGIlghV9QluBPDujkgmCVbUdlp0csA0CAJ9eRKvapYHzIIOK1FfMJIPeXhf3g+EGsti
+         MUUIMftfnzN705bcN8CSKezy7PDJWaNTjpXHAS9H7QzZhLVW7jIWASp90sBaYab2xAUh
+         tf6+GtAH+7yKV2vjU9hep0kYz4RBk6e91wddVc4IASqRKH+z6cegdTmBoN7v8svYfXRS
+         zUGA==
+X-Gm-Message-State: AOAM5338Ao2jO0p19q0IBsxlsxHEaERy16snyoLu46xtpbmNSVjRk8lJ
+        JwevTI7PyyX+h22i37SNJvn9z0aStsCgNVVsZNrioy0fI7Kl
+X-Google-Smtp-Source: ABdhPJxXCVhnlFwd644zkajZIE1B8kF0ijJjuc8EwzFzxiIWmswVFPBj5V4F9nulsIbuz9bZq6taBWf2a8o6jZr87DJCBiLlRtRB
 MIME-Version: 1.0
-X-Received: by 2002:a02:a808:: with SMTP id f8mr2628773jaj.84.1604318059055;
+X-Received: by 2002:a02:3b57:: with SMTP id i23mr11915552jaf.110.1604318059322;
  Mon, 02 Nov 2020 03:54:19 -0800 (PST)
 Date:   Mon, 02 Nov 2020 03:54:19 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000004500b05b31e68ce@google.com>
-Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run3
-From:   syzbot <syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@elte.hu, mingo@redhat.com,
-        mmullins@fb.com, netdev@vger.kernel.org, peterz@infradead.org,
-        rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <00000000000008604f05b31e6867@google.com>
+Subject: KASAN: null-ptr-deref Write in kthread_use_mm
+From:   syzbot <syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, will@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -53,65 +50,88 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    080b6f40 bpf: Don't rely on GCC __attribute__((optimize)) ..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1089d37c500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=d29e58bb557324e55e5e
+HEAD commit:    4e78c578 Add linux-next specific files for 20201030
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=148969d4500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
+dashboard link: https://syzkaller.appspot.com/bug?extid=b57abf7ee60829090495
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f4b032500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1371a47c500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e1346c500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1388fbca500000
 
 The issue was bisected to:
 
-commit 9df1c28bb75217b244257152ab7d788bb2a386d0
-Author: Matt Mullins <mmullins@fb.com>
-Date:   Fri Apr 26 18:49:47 2019 +0000
+commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Oct 2 09:04:21 2020 +0000
 
-    bpf: add writable context for raw tracepoints
+    lockdep: Fix lockdep recursion
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b6c4da500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b6c4da500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b6c4da500000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1354e614500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d4e614500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1754e614500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Fixes: 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
+Reported-by: syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com
+Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
 
 ==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
-Read of size 8 at addr ffffc90000e6c030 by task kworker/0:3/3754
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+BUG: KASAN: null-ptr-deref in mmgrab include/linux/sched/mm.h:36 [inline]
+BUG: KASAN: null-ptr-deref in kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+Write of size 4 at addr 0000000000000060 by task io_uring-sq/26191
 
-CPU: 0 PID: 3754 Comm: kworker/0:3 Not tainted 5.9.0-syzkaller #0
+CPU: 1 PID: 26191 Comm: io_uring-sq Not tainted 5.10.0-rc1-next-20201030-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue:  0x0 (events)
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
- bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
- __bpf_trace_sched_switch+0xdc/0x120 include/trace/events/sched.h:138
- __traceiter_sched_switch+0x64/0xb0 include/trace/events/sched.h:138
- trace_sched_switch include/trace/events/sched.h:138 [inline]
- __schedule+0xeb8/0x2130 kernel/sched/core.c:4520
- schedule+0xcf/0x270 kernel/sched/core.c:4601
- worker_thread+0x14c/0x1120 kernel/workqueue.c:2439
+ __kasan_report mm/kasan/report.c:549 [inline]
+ kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+ mmgrab include/linux/sched/mm.h:36 [inline]
+ kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+ __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
+ __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
+ io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
+ io_init_req fs/io_uring.c:6661 [inline]
+ io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
+ __io_sq_thread fs/io_uring.c:6904 [inline]
+ io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
  kthread+0x3af/0x4a0 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
-Memory state around the buggy address:
- ffffc90000e6bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e6bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90000e6c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                     ^
- ffffc90000e6c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e6c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
 ==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 26191 Comm: io_uring-sq Tainted: G    B             5.10.0-rc1-next-20201030-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ panic+0x306/0x73d kernel/panic.c:231
+ end_report+0x58/0x5e mm/kasan/report.c:106
+ __kasan_report mm/kasan/report.c:552 [inline]
+ kasan_report.cold+0xd/0x37 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+ mmgrab include/linux/sched/mm.h:36 [inline]
+ kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+ __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
+ __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
+ io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
+ io_init_req fs/io_uring.c:6661 [inline]
+ io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
+ __io_sq_thread fs/io_uring.c:6904 [inline]
+ io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
