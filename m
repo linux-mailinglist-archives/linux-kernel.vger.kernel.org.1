@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62232A2E46
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223E22A2E53
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgKBPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:25:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725929AbgKBPZS (ORCPT
+        id S1726369AbgKBPai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:30:38 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:33733 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgKBPah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:25:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604330716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rZxy5nwoelG0xp4hpZrpbGdGAtoA6kInwBAKt8RDAhY=;
-        b=NXiAR/9anHYITKWWTw6FFuixtPG95kewE7oIUDIJYqHlmRGecLFFuWLg8ayZE7u8XMdOHC
-        +wW9ML0lJRke0ZPWKIoEm6qgerZX1oI58ep9Ha1oik3RCmwvrhnV7T4PKtJDj5fdpPPR/b
-        Mr+VUpXZG+okizZ8t3eu3VhR5tb7xLI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-b1KmrXT7MkGgZhluMdUqYA-1; Mon, 02 Nov 2020 10:25:12 -0500
-X-MC-Unique: b1KmrXT7MkGgZhluMdUqYA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C56A110B9CB0;
-        Mon,  2 Nov 2020 15:25:09 +0000 (UTC)
-Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB6836EF50;
-        Mon,  2 Nov 2020 15:25:02 +0000 (UTC)
-Message-ID: <2272fa13f5a5cad5deecb3210061e7353260cc6d.camel@redhat.com>
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-From:   Qian Cai <cai@redhat.com>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        don.brace@microsemi.com, ming.lei@redhat.com, bvanassche@acm.org,
-        dgilbert@interlog.com, paolo.valente@linaro.org, hare@suse.de,
-        hch@lst.de
-Cc:     Sumit Saxena <sumit.saxena@broadcom.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
-        Hannes Reinecke <hare@suse.com>
-Date:   Mon, 02 Nov 2020 10:24:59 -0500
-In-Reply-To: <1824064113e9adfdf4d086709cccee00@mail.gmail.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-         <1597850436-116171-18-git-send-email-john.garry@huawei.com>
-         <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
-         <1824064113e9adfdf4d086709cccee00@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 2 Nov 2020 10:30:37 -0500
+Received: by mail-oi1-f194.google.com with SMTP id s21so15070097oij.0;
+        Mon, 02 Nov 2020 07:30:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MHb+WHhvKWMEtBp+MT6o822dw6iepfZFOpJAoj7c5gk=;
+        b=dUI3j4SeI4Z3I5UNGu4Ud1tlnxjro0DEkEObDD07Kk8ze49llr+GzJS2JR3PJDOMEl
+         wt66wAOWF1Y2VzIv5DR2rAAi8navMKREHKIAwZMu5Pa9Fq21rRj1XbahFBWuyR1yQ2xT
+         v5rOZp8wzyG+t4tgMHRQ9NBjdQ/RQJBQPu/zysCEnxgB+Obn5HLCO0GxZdLU3zllYPtt
+         nQi+1JsKwSaCWfrG2p93l8eNtKUmGYLrAtH3qeO73cx5WJyKF2iK44R9LTbJ55Z/QLIJ
+         MOD2KONFggHibM2NzwHEgXYiocSlWkOdSyjNkMDEs4pjlGBwro2EZyVMmIChB4+X5Kuz
+         BDNA==
+X-Gm-Message-State: AOAM5307foLXwE7WQwTTaQHQkzta025sAfoi/xG6hgugQhpq0bMq8TV/
+        JHeazvxxm5NbzrEcgZzKxg==
+X-Google-Smtp-Source: ABdhPJwoFUlMHP8KOC6aRUM6dD/5odOuPVhCQuzSUPByJB2maDTMdZ5ll3eee1zbRrGFMJxJ9yMWmw==
+X-Received: by 2002:aca:59c3:: with SMTP id n186mr9961060oib.149.1604331036419;
+        Mon, 02 Nov 2020 07:30:36 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r67sm3287045oif.43.2020.11.02.07.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 07:30:35 -0800 (PST)
+Received: (nullmailer pid 3926406 invoked by uid 1000);
+        Mon, 02 Nov 2020 15:30:34 -0000
+Date:   Mon, 2 Nov 2020 09:30:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kishon@ti.com, yamonkar@cadence.com,
+        jsarha@ti.com, mparab@cadence.com, nsekhar@ti.com,
+        robh+dt@kernel.org, tomi.valkeinen@ti.com
+Subject: Re: [PATCH] dt-bindings: phy: Add Cadence Sierra PHY bindings in
+ YAML format
+Message-ID: <20201102153034.GA3926372@bogus>
+References: <1603898561-5142-1-git-send-email-sjakhade@cadence.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603898561-5142-1-git-send-email-sjakhade@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 20:01 +0530, Kashyap Desai wrote:
-> > On Wed, 2020-08-19 at 23:20 +0800, John Garry wrote:
-> > > From: Kashyap Desai <kashyap.desai@broadcom.com>
-> > > 
-> > > Fusion adapters can steer completions to individual queues, and we now
-> > > have support for shared host-wide tags.
-> > > So we can enable multiqueue support for fusion adapters.
-> > > 
-> > > Once driver enable shared host-wide tags, cpu hotplug feature is also
-> > > supported as it was enabled using below patchsets - commit
-> > > bf0beec0607d ("blk-mq: drain I/O when all CPUs in a hctx are
-> > > offline")
-> > > 
-> > > Currently driver has provision to disable host-wide tags using
-> > > "host_tagset_enable" module parameter.
-> > > 
-> > > Once we do not have any major performance regression using host-wide
-> > > tags, we will drop the hand-crafted interrupt affinity settings.
-> > > 
-> > > Performance is also meeting the expecatation - (used both none and
-> > > mq-deadline scheduler)
-> > > 24 Drive SSD on Aero with/without this patch can get 3.1M IOPs
-> > > 3 VDs consist of 8 SAS SSD on Aero with/without this patch can get
-> > > 3.1M IOPs.
-> > > 
-> > > Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> > > Signed-off-by: Hannes Reinecke <hare@suse.com>
-> > > Signed-off-by: John Garry <john.garry@huawei.com>
-> > 
-> > Reverting this commit fixed an issue that Dell Power Edge R6415 server
-> > with
-> > megaraid_sas is unable to boot.
+On Wed, 28 Oct 2020 16:22:41 +0100, Swapnil Jakhade wrote:
+> Add Cadence Sierra PHY bindings in YAML format.
 > 
-> I will take a look at this. BTW, can you try keeping same PATCH but use
-> module parameter "host_tagset_enable =0"
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> ---
+>  .../bindings/phy/phy-cadence-sierra.txt       |  70 --------
+>  .../bindings/phy/phy-cadence-sierra.yaml      | 152 ++++++++++++++++++
+>  2 files changed, 152 insertions(+), 70 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/phy-cadence-sierra.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml
+> 
 
-Yes, that also works.
-
+Reviewed-by: Rob Herring <robh@kernel.org>
