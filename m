@@ -2,182 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECA72A2DD2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891FF2A2DDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgKBPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:13:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgKBPNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:13:11 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97C3A22258;
-        Mon,  2 Nov 2020 15:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604329990;
-        bh=pQm13rJ0TtLsoFHOZA52H/TzTWUyG6xri7XGlle4HPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U5iA6iZ+4RrbBTruBVP23DAtPFm6+kceLiKQw3J0W+zg1uOK+4S4JJxuhMMUqU1YR
-         AbaxuhUr3wcVgMFL7UiNf9Rgt38tsM1oxGu8FMS5KMZthwA6c6ykTjZZtEvaQ3kHdo
-         qOQc20cDKQCRHjZYM2XM4fU6aSAxgj4DgVoNXSRU=
-Date:   Mon, 2 Nov 2020 17:12:56 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v3 2/4] PM: hibernate: make direct map manipulations more
- explicit
-Message-ID: <20201102151256.GA4879@kernel.org>
-References: <20201101170815.9795-1-rppt@kernel.org>
- <20201101170815.9795-3-rppt@kernel.org>
- <55cd2a4a-cfa8-d420-66b3-a25fcdd9b876@redhat.com>
+        id S1726255AbgKBPOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:14:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgKBPOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:14:46 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8196C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:14:46 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id f7so1855550vsh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LNQerxc/qedC0wC+tF3QpQvj0h2R4xLt0PpUVkepzP0=;
+        b=hDytvYZ1jBaQm/8UzAKKD5kCuGe4Gq6Si8iXJ7s6JrfIz14Yz1odx4/5Wb6frOwLHr
+         ruCvpXYEdm7XzZalJ6nfhmPPxetXBJsSGkv2Hl2FEaAcioU0wW+eJKb6GNfGFf/bU+nu
+         5Q8wiGVjj+1nafnithF5K9+NUzbptO7hXKr5Uj1u517J8RSU4spZZDpa8l+iwCkpEKll
+         o/AYBiyHHzdRbVMgDkkSF1w8agpTP1lqNjlu2o4CkPoTdVbwIzSzedCF9FO7a/OHYFP3
+         pOaiPucWZE3PURQUM7TkUn+rCJLKNjuoptb3OQsKeT49/yli1OMcsxpk17KWpq2FWHwv
+         Dm1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LNQerxc/qedC0wC+tF3QpQvj0h2R4xLt0PpUVkepzP0=;
+        b=JfYqEAvzsPHTwv0bT8Dm8XVCvNDggva7jVibEEtsNCYhvSNp7+qW/Rv+4ATMhTc3It
+         ATh182AbgeLcf5/737FmgjtBADSjyxx+m8jkHVYxwQEyZTemdSP0MYqWwwqInTwXfC2P
+         uNItendN5lUrb3ro6WRVDx3HPecld9jQwfInCMATSBtO1l1/LczxKiblk3RYqvc7zFwu
+         gHFTEXnKAeGJbbYUlJracXzvqFCkWIGf/4La6Tv/WzPMIxstzMsXoJm2TleZ9pPeNgNm
+         hGIfr68f3jbBRvtAD/Q2mKwhPgg5qN5Bvads6TWl41hvEB39WRJyi30D9c/YUPyeiTb3
+         tPzQ==
+X-Gm-Message-State: AOAM532EO2zVsrc4v2nsDyAvY/RIvm4XpK0WdfnOnJZpk3fkVRrEc4sr
+        ugrJ84demZlZlziY1Sz28sO9M/G3W2E=
+X-Google-Smtp-Source: ABdhPJx+/9/CPeu/Mtc92DuT62ENxxrex59FC0yCbdEEAM54OU0QfSYm2oB1FxTIr58P6lqGDu/ltw==
+X-Received: by 2002:a67:2783:: with SMTP id n125mr15449067vsn.47.1604330085281;
+        Mon, 02 Nov 2020 07:14:45 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id u7sm1520254vsj.1.2020.11.02.07.14.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 07:14:41 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id b34so4018811uab.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:14:39 -0800 (PST)
+X-Received: by 2002:ab0:3721:: with SMTP id s1mr5923580uag.92.1604330078711;
+ Mon, 02 Nov 2020 07:14:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55cd2a4a-cfa8-d420-66b3-a25fcdd9b876@redhat.com>
+References: <Mx3BWGop6fGORN6Cpo4mHIHz2b1bb0eLxeMG8vsijnk@cp3-web-020.plabs.ch>
+ <CA+FuTSdiqaZJ3HQHuEEMwKioWGKvGwZ42Oi7FpRf0hqWdZ27pQ@mail.gmail.com>
+ <TSRRse4RkO_XW4DtdTkz4NeZPwzHXaPOEFU9-J4VlpLbUzlBzuhW8HYfHCfFJ1Ro6FwztEO652tbnSGOE-MjfKez1NvVPM3v3ResWtbK5Rk=@pm.me>
+ <MX6AwRxaXyMi3FALeN1gpN8y4XgaktZM2MHxQMOM@cp4-web-036.plabs.ch>
+ <CA+FuTSdKYVc3w9if5zB6WSWJ3M1XWNmXb-6VGJqKS0WndnPLhw@mail.gmail.com> <OBMm3ctve56m8utHeG4YjTDZzRKXChKzeQaMyS1EQE@cp7-web-043.plabs.ch>
+In-Reply-To: <OBMm3ctve56m8utHeG4YjTDZzRKXChKzeQaMyS1EQE@cp7-web-043.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 2 Nov 2020 10:14:02 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSddfgGvHsi1LF=DM519UFdmLaw8besX-OfcgOPVLypnOQ@mail.gmail.com>
+Message-ID: <CA+FuTSddfgGvHsi1LF=DM519UFdmLaw8besX-OfcgOPVLypnOQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: avoid unneeded UDP L4 and fraglist GSO resegmentation
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:19:36AM +0100, David Hildenbrand wrote:
-> On 01.11.20 18:08, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page may be
-> > not present in the direct map and has to be explicitly mapped before it
-> > could be copied.
-> > 
-> > Introduce hibernate_map_page() that will explicitly use
-> > set_direct_map_{default,invalid}_noflush() for ARCH_HAS_SET_DIRECT_MAP case
-> > and debug_pagealloc_map_pages() for DEBUG_PAGEALLOC case.
-> > 
-> > The remapping of the pages in safe_copy_page() presumes that it only
-> > changes protection bits in an existing PTE and so it is safe to ignore
-> > return value of set_direct_map_{default,invalid}_noflush().
-> > 
-> > Still, add a WARN_ON() so that future changes in set_memory APIs will not
-> > silently break hibernation.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   include/linux/mm.h      | 12 ------------
-> >   kernel/power/snapshot.c | 30 ++++++++++++++++++++++++++++--
-> >   2 files changed, 28 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 1fc0609056dc..14e397f3752c 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2927,16 +2927,6 @@ static inline bool debug_pagealloc_enabled_static(void)
-> >   #if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
-> >   extern void __kernel_map_pages(struct page *page, int numpages, int enable);
-> > -/*
-> > - * When called in DEBUG_PAGEALLOC context, the call should most likely be
-> > - * guarded by debug_pagealloc_enabled() or debug_pagealloc_enabled_static()
-> > - */
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable)
-> > -{
-> > -	__kernel_map_pages(page, numpages, enable);
-> > -}
-> > -
-> >   static inline void debug_pagealloc_map_pages(struct page *page,
-> >   					     int numpages, int enable)
-> >   {
-> > @@ -2948,8 +2938,6 @@ static inline void debug_pagealloc_map_pages(struct page *page,
-> >   extern bool kernel_page_present(struct page *page);
-> >   #endif	/* CONFIG_HIBERNATION */
-> >   #else	/* CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable) {}
-> >   static inline void debug_pagealloc_map_pages(struct page *page,
-> >   					     int numpages, int enable) {}
-> >   #ifdef CONFIG_HIBERNATION
-> > diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> > index 46b1804c1ddf..054c8cce4236 100644
-> > --- a/kernel/power/snapshot.c
-> > +++ b/kernel/power/snapshot.c
-> > @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
-> >   static inline void hibernate_restore_unprotect_page(void *page_address) {}
-> >   #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
-> > +static inline void hibernate_map_page(struct page *page, int enable)
-> > +{
-> > +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
-> > +		unsigned long addr = (unsigned long)page_address(page);
-> > +		int ret;
-> > +
-> > +		/*
-> > +		 * This should not fail because remapping a page here means
-> > +		 * that we only update protection bits in an existing PTE.
-> > +		 * It is still worth to have WARN_ON() here if something
-> > +		 * changes and this will no longer be the case.
-> > +		 */
-> > +		if (enable)
-> > +			ret = set_direct_map_default_noflush(page);
-> > +		else
-> > +			ret = set_direct_map_invalid_noflush(page);
-> > +
-> > +		if (WARN_ON(ret))
-> > +			return;
-> 
-> People seem to prefer pr_warn() now that production kernels have panic on
-> warn enabled. It's weird.
+On Sat, Oct 31, 2020 at 11:56 AM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Date: Sat, 31 Oct 2020 11:26:24 -0400
+>
+> >>>> I think it is fine to reenable this again, now that UDP sockets will
+> >>>> segment unexpected UDP GSO packets that may have looped. We previously
+> >>>> added general software support in commit 83aa025f535f ("udp: add gso
+> >>>> support to virtual devices"). Then reduced its scope to egress only in
+> >>>> 8eea1ca82be9 ("gso: limit udp gso to egress-only virtual devices") to
+> >>>> handle that edge case.
+> >>
+> >> Regarding bonding and teaming: I think they should also use
+> >> NETIF_F_GSO_SOFTWARE mask, not NETIF_F_ALL_TSO, as SCTP also has
+> >> a software fallback. This way we could also remove a separate
+> >> advertising of NETIF_F_GSO_UDP_L4, as it will be included in the first.
+> >>
+> >> So, if this one:
+> >> 1. Add NETIF_F_GSO_UDP_L4 and NETIF_F_GSO_FRAGLIST to
+> >>    NETIF_F_GSO_SOFTWARE;
+> >> 2. Change bonding and teaming features mask from NETIF_F_ALL_TSO |
+> >>    NETIF_F_GSO_UDP_L4 to NETIF_F_GSO_SOFTWARE;
+> >> 3. Check that every virtual netdev has NETIF_F_GSO_SOFTWARE _or_
+> >>    NETIF_F_GSO_MASK in its advertising.
+> >>
+> >> is fine for everyone, I'll publish more appropriate and polished v2 soon.
+> >
+> > I think we can revert 8eea1ca82be9. Except for the part where it
+> > defines the feature in NETIF_F_GSO_ENCAP_ALL instead of
+> > NETIF_F_GSO_SOFTWARE. That appears to have been a peculiar choice. I
+> > can't recall exactly why I chose that. Most likely because that was
+> > (at the time) the only macro that covered all the devices I wanted to
+> > capture.
+> >
+> > As for SCTP: that has the same concern that prompted that commit for
+> > UDP: is it safe to forward those packets to the ingress path today?
+>
+> Oh well. I just looked up into net/sctp/offload.c and see no GRO
+> receiving callbacks, only GSO ones. On the other hand,
+> NETIF_F_GSO_SOFTWARE includes GSO_SCTP and is used in almost every
+> virtual netdev driver, including macvlan and veth mentioned earlier,
+> so that seems to be fine.
 
-Weird indeed as the whole point of WARN to yell without causing a
-crash...
-I can change to pr_warn though...
-
-> > +
-> > +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> > +	} else {
-> > +		debug_pagealloc_map_pages(page, 1, enable);
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-
-Thanks!
-
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+To follow up: SCTP sockets can handle such packets. So both local
+reception and forwarding are fine. This was expressly added to the
+second revision of the SCTP GSO commit.
