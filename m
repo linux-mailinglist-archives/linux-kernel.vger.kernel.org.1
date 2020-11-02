@@ -2,52 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BAC2A3748
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D386C2A374B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbgKBXoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:44:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725841AbgKBXoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:44:22 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24E212225E;
-        Mon,  2 Nov 2020 23:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604360661;
-        bh=6dQeEHNRivKvvKfr0iWhs+r+1C8zgEBblMgxv46Uq4s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1L69nY9ar12AVu5Rp+5aFzJaXzmENXWovblmwhWeDJ6MX9ZDRacb190ijsyN85iEI
-         JQKmLw16ialwO6sT22Dlxnqhw39//zaRQjv1aBW5nPTBLctabuWbWmNt4O0uTK3np1
-         mpuTR2yGda/X/IH2sss2x2rufTiYRRzahT+Bp2lg=
-Date:   Tue, 3 Nov 2020 07:44:16 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] arm64: dts: imx8mq: Configure clock rate for
- audio plls
-Message-ID: <20201102234416.GX31601@dragon>
-References: <1604283077-27012-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726977AbgKBXpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:45:47 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1277 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgKBXpm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:45:42 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa09a2a0000>; Mon, 02 Nov 2020 15:45:46 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
+ 2020 23:45:41 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 2 Nov 2020 23:45:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QjFqvi+YjEM7A5lwAo6E9o2veihpOpFDJoCRfO/KA6IiepMZ2i3uB5fZaOVFn1tRVzCNjJ7snuLmxLxiRRgCicKdORlHjNZiX/nXWcNu5jym56dncK4Mnn2WsyxSd8RoI0aegh4r2FrlRsEZBep1RWYrhPEB00ydBiXue1yLmFwk6qseNVzYRpbuxaXPdUNrT4KKOBht5jjjrPMN9dl644CTn68s5ScZl9tzeXRoo20prOczubUFohVeV4rERedvu7YtNLcS0lf+20mLesoCYDqEZemizZKjfuHH3N+ZZd7Q+OqC0muFnOxn8UfnFIwp8SWfSnKVyH1aNbjXrPKa8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmI+J98bp4TdrlGnE/JIUelfyqOoGsGi2OULvrrG2JU=;
+ b=LEOaF97MsnLP1lDbm3MZJbp4g0haYutwJdkeyFRKf8xsruZwaLP/vBv/MhCC1u9c6et7JJm9SsyxUaxfNfaDVp6EKAvwOks1Rf2lTtLhX0++HVgcYb3ysUZVZOg/NiephwFAOt/vO07odhALQjkMRBv5xny5didFj7hGvLyK+9QvJ6XqaLYtvnXCUCrMqaybyH3bsSP6jGuThO+UZHnJ/duwSbBMWGeI/yyxsFQEKKF3Z15pGB+P1IslWzmA9vrxc8I/cgeeOLy3BIv6r6XIV3p5g6UP7xjmsaa4OUd6dLAsRN6M9TMwW9F2KeJOxjwgLP7A1IdWcCjtGbLxqY0kfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0202.namprd12.prod.outlook.com (2603:10b6:4:4d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Mon, 2 Nov
+ 2020 23:45:40 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 23:45:40 +0000
+Date:   Mon, 2 Nov 2020 19:45:39 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tags need some work in the rdma tree
+Message-ID: <20201102234539.GK2620339@nvidia.com>
+References: <20201103083730.539fe81c@canb.auug.org.au>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1604283077-27012-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201103083730.539fe81c@canb.auug.org.au>
+X-ClientProxiedBy: MN2PR05CA0040.namprd05.prod.outlook.com
+ (2603:10b6:208:236::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0040.namprd05.prod.outlook.com (2603:10b6:208:236::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Mon, 2 Nov 2020 23:45:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZjW7-00Fh7W-C2; Mon, 02 Nov 2020 19:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604360746; bh=hmI+J98bp4TdrlGnE/JIUelfyqOoGsGi2OULvrrG2JU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=CKA5UezzriZTuy/YHBavXoQofdCSbXrjDO3FHvwixLQo+dOVSVdlkGl1XPF8uZDMa
+         n84tgL59CBPBeN6H1aBXr65YpoqsUGGg+I702F5buiGOJuOlHdGkiHjS+TdPgs1txe
+         IzHKHJQ1VPA/gpYmE6lDTQdai2Go21ikIMKydjF2M93zmmmT0Q6t5aZTsQMopQOBcC
+         WmSH3j8O5fUGDIdTHpI9N9kNtwyBS2fc+s0kJaPWw2i7Xw3Yj/UHpDgOr3IsLvpXvu
+         zAUM6HIMhDlKLixqro7UDxC30V07ttZqGPioqqKm1CNZuwaXEeC8ZuvKQO45ldWm8U
+         5PJFc1LYeXrOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:11:16AM +0800, Shengjiu Wang wrote:
-> Configure clock rate for audio plls. audio pll1 is used
-> as parent clock for clocks that is multiple of 8kHz.
-> audio pll2 is used as parent clock for clocks that is
-> multiple of 11kHz.
+On Tue, Nov 03, 2020 at 08:37:30AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> In commit
+> 
+>   32fabd9b163b ("RDMA/rxe: Compute PSN windows correctly")
+> 
+> Fixes tag
+> 
+>   Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
+> 
+> has these problem(s):
+> 
+>   - Subject does not match target commit subject
+>     Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
+> 
+> Maybe you meant
+> 
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> 
+> In commit
+> 
+>   b67ffe884bdd ("RDMA/bnxt_re: Fix entry size during SRQ create")
+> 
+> Fixes tag
+> 
+>   Fixes: 2bb3c32c5c5f ("RDMA/bnxt_re: Change wr posting logic to accommodate  variable wqes")
+> 
+> has these problem(s):
+> 
+>   - Subject does not match target commit subject
+>     Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
 
-Applied both, thanks.
+I don't usually like to rebase this tree, but I just pushed this, so
+lets fix them.
+
+My checker script noticed but I didn't notice the output in all the
+other spam :\
+
+I would be happy if the 0-day folks could run these checks too
+
+Jason
