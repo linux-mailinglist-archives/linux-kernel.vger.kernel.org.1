@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712E12A30BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822C02A30C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbgKBRDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:03:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727144AbgKBRDS (ORCPT
+        id S1727338AbgKBRD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:03:28 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37968 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727144AbgKBRD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:03:18 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE2BC0617A6;
-        Mon,  2 Nov 2020 09:03:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=8R9siPqKWQkaZsoyJP4hgDCdyshjHYVTZKbppBnGdqc=; b=FAzSHDs6kcdBpZZIh++eooksKw
-        JVNWWK0TevpgD757i9gABdsindQ0fmCtpQo5XottcABwgUduPrbJxKSB1jB8jBdMSgmrAjjmcZP/W
-        pibknGDMZ0EB5qklmGUbijqLs1qdiJiBluQUIpkHCueBTWJXVZPAaG2pqDQlz/vgcKjViduh46tap
-        HcqzHO54V61MlXc25/YkDJS1v51/kimxezVLx+AAj/LaK668hQm9LPzz4qfxsFBFzkyKhRWkZaglj
-        61CTWeIiIpbolBzVuokLoPjGdtIj0+VMSqBI3QghKU07/98DkgoBJoy5J2jh/eWBQPribDUOpkgvi
-        zCZVKCPw==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZdEg-0002QW-QC; Mon, 02 Nov 2020 17:03:15 +0000
-Subject: Re: linux-next: Tree for Nov 2 [drivers/vdpa/vdpa_sim/vdpa_sim.ko]
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20201102162845.3eb6598e@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d3d50a94-cdc5-572b-e9ca-3ee5638d21ee@infradead.org>
-Date:   Mon, 2 Nov 2020 09:03:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 2 Nov 2020 12:03:26 -0500
+Received: by mail-ot1-f67.google.com with SMTP id b2so13238870ots.5;
+        Mon, 02 Nov 2020 09:03:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gxBlEaVfdyoDCLmLXJGwLjL48itHuyNtFBGRaznxNrY=;
+        b=kUJnWY+63meqXcJAaJN+cJXIwib40qOw0v1uEUt+3jQe5Rexa/9fRPXHd1pUlgkPsD
+         mp5VPnlzd0JIDs8jiqgG13ngrxurjObdB56+MEopH/lerT90RrEpd1pGTcho566tiTks
+         XSwDK+FRPwFnAvJnb1mZxP4xn3O5ShQLPLEvOPaznh5DHuaKqJt8sXjyzpt5yXe8fzS9
+         rw/4v3WnQ6pqLSAvZXH3d2un9OWGWOGjAwoYxE6jEEdymeUZctyKtS8qnIoCuOYESNJf
+         yhfAT9hfRbqtsoCw2Akx5PSx4gHRNi5lMIVpV2vhZl5nOLCLXy4jdvdJCF8fl9U4PfvC
+         lqyw==
+X-Gm-Message-State: AOAM532SMnt7QUoGnSFQtjxohHEHZgM1Zp11PaDYRZmnSBsPsEh1/xZD
+        pZ5ZW+qFaUcuDDtHCvyXD7JNbybAkVT71BEh4BM=
+X-Google-Smtp-Source: ABdhPJw3ExOcLDLQFHftTad29tbUtNQs4yRHMzOmn6nOJtsUJM9e0YNVeSV2V7+ob9CCIZeKFPd9BgCvfZ/uRPaSz/8=
+X-Received: by 2002:a9d:311:: with SMTP id 17mr994965otv.260.1604336604825;
+ Mon, 02 Nov 2020 09:03:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201102162845.3eb6598e@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1604137179-29537-1-git-send-email-Julia.Lawall@inria.fr>
+In-Reply-To: <1604137179-29537-1-git-send-email-Julia.Lawall@inria.fr>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 2 Nov 2020 18:03:13 +0100
+Message-ID: <CAJZ5v0hvrF+X-PUsyEuFYUnsDHEop9DteDje-bemS5yWyLoFOQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: PM: correct path name
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/20 9:28 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20201030:
-> 
+On Sat, Oct 31, 2020 at 11:23 AM Julia Lawall <Julia.Lawall@inria.fr> wrote:
+>
+> cpu/ is needed before cpu<N>/
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+>
+> ---
+>  Documentation/admin-guide/pm/cpuidle.rst |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/pm/cpuidle.rst b/Documentation/admin-guide/pm/cpuidle.rst
+> index 37940a0584ec..26a9d648b88c 100644
+> --- a/Documentation/admin-guide/pm/cpuidle.rst
+> +++ b/Documentation/admin-guide/pm/cpuidle.rst
+> @@ -478,7 +478,7 @@ order to ask the hardware to enter that state.  Also, for each
+>  statistics of the given idle state.  That information is exposed by the kernel
+>  via ``sysfs``.
+>
+> -For each CPU in the system, there is a :file:`/sys/devices/system/cpu<N>/cpuidle/`
+> +For each CPU in the system, there is a :file:`/sys/devices/system/cpu/cpu<N>/cpuidle/`
+>  directory in ``sysfs``, where the number ``<N>`` is assigned to the given
+>  CPU at the initialization time.  That directory contains a set of subdirectories
+>  called :file:`state0`, :file:`state1` and so on, up to the number of idle state
 
-on x86_64:
-
-when CONFIG_NET is not enabled:
-
-ERROR: modpost: "mac_pton" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] undefined!
-
-
-Should VDPA_SIM, IFCVF, MLX5_VDPA_NET depend on NET or NETDEVICES?
-
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Applied as 5,10-rc material, thanks!
