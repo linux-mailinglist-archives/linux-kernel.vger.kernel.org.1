@@ -2,63 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134312A2532
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC6C2A2556
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgKBH3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbgKBH3h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:29:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79640C0617A6;
-        Sun,  1 Nov 2020 23:29:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7kqil5vrmEb2Nddp3OQTQBXQGkc9niPiGcaNE67tBY8=; b=Erkn5URR+wSGh9C0rgWsbo+p9y
-        ppm6PQDbDGHOGGA2h3Hrj/hAaUJmZb7bckVW0bAUthsA1/1XR/stYVsLsHGSL+0cUvzAzwZBKG4Z+
-        1X+JPSn7x/00wDea9bTorvr41bTNvJ1tZplphwfSACELJOmWElB84jaIHXnye8gKSTw7PYtIkp+cK
-        WGyQCz7gr/AM/kILQY6/E3kR8Ur/Rw382iwx+IpLcP8isCw9xGb2Ye7bH/QCr3P+yArX+AJnphOaO
-        aU9VCRUV9hCMajGMKNzrOpgkRoBtDaIgpUmG5ro2Cv7DaRGobrM3PjNsUJlNDtS1sygQt/v3/GLna
-        efXx4F/w==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZUHU-0004O4-0T; Mon, 02 Nov 2020 07:29:32 +0000
-Date:   Mon, 2 Nov 2020 07:29:31 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        J??r??me Glisse <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
-Message-ID: <20201102072931.GA16419@infradead.org>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-9-daniel.vetter@ffwll.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030100815.2269-9-daniel.vetter@ffwll.ch>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728109AbgKBHgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:36:49 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:42474 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726819AbgKBHgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:36:47 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 74B872013BE;
+        Mon,  2 Nov 2020 08:36:45 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 198302013CB;
+        Mon,  2 Nov 2020 08:36:42 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 833A04029C;
+        Mon,  2 Nov 2020 08:36:37 +0100 (CET)
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
+        Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH v4 1/3] soc: fsl: handle RCPM errata A-008646 on SoC LS1021A
+Date:   Mon,  2 Nov 2020 15:26:50 +0800
+Message-Id: <20201102072652.34893-1-ran.wang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:08:08AM +0100, Daniel Vetter wrote:
-> Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
-> that by drivers/modules is together with an mmu_notifier, and that's
-> all _GPL stuff.
+From: Biwen Li <biwen.li@nxp.com>
 
-I also think it also needs to be renamed to explicitly break any existing
-users out of tree or int the submission queue.
+Hardware issue:
+- Reading register RCPM_IPPDEXPCR1 always return zero, this causes
+  system firmware could not get correct information and wrongly do
+  clock gating for all wakeup source IP during system suspend. Then
+  those IPs will never get chance to wake system.
+
+Workaround:
+- Copy register RCPM_IPPDEXPCR1's setting to register SCFG_SPARECR8
+  to allow system firmware's psci method read it and do things accordingly.
+
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+---
+Change in v4:
+ - Replace property 'fsl,ippdexpcr1-alt-reg' with compatible checking as the
+   workaround trigger condition.
+
+Change in v3:
+ - Add  copy_ippdexpcr1_setting(), simplize workaournd's implementation
+   according to binding update.
+ - Minor update on commit message.
+
+Change in v2:
+ - Update commit message to be more clear.
+ - Replace device_property_read_u32_array() with syscon_regmap_lookup_by_phandle_args()
+   to make code simpler.
+
+ drivers/soc/fsl/rcpm.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
+index a093dbe..4ace28c 100644
+--- a/drivers/soc/fsl/rcpm.c
++++ b/drivers/soc/fsl/rcpm.c
+@@ -2,7 +2,7 @@
+ //
+ // rcpm.c - Freescale QorIQ RCPM driver
+ //
+-// Copyright 2019 NXP
++// Copyright 2019-2020 NXP
+ //
+ // Author: Ran Wang <ran.wang_1@nxp.com>
+ 
+@@ -22,6 +22,28 @@ struct rcpm {
+ 	bool		little_endian;
+ };
+ 
++#define  SCFG_SPARECR8	0x051c
++
++static void copy_ippdexpcr1_setting(u32 val)
++{
++	struct device_node *np;
++	void __iomem *regs;
++	u32 reg_val;
++
++	np = of_find_compatible_node(NULL, NULL, "fsl,ls1021a-scfg");
++	if (!np)
++		return;
++
++	regs = of_iomap(np, 0);
++	if (!regs)
++		return;
++
++	reg_val = ioread32be(regs + SCFG_SPARECR8);
++	iowrite32be(val | reg_val, regs + SCFG_SPARECR8);
++
++	iounmap(regs);
++}
++
+ /**
+  * rcpm_pm_prepare - performs device-level tasks associated with power
+  * management, such as programming related to the wakeup source control.
+@@ -90,6 +112,17 @@ static int rcpm_pm_prepare(struct device *dev)
+ 			tmp |= ioread32be(address);
+ 			iowrite32be(tmp, address);
+ 		}
++		/*
++		 * Workaround of errata A-008646 on SoC LS1021A:
++		 * There is a bug of register ippdexpcr1.
++		 * Reading configuration register RCPM_IPPDEXPCR1
++		 * always return zero. So save ippdexpcr1's value
++		 * to register SCFG_SPARECR8.And the value of
++		 * ippdexpcr1 will be read from SCFG_SPARECR8.
++		 */
++		if (dev_of_node(dev) && (i == 1))
++			if (of_device_is_compatible(np, "fsl,ls1021a-rcpm"))
++				copy_ippdexpcr1_setting(tmp);
+ 	}
+ 
+ 	return 0;
+-- 
+2.7.4
+
