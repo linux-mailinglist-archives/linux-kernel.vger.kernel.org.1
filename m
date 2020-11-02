@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AB92A2A08
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D502A2A1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgKBLyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:54:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S1728790AbgKBLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728765AbgKBLyZ (ORCPT
+        with ESMTP id S1728792AbgKBLy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:54:25 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B82CC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:54:25 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id n15so14288131wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:24 -0800 (PST)
+        Mon, 2 Nov 2020 06:54:26 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EF1C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:54:26 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h22so9239533wmb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zmRHhQEVdc7j5b8GRJ+bwBPDfCwyz1df7aW7vS1l850=;
-        b=w4+biPUE2uMMqM1NCNVRw/lhr1t2nDaFpT8nyyjQsKMPQSxZh9JlQm19v4OWojmS9M
-         LRH4zJVB3i3J9Vl9CTf89o78Tvv8KSyYixWNURyMWKqfCiJ9VUR8pWhs7PDZ8ATkyKg/
-         0k/geNcihJaIVBPlDvNci4aNTroRuJV8VR8CNUM4Px7f+ZxHlUV96B/d5p8gRPftyyzO
-         y5dnNHGT48kE5ka9kn3j7mMVPhZenI8Kv7/Y5/fnCSFObccpgGkMU4TF0iGGCLyeTK2F
-         Qo88KXtk/m0M8OZCFCqFGzSDBI7xXaMPF5dho5lBPiFxC9kACwTTx9JfGQBVyHOw1YA0
-         LSLQ==
+        bh=BvGUWERXaYGJjMJDGbA+xeDXFdD9XnQLhYUhgfSf5Mw=;
+        b=BDjAOCyrtvyPqB0ou7ixlAjaCYYL4sJAlfYMjm8CmJVrlMy5GlykX23d1CV8+hlrQt
+         jm3570TZOoBNQp/jbO9p7NcWcHA7hYD05b4IJELZ+fm3rWqlnPRK6GAEE9+8zWYQtHGm
+         YbDOxW+u4uE9sqKhVXCiDAP5Z89cRFutstba5kDRGjUHd2yYpdlCjKPchJ/D+kxLNF6W
+         funPxdm/wN2dR64CJb1jm+7UFmYuDZpt0RABnWvng61Eb2ksmInsZZd4UMkweWysLFk2
+         jpiyVHoBMo2AvN7DjzIzQWqJc/jnOtqV62Tk7NVEnVt3hi4jh9B3nk/9P+p5yFrFemxG
+         SP6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zmRHhQEVdc7j5b8GRJ+bwBPDfCwyz1df7aW7vS1l850=;
-        b=V2+bg0ZlQ/rvFb1FscGAvgiJUs6X0tY9J4AY+teNuFDcNDl9aQAnp9yi9U6Apbghws
-         /91uqn40qrTCAgBxsVkZ7rf0ifunT6jSB9Qbv8u0DAFkwlQZ4fpcMC6p0M12D6k9ppUh
-         zJEx3sik/D3mi3wBZPHZ4CxHMv5520aTPofnEbnoVoD6ANDg6Ej4cUipn5G0OfmYmTEr
-         QU/iLIRkyMkltvxg6z2W/B1D6hqIIuP4dXs3pD0SSIZk70K7pt9ZHldl84Kbs73LkV9E
-         kODXLyJ4lAPbNS/DiSup0T2ATvV1vfXf+f/Tsbr0nXsn1afSglfhVo8iKgOj3oicskCV
-         XFcg==
-X-Gm-Message-State: AOAM533p23kF/qAw/5eP+QHGXVVPK8yqFpN+g8eDnrJzyvYJtlV0jXWl
-        OJQYISb6wdpDhGVzDJtnLjj5xw==
-X-Google-Smtp-Source: ABdhPJyJf4YYacMOMRGDnSM6ll4hRK/WVoFumKmKugMzoiLcuyHlURGIkMffq81yrt4xhF/tTH+JCA==
-X-Received: by 2002:a05:6000:1084:: with SMTP id y4mr18846233wrw.138.1604318063774;
-        Mon, 02 Nov 2020 03:54:23 -0800 (PST)
+        bh=BvGUWERXaYGJjMJDGbA+xeDXFdD9XnQLhYUhgfSf5Mw=;
+        b=obqkLNvZzZI7pPIuMvBIw5Vo1PdZqtS+dkcB4SAVqq3M16e3Ofn4f23eYe/dMbdT23
+         uTtO5CHsx64uiteGWVWgCEIMu/oI6vFDZulIYOdpFRW3mdBVnZnwBgf0H2wboOxTWNa1
+         p6P4FfnsnXBjX80Ty6oHpGBbTxQTqtJwoIOl08m1zyKNnXSPsc1DhekG9IpT2ggMcrFg
+         tX/kuPXaqdD4dydl7KCAx7Rx0aascwDinJQYX2ZjaBlLDNu4NPchYH2yXIh/V2P1BkJg
+         +DR09CFrWgkq738ufYEvuEkB8aZ0ScfosOa+BgliIfPsYcxI6l/WZuinYhsMqD35Z1qM
+         vgDg==
+X-Gm-Message-State: AOAM533js4WnuKrosHjrPB7K5SVJRPcY1irHzS1QhucBKTSeYXKxbcI1
+        Xz2cVujfMXVWvgEn0g49EjMZjA==
+X-Google-Smtp-Source: ABdhPJwQ1EjTwfCM7yhPtNvjrqOk2umJRWV/i2J3TyjOLlGeGndTu9CRfs9pbUSWOZWpmeXpt1LtHQ==
+X-Received: by 2002:a1c:28d4:: with SMTP id o203mr17464567wmo.143.1604318065105;
+        Mon, 02 Nov 2020 03:54:25 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.22
+        by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:54:23 -0800 (PST)
+        Mon, 02 Nov 2020 03:54:24 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     vigneshr@ti.com
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
         linux-mtd@lists.infradead.org
-Subject: [PATCH 08/23] mtd: ubi: build: Document 'ubi_num' in struct mtd_dev_param
-Date:   Mon,  2 Nov 2020 11:53:51 +0000
-Message-Id: <20201102115406.1074327-9-lee.jones@linaro.org>
+Subject: [PATCH 09/23] mtd: nand: spi: toshiba: Demote non-conformant kernel-doc header
+Date:   Mon,  2 Nov 2020 11:53:52 +0000
+Message-Id: <20201102115406.1074327-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
 References: <20201102115406.1074327-1-lee.jones@linaro.org>
@@ -68,28 +70,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/ubi/build.c:61: warning: Function parameter or member 'ubi_num' not described in 'mtd_dev_param'
+ drivers/mtd/nand/spi/toshiba.c:36: warning: Function parameter or member 'write_cache_variants' not described in 'SPINAND_OP_VARIANTS'
+ drivers/mtd/nand/spi/toshiba.c:36: warning: Function parameter or member '0' not described in 'SPINAND_OP_VARIANTS'
 
-Cc: Richard Weinberger <richard@nod.at>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/ubi/build.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/spi/toshiba.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index e85b04e9716b2..40fa994ad6a8f 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -50,6 +50,7 @@
-  * struct mtd_dev_param - MTD device parameter description data structure.
-  * @name: MTD character device node path, MTD device name, or MTD device number
-  *        string
-+ * @ubi_num: UBI number
-  * @vid_hdr_offs: VID header offset
-  * @max_beb_per1024: maximum expected number of bad PEBs per 1024 PEBs
+diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
+index 21fde28756742..7380b1ebaccd5 100644
+--- a/drivers/mtd/nand/spi/toshiba.c
++++ b/drivers/mtd/nand/spi/toshiba.c
+@@ -28,7 +28,7 @@ static SPINAND_OP_VARIANTS(update_cache_x4_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
+-/**
++/*
+  * Backward compatibility for 1st generation Serial NAND devices
+  * which don't support Quad Program Load operation.
   */
 -- 
 2.25.1
