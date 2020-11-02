@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC85E2A29C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8262A29C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgKBLrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
+        id S1728633AbgKBLrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728716AbgKBLqZ (ORCPT
+        with ESMTP id S1728722AbgKBLqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:46:25 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AD5C061A48
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:46:24 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id b3so10917768pfo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:46:24 -0800 (PST)
+        Mon, 2 Nov 2020 06:46:33 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D46C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:46:32 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id i7so8636118pgh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:46:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=63fCD7b9c39BMwHAue5Fl+YEtHFG3eKfVilw8x2/rAA=;
-        b=hJ9/Ezv1ZgdvCLAG1rgjJ/9mpQ+SKh3LvAYZ/WUKYXIalESoV9Oql4vEQPCT2oMRus
-         Drdj9tN3YSjMyBl+gq1AeNPOpvihBVmc1GU7Jm/9saZgCQNc7QuyUJilIvyNHRHrw9VW
-         fY1y9FZJNr/taNUexlK7F8FnmRslj7+n7UVcb6vdTIfHXDkMGs9Vv+EQPz03XeTpwM4T
-         y0sxHRkvp7vk08etU9dCuWcROXesLKCqMHWaZ93iaANXXu+HO+gONdCfJ23JAcZbp6zr
-         1PC8Lnkk0Pilok7g7Kx4MQXncXBIwSgsu/qS0WXMl5HrPqZek7EGWxjeoaUiBFo3oGqX
-         Q5Jw==
+        bh=onEvuddY7rjjmRNmF3inPaMsobQ6rmeVGOOE4kPhESY=;
+        b=Vr5aHR13z2KIKtAwzdZ9s6RuU5nLQfx+2eKHmCn96yKknRT+ZskWrmJ8yaTYMU7fWA
+         Duj06UU0FTvBMzrM2Pr/1EXdpd1MkKR4u8DSzE/cXXoIu/RyDBkLJKKUe93TQP2Wm5rf
+         hFSWBvw5Qb1z4J3oRSY2qvEi1w86g4+e8BnVTllmTnVFPa87+8BVL0rk0aw9OP0YW0+D
+         bwK9KSCqGu+AEQ7O7WhQ7SxBEVE5VEzdhEXC3uirBEKqUUTcFVohi3NdE8QMeghI5cde
+         SX0R4CrRZA8D4lI4ATcq/88Bapzxz3tX8ALazIlthY7XTG13blWgKV/JHywhVKn9l2pS
+         e8wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=63fCD7b9c39BMwHAue5Fl+YEtHFG3eKfVilw8x2/rAA=;
-        b=CAhDoli4TsNHo1zgFo6YKPbv49MGcZCKJYVpBM0nnYGxbW4NERsdc8+Dn6WdUMmONF
-         arsQ6hfqNS+jwSVxUGXIvhXM1kWBGRi+lK6ZR1jFq6RTl7T5O/SUadbB6j19cYkEMHsY
-         jgJj0WwwISptj5LN+vvsJH/lw98oZvm0glRtkJlf0q0wLNY/AG/uviZZNlcq80Jt6eSV
-         oq9e0HNtOYhB9sLscskXy2ATCl7kwCd3/L2nmFqTIqQiEoMjdMd+4T31xYDnJlteZofz
-         ojlzJiMgBT52hx/RYNsm+AhV6R5GvmLP/E/ttjGiDE3WneSaJUrJ4CH1CaM1fQ5fsf2M
-         b5tQ==
-X-Gm-Message-State: AOAM530DlLmElmIGEkCZq44k1Wgvrxn1tyOYmt94IfTeBvJ/AgOawkJv
-        IAJ8slg+kf9vmM4mgfXmbyVlfw==
-X-Google-Smtp-Source: ABdhPJxo+jJRsFTKov77OJRU77007ycelGKbPaV5dYEs45Z4UJIU+NvAvFXsfZkDaHO0m3EtjWrM2A==
-X-Received: by 2002:a63:3d8c:: with SMTP id k134mr12755914pga.22.1604317583680;
-        Mon, 02 Nov 2020 03:46:23 -0800 (PST)
+        bh=onEvuddY7rjjmRNmF3inPaMsobQ6rmeVGOOE4kPhESY=;
+        b=WjHaFILNSHiSHPyhNCCQVrXzHXE5yslBKnEaSbj+RD6JmOR5Ql00MVtjPP71Yov3gm
+         fuUZoNXqPDwPgAnDwEu76u2yOWwPXDNOx7ZlpA/xqYOOz4AoiGRPqEQffdRfMzrPcJD9
+         JWYT/OyFA9dTRhmr4oY+HEnDKommPuzJfu4cbjPSabN4ohc+xfzpT+7BZD2W0Ss4Cski
+         pmOTY0v9oY9PwshWyM9A8AjSqH34iqQQMT2mC9W2lNReAHiufXP3gRBeRkjzMGxG9ifU
+         lmq10QkTrL+2Ejl3t5VfHCnqVwvXsc7/gJgD0uSpQbtrfED3qAbgHL84vmuUT+fyjArH
+         T3UQ==
+X-Gm-Message-State: AOAM5329EGVeKge60Cb0uL7fyHmDc7xPgrQYwbeEittjywe2iX6o83Rx
+        gx+I7uy/FT0yPP3PM3vBKHdClw==
+X-Google-Smtp-Source: ABdhPJz6Klrso4Ngfvn20QS7DmYsk6GOwWNXcIzsTkWC0MaK8geg5GBT9xWeV6BPg/9LlQGCX5EAwA==
+X-Received: by 2002:a17:90a:d104:: with SMTP id l4mr12488404pju.194.1604317591809;
+        Mon, 02 Nov 2020 03:46:31 -0800 (PST)
 Received: from localhost.localdomain ([122.173.169.225])
-        by smtp.gmail.com with ESMTPSA id y5sm14276184pfq.79.2020.11.02.03.46.15
+        by smtp.gmail.com with ESMTPSA id y5sm14276184pfq.79.2020.11.02.03.46.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Nov 2020 03:46:22 -0800 (PST)
+        Mon, 02 Nov 2020 03:46:31 -0800 (PST)
 From:   Sumit Garg <sumit.garg@linaro.org>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
         daniel.thompson@linaro.org
@@ -59,9 +59,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
         msys.mizuma@gmail.com, ito-yuichi@fujitsu.com,
         kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v7 5/7] arm64: ipi_nmi: Add support for NMI backtrace
-Date:   Mon,  2 Nov 2020 17:14:45 +0530
-Message-Id: <1604317487-14543-6-git-send-email-sumit.garg@linaro.org>
+Subject: [PATCH v7 6/7] kgdb: Expose default CPUs roundup fallback mechanism
+Date:   Mon,  2 Nov 2020 17:14:46 +0530
+Message-Id: <1604317487-14543-7-git-send-email-sumit.garg@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
 References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
@@ -69,72 +69,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable NMI backtrace support on arm64 using IPI turned as an NMI
-leveraging pseudo NMIs support. It is now possible for users to get a
-backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
+Add a new API kgdb_smp_call_nmi_hook() to expose default CPUs roundup
+mechanism to a particular archichecture as a runtime fallback if it
+detects to not support NMI roundup.
+
+Currently such an architecture example is arm64 supporting pseudo NMIs
+feature which is only available on platforms which have support for GICv3
+or later version.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- arch/arm64/include/asm/irq.h |  6 ++++++
- arch/arm64/kernel/ipi_nmi.c  | 18 ++++++++++++++++--
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ include/linux/kgdb.h      | 12 ++++++++++++
+ kernel/debug/debug_core.c |  8 +++++++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-index b2b0c64..ef018a8 100644
---- a/arch/arm64/include/asm/irq.h
-+++ b/arch/arm64/include/asm/irq.h
-@@ -6,6 +6,12 @@
+diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+index 0d6cf64..4190f13 100644
+--- a/include/linux/kgdb.h
++++ b/include/linux/kgdb.h
+@@ -200,6 +200,18 @@ kgdb_arch_handle_qxfer_pkt(char *remcom_in_buffer,
+ extern void kgdb_call_nmi_hook(void *ignored);
  
- #include <asm-generic/irq.h>
- 
-+#ifdef CONFIG_SMP
-+extern bool arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-+					   bool exclude_self);
-+#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-+#endif
+ /**
++ *	kgdb_smp_call_nmi_hook - Provide default fallback mechanism to
++ *				 round-up CPUs
++ *
++ *	If you're using the default implementation of kgdb_roundup_cpus()
++ *	this function will be called.  And if an arch detects at runtime to
++ *	not support NMI based roundup then it can fallback to default
++ *	mechanism using this API.
++ */
 +
- struct pt_regs;
- 
- static inline int nr_legacy_irqs(void)
-diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
-index a945dcf..597dcf7 100644
---- a/arch/arm64/kernel/ipi_nmi.c
-+++ b/arch/arm64/kernel/ipi_nmi.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/nmi.h>
- #include <linux/smp.h>
- 
- #include <asm/nmi.h>
-@@ -31,11 +32,24 @@ void arm64_send_nmi(cpumask_t *mask)
- 	__ipi_send_mask(ipi_nmi_desc, mask);
++extern void kgdb_smp_call_nmi_hook(void);
++
++/**
+  *	kgdb_roundup_cpus - Get other CPUs into a holding pattern
+  *
+  *	On SMP systems, we need to get the attention of the other CPUs
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 1e75a89..ae785d8 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -241,7 +241,7 @@ void __weak kgdb_call_nmi_hook(void *ignored)
  }
+ NOKPROBE_SYMBOL(kgdb_call_nmi_hook);
  
-+bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-+{
-+	if (!ipi_nmi_desc)
-+		return false;
-+
-+	nmi_trigger_cpumask_backtrace(mask, exclude_self, arm64_send_nmi);
-+
-+	return true;
-+}
-+
- static irqreturn_t ipi_nmi_handler(int irq, void *data)
+-void __weak kgdb_roundup_cpus(void)
++void kgdb_smp_call_nmi_hook(void)
  {
--	/* nop, NMI handlers for special features can be added here. */
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	if (nmi_cpu_backtrace(get_irq_regs()))
-+		ret = IRQ_HANDLED;
- 
--	return IRQ_NONE;
-+	return ret;
+ 	call_single_data_t *csd;
+ 	int this_cpu = raw_smp_processor_id();
+@@ -273,6 +273,12 @@ void __weak kgdb_roundup_cpus(void)
+ 			kgdb_info[cpu].rounding_up = false;
+ 	}
  }
++NOKPROBE_SYMBOL(kgdb_smp_call_nmi_hook);
++
++void __weak kgdb_roundup_cpus(void)
++{
++	kgdb_smp_call_nmi_hook();
++}
+ NOKPROBE_SYMBOL(kgdb_roundup_cpus);
  
- void dynamic_ipi_setup(int cpu)
+ #endif
 -- 
 2.7.4
 
