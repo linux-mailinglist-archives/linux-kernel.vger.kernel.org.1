@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6048B2A365D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8122F2A365C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgKBWUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKBWUH (ORCPT
+        id S1726042AbgKBWTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:19:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33452 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgKBWTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:20:07 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32204C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 14:20:07 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7A4CA583;
-        Mon,  2 Nov 2020 23:20:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1604355605;
-        bh=fTY55DHx6zAJQyTjZInJxof34DI3DmbATb+EmXI8rgI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iR4l77BBx5bYi9Lw/uWhIPymMZVyuy3F/MzDsTmPa9Xok1VN3PsFmEBcG0PsrOk1a
-         67RFNH2p/Lq3ZaY+MzPqWrFMzPy5RbI+wRHS90N3RM5eI0ZKudhlMc7PP3fYKiIwgj
-         ZDoIvlG5UVjyjGzZxoEPzWQWK6EROi0l90xUZms8=
-Date:   Tue, 3 Nov 2020 00:19:17 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     a.hajda@samsung.com, narmstrong@baylibre.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
-        tomi.valkeinen@ti.com, sebastian.reichel@collabora.com,
-        sam@ravnborg.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/bridge: tpd12s015: Fix irq registering in
- tpd12s015_probe
-Message-ID: <20201102221917.GJ3971@pendragon.ideasonboard.com>
-References: <20201031031648.42368-1-yuehaibing@huawei.com>
- <20201102143024.26216-1-yuehaibing@huawei.com>
+        Mon, 2 Nov 2020 17:19:53 -0500
+Date:   Mon, 2 Nov 2020 23:19:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604355592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=gqiPjScE5SdOJ0m0YaDRtOtnRuC/cXWpfBGliTbmIWA=;
+        b=aWf+gXTCp80n+HKo7bnq7KVcNRhJg5jV6Mn1jzD6rqAOFg4jfeamDbshYhRaQJrqWA1Nfe
+        +yw6XD2+GFvlbM/Yo2NyPo0latCJPJhPvdSn070cbBTvk8b/HNr5Tpnw8cHoorC8lIXnSM
+        8cD8TPHyEMjmGPSJneV0F408rQOvIAgjsDBv5eYE8omhA2mtfxTh8s9esxZ2U8zCXCdNmi
+        l+5BHuHVSA2FFHc8BM7mC/op3uxMO9WoTeTOJ4zeVkmssqIbldJFKgfBJiK1OfOLhd7Onu
+        j//iNS947DFS2ogjviPGyWkNjkjvy93qCA0nQRdThDCbJCjKEMu1gBUsmr+fTQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604355592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=gqiPjScE5SdOJ0m0YaDRtOtnRuC/cXWpfBGliTbmIWA=;
+        b=93ql7T2QRhClLbpJIwM7Al1jkiMyWdZWc/BTBv31stUKAlEBHKpomzkxdb9PPsxAQ3Yk54
+        1oK4EX69XnwrB9CA==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 0/2] Add a seqcount between gup_fast and
+ copy_page_range()
+Message-ID: <20201102221945.GA48454@lx-t490>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102143024.26216-1-yuehaibing@huawei.com>
+In-Reply-To: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
+Hello Jason,
 
-Thank you for the patch.
+Thanks for keeping me in the loop on this.
 
-On Mon, Nov 02, 2020 at 10:30:24PM +0800, YueHaibing wrote:
-> gpiod_to_irq() return negative value in case of error,
-> the existing code doesn't handle negative error codes.
-> If the HPD gpio supports IRQs (gpiod_to_irq returns a
-> valid number), we use the IRQ. If it doesn't (gpiod_to_irq
-> returns an error), it gets polled via detect(). 
-> 
-> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+I've also added the locking maintainers in Cc. IMHO there are some
+seqlock.h API violations in this series, and they should have the final
+say on this.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+On Fri, Oct 30, 2020 at 11:46:19AM -0300, Jason Gunthorpe wrote:
+>
+> As discussed and suggested by Linus use a seqcount to close the small race
+> between gup_fast and copy_page_range().
+>
+> Unfortunately the good suggestion to just use write_seqcount_begin() blows
+> up lockdep immediately due to the (new?) requirement that the write side
+> of seqcount be in a preempt disabled region.
 
-> ---
-> v2: Add checking for >= 0 and update commit message
-> ---
->  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> index 514cbf0eac75..e0e015243a60 100644
-> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
->  
->  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
->  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
-> -	if (tpd->hpd_irq) {
-> +	if (tpd->hpd_irq >= 0) {
->  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
->  						tpd12s015_hpd_isr,
->  						IRQF_TRIGGER_RISING |
+Disabling preemption for seqcount_t write-side critical sections was
+never a new requirement. It has always been this way, for the reasons
+explained at Documentation/locking/seqlock.rst, "Introduction" section.
 
--- 
-Regards,
+The recent seqcount_t changes did not mandate any new rules. This was
+done explicitly, and on-purpose, not to break any of the *large* set of
+existing seqcount_t call sites. It added multiple lockdep asserts
+though, to catch a number of (already) buggy users, and they were fixed
+beforehand.
 
-Laurent Pinchart
+It seems you have a special case here, so I'll continue discussing this
+at patch #2 where the code resides. Just wanted to answer the "(new?)"
+part above.
+
+>                                               For this application it does
+> not seem like a good idea, nor is it necessary as we don't spin on retry.
+> This is solved by being the first place to use raw_write_seqcount_t_begin()
+>
+
+Regardless of this series write side preemptibility requirements, the
+"_write_seqcount_*t*_()" interfaces are internal to seqlock.h and should
+_never_ be used outside of it.
+
+For plain seqcount_t, raw_write_seqcount_begin() is equivalent to
+raw_write_seqcount_*t*_begin() anyway, and should already satisfy your
+needs.
+
+/me jumps to patch #2 now...
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
