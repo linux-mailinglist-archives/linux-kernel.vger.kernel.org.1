@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21EF2A27C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19122A27C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgKBKJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:09:55 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:46653 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728156AbgKBKJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:09:55 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id E2AAD5EC;
-        Mon,  2 Nov 2020 05:09:53 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:09:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=D+Hx/PWdAsyxJNjfriAYbL4M0+L
-        ryAHrgIAbEkOsp4w=; b=SyrDBetL6FVnOkQHEWtJIvMiaP+kQxX/P3CdMvLnLy0
-        ck4SdLBrifaGg1FcbcSHbr+S1PiIzocvWwPOxao5LY+Wb6uXMc08c8/J08h0zA+y
-        s97ZrowNt5dgyaJuUYiWxzr/XIHi8q+y8XO+E5/T2k6fgl/j9pbq6e39rOC8+6il
-        QBRF7jA8e7k0UJsGbDLpvfpb/N8tUuvQYQzpZR3u9N/4cvKSwEhI0B2UYS0W4wpW
-        xcBJr6V/6PGXz6Ie163sNy58Rxm13M03ZZzxzO5X/YgaVhF17wPYWuJjQElBpg0P
-        OEf3mYwMF4ifCbvnn/MLuJL+oCOsqaGC92lsmHQp8IQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=D+Hx/P
-        WdAsyxJNjfriAYbL4M0+LryAHrgIAbEkOsp4w=; b=Ji08R2vdb2RxNtJ8oaHHqS
-        gzg5kAZ3JTiyvql9D5jSfbUFlBFKCZVrF2C4GHZKDdZQFYIY0FGWI8K7A/xhq1z7
-        jIH6R5gsVtgpxeCzOSo/osb/E/8lbfm61vxqjbPEwS9oAP1NpIbYZtC13EL7TIu1
-        uqapGbmy3DANuPoKtiLR7S0IgkOMyPaevPAH0CN3Ryv5ZCntC9vRkeflcvXWfxyt
-        Zmp2fEAI0VuPepthnp6qWLHLx7+t3H4EBnNjWIkwLAV2nvLpbbfi1O8QrWwYDdb1
-        /aQg/0U0K5K2Ml1vq5pR1eXiFwlN5w4wGfkyXOV7Tz7iSmiWHi3RwydHexNAbRCA
-        ==
-X-ME-Sender: <xms:8dqfX6DFLV7vlRY7Kx0Ua3IUrs80zbKF_67uT8uGrOPNxEgP6tazgA>
-    <xme:8dqfX0gBgXBT-beYPtwkgO8ZOIkgD-Lxw_d1n3p-hnH36-eoQRup0qkx2N-o21cPM
-    KLGbLdAbpslvnESPb0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepheenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:8dqfX9mT1GO3GT1ucf5BagVKBqTHyKLgfXLm-bUbP_vYtyT0_7jq7w>
-    <xmx:8dqfX4xVRz2lkuwxmY0YOQu_tjn94fk7JW-ZkG8XZHheC7NLsKBcKQ>
-    <xmx:8dqfX_T4jq9uzvRF6M4m6QMKijlA3YLW9TgDaho84agQLka0hIvJew>
-    <xmx:8dqfXwKRYAAbEdJBpRdZhoFDjo-klJ7Kn4Rx4egRDJj66PVzhv3Lsg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 109DB306467D;
-        Mon,  2 Nov 2020 05:09:52 -0500 (EST)
-Date:   Mon, 2 Nov 2020 11:09:52 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <contact@paulk.fr>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matteo Scordino <matteo.scordino@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 5/9] irqchip/sunxi-nmi: Add support for the V3s NMI
-Message-ID: <20201102100952.a6ma334f4msnlvts@gilmour.lan>
-References: <20201031182137.1879521-1-contact@paulk.fr>
- <20201031182137.1879521-6-contact@paulk.fr>
+        id S1728410AbgKBKKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:10:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42842 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728005AbgKBKKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 05:10:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604311847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VredqEs3zsL7zVXAU6Nag2b9EtiI2PI84vk+sy0mICQ=;
+        b=FjLzR2S6zs90AlezIG3wQfjvLX7BCp9tUV4Sns3f0aMoq9GlhSTIw4pXXzIuiMs3jHUtE1
+        FJldsBRijVKj26LakHUO6N7Db9V7f6toTAen1iVrCrfPs8a+fawUb48TN2KCeN5iJYJo22
+        vE+vtvQ6PauCRNSjlwotPa8AI3WtSJE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20F8BACA0;
+        Mon,  2 Nov 2020 10:10:47 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Zhang Qiang <Qiang.Zhang@windriver.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: [PATCH] kthread_worker: Document CPU hotplug handling
+Date:   Mon,  2 Nov 2020 11:10:39 +0100
+Message-Id: <20201102101039.19227-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="injg4cfqgqushr2n"
-Content-Disposition: inline
-In-Reply-To: <20201031182137.1879521-6-contact@paulk.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kthread worker API is simple. In short, it allows to create, use, and
+destroy workers. kthread_create_worker_on_cpu() just allows to bind
+a newly created worker to a given CPU.
 
---injg4cfqgqushr2n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is up to the API user how to handle CPU hotplug. They have to decide
+how to handle pending work items, prevent queuing new ones, and
+restore the functionality when the CPU goes off and on. There are
+few catches:
 
-On Sat, Oct 31, 2020 at 07:21:33PM +0100, Paul Kocialkowski wrote:
-> The V3s/V3 has a NMI IRQ controller, which is mainly used for the AXP209
-> interrupt. In great wisdom, Allwinner decided to invert the enable and
-> pending register offsets, compared to the A20.
->=20
-> As a result, a specific compatible and register description is required
-> for the V3s. This was tested with an AXP209 on a V3 board.
->=20
-> Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+   + The CPU affinity gets lost when it is scheduled on an offline CPU.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+   + The worker might not exist when the CPU was off when the user
+     created the workers.
 
-Maxime
+A good practice is to implement two CPU hotplug callbacks and
+destroy/create the worker when CPU goes down/up.
 
---injg4cfqgqushr2n
-Content-Type: application/pgp-signature; name="signature.asc"
+Mention this in the function description.
 
------BEGIN PGP SIGNATURE-----
+Link: https://lore.kernel.org/r/20201028073031.4536-1-qiang.zhang@windriver.com
+Reported-by: Zhang Qiang <Qiang.Zhang@windriver.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/kthread.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/a7wAKCRDj7w1vZxhR
-xSuYAQDunY+uNN2KKTu2GcOWUfvTmxWheh/U4qs6xQKOIeK3ZwD8CQDSb26iuwxz
-BFSHfsZQPMtI46RgP/EvwYER0P1sWgE=
-=fcKf
------END PGP SIGNATURE-----
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index e29773c82b70..fd3deae3afde 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -786,7 +786,25 @@ EXPORT_SYMBOL(kthread_create_worker);
+  * A good practice is to add the cpu number also into the worker name.
+  * For example, use kthread_create_worker_on_cpu(cpu, "helper/%d", cpu).
+  *
+- * Returns a pointer to the allocated worker on success, ERR_PTR(-ENOMEM)
++ * CPU hotplug:
++ * The kthread worker API is simple and generic. It just provides a way
++ * how to create, use, and destroy workers.
++ *
++ * It is up to the API user how to handle CPU hotplug. They have to decide
++ * how to handle pending work items, prevent queuing new ones, and
++ * restore the functionality when the CPU goes off and on. There are
++ * few catches:
++ *
++ *    - CPU affinity gets lost when it is scheduled on an offline CPU.
++ *
++ *    - The worker might not exist when the CPU was off when the user
++ *      created the workers.
++ *
++ * A good practice is to implement two CPU hotplug callbacks and
++ * destroy/create the worker when CPU goes down/up.
++ *
++ * Return:
++ * The pointer to the allocated worker on success, ERR_PTR(-ENOMEM)
+  * when the needed structures could not get allocated, and ERR_PTR(-EINTR)
+  * when the worker was SIGKILLed.
+  */
+-- 
+2.26.2
 
---injg4cfqgqushr2n--
