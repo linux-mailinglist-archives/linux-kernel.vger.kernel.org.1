@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559CC2A2295
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60552A2290
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgKBAew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 19:34:52 -0500
-Received: from m15111.mail.126.com ([220.181.15.111]:32806 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727333AbgKBAew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 19:34:52 -0500
-X-Greylist: delayed 1885 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Nov 2020 19:34:51 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=RIrWh638uBEKYF3A2h
-        R0szq8nONGR2032LXrtbL5g3I=; b=g0sNa4FKdrrpnC5GTXurjGP7HBPV7ee32y
-        WZRp0pxxR2RmeUUv0yrPcwpGkJ8xnXE1ICCtW0zNCQvby3du061YHdlBkUvNLRZE
-        Tnq4N8OZq31xScsp0xCXfCZqw4b3hInchQYSTj/1Fba2MmxCmffUjTX0VcJgm42I
-        kaXVnWDjQ=
-Received: from localhost.localdomain (unknown [112.17.240.93])
-        by smtp1 (Coremail) with SMTP id C8mowAA3uljFTJ9fgGG+Kw--.39873S2;
-        Mon, 02 Nov 2020 08:03:18 +0800 (CST)
-From:   Fengfei Xi <fengfei_xi@126.com>
-To:     darrick.wong@oracle.com
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fengfei Xi <fengfei_xi@126.com>
-Subject: [PATCH] xfs: Drop useless comments
-Date:   Mon,  2 Nov 2020 08:03:16 +0800
-Message-Id: <1604275396-4565-1-git-send-email-fengfei_xi@126.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: C8mowAA3uljFTJ9fgGG+Kw--.39873S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFykKF4xAw1fAr4xGr43trb_yoWxZFb_Ga
-        17tF4Ikw4UJFy7ta1UurnYyFyUW39rKrs7uanIqFyaq3W8Xan7ArykJF4YgwnrWrs3ZFn5
-        Jwn5Gry5tr9ayjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYcNVDUUUUU==
-X-Originating-IP: [112.17.240.93]
-X-CM-SenderInfo: pihqwwxhlb5xa6rslhhfrp/1tbi1wbQkl53U+6zvgAAsK
+        id S1727438AbgKBAa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 19:30:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727367AbgKBAa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 19:30:58 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E3CB2145D;
+        Mon,  2 Nov 2020 00:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604277057;
+        bh=hsc6sghMQfpJdDMaorF3YDs6oHrvYR5tUOTOnKqRVLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aJ79ea2gOEhSEYDv0nTxp0ZdUNj0cbaUa0XUyhGD/Dec6D7cQIZAbRFRAj6tUDMkO
+         J1Sj2HAbgAt1qNg1twQ8oK6A7cFFasaMZdd3sxN2y6qC9Zn9HP9hPjLYwjtxnMW1VF
+         yUUBPL7uLtK10EQ1qFSstk4q/IBK56u35ZiHpYQ8=
+Date:   Sun, 1 Nov 2020 19:30:56 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        dm-devel@redhat.com
+Subject: Re: [PATCH AUTOSEL 5.9 089/147] dm: change max_io_len() to use
+ blk_max_size_offset()
+Message-ID: <20201102003056.GD2092@sasha-vm>
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-89-sashal@kernel.org>
+ <20201027121959.GA13012@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201027121959.GA13012@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The names of functions xfs_buf_get_maps and _xfs_buf_free_pages
-can fully express their roles. So their comments are redundant.
-We could drop them entirely.
+On Tue, Oct 27, 2020 at 08:19:59AM -0400, Mike Snitzer wrote:
+>On Mon, Oct 26 2020 at  7:48pm -0400,
+>Sasha Levin <sashal@kernel.org> wrote:
+>
+>> From: Mike Snitzer <snitzer@redhat.com>
+>>
+>> [ Upstream commit 5091cdec56faeaefa79de4b6cb3c3c55e50d1ac3 ]
+>>
+>> Using blk_max_size_offset() enables DM core's splitting to impose
+>> ti->max_io_len (via q->limits.chunk_sectors) and also fallback to
+>> respecting q->limits.max_sectors if chunk_sectors isn't set.
+>>
+>> Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Not sure why this commit elevated to stable@ picking it up, please
+>explain.
 
-Signed-off-by: Fengfei Xi <fengfei_xi@126.com>
----
- fs/xfs/xfs_buf.c | 6 ------
- 1 file changed, 6 deletions(-)
+I misread the series this patch was in as being a fix rather than only
+the first patch, sorry :(
 
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 4e4cf91..2aeed30 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -197,9 +197,6 @@
- 	return 0;
- }
- 
--/*
-- *	Frees b_pages if it was allocated.
-- */
- static void
- xfs_buf_free_maps(
- 	struct xfs_buf	*bp)
-@@ -297,9 +294,6 @@
- 	return 0;
- }
- 
--/*
-- *	Frees b_pages if it was allocated.
-- */
- STATIC void
- _xfs_buf_free_pages(
- 	xfs_buf_t	*bp)
+>But you cannot take this commit standalone. These commits are prereqs:
+>
+>22ada802ede8 block: use lcm_not_zero() when stacking chunk_sectors
+>07d098e6bbad block: allow 'chunk_sectors' to be non-power-of-2
+>882ec4e609c1 dm table: stack 'chunk_sectors' limit to account for target-specific splitting
+>
+>This goes for all stable@ trees you AUTOSEL'd commit 5091cdec56f for.
+>
+>Mike
+>
+>> ---
+>>  drivers/md/dm.c | 20 ++++++++------------
+>>  1 file changed, 8 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+>> index 6ed05ca65a0f8..3982012b1309c 100644
+>> --- a/drivers/md/dm.c
+>> +++ b/drivers/md/dm.c
+>> @@ -1051,22 +1051,18 @@ static sector_t max_io_len_target_boundary(sector_t sector, struct dm_target *ti
+>>  static sector_t max_io_len(sector_t sector, struct dm_target *ti)
+>>  {
+>>  	sector_t len = max_io_len_target_boundary(sector, ti);
+>> -	sector_t offset, max_len;
+>> +	sector_t max_len;
+>>
+>>  	/*
+>>  	 * Does the target need to split even further?
+>> +	 * - q->limits.chunk_sectors reflects ti->max_io_len so
+>> +	 *   blk_max_size_offset() provides required splitting.
+>> +	 * - blk_max_size_offset() also respects q->limits.max_sectors
+>>  	 */
+>> -	if (ti->max_io_len) {
+>> -		offset = dm_target_offset(ti, sector);
+>> -		if (unlikely(ti->max_io_len & (ti->max_io_len - 1)))
+>> -			max_len = sector_div(offset, ti->max_io_len);
+>> -		else
+>> -			max_len = offset & (ti->max_io_len - 1);
+>> -		max_len = ti->max_io_len - max_len;
+>> -
+>> -		if (len > max_len)
+>> -			len = max_len;
+>> -	}
+>> +	max_len = blk_max_size_offset(dm_table_get_md(ti->table)->queue,
+>> +				      dm_target_offset(ti, sector));
+>> +	if (len > max_len)
+>> +		len = max_len;
+>>
+>>  	return len;
+>>  }
+>> --
+>> 2.25.1
+>>
+>
+
 -- 
-1.9.1
-
+Thanks,
+Sasha
