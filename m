@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9636D2A3407
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4112A3408
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgKBT0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:26:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726633AbgKBT0Q (ORCPT
+        id S1726606AbgKBT1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:27:20 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:38178 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725929AbgKBT1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:26:16 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9082C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:26:15 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id v4so15541155edi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dDQNhKPGqjVJkXRCCnTVmPBDzTBDoFvxQkjWFChUq7c=;
-        b=aMgw8zK7rCA1KVq/MU6bOhsU0tEut11yFI1PHpIrmQ1GvsyRa9VonG09yyX73f6HFX
-         HvILR0dwvJqrEQPwXRQSeL3U7QrGrbMngjrUVa87Dl0gNjHxwt63h/kA5UhJa4e9aPmx
-         de83lguI6lttJSqM1C9UXADtdbhALyf3QFFwmqKS9RE4j7QL536YGCM34TLz9gabbXcL
-         27liIuYANcsTRoln+q4tcxnnRxBRpUhaWSv1/MfeMVEgTZTOkJty4FQZm9fXjZO/bwu3
-         H1y+cFvspb6VrYE5RXH/oJC61UtBIo3YJxKJAKjRE6RmwOm2fP/dgV4XRsHhfmh7lzNJ
-         BD4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dDQNhKPGqjVJkXRCCnTVmPBDzTBDoFvxQkjWFChUq7c=;
-        b=Om3GGG2XtghLeFgxqidiqGgYoeaaWt7ZgBALYDf6jEej9zWV4GXtM4f9xPZlRtCdBY
-         tMRgScTftPbmkbAZr+VNfsF4Vtw4YKCK4Fi7/9qM0F3R2hz1OPm8ZjVgka6BlmU6ewrj
-         +vD6ymKDcC2n3ETsXQy/SfhlDwXTF1HtTfkmQIJTTrCGYxZxmCX52WOH1KpMvTvBd8Yz
-         jeiu3+1All3S+lgk6FVXFLSKm2CkHYE7DThNia1Rp0jqstYZB4nw8buE0hbhZcnkurI+
-         qdZ3k3AEHD9zwCDAL0eu51wxuUG66kdxi7PVFNhcAw3c5Wp0tWmD+aLgc1mWeE7rn4GP
-         KcpA==
-X-Gm-Message-State: AOAM5310QQslhoAR8g04+ErcoYKbszyJoOLSMq5JlzSfq034fs8j5+OF
-        5oZ/1IOWRxFW4HfrVnRYDfcoL/Db8wF2un+djGoOjA==
-X-Google-Smtp-Source: ABdhPJw7aq66qJvui6hJLPrXF7b2G+hIyn689UWesfAkpS5Y1kYqfJinaHs863DkeMqRZOD0NON5Ehn/1jAOw7ApiTY=
-X-Received: by 2002:aa7:cc84:: with SMTP id p4mr17722087edt.97.1604345174437;
- Mon, 02 Nov 2020 11:26:14 -0800 (PST)
+        Mon, 2 Nov 2020 14:27:20 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kZfU6-004uOq-Kz; Mon, 02 Nov 2020 12:27:18 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kZfU5-007zVJ-LR; Mon, 02 Nov 2020 12:27:18 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201030152407.43598-1-cai@redhat.com>
+        <20201030184255.GP3576660@ZenIV.linux.org.uk>
+        <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
+        <20201030184918.GQ3576660@ZenIV.linux.org.uk>
+        <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
+        <20201030222213.GR3576660@ZenIV.linux.org.uk>
+        <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
+Date:   Mon, 02 Nov 2020 13:27:17 -0600
+In-Reply-To: <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk> (Jens Axboe's
+        message of "Fri, 30 Oct 2020 17:21:39 -0600")
+Message-ID: <87eelba7ai.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20201030193045.GM2620339@nvidia.com> <20201030204307.GA683@otc-nc-03>
- <87h7qbkt18.fsf@nanos.tec.linutronix.de> <20201031235359.GA23878@araj-mobl1.jf.intel.com>
- <20201102132036.GX2620339@nvidia.com> <20201102162043.GB20783@otc-nc-03>
- <20201102171909.GF2620339@nvidia.com> <20d7c5fc-91b0-d673-d41a-335d91ca2dce@intel.com>
- <20201102182632.GH2620339@nvidia.com> <CAPcyv4h8O+boTo-MpGRSC8RpjrsvU-P3AU7_kwbrfDkEp8bH1w@mail.gmail.com>
- <20201102185130.GB3600342@nvidia.com>
-In-Reply-To: <20201102185130.GB3600342@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 2 Nov 2020 11:26:01 -0800
-Message-ID: <CAPcyv4jGrvkwjZG+qiu0VGU9ifj95t0Yi7ripJEtZr+_kVrWog@mail.gmail.com>
-Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>, maz@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Yi L Liu <yi.l.liu@intel.com>, Baolu Lu <baolu.lu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Sanjay K Kumar <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, Jing Lin <jing.lin@intel.com>,
-        kwankhede@nvidia.com, eric.auger@redhat.com,
-        Parav Pandit <parav@mellanox.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, netanelg@mellanox.com,
-        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Samuel Ortiz <samuel.ortiz@intel.com>,
-        Mona Hossain <mona.hossain@intel.com>,
-        Megha Dey <megha.dey@linux.intel.com>,
-        dmaengine@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1kZfU5-007zVJ-LR;;;mid=<87eelba7ai.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19hmILBBOoyP9lI/H0XHWh2pxjCwSHzin8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4865]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Jens Axboe <axboe@kernel.dk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 353 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.4 (1.0%), b_tie_ro: 2.3 (0.7%), parse: 0.69
+        (0.2%), extract_message_metadata: 8 (2.3%), get_uri_detail_list: 0.78
+        (0.2%), tests_pri_-1000: 3.8 (1.1%), tests_pri_-950: 1.11 (0.3%),
+        tests_pri_-900: 0.94 (0.3%), tests_pri_-90: 146 (41.5%), check_bayes:
+        145 (41.0%), b_tokenize: 4.4 (1.2%), b_tok_get_all: 4.7 (1.3%),
+        b_comp_prob: 1.56 (0.4%), b_tok_touch_all: 131 (37.2%), b_finish: 0.80
+        (0.2%), tests_pri_0: 155 (44.1%), check_dkim_signature: 0.38 (0.1%),
+        check_dkim_adsp: 2.7 (0.8%), poll_dns_idle: 15 (4.2%), tests_pri_10:
+        1.63 (0.5%), tests_pri_500: 29 (8.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 10:52 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Mon, Nov 02, 2020 at 10:38:28AM -0800, Dan Williams wrote:
->
-> > > I think you will be the first to use the namespace stuff for this, it
-> > > seems like a good idea and others should probably do so as well.
-> >
-> > I was thinking either EXPORT_SYMBOL_NS, or auxiliary bus, because you
-> > should be able to export an ops structure with all the necessary
-> > callbacks.
->
-> 'or'?
->
-> Auxiliary bus should not be used with huge arrays of function
-> pointers... The module providing the device should export a normal
-> linkable function interface. Putting that in a namespace makes a lot
-> of sense.
+Jens Axboe <axboe@kernel.dk> writes:
 
-True, probably needs to be a mixture of both.
+> On 10/30/20 4:22 PM, Al Viro wrote:
+>> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
+>>> On 10/30/20 12:49 PM, Al Viro wrote:
+>>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
+>>>>
+>>>>> See other reply, it's being posted soon, just haven't gotten there yet
+>>>>> and it wasn't ready.
+>>>>>
+>>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
+>>>>> instead. The intent is not to have any functional changes in that prep
+>>>>> patch. But once we can pass in filenames instead of user pointers, it's
+>>>>> usable from io_uring.
+>>>>
+>>>> You do realize that pathname resolution is *NOT* offloadable to helper
+>>>> threads, I hope...
+>>>
+>>> How so? If we have all the necessary context assigned, what's preventing
+>>> it from working?
+>> 
+>> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
+>> *do* pass through that, /dev/stdin included)
+>
+> Don't we just need ->thread_pid for that to work?
+
+No.  You need ->signal.
+
+You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
+that ->thread_pid is needed.
+
+Even more so than ->thread_pid, it is a kernel invariant that ->signal
+does not change.
+
+Eric
+
+
