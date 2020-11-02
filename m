@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA83E2A3129
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A702A312B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgKBRQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:16:02 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34541 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgKBRQC (ORCPT
+        id S1727730AbgKBRQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727521AbgKBRQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:16:02 -0500
-Received: by mail-oi1-f196.google.com with SMTP id c21so390071oic.1;
-        Mon, 02 Nov 2020 09:16:01 -0800 (PST)
+        Mon, 2 Nov 2020 12:16:11 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5779CC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:16:11 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id f38so11356100pgm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:16:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=FiaA239A2PQwcQasT6cnNh3FC/zYFdQwcuNqSx9+MnE=;
+        b=JMqav19onHdxHgN0cN+/6LBFGp1c/lYlCJS0cCzcGMtYJOMAqFmeF7FBbWDmMxzIqf
+         BHCCtcEmTUg0SMmeX/vprtLJcU5+/hPf6PqySAqR+jVXVr9otFhM0rcbvEOV2EM3Aque
+         FJf/yYrsRybLIkZ9wOEuTMi/8PFbNdzqKz9GPA/GWxh7XHUgErIA3q+pS2kNon+HtGw7
+         WVXYyRd/vyn8GDD6u2Da1jYDOEDQjTTgU3Jn0M798NGuuM1YFfV71pKu651Elg1SyUrE
+         jWtRs250nOXAgQTOXHEgzhfbmLpCV9jlOqII7p63G2NKFF68SkyX7f2TMg50o4m2HTP2
+         amfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DJhMNxXZamIrpg0kzWp8B/V6rtHCtD1wqM+Smkrcy+0=;
-        b=Nk7RsEqk6s9o8FxjYSY5Iv0a7rbTn2LuAK/Xf0cjxw18y/hNT7kgr/LT2BXdaZWJLS
-         RkgIa/RoRTJxQhO93Mm42zH9LveCR/cUjXUbQACFttSOBbEdpaHyeyx+rjcdcnux9d2G
-         iC1SPBNIsyTqQclXdDrkWFA+t9nwquy63BnPmUdN8Pamx6Vo05s5NzoIHXrxlYXl8sf0
-         qzNrXIae4Yq19Fz9qhTveomRLvoasWQUdQTjrIOQA3R/PIYJB09AwWrzyRDjt16+tBlG
-         LeMvL03vzaQ54WjABUemRfbyd/BtO14YBfZG+o9INslTP6AFavi+2Ou5hJcuGUiN0FkP
-         fldA==
-X-Gm-Message-State: AOAM531io2YZLvPu/Uif8e+Z6JKrGyRbIwsbX6yZP7FYg9xEAzdGvZA8
-        6qFpzCdj9OzzeKV5EULt/w==
-X-Google-Smtp-Source: ABdhPJzYQ0ZAxLvXxFHfECWqzCjvhZK3LAQinOKxN35gOPwU5N4c4JSMJ6sES7FN2EoLdD6xLN3qig==
-X-Received: by 2002:aca:5110:: with SMTP id f16mr1024894oib.94.1604337361192;
-        Mon, 02 Nov 2020 09:16:01 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r24sm248303otq.77.2020.11.02.09.16.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FiaA239A2PQwcQasT6cnNh3FC/zYFdQwcuNqSx9+MnE=;
+        b=kU7YORQLpOZKs3uCz61sq+dQuyOGbQqXAbd9HxN8JEL8fb9maIkoTW4ji8X6SDSL5B
+         +CeQ7tvAwl0EKTj9rMOR4A/uXfFlkGDGxd4p/aOQHYP3vURhtJRQ6Be3rucQb3ouH89l
+         KGVie4HKYvfkDidvPkrK9F85xs4Hj538ST6PyDgX6fJfWAE3GvTISBlFaQblicVn04gZ
+         1OL2Umx+ZSrmKanjI6mGZgwNRmx3KYFtmr6LUIzm/XBDs1pE0g3AruQaLszlzlii9OPZ
+         BSz7EvzXTOK0Lom8rAnqSbEVsPy9GU1n9U0PcCqK3Y24x4pCmWw3FaHoe5enVGTlzsqc
+         L1pA==
+X-Gm-Message-State: AOAM532p0teoaykBGnMptUJpuxl8/KHhvIRfKSHYvZ89ZtXHF1+Geyrz
+        +b/V8OV1R3LrcK1NM6g9XBo=
+X-Google-Smtp-Source: ABdhPJzWUXbXlsx2BdAw8cQo90IiH2be5wSFJGPhmOzuExBRvWBjzU1BWzYb/P9d2vappgwJgNm96A==
+X-Received: by 2002:a17:90a:2e07:: with SMTP id q7mr6193549pjd.103.1604337370937;
+        Mon, 02 Nov 2020 09:16:10 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id q16sm4199061pff.114.2020.11.02.09.16.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:16:00 -0800 (PST)
-Received: (nullmailer pid 4065376 invoked by uid 1000);
-        Mon, 02 Nov 2020 17:15:59 -0000
-Date:   Mon, 2 Nov 2020 11:15:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, aford@beaconembedded.com,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: soc: imx: Add binding doc for spba bus
-Message-ID: <20201102171559.GA4063854@bogus>
-References: <20201101131257.782279-1-aford173@gmail.com>
+        Mon, 02 Nov 2020 09:16:10 -0800 (PST)
+Date:   Mon, 2 Nov 2020 22:46:03 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, gregkh@linuxfoundation.org,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH 1/6] drm/amdgpu/dce: improve code indentation and alignment
+Message-ID: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201101131257.782279-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 01 Nov 2020 07:12:56 -0600, Adam Ford wrote:
-> Add binding doc for fsl,spba-bus.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
+General code indentation and alignment changes such as replace spaces
+by tabs or align function arguments as per the coding style
+guidelines. Issue reported by checkpatch script.
 
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/dce_v10_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v11_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c  | 2 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v8_0.c  | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: duplicate '$id' value 'http://devicetree.org/schemas/bus/simple-pm-bus.yaml#'
-
-
-See https://patchwork.ozlabs.org/patch/1391735
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+index 5963cbe0d455..00f8e60909b2 100644
+--- a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+@@ -2677,7 +2677,7 @@ static int dce_v10_0_crtc_set_base_atomic(struct drm_crtc *crtc,
+ 					 struct drm_framebuffer *fb,
+ 					 int x, int y, enum mode_set_atomic state)
+ {
+-       return dce_v10_0_crtc_do_set_base(crtc, fb, x, y, 1);
++	return dce_v10_0_crtc_do_set_base(crtc, fb, x, y, 1);
+ }
+ 
+ static const struct drm_crtc_helper_funcs dce_v10_0_crtc_helper_funcs = {
+diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+index 1954472c8e8f..80036f7ce560 100644
+--- a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
+@@ -2785,7 +2785,7 @@ static int dce_v11_0_crtc_set_base_atomic(struct drm_crtc *crtc,
+ 					 struct drm_framebuffer *fb,
+ 					 int x, int y, enum mode_set_atomic state)
+ {
+-       return dce_v11_0_crtc_do_set_base(crtc, fb, x, y, 1);
++	return dce_v11_0_crtc_do_set_base(crtc, fb, x, y, 1);
+ }
+ 
+ static const struct drm_crtc_helper_funcs dce_v11_0_crtc_helper_funcs = {
+diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+index 3a44753a80d1..943976349346 100644
+--- a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
+@@ -2567,7 +2567,7 @@ static int dce_v6_0_crtc_set_base_atomic(struct drm_crtc *crtc,
+ 					 struct drm_framebuffer *fb,
+ 					 int x, int y, enum mode_set_atomic state)
+ {
+-       return dce_v6_0_crtc_do_set_base(crtc, fb, x, y, 1);
++	return dce_v6_0_crtc_do_set_base(crtc, fb, x, y, 1);
+ }
+ 
+ static const struct drm_crtc_helper_funcs dce_v6_0_crtc_helper_funcs = {
+diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+index 3603e5f13077..7973183fa335 100644
+--- a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
+@@ -2498,7 +2498,7 @@ static void dce_v8_0_crtc_disable(struct drm_crtc *crtc)
+ 	case ATOM_PPLL2:
+ 		/* disable the ppll */
+ 		amdgpu_atombios_crtc_program_pll(crtc, amdgpu_crtc->crtc_id, amdgpu_crtc->pll_id,
+-                                                 0, 0, ATOM_DISABLE, 0, 0, 0, 0, 0, false, &ss);
++						 0, 0, ATOM_DISABLE, 0, 0, 0, 0, 0, false, &ss);
+ 		break;
+ 	case ATOM_PPLL0:
+ 		/* disable the ppll */
+@@ -2585,7 +2585,7 @@ static int dce_v8_0_crtc_set_base_atomic(struct drm_crtc *crtc,
+ 					 struct drm_framebuffer *fb,
+ 					 int x, int y, enum mode_set_atomic state)
+ {
+-       return dce_v8_0_crtc_do_set_base(crtc, fb, x, y, 1);
++	return dce_v8_0_crtc_do_set_base(crtc, fb, x, y, 1);
+ }
+ 
+ static const struct drm_crtc_helper_funcs dce_v8_0_crtc_helper_funcs = {
+-- 
+2.25.1
 
