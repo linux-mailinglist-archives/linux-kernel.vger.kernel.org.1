@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35FA2A2655
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F722A265B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgKBIoi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 03:44:38 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52836 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727960AbgKBIoi (ORCPT
+        id S1728222AbgKBIrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:47:12 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6689 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727902AbgKBIrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:44:38 -0500
-Received: by mail-wm1-f66.google.com with SMTP id c18so8528660wme.2;
-        Mon, 02 Nov 2020 00:44:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OCGK4HKfRunlqVPbFzQqyT4WldI8LCXHm3dcWydo1j4=;
-        b=qpvRYVvIpLkC/JneZ3xn+tW+mBG05+KEE4oVl3I5gEMvSqhNTEfPfcLg3j3cNP1jSP
-         rKKtQKM0CZGCzG6Mze6ZMazmy11mkOaB8cUAEKWLhAfl4N8Nn5aagU69zT0TxlkJku23
-         Ehn74qPAP9bpr+d/vb85RWDlOvMPIOD5H4fz+3ZfxviU4l8VsrXCZBtvDQBCNaBzDnmm
-         amYl4ZEA4GJlFCpbZYLwCT0jfWb9eqj/Rn2BSkjiboGzly3a2/3ZtynR7nDs0R1cNH0+
-         2h4cqeXadoB4GdMSQhYGDc6GdJfYNGw+NVbLrUTxlrwYa5ID/f63ZyBw1Hr6x/DDRRjP
-         h97A==
-X-Gm-Message-State: AOAM530wdHG+Y7QdKy6vGqRPnbFKcHaFs9DuywyEc2lntqZHeMsAIwAF
-        QqStwEeu7Wm72yRJSF4gVGU=
-X-Google-Smtp-Source: ABdhPJyKkkAQ9NQegXxdeGCKIH1PWUPYg/7zgzF1OtV79sTD75Sq+EeGSOlMGpymduisdGAkbS7w8Q==
-X-Received: by 2002:a1c:6355:: with SMTP id x82mr17377148wmb.177.1604306676290;
-        Mon, 02 Nov 2020 00:44:36 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id f7sm22322272wrx.64.2020.11.02.00.44.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 00:44:35 -0800 (PST)
-Date:   Mon, 2 Nov 2020 09:44:33 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx50-kobo-aura: Add 'grp' suffix to pinctrl
- node names
-Message-ID: <20201102084433.GB7331@kozik-lap>
-References: <20201031210729.2804471-1-j.neuschaefer@gmx.net>
+        Mon, 2 Nov 2020 03:47:12 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPmkK15Jgz15PVx;
+        Mon,  2 Nov 2020 16:47:05 +0800 (CST)
+Received: from [127.0.0.1] (10.57.60.129) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 16:46:58 +0800
+Subject: Re: [PATCH] drm/hisilicon: Remove redundant null check
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <kraxel@redhat.com>,
+        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1604050046-64539-1-git-send-email-tiantao6@hisilicon.com>
+ <2dbbbad0-53cf-52cc-3b6b-0d1547f7e085@suse.de>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <f41cbcb3-d08a-7d3f-530c-a0cb3f9e3801@huawei.com>
+Date:   Mon, 2 Nov 2020 16:46:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201031210729.2804471-1-j.neuschaefer@gmx.net>
+In-Reply-To: <2dbbbad0-53cf-52cc-3b6b-0d1547f7e085@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.57.60.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 10:07:29PM +0100, Jonathan Neuschäfer wrote:
-> i.MX pinctrl group nodes should have names that ends with 'grp'.
+
+
+在 2020/11/2 16:32, Thomas Zimmermann 写道:
+> Hi
 > 
-> Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
->  arch/arm/boot/dts/imx50-kobo-aura.dts | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+> Am 30.10.20 um 10:27 schrieb Tian Tao:
+>> drm_irq_uninstall can handle the case where dev->irq_enable is false,
+>> so Remove redundant null check.
+>>
+>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>> ---
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> index 0c1b40d..b71589b1 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> @@ -246,13 +246,13 @@ static int hibmc_unload(struct drm_device *dev)
+>>   
+>>   	drm_atomic_helper_shutdown(dev);
+>>   
+>> -	if (dev->irq_enabled)
+>> -		drm_irq_uninstall(dev);
+>> -
+>> +	drm_irq_uninstall(dev);
+> 
+> Removing this check would at least result in an error, [1] so rather
+> leave it in for now.
+> 
+Now there seems to be no driver to check the return value of 
+drm_irq_uninstall
+> Instead, we could discuss if drm_irq_install() should become a managed
+> interface.
+
+Codes like the following
+diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
+index 09d6e9e..572357c 100644
+--- a/drivers/gpu/drm/drm_irq.c
++++ b/drivers/gpu/drm/drm_irq.c
+@@ -172,6 +172,9 @@ int drm_irq_uninstall(struct drm_device *dev)
+         bool irq_enabled;
+         int i;
+
++       if(!dev->irq_enabled || !dev)
++               return 0;
+
+> 
+> Best regards
+> Thomas
+> 
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/drm_irq.c#L201
+> 
+>>   	pci_disable_msi(dev->pdev);
+>> +
+>>   	hibmc_kms_fini(priv);
+>>   	hibmc_mm_fini(priv);
+>>   	dev->dev_private = NULL;
+>> +
+>>   	return 0;
+>>   }
+>>   
+>>
 > 
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
