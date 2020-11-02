@@ -2,149 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B482A2FDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD772A2FDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgKBQbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:31:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgKBQbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:31:23 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3710C0617A6;
-        Mon,  2 Nov 2020 08:31:22 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id b9so4766310edu.10;
-        Mon, 02 Nov 2020 08:31:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p2fcTDg/av4TCztE3uRH2/liGORQajJn+isGnpmMdBU=;
-        b=kY5mbNmx5yYsUCy667eOxt3+IdZsjVD9gKrFGNoy2hqgQalZQTs3AeSk3vWJ5kQ2JN
-         Atd1Tu//NE2Y4wDfZTpy99zYc+8UhHBP03uRgZhDOzKBqz+0U3GSi2IATShIfo2BRUdT
-         ItzlZJ41MdCQUOf8LlN7ui9eSmjaeYJZkHfcBrEQUmIxesPKW9udwp2hwwFr5c2sfhUO
-         w7otYYN49qCn3xTYxBFIDHRdBCywzIOMGL9RQBQOs/99bFeaG+gaVEznCwid33k9DfiV
-         xGBzhP1xoifpkUj7MqIkdMy3LnoJqcxbmVX0Pc3WsbbvE/hgCYyGB+zThFVjMcCozSqZ
-         r7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p2fcTDg/av4TCztE3uRH2/liGORQajJn+isGnpmMdBU=;
-        b=GQ5COLeSdgfVW4+0RAgg3DI/wtBWW1inN36Ht8AaRDF/u35WeiupvoKtAIsOXvWR32
-         br/zDKOj+9Zcu0A/I/Mfxabz3htdPArcNZcL9DfCdHtNNVw+8zsleXAEPmgKXIQXMUrM
-         GBi3fTAsgzaBrnGPD3RR2P76moIwcW8zED5aLEKCtfpYv47QFGZ5890XFPJ2csRSeYsP
-         2ENufGykMAtUns2d1Om1+U8z/es5q78oG5Stv+5przs+8lpNEvubRp7oVPvqELbIaHo4
-         irdMByvPyflDchqndZctsll1vt64VHWil1AxLa36FQ2pG1Y9ryLOMbTOsjbEByTYBwec
-         h4yQ==
-X-Gm-Message-State: AOAM533nl2JVPK5lwvENHvKBT05iBOwpdEL3w0rwpxRd7nlnzzXY7TeG
-        q3yZOdr6gApx7P7OYHSDsa0uIpMD1OwWdg==
-X-Google-Smtp-Source: ABdhPJz5SCEMJfRJkGN5UBh8LBj3bCYDuwePlFY7wzirzd964nNtuX6Oo4fBvx6TOeQNE5GdH/PtxQ==
-X-Received: by 2002:aa7:d709:: with SMTP id t9mr2388615edq.305.1604334681706;
-        Mon, 02 Nov 2020 08:31:21 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id rl1sm9752463ejb.36.2020.11.02.08.31.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 08:31:20 -0800 (PST)
-Subject: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
- RK2928 and others
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Yifeng <yifeng.zhao@rock-chips.com>, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        heiko@sntech.de, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
- <20201028095326.15562-3-yifeng.zhao@rock-chips.com>
- <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>
- <e02e13a0-769d-6b73-c87e-5b7d75fd4254@rock-chips.com>
- <0b417fc2-3503-9bf6-914d-0f8b38df1914@gmail.com>
- <20201102140725.66e7dcb1@xps13>
- <5ad70fa0-05a9-e1e7-32cc-32933ff25ae9@gmail.com>
-Message-ID: <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
-Date:   Mon, 2 Nov 2020 17:31:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727142AbgKBQb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:31:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgKBQb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:31:26 -0500
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDAAC21D91;
+        Mon,  2 Nov 2020 16:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604334685;
+        bh=B/zH3CxgreK1CUsBcMTS6ICwz9Q0CaGVu9EoZo/Lae0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T6Yi7DhUQz+aWcNIo0haZc2KgCny7JUT/D0wINqPDQeraHvkToMj2LkViAZzok4Zi
+         Wy6SCJ5X2hYxFi5LALegDxIowgP2Xbqj+f/p82z8j9/zhLOaVw/+rgON/5zQKEBO/4
+         kQ8uSsXRxAh3fDylHh98Ip7Z4LFdXr54MALTk5O4=
+Date:   Mon, 2 Nov 2020 08:31:23 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH] f2fs: compress: support chksum
+Message-ID: <20201102163123.GD529594@google.com>
+References: <20201102122333.76667-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <5ad70fa0-05a9-e1e7-32cc-32933ff25ae9@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102122333.76667-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 2:11 PM, Johan Jonker wrote:
-> Hi,
+On 11/02, Chao Yu wrote:
+> This patch supports to store chksum value with compressed
+> data, and verify the integrality of compressed data while
+> reading the data.
 > 
-> On 11/2/20 2:07 PM, Miquel Raynal wrote:
->> Hi Johan, Yifeng
->>
->> Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 13:57:56
->> +0100:
->>
->>> Hi Yifeng,
->>>
->>> Don't poke with "ecc->bytes" ones it is set in rk_nfc_ecc_init(). It
->>> will not be noted by the MTD frame work or userspace. I think there's
->>> currently no way to let the user know that a different ECC must be used.
->>> Neither can the user set ECC on the fly.
->>>
->>> Example R/W flow:
->>>
->>>         nand_select_target()
->>> 	chip->ecc.write_page_raw()
->>> 	chip->ecc.write_page()
->>>
->>> [..]
->>>
->>> 	chip->ecc.read_page_raw()
->>> 	chip->ecc.read_page()
->>>         nand_deselect_target()
->>>
->>> A write/read with:
->>>
->>> rk_nfc_read_page_hwecc()
->>> rk_nfc_write_page_hwecc()
->>>
->>> or
->>>
->>> rk_nfc_read_page_raw()
->>> rk_nfc_write_page_raw()
->>>
->>> must end up with the same result. If we can't archive that, then we
->>> shouldn't offer RAW mode to the user for now. If Miquel agrees you
->>> should just get the driver ready now without these 2 functions and round
->>> things up.
->>
->> What about just not supporting the BootROM area if it was marked
->> "reserved" by the BRom in the DT?
+> The feature can be enabled through specifying mount option
+> 'compress_chksum'.
 > 
-> Should we just fill the buffers with '0xff' for boot blocks?
-
-(part 2) ;)
-My fault....
-Better use:
-
-    if ((chip->options & NAND_IS_BOOT_MEDIUM) &&
-        (page < (pages_per_blk * rknand->boot_blks))) {
-
-	return -EIO;
-
-    }
-
-
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  Documentation/filesystems/f2fs.rst |  1 +
+>  fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
+>  fs/f2fs/f2fs.h                     | 13 ++++++++++++-
+>  fs/f2fs/inode.c                    |  3 +++
+>  fs/f2fs/super.c                    |  9 +++++++++
+>  include/linux/f2fs_fs.h            |  2 +-
+>  6 files changed, 46 insertions(+), 2 deletions(-)
 > 
->>
->> Raw accessors is really a nice and basic feature that I would like to
->> have in every new driver.
->>
->> Thanks,
->> Miquèl
->>
-> 
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index b8ee761c9922..985ae7d35066 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
+>  			 For other files, we can still enable compression via ioctl.
+>  			 Note that, there is one reserved special extension '*', it
+>  			 can be set to enable compression for all files.
+> +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
+>  inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+>  			 files using the blk-crypto framework rather than
+>  			 filesystem-layer encryption. This allows the use of
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 14262e0f1cd6..a4e0d2c745b6 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>  				f2fs_cops[fi->i_compress_algorithm];
+>  	unsigned int max_len, new_nr_cpages;
+>  	struct page **new_cpages;
+> +	u32 chksum = 0;
+>  	int i, ret;
+>  
+>  	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+> @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>  
+>  	cc->cbuf->clen = cpu_to_le32(cc->clen);
+>  
+> +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
+> +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
+> +					cc->cbuf->cdata, cc->clen);
+> +	cc->cbuf->chksum = cpu_to_le32(chksum);
+> +
+>  	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+>  		cc->cbuf->reserved[i] = cpu_to_le32(0);
+>  
+> @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+>  			(struct decompress_io_ctx *)page_private(page);
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+>  	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
+> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+>  	const struct f2fs_compress_ops *cops =
+>  			f2fs_cops[fi->i_compress_algorithm];
+>  	int ret;
+> @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+>  
+>  	ret = cops->decompress_pages(dic);
+>  
+> +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
+> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+> +
+> +		if (provided != calculated) {
+> +			printk_ratelimited(
+> +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
+> +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
+> +				provided, calculated);
+> +			ret = -EFSCORRUPTED;
 
+Do we need to change fsck.f2fs to recover this?
+
+> +		}
+> +	}
+> +
+>  out_vunmap_cbuf:
+>  	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
+>  out_vunmap_rbuf:
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 99bcf4b44a9c..2ae254ab7b7d 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -147,7 +147,8 @@ struct f2fs_mount_info {
+>  
+>  	/* For compression */
+>  	unsigned char compress_algorithm;	/* algorithm type */
+> -	unsigned compress_log_size;		/* cluster log size */
+> +	unsigned char compress_log_size;	/* cluster log size */
+> +	bool compress_chksum;			/* compressed data chksum */
+>  	unsigned char compress_ext_cnt;		/* extension count */
+>  	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+>  };
+> @@ -731,6 +732,7 @@ struct f2fs_inode_info {
+>  	atomic_t i_compr_blocks;		/* # of compressed blocks */
+>  	unsigned char i_compress_algorithm;	/* algorithm type */
+>  	unsigned char i_log_cluster_size;	/* log of cluster size */
+> +	unsigned short i_compress_flag;		/* compress flag */
+>  	unsigned int i_cluster_size;		/* cluster size */
+>  };
+>  
+> @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
+>  	COMPRESS_MAX,
+>  };
+>  
+> +enum compress_flag {
+> +	COMPRESS_CHKSUM,
+> +	COMPRESS_MAX_FLAG,
+> +};
+> +
+>  #define COMPRESS_DATA_RESERVED_SIZE		5
+>  struct compress_data {
+>  	__le32 clen;			/* compressed data size */
+> +	__le32 chksum;			/* compressed data chksum */
+>  	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+>  	u8 cdata[];			/* compressed data */
+>  };
+> @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
+>  			F2FS_OPTION(sbi).compress_algorithm;
+>  	F2FS_I(inode)->i_log_cluster_size =
+>  			F2FS_OPTION(sbi).compress_log_size;
+> +	F2FS_I(inode)->i_compress_flag =
+> +			F2FS_OPTION(sbi).compress_chksum ?
+> +				1 << COMPRESS_CHKSUM : 0;
+>  	F2FS_I(inode)->i_cluster_size =
+>  			1 << F2FS_I(inode)->i_log_cluster_size;
+>  	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> index 657db2fb6739..de8f7fc89efa 100644
+> --- a/fs/f2fs/inode.c
+> +++ b/fs/f2fs/inode.c
+> @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
+>  					le64_to_cpu(ri->i_compr_blocks));
+>  			fi->i_compress_algorithm = ri->i_compress_algorithm;
+>  			fi->i_log_cluster_size = ri->i_log_cluster_size;
+> +			fi->i_compress_flag = ri->i_compress_flag;
+>  			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
+>  			set_inode_flag(inode, FI_COMPRESSED_FILE);
+>  		}
+> @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+>  					&F2FS_I(inode)->i_compr_blocks));
+>  			ri->i_compress_algorithm =
+>  				F2FS_I(inode)->i_compress_algorithm;
+> +			ri->i_compress_flag =
+> +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
+>  			ri->i_log_cluster_size =
+>  				F2FS_I(inode)->i_log_cluster_size;
+>  		}
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 00eff2f51807..f8de4d83a5be 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -146,6 +146,7 @@ enum {
+>  	Opt_compress_algorithm,
+>  	Opt_compress_log_size,
+>  	Opt_compress_extension,
+> +	Opt_compress_chksum,
+>  	Opt_atgc,
+>  	Opt_err,
+>  };
+> @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
+>  	{Opt_compress_algorithm, "compress_algorithm=%s"},
+>  	{Opt_compress_log_size, "compress_log_size=%u"},
+>  	{Opt_compress_extension, "compress_extension=%s"},
+> +	{Opt_compress_chksum, "compress_chksum"},
+>  	{Opt_atgc, "atgc"},
+>  	{Opt_err, NULL},
+>  };
+> @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  			F2FS_OPTION(sbi).compress_ext_cnt++;
+>  			kfree(name);
+>  			break;
+> +		case Opt_compress_chksum:
+> +			F2FS_OPTION(sbi).compress_chksum = true;
+> +			break;
+>  #else
+>  		case Opt_compress_algorithm:
+>  		case Opt_compress_log_size:
+>  		case Opt_compress_extension:
+> +		case Opt_compress_chksum:
+>  			f2fs_info(sbi, "compression options not supported");
+>  			break;
+>  #endif
+> @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+>  		seq_printf(seq, ",compress_extension=%s",
+>  			F2FS_OPTION(sbi).extensions[i]);
+>  	}
+> +
+> +	if (F2FS_OPTION(sbi).compress_chksum)
+> +		seq_puts(seq, ",compress_chksum");
+>  }
+>  
+>  static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> index a5dbb57a687f..7dc2a06cf19a 100644
+> --- a/include/linux/f2fs_fs.h
+> +++ b/include/linux/f2fs_fs.h
+> @@ -273,7 +273,7 @@ struct f2fs_inode {
+>  			__le64 i_compr_blocks;	/* # of compressed blocks */
+>  			__u8 i_compress_algorithm;	/* compress algorithm */
+>  			__u8 i_log_cluster_size;	/* log of cluster size */
+> -			__le16 i_padding;		/* padding */
+> +			__le16 i_compress_flag;		/* compress flag */
+>  			__le32 i_extra_end[0];	/* for attribute size calculation */
+>  		} __packed;
+>  		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+> -- 
+> 2.26.2
