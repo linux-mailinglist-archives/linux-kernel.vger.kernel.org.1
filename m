@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626BD2A26E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D972A26F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgKBJXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:23:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29468 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728004AbgKBJXj (ORCPT
+        id S1728087AbgKBJZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:25:56 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:38745 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727953AbgKBJZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:23:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604309018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dvzFTHWSHGEnWR6Ifj3GAv6gxH6+jHEcfGAXbqacOLM=;
-        b=BMCmZ85q1Z0rH5gglsxD1+Xe7WJuDlARIuOsRxHJTH5q5L19XMbtMmfLmAzAX/LhjilLhE
-        gpZVgWjQCTWEdXxc2A8MexDI3rhDb6EsBKu7IraGajJqVzWx7RyB2HOv7qYxnE4wKqhdUR
-        4vpAELP238TRnS+hvdFCw8Z5z6cC4Nw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-4rIlLjXWNA2GtVbijb8Etw-1; Mon, 02 Nov 2020 04:23:34 -0500
-X-MC-Unique: 4rIlLjXWNA2GtVbijb8Etw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A23411074652;
-        Mon,  2 Nov 2020 09:23:29 +0000 (UTC)
-Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CC9DF21E86;
-        Mon,  2 Nov 2020 09:23:21 +0000 (UTC)
-Subject: Re: [PATCH v3 3/4] arch, mm: restore dependency of
- __kernel_map_pages() of DEBUG_PAGEALLOC
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
+        Mon, 2 Nov 2020 04:25:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 30F02ED7;
+        Mon,  2 Nov 2020 04:25:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 04:25:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=2u3KySetCrStQBuOBzxXEYYC+qN
+        zn31jPLBz4766DEU=; b=GFuTACBkdbo5rFGzb/oYO2OJqhM1RdNEmJlps52N9in
+        HrlTsh3UhRafQ2aDJ9sMtrCTMnK8nm60aapWMJ3KDEwdCIiVUKpnjTCUKQPtEQBT
+        40J3JCv2DW75hEtoRn2joaIQwNd0ZhNszsES7tHMEZCDzimxR8hl4QX2iuDIqRRu
+        TnPPU+W5TMZbQmvItmVmkplH/dKCsiUpchjnnmx36XfpmMRaxvyqSTZHNDmvUUer
+        UQeXnLsIYlErkcPZoLWUqIy/TEQ40zQsvkk7t4lGpaDaJH+kADONb5EovluZm9Ng
+        w4ay6EORN6sgaW7qFA1YxDBbGS8MfHCZq+jp5f5dSsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=2u3KyS
+        etCrStQBuOBzxXEYYC+qNzn31jPLBz4766DEU=; b=XjqKzMjZbQSJbAMv12+B7j
+        fS+zwXxzxR+ahkxQOz07TYXdkfkPK7tmEH2o3sWapZlOC7bt2EFZs/4BuMA6qrFK
+        W+NJoMQ8sE1y2u7c3rwt8y6LpnbUEmaN7lPAa5Lf0SWmfcR1BVg++RvYwrfJYIG3
+        VvPNNejmEDWRsgVphVOyWFKI9X+dikk/M0Vh7ncwjCqCLzbtK7sHpGHFnjDJ3EZi
+        oSDmcN730wMp41vorzxQvtev6bOygVO5jlfUFg710zbFbgfvQW6LTzJb9kf7pgcS
+        bR+6nOckR9WEEJ2wMkJXulk1rEbvphOMo1ed8e1FLF5sRXuzsyW6rGOYW4W9FYzg
+        ==
+X-ME-Sender: <xms:otCfX3rqc5Yfc7pQv4C-VeDHhALtnZgq-dXZflUrwRUkvYku81TMKw>
+    <xme:otCfXxqOcnDpq7Mw07h5Olng0KBoCWog60dA8EyWUU5Wf9nOkQlZpqvgzHwe-zzk0
+    NpS0p1V1pqzLjFwm9c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:otCfX0M1yk9-Fq9IaNxtFjBx-jxLkn9b4L0mrfwgHYRFufJk-vgPfQ>
+    <xmx:otCfX65Lmh1Ef6GCaFJQXfO4K5-QAhLxtGwkONxYKVlHupENiE0M-Q>
+    <xmx:otCfX25RXB91NEF7b5xEqLyKUFCjfWL0ovCmPF3_1afZwt7yWq1udw>
+    <xmx:otCfXx0RpbdYLXIhRBWYomBLFq7t0fs-nZO31qtKvoxJcBlGy8T0Kw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C43053280059;
+        Mon,  2 Nov 2020 04:25:53 -0500 (EST)
+Date:   Mon, 2 Nov 2020 10:25:52 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-References: <20201101170815.9795-1-rppt@kernel.org>
- <20201101170815.9795-4-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <8eac2aa4-114e-f981-c8f8-ad8523175cf8@redhat.com>
-Date:   Mon, 2 Nov 2020 10:23:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] arm64: dts: allwinner: h6: orangepi-one-plus: Fix
+ ethernet
+Message-ID: <20201102092552.laumqscusjlnt5v5@gilmour.lan>
+References: <20201101072609.1681891-1-jernej.skrabec@siol.net>
 MIME-Version: 1.0
-In-Reply-To: <20201101170815.9795-4-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="taj27mowfuuakenh"
+Content-Disposition: inline
+In-Reply-To: <20201101072609.1681891-1-jernej.skrabec@siol.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
->   int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn, unsigned long address,
->   				   unsigned numpages, unsigned long page_flags)
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 14e397f3752c..ab0ef6bd351d 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2924,7 +2924,11 @@ static inline bool debug_pagealloc_enabled_static(void)
->   	return static_branch_unlikely(&_debug_pagealloc_enabled);
->   }
->   
-> -#if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
-> +#ifdef CONFIG_DEBUG_PAGEALLOC
-> +/*
-> + * To support DEBUG_PAGEALLOC architecture must ensure that
-> + * __kernel_map_pages() never fails
+--taj27mowfuuakenh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Maybe add here, that this implies mapping everything via PTEs during boot.
+On Sun, Nov 01, 2020 at 08:26:09AM +0100, Jernej Skrabec wrote:
+> RX/TX delay on OrangePi One Plus board is set on PHY. Reflect that in
+> ethernet node.
+>=20
+> Fixes: 7ee32a17e0d6 ("arm64: dts: allwinner: h6: orangepi-one-plus: Enabl=
+e ethernet")
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Applied. It's not clear yet whether it's the best way forward (the PR
+got rejected), so it might need some extra work in the future.
 
--- 
-Thanks,
+Maxime
 
-David / dhildenb
+--taj27mowfuuakenh
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/QoAAKCRDj7w1vZxhR
+xXIOAPkBr5bVh0WPEaxPkl/Bg3DLRv0/zCwy6hwh9ZbZoLYjOAEAlo3MAP+mA477
+FWS2zhpq33bK7iHJ7uP8ik22GY7r2gI=
+=lrKT
+-----END PGP SIGNATURE-----
+
+--taj27mowfuuakenh--
