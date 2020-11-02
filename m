@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79E92A2AF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7282A2AF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgKBMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:49:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42488 "EHLO mx2.suse.de"
+        id S1728891AbgKBMtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:49:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:59080 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728842AbgKBMtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:49:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7BDFAD5C;
-        Mon,  2 Nov 2020 12:49:14 +0000 (UTC)
-Subject: Re: [PATCH v5 1/1] mmap_lock: add tracepoints around lock acquisition
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20201027230711.2180435-1-axelrasmussen@google.com>
- <20201027230711.2180435-2-axelrasmussen@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1ce6927b-32a6-b59f-7b6b-6474000f44db@suse.cz>
-Date:   Mon, 2 Nov 2020 13:49:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728599AbgKBMtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:49:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7114F30E;
+        Mon,  2 Nov 2020 04:49:49 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A46F13F66E;
+        Mon,  2 Nov 2020 04:49:48 -0800 (PST)
+Date:   Mon, 2 Nov 2020 12:49:43 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH] ACPI: scan: Fix acpi_dma_configure_id() kerneldoc name
+Message-ID: <20201102124943.GA3161@e121166-lin.cambridge.arm.com>
+References: <1604315971-89149-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201027230711.2180435-2-axelrasmussen@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604315971-89149-1-git-send-email-john.garry@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 12:07 AM, Axel Rasmussen wrote:
-> The goal of these tracepoints is to be able to debug lock contention
-> issues. This lock is acquired on most (all?) mmap / munmap / page fault
-> operations, so a multi-threaded process which does a lot of these can
-> experience significant contention.
+On Mon, Nov 02, 2020 at 07:19:31PM +0800, John Garry wrote:
+> For some reason building with W=1 doesn't pick up on this, but the
+> kerneldoc name for acpi_dma_configure_id() is not right, so fix it up.
 > 
-> We trace just before we start acquisition, when the acquisition returns
-> (whether it succeeded or not), and when the lock is released (or
-> downgraded). The events are broken out by lock type (read / write).
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > 
-> The events are also broken out by memcg path. For container-based
-> workloads, users often think of several processes in a memcg as a single
-> logical "task", so collecting statistics at this level is useful.
-> 
-> The end goal is to get latency information. This isn't directly included
-> in the trace events. Instead, users are expected to compute the time
-> between "start locking" and "acquire returned", using e.g. synthetic
-> events or BPF. The benefit we get from this is simpler code.
-> 
-> Because we use tracepoint_enabled() to decide whether or not to trace,
-> this patch has effectively no overhead unless tracepoints are enabled at
-> runtime. If tracepoints are enabled, there is a performance impact, but
-> how much depends on exactly what e.g. the BPF program does.
-> 
-> [ rostedt@goodmis.org: in-depth examples of tracepoint_enabled() usage,
-> 	and per-cpu-per-context buffer design ]
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index a896e5e87c93..bc6a79e33220 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
 
-Great, thanks Steven.
+Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
+> @@ -1453,7 +1453,7 @@ int acpi_dma_get_range(struct device *dev, u64 *dma_addr, u64 *offset,
+>  }
+>  
+>  /**
+> - * acpi_dma_configure - Set-up DMA configuration for the device.
+> + * acpi_dma_configure_id - Set-up DMA configuration for the device.
+>   * @dev: The pointer to the device
+>   * @attr: device dma attributes
+>   * @input_id: input device id const value pointer
+> -- 
+> 2.26.2
+> 
