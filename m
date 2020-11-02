@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E91C2A2EF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984442A2F1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgKBQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
+        id S1727028AbgKBQFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:05:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgKBQE3 (ORCPT
+        with ESMTP id S1727007AbgKBQFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:04:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9472C0617A6;
-        Mon,  2 Nov 2020 08:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ById62lxNkbzmGe1y6sEW9CH+Xn28r08JtKiwHI4ZFE=; b=eXXZJcEJI37a+/rq1NcdCftKu9
-        1w1qhi7JK4Le0V6NXiB4NVW+gvn9ySrTjTmOENM8vLHMoaZsenii71Nci4qAeWZ0mamhK8a35JlQK
-        J6cojCg0ge0utPapk8k+jZjA6fWe4Fy6jHXiyGPgdfX9BY6C+qR/NI+aInfubiQUD76BE/6AuMWf6
-        2rZwOBSfaFCGmbL4e9iS4ymkQ4uuSmJgbUmrZEe7AuPpgfqxeEoNWiItbK37ZJp7oIKQTDRWtkIfD
-        RaNYRb+6U8KoxF7lQmMkTuC3Lqs1i1WIXcnj20sKrUrkN/yGwYgCfwn+13jRLArwa8HrkX306cFP0
-        r5FYl46Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZcJJ-0003kC-UX; Mon, 02 Nov 2020 16:03:58 +0000
-Date:   Mon, 2 Nov 2020 16:03:57 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v20 04/20] mm/thp: use head for head page in
- lru_add_page_tail
-Message-ID: <20201102160357.GP27442@casper.infradead.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-5-git-send-email-alex.shi@linux.alibaba.com>
- <20201029135047.GE599825@cmpxchg.org>
- <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+        Mon, 2 Nov 2020 11:05:08 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C781BC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:05:07 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id m11so8466137qvt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:05:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Sy6BvWdNS0zjXQiflbFd/HmI5xZS6ylM1lYk0zN7bgc=;
+        b=HVGBfoVQuqawyYPyqkKhtPLjHY70+xmE4evLY9Wev/QYsd3YskSStGJaHrpAxkxpXW
+         TdiudYldSt8CzICgNI20YY/qKjrbAYANuNINAXllncJKS3JwBokvGa9hZeSaMtZznhry
+         X00+ueOe5kQS5bhF+C9mcCiKs3A20KcCmTjJn7Z7fIQ4Gj1QWSNuLjVwE03OxRkVvly3
+         qqsUkbpqy8FLCmpiUyVLqG5iq3/13ZPgkYsGOoqNOikwl8Ot4sRvU3i2bLye2h5E1ynB
+         tqnS63qKVsEWGOuoNvIsH8nqWTLq4BnEH7Zi/1y8ZcW2eEpetUt2IapXtllgv0MVeONn
+         3hWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Sy6BvWdNS0zjXQiflbFd/HmI5xZS6ylM1lYk0zN7bgc=;
+        b=EOSwcEbfKbdbLqOAY1s3/nOjSoQxW0mKWr0wgacwHG4HW9/mdCjyZNmyoJd/tGSgjx
+         Sa+vIOIucuZT13xW/WbagCazDE5R+lMB9FY0tjUVgk5xhdzy1yJloiBVJCBJm9H/+ETU
+         pi8yButkmCRQOfi1Kljr6dvLjExPnjHJ17dcc9DhQ6x8a2Fw5RR/mtjhNJNVAOu3/r5p
+         Osp8ZFjdvUmSJxcW6GqXqNQjuzUcig2qynxpb17dOhJNK2BYS9hylj1MkarTH+1X2eK1
+         eGWLeAjnFg+4R9WjsinBszDgosU6FIUCUkQ2/hJX+rJNZCO69XoNVDh6unv13rUA6irp
+         /WYQ==
+X-Gm-Message-State: AOAM533ZjRXUN6Xw3KQe4UwnWrc1SwK5UcOQ2ehYoFBlr4xFmjBIMDx0
+        lnIxSIpuRRZuQz6s46IGu63MPGDykvD1ClwF
+X-Google-Smtp-Source: ABdhPJyb67OnlC/QoQu0KF9Gdop+DlVTu6p8FT4oUvbt8p7oowAaHDwBN/mhcMngE2XNR8scYV9LA86mLJlVhjo7
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:e585:: with SMTP id
+ t5mr22207546qvm.6.1604333106950; Mon, 02 Nov 2020 08:05:06 -0800 (PST)
+Date:   Mon,  2 Nov 2020 17:03:57 +0100
+In-Reply-To: <cover.1604333009.git.andreyknvl@google.com>
+Message-Id: <83f76fc92ca8c7f1a037356d11b6242ae0c4beef.1604333009.git.andreyknvl@google.com>
+Mime-Version: 1.0
+References: <cover.1604333009.git.andreyknvl@google.com>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH v7 17/41] kasan: only build init.c for software modes
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:46:54AM +0800, Alex Shi wrote:
-> -static void lru_add_page_tail(struct page *page, struct page *page_tail,
-> +static void lru_add_page_tail(struct page *head, struct page *tail,
->  		struct lruvec *lruvec, struct list_head *list)
->  {
-> -	VM_BUG_ON_PAGE(!PageHead(page), page);
-> -	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
-> -	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
-> +	VM_BUG_ON_PAGE(!PageHead(head), head);
-> +	VM_BUG_ON_PAGE(PageCompound(tail), head);
-> +	VM_BUG_ON_PAGE(PageLRU(tail), head);
+This is a preparatory commit for the upcoming addition of a new hardware
+tag-based (MTE-based) KASAN mode.
 
-These last two should surely have been
-	VM_BUG_ON_PAGE(PageCompound(tail), tail);
-	VM_BUG_ON_PAGE(PageLRU(tail), tail);
+The new mode won't be using shadow memory, so only build init.c that
+contains shadow initialization code for software modes.
 
-Also, what do people think about converting these to VM_BUG_ON_PGFLAGS?
+No functional changes for software modes.
 
-Either way:
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Marco Elver <elver@google.com>
+---
+Change-Id: I8d68c47345afc1dbedadde738f34a874dcae5080
+---
+ mm/kasan/Makefile | 6 +++---
+ mm/kasan/init.c   | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 370d970e5ab5..7cf685bb51bd 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -29,6 +29,6 @@ CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ 
+-obj-$(CONFIG_KASAN) := common.o init.o report.o
+-obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+-obj-$(CONFIG_KASAN_SW_TAGS) += tags.o tags_report.o
++obj-$(CONFIG_KASAN) := common.o report.o
++obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o generic_report.o quarantine.o
++obj-$(CONFIG_KASAN_SW_TAGS) += init.o tags.o tags_report.o
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index dfddd6c39fe6..1a71eaa8c5f9 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * This file contains some kasan initialization code.
++ * This file contains KASAN shadow initialization code.
+  *
+  * Copyright (c) 2015 Samsung Electronics Co., Ltd.
+  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
