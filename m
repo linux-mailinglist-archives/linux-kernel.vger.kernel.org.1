@@ -2,86 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C502A2F7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C402A2F7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgKBQRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:17:03 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59864 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgKBQRC (ORCPT
+        id S1726945AbgKBQRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbgKBQRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:17:02 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604333820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gXzFcVSwJFFqoLLrujA4jAJHEyHNXRFQIhN+VNXicmY=;
-        b=HgFPoOIBRNuVPGoUUvmvGsB8VJpKWZHeOHnLdsqKkgkM9BEq3bNVME4kfP61Je/O0ys40b
-        VXtncmqLgwsFFjUKkdPdgyY1pTB31mSudl5mr1cJfKpQauOGCDBHnyiLcEx5qlCRpMSgh3
-        WMBnlHm4gSrK4uDK5r2lgncrTO+ilUuaZSc4trHGUot/O4R/S32+2d0E4fP2F25T08EgXf
-        3rCDoHC3rsBnEJyWhDNYfMZ++gvV9suuiYCbHHqgQSvweiGwXkeE898UjRMFsAlEYI/U+U
-        HxszQRUC1f7/L5IuBgr7Fl+nb9t7+oWDXuV24SgnVL1u+nmhRS6NC8gQU2R2Lg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604333820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gXzFcVSwJFFqoLLrujA4jAJHEyHNXRFQIhN+VNXicmY=;
-        b=rklClo0HDFR6EFdKXRKNqGCBmRVN66dhW9Qv73+dH+3iL1s7TLKWhiiS8HQjwiunOfNlnD
-        OzxplicRw7W41uDg==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <df5565a2f1e821041c7c531ad52a3344@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de> <df5565a2f1e821041c7c531ad52a3344@kernel.org>
-Date:   Mon, 02 Nov 2020 17:16:59 +0100
-Message-ID: <87h7q791j8.fsf@nanos.tec.linutronix.de>
+        Mon, 2 Nov 2020 11:17:10 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42375C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:17:10 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id q1so4245882qvn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:17:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YeEey2vkBTNmp8sl+JT7BFlPeTSJgF0pPyztQBHkjgU=;
+        b=cADYsIgm7vmYEaWL0V7aONlTnr7fawBMY5eDc+08xjg9CnKskh8Zhjtzeip4GGgEy1
+         0ofmzTPtjWSI4oovnj3xQiqaEFd211XER6siB2eOlPi9M38d6oe/6YgdItmqrnL1T5QA
+         N3k86hXDOcCkb8YquvPE0ocSoPysRQqqE/Ol9zjr9MZXjDwT2dlYz40YXmRulKGYzdcz
+         Dd824lDFfi3Fz3Q2foAvvGT7m414yjQScJL9xFZ0eVgbKBg3S38CaosbSj1z2RcX2bDY
+         JI814zdEdX/zDzwQ2KOo66SPdD5pFzFslaqkdzbbdBpxUP2wpfBseoHdygzJffY4SjsJ
+         y6ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YeEey2vkBTNmp8sl+JT7BFlPeTSJgF0pPyztQBHkjgU=;
+        b=XwV9zQp907v/Djk2cpih8SzAyQilBIKzSBsyIwS6ZwX2QIMHPRYMey+xoy2F41zLr5
+         BWLrqADl8uNrm8EF92FN+Gyy5Z3UZE/kZy+5qZs1p+W5gnvY+OqftA6J9XErJA9VORHq
+         dc2tffukp2T6q/a4ip7s3zbIrADfN3XfGVGgm9DMOM02kBfBT7MUVOA5U8orxfSKZzDI
+         svUZ2riGwPYebl5inOML6XY44D2EBTNCK6vXxz2h+PH/M+5awyZWvf96SQ6pDPnJL0l6
+         KtOnCC+2iiToiOCUafxXbpZC7nZlFYBCFfobDyOWrNQGeRQbII/uF0njxURxe94VSusd
+         FPCg==
+X-Gm-Message-State: AOAM533QJpNGrvdZt3yJp548r7jfnL+s6+Iceym2EYuMglSabAK1SD5W
+        4Z/caS+2Mj6vkS2LrbEWQmr46GwKMA==
+X-Google-Smtp-Source: ABdhPJz4HEYQmREMM2lRBxTpTBosLijiIh6hDzV+KakGyEepCDW7g7H/fyol1LOnYxiWseehdxuUBw==
+X-Received: by 2002:a0c:b207:: with SMTP id x7mr22781268qvd.39.1604333829522;
+        Mon, 02 Nov 2020 08:17:09 -0800 (PST)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id i18sm8187020qtv.38.2020.11.02.08.17.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 02 Nov 2020 08:17:08 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:17:06 -0500
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        daniel.thompson@linaro.org, linux-arm-kernel@lists.infradead.org,
+        tglx@linutronix.de, jason@lakedaemon.net, linux@armlinux.org.uk,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au, davem@davemloft.net,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        mark.rutland@arm.com, julien.thierry.kdev@gmail.com,
+        dianders@chromium.org, jason.wessel@windriver.com,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/7] irqchip/gic-v3: Enable support for SGIs to act as
+ NMIs
+Message-ID: <20201102161706.xfqdsro7q7k65ybb@gabell>
+References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
+ <1604317487-14543-3-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604317487-14543-3-git-send-email-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02 2020 at 11:30, Marc Zyngier wrote:
-> On 2020-11-01 22:27, Thomas Gleixner wrote:
-> The following patch makes it work for me (GICv3 guest without an ITS)by
-> checking for the presence of an MSI domain at the point where we 
-> actually
-> perform this association, and before starting to scan for endpoints.
->
-> I *think* this should work for the MTK thingy, but someone needs to
-> go and check.
->
-> Thanks,
->
->          M.
->
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 4289030b0fff..bb363eb103a2 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus 
-> *bus)
->   		d = pci_host_bridge_msi_domain(b);
->
->   	dev_set_msi_domain(&bus->dev, d);
-> +	if (!d)
-> +		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+On Mon, Nov 02, 2020 at 05:14:42PM +0530, Sumit Garg wrote:
+> Add support to handle SGIs as pseudo NMIs. As SGIs or IPIs default to a
+> special flow handler: handle_percpu_devid_fasteoi_ipi(), so skip NMI
+> handler update in case of SGIs.
+> 
+> Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
+> as IRQs/NMIs happen as part of this routine.
+> 
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 29 +++++++++++++++++++++--------
+>  1 file changed, 21 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 16fecc0..7010ae2 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -461,6 +461,7 @@ static u32 gic_get_ppi_index(struct irq_data *d)
+>  static int gic_irq_nmi_setup(struct irq_data *d)
+>  {
+>  	struct irq_desc *desc = irq_to_desc(d->irq);
+> +	u32 idx;
+>  
+>  	if (!gic_supports_nmi())
+>  		return -EINVAL;
+> @@ -478,16 +479,22 @@ static int gic_irq_nmi_setup(struct irq_data *d)
+>  		return -EINVAL;
+>  
+>  	/* desc lock should already be held */
+> -	if (gic_irq_in_rdist(d)) {
+> -		u32 idx = gic_get_ppi_index(d);
+> +	switch (get_intid_range(d)) {
+> +	case SGI_RANGE:
+> +		break;
+> +	case PPI_RANGE:
+> +	case EPPI_RANGE:
+> +		idx = gic_get_ppi_index(d);
+>  
+>  		/* Setting up PPI as NMI, only switch handler for first NMI */
+>  		if (!refcount_inc_not_zero(&ppi_nmi_refs[idx])) {
+>  			refcount_set(&ppi_nmi_refs[idx], 1);
+>  			desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
+>  		}
+> -	} else {
+> +		break;
+> +	default:
+>  		desc->handle_irq = handle_fasteoi_nmi;
+> +		break;
+>  	}
+>  
+>  	gic_irq_set_prio(d, GICD_INT_NMI_PRI);
+> @@ -498,6 +505,7 @@ static int gic_irq_nmi_setup(struct irq_data *d)
+>  static void gic_irq_nmi_teardown(struct irq_data *d)
+>  {
+>  	struct irq_desc *desc = irq_to_desc(d->irq);
+> +	u32 idx;
+>  
+>  	if (WARN_ON(!gic_supports_nmi()))
+>  		return;
+> @@ -515,14 +523,20 @@ static void gic_irq_nmi_teardown(struct irq_data *d)
+>  		return;
+>  
+>  	/* desc lock should already be held */
+> -	if (gic_irq_in_rdist(d)) {
+> -		u32 idx = gic_get_ppi_index(d);
+> +	switch (get_intid_range(d)) {
+> +	case SGI_RANGE:
+> +		break;
+> +	case PPI_RANGE:
+> +	case EPPI_RANGE:
+> +		idx = gic_get_ppi_index(d);
+>  
+>  		/* Tearing down NMI, only switch handler for last NMI */
+>  		if (refcount_dec_and_test(&ppi_nmi_refs[idx]))
+>  			desc->handle_irq = handle_percpu_devid_irq;
+> -	} else {
+> +		break;
+> +	default:
+>  		desc->handle_irq = handle_fasteoi_irq;
+> +		break;
+>  	}
+>  
+>  	gic_irq_set_prio(d, GICD_INT_DEF_PRI);
+> @@ -1708,6 +1722,7 @@ static int __init gic_init_bases(void __iomem *dist_base,
+>  
+>  	gic_dist_init();
+>  	gic_cpu_init();
+> +	gic_enable_nmi_support();
+>  	gic_smp_init();
+>  	gic_cpu_pm_init();
+>  
+> @@ -1719,8 +1734,6 @@ static int __init gic_init_bases(void __iomem *dist_base,
+>  			gicv2m_init(handle, gic_data.domain);
+>  	}
+>  
+> -	gic_enable_nmi_support();
+> -
+>  	return 0;
+>  
+>  out_free:
+> -- 
 
-Hrm, that might break legacy setups (no irqdomain support). I'd rather
-prefer to explicitly tell the pci core at host registration time.
+Looks good to me. Please feel free to add:
 
-Bjorn?
+	Reviewed-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 
-Thanks,
-
-        tglx
+Thanks!
+Masa
