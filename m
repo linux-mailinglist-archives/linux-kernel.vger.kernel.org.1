@@ -2,62 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC522A2C7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F722A2C55
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgKBOSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:18:09 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50319 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgKBOQ7 (ORCPT
+        id S1725848AbgKBONq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:13:46 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:53500 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725768AbgKBONp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:16:59 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kZadj-0002eD-1h; Mon, 02 Nov 2020 14:16:55 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdgpu: fix spelling mistake: "Successed" -> "Succeeded"
-Date:   Mon,  2 Nov 2020 14:16:54 +0000
-Message-Id: <20201102141654.699468-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 2 Nov 2020 09:13:45 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2EA0ge021842;
+        Mon, 2 Nov 2020 09:13:44 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34h1s4xmhe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Nov 2020 09:13:44 -0500
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0A2EDgY3044371
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 2 Nov 2020 09:13:42 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 2 Nov 2020
+ 09:13:41 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 2 Nov 2020 09:13:41 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0A2EDbsF027259;
+        Mon, 2 Nov 2020 09:13:38 -0500
+From:   Cristian Pop <cristian.pop@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, Cristian Pop <cristian.pop@analog.com>
+Subject: [PATCH v7 1/5] iio: core: Add optional symbolic label to a device channel
+Date:   Mon, 2 Nov 2020 16:16:55 +0200
+Message-ID: <20201102141659.41875-1-cristian.pop@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_07:2020-11-02,2020-11-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1011 bulkscore=0 spamscore=0
+ adultscore=0 suspectscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011020113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+If a label is defined in the device tree for this channel add that
+to the channel specific attributes. This is useful for userspace to
+be able to identify an individual channel.
 
-There is a spelling mistake in a deb_dbg message. Fix it.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Cristian Pop <cristian.pop@analog.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/industrialio-core.c | 40 +++++++++++++++++++++++++++++++++
+ include/linux/iio/iio.h         |  6 +++++
+ 2 files changed, 46 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index 28a5c0d21b71..c99c2180785f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -296,7 +296,7 @@ static void amdgpu_vram_mgr_do_reserve(struct ttm_resource_manager *man)
- 		if (drm_mm_reserve_node(mm, &rsv->mm_node))
- 			continue;
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 6e388293c828..b577fff35641 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -669,6 +669,19 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
+ }
+ EXPORT_SYMBOL_GPL(iio_format_value);
  
--		dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Successed\n",
-+		dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Succeeded\n",
- 			rsv->mm_node.start, rsv->mm_node.size);
++static ssize_t iio_read_channel_label(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf)
++{
++	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
++
++	if (!indio_dev->info->read_label)
++		return -EINVAL;
++
++	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
++}
++
+ static ssize_t iio_read_channel_info(struct device *dev,
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+@@ -1137,6 +1150,28 @@ int __iio_add_chan_devattr(const char *postfix,
+ 	return ret;
+ }
  
- 		vis_usage = amdgpu_vram_mgr_vis_size(adev, &rsv->mm_node);
++static int iio_device_add_channel_label(struct iio_dev *indio_dev,
++					 struct iio_chan_spec const *chan)
++{
++	int ret;
++
++	if (!indio_dev->info->read_label)
++		return 0;
++
++	ret = __iio_add_chan_devattr("label",
++				     chan,
++				     &iio_read_channel_label,
++				     NULL,
++				     0,
++				     IIO_SEPARATE,
++				     &indio_dev->dev,
++				     &indio_dev->channel_attr_list);
++	if (ret < 0)
++		return ret;
++
++	return 1;
++}
++
+ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+ 					 struct iio_chan_spec const *chan,
+ 					 enum iio_shared_by shared_by,
+@@ -1270,6 +1305,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+ 		return ret;
+ 	attrcount += ret;
+ 
++	ret = iio_device_add_channel_label(indio_dev, chan);
++	if (ret < 0)
++		return ret;
++	attrcount += ret;
++
+ 	if (chan->ext_info) {
+ 		unsigned int i = 0;
+ 		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 2e45b3ceafa7..9a3cf4815148 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
+  *			and max. For lists, all possible values are enumerated.
+  * @write_raw:		function to write a value to the device.
+  *			Parameters are the same as for read_raw.
++ * @read_label:		function to request label name for a specified label,
++ *			for better channel identification.
+  * @write_raw_get_fmt:	callback function to query the expected
+  *			format/precision. If not set by the driver, write_raw
+  *			returns IIO_VAL_INT_PLUS_MICRO.
+@@ -420,6 +422,10 @@ struct iio_info {
+ 			 int val2,
+ 			 long mask);
+ 
++	int (*read_label)(struct iio_dev *indio_dev,
++			 struct iio_chan_spec const *chan,
++			 char *label);
++
+ 	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
+ 			 struct iio_chan_spec const *chan,
+ 			 long mask);
 -- 
-2.27.0
+2.17.1
 
