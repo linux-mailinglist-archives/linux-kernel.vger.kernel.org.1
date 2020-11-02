@@ -2,171 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE982A2CF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7758D2A2CF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgKBO1b convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 09:27:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgKBO1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:27:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF9EB206D5;
-        Mon,  2 Nov 2020 14:27:28 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 09:27:26 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-ID: <20201102092726.57cb643f@gandalf.local.home>
-In-Reply-To: <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726312AbgKBO1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:27:50 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:49867 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726283AbgKBO1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:27:50 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 5F691F4E;
+        Mon,  2 Nov 2020 09:27:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 09:27:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=u1lasnIG2eGKOFyUdl3ID5Smz+K
+        fPvZ2J9Y1zvLsTiY=; b=iqw+KF1jOGs4xVuovetmHfMFdGWrKcTwBLdH4DFT0rP
+        i03a2FjI2FKimA1rfL+IzL52Z0z56B1qYkNY200dI6CyDiwuf6wOPwVI2B91Snas
+        XiByXsbTbJYrNe3Fqo4+Itmz0yNuTbO8agDVV65B5tfY1GvmcIredmbLNLYmfJJI
+        6QXz7LswEhjXeKn2aQdZPdYyA/nUWicUfr3YQU6517Ze1D4PLSnfO506P64KeJBA
+        /M9Pqh1L1J0lS6SJd2l0DKTfyQ/D/6O2S42Gs+GV011tz6eB1dGph5wA9Mqzo1Ad
+        qT6UvFMn/dN6o9iyhO3Q0lTd2VHtcUcI9jiGaXf/Feg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=u1lasn
+        IG2eGKOFyUdl3ID5Smz+KfPvZ2J9Y1zvLsTiY=; b=DNlbHckHYXOGVvLvz4xvJu
+        FibaPrWku0GcRJgaK8gl/fay99SUM46RfCUagOPsFxhg9nsdOOmB4GaT2HR2vk5J
+        9pQ7RZ2Xtl2lfRu4xaI7hb6QhXJuWh4oXNYwz/FzCU7tP9Gr1F3dV6Yeo9YrA8Qn
+        gvWJcnksGr2M/OCUsnlcFXo4bZMdHrndftl3bTg9TlWB1CX7uR00f4evybRHUc3Z
+        vvbep9VqAsm8TC9h/Sogmk3sWsiZkObXFU6Bb4vvBkzZF5/xNr/B8xaUs4YhdW1Z
+        O5NC/ALnNlbdaki6CL4djyGfRL49nFF4dhgrQ1n7DH30KyTY8HmYjlNIYp4FMy8A
+        ==
+X-ME-Sender: <xms:YhegXzGT1sldYcuh1PmGHY91RXdsVr1qBu7K_frbo9eWzUwiQ5qKGg>
+    <xme:YhegXwXOvC-EOwqEt0-O61I-63149u-QB5HtDGCJypsPcEb7sx969usCGSf-FS36b
+    RUvOvP_TrgIFQaPIag>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:YhegX1KOeC6lVYQ555bO0XAO2B5CxaKrzdU5R_kGp8lfvD6Ep8mgTA>
+    <xmx:YhegXxGxra0BOc95BpLAVuuL3IAFH4hkT2amazX3KCkv_iQYggWrWg>
+    <xmx:YhegX5Vu-TUc1rGBeteKFPpx8z-IfKVMjSf4z8AKm7Ol1MqTIpz_AA>
+    <xmx:YxegX3clbMs122OKg58RPi4VHY3TSCfsEqevUPlhq5Vbdlj6gUc5eg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F06CB3064688;
+        Mon,  2 Nov 2020 09:27:45 -0500 (EST)
+Date:   Mon, 2 Nov 2020 15:27:44 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <contact@paulk.fr>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH 8/9] dt-bindings: arm: sunxi: Add SL631 with IMX179
+ bindings
+Message-ID: <20201102142744.lxjvu67pr7dmxzo7@gilmour.lan>
+References: <20201031182137.1879521-1-contact@paulk.fr>
+ <20201031182137.1879521-9-contact@paulk.fr>
+ <20201102101333.4bm2lfqpqnbpyp63@gilmour.lan>
+ <20201102103340.GD11809@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cdmzcvhmv6crmjoh"
+Content-Disposition: inline
+In-Reply-To: <20201102103340.GD11809@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-[ Peter Z, please take a look a this ]
+--cdmzcvhmv6crmjoh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2 Nov 2020 16:02:34 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Nov 02, 2020 at 11:33:40AM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Mon 02 Nov 20, 11:13, Maxime Ripard wrote:
+> > On Sat, Oct 31, 2020 at 07:21:36PM +0100, Paul Kocialkowski wrote:
+> > > Document the compatible strings for the SL631 Action Camera with IMX1=
+79.
+> > >=20
+> > > Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+> > > ---
+> > >  Documentation/devicetree/bindings/arm/sunxi.yaml | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Docum=
+entation/devicetree/bindings/arm/sunxi.yaml
+> > > index afa00268c7db..0fa0c0b5d89f 100644
+> > > --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
+> > > +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+> > > @@ -754,6 +754,12 @@ properties:
+> > >            - const: sinlinx,sina33
+> > >            - const: allwinner,sun8i-a33
+> > > =20
+> > > +      - description: SL631 Action Camera with IMX179
+> > > +        items:
+> > > +          - const: unknown,sl631-imx179
+> > > +          - const: unknown,sl631
+> > > +          - const: allwinner,sun8i-v3
+> > > +
+> >=20
+> > unknown is not a valid vendor (and you should explain why you picked
+> > that vendor name in the first place).
+>=20
+> Ah right, it's not in the vendor prefixes. The rationale is that there is=
+ no
+> indication of what the vendor might be on the PCB. Should I maybe use
+> allwinner here?
 
-> >From 509b27efef8c7dbf56cab2e812916d6cd778c745 Mon Sep 17 00:00:00 2001  
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> Date: Mon, 2 Nov 2020 15:37:28 +0900
-> Subject: [PATCH] kprobes: Disable lockdep for kprobe busy area
-> 
-> Since the code area in between kprobe_busy_begin()/end() prohibits
-> other kprobs to call probe handlers, we can avoid inconsitent
-> locks there. But lockdep doesn't know that, so it warns rp->lock
-> or kretprobe_table_lock.
-> 
-> To supress those false-positive errors, disable lockdep while
-> kprobe_busy is set.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  kernel/kprobes.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 8a12a25fa40d..c7196e583600 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1295,10 +1295,12 @@ void kprobe_busy_begin(void)
->  	__this_cpu_write(current_kprobe, &kprobe_busy);
->  	kcb = get_kprobe_ctlblk();
->  	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-> +	lockdep_off();
->  }
->  
->  void kprobe_busy_end(void)
->  {
-> +	lockdep_on();
->  	__this_cpu_write(current_kprobe, NULL);
->  	preempt_enable();
->  }
-> -- 
+You should mention it in the commit log for a start :)
 
-No, this is not the correct workaround (too big of a hammer). You could do
-the following:
+But yeah, we've used allwinner as a fallback for those cases so far.
 
-From 4139d9c8437b0bd2262e989ca4eb0a83b7e7bb72 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Mon, 2 Nov 2020 09:17:49 -0500
-Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
+Maxime
 
-Since the kprobe handlers have protection that prohibits other handlers from
-executing in other contexts (like if an NMI comes in while processing a
-kprobe, and executes the same kprobe, it will get fail with a "busy"
-return). Lockdep is unaware of this protection. Use lockdep's nesting api to
-differentiate between locks taken in NMI context and other context to
-supress the false warnings.
+--cdmzcvhmv6crmjoh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
+-----BEGIN PGP SIGNATURE-----
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/kprobes.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6AXYAAKCRDj7w1vZxhR
+xazfAQCTALPCW+BoUtOYsJJCGdpXhyQe4JgWh6/BgXFj86SV9QD/Rmpkyj/D2Z9u
+FkBRpMa2xPFAKK2SudAbNcYpnU9mcAg=
+=k95c
+-----END PGP SIGNATURE-----
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 8a12a25fa40d..ccb285867059 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1249,7 +1249,12 @@ __acquires(hlist_lock)
- 
- 	*head = &kretprobe_inst_table[hash];
- 	hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_hash_lock);
- 
-@@ -1258,7 +1263,12 @@ static void kretprobe_table_lock(unsigned long hash,
- __acquires(hlist_lock)
- {
- 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_table_lock);
- 
-@@ -2025,10 +2035,16 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
- 	unsigned long hash, flags = 0;
- 	struct kretprobe_instance *ri;
-+	int nmi = !!in_nmi();
- 
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
--	raw_spin_lock_irqsave(&rp->lock, flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(&rp->lock, flags, nmi);
- 	if (!hlist_empty(&rp->free_instances)) {
- 		ri = hlist_entry(rp->free_instances.first,
- 				struct kretprobe_instance, hlist);
-@@ -2039,7 +2055,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 		ri->task = current;
- 
- 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
--			raw_spin_lock_irqsave(&rp->lock, flags);
-+			raw_spin_lock_irqsave_nested(&rp->lock, flags, nmi);
- 			hlist_add_head(&ri->hlist, &rp->free_instances);
- 			raw_spin_unlock_irqrestore(&rp->lock, flags);
- 			return 0;
--- 
-2.25.4
-
+--cdmzcvhmv6crmjoh--
