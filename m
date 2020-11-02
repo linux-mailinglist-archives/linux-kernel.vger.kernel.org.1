@@ -2,333 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F1A2A30F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4B42A30FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727674AbgKBRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:09:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727200AbgKBRJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:09:14 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E96B2071A;
-        Mon,  2 Nov 2020 17:09:09 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 12:09:07 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH 11/11 v2] ftrace: Add recording of functions that caused
- recursion
-Message-ID: <20201102120907.457ad2f7@gandalf.local.home>
-In-Reply-To: <20201102164147.GJ20201@alley>
-References: <20201030213142.096102821@goodmis.org>
-        <20201030214014.801706340@goodmis.org>
-        <20201102164147.GJ20201@alley>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727688AbgKBRJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727316AbgKBRJY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:09:24 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463C8C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:09:24 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b12so7138824plr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=VqiKVe2OHLmU5JAf22RJzOSV9uu3Tp5oES/Ka+XZU48=;
+        b=E+GXv1xhCIFEzwW4SU0iieWzqTiYdPYfZF6FA2tz6ySZFh1DEj0TtTVOvRllE4Y+Zg
+         3FIeqIKXsy3OCMw12k0bjJZ79kpcoZnH5cFiu0RdpC7ciFct3ko4skYK+BTqTLmaqoUp
+         jYNEdNCK5gPrswQ77HOQQVSQR0xPt/gAyFjTw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=VqiKVe2OHLmU5JAf22RJzOSV9uu3Tp5oES/Ka+XZU48=;
+        b=e+L8EweYQ7KfHrFOYziP/lnbRHVik1bpEomre9exi1FKLIfNPh+It/JPxhczx93P9A
+         xpjYBqrrr+olK/10ROsQ7+TnbrFMuuAShZMsDEzyZxWyCfZSSEmQj9qhrYieoc3eABWI
+         RuJ9Z747+wnVoIgN7jASbvI+ERWp9ECnnaHr5d+d6TT0bFrwtCFKRmg34UOX3/IbPzGC
+         SNOVCXaBIvyO7+BbDYRNKieaB2oKnzedJ3y4dpeUBQ1kPdYubIRV1GEktXJC6BEOwH8f
+         /RqJaEXL97AP990AVPrrNCpo8zj3II+fevbddtZ9czijamrgI/nLkHEZwreFDARZtnMQ
+         E1fQ==
+X-Gm-Message-State: AOAM532NB2rcJVx2L1JmLoMn4nHxRrWvNJfeDhYZ9o3j6hWCObkW/b0P
+        TKgirRrsDF1gg24OtwIokiEmWg==
+X-Google-Smtp-Source: ABdhPJw8zB5/xSM90Q8TpAiNu3BRaZP596eYjK1Ir/3iDyBzYNs4HvGpVlbgKbb6uPSonDX/JXU8Fw==
+X-Received: by 2002:a17:902:ba96:b029:d5:f36b:44af with SMTP id k22-20020a170902ba96b02900d5f36b44afmr20995122pls.51.1604336963252;
+        Mon, 02 Nov 2020 09:09:23 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id i11sm7619662pfd.211.2020.11.02.09.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 09:09:22 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=V3kktCrwvMBeOy1dnQGYuV-ZUGX81+upRZacfzxjceFg@mail.gmail.com>
+References: <20201030011738.2028313-1-swboyd@chromium.org> <20201101173741.GA1293305@ravnborg.org> <CAD=FV=V3kktCrwvMBeOy1dnQGYuV-ZUGX81+upRZacfzxjceFg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Date:   Mon, 02 Nov 2020 09:09:21 -0800
+Message-ID: <160433696138.884498.1206890596724384092@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 17:41:47 +0100
-Petr Mladek <pmladek@suse.com> wrote:
+Quoting Doug Anderson (2020-11-02 08:37:21)
+> Hi,
+>=20
+> On Sun, Nov 1, 2020 at 9:37 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+> >
+> > Hi Stephen.
+> >
+> > On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
+> > > This patch series cleans up the DDC code a little bit so that
+> > > it is more efficient time wise and supports grabbing the EDID
+> > > of the eDP panel over the aux channel. I timed this on a board
+> > > I have on my desk and it takes about 20ms to grab the EDID out
+> > > of the panel and make sure it is valid.
+> > >
+> > > The first two patches seem less controversial so I stuck them at
+> > > the beginning. The third patch does the EDID reading and caches
+> > > it so we don't have to keep grabbing it over and over again. And
+> > > finally the last patch updates the reply field so that short
+> > > reads and nacks over the channel are reflected properly instead of
+> > > treating them as some sort of error that can't be discerned.
+> > >
+> > > Stephen Boyd (4):
+> > >   drm/bridge: ti-sn65dsi86: Combine register accesses in
+> > >     ti_sn_aux_transfer()
+> > >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
+> > >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+> > >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
+> >
+> > Series looks good. You can add my a-b on the full series.
+> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> >
+> > I can apply after Douglas have had a look at the patches he did not r-b
+> > yet.
+>=20
+> They look fine to me now assuming that Stepehn has tested patch #1
+> enough that we're confident that the slight change in ordering isn't
+> going to mess anything up.
 
-> On Fri 2020-10-30 17:31:53, Steven Rostedt wrote:
-> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > 
-> > This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
-> > "recursed_functions" all the functions that caused recursion while a
-> > callback to the function tracer was running.
-> >   
-> 
-> > --- /dev/null
-> > +++ b/kernel/trace/trace_recursion_record.c
-> > @@ -0,0 +1,220 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/seq_file.h>
-> > +#include <linux/kallsyms.h>
-> > +#include <linux/module.h>
-> > +#include <linux/ftrace.h>
-> > +#include <linux/fs.h>
-> > +
-> > +#include "trace_output.h"
-> > +
-> > +struct recursed_functions {
-> > +	unsigned long		ip;
-> > +	unsigned long		parent_ip;
-> > +};
-> > +
-> > +static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];  
-> 
-> The code tries to be lockless safe as much as possible. It would make
-> sense to allign the array.
-
-Hmm, is there an arch where the compiler would put an array of structures
-with two unsigned long, misaligned?
-
-> 
-> 
-> > +static atomic_t nr_records;
-> > +
-> > +/*
-> > + * Cache the last found function. Yes, updates to this is racey, but
-> > + * so is memory cache ;-)
-> > + */
-> > +static unsigned long cached_function;
-> > +
-> > +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
-> > +{
-> > +	int index;
-> > +	int i = 0;
-> > +	unsigned long old;
-> > +
-> > + again:
-> > +	/* First check the last one recorded */
-> > +	if (ip == cached_function)
-> > +		return;
-> > +
-> > +	index = atomic_read(&nr_records);
-> > +	/* nr_records is -1 when clearing records */
-> > +	smp_mb__after_atomic();
-> > +	if (index < 0)
-> > +		return;
-> > +
-> > +	/* See below */
-> > +	if (i > index)
-> > +		index = i;  
-> 
-> This looks like a complicated way to do index++ via "i" variable.
-> I guess that it was needed only in some older variant of the code.
-> See below.
-
-Because we reread the index above, and index could be bigger than i (more
-than index + 1).
-
-> 
-> > +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
-> > +		return;
-> > +
-> > +	for (i = index - 1; i >= 0; i--) {
-> > +		if (recursed_functions[i].ip == ip) {
-> > +			cached_function = ip;
-> > +			return;
-> > +		}
-> > +	}
-> > +
-> > +	cached_function = ip;
-> > +
-> > +	/*
-> > +	 * We only want to add a function if it hasn't been added before.
-> > +	 * Add to the current location before incrementing the count.
-> > +	 * If it fails to add, then increment the index (save in i)
-> > +	 * and try again.
-> > +	 */
-> > +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
-> > +	if (old != 0) {
-> > +		/* Did something else already added this for us? */
-> > +		if (old == ip)
-> > +			return;
-> > +		/* Try the next location (use i for the next index) */
-> > +		i = index + 1;  
-> 
-> What about
-> 
-> 		index++;
-> 
-> We basically want to run the code again with index + 1 limit.
-
-But something else could update nr_records, and we want to use that if
-nr_records is greater than i.
-
-Now, we could swap the use case, and have
-
-	int index = 0;
-
-	[..]
-	i = atomic_read(&nr_records);
-	if (i > index)
-		index = i;
-
-	[..]
-
-		index++;
-		goto again;
-
-
-> 
-> Maybe, it even does not make sense to check the array again
-> and we should just try to store the value into the next slot.
-
-We do this dance to prevent duplicates.
-
-But you are correct, that this went through a few iterations. And the first
-ones didn't have the cmpxchg on the ip itself, and that could make it so
-that we don't need this index = i dance.
-
-> 
-> > +		goto again;
-> > +	}
-> > +
-> > +	recursed_functions[index].parent_ip = parent_ip;  
-> 
-> WRITE_ONCE() ?
-
-Does it really matter?
-
-> 
-> > +
-> > +	/*
-> > +	 * It's still possible that we could race with the clearing
-> > +	 *    CPU0                                    CPU1
-> > +	 *    ----                                    ----
-> > +	 *                                       ip = func
-> > +	 *  nr_records = -1;
-> > +	 *  recursed_functions[0] = 0;
-> > +	 *                                       i = -1
-> > +	 *                                       if (i < 0)
-> > +	 *  nr_records = 0;
-> > +	 *  (new recursion detected)
-> > +	 *      recursed_functions[0] = func
-> > +	 *                                            cmpxchg(recursed_functions[0],
-> > +	 *                                                    func, 0)
-> > +	 *
-> > +	 * But the worse that could happen is that we get a zero in
-> > +	 * the recursed_functions array, and it's likely that "func" will
-> > +	 * be recorded again.
-> > +	 */
-> > +	i = atomic_read(&nr_records);
-> > +	smp_mb__after_atomic();
-> > +	if (i < 0)
-> > +		cmpxchg(&recursed_functions[index].ip, ip, 0);
-> > +	else if (i <= index)
-> > +		atomic_cmpxchg(&nr_records, i, index + 1);  
-> 
-> This looks weird. It would shift nr_records past the record added
-> in this call. It might skip many slots that were zeroed when clearing.
-> Also we do not know if our entry was not zeroed as well.
-> 
-> I would suggest to do it some other way (not even compile tested):
-> 
-> void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
-> {
-> 	int index, old_index;
-> 	int i = 0;
-> 	unsigned long old_ip;
-> 
->  again:
-> 	/* First check the last one recorded. */
-> 	if (ip == READ_ONCE(cached_function))
-> 		return;
-> 
-> 	index = atomic_read(&nr_records);
-> 	/* nr_records is -1 when clearing records. */
-> 	smp_mb__after_atomic();
-> 	if (index < 0)
-> 		return;
-> 
-> 	/* Already cached? */
-> 	for (i = index - 1; i >= 0; i--) {
-> 		if (recursed_functions[i].ip == ip) {
-> 			WRITE_ONCE(cached_function, ip);
-> 			return;
-> 		}
-> 	}
-> 
-> 	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
-> 		return;
-> 
-> 	/*
-> 	 * Try to reserve the slot. It might be already taken
-> 	 * or the entire cache cleared.
-> 	 */
-> 	old_index = atomic_cmpxchg(&nr_records, index, index + 1);
-> 	if (old_index != index)
-> 		goto again;
-> 
-> 	/*
-> 	 * Be careful. The entire cache might have been cleared and reused in
-> 	 * the meantime. Replace only empty slot.
-> 	 */
-> 	old_ip = cmpxchg(&recursed_functions[index].ip, 0, ip);
-> 	if (old_ip != 0)
-> 		goto again;
-> 
-> 	old_ip = cmpxchg(&recursed_functions[index].parent_ip, 0, parrent_ip);
-> 	if (old_ip != 0)
-> 		goto again;
-> 
-> 	/*
-> 	 * No ip is better than non-consistent one. The race with
-> 	 * clearing should be rare and not worth a perfect solution.
-> 	 */
-> 	if (READ_ONCE(recursed_functions[index].ip) != ip) {
-> 		cmpxchg(&recursed_functions[index].ip, ip, 0UL)
-> 		goto again;
-> 	}
-> }
-
-Let me go and rewrite it, this time considering the cmpxchg in the ip
-update code. I may end up with what you have above ;-)
-
-
-> 
-> The last check probably is not needed. Inconsistent entries
-> should be prevented by the way how this func is called:
-> 
-> 		static atomic_t paranoid_test;				\
-> 		if (!atomic_read(&paranoid_test)) {			\
-> 			atomic_inc(&paranoid_test);			\
-> 			ftrace_record_recursion(ip, pip);		\
-> 			atomic_dec(&paranoid_test);			\
-> 		}							\
-> 
-> 
-> 
-> 
-> The rest of the patchset looks fine. I do not feel comfortable to give
-> it Reviewed-by because I did not review it in depth.
-> 
-> I spent more time with the above lockless code. I took it is a
-> training. I need to improve this skill to feel more comfortable with
-> the lockless printk ring buffer ;-)
-
-Yeah, everything becomes exponentially complex when you make it lockless
-with multiple concurrent writers.
-
--- Steve
+I did test it but the test isn't thorough enough to cover the timeout
+case. I'll resend with v1 of this patch and pick up acks and include
+Sam on To line.
