@@ -2,137 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956402A26FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFD72A2704
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgKBJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727953AbgKBJ2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:28:46 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B2AC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 01:28:46 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id g19so2573438otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 01:28:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IbNuq3s1vVpD8H3QOsjV0sGqJ/Z7oSAbbkfkZvy1XHk=;
-        b=ZwDmKsJx7x9H4A6oxnKV/0mfK5ZFxB3a1aM7tsS3KQVWBTroULG54b+/X/QAb8xkd8
-         w60J0bsQvWMfAe1GP1j5aHGhevycwGs1eXOS5XmS9e1DzJwaERv34oRwd/zUc5NH25It
-         evwbcfSzmlipcIbMmq2HHokuvcx7O5RLmy0O4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IbNuq3s1vVpD8H3QOsjV0sGqJ/Z7oSAbbkfkZvy1XHk=;
-        b=F4CO12nQgxlMGoUuqlGKFEqSURgoKicX1kTU5+xTIucfi9PPpXg4fjaCCFy44DTumu
-         GhagYE2XsOejWsB7PplNInM+VRFfUf7tbUKVeXhHAc2+C+mV8ndjHGLMw/IAtFL/DCyW
-         jaTTd7aoBzYqoOjwBhpe/V/YM4uyRuCLul0mdbUGyWAk/ZFg10YawTAjcxARbLpP4gKy
-         Ob9aStikEm3ES2X0aLMeKWtOLWu24zjl6UpfsPLYnexDFVzLi0T8Tduo5mtoD01QYSfp
-         Ldomx+lQPZ4zEY/sy4XS9efbuqc9hY3bkog1lGtM1R/bLqq2sQke5nVdWQBn75YOLEA0
-         NEDQ==
-X-Gm-Message-State: AOAM531jbeSYqkEfF5TJs4Om8g5M4t9JhwsMRoXyo0fJ9GDcKfpu59zO
-        D018Cj1oI6sf1IiGsBUSxOtJONYQnORv3F8mmmBl/g==
-X-Google-Smtp-Source: ABdhPJw4HWb5RIkueETRBm8Fwwh31WuQZ8e/6YOS+9xABgykOarqawuOiAF2wFN7DrH/qvVU5QujD60r3ppsBeugVQ4=
-X-Received: by 2002:a9d:6e81:: with SMTP id a1mr10863311otr.303.1604309326237;
- Mon, 02 Nov 2020 01:28:46 -0800 (PST)
+        id S1728372AbgKBJ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:29:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:56568 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727953AbgKBJ3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 04:29:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C476101E;
+        Mon,  2 Nov 2020 01:29:12 -0800 (PST)
+Received: from [192.168.1.79] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AC263F718;
+        Mon,  2 Nov 2020 01:29:10 -0800 (PST)
+Subject: Re: [PATCH -next] drm/panfrost: Fix unused variable warning
+To:     Zou Wei <zou_wei@huawei.com>, robh@kernel.org,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1604309599-10078-1-git-send-email-zou_wei@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <8729ad8d-31db-c7cd-e962-a0f7db6891b3@arm.com>
+Date:   Mon, 2 Nov 2020 09:29:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201102124327.2f82b2a7@canb.auug.org.au>
-In-Reply-To: <20201102124327.2f82b2a7@canb.auug.org.au>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 2 Nov 2020 10:28:34 +0100
-Message-ID: <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1604309599-10078-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 2:43 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
->
-> In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-> include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-> include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
->    99 |  return SIZE_MAX;
->       |         ^~~~~~~~
-> include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
->     6 | #include <linux/init.h>
->   +++ |+#include <stdint.h>
->     7 | #include <linux/types.h>
-> include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
->    99 |  return SIZE_MAX;
->       |         ^~~~~~~~
->
-> Caused by commit
->
->   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
->
-> but only exposed by commit
->
->   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
->
-> I applied the following fix for today:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 2 Nov 2020 12:34:57 +1100
-> Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
->
-> Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+On 02/11/2020 09:33, Zou Wei wrote:
+> Fixes the following W=1 kernel build warning:
+> 
+> ./panfrost_job.c:617:28: warning: unused variable ‘js’ [-Wunused-variable]
+>    struct panfrost_job_slot *js = pfdev->js;
+>                              ^~
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-I think simplest if this lands through dma-api tree into current -rc
-kernels. Or should we just put this into drm-misc-next since that's
-where the problem shows up? Christoph, any preference from dma-api
-side?
--Daniel
+Boris posted an identical patch earlier:
+
+https://lore.kernel.org/r/20201101173817.831769-1-boris.brezillon%40collabora.com
+
+Steve
 
 > ---
->  include/linux/swiotlb.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 513913ff7486..ed9de7855d3b 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -5,6 +5,9 @@
->  #include <linux/dma-direction.h>
->  #include <linux/init.h>
->  #include <linux/types.h>
-> +#ifndef CONFIG_SWIOTLB
-> +#include <linux/limits.h>
-> +#endif
->
->  struct device;
->  struct page;
-> --
-> 2.28.0
->
-> --
-> Cheers,
-> Stephen Rothwell
+>   drivers/gpu/drm/panfrost/panfrost_job.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index 4902bc6..e75b7d2 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -613,8 +613,6 @@ int panfrost_job_open(struct panfrost_file_priv *panfrost_priv)
+>   
+>   void panfrost_job_close(struct panfrost_file_priv *panfrost_priv)
+>   {
+> -	struct panfrost_device *pfdev = panfrost_priv->pfdev;
+> -	struct panfrost_job_slot *js = pfdev->js;
+>   	int i;
+>   
+>   	for (i = 0; i < NUM_JOB_SLOTS; i++)
+> 
 
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
