@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9572A2329
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3F42A232A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727662AbgKBCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:46:04 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:22990 "EHLO
+        id S1727670AbgKBCrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:47:14 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:23776 "EHLO
         mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727470AbgKBCqD (ORCPT
+        with ESMTP id S1727445AbgKBCrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:46:03 -0500
+        Sun, 1 Nov 2020 21:47:14 -0500
 Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201102024558epoutp0474ffc99b4ed93bd0235b03531b874c50~DkNolAH7K2540325403epoutp04O
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:45:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201102024558epoutp0474ffc99b4ed93bd0235b03531b874c50~DkNolAH7K2540325403epoutp04O
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201102024711epoutp04aba3a3af0f0c255ab0145eb51c9a6a9c~DkOsEroly2702827028epoutp042
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:47:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201102024711epoutp04aba3a3af0f0c255ab0145eb51c9a6a9c~DkOsEroly2702827028epoutp042
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604285158;
-        bh=XVGcPifSFh7P2qC7KRnT9MItGbQhV0RaAub8F07Y3zI=;
+        s=mail20170921; t=1604285231;
+        bh=VOrfLY032QgorKUQNIL2pCx5BueZFlqJC2sBo5mzyj4=;
         h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=kTTBuWzrIomZZDXa28+qBLyehoDoXCclUIVFe0Xju6+7locg5CMXvzri06d68N1Vn
-         Rv0e+JXlt5jvg0u/318UnCB05MG8QKeipzNZBBrEbAePEEFwc/uYIUR4/RsvpdVNSq
-         47SHYD5nziDabOWHEdmy7jSG+oHDY6bhY1aTJDlA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        b=DSOD3cIMNO1Y9yCIiz1NzBCZE7HbBEnCoQJW0I+u1CEPnywWWRh9yeHSKfJc0QNuV
+         l6dTstkxkB0lHXGyLztjcX5fHPCGJRmz4m7n8049pXeDeSDepErpaBZSk/8yhn/j8G
+         o7JODL2bGhex2eaxt8QnyYgd6DzcKXSNuly9nrAg=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
         epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201102024558epcas1p31e3ebb8e0b0512e27a7acabf01470a0b~DkNoJETHR1272812728epcas1p3F;
-        Mon,  2 Nov 2020 02:45:58 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CPcjb1y1lzMqYlh; Mon,  2 Nov
-        2020 02:45:55 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6F.5A.02418.2E27F9F5; Mon,  2 Nov 2020 11:45:54 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20201102024553epcas1p3dedcbb6b82d0ae97f68d4b1cae4ff3c4~DkNj1K5sL0583105831epcas1p3X;
-        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201102024553epsmtrp29397436ccc5e48642f9ffc310a7b936d~DkNj0gEn01660616606epsmtrp23;
-        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-87-5f9f72e2efe2
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.FA.08745.1E27F9F5; Mon,  2 Nov 2020 11:45:53 +0900 (KST)
+        20201102024711epcas1p3d61cadfe853c8fadc54d567059eac74c~DkOryCa3I0354103541epcas1p3y;
+        Mon,  2 Nov 2020 02:47:11 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CPcl05PRrzMqYkp; Mon,  2 Nov
+        2020 02:47:08 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F1.0D.63458.6237F9F5; Mon,  2 Nov 2020 11:47:02 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201102024702epcas1p19967141e12133934e780f7eddff70b92~DkOjujjq92411924119epcas1p1C;
+        Mon,  2 Nov 2020 02:47:02 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201102024702epsmtrp156a32c9d3eefbf1fd2d80d9d5f79fc2a~DkOjt8rWi3265432654epsmtrp1d;
+        Mon,  2 Nov 2020 02:47:02 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-4c-5f9f732629ab
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FA.6B.13470.6237F9F5; Mon,  2 Nov 2020 11:47:02 +0900 (KST)
 Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201102024553epsmtip29cbe66f05aaa0fe522995f2d103cb394~DkNjqmTG71554315543epsmtip2a;
-        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
-Subject: Re: [PATCH 1/2] extcon: fsa9480: Rewrite bindings in YAML and
- extend
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201102024702epsmtip17fe9500470cf05a44592d6e02ce2b164~DkOjjvmav0770407704epsmtip1o;
+        Mon,  2 Nov 2020 02:47:02 +0000 (GMT)
+Subject: Re: [PATCH 2/2] extcon: fsa9480: Support TI TSU6111 variant
 To:     Linus Walleij <linus.walleij@linaro.org>,
         MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
 From:   Chanwoo Choi <cw00.choi@samsung.com>
 Organization: Samsung Electronics
-Message-ID: <ae62b1b2-87ab-4d87-519a-ea341a729995@samsung.com>
-Date:   Mon, 2 Nov 2020 11:59:52 +0900
+Message-ID: <ead95b16-d8c8-37b3-bc00-408068d2fbba@samsung.com>
+Date:   Mon, 2 Nov 2020 12:01:01 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
         Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20201101004357.1076876-1-linus.walleij@linaro.org>
+In-Reply-To: <20201101004357.1076876-2-linus.walleij@linaro.org>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmru6jovnxBhOvSFrMP3KO1WLKn+VM
-        Fpd3zWGzuN24gs2BxePOtT1sHn1bVjF6fN4kF8AclW2TkZqYklqkkJqXnJ+SmZduq+QdHO8c
-        b2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA7RNSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKr
-        lFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCd0f9tK2vBNfmKp1fvMDYwbpDsYuTkkBAw
-        kVjxaTdjFyMXh5DADkaJs5PbWCGcT4wSl47/ZYZwPjNKnLnRwwbTcnDxI6iqXYwSr2b+ZQJJ
-        CAm8Z5TYdD4OxBYW8Jc4dvgkWIOIQLjEvmMHmEFsZgEbiY7f51hAbDYBLYn9L26A1fALKEpc
-        /fGYEcTmFbCT+HlrGVicRUBF4s6/Y2BxUYEwiZPbWqBqBCVOznwCNodTwEFixr8tUPPFJW49
-        mc8EYctLbH87hxni6K/sEo1NkRC2i8Sbd38ZIWxhiVfHt7BD2FISn9/thXqyWmLlySNsIE9K
-        CHQwSmzZf4EVImEssX/pZKAFHEALNCXW79KHCCtK7Pw9lxFiL5/Eu689rCAlEgK8Eh1tQhAl
-        yhKXH9xlgrAlJRa3d7JNYFSaheSbWUg+mIXkg1kIyxYwsqxiFEstKM5NTy02LDBEjuxNjOCE
-        qGW6g3Hi2w96hxiZOBgPMUpwMCuJ8NZEzosX4k1JrKxKLcqPLyrNSS0+xGgKDN+JzFKiyfnA
-        lJxXEm9oamRsbGxhYmhmamioJM77R7sjXkggPbEkNTs1tSC1CKaPiYNTqoHJZvJx7lebzq2X
-        9l8uOeFpopF966KXt/LnS3dtqmlSuduv2S80592lDw5+GxQE7we8OBY2Zcb2ibbqtoydC5mO
-        MpXkvY2/xLKqtlM0xP6r8+uZdt0RU8TOhZSwnD+3T1NMNfXPkn3rk83MnPdOP+pUVf7lcAYD
-        79OFn+5P3xJ3v9py/sqEnU9m6F7fc/Dp3zNXOTeItXStZPwVo1x5cbWure0L8bX39PjscnWZ
-        u1TOZfkfuLswRHm/tY6Ku36++MTZgY4749qfBf5aGMpptElwT8X2+baPPnmHF9h8mekm/n1D
-        wSxVnb75Ugnziz52PFOpzNPnMJOU6mmNNuNsOqn9VMA9JuxF0zn5590brnMpsRRnJBpqMRcV
-        JwIAjQBglhEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvO7DovnxBqfvaVnMP3KO1WLKn+VM
-        Fpd3zWGzuN24gs2BxePOtT1sHn1bVjF6fN4kF8AcxWWTkpqTWZZapG+XwJXR/20ra8E1+Yqn
-        V+8wNjBukOxi5OSQEDCROLj4EWsXIxeHkMAORol5hy6wQiQkJaZdPMrcxcgBZAtLHD5cDFHz
-        llHizOyfYDXCAr4Sm5deZQexRQTCJWYveM8MYjML2Eh0/D7HAtEwmVFiXddjsASbgJbE/hc3
-        2EBsfgFFias/HjOC2LwCdhI/by0Di7MIqEjc+XcMLC4qECaxc8ljJogaQYmTM5+wgNicAg4S
-        M/5tgVqmLvFn3iUoW1zi1pP5TBC2vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxgZFnFKJlaUJyb
-        nltsWGCUl1quV5yYW1yal66XnJ+7iREcHVpaOxj3rPqgd4iRiYPxEKMEB7OSCG9N5Lx4Id6U
-        xMqq1KL8+KLSnNTiQ4zSHCxK4rxfZy2MExJITyxJzU5NLUgtgskycXBKNTCZvZyxs/+kxIeb
-        jsFmLnPP8hyUW8xTJ8RhEpx7p2lJ5PuWzm2LQ5bHzmG4r3vXMLXx46Ha9DeiPs7b3I/W97bt
-        2PO+aYl6ynzPMi07i7oT9zat4lZMu7Z/uZ+G2TE7gYz5T7mzlv7YWKK5evOfBdvO1u0Jcklz
-        /L9s7fobp9Rl39zLXXwm2Wb15IV2ymEPD/W2fBPvUF+55yBLZWnEHN6d+xmDvReHyoh5Bm9/
-        LfqUo2FbiltWEOd9H686wXMf3TgMj0zd2fp4ftzp3qsf9k4403dLsGC6r+nSiY7yxYtKpx10
-        2PHLdl/u9ASxjF0vDGu+XTtk8Vho+tFV7tuOGbLITc4Tqb0iyBx9dLH+d9HNSizFGYmGWsxF
-        xYkAb+E3uP0CAAA=
-X-CMS-MailID: 20201102024553epcas1p3dedcbb6b82d0ae97f68d4b1cae4ff3c4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7bCmga5a8fx4g3VfNSym/FnOZHF51xw2
+        i9uNK9gcmD3uXNvD5tG3ZRWjx+dNcgHMUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6
+        hpYW5koKeYm5qbZKLj4Bum6ZOUCLlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkF
+        lgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGR/n/mMreMpesWbDXMYGxg1sXYwcHBICJhL990y7
+        GLk4hAR2MEpc+fOVBcL5xCjx/9IHKOcbo0Rb0zzGLkZOsI7OVRegEnsZJWa8e84E4bxnlPj0
+        o48FpEpYwEWioXUimC0iEC6x79gBZhCbWUBB4te9TawgNpuAlsT+FzfYQGx+AUWJqz8eg23g
+        FbCTuDmxjx3EZhFQkTj87y5YXFQgTOLkthaoGkGJkzOfgM3nFHCQeDVxGzvEfHGJW0/mM0HY
+        8hLb385hhrj6I7vE3gXsELaLxOvrc6G+EZZ4dXwLVFxK4mV/G5RdLbHy5BE2kMckBDoYJbbs
+        v8AKkTCW2L90MhMo8JgFNCXW79KHCCtK7PwNMZNZgE/i3dceVkj48kp0tAlBlChLXH5wlwnC
+        lpRY3N7JNoFRaRaSb2Yh+WAWkg9mISxbwMiyilEstaA4Nz212LDACDmyNzGC06CW2Q7GSW8/
+        6B1iZOJgPMQowcGsJMJbEzkvXog3JbGyKrUoP76oNCe1+BCjKTB8JzJLiSbnAxNxXkm8oamR
+        sbGxhYmhmamhoZI47x/tjnghgfTEktTs1NSC1CKYPiYOTqkGpu6Uv0XFE37r5te/1VixtTdj
+        67uoH0uen7gkavVAQ2139CK/QwurYo8E1O0JC5rW8uBYbdWamCrJmVedPkREBIvrHfE8rSL8
+        nVdLseGw8cvLS56WyPWJOr8R7r2onfn5fOf0/WoBWpkMFQe/TqgLmLWNR0vCNiF7w/ow9ebO
+        neGXq57c4N021+MEo/DX2tzg5G37KicxtSaZiZnnuIQ7hTKxlkf6ZtgahkfdYvX+FKW5dr/C
+        pNrbQTtUs/6fVMhZoH7F+q/+jdof/hbfDfYziM464p/byeurz518YeqWi6uyjbRl9n1wSXvs
+        W9F5spNZw5LPIO5pzTF/WaXHvxfOL4zet8vG6pPv5qoFMkJKLMUZiYZazEXFiQBjLKl7DAQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWy7bCSnK5a8fx4g++LBS2m/FnOZHF51xw2
+        i9uNK9gcmD3uXNvD5tG3ZRWjx+dNcgHMUVw2Kak5mWWpRfp2CVwZH+f+Yyt4yl6xZsNcxgbG
+        DWxdjJwcEgImEp2rLrB0MXJxCAnsZpRYeH0CK0RCUmLaxaPMXYwcQLawxOHDxRA1bxklWmfs
+        ZAGpERZwkWhonQhmiwiES8xe8J4ZxGYWUJD4dW8TK0TDSUaJhh0XmEASbAJaEvtf3ADbzC+g
+        KHH1x2NGEJtXwE7i5sQ+dhCbRUBF4vC/u2BxUYEwiZ1LHjNB1AhKnJz5BGwZp4CDxKuJ29gh
+        lqlL/Jl3CWqxuMStJ/OZIGx5ie1v5zBPYBSehaR9FpKWWUhaZiFpWcDIsopRMrWgODc9t9iw
+        wDAvtVyvODG3uDQvXS85P3cTIzgmtDR3MG5f9UHvECMTB+MhRgkOZiUR3prIefFCvCmJlVWp
+        RfnxRaU5qcWHGKU5WJTEeW8ULowTEkhPLEnNTk0tSC2CyTJxcEo1MBlw390x+8BskRWWs46d
+        +jl94ctJT79cm8XDuO/Vjrq/WyOPRyxQye/ju3ZAfPo8x66DGg1V8apmp/bw7zpmNplbYrP+
+        sXsCn39e/tof87iU6f2Zp4+XzDPxN2FbVjLV+PaVmGo2O7/nv/wV6mb92n/in/XWT/8Z191f
+        WC118tDiLXp3Mi+85/Ep7t1482Dj5Yf1O966iLfHlEkX59nMCywKfbD1fsCV9Kg6s+q/ZY/y
+        Av2PXXz9IuNQWWXcFfda1uWWr1OUCzZ6ef6at0w+8fRttg3puzQljRUVjJqiAn1zY3PupB4/
+        bDd3vRXHh78672xzLXfW79O9G/C2xe1yv7RgU1mIxaaiH02T5q108DuoxFKckWioxVxUnAgA
+        oiyan/gCAAA=
+X-CMS-MailID: 20201102024702epcas1p19967141e12133934e780f7eddff70b92
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201101004410epcas1p36f8a3469611fbc27eed6803d383df06e
-References: <CGME20201101004410epcas1p36f8a3469611fbc27eed6803d383df06e@epcas1p3.samsung.com>
-        <20201101004357.1076876-1-linus.walleij@linaro.org>
+X-CMS-RootMailID: 20201101004413epcas1p3e630dbf1581ff36176123f9f8ef15be2
+References: <20201101004357.1076876-1-linus.walleij@linaro.org>
+        <CGME20201101004413epcas1p3e630dbf1581ff36176123f9f8ef15be2@epcas1p3.samsung.com>
+        <20201101004357.1076876-2-linus.walleij@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -113,112 +113,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Linus,
 
 On 11/1/20 9:43 AM, Linus Walleij wrote:
-> This rewrites the FSA9480 DT bindings using YAML and
-> extends them with the compatible TI TSU6111.
+> The Texas Instruments TSU6111 is compatible to the
+> FSA880/FSA9480.
 > 
-> I chose to name the file fcs,fsa880 since this is the
-> first switch, later versions are improvements.
-> 
-> Cc: devicetree@vger.kernel.org
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  .../bindings/extcon/extcon-fsa9480.txt        | 21 --------
->  .../bindings/extcon/fcs,fsa880.yaml           | 52 +++++++++++++++++++
->  2 files changed, 52 insertions(+), 21 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
->  create mode 100644 Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
+>  drivers/extcon/extcon-fsa9480.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt b/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
-> deleted file mode 100644
-> index 624bd76f468e..000000000000
-> --- a/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
-> +++ /dev/null
-> @@ -1,21 +0,0 @@
-> -FAIRCHILD SEMICONDUCTOR FSA9480 MICROUSB SWITCH
-> -
-> -The FSA9480 is a USB port accessory detector and switch. The FSA9480 is fully
-> -controlled using I2C and enables USB data, stereo and mono audio, video,
-> -microphone, and UART data to use a common connector port.
-> -
-> -Required properties:
-> - - compatible : Must be one of
-> -   "fcs,fsa9480"
-> -   "fcs,fsa880"
-> - - reg : Specifies i2c slave address. Must be 0x25.
-> - - interrupts : Should contain one entry specifying interrupt signal of
-> -   interrupt parent to which interrupt pin of the chip is connected.
-> -
-> - Example:
-> -	musb@25 {
-> -		compatible = "fcs,fsa9480";
-> -		reg = <0x25>;
-> -		interrupt-parent = <&gph2>;
-> -		interrupts = <7 0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml b/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
-> new file mode 100644
-> index 000000000000..ef6a246a1337
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: https://protect2.fireeye.com/v1/url?k=da7a3fd4-85e106de-da7bb49b-0cc47a31384a-f57ab7f026383135&q=1&e=f8ca331d-3c11-4257-8322-d97ac13418ef&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fextcon%2Ffcs%2Cfsa880.yaml%23
-> +$schema: https://protect2.fireeye.com/v1/url?k=0449819e-5bd2b894-04480ad1-0cc47a31384a-07ad90468a2ed371&q=1&e=f8ca331d-3c11-4257-8322-d97ac13418ef&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
-> +
-> +title: Fairchild Semiconductor FSA880, FSA9480 and compatibles
-> +
-> +maintainers:
-> +  - Linus Walleij <linus.walleij@linaro.org>
-> +
-> +description:
-> +  The FSA880 and FSA9480 are USB port accessory detectors and switches.
-> +  The switch is fully controlled using I2C and enables USB data, stereo
-> +  and mono audio, video, microphone, and UART data to use a common
-> +  connector port. Compatible switches exist from other manufacturers.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fcs,fsa880
-> +      - fcs,fsa9480
-> +      - ti,tsu6111
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: The I2C address for an FSA880 compatible device is
-> +      usually 0x25.
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        usb-switch@25 {
-> +            compatible = "fcs,fsa880";
-> +            reg = <0x25>;
-> +            interrupt-parent = <&gpio>;
-> +            interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
-> +        };
-> +    };
+> diff --git a/drivers/extcon/extcon-fsa9480.c b/drivers/extcon/extcon-fsa9480.c
+> index 8405512f5199..08bdedbcdb0d 100644
+> --- a/drivers/extcon/extcon-fsa9480.c
+> +++ b/drivers/extcon/extcon-fsa9480.c
+> @@ -364,6 +364,7 @@ MODULE_DEVICE_TABLE(i2c, fsa9480_id);
+>  static const struct of_device_id fsa9480_of_match[] = {
+>  	{ .compatible = "fcs,fsa9480", },
+>  	{ .compatible = "fcs,fsa880", },
+> +	{ .compatible = "ti,tsu6111", },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(of, fsa9480_of_match);
 > 
 
 Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-I'm waiting the reply from DT maintainer for a while.
-After that, I'll merge them.
+As I replied from patch1, I'm waiting the review from DT maintainer.
+And then, I'll merge it.
+
 
 -- 
 Best Regards,
