@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745BA2A2D1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140402A2D22
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgKBOkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:40:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgKBOkc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:40:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D25C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:40:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bNVXHRt2j5TVq+P2Oa2ykU3JjLaZgnmCgBfTsAuZWMc=; b=KWKkiOwvAzN2or175mvatzQWqJ
-        ipyVU06RQPLkD8FRX8QuJ78U3df7XRmP/Qg7Bccv3ZQ1A1VvR92fcpXtuYjjwGYZvETs9kuLT3lTJ
-        fkv0ZMbO4mRYgKoSWkLPqzjh8mGHn9to7ZSuKm5rLfcNMRCT8QRtiWohoyk03cxrLikpm0a1G57pL
-        jbRNNPE51Mbtw9s5MZ4PcyJC3iGsTwskMKvqc/JTgMfGIbWFcjeOcBmKaAQ/PlrTBjfkCnqRrW4Lj
-        ZLigtPWW2yUrZ71JUw7g0vuDvlWbvDIqtRY6NB50K3TdUjK4rNTmHYhy3+G8GSgjk4eLioBnFqsvK
-        0xhZIu6g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZb0U-0006yS-2Y; Mon, 02 Nov 2020 14:40:26 +0000
-Date:   Mon, 2 Nov 2020 14:40:25 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] mm: shmem: Convert shmem_enabled_show to use
- sysfs_emit_at
-Message-ID: <20201102144025.GL27442@casper.infradead.org>
-References: <cover.1604261483.git.joe@perches.com>
- <a06810c216a45e5f6f1b9f49fbe2f332ca3c8972.1604261483.git.joe@perches.com>
- <20201101204834.GF27442@casper.infradead.org>
- <616b92af9378e9f9697555074bba1e377450477f.camel@perches.com>
- <20201101211910.GG27442@casper.infradead.org>
- <bc1a4a2a7ff69eeee131744881e1e8c72444be01.camel@perches.com>
- <20201101220604.GI27442@casper.infradead.org>
- <20201102133343.GA1011963@kroah.com>
- <20201102140836.GJ27442@casper.infradead.org>
- <20201102143259.GA1024551@kroah.com>
+        id S1726201AbgKBOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:41:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbgKBOlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:41:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604328070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hmEKAQREm+jqesAwSXDRO+rQTKsVN1T127G+Uf+JVEQ=;
+        b=MpevfN3GJJcLe+03477VH/DUNhpuduQOcbmSpPfgj+CRO57PsmBxOZi4kSkYQyNn+QwTEh
+        XRLu0p4M/LIfHx2kASuQ8NauWXzKqW79XRPyxXpBwTuS/hMTbzcKn+LAFeeMFjqIN0Wzd2
+        Vc/jygrb8Kc1YkkysPh2Y9GFWXG9WhQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 55D68AD6B;
+        Mon,  2 Nov 2020 14:41:10 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 15:41:09 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 07/11 v2] livepatch: Trigger WARNING if livepatch
+ function fails due to recursion
+Message-ID: <20201102144109.GI20201@alley>
+References: <20201030213142.096102821@goodmis.org>
+ <20201030214014.167613723@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102143259.GA1024551@kroah.com>
+In-Reply-To: <20201030214014.167613723@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:32:59PM +0100, Greg Kroah-Hartman wrote:
-> On Mon, Nov 02, 2020 at 02:08:36PM +0000, Matthew Wilcox wrote:
-> > On Mon, Nov 02, 2020 at 02:33:43PM +0100, Greg Kroah-Hartman wrote:
-> > > > Oh, ugh, sysfs_emit() should be able to work on a buffer that isn't
-> > > > page aligned.  Greg, how about this?
-> > > 
-> > > How can sysfs_emit() be called on a non-page-aligned buffer?  It's being
-> > > used on the buffer that was passed to the sysfs call.
-> > > 
-> > > And if you are writing multiple values to a single sysfs file output,
-> > > well, not good...
-> > 
-> > See shmem_enabled_show() in mm/shmem.c (output at
-> > /sys/kernel/mm/transparent_hugepage/shmem_enabled on your machine).
-> > 
-> > I don't claim it's a good interface, but it exists.
+On Fri 2020-10-30 17:31:49, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Ok, that's a common pattern for sysfs files, not that bad.
+> If for some reason a function is called that triggers the recursion
+> detection of live patching, trigger a warning. By not executing the live
+> patch code, it is possible that the old unpatched function will be called
+> placing the system into an unknown state.
 > 
-> What's wrong with using sysfs_emit_at()?  We want sysfs_emit() to "know"
-> that the buffer is PAGE_SIZE big, if you try to allow offsets in it,
-> that defeats the purpose of the check.
+> Link: https://lore.kernel.org/r/20201029145709.GD16774@alley
+> 
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Miroslav Benes <mbenes@suse.cz>
+> Cc: Joe Lawrence <joe.lawrence@redhat.com>
+> Cc: live-patching@vger.kernel.org
+> Suggested-by: Petr Mladek <pmladek@suse.com>
 
-For someone who's used to C "strings", it's pretty common to do
-something like:
+It has actually been first suggested by Miroslav. He might want
+to take the fame and eventual shame ;-)
 
-	buf += sprintf(buf, "foo ");
-	buf += sprintf(buf, "bar ");
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-sysfs_emit_at instead wants me to do:
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-	len += sprintf(buf + len, "foo ");
-	len += sprintf(buf + len, "bar ");
-
-I don't see how the code I wrote defeats the check.  It checks that the
-buffer never crosses a PAGE_SIZE boundary, which is equivalently safe.
+Best Regards,
+Petr
