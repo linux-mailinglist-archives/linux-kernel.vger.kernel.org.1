@@ -2,243 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429292A3486
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C062A347E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgKBTpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgKBTpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:45:18 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD38C0617A6;
-        Mon,  2 Nov 2020 11:45:18 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id x7so16012253wrl.3;
-        Mon, 02 Nov 2020 11:45:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=laqvXkYmnuGd0xSBrvapYqlT+lDWdfEk/TVZWHBUFak=;
-        b=Xcu4Fuh7ucz0IyN2Q9r9gVmHTHMRgAt6J3EL40r2hOn8GHpIYVL4F9QyxLZjQjaHKD
-         Q23alGe3vdzXDX/NYsmYEGuz0HSN0mD5zpT6OG2cZmZB/2A8rlOp/u5dnPC8jb0L/Zlb
-         jQpmd4aLHJM5p1sDQ6+hoS4A8xICctQtmdgp3wMstwZA7wqQvL3nJgQG//zv5ctFG/1U
-         75/w69lxjXWSyHtPfNNmL5zudSct3ItMfx6+b01qJhKjAKBWl5o4oqgQQAdl8dDCMltf
-         5jHGvTX1xOK8prO/vWr0PsbKEhppDUxNe4DCHwv97Zsyy3tDVIy5yycC1Ep5TCbdOPu2
-         mytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=laqvXkYmnuGd0xSBrvapYqlT+lDWdfEk/TVZWHBUFak=;
-        b=GR8MIus9DdMdgyuJ0HszrysFz1bPGr7Ti/4sF9C6Bgr7zuohtwQxeuly4s52shr1tq
-         DCtSB697ozadC4kAMcvaYeshAo+Ssy+pGkrwXszBlV1x5t0EzVh0+l2+iFtfOSsEicVr
-         z5vKyHRiJfGHGeNiduZ0BV1ZixFI+4zYY/Sa9Hm6Ogs8I39r1LitjuLgt6RRM+d7whwx
-         5sm+nw9v0pja9OWjTkJWRp+NfHVfeCS0Q8+8XhRZCVP10LsX/6uRZQ9TJSG1QiXQpWdp
-         NvCDQG7/pfVjBw9+cn2OFNh63r/dugB87xONTszjFyIdJs8JrKsIOoiNyXNekOBD/q51
-         mOSQ==
-X-Gm-Message-State: AOAM5325Xgne3M7V5owPyljzVZQa3/rxCM40bqP2WKlDAbCScFqPqPMm
-        4/ycN/aWl8sqnNEfL0ybWr4=
-X-Google-Smtp-Source: ABdhPJz8m94F40PYPDleJPuNVjP3xxDbSlJfSVCYuiHmiaTZX/Dk9in69mChxicVhbXQrTId1ocsGg==
-X-Received: by 2002:a5d:4f07:: with SMTP id c7mr23106131wru.296.1604346317099;
-        Mon, 02 Nov 2020 11:45:17 -0800 (PST)
-Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
-        by smtp.gmail.com with ESMTPSA id l11sm21642720wro.89.2020.11.02.11.45.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 11:45:15 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Sargun Dhillon <sargun@sargun.me>
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
- <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com>
- <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
- <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com>
- <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <964c2191-db78-ff4d-5664-1d80dc382df4@gmail.com>
-Date:   Mon, 2 Nov 2020 20:45:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726735AbgKBTrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:47:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726645AbgKBTp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:45:27 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EE3520731;
+        Mon,  2 Nov 2020 19:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604346327;
+        bh=lo0IBN1ZG0QJIt1HgBezUROdxd8mSyZAwRupjjHYJwo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=K2GDC4CTqrR/5645GiAOWT2dERcvJYQwYxjyTFSdDiSH4Q/TwJZPvFABbKxECV4at
+         hTyr2f/KC745+Qge99Af6wZpbzEz6P+UtQRwX4sUL8ltgAj2JBLTfXuuqLOuQZSd4t
+         BE+0Bje/TY20OyTqElOH2zovOyot/iTl3yddZHAs=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs: change aggregate cs counters to atomic
+Date:   Mon,  2 Nov 2020 21:45:23 +0200
+Message-Id: <20201102194523.23096-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sargun,
+In case we will have multiple contexts/processes, we can't just
+increment aggregated counters. We need to make them atomic as they can
+be incremented by multiple processes
 
-Thanks for your reply!
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../habanalabs/common/command_submission.c    | 42 +++++++++----------
+ drivers/misc/habanalabs/common/habanalabs.h   | 17 +++++++-
+ .../misc/habanalabs/common/habanalabs_ioctl.c | 18 +++++++-
+ drivers/misc/habanalabs/common/hw_queue.c     |  7 +++-
+ 4 files changed, 59 insertions(+), 25 deletions(-)
 
-On 11/2/20 9:07 AM, Sargun Dhillon wrote:
-> On Sat, Oct 31, 2020 at 9:27 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
->>
->> Hello Sargun,
->>
->> Thanks for your reply.
->>
->> On 10/30/20 9:27 PM, Sargun Dhillon wrote:
->>> On Thu, Oct 29, 2020 at 09:37:21PM +0100, Michael Kerrisk (man-pages)
->>> wrote:
->>
->> [...]
->>
->>>>> I think I commented in another thread somewhere that the
->>>>> supervisor is not notified if the syscall is preempted. Therefore
->>>>> if it is performing a preemptible, long-running syscall, you need
->>>>> to poll SECCOMP_IOCTL_NOTIF_ID_VALID in the background, otherwise
->>>>> you can end up in a bad situation -- like leaking resources, or
->>>>> holding on to file descriptors after the program under
->>>>> supervision has intended to release them.
->>>>
->>>> It's been a long day, and I'm not sure I reallu understand this.
->>>> Could you outline the scnario in more detail?
->>>>
->>> S: Sets up filter + interception for accept T: socket(AF_INET,
->>> SOCK_STREAM, 0) = 7 T: bind(7, {127.0.0.1, 4444}, ..) T: listen(7,
->>> 10) T: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
->>
->> Presumably, the preceding line should have been:
->>
->> S: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
->> (s/T:/S:/)
->>
->> right?
-> 
-> Right.
->>
->>
->>> T: accept(7, ...) S: Intercepts accept S: Does accept in background
->>> T: Receives signal, and accept(...) responds in EINTR T: close(7) S:
->>> Still running accept(7, ....), holding port 4444, so if now T
->>> retries to bind to port 4444, things fail.
->>
->> Okay -- I understand. Presumably the solution here is not to
->> block in accept(), but rather to use poll() to monitor both the
->> notification FD and the listening socket FD?
->>
-> You need to have some kind of mechanism to periodically check
-> if the notification is still alive, and preempt the accept. It doesn't
-> matter how exactly you "background" the accept (threads, or
-> O_NONBLOCK + epoll).
-> 
-> The thing is you need to make sure that when the process
-> cancels a syscall, you need to release the resources you
-> may have acquired on its behalf or bad things can happen.
-> 
-
-Got it. I added the following text:
-
-   Caveats regarding blocking system calls
-       Suppose that the target performs a blocking system call (e.g.,
-       accept(2)) that the supervisor should handle.  The supervisor
-       might then in turn execute the same blocking system call.
-
-       In this scenario, it is important to note that if the target's
-       system call is now interrupted by a signal, the supervisor is not
-       informed of this.  If the supervisor does not take suitable steps
-       to actively discover that the target's system call has been
-       canceled, various difficulties can occur.  Taking the example of
-       accept(2), the supervisor might remain blocked in its accept(2)
-       holding a port number that the target (which, after the
-       interruption by the signal handler, perhaps closed  its listening
-       socket) might expect to be able to reuse in a bind(2) call.
-
-       Therefore, when the supervisor wishes to emulate a blocking system
-       call, it must do so in such a way that it gets informed if the
-       target's system call is interrupted by a signal handler.  For
-       example, if the supervisor itself executes the same blocking
-       system call, then it could employ a separate thread that uses the
-       SECCOMP_IOCTL_NOTIF_ID_VALID operation to check if the target is
-       still blocked in its system call.  Alternatively, in the accept(2)
-       example, the supervisor might use poll(2) to monitor both the
-       notification file descriptor (so as as to discover when the
-       target's accept(2) call has been interrupted) and the listening
-       file descriptor (so as to know when a connection is available).
-
-       If the target's system call is interrupted, the supervisor must
-       take care to release resources (e.g., file descriptors) that it
-       acquired on behalf of the target.
-
-Does that seem okay?
-
->>>>> ENOENT The cookie number is not valid. This can happen if a
->>>>> response has already been sent, or if the syscall was
->>>>> interrupted
->>>>>
->>>>> EBADF If the file descriptor specified in srcfd is invalid, or if
->>>>> the fd is out of range of the destination program.
->>>>
->>>> The piece "or if the fd is out of range of the destination program"
->>>> is not clear to me. Can you say some more please.
->>>>
->>>
->>> IIRC the maximum fd range is specific in proc by some sysctl named
->>> nr_open. It's also evaluated against RLIMITs, and nr_max.
->>>
->>> If nr-open (maximum fds open per process, iiirc) is 1000, even if 10
->>> FDs are open, it wont work if newfd is 1001.
->>
->> Actually, the relevant limit seems to be just the RLIMIT_NOFILE
->> resource limit at least in my reading of fs/file.c::replace_fd().
->> So I made the text
->>
->>               EBADF  Allocating the file descriptor in the target would
->>                      cause the target's RLIMIT_NOFILE limit to be
->>                      exceeded (see getrlimit(2)).
->>
->>
-> 
-> If you're above RLIMIT_NOFILE, you get EBADF.
-> 
-> When we do __receive_fd with a specific fd (newfd specified):
-> https://elixir.bootlin.com/linux/latest/source/fs/file.c#L1086
-> 
-> it calls replace_fd, which calls expand_files. expand_files
-> can fail with EMFILE.
-> 
->>>>> EINVAL If flags or new_flags were unrecognized, or if newfd is
->>>>> non-zero, and SECCOMP_ADDFD_FLAG_SETFD has not been set.
->>>>>
->>>>> EMFILE Too many files are open by the destination process.
->>
->> I'm not sure that the error can really occur. That's the error
->> that in most other places occurs when RLIMIT_NOFILE is exceeded.
->> But I may have missed something. More precisely, when do you think
->> EMFILE can occur?
->>
-> It can happen if the user specifies a newfd which is too large.
-
-Got it. Thanks! I made the error text:
-
-        EMFILE The file descriptor number specified in newfd  exceeds  the
-              limit specified in /proc/sys/fs/nr_open.
-
-Thanks,
-
-Michael
-
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index b2b974ecc431..9d49dd1558af 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -242,20 +242,6 @@ static void free_job(struct hl_device *hdev, struct hl_cs_job *job)
+ 	kfree(job);
+ }
+ 
+-static void cs_counters_aggregate(struct hl_device *hdev, struct hl_ctx *ctx)
+-{
+-	hdev->aggregated_cs_counters.device_in_reset_drop_cnt +=
+-			ctx->cs_counters.device_in_reset_drop_cnt;
+-	hdev->aggregated_cs_counters.out_of_mem_drop_cnt +=
+-			ctx->cs_counters.out_of_mem_drop_cnt;
+-	hdev->aggregated_cs_counters.parsing_drop_cnt +=
+-			ctx->cs_counters.parsing_drop_cnt;
+-	hdev->aggregated_cs_counters.queue_full_drop_cnt +=
+-			ctx->cs_counters.queue_full_drop_cnt;
+-	hdev->aggregated_cs_counters.max_cs_in_flight_drop_cnt +=
+-			ctx->cs_counters.max_cs_in_flight_drop_cnt;
+-}
+-
+ static void cs_do_release(struct kref *ref)
+ {
+ 	struct hl_cs *cs = container_of(ref, struct hl_cs,
+@@ -358,7 +344,6 @@ static void cs_do_release(struct kref *ref)
+ 
+ 	complete_all(&cs->fence->completion);
+ 	hl_fence_put(cs->fence);
+-	cs_counters_aggregate(hdev, cs->ctx);
+ 
+ 	kfree(cs->jobs_in_queue_cnt);
+ 	kfree(cs);
+@@ -397,11 +382,14 @@ static void cs_timedout(struct work_struct *work)
+ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 			enum hl_cs_type cs_type, struct hl_cs **cs_new)
+ {
+-	struct hl_cs_compl *cs_cmpl;
++	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_fence *other = NULL;
++	struct hl_cs_compl *cs_cmpl;
+ 	struct hl_cs *cs;
+ 	int rc;
+ 
++	cntr = &hdev->aggregated_cs_counters;
++
+ 	cs = kzalloc(sizeof(*cs), GFP_ATOMIC);
+ 	if (!cs)
+ 		return -ENOMEM;
+@@ -436,6 +424,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		dev_dbg_ratelimited(hdev->dev,
+ 			"Rejecting CS because of too many in-flights CS\n");
+ 		ctx->cs_counters.max_cs_in_flight_drop_cnt++;
++		atomic64_inc(&cntr->max_cs_in_flight_drop_cnt);
+ 		rc = -EAGAIN;
+ 		goto free_fence;
+ 	}
+@@ -610,6 +599,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ {
+ 	struct hl_device *hdev = hpriv->hdev;
+ 	struct hl_cs_chunk *cs_chunk_array;
++	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_cs_job *job;
+ 	struct hl_cs *cs;
+ 	struct hl_cb *cb;
+@@ -617,6 +607,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 	u32 size_to_copy;
+ 	int rc, i;
+ 
++	cntr = &hdev->aggregated_cs_counters;
+ 	*cs_seq = ULLONG_MAX;
+ 
+ 	if (num_chunks > HL_MAX_JOBS_PER_CS) {
+@@ -664,6 +655,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 						&is_kernel_allocated_cb);
+ 		if (rc) {
+ 			hpriv->ctx->cs_counters.parsing_drop_cnt++;
++			atomic64_inc(&cntr->parsing_drop_cnt);
+ 			goto free_cs_object;
+ 		}
+ 
+@@ -671,6 +663,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 			cb = get_cb_from_cs_chunk(hdev, &hpriv->cb_mgr, chunk);
+ 			if (!cb) {
+ 				hpriv->ctx->cs_counters.parsing_drop_cnt++;
++				atomic64_inc(&cntr->parsing_drop_cnt);
+ 				rc = -EINVAL;
+ 				goto free_cs_object;
+ 			}
+@@ -685,6 +678,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 						is_kernel_allocated_cb);
+ 		if (!job) {
+ 			hpriv->ctx->cs_counters.out_of_mem_drop_cnt++;
++			atomic64_inc(&cntr->out_of_mem_drop_cnt);
+ 			dev_err(hdev->dev, "Failed to allocate a new job\n");
+ 			rc = -ENOMEM;
+ 			if (is_kernel_allocated_cb)
+@@ -718,6 +712,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 		rc = cs_parser(hpriv, job);
+ 		if (rc) {
+ 			hpriv->ctx->cs_counters.parsing_drop_cnt++;
++			atomic64_inc(&cntr->parsing_drop_cnt);
+ 			dev_err(hdev->dev,
+ 				"Failed to parse JOB %d.%llu.%d, err %d, rejecting the CS\n",
+ 				cs->ctx->asid, cs->sequence, job->id, rc);
+@@ -727,6 +722,7 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 
+ 	if (int_queues_only) {
+ 		hpriv->ctx->cs_counters.parsing_drop_cnt++;
++		atomic64_inc(&cntr->parsing_drop_cnt);
+ 		dev_err(hdev->dev,
+ 			"Reject CS %d.%llu because only internal queues jobs are present\n",
+ 			cs->ctx->asid, cs->sequence);
+@@ -768,20 +764,22 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 				void __user *chunks, u32 num_chunks,
+ 				u64 *cs_seq)
+ {
+-	struct hl_device *hdev = hpriv->hdev;
+-	struct hl_ctx *ctx = hpriv->ctx;
++	u32 size_to_copy, q_idx, signal_seq_arr_len, cb_size;
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
+ 	struct hw_queue_properties *hw_queue_prop;
++	u64 *signal_seq_arr = NULL, signal_seq;
++	struct hl_device *hdev = hpriv->hdev;
++	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_fence *sig_fence = NULL;
++	struct hl_ctx *ctx = hpriv->ctx;
++	enum hl_queue_type q_type;
+ 	struct hl_cs_job *job;
+ 	struct hl_cs *cs;
+ 	struct hl_cb *cb;
+-	enum hl_queue_type q_type;
+-	u64 *signal_seq_arr = NULL, signal_seq;
+-	u32 size_to_copy, q_idx, signal_seq_arr_len, cb_size;
+ 	int rc;
+ 
+ 	*cs_seq = ULLONG_MAX;
++	cntr = &hdev->aggregated_cs_counters;
+ 
+ 	if (num_chunks > HL_MAX_JOBS_PER_CS) {
+ 		dev_err(hdev->dev,
+@@ -920,6 +918,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	job = hl_cs_allocate_job(hdev, q_type, true);
+ 	if (!job) {
+ 		ctx->cs_counters.out_of_mem_drop_cnt++;
++		atomic64_inc(&cntr->out_of_mem_drop_cnt);
+ 		dev_err(hdev->dev, "Failed to allocate a new job\n");
+ 		rc = -ENOMEM;
+ 		goto put_cs;
+@@ -934,6 +933,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 				q_type == QUEUE_TYPE_HW && hdev->mmu_enable);
+ 	if (!cb) {
+ 		ctx->cs_counters.out_of_mem_drop_cnt++;
++		atomic64_inc(&cntr->out_of_mem_drop_cnt);
+ 		kfree(job);
+ 		rc = -EFAULT;
+ 		goto put_cs;
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 80d4d7385ffe..d7cf833a20bc 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -1067,6 +1067,21 @@ struct hl_cs_parser {
+ 	u8			contains_dma_pkt;
+ };
+ 
++/**
++ * struct hl_info_cs_counters - command submission counters
++ * @out_of_mem_drop_cnt: dropped due to memory allocation issue
++ * @parsing_drop_cnt: dropped due to error in packet parsing
++ * @queue_full_drop_cnt: dropped due to queue full
++ * @device_in_reset_drop_cnt: dropped due to device in reset
++ * @max_cs_in_flight_drop_cnt: dropped due to maximum CS in-flight
++ */
++struct hl_cs_counters_atomic {
++	atomic64_t out_of_mem_drop_cnt;
++	atomic64_t parsing_drop_cnt;
++	atomic64_t queue_full_drop_cnt;
++	atomic64_t device_in_reset_drop_cnt;
++	atomic64_t max_cs_in_flight_drop_cnt;
++};
+ 
+ /*
+  * MEMORY STRUCTURE
+@@ -1649,7 +1664,7 @@ struct hl_device {
+ 
+ 	struct hl_device_idle_busy_ts	*idle_busy_ts_arr;
+ 
+-	struct hl_cs_counters		aggregated_cs_counters;
++	struct hl_cs_counters_atomic	aggregated_cs_counters;
+ 
+ 	struct hl_mmu_priv		mmu_priv;
+ 	struct hl_mmu_funcs		mmu_func;
+diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+index 07317ea49129..350a768309bd 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
++++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+@@ -314,10 +314,13 @@ static int clk_throttle_info(struct hl_fpriv *hpriv, struct hl_info_args *args)
+ 
+ static int cs_counters_info(struct hl_fpriv *hpriv, struct hl_info_args *args)
+ {
+-	struct hl_device *hdev = hpriv->hdev;
++	void __user *out = (void __user *) (uintptr_t) args->return_pointer;
+ 	struct hl_info_cs_counters cs_counters = { {0} };
++	struct hl_device *hdev = hpriv->hdev;
++	struct hl_cs_counters_atomic *cntr;
+ 	u32 max_size = args->return_size;
+-	void __user *out = (void __user *) (uintptr_t) args->return_pointer;
++
++	cntr = &hdev->aggregated_cs_counters;
+ 
+ 	if ((!max_size) || (!out))
+ 		return -EINVAL;
+@@ -325,6 +328,17 @@ static int cs_counters_info(struct hl_fpriv *hpriv, struct hl_info_args *args)
+ 	memcpy(&cs_counters.cs_counters, &hdev->aggregated_cs_counters,
+ 			sizeof(struct hl_cs_counters));
+ 
++	cs_counters.cs_counters.out_of_mem_drop_cnt =
++			atomic64_read(&cntr->out_of_mem_drop_cnt);
++	cs_counters.cs_counters.parsing_drop_cnt =
++			atomic64_read(&cntr->parsing_drop_cnt);
++	cs_counters.cs_counters.queue_full_drop_cnt =
++			atomic64_read(&cntr->queue_full_drop_cnt);
++	cs_counters.cs_counters.device_in_reset_drop_cnt =
++			atomic64_read(&cntr->device_in_reset_drop_cnt);
++	cs_counters.cs_counters.max_cs_in_flight_drop_cnt =
++			atomic64_read(&cntr->max_cs_in_flight_drop_cnt);
++
+ 	if (hpriv->ctx)
+ 		memcpy(&cs_counters.ctx_cs_counters, &hpriv->ctx->cs_counters,
+ 				sizeof(struct hl_cs_counters));
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 5e66c98fb0d3..adb61f9eb2b5 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -485,17 +485,21 @@ static void init_signal_wait_cs(struct hl_cs *cs)
+  */
+ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ {
++	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_ctx *ctx = cs->ctx;
+ 	struct hl_device *hdev = ctx->hdev;
+ 	struct hl_cs_job *job, *tmp;
+ 	struct hl_hw_queue *q;
+-	u32 max_queues;
+ 	int rc = 0, i, cq_cnt;
++	u32 max_queues;
++
++	cntr = &hdev->aggregated_cs_counters;
+ 
+ 	hdev->asic_funcs->hw_queues_lock(hdev);
+ 
+ 	if (hl_device_disabled_or_in_reset(hdev)) {
+ 		ctx->cs_counters.device_in_reset_drop_cnt++;
++		atomic64_inc(&cntr->device_in_reset_drop_cnt);
+ 		dev_err(hdev->dev,
+ 			"device is disabled or in reset, CS rejected!\n");
+ 		rc = -EPERM;
+@@ -529,6 +533,7 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ 
+ 			if (rc) {
+ 				ctx->cs_counters.queue_full_drop_cnt++;
++				atomic64_inc(&cntr->queue_full_drop_cnt);
+ 				goto unroll_cq_resv;
+ 			}
+ 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.17.1
+
