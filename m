@@ -2,159 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E332A3297
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB152A329A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgKBSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S1726329AbgKBSMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgKBSLw (ORCPT
+        with ESMTP id S1725797AbgKBSMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:11:52 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FFDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:11:52 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id t14so11493233pgg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=65bWdgXbJUHSY9klg8B4g7EQCn2RPfl2U/2hJDHKOAE=;
-        b=U5rpbbu/Wrv4XZAFMnegfITISy/o8wRmSAZfJOKn2097owuIhcuSadcJxcjRhHssNw
-         uWobnKuds82uuRwIxhpeoRAIUz/L2h8mFs0pBKxMQMw3/H0kbLH/uzvxxw0BdJvQxvgt
-         ubiXu+AQ4Ylqn8AHKEJgXa96iJHyoSqCZU0rk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=65bWdgXbJUHSY9klg8B4g7EQCn2RPfl2U/2hJDHKOAE=;
-        b=EuBq0JH/YPvjw1RU2V3Y2gg76bYu6gD51sp7gZUOphdCw6xmz6Awej3sbLgveB5u49
-         L8pRyDg8liu+nMRbkMaioYFYy/gYC+43IIqVtCV3cn3F/WI8ALC8EzJC+YM/k+pz74zm
-         sKeL35+vtHWG+lNUEhdoF9ZicpwBbdiAiXAJVpoXg/H1A77SY3JB5TnSelkWKBdijlPM
-         elUGQlzWbNNyMFX4iITeK19KrgGBWRJwa0sfG5lgE+dfa72QnHaw+0hpT50fQq+hh4dm
-         RDlI3b67ZOuOPwrb1KiP/TbBipJnLRBCnR3Y0OT1Zx4M6iGncUcVJN+NdBDBHhjHM0OL
-         9iuQ==
-X-Gm-Message-State: AOAM533xQEM6NdTrNvDcBcGbPtQZnjyH9bbCW7tTQwGGBdWKfEzHY1Rp
-        1YBhsJxBZY4szNdavIpyVqhalQ==
-X-Google-Smtp-Source: ABdhPJyiqLw//JRe3xdwfiASEB6IO86bTA3ip32CFqcGAv0wzGc0q3Li+IksqOKphIfp6NeiyysU1w==
-X-Received: by 2002:a62:d44b:0:b029:162:67f0:3c56 with SMTP id u11-20020a62d44b0000b029016267f03c56mr22037823pfl.55.1604340711929;
-        Mon, 02 Nov 2020 10:11:51 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id b17sm13175640pgb.94.2020.11.02.10.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:11:51 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: [PATCH v3 4/4] drm/bridge: ti-sn65dsi86: Update reply on aux failures
-Date:   Mon,  2 Nov 2020 10:11:44 -0800
-Message-Id: <20201102181144.3469197-5-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201102181144.3469197-1-swboyd@chromium.org>
-References: <20201102181144.3469197-1-swboyd@chromium.org>
+        Mon, 2 Nov 2020 13:12:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473A0C0617A6;
+        Mon,  2 Nov 2020 10:12:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tzLpJEtqWMoAnuZtioMuRPejBU3helvAx3OnKp5WyT4=; b=K+gfwNBhSTHctxo7GZiCazthuJ
+        i7/UcMkPU6eDSMzvQagAC4kJJ6q8TBj23rOLaAkkxbILe5cwPbOnbIray2do6ta8FtzHrvqznk5lv
+        2Qxfu8C6iW3Es6Mi/wIwYE2yI86zxSCtrB6aEsbbiCJqhvdEXjbjqdWoue3sPVOp/xfN3MyyN0/Jr
+        8Fl1JcFLYsZSthool5iJ3c/2vllWq33UAZs/mJ3S7cFVwhAec8CMwbUD43yebsjy7U1dVABCpkd0l
+        UgdXYrqbAAQJo5WQmJ2nHlALg4VqG7M8jH/x7/TvrJqeRN7Nu/YBcssAwhCQ+Bljm5jMlgdUeWYjV
+        2siQtS2Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZeJq-0004v4-I3; Mon, 02 Nov 2020 18:12:38 +0000
+Date:   Mon, 2 Nov 2020 18:12:38 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+Message-ID: <20201102181238.GA17806@infradead.org>
+References: <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+ <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+ <20201029145743.GA19379@infradead.org>
+ <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
+ <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
+ <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
+ <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
+ <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
+ <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should be setting the drm_dp_aux_msg::reply field if a NACK or a
-SHORT reply happens. Update the error bit handling logic in
-ti_sn_aux_transfer() to handle these cases and notify upper layers that
-such errors have happened. This helps the retry logic understand that a
-timeout has happened, or to shorten the read length if the panel isn't
-able to handle the longest read possible.
+On Mon, Nov 02, 2020 at 10:55:33AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-10-31 09:00:49 [-0600], Jens Axboe wrote:
+> > There really aren't any rules for this, and it's perfectly legit to
+> > complete from process context. Maybe you're a kthread driven driver and
+> > that's how you handle completions. The block completion path has always
+> > been hard IRQ safe, but possible to call from anywhere.
+> 
+> I'm not trying to put restrictions and forbidding completions from a
+> kthread. I'm trying to avoid the pointless softirq dance for no added
+> value. We could:
 
-Note: I don't have any hardware that exhibits these code paths so this
-is written based on reading the datasheet for this bridge and inspecting
-the code and how this is called.
+> to not break that assumption you just mentioned and provide 
+> |static inline void blk_mq_complete_request_local(struct request *rq)
+> |{
+> |                 rq->q->mq_ops->complete(rq);
+> |}
+> 
+> so that completion issued from from process context (like those from
+> usb-storage) don't end up waking `ksoftird' (running at SCHED_OTHER)
+> completing the requests but rather performing it right away. The softirq
+> dance makes no sense here.
 
-Changes in v2:
- - Move WRITE_STATUS_UPDATE check from case to assignment
+Agreed.  But I don't think your above blk_mq_complete_request_local
+is all that useful either as ->complete is defined by the caller,
+so we could just do a direct call.  Basically we should just
+return false from blk_mq_complete_request_remote after updating
+the state when called from process context.  But given that IIRC
+we are not supposed to check what state we are called from
+we'll need a helper just for updating the state instead and
+ensure the driver uses the right helper.  Now of course we might
+have process context callers that still want to bounce to the
+submitting CPU, but in that case we should go directly to a
+workqueue or similar.
 
-Changes in v2:
- - Handle WRITE_STATUS_UPDATE properly
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc: Jonas Karlman <jonas@kwiboo.se>
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-Cc: Sean Paul <seanpaul@chromium.org>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 35 +++++++++++++++++++++++----
- 1 file changed, 30 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 6b6e98ca2881..3a758c706b70 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -861,7 +861,7 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
- 				  struct drm_dp_aux_msg *msg)
- {
- 	struct ti_sn_bridge *pdata = aux_to_ti_sn_bridge(aux);
--	u32 request = msg->request & ~DP_AUX_I2C_MOT;
-+	u32 request = msg->request & ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
- 	u32 request_val = AUX_CMD_REQ(msg->request);
- 	u8 *buf = msg->buffer;
- 	unsigned int len = msg->size;
-@@ -878,6 +878,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
- 	case DP_AUX_NATIVE_READ:
- 	case DP_AUX_I2C_READ:
- 		regmap_write(pdata->regmap, SN_AUX_CMD_REG, request_val);
-+		/* Assume it's good */
-+		msg->reply = 0;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -909,10 +911,33 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
- 	ret = regmap_read(pdata->regmap, SN_AUX_CMD_STATUS_REG, &val);
- 	if (ret)
- 		return ret;
--	else if ((val & AUX_IRQ_STATUS_NAT_I2C_FAIL)
--		 || (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT)
--		 || (val & AUX_IRQ_STATUS_AUX_SHORT))
--		return -ENXIO;
-+
-+	if (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT) {
-+		/*
-+		 * The hardware tried the message seven times per the DP spec
-+		 * but it hit a timeout. We ignore defers here because they're
-+		 * handled in hardware.
-+		 */
-+		return -ETIMEDOUT;
-+	}
-+
-+	if (val & AUX_IRQ_STATUS_AUX_SHORT) {
-+		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
-+		if (ret)
-+			return ret;
-+	} else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
-+		switch (request) {
-+		case DP_AUX_I2C_WRITE:
-+		case DP_AUX_I2C_READ:
-+			msg->reply |= DP_AUX_I2C_REPLY_NACK;
-+			break;
-+		case DP_AUX_NATIVE_READ:
-+		case DP_AUX_NATIVE_WRITE:
-+			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-+			break;
-+		}
-+		return 0;
-+	}
- 
- 	if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE ||
- 	    len == 0)
--- 
-Sent by a computer, using git, on the internet
-
+Either way doing this properly will probabl involve an audit of all
+drivers, but I think that is worth it.
