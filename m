@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A862A3601
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E492A35FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgKBVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBVcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:32:10 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA640C0617A6;
-        Mon,  2 Nov 2020 13:32:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=h3oMtEYvKdbDjFLUL7+0fGhfLoWgk1F2RuoMLSxSJj8=; b=n8iCUXfNz9t/awYKgJl8XKY1Rz
-        C7+agVs/l/NJuZGTOxEu1flJFNZNFrNLGn4mvMorpeT3er/qmhizLO7OqfArlm5YqCSank7agxRlc
-        94/ACmeDTQDRWWiHhmambyYagPqx092ouWGPSz+8NpjAah+uw1byjU1f3o4H7jN5PkyeXmC11fOws
-        P1AkoObQeRtwN3hI0pJSc1pqZ5pvizvIHBvzLj/5tJxGKJopPIzh+ZbsTJGOpcVUZI8SqSOymwy/9
-        Px3zu//bTfgHWDHBttj21iE666RW38k5khcMrc1lHZzx/Fbi53oiglAHCua4mECXxr5XuzJ+qzj0s
-        JSb4tABg==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZhQs-0004oc-6V; Mon, 02 Nov 2020 21:32:06 +0000
-Subject: Re: [PATCH] clk: imx: scu: Fix compile error with module build of
- clk-scu.o
-To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <208469.1604318525@turing-police>
- <6e5a8fdb-0a02-5eae-ca1f-37df8a454e34@infradead.org>
- <238534.1604350899@turing-police>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0b61c4f4-b389-c853-6e09-ee603455e583@infradead.org>
-Date:   Mon, 2 Nov 2020 13:31:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725983AbgKBVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:32:05 -0500
+Received: from ozlabs.org ([203.11.71.1]:56825 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgKBVcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:32:05 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQ5hy3w1yz9sRK;
+        Tue,  3 Nov 2020 08:32:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604352722;
+        bh=gtoqJfn9FIdEkbzAxub4iuBVUObrpUd1AOjxOPH8/eQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hTg5hh2YBpaLKYuKxTSrEZbnOqdhJMX/xxA6i1ZQDuZW1xOVqesrSS6YbpfZaDZlG
+         sL5Vvut9K62+FtgZ1d98Ed8Sj23csS35C9UxpUp55H8Ze9qMu9aVemnzBJzQudCnFf
+         mJSA/6cUPnY3XmqptC8p/JJAEtuRxIn203FKuZf9mJWsMX7Z/vqPRzbuSg8H+qPTy8
+         P5HKikqWtOCF6BHH/nGzcXhrV1Rr0kBUCEmVsXw/+4TKi7k/FzGUiUFn0A6LuHiXEs
+         BlarPUGLtHCO4OhgQaE40oBG6t2WdcjIRNbfbYiLBnVxhDrYQOygw6euK1WdEmywjh
+         Kz1WFDBb07gEw==
+Date:   Tue, 3 Nov 2020 08:32:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the printk tree
+Message-ID: <20201103083201.4c653eed@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <238534.1604350899@turing-police>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/hc1z_9m0psR.L5Og6lAVvqh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 1:01 PM, Valdis Klētnieks wrote:
-> On Mon, 02 Nov 2020 09:15:20 -0800, Randy Dunlap said:
-> 
->> also
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> However, this driver does not directly use <linux/module.h>.
-> 
-> Just my luck - I looked at 3 or 4 other things that include of_platform.h
-> and they all *did* include module.h.
-> 
->> platform_device.h #includes <linux/device.h>, which is where the
->> problem lies:
->>
->> <linux/device.h> uses macros that are provided by <linux/module.h>
->> so <linux/device.h> should #include <linux/module.h>.
->>
->> and that fixes this commit:
->>
->> commit 4c002c978b7f2f2306d53de051c054504af920a9
->> Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Date:   Mon Dec 9 20:33:03 2019 +0100
->>
->>     device.h: move 'struct driver' stuff out to device/driver.h
-> 
-> OK.. who's going to do that? Me, or Randy, or Greg?
+--Sig_/hc1z_9m0psR.L5Og6lAVvqh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-You could go ahead... I began on it yesterday but didn't finish
-testing, although I did see the same build error that the 0day
-bot reported, so I don't know what it's going to take to fix that.
+Hi all,
 
+In commit
 
--- 
-~Randy
+  8a8424bf2439 ("init/Kconfig: Fix CPU number in LOG_CPU_MAX_BUF_SHIFT desc=
+ription")
 
+Fixes tag
+
+  Fixes: 23b2899f7f ("printk: allow increasing the ring buffer depending on=
+ the number of CPUs")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hc1z_9m0psR.L5Og6lAVvqh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+getEACgkQAVBC80lX
+0Gz7RggAmFZG42PuTH117ZayMoNwr5k3+6pYp62xvpbHE9BdOaCxfNHoy0jWVEl3
+Hqhin3oYjtjBPVjEWCZLpohx5N20WfLGP04AUiKWenQd6RFKIOEWpclWLTyfuvhC
+6L5uolfumHR7Z8OZmek/YvLVQQmqhW47JZCVHypmEsdl41dvnOypBnytSoTuPoQv
+1iaQ9zygEjf7kvCZYF8UqChL/G1CMNjKizm55/s2U1dlalC04usRbg5myoIiPSDM
+isfQOat79XPN4ktv79gWvJCrpjRLfiTcss8vBHMXNdPetJ1781xxcARetsWyQSop
+sI6gBkYS7Ux+VUCDc/l+Brekg5MRDw==
+=w0Kh
+-----END PGP SIGNATURE-----
+
+--Sig_/hc1z_9m0psR.L5Og6lAVvqh--
