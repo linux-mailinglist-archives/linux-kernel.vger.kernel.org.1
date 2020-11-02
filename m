@@ -2,108 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CD62A2D05
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8A42A2D09
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgKBObi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:31:38 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40874 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgKBObf (ORCPT
+        id S1726096AbgKBOcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgKBOcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:31:35 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A2EPLKd042219;
-        Mon, 2 Nov 2020 14:31:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=BQDJe71X5l6t0vecfZytTzkoHxPWhPbaKkNRsejo630=;
- b=mjwWSevI93WJzam9IOb6T47zzJ89nLLqnCVCGvqCbuHdp6493HOLg9B1p1Ov6mx4yGCk
- fAYSxdMzIxlrbnXYaHXg9lcdyGRzqDDSd7o/CBvFObwLcujnqv9cXTYvP9qwp3nwS0gG
- zgGyLYkoqzFhrsWH+iwpUPmgHWZsBiTTb7cU9oynMQIZuFwS1ixHjU3OICviVMRG7/Ix
- Jb/Mq305A++iR2LhShkCvvjpbDLeGXxLghFTQYDFP7zNwacILtjvYgIyetaKr10A+Yy3
- 4LrMMwqpqG+JZrTAH0VpsKzjBfRQuwes90T9u8QjMMTxpB2qHNjDl5gxj6kYpwMYxPnL KA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34hhvc45he-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 02 Nov 2020 14:31:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A2ETdGs087987;
-        Mon, 2 Nov 2020 14:31:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34hvrtxh1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Nov 2020 14:31:28 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A2EVPg1011249;
-        Mon, 2 Nov 2020 14:31:25 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 02 Nov 2020 06:31:25 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] nfsd: remove unneeded semicolon
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20201101153234.2291612-1-trix@redhat.com>
-Date:   Mon, 2 Nov 2020 09:31:24 -0500
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <A241215F-384F-4BC7-98A4-339D21622B4B@oracle.com>
-References: <20201101153234.2291612-1-trix@redhat.com>
-To:     trix@redhat.com, Bruce Fields <bfields@fieldses.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011020116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011020115
+        Mon, 2 Nov 2020 09:32:00 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C524C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:32:00 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id ed14so2604855qvb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=BDMjfTmOOKhZH3K/ouFyqmuRkOXqqdLRGH9Vk8XxVqg=;
+        b=Q6xDg3VkvU7CZxgoA5ptlTfvu/ZLrWGWrgqz+3tekYZJQp/45KdEKWCKkyKKHlwUkZ
+         uA8XC7laSjpEr1z75pK6/lGkslOvfcf7bMC0I02jnH1hpTtSz7DOvDUvch5OdZYJY3+O
+         eFEOIMdHTMvHIkLhRgjItklK9DDNZ2Pv+3qcY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=BDMjfTmOOKhZH3K/ouFyqmuRkOXqqdLRGH9Vk8XxVqg=;
+        b=OUts9EBbkOTWWHsdMrFz9XIxkB788yyzfwfjlvOkduUGaX5t1A7plp/pqyorIPvL2g
+         +bOTTGVCgrZBT9YF069XNWr7O7BPCkcQ2n3HUzmC3pAMoJ0bl9J9TWP3j7v4SsVUxSvh
+         Q5ToZ4rP+odWSzPnjT/WPIXTZFtkuYBbgkbuZv6yJA8gKylY0fPfEUZRcF4QGSzQ5WYU
+         0hYlpQUPr+rXtaoqpbkCWpxZVUWdXM1PTC/IiyV1KwM/ZZa9wlduOVuHqLWzNbGigWER
+         CYDxobs9hWX+5PIiYefKTW8G7U+/9tMP4zdvgnHBVSO1htiEh3g80VdlEwkOoQMH7kjc
+         e+BQ==
+X-Gm-Message-State: AOAM532Vh9dEfvWDpdSnw3d0byduYqSJf8rmjq9x+0lvT/rf/dfG00jI
+        ZP9ElA7Ag1GfnmRPM+NTL7wZeXEhrs9WB4YHP/DsIQ==
+X-Google-Smtp-Source: ABdhPJxDecX0uFlfN58W3lUU/SgCYBdAV13Nk2j+mkKDdCuIncKwkTr48GZXXPHju4Vfn2LwrTGyw/R+xRIZGCN0Ewg=
+X-Received: by 2002:ad4:42ae:: with SMTP id e14mr3337109qvr.34.1604327518660;
+ Mon, 02 Nov 2020 06:31:58 -0800 (PST)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+         <1597850436-116171-18-git-send-email-john.garry@huawei.com> <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+In-Reply-To: <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+MIME-Version: 1.0
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQIEYzmMwLj9Hjt1oYRTL2F1ptHELAH4Y1GPA2MBE+CpLqftIA==
+Date:   Mon, 2 Nov 2020 20:01:55 +0530
+Message-ID: <1824064113e9adfdf4d086709cccee00@mail.gmail.com>
+Subject: RE: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+To:     Qian Cai <cai@redhat.com>, John Garry <john.garry@huawei.com>,
+        axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        don.brace@microsemi.com, ming.lei@redhat.com, bvanassche@acm.org,
+        dgilbert@interlog.com, paolo.valente@linaro.org, hare@suse.de,
+        hch@lst.de
+Cc:     Sumit Saxena <sumit.saxena@broadcom.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
+        Hannes Reinecke <hare@suse.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e0387305b3209be6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000e0387305b3209be6
+Content-Type: text/plain; charset="UTF-8"
 
+> On Wed, 2020-08-19 at 23:20 +0800, John Garry wrote:
+> > From: Kashyap Desai <kashyap.desai@broadcom.com>
+> >
+> > Fusion adapters can steer completions to individual queues, and we now
+> > have support for shared host-wide tags.
+> > So we can enable multiqueue support for fusion adapters.
+> >
+> > Once driver enable shared host-wide tags, cpu hotplug feature is also
+> > supported as it was enabled using below patchsets - commit
+> > bf0beec0607d ("blk-mq: drain I/O when all CPUs in a hctx are
+> > offline")
+> >
+> > Currently driver has provision to disable host-wide tags using
+> > "host_tagset_enable" module parameter.
+> >
+> > Once we do not have any major performance regression using host-wide
+> > tags, we will drop the hand-crafted interrupt affinity settings.
+> >
+> > Performance is also meeting the expecatation - (used both none and
+> > mq-deadline scheduler)
+> > 24 Drive SSD on Aero with/without this patch can get 3.1M IOPs
+> > 3 VDs consist of 8 SAS SSD on Aero with/without this patch can get
+> > 3.1M IOPs.
+> >
+> > Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+> > Signed-off-by: Hannes Reinecke <hare@suse.com>
+> > Signed-off-by: John Garry <john.garry@huawei.com>
+>
+> Reverting this commit fixed an issue that Dell Power Edge R6415 server
+> with
+> megaraid_sas is unable to boot.
 
-> On Nov 1, 2020, at 10:32 AM, trix@redhat.com wrote:
-> 
-> From: Tom Rix <trix@redhat.com>
-> 
-> A semicolon is not needed after a switch statement.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> fs/nfsd/nfs4xdr.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-> index 259d5ad0e3f4..6020f0ff6795 100644
-> --- a/fs/nfsd/nfs4xdr.c
-> +++ b/fs/nfsd/nfs4xdr.c
-> @@ -2558,7 +2558,7 @@ static u32 nfs4_file_type(umode_t mode)
-> 	case S_IFREG:	return NF4REG;
-> 	case S_IFSOCK:	return NF4SOCK;
-> 	default:	return NF4BAD;
-> -	};
-> +	}
-> }
-> 
-> static inline __be32
-> -- 
-> 2.18.1
-> 
+I will take a look at this. BTW, can you try keeping same PATCH but use
+module parameter "host_tagset_enable =0"
 
-I can take this for 5.11.
+Kashyap
 
---
-Chuck Lever
+--000000000000e0387305b3209be6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-
-
+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
+yfWKfxJx8FcWmsjkSlrwDu+oVuDUa2wqeKBU12HQ4JAVd+LOb5edsbbFQxgGHu+MPuc/1hl9kTkC
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU4dX1
+Yg4eoWXbqyPW/N1ZD/LPIWcwDQYJKoZIhvcNAQELBQADggEBABBuHYKGUwHIhCjd3LieJwKVuJNr
+YohEnZzCoNaOj33/j5thiA4cZehCh6SgrIlFBIktLD7jW9Dwl88Gfcy+RrVa7XK5Hyqwr1JlCVsW
+pNj4hlSJMNNqxNSqrKaD1cR4/oZVPFVnJJYlB01cLVjGMzta9x27e6XEtseo2s7aoPS2l82koMr7
+8S/v9LyyP4X2aRTWOg9RG8D/13rLxFAApfYvCrf0quIUBWw2BXlq3+e3r7pU7j40d6P04VV3Zxws
+M+LbYxcXFT2gXvoYd2Ms8zsLrhO2M6pMzeNGWk2HWTof9s7EEHDjis/MRlbYSNaohV23IUzNlBw7
+1FmvvW5GKK0xggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDDSdoX7GqonhoE7TszANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgsg/XY/U4
+rHYVahd8ykRLmqc+EHfvIdb84tafTy2GLp0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAxMTAyMTQzMTU5WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAK7IkGa+pN1ifyqm2aN71wPo1V1K
+SwkseFDxVYiSDxzkNMGiJbnn5aP2tmdSxRSXCqiHueNo7A8bsa6qXxr3Gx87GxzvDnay+vBxXXoA
+ebUUkzXFoIzwmSGIF58OgnEbrDMq9pzSN5FmsBke/jNjVPARMMO/32ufK7C7h+S4UIL7VW3YqivO
+yymshRt7y0vmjlyoRNJDvavi20iR9EqlRPHeCvMudkf4+eN4kSTCebeiwmp2fJUH83lljY5ZbILv
+URoUJxdI8rMg/AbsImAgnQDpONcCeuBjEHVZI1+cshWi22wE+QaPrmgsbHOboGIsffk0V6UshX9V
+s5q80qF4REM=
+--000000000000e0387305b3209be6--
