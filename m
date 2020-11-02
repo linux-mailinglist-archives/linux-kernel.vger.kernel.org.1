@@ -2,93 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A241A2A2278
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 00:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735BD2A227D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgKAX66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 18:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
+        id S1727487AbgKBACE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 19:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgKAX66 (ORCPT
+        with ESMTP id S1727309AbgKBACE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 18:58:58 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE50C0617A6;
-        Sun,  1 Nov 2020 15:58:57 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id f93so8162581qtb.10;
-        Sun, 01 Nov 2020 15:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k0kRy+Nx/QnWYbnmGzwht3fo9mypVSfVLNNpjvfeF7Y=;
-        b=brNJSku0bPKWosQMJXoWRGAomXJHS//QnKnot+pwva9tggddcof7eebITAxeSQqISR
-         0shntSkFIew5/XuK/at+g071ttN0u3P5qb6hi9WbqpHd0NH8ZbFymxybJDYkZitbEodF
-         b6d2g1d8MRMbKxo2Tnlnr4HmIfKWHriMjW+hw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k0kRy+Nx/QnWYbnmGzwht3fo9mypVSfVLNNpjvfeF7Y=;
-        b=Va9Gw5fiBW7gWZwm8r+QAxMUvV/ASBmahocRkKvHqXWg7E92eJtCIX6pNjCExIInar
-         xJgNHKXQAIDNfUHM+413oQ4JA/Y9XDn5kbbdI1dF5yd2LTJO/XDin3EMhqwNCc25fjFe
-         dqLTe0ol/g8NGz0w/qr4AX4qG0EzeDW3jb2oqgzAsehiASbaxGrcu7qazbhUSYfyC7n2
-         vKL7OvsWPzwM5JKMFqy8kWQM1A5PAtAslu4W5Xwy+xN96z7yWemrMLs1RRfUiU+9HQlf
-         +YcWfda1+CcxLN4bOjOF0qJ2O4QhEvsiK58ZySpvUhD+oSVyTjjaw4gpwNLIU6oVOO3M
-         O+uQ==
-X-Gm-Message-State: AOAM5338Vj9kUof8NL3y3tuJra/3kQwXn4kLmrArWIMhXucshry7v905
-        1WXVqm+S78oMPEM1tXS11idi30GwxQ2JeOahUXmV1Nuk2Nw=
-X-Google-Smtp-Source: ABdhPJzQB5EPcYDgX2QkiYwah4UMZ5U4K0vEkbXYMHSrPooTsRW4trT5qeGhOH4iMIk8EMMTIgScxdMc83Ni2J3YO6k=
-X-Received: by 2002:ac8:5854:: with SMTP id h20mr12022217qth.176.1604275137155;
- Sun, 01 Nov 2020 15:58:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20200813190431.3331026-1-vijaykhemka@fb.com>
-In-Reply-To: <20200813190431.3331026-1-vijaykhemka@fb.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Sun, 1 Nov 2020 23:58:44 +0000
-Message-ID: <CACPK8Xe8cfQO2=+66_xE3gVWnqThWqPkhVuELpOowdaXORZCbw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: tiogapass: Remove vuart
-To:     Vijay Khemka <vijaykhemka@fb.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Sun, 1 Nov 2020 19:02:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBA8C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 16:02:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=0zEKYXveXP5fa+tRFUARog0gdVdEjUSFs0ihOqFPpjc=; b=uJXtK9JNCoVw/IsdTE5SFtOBT9
+        OY+TlKxuHR9FV3v7/e/bMVddI9hFnaDogVMwsZlcBCcRw9uTUl4ML6tJPYGijYGW0QlWEUFKM2NIg
+        WeNVX2Bs0+oubNRt3WLBVjIjrsoBVyFU/y/oCk/ztPHsP8IqIB7aaHXba28HMzgY3BzmwtOZivmAP
+        rZdvd6PWuM3r/Y83yR+EdjPJLI+21n00U0bBncT/KITtFtlNhR4/nzxmRIeb6r61BdBrEhFrLESzu
+        uCb3sVWJCC5+g2G0gA88gpqtzXCG5j3d9EYSmH/6htJ/DS+VH2xjJ5s6Jz304ASkUwxsrUebwxKoF
+        2F8l7VkQ==;
+Received: from [2601:1c0:6280:3f0::60d5]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZNIN-0004it-AO; Mon, 02 Nov 2020 00:01:59 +0000
+Subject: Re: Linux 5.10-rc2 (docs build)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sai Dasari <sdasari@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <CAHk-=wiGc62spBHh+i1yH9sVLpCqZBznUF8QdO7H5772qO1xqQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ff1301ed-6040-3aac-c057-7f37184604d3@infradead.org>
+Date:   Sun, 1 Nov 2020 16:01:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wiGc62spBHh+i1yH9sVLpCqZBznUF8QdO7H5772qO1xqQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 at 19:04, Vijay Khemka <vijaykhemka@fb.com> wrote:
->
-> Removed vuart for facebook tiogapass platform as it uses uart2 and
-> uart3 pin with aspeed uart routing feature.
->
-> Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Something broke the docs build (SEVERE):
 
-> ---
->  arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts | 5 -----
->  1 file changed, 5 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-> index 2d44d9ad4e40..e6ad821a8635 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-> @@ -82,11 +82,6 @@ &lpc_ctrl {
->         status = "okay";
->  };
->
-> -&vuart {
-> -       // VUART Host Console
-> -       status = "okay";
-> -};
-> -
->  &uart1 {
->         // Host Console
->         status = "okay";
-> --
-> 2.24.1
->
+
+Sphinx parallel build error:
+docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-bus-rapidio:2: (SEVERE/4) Title level inconsistent:
+
+Attributes Common for All RapidIO Devices
+-----------------------------------------
+
+
+and then it stops/hangs. Does not terminate normally but is no longer
+executing.
+
+-- 
+~Randy
+
