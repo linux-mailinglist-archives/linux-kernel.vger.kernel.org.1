@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908432A330E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C77A2A3313
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgKBSeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:34:01 -0500
-Received: from mga17.intel.com ([192.55.52.151]:4765 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbgKBSeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:34:01 -0500
-IronPort-SDR: bnuwXQ9emSVxR9tvMh23EZ8WQ+yCg3ifX4e/9buE8mrdGqGtDcTjX6nf25ZMYPMsqzoLfySa6r
- O0Pjk347mfGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="148786621"
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="148786621"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:34:01 -0800
-IronPort-SDR: pahTddyjF32YwYnd6OFeQd2/itlS/oc6hyqu8YMbqEDKrlmEYpuwwcjgam8jheQPbPFunfza8+
- l8aDQFZSPGuA==
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="470475711"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:34:00 -0800
-Date:   Mon, 2 Nov 2020 10:33:59 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Tao Xu <tao3.xu@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        id S1726563AbgKBSen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726525AbgKBSel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:34:41 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FDBC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:34:41 -0800 (PST)
+Received: from zn.tnic (p200300ec2f086a00fa513bf50e741c79.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6a00:fa51:3bf5:e74:1c79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 091CF1EC0249;
+        Mon,  2 Nov 2020 19:34:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604342079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6gyIuFjrxWqj7ZZQ8QrJgmiKLdEe27h5YwOXM77j2B0=;
+        b=Y5tPVUz30nIF1a/NLWGSYuzdeEtjRmjfIS2zr2mOfn/90LLk8rG/+Ei3EmriT1pnznuP+E
+        VFRKV8Q/7a0W8zWjD9XKIzjLdPr187+Z7Ok0wRqv7i9bMJ8bl8C+FqbXT6rjs6kNOsOHCa
+        nm3xYADoRBvHTFpZQXKmQZ/gh6WTpPM=
+Date:   Mon, 2 Nov 2020 19:34:30 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     shuo.a.liu@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
-Message-ID: <20201102183359.GE21563@linux.intel.com>
-References: <20201102061445.191638-1-tao3.xu@intel.com>
- <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
- <20201102173130.GC21563@linux.intel.com>
- <CALCETrV0ZsTcQKVCPPSKHnuVgERMC0x86G5y_6E5Rhf=h5JzsA@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201102183430.GG15392@zn.tnic>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-5-shuo.a.liu@intel.com>
+ <20201102145657.GD15392@zn.tnic>
+ <20201102160901.GU2672@gate.crashing.org>
+ <20201102171950.GF15392@zn.tnic>
+ <20201102181000.GX2672@gate.crashing.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALCETrV0ZsTcQKVCPPSKHnuVgERMC0x86G5y_6E5Rhf=h5JzsA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201102181000.GX2672@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:01:16AM -0800, Andy Lutomirski wrote:
-> On Mon, Nov 2, 2020 at 9:31 AM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
-> >
-> > On Mon, Nov 02, 2020 at 08:43:30AM -0800, Andy Lutomirski wrote:
-> > > On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
-> > > > 2. Another patch to disable interception of #DB and #AC when notify
-> > > > VM-Exiting is enabled.
-> > >
-> > > Whoa there.
-> > >
-> > > A VM control that says "hey, CPU, if you messed up and livelocked for
-> > > a long time, please break out of the loop" is not a substitute for
-> > > fixing the livelocks.  So I don't think you get do disable
-> > > interception of #DB and #AC.
-> >
-> > I think that can be incorporated into a module param, i.e. let the platform
-> > owner decide which tool(s) they want to use to mitigate the legacy architecture
-> > flaws.
-> 
-> What's the point?  Surely the kernel should reliably mitigate the
-> flaw, and the kernel should decide how to do so.
+On Mon, Nov 02, 2020 at 12:10:00PM -0600, Segher Boessenkool wrote:
+> movl works for moving anything g->r.
 
-IMO, setting a reasonably low threshold _is_ mitigating such flaws.  E.g. it's
-entirely possible, if not likely, that we can push the threshold below various
-ENCLS instruction latencies.  Now I'm curious as to how exactly the accounting
-is done under the hood, e.g. I assume retiring uops of a massive instruction is
-enough to reset the timer, but I haven't actually read the specs in detail.
+Right.
 
-If userspace is truly malicious, it can easily spawn new VMs/processes to carry
-out its attack, e.g. exiting to userspace on these VM-Exits effectively
-throttles userspace as much as straight killing the process.
+> This is not true for most insns, and not for most architectures at
+> all (usually loading from memory has a separate mnemonic; moving an
+> immediate number often as well (and it does not usually allow *every*
+> immediate anyway, not even all numbers!)
 
-> >
-> > > I also think you should print a loud warning
-> >
-> > I'm not so sure on this one, e.g. userspace could just spin up a new instance
-> > if its malicious guest and spam the kernel log.
-> 
-> pr_warn_once()?
+So I've heard from other architectures. Every arch has its own problems.
+:-)
 
-Or ratelimited.  My point was that a straight WARN would be less than ideal.
+> Most people do not read the documentation, they just copy from (bad)
+> examples (and arguably, any example you do not really understand is a
+> bad example).
 
-> If this triggers, it's a *bug*, right?  Kernel or CPU.
+Unfortunately.
 
-Sort of?  Many (all?) of the known of the scenarios that can trigger this exit
-are unlikely to ever be fixed in silicon.  I'm not saying they shouldn't be
-fixed, just that practically speaking they are highly unlikely to be fixed
-anytime soon.  The infinite #DB/#AC recursion flaws are inarguably dumb CPU
-behavior, but there are other scenarious that are less cut and dried, i.e. may
-not be fixable without non-trivial tradeoffs.
+> (It does not allow *all* memory and *all* constants, btw...  And the
+> condition for registers is not really "general register", whatever that
+> means...
 
-> > > and have some intelligent handling when this new exit triggers.
-> >
-> > We discussed something similar in the context of the new bus lock VM-Exit.  I
-> > don't know that it makes sense to try and add intelligence into the kernel.
-> > In many use cases, e.g. clouds, the userspace VMM is trusted (inasmuch as
-> > userspace can be trusted), while the guest is completely untrusted.  Reporting
-> > the error to userspace and letting the userspace stack take action is likely
-> > preferable to doing something fancy in the kernel.
-> >
-> >
-> > Tao, this patch should probably be tagged RFC, at least until we can experiment
-> > with the threshold on real silicon.  KVM and kernel behavior may depend on the
-> > accuracy of detecting actual attacks, e.g. if we can set a threshold that has
-> > zero false negatives and near-zero false postives, then it probably makes sense
-> > to be more assertive in how such VM-Exits are reported and logged.
-> 
-> If you can actually find a threshold that reliably mitigates the bug
-> and does not allow a guest to cause undesirably large latency in the
-> host, then fine.  1/10 if a tick is way too long, I think.
+I think that means general purpose registers. I.e., it won't use, say
+FPU, XMM or whatever special regs.
 
-Yes, this was my internal review feedback as well.  Either that got lost along
-the way or I wasn't clear enough in stating what should be used as a placeholder
-until we have silicon in hand.
+What does the asm() parsing code in gcc do for "g"? There should be
+some logic which constraints what register is valid...
+
+> I hope no one ever told you our documentation does not have white
+> lies!)
+
+I have convinced myself of this a couple of times already so I either go
+ask our gcc friends or go look straight at gcc source. It is useful to
+know folks which hack on it so that I can ask them stupid questions and
+not go off into the weeds, trying to figure out what the documentation
+says.
+
+But hey, if that gets the documentation improved, that's a win-win
+situation right there. Might even make people copying from bad examples
+to go look at the docs first...
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
