@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE12F2A35ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFE12A35F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgKBVXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:23:39 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:39096 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgKBVXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:23:39 -0500
-Received: from comp-core-i7-2640m-0182e6 (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id B766F209AF;
-        Mon,  2 Nov 2020 21:23:36 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 22:23:32 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [RFC PATCH v1 1/4] Increase size of ucounts to atomic_long_t
-Message-ID: <20201102212332.zsdi2xcx6vxdh5ui@comp-core-i7-2640m-0182e6>
-References: <cover.1604335819.git.gladkov.alexey@gmail.com>
- <f3c95ffedbab07f05e0e6e4e5a8bdd6c358194e7.1604335819.git.gladkov.alexey@gmail.com>
- <20201102180301.dup2cmbqdyrexp22@wittgenstein>
+        id S1726647AbgKBVYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:24:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27601 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725933AbgKBVYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:24:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604352242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5krEaljvyrhzNRqKb50IcCPttqpfwQ2VdU+VnjlUbEw=;
+        b=M0L+uqsFa3JXR8oBrwpsU+NODhRqxIyxJ3FSPiZkD8/mYEgpjEeZHLkIu4kDFUKJ4U1Jfi
+        j0UHussuTJTbGocRcdnO6NUT75Phnis5MXu1fbcwlyMXDvgW1sBUbCqbWqfzXDuv6TDZjW
+        Yx/26AHdZ4Rj07fERFfNx/gIz5YWhNg=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-288VSniwN8Cp2XveQBSyXw-1; Mon, 02 Nov 2020 16:24:00 -0500
+X-MC-Unique: 288VSniwN8Cp2XveQBSyXw-1
+Received: by mail-qt1-f199.google.com with SMTP id 2so8902883qtb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:24:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5krEaljvyrhzNRqKb50IcCPttqpfwQ2VdU+VnjlUbEw=;
+        b=uHAGWlPdoG3eGjt4ZBrsjlPeECT8b77CbBXQFFUgfxtK7otMf8uSs2vnxJYXL/AfI0
+         L8X/2vKA2tf/5Vw1s109PKsC+RHP9+MKogOagaHBn31JAtSIAUIBe0cPPqPz3Sjphr8n
+         fUiV99Yf73TWCqw1tE92O5isSSY6So6VBcrsjIzpRFhTSbJNzCyXf4ogaKe9uqp3xOgL
+         YGxHQECNhoSK+sjsJoC4oG1K6RNYz2/L8tRE0dM8OlbA4J7KfpMO3cbPEGEbnOCgIro5
+         D8AagqoSQuQV551EDlILUEz0hSv9cbD6SpZ96PVZh/ipuSdM6y86rwMgFXRpWDXvISH1
+         Hwig==
+X-Gm-Message-State: AOAM532dy3u3a+vRs55ZEV8sa51R5qIO4UOIi6reVb0o5+YHCgq6n+S0
+        4mKMKEkIgnW2qwglBapsoH32xyC5mJnN9cDFzxLNw3Gpv9vzHorOB4oJZz5U54aASlv8Qkmv6pC
+        fISVp8rdwspqsyMXxwJqH/a9z
+X-Received: by 2002:ac8:51cd:: with SMTP id d13mr16561567qtn.148.1604352240472;
+        Mon, 02 Nov 2020 13:24:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzVZNW9d1dBhPMDwDQjUbkTYH74maXUmC/a3NMkduqNhkNQs5W808H/I9luHcDXbPi93/dC1A==
+X-Received: by 2002:ac8:51cd:: with SMTP id d13mr16561552qtn.148.1604352240251;
+        Mon, 02 Nov 2020 13:24:00 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
+        by smtp.gmail.com with ESMTPSA id 69sm9012776qko.48.2020.11.02.13.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 13:23:59 -0800 (PST)
+Date:   Mon, 2 Nov 2020 16:23:58 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Subject: Re: [PATCH 1/5] KVM: selftests: Factor code out of demand_paging_test
+Message-ID: <20201102212358.GB20600@xz-x1>
+References: <20201027233733.1484855-1-bgardon@google.com>
+ <20201027233733.1484855-2-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201102180301.dup2cmbqdyrexp22@wittgenstein>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 02 Nov 2020 21:23:37 +0000 (UTC)
+In-Reply-To: <20201027233733.1484855-2-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 07:03:01PM +0100, Christian Brauner wrote:
-> On Mon, Nov 02, 2020 at 05:50:30PM +0100, Alexey Gladkov wrote:
-> > In order to be able to use ucounts for rlimits, the size must be increased.
-> > For example user_struct.mq_bytes (RLIMIT_MSGQUEUE) is unsigned long.
+On Tue, Oct 27, 2020 at 04:37:29PM -0700, Ben Gardon wrote:
+> Much of the code in demand_paging_test can be reused by other, similar
+> multi-vCPU-memory-touching-perfromance-tests. Factor that common code
+> out for reuse.
 > 
-> I don't have any issues with this change I just wonder what the exact
-> reason is. It's not immediately obvious to me.
+> No functional change expected.
 
-Right now user_struct.mq_bytes that is currently used for checking
-RLIMIT_MSGQUEUE is unsigned log, but ucounts is signed int. The rlimit is
-also unsigned long. If I migrate RLIMIT_MSGQUEUE to ucounts I will
-decrease counter and possibly break backward compatibility. Technically,
-it can be violated anyway.
+Is there explicit reason to put the common code in a header rather than
+perf_test_util.c?  No strong opinion on this especially this is test code,
+just curious.  Since iiuc .c file is still preferred for things like this.
 
-linux/ipc/mqueue.c:376:
-
-	mq_bytes += mq_treesize;
-	spin_lock(&mq_lock);
-	if (u->mq_bytes + mq_bytes < u->mq_bytes ||
-	    u->mq_bytes + mq_bytes > rlimit(RLIMIT_MSGQUEUE)) {
-		spin_unlock(&mq_lock);
-		/* mqueue_evict_inode() releases info->messages */
-		ret = -EMFILE;
-		goto out_inode;
-	}
-	u->mq_bytes += mq_bytes;
-	spin_unlock(&mq_lock);
-
-> > 
-> > Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
-> > ---
-> >  include/linux/user_namespace.h |  4 ++--
-> >  kernel/ucount.c                | 14 +++++++-------
-> >  2 files changed, 9 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-> > index 6ef1c7109fc4..fc75af812d73 100644
-> > --- a/include/linux/user_namespace.h
-> > +++ b/include/linux/user_namespace.h
-> > @@ -86,7 +86,7 @@ struct user_namespace {
-> >  	struct ctl_table_header *sysctls;
-> >  #endif
-> >  	struct ucounts		*ucounts;
-> > -	int ucount_max[UCOUNT_COUNTS];
-> > +	long ucount_max[UCOUNT_COUNTS];
-> >  } __randomize_layout;
-> >  
-> >  struct ucounts {
-> > @@ -94,7 +94,7 @@ struct ucounts {
-> >  	struct user_namespace *ns;
-> >  	kuid_t uid;
-> >  	int count;
-> > -	atomic_t ucount[UCOUNT_COUNTS];
-> > +	atomic_long_t ucount[UCOUNT_COUNTS];
-> >  };
-> >  
-> >  extern struct user_namespace init_user_ns;
-> > diff --git a/kernel/ucount.c b/kernel/ucount.c
-> > index 11b1596e2542..7b2bca8582ef 100644
-> > --- a/kernel/ucount.c
-> > +++ b/kernel/ucount.c
-> > @@ -175,14 +175,14 @@ static void put_ucounts(struct ucounts *ucounts)
-> >  	kfree(ucounts);
-> >  }
-> >  
-> > -static inline bool atomic_inc_below(atomic_t *v, int u)
-> > +static inline bool atomic_long_inc_below(atomic_long_t *v, int u)
-> >  {
-> > -	int c, old;
-> > -	c = atomic_read(v);
-> > +	long c, old;
-> > +	c = atomic_long_read(v);
-> >  	for (;;) {
-> >  		if (unlikely(c >= u))
-> >  			return false;
-> > -		old = atomic_cmpxchg(v, c, c+1);
-> > +		old = atomic_long_cmpxchg(v, c, c+1);
-> >  		if (likely(old == c))
-> >  			return true;
-> >  		c = old;
-> > @@ -199,14 +199,14 @@ struct ucounts *inc_ucount(struct user_namespace *ns, kuid_t uid,
-> >  		int max;
-> >  		tns = iter->ns;
-> >  		max = READ_ONCE(tns->ucount_max[type]);
-> > -		if (!atomic_inc_below(&iter->ucount[type], max))
-> > +		if (!atomic_long_inc_below(&iter->ucount[type], max))
-> >  			goto fail;
-> >  	}
-> >  	return ucounts;
-> >  fail:
-> >  	bad = iter;
-> >  	for (iter = ucounts; iter != bad; iter = iter->ns->ucounts)
-> > -		atomic_dec(&iter->ucount[type]);
-> > +		atomic_long_dec(&iter->ucount[type]);
-> >  
-> >  	put_ucounts(ucounts);
-> >  	return NULL;
-> > @@ -216,7 +216,7 @@ void dec_ucount(struct ucounts *ucounts, enum ucount_type type)
-> >  {
-> >  	struct ucounts *iter;
-> >  	for (iter = ucounts; iter; iter = iter->ns->ucounts) {
-> > -		int dec = atomic_dec_if_positive(&iter->ucount[type]);
-> > +		int dec = atomic_long_dec_if_positive(&iter->ucount[type]);
-> >  		WARN_ON_ONCE(dec < 0);
-> >  	}
-> >  	put_ucounts(ucounts);
-> > -- 
-> > 2.25.4
-> > 
 > 
+> This series was tested by running the following invocations on an Intel
+> Skylake machine:
+> dirty_log_perf_test -b 20m -i 100 -v 64
+> dirty_log_perf_test -b 20g -i 5 -v 4
+> dirty_log_perf_test -b 4g -i 5 -v 32
+> demand_paging_test -b 20m -v 64
+> demand_paging_test -b 20g -v 4
+> demand_paging_test -b 4g -v 32
+> All behaved as expected.
+
+May move this chunk to the cover letter to avoid keeping it in every commit
+(btw, you mentioned "this series" but I feel like you meant "you verified that
+after applying each of the commits").
+
+Thanks,
 
 -- 
-Rgrds, legion
+Peter Xu
 
