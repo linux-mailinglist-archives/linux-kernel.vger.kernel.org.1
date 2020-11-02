@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43BF2A25E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C542A2600
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgKBINN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgKBIME (ORCPT
+        id S1728229AbgKBIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:20:45 -0500
+Received: from regular1.263xmail.com ([211.150.70.206]:49768 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728199AbgKBIUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:12:04 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A54C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:12:04 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w65so10428990pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:12:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A2lbRxRCm6YJ/XgJATRJyEyLX4vRUjWqIBI7bdt9ix0=;
-        b=rTYOIXoaERUMqqFWrKz5r963tOK5UvxmwILHg/dNBgIyFKveGTlbRc0W1MgBlZcvtH
-         xS9BXyhubL7euN/5c5vZt8N8Rx0hDfpaR/bCaCM8U2BI6f5ylc7QWpsYeacF4CEkHV3r
-         gH9Yuf1GSBDKSjaVJGjkUR4ojpI2GvlpGStZwpr3FsA+U5wm9Wj3KkdSP2fuNiXvG3mj
-         AkGqzhbpeU08Ix6nU+8Lzs2QhDUMttrQ946on4pzF4gyqHmAYNggwEbmVkDC2LDzULke
-         GzP+ooh50vwcK+2Lezl5a7CeZRCdlxlmhI2oT/qvz3cO5nL0Txj2/XnBWR5hnYzJuyJX
-         HWhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A2lbRxRCm6YJ/XgJATRJyEyLX4vRUjWqIBI7bdt9ix0=;
-        b=Hwgviucw95haTasoRsac96uK6wIFSfRTBlFe/zACe1OqFOi5CJlNP5j48DzbN3C3Jm
-         HlRYZQj9L8+fmE2Wia7eyp4uj4WtJjc9l29HCwxKhJ468P4AlLwhPIWyxydFflTFt8r/
-         HnQEaOcCpjPGx+hZSFAphQ54KqIgkD/XqjD0B5CHwEKEZOYUlVhueSv1TqYCBkUa1RSV
-         HJazt/RLlfBHeuHL0i+Vt08KwygoarRxH5VW/3WzWpT9Kb9iwUfDeYI9Ifn6qQeYBj4w
-         m2rD1BMAhF4s/J7y+M3AU290fOt75+Jdj1Y86VaEn6I/rz3TQI52nd9rv1rGfQBbUPtN
-         GBpA==
-X-Gm-Message-State: AOAM530ygZGzmae6jHeHJGDFSOkqjHKT/IlsuTo6Xh3Eg9ygEauLC775
-        QcTHRY0jhLqgPxuZy3EH3gFH+g==
-X-Google-Smtp-Source: ABdhPJzhWRwM9T+K7YXOdYW/f/MLs7UkfWf9rR7zJarQUKacM61QVlTaewhaM0+Q2A5PdiGqQnNf2Q==
-X-Received: by 2002:aa7:931a:0:b029:164:115:33ca with SMTP id 26-20020aa7931a0000b0290164011533camr21021035pfj.62.1604304724131;
-        Mon, 02 Nov 2020 00:12:04 -0800 (PST)
-Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id a18sm13885502pfg.54.2020.11.02.00.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 00:12:03 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH] Bluetooth: btusb: Add support for 13d3:3560 MediaTek MT7615E device
-Date:   Mon,  2 Nov 2020 16:11:57 +0800
-Message-Id: <20201102081157.25012-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 2 Nov 2020 03:20:44 -0500
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id B62C42615;
+        Mon,  2 Nov 2020 16:14:01 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from hp1216 (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P26974T140148431894272S1604304841345296_;
+        Mon, 02 Nov 2020 16:14:02 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <7d77ae4acfc77cc4fc55aff865618565>
+X-RL-SENDER: zyf@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: zyf@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Date:   Mon, 2 Nov 2020 16:14:01 +0800
+Organization: =?utf-8?B?55Ge6Iqv5b6u55S15a2Q?=
+From:   =?utf-8?B?6LW15Luq5bOw?= <yifeng.zhao@rock-chips.com>
+To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
+Cc:     "Johan Jonker" <jbx6244@gmail.com>, richard <richard@nod.at>,
+        vigneshr <vigneshr@ti.com>, robh+dt <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        =?utf-8?B?SGVpa29TdMO8Ym5lcg==?= <heiko@sntech.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-rockchip <linux-rockchip@lists.infradead.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>, 
+        <20201028095326.15562-3-yifeng.zhao@rock-chips.com>, 
+        <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>, 
+        <0dabd80e-b281-be65-b8e2-da00f46964fb@gmail.com>, 
+        <20201102114503679684135@rock-chips.com>, 
+        <20201102083258.3a748c44@xps13>
+X-Priority: 3
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.18.111[cn]
+Mime-Version: 1.0
+Message-ID: <20201102161300764203144@rock-chips.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASUS X532EQ laptop contains AzureWave AW-CB434NF module with an
-associated MT7615E BT chip using a USB ID of 13d3:3560.
+SGkgTWlxdWVsLAoKVGhlIG5hbmRfYmFzZS5jIHdpbGwgY2FsbMKgbmFuZF9kZXNlbGVjdF90YXJn
+ZXQgYWZ0ZXIgTkFORCByZWFkL3Byb2dyYW0uLi4gb3BzIGRvbmUsIGFuZCBzZXTCoHZhcmlhYmxl
+IGNoaXAtPmN1cl9jcyA9IC0xLApidXQgdGhlIG5hbmQgY29udHJvbGxlciBkbyBub3RoaW5nIGFu
+ZCB0aGUgY3Mgb2YgdGhlIE5BTkQgZGV2aWNlIGlzIHN0aWxsIHNlbGVjdGVkLCAKc28gdGhlIE5B
+TkQgZGV2aWNlIMKgd2lsbCBub3QgZW50ZXIgYXV0byBwb3dlciBzYXZlIG1vZGUuCgotLS0tLS0t
+LS0tLS0tLQpUaGFua3MsCllpZmVuZwoKPkhlbGxvLAo+Cj7otbXku6rls7AgPHlpZmVuZy56aGFv
+QHJvY2stY2hpcHMuY29tPiB3cm90ZSBvbiBNb24sIDIgTm92IDIwMjAgMTE6NDY6MDQKPiswODAw
+Ogo+Cj4+IEhpIEpvaGFuLAo+Pgo+PiB2b2lkIG5hbmRfZGVzZWxlY3RfdGFyZ2V0KHN0cnVjdCBu
+YW5kX2NoaXAgKmNoaXApCj4+IHsKPj4gaWYgKGNoaXAtPmxlZ2FjeS5zZWxlY3RfY2hpcCkKPj4g
+Y2hpcC0+bGVnYWN5LnNlbGVjdF9jaGlwKGNoaXAsIC0xKTsKPj4KPj4gY2hpcC0+Y3VyX2NzID0g
+LTE7Cj4+IH0KPj4KPj4gSSBuZWVkIGFkZCB0aGUgY29kZSBiZWxvdyBhbmQgaXQgd29yay4KPj4K
+Pj4gwqAgwqBjaGlwLT5sZWdhY3kuc2VsZWN0X2NoaXAgPSBya19uZmNfc2VsZWN0X2NoaXA7Cj4+
+Cj4+IEJ1dCBJIGZvdW5kwqBhbG1vc3QgYWxsIG5hbmRjIGRyaXZlcnMgZG8gbm90IGFkZCB0aGlz
+IGNvZGUuIElzIHRoZXJlIGFueSBvdGhlciB3YXkgdG8gaW1wbGVtZW50IGl077yfCj4KPkluZGVl
+ZCwgd2UgZG9uJ3QgYWNjZXB0IG5ldyBjb2RlIHdlIGxlZ2FjeSBiaW5kaW5ncy4KPgo+SSBkb24n
+dCB1bmRlcnN0YW5kIHdoYXQgZXh0cmEgY29uc3VtcHRpb24geW91IGFyZSB0cnlpbmcgdG8gYXZv
+aWQsCj5iZWNhdXNlIGlmIGl0IGlzIHRoZSBOQU5EIGRldmljZSBpdHNlbGYgdGhhdCBpcyBhYmxl
+IHRvIHNhdmUgcG93ZXIgd2hlbgo+aXQgZ2V0cyB1bnNlbGVjdGVkLCBpdCdzIHJlYWxseSBub25l
+IG9mIHlvdSBjb250cm9sbGVyJ3MgYnVzaW5lc3MuCj4KPlBlcmhhcHMgaXQncyB0aGUgdGltZSB0
+byBmb2N1cyBvbiB0aGUgY29udHJvbGxlciBzdXBwb3J0IGFuZCB0dW5lIHRoZQo+Y29kZSBiYXNl
+IGxhdGVyIGluIGEgYmlkIHRvIHJlZHVjZSBjb25zdW1wdGlvbi4KPgo+VGhhbmtzLAo+TWlxdcOo
+bAo+Cj4KPg==
 
-T:  Bus=03 Lev=01 Prnt=01 Port=09 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=13d3 ProdID=3560 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
----
- drivers/bluetooth/btusb.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 5af2e3f30a5e..a0bfd41fdfee 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -367,6 +367,7 @@ static const struct usb_device_id blacklist_table[] = {
- 	/* MediaTek Bluetooth devices */
- 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0e8d, 0xe0, 0x01, 0x01),
- 	  .driver_info = BTUSB_MEDIATEK },
-+	{ USB_DEVICE(0x13d3, 0x3560), .driver_info = BTUSB_MEDIATEK},
- 
- 	/* Additional Realtek 8723AE Bluetooth devices */
- 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
--- 
-2.20.1
 
