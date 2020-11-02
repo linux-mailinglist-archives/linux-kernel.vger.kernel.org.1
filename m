@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8AE2A28EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB282A28ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgKBLSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgKBLSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:18:44 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D47C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:18:44 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id g19so2813006otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:18:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kXZChu7Wh7ILON/2gYLH4Pho4CrTf6ogIIqD17tHacw=;
-        b=XUnOWCaJfUDDNS3cOqI8xlIpVY8dhXOnpx/GxA+bzrrMj4pqtfTy6G0TGcV6UUqnVN
-         uBUJYiDPN2cU1ch1eqcgQec67EfZlp4DZn+gL1McyoCAAjgLw0UU3TZlto74e+nLal7F
-         SxNXcEO/WWd9sDQrVph/8rzIO4nUcH4ND/6vw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kXZChu7Wh7ILON/2gYLH4Pho4CrTf6ogIIqD17tHacw=;
-        b=tbZy8DX+GQ9SrX2pQXZ9XGOX6764xfzI66F+KUAamFv2pZc5BNUIYDAuUJVFMSgCzM
-         Pi+YnVGxApA7SrwNf7Oyjo1DiNxeFHcc52MdF/63mMe/V4MOTOcKVdfNl06QzT8ADejm
-         xD/6UCyvNEjskl1DCSkB+0dNSeYttV3uG+/aFpZaGXMkguACyZabqOa6E5JdWfgXxcDT
-         0JEaRq3g/PnjeQoSnG7aO2bRscijPn8oMq+eRTXosXeNS8+t72JEgHGO6BDkl87kxrpd
-         9upleo+p1NPb1aH/uBeSb2j6+Gtsu7jF7ZNPqS7DzRbESLt6mfWfvNikAzMpEWzF5uZR
-         kBTA==
-X-Gm-Message-State: AOAM531Zx+Mrba87wzer7M0UK1gKAbZf7zy3LQkGYBlpkTa7+TPSCebk
-        66zE7vrvWXJ+vt1nvX84H7BYC2FEUKv2R0WzkwoiLw==
-X-Google-Smtp-Source: ABdhPJyQ0Lf5Md5khYUkk0S09uHR5oX+TS7s0b1ujSLfYLBp453dV5dDz9J5t5srPUamv+QLV9k/82ttq3sZ5XfNnSI=
-X-Received: by 2002:a9d:6e81:: with SMTP id a1mr11108613otr.303.1604315923479;
- Mon, 02 Nov 2020 03:18:43 -0800 (PST)
+        id S1728585AbgKBLTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:19:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:22909 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728253AbgKBLTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:19:04 -0500
+IronPort-SDR: g19nmgtWmOvst89sfnf1tbL4BWUW+lKsXARijIctObK0DLQ8drASf1DRamNJo5umP3eZhTcS/m
+ JwhObDxaNraw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="253575769"
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="253575769"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 03:19:03 -0800
+IronPort-SDR: exXf9gIIu47z4ZEa6YfCsbTywZw+0LyLQ/rMWrTwtDLwxiTLSn62U6Q5fDKZN8FpHUGAPgcitV
+ 5i121SeDZzhw==
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="527904799"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 03:19:01 -0800
+Date:   Mon, 2 Nov 2020 11:18:53 +0000
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     trix@redhat.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, dominik.przychodni@intel.com,
+        wojciech.ziemba@intel.com, mpatocka@redhat.com,
+        geert+renesas@glider.be, ardb@kernel.org, qat-linux@intel.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: qat: remove unneeded semicolon
+Message-ID: <20201102111853.GA693055@silpixa00400314>
+References: <20201027190407.1587980-1-trix@redhat.com>
 MIME-Version: 1.0
-References: <20201030181822.570402-1-lee.jones@linaro.org> <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
- <20201102110916.GK4127@dell>
-In-Reply-To: <20201102110916.GK4127@dell>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 2 Nov 2020 12:18:32 +0100
-Message-ID: <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const qualifier
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027190407.1587980-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 12:09 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Mon, 02 Nov 2020, Daniel Vetter wrote:
->
-> > On Fri, Oct 30, 2020 at 7:18 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
-> > > built-in fonts") introduced the following error when building
-> > > rpc_defconfig (only this build appears to be affected):
-> > >
-> > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compr=
-essed/ll_char_wr.o:
-> > >     defined in discarded section `.data' of arch/arm/boot/compressed/=
-font.o
-> > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boo=
-t/compressed/font.o:
-> > >     defined in discarded section `.data' of arch/arm/boot/compressed/=
-font.o
-> > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: =
-arch/arm/boot/compressed/vmlinux] Error 1
-> > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boo=
-t/compressed/vmlinux] Error 2
-> > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
-> > >
-> > > The .data section is discarded at link time.  Reinstating
-> > > acorndata_8x8 as const ensures it is still available after linking.
-> > >
-> > > Cc: <stable@vger.kernel.org>
-> > > Cc: Russell King <linux@armlinux.org.uk>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >
-> > Shouldn't we add the const to all of them, for consistency?
->
-> The thought did cross my mind.  However, I do not see any further
-> issues which need addressing.  Nor do I have any visibility into what
-> issues may be caused by doing so.  The only thing I know for sure is
-> that this patch fixes the compile error pertained to in the commit
-> message, and I'd like for this fix to be as atomic as possible, as
-> it's designed to be routed through the Stable/LTS trees.
+On Tue, Oct 27, 2020 at 12:04:07PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A semicolon is not needed after a switch statement.
+I rebased the patch on top of cryptodev-2.6/master as it didn't apply
+after the latest patches to the qat driver and modified slightly the commit
+message: /s/qat:/qat -/
 
-The trouble is that if we only make one of them const, then it'll take
-so much longer to hit any issues due to code not handling this
-correctly. Being consistent with all fonts sounds like the best
-approach.
+----8<----
+From: Tom Rix <trix@redhat.com>
+Subject: [PATCH] crypto: qat - remove unneeded semicolon
 
-And the original patch that lost the const for the additional data
-also went through cc: stable for all fonts together. So that shouldn't
-be the hold-up.
--Daniel
+A semicolon is not needed after a switch statement.
 
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Signed-off-by: Tom Rix <trix@redhat.com>
+[giovanni.cabiddu@intel.com: rebased and minor change to commit message]
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+---
+ drivers/crypto/qat/qat_common/qat_algs.c      | 2 +-
+ drivers/crypto/qat/qat_common/qat_asym_algs.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/crypto/qat/qat_common/qat_algs.c b/drivers/crypto/qat/qat_common/qat_algs.c
+index a38afc61f6d2..0fab8bb8ca59 100644
+--- a/drivers/crypto/qat/qat_common/qat_algs.c
++++ b/drivers/crypto/qat/qat_common/qat_algs.c
+@@ -105,7 +105,7 @@ static int qat_get_inter_state_size(enum icp_qat_hw_auth_algo qat_hash_alg)
+ 		return ICP_QAT_HW_SHA512_STATE1_SZ;
+ 	default:
+ 		return -EFAULT;
+-	};
++	}
+ 	return -EFAULT;
+ }
+ 
+diff --git a/drivers/crypto/qat/qat_common/qat_asym_algs.c b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+index f112078be868..2c863d25327a 100644
+--- a/drivers/crypto/qat/qat_common/qat_asym_algs.c
++++ b/drivers/crypto/qat/qat_common/qat_asym_algs.c
+@@ -201,7 +201,7 @@ static unsigned long qat_dh_fn_id(unsigned int len, bool g2)
+ 		return g2 ? PKE_DH_G2_4096 : PKE_DH_4096;
+ 	default:
+ 		return 0;
+-	};
++	}
+ }
+ 
+ static int qat_dh_compute_value(struct kpp_request *req)
+@@ -572,7 +572,7 @@ static unsigned long qat_rsa_enc_fn_id(unsigned int len)
+ 		return PKE_RSA_EP_4096;
+ 	default:
+ 		return 0;
+-	};
++	}
+ }
+ 
+ #define PKE_RSA_DP1_512 0x1c161b3c
+@@ -601,7 +601,7 @@ static unsigned long qat_rsa_dec_fn_id(unsigned int len)
+ 		return PKE_RSA_DP1_4096;
+ 	default:
+ 		return 0;
+-	};
++	}
+ }
+ 
+ #define PKE_RSA_DP2_512 0x1c131b57
+@@ -630,7 +630,7 @@ static unsigned long qat_rsa_dec_fn_id_crt(unsigned int len)
+ 		return PKE_RSA_DP2_4096;
+ 	default:
+ 		return 0;
+-	};
++	}
+ }
+ 
+ static int qat_rsa_enc(struct akcipher_request *req)
+-- 
+2.28.0
 
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
