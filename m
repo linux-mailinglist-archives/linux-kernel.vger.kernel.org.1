@@ -2,78 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5882A34AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54B22A34B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgKBT6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:58:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725980AbgKBT5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:57:11 -0500
-Received: from localhost.localdomain (cpe-70-114-140-30.austin.res.rr.com [70.114.140.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3820E2076E;
-        Mon,  2 Nov 2020 19:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604347030;
-        bh=d8i7qIjkeTQr/yZuyeY0/03lXGvwQ7SL9FuL8qbKbGU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MacmxI8YkqGngUsnd/SdP4H+a2t89NNG7HB5lVJDHRaSDdHwCp2ANAkzkoA8JCecy
-         3Cvp41RNes4hTdfEQbuBsenvtbTVszwX3GcJOMqPgHgjxHPkdDcGTSWIC6GA+pmKEd
-         Wo6RR+tGxbi1H1GRGjyUYG3T0HWGl8rFSg3dGYHU=
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     p.zabel@pengutronix.de
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] reset: socfpga: add error handling and release mem-region
-Date:   Mon,  2 Nov 2020 13:57:02 -0600
-Message-Id: <20201102195702.14496-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726920AbgKBT6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:58:06 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:51136 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726360AbgKBT52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:57:28 -0500
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2JnjMh005906;
+        Mon, 2 Nov 2020 19:57:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : content-type : in-reply-to
+ : mime-version; s=pps0720;
+ bh=wWs0BUEJ4QSNrRzIaVowN9j/D52jMAm5Em0ykihOTZQ=;
+ b=VNiX8vb822xLllVx1v3z5RrsyJUjBMeJ6tcgV+g2nFh3NLk2UMzjHNNQ3CTzo88LOnfq
+ LljI1H9HSQQ5cKKYs7MIqptbZWYzV9b8gar9mi/notjhsenBE6pVBf/9LWqbz7sktRok
+ eEZxw71kE3LcPaX5elJp8FGaMmGH3vECknTOiBlEwzy53RImjLycd2j6kJi8m5J+DiPW
+ +wYwOQurL4OkyCiA75OG90aMfKkh2Zp8HdelJ/yKYgIj0E9ZO1O+TFcHMeSypGrqf6XX
+ OLAXpCbT3uR4UfiowjKqlIhq0oAOsqsBjjeDG+8BzQLXwwHt9B0lVrODNIk6hueMupJw Cg== 
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0a-002e3701.pphosted.com with ESMTP id 34hht5d6fj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Nov 2020 19:57:14 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id A1DD154;
+        Mon,  2 Nov 2020 19:57:12 +0000 (UTC)
+Received: from rfwz62 (rfwz62.americas.hpqcorp.net [10.33.237.8])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 413E046;
+        Mon,  2 Nov 2020 19:57:11 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 12:57:11 -0700
+From:   rwright@hpe.com
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        wambui.karugax@gmail.com, chris@chris-wilson.co.uk,
+        matthew.auld@intel.com, akeem.g.abodunrin@intel.com,
+        prathap.kumar.valsan@intel.com, mika.kuoppala@linux.intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Reduce context clear batch size to avoid gpu hang
+Message-ID: <20201102195710.GA12790@rfwz62>
+Reply-To: rwright@hpe.com
+References: <20201101174132.10513-1-rwright@hpe.com>
+ <8cdf0dd0-2a2f-bae9-71ea-89a88fdb14a5@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8cdf0dd0-2a2f-bae9-71ea-89a88fdb14a5@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_13:2020-11-02,2020-11-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 priorityscore=1501 impostorscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011020151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of an error, call release_mem_region when an error happens
-during allocation of resources. Also add error handling for the case
-that reset_controller_register fails.
+On Mon, Nov 02, 2020 at 10:48:54AM +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 11/1/20 6:41 PM, rwright@hpe.com wrote:
+> > From: Randy Wright <rwright@hpe.com>
+> > 
+> > For several months, I've been experiencing GPU hangs when  starting
+> > Cinnamon on an HP Pavilion Mini 300-020 if I try to run an upstream
+> > kernel.  I reported this recently in
+> > https://gitlab.freedesktop.org/drm/intel/-/issues/2413 where I have
+> > attached the requested evidence including the state collected from
+> > /sys/class/drm/card0/error and debug output from dmesg.
+> > 
+> > I ran a bisect to find the problem, which indicates this is the
+> > troublesome commit:
+> > 
+> >   [47f8253d2b8947d79fd3196bf96c1959c0f25f20] drm/i915/gen7: Clear all EU/L3 residual contexts
+> > ...
+> > I've now cleaned up the patch to employ a new QUIRK_RENDERCLEAR_REDUCED.
+> > The quirk is presently set only for the aforementioned HP Pavilion Mini
+> > 300-020.  The patch now touches three files to define the quirk, set it,
+> > and then check for it in function batch_get_defaults.
+> 
+> Note I'm not really an i915 dev.
+> 
+> With that said I do wonder if we should not use the
+> reduced batch size in a lot more cases, the machine in question uses a
+> 3558U CPU if the iGPU of that CPU has this issue, then I would expect
+> pretty much all Haswell U models (at a minimum) to have this issue.
+> 
+> So solving this with a quirk for just the HP Pavilion Mini 300-020
+> seems wrong to me. I think we need a more generic way of enabling
+> the reduced batch size. I even wonder if we should not simply use
+> it everywhere. Since you do have a proper Haswell CPU, I guess
+> it being an U model makes the hang easier to trigger, but I suspect
+> the higher TPD ones may also still be susceptible ...
+> 
+> Regards,
+> 
+> Hans
+> 
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- drivers/reset/reset-socfpga.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Hi Hans,
 
-diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpga.c
-index bdd984296196..af9041ec37c6 100644
---- a/drivers/reset/reset-socfpga.c
-+++ b/drivers/reset/reset-socfpga.c
-@@ -44,7 +44,7 @@ static int a10_reset_init(struct device_node *np)
- 	data->membase = ioremap(res.start, size);
- 	if (!data->membase) {
- 		ret = -ENOMEM;
--		goto err_alloc;
-+		goto release_region;
- 	}
- 
- 	if (of_property_read_u32(np, "altr,modrst-offset", &reg_offset))
-@@ -59,7 +59,14 @@ static int a10_reset_init(struct device_node *np)
- 	data->rcdev.of_node = np;
- 	data->status_active_low = true;
- 
--	return reset_controller_register(&data->rcdev);
-+	ret = reset_controller_register(&data->rcdev);
-+	if (ret)
-+		pr_err("unable to register device\n");
-+
-+	return 0;
-+
-+release_region:
-+	release_mem_region(res.start, size);
- 
- err_alloc:
- 	kfree(data);
--- 
-2.17.1
+As you noted, the 3558U cpu is one of the least powerful processors
+to be designated as a Haswell, but there are others at the low end
+of the Haswell architecture that I also suspect might exhibit
+similar problems.
 
+That leads me to think that more gpu hangs like mine will be reported
+when commit 47f8253d makes its way into widely used kernels. And that's
+why I chose to implement a quirk that would allow enrolling other
+systems as they are identified.
+
+Your remark about applying the reduced batch size in all cases certainly
+would simplify the patch.   However, I don't have any other systems
+using the i915 driver on which I could try to measure the putative
+performance penalty of reducing the batch size on a system that worked
+properly with the large size.   So I couldn't thoroughly investigate
+the consequences of a broader change.
+
+That said, if the i915 maintainers respond in favor of the simpler
+unconditional reduction of the batch size, I will be glad to
+propose a much simpler version of my patch.
+
+I probably should clarify that this patch is to resolve a problem on a
+personally owned system that I use at home.  It is not related to a
+problem with any of HPE's products, and so I don't have a lab full of
+systems using the i915 driver on which I can test a change that would
+have an effect many products.  The consumer products like Pavilions
+stayed with HP when HPE split from HP five years ago.
+
+--
+Randy Wright            Usmail: Hewlett Packard Enterprise
+Email: rwright@hpe.com          Servers Linux Enablement
+Phone: (970) 898-0998           3404 E. Harmony Rd, Mailstop 36
+                                Fort Collins, CO 80528-9599 
