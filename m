@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892A32A2FFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354712A3012
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbgKBQlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:41:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S1727292AbgKBQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgKBQlF (ORCPT
+        with ESMTP id S1727202AbgKBQlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:41:05 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5E3C0617A6;
-        Mon,  2 Nov 2020 08:41:05 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id r10so11240532pgb.10;
-        Mon, 02 Nov 2020 08:41:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gVScNhg3nwSxNUg/MgfwzotEdUV9MD/rwLFJFqF4KkY=;
-        b=ozIK3MB34COjNhsEolV6Im+wdPQSNM2a9DrXoHDCBTmKDqTZRq4rKwEDE4fc9Foo2E
-         drGDMGJe9zjkwJRZhAUSPpsqmIXn9sa44qJ8S8VhZ7o6EFuRZ24zdy6dcQtZipSIUtUT
-         F6vltHHB9Tsd07KzL81OZF+qBD+jMz6OyGcsJtoAe0ALVKr2ishjGWd3UETyoaVG6HPI
-         MNM4i3ppIzXUuUQrBJhr5l5ouCiTYGQPucUBzba/UcSCUfrOosFnHU+2uyNgIjSdgyJ4
-         BCUp3iEDGMKQFUSPMN13AWyhcf6njkfO6DmMOvEqYy6+b48QGPiWZjKaYMAFu8vHKguF
-         FpHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gVScNhg3nwSxNUg/MgfwzotEdUV9MD/rwLFJFqF4KkY=;
-        b=OwzpSCIKYL2GDjtraRFRUyKbbLPgm/aqwWJ+wRuOAMrHUixuy/SEBTVTcA5C2y9IC0
-         wldNmF/NKZjAgHgFBWnb7k09P2zw1uI/CMPoChzW4OW6c9gZR9T615OqN5lbMrlvAR+w
-         y0yqnNCQnJbntyScFbSAFtFWx7Ej6qPM6NWPbMjvaI0zIdnKrWNvkxXiq7ErWNRcVRUt
-         dPDy1K8dL1xvAVDpsfl+S2pZLYvN62GP/Y8FVCwIinRT30ZWgV2ap4vMB5Z3eeLDGU1+
-         xZc4cC1dKFa9/b6x/PQXEiEz4Hv7VwaoDG5GYN/l1a1qt6df3GROArInRZKit6lGuDar
-         2+IQ==
-X-Gm-Message-State: AOAM532LD/1Jr8snZuwbFsueITFWC4JFwpv4sVShmr/PEcgP9vt2M1LZ
-        AbxfNWcPKLXRyHyNWs2I2xZVJPTCo90K7DyfiuM=
-X-Google-Smtp-Source: ABdhPJwOzMbyY75elEDngKQ6pj7PwgayDj5owOPqp10tiA7jB3AWJfZi2U9zYHWZC09YfXWcEeb5RA==
-X-Received: by 2002:a17:90a:5c82:: with SMTP id r2mr18207842pji.69.1604335264336;
-        Mon, 02 Nov 2020 08:41:04 -0800 (PST)
-Received: from [192.168.0.104] ([49.207.221.93])
-        by smtp.gmail.com with ESMTPSA id s145sm3272429pfs.187.2020.11.02.08.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 08:41:02 -0800 (PST)
-Subject: Re: [PATCH v3] net: usb: usbnet: update __usbnet_{read|write}_cmd()
- to use new API
-To:     Oliver Neukum <oneukum@suse.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201029132256.11793-1-anant.thazhemadam@gmail.com>
- <20201031213533.40829-1-anant.thazhemadam@gmail.com>
- <11476cd1da8b63f75d39bd5b8e876ad3968a1903.camel@suse.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <c50d24f5-0ed3-4361-0830-619367a3c99e@gmail.com>
-Date:   Mon, 2 Nov 2020 22:10:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 2 Nov 2020 11:41:40 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31786C0617A6;
+        Mon,  2 Nov 2020 08:41:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ytzVAE2XCkwajxNhr8bJkGONDthc4ed0WgNEJDU139o=; b=nE3J0Pfg3W6SPnONobv6XQp1hy
+        owdsSlNiW+Y+bXs25cf+31F3D+mxsgHuDIuqdWfnAnRlHJ1s5R+ctP8rcgh+DxSSBBpSXd6axdU4J
+        sRMEd3Y+YpSCakvhT0EkTeN6kVU5UD1aRFi6OCuHy5CgoyGRpl+5R238VwjWhH7cwoyPEK4yiZ1X6
+        Cgs3zHL/wjscvr7GJ1R0kxcjsQaBy+BbvD8cAQG1QY+FZNbFHH3KZDCtM7wOsPa/epJ2/S6Z4tq1E
+        eqqc5m7o1oaEZFRUN2OlMu229aZwM0UmKcHYyLco2iOqHMFfV7rvlyxhX+6qaKX5md8tUWMzty3Ex
+        sDCyYxGQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZctf-0006jm-CW; Mon, 02 Nov 2020 16:41:31 +0000
+Date:   Mon, 2 Nov 2020 16:41:31 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@infradead.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        J??r??me Glisse <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
+Message-ID: <20201102164131.GA25526@infradead.org>
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
+ <20201030100815.2269-9-daniel.vetter@ffwll.ch>
+ <20201102072931.GA16419@infradead.org>
+ <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
+ <20201102130115.GC36674@ziepe.ca>
+ <CAKMK7uHeL=w7GoBaY4XrbRcpJabR9UWnP+oQ9Fg51OzL7=KxiA@mail.gmail.com>
+ <20201102155256.GG36674@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <11476cd1da8b63f75d39bd5b8e876ad3968a1903.camel@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102155256.GG36674@ziepe.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 11:52:56AM -0400, Jason Gunthorpe wrote:
+> Need to hold the lock to check that and there are two ways to register
+> notifiers these days, so it feels to expensive to me.
+> 
+> CH's 'export symbol only for kvm' really does seem the most robust way
+> to handle this though.
 
-On 02/11/20 3:10 pm, Oliver Neukum wrote:
-> Am Sonntag, den 01.11.2020, 03:05 +0530 schrieb Anant Thazhemadam:
->> Currently, __usbnet_{read|write}_cmd() use usb_control_msg().
->> However, this could lead to potential partial reads/writes being
->> considered valid, and since most of the callers of
->> usbnet_{read|write}_cmd() don't take partial reads/writes into account
->> (only checking for negative error number is done), and this can lead to
->> issues.
->>
-> Hi,
->
-> plesae send this as a post of its own. We cannot take a new set
-> as a reply to an older set.
->
-> 	Regards
-> 		Oliver
->
+I hope I can get that done for this merge window, but I'm not sure.
 
-Got it. I will do that.
-
-Thanks,
-Anant
+I still think we should at least have a new name for the old follow_pfn
+that no one should use.  And it should sound more scary than
+unsafe_follow_pfn :)
