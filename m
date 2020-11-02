@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777902A2DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDFB2A2DB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgKBPL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKBPLz (ORCPT
+        id S1726206AbgKBPLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:11:22 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4723 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgKBPLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:11:55 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B114EC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:11:54 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id j31so2655869qtb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:11:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UPtv4U9PJYklpaVPZSIF4wy6HpZ+y+9XSdus7akqhs8=;
-        b=fvxCbUcg/TaoIHaH+KHaeKyaSujnKcSUTkmfqyKh/QkKJK9U7Sv6hkYTJZuE9PsDOH
-         qf1Tnz2zslvTItDBBEGYItyQGojO3aAIR8eUaSJpcqXBn5EEyU5wQLTeRy6/NiByQvOL
-         tc249Rsimsi+EMBEKIonliNDNG5ojtn9hnKe3eyWzN95l7neNpaTO8/2yelL57HdyFM/
-         ttrYwXC6tcJvxMjYh9r4+Qoj8BFXE/p+GN5LA2/SoF5V7ZReJ2GkiN1jq3m35x2uvVDc
-         xTtw2g7qK6VknF3fnO5bwz2y19yw58hf79Y22XgqerPNif0SPlCz8eN78jXHIUeirN0M
-         2Ojw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UPtv4U9PJYklpaVPZSIF4wy6HpZ+y+9XSdus7akqhs8=;
-        b=d3P/2zl0nDqJ2mbFB8HOeXjZOEm9Wk34noBucWPTwm+otDorWduVa+26E0Vmv52X22
-         5p+4pj0V7MKD/iFK1VMs1OiisitHClNX0zKRA1yYtvb2GvywpL2xltrk0WRIoW/RPzkt
-         ixA46DCxiwm+G7w5EEBADnLDR76Z0B5gWD34YgmSvlmbAM3jxUHyHPZls7tD3l7vMfL0
-         krtIMaB9wigdMpL4XYkI/fJ7nfEn7jegrTI8wNsQkGzlzNhj+7e3o6zi85JaKezdLpev
-         rqAuGYvcK+bzgJZV0B4YKrk8GgqCK2/duuJR6DnU1Mun29nFQMENRwrGmN9Drqa704rQ
-         Vcdw==
-X-Gm-Message-State: AOAM530M+29lkLVL8MbwpQmEg0PjKlT9voF4WOgv+4OhLvA+qOpOiJwQ
-        4+1ygv9g+dD4BdBpSe+CR+VxyA==
-X-Google-Smtp-Source: ABdhPJxGgGlrJP934R5ihqM55D4zloX84/xMg/6bsipL0oceVlXCG3ieSqhwKu6fQ7ldx9JiYp4Lng==
-X-Received: by 2002:aed:3943:: with SMTP id l61mr14846566qte.195.1604329913801;
-        Mon, 02 Nov 2020 07:11:53 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:2f6e])
-        by smtp.gmail.com with ESMTPSA id t70sm8003983qke.119.2020.11.02.07.11.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 07:11:53 -0800 (PST)
-Date:   Mon, 2 Nov 2020 10:10:08 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v20 15/20] mm/lru: introduce TestClearPageLRU
-Message-ID: <20201102151008.GH724984@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-16-git-send-email-alex.shi@linux.alibaba.com>
+        Mon, 2 Nov 2020 10:11:20 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa021980000>; Mon, 02 Nov 2020 07:11:20 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
+ 2020 15:11:20 +0000
+Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Mon, 2 Nov 2020 15:11:16 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v5 1/7] ASoC: soc-core: Fix component name_prefix parsing
+Date:   Mon, 2 Nov 2020 20:40:08 +0530
+Message-ID: <1604329814-24779-2-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
+References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603968305-8026-16-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604329880; bh=FHT04Zjwy1O9RPGLmdmquPXv1ppSfBgc8wTmQasvgUE=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:MIME-Version:Content-Type;
+        b=YmLiCqm7mRe8yEVNxdNqpZjIuXUv+wEVtmjjAqefgANIrUpixuGUW7PFolbNCtxRq
+         sGVJmE8KS5VS1pzDr3zPJhZ510iTh4JL/j8/b0903EdU5la9QlTa4e12yy9msOGRDe
+         9BOokU4sb+uP1Src0KCqSwx32gzf9jZRsn6wBLTSEqy0ehG/YWqNbk41JTbjeQEcLA
+         Kr4XaSCCwSHJr/5UadDuohBQCrEZYBHecqEbjICf7M4bBgLnDWrE8uAAZIwYtAulaE
+         FuOnLKDTzoRKEvfEkUHoMyfCdw9aT3BUhGVraW+yaUdfNH+u0JOUOE6Trh8VRdXhbw
+         x/9LdGj/ExVwA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 06:45:00PM +0800, Alex Shi wrote:
-> Currently lru_lock still guards both lru list and page's lru bit, that's
-> ok. but if we want to use specific lruvec lock on the page, we need to
-> pin down the page's lruvec/memcg during locking. Just taking lruvec
-> lock first may be undermined by the page's memcg charge/migration. To
-> fix this problem, we could clear the lru bit out of locking and use
-> it as pin down action to block the page isolation in memcg changing.
+The "prefix" can be defined in DAI link node or it can be specified as
+part of the component node itself. Currently "sound-name-prefix" defined
+in a component is not taking effect. Actually the property is not getting
+parsed. It can be fixed by parsing "sound-name-prefix" property whenever
+"prefix" is missing in DAI link Codec node.
 
-Small nit, but the use of "could" in this sentence sounds like you're
-describing one possible solution that isn't being taken, when in fact
-you are describing the chosen locking mechanism.
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+---
+ sound/soc/soc-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Replacing "could" with "will" would make things a bit clearer IMO.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 05a085f..9b3eaec 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1124,7 +1124,8 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
+ 	for (i = 0; i < card->num_configs; i++) {
+ 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
+ 
+-		if (snd_soc_is_matching_component(&map->dlc, component)) {
++		if (snd_soc_is_matching_component(&map->dlc, component) &&
++		    map->name_prefix) {
+ 			component->name_prefix = map->name_prefix;
+ 			return;
+ 		}
+-- 
+2.7.4
 
-> So now a standard steps of page isolation is following:
-> 	1, get_page(); 	       #pin the page avoid to be free
-> 	2, TestClearPageLRU(); #block other isolation like memcg change
-> 	3, spin_lock on lru_lock; #serialize lru list access
-> 	4, delete page from lru list;
-> The step 2 could be optimzed/replaced in scenarios which page is
-> unlikely be accessed or be moved between memcgs.
-
-This is a bit ominous. I'd either elaborate / provide an example /
-clarify why some sites can deal with races - or just remove that
-sentence altogether from this part of the changelog.
-
-> This patch start with the first part: TestClearPageLRU, which combines
-> PageLRU check and ClearPageLRU into a macro func TestClearPageLRU. This
-> function will be used as page isolation precondition to prevent other
-> isolations some where else. Then there are may !PageLRU page on lru
-> list, need to remove BUG() checking accordingly.
-> 
-> There 2 rules for lru bit now:
-> 1, the lru bit still indicate if a page on lru list, just in some
->    temporary moment(isolating), the page may have no lru bit when
->    it's on lru list.  but the page still must be on lru list when the
->    lru bit set.
-> 2, have to remove lru bit before delete it from lru list.
-> 
-> As Andrew Morton mentioned this change would dirty cacheline for page
-> isn't on LRU. But the lost would be acceptable in Rong Chen
-> <rong.a.chen@intel.com> report:
-> https://lore.kernel.org/lkml/20200304090301.GB5972@shao2-debian/
-> 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
