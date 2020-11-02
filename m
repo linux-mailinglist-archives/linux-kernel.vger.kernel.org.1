@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62852A2C2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F62A2C27
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgKBNzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:55:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48071 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgKBNx5 (ORCPT
+        id S1725845AbgKBNzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgKBNyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:53:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604325236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ytGUxyQFsDqgxxojPp7/D2Ty0Jj+0Gic6ECasG0S6AE=;
-        b=CTWQ7w6Gp5S8O668kqlmHI2JFC1dosM5ag9xu8oKIKbaA3UgAGRk3kFVxqwcWxCif5+WTN
-        mdpPW4TFBtCO7qO712wi2xV7V806+x9LG5irrNNRPQYtqhebSlqQGaMDqNWz9oxFWYhQB7
-        aJ/VyBnBX00rsJ9D5o9lscBI4l1L/iU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-Rx3XlnKYNSmaoHZqPJ3vbg-1; Mon, 02 Nov 2020 08:53:52 -0500
-X-MC-Unique: Rx3XlnKYNSmaoHZqPJ3vbg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A3A0CE65C;
-        Mon,  2 Nov 2020 13:53:51 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-114-236.rdu2.redhat.com [10.10.114.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 353AC747C6;
-        Mon,  2 Nov 2020 13:53:43 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 08:53:41 -0500
-From:   Phil Auld <pauld@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Benjamin Segall' <bsegall@google.com>, Hui Su <sh_def@163.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: remove the spin_lock operations
-Message-ID: <20201102135341.GA154641@lorien.usersys.redhat.com>
-References: <20201030144621.GA96974@rlk>
- <xm26mu0335zz.fsf@google.com>
- <22f99ee1d9b245c2a356d4d555b54e6a@AcuMS.aculab.com>
+        Mon, 2 Nov 2020 08:54:55 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E27DC061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:54:55 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h22so9602985wmb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HSJ3s4kk78CsixfcMhylaTOQInqHbcM0PNqhAJpk4PE=;
+        b=vGSl9SXiVHPlEeKwXPuJ+kqLGdcCNTo32UXEgPV6SG/4765tTSjI2XccTyhH463SR9
+         X8WdheAFoGwThNeBZ/iHvH5rD8CKfQZbkTllsKe5hmGcTsSKZ1yqK57hdfh97SRSfc2S
+         xTxOI7YThT0jVW3jA6wkBMGHVOI8vDSDeb0hajPli/tuYw6YzIJPiJfaqpCoyeWdYneJ
+         /UFXt5emdxCPw06+vrb2w+8vcWCDBRx6K1PV2u6VXX+8PSHF99vME9IXJFAWQTlvzr6a
+         /SA1CC+mqWKfImAXziaKUIgIBbhQu0ACrv27R8d/dPBohYxxHFWfmOSIJFs5toRcfga9
+         KXbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HSJ3s4kk78CsixfcMhylaTOQInqHbcM0PNqhAJpk4PE=;
+        b=F08jZVQ0arHWoyamQHU2WjSY3AW8YhgrUTmL7INU+P5ECDrgRFwTmhi+ku0FDb1GMH
+         zxiH0inNSHnVP8xkupshycDO6UMvqksqLtnFxe20qU8O0bERbmguLOXPLjHLP2S7/WYp
+         yK/LIhorz7HxzwzDMuUdKh24fli53J88mW9nuqrai+mqYfriseCkXByRau43MXTLAThq
+         Tzms3SqpukKI1k5ER6sionAIDzld4KUcYG9P90hycWp86s/vBQMhcPGxaWjgLZL/Xk81
+         ayL2MahTuhPXDIjfOJpy14MgGKMVyJn5Tw3warakUGmjR0oEWdS+jxmC8yM/w8jtWCxe
+         30dw==
+X-Gm-Message-State: AOAM531IBQ5rctOf0aw7+aQ/0zleDtUr0odctOwd3SO10hOBbHC7VMql
+        80458JNs7AjC4n0ya5YPGFWoFA==
+X-Google-Smtp-Source: ABdhPJx8/+oUahdkx2/ilxjGC/UEmOEiYmXb73w90eteOw4p5SnvEC4gSXTCGgVhR0HS7Cxwj0r2WA==
+X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr3686427wmc.172.1604325293729;
+        Mon, 02 Nov 2020 05:54:53 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id r18sm24511552wrj.50.2020.11.02.05.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 05:54:53 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:54:49 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, daniel.lezcano@linaro.org,
+        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
+        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
+        sboyd@kernel.org, nm@ti.com
+Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+Message-ID: <20201102135449.GE2221764@google.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+ <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <22f99ee1d9b245c2a356d4d555b54e6a@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:16:29PM +0000 David Laight wrote:
-> From: Benjamin Segall
-> > Sent: 30 October 2020 18:48
-> > 
-> > Hui Su <sh_def@163.com> writes:
-> > 
-> > > Since 'ab93a4bc955b ("sched/fair: Remove
-> > > distribute_running fromCFS bandwidth")',there is
-> > > nothing to protect between raw_spin_lock_irqsave/store()
-> > > in do_sched_cfs_slack_timer().
-> > >
-> > > So remove it.
-> > 
-> > Reviewed-by: Ben Segall <bsegall@google.com>
-> > 
-> > (I might nitpick the subject to be clear that it should be trivial
-> > because the lock area is empty, or call them dead or something, but it's
-> > not all that important)
-> 
-> I don't know about this case, but a lock+unlock can be used
-> to ensure that nothing else holds the lock when acquiring
-> the lock requires another lock be held.
-> 
-> So if the normal sequence is:
-> 	lock(table)
-> 	# lookup item
-> 	lock(item)
-> 	unlock(table)
-> 	....
-> 	unlock(item)
-> 
-> Then it can make sense to do:
-> 	lock(table)
-> 	lock(item)
-> 	unlock(item)
-> 	....
-> 	unlock(table)
-> 
-> although that ought to deserve a comment.
->
+On Monday 02 Nov 2020 at 08:54:38 (+0000), Lukasz Luba wrote:
+> Gentle ping to Quentin and Daniel for sharing opinion on this patch set.
+> If you are OK, then I could use this as a base for next work.
 
-Nah, this one used to be like this :
+One or two small nits, but overall this LGTM. Thanks Lukasz.
 
-        raw_spin_lock_irqsave(&cfs_b->lock, flags);
-        lsub_positive(&cfs_b->runtime, runtime);
-        cfs_b->distribute_running = 0;
-        raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
+> As you probably know I am working also on 'sustainable power' estimation
+> which could be used when there is no DT value but it comes from FW.
+> That would meet requirement from Doug, when the DT cannot be used,
+> but we have sustainable levels from FW [1].
 
-It's just a leftover. I agree that if it was there for some other
-purpose that it would really need a comment. In this case, it's an
-artifact of patch-based development I think.
+Cool, and also, I'd be happy to hear from Doug if passing the sustained
+power via sysfs is good enough for his use-case in the meantime?
 
-
-Cheers,
-Phil
-
-
-> 	avid
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
--- 
-
+Thanks,
+Quentin
