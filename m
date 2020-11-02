@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DDC2A31B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7887A2A31B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgKBRgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:36:46 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:5473 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbgKBRgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:36:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1604338605; x=1635874605;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=63PIJXKLFwrFkRjowWo20b8DPKycpZ23Q/BMc+ghSfk=;
-  b=X694F9AqmVjeRErGig164uYjTV3JWrVduqTWXdEHKtiKOBesHF4yQ/pF
-   fsMLPkHmNUHi/VViVzhoWHM5nnAXQ/M+q36ZknxvYvL/vxClYEmuPj7pX
-   5V5xZ82koqslXRVCxC/6h2/GEk32K9kGoSFWX5kOPCakSwiiteZCUdKJH
-   c=;
-X-IronPort-AV: E=Sophos;i="5.77,445,1596499200"; 
-   d="scan'208";a="62248451"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 02 Nov 2020 17:36:38 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 0F334A21C2;
-        Mon,  2 Nov 2020 17:36:36 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.229) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 2 Nov 2020 17:36:27 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
+        id S1727906AbgKBRh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:37:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727693AbgKBRh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:37:28 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BC1F207BB;
+        Mon,  2 Nov 2020 17:37:23 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 12:37:21 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v2] nitro_enclaves: Fixup type and simplify logic of the poll mask setup
-Date:   Mon, 2 Nov 2020 19:36:22 +0200
-Message-ID: <20201102173622.32169-1-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2] ftrace: Add recording of functions that caused
+ recursion
+Message-ID: <20201102123721.4fcce2cb@gandalf.local.home>
+In-Reply-To: <20201102164147.GJ20201@alley>
+References: <20201030213142.096102821@goodmis.org>
+        <20201030214014.801706340@goodmis.org>
+        <20201102164147.GJ20201@alley>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.43.160.229]
-X-ClientProxiedBy: EX13D34UWC002.ant.amazon.com (10.43.162.137) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the assigned value of the poll result to be EPOLLHUP instead of
-POLLHUP to match the __poll_t type.
+On Mon, 2 Nov 2020 17:41:47 +0100
+Petr Mladek <pmladek@suse.com> wrote:
 
-While at it, simplify the logic of setting the mask result of the poll
-function.
+> > +	i = atomic_read(&nr_records);
+> > +	smp_mb__after_atomic();
+> > +	if (i < 0)
+> > +		cmpxchg(&recursed_functions[index].ip, ip, 0);
+> > +	else if (i <= index)
+> > +		atomic_cmpxchg(&nr_records, i, index + 1);  
+> 
+> This looks weird. It would shift nr_records past the record added
+> in this call. It might skip many slots that were zeroed when clearing.
+> Also we do not know if our entry was not zeroed as well.
 
-Changelog
+nr_records always holds the next position to write to.
 
-v1 -> v2
+	index = nr_records;
+	recursed_functions[index].ip = ip;
+	nr_records++;
 
-* Simplify the mask setting logic from the poll function.
+Before clearing, we have:
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+	nr_records = -1;
+	smp_mb();
+	memset(recursed_functions, 0);
+	smp_wmb();
+	nr_records = 0;
 
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index f06622b48d695..f1964ea4b8269 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1505,10 +1505,8 @@ static __poll_t ne_enclave_poll(struct file *file, poll_table *wait)
- 
- 	poll_wait(file, &ne_enclave->eventq, wait);
- 
--	if (!ne_enclave->has_event)
--		return mask;
--
--	mask = POLLHUP;
-+	if (ne_enclave->has_event)
-+		mask |= EPOLLHUP;
- 
- 	return mask;
- }
--- 
-2.20.1 (Apple Git-117)
+When we enter this function:
+
+	i = nr_records;
+	smp_mb();
+	if (i < 0)
+		return;
 
 
+Thus, we just stopped all new updates while clearing the records.
 
+But what about if something is currently updating?
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+	i = nr_records;
+	smp_mb();
+	if (i < 0)
+		cmpxchg(recursed_functions, ip, 0);
 
+The above shows that if the current updating process notices that the
+clearing happens, it will clear the function it added.
+
+	else if (i <= index)
+		cmpxchg(nr_records, i, index + 1);
+
+This makes sure that nr_records only grows if it is greater or equal to
+zero.
+
+The only race that I see that can happen, is the one in the comment I
+showed. And that is after enabling the recursed functions again after
+clearing, one CPU could add a function while another CPU that just added
+that same function could be just exiting this routine, notice that a
+clearing of the array happened, and remove its function (which was the same
+as the one just happened). So we get a "zero" in the array. If this
+happens, it is likely that that function will recurse again and will be
+added later.
+
+-- Steve
