@@ -2,210 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2BC2A3498
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743692A34A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgKBTwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:52:42 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:35465 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727085AbgKBTwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:52:40 -0500
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 02 Nov 2020 11:52:39 -0800
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 02 Nov 2020 11:52:39 -0800
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 11736188E; Mon,  2 Nov 2020 11:52:39 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:52:39 -0800
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joe Perches <joe@perches.com>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: mfd: Add QCOM PM8008 MFD bindings
-Message-ID: <20201102195238.GB29492@codeaurora.org>
-References: <cover.1603402280.git.gurus@codeaurora.org>
- <b224632c03055a92022edb5929f22f26db66bc6d.1603402280.git.gurus@codeaurora.org>
- <20201030154900.GA3896697@bogus>
+        id S1727147AbgKBTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:54:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727145AbgKBTyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:54:05 -0500
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A9052225E;
+        Mon,  2 Nov 2020 19:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604346844;
+        bh=XSKqsn3P2/pXv/MCbKfRw59VxuoIrUSEkA+QHvC1urI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=C65vDUFHBMWfeWycrASThmwyc1A4ZuKeBz9o7K1SMK8F6XuZTnJKsdQWUBnmdEscZ
+         Owae24HwhDTm8OvKN08Z+833e1Y+yWXQS6WkXj8PJ5tlPbrv+W6BmuE67o6QqWuS6c
+         1OAO1fyJQwLeJcxMFr/6shNzfDPfnElEC/ij8E+o=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] selftests/x86: Use __builtin_ia32_read/writeeflags
+Date:   Mon,  2 Nov 2020 11:54:02 -0800
+Message-Id: <aee4b1cdfc56083eb779ce927b7d3459aad2af76.1604346818.git.luto@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201030154900.GA3896697@bogus>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:49:00AM -0500, Rob Herring wrote:
-> On Thu, Oct 22, 2020 at 02:35:41PM -0700, Guru Das Srinagesh wrote:
-> > Add device tree bindings for the driver for Qualcomm Technology Inc.'s
-> > PM8008 MFD PMIC.
-> > 
-> > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> > ---
-> >  .../bindings/mfd/qcom,pm8008-irqchip.yaml          | 102 +++++++++++++++++++++
-> >  1 file changed, 102 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> > new file mode 100644
-> > index 0000000..31d7b68
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
-> > @@ -0,0 +1,102 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mfd/qcom,pm8008-irqchip.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Technologies, Inc. PM8008 Multi-Function Device PMIC
-> > +
-> > +maintainers:
-> > +  - Guru Das Srinagesh <gurus@codeaurora.org>
-> > +
-> > +description: |
-> > +  PM8008 is a PMIC that contains 7 LDOs, 2 GPIOs, temperature monitoring, and
-> > +  can be interfaced over I2C.
-> 
-> No bindings for all those functions? Bindings should be complete.
+The asm to read and write EFLAGS from userspace is horrible.  The
+compiler builtins are now available on all supported compilers, so
+use them instead.
 
-While pushing out this patchset, I accidentally dropped the "RFC" tag in
-the mail subjects. This driver and binding document are meant to be just
-an exemplar for how the framework changes would be used, and hence I
-felt adding only a single node would suffice for illustration purposes.
+(The compiler builtins are also unnecessarily ugly, but that's a
+ more manageable level of ugliness.)
 
-> 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: qcom,pm8008-irqchip
-> 
-> Why irqchip?
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ tools/testing/selftests/x86/helpers.h | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-Since the driver's main functions are to register with the regmap-irq
-framework and to pass a regmap to the child nodes it populates. Would
-"qcom,pm8008-mfd" be more appropriate?
+diff --git a/tools/testing/selftests/x86/helpers.h b/tools/testing/selftests/x86/helpers.h
+index f5ff2a2615df..4ef42c4559a9 100644
+--- a/tools/testing/selftests/x86/helpers.h
++++ b/tools/testing/selftests/x86/helpers.h
+@@ -6,36 +6,20 @@
+ 
+ static inline unsigned long get_eflags(void)
+ {
+-	unsigned long eflags;
+-
+-	asm volatile (
+ #ifdef __x86_64__
+-		"subq $128, %%rsp\n\t"
+-		"pushfq\n\t"
+-		"popq %0\n\t"
+-		"addq $128, %%rsp"
++	return __builtin_ia32_readeflags_u64();
+ #else
+-		"pushfl\n\t"
+-		"popl %0"
++	return __builtin_ia32_readeflags_u32();
+ #endif
+-		: "=r" (eflags) :: "memory");
+-
+-	return eflags;
+ }
+ 
+ static inline void set_eflags(unsigned long eflags)
+ {
+-	asm volatile (
+ #ifdef __x86_64__
+-		"subq $128, %%rsp\n\t"
+-		"pushq %0\n\t"
+-		"popfq\n\t"
+-		"addq $128, %%rsp"
++	__builtin_ia32_writeeflags_u64(eflags);
+ #else
+-		"pushl %0\n\t"
+-		"popfl"
++	__builtin_ia32_writeeflags_u32(eflags);
+ #endif
+-		:: "r" (eflags) : "flags", "memory");
+ }
+ 
+ #endif /* __SELFTESTS_X86_HELPERS_H */
+-- 
+2.28.0
 
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupt-names:
-> > +    items:
-> > +      - const: pm8008
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  interrupt-controller: true
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> > +    description: Must be specified if child nodes are specified.
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +    description: Must be specified if child nodes are specified.
-> > +
-> > +  "#interrupt-cells":
-> > +    const: 2
-> > +    description: |
-> > +      The first cell is the IRQ number, the second cell is the IRQ trigger flag.
-> > +
-> > +patternProperties:
-> > +  "^.*@[0-9a-f]+$":
-> 
-> '^.*' can be dropped. That's redundant.
-
-Done.
-
-> 
-> > +    type: object
-> > +    # Each peripheral in PM8008 must be represented as a child node with an
-> > +    # optional label for referencing as phandle elsewhere. This is optional.
-> > +    properties:
-> > +      compatible:
-> > +        description: The compatible string for the peripheral's driver.
-> > +
-> > +      reg:
-> > +        maxItems: 1
-> 
-> What does the address represent? It's non-standard, so it needs to be 
-> defined.
-
-Will add description.
-
-> 
-> > +
-> > +      interrupts:
-> > +        maxItems: 1
-> > +
-> > +    required:
-> > +      - compatible
-> > +      - reg
-> > +      - interrupts
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - "#interrupt-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    qupv3_se13_i2c {
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +
-> > +            pm8008i@8 {
-> > +                    compatible = "qcom,pm8008-irqchip";
-> > +                    reg = <0x8>;
-> > +                    #address-cells = <1>;
-> > +                    #size-cells = <0>;
-> > +                    interrupt-controller;
-> > +                    #interrupt-cells = <2>;
-> > +
-> > +                    interrupt-names = "pm8008";
-> > +                    interrupt-parent = <&tlmm>;
-> > +                    interrupts = <32 IRQ_TYPE_EDGE_RISING>;
-> > +
-> > +                    pm8008_tz: qcom,temp-alarm@2400 {
-> 
-> Must be documented.
-> 
-> And don't use vendor prefixes in node names. 
-
-Done.
-
-> 
-> > +                            compatible = "qcom,spmi-temp-alarm";
-> > +                            reg = <0x2400>;
-> > +                            interrupts = <0x5 IRQ_TYPE_EDGE_BOTH>;
-> > +                            #thermal-sensor-cells = <0>;
-> > +                    };
-> > +            };
-> > +    };
-> > +
-> > +...
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
