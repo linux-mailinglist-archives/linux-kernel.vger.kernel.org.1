@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF2B2A2A6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDE42A2A73
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgKBMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:10:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
+        id S1728654AbgKBMM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:12:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728421AbgKBMK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:10:58 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728483AbgKBMMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:12:25 -0500
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 575BC2223C;
-        Mon,  2 Nov 2020 12:10:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C5C2206DD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604319056;
-        bh=NC/77HgijA8lK3BIaPDo7FO84Vs7DTsypR0F4w2tDXs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IG6rrDqplYvXS5JH5QcEonlRD5fG+Y3Hd1VRveMF+O4kC4UBwQEm144DupvHQmknQ
-         rVBXiWtqQ3zI5CEnoJdbAAKvPFpZRoDRjitbuft3mSZ8LVcxRVksmJJnlL5hnwPGKV
-         NV5Ujhqxs+1+axpw5VYTQPzLhHNAxb/GOFjiauO8=
-Date:   Mon, 2 Nov 2020 13:11:50 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20201102121150.GA663356@kroah.com>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
- <20201102114903.GN4127@dell>
+        s=default; t=1604319144;
+        bh=nGTVuUBTENpQ2A0moLT+om0wH11rswVZVeBCaRVHUeI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nRirczYoS7bx9xC5/5w5V6gJBg3fxs54JXJRCk4iJ4Smk6V+9go6AXAelRW8KewAi
+         UwtPv3nMbmL+aX4c1Yaj3w7DHJGDCFV0p/RkfYIGHCeW9HLbU0+LBCOzFPZQW/Zt8J
+         w7LAlHP77be4tfqBuRv3KDwE5W4ye733iNvFnFFU=
+Received: by mail-ed1-f52.google.com with SMTP id o18so14139729edq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:12:24 -0800 (PST)
+X-Gm-Message-State: AOAM530O5k0DXr5cGNe7XNa2fp2dD//jkl1ssVxzivFu6ari1XmgaoPt
+        /8brZapeQKjcsjC6zNptiW5TUQ/GrONaCunw2rc=
+X-Google-Smtp-Source: ABdhPJzJ/0zYgptPoddLHxtPRo4Sfqolqs4YqPB75SaMb70qUkw2cXYwxUpX1PMfP7ZHD1C2mZmg30MkMMedqG1EG4k=
+X-Received: by 2002:aa7:ce04:: with SMTP id d4mr15788401edv.18.1604319143048;
+ Mon, 02 Nov 2020 04:12:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102114903.GN4127@dell>
+References: <20201029132720.13962-1-krzk@kernel.org> <20201102120311.000078d8@Huawei.com>
+In-Reply-To: <20201102120311.000078d8@Huawei.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 2 Nov 2020 13:12:10 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPenxcGTZUT0E=VBaknQ=imEAP-ExXdrEPP-mkTaNPP-FQ@mail.gmail.com>
+Message-ID: <CAJKOXPenxcGTZUT0E=VBaknQ=imEAP-ExXdrEPP-mkTaNPP-FQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] MAINTAINERS: add Dan Murphy as TP LP8xxx
+ drivers maintainer
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
-> On Mon, 02 Nov 2020, David Laight wrote:
-> 
-> > From: Lee Jones
-> > > Sent: 02 November 2020 11:12
-> > > 
-> > > strncpy() may not provide a NUL terminator, which means that a 1-byte
-> > > leak would be possible *if* this was ever copied to userspace.  Ensure
-> > > the buffer will always be NUL terminated by using the kernel's
-> > > strscpy() which a) uses the destination (instead of the source) size
-> > > as the bytes to copy and b) is *always* NUL terminated.
-> > > 
-> > > Cc: Rodolfo Giometti <giometti@enneenne.com>
-> > > Cc: "Eurotech S.p.A" <info@eurotech.it>
-> > > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/misc/c2port/core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> > > index 80d87e8a0bea9..b96444ec94c7e 100644
-> > > --- a/drivers/misc/c2port/core.c
-> > > +++ b/drivers/misc/c2port/core.c
-> > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
-> > >  	}
-> > >  	dev_set_drvdata(c2dev->dev, c2dev);
-> > > 
-> > > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> > > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
-> > 
-> > strscpy() doesn't zero fill so if the memory isn't zeroed
-> > and a 'blind' copy to user of the structure is done
-> > then more data is leaked.
-> > 
-> > strscpy() may be better, but rational isn't right.
-> 
-> The original patch zeroed the data too, but I was asked to remove that
-> part [0].  In your opinion, should it be reinstated?
-> 
-> [0] https://lore.kernel.org/patchwork/patch/1272290/
+On Mon, 2 Nov 2020 at 13:05, Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 29 Oct 2020 14:27:20 +0100
+> Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> > Milo Kim's email in TI bounces with permanent error (550: Invalid
+> > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> > credits and add Dan Murphy from TI to look after:
+> >  - TI LP855x backlight driver,
+> >  - TI LP8727 charger driver,
+> >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Cc: Dan Murphy <dmurphy@ti.com>
+> > Acked-by: Dan Murphy <dmurphy@ti.com>
+> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Acked-by: Sebastian Reichel <sre@kernel.org>
+>
+> Typo in patch title unless I'm missing what TP means!
 
-Just keep the kzalloc() part of the patch, this portion makes no sense
-to me.  But if you REALLY want to get it correct, call dev_set_name()
-instead please, as that is what it is there for.
+Thanks, this should be "TI". I will send a v3, unless Lee corrects
+this while applying.
 
-thanks,
-
-greg k-h
+Best regards,
+Krzysztof
