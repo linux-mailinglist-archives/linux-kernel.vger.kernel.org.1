@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32212A3190
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2472A31AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727763AbgKBRbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:31:35 -0500
-Received: from mga02.intel.com ([134.134.136.20]:58695 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgKBRbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:31:35 -0500
-IronPort-SDR: Qp1/uALvXGx4w5lJK0MqhrW1/UV8ahNVVg37THQP/y6PKC2OqffeD0sW8hiIre9i8ueuUPNv+h
- SR69FTHoAZUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="155909597"
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="155909597"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 09:31:34 -0800
-IronPort-SDR: XDYVXdpZ637dAUON1ShOdypkhvFUCwXcWPE21VX6qdWBLfkxhohSWuTOtBiK7a1QP//whSl54N
- zjidFknihj3w==
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="528093774"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 09:31:33 -0800
-Date:   Mon, 2 Nov 2020 09:31:32 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Tao Xu <tao3.xu@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
-Message-ID: <20201102173130.GC21563@linux.intel.com>
-References: <20201102061445.191638-1-tao3.xu@intel.com>
- <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+        id S1727836AbgKBRgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:36:01 -0500
+Received: from lhrrgout.huawei.com ([185.176.76.210]:3018 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727395AbgKBRgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:36:01 -0500
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 6EE6C5105EEFC14C7BD3;
+        Mon,  2 Nov 2020 17:35:59 +0000 (GMT)
+Received: from [10.210.168.82] (10.210.168.82) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 2 Nov 2020 17:35:58 +0000
+From:   John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>
+CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
+References: <1603888387-52499-1-git-send-email-john.garry@huawei.com>
+ <1603888387-52499-2-git-send-email-john.garry@huawei.com>
+ <87eelifbx6.fsf@nanos.tec.linutronix.de>
+Message-ID: <ce13a36e-967c-c7ec-fd34-d53262313a5d@huawei.com>
+Date:   Mon, 2 Nov 2020 17:32:32 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87eelifbx6.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.82]
+X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 08:43:30AM -0800, Andy Lutomirski wrote:
-> On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
-> > 2. Another patch to disable interception of #DB and #AC when notify
-> > VM-Exiting is enabled.
+On 28/10/2020 18:22, Thomas Gleixner wrote:
+> On Wed, Oct 28 2020 at 20:33, John Garry wrote:
+
+Hi Thomas,
+
+>>   
+>> +int irq_update_affinity_desc(unsigned int irq,
+>> +			     struct irq_affinity_desc *affinity)
+>> +{
+>> +	unsigned long flags;
+>> +	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
+>> +
+>> +	if (!desc)
+>> +		return -EINVAL;
+> Just looking at it some more. This needs a check whether the interrupt
+> is actually shut down. Otherwise the update will corrupt
+> state. Something like this:
 > 
-> Whoa there.
+>          if (irqd_is_started(&desc->irq_data))
+>          	return -EBUSY;
 > 
-> A VM control that says "hey, CPU, if you messed up and livelocked for
-> a long time, please break out of the loop" is not a substitute for
-> fixing the livelocks.  So I don't think you get do disable
-> interception of #DB and #AC.
+> But all of this can't work on x86 due to the way how vector allocation
+> works. Let me think about that.
+> 
 
-I think that can be incorporated into a module param, i.e. let the platform
-owner decide which tool(s) they want to use to mitigate the legacy architecture
-flaws.
+Is the problem that we reserve per-cpu managed interrupt space when 
+allocated irq vectors on x86, and so later changing managed vs 
+non-managed setting for irqs messes up this accounting somehow?
 
-> I also think you should print a loud warning
-
-I'm not so sure on this one, e.g. userspace could just spin up a new instance
-if its malicious guest and spam the kernel log.
-
-> and have some intelligent handling when this new exit triggers.
-
-We discussed something similar in the context of the new bus lock VM-Exit.  I
-don't know that it makes sense to try and add intelligence into the kernel.
-In many use cases, e.g. clouds, the userspace VMM is trusted (inasmuch as
-userspace can be trusted), while the guest is completely untrusted.  Reporting
-the error to userspace and letting the userspace stack take action is likely
-preferable to doing something fancy in the kernel.
-
-
-Tao, this patch should probably be tagged RFC, at least until we can experiment
-with the threshold on real silicon.  KVM and kernel behavior may depend on the
-accuracy of detecting actual attacks, e.g. if we can set a threshold that has
-zero false negatives and near-zero false postives, then it probably makes sense
-to be more assertive in how such VM-Exits are reported and logged.
+Cheers,
+John
