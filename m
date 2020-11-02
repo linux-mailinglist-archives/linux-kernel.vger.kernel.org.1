@@ -2,93 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7A72A25F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7652A25FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgKBISg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:18:36 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39810 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727802AbgKBISg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:18:36 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A28HkjG095958;
-        Mon, 2 Nov 2020 02:17:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604305066;
-        bh=PKURKhrStf5hrU/3/FF8PfX58ZYAVeadBgvFHZofdUQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=aBk9tP4xdkqFm+ZsJtTWJASXy4g8DHzi/WCcG1PXOBg5cUc9e3Be39Cgu6md+6JbB
-         H+acGNAdSqAMWLIvF5U3xqVqPO5z2Va273STE7hdctiLgeWib5IiY8tECBeHTeWLHk
-         +V1nv47qCi57ZIlKmf+2BRKCwy10JTZEGpDjVXKY=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A28Hkj4016878
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Nov 2020 02:17:46 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 02:17:45 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 02:17:46 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A28HiDm044386;
-        Mon, 2 Nov 2020 02:17:44 -0600
-Subject: Re: [PATCH] ASoC: ti: davinci-evm: Remove redundant null check before
- clk_disable_unprepare
-To:     Xu Wang <vulab@iscas.ac.cn>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20201029082513.28233-1-vulab@iscas.ac.cn>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <ec63e4cc-b723-d183-8205-20fd0debbb43@ti.com>
-Date:   Mon, 2 Nov 2020 10:18:24 +0200
+        id S1728106AbgKBIUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:20:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40702 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727802AbgKBIUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:20:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6132EABDE;
+        Mon,  2 Nov 2020 08:20:09 +0000 (UTC)
+Subject: Re: [PATCH] gpu/drm: delete same check in if condition
+To:     Bernard Zhao <bernard@vivo.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20201102030736.3833-1-bernard@vivo.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <44218b05-7a3e-2e22-d836-d7eb22d89d45@suse.de>
+Date:   Mon, 2 Nov 2020 09:20:08 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201029082513.28233-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201102030736.3833-1-bernard@vivo.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="iR6yRUrmHIFeO3F07WSYQk20oY8lt5hYw"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iR6yRUrmHIFeO3F07WSYQk20oY8lt5hYw
+Content-Type: multipart/mixed; boundary="IQVAG7BoXHTW6xfbd8OOcGR5tI6dL30BU";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Bernard Zhao <bernard@vivo.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: opensource.kernel@vivo.com
+Message-ID: <44218b05-7a3e-2e22-d836-d7eb22d89d45@suse.de>
+Subject: Re: [PATCH] gpu/drm: delete same check in if condition
+References: <20201102030736.3833-1-bernard@vivo.com>
+In-Reply-To: <20201102030736.3833-1-bernard@vivo.com>
 
+--IQVAG7BoXHTW6xfbd8OOcGR5tI6dL30BU
+Content-Type: multipart/mixed;
+ boundary="------------7BCA7E0ADECDD6DF0439EFBD"
+Content-Language: en-US
 
-On 29/10/2020 10.25, Xu Wang wrote:
-> Because clk_disable_unprepare() already checked NULL clock parameter,
-> so the additional check is unnecessary, just remove it.
+This is a multi-part message in MIME format.
+--------------7BCA7E0ADECDD6DF0439EFBD
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Hi
 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Am 02.11.20 um 04:07 schrieb Bernard Zhao:
+> In function drm_bridge_connector_get_modes_edid, drm_edid_is_valid
+> will check weather (!edid), no need to check again in the if
+> branch.
+>=20
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Thanks! I'll add the patch to drm-misc-next.
+
+Best regards
+Thomas
+
 > ---
->  sound/soc/ti/davinci-evm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-> index 105e56ab9cdc..b043a0070d20 100644
-> --- a/sound/soc/ti/davinci-evm.c
-> +++ b/sound/soc/ti/davinci-evm.c
-> @@ -46,8 +46,7 @@ static void evm_shutdown(struct snd_pcm_substream *substream)
->  	struct snd_soc_card_drvdata_davinci *drvdata =
->  		snd_soc_card_get_drvdata(soc_card);
->  
-> -	if (drvdata->mclk)
-> -		clk_disable_unprepare(drvdata->mclk);
-> +	clk_disable_unprepare(drvdata->mclk);
->  }
->  
->  static int evm_hw_params(struct snd_pcm_substream *substream,
-> 
+>  drivers/gpu/drm/drm_bridge_connector.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/d=
+rm_bridge_connector.c
+> index a58cbde59c34..791379816837 100644
+> --- a/drivers/gpu/drm/drm_bridge_connector.c
+> +++ b/drivers/gpu/drm/drm_bridge_connector.c
+> @@ -241,7 +241,7 @@ static int drm_bridge_connector_get_modes_edid(stru=
+ct drm_connector *connector,
+>  		goto no_edid;
+> =20
+>  	edid =3D bridge->funcs->get_edid(bridge, connector);
+> -	if (!edid || !drm_edid_is_valid(edid)) {
+> +	if (!drm_edid_is_valid(edid)) {
+>  		kfree(edid);
+>  		goto no_edid;
+>  	}
+>=20
 
-- Péter
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--------------7BCA7E0ADECDD6DF0439EFBD
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x680DC11D530B7A23.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0x680DC11D530B7A23.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
+H47
+fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
+bqP
+5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
+z9E
+ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
+nEm
+imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
+W1t
+ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
+BYC
+AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
+Onf
+G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
+GJm
+DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
++1Q
+DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
+p8n
+91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
+zF1
+CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
+gUC
+WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
+IiL
++he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
+42f
+CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
+Urj
+EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
+45N
+GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
+Tpy
+Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
+u5r
+A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
+/N8
+GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
+j0g
+voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
+bZM
+RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
+zWw
+iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
+Xy9
+RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
+c0n
+VGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+wsCOBBMBCAA4AhsDBQsJC=
+AcC
+BhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl78SF4ACgkQaA3BH=
+VML
+eiOpGAgAih6C1OnWms/N8eBMC4Q93y/nyywe5vCL22Dr1rwgn6Iw2jOGziJSi7zhY4sEk2NKJ=
+5cd
+lFrx8mP//b+xO4AGffwBD0Vwpf38Hj2Gt0KjpzRYccqqU+tJPO5c0pjI52ZIV3+kOEFvYGfkN=
+PHE
+flE+b81T8L2dSXCLtj4WAGUM1rmHn3bCYl+/RwkB+8XnoL5AvrmMcU4Uhb3FJpM4DHExccYkd=
+eSL
+ojBppOCztBCUpBx3le+8QPVvAvJDuur4wRmjk3sjKClAwzeqoYyUKcN3JDdb3mt3QcJal9rSh=
+VEI
+7B25IvfmEbs42oGm8GPzPkaNJu3gcska+l5PSTfurNETGsJdBBARAgAdFiEEJ+jjpp87z/+5L=
+Y5q
+LnehMBH108IFAls6HVcACgkQLnehMBH108LTkACgjLQdDYMENi6BDjY/gd/LF9lMi8oAnR+o0=
+FwE
+Vb1K1tEMQ/1x+k1U6/xgwsBzBBABCAAdFiEEHl2YIZkIo5VO2MxYqlA7ya4PR6cFAls58bMAC=
+gkQ
+qlA7ya4PR6cvTAgAzY1N5QMKh8ECRtYcZNmilyV59uHTEY9hAR+203JqWnSGfUKtU7s6xfl5O=
+NGq
+DI5rULk4Cw2CEIzg9Sat+/lxn36w2f1tEznS5Vb0gVGWrzDAFjj7tB6MnmCzsNb/S1kgxnqJM=
+Yor
+RYQ7uB3Yr2Fdp08FJxN0ipd5YfzaZ6KoSWcRAv4r1R4ZQGuS77URAg7HDOIrBMOVO+HIn7GYQ=
+qPS
+5ZFw5yXbvEtL1c5Y8Zdw1AG2VmEXx78TWQVG3kI8/lQF1QI3yrJ1Rp2x5eK9I0OJihv13IlIW=
+3sb
+QGrj9pxF63kA20ZFaynzFglBGiyxExYvTD0/xKIhzYhj8mtCunPb2cLAcwQQAQgAHRYhBLsjb=
+bex
+nu/GyEcdaKfzfBmMOTGBBQJbOjLAAAoJEKfzfBmMOTGBBoMIALIW4EtBY28tPwZMOpN/+ARPO=
+a2g
+Qzpivw7iNtiDTnGIXMCoxly1CybfMdqTHYmuKbEO9AlFAlDOnkgInsn8E65IvgUTVI95Ah+Ob=
+iPI
+FkYc/9a+AexPl7f5kI9489k77eKtqtMpWFpo/vROmRroSw4JnM7ovwPq1QOSHExfTKbLunzD1=
+i3V
+4PShSZ6bGsp1LW6Wk0lRMHDuAk3xsyjBWfJwSbrCe3E6OsLG7BuQqEUt2fR6NxdDRSR9tQUp9=
+Tri
+AYG5LndmUzxeU6FAQjD8Wt1ezOFH5ODcCDXfRyYmE6uCGA4EvO8l9R3o68NPlUjPRAZsCbxJa=
+UAg
+iazX1nyQGwvOwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHU=
+E9e
+osYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+q=
+bU6
+3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWWG=
+KdD
+egUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lvhFXod=
+NFM
+AgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsAEQEAAcLAf=
+AQY
+AQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkDwmcAAAoJEGgNwR1TC3ojp=
+fcI
+AInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2h9ifw9Nf2TjCZ6AMvC3thAN0r=
+FDj
+55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxUn+LSiRrOdywn6erjxRi9EYTVLCHcD=
+hBE
+jKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uIaMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU=
+2y3
+ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBWHE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/t=
+sZv
+yEX6zN8CtirPdPWu/VXNRYAl/lat7lSI3H26qrE=3D
+=3DmxFq
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------7BCA7E0ADECDD6DF0439EFBD--
+
+--IQVAG7BoXHTW6xfbd8OOcGR5tI6dL30BU--
+
+--iR6yRUrmHIFeO3F07WSYQk20oY8lt5hYw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl+fwTgFAwAAAAAACgkQaA3BHVMLeiMT
+9Af/Ykrmf+cnItN/dwCvrf46xA4sdB+C6eH5VNK4u9RxX/wof6RZOu2RcNODZnWGxCO9ewTDzU1L
+1xNvZdp0qmCxjWGEqSvi69Lqar8UoICF9iDapSZVNtkQe7VJxX6edOHVReyem9cFLFh00NWk0xby
+XdlBAefmS7EVXHEl+WG6/oenBt8hQDrlHolmtxp9k+wLIxDcv1PqszXdX/y5j/uaVjSWJLhTVdrB
+DEoBkEI75XuU7LhDQbR8C0o5XOgtqevmMnrzHCmhzR+Ap3i1JpKpZdcFlRECEK/GPMMpU7MYQ24a
+Xk65Z+qJ1QoAZMpp07rNE7q5kxZ0yEeZ8qZDKcwUtw==
+=Zx/b
+-----END PGP SIGNATURE-----
+
+--iR6yRUrmHIFeO3F07WSYQk20oY8lt5hYw--
