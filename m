@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABAF2A35F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3874E2A360E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKBV1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:27:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39701 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725929AbgKBV1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:27:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604352440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AcZsDHqiU0z9govFV78wlNAx19ATsA9/xILzMrob+9I=;
-        b=NL36DgANBl7bthatcKwu2QJSXovwZegzL0O90/1V0QU0KCJX3JGbwaGXoHnuSIkb3HC6FS
-        b+YA1RccLqrIHkhaokgva7tQzB7z1WBKOpZNFaVDy+n3lYfde7hDZmWKUHxJmkJaFjWZ+8
-        U+LjyFStQZHFi6ONhuhYTTbwWOZoAs4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-s9o7go72NIa3mPGW4S5TAw-1; Mon, 02 Nov 2020 16:27:18 -0500
-X-MC-Unique: s9o7go72NIa3mPGW4S5TAw-1
-Received: by mail-qt1-f199.google.com with SMTP id u28so2603511qtv.20
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:27:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AcZsDHqiU0z9govFV78wlNAx19ATsA9/xILzMrob+9I=;
-        b=R2VxMENHpFBhZVy1Wp0pHHeJ86TrqIWWdIAUnU0K937inBipK2oKzuj06XraRYqnTq
-         5l25b3gHMDKgQVZZGg3JHYIkMIU91+LBwd17SxoC2q7VLja8L3jVBJ5HNSZro13xlfX8
-         GF4bvaRYOT9HyuxXKMFO5ON098GR8nduFWCKYkmTm93CAR+QerfJj/qDy2cW5p6EmK25
-         9klaTt2xR6k3M+7tdw2JLUZ0jHk4Wur/2gzdFJ51V9mNrwFsxlxc1nHWzEhbhbJsCzpB
-         ASwon3/unSuW2smzgIYcL1qCyc2PzevCV9mtKrwAA4RCFkt4J+/H8dcNPG2SFX/p01i/
-         IYYQ==
-X-Gm-Message-State: AOAM533WRihMKuw+AhIpsQYJMFF92fVdkB2xxPK5I/CtYK8xiMI481gy
-        fx4gpz8HfQ6cYbZIx3h5RTHWgzp+zihoYq1P2VpDGIEhNiVDv5fU8oNb/260KfDQtOe/lP922jP
-        G94WVvZxtmNosze2D0fybVQKj
-X-Received: by 2002:a37:6149:: with SMTP id v70mr16390916qkb.188.1604352438283;
-        Mon, 02 Nov 2020 13:27:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1BX1HFiblt+dhs6jzM4c/cLeLDSoTUTDjBFSoL2oLT5fjFR9ZaovZujpYbCENwpT9VuNZRQ==
-X-Received: by 2002:a37:6149:: with SMTP id v70mr16390897qkb.188.1604352438101;
-        Mon, 02 Nov 2020 13:27:18 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id f21sm5206440qkl.131.2020.11.02.13.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 13:27:17 -0800 (PST)
-Date:   Mon, 2 Nov 2020 16:27:15 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Peter Feiner <pfeiner@google.com>
-Subject: Re: [PATCH 3/5] KVM: selftests: Simplify demand_paging_test with
- timespec_diff_now
-Message-ID: <20201102212715.GD20600@xz-x1>
-References: <20201027233733.1484855-1-bgardon@google.com>
- <20201027233733.1484855-4-bgardon@google.com>
+        id S1726109AbgKBVgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:36:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41714 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgKBVgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:36:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3ED69AD09;
+        Mon,  2 Nov 2020 21:36:40 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     johan@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] usb/mos7720: process deferred urbs in a workqueue
+Date:   Mon,  2 Nov 2020 13:14:50 -0800
+Message-Id: <20201102211450.5722-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201027233733.1484855-4-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 04:37:31PM -0700, Ben Gardon wrote:
-> Add a helper function to get the current time and return the time since
-> a given start time. Use that function to simplify the timekeeping in the
-> demand paging test.
+Tasklets have long been deprecated as being too heavy on the
+system by running in irq context - and this is not a performance
+critical path. If a higher priority process wants to run, it
+must wait for the tasklet to finish before doing so. In addition,
+mutex_trylock() is not supposed to be used in irq context because
+it can confuse priority boosting in PREEMPT_RT, although in this
+case the lock is held and released in the same context.
 
-Nit: timespec_diff_now() sounds less charming than timespec_elapsed() to
-me... "diff_now" is longer, and it also does not show positive/negative of the
-results (which in this case should always be end-start). "elapsed" should
-always mean something positive.
+This conversion from tasklet to workqueue allows to avoid
+playing games with the disconnect mutex, having to re-reschedule
+in the callback, now just take the mutex normally. There is
+also no need anymore for atomic allocations.
 
-With/Without the change above:
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+Compile tested only.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+ drivers/usb/serial/mos7720.c | 38 ++++++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
+index 5eed1078fac8..6982800e61d4 100644
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -101,7 +101,7 @@ struct mos7715_parport {
+ 	spinlock_t              listlock;      /* protects list access */
+ 	bool                    msg_pending;   /* usb sync call pending */
+ 	struct completion       syncmsg_compl; /* usb sync call completed */
+-	struct tasklet_struct   urb_tasklet;   /* for sending deferred urbs */
++	struct work_struct      urb_wq;        /* for sending deferred urbs */
+ 	struct usb_serial       *serial;       /* back to containing struct */
+ 	__u8	                shadowECR;     /* parallel port regs... */
+ 	__u8	                shadowDCR;
+@@ -278,32 +278,28 @@ static void destroy_urbtracker(struct kref *kref)
+ }
+ 
+ /*
+- * This runs as a tasklet when sending an urb in a non-blocking parallel
+- * port callback had to be deferred because the disconnect mutex could not be
+- * obtained at the time.
++ * This runs as a workqueue (process context) when sending a urb from a
++ * non-blocking parallel port callback which had to be deferred because
++ * the disconnect mutex could not be obtained at the time.
+  */
+-static void send_deferred_urbs(struct tasklet_struct *t)
++static void send_deferred_urbs(struct work_struct *work)
+ {
+ 	int ret_val;
+ 	unsigned long flags;
+-	struct mos7715_parport *mos_parport = from_tasklet(mos_parport, t,
+-							   urb_tasklet);
++	struct mos7715_parport *mos_parport;
+ 	struct urbtracker *urbtrack, *tmp;
+ 	struct list_head *cursor, *next;
+ 	struct device *dev;
+ 
++	mos_parport = container_of(work, struct mos7715_parport, urb_wq);
++
+ 	/* if release function ran, game over */
+ 	if (unlikely(mos_parport->serial == NULL))
+ 		return;
+ 
+ 	dev = &mos_parport->serial->dev->dev;
+ 
+-	/* try again to get the mutex */
+-	if (!mutex_trylock(&mos_parport->serial->disc_mutex)) {
+-		dev_dbg(dev, "%s: rescheduling tasklet\n", __func__);
+-		tasklet_schedule(&mos_parport->urb_tasklet);
+-		return;
+-	}
++	mutex_lock(&mos_parport->serial->disc_mutex);
+ 
+ 	/* if device disconnected, game over */
+ 	if (unlikely(mos_parport->serial->disconnected)) {
+@@ -324,7 +320,7 @@ static void send_deferred_urbs(struct tasklet_struct *t)
+ 		list_move_tail(cursor, &mos_parport->active_urbs);
+ 	list_for_each_entry_safe(urbtrack, tmp, &mos_parport->active_urbs,
+ 			    urblist_entry) {
+-		ret_val = usb_submit_urb(urbtrack->urb, GFP_ATOMIC);
++		ret_val = usb_submit_urb(urbtrack->urb, GFP_KERNEL);
+ 		dev_dbg(dev, "%s: urb submitted\n", __func__);
+ 		if (ret_val) {
+ 			dev_err(dev, "usb_submit_urb() failed: %d\n", ret_val);
+@@ -394,15 +390,15 @@ static int write_parport_reg_nonblock(struct mos7715_parport *mos_parport,
+ 
+ 	/*
+ 	 * get the disconnect mutex, or add tracker to the deferred_urbs list
+-	 * and schedule a tasklet to try again later
++	 * and schedule a workqueue to process it later
+ 	 */
+ 	if (!mutex_trylock(&serial->disc_mutex)) {
+ 		spin_lock_irqsave(&mos_parport->listlock, flags);
+ 		list_add_tail(&urbtrack->urblist_entry,
+ 			      &mos_parport->deferred_urbs);
+ 		spin_unlock_irqrestore(&mos_parport->listlock, flags);
+-		tasklet_schedule(&mos_parport->urb_tasklet);
+-		dev_dbg(&usbdev->dev, "tasklet scheduled\n");
++		schedule_work(&mos_parport->urb_wq);
++		dev_dbg(&usbdev->dev, "workqueue scheduled\n");
+ 		return 0;
+ 	}
+ 
+@@ -717,7 +713,7 @@ static int mos7715_parport_init(struct usb_serial *serial)
+ 	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
+ 	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
+ 	mos_parport->serial = serial;
+-	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
++	INIT_WORK(&mos_parport->urb_wq, send_deferred_urbs);
+ 	init_completion(&mos_parport->syncmsg_compl);
+ 
+ 	/* cycle parallel port reset bit */
+@@ -1886,10 +1882,10 @@ static void mos7720_release(struct usb_serial *serial)
+ 		usb_set_serial_data(serial, NULL);
+ 		mos_parport->serial = NULL;
+ 
+-		/* if tasklet currently scheduled, wait for it to complete */
+-		tasklet_kill(&mos_parport->urb_tasklet);
++		/* if work is currently scheduled, wait for it to complete */
++		cancel_work_sync(&mos_parport->urb_wq);
+ 
+-		/* unlink any urbs sent by the tasklet  */
++		/* unlink any urbs sent by the workqueue */
+ 		spin_lock_irqsave(&mos_parport->listlock, flags);
+ 		list_for_each_entry(urbtrack,
+ 				    &mos_parport->active_urbs,
 -- 
-Peter Xu
+2.26.2
 
