@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE162A282A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482602A282E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgKBKYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
+        id S1728461AbgKBKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgKBKYt (ORCPT
+        with ESMTP id S1728189AbgKBKZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:24:49 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8A3C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:24:49 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so6609006plr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:24:49 -0800 (PST)
+        Mon, 2 Nov 2020 05:25:03 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7CC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:25:03 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b3so8002073wrx.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KVNk8B5WeX3J87Nf1hJEI8gQBe0Dd3Oj7OyhNsjulAw=;
-        b=SBxis+i+IKvLiy3QYdRFuwFXF6KooqDltEafpJcSdFst61QVm3s9L0GyskN0geynem
-         7bV9LrJfRxrK1wZcdxTL3kL652vR+aHSlCJsyVXi5G9D7xSGQn1G/weDZ3cUSObnwv74
-         LzDXzaaYT6r0o1ItmpetKh3uagVWQZzNQrd5JePadKV+BqYslatdzpl8fr/6L+IuITUg
-         6UMm/1ePh3s3W12nIXxPN2BjcCNMXxXST4XH7wtISIQfX5qP7/Yq+h5J/hygU4Iyk5x1
-         zQgMOm9tIQ8CdHANXGTRJOzmwiMkZ2isj/k49R7rdS0tNXB7EkSaI4b/McYsGUTrQeYu
-         whaQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=LccT21b8oHSdfBVYfrJ2538ilnsVhQhEKgEPP8Af9QI=;
+        b=e6CC0DHj91kam2bMcbp9IrayZuE8nIjy0Z3Ez39mp5B973cKikekNrdRQWGKZ+XzKr
+         x1Z8ZcqhMHcnqKsAkBF8d7SRyMqB8EniMZ1UeoIwsYVEmSJTQp4YTnTz1AusysEoIaai
+         xWdeC9UmltCB3mbsKsu9qTDJGLyd5RibdO8H9Rq6gtp1jWlSgp/eCRns7IgGzLjT6o3o
+         mQ+a1Bis9VlBgBQWZpdOKlPUuknhPngi2CBu9U61n7M4S7ZNxJl57gghUcxoM8YyqrVZ
+         YhHmyBQjyq9W4nRaM4U/L0WA8c3j5hfOOn/CjiPoDi6ck2Sc4rD1cJBD5rxXWhIsDYa5
+         nXTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KVNk8B5WeX3J87Nf1hJEI8gQBe0Dd3Oj7OyhNsjulAw=;
-        b=sUxQP3wlxItAhUWq+RffC/WWEv88Px1iL7i/NrAlJ1GUZkg5jB7+FepkaKXMuvwYbJ
-         KjZk55CA382JE5EmXugrB6w1JfjiywaAwJJzxzzeoKnje0hJA776P4pvBpTUrxVXRd6B
-         MqBrCzqIyqgXfVhmFVYypch4rNQAWCe4cRZ/yqHjNmYHYxiEN+Vi5a1xWNxhleAhxKY9
-         wzmg91+p3MoU55MSgb2SW9ZM2jt/crU0oVgBnQ5jX+XLgKKaCjXUjk8QbETmMXgbwf65
-         y0snCO0MK9MkbIH/bKNhi3u28ev+k+ckcg/5uXU4T1IkMHHA99cHlWfn2C6EsRj9BfBh
-         8xbw==
-X-Gm-Message-State: AOAM532oUbuuCcf6zLUeJV3u8oQpNBWLeSTqM5nMiFyfcqOUL5Z70c4w
-        Od9u7GwGUqcxPZrwCRUvsy5sEA==
-X-Google-Smtp-Source: ABdhPJxKxbGmd5f0Oy9nPc3Pnt2dCM7Z6ZB2NyxNqNFnlVy13Ru0GGgann2+GZV2cyl3V06JnjtUOA==
-X-Received: by 2002:a17:902:e983:b029:d5:f465:55d5 with SMTP id f3-20020a170902e983b02900d5f46555d5mr20542506plb.60.1604312689019;
-        Mon, 02 Nov 2020 02:24:49 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.141.182.112])
-        by smtp.gmail.com with ESMTPSA id k127sm12259743pgk.10.2020.11.02.02.24.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 02 Nov 2020 02:24:48 -0800 (PST)
-Date:   Mon, 2 Nov 2020 18:24:41 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] perf lock: Correct field name "flags"
-Message-ID: <20201102102441.GC6633@leoy-ThinkPad-X240s>
-References: <20201021003948.28817-1-leo.yan@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021003948.28817-1-leo.yan@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LccT21b8oHSdfBVYfrJ2538ilnsVhQhEKgEPP8Af9QI=;
+        b=umo7aCeapoOlbhRjJma6RMDhYxpPt73un5gBRJ59tZsiHoWgGbauw6niz4ADOokqVt
+         BFRKB66elkdLYnlCz7QLqsCdJNTWxVID13fxb0I28TuyQWJhKwZq7Q8yA+pUtNvZJ1c0
+         Pz5X1mamZ/ita/qh8y+P1cwynS/YJDwSNHIVpivYvlUxQtofzSV1gh57merQ//gaQkg3
+         H61diJJJvf8h7gyTQbMvoR47RMP+AHwaikteZ/jlMbsSN4vX0vr0cIvu2mkdBm4etmqt
+         xbKNCEcrxQaAdvLTlfEyGZ1/cuovvqJCPj0Iqg6U5hX0v7PlRNxnabGQkduEORfG+Ywp
+         t/ZA==
+X-Gm-Message-State: AOAM531eK6Eq1H4ULX8uDhPMXSQYYbrHoW7vJnDBYGMz6skIdxT27y27
+        xl8g7bJrWaq0hxSKFYAK+nALcg==
+X-Google-Smtp-Source: ABdhPJzePWtMiy3DvbqfzdBhT3bMxRrcQu8Scn8eC4Q9XfrpVv/waTj8EYysh3UrMIhQJc3s2MZs7A==
+X-Received: by 2002:a5d:448b:: with SMTP id j11mr19091890wrq.129.1604312702103;
+        Mon, 02 Nov 2020 02:25:02 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:b16a:2491:d72d:caf1])
+        by smtp.gmail.com with ESMTPSA id r18sm23696698wrj.50.2020.11.02.02.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 02:25:01 -0800 (PST)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org, riel@surriel.com,
+        clm@fb.com
+Cc:     hannes@cmpxchg.org, Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] sched/fair: ensure tasks spreading in LLC during LB
+Date:   Mon,  2 Nov 2020 11:24:57 +0100
+Message-Id: <20201102102457.28808-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+schbench shows latency increase for 95 percentile above since:
+  commit 0b0695f2b34a ("sched/fair: Rework load_balance()")
 
-On Wed, Oct 21, 2020 at 08:39:47AM +0800, Leo Yan wrote:
-> The tracepoint "lock:lock_acquire" contains field "flags" but not
-> "flag".  Current code wrongly retrieves value from field "flag" and it
-> always gets zero for the value, thus "perf lock" doesn't report the
-> correct result.
-> 
-> This patch replaces the field name "flag" with "flags", so can read out
-> the correct flags for locking.
+Align the behavior of the load balancer with the wake up path, which tries
+to select an idle CPU which belongs to the LLC for a waking task.
 
-Could you take a look for the two fixings in this patch set (v2)?
+calculate_imbalance() will use nr_running instead of the spare
+capacity when CPUs share resources (ie cache) at the domain level. This
+will ensure a better spread of tasks on idle CPUs.
 
-Thanks,
-Leo
+Running schbench on a hikey (8cores arm64) shows the problem:
 
-> Fixes: 746f16ec6ae3 ("perf lock: Use perf_evsel__intval and perf_session__set_tracepoints_handlers")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/builtin-lock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index f0a1dbacb46c..5cecc1ad78e1 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -406,7 +406,7 @@ static int report_lock_acquire_event(struct evsel *evsel,
->  	struct lock_seq_stat *seq;
->  	const char *name = evsel__strval(evsel, sample, "name");
->  	u64 tmp	 = evsel__intval(evsel, sample, "lockdep_addr");
-> -	int flag = evsel__intval(evsel, sample, "flag");
-> +	int flag = evsel__intval(evsel, sample, "flags");
->  
->  	memcpy(&addr, &tmp, sizeof(void *));
->  
-> -- 
-> 2.17.1
-> 
+tip/sched/core :
+schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+Latency percentiles (usec)
+	50.0th: 33
+	75.0th: 45
+	90.0th: 51
+	95.0th: 4152
+	*99.0th: 14288
+	99.5th: 14288
+	99.9th: 14288
+	min=0, max=14276
+
+tip/sched/core + patch :
+schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+Latency percentiles (usec)
+	50.0th: 34
+	75.0th: 47
+	90.0th: 52
+	95.0th: 78
+	*99.0th: 94
+	99.5th: 94
+	99.9th: 94
+	min=0, max=94
+
+Fixes: 0b0695f2b34a ("sched/fair: Rework load_balance()")
+Reported-by: Chris Mason <clm@fb.com>
+Suggested-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aa4c6227cd6d..210b15f068a6 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9031,7 +9031,8 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 	 * emptying busiest.
+ 	 */
+ 	if (local->group_type == group_has_spare) {
+-		if (busiest->group_type > group_fully_busy) {
++		if ((busiest->group_type > group_fully_busy) &&
++		    !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
+ 			/*
+ 			 * If busiest is overloaded, try to fill spare
+ 			 * capacity. This might end up creating spare capacity
+-- 
+2.17.1
+
