@@ -2,180 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC362A337A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EFE2A337D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgKBS7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        id S1726501AbgKBTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgKBS7x (ORCPT
+        with ESMTP id S1725882AbgKBS77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:59:53 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106FDC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:59:53 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id j7so15697232oie.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:59:53 -0800 (PST)
+        Mon, 2 Nov 2020 13:59:59 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E36C0617A6;
+        Mon,  2 Nov 2020 10:59:59 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id b138so12625361yba.5;
+        Mon, 02 Nov 2020 10:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wnk2CLIL87tXQgWK+SrdFKrU8Jb11+wiVutkxS8FJAk=;
-        b=y8K5h6gMZ1Tpu2gKkrgqxtPSgjoXfyfnfxZ1Gi6no1fM6Ufkq2SZwgGLU9tdovF8FD
-         H1T5vstQrNtQKJuCst5PHACGrAbrRpFWF4UQ2X4WOTR/wX0+FGnay+51KJKTHp2DItpL
-         K36OdYDSGrFeiX14jO+skjrnVyGgEq5LWrdeYEWwCOoQ7PpcpO57ytLH5vsaU7bBqf34
-         CTYNsKAOoh6Ou3CvKYPkTSccGuyKV+/Q3JJNGxVlby3c5UYNkwckVW82HdOABbSSmhoM
-         RLY5KqVxx25NG6jAp1gM9G8CFTXTCXCdzie9kdZIgwj9LkzYbToK7rROvBRNBDGGy+o3
-         Rb6Q==
+        bh=dpf57obcTDUfpgE4X4aU2uC5mE04uKRHqZ7salaebWY=;
+        b=uIuQHo1bXiaGsEZs1SD690jNAApi1irtsV2HmJhEYpjfIvNYYDblmOlMnBE+35n9in
+         yjkEiUizRO2qnAsIGDqxw//QMoA9DYkrSzTqflaiCczVSAIovv9ZVSbWCkPjRwPVjWg0
+         gB17Xe4pdfDCK4rypE2cdD/w2tS1iHIz5E8RIL/IGHIhHPRTrIR4JlevYkUbYIiIeqzo
+         lyHtNLcm2U8XvmB0PkcL78GGmvSlB45Z7KeK3I0wBkIXBrpwfSRvBPhGb65vdF6zISWi
+         /W9r3Z0AR9CL9kezruGAvSECiCBYBuh2/C5+E/SgjQO1NLErI+LG8C3Mh9V+KJhyej5L
+         lRmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wnk2CLIL87tXQgWK+SrdFKrU8Jb11+wiVutkxS8FJAk=;
-        b=Qxllwnl9WaYhoCnuZmWGgl6vfr20jp+cZuzzmkE5lh/uOziFOdD9/8cV7pIqbyy/nS
-         65uZVhjnOV05OL+MMj+R2Twzl4XjnIL8Q8rapJDnzuaiPrimlmNtF31tGtJApFxf8gEb
-         UQsABPruXKWu9L/A+3ALtz7BaviNuewt3g2OS/567I0QYfiqjbNDv/wx+ii0Iibfct1r
-         Ayw5Oq3eIVPHp3gzhKZegpMh2dThqgwT74JxhMW1UgmF8XCF71RqDrpVEe+GUXavZcvR
-         oiw7Jmqc5TB0Rua3xtqoSQm/IXYY4akbfIgfGULsU5LDvvssuJpy6BkAUqAwB44h5xFe
-         f8pQ==
-X-Gm-Message-State: AOAM533jpPR3amgUrRadpjwJJhzCNFvDK3ynmin1E/a+y9vGv/8Fb5T6
-        5cpxSJT0+OIM3LCBTKS7LFRH037MErKzx/tbndoAiQ==
-X-Google-Smtp-Source: ABdhPJyv8ca+UcWsaMrEtPLvZWkJ8u+QT2pHVeI/zOlp0URmlMHhtuM0mOxrGBs5do9zPRpDC/ARcMBfnYn6s/S9Lpc=
-X-Received: by 2002:aca:aa90:: with SMTP id t138mr6303107oie.171.1604343592266;
- Mon, 02 Nov 2020 10:59:52 -0800 (PST)
+        bh=dpf57obcTDUfpgE4X4aU2uC5mE04uKRHqZ7salaebWY=;
+        b=RrkuB7aeqCsSzlnu9kyeZhxi4eZwJXzOBbWz84SwvNe++bNZhTzZjTU1a0fckXYwOf
+         geKL2QxovY+fKhyA/8AM2txg5zWSzrK18UqVtF03WRRH88MUyn2n5zFj1VcDYDhtK2OL
+         x85r4/dWokT8NmLtBHIIark724q9LFNrGaSdYPdVPdENKfBSxbpH8iOfQ+SFSpgOdGB6
+         2s3jEhiCfLgF7gFROUJtUVOVAo0TwggbwReF6L5tCkh2SqMqsRFu7PNMfWuwepgJwJ3W
+         qPum/TEBmLm9O4RJT419+iVlmfmC7J92dqYdwkv+pGeoaJ/OJI7VuLVIzB9vjTUvnT7s
+         X/jA==
+X-Gm-Message-State: AOAM531LwKrIU4kFI+9KgJseWOFX69D3rWWBuiwgXHj8GdDrVxImBG1h
+        ScHmIvAz33OxNqZIha6LWvUcPHydF9BNE0qwvwoDKYV62Cklxw==
+X-Google-Smtp-Source: ABdhPJxeZbSScoQ+As7CbT+Gg8VIx5tt5UejlPgz4LaSFdFAdNjkpOYBr4EFlysevakPxMbUijmoyLqWGxxZKj9Af94=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr22709876ybf.425.1604343598235;
+ Mon, 02 Nov 2020 10:59:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20201023033130.11354-1-cunkel@drivescale.com> <f5ba4699-5620-d30d-2b0b-51b39b46b589@redhat.com>
-In-Reply-To: <f5ba4699-5620-d30d-2b0b-51b39b46b589@redhat.com>
-From:   Chris Unkel <cunkel@drivescale.com>
-Date:   Mon, 2 Nov 2020 10:59:39 -0800
-Message-ID: <CAHFUYDpFeK+mkRSkzAydu9emGSzpPxu3QuTN73uatADvfRqzgw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mdraid sb and bitmap write alignment on 512e drives
-To:     Xiao Ni <xni@redhat.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Song Liu <song@kernel.org>
+References: <20201101153647.2292322-1-trix@redhat.com>
+In-Reply-To: <20201101153647.2292322-1-trix@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Nov 2020 10:59:47 -0800
+Message-ID: <CAEf4BzY+_aqCpww9ZCHOMCnunvWrszWTUFDP=cEy2CY75S1yRg@mail.gmail.com>
+Subject: Re: [PATCH] net: core: remove unneeded semicolon
+To:     trix@redhat.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>, ap420073@gmail.com,
+        Cong Wang <xiyou.wangcong@gmail.com>, jiri@mellanox.com,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiao,
+On Sun, Nov 1, 2020 at 7:38 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> A semicolon is not needed after a switch statement.
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
 
-That particular array is super1.2.  The block trace was captured on
-the disk underlying the partition device on which the md array member
-resides, not on the partition device itself.  The partition starts
-2048 sectors into the disk (1MB).  So the 2048 sectors offset to the
-beginning of the partition, plus the 8 sector superblock offset for
-super1.2 ends up at 2056.
+Yep.
 
-Sorry for the confusion there.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Regards,
-
- --Chris
-
-On Sun, Nov 1, 2020 at 11:04 PM Xiao Ni <xni@redhat.com> wrote:
+>  net/core/dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 751e5264fd49..10f5d0c3d0d7 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -8898,7 +8898,7 @@ static bpf_op_t dev_xdp_bpf_op(struct net_device *dev, enum bpf_xdp_mode mode)
+>                 return dev->netdev_ops->ndo_bpf;
+>         default:
+>                 return NULL;
+> -       };
+> +       }
+>  }
 >
->
-> On 10/23/2020 11:31 AM, Christopher Unkel wrote:
-> > Hello all,
-> >
-> > While investigating some performance issues on mdraid 10 volumes
-> > formed with "512e" disks (4k native/physical sector size but with 512
-> > byte sector emulation), I've found two cases where mdraid will
-> > needlessly issue writes that start on 4k byte boundary, but are are
-> > shorter than 4k:
-> >
-> > 1. writes of the raid superblock; and
-> > 2. writes of the last page of the write-intent bitmap.
-> >
-> > The following is an excerpt of a blocktrace of one of the component
-> > members of a mdraid 10 volume during a 4k write near the end of the
-> > array:
-> >
-> >    8,32  11        2     0.000001687   711  D  WS 2064 + 8 [kworker/11:1H]
-> > * 8,32  11        5     0.001454119   711  D  WS 2056 + 1 [kworker/11:1H]
-> > * 8,32  11        8     0.002847204   711  D  WS 2080 + 7 [kworker/11:1H]
-> >    8,32  11       11     0.003700545  3094  D  WS 11721043920 + 8 [md127_raid1]
-> >    8,32  11       14     0.308785692   711  D  WS 2064 + 8 [kworker/11:1H]
-> > * 8,32  11       17     0.310201697   711  D  WS 2056 + 1 [kworker/11:1H]
-> >    8,32  11       20     5.500799245   711  D  WS 2064 + 8 [kworker/11:1H]
-> > * 8,32  11       23    15.740923558   711  D  WS 2080 + 7 [kworker/11:1H]
-> >
-> > Note the starred transactions, which each start on a 4k boundary, but
-> > are less than 4k in length, and so will use the 512-byte emulation.
-> > Sector 2056 holds the superblock, and is written as a single 512-byte
-> > write.  Sector 2086 holds the bitmap bit relevant to the written
-> > sector.  When it is written the active bits of the last page of the
-> > bitmap are written, starting at sector 2080, padded out to the end of
-> > the 512-byte logical sector as required.  This results in a 3.5kb
-> > write, again using the 512-byte emulation.
->
-> Hi Christopher
->
-> Which superblock version do you use? If it's super1.1, superblock starts
-> at 0 sector.
-> If it's super1.2, superblock starts at 8 sector. If it's super1.0,
-> superblock starts at the
-> end of device and bitmap is before superblock. As mentioned above,
-> bitmap is behind
-> the superblock, so it should not be super1.0. So I have a question why
-> does 2056 hold
-> the superblock?
->
-> Regards
-> Xiao
->
-> >
-> > Note that in some arrays the last page of the bitmap may be
-> > sufficiently full that they are not affected by the issue with the
-> > bitmap write.
-> >
-> > As there can be a substantial penalty to using the 512-byte sector
-> > emulation (turning writes into read-modify writes if the relevant
-> > sector is not in the drive's cache) I believe it makes sense to pad
-> > these writes out to a 4k boundary.  The writes are already padded out
-> > for "4k native" drives, where the short access is illegal.
-> >
-> > The following patch set changes the superblock and bitmap writes to
-> > respect the physical block size (e.g. 4k for today's 512e drives) when
-> > possible.  In each case there is already logic for padding out to the
-> > underlying logical sector size.  I reuse or repeat the logic for
-> > padding out to the physical sector size, but treat the padding out as
-> > optional rather than mandatory.
-> >
-> > The corresponding block trace with these patches is:
-> >
-> >     8,32   1        2     0.000003410   694  D  WS 2064 + 8 [kworker/1:1H]
-> >     8,32   1        5     0.001368788   694  D  WS 2056 + 8 [kworker/1:1H]
-> >     8,32   1        8     0.002727981   694  D  WS 2080 + 8 [kworker/1:1H]
-> >     8,32   1       11     0.003533831  3063  D  WS 11721043920 + 8 [md127_raid1]
-> >     8,32   1       14     0.253952321   694  D  WS 2064 + 8 [kworker/1:1H]
-> >     8,32   1       17     0.255354215   694  D  WS 2056 + 8 [kworker/1:1H]
-> >     8,32   1       20     5.337938486   694  D  WS 2064 + 8 [kworker/1:1H]
-> >     8,32   1       23    15.577963062   694  D  WS 2080 + 8 [kworker/1:1H]
-> >
-> > I do notice that the code for bitmap writes has a more sophisticated
-> > and thorough check for overlap than the code for superblock writes.
-> > (Compare write_sb_page in md-bitmap.c vs. super_1_load in md.c.) From
-> > what I know since the various structures starts have always been 4k
-> > aligned anyway, it is always safe to pad the superblock write out to
-> > 4k (as occurs on 4k native drives) but not necessarily futher.
-> >
-> > Feedback appreciated.
-> >
-> >    --Chris
-> >
-> >
-> > Christopher Unkel (3):
-> >    md: align superblock writes to physical blocks
-> >    md: factor sb write alignment check into function
-> >    md: pad writes to end of bitmap to physical blocks
-> >
-> >   drivers/md/md-bitmap.c | 80 +++++++++++++++++++++++++-----------------
-> >   drivers/md/md.c        | 15 ++++++++
-> >   2 files changed, 63 insertions(+), 32 deletions(-)
-> >
+>  static struct bpf_xdp_link *dev_xdp_link(struct net_device *dev,
+> --
+> 2.18.1
 >
