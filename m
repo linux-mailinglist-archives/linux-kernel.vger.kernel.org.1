@@ -2,248 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C759B2A2480
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614922A248C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbgKBF4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgKBF4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:56:31 -0500
-Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7DC820870;
-        Mon,  2 Nov 2020 05:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604296590;
-        bh=H4bxrHgb7QzAd4s6R7ZAcPSYQsd0k6a8eql72d8Wh3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IVgUDyjOS+GO22O0osaO3K3VzLaZ5+NfqDzIdn3mEMC6Vw5Yp7Pm/EgRYKkZQqnLK
-         R1Gw0mAB9KsxH2iSTGv+VOVRvic3kO2Q+DRP+NkrKNolUy5EZgtKHfaAXdGEBNeGb7
-         7kW+SggiAe5YWsZ2eXZnpDk8Hnz9ZN5kCTnuZ+Jo=
-Date:   Mon, 2 Nov 2020 07:56:26 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "kiran.patil@intel.com" <kiran.patil@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v1 03/11] net/mlx5_core: Clean driver version
- and name
-Message-ID: <20201102055626.GD5429@unreal>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-4-leon@kernel.org>
- <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
+        id S1727840AbgKBGAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 01:00:03 -0500
+Received: from mail-eopbgr80041.outbound.protection.outlook.com ([40.107.8.41]:51822
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727767AbgKBGAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 01:00:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=heh4nECR5UGA2DBjxIMyStv68DjfAbvfFqTmFRqyA+oJ332hf54GXM6MydVqBDmVwSBR1Uh45rHvt4tMNv3bLLUmFkrxpncxTSMNkwG2iFsKasexyj/kzAhK/2mhs1oFwieELH7MXRzBpl0FvQMkBDaWthrAT0ituP/0vEjOJC4zIJM/BA4jtF1+K2GCNvbzaiB/ZYCGSqMg/zrw0lYhI3SnVZMpLfpRkGHunH1b59TATZOr9X7GK4n2yPYjuPvjDj+qsGsgn6yemyFoTuE3SgpWWlv99G81yx7O/G+QDbrBeoBW+6enp8mBbUL9D4JgpNk+Z8e9eGHbyhM3STzvjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=53GtBVqgVMacHN/cZiJ5NKb9GnkAmQu3Uk9idhwgCrQ=;
+ b=RyqmVE9qLKRbMmjEi3RNDxvkc/eT+OYTntkQlKYuf8pxLIrtbbXQ8mcmMJAy0f4Wey3DGKcvJxNpeQqQZVtjxR0oO83x9+K1SZgyZifyCzqW/cRBhNrROdJ+t3XfHqFkBCv87TW8TmTyDsyiddVWS1tXvtSHtGezDcoyUgl1oNdJgkbPMhZirf4t/svr84d9o3GX1Gtg3BoAmwlEQbN3HJwmjoWFnF1Y5R6c3QTrAwa6QsmQKbSe9w2JSRapHFzFa4AlqPF/BzxvLGqb14EOqrrWr8zURDQIGWx0Nvu4HiGOsiIgfjP+YjXO71oxIBqgqJg8AH6jzwLeXZUdMYUApw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=53GtBVqgVMacHN/cZiJ5NKb9GnkAmQu3Uk9idhwgCrQ=;
+ b=pK3j0oh3M8BGgBh7E5YQz7RMgnwKeLp6nm8uAmukVntwV/tHhzyaDAiJGyOIxFzg0JF3Oi5h4l4AyhgcEeFIfuBTgyIem1tVoTy1rlcbUV0RXC8U/nISMTkOjBXb/n8OJBGFF85Q7tfwWgDsntRvcYKWLF0k/C0N897Bs5gW12M=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB6893.eurprd04.prod.outlook.com (2603:10a6:803:133::7)
+ by VE1PR04MB7439.eurprd04.prod.outlook.com (2603:10a6:800:1ab::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Mon, 2 Nov
+ 2020 05:59:59 +0000
+Received: from VI1PR04MB6893.eurprd04.prod.outlook.com
+ ([fe80::48ec:3370:b98c:ad13]) by VI1PR04MB6893.eurprd04.prod.outlook.com
+ ([fe80::48ec:3370:b98c:ad13%2]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 05:59:59 +0000
+From:   meenakshi.aggarwal@nxp.com
+To:     shawnguo@kernel.org, robh+dt@kernel.org, V.sethi@nxp.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+Subject: [PATCH v4 0/2] Add device tree support for LX2162AQDS board
+Date:   Mon,  2 Nov 2020 11:29:39 +0530
+Message-Id: <1604296781-28295-1-git-send-email-meenakshi.aggarwal@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1601373718-13218-3-git-send-email-meenakshi.aggarwal@nxp.com>
+References: <1601373718-13218-3-git-send-email-meenakshi.aggarwal@nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR02CA0067.apcprd02.prod.outlook.com
+ (2603:1096:4:54::31) To VI1PR04MB6893.eurprd04.prod.outlook.com
+ (2603:10a6:803:133::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0067.apcprd02.prod.outlook.com (2603:1096:4:54::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3499.18 via Frontend Transport; Mon, 2 Nov 2020 05:59:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: cbca7c81-c6f8-410d-a08f-08d87ef48780
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7439:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB74393AE41797A6B7A99A6AD18E100@VE1PR04MB7439.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YwBu2BFmtPkh6y6gl8chK41Rpbii7zI5CxLlGzHQ93zds9dfBkMZXppkL5Vla5Bg3IiOHsLFRT+ZVp1WuQUxxp8u0d4DMubX028jBBGfT7myyDz+xdmRhQCZagERf+3yYdDzKtiXc9XQ+1hSte/UKyWp7DC4NKvirZ4zhJhHSno5IJRLUCQJJl2sgiNPjMChR6nep3+QWRzDr/3QD0fPncmac5GcUHS/XZcryJG9M01Ske2f9qs3VdTGh6jEk+LCtMz+OGCYY/7cpMX6+HOypNpXGrATcIw7q+Wqb6L4xvV9IFMSDPMvMJnEZqN6knpHi35lAUOZIw8zImgGpzwlX+JVP1OUipvoXpjOjE3skO+q/PH6fo5ffV12hBnbjtKL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB6893.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(5660300002)(66556008)(8936002)(6486002)(4744005)(8676002)(9686003)(316002)(83380400001)(66476007)(1006002)(6666004)(66946007)(7696005)(86362001)(52116002)(4326008)(55236004)(16526019)(2616005)(36756003)(956004)(26005)(478600001)(186003)(2906002)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Lqg4zDIgMcrNCnVJS2Se3+stdWAVmgwp/NtohOi4J0n2luwN6LYBvuuudf3qebmKi0lmNlZfDPuI3eRW3C1fZ8Z8W8NWi2ZHatmdyw3QvONNH1eAR57d1+5zsjcqR4RAeNEZLqMu0V0UqCWx36lyKMuJ2WT1Rmk1F3VE30ereIYxUThyqxNp6byDzPuMdMDR28RWQ/kXDahXhApMBikSELEsl+zNK8/8kGUb0R6puG+AvpGeiBWDkm9hIuqNJglxN+cQoexVojprV5hdljFwgNR71csr8hfb08J+La15o+bOR2MInfR5YSUPhmChGqAVWq/CgNZv8LtLFXT3hVepcIWPT7gxPQXRKMQoB0Qm7t7CHKrmOTayP9TA8W7xO6OXFqvkVNPXJwBE4JDUJQPwvQCCo3CmLP06rZ20ILHXZttgK6vCMSQuV6IFuQRpl8/iU4FGxwaTGLPYbuhdQm+kjG0ccMK4tM3op1Vy5QLid4573YmP3Zn1zSL2bbJZziB1K9+3AIkdeol58VQi1njOjJnR+6Bn3G4AkQuNstTK7cSOCtWTURieizfspG6Odw/k4e8ev3dGYdW3gap2/iHArhbP8nlAErpY1dOXcjbA9Za3kWP7sspGozEPzZKDH8UMQjgnW7ouNk0VKPdmDkWvpg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbca7c81-c6f8-410d-a08f-08d87ef48780
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6893.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 05:59:59.1891
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6WxhjffeGSo+2Rur1YUvCkGO/0Ltm57WifS9IrcByMRg1odwiBuf28WL5Tut12ttB31O3F1UBHq0+X2M4qlZJ3CtKA9oW2c3mKy+euXgw6Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7439
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 05:07:59AM +0000, Parav Pandit wrote:
->
->
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, November 2, 2020 1:46 AM
-> >
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > Remove exposed driver version as it was done in other drivers, so module
-> > version will work correctly by displaying the kernel version for which it is
-> > compiled.
-> >
-> > And move mlx5_core module name to general include, so auxiliary drivers
-> > will be able to use it as a basis for a name in their device ID tables.
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/devlink.c     |  2 +-
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c  |  4 +---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c      |  1 -
-> >  .../net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c   |  2 +-
-> >  drivers/net/ethernet/mellanox/mlx5/core/main.c        | 11 +++++++----
-> >  drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h   |  3 ---
-> >  include/linux/mlx5/driver.h                           |  2 ++
-> >  7 files changed, 12 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > index a28f95df2901..1a351e2f6ace 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > @@ -52,7 +52,7 @@ mlx5_devlink_info_get(struct devlink *devlink, struct
-> > devlink_info_req *req,
-> >  	u32 running_fw, stored_fw;
-> >  	int err;
-> >
-> > -	err = devlink_info_driver_name_put(req, DRIVER_NAME);
-> > +	err = devlink_info_driver_name_put(req, KBUILD_MODNAME);
-> >  	if (err)
-> >  		return err;
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > index d25a56ec6876..bcff18a87bcd 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > @@ -40,9 +40,7 @@ void mlx5e_ethtool_get_drvinfo(struct mlx5e_priv
-> > *priv,  {
-> >  	struct mlx5_core_dev *mdev = priv->mdev;
-> >
-> > -	strlcpy(drvinfo->driver, DRIVER_NAME, sizeof(drvinfo->driver));
-> > -	strlcpy(drvinfo->version, DRIVER_VERSION,
-> > -		sizeof(drvinfo->version));
-> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo-
-> > >driver));
-> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
-> >  		 "%d.%d.%04d (%.16s)",
-> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
-> > fw_rev_sub(mdev), diff --git
-> > a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > index 67247c33b9fd..ef2f8889ba0f 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > @@ -64,7 +64,6 @@ static void mlx5e_rep_get_drvinfo(struct net_device
-> > *dev,
-> >
-> >  	strlcpy(drvinfo->driver, mlx5e_rep_driver_name,
-> >  		sizeof(drvinfo->driver));
-> > -	strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
-> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
-> >  		 "%d.%d.%04d (%.16s)",
-> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > index cac8f085b16d..97d96fc38a65 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > @@ -39,7 +39,7 @@ static void mlx5i_get_drvinfo(struct net_device *dev,
-> >  	struct mlx5e_priv *priv = mlx5i_epriv(dev);
-> >
-> >  	mlx5e_ethtool_get_drvinfo(priv, drvinfo);
-> > -	strlcpy(drvinfo->driver, DRIVER_NAME "[ib_ipoib]",
-> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME "[ib_ipoib]",
-> >  		sizeof(drvinfo->driver));
-> >  }
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > index 71e210f22f69..9827127cb674 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > @@ -77,7 +77,6 @@
-> >  MODULE_AUTHOR("Eli Cohen <eli@mellanox.com>");
-> > MODULE_DESCRIPTION("Mellanox 5th generation network adapters
-> > (ConnectX series) core driver");  MODULE_LICENSE("Dual BSD/GPL"); -
-> > MODULE_VERSION(DRIVER_VERSION);
-> >
-> >  unsigned int mlx5_core_debug_mask;
-> >  module_param_named(debug_mask, mlx5_core_debug_mask, uint, 0644);
-> > @@ -228,7 +227,7 @@ static void mlx5_set_driver_version(struct
-> > mlx5_core_dev *dev)
-> >  	strncat(string, ",", remaining_size);
-> >
-> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
-> > -	strncat(string, DRIVER_NAME, remaining_size);
-> > +	strncat(string, KBUILD_MODNAME, remaining_size);
-> >
-> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
-> >  	strncat(string, ",", remaining_size);
-> > @@ -313,7 +312,7 @@ static int request_bar(struct pci_dev *pdev)
-> >  		return -ENODEV;
-> >  	}
-> >
-> > -	err = pci_request_regions(pdev, DRIVER_NAME);
-> > +	err = pci_request_regions(pdev, KBUILD_MODNAME);
-> >  	if (err)
-> >  		dev_err(&pdev->dev, "Couldn't get PCI resources,
-> > aborting\n");
-> >
-> > @@ -1617,7 +1616,7 @@ void mlx5_recover_device(struct mlx5_core_dev
-> > *dev)  }
-> >
-> >  static struct pci_driver mlx5_core_driver = {
-> > -	.name           = DRIVER_NAME,
-> > +	.name           = KBUILD_MODNAME,
-> >  	.id_table       = mlx5_core_pci_table,
-> >  	.probe          = init_one,
-> >  	.remove         = remove_one,
-> > @@ -1643,6 +1642,10 @@ static int __init init(void)  {
-> >  	int err;
-> >
-> > +	WARN_ONCE(strcmp(MLX5_ADEV_NAME, KBUILD_MODNAME) ||
-> > +		  strlen(MLX5_ADEV_NAME) != strlen(KBUILD_MODNAME),
-> > +		  "mlx5_core name not in sync with kernel module name");
-> > +
-> In which case, both the strings are same but their length not?
-> You likely don't need the string length check.
+From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
 
-Yes, I was overzealous, I'll remove when will apply the series.
+LX2162A has same die as of LX2160A with different packaging.
 
->
-> >  	get_random_bytes(&sw_owner_id, sizeof(sw_owner_id));
-> >
-> >  	mlx5_core_verify_params();
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > index 8cec85ab419d..b285f1515e4e 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > @@ -42,9 +42,6 @@
-> >  #include <linux/mlx5/fs.h>
-> >  #include <linux/mlx5/driver.h>
-> >
-> > -#define DRIVER_NAME "mlx5_core"
-> > -#define DRIVER_VERSION "5.0-0"
-> > -
-> >  extern uint mlx5_core_debug_mask;
-> >
-> >  #define mlx5_core_dbg(__dev, format, ...)				\
-> > diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h index
-> > 317257f8e0ad..ed1d030658d2 100644
-> > --- a/include/linux/mlx5/driver.h
-> > +++ b/include/linux/mlx5/driver.h
-> > @@ -56,6 +56,8 @@
-> >  #include <linux/ptp_clock_kernel.h>
-> >  #include <net/devlink.h>
-> >
-> > +#define MLX5_ADEV_NAME "mlx5_core"
-> > +
-> >  enum {
-> >  	MLX5_BOARD_ID_LEN = 64,
-> >  };
-> > --
-> > 2.28.0
->
->
-> Other than strlen removal check,
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
->
+Changes:
 
-Thanks
+        v2:
+        - divided patch into two, binding and dts support
+
+	v3:
+	- incorporated review comments on voltage regulator node
+
+	v4:
+	- fixed check-patch warning.
+
+Meenakshi Aggarwal (2):
+  dt-bindings: arm64: add compatible for LX2162A QDS Board
+  arm64: dts: lx2160a: add device tree for lx2162aqds board
+
+ Documentation/devicetree/bindings/arm/fsl.yaml    |   1 +
+ arch/arm64/boot/dts/freescale/Makefile            |   1 +
+ arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts | 334 ++++++++++++++++++++++
+ 3 files changed, 336 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+
+-- 
+2.7.4
+
