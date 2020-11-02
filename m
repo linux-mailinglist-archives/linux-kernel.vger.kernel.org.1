@@ -2,125 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C133E2A3373
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC362A337A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgKBS6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:58:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60730 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726392AbgKBS6L (ORCPT
+        id S1726277AbgKBS7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgKBS7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:58:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604343489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KiFFtp2v2OzZxtB5aSwfZtbGyO8aZuVS/CYOJRroQx8=;
-        b=jQSQDI6cvueQU79Df0zL+hguqUy+1JsNBWPJTdJ2TqbgL8THB/XNmvryAAHPWW8EO0lxYz
-        zS23eLrJRd7oOABvTxZqclkGaYvgUOKxGPOMZplNkwX6MGYT2gJa7pQCfKjmmrcIvABgoB
-        dVRT6yqqQxvmT46ckeAH9dHNa9VWQVY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-oDfcHmi6OeOM-azEQBhOOA-1; Mon, 02 Nov 2020 13:58:07 -0500
-X-MC-Unique: oDfcHmi6OeOM-azEQBhOOA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 048BE108E1A1;
-        Mon,  2 Nov 2020 18:58:06 +0000 (UTC)
-Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 690191002C1A;
-        Mon,  2 Nov 2020 18:58:01 +0000 (UTC)
-Message-ID: <d60d24de6b7c9b948333e4e288452fe0a39d2380.camel@redhat.com>
-Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
-From:   Qian Cai <cai@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        oleg@redhat.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Date:   Mon, 02 Nov 2020 13:58:00 -0500
-In-Reply-To: <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
-References: <20201101173153.GC9375 () osiris>
-         <362e3645e2c0891309c07e244a147f0c32f106da.camel@redhat.com>
-         <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
+        Mon, 2 Nov 2020 13:59:53 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106FDC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:59:53 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id j7so15697232oie.12
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wnk2CLIL87tXQgWK+SrdFKrU8Jb11+wiVutkxS8FJAk=;
+        b=y8K5h6gMZ1Tpu2gKkrgqxtPSgjoXfyfnfxZ1Gi6no1fM6Ufkq2SZwgGLU9tdovF8FD
+         H1T5vstQrNtQKJuCst5PHACGrAbrRpFWF4UQ2X4WOTR/wX0+FGnay+51KJKTHp2DItpL
+         K36OdYDSGrFeiX14jO+skjrnVyGgEq5LWrdeYEWwCOoQ7PpcpO57ytLH5vsaU7bBqf34
+         CTYNsKAOoh6Ou3CvKYPkTSccGuyKV+/Q3JJNGxVlby3c5UYNkwckVW82HdOABbSSmhoM
+         RLY5KqVxx25NG6jAp1gM9G8CFTXTCXCdzie9kdZIgwj9LkzYbToK7rROvBRNBDGGy+o3
+         Rb6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wnk2CLIL87tXQgWK+SrdFKrU8Jb11+wiVutkxS8FJAk=;
+        b=Qxllwnl9WaYhoCnuZmWGgl6vfr20jp+cZuzzmkE5lh/uOziFOdD9/8cV7pIqbyy/nS
+         65uZVhjnOV05OL+MMj+R2Twzl4XjnIL8Q8rapJDnzuaiPrimlmNtF31tGtJApFxf8gEb
+         UQsABPruXKWu9L/A+3ALtz7BaviNuewt3g2OS/567I0QYfiqjbNDv/wx+ii0Iibfct1r
+         Ayw5Oq3eIVPHp3gzhKZegpMh2dThqgwT74JxhMW1UgmF8XCF71RqDrpVEe+GUXavZcvR
+         oiw7Jmqc5TB0Rua3xtqoSQm/IXYY4akbfIgfGULsU5LDvvssuJpy6BkAUqAwB44h5xFe
+         f8pQ==
+X-Gm-Message-State: AOAM533jpPR3amgUrRadpjwJJhzCNFvDK3ynmin1E/a+y9vGv/8Fb5T6
+        5cpxSJT0+OIM3LCBTKS7LFRH037MErKzx/tbndoAiQ==
+X-Google-Smtp-Source: ABdhPJyv8ca+UcWsaMrEtPLvZWkJ8u+QT2pHVeI/zOlp0URmlMHhtuM0mOxrGBs5do9zPRpDC/ARcMBfnYn6s/S9Lpc=
+X-Received: by 2002:aca:aa90:: with SMTP id t138mr6303107oie.171.1604343592266;
+ Mon, 02 Nov 2020 10:59:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20201023033130.11354-1-cunkel@drivescale.com> <f5ba4699-5620-d30d-2b0b-51b39b46b589@redhat.com>
+In-Reply-To: <f5ba4699-5620-d30d-2b0b-51b39b46b589@redhat.com>
+From:   Chris Unkel <cunkel@drivescale.com>
+Date:   Mon, 2 Nov 2020 10:59:39 -0800
+Message-ID: <CAHFUYDpFeK+mkRSkzAydu9emGSzpPxu3QuTN73uatADvfRqzgw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mdraid sb and bitmap write alignment on 512e drives
+To:     Xiao Ni <xni@redhat.com>
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 10:07 -0700, Jens Axboe wrote:
-> On 11/2/20 9:59 AM, Qian Cai wrote:
-> > On Sun, 2020-11-01 at 17:31 +0000, Heiko Carstens wrote:
-> > > On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
-> > > > Wire up TIF_NOTIFY_SIGNAL handling for s390.
-> > > > 
-> > > > Cc: linux-s390@vger.kernel.org
-> > > > Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > 
-> > Even though I did confirm that today's linux-next contains this additional
-> > patch
-> > from Heiko below, a z10 guest is still unable to boot. Reverting the whole
-> > series (reverting only "s390: add support for TIF_NOTIFY_SIGNAL" introduced
-> > compiling errors) fixed the problem, i.e., git revert --no-edit
-> > af0dd809f3d3..7b074c15374c [1]
-> 
-> That's odd, it should build fine without that patch. How did it fail for you?
+Hi Xiao,
 
-In file included from ./arch/s390/include/asm/bug.h:5,
-                 from ./include/linux/bug.h:5,
-                 from ./include/linux/mmdebug.h:5,
-                 from ./include/linux/percpu.h:5,
-                 from ./include/linux/context_tracking_state.h:5,
-                 from ./include/linux/hardirq.h:5,
-                 from ./include/linux/kvm_host.h:7,
-                 from arch/s390/kernel/asm-offsets.c:11:
-./include/linux/sched/signal.h: In function ‘signal_pending’:
-./include/linux/sched/signal.h:368:39: error: ‘TIF_NOTIFY_SIGNAL’ undeclared
-(first use in this function); did you mean ‘TIF_NOTIFY_RESUME’?
-  if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
-                                       ^~~~~~~~~~~~~~~~~
-./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
- # define unlikely(x) __builtin_expect(!!(x), 0)
-                                          ^
-./include/linux/sched/signal.h:368:39: note: each undeclared identifier is
-reported only once for each function it appears in
-  if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
-                                       ^~~~~~~~~~~~~~~~~
-./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
- # define unlikely(x) __builtin_expect(!!(x), 0)
-                                          ^
-make[1]: *** [scripts/Makefile.build:117: arch/s390/kernel/asm-offsets.s] Error
-1
-make: *** [Makefile:1198: prepare0] Error 2
+That particular array is super1.2.  The block trace was captured on
+the disk underlying the partition device on which the md array member
+resides, not on the partition device itself.  The partition starts
+2048 sectors into the disk (1MB).  So the 2048 sectors offset to the
+beginning of the partition, plus the 8 sector superblock offset for
+super1.2 ends up at 2056.
 
-> 
-> Can you try and add this on top? Looks like I forgot the signal change for
-> s390, though that shouldn't really cause any issues.
+Sorry for the confusion there.
 
-It does not help with the boot issue at all.
+Regards,
 
-> 
-> 
-> diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
-> index 9e900a8977bd..a68c3796a1bf 100644
-> --- a/arch/s390/kernel/signal.c
-> +++ b/arch/s390/kernel/signal.c
-> @@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
->  	current->thread.system_call =
->  		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
->  
-> -	if (get_signal(&ksig)) {
-> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL) && get_signal(&ksig)) {
->  		/* Whee!  Actually deliver the signal.  */
->  		if (current->thread.system_call) {
->  			regs->int_code = current->thread.system_call;
-> 
+ --Chris
 
+On Sun, Nov 1, 2020 at 11:04 PM Xiao Ni <xni@redhat.com> wrote:
+>
+>
+>
+> On 10/23/2020 11:31 AM, Christopher Unkel wrote:
+> > Hello all,
+> >
+> > While investigating some performance issues on mdraid 10 volumes
+> > formed with "512e" disks (4k native/physical sector size but with 512
+> > byte sector emulation), I've found two cases where mdraid will
+> > needlessly issue writes that start on 4k byte boundary, but are are
+> > shorter than 4k:
+> >
+> > 1. writes of the raid superblock; and
+> > 2. writes of the last page of the write-intent bitmap.
+> >
+> > The following is an excerpt of a blocktrace of one of the component
+> > members of a mdraid 10 volume during a 4k write near the end of the
+> > array:
+> >
+> >    8,32  11        2     0.000001687   711  D  WS 2064 + 8 [kworker/11:1H]
+> > * 8,32  11        5     0.001454119   711  D  WS 2056 + 1 [kworker/11:1H]
+> > * 8,32  11        8     0.002847204   711  D  WS 2080 + 7 [kworker/11:1H]
+> >    8,32  11       11     0.003700545  3094  D  WS 11721043920 + 8 [md127_raid1]
+> >    8,32  11       14     0.308785692   711  D  WS 2064 + 8 [kworker/11:1H]
+> > * 8,32  11       17     0.310201697   711  D  WS 2056 + 1 [kworker/11:1H]
+> >    8,32  11       20     5.500799245   711  D  WS 2064 + 8 [kworker/11:1H]
+> > * 8,32  11       23    15.740923558   711  D  WS 2080 + 7 [kworker/11:1H]
+> >
+> > Note the starred transactions, which each start on a 4k boundary, but
+> > are less than 4k in length, and so will use the 512-byte emulation.
+> > Sector 2056 holds the superblock, and is written as a single 512-byte
+> > write.  Sector 2086 holds the bitmap bit relevant to the written
+> > sector.  When it is written the active bits of the last page of the
+> > bitmap are written, starting at sector 2080, padded out to the end of
+> > the 512-byte logical sector as required.  This results in a 3.5kb
+> > write, again using the 512-byte emulation.
+>
+> Hi Christopher
+>
+> Which superblock version do you use? If it's super1.1, superblock starts
+> at 0 sector.
+> If it's super1.2, superblock starts at 8 sector. If it's super1.0,
+> superblock starts at the
+> end of device and bitmap is before superblock. As mentioned above,
+> bitmap is behind
+> the superblock, so it should not be super1.0. So I have a question why
+> does 2056 hold
+> the superblock?
+>
+> Regards
+> Xiao
+>
+> >
+> > Note that in some arrays the last page of the bitmap may be
+> > sufficiently full that they are not affected by the issue with the
+> > bitmap write.
+> >
+> > As there can be a substantial penalty to using the 512-byte sector
+> > emulation (turning writes into read-modify writes if the relevant
+> > sector is not in the drive's cache) I believe it makes sense to pad
+> > these writes out to a 4k boundary.  The writes are already padded out
+> > for "4k native" drives, where the short access is illegal.
+> >
+> > The following patch set changes the superblock and bitmap writes to
+> > respect the physical block size (e.g. 4k for today's 512e drives) when
+> > possible.  In each case there is already logic for padding out to the
+> > underlying logical sector size.  I reuse or repeat the logic for
+> > padding out to the physical sector size, but treat the padding out as
+> > optional rather than mandatory.
+> >
+> > The corresponding block trace with these patches is:
+> >
+> >     8,32   1        2     0.000003410   694  D  WS 2064 + 8 [kworker/1:1H]
+> >     8,32   1        5     0.001368788   694  D  WS 2056 + 8 [kworker/1:1H]
+> >     8,32   1        8     0.002727981   694  D  WS 2080 + 8 [kworker/1:1H]
+> >     8,32   1       11     0.003533831  3063  D  WS 11721043920 + 8 [md127_raid1]
+> >     8,32   1       14     0.253952321   694  D  WS 2064 + 8 [kworker/1:1H]
+> >     8,32   1       17     0.255354215   694  D  WS 2056 + 8 [kworker/1:1H]
+> >     8,32   1       20     5.337938486   694  D  WS 2064 + 8 [kworker/1:1H]
+> >     8,32   1       23    15.577963062   694  D  WS 2080 + 8 [kworker/1:1H]
+> >
+> > I do notice that the code for bitmap writes has a more sophisticated
+> > and thorough check for overlap than the code for superblock writes.
+> > (Compare write_sb_page in md-bitmap.c vs. super_1_load in md.c.) From
+> > what I know since the various structures starts have always been 4k
+> > aligned anyway, it is always safe to pad the superblock write out to
+> > 4k (as occurs on 4k native drives) but not necessarily futher.
+> >
+> > Feedback appreciated.
+> >
+> >    --Chris
+> >
+> >
+> > Christopher Unkel (3):
+> >    md: align superblock writes to physical blocks
+> >    md: factor sb write alignment check into function
+> >    md: pad writes to end of bitmap to physical blocks
+> >
+> >   drivers/md/md-bitmap.c | 80 +++++++++++++++++++++++++-----------------
+> >   drivers/md/md.c        | 15 ++++++++
+> >   2 files changed, 63 insertions(+), 32 deletions(-)
+> >
+>
