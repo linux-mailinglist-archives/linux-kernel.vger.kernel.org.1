@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231D62A34D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C839C2A34FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgKBUCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S1727163AbgKBUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgKBUCS (ORCPT
+        with ESMTP id S1726727AbgKBUMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:02:18 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C950C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:02:18 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id x7so16058887wrl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:02:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=+LHkPNNHGbEfsJSQWciAnfkrQlxui91397IyZ7j51r4=;
-        b=s/XXlneVIJlCJqA+P3wqUaXYCK2ybHjf+F+WnpOSHIIg3kHtEB1z3Gc/pgUKvHF4He
-         vsv1iWVlFT8uZPEEg5jF/+zW2PGq8gW1DKDdmO8X0S6euvf3NJ8meCddkGp3sje+58MS
-         5CUJqqeG0HeGZ1EiMe2HPXlMejTWo5lCw6iYAk3ClO89NIxF0S8Lcs5xupGvEpHWedKW
-         kssWl8UnN5T2ejXz+WhH8xcuaJAVWLZ1xLV9LllODxi3sJ577JUNsa78V4uB/mjswCSD
-         ozf9/apVVI6gXkiGQPVfMdQavzNxCI6T93iHkHFStVD+zfTZNlFp6Li3SjuHcUDVZHFd
-         D8Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=+LHkPNNHGbEfsJSQWciAnfkrQlxui91397IyZ7j51r4=;
-        b=OPL37cQO2yKhKm+1HG2uIFZOd3gASTCiD7kUaxTe3lxwn05NDz006sJrVaE1OCVvBv
-         VpYIU5Nc0aSiP4z6ulUMfUod2KPNZFqZ2pnDR/i1v4m0BVvPNpXw6J5D+SL47VisbS9i
-         tbc7cl8ZTajXZCDh+hEzpgNQiuh9NtKbSerX3woB1ZLeh5993jMJVQsl9Jl3GOb7B4oL
-         /T7q4zwRNV29GmV5fHJ1emswhlbt/Ezqb0KIUDSd61eBr6N42zb+4M2CtrkbvOEUnRum
-         6zrmiLQBsfzV0PBxt7IeKb6napuWly1CeoVA1jgd2WmVGmakMDQqpPbPYRU4twuv3Bxi
-         13ig==
-X-Gm-Message-State: AOAM5333czOKLAuEzQMB+pZiLfxqdrwrXUwgFNPfwdAm2WwzjfaiwHWt
-        0El8/CkMfA1Y9KW/UKaOfwc=
-X-Google-Smtp-Source: ABdhPJx/kNoq2YtHLfUwD/tFAfh/4biaXbd6hWObircRavhW5qvCIADgoqAOup5/kF5517/O/JPOhg==
-X-Received: by 2002:adf:c847:: with SMTP id e7mr15411821wrh.346.1604347336925;
-        Mon, 02 Nov 2020 12:02:16 -0800 (PST)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id b4sm15426048wro.57.2020.11.02.12.02.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 12:02:16 -0800 (PST)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH] drm/amd: fix typoes
-To:     Bernard Zhao <bernard@vivo.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
+        Mon, 2 Nov 2020 15:12:40 -0500
+X-Greylist: delayed 595 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Nov 2020 12:12:40 PST
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E5AC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:12:40 -0800 (PST)
+Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E34CA3E7B1;
+        Mon,  2 Nov 2020 21:02:41 +0100 (CET)
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     robdclark@gmail.com
+Cc:     konrad.dybcio@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Colin Ian King <colin.king@canonical.com>,
-        zhengbin <zhengbin13@huawei.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20201102125747.6420-1-bernard@vivo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <654ce843-8b12-7ba2-9225-3c724afa3cdf@gmail.com>
-Date:   Mon, 2 Nov 2020 21:02:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm: a5xx: Make preemption reset case reentrant
+Date:   Mon,  2 Nov 2020 21:02:25 +0100
+Message-Id: <20201102200227.8876-1-marijn.suijten@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201102125747.6420-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 02.11.20 um 13:57 schrieb Bernard Zhao:
-> Fix typoes.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+nr_rings is reset to 1, but when this function is called for a second
+(and third!) time nr_rings > 1 is false, thus the else case is entered
+to set up a buffer for the RPTR shadow and consequently written to
+RB_RPTR_ADDR, hanging platforms without WHERE_AM_I firmware support.
 
-Acked-by: Christian König <christian.koenig@amd.com>
+Restructure the condition in such a way that shadow buffer setup only
+ever happens when has_whereami is true; otherwise preemption is only
+finalized when the number of ring buffers has not been reset to 1 yet.
 
-> ---
->   drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> index 2c6db379afae..e994d233aa21 100644
-> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> @@ -1980,7 +1980,7 @@ static void calculate_bandwidth(
->   	else {
->   		data->latency_for_non_mcifwr_clients = bw_int_to_fixed(0);
->   	}
-> -	/*dmif mc urgent latency suppported in high sclk and yclk*/
-> +	/*dmif mc urgent latency supported in high sclk and yclk*/
->   	data->dmifmc_urgent_latency_supported_in_high_sclk_and_yclk = bw_div((bw_sub(data->min_read_buffer_size_in_time, data->dmif_burst_time[high][s_high])), data->total_dmifmc_urgent_trips);
->   	/*dram speed/p-state change margin*/
->   	/*in the multi-display case the nb p-state change watermark cannot exceed the average lb size plus the dmif size or the cursor dcp buffer size*/
+Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
+Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+---
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index d6804a802355..9a202a7da131 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -755,12 +755,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+ 	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
+ 		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
+ 
+-	/* Disable preemption if WHERE_AM_I isn't available */
+-	if (!a5xx_gpu->has_whereami && gpu->nr_rings > 1) {
+-		a5xx_preempt_fini(gpu);
+-		gpu->nr_rings = 1;
+-	} else {
+-		/* Create a privileged buffer for the RPTR shadow */
++	/* Create a privileged buffer for the RPTR shadow */
++	if (a5xx_gpu->has_whereami) {
+ 		if (!a5xx_gpu->shadow_bo) {
+ 			a5xx_gpu->shadow = msm_gem_kernel_new(gpu->dev,
+ 				sizeof(u32) * gpu->nr_rings,
+@@ -774,6 +770,10 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+ 
+ 		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
+ 			REG_A5XX_CP_RB_RPTR_ADDR_HI, shadowptr(a5xx_gpu, gpu->rb[0]));
++	} else if (gpu->nr_rings > 1) {
++		/* Disable preemption if WHERE_AM_I isn't available */
++		a5xx_preempt_fini(gpu);
++		gpu->nr_rings = 1;
+ 	}
+ 
+ 	a5xx_preempt_hw_init(gpu);
+-- 
+2.29.2
 
