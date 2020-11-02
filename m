@@ -2,240 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1642A26D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DB72A26D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgKBJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgKBJTH (ORCPT
+        id S1728325AbgKBJT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:19:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727953AbgKBJT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:19:07 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B201C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 01:19:06 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id n18so13653144wrs.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 01:19:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lJEHmFBd3cbPOId3itPZgdyXvG8tbcQnOFRnmR4UTeM=;
-        b=FplHk9O/3Aabvuq0TjN3j50JQhWdJC4NEcRFbKJD2Y129gdpW0LkBRrboK4kB8EMqU
-         7CATJTqx6uwzh16XQT+EYIlFQS5Vlxlq27FU41zTXxMDj2Is7t5up4B88gOkNY5Ljk7N
-         umYwxyT6zrolEnTdPSD+KDMbFK75DjJxrH7xdAcX7ZBr5sjdrno14/IuuUf5S7MHG6FJ
-         +WBCkEddonUskiIhEM0aC2Wlf+HI9OWZ3tXAtFNpxZPqot0aOm8L0o7V8WkqgLlXoO3r
-         WwGIKdws5nFZ5Nxq74lthS47tvfZV9fUOKVxxqoyipyNgIDcuvCG0vgmz6V4gGb+aoSf
-         1FSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lJEHmFBd3cbPOId3itPZgdyXvG8tbcQnOFRnmR4UTeM=;
-        b=eBxoeNAZsC5bdnOKWGnYdVD8ntePWsMLyMK2K7aFAFn2bDkscWx8wlP8/y0AgHkaf2
-         f/JD9+QzDw6rjRNE3cun3I2jxa1wpd4e6ylDXUdK7+OvsoZ41ugEvT2AKtSuC/3FfCuL
-         IHccodWvGaNntzu6wzendcbqJsm8PIsP48xiTiaKqYVdVFaHUV/pl3DgzQtzu9doq6iN
-         A3bnhVPHv/Vt+k7UArCFtuRWUoQXFr4vhogK5EGeGT2Xb/fGKaDPwtT/T1TCY+ee9Dfs
-         o8gX5s8PiehWdrvIBpmclEEoG1eUNCCYvz0HxJiZpA6rvjJj1ls2Ag+9GxFw+GnbziPZ
-         DJGA==
-X-Gm-Message-State: AOAM5339QoNl5uZXrnxjrNmPpB1dcloJ76E9FbxRPRYVrVd/SHW6kXh3
-        isP3AwpGhwGAsoAwLNIQQAiZTg==
-X-Google-Smtp-Source: ABdhPJyT2/vlBNWplhw7RnadVnFPjUWs2R99EVOUZkdoO+TTy4Q7kTWiCScY9h/WA2u/o1tcM8BwOw==
-X-Received: by 2002:a05:6000:3:: with SMTP id h3mr17931164wrx.215.1604308744638;
-        Mon, 02 Nov 2020 01:19:04 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id z19sm3725087wmk.12.2020.11.02.01.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 01:19:03 -0800 (PST)
-Date:   Mon, 2 Nov 2020 09:19:01 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
+        Mon, 2 Nov 2020 04:19:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604308796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Fw8UzFDCnhqj5U8VjwS50spEGfFEI10XeNVmZ9tLlQ=;
+        b=Zu2waH4rE7HiHb8vMFx50g3SRWcFwIeC9vwC5230amnmz6+2qLjk7kGj6qnwAweLREBQGl
+        8hehoUD/zJQMD757k02qVeREU07/2dGmQLzOae6n0KP2SFvXGK8W31b/zZ0qWbcIV55Dyo
+        Min5rcJKiPEunm2gWp8iNzhe+JHHBI8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-r38_d9yVPFKybO8Ug1IDcw-1; Mon, 02 Nov 2020 04:19:52 -0500
+X-MC-Unique: r38_d9yVPFKybO8Ug1IDcw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 482D2809DCF;
+        Mon,  2 Nov 2020 09:19:47 +0000 (UTC)
+Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E85FB1002C16;
+        Mon,  2 Nov 2020 09:19:36 +0000 (UTC)
+Subject: Re: [PATCH v3 2/4] PM: hibernate: make direct map manipulations more
+ explicit
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        "David S. Miller" <davem@davemloft.net>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 6/7] kgdb: roundup: Allow runtime arch specific
- override
-Message-ID: <20201102091901.fkxdp2wyiycdhtjm@holly.lan>
-References: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
- <1603983387-8738-7-git-send-email-sumit.garg@linaro.org>
- <20201029152106.gj66mjnathsdqtoe@holly.lan>
- <CAFA6WYOcCj=_G67QGN=8McHWvunoggN7tho9_VueH763U9K=_g@mail.gmail.com>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <20201101170815.9795-1-rppt@kernel.org>
+ <20201101170815.9795-3-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <55cd2a4a-cfa8-d420-66b3-a25fcdd9b876@redhat.com>
+Date:   Mon, 2 Nov 2020 10:19:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYOcCj=_G67QGN=8McHWvunoggN7tho9_VueH763U9K=_g@mail.gmail.com>
+In-Reply-To: <20201101170815.9795-3-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:48:53AM +0530, Sumit Garg wrote:
-> On Thu, 29 Oct 2020 at 20:51, Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 08:26:26PM +0530, Sumit Garg wrote:
-> > > Add a new API kgdb_arch_roundup_cpus() for a particular archichecture to
-> > > override default kgdb roundup and if it detects at runtime to not support
-> > > NMI roundup then it can fallback to default implementation using async
-> > > SMP cross-calls.
-> > >
-> > > Currently such an architecture example is arm64 supporting pseudo NMIs
-> > > feature which is only available on platforms which have support for GICv3
-> > > or later version.
-> > >
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > ---
-> > >  arch/powerpc/kernel/kgdb.c |  3 ++-
-> > >  arch/sparc/kernel/smp_64.c |  3 ++-
-> > >  arch/x86/kernel/kgdb.c     |  6 ++++--
-> > >  include/linux/kgdb.h       |  5 +++--
-> > >  kernel/debug/debug_core.c  | 10 +++++++++-
-> > >  5 files changed, 20 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
-> > > index 4090802..126575d 100644
-> > > --- a/arch/powerpc/kernel/kgdb.c
-> > > +++ b/arch/powerpc/kernel/kgdb.c
-> > > @@ -125,9 +125,10 @@ static int kgdb_debugger_ipi(struct pt_regs *regs)
-> > >  }
-> > >
-> > >  #ifdef CONFIG_SMP
-> > > -void kgdb_roundup_cpus(void)
-> > > +bool kgdb_arch_roundup_cpus(void)
-> > >  {
-> > >       smp_send_debugger_break();
-> > > +     return true;
-> > >  }
-> > >  #endif
-> > >
-> > > diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
-> > > index e38d8bf..c459c83 100644
-> > > --- a/arch/sparc/kernel/smp_64.c
-> > > +++ b/arch/sparc/kernel/smp_64.c
-> > > @@ -1014,9 +1014,10 @@ void flush_dcache_page_all(struct mm_struct *mm, struct page *page)
-> > >  }
-> > >
-> > >  #ifdef CONFIG_KGDB
-> > > -void kgdb_roundup_cpus(void)
-> > > +bool kgdb_arch_roundup_cpus(void)
-> > >  {
-> > >       smp_cross_call(&xcall_kgdb_capture, 0, 0, 0);
-> > > +     return true;
-> > >  }
-> > >  #endif
-> > >
-> > > diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
-> > > index ff7878d..1b756d9 100644
-> > > --- a/arch/x86/kernel/kgdb.c
-> > > +++ b/arch/x86/kernel/kgdb.c
-> > > @@ -404,7 +404,8 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
-> > >
-> > >  #ifdef CONFIG_SMP
-> > >  /**
-> > > - *   kgdb_roundup_cpus - Get other CPUs into a holding pattern
-> > > + *   kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
-> > > + *                            in an architectural specific manner
-> > >   *
-> > >   *   On SMP systems, we need to get the attention of the other CPUs
-> > >   *   and get them be in a known state.  This should do what is needed
-> > > @@ -414,9 +415,10 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
-> > >   *
-> > >   *   On non-SMP systems, this is not called.
-> > >   */
-> > > -void kgdb_roundup_cpus(void)
-> > > +bool kgdb_arch_roundup_cpus(void)
-> > >  {
-> > >       apic_send_IPI_allbutself(NMI_VECTOR);
-> > > +     return true;
-> > >  }
-> > >  #endif
-> > >
-> > > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-> > > index 0d6cf64..f9db5b8 100644
-> > > --- a/include/linux/kgdb.h
-> > > +++ b/include/linux/kgdb.h
-> > > @@ -200,7 +200,8 @@ kgdb_arch_handle_qxfer_pkt(char *remcom_in_buffer,
-> > >  extern void kgdb_call_nmi_hook(void *ignored);
-> > >
-> > >  /**
-> > > - *   kgdb_roundup_cpus - Get other CPUs into a holding pattern
-> > > + *   kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
-> > > + *                            in an architectural specific manner
-> > >   *
-> > >   *   On SMP systems, we need to get the attention of the other CPUs
-> > >   *   and get them into a known state.  This should do what is needed
-> > > @@ -210,7 +211,7 @@ extern void kgdb_call_nmi_hook(void *ignored);
-> > >   *
-> > >   *   On non-SMP systems, this is not called.
-> > >   */
-> > > -extern void kgdb_roundup_cpus(void);
-> > > +extern bool kgdb_arch_roundup_cpus(void);
-> > >
-> > >  /**
-> > >   *   kgdb_arch_set_pc - Generic call back to the program counter
-> > > diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-> > > index 1e75a89..27e401c 100644
-> > > --- a/kernel/debug/debug_core.c
-> > > +++ b/kernel/debug/debug_core.c
-> > > @@ -241,13 +241,21 @@ void __weak kgdb_call_nmi_hook(void *ignored)
-> > >  }
-> > >  NOKPROBE_SYMBOL(kgdb_call_nmi_hook);
-> > >
-> > > -void __weak kgdb_roundup_cpus(void)
-> > > +bool __weak kgdb_arch_roundup_cpus(void)
-> > > +{
-> > > +     return false;
-> >
-> > Do we really need to introduce all these boolean return values just to
-> > call a bit of library code when one of the architectures wants to
-> > fallback to a generic implementation?
-> >
-> > Why not something more like:
-> >
-> > void kgdb_smp_call_nmi_hook(void)
-> > {
-> >     /* original weak version of kgdb_roundup_cpus goes here */
-> > }
-> >
-> > void __weak kgdb_roundup_cpus(void)
-> > {
-> >     kgdb_smp_call_nmi_hook();
-> > }
-> >
-> > arm64 can now simply call the new library function if a fallback is needed.
-> >
+On 01.11.20 18:08, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Makes sense, I will use this approach instead.
+> When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page may be
+> not present in the direct map and has to be explicitly mapped before it
+> could be copied.
 > 
-> > Note that same question applies to the backtrace changes...
+> Introduce hibernate_map_page() that will explicitly use
+> set_direct_map_{default,invalid}_noflush() for ARCH_HAS_SET_DIRECT_MAP case
+> and debug_pagealloc_map_pages() for DEBUG_PAGEALLOC case.
 > 
-> In case of backtrace, there are already multiple APIs wrapping
-> arch_trigger_cpumask_backtrace() as follows:
+> The remapping of the pages in safe_copy_page() presumes that it only
+> changes protection bits in an existing PTE and so it is safe to ignore
+> return value of set_direct_map_{default,invalid}_noflush().
 > 
-> - trigger_all_cpu_backtrace()
-> - trigger_allbutself_cpu_backtrace()
-> - trigger_cpumask_backtrace()
-> - trigger_single_cpu_backtrace()
+> Still, add a WARN_ON() so that future changes in set_memory APIs will not
+> silently break hibernation.
 > 
-> And each of them already return a boolean and have corresponding
-> different fallback mechanisms. So we can't have a common fallback API
-> from arch specific code and instead need to extend that boolean return
-> to arch specific code that is implemented as part of patch #4.
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   include/linux/mm.h      | 12 ------------
+>   kernel/power/snapshot.c | 30 ++++++++++++++++++++++++++++--
+>   2 files changed, 28 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 1fc0609056dc..14e397f3752c 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2927,16 +2927,6 @@ static inline bool debug_pagealloc_enabled_static(void)
+>   #if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
+>   extern void __kernel_map_pages(struct page *page, int numpages, int enable);
+>   
+> -/*
+> - * When called in DEBUG_PAGEALLOC context, the call should most likely be
+> - * guarded by debug_pagealloc_enabled() or debug_pagealloc_enabled_static()
+> - */
+> -static inline void
+> -kernel_map_pages(struct page *page, int numpages, int enable)
+> -{
+> -	__kernel_map_pages(page, numpages, enable);
+> -}
+> -
+>   static inline void debug_pagealloc_map_pages(struct page *page,
+>   					     int numpages, int enable)
+>   {
+> @@ -2948,8 +2938,6 @@ static inline void debug_pagealloc_map_pages(struct page *page,
+>   extern bool kernel_page_present(struct page *page);
+>   #endif	/* CONFIG_HIBERNATION */
+>   #else	/* CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */
+> -static inline void
+> -kernel_map_pages(struct page *page, int numpages, int enable) {}
+>   static inline void debug_pagealloc_map_pages(struct page *page,
+>   					     int numpages, int enable) {}
+>   #ifdef CONFIG_HIBERNATION
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 46b1804c1ddf..054c8cce4236 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
+>   static inline void hibernate_restore_unprotect_page(void *page_address) {}
+>   #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+>   
+> +static inline void hibernate_map_page(struct page *page, int enable)
+> +{
+> +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
+> +		unsigned long addr = (unsigned long)page_address(page);
+> +		int ret;
+> +
+> +		/*
+> +		 * This should not fail because remapping a page here means
+> +		 * that we only update protection bits in an existing PTE.
+> +		 * It is still worth to have WARN_ON() here if something
+> +		 * changes and this will no longer be the case.
+> +		 */
+> +		if (enable)
+> +			ret = set_direct_map_default_noflush(page);
+> +		else
+> +			ret = set_direct_map_invalid_noflush(page);
+> +
+> +		if (WARN_ON(ret))
+> +			return;
 
-Understood. Thanks.
+People seem to prefer pr_warn() now that production kernels have panic 
+on warn enabled. It's weird.
 
+> +
+> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +	} else {
+> +		debug_pagealloc_map_pages(page, 1, enable);
 
-Daniel.
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
