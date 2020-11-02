@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFCE2A32A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB432A32BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgKBSRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:17:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40744 "EHLO mail.kernel.org"
+        id S1726369AbgKBSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:18:39 -0500
+Received: from mga03.intel.com ([134.134.136.65]:63800 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725797AbgKBSRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:17:05 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD32F22226;
-        Mon,  2 Nov 2020 18:17:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604341024;
-        bh=2/odKowhAlWAtshuYHyu0gkDHZKZNXHMacRxuGz6efU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tve+pgqJvczxkHtBcU8mFT2JBGU7D7mzy7I4hbA813eOfsbURuQYOLc7D2JyRDPaS
-         PS7KuTSBvySF7uSs1qMaKKFPke7NqRB3zCnCa77cJceIAuLy1qQkdIUIUdVSSEYD3F
-         AglXH5ZYoU5QHUIGBQ+VQ+oDSefSME24bWwHO9Jk=
-Date:   Mon, 2 Nov 2020 18:16:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Bangzheng Liu <bangzheng.liu@unisoc.com>
-Subject: Re: [PATCH] spi: add runtime PM for transfer_one_message
-Message-ID: <20201102181655.GC5014@sirena.org.uk>
-References: <20201102112239.19218-1-zhang.lyra@gmail.com>
+        id S1725801AbgKBSSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:18:39 -0500
+IronPort-SDR: xY1G/DZLIXKRoMPcAdqRbHuosu0AV3eybq/tXjhiWxU/vp41MCqHnowrHEoomex8b+WoYSlzik
+ f3mQv6QVBk3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169031274"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="169031274"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:18:38 -0800
+IronPort-SDR: oF/i1SsSGRxUOiA/dJwiaQ613OylcyOSVl+zRFb5481okUHsRV9ukA6+E8pJLLe59VdJEhq+iD
+ ILHDq33gOVfw==
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="336254810"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.251.132.252]) ([10.251.132.252])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:18:36 -0800
+Subject: Re: [PATCH v4 00/17] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        dan.j.williams@intel.com, kwankhede@nvidia.com,
+        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
+        netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com,
+        Megha Dey <megha.dey@linux.intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, kvm@vger.kernel.org
+References: <20201030185858.GI2620339@nvidia.com>
+ <c9303df4-3e57-6959-a89c-5fc98397ac70@intel.com>
+ <20201030191706.GK2620339@nvidia.com> <20201030192325.GA105832@otc-nc-03>
+ <20201030193045.GM2620339@nvidia.com> <20201030204307.GA683@otc-nc-03>
+ <87h7qbkt18.fsf@nanos.tec.linutronix.de>
+ <20201031235359.GA23878@araj-mobl1.jf.intel.com>
+ <20201102132036.GX2620339@nvidia.com> <20201102162043.GB20783@otc-nc-03>
+ <20201102171909.GF2620339@nvidia.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <20d7c5fc-91b0-d673-d41a-335d91ca2dce@intel.com>
+Date:   Mon, 2 Nov 2020 11:18:33 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
-Content-Disposition: inline
-In-Reply-To: <20201102112239.19218-1-zhang.lyra@gmail.com>
-X-Cookie: I've only got 12 cards.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201102171909.GF2620339@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---4jXrM3lyYWu4nBt5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Nov 02, 2020 at 07:22:39PM +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On 11/2/2020 10:19 AM, Jason Gunthorpe wrote:
+> On Mon, Nov 02, 2020 at 08:20:43AM -0800, Raj, Ashok wrote:
+>> Creating these private interfaces for intra-module are just 1-1 and not
+>> general purpose and every accelerator needs to create these instances.
+> 
+> This is where we are going, auxillary bus should be merged soon which
+> is specifically to connect these kinds of devices across subsystems
 
-> Before transfer message, spi devices probably have been in runtime suspended,
-> that would cause the kernel crash on some platforms once access spi
-> registers, such as on Unisoc's SoCs. The spi devices can be suspended
-> until message transfer completed.
+I think this resolves the aux device probe/remove issue via a common bus. But it 
+does not help with the mdev device needing a lot of the device handling calls 
+from the parent driver as it share the same handling as the parent device. My 
+plan is to export all the needed call via EXPORT_SYMBOL_NS() so the calls can be 
+shared in its own namespace between the modules. Do you have any objection with 
+that?
 
-This commit message is a bit hard to follow so I don't really understand
-what the issue is.  We only ever call transfer_one_message() from within
-__spi_pump_messages() which already handles auto_runtime_pm so I'm not
-seeing the situation where we might get to transfer_one_message()
-without having already runtime resumed the controller.  What exactly is
-the error situation here?  This code has been around for a while and I'm
-not aware of reports of issues here and I can't see anything unusual
-that the Spreadtrum driver is doing.
-
-Also why are we doing this in transfer_one_message() where it will only
-work for controllers using that?  If we're missing runtime PM in some
-paths then presumably controllers with a custom implementation are also
-going to be affected as well, auto_runtime_pm is supposed to work for
-them as well.
-
---4jXrM3lyYWu4nBt5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+gTRYACgkQJNaLcl1U
-h9DpgQf/fsNdTAx1Ok5mFJtucgRm8rHojszj+RjuRxcRQMQ40rBzWUwhAEpDUj0r
-XcYKd9vBWfldbPNj5lNrXTVLdbIB/b2UWL8ixa3Pj5rSnrZ+r2pDl8DuwnimR1Jw
-lUjnZz8eBDVHVE6bgZanqn6SSXAX3WTnVo2kRZcSeTksA30xP9SHOSiM6krtQpsm
-eUcc3wTHMGHtnQJsucXVnlFcyes3eBN0nzGK4bpmaPUE8QP84JU4ZcIUtY+qMHJ6
-FdHUHT3KVzCXb/7dW7llaBWRHeDqLoPBnk8uUQHuwx8fR7CFm1jn2GPfBfocyJSo
-i8aObNBlCKwWmShZroUBm3lNRPMclQ==
-=YR84
------END PGP SIGNATURE-----
-
---4jXrM3lyYWu4nBt5--
+> 
+> Jason
+> 
