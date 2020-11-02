@@ -2,46 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B084C2A3465
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3612A3477
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgKBTky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:40:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbgKBTky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:40:54 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C2472225E;
-        Mon,  2 Nov 2020 19:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604346052;
-        bh=xFTV7jxi0Z5FmX9TvpJwworvBiIkraPMD/kpaDtN+A8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=juv/VWknHk6qwA/PAJJq7bClhe0qpWTvHnaqbry/qAv/AxzjYRMrtXFHMdQg2T9/i
-         AdoE3Dw+wXXqTsUCog2bHScSmi1qrcLjGrBJXDVg9OE/uXkBf45UcmJIkEsdbmniZC
-         Z8DIw0oXwvDGOpLMrDFUksEsBMOXhOdW5SGzj4IQ=
-Date:   Mon, 2 Nov 2020 20:41:46 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: Re: [PATCH] MAINTAINERS: update email, git repo of habanalabs driver
-Message-ID: <20201102194146.GB2429929@kroah.com>
-References: <20201102191753.13809-1-ogabbay@kernel.org>
+        id S1726342AbgKBTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgKBTn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:43:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E585C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:43:58 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s9so15965157wro.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f6IxraRxxdSog0pizitTRE7WWJiT5BOAX8ryhNU1NRQ=;
+        b=VE4XXdGU8dJOhXS0df4gzIUa6WS+ia5T1R9HtsqvcLzEc19f5G22wX8cdUuvh1t4Aj
+         oA2mShqlCi+ap0GIx3OV/gvMk9mBtgowaTKUAdvgl+ZMmoTHfq0iX94q9Yot+fmtgJiY
+         ADzzadXm3vv7CfN5+jO6Fc2iuegatwOKEZwuWf1EEtzFl3EqYMCAk0bcMdQ8GHiIk3l6
+         pmnFqEfUKSdzKInQ+Jz/SvlRum4GjYGTzEX9Ck/ndx54ymdapK308qrxEFA5j8feWz1z
+         weE/unWrmE8WvBWellDKcXYg/sysFXHGwOImAAd+Zit4qrbDRMdmD6uowwr4pmxlu/O4
+         /P2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f6IxraRxxdSog0pizitTRE7WWJiT5BOAX8ryhNU1NRQ=;
+        b=aj4fXPIefE4NADhuljSGDEmc504cjkvBx10obU3StzzKj99sHryUpkzxv0rwabQqFG
+         ca3mZkngMOrBnnT/njISO7CeEzhdUchTXAVyFPyekG5KjWw5s3lhl9+7opP3WqzU9N4b
+         aPGpOvlggYMsRQAngmd+gCJwvY09ZZpeH42cmjgFIYAz6MZDzDowxIVHMzU2MLXXVwbI
+         yLrUM/homJ2C774ZCGsLJCOD2VlztkaZ0V+cXnI85VHMcDB0WZor2EaPiha9wEzjgyn/
+         cPu6vcqhNeqHrT0wTjTvMLI3wWjF2Uup8PgCwwMEfYHPkoN1rz+eCOQJt3sSfu+Qu6N4
+         mTIg==
+X-Gm-Message-State: AOAM533FJVvnaIBdGysO9ikiIdgNbJdw1u9I38jJ4otrnFUKMp/AG3wG
+        I7kCIRzHmC/0FpFWjTq7S8jEcshWNGD/xUftI44=
+X-Google-Smtp-Source: ABdhPJw78jtdtZ6xpKIYXTw9wOhl0vAPW7uN5ackYLXnSo41LINFhWGQviyc5uG6uHsW7YR8EsHqWn6a1bPM83bcQc0=
+X-Received: by 2002:adf:f246:: with SMTP id b6mr21844385wrp.111.1604346236857;
+ Mon, 02 Nov 2020 11:43:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102191753.13809-1-ogabbay@kernel.org>
+References: <20201102184147.GA42288@localhost>
+In-Reply-To: <20201102184147.GA42288@localhost>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 2 Nov 2020 14:43:45 -0500
+Message-ID: <CADnq5_OnA3T_p4pTEOpoqQ=NZyso2VFoDiOHu=+h7dKOeKHq-A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: do not initialise global variables to 0 or NULL
+To:     Deepak R Varma <mh12gx2825@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 09:17:53PM +0200, Oded Gabbay wrote:
-> Update the email to my kernel.org email address and update the git
-> repository address to the git.kernel.org
-> 
-> Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+On Mon, Nov 2, 2020 at 1:42 PM Deepak R Varma <mh12gx2825@gmail.com> wrote:
+>
+> Initializing global variable to 0 or NULL is not necessary and should
+> be avoided. Issue reported by checkpatch script as:
+> ERROR: do not initialise globals to 0 (or NULL).
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I agree that this is technically correct, but a lot of people don't
+seem to know that so we get a lot of comments about this code for the
+variables that are not explicitly set.  Seems less confusing to
+initialize them even if it not necessary.  I don't have a particularly
+strong opinion on it however.
+
+Alex
+
+>
+> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 46 ++++++++++++-------------
+>  drivers/gpu/drm/amd/amdgpu/atom.c       |  4 +--
+>  2 files changed, 25 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> index 8ab6126ff70c..6de94c46bc91 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> @@ -94,16 +94,16 @@
+>  #define KMS_DRIVER_MINOR       40
+>  #define KMS_DRIVER_PATCHLEVEL  0
+>
+> -int amdgpu_vram_limit = 0;
+> -int amdgpu_vis_vram_limit = 0;
+> +int amdgpu_vram_limit;
+> +int amdgpu_vis_vram_limit;
+>  int amdgpu_gart_size = -1; /* auto */
+>  int amdgpu_gtt_size = -1; /* auto */
+>  int amdgpu_moverate = -1; /* auto */
+> -int amdgpu_benchmarking = 0;
+> -int amdgpu_testing = 0;
+> +int amdgpu_benchmarking;
+> +int amdgpu_testing;
+>  int amdgpu_audio = -1;
+> -int amdgpu_disp_priority = 0;
+> -int amdgpu_hw_i2c = 0;
+> +int amdgpu_disp_priority;
+> +int amdgpu_hw_i2c;
+>  int amdgpu_pcie_gen2 = -1;
+>  int amdgpu_msi = -1;
+>  char amdgpu_lockup_timeout[AMDGPU_MAX_TIMEOUT_PARAM_LENGTH];
+> @@ -113,43 +113,43 @@ int amdgpu_aspm = -1;
+>  int amdgpu_runtime_pm = -1;
+>  uint amdgpu_ip_block_mask = 0xffffffff;
+>  int amdgpu_bapm = -1;
+> -int amdgpu_deep_color = 0;
+> +int amdgpu_deep_color;
+>  int amdgpu_vm_size = -1;
+>  int amdgpu_vm_fragment_size = -1;
+>  int amdgpu_vm_block_size = -1;
+> -int amdgpu_vm_fault_stop = 0;
+> -int amdgpu_vm_debug = 0;
+> +int amdgpu_vm_fault_stop;
+> +int amdgpu_vm_debug;
+>  int amdgpu_vm_update_mode = -1;
+> -int amdgpu_exp_hw_support = 0;
+> +int amdgpu_exp_hw_support;
+>  int amdgpu_dc = -1;
+>  int amdgpu_sched_jobs = 32;
+>  int amdgpu_sched_hw_submission = 2;
+> -uint amdgpu_pcie_gen_cap = 0;
+> -uint amdgpu_pcie_lane_cap = 0;
+> +uint amdgpu_pcie_gen_cap;
+> +uint amdgpu_pcie_lane_cap;
+>  uint amdgpu_cg_mask = 0xffffffff;
+>  uint amdgpu_pg_mask = 0xffffffff;
+>  uint amdgpu_sdma_phase_quantum = 32;
+> -char *amdgpu_disable_cu = NULL;
+> -char *amdgpu_virtual_display = NULL;
+> +char *amdgpu_disable_cu;
+> +char *amdgpu_virtual_display;
+>  /* OverDrive(bit 14) disabled by default*/
+>  uint amdgpu_pp_feature_mask = 0xffffbfff;
+> -uint amdgpu_force_long_training = 0;
+> -int amdgpu_job_hang_limit = 0;
+> +uint amdgpu_force_long_training;
+> +int amdgpu_job_hang_limit;
+>  int amdgpu_lbpw = -1;
+>  int amdgpu_compute_multipipe = -1;
+>  int amdgpu_gpu_recovery = -1; /* auto */
+> -int amdgpu_emu_mode = 0;
+> -uint amdgpu_smu_memory_pool_size = 0;
+> +int amdgpu_emu_mode;
+> +uint amdgpu_smu_memory_pool_size;
+>  /* FBC (bit 0) disabled by default*/
+> -uint amdgpu_dc_feature_mask = 0;
+> -uint amdgpu_dc_debug_mask = 0;
+> +uint amdgpu_dc_feature_mask;
+> +uint amdgpu_dc_debug_mask;
+>  int amdgpu_async_gfx_ring = 1;
+> -int amdgpu_mcbp = 0;
+> +int amdgpu_mcbp;
+>  int amdgpu_discovery = -1;
+> -int amdgpu_mes = 0;
+> +int amdgpu_mes;
+>  int amdgpu_noretry = -1;
+>  int amdgpu_force_asic_type = -1;
+> -int amdgpu_tmz = 0;
+> +int amdgpu_tmz;
+>  int amdgpu_reset_method = -1; /* auto */
+>  int amdgpu_num_kcq = -1;
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
+> index 696e97ab77eb..46c00ee580b1 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/atom.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/atom.c
+> @@ -66,7 +66,7 @@ typedef struct {
+>         bool abort;
+>  } atom_exec_context;
+>
+> -int amdgpu_atom_debug = 0;
+> +int amdgpu_atom_debug;
+>  static int amdgpu_atom_execute_table_locked(struct atom_context *ctx, int index, uint32_t * params);
+>  int amdgpu_atom_execute_table(struct atom_context *ctx, int index, uint32_t * params);
+>
+> @@ -88,7 +88,7 @@ static int atom_dst_to_src[8][4] = {
+>  };
+>  static int atom_def_dst[8] = { 0, 0, 1, 2, 0, 1, 2, 3 };
+>
+> -static int debug_depth = 0;
+> +static int debug_depth;
+>  #ifdef ATOM_DEBUG
+>  static void debug_print_spaces(int n)
+>  {
+> --
+> 2.25.1
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
