@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194DA2A3761
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AEB2A3762
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgKBX62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        id S1727138AbgKBX6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbgKBX61 (ORCPT
+        with ESMTP id S1726860AbgKBX6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:58:27 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04ECC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:58:27 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id c25so3789147ooe.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:58:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sxJe+3z06Di6CVsGeFvUBp5UqAuXz7uQn61OkTGFrlM=;
-        b=T7vpCAOkiVFKhKnPw+LMZNkU0YM0ieglut5Uo7zd7fWte6lLpPCqY9BmuCGgHbgOnm
-         B8FQgjniFsP/NjWU5tkoyc86r66Po46QpHiLsRGWAuG5MFMUcrgV9oc2yimuzhz73ZQT
-         I+gShJ84eavvtAoRN6o22a5Ky3fw4QIofontIYOrRWGjLImaNmaUqkaNRprkSSn+iQdG
-         OSFnsKpsZsKKyPVHEgwklITVKLfrPp89zHMCXCp6Le/9p5IK98C0cKLUImSn71IsrQSH
-         4nulstt1CPqfyI7vaPLIW7eitJISh1ENj+D5+IxooXj05ZmhTf8BAMpkLEAGJ/06Xdla
-         zBjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sxJe+3z06Di6CVsGeFvUBp5UqAuXz7uQn61OkTGFrlM=;
-        b=mXgtsL2GnVCUmnwHhwvQl03gnrX+nhRKia6GYBYKrevN7Vg4dNv4Vb7dYnHRqywpci
-         tZRZzXgodIjYjcx/2uhm7HHkkDy7qWtkNKY2IOdjMST/FEoPbrS8TdjksVLUNbx8iRHf
-         3UWpajl49Uenm66+ic8R0Vxev/HvDH5xAIxn9kwe9D0hnSZhWUDYq3Wb0rO8W2ltodB/
-         rVjOREa+e6VmOeFjXtix6WWrt4pK3McKj8Q7XKoC6rOcoAOmpU1w6AufzNdVzSfqLk6T
-         +dIIQrOk+yythsbjy3ijdpsbcUTv1Vw9R7AQeyHcFZb3F5e8qkYgPB2qr2y6qoFqnXkL
-         douA==
-X-Gm-Message-State: AOAM53366POqXwW5Kw7vP8vQqtpVo5RS4yCGDDWB29+xP35gw316AbDg
-        gm/9ZFuzOEE18seBVRK9CrzYqw==
-X-Google-Smtp-Source: ABdhPJyBAbhusE/blt380mqgPMNqmbDxqYGfgKj9mPsr6sAr0Or8zvEBA22gY8Bp4XXEPqHBp1pI2A==
-X-Received: by 2002:a4a:1e43:: with SMTP id 64mr13674813ooq.57.1604361507125;
-        Mon, 02 Nov 2020 15:58:27 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 85sm2674531oie.30.2020.11.02.15.58.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 15:58:26 -0800 (PST)
-Date:   Mon, 2 Nov 2020 17:58:24 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Baolin Wang <baolin.wang7@gmail.com>
-Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: Re: [PATCH v2 1/2] hwspinlock: sprd: fixed warning of unused
- variable 'sprd_hwspinlock_of_match'
-Message-ID: <20201102235824.GB223412@builder.lan>
-References: <20201030034654.15775-1-zhang.lyra@gmail.com>
- <20201030034654.15775-2-zhang.lyra@gmail.com>
- <CADBw62oQj+K_-nyoZyMJSQ6VaqcNHbX9gbyLEzV9+Od1cVmC5A@mail.gmail.com>
+        Mon, 2 Nov 2020 18:58:34 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD18C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:58:34 -0800 (PST)
+Date:   Tue, 3 Nov 2020 00:58:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604361512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=EUc8ouU+wBbKL35b1Wz4H1oFm1iThH4UiokAYDkphtI=;
+        b=mUjJO30zHIraTb9wkx4VJj8y4oSR6Q5RciQVCCSg/3nHP9zRU6cX8hE29ULf8MyV9miP1z
+        Z631a4hPVaBBxRxXnvsTFH4bIRIZ4K/rfD0Q5TDvB4vrBBhtHOgWszuZHNSdB+9DSpq/cb
+        APTLh3dMUUwDHH0irMGnfnxYGu3zf4CYL0ESe1+DxKgwWqsWy7zWwk92rWLdrPIYdnvyw7
+        86RR0dlXh4wxsW70k0dr1yWc7bvqDhZLl/tj4knWJ0G42jhvY1BalIqSPxBbmXk5mvnbPp
+        1ZnicxPBHRL+9Abof6uK7XOhifXeV+7BJCUXmEi4X7vGBHYt/9xJXIpp89IkXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604361512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=EUc8ouU+wBbKL35b1Wz4H1oFm1iThH4UiokAYDkphtI=;
+        b=myFbIB/Rg7QAUo0gPSmUmACCtS8QYcTO2Hfc4GSxOC9/ctr4bUEMxBvtKoyZbIP1UVxw9V
+        9D2mOHVkrEAgJUAA==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during
+ fork
+Message-ID: <20201102235831.GA52235@lx-t490>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADBw62oQj+K_-nyoZyMJSQ6VaqcNHbX9gbyLEzV9+Od1cVmC5A@mail.gmail.com>
+In-Reply-To: <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02 Nov 17:34 CST 2020, Baolin Wang wrote:
+On Fri, Oct 30, 2020 at 11:46:21AM -0300, Jason Gunthorpe wrote:
 
-> On Friday, October 30, 2020, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > The macro function of_match_ptr() is NULL if CONFIG_OF is not set, then
-> > Clang compiler would complain the of_device_id variable is unused.
-> >
-> > But using of_match_ptr() is space saving, for this case, the unused
-> structure
-> > 'sprd_hwspinlock_of_match' would be not built into symbol table if
-> CONFIG_OF
-> > is not set, probably depends on the compiler though.
-> >
-> > So adding __maybe_unsed seems a good approach to fix this warning.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Fixes: d8c8bbbb1aba ("hwspinlock: sprd: Add hardware spinlock driver")
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> 
-> I'd like to remove this wrapper, and just depend on the CONFIG_OF. But I
-> have no objection for this patch.  So
-> Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-> 
+...
 
-As noted on the first line of the probe function, this driver isn't
-going to do anything when CONFIG_OF is disabled - and I don't think we
-should worry too much about space savings during COMPILE_TEST.
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c48f8df6e50268..294c2c3c4fe00d 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1171,6 +1171,12 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+>  		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
+>  					0, src_vma, src_mm, addr, end);
+>  		mmu_notifier_invalidate_range_start(&range);
 
-So I would prefer that we simply drop the of_match_ptr()
+> +		/*
+> +		 * The read side doesn't spin, it goes to the mmap_lock, so the
+> +		 * raw version is used to avoid disabling preemption here
+> +		 */
+> +		mmap_assert_write_locked(src_mm);
+> +		raw_write_seqcount_t_begin(&src_mm->write_protect_seq);
+>  	}
+>
 
-But I believe that's what you're saying as well Baolin?
+Please, s/raw_write_seqcount_t_begin()/raw_write_seqcount_begin()/g. For
+plain seqcount_t, it's the same, while still respecting the seqlock.h
+API boundaries.
 
-Regards,
-Bjorn
+Let's make the comment also a bit more clear (IMHO, "lockdep" needs to
+be mentioned somewhere):
 
-> 
-> >  drivers/hwspinlock/sprd_hwspinlock.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hwspinlock/sprd_hwspinlock.c
-> b/drivers/hwspinlock/sprd_hwspinlock.c
-> > index 36dc8038bbb4..4c63e2546064 100644
-> > --- a/drivers/hwspinlock/sprd_hwspinlock.c
-> > +++ b/drivers/hwspinlock/sprd_hwspinlock.c
-> > @@ -138,7 +138,7 @@ static int sprd_hwspinlock_probe(struct
-> platform_device *pdev)
-> >                                          SPRD_HWLOCKS_NUM);
-> >  }
-> >
-> > -static const struct of_device_id sprd_hwspinlock_of_match[] = {
-> > +static const __maybe_unused struct of_device_id
-> sprd_hwspinlock_of_match[] = {
-> >         { .compatible = "sprd,hwspinlock-r3p0", },
-> >         { /* sentinel */ }
-> >  };
-> > --
-> > 2.20.1
-> >
-> >
-> 
-> -- 
-> Baolin Wang
+		/*
+		 * Disabling preemption is not needed for the write side, as
+		 * the read side doesn't spin, but goes to the mmap_lock.
+		 *
+		 * Use the raw variant of the seqcount_t write API to avoid
+		 * lockdep complaining about preemptibility.
+		 */
+		mmap_assert_write_locked(src_mm);
+		raw_write_seqcount_t_begin(&src_mm->write_protect_seq);
+
+>  	ret = 0;
+> @@ -1187,8 +1193,10 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+>  		}
+>  	} while (dst_pgd++, src_pgd++, addr = next, addr != end);
+>
+> -	if (is_cow)
+> +	if (is_cow) {
+> +		raw_write_seqcount_t_end(&src_mm->write_protect_seq);
+
+ditto.
+
+s/raw_write_seqcount_t_end()/raw_write_seqcount_end()/g
+
+>  		mmu_notifier_invalidate_range_end(&range);
+> +	}
+>  	return ret;
+>  }
+>
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
