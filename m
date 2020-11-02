@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716762A3261
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE72A3263
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgKBRzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:55:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbgKBRzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:55:00 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2824221D91;
-        Mon,  2 Nov 2020 17:54:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604339699;
-        bh=8/mUrAxnZZrM1RFaXGsbb/nCz+p4v9A2HQqXXh5kCvc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kIcYCVy4ADziEoDl32si94cKoiihbeDvIFkg1X2O1UyiRXcj1mZ3uQsKt58dg5Ypr
-         cukYTY9HbZhq4NAmX4tFEG4Ra5cdaHpU9ZRAw7uHtqFO2StHpbkaN6h7tl0f4ZeajE
-         58M/lY+CLlp6Nu9u1nlS/1ksxdwq9AaM2ix/cGoo=
-Date:   Mon, 2 Nov 2020 09:54:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Naveen Mamindlapalli <naveenm@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        Tomasz Duszynski <tduszynski@marvell.com>
-Subject: Re: [PATCH net-next 10/13] octeontx2-pf: Add support for SR-IOV
- management functions
-Message-ID: <20201102095458.024ab1e9@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201102061122.8915-11-naveenm@marvell.com>
-References: <20201102061122.8915-1-naveenm@marvell.com>
-        <20201102061122.8915-11-naveenm@marvell.com>
+        id S1726162AbgKBRzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:55:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:57849 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgKBRza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:55:30 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kZe3D-0003rS-I9; Mon, 02 Nov 2020 17:55:27 +0000
+Date:   Mon, 2 Nov 2020 18:55:26 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: [RFC PATCH v1 0/4] Per user namespace rlimits
+Message-ID: <20201102175526.eu4npm4v2ggicvaf@wittgenstein>
+References: <cover.1604335819.git.gladkov.alexey@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.1604335819.git.gladkov.alexey@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 11:41:19 +0530 Naveen Mamindlapalli wrote:
-> This patch adds support for ndo_set_vf_mac, ndo_set_vf_vlan
-> and ndo_get_vf_config handlers. The traffic redirection
-> based on the VF mac address or vlan id is done by installing
-> MCAM rules. Reserved RX_VTAG_TYPE7 in each NIXLF for VF VLAN
-> which strips the VLAN tag from ingress VLAN traffic. The NIX PF
-> allocates two MCAM entries for VF VLAN feature, one used for
-> ingress VTAG strip and another entry for egress VTAG insertion.
->=20
-> This patch also updates the MAC address in PF installed VF VLAN
-> rule upon receiving nix_lf_start_rx mbox request for VF since
-> Administrative Function driver will assign a valid MAC addr
-> in nix_lf_start_rx function.
->=20
-> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
-> Co-developed-by: Tomasz Duszynski <tduszynski@marvell.com>
-> Signed-off-by: Tomasz Duszynski <tduszynski@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+On Mon, Nov 02, 2020 at 05:50:29PM +0100, Alexey Gladkov wrote:
+> Preface
+> -------
+> These patches are for binding the rlimits to a user in the user namespace.
+> This patch set can be applied on top of:
+> 
+> git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.8-2-g43e210d68200
+> 
+> Problem
+> -------
+> Some rlimits are set per user: RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING,
+> RLIMIT_MSGQUEUE. When several containers are created from one user then
+> the processes inside the containers influence each other.
+> 
+> Eric W. Biederman mentioned this issue [1][2][3].
+> 
+> Introduced changes
+> ------------------
+> To fix this problem, you can bind the counter of the specified rlimits to the
+> user within the user namespace. By default, to preserve backward compatibility,
+> only the initial user namespace is used. This patch adds one more prctl
+> parameter to change the binding to the user namespace.
+> 
+> This will not cause the user to take more resources than allowed in the parent
+> user namespace because it only virtualizes the rlimit counter. Limits in all
+> parent user namespaces are taken into account.
+> 
+> For example, this allows us to run multiple containers by the same user and
+> set the RLIMIT_NPROC to 1 inside.
 
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2097:31: warning: cast=
- to restricted __be16
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2097:31: warning: cast=
- to restricted __be16
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2097:31: warning: cast=
- to restricted __be16
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2097:31: warning: cast=
- to restricted __be16
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2158:55: warning: inco=
-rrect type in argument 5 (different base types)
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2158:55:    expected u=
-nsigned short [usertype] proto
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:2158:55:    got restri=
-cted __be16 [usertype] proto
-203a211,214
-drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: In function =E2=80=
-=98npc_update_dmac_value=E2=80=99:
-drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c:1236:24: warning: im=
-plicit conversion from =E2=80=98enum header_fields=E2=80=99 to =E2=80=98enu=
-m key_fields=E2=80=99 [-Wenum-conversion]
- 1236 |  npc_update_entry(rvu, NPC_DMAC, entry,
-      |                        ^~~~~~~~
+Thanks for picking this up and working on it. This would definitely fix
+many issues for folks running unprivileged containers using a single id
+map which is the default behavior for LXC/LXD and so very valuable to
+us.
+
+Christian
+
+> 
+> ToDo
+> ----
+> * RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are not implemented.
+> * No documentation.
+> * No tests.
+> 
+> [1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+> [2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+> [3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+> 
+> Changelog
+> ---------
+> v1:
+> * After discussion with Eric W. Biederman, I increased the size of ucounts to
+>   atomic_long_t.
+> * Added ucount_max to avoid the fork bomb.
+> 
+> --
+> 
+> Alexey Gladkov (4):
+>   Increase size of ucounts to atomic_long_t
+>   Move the user's process counter to ucounts
+>   Do not allow fork if RLIMIT_NPROC is exceeded in the user namespace
+>     tree
+>   Allow to change the user namespace in which user rlimits are counted
+> 
+>  fs/exec.c                      | 13 ++++++---
+>  fs/io-wq.c                     | 25 +++++++++++++-----
+>  fs/io-wq.h                     |  1 +
+>  fs/io_uring.c                  |  1 +
+>  include/linux/cred.h           |  8 ++++++
+>  include/linux/sched.h          |  3 +++
+>  include/linux/sched/user.h     |  1 -
+>  include/linux/user_namespace.h | 12 +++++++--
+>  include/uapi/linux/prctl.h     |  5 ++++
+>  kernel/cred.c                  | 44 ++++++++++++++++++++++++-------
+>  kernel/exit.c                  |  2 +-
+>  kernel/fork.c                  | 13 ++++++---
+>  kernel/sys.c                   | 26 ++++++++++++++++--
+>  kernel/ucount.c                | 48 +++++++++++++++++++++++++++++-----
+>  kernel/user.c                  |  3 ++-
+>  kernel/user_namespace.c        |  3 +++
+>  16 files changed, 171 insertions(+), 37 deletions(-)
+> 
+> -- 
+> 2.25.4
+> 
