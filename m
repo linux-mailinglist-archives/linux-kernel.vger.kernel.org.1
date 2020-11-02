@@ -2,214 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A982A3099
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED232A3054
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727712AbgKBQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727151AbgKBQzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:55:44 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF14C0617A6;
-        Mon,  2 Nov 2020 08:55:43 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 133so11606802pfx.11;
-        Mon, 02 Nov 2020 08:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1YdlygNrEXUlcZfght3UiooWvJCdKrIM8fi0Iud6y9Y=;
-        b=DSlnE7WOf8he6FwOZCHT0o0XLzJMz58pzJ8F8DkrkD5UT5XNdt4xRz8jQ+ehq9l8Np
-         wIw+a9CV1/PHPbvYYAtenesSaPDQ6MbHpwtdOv89La0LK+/mL0g0NLcCo7HmahFBnp6G
-         9hLADmmoaDc4d40gKXJbNmthS2Cnl1TrjysQVV+TfK9fy12cnhMJd+g/DcAiCwphLpRD
-         OwODZPwdwRvHZHTqVc+0SZt50nyKFXzDL/uy5vCNJtZFDLUjTTn2sTiGNqOLK6woOdNx
-         4uEj0KnUBhRMVdwRQR04iYpkHu3sBiuVuRLAnDTvrY6MoGdNG8/88lEG3MSVbfkDufGg
-         eNug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1YdlygNrEXUlcZfght3UiooWvJCdKrIM8fi0Iud6y9Y=;
-        b=G68NmBk9R184yf4xrkyvNgZhwCgckYNexns3uhKVdxQmMeDGwi0RP4CI4dlifXvaKB
-         PPu3jJasUfwkpEoiKp/FD/Fpv449vZLW+wRtRpXKPAjWu74mOW4GKOjjirMMAYukNeg4
-         3KpADnr6b6DYsjFJNlBim2X9KhkblEcBSFVkHcSkjXfsVEU1KJOAVlAb9yt/YeBNlr6q
-         Q2XK1fmjnqIJHRYaVcaEgguxDfw4QjQrlYyPup2oyCsOiPAUtrReWMfJZl5u1lcjTh+q
-         WErCZPSXB4R9t0CDeaW9B/CEuyhUxRXbSvg6AvZPYTSz6Kx4BPGjOtuxoAmy8OAGe83G
-         jH2g==
-X-Gm-Message-State: AOAM532DlfPNvBwJHUPgqaYvXMBPzJVixPywfSOXYY3pLFsKKVH15Q18
-        Sr5vQNphTzp6cAASngK5Rk0=
-X-Google-Smtp-Source: ABdhPJyKCCtMCVaSvU3Is+RZvy6q7HpSGUGMl4yzO6ssLEtChPuyUb5A8lINnWDTzVhEeOe929D7+Q==
-X-Received: by 2002:a63:1c45:: with SMTP id c5mr10089758pgm.357.1604336143430;
-        Mon, 02 Nov 2020 08:55:43 -0800 (PST)
-Received: from varodek.localdomain ([223.179.149.110])
-        by smtp.gmail.com with ESMTPSA id t74sm4953233pfc.47.2020.11.02.08.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 08:55:42 -0800 (PST)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Balsundar P <balsundar.p@microchip.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: [PATCH v4 29/29] scsi: pmcraid: use generic power management
-Date:   Mon,  2 Nov 2020 22:17:30 +0530
-Message-Id: <20201102164730.324035-30-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201102164730.324035-1-vaibhavgupta40@gmail.com>
-References: <20201102164730.324035-1-vaibhavgupta40@gmail.com>
+        id S1727424AbgKBQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:52:33 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:51584 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727402AbgKBQwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:52:32 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id C2A43209AF;
+        Mon,  2 Nov 2020 16:52:27 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>
+Subject: [RFC PATCH v1 0/4] Per user namespace rlimits
+Date:   Mon,  2 Nov 2020 17:50:29 +0100
+Message-Id: <cover.1604335819.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 02 Nov 2020 16:52:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers should do only device-specific jobs. But in general, drivers using
-legacy PCI PM framework for .suspend()/.resume() have to manage many PCI
-PM-related tasks themselves which can be done by PCI Core itself. This
-brings extra load on the driver and it directly calls PCI helper functions
-to handle them.
+Preface
+-------
+These patches are for binding the rlimits to a user in the user namespace.
+This patch set can be applied on top of:
 
-Switch to the new generic framework by updating function signatures and
-define a "struct dev_pm_ops" variable to bind PM callbacks. Also, remove
-unnecessary calls to the PCI Helper functions along with the legacy
-.suspend & .resume bindings.
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.8-2-g43e210d68200
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/scsi/pmcraid.c | 43 ++++++++++--------------------------------
- 1 file changed, 10 insertions(+), 33 deletions(-)
+Problem
+-------
+Some rlimits are set per user: RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING,
+RLIMIT_MSGQUEUE. When several containers are created from one user then
+the processes inside the containers influence each other.
 
-diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-index 5c767cd8ffc3..834556ea21d2 100644
---- a/drivers/scsi/pmcraid.c
-+++ b/drivers/scsi/pmcraid.c
-@@ -5234,53 +5234,37 @@ static void pmcraid_remove(struct pci_dev *pdev)
- 	return;
- }
- 
--#ifdef CONFIG_PM
- /**
-  * pmcraid_suspend - driver suspend entry point for power management
-- * @pdev:   PCI device structure
-- * @state:  PCI power state to suspend routine
-+ * @dev:   Device structure
-  *
-  * Return Value - 0 always
-  */
--static int pmcraid_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused pmcraid_suspend(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
- 
- 	pmcraid_shutdown(pdev);
- 	pmcraid_disable_interrupts(pinstance, ~0);
- 	pmcraid_kill_tasklets(pinstance);
--	pci_set_drvdata(pinstance->pdev, pinstance);
- 	pmcraid_unregister_interrupt_handler(pinstance);
--	pci_save_state(pdev);
--	pci_disable_device(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
- 
- 	return 0;
- }
- 
- /**
-  * pmcraid_resume - driver resume entry point PCI power management
-- * @pdev: PCI device structure
-+ * @dev: Device structure
-  *
-  * Return Value - 0 in case of success. Error code in case of any failure
-  */
--static int pmcraid_resume(struct pci_dev *pdev)
-+static int __maybe_unused pmcraid_resume(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
- 	struct Scsi_Host *host = pinstance->host;
--	int rc;
--
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--
--	rc = pci_enable_device(pdev);
--
--	if (rc) {
--		dev_err(&pdev->dev, "resume: Enable device failed\n");
--		return rc;
--	}
--
--	pci_set_master(pdev);
-+	int rc = 0;
- 
- 	if (sizeof(dma_addr_t) == 4 ||
- 	    dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))
-@@ -5333,18 +5317,10 @@ static int pmcraid_resume(struct pci_dev *pdev)
- 	scsi_host_put(host);
- 
- disable_device:
--	pci_disable_device(pdev);
- 
- 	return rc;
- }
- 
--#else
--
--#define pmcraid_suspend NULL
--#define pmcraid_resume  NULL
--
--#endif /* CONFIG_PM */
--
- /**
-  * pmcraid_complete_ioa_reset - Called by either timer or tasklet during
-  *				completion of the ioa reset
-@@ -5832,6 +5808,8 @@ static int pmcraid_probe(struct pci_dev *pdev,
- 	return -ENODEV;
- }
- 
-+static SIMPLE_DEV_PM_OPS(pmcraid_pm_ops, pmcraid_suspend, pmcraid_resume);
-+
- /*
-  * PCI driver structure of pmcraid driver
-  */
-@@ -5840,8 +5818,7 @@ static struct pci_driver pmcraid_driver = {
- 	.id_table = pmcraid_pci_table,
- 	.probe = pmcraid_probe,
- 	.remove = pmcraid_remove,
--	.suspend = pmcraid_suspend,
--	.resume = pmcraid_resume,
-+	.driver.pm = &pmcraid_pm_ops,
- 	.shutdown = pmcraid_shutdown
- };
- 
+Eric W. Biederman mentioned this issue [1][2][3].
+
+Introduced changes
+------------------
+To fix this problem, you can bind the counter of the specified rlimits to the
+user within the user namespace. By default, to preserve backward compatibility,
+only the initial user namespace is used. This patch adds one more prctl
+parameter to change the binding to the user namespace.
+
+This will not cause the user to take more resources than allowed in the parent
+user namespace because it only virtualizes the rlimit counter. Limits in all
+parent user namespaces are taken into account.
+
+For example, this allows us to run multiple containers by the same user and
+set the RLIMIT_NPROC to 1 inside.
+
+ToDo
+----
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are not implemented.
+* No documentation.
+* No tests.
+
+[1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (4):
+  Increase size of ucounts to atomic_long_t
+  Move the user's process counter to ucounts
+  Do not allow fork if RLIMIT_NPROC is exceeded in the user namespace
+    tree
+  Allow to change the user namespace in which user rlimits are counted
+
+ fs/exec.c                      | 13 ++++++---
+ fs/io-wq.c                     | 25 +++++++++++++-----
+ fs/io-wq.h                     |  1 +
+ fs/io_uring.c                  |  1 +
+ include/linux/cred.h           |  8 ++++++
+ include/linux/sched.h          |  3 +++
+ include/linux/sched/user.h     |  1 -
+ include/linux/user_namespace.h | 12 +++++++--
+ include/uapi/linux/prctl.h     |  5 ++++
+ kernel/cred.c                  | 44 ++++++++++++++++++++++++-------
+ kernel/exit.c                  |  2 +-
+ kernel/fork.c                  | 13 ++++++---
+ kernel/sys.c                   | 26 ++++++++++++++++--
+ kernel/ucount.c                | 48 +++++++++++++++++++++++++++++-----
+ kernel/user.c                  |  3 ++-
+ kernel/user_namespace.c        |  3 +++
+ 16 files changed, 171 insertions(+), 37 deletions(-)
+
 -- 
-2.28.0
+2.25.4
 
