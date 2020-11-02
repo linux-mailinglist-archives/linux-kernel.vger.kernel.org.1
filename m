@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5151B2A2F3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76152A2F3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgKBQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S1727186AbgKBQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:05:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727164AbgKBQFr (ORCPT
+        with ESMTP id S1727173AbgKBQFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:05:47 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF06C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:05:47 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id i39so8345179qtb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:05:47 -0800 (PST)
+        Mon, 2 Nov 2020 11:05:50 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49659C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:05:50 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id 11so5508030wrc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:05:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=E7M1YMbMIR4yMAYd8ymzpiiG9f9KaGeAaRDscMDAbI8=;
-        b=B+b74HQOp3f/kfOxXBITIRBEll8gls2oSrKFlkytGbLYfoRHHu1uMoDCIY1/QpTreR
-         1OWKmsbQ3kb79xzISbXlnmxB2nFKPH9xGsspSZnhWewaaEzeQQzpYHdE+Tvylc9ZEy1C
-         Ynm9YJUeyl+VKHbYnn3nmDML3XSJTKgfLfCPTEHNx4Yj+yOt3oFEMIQaUDLmJGta7A6s
-         +CZAF+bpODT0CKwxt9FAzMVIgqHaDyQzk6/HgFfJyDbRWtMk9xod5t/V99ooccHzwWKh
-         mR2nvhRCb+Ky6uhyTKye5Xm1E2L9ta9OLifCVWA+NfdRlyOE/FFvrXthJ3hePSrMPK9z
-         3dQA==
+        bh=NNmCWg3uUJkm97N9bODpJVOfWoCAwpfkACCfjKkMoC0=;
+        b=qPcFaq777hgcZTn8yo7P5F27kww5oGhyVSMjBwDWyTz9uft51/+YlmhHlTg9S7hGV9
+         d8b0wvwV7HgGGYbBBF+UzG6xXIGdftNQsOe6rw6IrJtgsp9EVwCV/URLlBvOkk1AIaNy
+         YChwpa3HVCcyS0b6aFarAJ/RSkc/zQa+sNebjqtfmGTTw0xy53wENFlCMAheQaaGdb9T
+         cvjsSMFugF6SyvsfPEl42aBMAnt/JAiB9geaSTKxkef2XdTa+yJl/ZUmTGs4BDTO36E/
+         1QlyL75W/QDPxiOkFTufsc1+SyAqNVAybEujDrd9vhWrHLfADL9mBLfJKI5VEttMLVrz
+         BU8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=E7M1YMbMIR4yMAYd8ymzpiiG9f9KaGeAaRDscMDAbI8=;
-        b=ZSSVi6TLxIGKgRSBrl0mKDav+R0ICRcH9m3ZU/IQa38OcAfFMTiOUE0y8y9G9oX3vs
-         Ikh7m1RfvQu9N/hkgzIS3az3boY7Ey//HPMe6wZz8QUvHSkuuL+WY8iJOsNVIs1GLF+e
-         EqlgYvmyozAr2/F1kt5vAY+MSztdz50n0tNo8SxkrPQNYd031zkuOGqqqDrMr6Lpk8wP
-         oITz17AFrGVWPMIYq/oTzxnfbefikm0dfeYuBOohP4ZdM5fx/Hpf5H6opf0h+dGjtQNZ
-         o+5LgTOe+6O/NE41oP5h3OqKao78NI9Us/YKCrgh5T2SmS5O6ABFppSq+ezi1e7NoyUY
-         1X4g==
-X-Gm-Message-State: AOAM533AWLR6KEBlXWBPJWDlbLCtmFFEs64xW2AUM2P78QFdYLIV9o7O
-        YPKeXq1jYPnkaTyWA+M5wqdwP79/AWQWnLmp
-X-Google-Smtp-Source: ABdhPJxCpvODUOhYUZL5nc/yMsQuPusWm8gNXkjp/HkCNDgiJkwTvpJ1d1RHTffAkbxP5qgxtSriqvYjoje6hyoR
+        bh=NNmCWg3uUJkm97N9bODpJVOfWoCAwpfkACCfjKkMoC0=;
+        b=dqMCiIU38vgSLeHcsTS8v3e6sTxwAb4xYN9p7CTHmfPR5q9R7aqdP4v/URkHX2rYg0
+         1SWAC0RwoBLlMynC4VvJZ4jTHqHv+POs6wCNrmkZxXfKHnrxt+DQEaxpMicXcoaYBhPz
+         Mn7dSjzoFtBnpfYSZ1U9jpk8bi9w1FpbstCuaZC3SvkkgHPq2d9MzeL0HvahEoJpoFBk
+         22yS3MVyZ1r1191iI1yAT2QL3Fc1Bb32UHJfoaf+4q+LdqpnWChJIPmBpC2d27WNby8M
+         FXCUvtT13/uBVOR36JgP+snDydPUZq8KNnmRtDpiTLi1GhuhE45Hks+4b3VoJvWFsgIt
+         2zuQ==
+X-Gm-Message-State: AOAM532W03g/r2dUkNU4YzxHmoPEdxng6+XUBPufRvdsDLTKfpVXHHqr
+        aMlXMfSAF3uPyKxPnB/IicQLZZ/fSa7TdRH8
+X-Google-Smtp-Source: ABdhPJxTZtMrOlRAcivtl/DfxDa2NTxs0uKOGlHNXMtACmGBEzGdVF5pCUR1iRnUEa0kJT9CCPiHdU6rMhOzZWEt
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a0c:f70e:: with SMTP id
- w14mr23027576qvn.10.1604333146336; Mon, 02 Nov 2020 08:05:46 -0800 (PST)
-Date:   Mon,  2 Nov 2020 17:04:13 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:b0ca:: with SMTP id
+ z193mr18288765wme.82.1604333148905; Mon, 02 Nov 2020 08:05:48 -0800 (PST)
+Date:   Mon,  2 Nov 2020 17:04:14 +0100
 In-Reply-To: <cover.1604333009.git.andreyknvl@google.com>
-Message-Id: <adfb51f61d93c78ca37d6238d4a435e755b30e43.1604333009.git.andreyknvl@google.com>
+Message-Id: <bd64e051e8e36ac25751debc071887af3d7f663f.1604333009.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604333009.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v7 33/41] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
+Subject: [PATCH v7 34/41] kasan, x86, s390: update undef CONFIG_KASAN
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>
@@ -74,36 +74,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
-KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
+With the intoduction of hardware tag-based KASAN some kernel checks of
+this kind:
+
+  ifdef CONFIG_KASAN
+
+will be updated to:
+
+  if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+
+x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
+that isn't linked with KASAN runtime and shouldn't have any KASAN
+annotations.
+
+Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I5d1117e6a991cbca00d2cfb4ba66e8ae2d8f513a
+Change-Id: I2a622db0cb86a8feb60c30d8cb09190075be2a90
 ---
- mm/kasan/kasan.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/s390/boot/string.c         | 1 +
+ arch/x86/boot/compressed/misc.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index e3cd6a3d2b23..618e69d12f61 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -5,7 +5,13 @@
- #include <linux/kasan.h>
- #include <linux/stackdepot.h>
+diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+index b11e8108773a..faccb33b462c 100644
+--- a/arch/s390/boot/string.c
++++ b/arch/s390/boot/string.c
+@@ -3,6 +3,7 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #undef CONFIG_KASAN
++#undef CONFIG_KASAN_GENERIC
+ #include "../lib/string.c"
  
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
-+#else
-+#include <asm/mte-kasan.h>
-+#define KASAN_GRANULE_SIZE	MTE_GRANULE_SIZE
-+#endif
-+
- #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
- #define KASAN_GRANULE_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
+ int strncmp(const char *cs, const char *ct, size_t count)
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 6d31f1b4c4d1..652decd6c4fc 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -12,6 +12,7 @@
+ #undef CONFIG_PARAVIRT_XXL
+ #undef CONFIG_PARAVIRT_SPINLOCKS
+ #undef CONFIG_KASAN
++#undef CONFIG_KASAN_GENERIC
  
+ /* cpu_feature_enabled() cannot be used this early */
+ #define USE_EARLY_PGTABLE_L5
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
