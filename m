@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F042A29EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB272A29EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728884AbgKBLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728733AbgKBLtH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:49:07 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521EEC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:49:07 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id w14so14205522wrs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:49:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+nfxQCCmJXEo7KncMNyKTjvgt98qI81zIUKCv1ZGk7A=;
-        b=gRVuPI8Mfv4ZFGLYGPQhACenu9vVDG903vkWLHVy+/1o+8b+naTJnraP4Dpoj5wEkl
-         hNJ6VFcZKLu7kk/zbxDCOgcPkK0I7OiqTGkWOxZHvmCWYJO1jrjsSzoSwDq5xVm4Un3U
-         LROLW/77WC0GhEobCwK6DjkRmLH4MUmYo0TW7+8YABnCp4zoLfq4DeyQ6Dm2lAfAn1vK
-         9Vvj5PaXynwPrJOPCfI1N7l1hcuesyRz+5S6P3wld5tpLaQpCsnJiYruwrfu1d2jW/Ug
-         S87MI1SRGXt0/JcB/2fEFOI+gFidAWIDfUYiUbfP/KIVuKOaTRR+nbB9oNyMFiZscKIG
-         vCcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+nfxQCCmJXEo7KncMNyKTjvgt98qI81zIUKCv1ZGk7A=;
-        b=jT+DWDEgLGLjhxI1SQv9LU4nQfsGrGyzdTZ1LYJlqKT2I5JU5vcCmg0aWRsNi7o9pA
-         o7G6UZT1kueYbVJDM+bYQ97YNP+Hn9Y6X36ctxyIFIoNAO/+fh+AHifFt+MjXB4l8LmX
-         I/s8yFTxn8J2ZjEMBEc8QhfaxM4oozuOteC0c9OQQtke2mx+U2JuShhWV6S6mLFOGDtu
-         Lnfn3rAk0UtTO7WF6w4JohwLG71S3XBUKC9ZgphrEPdxge7zDIipOYyVZJ4yK7GDl+XI
-         2W2qsZXvgo5DhUuj72hPwzkYl2y0XlwV6qGapC7/75gJ163cDIS9nMrfh+ptpzE4xttl
-         EWIw==
-X-Gm-Message-State: AOAM532chEJ5BtNVI+yYtsIYxMs6U2+Sm5vUj+XECC1Zl5F7m1dZh25A
-        Y16VFiFzY4Y2GPEoxCraq+ZVxxY0mzXFpQ==
-X-Google-Smtp-Source: ABdhPJzlXOMnvvRSFKCIMDXT1E5IRJdfL+GZYEdvDsrxITEEnF5V1jDXACBqO2oZw8A8ePwmsXjtdQ==
-X-Received: by 2002:adf:ab50:: with SMTP id r16mr19080712wrc.235.1604317746019;
-        Mon, 02 Nov 2020 03:49:06 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id a3sm14865167wmb.46.2020.11.02.03.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:49:05 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:49:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20201102114903.GN4127@dell>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+        id S1728791AbgKBLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:48:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728610AbgKBLs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:48:57 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 385D821D91;
+        Mon,  2 Nov 2020 11:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604317736;
+        bh=+iwZp4hz8Ac+ih2R+PIMnjM3wfsZ6NHD+wtMijUtFSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R5c5fWp8keTvEfGO5J6e9XUE0aaIT+pfFquuQdLSWzdeLc3rsCYkUYVSFuUw/egEx
+         CJddh4EPYpUjJWmUynG0GdV8KVOcBhUvLQuVB553AZjJNTNA8QD5dlxEu0ULnXsx/R
+         46bPSVVs9r0wymE9C+cTVJzkhusfHT7Oly3YtrvA=
+Date:   Mon, 2 Nov 2020 12:49:52 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
+Message-ID: <20201102114952.GA661633@kroah.com>
+References: <20201027135430.632029009@linuxfoundation.org>
+ <20201028171035.GD118534@roeck-us.net>
+ <20201028195619.GC124982@roeck-us.net>
+ <20201031094500.GA271135@eldamar.lan>
+ <7608060e-f48b-1a7c-1a92-9c41d81d9a40@roeck-us.net>
+ <20201102113648.GB9840@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+In-Reply-To: <20201102113648.GB9840@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, David Laight wrote:
-
-> From: Lee Jones
-> > Sent: 02 November 2020 11:12
-> > 
-> > strncpy() may not provide a NUL terminator, which means that a 1-byte
-> > leak would be possible *if* this was ever copied to userspace.  Ensure
-> > the buffer will always be NUL terminated by using the kernel's
-> > strscpy() which a) uses the destination (instead of the source) size
-> > as the bytes to copy and b) is *always* NUL terminated.
-> > 
-> > Cc: Rodolfo Giometti <giometti@enneenne.com>
-> > Cc: "Eurotech S.p.A" <info@eurotech.it>
-> > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/misc/c2port/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> > index 80d87e8a0bea9..b96444ec94c7e 100644
-> > --- a/drivers/misc/c2port/core.c
-> > +++ b/drivers/misc/c2port/core.c
-> > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
-> >  	}
-> >  	dev_set_drvdata(c2dev->dev, c2dev);
-> > 
-> > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+On Mon, Nov 02, 2020 at 12:36:48PM +0100, Pavel Machek wrote:
+> Hi!
 > 
-> strscpy() doesn't zero fill so if the memory isn't zeroed
-> and a 'blind' copy to user of the structure is done
-> then more data is leaked.
+> > >>> perf failures are as usual. powerpc:
+> > > 
+> > > Regarding the perf failures, do you plan to revert b801d568c7d8 ("perf
+> > > cs-etm: Move definition of 'traceid_list' global variable from header
+> > > file") included in 4.19.152 or is a bugfix underway?
+> > > 
+> > 
+> > The problem is:
+> > 
+> > In file included from util/evlist.h:15:0,
+> >                  from util/evsel.c:30:
+> > util/evsel.c: In function ‘perf_evsel__exit’:
+> > util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
+> > /usr/include/stdlib.h:563:13: note: expected ‘void *’ but argument is of type ‘const char *’
+> >  extern void free (void *__ptr) __THROW;
+> > 
+> > This is seen with older versions of gcc (6.5.0 in my case). I have no idea why
+> > newer versions of gcc/glibc accept this (afaics free() still expects a char *,
+> > not a const char *). The underlying problem is that pmu_name should not be
+> > declared const char *, but char *, since it is allocated. The upstream version
+> > of perf no longer uses the same definition of zfree(). It was changed from
+> > 	#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+> > to
+> > 	#define zfree(ptr) __zfree((void **)(ptr))
+> > which does the necessary typecast. The fix would be to either change the definition
+> > of zfree to add the typecast, or to change the definition of pmu_name to drop the const.
+> > Both would only apply to v4.19.y. I don't know if either would be acceptable.
 > 
-> strscpy() may be better, but rational isn't right.
+> As the problem is already fixed in the mainline, either solution
+> should be acceptable for -stable.
+> 
+> Probably the one adjusting the zfree() is more suitable, as that is
+> the way it was solved in the mainline.
 
-The original patch zeroed the data too, but I was asked to remove that
-part [0].  In your opinion, should it be reinstated?
+If you can provide the proper patches backported to 4.19, I will gladly
+take them.  I tried to figure it out and couldn't, so good luck!
 
-[0] https://lore.kernel.org/patchwork/patch/1272290/
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+greg k-h
