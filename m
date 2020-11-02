@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675772A26A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3F82A26A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgKBJIH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 04:08:07 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26763 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728294AbgKBJID (ORCPT
+        id S1728343AbgKBJId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:08:33 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6729 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBJIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:08:03 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-2-3gt7SuvxPWOqa-ZpIA1B2g-1;
- Mon, 02 Nov 2020 09:06:39 +0000
-X-MC-Unique: 3gt7SuvxPWOqa-ZpIA1B2g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 2 Nov 2020 09:06:38 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 2 Nov 2020 09:06:38 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Greg KH' <gregkh@linuxfoundation.org>
-CC:     'David Hildenbrand' <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12CAAB+UKYAAAQNg///yIQCAD2i/YA==
-Date:   Mon, 2 Nov 2020 09:06:38 +0000
-Message-ID: <0ab5ac71f28d459db2f350c2e07b88ca@AcuMS.aculab.com>
-References: <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
- <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
- <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
- <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
- <999e2926-9a75-72fd-007a-1de0af341292@redhat.com>
- <35d0ec90ef4f4a35a75b9df7d791f719@AcuMS.aculab.com>
- <20201023144718.GA2525489@kroah.com>
-In-Reply-To: <20201023144718.GA2525489@kroah.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 2 Nov 2020 04:08:32 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPn936cbxzkdXL;
+        Mon,  2 Nov 2020 17:06:47 +0800 (CST)
+Received: from [127.0.0.1] (10.57.60.129) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 17:06:43 +0800
+Subject: Re: [PATCH] drm/hisilicon: Remove redundant null check
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <kraxel@redhat.com>,
+        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1604050046-64539-1-git-send-email-tiantao6@hisilicon.com>
+ <2dbbbad0-53cf-52cc-3b6b-0d1547f7e085@suse.de>
+ <f41cbcb3-d08a-7d3f-530c-a0cb3f9e3801@huawei.com>
+ <b3656895-42a5-ff20-a695-dccaf1992938@suse.de>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <48f68940-14a4-6ea7-4296-53970cd74015@huawei.com>
+Date:   Mon, 2 Nov 2020 17:06:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <b3656895-42a5-ff20-a695-dccaf1992938@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.57.60.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 'Greg KH'
-> Sent: 23 October 2020 15:47
+
+
+在 2020/11/2 17:03, Thomas Zimmermann 写道:
+> Hi
 > 
-> On Fri, Oct 23, 2020 at 02:39:24PM +0000, David Laight wrote:
-> > From: David Hildenbrand
-> > > Sent: 23 October 2020 15:33
-> > ...
-> > > I just checked against upstream code generated by clang 10 and it
-> > > properly discards the upper 32bit via a mov w23 w2.
-> > >
-> > > So at least clang 10 indeed properly assumes we could have garbage and
-> > > masks it off.
-> > >
-> > > Maybe the issue is somewhere else, unrelated to nr_pages ... or clang 11
-> > > behaves differently.
-> >
-> > We'll need the disassembly from a failing kernel image.
-> > It isn't that big to hand annotate.
+> Am 02.11.20 um 09:46 schrieb tiantao (H):
+>>
+>>
+>> 在 2020/11/2 16:32, Thomas Zimmermann 写道:
+>>> Hi
+>>>
+>>> Am 30.10.20 um 10:27 schrieb Tian Tao:
+>>>> drm_irq_uninstall can handle the case where dev->irq_enable is false,
+>>>> so Remove redundant null check.
+>>>>
+>>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>>>> ---
+>>>>    drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++---
+>>>>    1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> index 0c1b40d..b71589b1 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> @@ -246,13 +246,13 @@ static int hibmc_unload(struct drm_device *dev)
+>>>>          drm_atomic_helper_shutdown(dev);
+>>>>    -    if (dev->irq_enabled)
+>>>> -        drm_irq_uninstall(dev);
+>>>> -
+>>>> +    drm_irq_uninstall(dev);
+>>>
+>>> Removing this check would at least result in an error, [1] so rather
+>>> leave it in for now.
+>>>
+>> Now there seems to be no driver to check the return value of
+>> drm_irq_uninstall
 > 
-> I've worked around the merge at the moment in the android tree, but it
-> is still quite reproducable, and will try to get a .o file to
-> disassemble on Monday or so...
+> True. No clean-up code should ever fail. But currently, it's not handled
+> by drm_irq_uninstall().
+> 
+> A better fix would be to have drm_irq_uninstall() return early with a
+> warning if IRQs are disabled. And for most drivers, a managed version of
+> drm_irq_install() would be useful.
+> 
+Codes like the following
+diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
+index 09d6e9e..572357c 100644
+--- a/drivers/gpu/drm/drm_irq.c
++++ b/drivers/gpu/drm/drm_irq.c
+@@ -172,6 +172,9 @@ int drm_irq_uninstall(struct drm_device *dev)
+         bool irq_enabled;
+         int i;
 
-Did this get properly resolved?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
++       if(!dev->irq_enabled || !dev)
++               return 0;
+> Best regards
+> Thomas
+> 
+>>> Instead, we could discuss if drm_irq_install() should become a managed
+>>> interface.
+>>
+>> Codes like the following
+>> diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
+>> index 09d6e9e..572357c 100644
+>> --- a/drivers/gpu/drm/drm_irq.c
+>> +++ b/drivers/gpu/drm/drm_irq.c
+>> @@ -172,6 +172,9 @@ int drm_irq_uninstall(struct drm_device *dev)
+>>          bool irq_enabled;
+>>          int i;
+>>
+>> +       if(!dev->irq_enabled || !dev)
+>> +               return 0;
+>>
+>>>
+>>> Best regards
+>>> Thomas
+>>>
+>>> [1]
+>>> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/drm_irq.c#L201
+>>>
+>>>
+>>>>        pci_disable_msi(dev->pdev);
+>>>> +
+>>>>        hibmc_kms_fini(priv);
+>>>>        hibmc_mm_fini(priv);
+>>>>        dev->dev_private = NULL;
+>>>> +
+>>>>        return 0;
+>>>>    }
+>>>>   
+>>>
+>>
+> 
 
