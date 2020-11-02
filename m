@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AE72A3263
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1D62A3268
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgKBRzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:55:31 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57849 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgKBRza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:55:30 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kZe3D-0003rS-I9; Mon, 02 Nov 2020 17:55:27 +0000
-Date:   Mon, 2 Nov 2020 18:55:26 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [RFC PATCH v1 0/4] Per user namespace rlimits
-Message-ID: <20201102175526.eu4npm4v2ggicvaf@wittgenstein>
-References: <cover.1604335819.git.gladkov.alexey@gmail.com>
+        id S1725846AbgKBR65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:58:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39518 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbgKBR65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:58:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604339935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tTGxmloRlosiHcrkblVZKAex8K4UmQqhkKABRK1uCH0=;
+        b=C9zaZGXNo+TDLv2h+wjRZH1Tvbunz+KrxDxPasZEs7237KHD5bMk2LUifxPlPIz/OY4jhf
+        52cOkXcpCM8ZmWg0ud5SE/Dq0hrwDqNna1G8Kd6zQeNP6QLxFBbsDAD82gsQWGQtCObYV0
+        f6ROfUmpcZM3QTk8Q8fZyHD6C2HA+e8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 821A9AE7D;
+        Mon,  2 Nov 2020 17:58:55 +0000 (UTC)
+Subject: Re: possible lockdep regression introduced by 4d004099a668 ("lockdep:
+ Fix lockdep recursion")
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>, matorola@gmail.com,
+        mingo@kernel.org
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+ <20201026125524.GP2594@hirez.programming.kicks-ass.net>
+ <20201026152256.GB2651@hirez.programming.kicks-ass.net>
+From:   Filipe Manana <fdmanana@suse.com>
+Message-ID: <968c6023-612c-342b-aa69-ec9e1e428eb0@suse.com>
+Date:   Mon, 2 Nov 2020 17:58:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201026152256.GB2651@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1604335819.git.gladkov.alexey@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 05:50:29PM +0100, Alexey Gladkov wrote:
-> Preface
-> -------
-> These patches are for binding the rlimits to a user in the user namespace.
-> This patch set can be applied on top of:
-> 
-> git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.8-2-g43e210d68200
-> 
-> Problem
-> -------
-> Some rlimits are set per user: RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING,
-> RLIMIT_MSGQUEUE. When several containers are created from one user then
-> the processes inside the containers influence each other.
-> 
-> Eric W. Biederman mentioned this issue [1][2][3].
-> 
-> Introduced changes
-> ------------------
-> To fix this problem, you can bind the counter of the specified rlimits to the
-> user within the user namespace. By default, to preserve backward compatibility,
-> only the initial user namespace is used. This patch adds one more prctl
-> parameter to change the binding to the user namespace.
-> 
-> This will not cause the user to take more resources than allowed in the parent
-> user namespace because it only virtualizes the rlimit counter. Limits in all
-> parent user namespaces are taken into account.
-> 
-> For example, this allows us to run multiple containers by the same user and
-> set the RLIMIT_NPROC to 1 inside.
 
-Thanks for picking this up and working on it. This would definitely fix
-many issues for folks running unprivileged containers using a single id
-map which is the default behavior for LXC/LXD and so very valuable to
-us.
 
-Christian
+On 26/10/20 15:22, Peter Zijlstra wrote:
+> On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
+>> On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+>>>> That smells like the same issue reported here:
+>>>>
+>>>>   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+>>>>
+>>>> Make sure you have commit:
+>>>>
+>>>>   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+>>>>
+>>>> (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+>>>
+>>> Yes, CONFIG_DEBUG_PREEMPT is enabled.
+>>
+>> Bummer :/
+>>
+>>> I'll try with that commit and let you know, however it's gonna take a
+>>> few hours to build a kernel and run all fstests (on that test box it
+>>> takes over 3 hours) to confirm that fixes the issue.
+>>
+>> *ouch*, 3 hours is painful. How long to make it sick with the current
+>> kernel? quicker I would hope?
+>>
+>>> Thanks for the quick reply!
+>>
+>> Anyway, I don't think that commit can actually explain the issue :/
+>>
+>> The false positive on lockdep_assert_held() happens when the recursion
+>> count is !0, however we _should_ be having IRQs disabled when
+>> lockdep_recursion > 0, so that should never be observable.
+>>
+>> My hope was that DEBUG_PREEMPT would trigger on one of the
+>> __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+>> then be a clear violation.
+>>
+>> And you're seeing this on x86, right?
+>>
+>> Let me puzzle moar..
+> 
+> So I might have an explanation for the Sparc64 fail, but that can't
+> explain x86 :/
+> 
+> I initially thought raw_cpu_read() was OK, since if it is !0 we have
+> IRQs disabled and can't get migrated, so if we get migrated both CPUs
+> must have 0 and it doesn't matter which 0 we read.
+> 
+> And while that is true; it isn't the whole store, on pretty much all
+> architectures (except x86) this can result in computing the address for
+> one CPU, getting migrated, the old CPU continuing execution with another
+> task (possibly setting recursion) and then the new CPU reading the value
+> of the old CPU, which is no longer 0.
+> 
+> I already fixed a bunch of that in:
+> 
+>   baffd723e44d ("lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"")
+> 
+> but clearly this one got crossed.
+> 
+> Still, that leaves me puzzled over you seeing this on x86 :/
+
+Hi Peter,
+
+I still get the same issue with 5.10-rc2.
+Is there any non-merged patch I should try, or anything I can help with?
+
+Thanks.
 
 > 
-> ToDo
-> ----
-> * RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are not implemented.
-> * No documentation.
-> * No tests.
+> Anatoly, could you try linus+tip/locking/urgent and the below on your
+> Sparc, please?
 > 
-> [1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
-> [2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
-> [3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
-> 
-> Changelog
-> ---------
-> v1:
-> * After discussion with Eric W. Biederman, I increased the size of ucounts to
->   atomic_long_t.
-> * Added ucount_max to avoid the fork bomb.
-> 
-> --
-> 
-> Alexey Gladkov (4):
->   Increase size of ucounts to atomic_long_t
->   Move the user's process counter to ucounts
->   Do not allow fork if RLIMIT_NPROC is exceeded in the user namespace
->     tree
->   Allow to change the user namespace in which user rlimits are counted
-> 
->  fs/exec.c                      | 13 ++++++---
->  fs/io-wq.c                     | 25 +++++++++++++-----
->  fs/io-wq.h                     |  1 +
->  fs/io_uring.c                  |  1 +
->  include/linux/cred.h           |  8 ++++++
->  include/linux/sched.h          |  3 +++
->  include/linux/sched/user.h     |  1 -
->  include/linux/user_namespace.h | 12 +++++++--
->  include/uapi/linux/prctl.h     |  5 ++++
->  kernel/cred.c                  | 44 ++++++++++++++++++++++++-------
->  kernel/exit.c                  |  2 +-
->  kernel/fork.c                  | 13 ++++++---
->  kernel/sys.c                   | 26 ++++++++++++++++--
->  kernel/ucount.c                | 48 +++++++++++++++++++++++++++++-----
->  kernel/user.c                  |  3 ++-
->  kernel/user_namespace.c        |  3 +++
->  16 files changed, 171 insertions(+), 37 deletions(-)
-> 
-> -- 
-> 2.25.4
+> ---
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 3e99dfef8408..a3041463e42d 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -84,7 +84,7 @@ static inline bool lockdep_enabled(void)
+>  	if (!debug_locks)
+>  		return false;
+>  
+> -	if (raw_cpu_read(lockdep_recursion))
+> +	if (this_cpu_read(lockdep_recursion))
+>  		return false;
+>  
+>  	if (current->lockdep_recursion)
 > 
