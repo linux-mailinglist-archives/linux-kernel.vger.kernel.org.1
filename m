@@ -2,59 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4D72A2A72
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF2B2A2A6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgKBMLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728615AbgKBMLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:11:32 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6579C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:11:31 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id a9so14284035wrg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=O1eE9pj4r8IqkyxfcZDpDxoJDTZiw0/kvBe3pBdvn+Q=;
-        b=AL2zwRnj1zVIIhh0D3ok4wrrVs8c0c0ROYytRM1Lzh7KbZG8Mu0UMTHkWQS9iX499B
-         Lz/3w3Gsed/ydOdXzJGZkoLIClz1raYJsVtIMZiI+bFaoJXdfG5EDPuh2EdcbZe8KOiU
-         JSw5wS3zV3cu5bpdSrzPkM4SVeUnogxC/o0u47sBe9CZxDZ3kWpojTnXooGthP8R/LgI
-         CTXSj2lPF4haoiZA9TDL1KpSDQrkEJkLpZi9TF432UwlOkK7yVZzsLgA+oW3Q1zbcYNq
-         gS7iEDfBkqXqdJZNBrszwaqJCxZ1dhbBiFphQVWZifaOyUJoBcoUwZ3+cAwZtEZz+DH3
-         H0OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=O1eE9pj4r8IqkyxfcZDpDxoJDTZiw0/kvBe3pBdvn+Q=;
-        b=fUwQW6+hVpVvhmeI4CnNeYjnBbsuk4GyerGiT3LVpxGIcI3NwQ3L2WTigzvtde3bHD
-         QbPXgeQNs84MAktKfesGJ8SlLyHwFUm2AGAbuLVXlY9PDdS6zFFyh+Mn9zdIAL7Kd3zj
-         7nsXcYbPCVx7dTH88SP2+gHv5F0ngIoU60Yz0nFF+guKQwBBB7VNXVOEh3pca2/ylKFP
-         KfXbuNqOX6xLGSrDwMTFI0VDP/lBDqw2U3bDrAfLCuSdHFXyLccYPWK4n13fTKP2dz8j
-         FBqHCa5NtaBYiacBy3xvmjGK4AytDDd62Qlh5hFWjCE5cllJEyFGkpGQQeu3dWi6E6k1
-         fcGw==
-X-Gm-Message-State: AOAM5338nJZRr6cQRibfE5umjiht0L3/SYC/S9vkNDe5RS3uqIlawWPg
-        SUG8Gtuq/I8ja5kOEv8evZL5CgVyjy89dwPuB5g=
-X-Google-Smtp-Source: ABdhPJzwUy2ssvLXGAUT3QHti4TQGVUlTEDlgum0IOPFr76P3DgFodFkR6n8i9zdWZFG502iOnMyBSeXFAQS7ZpeIjk=
-X-Received: by 2002:adf:edcf:: with SMTP id v15mr18834052wro.291.1604319090748;
- Mon, 02 Nov 2020 04:11:30 -0800 (PST)
+        id S1728607AbgKBMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:10:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728421AbgKBMK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:10:58 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 575BC2223C;
+        Mon,  2 Nov 2020 12:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604319056;
+        bh=NC/77HgijA8lK3BIaPDo7FO84Vs7DTsypR0F4w2tDXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IG6rrDqplYvXS5JH5QcEonlRD5fG+Y3Hd1VRveMF+O4kC4UBwQEm144DupvHQmknQ
+         rVBXiWtqQ3zI5CEnoJdbAAKvPFpZRoDRjitbuft3mSZ8LVcxRVksmJJnlL5hnwPGKV
+         NV5Ujhqxs+1+axpw5VYTQPzLhHNAxb/GOFjiauO8=
+Date:   Mon, 2 Nov 2020 13:11:50 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rodolfo Giometti <giometti@enneenne.com>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
+ more secure
+Message-ID: <20201102121150.GA663356@kroah.com>
+References: <20201102111211.1047972-1-lee.jones@linaro.org>
+ <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+ <20201102114903.GN4127@dell>
 MIME-Version: 1.0
-Received: by 2002:a7b:c2e8:0:0:0:0:0 with HTTP; Mon, 2 Nov 2020 04:11:30 -0800 (PST)
-Reply-To: amweber0193@gmail.com
-From:   Amanda Weber <ogudupatrick@gmail.com>
-Date:   Mon, 2 Nov 2020 13:11:30 +0100
-Message-ID: <CANRTtO+xw2v5JGg8hGMaECM1-n=MDdwVvM8+xufCtCQryB5K0w@mail.gmail.com>
-Subject: Response awaited
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102114903.GN4127@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I have waited for your response having known you have read my
-mail to you. Please can you now respond to me? Regards, Amanda
+On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
+> On Mon, 02 Nov 2020, David Laight wrote:
+> 
+> > From: Lee Jones
+> > > Sent: 02 November 2020 11:12
+> > > 
+> > > strncpy() may not provide a NUL terminator, which means that a 1-byte
+> > > leak would be possible *if* this was ever copied to userspace.  Ensure
+> > > the buffer will always be NUL terminated by using the kernel's
+> > > strscpy() which a) uses the destination (instead of the source) size
+> > > as the bytes to copy and b) is *always* NUL terminated.
+> > > 
+> > > Cc: Rodolfo Giometti <giometti@enneenne.com>
+> > > Cc: "Eurotech S.p.A" <info@eurotech.it>
+> > > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  drivers/misc/c2port/core.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+> > > index 80d87e8a0bea9..b96444ec94c7e 100644
+> > > --- a/drivers/misc/c2port/core.c
+> > > +++ b/drivers/misc/c2port/core.c
+> > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+> > >  	}
+> > >  	dev_set_drvdata(c2dev->dev, c2dev);
+> > > 
+> > > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+> > > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+> > 
+> > strscpy() doesn't zero fill so if the memory isn't zeroed
+> > and a 'blind' copy to user of the structure is done
+> > then more data is leaked.
+> > 
+> > strscpy() may be better, but rational isn't right.
+> 
+> The original patch zeroed the data too, but I was asked to remove that
+> part [0].  In your opinion, should it be reinstated?
+> 
+> [0] https://lore.kernel.org/patchwork/patch/1272290/
+
+Just keep the kzalloc() part of the patch, this portion makes no sense
+to me.  But if you REALLY want to get it correct, call dev_set_name()
+instead please, as that is what it is there for.
+
+thanks,
+
+greg k-h
