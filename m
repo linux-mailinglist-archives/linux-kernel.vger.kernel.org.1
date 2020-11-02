@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D386C2A374B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF412A374E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgKBXpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:45:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1277 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgKBXpm (ORCPT
+        id S1726380AbgKBXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgKBXuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:45:42 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa09a2a0000>; Mon, 02 Nov 2020 15:45:46 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
- 2020 23:45:41 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 2 Nov 2020 23:45:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QjFqvi+YjEM7A5lwAo6E9o2veihpOpFDJoCRfO/KA6IiepMZ2i3uB5fZaOVFn1tRVzCNjJ7snuLmxLxiRRgCicKdORlHjNZiX/nXWcNu5jym56dncK4Mnn2WsyxSd8RoI0aegh4r2FrlRsEZBep1RWYrhPEB00ydBiXue1yLmFwk6qseNVzYRpbuxaXPdUNrT4KKOBht5jjjrPMN9dl644CTn68s5ScZl9tzeXRoo20prOczubUFohVeV4rERedvu7YtNLcS0lf+20mLesoCYDqEZemizZKjfuHH3N+ZZd7Q+OqC0muFnOxn8UfnFIwp8SWfSnKVyH1aNbjXrPKa8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hmI+J98bp4TdrlGnE/JIUelfyqOoGsGi2OULvrrG2JU=;
- b=LEOaF97MsnLP1lDbm3MZJbp4g0haYutwJdkeyFRKf8xsruZwaLP/vBv/MhCC1u9c6et7JJm9SsyxUaxfNfaDVp6EKAvwOks1Rf2lTtLhX0++HVgcYb3ysUZVZOg/NiephwFAOt/vO07odhALQjkMRBv5xny5didFj7hGvLyK+9QvJ6XqaLYtvnXCUCrMqaybyH3bsSP6jGuThO+UZHnJ/duwSbBMWGeI/yyxsFQEKKF3Z15pGB+P1IslWzmA9vrxc8I/cgeeOLy3BIv6r6XIV3p5g6UP7xjmsaa4OUd6dLAsRN6M9TMwW9F2KeJOxjwgLP7A1IdWcCjtGbLxqY0kfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0202.namprd12.prod.outlook.com (2603:10b6:4:4d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Mon, 2 Nov
- 2020 23:45:40 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 23:45:40 +0000
-Date:   Mon, 2 Nov 2020 19:45:39 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tags need some work in the rdma tree
-Message-ID: <20201102234539.GK2620339@nvidia.com>
-References: <20201103083730.539fe81c@canb.auug.org.au>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201103083730.539fe81c@canb.auug.org.au>
-X-ClientProxiedBy: MN2PR05CA0040.namprd05.prod.outlook.com
- (2603:10b6:208:236::9) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 2 Nov 2020 18:50:23 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D90C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:50:21 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id d24so16970256ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:50:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WR44C7avZjfauNuaDTbkUp2xrGy1QH6n8J2rne3T40M=;
+        b=Qzpo9H/hHuFEF5PMbXyPatLQyAGiqFpnH1ehRVWpkkIPijlt+qArr+VCmQ0xejzEWx
+         UUbk3pCruq6MMEh0sRMDxZblo/glUV5deKQ9B92bh5jezty+F6P8q248T8N//nug0WkR
+         9LPw6HeqZYXSKzqphCKvnprOPhIxqGUS0m+UnoX/x78A37WWqZ04KRlt7VUAoJgGXTzL
+         oeOOEw/pKgQU4lhNJXog2jtISoyYeT250exbxlIlO1p3e4ZHAx/stGJorJPD/MSFXJ7b
+         zF3nEgJI4fotpgya98p/B4W80CJfFn2Dvkz9Lu9h+CXIxS4EUKgMxZwktXwHQrTIJyql
+         NN/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WR44C7avZjfauNuaDTbkUp2xrGy1QH6n8J2rne3T40M=;
+        b=t71HT4I13L+AZWWIeoP4si33AI5z98ElvstyBT2S7gQryIsmcIZLul1iIWlJW+ByuY
+         STfmbhv0dZGBGXvlLMK4ZIHE0UCqpvaIezqx0hF2Uyx8svpVNzuPcrGibUdGK9m8iZcV
+         YXIwe8qY+bnZuSgC7OT1JWrVFA/5q1j0VSaekXZ6FojRzAYn8Vwas+qw6DyDNPR3jBmj
+         h2ToL917emKV+YOVWOXT7XhZm0kjJ1ZO/k6JbRXnsLnc6wcmp4cpWmO5ViXvKmJ+8Leu
+         pEndHGR8FWGuVVLCrp7JzZ++nLGpCyJk9juEUwdfQl3bFh7AyY6NKd03W2Kh8sm9n4wZ
+         PG+Q==
+X-Gm-Message-State: AOAM53187CHbShczBv/zGs+u4quHWUkK8rmbycARY560mcvNfAZoeFAD
+        lU1tUCbgS4s4hlBRsNL2/6T4YkYi+tkTxZe1k6E=
+X-Google-Smtp-Source: ABdhPJxntr8uhpoRGQ+Ox7xxu3TCKmjcCBS9nk7hH9PiTCgn3VQWVs1pvyO62EOp8gAjTmBpY5eNA2HiMJs+HtjEFm4=
+X-Received: by 2002:a2e:8706:: with SMTP id m6mr7734034lji.129.1604361020254;
+ Mon, 02 Nov 2020 15:50:20 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0040.namprd05.prod.outlook.com (2603:10b6:208:236::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Mon, 2 Nov 2020 23:45:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZjW7-00Fh7W-C2; Mon, 02 Nov 2020 19:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604360746; bh=hmI+J98bp4TdrlGnE/JIUelfyqOoGsGi2OULvrrG2JU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=CKA5UezzriZTuy/YHBavXoQofdCSbXrjDO3FHvwixLQo+dOVSVdlkGl1XPF8uZDMa
-         n84tgL59CBPBeN6H1aBXr65YpoqsUGGg+I702F5buiGOJuOlHdGkiHjS+TdPgs1txe
-         IzHKHJQ1VPA/gpYmE6lDTQdai2Go21ikIMKydjF2M93zmmmT0Q6t5aZTsQMopQOBcC
-         WmSH3j8O5fUGDIdTHpI9N9kNtwyBS2fc+s0kJaPWw2i7Xw3Yj/UHpDgOr3IsLvpXvu
-         zAUM6HIMhDlKLixqro7UDxC30V07ttZqGPioqqKm1CNZuwaXEeC8ZuvKQO45ldWm8U
-         5PJFc1LYeXrOw==
+Received: by 2002:a05:6520:4211:b029:97:9ea5:def8 with HTTP; Mon, 2 Nov 2020
+ 15:50:19 -0800 (PST)
+Reply-To: salim.salif@mail.com
+From:   "salim.salif." <sallmsalif00@gmail.com>
+Date:   Mon, 2 Nov 2020 15:50:19 -0800
+Message-ID: <CAHkoTS1RzbQNaPJcSBJG8_RrP6udDV0u2m9PTyDnQDb=OKAZdQ@mail.gmail.com>
+Subject: . Mr._____.s.allm .___Salif,.,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 08:37:30AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   32fabd9b163b ("RDMA/rxe: Compute PSN windows correctly")
-> 
-> Fixes tag
-> 
->   Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
-> 
-> has these problem(s):
-> 
->   - Subject does not match target commit subject
->     Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
-> 
-> Maybe you meant
-> 
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> 
-> In commit
-> 
->   b67ffe884bdd ("RDMA/bnxt_re: Fix entry size during SRQ create")
-> 
-> Fixes tag
-> 
->   Fixes: 2bb3c32c5c5f ("RDMA/bnxt_re: Change wr posting logic to accommodate  variable wqes")
-> 
-> has these problem(s):
-> 
->   - Subject does not match target commit subject
->     Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
+Good Day
 
-I don't usually like to rebase this tree, but I just pushed this, so
-lets fix them.
+I am Mr.sallm Salif, a regional managing director (CORIS BANK
+INTERNATIONAL) Ouagadougou Burkina Faso, in my department we have
+US$9,500.0000 million united state dollars, to transfer into your
+account as a dormant fund.If you are interested to use this fund to
+help the orphans around the world contact and send me your personal
+information for more details:
 
-My checker script noticed but I didn't notice the output in all the
-other spam :\
+Your full names..........
+Your country of origin.....
+your city..........
+Your occupation..........
+Your Age..........
+Your Mobile Number..........
+Your Marital Status........
+A copy of your identification.
 
-I would be happy if the 0-day folks could run these checks too
-
-Jason
+Best Regards
+Mr.sallm Salif,
