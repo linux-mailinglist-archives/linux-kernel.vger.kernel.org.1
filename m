@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57E12A2BF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576F12A2C26
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725898AbgKBNtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        id S1725960AbgKBNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKBNtE (ORCPT
+        with ESMTP id S1725791AbgKBNtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:49:04 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C988C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:49:04 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 13so11165459pfy.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:49:04 -0800 (PST)
+        Mon, 2 Nov 2020 08:49:31 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B5BC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:49:31 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id b1so17492090lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:49:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WpF3sGCaFtVS1Eh20j27YgKkWsI2ZncIVFxEJni7Be4=;
-        b=GSlJIwMxdX5CBk/cKQG3VsM4ru4+Q/uvclPVySn8U60UWDJcYGPlQ5jkRJzNG0i/Qa
-         Y1hqI7Fbn6U+29sQiEOZvWAitHhQEnb0L8oGWkzWPfi0hGjwt9HYjQCK8ItkVDHP7MY0
-         cdcr/Wqikh4CH36iTncUM+M5zWPpuVQG0sdk15zf8GbhSsftpBG7Cuz7ZzIcGjHPD3vY
-         EfEY49KetKEyXja4u4yzYJqpoiKMdWL/R+tTq8ea90J0MXIlX+/Hc+PTycJwOp1e+eQL
-         7Mios4ebR5qMFmkgPy0DlRs+ygTh7rKLLewLUWtMM9QZspv2vwEJNXqsCBRC2m9catOD
-         R4HQ==
+        bh=crmhEgzkOmERlRibdWJQ5fJu4CKk3cly9oNaCdoNCWg=;
+        b=e6rC0R5eB3PGQ+ozTxEoHwxYIrjTzj/lowbcSttME14YVqM0lIps4VooUuhm29uIFE
+         q8sNXcIJGw1ny8hoRglYxZ9KpzrARGaG8u/N9tg9+2fxDLajahu8D7ztqKBx0+P+97wD
+         4+7gApcowelSqDo/j7gBpM0LF9LMwoRBhHlWlLF0AWUWkY6K823EIHiJsubXmHK+E3xk
+         lOAWs2Oo413J9KNPAL17FSBQ2PIaDC1vMh4rOc652o/EuV589g2E4DXpKlkXZkO6XhAc
+         gzqCT04f7oiU+lnIkGSrqs7iuqhzD+uA6V/Vg3+E84dav23WLkJXEsQtCLEKQAUdGu0f
+         o0cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WpF3sGCaFtVS1Eh20j27YgKkWsI2ZncIVFxEJni7Be4=;
-        b=c34R8naY6g5lRB+ZbfSVzRHRX8HTT+L/tgg/vKIW2Jh+rc+hUkJdeDXth11Up6Ncmk
-         Fr5nFePiH1wl7+KeVNlItREq7zbVMwAuzkeOwtCFLfmDb4ZEs9wOS2yypyjrIMtJxAiE
-         9MEcq9G4hytV+rVIllx1xRW8RqLYWPlCwNihQaPmLSegxuD4U6LaRHte67N2sT83f+FU
-         lX08ED7aQtCg0b1d5ViJxIfyd0QDl/vAzWjY2VxYzMzPWPK9JshepXg+2tps92WEYyQa
-         I7ISIiPdjUAIrqbbajgsf6hOhn29cdqmtmANX/VLhPSls2s6KwsQmjmWyLqcDBkBSE4s
-         /1MA==
-X-Gm-Message-State: AOAM5310qzxwQaLEqQfLCFhqQVXNcDByDLn4/C2RNP/yp5jDwMmL1Csc
-        RcJZMERer+SsbnUOuv2vWbYyAkj2EzwsTeTk70kPJg==
-X-Google-Smtp-Source: ABdhPJxMGgNruSBgB1KLqECniO90ERSveN//g/NnKzYcrbtcD98wF7ERQBa3YmbwMzRZf4COZcWiWxSYT+Tbd0XsTb0=
-X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id
- s7-20020aa782870000b0290142250139ecmr21136648pfm.59.1604324944055; Mon, 02
- Nov 2020 05:49:04 -0800 (PST)
+        bh=crmhEgzkOmERlRibdWJQ5fJu4CKk3cly9oNaCdoNCWg=;
+        b=c26plOGfoQs1ts9hS3mn+gBQ+EKk5S0oVAorSUsLr98LA2SEgLV8yX5bAXO4H0YN80
+         UIQ6wAutHHFdJn9LjuDgviUs5qfdO6uqk0oL7kO0VYzCCjUy405ODFNTaHH8ER4cfAKa
+         M0K1U21RNTyNhcQ76n1f6oy92vBlpbQ7rVuqOV+zsflv7l4n8foRj/9VhxkESxN2uNcA
+         hQX+spTVjMaOW8ZU7DXc1xRPMuhdiMUZfO7N65NmURff3vqKjGj2G4R8pMGYAcoT+j5a
+         mJFms6P7bVaZ6sjDfgm8jNUs6IpUsOBLJ1qBOkCXfh0Ojjjq5+nmwWo+9s/BAGzZ7+LY
+         3zvA==
+X-Gm-Message-State: AOAM530064vaI/5cc05MMshXLpia3nh1xaV23p0jdAOjRzpzC3YSw6RC
+        jZnt2Ew8CO9EL0IwjZnL63vs+Fmh6UBviis56GAEFA==
+X-Google-Smtp-Source: ABdhPJzGqIM5asHLIuy+EbHVmr9RXtwczq03HEhFi/zVkHIauFUcnrDjghLCaRPEjzU8Vbt4y8sReBCfx7RX76nxcBo=
+X-Received: by 2002:a05:6512:51a:: with SMTP id o26mr5441083lfb.381.1604324969162;
+ Mon, 02 Nov 2020 05:49:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201028141646.GA75933@rlk>
-In-Reply-To: <20201028141646.GA75933@rlk>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 2 Nov 2020 21:48:25 +0800
-Message-ID: <CAMZfGtXYLLsS-kGAPD6xxygSC7nyub-OsAtXCTehW-n2ik9m7w@mail.gmail.com>
-Subject: Re: [External] [PATCH v2] mm/list_lru: optimize condition of exiting
- the loop
-To:     Hui Su <sh_def@163.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, gustavo@embeddedor.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+ <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com> <CAG48ez3qKg-ReY4R=S_thQ6tOzv2ZHV=xW5qBxpqs0iSjH_oFQ@mail.gmail.com>
+ <9f9b8b86-6e49-17ef-e414-82e489b0b99a@gmail.com>
+In-Reply-To: <9f9b8b86-6e49-17ef-e414-82e489b0b99a@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 2 Nov 2020 14:49:01 +0100
+Message-ID: <CAG48ez0W2zye2KeNiVaKq9RPtUhcUtzP0zOjULRQZbOuRyz+9w@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:17 PM Hui Su <sh_def@163.com> wrote:
+On Sat, Oct 31, 2020 at 9:31 AM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+> On 10/30/20 8:14 PM, Jann Horn wrote:
+> > With the caveat that a cancelled syscall
+> > could've also led to the memory being munmap()ed, so the nread==0 case
+> > could also happen legitimately - so you might want to move this check
+> > up above the nread==0 (mm went away) and nread==-1 (mm still exists,
+> > but read from address failed, errno EIO) checks if the error message
+> > shouldn't appear spuriously.
 >
-> In list_lru_walk(), nr_to_walk type is 'unsigned long',
-> so nr_to_walk won't be '< 0'.
+> In any case, I've been refactoring (simplifying) that code a little.
+> I haven't so far rearranged the order of the checks, but I already
+> log message for the nread==0 case. (Instead, there will eventually
+> be an error when the response is sent.)
 >
-> In list_lru_walk_node(), nr_to_walk type is 'unsigned long',
-> so *nr_to_walk won't be '< 0' too.
+> I also haven't exactly tested the scenario you describe in the
+> seccomp unotify scenario, but I think the above is not correct. Here
+> are two scenarios I did test, simply with mmap() and /proc/PID/mem
+> (no seccomp involved):
 >
-> We can use '!nr_to_walk' instead of 'nr_to_walk <= 0', which
-> is more precise.
+> Scenario 1:
+> A creates a mapping at address X
+> B opens /proc/A/mem and and lseeks on resulting FD to offset X
+> A terminates
+> B reads from FD ==> read() returns 0 (EOF)
 >
-> Signed-off-by: Hui Su <sh_def@163.com>
+> Scenario 2:
+> A creates a mapping at address X
+> B opens /proc/A/mem and and lseeks on resulting FD to offset X
+> A unmaps mapping at address X
+> B reads from FD ==> read() returns -1 / EIO.
+>
+> That last scenario seems to contradict what you say, since I
+> think you meant that in this case read() should return 0 in
+> that case. Have I misunderstood you?
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-> ---
->  include/linux/list_lru.h | 2 +-
->  mm/list_lru.c            | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-> index 9dcaa3e582c9..b7bc4a2636b9 100644
-> --- a/include/linux/list_lru.h
-> +++ b/include/linux/list_lru.h
-> @@ -214,7 +214,7 @@ list_lru_walk(struct list_lru *lru, list_lru_walk_cb isolate,
->         for_each_node_state(nid, N_NORMAL_MEMORY) {
->                 isolated += list_lru_walk_node(lru, nid, isolate,
->                                                cb_arg, &nr_to_walk);
-> -               if (nr_to_walk <= 0)
-> +               if (!nr_to_walk)
->                         break;
->         }
->         return isolated;
-> diff --git a/mm/list_lru.c b/mm/list_lru.c
-> index 5aa6e44bc2ae..35be4de9fd77 100644
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -294,7 +294,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
->
->         isolated += list_lru_walk_one(lru, nid, NULL, isolate, cb_arg,
->                                       nr_to_walk);
-> -       if (*nr_to_walk > 0 && list_lru_memcg_aware(lru)) {
-> +       if (*nr_to_walk && list_lru_memcg_aware(lru)) {
->                 for_each_memcg_cache_index(memcg_idx) {
->                         struct list_lru_node *nlru = &lru->node[nid];
->
-> @@ -304,7 +304,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
->                                                         nr_to_walk);
->                         spin_unlock(&nlru->lock);
->
-> -                       if (*nr_to_walk <= 0)
-> +                       if (!*nr_to_walk)
->                                 break;
->                 }
->         }
-> --
-> 2.29.0
->
->
-
-
---
-Yours,
-Muchun
+Sorry, I messed up the description when I wrote that. Yes, this looks
+as expected - EIO if the VMA is gone, 0 if the mm_users of the
+mm_struct have dropped to zero because all tasks that use the mm have
+exited.
