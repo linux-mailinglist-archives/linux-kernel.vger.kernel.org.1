@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B24F2A263F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2392A263E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgKBIje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:39:34 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6727 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728266AbgKBIje (ORCPT
+        id S1728263AbgKBIj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:39:27 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44615 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727972AbgKBIj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:39:34 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPmYV4WHgzkdcL;
-        Mon,  2 Nov 2020 16:39:26 +0800 (CST)
-Received: from [10.63.139.185] (10.63.139.185) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 16:39:21 +0800
-Subject: Re: [PATCH v3 0/2] uacce: fix some coding styles
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
- <5F9FAA08.2000406@hisilicon.com> <20201102070937.GA71996@kroah.com>
- <5F9FB789.9090204@hisilicon.com> <20201102083356.GA142100@kroah.com>
-CC:     Kai Ye <yekai13@huawei.com>, <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5F9FC5B9.208@hisilicon.com>
-Date:   Mon, 2 Nov 2020 16:39:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        Mon, 2 Nov 2020 03:39:26 -0500
+Received: by mail-wr1-f65.google.com with SMTP id b3so7605419wrx.11;
+        Mon, 02 Nov 2020 00:39:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o3JaExbbhm3aQ9g7JMD1kTTlVkCH24wuUtWIjuo+/Gs=;
+        b=RfdErApCWvBxftKyEDGMPqMRyAecl+73Wj+lHeGldIkFvDtn3qFckt84XyVeOcCepB
+         F8PfH7mRWSdu32q5MfhwU1eluIy9jMKn8e5mV/QF5QRuBDDJhCQQOYVmZCC7bCR4RWon
+         atnO9es20pLDqn+4w6cpgmXJ6MTXzYLon9S6OyQf/dCsvxT269wyfuEcaJVpuWqBgHe4
+         SP1nzDAd6g4wFSFHmkirmRGn1BxWPT+8/NNzG8M0GBgY/TKjo4bhyN7xO9ARpFp9zPPZ
+         EYZeVfwwqTKqxVB8a85NmsK+IkbIg5xe38eJyYIBTZ4afFMdIx3fGPkCQ4U4AKZVD/5i
+         cPSQ==
+X-Gm-Message-State: AOAM530OeMax9+fr5hAhkIco++bCvufEZNOk6GM//2hHP0G2kxEnvUqO
+        nd+FFbhx8Bx1qvy3O8Koj3o=
+X-Google-Smtp-Source: ABdhPJxHQLkKVKy+jnNBMu1LSGvHqBENsrhhofX7k5Ss909xx78f7GB6DBJoP1rq4uuztVoITehqag==
+X-Received: by 2002:a05:6000:107:: with SMTP id o7mr18539299wrx.354.1604306364645;
+        Mon, 02 Nov 2020 00:39:24 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id s188sm4255195wmf.45.2020.11.02.00.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:39:23 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:39:22 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Wolfram Sang <wsa@kernel.org>, Andrzej Hajda <a.hajda@samsung.com>,
+        linux-i2c@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] i2c: exynos5: fix platform_get_irq error handling
+Message-ID: <20201102083922.GC6986@kozik-lap>
+References: <20201027214257.8099-1-martin@kaiser.cx>
+ <20201101171807.8182-1-martin@kaiser.cx>
+ <20201101171807.8182-2-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <20201102083356.GA142100@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.63.139.185]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201101171807.8182-2-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/2 16:33, Greg Kroah-Hartman wrote:
-> On Mon, Nov 02, 2020 at 03:38:49PM +0800, Zhou Wang wrote:
->> On 2020/11/2 15:09, Greg Kroah-Hartman wrote:
->>> On Mon, Nov 02, 2020 at 02:41:12PM +0800, Zhou Wang wrote:
->>>> On 2020/9/23 18:09, Kai Ye wrote:
->>>>> 1. delete some redundant code.
->>>>> 2. modify the module author information. "Hisilicon"
->>>>> spelling is error.
->>>>>
->>>>> Changes v2 -> v3:
->>>>> 	Two things, splited to two patches.
->>>>> Changes v1 -> v2:
->>>>> 	deleted extra NULL pointer check in uacce_fops.
->>>>>
->>>>> Kai Ye (2):
->>>>>   uacce: fix some coding styles
->>>>>   uacce: modify the module author information.
->>>>>
->>>>>  drivers/misc/uacce/uacce.c | 13 +------------
->>>>>  1 file changed, 1 insertion(+), 12 deletions(-)
->>>>>
->>>>
->>>> Hi Hartman，
->>>>
->>>> Could you help to take this clean up patch?
->>>
->>> I do not see a patch here :(
->>
->> I know the reason, Kai Ye did not To you and I also added your
->> Email address in this ping :) I have replied patches directly.
->>
->> Could you take them?
+On Sun, Nov 01, 2020 at 06:18:06PM +0100, Martin Kaiser wrote:
+> If platform_get_irq returns an error, relay this error to the caller of
+> the probe function. Don't change all errors to -EINVAL. This breaks the
+> case where platform_get_irq returns -EPROBE_DEFER.
 > 
-> I need them in a format that I can apply them in, please resend the
-> whole series properly, so that I do not have to edit them by-hand.
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+> changes in v2
+> - split the patch in three parts
+> 
+>  drivers/i2c/busses/i2c-exynos5.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
 
-Got it. Thanks!
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Best,
-Zhou
-
-> 
-> thanks,
-> 
-> greg k-h
-> .
-> 
+Best regards,
+Krzysztof
