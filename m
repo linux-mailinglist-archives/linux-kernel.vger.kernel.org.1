@@ -2,250 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488832A2DA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B372A2DAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgKBPI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:08:57 -0500
-Received: from mga07.intel.com ([134.134.136.100]:58334 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbgKBPI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:08:57 -0500
-IronPort-SDR: EyUKyWdZRZt/DLahgFCnB/N1SADy4ohXlm/3ywLuebEJ6uYyFj+8M4pViy7RpQ/L2u4OTubeIU
- qLO4SG/0C4og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="233066361"
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="233066361"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 07:08:53 -0800
-IronPort-SDR: VZ15W9VfAAbAUWirdaRc7gN9ji0PujZY3NDoErMegNa8TgfAJq8+QCsei5GNT+sBRNge5xy+jb
- KcmC8zbcMXGA==
-X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
-   d="scan'208";a="357353251"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 07:08:49 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id ED771208F7; Mon,  2 Nov 2020 17:08:47 +0200 (EET)
-Date:   Mon, 2 Nov 2020 17:08:47 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] media: i2c: imx258: get clock from device
- properties and enable it via runtime PM
-Message-ID: <20201102150847.GZ26150@paasikivi.fi.intel.com>
-References: <20201019170247.92002-1-krzk@kernel.org>
- <20201019172617.92815-1-krzk@kernel.org>
- <20201019172617.92815-3-krzk@kernel.org>
+        id S1726321AbgKBPKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:10:13 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:43094 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725817AbgKBPKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:10:12 -0500
+Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2F3R3W002229;
+        Mon, 2 Nov 2020 15:10:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=bMsdKUsDbBtdRjs7iz+41iYksutZLHfpc65lqduc7hc=;
+ b=VFiYIZ4Ckd49NPOz3KIkheC3O+jZismG2wGmy8D6zodpj5Jep/Eae4THHtAReD/mQjj1
+ ZFZLLa0DYm69uaJBvjihX7itDdY3n38bhlUxxH3Bwbb+J6hFoq3dC4WHz1pAoHWT87dR
+ WQeW2cB6Vx05GbIEcGswyuJhLuDndWnuOhr0EKi/SpbVa8tEkCc6JOFnu896w2nPuOpg
+ lhVUlw+DUQalJ1q+1Qn2/S38uzvIN+f3AALHRWQfW52I8hGN2tuspu+uHsoFX1H8Z3kp
+ pZOcb7T52XDQZZE+mZY4VrdkISZl7GgLNJJ5WifufZMch2rIfuRDtbo2eAyFArv80OpQ 9A== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 34h0k1yhqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Nov 2020 15:10:00 +0000
+Received: from sarge.linuxathome.me (unknown [16.29.176.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by g4t3427.houston.hpe.com (Postfix) with ESMTPS id CFC336C;
+        Mon,  2 Nov 2020 15:09:57 +0000 (UTC)
+From:   Hedi Berriche <hedi.berriche@hpe.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hedi Berriche <hedi.berriche@hpe.com>,
+        Russ Anderson <rja@hpe.com>, Joerg Roedel <jroedel@suse.com>,
+        Sinan Kaya <okaya@kernel.org>, stable@kernel.org
+Subject: [PATCH v4 0/1] PCI/ERR: fix regression introduced by 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+Date:   Mon,  2 Nov 2020 15:09:50 +0000
+Message-Id: <20201102150951.149893-1-hedi.berriche@hpe.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019172617.92815-3-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_09:2020-11-02,2020-11-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ clxscore=1015 mlxlogscore=999 lowpriorityscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krysztof,
+This is essentially a resend of v3 as it failed to get enough traction;
+no code change, I only added Sinan Kaya's Reviewed-by.
 
-On Mon, Oct 19, 2020 at 07:26:17PM +0200, Krzysztof Kozlowski wrote:
-> The IMX258 sensor driver checked in device properties for a
-> clock-frequency property which actually does not mean that the clock is
-> really running such frequency or is it even enabled.
-> 
-> Get the provided clock and check it frequency.  If none is provided,
-> fall back to old property.
-> 
-> Enable the clock when accessing the IMX258 registers and when streaming
-> starts with runtime PM.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v4:
-> 1. Add missing imx258_power_off.
-> 
-> Changes since v3:
-> 1. None
-> 
-> Changes since v2:
-> 1. Do not try to set drvdata, wrap lines.
-> 2. Use dev_dbg.
-> 
-> Changes since v1:
-> 1. Use runtime PM for clock toggling
-> ---
->  drivers/media/i2c/imx258.c | 73 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 64 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> index ae183b0dbba9..038115471f17 100644
-> --- a/drivers/media/i2c/imx258.c
-> +++ b/drivers/media/i2c/imx258.c
-> @@ -2,6 +2,7 @@
->  // Copyright (C) 2018 Intel Corporation
->  
->  #include <linux/acpi.h>
-> +#include <linux/clk.h>
->  #include <linux/delay.h>
->  #include <linux/i2c.h>
->  #include <linux/module.h>
-> @@ -68,6 +69,9 @@
->  #define REG_CONFIG_MIRROR_FLIP		0x03
->  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
->  
-> +/* Input clock frequency in Hz */
-> +#define IMX258_INPUT_CLOCK_FREQ		19200000
-> +
->  struct imx258_reg {
->  	u16 address;
->  	u8 val;
-> @@ -610,6 +614,8 @@ struct imx258 {
->  
->  	/* Streaming on/off */
->  	bool streaming;
-> +
-> +	struct clk *clk;
->  };
->  
->  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
-> @@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
->  	return 0;
->  }
->  
-> +static int imx258_power_on(struct device *dev)
-> +{
-> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-> +	struct imx258 *imx258 = to_imx258(sd);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(imx258->clk);
-> +	if (ret)
-> +		dev_err(dev, "failed to enable clock\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int imx258_power_off(struct device *dev)
-> +{
-> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-> +	struct imx258 *imx258 = to_imx258(sd);
-> +
-> +	clk_disable_unprepare(imx258->clk);
-> +
-> +	return 0;
-> +}
-> +
->  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  {
->  	struct imx258 *imx258 = to_imx258(sd);
-> @@ -1199,9 +1228,28 @@ static int imx258_probe(struct i2c_client *client)
->  	int ret;
->  	u32 val = 0;
->  
-> -	device_property_read_u32(&client->dev, "clock-frequency", &val);
-> -	if (val != 19200000)
-> -		return -EINVAL;
-> +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> +	if (!imx258)
-> +		return -ENOMEM;
-> +
-> +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-> +	if (!imx258->clk) {
-> +		dev_dbg(&client->dev,
-> +			"no clock provided, using clock-frequency property\n");
-> +
-> +		device_property_read_u32(&client->dev, "clock-frequency", &val);
-> +		if (val != IMX258_INPUT_CLOCK_FREQ)
-> +			return -EINVAL;
-> +	} else if (IS_ERR(imx258->clk)) {
-> +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
-> +				     "error getting clock\n");
-> +	} else {
-> +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
+- Changes since v3:
+* added Sinan Kaya <okaya@kernel.org> Reviewed-by
 
-Please move the check outside the conditional block. May be a separate
-patch if you like.
+- Changes since v2:
+ * set status to PCI_ERS_RESULT_RECOVERED, in case of successful link
+   reset, if and only if the initial value of error status is
+   PCI_ERS_RESULT_DISCONNECT or PCI_ERS_RESULT_NO_AER_DRIVER.
 
-> +			dev_err(&client->dev,
-> +				"input clock frequency not supported\n");
-> +			return -EINVAL;
-> +		}
-> +	}
->  
->  	/*
->  	 * Check that the device is mounted upside down. The driver only
-> @@ -1211,24 +1259,25 @@ static int imx258_probe(struct i2c_client *client)
->  	if (ret || val != 180)
->  		return -EINVAL;
->  
-> -	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> -	if (!imx258)
-> -		return -ENOMEM;
-> -
->  	/* Initialize subdev */
->  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
->  
-> +	/* Will be powered off via pm_runtime_idle */
-> +	ret = imx258_power_on(&client->dev);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Check module identity */
->  	ret = imx258_identify_module(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_identify;
->  
->  	/* Set default mode to max resolution */
->  	imx258->cur_mode = &supported_modes[0];
->  
->  	ret = imx258_init_controls(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_identify;
->  
->  	/* Initialize subdev */
->  	imx258->sd.internal_ops = &imx258_internal_ops;
-> @@ -1258,6 +1307,9 @@ static int imx258_probe(struct i2c_client *client)
->  error_handler_free:
->  	imx258_free_controls(imx258);
->  
-> +error_identify:
-> +	imx258_power_off(&client->dev);
-> +
->  	return ret;
->  }
->  
-> @@ -1271,6 +1323,8 @@ static int imx258_remove(struct i2c_client *client)
->  	imx258_free_controls(imx258);
->  
->  	pm_runtime_disable(&client->dev);
-> +	if (!pm_runtime_status_suspended(&client->dev))
-> +		imx258_power_off(&client->dev);
->  	pm_runtime_set_suspended(&client->dev);
->  
->  	return 0;
-> @@ -1278,6 +1332,7 @@ static int imx258_remove(struct i2c_client *client)
->  
->  static const struct dev_pm_ops imx258_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(imx258_suspend, imx258_resume)
-> +	SET_RUNTIME_PM_OPS(imx258_power_off, imx258_power_on, NULL)
->  };
->  
->  #ifdef CONFIG_ACPI
+- Changes since v1:
+ * changed the commit message to clarify what broke post commit 6d2c89441571
+ * dropped the misnomer post_reset_status variable in favour of a more natural
+   approach that relies on a boolean to keep track of the outcome of reset_link()
+
+After commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+pcie_do_recovery() no longer calls ->slot_reset() in the case of a successful
+reset which breaks error recovery by breaking driver (re)initialisation.
+
+Cc: Russ Anderson <rja@hpe.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Ashok Raj <ashok.raj@intel.com>
+Cc: Joerg Roedel <jroedel@suse.com>
+Cc: Sinan Kaya <okaya@kernel.org>
+
+Cc: stable@kernel.org # v5.7+
+
+---
+Hedi Berriche (1):
+  PCI/ERR: don't clobber status after reset_link()
+
+ drivers/pci/pcie/err.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 -- 
-Kind regards,
+2.28.0
 
-Sakari Ailus
