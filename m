@@ -2,375 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0190A2A2300
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A302A2303
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbgKBCVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:21:45 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:28085 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727366AbgKBCVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:21:44 -0500
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0A22LJcF015112;
-        Mon, 2 Nov 2020 11:21:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0A22LJcF015112
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1604283680;
-        bh=7kufdqB6w12vbwLH1sg8pmQm6IPoKcemYRUDaLJV+OQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pgw8zH44Kmy4yph/TQktn+eMDKV+dRjbPC5vvxdrbAMLtwmaChZjySfF/0BX1KIfw
-         Eme/4WMScLq+ocfKhkZhNTfnBNLt8/UWPaAJjF6frQ8RbYvvWvHn4IqYup/TbNYlNR
-         FbA3eUm7pQvLdujLziTg94VmAK+5oQTAYRFlevPH0HsC+25z4Ldg+a712gPq3jgAh4
-         KdvKbfgHw0frp2xSv8lf+ORLf/VqSXmgVewiwSWUXU5WPnhGjFY6SRiA7HVEJOu78N
-         Ets6vhkXKWBezj748QTnkgNsRHyL0in003BFG4+Dp5h81ENxG/JJeMoAC1CxXFvcwy
-         nLlQO01qCmieA==
-X-Nifty-SrcIP: [209.85.210.174]
-Received: by mail-pf1-f174.google.com with SMTP id 72so3056283pfv.7;
-        Sun, 01 Nov 2020 18:21:19 -0800 (PST)
-X-Gm-Message-State: AOAM5323zcfVSDYJHcFbycl6HYgEASC2G14QEA/xN4NiKeobXcuUgEsM
-        E4/G4ry0HDadi5h+TJC23WJMZJEUsYWXetmmZM4=
-X-Google-Smtp-Source: ABdhPJwKvv1jTcmKbI6fzojWq0jfb6TK+06Kp4aELIM1e5V2LrbzLbfIIzX0RCGnd5XwbCPC+JOd223Xl/m+TAKEmSs=
-X-Received: by 2002:a17:90a:aa91:: with SMTP id l17mr14663133pjq.198.1604283678819;
- Sun, 01 Nov 2020 18:21:18 -0800 (PST)
+        id S1727628AbgKBCY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:24:58 -0500
+Received: from mail-eopbgr130084.outbound.protection.outlook.com ([40.107.13.84]:19623
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727409AbgKBCY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 21:24:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hZzCjFHnxMPZX0J76N6aEJogx4ok+btcSDychAcTZ+LnJcq9ziRWwTQV4OeCojoeUBVVimQoztTAi07LoT9EIlA7dDTF6j0/xk9CITRaimholTUDe+aaL5KBlBbe81l04PpitBqA7wttLJSauW6jtT3x1jSq5YtfKaBYJ3vNzUCTZN5AlfL9gTfyxEE+i9Yd8HlejHOyTPImS7WkkwBt6BYW2YalaNhD0zMT6SFYFfTrkSS4i4uvfcX+V+ikbJXqohSAQ8boYM7KSV72UQov/yn1WvKRv9E/U/82GSLr9dsZM/spaovmrWBmrsI3wAZQXnkF9uaMl8kaBjKx/vbxjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=flXLY0uXq9eDXJT/A9R0SckRALR2OBIbCUeAlNHHKpo=;
+ b=ZzF98BIjQMYLMbYUTu5C6aILTaL0th6yhShzxFXOCSlnLhpJbLEOE3nQW+0WKq++CoxeeUA+KxgLjoECVoJVQulTmutTmWJ5okMAp5LBVC5QUIvKAscPVAYq4FkgOutbwHuU/4LsgxGGO2NHEnV/wobzSrmoF72d7+kJ1GA7mTMivQevpN1OLdguotqdtobI8h8+Z53XQjgG33akYS0b6meCp4ga05YMj6w35Yc+84p/Qd2kxGNVHU3urOL1sdszw+gpGVK8o32qpd+yiWY06PXj9uwa9FZhPpFGvzquLHpPoe9fSoyAHrjkzLkA11A2mSaP8rwEQuNZrt27nu3P3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=flXLY0uXq9eDXJT/A9R0SckRALR2OBIbCUeAlNHHKpo=;
+ b=lzkLRhctzADix2SP+C59EkwNVnUKw9s2SbeYldPNBrUBpUoB+JKFmLqO7zdLL7IgI2JAf7hW1odguC+vjGNtQuBi2C3j2cQfzSyjfjcv0TygNhgox9TjKSREv3s1EwMIn7K4LBrHQeejWuoJ/UcxPho3t5nM2pu9QWFbhfjs5Is=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DBBPR04MB7674.eurprd04.prod.outlook.com (2603:10a6:10:1f5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 02:24:53 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc%8]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 02:24:53 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
+Cc:     linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] arm64: dts: imx8m: add IR support
+Date:   Mon,  2 Nov 2020 10:25:24 +0800
+Message-Id: <20201102022527.14265-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR04CA0163.apcprd04.prod.outlook.com (2603:1096:4::25)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-References: <20201022012106.1875129-1-ndesaulniers@google.com>
-In-Reply-To: <20201022012106.1875129-1-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 2 Nov 2020 11:20:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
-Message-ID: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: implement support for DWARF5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR04CA0163.apcprd04.prod.outlook.com (2603:1096:4::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27 via Frontend Transport; Mon, 2 Nov 2020 02:24:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 054145e0-6157-4c37-05ac-08d87ed67b69
+X-MS-TrafficTypeDiagnostic: DBBPR04MB7674:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBBPR04MB767467FAF3B11B66678DD33BE6100@DBBPR04MB7674.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tK3XhpGUq4TrqvV1/COdYpNLP+DZW37FXhTSfFFstcsFxcKbHrXb/AbH0pW6gqIdOUZPEg7843d9qiPpjS77Li+1o/mFQFdJ4sMe313tsmF4I/p10GAwZCqeZInFme0GwneyfgX7MY0xM5nz6VbDRZEuNfH1lCZycELPd2PsCerlfp2+K6oXMbxCZe3CbM7cfokK06cEPqjFyuAPtNfBZUJO9tA37cZsQwzZ8taD1yhsZDMdCgarjeu3IFIuVvSoNpoWMnJpL/Mo8Uc9/0UzQs4NGOkUAUFERQ7CoKZf+aSS3LOu1Hc1Heefo9tsX/U8ULDKpLh+2VtrWk6gfLathwt87sDLNY6OUGDZsK+jlr7nw2yn3EqDeZjopmb9BXfrsP6Ip4BAGcV8JoIqYNJYHQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39860400002)(186003)(5660300002)(16526019)(26005)(2906002)(6486002)(6512007)(6666004)(6506007)(36756003)(478600001)(69590400008)(52116002)(66946007)(86362001)(8676002)(8936002)(66556008)(66476007)(4744005)(4326008)(1076003)(316002)(83380400001)(2616005)(956004)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: FHZQpSAm1JxR/KbLhqINU7/h1aov4q2JZFE48fiA5Nbk0bNdFXnCvCkqU9IJuOXuPy1+KUCyZ48J458nk8IY3F4eWhSzaF1Rp8mhuKJHL91lcSWiuAxqlY9mKszniP88NK/VtkiwrovJ+A256wmjaWwvqAt/WGrvtyJTkUXLZt2/leyVL2NZdZBpU/ec9WGo79Bkw+T4P33QfjxY1820AFxVkeMzUCNYbT0kWVpCDnHr6hIbz4yOyh+yqkIu0WvpcPA12oN5sOn+pdKH1MJSznrPAw8hKi35La5p7kEZvoWlkFFiKyg0wjeHET9iMjmP9uUvuCGeJ/kT9pQWkvJX4sZ9xrVGPgWyqJSLaieKfOQzPXh0bQr8jgo1BBdP5tz1b8++0YCg+KuQgGooHq9+5Z56/LipvqSs1qSKlYVXG0zQ8S3UNCivGf/eD+PRrJqbmh0XpftcJ9IySuu0W6vwl3j1x5XlbvcIjLrk9+QrI2WT9fsTpXvwhCxmmo38Ty13eWjRxMUE9XqcNzsaY3O7jRYaYQ09ZsnzrcBhzORgiXQNM19zcYtz76LrsuctF71741GWFWV/TVKhEs4XmogR3Tzx5KXgZHj+G/He4M/x7VWKQmQkggGTQvusmjmGsHybwo3GjLiGqp308Tim0hyr4Q==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 054145e0-6157-4c37-05ac-08d87ed67b69
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 02:24:53.4722
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b88s7h95DhCNTo2dv667msRp/exXhaxak7RNYnqNgP9OHH4wd0iqMr/K3/hilaNtIASgS9E7O+utFBz7dI460A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7674
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:21 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> DWARF5 is the latest standard of the DWARF debug info format.
->
-> Feature detection of DWARF5 is onerous, especially given that we've
-> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> support. Further -gdwarf-X where X is an unsupported value doesn't
-> produce an error in $(CC). GNU `as` only recently gained support for
-> specifying -gdwarf-5.
->
-> The DWARF version of a binary can be validated with:
-> $ llvm-dwarfdump vmlinux | head -n 5 | grep version
-> or
-> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
->
-> DWARF5 wins significantly in terms of size when mixed with compression
-> (CONFIG_DEBUG_INFO_COMPRESSED).
->
-> 363M    vmlinux.clang12.dwarf5.compressed
-> 434M    vmlinux.clang12.dwarf4.compressed
-> 439M    vmlinux.clang12.dwarf2.compressed
-> 457M    vmlinux.clang12.dwarf5
-> 536M    vmlinux.clang12.dwarf4
-> 548M    vmlinux.clang12.dwarf2
->
-> Make CONFIG_DEBUG_INFO_DWARF4 part of a Kconfig choice to preserve
-> forward compatibility.
->
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> RFC because this patch is super half baked, but I'm looking for
-> feedback.
->
-> I would logically split this into a series of patches;
-> 1. disable -Wa,gdwarf-2 for LLVM_IAS=1, see also
->   https://github.com/ClangBuiltLinux/linux/issues/716
->   https://github.com/ClangBuiltLinux/continuous-integration/blob/master/patches/llvm-all/linux-next/arm64/silence-dwarf2-warnings.patch
->   that way we can backport for improved LLVM_IAS support.
-> 2. move CONFIG_DEBUG_INFO_DWARF4 to choice.
-> 3. implement the rest on top.
->
-> I'm pretty sure GNU `as` only recently gained the ability to specify
-> -gdwarf-4 without erroring in binutils 2.35, so that part likely needs
-> to be fixed.
->
->  Makefile                          | 19 ++++++++++++++++---
->  include/asm-generic/vmlinux.lds.h |  6 +++++-
->  lib/Kconfig.debug                 | 29 +++++++++++++++++++++++++----
->  scripts/test_dwarf5_support.sh    |  4 ++++
->  4 files changed, 50 insertions(+), 8 deletions(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
->
-> diff --git a/Makefile b/Makefile
-> index e71979882e4f..0862df5b1a24 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -828,10 +828,23 @@ else
->  DEBUG_CFLAGS   += -g
->  endif
->
-> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> -
-> +DWARF_VERSION=2
+Add IR support on i.MX8M platforms.
 
-This is not a shell script.
-You can add spaces around '='
+Joakim Zhang (3):
+  arm64: dts: imx8mq-evk: add linux,autosuspend-period property for IR
+  arm64: dts: imx8mm-evk: add IR support
+  arm64: dts: imx8mn-evk: add IR support
 
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 14 ++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi | 14 ++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts  |  1 +
+ 3 files changed, 29 insertions(+)
 
+-- 
+2.17.1
 
->  ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS   += -gdwarf-4
-> +DWARF_VERSION=4
-> +endif
-> +ifdef CONFIG_DEBUG_INFO_DWARF5
-> +DWARF_VERSION=5
-> +endif
-
-
-This might be a bit tricky, but you can do like this if you like:
-
-
-dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-dwarf-version-$(CONFIG_DEBUG_INFO_DWARF3) := 3
-dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
-
-DEBUG_CFLAGS  += -gdwarf-$(dwarf-version-y)
-
-
-
-
-
-
-> +DEBUG_CFLAGS   += -gdwarf-$(DWARF_VERSION)
-> +
-> +ifneq ($(DWARF_VERSION)$(LLVM_IAS),21)
-> +KBUILD_AFLAGS  += -Wa,-gdwarf-$(DWARF_VERSION)
-> +endif
-> +
-> +ifdef CONFIG_CC_IS_CLANG
-> +ifneq ($(LLVM_IAS),1)
-> +KBUILD_CFLAGS  += -Wa,-gdwarf-$(DWARF_VERSION)
-> +endif
->  endif
->
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index cd14444bf600..0382808ef9fe 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -828,7 +828,11 @@
->                 .debug_types    0 : { *(.debug_types) }                 \
->                 /* DWARF 5 */                                           \
->                 .debug_macro    0 : { *(.debug_macro) }                 \
-> -               .debug_addr     0 : { *(.debug_addr) }
-> +               .debug_addr     0 : { *(.debug_addr) }                  \
-> +               .debug_line_str 0 : { *(.debug_line_str) }              \
-> +               .debug_loclists 0 : { *(.debug_loclists) }              \
-> +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
-> +               .debug_str_offsets 0 : { *(.debug_str_offsets) }
->
->  /* Stabs debugging sections. */
->  #define STABS_DEBUG                                                    \
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 537cf3c2937d..6b01f0e2dad8 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,14 +256,35 @@ config DEBUG_INFO_SPLIT
->           to know about the .dwo files and include them.
->           Incompatible with older versions of ccache.
->
-> +choice
-> +prompt "DWARF version"
-
-Indentation for 'prompt'.
-
-
-> +       depends on DEBUG_INFO
-
-Unneeded.
-
-This block resides inside 'if DEBUG_INFO'
-
-
-
-> +       default DEBUG_INFO_DWARF2
-
-
-This is unneeded because the first entry
-is the default.
-
-
-> +       help
-> +         Which version of DWARF debug info to emit.
-> +
-> +config DEBUG_INFO_DWARF2
-> +       bool "Generate dwarf2 debuginfo"
-> +       help
-> +         Generate dwarf2 debug info.
-> +
->  config DEBUG_INFO_DWARF4
->         bool "Generate dwarf4 debuginfo"
->         depends on $(cc-option,-gdwarf-4)
->         help
-> -         Generate dwarf4 debug info. This requires recent versions
-> -         of gcc and gdb. It makes the debug information larger.
-> -         But it significantly improves the success of resolving
-> -         variables in gdb on optimized code.
-> +         Generate dwarf4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +         It makes the debug information larger, but it significantly
-> +         improves the success of resolving variables in gdb on optimized code.
-> +
-> +config DEBUG_INFO_DWARF5
-> +       bool "Generate dwarf5 debuginfo"
-> +       depends on DEBUG_INFO
-> +       depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> +       help
-> +         Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
-> +         gdb 8.0+.
-> +
-> +endchoice # "DWARF version"
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> new file mode 100755
-> index 000000000000..82c0eea45845
-> --- /dev/null
-> +++ b/scripts/test_dwarf5_support.sh
-> @@ -0,0 +1,4 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +set -eu
-> +echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-
-
-
-Please tell me how this script detects the dwarf-5 capability.
-
-
-This script fails for GCC 10.
-
-
-masahiro@grover:~/workspace/linux-kbuild$
-./scripts/test_dwarf5_support.sh  clang
-masahiro@grover:~/workspace/linux-kbuild$ echo $?
-0
-masahiro@grover:~/workspace/linux-kbuild$
-./scripts/test_dwarf5_support.sh gcc-10
-{standard input}: Assembler messages:
-{standard input}:1: Error: file number less than one
-masahiro@grover:~/workspace/linux-kbuild$ echo $?
-1
-
-
-
-
-The manual says the fileno should be "a positive integer".
-
-
-  .file fileno filename
-
-  When emitting dwarf2 line number information .file assigns filenames
-to the .debug_line file name table.
-  The fileno operand should be a unique positive integer to use as the
-index of the entry in the table.
-  The filename operand is a C string literal.
-
-  The detail of filename indices is exposed to the user because the
-filename table is shared with the
-  .debug_info section of the dwarf2 debugging information, and thus
-the user must know the exact indices
-  that table entries will have.
-
-
-
-So, I modified the script as follows:
-
-
-masahiro@grover:~/workspace/linux-kbuild$ git diff
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-index 82c0eea45845..8d7213e8e51f 100755
---- a/scripts/test_dwarf5_support.sh
-+++ b/scripts/test_dwarf5_support.sh
-@@ -1,4 +1,4 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- set -eu
--echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-+echo ".file 1 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-
-
-
-
-masahiro@grover:~/workspace/linux-kbuild$ ./scripts/test_dwarf5_support.sh  gcc
-masahiro@grover:~/workspace/linux-kbuild$ echo $?
-0
-
-
-
-But, GCC 4.9 also passes this check.
-
-masahiro@grover:~/workspace/linux-kbuild$
-~/tools/aarch64-linaro-4.9/bin/aarch64-linux-gnu-gcc --version
-aarch64-linux-gnu-gcc (Linaro GCC 4.9-2016.02) 4.9.4 20151028 (prerelease)
-Copyright (C) 2015 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-masahiro@grover:~/workspace/linux-kbuild$
-./scripts/test_dwarf5_support.sh
-~/tools/aarch64-linaro-4.9/bin/aarch64-linux-gnu-gcc
-masahiro@grover:~/workspace/linux-kbuild$ echo $?
-0
-
-
-
-
-
-
-Some nit-pickings.
-
-
-echo '.file 0 "asdf"'
-
-... might look cleaner because you do not need to
-use escaping inside the single-quotes.
-
-
-
-'set -u' seems to have no effect because "$*"
-is the only variable expansion in this script.
-
-
-              -u      Treat  unset variables and parameters other than
-the special parameters "@" and
-                      "*" as an error when performing parameter
-expansion.  If expansion is attempted
-                      on  an  unset variable or parameter, the shell
-prints an error message, and, if
-                      not interactive, exits with a non-zero status.
-
-
-
-
-
-
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201022012106.1875129-1-ndesaulniers%40google.com.
-
-
-
---
-Best Regards
-
-Masahiro Yamada
