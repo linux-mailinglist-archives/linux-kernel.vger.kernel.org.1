@@ -2,179 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EF32A3617
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B792A3621
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgKBVjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgKBVjg (ORCPT
+        id S1725841AbgKBVpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:45:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46845 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725766AbgKBVpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:39:36 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2489C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:39:35 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w65so12323371pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FtSibvsdvA5rUVREdfoxJ1vc1kri00NcSUIMa32id/s=;
-        b=ycjCRV279Di6GZducEQavbrEZb8VCpkB+B+XTo94i7BUa+daWWB+xqYhjBBgKK4fh/
-         8cEojishyWBfJt4Ky2n8BpKLe9NV8dDt8NCJaZ8zEKTcXNmgtqkDRjNnY7A/duwn32hJ
-         hTodV7RxYvyoCoz915HcGS5p+bdQANEW5X3bIHy0Ys5NpQgE2KpLYbuEhVPFEqgqU2mT
-         mUO+wUtaTmJLopzszFpyNpl5oClyoULw+3Y6QbAQwhFviBWyvsgUFete4SGPDZZuzUzd
-         iCLnrY1KDd+CuXo6iosCuWvM2ifwbL6qmrg5elVsJXA5kYy1W8Q7PPjv0PbR5x5a/jV8
-         j+4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FtSibvsdvA5rUVREdfoxJ1vc1kri00NcSUIMa32id/s=;
-        b=lYpWTjeMC41mbTS9+Dx84F6wSamtc1jlyqlc0WOqWu/OI1oFcOV1NQ8M2UJninfxZz
-         U4eAVsNiVGvHBaHVZCme1sAcgAM2IREgoRaSlIX+n79EGdu5mV9bMfzj0EpdOIm6e8pO
-         XmdNh5CYSCivHPJtcCX0zj/RIRQlYA9i0eVDv0JuadIWYVX3q78CNEisg7wDQRAjwXim
-         He/YAGAuHkxmqWK4+o4WGsi3tiQN7iYnT6xHeDU3ZR/YBHeN7DRkmWECMU7p29eR6nE5
-         ICRGkjYNKFxgLZmP0p3a1+YTK+nixczZ7uw6INoPq35TTsupcvVnzVJmD1x0gmLWM1cN
-         /Wbw==
-X-Gm-Message-State: AOAM530aAW6hSpAocOoy2ZNlc7SFrP8AwcOJNUN+uacxwWFC3tZafMR1
-        H4vFWyOWi6r4ztUvVHNmhJD4YBNjqyejAQ==
-X-Google-Smtp-Source: ABdhPJwIWV5qLDMLpsaxZ1JpfY8hZganSzwNcbYL9T+70ZBF+NS40V/oYgHHkjldaZleNZmuf/jaNg==
-X-Received: by 2002:a17:90a:a595:: with SMTP id b21mr184058pjq.3.1604353174988;
-        Mon, 02 Nov 2020 13:39:34 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id z10sm403283pjz.49.2020.11.02.13.39.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 13:39:34 -0800 (PST)
-Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
-From:   Jens Axboe <axboe@kernel.dk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201030152407.43598-1-cai@redhat.com>
- <20201030184255.GP3576660@ZenIV.linux.org.uk>
- <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
- <20201030184918.GQ3576660@ZenIV.linux.org.uk>
- <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
- <20201030222213.GR3576660@ZenIV.linux.org.uk>
- <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
- <87eelba7ai.fsf@x220.int.ebiederm.org>
- <f33a6b5e-ecc9-2bef-ab40-6bd8cc2030c2@kernel.dk>
- <87k0v38qlw.fsf@x220.int.ebiederm.org>
- <d77e2d82-22da-a7a0-54e0-f5d315f32a75@kernel.dk>
-Message-ID: <3abc1742-733e-c682-5476-c6337a630e05@kernel.dk>
-Date:   Mon, 2 Nov 2020 14:39:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 2 Nov 2020 16:45:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604353544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cTFZ8lzIl2cNFfLo0OSYv8YB3iqFe9fcgW+Rx9EOOi4=;
+        b=ixLRqe3dUgHMF20Sd+3zcCGcCwLODISR9/bx3h2LJhWVGUDbpBl86YwlEv79yKpVHqGSwk
+        46ABbEz/vtvOAguSIxtENjfyDh7dZms3P/jXYj9WDQxbNEI5BQEQpBkA3x27SQFS5CQYJj
+        8+j03FxwHJ3CRfTKBRmsIniLASXrG5Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-20h8hIN2MDemDpI5kdMj1Q-1; Mon, 02 Nov 2020 16:45:42 -0500
+X-MC-Unique: 20h8hIN2MDemDpI5kdMj1Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C123D802B61;
+        Mon,  2 Nov 2020 21:45:40 +0000 (UTC)
+Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 49A0C68433;
+        Mon,  2 Nov 2020 21:45:37 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 14:45:36 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Diana Craciun <diana.craciun@oss.nxp.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
+        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] vfio/fsl-mc: return -EFAULT if copy_to_user() fails
+Message-ID: <20201102144536.42a0e066@w520.home>
+In-Reply-To: <20201023113450.GH282278@mwanda>
+References: <20201023113450.GH282278@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <d77e2d82-22da-a7a0-54e0-f5d315f32a75@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 1:31 PM, Jens Axboe wrote:
-> On 11/2/20 1:12 PM, Eric W. Biederman wrote:
->> Jens Axboe <axboe@kernel.dk> writes:
->>
->>> On 11/2/20 12:27 PM, Eric W. Biederman wrote:
->>>> Jens Axboe <axboe@kernel.dk> writes:
->>>>
->>>>> On 10/30/20 4:22 PM, Al Viro wrote:
->>>>>> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
->>>>>>> On 10/30/20 12:49 PM, Al Viro wrote:
->>>>>>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
->>>>>>>>
->>>>>>>>> See other reply, it's being posted soon, just haven't gotten there yet
->>>>>>>>> and it wasn't ready.
->>>>>>>>>
->>>>>>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
->>>>>>>>> instead. The intent is not to have any functional changes in that prep
->>>>>>>>> patch. But once we can pass in filenames instead of user pointers, it's
->>>>>>>>> usable from io_uring.
->>>>>>>>
->>>>>>>> You do realize that pathname resolution is *NOT* offloadable to helper
->>>>>>>> threads, I hope...
->>>>>>>
->>>>>>> How so? If we have all the necessary context assigned, what's preventing
->>>>>>> it from working?
->>>>>>
->>>>>> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
->>>>>> *do* pass through that, /dev/stdin included)
->>>>>
->>>>> Don't we just need ->thread_pid for that to work?
->>>>
->>>> No.  You need ->signal.
->>>>
->>>> You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
->>>> that ->thread_pid is needed.
->>>>
->>>> Even more so than ->thread_pid, it is a kernel invariant that ->signal
->>>> does not change.
->>>
->>> I don't care about the pid itself, my suggestion was to assign ->thread_pid
->>> over the lookup operation to ensure that /proc/self/ worked the way that
->>> you'd expect.
->>
->> I understand that.
->>
->> However /proc/self/ refers to the current process not to the current
->> thread.  So ->thread_pid is not what you need to assign to make that
->> happen.  What the code looks at is: ->signal->pids[PIDTYPE_TGID].
->>
->> It will definitely break invariants to assign to ->signal.
->>
->> Currently only exchange_tids assigns ->thread_pid and it is nasty.  It
->> results in code that potentially results in infinite loops in
->> kernel/signal.c
->>
->> To my knowledge nothing assigns ->signal->pids[PIDTYPE_TGID].  At best
->> it might work but I expect the it would completely confuse something in
->> the pid to task or pid to process mappings.  Which is to say even if it
->> does work it would be an extremely fragile solution.
+
+Thanks, Dan.
+
+Diana, can I get an ack for this?  Thanks,
+
+Alex
+
+On Fri, 23 Oct 2020 14:34:50 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
+
+> The copy_to_user() function returns the number of bytes remaining to be
+> copied, but this code should return -EFAULT.
 > 
-> Thanks Eric, that's useful. Sounds to me like we're better off, at least
-> for now, to just expressly forbid async lookup of /proc/self/. Which
-> isn't really the end of the world as far as I'm concerned.
-
-Alternatively, we just teach task_pid_ptr() where to look for an
-alternate, if current->flags & PF_IO_WORKER is true. Then we don't have
-to assign anything that's visible in task_struct, and in fact the async
-worker can retain this stuff on the stack. As all requests are killed
-before a task is allowed to exit, that should be safe.
-
-
-diff --git a/kernel/pid.c b/kernel/pid.c
-index 74ddbff1a6ba..5fd421a4864c 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -42,6 +42,7 @@
- #include <linux/sched/signal.h>
- #include <linux/sched/task.h>
- #include <linux/idr.h>
-+#include <linux/io_uring.h>
- #include <net/sock.h>
- #include <uapi/linux/pidfd.h>
- 
-@@ -320,6 +321,12 @@ EXPORT_SYMBOL_GPL(find_vpid);
- 
- static struct pid **task_pid_ptr(struct task_struct *task, enum pid_type type)
- {
-+	if ((task->flags & PF_IO_WORKER) && task->io_uring) {
-+		return (type == PIDTYPE_PID) ?
-+			&task->io_uring->thread_pid :
-+			&task->io_uring->pids[type];
-+	}
-+
- 	return (type == PIDTYPE_PID) ?
- 		&task->thread_pid :
- 		&task->signal->pids[type];
-
--- 
-Jens Axboe
+> Fixes: df747bcd5b21 ("vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> index 0113a980f974..21f22e3da11f 100644
+> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> @@ -248,7 +248,9 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>  		info.size = vdev->regions[info.index].size;
+>  		info.flags = vdev->regions[info.index].flags;
+>  
+> -		return copy_to_user((void __user *)arg, &info, minsz);
+> +		if (copy_to_user((void __user *)arg, &info, minsz))
+> +			return -EFAULT;
+> +		return 0;
+>  	}
+>  	case VFIO_DEVICE_GET_IRQ_INFO:
+>  	{
+> @@ -267,7 +269,9 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>  		info.flags = VFIO_IRQ_INFO_EVENTFD;
+>  		info.count = 1;
+>  
+> -		return copy_to_user((void __user *)arg, &info, minsz);
+> +		if (copy_to_user((void __user *)arg, &info, minsz))
+> +			return -EFAULT;
+> +		return 0;
+>  	}
+>  	case VFIO_DEVICE_SET_IRQS:
+>  	{
 
