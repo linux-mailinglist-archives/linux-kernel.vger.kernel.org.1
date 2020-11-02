@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276152A229E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D382A22B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 02:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbgKBAvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 19:51:48 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6686 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbgKBAvs (ORCPT
+        id S1727633AbgKBBI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 20:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727335AbgKBBIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 19:51:48 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPZ9s1fsPz15Q0f;
-        Mon,  2 Nov 2020 08:51:45 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 08:51:41 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <ulf.hansson@linaro.org>, <afaerber@suse.de>,
-        <manivannan.sadhasivam@linaro.org>, <p.zabel@pengutronix.de>,
-        <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: owl-mmc: replace spin_lock_irqsave by spin_lock in hard IRQ
-Date:   Mon, 2 Nov 2020 08:52:17 +0800
-Message-ID: <1604278337-55624-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 1 Nov 2020 20:08:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A48CC0617A6;
+        Sun,  1 Nov 2020 17:08:25 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604279303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4uGtzWR3XDWVzxJPeTJwUrr+92QjqUI1P4Rl6d07MCc=;
+        b=XrgDk26VSw3lMWxT80X6p2BiIELFfSd45uXmpqg40hcbZPvcaSEbWpk3R+GxKbboSmpFo7
+        63BVEl/BSGohNcNmokSUofaOuAyVB8TF4zkcITLfRQimdDp0/NzDabt6xoWCRv1KCKeW7F
+        JBfHL2Zd4jfQiOa73d8ngQE8XEVUJ3AcbNTfvECT7y8NW8OaNw3Ie/CbXJDQBPmopC0hi6
+        3UpqoW4N6M5pY4xkTcBxiJGRWb665zE7gX5m+PKTKEvvjyV6Hoqyt5gxZLMHwAEcjlgo+r
+        WdCkNHrQQLMZuU+RDrUNzqVy0E0MpRf3weVrn07sYqVIDzra4XxQNgHUkZAAnw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604279303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4uGtzWR3XDWVzxJPeTJwUrr+92QjqUI1P4Rl6d07MCc=;
+        b=w804GlJ3cTjryaWI6xXsdwM5po9NFzF1/LMSPDCaZtr/gWtzM/1QwrA9gqRhs9hURGxtuJ
+        nFG9PzKRhgh+hKBA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Christoph Hellwig <hch@lst.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic & friends
+In-Reply-To: <20201029221806.189523375@linutronix.de>
+References: <20201029221806.189523375@linutronix.de>
+Date:   Mon, 02 Nov 2020 02:08:23 +0100
+Message-ID: <87k0v48t14.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code has been in a irq-disabled context since it is hard IRQ. There
-is no necessity to do it again.
+On Thu, Oct 29 2020 at 23:18, Thomas Gleixner wrote:
+>
+> There is also a still to be investigated question from Linus on the initial
+> posting versus the per cpu / per task mapping stack depth which might need
+> to be made larger due to the ability to take page faults within a mapping
+> region.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/mmc/host/owl-mmc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I looked deeper into that and we have a stack depth of 20. That's plenty
+and I couldn't find a way to get above 10 nested ones including faults,
+interrupts, softirqs. With some stress testing I was not able to get over
+a maximum of 6 according to the traceprintk I added.
 
-diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
-index ccf214a..82d2bad 100644
---- a/drivers/mmc/host/owl-mmc.c
-+++ b/drivers/mmc/host/owl-mmc.c
-@@ -134,10 +134,9 @@ static void owl_mmc_update_reg(void __iomem *reg, unsigned int val, bool state)
- static irqreturn_t owl_irq_handler(int irq, void *devid)
- {
- 	struct owl_mmc_host *owl_host = devid;
--	unsigned long flags;
- 	u32 state;
- 
--	spin_lock_irqsave(&owl_host->lock, flags);
-+	spin_lock(&owl_host->lock);
- 
- 	state = readl(owl_host->base + OWL_REG_SD_STATE);
- 	if (state & OWL_SD_STATE_TEI) {
-@@ -147,7 +146,7 @@ static irqreturn_t owl_irq_handler(int irq, void *devid)
- 		complete(&owl_host->sdc_complete);
- 	}
- 
--	spin_unlock_irqrestore(&owl_host->lock, flags);
-+	spin_unlock(&owl_host->lock);
- 
- 	return IRQ_HANDLED;
- }
--- 
-2.7.4
+For some obscure reason when CONFIG_DEBUG_HIGHMEM is enabled the stack
+depth is increased from 20 to 41. But the only thing DEBUG_HIGHMEM does
+is to enable a few BUG_ON()'s in the mapping code.
+
+That's a leftover from the historical mapping code which had fixed
+entries for various purposes. DEBUG_HIGHMEM inserted guard mappings
+between the map types. But that got all ditched when kmap_atomic()
+switched to a stack based map management. Though the WITH_KM_FENCE magic
+survived without being functional. All the thing does today is to
+increase the stack depth.
+
+I just made that functional again by keeping the stack depth increase
+and utilizing every second slot. That should catch Willy's mapping
+problem nicely if he bothers to test on 32bit :)
+
+Thanks,
+
+        tglx
 
