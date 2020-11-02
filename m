@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD752A336F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C133E2A3373
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgKBS6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgKBS6J (ORCPT
+        id S1726587AbgKBS6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:58:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60730 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726392AbgKBS6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:58:09 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0865C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:58:08 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id n15so15893910wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:58:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XxeRfZAIWbudLvp9kWivxncFadrsvxo56vZJQ20jKs4=;
-        b=kOusrNgTcZm1MxA3iSkro72CMD3oLdxo8P3rycLbCduVu8veVm0Za2ckbpRMXgneNS
-         t0jAYOqI7qTcxjAbWh1edM/wwKBrnQVG0pEqHbK5AXtsQtNn2FH01tkDKBQuth2FHmES
-         1BLS7z9rEV8/45Df9hWoCjIpdKYTDYoD/OgjAsmv+udkLzBYvOHhzn4fUeHhZLhszA56
-         5oYxXxKI86lgXMqPyA2qC5+e6lkz/cQtUo+6y3RZgK5AOTJ8GnqXLMTaRtPqwc4HKm1q
-         WaoE72ypwkyIN8H9zt/dpOTz8lQeDuqulJqnCyfmCuJPMipsIqEfEHkm9ThmeiVeNWk+
-         hlPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XxeRfZAIWbudLvp9kWivxncFadrsvxo56vZJQ20jKs4=;
-        b=Ppy78PFvQGmj0DqGcFT3PaQeobRDszjXAXbBVRPfiLWQcCSjktCsGGxqFwajmEDKfM
-         TQj9+0RMauJkhbC3r3Zk/pgN6U/wkLDqzFXZnOrj2JbaeMoXJFGGue1FanhmElhkCHMf
-         ae0miUPu7Em95x1MOAU6VCaMQSo8RjKEXrN4eXUPNOr5a+kRDYJZ2qi32uKaB2s8VGva
-         Mer6gd3hShyBfb4uf8np6VqbyT7rf7xd1SVZlnrWNIhHsIxn0YWxrq6Ax3Mz7/TJ9hyN
-         B2p5pBs/ykqQJVn86XigkvJ0knOpv3U3cctOWLViqh0QfZmwjL+YWSHrimzD4kUfu5qN
-         YcuA==
-X-Gm-Message-State: AOAM533Td/HcCjYcsSU3Ysn/wQhyr6meSx8lqW3slVFNe9P3LNqj7Qb4
-        Y7wgWEIT7MqvYA+ghfglKmxn3SFBRNyHT206hpY=
-X-Google-Smtp-Source: ABdhPJxvq18UhGQenFga2zX3xGzDEm+8E1qLSRDidKYDfnqifZoOx6NvrWF8WShy3ONm0wckJIZeC2DOkSqQ6RsC+og=
-X-Received: by 2002:adf:dd8f:: with SMTP id x15mr23253688wrl.124.1604343487472;
- Mon, 02 Nov 2020 10:58:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102125747.6420-1-bernard@vivo.com>
-In-Reply-To: <20201102125747.6420-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 2 Nov 2020 13:57:56 -0500
-Message-ID: <CADnq5_PwBLibCGs_feeUGnJrTs1=2ezW_kyev=-aXm3V15QNUg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: fix typoes
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Colin Ian King <colin.king@canonical.com>,
-        zhengbin <zhengbin13@huawei.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+        Mon, 2 Nov 2020 13:58:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604343489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KiFFtp2v2OzZxtB5aSwfZtbGyO8aZuVS/CYOJRroQx8=;
+        b=jQSQDI6cvueQU79Df0zL+hguqUy+1JsNBWPJTdJ2TqbgL8THB/XNmvryAAHPWW8EO0lxYz
+        zS23eLrJRd7oOABvTxZqclkGaYvgUOKxGPOMZplNkwX6MGYT2gJa7pQCfKjmmrcIvABgoB
+        dVRT6yqqQxvmT46ckeAH9dHNa9VWQVY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-oDfcHmi6OeOM-azEQBhOOA-1; Mon, 02 Nov 2020 13:58:07 -0500
+X-MC-Unique: oDfcHmi6OeOM-azEQBhOOA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 048BE108E1A1;
+        Mon,  2 Nov 2020 18:58:06 +0000 (UTC)
+Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 690191002C1A;
+        Mon,  2 Nov 2020 18:58:01 +0000 (UTC)
+Message-ID: <d60d24de6b7c9b948333e4e288452fe0a39d2380.camel@redhat.com>
+Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
+From:   Qian Cai <cai@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        oleg@redhat.com, tglx@linutronix.de,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Date:   Mon, 02 Nov 2020 13:58:00 -0500
+In-Reply-To: <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
+References: <20201101173153.GC9375 () osiris>
+         <362e3645e2c0891309c07e244a147f0c32f106da.camel@redhat.com>
+         <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Mon, 2020-11-02 at 10:07 -0700, Jens Axboe wrote:
+> On 11/2/20 9:59 AM, Qian Cai wrote:
+> > On Sun, 2020-11-01 at 17:31 +0000, Heiko Carstens wrote:
+> > > On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
+> > > > Wire up TIF_NOTIFY_SIGNAL handling for s390.
+> > > > 
+> > > > Cc: linux-s390@vger.kernel.org
+> > > > Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> > 
+> > Even though I did confirm that today's linux-next contains this additional
+> > patch
+> > from Heiko below, a z10 guest is still unable to boot. Reverting the whole
+> > series (reverting only "s390: add support for TIF_NOTIFY_SIGNAL" introduced
+> > compiling errors) fixed the problem, i.e., git revert --no-edit
+> > af0dd809f3d3..7b074c15374c [1]
+> 
+> That's odd, it should build fine without that patch. How did it fail for you?
 
-Alex
+In file included from ./arch/s390/include/asm/bug.h:5,
+                 from ./include/linux/bug.h:5,
+                 from ./include/linux/mmdebug.h:5,
+                 from ./include/linux/percpu.h:5,
+                 from ./include/linux/context_tracking_state.h:5,
+                 from ./include/linux/hardirq.h:5,
+                 from ./include/linux/kvm_host.h:7,
+                 from arch/s390/kernel/asm-offsets.c:11:
+./include/linux/sched/signal.h: In function ‘signal_pending’:
+./include/linux/sched/signal.h:368:39: error: ‘TIF_NOTIFY_SIGNAL’ undeclared
+(first use in this function); did you mean ‘TIF_NOTIFY_RESUME’?
+  if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
+                                       ^~~~~~~~~~~~~~~~~
+./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
+ # define unlikely(x) __builtin_expect(!!(x), 0)
+                                          ^
+./include/linux/sched/signal.h:368:39: note: each undeclared identifier is
+reported only once for each function it appears in
+  if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
+                                       ^~~~~~~~~~~~~~~~~
+./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
+ # define unlikely(x) __builtin_expect(!!(x), 0)
+                                          ^
+make[1]: *** [scripts/Makefile.build:117: arch/s390/kernel/asm-offsets.s] Error
+1
+make: *** [Makefile:1198: prepare0] Error 2
 
-On Mon, Nov 2, 2020 at 8:43 AM Bernard Zhao <bernard@vivo.com> wrote:
->
-> Fix typoes.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> index 2c6db379afae..e994d233aa21 100644
-> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> @@ -1980,7 +1980,7 @@ static void calculate_bandwidth(
->         else {
->                 data->latency_for_non_mcifwr_clients = bw_int_to_fixed(0);
->         }
-> -       /*dmif mc urgent latency suppported in high sclk and yclk*/
-> +       /*dmif mc urgent latency supported in high sclk and yclk*/
->         data->dmifmc_urgent_latency_supported_in_high_sclk_and_yclk = bw_div((bw_sub(data->min_read_buffer_size_in_time, data->dmif_burst_time[high][s_high])), data->total_dmifmc_urgent_trips);
->         /*dram speed/p-state change margin*/
->         /*in the multi-display case the nb p-state change watermark cannot exceed the average lb size plus the dmif size or the cursor dcp buffer size*/
-> --
-> 2.29.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> Can you try and add this on top? Looks like I forgot the signal change for
+> s390, though that shouldn't really cause any issues.
+
+It does not help with the boot issue at all.
+
+> 
+> 
+> diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+> index 9e900a8977bd..a68c3796a1bf 100644
+> --- a/arch/s390/kernel/signal.c
+> +++ b/arch/s390/kernel/signal.c
+> @@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
+>  	current->thread.system_call =
+>  		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
+>  
+> -	if (get_signal(&ksig)) {
+> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL) && get_signal(&ksig)) {
+>  		/* Whee!  Actually deliver the signal.  */
+>  		if (current->thread.system_call) {
+>  			regs->int_code = current->thread.system_call;
+> 
+
