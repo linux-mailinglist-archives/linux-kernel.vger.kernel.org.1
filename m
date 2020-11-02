@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F5F2A31A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDF12A31A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgKBRdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S1727930AbgKBReo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727862AbgKBRdk (ORCPT
+        with ESMTP id S1727227AbgKBReo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:33:40 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF97C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:33:40 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id v19so10984604lji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:33:40 -0800 (PST)
+        Mon, 2 Nov 2020 12:34:44 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D65C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:34:43 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id x7so13686233ili.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:34:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zxi+DkPWMjinOcCeCZ9Cx94L36yTcmFlHJe6N5+L51M=;
-        b=ZXhsqY6MCotjClhgvD+HFZ9GP8YgAa521KQd4bwv84NsEZUD2wdTaA1BfC04Wwl5nv
-         v1o3y4j14Fear3HXXTYaJ6iGZ12dNiyJnHFekvcAWqN4QkgxAsVS8dzrEpp0du/7P0cu
-         s4nSmydGx+B8pzds2DbdUbMC+3GLIoiPfe+YE=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BxMzrdZcjEL0JJ6yvBsXBlKvsrYvjjyVf7t7mWyl/QY=;
+        b=YN7mW/nri9xNNNunEygc4Y8mTJ8WA86uI2PVrndkO42SUdcyGK1LXt3X4Cq8Z5b5/l
+         WcswdaiGtCdwVGH17HdZ8DnfpncVzstYpufEte4YHQluwisYrXkWgVMZiUqS79VdgZi+
+         LPgRYrRgc/MNKT7p/T/Iy/PXFvMih9vQTMCHl7wSZwJnLkLFLuuyqFzZOk75FcF2Jcdl
+         70Re9u2Rw5prU5BqFAbw6+63L7GuuXP52zq4B4DdXU0gjPN4BJ7ZgrsYpKFuorsyzXNM
+         7VU/V5ZqEzVMb5l1gACbrTHHbJ50qxbmIwdOE0kRUng27N7XbRp6FzEj1LuI+i0DPsix
+         ow6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zxi+DkPWMjinOcCeCZ9Cx94L36yTcmFlHJe6N5+L51M=;
-        b=oBVv3nEhnMpv0kC0V+dbqjWirFi6FAYB1gVc3bAv4FqizKldIp+x6Hbsl7Ox0RNBkb
-         OklK2TDlYiwiIrj1xDDe+PjOpus6gWI+B9GMhWK++exdGV4kAX894pMZryElgnIHIpE2
-         XuFsb7VJr3QpLr/xQPa6xOTNeKnD98Ep0h/P/A8jISSAz4z0WZK+lkuB1C8IvgdK75uc
-         UK/mkSI/gONYoYv52eAPh7juwP7xHofvcIKhgSbfDdqjZlR5tiy4rgFc+vK+JXVmI71v
-         neiM4pkGm/Y8ut9az7rUnUfTnjb2zSzGx627ink33PTF5HVZNZHAChbtq2DH9WP8OQNI
-         6z5A==
-X-Gm-Message-State: AOAM532fWEPGXtTTbLZDjoGs9G/BoRrBjPZ/yH7FAudugT9LP3oxevZB
-        JGxYLLNC5RDBgh3ZZkYRwFlfL6b5QNk7Sg==
-X-Google-Smtp-Source: ABdhPJxxx4dQlTD9EJgXR3SiW4IaLR9vxPsTh16NjE4Ic4vVcwWCeNbq3J5parnpDOizJDM47EIw7Q==
-X-Received: by 2002:a2e:a41a:: with SMTP id p26mr6763254ljn.126.1604338418124;
-        Mon, 02 Nov 2020 09:33:38 -0800 (PST)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id r6sm2494865lfm.242.2020.11.02.09.33.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 09:33:34 -0800 (PST)
-Received: by mail-lj1-f169.google.com with SMTP id k25so15919630lji.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:33:34 -0800 (PST)
-X-Received: by 2002:a2e:868b:: with SMTP id l11mr6795547lji.102.1604338413799;
- Mon, 02 Nov 2020 09:33:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BxMzrdZcjEL0JJ6yvBsXBlKvsrYvjjyVf7t7mWyl/QY=;
+        b=nRkJ0ywJkdi5ta2wzApsIdZqrl1bh+n/IJOAD7z1kMnkrspGhemJStEMqxUPiCt1aj
+         RKifbmA9pl2i4UIcviq9NEpZORtfsVYTNFgRcX0pApeQzbJpCyaATSO6YygTZ1+WNeLZ
+         6JoFskMDnxQ3kUUYceoqe7zQJpQViVU4RTJt1lZZ2gm7hNNUHqMRwbSwUTgvdLwURJWT
+         qySh4SHvkIiTPQgqyLKHEg51zWZYcG0soixP+1P4emOd3EnBJt6RA+s/HhOGWV6m4GbE
+         bUUsiiXcMdW9JSTmTMoqnhXN5BpkcITAUEKlLLvOeapL8KDFvqgahtpOk38PDVLW4m+a
+         IyLQ==
+X-Gm-Message-State: AOAM532hAGZc1UICpBVQ1cBn4HC78CvGUXsU/xIqZ9F11aGCaf/OrQOa
+        gfDuzSehzCOWZl0fAVm66BGwww==
+X-Google-Smtp-Source: ABdhPJxFLCublLFiKxPcBrsz/nOyGqz3ZlA28rV+BeouRxTKfd5HoWCHLqmRDZm4LFIV91ZObX6fIg==
+X-Received: by 2002:a92:6810:: with SMTP id d16mr5010881ilc.153.1604338483325;
+        Mon, 02 Nov 2020 09:34:43 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id u8sm10963432ilm.36.2020.11.02.09.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 09:34:42 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: ipa: restrict special reset to IPA v3.5.1
+Date:   Mon,  2 Nov 2020 11:34:35 -0600
+Message-Id: <20201102173435.5987-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201102105422.752202-1-geert+renesas@glider.be>
-In-Reply-To: <20201102105422.752202-1-geert+renesas@glider.be>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 2 Nov 2020 09:33:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgFZRAVB_LUM+A24u2iubynmkbMDXb3rxy8GmRmKM7gfw@mail.gmail.com>
-Message-ID: <CAHk-=wgFZRAVB_LUM+A24u2iubynmkbMDXb3rxy8GmRmKM7gfw@mail.gmail.com>
-Subject: Re: [PATCH] of: Drop superfluous ULL suffix for ~0
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Christoph Hellwig <hch@lst.de>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 2:54 AM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> There is no need to specify a "ULL" suffix for "all bits set": "~0" is
-> sufficient, and works regardless of type.  In fact adding the suffix
-> makes the code more fragile.
+With IPA v3.5.1, if IPA aggregation is active at the time an
+underlying GSI channel reset is performed, some special handling
+is required.
 
-I took this directly, since it was triggered by my code pattern rant.
+There is logic in ipa_endpoint_reset() that arranges for that
+special handling, but it's done for all hardware versions, not
+just IPA v3.5.1.
 
-Thanks,
-                Linus
+Fix the logic to properly restrict the special behavior.
+
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_endpoint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index 7386e10615d99..6f79028910e3c 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -1314,7 +1314,7 @@ static void ipa_endpoint_reset(struct ipa_endpoint *endpoint)
+ 	 */
+ 	legacy = ipa->version == IPA_VERSION_3_5_1;
+ 	special = !endpoint->toward_ipa && endpoint->data->aggregation;
+-	if (special && ipa_endpoint_aggr_active(endpoint))
++	if (legacy && special && ipa_endpoint_aggr_active(endpoint))
+ 		ret = ipa_endpoint_reset_rx_aggr(endpoint);
+ 	else
+ 		gsi_channel_reset(&ipa->gsi, channel_id, legacy);
+-- 
+2.20.1
+
