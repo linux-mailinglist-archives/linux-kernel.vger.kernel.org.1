@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4112A3408
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A882A340D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgKBT1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:27:20 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:38178 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKBT1U (ORCPT
+        id S1726591AbgKBT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:29:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgKBT3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:27:20 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kZfU6-004uOq-Kz; Mon, 02 Nov 2020 12:27:18 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kZfU5-007zVJ-LR; Mon, 02 Nov 2020 12:27:18 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201030152407.43598-1-cai@redhat.com>
-        <20201030184255.GP3576660@ZenIV.linux.org.uk>
-        <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
-        <20201030184918.GQ3576660@ZenIV.linux.org.uk>
-        <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
-        <20201030222213.GR3576660@ZenIV.linux.org.uk>
-        <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
-Date:   Mon, 02 Nov 2020 13:27:17 -0600
-In-Reply-To: <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk> (Jens Axboe's
-        message of "Fri, 30 Oct 2020 17:21:39 -0600")
-Message-ID: <87eelba7ai.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 2 Nov 2020 14:29:30 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A11CC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:29:30 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id g12so11647830pgm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=uoOxuimGqR/XZohg3kDNnqLGh44Gb3rHGmhcimxdOOY=;
+        b=X/cJK6On7gCEku6gf7AommmoOsjU/a5tlIE4w3Lty5H00mkIV5rNXD2hV5drnpvER7
+         RuQ18vm1/trkX2my4c491xbgR8ybadobgs5JQu9jdUO4SKrwVCrwCmQKiE9mgwhrJdMR
+         byvh/r5+J24rf4ov9GZLSpFpLphkTvgaKkm0c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=uoOxuimGqR/XZohg3kDNnqLGh44Gb3rHGmhcimxdOOY=;
+        b=EDU1OUCTP2OunumHtuIVEtAEMvwCVDiqdu4dR6eQz9l+OdCX3e39szk+BW7/jYabys
+         GAVGtDprWcgpJXKA4HSRzHK1eRkxIF/kk55v3B2LYB2Qbfo0esVzbgxa79EdS2zAbyaA
+         cyVV9HEQmIlsF49jY7HM1SdHnmCCF1foSbY2Pg5/fE+VdWJt9NQseCTJEIEHhJVz51Tc
+         nknfQbwvplfSnkeMpPgSlP0pSdEl4tbHIfD3Sa2MS8vsHIDiuMMRT9PlQ3bsEtxossbR
+         LhgUWI2o5B13H+y3aJ6E/Liys85ZekeydNlaocyGksESiJjGRC2D/MqQRgaOrYmqtlLh
+         TZBA==
+X-Gm-Message-State: AOAM531wIXtZFZasAgLTy6ZMt++KgqIO0obOi/yN3ASGVqIl3CpSSBr+
+        UJglzB1o3JCwYpDV8EzeES40GHlSjTA+/A==
+X-Google-Smtp-Source: ABdhPJxVKt+kRsHzbnU0rETD6G/1efTmJN02g/NGxauAmXXTQrMIxC6/YcVUoL/EqVkPVsDTdrz6Ow==
+X-Received: by 2002:aa7:8548:0:b029:164:769a:353 with SMTP id y8-20020aa785480000b0290164769a0353mr23105505pfn.45.1604345370040;
+        Mon, 02 Nov 2020 11:29:30 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id j11sm14286248pfh.143.2020.11.02.11.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 11:29:29 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kZfU5-007zVJ-LR;;;mid=<87eelba7ai.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19hmILBBOoyP9lI/H0XHWh2pxjCwSHzin8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4865]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 353 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.4 (1.0%), b_tie_ro: 2.3 (0.7%), parse: 0.69
-        (0.2%), extract_message_metadata: 8 (2.3%), get_uri_detail_list: 0.78
-        (0.2%), tests_pri_-1000: 3.8 (1.1%), tests_pri_-950: 1.11 (0.3%),
-        tests_pri_-900: 0.94 (0.3%), tests_pri_-90: 146 (41.5%), check_bayes:
-        145 (41.0%), b_tokenize: 4.4 (1.2%), b_tok_get_all: 4.7 (1.3%),
-        b_comp_prob: 1.56 (0.4%), b_tok_touch_all: 131 (37.2%), b_finish: 0.80
-        (0.2%), tests_pri_0: 155 (44.1%), check_dkim_signature: 0.38 (0.1%),
-        check_dkim_adsp: 2.7 (0.8%), poll_dns_idle: 15 (4.2%), tests_pri_10:
-        1.63 (0.5%), tests_pri_500: 29 (8.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201030232324.11170-1-khsieh@codeaurora.org>
+References: <20201030232324.11170-1-khsieh@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: promote irq_hpd handle to handle link trainign correctly
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Mon, 02 Nov 2020 11:29:28 -0800
+Message-ID: <160434536802.884498.16389146296525781476@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+Subject has a typo in "training".
 
-> On 10/30/20 4:22 PM, Al Viro wrote:
->> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
->>> On 10/30/20 12:49 PM, Al Viro wrote:
->>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
->>>>
->>>>> See other reply, it's being posted soon, just haven't gotten there yet
->>>>> and it wasn't ready.
->>>>>
->>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
->>>>> instead. The intent is not to have any functional changes in that prep
->>>>> patch. But once we can pass in filenames instead of user pointers, it's
->>>>> usable from io_uring.
->>>>
->>>> You do realize that pathname resolution is *NOT* offloadable to helper
->>>> threads, I hope...
->>>
->>> How so? If we have all the necessary context assigned, what's preventing
->>> it from working?
->> 
->> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
->> *do* pass through that, /dev/stdin included)
->
-> Don't we just need ->thread_pid for that to work?
+Quoting Kuogee Hsieh (2020-10-30 16:23:24)
+> Some dongles, such as Apple, required link training done at irq_hpd
 
-No.  You need ->signal.
+s/required/require/
 
-You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
-that ->thread_pid is needed.
+> request instead of plugin request. This patch promote irq_hpd hanlder
 
-Even more so than ->thread_pid, it is a kernel invariant that ->signal
-does not change.
+s/hanlder/handler/
 
-Eric
+> to handle link training and setup hpd_state correctly.
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+
+Any Fixes tag?
+
+>  drivers/gpu/drm/msm/dp/dp_display.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
+/dp_display.c
+> index 13b66266cd69..55627530957c 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -483,10 +485,24 @@ static int dp_display_usbpd_attention_cb(struct dev=
+ice *dev)
+>                 return -ENODEV;
+>         }
+> =20
+> +       hpd =3D dp->usbpd;
+> +
+>         /* check for any test request issued by sink */
+>         rc =3D dp_link_process_request(dp->link);
+> -       if (!rc)
+> -               dp_display_handle_irq_hpd(dp);
+> +       if (!rc) {
+> +               sink_request =3D dp->link->sink_request;
+> +               if (sink_request & DS_PORT_STATUS_CHANGED) {
+> +                       dp->hpd_state =3D ST_CONNECT_PENDING;
+> +                       hpd->hpd_high =3D 1;
+> +               }
+> +
+> +               rc =3D dp_display_handle_irq_hpd(dp);
+> +
+> +               if (rc && sink_request & DS_PORT_STATUS_CHANGED) {
+
+Can you add parenthesis around this?
+
+		if (rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
 
 
+I honestly don't know what's going on in this patch. It talks about
+making link training happen during irq hpd handler but this is the
+attention handler and we're checking port status changed? This is
+related? The code is really not clear.
+
+> +                       hpd->hpd_high =3D 0;
+> +                       dp->hpd_state =3D ST_DISCONNECTED;
+> +               }
+> +       }
+> =20
+>         return rc;
+>  }
+>=20
+> base-commit: 0e162b10644605428cd2596c12f8ed410cf9d2d9
+
+What commit is this?
