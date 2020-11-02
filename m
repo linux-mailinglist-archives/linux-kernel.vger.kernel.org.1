@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8142A2931
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7B32A291D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgKBL0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S1728887AbgKBLZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:25:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgKBLZC (ORCPT
+        with ESMTP id S1728863AbgKBLZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:25:02 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A07AC061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:25:02 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id e2so9133078wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:25:02 -0800 (PST)
+        Mon, 2 Nov 2020 06:25:03 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AABC061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:25:03 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id a9so14114420wrg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xeSA2mlsN3ZwFX+jKncibbMs9rhzwDQUIegRTfjnveQ=;
-        b=VVEaf7Y3SMh5enKI6sSPYS8qBdEmniXBDjhnPr0ooccJuHZYNLZ4XYsVQ29Lz1HWbr
-         mD1A9erhbVayOVS8PFa4vfgnc1g/odoQ/HQfHaCLJfCSwt9uAt+5EaCuw3vHkPQZwGUY
-         PPq6PHFZl3sCfe1oy5Zxm0pdXlUgtk7AHmepYV14X/JQjha4+sHEi9AdQzeDlrGFyrls
-         C5dFcfwXqcHy6fNTYb5iKGcpez5621C10J1ZTHasWWEvWpxP1XSOoL+WaMcNptm8IHkb
-         fpn0n0ewRvXQaEaF/RSbC9bLWYM3+2umG2T54UHfFFGM4naI4aUtfk1KXQhB1Si8Zu/Q
-         /PBw==
+        bh=V56hUx4Ik29TQLj2+CSFLe9SRW9C8bcqnq7xkJaiUmI=;
+        b=LbLnLJ7sYZ0Y4ts2ejFZSO6VFjct/fqvAsi66WGbmbjiWxrlKP23awk5AoxWovYtQq
+         ANyWpgdkbExKHSc4LRTxA3Wm0sLoiUn/xeYK7K8YxzBckH70djdbeTaZ7sVmCcyxLH/7
+         LbV8udT93qwScqZSTKAcQ+sj80osPAff/t4/43FDsEHUxBY+thIUAqd6YjLvT4roAwnx
+         vL8mI2Vq5xzw5DESN0m3QKTKHsOBwDfAYAo/1nGEjKG7vuM02DvSM6IJXUhqFCgPi6i+
+         QBZHISS14SQLp1xJ1BSdY058i5GfkClF7p6g1xsGJbL7YxzUX2H7j+aKltf7vdTzROyX
+         vZHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xeSA2mlsN3ZwFX+jKncibbMs9rhzwDQUIegRTfjnveQ=;
-        b=NpLVXwvEay5RDr0YmS5141sbxZQum/2OZQl9C4OH7/cQMzCht+8XdOaYIw8eujRedy
-         BTRNcIpxiDrbtwB8sJGAXIsUwTYtnBMgkZyMvvEARPhubLA2B/9et6kRgK8CPpNnexkd
-         LrQeGBqs8UAzRk+zSIWEd1S+DwVmoGV1IAcBxytkM8sgSOtEUxDXOLqghmcJuj0OV3qj
-         sHxY6Ou6jrTNxt1WG66gk7eQ4AebEKLdgbV2zvrR2Wt9XjtZO5lw1NytASsNjnZuCByA
-         K6IeV0v9y+9DLHm9JGZu0tUcqU1WnBWRK/1PvppiKzK83810SOIdzPbZz+IM6hh+DnWv
-         gydA==
-X-Gm-Message-State: AOAM531QKALJMS36FEqnxyezGhAIVN1nNJXQ2anYyzcR+brfnBRPxTly
-        sNJFJsV9mpZo67nvZSrsMLvCYg==
-X-Google-Smtp-Source: ABdhPJzpCZVoorPU3KqL0JE9wAQ9ZCiP3HJw+gpSeWPJvYEzWJc+/8YbC6/BBQkv8KBFvI1nGt8VgQ==
-X-Received: by 2002:a7b:c109:: with SMTP id w9mr11271120wmi.34.1604316301079;
-        Mon, 02 Nov 2020 03:25:01 -0800 (PST)
+        bh=V56hUx4Ik29TQLj2+CSFLe9SRW9C8bcqnq7xkJaiUmI=;
+        b=cGaTzp9/HNH5loYPiXPqT+glIhZloflMlyHZjhSZ/8N2pwENd+w9OVQf3RmIXtsIHV
+         YESzrFfzBJEDBV1pNBrLSMuy2qm6F5Jd8eGmE5Q+gft6ptpezZQrO2CxzfwuQotF5r61
+         iZHVY92vvVYOjCC4Pu9dfZBtbKmpEK5ODdlnrRzEBqWSbkqNG96T5ExgKNnrr3k88cxr
+         TLBmKey8mF2lcLIXzEEgttLxB6gnwfOi7ldHxvVunAGU2NCMFI4N+9utP+U6bu3a+tlW
+         +c2Y8YYfb+h0WUUmlU/TSFk2V/CN2B7y0dP8GCGiZLrMUdZFRdrQA1f6IfcwB/9vb5pW
+         fZeg==
+X-Gm-Message-State: AOAM532fnLEMke/rNsQXxT/hPwJWdQSc9kiNPrWIPFC94TOTquLYc81t
+        qbu/8y2pa4Hgjw5Ov4rsA8PFzQ==
+X-Google-Smtp-Source: ABdhPJzTyFAeigdIzuKUqE+E8GyCEp2hfljOIkpyNn8sJbCdvxcGFGLf34+xtIbYZk3zUTIk7raa1Q==
+X-Received: by 2002:adf:e8d0:: with SMTP id k16mr19559451wrn.362.1604316302226;
+        Mon, 02 Nov 2020 03:25:02 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.59
+        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:25:00 -0800 (PST)
+        Mon, 02 Nov 2020 03:25:01 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Ping-Ke Shih <pkshih@realtek.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 32/41] rtl8723be: trx: Remove set but unused variable 'cck_highpwr'
-Date:   Mon,  2 Nov 2020 11:24:01 +0000
-Message-Id: <20201102112410.1049272-33-lee.jones@linaro.org>
+Subject: [PATCH 33/41] rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
+Date:   Mon,  2 Nov 2020 11:24:02 +0000
+Message-Id: <20201102112410.1049272-34-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102112410.1049272-1-lee.jones@linaro.org>
 References: <20201102112410.1049272-1-lee.jones@linaro.org>
@@ -70,42 +71,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c: In function ‘_rtl8723be_query_rxphystatus’:
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c:53:6: warning: variable ‘cck_highpwr’ set but not used [-Wunused-but-set-variable]
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c: In function ‘rtl8821ae_phy_switch_wirelessband’:
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:597:14: warning: variable ‘rxpath’ set but not used [-Wunused-but-set-variable]
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:597:6: warning: variable ‘txpath’ set but not used [-Wunused-but-set-variable]
 
 Cc: Ping-Ke Shih <pkshih@realtek.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Larry Finger <Larry.Finger@lwfinger.net>
 Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-index 559ab78687c37..5a7cd270575a2 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-@@ -50,7 +50,6 @@ static void _rtl8723be_query_rxphystatus(struct ieee80211_hw *hw,
- 	pstatus->rx_mimo_signalquality[1] = -1;
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+index f41a7643b9c42..72ee0700a5497 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+@@ -594,11 +594,10 @@ void rtl8821ae_phy_switch_wirelessband(struct ieee80211_hw *hw, u8 band)
+ 	struct rtl_hal *rtlhal = rtl_hal(rtl_priv(hw));
+ 	struct rtl_dm *rtldm = rtl_dm(rtlpriv);
+ 	u8 current_band = rtlhal->current_bandtype;
+-	u32 txpath, rxpath;
+ 	s8 bb_diff_between_band;
  
- 	if (is_cck) {
--		u8 cck_highpwr;
- 		u8 cck_agc_rpt;
- 
- 		cck_agc_rpt = p_phystrpt->cck_agc_rpt_ofdm_cfosho_a;
-@@ -59,8 +58,7 @@ static void _rtl8723be_query_rxphystatus(struct ieee80211_hw *hw,
- 		/* (2)PWDB, Average PWDB cacluated by
- 		 * hardware (for rate adaptive)
- 		 */
--		cck_highpwr = (u8)rtl_get_bbreg(hw, RFPGA0_XA_HSSIPARAMETER2,
--						 BIT(9));
-+		rtl_get_bbreg(hw, RFPGA0_XA_HSSIPARAMETER2, BIT(9));
- 
- 		lan_idx = ((cck_agc_rpt & 0xE0) >> 5);
- 		vga_idx = (cck_agc_rpt & 0x1f);
+-	txpath = rtl8821ae_phy_query_bb_reg(hw, RTXPATH, 0xf0);
+-	rxpath = rtl8821ae_phy_query_bb_reg(hw, RCCK_RX, 0x0f000000);
++	rtl8821ae_phy_query_bb_reg(hw, RTXPATH, 0xf0);
++	rtl8821ae_phy_query_bb_reg(hw, RCCK_RX, 0x0f000000);
+ 	rtlhal->current_bandtype = (enum band_type) band;
+ 	/* reconfig BB/RF according to wireless mode */
+ 	if (rtlhal->current_bandtype == BAND_ON_2_4G) {
 -- 
 2.25.1
 
