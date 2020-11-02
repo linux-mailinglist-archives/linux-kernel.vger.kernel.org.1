@@ -2,474 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D902A232B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2B2A232F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbgKBCr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:47:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727445AbgKBCr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:47:56 -0500
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4156E22272;
-        Mon,  2 Nov 2020 02:47:52 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] m68k: m68328: move platform code to separate files
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-References: <20201030142642.855683-1-arnd@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <7435ae9a-9524-0d65-240a-bb134eefef11@linux-m68k.org>
-Date:   Mon, 2 Nov 2020 12:47:49 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201030142642.855683-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727687AbgKBCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:51:02 -0500
+Received: from mail-eopbgr20058.outbound.protection.outlook.com ([40.107.2.58]:23045
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727445AbgKBCvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 21:51:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ltAZ4M9AEsZtqRQ4IPO2whc2Qi630ie4HbxYZ0g5Q6s8jOTFfgx7RlZFwy6DHQLFo9Ln0TxuqBoNPfxoExGSLdSuHpy7kcalV+vRHfIMiqg5THOyycSwKzakqP31mAxOUTtCUkPwUwcFKRS/E8v5Etu82TvAqtzNWlPk+ifjLgB98IVPtBEfaf0Q5hKXxXKYJ5RWn/fG3mkV8ojcJiyY59HKV26bCblRYH/rbbz0UThT/AjDlpdvr/YS+iuS8F/k7g5a+cuLmZ2m5KNc87ZG5jcPZZx1WpVmlwMQk+WyUhtlzdFZhkG5gWDty+ariDkuUzzoyj9N3xESo6CHTf9e6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7hk+/YCRKe6uz6K3w7er8FM1aK2eW1cfUiQpbfJkio=;
+ b=TwxaOQ4K3/9xIIrzLx4415hqBuHnG13TMC4n6bfTq5OWX9k6sVBSgIT36js8wW6930GyHRvj3HhPoyClzVV1S++Po1hyOQTUZt+X/dQPjAcjSFa8rMNYF02Pf9XscPb6HpEysB6xrTxMjdFvOfxYbZYu6NRbjR0/XwuVhR4ysAfMZUVEvI6H+X1ovLr0hTBmTJKeV7/RGrMCbqVH7NJcYGGVDPEhMGbJ5Xet+LGVKjX2mRYuKpYPkOdUr3w0u2eEg6pKa0fphIszCRRX+Mv7Wuk3Y7dTk/BrYCqprlQJRuO2RTMKESKsT/yQAp6fmhTQj6tk+OVXaA3N5xACRC6WKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7hk+/YCRKe6uz6K3w7er8FM1aK2eW1cfUiQpbfJkio=;
+ b=NjYIru8dpBwqcefPdWfh8V5oy0sWcUgyCm7rGYMbJi89UnMGgR6+ZZuOU00HSQ+lSyybw9GwnfVzgv7PHJI/aJv5SVuvXatZ2C8/gGcrTX1WVSqv3hXXKqJg5PzmPOOWuh3E2Dq9avSF0ffYIqWRIBsx6KIk7fTdSc8TbqM/S7A=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DBAPR04MB7430.eurprd04.prod.outlook.com (2603:10a6:10:1aa::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 02:50:55 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc%8]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 02:50:55 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+CC:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V4 1/6] firmware: imx: always export SCU symbols
+Thread-Topic: [PATCH V4 1/6] firmware: imx: always export SCU symbols
+Thread-Index: AQHWp2phbfWjD2H3H0e5mz6xLBAGVamy9mqAgAE+UUA=
+Date:   Mon, 2 Nov 2020 02:50:55 +0000
+Message-ID: <DB8PR04MB679590BED0CD0D8FC5C4C418E6100@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20201021052437.3763-1-qiangqing.zhang@nxp.com>
+ <20201021052437.3763-2-qiangqing.zhang@nxp.com>
+ <20201101074300.GF31601@dragon>
+In-Reply-To: <20201101074300.GF31601@dragon>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 361f25d0-0c76-414c-0b34-08d87eda1ebf
+x-ms-traffictypediagnostic: DBAPR04MB7430:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBAPR04MB7430594B4B77368D1637A9E5E6100@DBAPR04MB7430.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OxIYu/zZrEfU7l/Lgv+v0AFelcz34R9hf1yhlTjXgXRiq8eECewiRXDW3TGZHfxLEp9d3d03C1NGLoiftfJZB1bWkQaRwTSxNBV0EUbuEQXI42VmyLm/ePA5vRX+U04G84oaPNGBECKK/6AZQ5V0YFsDwtHPTZ8Td9y8UsxWjczC3hm3T4+371o4PNUGE3ILJYRHy1PZenbQ/u5kJrFj3+73T01l4+VXWelp0jt7TDitv7YTXpTEXwmzA9QtT3S8hk0jP3QslxbVe/M1LPICMYss34jb8h/g7/l5RU+vej7W1RfKbtKJtsJtilfKyZ2ZXVNNoG6f5oC+p196kditlw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(54906003)(316002)(6916009)(71200400001)(8936002)(8676002)(66556008)(9686003)(66446008)(76116006)(64756008)(66476007)(66946007)(83380400001)(2906002)(4326008)(5660300002)(186003)(6506007)(26005)(478600001)(53546011)(86362001)(33656002)(55016002)(7696005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: +lV/BdxZfH2MYl7A1GpJdAgbjbogt17icRAzZv99MXspXP+fbUmm5nTaJWmVu/mzL7NF5IzJ6Oo3dAacBOl6Y9yXYqZD6evgOxZhx0ut97u4UI+xE74IGDMd0W1q4h+/YVKP6ZAGp69nKOZpXs6R/Wgaq9YfH2gq8pM48SyFYrqF6FCd5Vk+kBhfL3LDMPoP7OCzgsgb6dcliAoFYBWFeye7bW6gtZvsmSLBwo3OC6Axx+ScFrxJudgEZQ5Jsq63yjzDzTLKQkY08ai+hKKis1Qyig5KMKQOCQld3CYPUEAUzGPmJByUYn1mTA4L03R9xj4eU8JEhdHpuepQxlaIb3lBHcf6+keu6ktOLPfvGvNBHbtzb518eVOYhOqhF0Zx4OM9L5FJ6fnF7o+TzJCEM3evrwHbZiz/54bZ/MVLTaY9BE+zW9SZGSDXHPMdGFeY4cJ+54riEynvC/0T3FFxZzBeX+Q1leLrMt8aid8xXyU2ycGpp/iVKBtUE1bU/4ghwwcrRtirJPJUx++KrjHEF8epA7pw+eegMxRBMN9AIbB0v75xIKgXMiGlgBOa55QSEg2zhzJ75TfaeX5u99Rfli/vR2u7VJZ/SGEON2HI0IlAu7UimF50JgJaUClpa0UQsMaZHkX2XPnvevnpgH2Oxw==
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 361f25d0-0c76-414c-0b34-08d87eda1ebf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 02:50:55.5676
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Vwop8m1gZXp5dCHMj7gIOaZ3cLEf1zhP5VVSsZqIDkQnOmjS3XOE61J6babarN+625lxlgC2R5fSDZ4vmsKdyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 31/10/20 12:26 am, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The dragen2 and ucsimm/ucdimm files require a bit of
-> custom code compared to the other dragonball platforms,
-> move them into separate files as a preparation for a
-> build fix.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Just a small cleanup after I ran into some issue during build
-> testing my timer patches, the second patch contains the
-> actual bugfix but relies on this preparation patch.
-
-Thanks Arnd,
-Pushed into the for-next branch of the m68knommu git tree.
-
-Regards
-Greg
-
-
-> ---
->   arch/m68k/68000/Makefile   |   4 ++
->   arch/m68k/68000/dragen2.c  | 100 +++++++++++++++++++++++++++
->   arch/m68k/68000/m68328.c   |   3 +-
->   arch/m68k/68000/m68328.h   |   5 ++
->   arch/m68k/68000/m68EZ328.c |  23 +------
->   arch/m68k/68000/m68VZ328.c | 136 ++-----------------------------------
->   arch/m68k/68000/ucsimm.c   |  38 +++++++++++
->   7 files changed, 158 insertions(+), 151 deletions(-)
->   create mode 100644 arch/m68k/68000/dragen2.c
->   create mode 100644 arch/m68k/68000/m68328.h
->   create mode 100644 arch/m68k/68000/ucsimm.c
-> 
-> diff --git a/arch/m68k/68000/Makefile b/arch/m68k/68000/Makefile
-> index 4f7d4b45a46f..ce0b26d6580d 100644
-> --- a/arch/m68k/68000/Makefile
-> +++ b/arch/m68k/68000/Makefile
-> @@ -16,4 +16,8 @@ obj-$(CONFIG_M68EZ328)	+= m68EZ328.o
->   obj-$(CONFIG_M68VZ328)	+= m68VZ328.o
->   obj-$(CONFIG_ROM)	+= romvec.o
->   
-> +obj-$(CONFIG_DRAGEN2)	+= dragen2.o
-> +obj-$(CONFIG_UCSIMM)	+= ucsimm.o
-> +obj-$(CONFIG_UCDIMM)	+= ucsimm.o
-> +
->   extra-y 		:= head.o
-> diff --git a/arch/m68k/68000/dragen2.c b/arch/m68k/68000/dragen2.c
-> new file mode 100644
-> index 000000000000..584893c57c37
-> --- /dev/null
-> +++ b/arch/m68k/68000/dragen2.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Copyright (C) 1993 Hamish Macdonald
-> + *  Copyright (C) 1999 D. Jeff Dionne
-> + *  Copyright (C) 2001 Georges Menie, Ken Desmet
-> + *
-> + * This file is subject to the terms and conditions of the GNU General Public
-> + * License.  See the file COPYING in the main directory of this archive
-> + * for more details.
-> + */
-> +#include <linux/init.h>
-> +#include <asm/machdep.h>
-> +#include <asm/MC68VZ328.h>
-> +
-> +/***************************************************************************/
-> +/*                        Init Drangon Engine hardware                     */
-> +/***************************************************************************/
-> +
-> +static void dragen2_reset(void)
-> +{
-> +	local_irq_disable();
-> +
-> +#ifdef CONFIG_INIT_LCD
-> +	PBDATA |= 0x20;				/* disable CCFL light */
-> +	PKDATA |= 0x4;				/* disable LCD controller */
-> +	LCKCON = 0;
-> +#endif
-> +
-> +	__asm__ __volatile__(
-> +		"reset\n\t"
-> +		"moveal #0x04000000, %a0\n\t"
-> +		"moveal 0(%a0), %sp\n\t"
-> +		"moveal 4(%a0), %a0\n\t"
-> +		"jmp (%a0)"
-> +	);
-> +}
-> +
-> +void __init init_dragen2(char *command, int size)
-> +{
-> +	mach_reset = dragen2_reset;
-> +
-> +#ifdef CONFIG_DIRECT_IO_ACCESS
-> +	SCR = 0x10;					/* allow user access to internal registers */
-> +#endif
-> +
-> +	/* CSGB Init */
-> +	CSGBB = 0x4000;
-> +	CSB = 0x1a1;
-> +
-> +	/* CS8900 init */
-> +	/* PK3: hardware sleep function pin, active low */
-> +	PKSEL |= PK(3);				/* select pin as I/O */
-> +	PKDIR |= PK(3);				/* select pin as output */
-> +	PKDATA |= PK(3);			/* set pin high */
-> +
-> +	/* PF5: hardware reset function pin, active high */
-> +	PFSEL |= PF(5);				/* select pin as I/O */
-> +	PFDIR |= PF(5);				/* select pin as output */
-> +	PFDATA &= ~PF(5);			/* set pin low */
-> +
-> +	/* cs8900 hardware reset */
-> +	PFDATA |= PF(5);
-> +	{ int i; for (i = 0; i < 32000; ++i); }
-> +	PFDATA &= ~PF(5);
-> +
-> +	/* INT1 enable (cs8900 IRQ) */
-> +	PDPOL &= ~PD(1);			/* active high signal */
-> +	PDIQEG &= ~PD(1);
-> +	PDIRQEN |= PD(1);			/* IRQ enabled */
-> +
-> +#ifdef CONFIG_INIT_LCD
-> +	/* initialize LCD controller */
-> +	LSSA = (long) screen_bits;
-> +	LVPW = 0x14;
-> +	LXMAX = 0x140;
-> +	LYMAX = 0xef;
-> +	LRRA = 0;
-> +	LPXCD = 3;
-> +	LPICF = 0x08;
-> +	LPOLCF = 0;
-> +	LCKCON = 0x80;
-> +	PCPDEN = 0xff;
-> +	PCSEL = 0;
-> +
-> +	/* Enable LCD controller */
-> +	PKDIR |= 0x4;
-> +	PKSEL |= 0x4;
-> +	PKDATA &= ~0x4;
-> +
-> +	/* Enable CCFL backlighting circuit */
-> +	PBDIR |= 0x20;
-> +	PBSEL |= 0x20;
-> +	PBDATA &= ~0x20;
-> +
-> +	/* contrast control register */
-> +	PFDIR |= 0x1;
-> +	PFSEL &= ~0x1;
-> +	PWMR = 0x037F;
-> +#endif
-> +}
-> diff --git a/arch/m68k/68000/m68328.c b/arch/m68k/68000/m68328.c
-> index 419751b15ec8..6a5cfc977150 100644
-> --- a/arch/m68k/68000/m68328.c
-> +++ b/arch/m68k/68000/m68328.c
-> @@ -25,9 +25,10 @@
->   #include "bootlogo.h"
->   #endif
->   
-> +#include "m68328.h"
-> +
->   /***************************************************************************/
->   
-> -int m68328_hwclk(int set, struct rtc_time *t);
->   
->   /***************************************************************************/
->   
-> diff --git a/arch/m68k/68000/m68328.h b/arch/m68k/68000/m68328.h
-> new file mode 100644
-> index 000000000000..f6047c3168d4
-> --- /dev/null
-> +++ b/arch/m68k/68000/m68328.h
-> @@ -0,0 +1,5 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +void init_dragen2(char *command, int size);
-> +void init_ucsimm(char *command, int size);
-> +struct rtc_time;
-> +int m68328_hwclk(int set, struct rtc_time *t);
-> diff --git a/arch/m68k/68000/m68EZ328.c b/arch/m68k/68000/m68EZ328.c
-> index 05f137dc257e..65bd112285ef 100644
-> --- a/arch/m68k/68000/m68EZ328.c
-> +++ b/arch/m68k/68000/m68EZ328.c
-> @@ -24,9 +24,7 @@
->   #include <asm/bootstd.h>
->   #endif
->   
-> -/***************************************************************************/
-> -
-> -int m68328_hwclk(int set, struct rtc_time *t);
-> +#include "m68328.h"
->   
->   /***************************************************************************/
->   
-> @@ -44,29 +42,12 @@ void m68ez328_reset(void)
->   
->   /***************************************************************************/
->   
-> -unsigned char *cs8900a_hwaddr;
-> -static int errno;
-> -
-> -#ifdef CONFIG_UCSIMM
-> -_bsc0(char *, getserialnum)
-> -_bsc1(unsigned char *, gethwaddr, int, a)
-> -_bsc1(char *, getbenv, char *, a)
-> -#endif
-> -
->   void __init config_BSP(char *command, int len)
->   {
-> -  unsigned char *p;
-> -
->     pr_info("68EZ328 DragonBallEZ support (C) 1999 Rt-Control, Inc\n");
->   
->   #ifdef CONFIG_UCSIMM
-> -  pr_info("uCsimm serial string [%s]\n", getserialnum());
-> -  p = cs8900a_hwaddr = gethwaddr(0);
-> -  pr_info("uCsimm hwaddr %pM\n", p);
-> -
-> -  p = getbenv("APPEND");
-> -  if (p) strcpy(p,command);
-> -  else command[0] = 0;
-> +  init_ucsimm(command, len);
->   #endif
->   
->     mach_sched_init = hw_timer_init;
-> diff --git a/arch/m68k/68000/m68VZ328.c b/arch/m68k/68000/m68VZ328.c
-> index ada87b23afdc..025da5552f1c 100644
-> --- a/arch/m68k/68000/m68VZ328.c
-> +++ b/arch/m68k/68000/m68VZ328.c
-> @@ -32,101 +32,9 @@
->   #include "bootlogo-vz.h"
->   #endif
->   
-> -/***************************************************************************/
-> -
-> -int m68328_hwclk(int set, struct rtc_time *t);
-> -
-> -/***************************************************************************/
-> -/*                        Init Drangon Engine hardware                     */
-> -/***************************************************************************/
-> -#if defined(CONFIG_DRAGEN2)
-> -
-> -static void m68vz328_reset(void)
-> -{
-> -	local_irq_disable();
-> -
-> -#ifdef CONFIG_INIT_LCD
-> -	PBDATA |= 0x20;				/* disable CCFL light */
-> -	PKDATA |= 0x4;				/* disable LCD controller */
-> -	LCKCON = 0;
-> -#endif
-> -
-> -	__asm__ __volatile__(
-> -		"reset\n\t"
-> -		"moveal #0x04000000, %a0\n\t"
-> -		"moveal 0(%a0), %sp\n\t"
-> -		"moveal 4(%a0), %a0\n\t"
-> -		"jmp (%a0)"
-> -	);
-> -}
-> -
-> -static void __init init_hardware(char *command, int size)
-> -{
-> -#ifdef CONFIG_DIRECT_IO_ACCESS
-> -	SCR = 0x10;					/* allow user access to internal registers */
-> -#endif
-> -
-> -	/* CSGB Init */
-> -	CSGBB = 0x4000;
-> -	CSB = 0x1a1;
-> -
-> -	/* CS8900 init */
-> -	/* PK3: hardware sleep function pin, active low */
-> -	PKSEL |= PK(3);				/* select pin as I/O */
-> -	PKDIR |= PK(3);				/* select pin as output */
-> -	PKDATA |= PK(3);			/* set pin high */
-> -
-> -	/* PF5: hardware reset function pin, active high */
-> -	PFSEL |= PF(5);				/* select pin as I/O */
-> -	PFDIR |= PF(5);				/* select pin as output */
-> -	PFDATA &= ~PF(5);			/* set pin low */
-> -
-> -	/* cs8900 hardware reset */
-> -	PFDATA |= PF(5);
-> -	{ int i; for (i = 0; i < 32000; ++i); }
-> -	PFDATA &= ~PF(5);
-> -
-> -	/* INT1 enable (cs8900 IRQ) */
-> -	PDPOL &= ~PD(1);			/* active high signal */
-> -	PDIQEG &= ~PD(1);
-> -	PDIRQEN |= PD(1);			/* IRQ enabled */
-> -
-> -#ifdef CONFIG_INIT_LCD
-> -	/* initialize LCD controller */
-> -	LSSA = (long) screen_bits;
-> -	LVPW = 0x14;
-> -	LXMAX = 0x140;
-> -	LYMAX = 0xef;
-> -	LRRA = 0;
-> -	LPXCD = 3;
-> -	LPICF = 0x08;
-> -	LPOLCF = 0;
-> -	LCKCON = 0x80;
-> -	PCPDEN = 0xff;
-> -	PCSEL = 0;
-> -
-> -	/* Enable LCD controller */
-> -	PKDIR |= 0x4;
-> -	PKSEL |= 0x4;
-> -	PKDATA &= ~0x4;
-> -
-> -	/* Enable CCFL backlighting circuit */
-> -	PBDIR |= 0x20;
-> -	PBSEL |= 0x20;
-> -	PBDATA &= ~0x20;
-> -
-> -	/* contrast control register */
-> -	PFDIR |= 0x1;
-> -	PFSEL &= ~0x1;
-> -	PWMR = 0x037F;
-> -#endif
-> -}
-> +#include "m68328.h"
->   
->   /***************************************************************************/
-> -/*                      Init RT-Control uCdimm hardware                    */
-> -/***************************************************************************/
-> -#elif defined(CONFIG_UCDIMM)
-> -
->   static void m68vz328_reset(void)
->   {
->   	local_irq_disable();
-> @@ -139,51 +47,21 @@ static void m68vz328_reset(void)
->   	);
->   }
->   
-> -unsigned char *cs8900a_hwaddr;
-> -static int errno;
-> -
-> -_bsc0(char *, getserialnum)
-> -_bsc1(unsigned char *, gethwaddr, int, a)
-> -_bsc1(char *, getbenv, char *, a)
-> -
-> -static void __init init_hardware(char *command, int size)
-> -{
-> -	char *p;
-> -
-> -	pr_info("uCdimm serial string [%s]\n", getserialnum());
-> -	p = cs8900a_hwaddr = gethwaddr(0);
-> -	pr_info("uCdimm hwaddr %pM\n", p);
-> -	p = getbenv("APPEND");
-> -	if (p)
-> -		strcpy(p, command);
-> -	else
-> -		command[0] = 0;
-> -}
-> -
-> -/***************************************************************************/
-> -#else
-> -
-> -static void m68vz328_reset(void)
-> -{
-> -}
-> -
-> -static void __init init_hardware(char *command, int size)
-> -{
-> -}
-> -
-> -/***************************************************************************/
-> -#endif
->   /***************************************************************************/
->   
->   void __init config_BSP(char *command, int size)
->   {
->   	pr_info("68VZ328 DragonBallVZ support (c) 2001 Lineo, Inc.\n");
->   
-> -	init_hardware(command, size);
-> -
->   	mach_sched_init = hw_timer_init;
->   	mach_hwclk = m68328_hwclk;
->   	mach_reset = m68vz328_reset;
-> +
-> +#ifdef CONFIG_UCDIMM
-> +	init_ucsimm(command, len);
-> +#elif defined(CONFIG_DRAGEN2)
-> +	init_dragen2(command, len);
-> +#endif
->   }
->   
->   /***************************************************************************/
-> diff --git a/arch/m68k/68000/ucsimm.c b/arch/m68k/68000/ucsimm.c
-> new file mode 100644
-> index 000000000000..7c6cbf643712
-> --- /dev/null
-> +++ b/arch/m68k/68000/ucsimm.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Copyright (C) 1993 Hamish Macdonald
-> + *  Copyright (C) 1999 D. Jeff Dionne
-> + *  Copyright (C) 2001 Georges Menie, Ken Desmet
-> + *
-> + * This file is subject to the terms and conditions of the GNU General Public
-> + * License.  See the file COPYING in the main directory of this archive
-> + * for more details.
-> + */
-> +#include <linux/init.h>
-> +#include <asm/bootstd.h>
-> +#include <asm/machdep.h>
-> +#include <asm/MC68VZ328.h>
-> +
-> +
-> +#include "m68328.h"
-> +
-> +unsigned char *cs8900a_hwaddr;
-> +static int errno;
-> +
-> +_bsc0(char *, getserialnum)
-> +_bsc1(unsigned char *, gethwaddr, int, a)
-> +_bsc1(char *, getbenv, char *, a)
-> +
-> +void __init init_ucsimm(char *command, int size)
-> +{
-> +	char *p;
-> +
-> +	pr_info("uCsimm/uCdimm serial string [%s]\n", getserialnum());
-> +	p = cs8900a_hwaddr = gethwaddr(0);
-> +	pr_info("uCsimm/uCdimm hwaddr %pM\n", p);
-> +	p = getbenv("APPEND");
-> +	if (p)
-> +		strcpy(p, command);
-> +	else
-> +		command[0] = 0;
-> +}
-> 
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNoYXduIEd1byA8c2hhd25n
+dW9Aa2VybmVsLm9yZz4NCj4gU2VudDogMjAyMMTqMTHUwjHI1SAxNTo0Mw0KPiBUbzogSm9ha2lt
+IFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gQ2M6IG1rbEBwZW5ndXRyb25peC5k
+ZTsgcm9iaCtkdEBrZXJuZWwub3JnOyBzLmhhdWVyQHBlbmd1dHJvbml4LmRlOw0KPiBrZXJuZWxA
+cGVuZ3V0cm9uaXguZGU7IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBZaW5nIExp
+dQ0KPiA8dmljdG9yLmxpdUBueHAuY29tPjsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgbmV0
+ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBT
+dWJqZWN0OiBSZTogW1BBVENIIFY0IDEvNl0gZmlybXdhcmU6IGlteDogYWx3YXlzIGV4cG9ydCBT
+Q1Ugc3ltYm9scw0KPiANCj4gT24gV2VkLCBPY3QgMjEsIDIwMjAgYXQgMDE6MjQ6MzJQTSArMDgw
+MCwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+IEZyb206IExpdSBZaW5nIDx2aWN0b3IubGl1QG54
+cC5jb20+DQo+ID4NCj4gPiBBbHdheXMgZXhwb3J0IFNDVSBzeW1ib2xzIGZvciBib3RoIFNDVSBT
+b0NzIGFuZCBub24tU0NVIFNvQ3MgdG8gYXZvaWQNCj4gPiBidWlsZCBlcnJvci4NCj4gPg0KPiA+
+IFNpZ25lZC1vZmYtYnk6IExpdSBZaW5nIDx2aWN0b3IubGl1QG54cC5jb20+DQo+ID4gU2lnbmVk
+LW9mZi1ieTogUGVuZyBGYW4gPHBlbmcuZmFuQG54cC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTog
+Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgaW5j
+bHVkZS9saW51eC9maXJtd2FyZS9pbXgvaXBjLmggICAgICB8IDE1ICsrKysrKysrKysrKysrKw0K
+PiANCj4gQ291bGQgeW91IHJlYmFzZSBpdCB0byBteSBpbXgvZHJpdmVycyBicmFuY2g/ICBUaGVy
+ZSBpcyBvbmUgcGF0Y2ggZnJvbSBQZW5nDQo+IEZhbiB0aGF0IGFscmVhZHkgY2hhbmdlZCBpcGMu
+aC4NCg0KDQpIaSBTaGF3biwNCg0KUGxlYXNlIGlnbm9yZSAxLzYgcGF0Y2ggc2luY2UgaXQgaGFz
+IGJlZW4gZG9uZSB3aXRoIFBlbmcncyBwYXRjaC4gSSB3aWxsIHJlc2VuZCBmbGV4Y2FuIHBhdGNo
+IHNldCBhZnRlciBQZW5nJ3MgcGF0Y2ggZ29lcyBpbnRvIG1haW5saW5lLg0KDQpDb3VsZCB5b3Ug
+cGxlYXNlIHJldmlldyA1LzYgcGF0Y2ggd2hpY2ggaXMgc3VnZ2VzdGVkIGJ5IEZsZXhjYW4gZHJp
+dmVyIG1haW50YWluZXI/IFRoYW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoN
+Cg0KPiBTaGF3bg0KPiANCj4gPiAgaW5jbHVkZS9saW51eC9maXJtd2FyZS9pbXgvc3ZjL21pc2Mu
+aCB8IDIzICsrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMzgg
+aW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvZmlybXdh
+cmUvaW14L2lwYy5oDQo+ID4gYi9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lteC9pcGMuaA0KPiA+
+IGluZGV4IDg5MTA1NzQzNDg1OC4uMzAwZmEyNTNmYzMwIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1
+ZGUvbGludXgvZmlybXdhcmUvaW14L2lwYy5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9maXJt
+d2FyZS9pbXgvaXBjLmgNCj4gPiBAQCAtMzQsNiArMzQsNyBAQCBzdHJ1Y3QgaW14X3NjX3JwY19t
+c2cgew0KPiA+ICAJdWludDhfdCBmdW5jOw0KPiA+ICB9Ow0KPiA+DQo+ID4gKyNpZiBJU19FTkFC
+TEVEKENPTkZJR19JTVhfU0NVKQ0KPiA+ICAvKg0KPiA+ICAgKiBUaGlzIGlzIGFuIGZ1bmN0aW9u
+IHRvIHNlbmQgYW4gUlBDIG1lc3NhZ2Ugb3ZlciBhbiBJUEMgY2hhbm5lbC4NCj4gPiAgICogSXQg
+aXMgY2FsbGVkIGJ5IGNsaWVudC1zaWRlIFNDRlcgQVBJIGZ1bmN0aW9uIHNoaW1zLg0KPiA+IEBA
+IC01NSw0ICs1NiwxOCBAQCBpbnQgaW14X3NjdV9jYWxsX3JwYyhzdHJ1Y3QgaW14X3NjX2lwYyAq
+aXBjLCB2b2lkDQo+ICptc2csIGJvb2wgaGF2ZV9yZXNwKTsNCj4gPiAgICogQHJldHVybiBSZXR1
+cm5zIGFuIGVycm9yIGNvZGUgKDAgPSBzdWNjZXNzLCBmYWlsZWQgaWYgPCAwKQ0KPiA+ICAgKi8N
+Cj4gPiAgaW50IGlteF9zY3VfZ2V0X2hhbmRsZShzdHJ1Y3QgaW14X3NjX2lwYyAqKmlwYyk7DQo+
+ID4gKw0KPiA+ICsjZWxzZQ0KPiA+ICtzdGF0aWMgaW5saW5lIGludA0KPiA+ICtpbXhfc2N1X2Nh
+bGxfcnBjKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHZvaWQgKm1zZywgYm9vbCBoYXZlX3Jlc3Ap
+IHsNCj4gPiArCXJldHVybiAtRUlPOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5l
+IGludCBpbXhfc2N1X2dldF9oYW5kbGUoc3RydWN0IGlteF9zY19pcGMgKippcGMpIHsNCj4gPiAr
+CXJldHVybiAtRUlPOw0KPiA+ICt9DQo+ID4gKyNlbmRpZg0KPiA+ICsNCj4gPiAgI2VuZGlmIC8q
+IF9TQ19JUENfSCAqLw0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lt
+eC9zdmMvbWlzYy5oDQo+ID4gYi9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lteC9zdmMvbWlzYy5o
+DQo+ID4gaW5kZXggMDMxZGQ0ZDNjNzY2Li5kMjU1MDQ4ZjE3ZGUgMTAwNjQ0DQo+ID4gLS0tIGEv
+aW5jbHVkZS9saW51eC9maXJtd2FyZS9pbXgvc3ZjL21pc2MuaA0KPiA+ICsrKyBiL2luY2x1ZGUv
+bGludXgvZmlybXdhcmUvaW14L3N2Yy9taXNjLmgNCj4gPiBAQCAtNDYsNiArNDYsNyBAQCBlbnVt
+IGlteF9taXNjX2Z1bmMgew0KPiA+ICAgKiBDb250cm9sIEZ1bmN0aW9ucw0KPiA+ICAgKi8NCj4g
+Pg0KPiA+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfSU1YX1NDVSkNCj4gPiAgaW50IGlteF9zY19t
+aXNjX3NldF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4g
+PiAgCQkJICAgIHU4IGN0cmwsIHUzMiB2YWwpOw0KPiA+DQo+ID4gQEAgLTU1LDQgKzU2LDI2IEBA
+IGludCBpbXhfc2NfbWlzY19nZXRfY29udHJvbChzdHJ1Y3QgaW14X3NjX2lwYyAqaXBjLA0KPiA+
+IHUzMiByZXNvdXJjZSwgIGludCBpbXhfc2NfcG1fY3B1X3N0YXJ0KHN0cnVjdCBpbXhfc2NfaXBj
+ICppcGMsIHUzMg0KPiByZXNvdXJjZSwNCj4gPiAgCQkJYm9vbCBlbmFibGUsIHU2NCBwaHlzX2Fk
+ZHIpOw0KPiA+DQo+ID4gKyNlbHNlDQo+ID4gK3N0YXRpYyBpbmxpbmUgaW50DQo+ID4gK2lteF9z
+Y19taXNjX3NldF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwN
+Cj4gPiArCQkJdTggY3RybCwgdTMyIHZhbCkNCj4gPiArew0KPiA+ICsJcmV0dXJuIC1FSU87DQo+
+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgaW50DQo+ID4gK2lteF9zY19taXNjX2dl
+dF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4gPiArCQkJ
+dTggY3RybCwgdTMyICp2YWwpDQo+ID4gK3sNCj4gPiArCXJldHVybiAtRUlPOw0KPiA+ICt9DQo+
+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5lIGludCBpbXhfc2NfcG1fY3B1X3N0YXJ0KHN0cnVjdCBp
+bXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4gPiArCQkJCSAgICAgIGJvb2wgZW5hYmxl
+LCB1NjQgcGh5c19hZGRyKSB7DQo+ID4gKwlyZXR1cm4gLUVJTzsNCj4gPiArfQ0KPiA+ICsjZW5k
+aWYNCj4gPiArDQo+ID4gICNlbmRpZiAvKiBfU0NfTUlTQ19BUElfSCAqLw0KPiA+IC0tDQo+ID4g
+Mi4xNy4xDQo+ID4NCg==
