@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9A12A3329
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA82A333D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgKBSnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:43:14 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:37978 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKBSnN (ORCPT
+        id S1726552AbgKBSny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgKBSnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:43:13 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kZenP-000rzp-GY; Mon, 02 Nov 2020 11:43:11 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kZenO-000226-GZ; Mon, 02 Nov 2020 11:43:11 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201030152407.43598-1-cai@redhat.com>
-        <20201030184255.GP3576660@ZenIV.linux.org.uk>
-        <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
-        <20201030184918.GQ3576660@ZenIV.linux.org.uk>
-        <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
-        <20201030222213.GR3576660@ZenIV.linux.org.uk>
-        <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
-Date:   Mon, 02 Nov 2020 12:43:09 -0600
-In-Reply-To: <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk> (Jens Axboe's
-        message of "Fri, 30 Oct 2020 17:21:39 -0600")
-Message-ID: <87y2jja9c2.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 2 Nov 2020 13:43:53 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E38C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:43:53 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id k9so12400505qki.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:43:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
+        b=mlUxWUYczJS33fR/iEwt/7WalH3MyWBBWGTZPF3zH1DpEprnioF1fYaxu2gUKfLdKw
+         1WMZTm5lKn3mAjOa41gApSWGp+MEayPPgZTLRwmfUBDhuWArFWjsSASOHXFb+IfhiElE
+         SmHeEPC+CaEHSaIUeDgtVjphVl0ukNHXln5sE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
+        b=k692CoAwJraimqle2rUQJL0fUEquqV945JbL8TGUA0u7w+v+yi2ZipiJdZV8xWp0Zf
+         CeEjy3vguJOlI/xsJw54HDzM5U0s+23KZcollngXuSuDZCDCoJbxb9/FDgVBM8R4nETo
+         q982F6CAAlm3f2Jc1eqO/grWDt/C9R04+Cr7bBHPndlZqRWmy53KlLY6pg0BzGlHJNNR
+         erx8VsIQwLh+IuJNlt+i446woPqPMEmnRqe9KyPyAmjw2K9XiJPnh6C1CSqGNlErQkNt
+         8t9GnzzEzANCsw3L6eAB3cFY6F8p+neCOZ27HSHops+ngllcU0k8xwhxSPOIYq+m+1MU
+         SUeA==
+X-Gm-Message-State: AOAM532NAsUgb5KKVR27YZ14j5goBhn3wA62fjZw8OSzvK2f5ou6sWck
+        0yN8mN2VUL1yQ64vFO7ml7P93Q==
+X-Google-Smtp-Source: ABdhPJxhYLiuNq2MONOb69Pm6DrknVY7dG6jwS8GHGFR1nX80wOdGTryPPiTHxLvnkYi9O5IVdbUng==
+X-Received: by 2002:a05:620a:2144:: with SMTP id m4mr16144470qkm.269.1604342632790;
+        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id 71sm8719856qko.55.2020.11.02.10.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:43:51 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
+ rcuidle tracepoints
+Message-ID: <20201102184351.GA595952@google.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-7-mjeanson@efficios.com>
+ <20201023211359.GC3563800@google.com>
+ <20201026082010.GC2628@hirez.programming.kicks-ass.net>
+ <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kZenO-000226-GZ;;;mid=<87y2jja9c2.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX181lbXNi0J03l5MfI6GEDv6cuRy7EmX6ps=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4865]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 581 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 11 (1.9%), b_tie_ro: 9 (1.6%), parse: 0.85 (0.1%),
-         extract_message_metadata: 12 (2.0%), get_uri_detail_list: 1.00 (0.2%),
-         tests_pri_-1000: 4.8 (0.8%), tests_pri_-950: 1.34 (0.2%),
-        tests_pri_-900: 1.05 (0.2%), tests_pri_-90: 121 (20.9%), check_bayes:
-        119 (20.5%), b_tokenize: 5 (0.9%), b_tok_get_all: 5 (0.9%),
-        b_comp_prob: 2.2 (0.4%), b_tok_touch_all: 102 (17.6%), b_finish: 0.92
-        (0.2%), tests_pri_0: 156 (26.9%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 238 (41.0%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 267 (46.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+On Mon, Oct 26, 2020 at 10:28:07AM -0400, Mathieu Desnoyers wrote:
+> ----- On Oct 26, 2020, at 4:20 AM, Peter Zijlstra peterz@infradead.org wrote:
+> 
+> > On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
+> >> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
+> >> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >> > 
+> >> > Considering that tracer callbacks expect RCU to be watching (for
+> >> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
+> >> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
+> >> > no point in using SRCU anymore given that rcuidle tracepoints need to
+> >> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
+> >> > tracepoints for rcuidle tracepoints.
+> >> 
+> >> High level question:
+> >> 
+> >> IIRC, doing this increases overhead for general tracing that does not use
+> >> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
+> >> tracepoints. I remember adding SRCU because of this reason.
+> >> 
+> >> Can the 'rcuidle' information not be pushed down further, such that perf does
+> >> it because it requires RCU to be watching, so that it does not effect, say,
+> >> trace events?
+> > 
+> > There's very few trace_.*_rcuidle() users left. We should eradicate them
+> > and remove the option. It's bugs to begin with.
+> 
+> I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
+> API and fixing all callers to ensure they trace from a context where RCU is
+> watching would simplify instrumentation of the Linux kernel, thus making it harder
+> for subtle bugs to hide and be unearthed only when tracing is enabled. This is
+> AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
+> think it is a good thing.
+> 
+> So if we consider this our target, and that the current state of things is that
+> we need to have RCU watching around callback invocation, then removing the
+> dependency on SRCU seems like an overall simplification which does not regress
+> feature-wise nor speed-wise compared with what we have upstream today. The next
+> steps would then be to audit all rcuidle tracepoints and make sure the context
+> where they are placed has RCU watching already, so we can remove the tracepoint
+> rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
+> from the tracepoint code.
+> 
+> This is however beyond the scope of the proposed patch set.
 
-> On 10/30/20 4:22 PM, Al Viro wrote:
->> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
->>> On 10/30/20 12:49 PM, Al Viro wrote:
->>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
->>>>
->>>>> See other reply, it's being posted soon, just haven't gotten there yet
->>>>> and it wasn't ready.
->>>>>
->>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
->>>>> instead. The intent is not to have any functional changes in that prep
->>>>> patch. But once we can pass in filenames instead of user pointers, it's
->>>>> usable from io_uring.
->>>>
->>>> You do realize that pathname resolution is *NOT* offloadable to helper
->>>> threads, I hope...
->>>
->>> How so? If we have all the necessary context assigned, what's preventing
->>> it from working?
->> 
->> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
->> *do* pass through that, /dev/stdin included)
->
-> Don't we just need ->thread_pid for that to work?
+You are right, it doesn't regress speedwise - I got confused since the code
+was modified to call rcu_enter_irqson() even for the rcuidle case (which I
+had avoided when I added SRCU). So in current code, SRCU is kind of
+pointless. I think keep the patch in the series.
 
-Are you proposing changing the pid of a kernel thread to get that?
+thanks,
 
-Currently it is an invariant in the kernel that pids do not change.
+ - Joel
 
-Eric
