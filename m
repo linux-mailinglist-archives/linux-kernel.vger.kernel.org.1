@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DD02A289E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9421F2A28A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgKBLA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:00:28 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45575 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728239AbgKBLA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:00:28 -0500
-Received: by mail-ot1-f65.google.com with SMTP id k3so336984otp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:00:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Est9z1fD3Li8EgxUfKLKw9jqrC1ujvYEuzVL+Qvht4A=;
-        b=fdcK3y5sKE2r0iTzk78VmtiEGWvmhWRk6TY8KAvsHvWHPNQqgoA66QvIegKujjT8Ca
-         Gk+AxJ7XZ+wNICng2DSSQ26L/+Y09ADV2TkuRubM4UOQwjLK+tJGECqKqUstJxAjjhlT
-         2/lEGIi+yFFT8sQlcU3mxhYW8uelclVp7sbBpnM9wSBm7cXsFEeeMl07xOPU5Qmu5Tbc
-         s4De7eon9N+95lhxn08PLG0Otho3dogAMF25N6TVRR5sHOVA+EZYi0R4VC7GkhFbMI+u
-         Jd/SG5Ex0SDIIPjBNvx4d1laexfh+MbO+zjuee8xyhcC8rS24c+pYS/8ekYl3g2Oe9Ty
-         TBgA==
-X-Gm-Message-State: AOAM532naoAyK68anu50udTaQ/EWTkbUB3rWpPZtMnf8OquXnShhL7Pr
-        bnBSHk0lIKOweowmcmKX58NSMUwxTV97B17gPoA=
-X-Google-Smtp-Source: ABdhPJyBpL+PeeLUEXiVaPZCo+Jvm31VUCsN3zE+dXDJ1eFI4W9tfAA3CcQBA6aMvyEvrPeYxISX9Ot8L7tpC9vlADo=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr11484382otc.145.1604314825756;
- Mon, 02 Nov 2020 03:00:25 -0800 (PST)
+        id S1728510AbgKBLBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:01:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37898 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728359AbgKBLBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:01:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604314868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U0bbJWcE8TqZZ4KFhcUKjOk+R/xtAXQ8wifmaN/IvfI=;
+        b=UIelVJPpkHhU7oxUQ9EIzt3AI1+pVAlyBNlDsvtkT6vJrdTGjtvge3IYkrv1RinJOe9QNw
+        0wWSgDcGgagelYIGmAZMY9gYCPjWZf+1UOiPVNHZm+ZyI5SM3e+NmUOfUjqINlX6FCcvZQ
+        X6iTmlwGjmu5rYcvKDnmeUUrtfo2vxQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5897FAD3C;
+        Mon,  2 Nov 2020 11:01:08 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 12:01:07 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>
+Subject: Re: [PATCH v2 2/2] reboot: fix parsing of reboot cpu number
+Message-ID: <20201102110107.GG20201@alley>
+References: <20201027133545.58625-1-mcroce@linux.microsoft.com>
+ <20201027133545.58625-3-mcroce@linux.microsoft.com>
+ <20201030143049.GE1602@alley>
+ <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201031093823.GA453843@infradead.org> <CAHk-=wgetKKWar8M0VW4mXBY4p5_oCMH=nvU001pkozEgsMEKg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgetKKWar8M0VW4mXBY4p5_oCMH=nvU001pkozEgsMEKg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 2 Nov 2020 12:00:14 +0100
-Message-ID: <CAMuHMdVyL7_VaqfVPxESmPBe=pntcRdB3_PEArU4JQasX0EBfA@mail.gmail.com>
-Subject: Re: [GIT PULL] dma-mapping fix for 5.10
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Sat, Oct 31, 2020 at 8:51 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Sat, Oct 31, 2020 at 2:40 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > dma-mapping fix for 5.10:
+On Sun 2020-11-01 02:57:40, Matteo Croce wrote:
+> On Fri, Oct 30, 2020 at 3:30 PM Petr Mladek <pmladek@suse.com> wrote:
 > >
-> >  - fix an integer overflow on 32-bit platforms in the new DMA range code
-> >    (Geert Uytterhoeven)
->
-> So this is just a stylistic nit, and has no impact on this pull (which
-> I've done). But looking at the patch, it triggers one of my "this is
-> wrong" patterns.
->
-> In particular, this:
->
->         u64 dma_start = 0;
->         ...
->         for (dma_start = ~0ULL; r->size; r++) {
->
-> is actually completely bogus in theory, and it's a horribly horribly
-> bad pattern to have.
->
-> The thing that I hate about that parttern is "~0ULL", which is simply wrong.
->
-> The correct pattern for "all bits set" is ~0. NOTHING ELSE. No extra
-> letters at the end.
->
-> Why? Because using an unsigned type is wrong, and will not extend the
-> bits up to a potentially bigger size.
->
-> So adding that "ULL" is not just three extra characters to type, it
-> actually _detracts_ from the code and makes it more fragile and
-> potentially wrong.
->
-> It so happens, that yes, in the kernel, "ull" us 64-bit, and you get
-> the right results. So the code _works_. But it's wrong, and it now
-> requires that the types match exactly (ie it would not be broken if
-> somebody ever were to say "I want to use use 128-bit dma addresses and
-> u128").
+> > On Tue 2020-10-27 14:35:45, Matteo Croce wrote:
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > >
+> > > The kernel cmdline reboot= argument allows to specify the CPU used
+> > > for rebooting, with the syntax `s####` among the other flags, e.g.
+> > >
+> > >   reboot=soft,s4
+> > >   reboot=warm,s31,force
+> > >
+> > > In the early days the parsing was done with simple_strtoul(), later
+> > > deprecated in favor of the safer kstrtoint() which handles overflow.
+> > >
+> > > But kstrtoint() returns -EINVAL if there are non-digit characters
+> > > in a string, so if this flag is not the last given, it's silently
+> > > ignored as well as the subsequent ones.
+> > >
+> > > To fix it, revert the usage of simple_strtoul(), which is no longer
+> > > deprecated, and restore the old behaviour.
+> > >
+> > > While at it, merge two identical code blocks into one.
+> >
+> > > --- a/kernel/reboot.c
+> > > +++ b/kernel/reboot.c
+> > > @@ -552,25 +552,19 @@ static int __init reboot_setup(char *str)
+> > >
+> > >               case 's':
+> > >               {
+> > > -                     int rc;
+> > > -
+> > > -                     if (isdigit(*(str+1))) {
+> > > -                             rc = kstrtoint(str+1, 0, &reboot_cpu);
+> > > -                             if (rc)
+> > > -                                     return rc;
+> > > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > > -                                     reboot_cpu = 0;
+> > > -                                     return -ERANGE;
+> > > -                             }
+> > > -                     } else if (str[1] == 'm' && str[2] == 'p' &&
+> > > -                                isdigit(*(str+3))) {
+> > > -                             rc = kstrtoint(str+3, 0, &reboot_cpu);
+> > > -                             if (rc)
+> > > -                                     return rc;
+> > > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > > -                                     reboot_cpu = 0;
+> >
+> >                                                      ^^^^^^
+> >
+> > > +                     int cpu;
+> > > +
+> > > +                     /*
+> > > +                      * reboot_cpu is s[mp]#### with #### being the processor
+> > > +                      * to be used for rebooting. Skip 's' or 'smp' prefix.
+> > > +                      */
+> > > +                     str += str[1] == 'm' && str[2] == 'p' ? 3 : 1;
+> > > +
+> > > +                     if (isdigit(str[0])) {
+> > > +                             cpu = simple_strtoul(str, NULL, 0);
+> > > +                             if (cpu >= num_possible_cpus())
+> > >                                       return -ERANGE;
+> > > -                             }
+> > > +                             reboot_cpu = cpu;
+> >
+> > The original value stays when the new one is out of range. It is
+> > small functional change that should get mentioned in the commit
+> > message or better fixed separately.
 
-Thanks, you're right, the "ULL" suffix is not needed, and could cause
-future issues.
+Ah, I see. From some reason, I assumed that it was defined as
+module_param() or core_param(). Then it would be possible to modify
+it later via /sys.
 
-> Another example is using "~0ul", which would give different results on
-> a 32-bit kernel and a 64-bit kernel. Again: DON'T DO THAT.
+I am sorry for the noise.
 
-Definitely.
-
-> I repeat: the right thing to do for "all bits set" is just a plain ~0
-> or -1. Either of those are fine (technically assumes a 2's complement
-> machine, but let's just be honest: that's a perfectly fine assumption,
-> and -1 might be preferred by some because it makes that sign extension
-> behavior of the integer constant more obvious).
-
-"-1" definitely causes warnings, depending on your compiler (not with
-the gcc 9.3.0 I'm currently using, though).
-
-> Don't try to do anything clever or anything else, because it's going
-> to be strictly worse.
->
-> The old code that that patch removed was "technically correct", but
-> just pointless, and actually shows the problem:
->
->         for (dma_start = ~(dma_addr_t)0; r->size; r++) {
->
-> the above is indeed a correct way to say "I want all bits set in a
-> dma_addr_t", but while correct, it is - once again - strictly inferior
-> to just using "~0".
-
-Obviously I was misled by the old code, and instead of changing
-the cast, I replaced the cast ("casts are evil") by a suffix. Doh.
-
-Any, I've just sent a patch. Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best Regards,
+Petr
