@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4C92A2EA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E562A2EA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgKBPw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgKBPw6 (ORCPT
+        id S1726643AbgKBPxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:53:22 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:47879 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgKBPxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:52:58 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB48C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:52:58 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id da2so4108797qvb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:52:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f4bAkyYQ5JW+w3wAB0B3Wuqs9gDAq+dCKVKb1szgdTE=;
-        b=hqSP56ncN1Xesc0LR+LCBrLcoSGV6TopG9RG3GGTAjXZawK07x4FedOxx8+KwVozhh
-         yTaXjjMacA7HSrB+GRFpwykUXEgHjYuiJRUfTBK6bxwzQkDVZZxpNeA6oR5zy06hcsRr
-         +OWzKfZs32d+rXtNU6sG16vNSbBVRNjen0md3oJEh5m3qEuLJBFDAZd22drwYUhFMUM8
-         jihAo1Zpdxicjpm3k0zP51jRIixb81HpWfJ8CKClqtFak5XKxto5Xo7s7pUz3s+srShN
-         1BUfFqWebwl5tOah1zDSpMj6M1bL9GXyO8wQDz9s59OVdbT9CJgBaBWOD1bIDFUY/B+7
-         N2fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f4bAkyYQ5JW+w3wAB0B3Wuqs9gDAq+dCKVKb1szgdTE=;
-        b=ZZUZm8rtLE0wQIFqt+i51Z5pQs21MAk6DBftlG+t7nl/1dbmLSTUSDbfFP4j3guky6
-         lCgRJcvWMB0Wd2OoUqXCOp5LlebV1rzKO31xCt8eyTVrmcF/luuMPujtZkPBynNrznSV
-         L4aMm5Tva3lje2nCPKjmbKsZjgI1NQjEaVVnFr9Dh97XJnENNsjqGkgaVwDbPNPWERHN
-         w7xuh8n04TOHUT6Wf99VeGRgmGRRz2XZl4cHxysU2AmdPExesIvo4h7P/ql/yl5CtV+s
-         vaa1X5MbDFHjfpxZp+hjOXZuXGKqYlFKuDSP1F/BbFkRbdzvIhh2Os05oaj11EvgTVEq
-         jcQw==
-X-Gm-Message-State: AOAM530ID0vSLexLr9wC3c7n27vRTT5sREiM5b4BdmNEwnLSvg4qGEHI
-        u6C7OGFhJM/ckmUI/QSfQ3HZaA==
-X-Google-Smtp-Source: ABdhPJywaNhw5aFpN/pYIk6/MJ/bkf/gh0tZ3udL0VlE8QqDUlZAs/BeSFGHSpJn56VGOhuQYMqcFg==
-X-Received: by 2002:a0c:a261:: with SMTP id f88mr23351432qva.56.1604332377746;
-        Mon, 02 Nov 2020 07:52:57 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id v92sm8169357qte.33.2020.11.02.07.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 07:52:56 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kZc8e-00F975-6s; Mon, 02 Nov 2020 11:52:56 -0400
-Date:   Mon, 2 Nov 2020 11:52:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        J??r??me Glisse <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
-Message-ID: <20201102155256.GG36674@ziepe.ca>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-9-daniel.vetter@ffwll.ch>
- <20201102072931.GA16419@infradead.org>
- <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
- <20201102130115.GC36674@ziepe.ca>
- <CAKMK7uHeL=w7GoBaY4XrbRcpJabR9UWnP+oQ9Fg51OzL7=KxiA@mail.gmail.com>
+        Mon, 2 Nov 2020 10:53:21 -0500
+X-Originating-IP: 90.1.129.152
+Received: from localhost.localdomain (alille-651-1-130-152.w90-1.abo.wanadoo.fr [90.1.129.152])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A684960016;
+        Mon,  2 Nov 2020 15:53:17 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v7 0/3] drm: LogiCVC display controller support
+Date:   Mon,  2 Nov 2020 16:53:05 +0100
+Message-Id: <20201102155308.142691-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uHeL=w7GoBaY4XrbRcpJabR9UWnP+oQ9Fg51OzL7=KxiA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 02:23:58PM +0100, Daniel Vetter wrote:
-> On Mon, Nov 2, 2020 at 2:01 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Nov 02, 2020 at 01:56:10PM +0100, Daniel Vetter wrote:
-> > > On Mon, Nov 2, 2020 at 8:29 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > > >
-> > > > On Fri, Oct 30, 2020 at 11:08:08AM +0100, Daniel Vetter wrote:
-> > > > > Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
-> > > > > that by drivers/modules is together with an mmu_notifier, and that's
-> > > > > all _GPL stuff.
-> > > >
-> > > > I also think it also needs to be renamed to explicitly break any existing
-> > > > users out of tree or int the submission queue.
-> > >
-> > > Ok I looked at the mmu notifier locking again and noticed that
-> > > mm->subscriptions has its own spinlock. Since there usually shouldn't
-> > > be a huge pile of these I think it's feasible to check for the mmu
-> > > notifier in follow_pfn. And that would stuff this gap for good. I'll
-> > > throw that on top as a final patch and see what people think.
-> >
-> > Probably the simplest is to just check mm_has_notifiers() when in
-> > lockdep or something very simple like that
-> 
-> lockdep feels wrong, was locking more at CONFIG_DEBUG_VM. And since
-> generally you only have 1 mmu notifier (especially for kvm) I think we
-> can also pay the 2nd cacheline miss and actually check the right mmu
-> notifier is registered.
+This series introduces support for the LogiCVC display controller.
+The controller is a bit unusual since it is usually loaded as
+programmable logic on Xilinx FPGAs or Zynq-7000 SoCs.
+More details are presented on the main commit for the driver.
 
-Need to hold the lock to check that and there are two ways to register
-notifiers these days, so it feels to expensive to me.
+More information about the controller is available on the dedicated
+web page: https://www.logicbricks.com/Products/logiCVC-ML.aspx
 
-CH's 'export symbol only for kvm' really does seem the most robust way
-to handle this though.
+Note that this driver has rather simple connector management, which was
+not converted to drm_panel_bridge to keep the ability to enable the panel
+at first vblank but also to support DVI.
 
-Jason
+Changes since v6:
+- Updated to the latest DRM internal API changes; 
+- Used an enum to index dt properties instead of the name string.
+
+Changes since v5:
+- Subclass DRM device and use devm_drm_dev_alloc for allocation;
+- Removed call to drm_mode_config_cleanup (done automatically with devm);
+- Some related code cleanups;
+- Bring back not-for-merge patch adding colorkey support.
+
+Changes since v4:
+- Updated to internal DRM API changes (rebased on drm-misc-next);
+- Added Kconfig dependency on OF;
+- Added MAINTAINERS entry;
+- Used drm_err and dev_err instead of DRM_ERROR where possible;
+- Various cosmetic changes.
+
+Changes since v3:
+- Rebased on latest drm-misc;
+- Improved event lock wrapping;
+- Added collect tag;
+- Added color-key support patch (not for merge, for reference only).
+
+Changes since v2:
+- Fixed and slightly improved dt schema.
+
+Changes since v1:
+- Switched dt bindings documentation to dt schema;
+- Described more possible dt parameters;
+- Added support for the lvds-3bit interface;
+- Added support for grabbing syscon regmap from parent node;
+- Removed layers count property and count layers child nodes instead.
+
+Cheers!
+
+Paul Kocialkowski (3):
+  dt-bindings: display: Document the Xylon LogiCVC display controller
+  drm: Add support for the LogiCVC display controller
+  NOTFORMERGE: drm/logicvc: Add plane colorkey support
+
+ .../display/xylon,logicvc-display.yaml        | 313 ++++++++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/Kconfig                       |   2 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/logicvc/Kconfig               |   9 +
+ drivers/gpu/drm/logicvc/Makefile              |   4 +
+ drivers/gpu/drm/logicvc/logicvc_crtc.c        | 277 +++++++
+ drivers/gpu/drm/logicvc/logicvc_crtc.h        |  21 +
+ drivers/gpu/drm/logicvc/logicvc_drm.c         | 472 +++++++++++
+ drivers/gpu/drm/logicvc/logicvc_drm.h         |  67 ++
+ drivers/gpu/drm/logicvc/logicvc_interface.c   | 224 ++++++
+ drivers/gpu/drm/logicvc/logicvc_interface.h   |  30 +
+ drivers/gpu/drm/logicvc/logicvc_layer.c       | 750 ++++++++++++++++++
+ drivers/gpu/drm/logicvc/logicvc_layer.h       |  71 ++
+ drivers/gpu/drm/logicvc/logicvc_mode.c        | 101 +++
+ drivers/gpu/drm/logicvc/logicvc_mode.h        |  15 +
+ drivers/gpu/drm/logicvc/logicvc_of.c          | 197 +++++
+ drivers/gpu/drm/logicvc/logicvc_of.h          |  46 ++
+ drivers/gpu/drm/logicvc/logicvc_regs.h        |  88 ++
+ 19 files changed, 2694 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/xylon,logicvc-display.yaml
+ create mode 100644 drivers/gpu/drm/logicvc/Kconfig
+ create mode 100644 drivers/gpu/drm/logicvc/Makefile
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_regs.h
+
+-- 
+2.28.0
+
