@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DE32A2513
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE0F2A2521
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgKBHUW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 02:20:22 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:54151 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727306AbgKBHUW (ORCPT
+        id S1728065AbgKBHXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:23:11 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:45770 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727865AbgKBHXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:20:22 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A27KG1t8032712, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A27KG1t8032712
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 2 Nov 2020 15:20:16 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.33) by
- RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 2 Nov 2020 15:20:16 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 2 Nov 2020 15:20:15 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Mon, 2 Nov 2020 15:20:15 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for RTL8153
-Thread-Topic: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
- RTL8153
-Thread-Index: AQHWrmwDnKDexsPDxUiMgOTBbfR/C6mx0pMAgAJFC4A=
-Date:   Mon, 2 Nov 2020 07:20:15 +0000
-Message-ID: <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
-References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
-        <1394712342-15778-388-Taiwan-albertk@realtek.com>
- <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.146]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 2 Nov 2020 02:23:09 -0500
+Received: by mail-il1-f200.google.com with SMTP id z18so9572719ilb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:23:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=2UyDQv8E1XspZMV78KNBT26cn2GGMd5ig6Tf1UtogOA=;
+        b=LoqA0RVA6JHBNnnVuf8FzhtuTtQANZ4ZehHuL4ftG36QD414NLGfp1Oss2buK0OmAk
+         MK/m+yl+VVOgZSucczWwRHrbhbOD3JfaJR5eLnmVsBxNIsHpyMXA2ADezr/DhKYig3O5
+         bQ+4FJevP35Mh2oruoJjffh3yRCfcLunSJIvPIztq24NiZmYR53setA2zGTt1ah22A/6
+         Db9lqBx4YOwazreGc85CH4dp9gPjZA5b8gIDxL88sKCAYs3e7HvdFKM3Pjl2bfylqVKO
+         Qc2SIeG2IYNKPuDN05o7YP08hewnuixkVFeKl4vmu0d0Kp3+cKBH1UL5yjOj3LNnJ3vo
+         h6ug==
+X-Gm-Message-State: AOAM531kcBFgPvwZMtTAqLZwkGvwnZX3EmwWMvpzubQxqzUykTUglMki
+        VF57I3SYPA+6TLAFjecxSIRUh48xlndD5JpkpX65voAnkGwG
+X-Google-Smtp-Source: ABdhPJzoH6khlFDroSU93HRb6B6g52wrE97mFnt2Q9goMzm28lI51hfnapLFiKFwAngMuOSXVqXOIRpT7cO7j9OBDoweJQcqSYxf
 MIME-Version: 1.0
+X-Received: by 2002:a6b:e613:: with SMTP id g19mr9732302ioh.17.1604301787015;
+ Sun, 01 Nov 2020 23:23:07 -0800 (PST)
+Date:   Sun, 01 Nov 2020 23:23:07 -0800
+In-Reply-To: <000000000000f1a42205b2528067@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000020b31905b31a9edc@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Write in xfrm_attr_cpy32
+From:   syzbot <syzbot+c43831072e7df506a646@syzkaller.appspotmail.com>
+To:     0x7f454c46@gmail.com, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        dima@arista.com, hdanton@sina.com, herbert@gondor.apana.org.au,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mkubecek@suse.cz,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org>
-[...]
-> Can you describe the use case in more detail?
-> 
-> AFAICT r8152 defines a match for the exact same device.
-> Does it not mean that which driver is used will be somewhat random
-> if both are built?
+syzbot has bisected this issue to:
 
-I export rtl_get_version() from r8152. It would return none zero
-value if r8152 could support this device. Both r8152 and r8153_ecm
-would check the return value of rtl_get_version() in porbe().
-Therefore, if rtl_get_version() return none zero value, the r8152
-is used for the device with vendor mode. Otherwise, the r8153_ecm
-is used for the device with ECM mode.
+commit 5106f4a8acff480e244300bc5097c0ad7048c3a2
+Author: Dmitry Safonov <dima@arista.com>
+Date:   Mon Sep 21 14:36:55 2020 +0000
 
-> > +/* Define these values to match your device */
-> > +#define VENDOR_ID_REALTEK		0x0bda
-> > +#define VENDOR_ID_MICROSOFT		0x045e
-> > +#define VENDOR_ID_SAMSUNG		0x04e8
-> > +#define VENDOR_ID_LENOVO		0x17ef
-> > +#define VENDOR_ID_LINKSYS		0x13b1
-> > +#define VENDOR_ID_NVIDIA		0x0955
-> > +#define VENDOR_ID_TPLINK		0x2357
-> 
-> $ git grep 0x2357 | grep -i tplink
-> drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
-> drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
-> drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
-> 
-> $ git grep 0x17ef | grep -i lenovo
-> drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
-> drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
-> drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
-> drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
-> 
-> Time to consolidate those vendor id defines perhaps?
+    xfrm/compat: Add 32=>64-bit messages translator
 
-It seems that there is no such header file which I could include
-or add the new vendor IDs.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cefa8a500000
+start commit:   3cea11cd Linux 5.10-rc2
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cefa8a500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cefa8a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=c43831072e7df506a646
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1388676c500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158f642c500000
 
-Best Regards,
-Hayes
+Reported-by: syzbot+c43831072e7df506a646@syzkaller.appspotmail.com
+Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
 
-
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
