@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839D32A2BF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57E12A2BF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbgKBNs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
+        id S1725898AbgKBNtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:49:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgKBNsZ (ORCPT
+        with ESMTP id S1725616AbgKBNtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:48:25 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6F0C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:48:25 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 205so1815781wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:48:25 -0800 (PST)
+        Mon, 2 Nov 2020 08:49:04 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C988C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:49:04 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 13so11165459pfy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:49:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UFRhiWlZ0PmDQf5vXKHCYQqY9H8uzxB92d/n5pWqdLA=;
-        b=IGXlcw/FXocL1GYrDQgAAbLPC9DB70ce4/7VYcbIsVF0i9rXqooRJVzVPEMN2MNyTW
-         vZ7+5JdpyDY/6L7D88JWUe4StIkmdHdVdiPqxUv9U8fkUeNVOK3mLZ5uO7Ulm1Ng43NF
-         vnuQjvRGj3fe0TJviSqkXtQMd1/8c3fwyKIKWbZdPJ0PMJ3Tm4iJ2ut5UUwNNZevLsYI
-         Nwvtf9l6Iz9+FHUgwWrtdj0mMhCP9foV67J1BQfvQFdSStWmt/EbDfHCAF+V68HgW11E
-         KMIyO6xkaiZw2GvONSIukw9jzCA4nqzpC9ZjNX+5dUEt/GLf1IbR4AGcW0kqbXDBfe2J
-         u6QQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WpF3sGCaFtVS1Eh20j27YgKkWsI2ZncIVFxEJni7Be4=;
+        b=GSlJIwMxdX5CBk/cKQG3VsM4ru4+Q/uvclPVySn8U60UWDJcYGPlQ5jkRJzNG0i/Qa
+         Y1hqI7Fbn6U+29sQiEOZvWAitHhQEnb0L8oGWkzWPfi0hGjwt9HYjQCK8ItkVDHP7MY0
+         cdcr/Wqikh4CH36iTncUM+M5zWPpuVQG0sdk15zf8GbhSsftpBG7Cuz7ZzIcGjHPD3vY
+         EfEY49KetKEyXja4u4yzYJqpoiKMdWL/R+tTq8ea90J0MXIlX+/Hc+PTycJwOp1e+eQL
+         7Mios4ebR5qMFmkgPy0DlRs+ygTh7rKLLewLUWtMM9QZspv2vwEJNXqsCBRC2m9catOD
+         R4HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UFRhiWlZ0PmDQf5vXKHCYQqY9H8uzxB92d/n5pWqdLA=;
-        b=E781Tzw2jRPBpPl1LutHKsYEwjgBY5I0RAneAqwQfd8QmNDscqcy83XEOIa2kcRPD8
-         3yy2A2lqoOdY5yyNUBftbmG8mO02pgVYFB1nkhAzm4YtQHq+CIips5SNs808FoIFgt2l
-         x3XJveHJMs52Ky7X8mzoGaQdctHoZEUD4/p38wAuhUVIclPN/eaBAnWx38Al0gkKfl2P
-         N4tn0+xJEspqvEJdQYb5Z3bY/TEEHl9bktbtweAVLYVwrQRVpK0iR+j0SLE6oiNw/mUK
-         RALS2lT+O7RrfzUSgXlXrEnfC7IkduA7rAcdY1u1V5iRLT22IlGZveIuureLf5InkbBo
-         qgXw==
-X-Gm-Message-State: AOAM530a1atHNnCix21r78DjAS/ifgFwz2FF24EXDf6ofscf6c4wZ1ZP
-        JnkBVGZ4kuO1dflIKAVOaphwxfq57xYhvIfo
-X-Google-Smtp-Source: ABdhPJyUhiWVTvkM08d0dh3jqSehjke4YSRXKwFK5RUJyJHB/R9+titxNviK2sWz6ca1mjON+wvXwQ==
-X-Received: by 2002:a1c:309:: with SMTP id 9mr9312082wmd.80.1604324904060;
-        Mon, 02 Nov 2020 05:48:24 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id h4sm22234799wrp.52.2020.11.02.05.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 05:48:23 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:48:20 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-Subject: Re: [PATCH v3 3/4] PM / EM: update the comments related to power
- scale
-Message-ID: <20201102134820.GC2221764@google.com>
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <20201019140601.3047-4-lukasz.luba@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WpF3sGCaFtVS1Eh20j27YgKkWsI2ZncIVFxEJni7Be4=;
+        b=c34R8naY6g5lRB+ZbfSVzRHRX8HTT+L/tgg/vKIW2Jh+rc+hUkJdeDXth11Up6Ncmk
+         Fr5nFePiH1wl7+KeVNlItREq7zbVMwAuzkeOwtCFLfmDb4ZEs9wOS2yypyjrIMtJxAiE
+         9MEcq9G4hytV+rVIllx1xRW8RqLYWPlCwNihQaPmLSegxuD4U6LaRHte67N2sT83f+FU
+         lX08ED7aQtCg0b1d5ViJxIfyd0QDl/vAzWjY2VxYzMzPWPK9JshepXg+2tps92WEYyQa
+         I7ISIiPdjUAIrqbbajgsf6hOhn29cdqmtmANX/VLhPSls2s6KwsQmjmWyLqcDBkBSE4s
+         /1MA==
+X-Gm-Message-State: AOAM5310qzxwQaLEqQfLCFhqQVXNcDByDLn4/C2RNP/yp5jDwMmL1Csc
+        RcJZMERer+SsbnUOuv2vWbYyAkj2EzwsTeTk70kPJg==
+X-Google-Smtp-Source: ABdhPJxMGgNruSBgB1KLqECniO90ERSveN//g/NnKzYcrbtcD98wF7ERQBa3YmbwMzRZf4COZcWiWxSYT+Tbd0XsTb0=
+X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id
+ s7-20020aa782870000b0290142250139ecmr21136648pfm.59.1604324944055; Mon, 02
+ Nov 2020 05:49:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019140601.3047-4-lukasz.luba@arm.com>
+References: <20201028141646.GA75933@rlk>
+In-Reply-To: <20201028141646.GA75933@rlk>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 2 Nov 2020 21:48:25 +0800
+Message-ID: <CAMZfGtXYLLsS-kGAPD6xxygSC7nyub-OsAtXCTehW-n2ik9m7w@mail.gmail.com>
+Subject: Re: [External] [PATCH v2] mm/list_lru: optimize condition of exiting
+ the loop
+To:     Hui Su <sh_def@163.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, gustavo@embeddedor.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 Oct 2020 at 15:06:00 (+0100), Lukasz Luba wrote:
-> The Energy Model supports power values expressed in milli-Watts or in an
-> 'abstract scale'. Update the related comments is the code to reflect that
-> state.
+On Wed, Oct 28, 2020 at 10:17 PM Hui Su <sh_def@163.com> wrote:
+>
+> In list_lru_walk(), nr_to_walk type is 'unsigned long',
+> so nr_to_walk won't be '< 0'.
+>
+> In list_lru_walk_node(), nr_to_walk type is 'unsigned long',
+> so *nr_to_walk won't be '< 0' too.
+>
+> We can use '!nr_to_walk' instead of 'nr_to_walk <= 0', which
+> is more precise.
+>
+> Signed-off-by: Hui Su <sh_def@163.com>
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  include/linux/list_lru.h | 2 +-
+>  mm/list_lru.c            | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
+> index 9dcaa3e582c9..b7bc4a2636b9 100644
+> --- a/include/linux/list_lru.h
+> +++ b/include/linux/list_lru.h
+> @@ -214,7 +214,7 @@ list_lru_walk(struct list_lru *lru, list_lru_walk_cb isolate,
+>         for_each_node_state(nid, N_NORMAL_MEMORY) {
+>                 isolated += list_lru_walk_node(lru, nid, isolate,
+>                                                cb_arg, &nr_to_walk);
+> -               if (nr_to_walk <= 0)
+> +               if (!nr_to_walk)
+>                         break;
+>         }
+>         return isolated;
+> diff --git a/mm/list_lru.c b/mm/list_lru.c
+> index 5aa6e44bc2ae..35be4de9fd77 100644
+> --- a/mm/list_lru.c
+> +++ b/mm/list_lru.c
+> @@ -294,7 +294,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
+>
+>         isolated += list_lru_walk_one(lru, nid, NULL, isolate, cb_arg,
+>                                       nr_to_walk);
+> -       if (*nr_to_walk > 0 && list_lru_memcg_aware(lru)) {
+> +       if (*nr_to_walk && list_lru_memcg_aware(lru)) {
+>                 for_each_memcg_cache_index(memcg_idx) {
+>                         struct list_lru_node *nlru = &lru->node[nid];
+>
+> @@ -304,7 +304,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
+>                                                         nr_to_walk);
+>                         spin_unlock(&nlru->lock);
+>
+> -                       if (*nr_to_walk <= 0)
+> +                       if (!*nr_to_walk)
+>                                 break;
+>                 }
+>         }
+> --
+> 2.29.0
+>
+>
 
-Thanks,
-Quentin
+
+--
+Yours,
+Muchun
