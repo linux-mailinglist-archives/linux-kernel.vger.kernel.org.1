@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6602A254F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9B32A255A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgKBHe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgKBHe6 (ORCPT
+        id S1728135AbgKBHhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:37:20 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6725 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728029AbgKBHhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:34:58 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C94CC0617A6;
-        Sun,  1 Nov 2020 23:34:58 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id y1so3664901uac.13;
-        Sun, 01 Nov 2020 23:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jcub/V5PHC4+SEwinCH+yvg22FdW459DqPvHHN6CGCU=;
-        b=OoKgxHDC/RE2Xk4x6hntCvv+jB06IZwpSl+luRMl+q182/CX6tYZEypISW19jThP1X
-         0MVJKH4Xtz5GtvUVqbkngfjCrxw6yj7fKVOswDZ53y7bDAuIJynVXyX0WkTBd5ZCwsse
-         TOjWZaP8WaigFe8ugiwp4ZyHt7rtrX/27YF+r40bv5DihKNaaizyXCX4XFF5oQfhs4Bs
-         z5iG5OBofBBJTZBJWSQtQYQB8v0nK2tpSeWygfyof8BDetHXPPaSu8HybPYl9ZFPKndw
-         hV0RMzEkDuM2hhjmBdbcX1nwVksBfpD+r115Pj36Ab3c5hARGcUhkKJySS6Kl1lY8o93
-         iGmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jcub/V5PHC4+SEwinCH+yvg22FdW459DqPvHHN6CGCU=;
-        b=hH7WWl1Y0bACT88DOkrywxVuY/A5xa42gBZ1vlwYmeFz1Pz11s6kxH2sdlD5pD08AQ
-         M3a31wltREiCxeHBMEN8A1ggLuzJRMXgMset8+GHeDTKqyna2CABBwcXUBkriRqZ6F6w
-         lIXBmpFIU0PbM9Uz+D9srygNYNuljhzvT7m4PfCu+WZ8iVJ+ZMREnZOM4juzZUfUsoiS
-         WhM7fdmjgqNVT+mMxf+CLHXP4Y63idMwWO75Qkq4jYLREPEMU2HPXDVyhuAoS5yXQ00R
-         2zTcoGFo0b7FpKaIW1ZqdsHaw6aDrogc6DX9td5W/JhYmwycp/tsOaPK4OlCvgZ+7AmP
-         IHDw==
-X-Gm-Message-State: AOAM530wkAYULlUe/5hoiDETzqbSuUYf7hSgOSYwrYED93hkAE6cqdPo
-        2ONMzp0dBfmwDee2huCYLl9YX4XVtH1K379HNhteY/h+SLKn8w==
-X-Google-Smtp-Source: ABdhPJz5csAPhcYN0p+3YMmXnIZqHfYWOpyp92yHXR/WeaeyKqdn57Lhd1sizJD81Dd5tXoCetVfFoXKb9fGX7fEcCc=
-X-Received: by 2002:ab0:23d5:: with SMTP id c21mr6953552uan.129.1604302497198;
- Sun, 01 Nov 2020 23:34:57 -0800 (PST)
+        Mon, 2 Nov 2020 02:37:20 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPl9k5112zkdRv;
+        Mon,  2 Nov 2020 15:37:14 +0800 (CST)
+Received: from [10.63.139.185] (10.63.139.185) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 2 Nov 2020 15:37:10 +0800
+Subject: Re: [PATCH v3 1/2] uacce: delete some redundant code.
+To:     Kai Ye <yekai13@huawei.com>, <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
+ <1600855762-10031-2-git-send-email-yekai13@huawei.com>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <5F9FB725.5000002@hisilicon.com>
+Date:   Mon, 2 Nov 2020 15:37:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
 MIME-Version: 1.0
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru> <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
-From:   Jun Li <lijun.kernel@gmail.com>
-Date:   Mon, 2 Nov 2020 15:34:46 +0800
-Message-ID: <CAKgpwJWWg+fimuQOCcw=L0HZSwLYXNNCAV4ifzzG-HXfkFmazw@mail.gmail.com>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1600855762-10031-2-git-send-email-yekai13@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.63.139.185]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Serge Semin <Sergey.Semin@baikalelectronics.ru> =E4=BA=8E2020=E5=B9=B410=E6=
-=9C=8820=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=888:04=E5=86=99=E9=81=
-=93=EF=BC=9A
->
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
+On 2020/9/23 18:09, Kai Ye wrote:
+> Delete some redundant code.
+> 
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> ---
+>  drivers/misc/uacce/uacce.c | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> index 107028e..9b83bc5 100644
+> --- a/drivers/misc/uacce/uacce.c
+> +++ b/drivers/misc/uacce/uacce.c
+> @@ -239,17 +239,6 @@ static int uacce_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+>  
+>  	switch (type) {
+>  	case UACCE_QFRT_MMIO:
+> -		if (!uacce->ops->mmap) {
+> -			ret = -EINVAL;
+> -			goto out_with_lock;
+> -		}
+> -
+> -		ret = uacce->ops->mmap(q, vma, qfr);
+> -		if (ret)
+> -			goto out_with_lock;
+> -
+> -		break;
+> -
+>  	case UACCE_QFRT_DUS:
+>  		if (!uacce->ops->mmap) {
+>  			ret = -EINVAL;
+> 
 
-This need a counterpart driver change:
-drivers/usb/dwc3/dwc3-qcom.c
-dwc3_np =3D of_get_child_by_name(np, "dwc3");
+Hi Hartman,
 
-Li Jun
+Could you take this patch?
+
+Best,
+Zhou
