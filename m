@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04E02A2820
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478792A2823
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728435AbgKBKVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:21:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36295 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728005AbgKBKVj (ORCPT
+        id S1728436AbgKBKXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:23:14 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:45173 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728005AbgKBKXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:21:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604312498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Lf6wlb3PZFzHMyIied7N5VXmSAujDTv239rqbCDPtM=;
-        b=FiI3wsgMBJCmUGmmp/tZiPlhYiRbb6cR9d8X/QBiBfU1lM2gQIAKMMDXOQf0S30FG1rEfL
-        XhgibQjADI2di1gMDza3AreR85RbKvs778OdoOPgNTjRT7XY5fvrAtsF1aHwWKYuWVsu6f
-        CsdpQbrpztrOlwxFhZOzHBd4KvNY8Co=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-LdZU5nPQNruc30dhsHe5tg-1; Mon, 02 Nov 2020 05:21:36 -0500
-X-MC-Unique: LdZU5nPQNruc30dhsHe5tg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A9458030DC;
-        Mon,  2 Nov 2020 10:21:35 +0000 (UTC)
-Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 96BCB6EF79;
-        Mon,  2 Nov 2020 10:21:33 +0000 (UTC)
-Subject: Re: [PATCH] mm/zswap: Fix passing zero to 'PTR_ERR' warning
-To:     YueHaibing <yuehaibing@huawei.com>, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201031055615.28080-1-yuehaibing@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6926f3a4-05df-70a6-7a56-4405e10cb9f3@redhat.com>
-Date:   Mon, 2 Nov 2020 11:21:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 2 Nov 2020 05:23:13 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 81B70F58;
+        Mon,  2 Nov 2020 05:23:12 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:23:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=YuURcf+7tOjKrSfDQk94W3WVSnj
+        EFGfT9fSMDlBxuys=; b=Cv8DsezNjjH7PfKp4JRLJuJDWoykiAPejFTekHs1BOw
+        nPbYJjCvI4tfn/PrY8pNO6Btr5JyVjWf2aFf/9bUuDsgufsYyAqoJXs0WJjpyQUJ
+        QO55A91sz83WviL4U9ElRM1R5DM5/Hj8TloN8BB7/FF8VTD7DkfvbBZbIWEjGGoi
+        uHbXCSZcJUPeRhRF/XtDZu59fjgBbt2twP8UC8DdfZjCaEPXtc+GSYO9y/o1zIBI
+        ZLTFPyOVZQprPjKTuVs34c8sd2ICHlBtxi5t1K7FeYmBTwymt1lBp0M1jkW4nwgn
+        BRQ+m1kUbQNOWq4ONzGbSPYkzRRtvF0jvPZlFxSv3wA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YuURcf
+        +7tOjKrSfDQk94W3WVSnjEFGfT9fSMDlBxuys=; b=aIe7no/wQ+tJOnbYtU0fdk
+        mCaiGjSEe3eH3geNz4nUdhB7ajHyIbMncda3LQjyICJYyFEnSqLb54QWg4u85Uwk
+        lctRavxCP/zzjxpVh/7GwLqHdX1Uw3ZxCc3eGzH7ugJrihCY0VyikiUyCNVGDBmz
+        3/FvphlxJWE+tNnj4jxtPkR9tKSoI4mHdZwPhMuokQVmj8sauTDtoB+paIrz+g5V
+        BNQ7G7ZZ5lQTodU88Pup/tg/CSjHrZruXZOa0EBkwYw+mBBOgCMvAepVoacY3+3l
+        q6Ihi/EKxqqFZg7ax9heI3GAJi5hgdBBJ/s1MTST2Cpooe2sPQOP5bXFOVg1x5ug
+        ==
+X-ME-Sender: <xms:D96fXzI7axdnbj6n5bHSitDJ9Dw_x0tDSr-aGzVy6lc-2PKBFBuoWg>
+    <xme:D96fX3I85YWlSh2l1Mn7Hs-FDZUnpX5dhDBoDqHrcPH1p_XGqQ-7AXYMCQ99HgPZN
+    8MQ6ojgohzGdapdgPc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:D96fX7uAYYN9MyJeu723HFPxdDXljxSR65Nab_gh8zACYTsDX5QLKA>
+    <xmx:D96fX8Y9c6Ue_9eHP4tPaBjtzFh2RdH3LT4H3aRkgJD6mQzmmQhjzQ>
+    <xmx:D96fX6b1XN6FhGdHQwY57aMek0TJ0QnXHvXBn03hZR_P57K1hIxSNA>
+    <xmx:EN6fXxUDLEe3HtG6fAQF7TGFAzNsADYt--sh4FaeY9ugEY51wmrnug>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 94D84306468A;
+        Mon,  2 Nov 2020 05:23:11 -0500 (EST)
+Date:   Mon, 2 Nov 2020 11:23:09 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2] arm64: dts: allwinner: h6: PineH64 model B: Add wifi
+Message-ID: <20201102102309.xbrqfszpq3i62vor@gilmour.lan>
+References: <20201030172530.1096394-1-jernej.skrabec@siol.net>
 MIME-Version: 1.0
-In-Reply-To: <20201031055615.28080-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fj3fhevzjxjy2rgx"
+Content-Disposition: inline
+In-Reply-To: <20201030172530.1096394-1-jernej.skrabec@siol.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.10.20 06:56, YueHaibing wrote:
-> Fix smatch warning:
-> 
-> mm/zswap.c:425 zswap_cpu_comp_prepare() warn: passing zero to 'PTR_ERR'
-> 
-> crypto_alloc_comp() never return NULL, use IS_ERR
-> instead of IS_ERR_OR_NULL to fix this.
-> 
-> Fixes: f1c54846ee45 ("zswap: dynamic pool creation")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->   mm/zswap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 1eced701b3bd..55a2f72557a8 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -421,7 +421,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
->   		return 0;
->   
->   	tfm = crypto_alloc_comp(pool->tfm_name, 0, 0);
-> -	if (IS_ERR_OR_NULL(tfm)) {
-> +	if (IS_ERR(tfm)) {
->   		pr_err("could not alloc crypto comp %s : %ld\n",
->   		       pool->tfm_name, PTR_ERR(tfm));
->   		return -ENOMEM;
-> 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+--fj3fhevzjxjy2rgx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+On Fri, Oct 30, 2020 at 06:25:30PM +0100, Jernej Skrabec wrote:
+> PineH64 model B contains RTL8723CS wifi+bt combo module.
+>=20
+> Since bluetooth support is not yet squared away, only wifi is enabled
+> for now.
+>=20
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-David / dhildenb
+Applied, thanks!
+Maxime
 
+--fj3fhevzjxjy2rgx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/eDQAKCRDj7w1vZxhR
+xRfPAQDGyuAJQmmdszu3SSMVCP3kyuqLOJeYvRUexBCpSAJkJgEA9Smgfe7GGqAR
+59ntEcW7DK+VeWO9tvAnxxbaONdQsAQ=
+=zusj
+-----END PGP SIGNATURE-----
+
+--fj3fhevzjxjy2rgx--
