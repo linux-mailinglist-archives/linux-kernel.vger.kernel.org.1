@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD562A3490
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A632A3493
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgKBTw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:52:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38600 "EHLO mail.kernel.org"
+        id S1727057AbgKBTw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:52:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgKBTvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:51:14 -0500
+        id S1726855AbgKBTvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:51:15 -0500
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9390420731;
-        Mon,  2 Nov 2020 19:51:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97DB120731;
+        Mon,  2 Nov 2020 19:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604346673;
-        bh=FpDcuq4X3c15OGqODzqAwNDRNZ4X0QXyRi03Om0x8cM=;
+        s=default; t=1604346674;
+        bh=GHgrqrZC9saaja+OzUUhbi6fJEQlVSb7/fyvPZXEx6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4MuecLoB0CKibj8VPiip0cqlcGFmU8mf36eiMbFOAj8zw8/ufHZz5ucsKwh79UiX
-         B/XiV+Fq4ANoCjppDyyzPSuSkTLX7c21X3/dWkkQ0Yu3a6E084gHeP4Esg2yB8mM9R
-         zFfP+32Qszb23XR7z3oAWgoWT5rOnfKo7XhBT9AU=
+        b=a7QGQFGKYZgnL1CsRgcfXVEJvGkahE5IE4nzejf579kzL6B8XT7ZdxEhVxbHLOHU7
+         MAuwKup1AUq//kIiOQKGwxQCgXQqnb1QxEzZB0MryPCZhiGoz3m2/+0AAs3vC7QziW
+         jLvQQ7kEIVxh0NhHZ13ei69dtOzjLXtJMbwVnixg=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 1/2] selftests/x86/fsgsbase: Fix GS == 1, 2, and 3 tests
-Date:   Mon,  2 Nov 2020 11:51:10 -0800
-Message-Id: <7567fd44a1d60a9424f25b19a998f12149993b0d.1604346596.git.luto@kernel.org>
+Subject: [PATCH 2/2] selftests/x86: Add missing .note.GNU-stack sections
+Date:   Mon,  2 Nov 2020 11:51:11 -0800
+Message-Id: <6f043c03e9e0e4557e1e975a63b07a4d18965a68.1604346596.git.luto@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1604346596.git.luto@kernel.org>
 References: <cover.1604346596.git.luto@kernel.org>
@@ -39,47 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting GS to 1, 2, or 3 causes a nonsensical part of the IRET
-microcode to change GS back to zero on a return from kernel mode to
-user mode.  The result is that these tests fail randomly depending
-on when interrupts happen.  Detect when this happens and let the
-test pass.
+Several of the x86 selftests end up with executable stacks because
+the asm was missing the annotation that says that they are modern
+and don't need executable stacks.  Add the annotations.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- tools/testing/selftests/x86/fsgsbase.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ tools/testing/selftests/x86/raw_syscall_helper_32.S | 2 ++
+ tools/testing/selftests/x86/thunks.S                | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
-index 7161cfc2e60b..8c780cce941d 100644
---- a/tools/testing/selftests/x86/fsgsbase.c
-+++ b/tools/testing/selftests/x86/fsgsbase.c
-@@ -392,8 +392,8 @@ static void set_gs_and_switch_to(unsigned long local,
- 		local = read_base(GS);
+diff --git a/tools/testing/selftests/x86/raw_syscall_helper_32.S b/tools/testing/selftests/x86/raw_syscall_helper_32.S
+index 94410fa2b5ed..a10d36afdca0 100644
+--- a/tools/testing/selftests/x86/raw_syscall_helper_32.S
++++ b/tools/testing/selftests/x86/raw_syscall_helper_32.S
+@@ -45,3 +45,5 @@ int80_and_ret:
  
- 		/*
--		 * Signal delivery seems to mess up weird selectors.  Put it
--		 * back.
-+		 * Signal delivery is quite likely to change a selector
-+		 * of 1, 2, or 3 back to 0 due to IRET being defective.
- 		 */
- 		asm volatile ("mov %0, %%gs" : : "rm" (force_sel));
- 	} else {
-@@ -411,6 +411,14 @@ static void set_gs_and_switch_to(unsigned long local,
- 	if (base == local && sel_pre_sched == sel_post_sched) {
- 		printf("[OK]\tGS/BASE remained 0x%hx/0x%lx\n",
- 		       sel_pre_sched, local);
-+	} else if (base == local && sel_pre_sched >= 1 && sel_pre_sched <= 3 &&
-+		   sel_post_sched == 0) {
-+		/*
-+		 * IRET is misdesigned and will squash selectors 1, 2, or 3
-+		 * to zero.  Don't fail the test just because this happened.
-+		 */
-+		printf("[OK]\tGS/BASE changed from 0x%hx/0x%lx to 0x%hx/0x%lx because IRET is defective\n",
-+		       sel_pre_sched, local, sel_post_sched, base);
- 	} else {
- 		nerrs++;
- 		printf("[FAIL]\tGS/BASE changed from 0x%hx/0x%lx to 0x%hx/0x%lx\n",
+ 	.type int80_and_ret, @function
+ 	.size int80_and_ret, .-int80_and_ret
++
++.section .note.GNU-stack,"",%progbits
+diff --git a/tools/testing/selftests/x86/thunks.S b/tools/testing/selftests/x86/thunks.S
+index 1bb5d62c16a4..a2d47d8344d4 100644
+--- a/tools/testing/selftests/x86/thunks.S
++++ b/tools/testing/selftests/x86/thunks.S
+@@ -57,3 +57,5 @@ call32_from_64:
+ 	ret
+ 
+ .size call32_from_64, .-call32_from_64
++
++.section .note.GNU-stack,"",%progbits
 -- 
 2.28.0
 
