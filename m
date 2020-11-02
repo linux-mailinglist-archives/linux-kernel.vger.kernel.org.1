@@ -2,217 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3862A2617
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E382A261A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgKBI2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:28:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgKBI2s (ORCPT
+        id S1728244AbgKBI3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:29:00 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:40116 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728231AbgKBI27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:28:48 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E604C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:28:48 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kZVCk-0001xp-Ny; Mon, 02 Nov 2020 09:28:42 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:1e4c:3972:f69f:4bf4] (unknown [IPv6:2a03:f580:87bc:d400:1e4c:3972:f69f:4bf4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 74EC7587D34;
-        Mon,  2 Nov 2020 08:28:38 +0000 (UTC)
-Subject: Re: [PATCH] net: can: prevent potential access of uninitialized value
- in canfd_rcv()
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-References: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
- <1817819d-3aeb-8034-a4ec-7c70040b0cf0@pengutronix.de>
- <8c65ee4b-3cb8-907f-fa98-9bf4bd4293d3@gmail.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <28167915-ffeb-3555-7b7c-b735799b7831@pengutronix.de>
-Date:   Mon, 2 Nov 2020 09:28:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 2 Nov 2020 03:28:59 -0500
+Received: by mail-wm1-f65.google.com with SMTP id k18so8587916wmj.5;
+        Mon, 02 Nov 2020 00:28:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hlHTf3Iy5UoM0K8uLC/hLMz2YcBjX/2Xy68U5kPZPeU=;
+        b=URKmBJSW2yeXhz6kb4b7srNiXhwNM6Gp+vyGB8oqAsqfO/SpakNIprnwqhOHSOyqpM
+         DVUKHJEkayS9FOcyohx+R7FREhGtVZeFgPi1EzWQZ/ZJrZ6A/YuHglvaeJ6q4kCGn3ba
+         5euk6WuSW+4hf4kq8mqthroFgkf/WjzCoADJ77+MeHWbQHIQfF0X+8DR09/tBt0sN0KL
+         W2AykSnXHC2ju5yirugmDnfLEOJbyhRRIOBvv1x4yAXYdKhNqCCYPshQZKxPjoMFzYcE
+         mHtBOgK3Nn5Egvxk7liDVSi7NbE0cdHcXl0uHMTDgQRhJXaiUPQVfWwmehBbtO4hVyXC
+         wrOg==
+X-Gm-Message-State: AOAM532Z8Qvr2audJPYJMUwX+ozhmYnmfR6aZa3B+kzZY56P7Rj9eupC
+        Yuy9noxR0UKsk5kCLNtUikg=
+X-Google-Smtp-Source: ABdhPJyScERyc9CX7goUu5qPR/vKFptB9tCjM0pnlV5B0fPdzLPBqMsThFmlV+WCVd7m1QvU60ykwg==
+X-Received: by 2002:a1c:b346:: with SMTP id c67mr16146659wmf.105.1604305736162;
+        Mon, 02 Nov 2020 00:28:56 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id u3sm21488204wrq.19.2020.11.02.00.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:28:54 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:28:53 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de
+Subject: Re: [PATCH V2] arm64: dts: imx8mp-evk: add CAN support
+Message-ID: <20201102082853.GB6152@kozik-lap>
+References: <20201102021634.6480-1-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <8c65ee4b-3cb8-907f-fa98-9bf4bd4293d3@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="xEfywrfBEaJgE3gGWfpYYK8ofrTAiimEr"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102021634.6480-1-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xEfywrfBEaJgE3gGWfpYYK8ofrTAiimEr
-Content-Type: multipart/mixed; boundary="WoMnR4Ie50mZr523xMIB1zOGAU5W8F17Q";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org,
- syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Message-ID: <28167915-ffeb-3555-7b7c-b735799b7831@pengutronix.de>
-Subject: Re: [PATCH] net: can: prevent potential access of uninitialized value
- in canfd_rcv()
-References: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
- <1817819d-3aeb-8034-a4ec-7c70040b0cf0@pengutronix.de>
- <8c65ee4b-3cb8-907f-fa98-9bf4bd4293d3@gmail.com>
-In-Reply-To: <8c65ee4b-3cb8-907f-fa98-9bf4bd4293d3@gmail.com>
+On Mon, Nov 02, 2020 at 10:16:34AM +0800, Joakim Zhang wrote:
+> Add CAN device node and pinctrl on i.MX8MP evk board.
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+> ChangeLogs:
+> V1->V2:
+> 	* add missing space before '=',
+> 	fsl,clk-source= /bits/ 8 <0> -> fsl,clk-source = /bits/ 8 <0>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 62 ++++++++++++++++++++
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi    | 30 ++++++++++
+>  2 files changed, 92 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> index 908b92bb4dcd..b10dce8767a4 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> @@ -33,6 +33,28 @@
+>  		      <0x1 0x00000000 0 0xc0000000>;
+>  	};
+>  
+> +	reg_can1_stby: regulator-can1-stby {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "can1-stby";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flexcan1_reg>;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio5 5 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	reg_can2_stby: regulator-can2-stby {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "can2-stby";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flexcan2_reg>;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio4 27 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+>  	reg_usdhc2_vmmc: regulator-usdhc2 {
+>  		compatible = "regulator-fixed";
+>  		pinctrl-names = "default";
+> @@ -45,6 +67,20 @@
+>  	};
+>  };
+>  
+> +&flexcan1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_flexcan1>;
+> +	xceiver-supply = <&reg_can1_stby>;
+> +	status = "okay";
+> +};
+> +
+> +&flexcan2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_flexcan2>;
+> +	xceiver-supply = <&reg_can2_stby>;
+> +	status = "disabled";/* can2 pin conflict with pdm */
+> +};
+> +
+>  &fec {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_fec>;
+> @@ -144,6 +180,32 @@
+>  		>;
+>  	};
+>  
+> +	pinctrl_flexcan1: flexcan1grp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SPDIF_RX__CAN1_RX          0x154
+> +			MX8MP_IOMUXC_SPDIF_TX__CAN1_TX          0x154
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan2: flexcan2grp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SAI5_MCLK__CAN2_RX         0x154
+> +			MX8MP_IOMUXC_SAI5_RXD3__CAN2_TX         0x154
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan1_reg: flexcan1reggrp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SPDIF_EXT_CLK__GPIO5_IO05  0x154   /* CAN1_STBY */
+> +		>;
+> +	};
+> +
+> +	pinctrl_flexcan2_reg: flexcan2reggrp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_SAI2_MCLK__GPIO4_IO27      0x154   /* CAN2_STBY */
+> +		>;
+> +	};
+> +
+>  	pinctrl_gpio_led: gpioledgrp {
+>  		fsl,pins = <
+>  			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16	0x19
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> index 479312293036..ecccfbb4f5ad 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -552,6 +552,36 @@
+>  				status = "disabled";
+>  			};
+>  
+> +			flexcan1: can@308c0000 {
+> +				compatible = "fsl,imx8mp-flexcan", "fsl,imx6q-flexcan";
 
---WoMnR4Ie50mZr523xMIB1zOGAU5W8F17Q
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Undocumented compatible in Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
 
-On 11/2/20 8:44 AM, Anant Thazhemadam wrote:
->=20
-> On 02-11-2020 12:40, Marc Kleine-Budde wrote:
->> On 11/2/20 4:13 AM, Anant Thazhemadam wrote:
->>> In canfd_rcv(), cfd->len is uninitialized when skb->len =3D 0, and th=
-is
->>> uninitialized cfd->len is accessed nonetheless by pr_warn_once().
->>>
->>> Fix this uninitialized variable access by checking cfd->len's validit=
-y
->>> condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's=
+Best regards,
+Krzysztof
 
->>> condition is checked, and appropriately modify the log messages that
->>> are generated as well.
->>> In case either of the required conditions fail, the skb is freed and
->>> NET_RX_DROP is returned, same as before.
->>>
->>> Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
->>> Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->>> ---
->>> This patch was locally tested using the reproducer and .config file=20
->>> generated by syzbot.
->>>
->>>  net/can/af_can.c | 19 ++++++++++++++-----
->>>  1 file changed, 14 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/net/can/af_can.c b/net/can/af_can.c
->>> index ea29a6d97ef5..1b9f2e50f065 100644
->>> --- a/net/can/af_can.c
->>> +++ b/net/can/af_can.c
->>> @@ -694,16 +694,25 @@ static int canfd_rcv(struct sk_buff *skb, struc=
-t net_device *dev,
->> Can you create a similar patch for "can_rcv()"?
->=20
-> Yes, I can. Would it be alright if that was part of the v2 itself (sinc=
-e it's similar changes)?
-> Or would I have to split them up into 2 different patches and send it a=
-s a 2-patch series
-> (since the changes made are in different functions)?
-
-Please make it two patches. Please add a "Fixes" line to both patches.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---WoMnR4Ie50mZr523xMIB1zOGAU5W8F17Q--
-
---xEfywrfBEaJgE3gGWfpYYK8ofrTAiimEr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+fwzIACgkQqclaivrt
-76nWLAf8CLzXzYX6Nv14/3mZxRm+h7Zy2pOIXyJX5p75AmmVWWryDi1Vg0ijOnDz
-5e65FfXl8q1c7wE4o0VI+HhNgY0REVN+vP70qnFF2oIPE2QBcirCAK3vDRzk6WDI
-suqhJb6bNpA+8Ekvqw5wFad1ZR8rxrI/+k0FOgHTEGYpdwFRkGvfjhj/6FSxaoI1
-Em88Ff4XnatAaNyNfo1FK2bVFMNf2zkcbW/lCQTweuj1J3bzSHydpkhCwzxK/jaF
-/mCBF7UucZEJczDuaFkvl34VT72pUzKkAdDFM56sNleHr28+K92Y/THh6Qf9phcB
-d8V/oAoXH3b8jZTvbKdwBd51/r1LlA==
-=E3pH
------END PGP SIGNATURE-----
-
---xEfywrfBEaJgE3gGWfpYYK8ofrTAiimEr--
+> +				reg = <0x308c0000 0x10000>;
+> +				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk IMX8MP_CLK_IPG_ROOT>,
+> +					 <&clk IMX8MP_CLK_CAN1_ROOT>;
+> +				clock-names = "ipg", "per";
+> +				assigned-clocks = <&clk IMX8MP_CLK_CAN1>;
+> +				assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_40M>;
+> +				assigned-clock-rates = <40000000>;
+> +				fsl,clk-source = /bits/ 8 <0>;
+> +				fsl,stop-mode = <&gpr 0x10 4>;
+> +				status = "disabled";
+> +			};
+> +
+> +			flexcan2: can@308d0000 {
+> +				compatible = "fsl,imx8mp-flexcan", "fsl,imx6q-flexcan";
+> +				reg = <0x308d0000 0x10000>;
+> +				interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk IMX8MP_CLK_IPG_ROOT>,
+> +					 <&clk IMX8MP_CLK_CAN2_ROOT>;
+> +				clock-names = "ipg", "per";
+> +				assigned-clocks = <&clk IMX8MP_CLK_CAN2>;
+> +				assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_40M>;
+> +				assigned-clock-rates = <40000000>;
+> +				fsl,clk-source = /bits/ 8 <0>;
+> +				fsl,stop-mode = <&gpr 0x10 5>;
+> +				status = "disabled";
+> +			};
+> +
+>  			crypto: crypto@30900000 {
+>  				compatible = "fsl,sec-v4.0";
+>  				#address-cells = <1>;
+> -- 
+> 2.17.1
+> 
