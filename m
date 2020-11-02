@@ -2,73 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26A52A2367
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC942A2368
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgKBDOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 22:14:35 -0500
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:40956 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727450AbgKBDOe (ORCPT
+        id S1727831AbgKBDOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 22:14:43 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7393 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727800AbgKBDOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 22:14:34 -0500
-Received: from ubuntu.localdomain (unknown [58.213.83.157])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 4A8E148293A;
-        Mon,  2 Nov 2020 11:14:30 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Xiaojie Yuan <xiaojie.yuan@amd.com>,
-        Changfeng <Changfeng.Zhu@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] drm/amd: move DRM_ERROR log out of the mutex protect area
-Date:   Sun,  1 Nov 2020 19:14:17 -0800
-Message-Id: <20201102031423.4033-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.29.0
+        Sun, 1 Nov 2020 22:14:43 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPdLm1BKbz6yxB;
+        Mon,  2 Nov 2020 11:14:40 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 2 Nov 2020 11:14:32 +0800
+Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
+ napi_consume_skb()
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <pabeni@redhat.com>,
+        <pshelar@ovn.org>, <fw@strlen.de>, <gnault@redhat.com>,
+        <steffen.klassert@secunet.com>, <kyk.segfault@gmail.com>,
+        <viro@zeniv.linux.org.uk>, <vladimir.oltean@nxp.com>,
+        <edumazet@google.com>, <saeed@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
+ <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
+Date:   Mon, 2 Nov 2020 11:14:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZT0seQx4aGEJOTUhKVkpNS09JQ01DTEtNQk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nz46Pio6PD8vSiFRShgiD04Z
-        AxJPCR9VSlVKTUtPSUNNQ0xKSk5OVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlOQ1VJ
-        SkhVQ0hVSk5MWVdZCAFZQUlOQkw3Bg++
-X-HM-Tid: 0a7586f2f45893bakuws4a8e148293a
+In-Reply-To: <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function amdgpu_register_gpu_instance, there is no need to
-protect DRM_ERROR in mutex mgpu_info.mutex.
-This change is to make the code to run a bit fast.
+On 2020/11/1 6:38, Jakub Kicinski wrote:
+> On Thu, 29 Oct 2020 19:34:48 +0800 Yunsheng Lin wrote:
+>> The current semantic for napi_consume_skb() is that caller need
+>> to provide non-zero budget when calling from NAPI context, and
+>> breaking this semantic will cause hard to debug problem, because
+>> _kfree_skb_defer() need to run in atomic context in order to push
+>> the skb to the particular cpu' napi_alloc_cache atomically.
+>>
+>> So add a in_softirq() debug checking in napi_consume_skb() to catch
+>> this kind of error.
+>>
+>> Suggested-by: Eric Dumazet <edumazet@google.com>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> 
+>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>> index 1ba8f01..1834007 100644
+>> --- a/net/core/skbuff.c
+>> +++ b/net/core/skbuff.c
+>> @@ -897,6 +897,10 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
+>>  		return;
+>>  	}
+>>  
+>> +	DEBUG_NET_WARN(!in_softirq(),
+>> +		       "%s is called with non-zero budget outside softirq context.\n",
+>> +		       __func__);
+> 
+> Can't we use lockdep instead of defining our own knobs?
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From the first look, using the below seems better than defining our
+own knobs, because there is similar lockdep_assert_in_irq() checking
+already and lockdep_assert_in_*() is NULL-OP when CONFIG_PROVE_LOCKING
+is not defined.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index efda38349a03..cc61b0a5b8d1 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@ -104,8 +104,8 @@ void amdgpu_register_gpu_instance(struct amdgpu_device *adev)
- 	mutex_lock(&mgpu_info.mutex);
- 
- 	if (mgpu_info.num_gpu >= MAX_GPU_INSTANCE) {
--		DRM_ERROR("Cannot register more gpu instance\n");
- 		mutex_unlock(&mgpu_info.mutex);
-+		DRM_ERROR("Cannot register more gpu instance\n");
- 		return;
- 	}
- 
--- 
-2.29.0
+> 
+> Like this maybe?
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index f5594879175a..5253a167d00c 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -594,6 +594,14 @@ do {                                                                       \
+>                       this_cpu_read(hardirqs_enabled)));                \
+>  } while (0)
+>  
+> +#define lockdep_assert_in_softirq()                                    \
+> +do {                                                                   \
+> +       WARN_ON_ONCE(__lockdep_enabled                  &&              \
+> +                    (softirq_count() == 0              ||              \
+> +                     this_cpu_read(hardirq_context)));                 \
 
+Using in_softirq() seems more obvious then using softirq_count()?
+And there is below comment above avoiding the using of in_softirq(), maybe
+that is why you use softirq_count() directly here?
+"softirq_count() == 0" still mean we are not in the SoftIRQ context and
+BH is not disabled. right? Perhap lockdep_assert_in_softirq_or_bh_disabled()
+is more obvious?
+
+/*
+ * Are we doing bottom half or hardware interrupt processing?
+ *
+ * in_irq()       - We're in (hard) IRQ context
+ * in_softirq()   - We have BH disabled, or are processing softirqs
+ * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+ * in_serving_softirq() - We're in softirq context
+ * in_nmi()       - We're in NMI context
+ * in_task()	  - We're in task context
+ *
+ * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
+ *       should not be used in new code.
+ */
+
+
+Also, is there any particular reason we do the "this_cpu_read(hardirq_context)"
+checking?
+
+Thanks.
+
+> +} while (0)
+> 
+> 
+> 
+>>  	if (!skb_unref(skb))
+>>  		return;
+>>  
+> 
+> .
+> 
