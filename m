@@ -2,323 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBF72A2CDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8AD2A2CC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgKBO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S1725913AbgKBOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgKBOWi (ORCPT
+        with ESMTP id S1726114AbgKBOYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:22:38 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4797BC061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:22:38 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id b3so8909390wrx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:22:38 -0800 (PST)
+        Mon, 2 Nov 2020 09:24:04 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0866AC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:24:04 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id d142so951601wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:24:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vLbBt6T4zV/xw9PURuQlOM8wVnilFKG9GdBusjjh0Mo=;
-        b=SFVRkrzIcWH8EfsDxR6Pfi92y1MXVYva5l0WcguIBbfiE6IhQzVSHxF9UsbfKH4vFQ
-         /61PTFnjWKt2Ktu6jXxhzFS3RDl7WTTD9S3vsW+B4e7Sg6e/XsaQ2vDhYcUZgEzWkrnR
-         AHPJOKqdTpNTijRvRzHgu4GmCzVhCVMucqJ2YYGxvb+fZLBWTVeTxe49bniLiXylqHLl
-         IBftQ1vXwTIf/WVsV43Cl2yXb506SQEBnc91/oWiwSps/zB8FBL2gSYJ8mO3LGbm2/OJ
-         sm3hZ7NMOKpMqAFEXP6N3uptECOZQEhE4YxhwTsGRe0a1doWV3b/H1Hv/j1+7CIuRcPb
-         BiLw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pfaEdHgBmw2l0HgsbZl3mj1NuXZBElDuHydbjKuUqqI=;
+        b=J1pfvM9g1qpPeI81gjB/VYKQEg+2KdGsJzuKhlfX5oHLKbyxX12KVMOF56Rx8VEz4Y
+         7DCyhYtXYG4JKFMcrjB0NZjTXQ1rGiQ2W6apTgNdzXdpll/VXXiUAEoJ+UyAjkW3EbPI
+         B0juqx/Sw2Tmi6RSpKHxUKQrGQntKG4pUsxi+YYDr0qzOWrJdPNsu96OP2Kb1pOtNhva
+         KGJNWG/pzyZOi4rWVCD6Kqe8HLGgZnw1XDZNxuyEh8YGZXq2Qt5NiGNvDpsV6pHrcFy2
+         kBdyMOHgGRYAMN+EVrXL+s5fbpedS/fBc2Wk4Q9d0btIfTzOvBVAdH1KmJa8n/x+ANdM
+         kT6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vLbBt6T4zV/xw9PURuQlOM8wVnilFKG9GdBusjjh0Mo=;
-        b=I6pm//GFZuVQqgSf7aDCPMo96dHDgGZmrpDdY816f6WV5lvX4yUdSQuQaK8LR08MAZ
-         sAAiNev51WG+MXQCyNBDQc4yJvDMj74coJdtlIRpzSyMh/PYx/WGmLN08TV87/4KLIQ9
-         SKQyCjGHAR8E916z1wBK/MCvCVWoKzWdrTN48oYHgz4xUHNUKxwzazjqoE0uCb/KB4iK
-         U97bIepWRLRyFLlBlHXs+C6lPjyjW388AGUYy6K/CXHyXiMK2o5sU8YXxyM83UHbTJpU
-         mYrZfe9GROj9YDBggCNkqmiepwwxchsBqZqcCDo9Ky/URlggiXI+3TPbDEFd6k6Ymvew
-         mavQ==
-X-Gm-Message-State: AOAM530bg3i8enUeKPyztVsAtYGTAms4HmwKrdKx5STj1VbSxfbd2lKy
-        NxhCQi6I+hrq4iCWDf8u4689sA==
-X-Google-Smtp-Source: ABdhPJw416wPtB82zogsu5olmJkH1UCsYtbiT23TJOgqrvgg/jImFRTpDsKYOmvyA335IzD2wpSLyg==
-X-Received: by 2002:a5d:4612:: with SMTP id t18mr20763254wrq.307.1604326957059;
-        Mon, 02 Nov 2020 06:22:37 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id 3sm16182987wmd.19.2020.11.02.06.22.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pfaEdHgBmw2l0HgsbZl3mj1NuXZBElDuHydbjKuUqqI=;
+        b=KG9PjbUnUwiitrGm0gx6kPK+fJtwH5dVRsrK2sGQUHAdBNc5fAN3zk7GlY2/RcNNqi
+         d2xZiT4570ZWh04uBrIJx+qvkKaApRGSTwZQlnDBhss+BGx5I1uMTCOarhQd4g2MUPRd
+         vzABSE8j7UX5+R1ds2ng9auoH+zgFMk0GOUZbWQ5cXKF+Yl3m0USID0igjwVxKpFvoWw
+         6IvxhiuLC+KgOuQDUyYy4eFltSVkOi32CNH6dVocZF6uehGIZGomYDraOTaCgjSPJVA5
+         1t4cNESFvSO8Uste09EMzZZOaDNM7zCx/2sFUFBlTPACuSz1AMNpHD64bN787MXM9F1y
+         wayQ==
+X-Gm-Message-State: AOAM530A6gEgdjMxV/c2EE8L40pJsURSW79fK+hRnOfRZWyKZc1krSX6
+        E9hzQphIQqbM+equLNOkeg5Dog==
+X-Google-Smtp-Source: ABdhPJxptVEKDqrhUDqsGd1T2xKfaeFsV7xZnIIIySqexTSIanwWk9hgMFroEGh99uCK2iovzdLGeQ==
+X-Received: by 2002:a1c:6302:: with SMTP id x2mr19015414wmb.121.1604327041826;
+        Mon, 02 Nov 2020 06:24:01 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id f7sm23542501wrx.64.2020.11.02.06.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 06:22:36 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 4/4] iio: adc: xilinx: use more devres helpers and remove remove()
-Date:   Mon,  2 Nov 2020 15:22:28 +0100
-Message-Id: <20201102142228.14949-5-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201102142228.14949-1-brgl@bgdev.pl>
-References: <20201102142228.14949-1-brgl@bgdev.pl>
+        Mon, 02 Nov 2020 06:24:01 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     martin.petersen@oracle.com, jejb@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [RESEND 00/19] Rid W=1 warnings in SCSI
+Date:   Mon,  2 Nov 2020 14:23:40 +0000
+Message-Id: <20201102142359.561122-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+[Resending to include the SCSI ML as per Martin's request]
 
-In order to simplify resource management and error paths in probe() and
-entirely drop the remove() callback - use devres helpers wherever
-possible. Define devm actions for cancelling the delayed work and
-disabling the clock.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/iio/adc/xilinx-xadc-core.c | 129 +++++++++++++----------------
- 1 file changed, 56 insertions(+), 73 deletions(-)
+Lee Jones (19):
+  scsi: aic7xxx: aic79xx_osm: Remove unused variable 'saved_scsiid'
+  scsi: mpt3sas: mpt3sas_scsih: Fix function documentation formatting
+  scsi: lpfc: lpfc_scsi: Fix a whole host of kernel-doc issues
+  scsi: lpfc: lpfc_attr: Demote kernel-doc format for redefined
+    functions
+  scsi: lpfc: lpfc_attr: Fix-up a bunch of kernel-doc misdemeanours
+  scsi: lpfc: lpfc_debugfs: Fix a couple of function documentation
+    issues
+  scsi: lpfc: lpfc_bsg: Provide correct documentation for a bunch of
+    functions
+  scsi: esas2r: esas2r_disc: Place brackets around a potentially empty
+    if()
+  scsi: esas2r: esas2r_init: Place brackets around a potentially empty
+    if()
+  scsi: lpfc: lpfc_nvme: Remove unused variable 'phba'
+  scsi: ufs: ufshcd: Fix some function doc-rot
+  scsi: lpfc: lpfc_nvme: Fix some kernel-doc related issues
+  scsi: esas2r: esas2r_int: Add brackets around potentially empty if()s
+  scsi: lpfc: lpfc_nvmet: Fix-up some formatting and doc-rot issues
+  scsi: esas2r: esas2r_main: Demote non-conformant kernel-doc header
+  scsi: advansys: Relocate or remove unused variables
+  scsi: dc395x: Remove a few unused variables
+  scsi: dc395x: Mark 's_stat2' as __maybe_unused
+  scsi: hpsa: Strip out a bunch of set but unused variables
 
-diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-index 7792aa4cf9cb..6ce1745b4995 100644
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -709,11 +709,12 @@ static const struct iio_trigger_ops xadc_trigger_ops = {
- static struct iio_trigger *xadc_alloc_trigger(struct iio_dev *indio_dev,
- 	const char *name)
- {
-+	struct device *dev = indio_dev->dev.parent;
- 	struct iio_trigger *trig;
- 	int ret;
- 
--	trig = iio_trigger_alloc("%s%d-%s", indio_dev->name,
--				indio_dev->id, name);
-+	trig = devm_iio_trigger_alloc(dev, "%s%d-%s", indio_dev->name,
-+				      indio_dev->id, name);
- 	if (trig == NULL)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -721,15 +722,11 @@ static struct iio_trigger *xadc_alloc_trigger(struct iio_dev *indio_dev,
- 	trig->ops = &xadc_trigger_ops;
- 	iio_trigger_set_drvdata(trig, iio_priv(indio_dev));
- 
--	ret = iio_trigger_register(trig);
-+	ret = devm_iio_trigger_register(dev, trig);
- 	if (ret)
--		goto error_free_trig;
-+		return ERR_PTR(ret);
- 
- 	return trig;
--
--error_free_trig:
--	iio_trigger_free(trig);
--	return ERR_PTR(ret);
- }
- 
- static int xadc_power_adc_b(struct xadc *xadc, unsigned int seq_mode)
-@@ -1188,6 +1185,20 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	return 0;
- }
- 
-+static void xadc_clk_disable_unprepare(void *data)
-+{
-+	struct clk *clk = data;
-+
-+	clk_disable_unprepare(clk);
-+}
-+
-+static void xadc_cancel_delayed_work(void *data)
-+{
-+	struct delayed_work *work = data;
-+
-+	cancel_delayed_work_sync(work);
-+}
-+
- static int xadc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1236,34 +1247,35 @@ static int xadc_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
--		ret = iio_triggered_buffer_setup(indio_dev,
--			&iio_pollfunc_store_time, &xadc_trigger_handler,
--			&xadc_buffer_ops);
-+		ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-+						      &iio_pollfunc_store_time,
-+						      &xadc_trigger_handler,
-+						      &xadc_buffer_ops);
- 		if (ret)
- 			return ret;
- 
- 		xadc->convst_trigger = xadc_alloc_trigger(indio_dev, "convst");
--		if (IS_ERR(xadc->convst_trigger)) {
--			ret = PTR_ERR(xadc->convst_trigger);
--			goto err_triggered_buffer_cleanup;
--		}
-+		if (IS_ERR(xadc->convst_trigger))
-+			return PTR_ERR(xadc->convst_trigger);
-+
- 		xadc->samplerate_trigger = xadc_alloc_trigger(indio_dev,
- 			"samplerate");
--		if (IS_ERR(xadc->samplerate_trigger)) {
--			ret = PTR_ERR(xadc->samplerate_trigger);
--			goto err_free_convst_trigger;
--		}
-+		if (IS_ERR(xadc->samplerate_trigger))
-+			return PTR_ERR(xadc->samplerate_trigger);
- 	}
- 
- 	xadc->clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(xadc->clk)) {
--		ret = PTR_ERR(xadc->clk);
--		goto err_free_samplerate_trigger;
--	}
-+	if (IS_ERR(xadc->clk))
-+		return PTR_ERR(xadc->clk);
- 
- 	ret = clk_prepare_enable(xadc->clk);
- 	if (ret)
--		goto err_free_samplerate_trigger;
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(dev,
-+				       xadc_clk_disable_unprepare, xadc->clk);
-+	if (ret)
-+		return ret;
- 
- 	/*
- 	 * Make sure not to exceed the maximum samplerate since otherwise the
-@@ -1272,22 +1284,28 @@ static int xadc_probe(struct platform_device *pdev)
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
- 		ret = xadc_read_samplerate(xadc);
- 		if (ret < 0)
--			goto err_free_samplerate_trigger;
-+			return ret;
-+
- 		if (ret > XADC_MAX_SAMPLERATE) {
- 			ret = xadc_write_samplerate(xadc, XADC_MAX_SAMPLERATE);
- 			if (ret < 0)
--				goto err_free_samplerate_trigger;
-+				return ret;
- 		}
- 	}
- 
--	ret = request_irq(xadc->irq, xadc->ops->interrupt_handler, 0,
--			  dev_name(dev), indio_dev);
-+	ret = devm_request_irq(dev, xadc->irq, xadc->ops->interrupt_handler, 0,
-+			       dev_name(dev), indio_dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(dev, xadc_cancel_delayed_work,
-+				       &xadc->zynq_unmask_work);
- 	if (ret)
--		goto err_clk_disable_unprepare;
-+		return ret;
- 
- 	ret = xadc->ops->setup(pdev, indio_dev, xadc->irq);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
- 
- 	for (i = 0; i < 16; i++)
- 		xadc_read_adc_reg(xadc, XADC_REG_THRESHOLD(i),
-@@ -1295,7 +1313,7 @@ static int xadc_probe(struct platform_device *pdev)
- 
- 	ret = xadc_write_adc_reg(xadc, XADC_REG_CONF0, conf0);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
- 
- 	bipolar_mask = 0;
- 	for (i = 0; i < indio_dev->num_channels; i++) {
-@@ -1305,17 +1323,18 @@ static int xadc_probe(struct platform_device *pdev)
- 
- 	ret = xadc_write_adc_reg(xadc, XADC_REG_INPUT_MODE(0), bipolar_mask);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
-+
- 	ret = xadc_write_adc_reg(xadc, XADC_REG_INPUT_MODE(1),
- 		bipolar_mask >> 16);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
- 
- 	/* Disable all alarms */
- 	ret = xadc_update_adc_reg(xadc, XADC_REG_CONF1, XADC_CONF1_ALARM_MASK,
- 				  XADC_CONF1_ALARM_MASK);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
- 
- 	/* Set thresholds to min/max */
- 	for (i = 0; i < 16; i++) {
-@@ -1330,59 +1349,23 @@ static int xadc_probe(struct platform_device *pdev)
- 		ret = xadc_write_adc_reg(xadc, XADC_REG_THRESHOLD(i),
- 			xadc->threshold[i]);
- 		if (ret)
--			goto err_free_irq;
-+			return ret;
- 	}
- 
- 	/* Go to non-buffered mode */
- 	xadc_postdisable(indio_dev);
- 
--	ret = iio_device_register(indio_dev);
-+	ret = devm_iio_device_register(dev, indio_dev);
- 	if (ret)
--		goto err_free_irq;
-+		return ret;
- 
- 	platform_set_drvdata(pdev, indio_dev);
- 
--	return 0;
--
--err_free_irq:
--	free_irq(xadc->irq, indio_dev);
--	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
--err_clk_disable_unprepare:
--	clk_disable_unprepare(xadc->clk);
--err_free_samplerate_trigger:
--	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
--		iio_trigger_free(xadc->samplerate_trigger);
--err_free_convst_trigger:
--	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
--		iio_trigger_free(xadc->convst_trigger);
--err_triggered_buffer_cleanup:
--	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
--		iio_triggered_buffer_cleanup(indio_dev);
--
--	return ret;
--}
--
--static int xadc_remove(struct platform_device *pdev)
--{
--	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
--	struct xadc *xadc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
--		iio_trigger_free(xadc->samplerate_trigger);
--		iio_trigger_free(xadc->convst_trigger);
--		iio_triggered_buffer_cleanup(indio_dev);
--	}
--	free_irq(xadc->irq, indio_dev);
--	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
--	clk_disable_unprepare(xadc->clk);
--
- 	return 0;
- }
- 
- static struct platform_driver xadc_driver = {
- 	.probe = xadc_probe,
--	.remove = xadc_remove,
- 	.driver = {
- 		.name = "xadc",
- 		.of_match_table = xadc_of_match_table,
+ drivers/scsi/advansys.c              | 16 ++------
+ drivers/scsi/aic7xxx/aic79xx_osm.c   |  3 +-
+ drivers/scsi/dc395x.c                | 15 +++-----
+ drivers/scsi/esas2r/esas2r_disc.c    |  3 +-
+ drivers/scsi/esas2r/esas2r_init.c    |  5 ++-
+ drivers/scsi/esas2r/esas2r_int.c     |  8 ++--
+ drivers/scsi/esas2r/esas2r_main.c    |  8 +---
+ drivers/scsi/hpsa.c                  | 25 ++++---------
+ drivers/scsi/lpfc/lpfc_attr.c        | 56 +++++++++++++++++-----------
+ drivers/scsi/lpfc/lpfc_bsg.c         | 34 ++++++++---------
+ drivers/scsi/lpfc/lpfc_debugfs.c     |  3 +-
+ drivers/scsi/lpfc/lpfc_nvme.c        | 37 ++++++++----------
+ drivers/scsi/lpfc/lpfc_nvmet.c       | 17 ++++-----
+ drivers/scsi/lpfc/lpfc_scsi.c        | 48 +++++++++++++++---------
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c |  8 ++--
+ drivers/scsi/ufs/ufshcd.c            |  3 +-
+ 16 files changed, 141 insertions(+), 148 deletions(-)
+
 -- 
-2.29.1
+2.25.1
 
