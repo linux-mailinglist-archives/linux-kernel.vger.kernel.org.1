@@ -2,137 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424D42A3626
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B8F2A362D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgKBVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
+        id S1725883AbgKBV4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgKBVqg (ORCPT
+        with ESMTP id S1725766AbgKBV4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:46:36 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C27C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:46:36 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id y14so12304830pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:46:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NuAK5iU+OB5uwgmefiNZ92vlEQCJHA3+TVIKzsNC8/Q=;
-        b=PmBlyYUxet0pQz4Kq7fTrLy5nPvS/FiNVis6+GO0WuqHhybCtrLbmb89ZojZH+caQT
-         BYwdEgUSIAnFnVx/BdCKv2E9nEtFAYMGfol+eXsTlcBAJjm4GYaq8lY8VakgxbRSzwfL
-         X2KFvZAAu+5G8djht/XSlC5F12rPHBnwkUHEMVjjv47S7Y6w6WgPBSmxzNri3nQPrk4p
-         0yMHBC8j/+mmI5Hd0wCTaxk8MWGzIJuTOQKtc1jxySg+n3YG12HM4jMCi8fa4bp+cCDG
-         43VLHSE5VSo5STKVUza8IG7D6ndFh44r82gSW2XBaT9OTbvLZoMSYESEHju8kMtIkWvU
-         oDGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NuAK5iU+OB5uwgmefiNZ92vlEQCJHA3+TVIKzsNC8/Q=;
-        b=SBTd0Y9adPk1iuDoexAUM3TtLPYG0uQww43MhVhHZYV1+nbzyNx2nUN1vSJ4asy+2X
-         nKTYPcKaEnvAO+nVdV2f9oVZtiLkR9gjPxqY6ioo4G+/3Su3I1Z8q7/CeAxtnI1dhtlI
-         0CSZ5KBSz15r3jE8w2kHVPiNlkcsFPWhWyB6O7Xu4mGS3bOf+dnR9MXPfROfI34V01Yj
-         PHvxXLVvdMN2eciBg9YxNOqmI9fp281RZwe6+6qJLJHAJbTnbH/7vbRvMXDiV4pa1i6m
-         R7E9CVQ5Y6pmVbXWjD/Zs4lhPSQYYYJjPa72EkS4Egx4eRujro+HbDCW8mVj4+F/1vNC
-         1nAw==
-X-Gm-Message-State: AOAM530fmDUlBUah1g8/4dCGxjvt4fd3nUFkbXUmdSHjOXAmMLrrleqD
-        ev0IsFBcLBon5asFjTDqdHLrmg==
-X-Google-Smtp-Source: ABdhPJy2WBxIE36mCDneHzdb8Jqk4jEXiLdHF0aRYDJZcW7w78FEN7ogF1O0a7WLCCGS5s2YPRUdcw==
-X-Received: by 2002:a62:25c7:0:b029:156:72a3:b0c0 with SMTP id l190-20020a6225c70000b029015672a3b0c0mr23140079pfl.59.1604353596231;
-        Mon, 02 Nov 2020 13:46:36 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id ca5sm453566pjb.27.2020.11.02.13.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 13:46:35 -0800 (PST)
-Date:   Mon, 2 Nov 2020 14:46:33 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 06/26] coresight: etm4x: Handle access to TRCSSPCICRn
-Message-ID: <20201102214633.GD2749502@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-8-suzuki.poulose@arm.com>
+        Mon, 2 Nov 2020 16:56:31 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6A0C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:56:31 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3EDBF583;
+        Mon,  2 Nov 2020 22:56:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604354187;
+        bh=89P0rtmbvGghV/QE8F8hRIZpDj6Er59rua00pGU1HKk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tfJzoGe7SDaqyeXt7EcNjKen2Xu/hoZRTpKea4JxoyJrLVwuvdFpgnnN1zD8nq7Vw
+         WEjhR1WD42k79W/o9mmE8pQeKbcdQKlsBtlRa6npDcXSHEh2YaJeL7DOg3iiKdwxvq
+         x76hSFJgfXbusuqBu3xDU00Qak9bBBGXXcoI5U6Q=
+Date:   Mon, 2 Nov 2020 23:55:39 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sean Paul <seanpaul@chromium.org>
+Subject: Re: [PATCH v2 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+Message-ID: <20201102215539.GF3971@pendragon.ideasonboard.com>
+References: <20201030011738.2028313-1-swboyd@chromium.org>
+ <20201030011738.2028313-4-swboyd@chromium.org>
+ <20201101192027.GA7612@pendragon.ideasonboard.com>
+ <CAD=FV=VKTS7G9a3x8iHg=eWRFtrcwKBdwbdtynmHhV4KPCnDKQ@mail.gmail.com>
+ <160433869233.884498.1989382962614280308@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-8-suzuki.poulose@arm.com>
+In-Reply-To: <160433869233.884498.1989382962614280308@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+Hi Stephen,
 
-On Wed, Oct 28, 2020 at 10:09:25PM +0000, Suzuki K Poulose wrote:
-> TRCSSPCICR<n> is present only if all of the following are true:
-> 	TRCIDR4.NUMSSCC > n.
-> 	TRCIDR4.NUMPC > 0b0000 .
-> 	TRCSSCSR<n>.PC == 0b1
+On Mon, Nov 02, 2020 at 09:38:12AM -0800, Stephen Boyd wrote:
+> Quoting Doug Anderson (2020-11-02 08:06:14)
+> > On Sun, Nov 1, 2020 at 11:21 AM Laurent Pinchart wrote:
+> > > On Thu, Oct 29, 2020 at 06:17:37PM -0700, Stephen Boyd wrote:
+> > > > @@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
+> > > >  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+> > > >  {
+> > > >       struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
+> > > > +     struct edid *edid = pdata->edid;
+> > > > +     int num, ret;
+> > > > +
+> > > > +     if (!edid) {
+> > > > +             pm_runtime_get_sync(pdata->dev);
+> > > > +             edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
+> > > > +             pm_runtime_put(pdata->dev);
+> > > > +     }
+> > >
+> > > Do we need to cache the EDID ? It seems like something that should be
+> > > done by the DRM core (well, caching modes in that case), not by
+> > > individual bridge drivers.
+> > 
+> > I can take the blame for the fact that it does caching, since I
+> > requested it in early reviews.  In general boot speed is pretty
+> > important to me and each read of the EDID take 20 ms.  There are
+> > definitely several calls to get the EDID during a normal bootup.
+> > Stephen did a little more digging into exactly what was causing all
+> > these calls and can chime in, 
 > 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+> In ChromeOS we get modes a couple times and then whenever we connect or
+> disconnect a DP cable for external display we also get modes. It seems
+> that we also run modetest at boot but I'm not sure why we do that. I
+> think it is to gather diagnostic data for all the EDIDs on the device at
+> boot so we know what all is connected.
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index d78a37b6592c..0310eac9dc16 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -175,8 +175,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  			       drvdata->base + TRCSSCCRn(i));
->  		writel_relaxed(config->ss_status[i],
->  			       drvdata->base + TRCSSCSRn(i));
-> -		writel_relaxed(config->ss_pe_cmp[i],
-> -			       drvdata->base + TRCSSPCICRn(i));
-> +		if (drvdata->nr_pe)
-
-Aren't you missing to check the value of the PC bit in TRCSSCSRn?
-
-                /*
-                 * TRCSSCSRn:PC, bit[3]: Indidate support for single-shot PE
-                 * comparator input.
-                 */
-                if (drvdata->nr_pe && (config->ss_status[i] & BIT(3)))
-
-
-I have picked up patches 1 to 5 and added a "Cc:stable" to paches 2, 4 and 5.
-More comments to come tomorrow.
-
-
-Thanks,
-Mathieu
-
-> +			writel_relaxed(config->ss_pe_cmp[i],
-> +				       drvdata->base + TRCSSPCICRn(i));
->  	}
->  	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
->  		writeq_relaxed(config->addr_val[i],
-> @@ -1228,7 +1229,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
->  		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
->  		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
-> -		state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
-> +		if (drvdata->nr_pe)
-> +			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
->  	}
->  
->  	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
-> @@ -1344,8 +1346,9 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
->  			       drvdata->base + TRCSSCCRn(i));
->  		writel_relaxed(state->trcsscsr[i],
->  			       drvdata->base + TRCSSCSRn(i));
-> -		writel_relaxed(state->trcsspcicr[i],
-> -			       drvdata->base + TRCSSPCICRn(i));
-> +		if (drvdata->nr_pe)
-> +			writel_relaxed(state->trcsspcicr[i],
-> +				       drvdata->base + TRCSSPCICRn(i));
->  	}
->  
->  	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
-> -- 
-> 2.24.1
+> > but in general until we can eliminate
+> > the extra calls it seems like it'd be nice to keep the caching?  This
+> > bridge chip is intended for use for eDP for internal panels, so there
+> > should be no downside to caching.  If we can later optimize the DRM
+> > core, we can fix this and a pre-existing driver that does the same
+> > type of caching (analogix-anx6345.c) at the same time?
 > 
+> I'd like to add the caching somewhere in the core (maybe the bridge
+> connector code?) but I don't know what the logic should be. Is it eDP
+> and if not hpd notify then cache all the time and if it is eDP and hpd
+> notify then cache once hpd notify says detected and drop cache when no
+> longer detected?
+> 
+> 	if (eDP) {
+> 		if (!hpd)
+> 			cache();
+> 		else if (hpd_detected()) {
+> 			cache();
+> 		else if (!hpd_detected()) {
+> 			drop_cache();
+> 		}
+> 	}
+> 
+> I thought that EDID could change and HPD can be pulsed to notify that it
+> should be read again.
+
+I think we should expose a flag tells the panel is fixed instead of
+making it a special case of eDP, as other panel types could benefit from
+the same mechanism. Otherwise, yes, I think it's really about caching
+the EDID the first time we read it, and then reusing it. The question is
+who should convert EDID to modes. At the moment bridge drivers do so,
+and we're migrating to drm_bridge_connector for most cases. That would
+be a candidate location to cache EDID. The DRM core would be another
+one, but in that case we may need to also cache the modes.
+
+-- 
+Regards,
+
+Laurent Pinchart
