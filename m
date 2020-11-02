@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88C52A372A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111512A3733
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgKBX2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:28:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33862 "EHLO mail.kernel.org"
+        id S1726212AbgKBXeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725841AbgKBX2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:28:47 -0500
+        id S1725831AbgKBXeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:34:09 -0500
 Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28AAE22280;
-        Mon,  2 Nov 2020 23:28:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B9AF2231B;
+        Mon,  2 Nov 2020 23:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604359727;
-        bh=4MjQMzBRiuQQCBZ/m2YpKQucOcQZa7hQO0Ry0R/PWLY=;
+        s=default; t=1604360048;
+        bh=69PEj21L4HDtC3TaZvhLQr+eaBUOJDTOMttCm7jiI6I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GVqI/0xLl0PHdspUgvrvlEYBzXN3PNAvN+q70ACDQLBvKvTxOJ6TzR0ZoJ+NDPPQG
-         a0olQwsE8XKIkqrfR2VV8fXgY7AxgLy5j5kogO6ts8+ZW5w9AbkbiOKFC+TxslySjE
-         z6tb/dovnpfFNLkfRTfXHYx/9BfVysVqDmi+s13E=
-Date:   Tue, 3 Nov 2020 07:28:41 +0800
+        b=vaxFKdXH1NFk1U++jbr7td08uj8fkTktKElkj7p+ViB/HOazv04vbCEZZDvoEs3oU
+         LmNKnrVPvTmDfq7gw8u7EiV1UHWt3OcJNM/ZxFtKZLEXSpX+P9ajWOJJAFZba4bx05
+         Da0MLOVt2MQFYdV+eutJV0oroz+cNpRG4bH7xpbk=
+Date:   Tue, 3 Nov 2020 07:34:03 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     mkl@pengutronix.de, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 5/6] dt-bindings: firmware: add IMX_SC_R_CAN(x) macro
- for CAN
-Message-ID: <20201102232840.GT31601@dragon>
-References: <20201021052437.3763-1-qiangqing.zhang@nxp.com>
- <20201021052437.3763-6-qiangqing.zhang@nxp.com>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>
+Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [PATCH v5 00/11] arm64: dts: layerscape: update MAC nodes with
+ PHY information
+Message-ID: <20201102233403.GU31601@dragon>
+References: <20201030113555.726487-1-ciorneiioana@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021052437.3763-6-qiangqing.zhang@nxp.com>
+In-Reply-To: <20201030113555.726487-1-ciorneiioana@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 01:24:36PM +0800, Joakim Zhang wrote:
-> Add IMX_SC_R_CAN(x) macro for CAN.
+On Fri, Oct 30, 2020 at 01:35:44PM +0200, Ioana Ciornei wrote:
+> From: Ioana Ciornei <ioana.ciornei@nxp.com>
 > 
-> Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> This patch set aims to add the necessary DTS nodes to complete the
+> MAC/PCS/PHY representation on DPAA2 devices. The external MDIO bus nodes
+> and the PHYs found on them are added, along with the PCS MDIO internal
+> buses and their PCS PHYs. Also, links to these PHYs are added from the
+> DPMAC node.
+> 
+> Changes in v2:
+>  - documented the dpmac node into a new yaml entry
+>  - dropped the '0x' from some unit addresses
+> 
+> Changes in v3:
+>  - renamed dpmac@x into ethernet@x
+>  - renamed the new documentation file to use the same name as the
+>    compatible
+>  - marked additionalProperties as false
+>  - added a reference to ethernet-controller.yaml
+>  - added a new patch to document 10gbase-r - 2/11
+> 
+> Changes in v4:
+>  - move the phy-connection-type attribute to the ethernet node in 7,8/11
+>  - remove the interrupts description from 8/11 since I plan to properly
+>    add all interrupt lines for all platforms
+> 
+> Changes in v5:
+>  - renamed all PHY nodes to ethernet-phy@x
+>  - added some empty lines between nodes
+>  - used the reg as the unit address
+> 
+> Ioana Ciornei (11):
+>   dt-bindings: net: add the DPAA2 MAC DTS definition
+>   dt-bindings: net: add the 10gbase-r connection type
+>   arm64: dts: ls1088a: add external MDIO device nodes
+>   arm64: dts: ls1088ardb: add QSGMII PHY nodes
+>   arm64: dts: ls1088ardb: add necessary DTS nodes for DPMAC2
+>   arm64: dts: ls208xa: add the external MDIO nodes
+>   arm64: dts: ls2088ardb: add PHY nodes for the CS4340 PHYs
+>   arm64: dts: ls2088ardb: add PHY nodes for the AQR405 PHYs
+>   arm64: dts: ls208xa: add PCS MDIO and PCS PHY nodes
+>   arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
+>   arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
 
-Acked-by: Shawn Guo <shawnguo@kernel.org>
-
-> ---
->  include/dt-bindings/firmware/imx/rsrc.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/dt-bindings/firmware/imx/rsrc.h b/include/dt-bindings/firmware/imx/rsrc.h
-> index 54278d5c1856..43885056557c 100644
-> --- a/include/dt-bindings/firmware/imx/rsrc.h
-> +++ b/include/dt-bindings/firmware/imx/rsrc.h
-> @@ -111,6 +111,7 @@
->  #define IMX_SC_R_CAN_0			105
->  #define IMX_SC_R_CAN_1			106
->  #define IMX_SC_R_CAN_2			107
-> +#define IMX_SC_R_CAN(x)			(IMX_SC_R_CAN_0 + (x))
->  #define IMX_SC_R_DMA_1_CH0		108
->  #define IMX_SC_R_DMA_1_CH1		109
->  #define IMX_SC_R_DMA_1_CH2		110
-> -- 
-> 2.17.1
-> 
+Applied all, thanks.
