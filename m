@@ -2,167 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9682A23CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 05:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8EC2A23D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 05:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgKBEnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 23:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727726AbgKBEnQ (ORCPT
+        id S1727849AbgKBEoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 23:44:21 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:5526 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727726AbgKBEoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 23:43:16 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC49C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 20:43:16 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id x13so9705446pgp.7
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 20:43:16 -0800 (PST)
+        Sun, 1 Nov 2020 23:44:20 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A24di5O006019;
+        Sun, 1 Nov 2020 20:44:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=EI5yK7DKwAGrHWozOnU2C20Fihc/ei9OUzYotIw3NTI=;
+ b=gdyz3l3tjrhQQfPRIGijmlQKL9/qD2I2XQgxYmIwl+vPrP04Z4oPH7nWjMcio5F9sFTM
+ iSx1afhtjVgnpqQ1DxYpTXE+tNI1zIi2MfX05FWjHHf5Gwf2v6LMwwGAsv9TKVT58/Q5
+ +w/D4vD13p+QfLlTvJjSSoIxKeYTlakhKA9hrR8q+kWb3N3YrYbIi9OXW2l5VbjyDjvU
+ 20YR6ucNctuR8SWmhnRh2is5YTtjSpOUoLKzf57LVk5tsKi1+KcbMpLEXYKDvbj7EMRJ
+ Z4QK9SNO6lLHqSnE+/B7RNEMFsBuKxsfAh2UeR+wpKHYYCyql0Xri3fJ+BXhMioHlImw FQ== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 34h7ennxc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 01 Nov 2020 20:44:16 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 1 Nov
+ 2020 20:44:14 -0800
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.53) by
+ SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sun, 1 Nov 2020 20:44:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cSV2+hgSnYkyUqRIro14BHLbvBZuZz0fr2DDQaZVJAB++iLagWaQs8us9+MOTDFkrVRq81ipjDJvxrmMhaxthjcgEquUuZcPrxyJG2iEYlXShYWA24/hM616U5axpKfpfKHiRz33afgLHurHbfpH5hrN4dfgFJRdqJsVNo3rtt9YVGNmIpyXNILgSHPGwpVTCgmnJJ8nLjMnp7mQpaWWraSn1UqGdTifKVpOcaPc7KFO9TtuCnbvZw7UIUfMiwED1PnBQGR5DxxX2xVrUAtO4WjCDd20J1A0FQr4slrduWThbYZplKSxTRulp5Q2B2EgSZc4Eo5/t4peV6bwgQBYRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EI5yK7DKwAGrHWozOnU2C20Fihc/ei9OUzYotIw3NTI=;
+ b=KdrlkkoozgI1UMYVcm0Yb1NAOmeuFSvp2pjpm30zp/WNa2t1nWOevGh3s5KvRnkYprFBGAPpfafISMtGIWreDve1EtpAaaU/lYCZhmWLoTSRd65Jb9SeAe4zPiT0h8nveGATQvY0uN1vzji67IyQo7p3XtcPCP/LK6op9jnvTM9SJ0BC8n+7xDNaITpdO21m3888RsZQzHv1Ihl309RMwdLEMlmikCbsqq3T4hF9dhIP1XFPIBKUYykGn+Xk0Ihy/aALiTZHRgTP6U7bbupfFAkyiKFCrsC/B72m4SyhjAoD94Ku2U6bC9Y8qWF8jlJO5E+xwYnOJuLhK75CbmTZEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=srks28iO1gRpgZNbb5QK/SCn40SAhZrPX4c/7fjgLFw=;
-        b=ub+qiSgSbfLn/SnED3PuPrLhmyL3iqBvzfQlSF6LEuubARqPGjU1EmwDT+CDViGRn3
-         vYweN7kq/UsFjLrUSYgoylXCBBbmu3Dsq1+JRYCYuvclcvBjaoWto+WJmOoyCotvGsGD
-         Nua1Jbwl2lg4SycCfIUVR81iMH27j2fz6AINkdxhrZOUJpGyWnbSl2Q4sM2LPFeTeVqa
-         opZzMqO6BHppw16XNgtJ6fOOBCb0Cj4hUU94aWB/IvLoXRdpgwe6Xk2lsYTODdeCpWbp
-         tq8jblB9dPPcKkE8k4x85piEWR3z7+uJMueoYzFqSj6JyOjiSXMdtLIQSyHRv5OXJvSZ
-         t0Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=srks28iO1gRpgZNbb5QK/SCn40SAhZrPX4c/7fjgLFw=;
-        b=ek70teyERBf3CZd4TC5RPWkzXFR9PNUrCTAJ67GBUJ3Y/MmtLTyYaEG1RAApr9E+2a
-         uK5b+mPrSHyFcH+cwCgqjZOx/2p/UxCL9VDCzqPgKUbo2tYoMUxviaKaDwd1aTqvUopi
-         L31E9gJWZ9LeUFkP2TFtMunP8D1yoITMx2oQtp90DWOliLC38EjTU9uv8EESooRza7BV
-         5xt3vrqDgximlmV+RVF3LVfM+O/EBg2h92Sm//6YSBEaV+6F4rq5+4plsEwxG9SsAIWa
-         r6hWfHl1J+JTk+ziPvDT09ZltJ16Bc9jt1obqHZ/ZE35TkdtOyCyeMxVUcR03DWS53UF
-         oAeQ==
-X-Gm-Message-State: AOAM531BLMzrh8xWe/Pg17ZHAi8X4YYSVL2L//7SZzp42hYmciRxkwN4
-        xzPR40C9CFKdbWCUz4c0sDsQ1A==
-X-Google-Smtp-Source: ABdhPJzB0gXN96d2Cn26PfuyUNHTdRvWXx2RkTUfk896bSkcgYtqKXoBjXilU5ZKHVPR0IeRPc9DzQ==
-X-Received: by 2002:a62:55c6:0:b029:160:1c33:a0f7 with SMTP id j189-20020a6255c60000b02901601c33a0f7mr20050354pfb.35.1604292195495;
-        Sun, 01 Nov 2020 20:43:15 -0800 (PST)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id r19sm10162020pjo.23.2020.11.01.20.43.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 01 Nov 2020 20:43:14 -0800 (PST)
-Date:   Mon, 2 Nov 2020 10:13:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        zhuguangqing <zhuguangqing@xiaomi.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: schedutil: Don't skip freq update if
- need_freq_update is set
-Message-ID: <20201102044312.4oxgfsmx3v5raq6d@vireshk-i7>
-References: <2954009.kBar6x9KXa@kreacher>
- <207ae817a778d79a99c30cb48f2ea1f527416519.1604042421.git.viresh.kumar@linaro.org>
- <CAJZ5v0j2uoaUdSr1-OonPkR6QapjOm4RE2Ya=LBpV1KDrLF3gw@mail.gmail.com>
- <CAJZ5v0gURd-dcAWj0KdmodM3MfU_DQ_HEiX-CCcd+fHpRikSyA@mail.gmail.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EI5yK7DKwAGrHWozOnU2C20Fihc/ei9OUzYotIw3NTI=;
+ b=kG1HTUHXG+Ga5o7JviEtiR1Yy33ldI6kcPOTvFV50IfIL45swxlULTZM3sH1+4OVNnCfy9Hwl3M79bzBfq/3/ZQVmylpjkjuMFF8m5WfMsTdP+wGv8dnG6+qoMrGUvm+HQYn8Q2lJBxIze+LsSK+43IWZLEQkRMqjcxv1gz8Fvg=
+Received: from DM6PR18MB3034.namprd18.prod.outlook.com (2603:10b6:5:18c::32)
+ by DM5PR18MB2213.namprd18.prod.outlook.com (2603:10b6:4:bb::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Mon, 2 Nov
+ 2020 04:44:11 +0000
+Received: from DM6PR18MB3034.namprd18.prod.outlook.com
+ ([fe80::a087:2131:1284:66e7]) by DM6PR18MB3034.namprd18.prod.outlook.com
+ ([fe80::a087:2131:1284:66e7%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 04:44:11 +0000
+From:   Saurav Kashyap <skashyap@marvell.com>
+To:     "trix@redhat.com" <trix@redhat.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] [PATCH] scsi: bnx2fc: remove unneeded semicolon
+Thread-Topic: [EXT] [PATCH] scsi: bnx2fc: remove unneeded semicolon
+Thread-Index: AQHWsFyo4eZrUValz0yeyQj3qWBVTqm0RK3A
+Date:   Mon, 2 Nov 2020 04:44:11 +0000
+Message-ID: <DM6PR18MB30341EB96B8A82BA6FAF9408D2100@DM6PR18MB3034.namprd18.prod.outlook.com>
+References: <20201101143812.2283642-1-trix@redhat.com>
+In-Reply-To: <20201101143812.2283642-1-trix@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [117.211.149.81]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f63ccd33-14f8-4259-99dd-08d87ee9f13e
+x-ms-traffictypediagnostic: DM5PR18MB2213:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR18MB2213179CF4D503CEBC19C8F5D2100@DM5PR18MB2213.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bGJ+UBcIKKYVzI9A6LDaRnFQY5D+YlQH9KUtjkH54WGGCanm3qYd4PRcItEjUwVaC+8KsjlYkJCjM3BgE5/JDDB8l+KzXQ9ZRjYlzS22njbPj7BnX9rZjcrMNjZ2rjAHLSvyBM0fyhH/6TN4WwNA2DL9HQdmyYlFnJKH1QkeiwEsUR0xhN1vDIrbLbR/M+yORD/Jb/t+Xf15P3gIHLoBhlXZrQbpfrMKbvsUEpAIkdX5oIOwR5kum4I8n1ZtZZXmXcD+u+cZ42MLHK3DD2fELDgXU3eI/EkeqnxSLnyyyMKLdt9jpxyNjCRr+pBmoLOiQFubm4tWf0O4jtBTkQYUGw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3034.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39850400004)(376002)(396003)(136003)(55016002)(7696005)(54906003)(8676002)(52536014)(8936002)(9686003)(2906002)(110136005)(316002)(86362001)(5660300002)(71200400001)(4326008)(26005)(66946007)(53546011)(66446008)(66476007)(76116006)(64756008)(66556008)(478600001)(83380400001)(33656002)(186003)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Ee/9WhAZ22vFNxNq4YNHBbI1HgALLRDCPubgabrHy51jhW13L5Ww/jOaBndvfo9E/uVD/WxAwowDS1yKCuPBm5RNMTozhVKuMHDIDWOGfacccRbnhMPlZRluzrDE5s34ZcgI/doAFbbyuAKkCB53ofQYfyxaA+deVkrVvADUM1QdJV9g2KjEq29mhwzLr06XZJ6QkyZyhLikFFWRf/htg8gXrVHjLqr5YDEPYIxOjGOvANjYMBVHPURRzxI+F0lkklqzjrEGO8PZGkWTJWF5pSKpbqbAJb/wgMMr8AiIr+UNI84SLiFEOcb49t4auyN7kbKtgEgPNsfKYqu93MeCYdwyoEpW78HUTx8VITy9EpTVaPTnPzabgBQEWdFYi0mjUFBN7rR6+o85O/0ekXqgfmAsH0GPKd2CQ+e31LS6pQKJ09cGRuG4En7vDQpofmEUYR/bJLf78AVTGHZPZcRMl8NPtgp85eD/UwBEcdF3JbJZzXTGV+bVkaQtFdbKDefGiP32nTk4clhlD8A3ciY+i7QcOMr0D2I5cxMnuc+cbm4dBjQk/5PEOXyU9QL9z1yhK6aKWstdnDTyzN1V1GiL1hGAu7t6hYEF8NoIVoLHTq1mlCfGbKa3rmbYRbyRm//mxbqEYc8Fe7JXpGpKZp0voQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gURd-dcAWj0KdmodM3MfU_DQ_HEiX-CCcd+fHpRikSyA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB3034.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f63ccd33-14f8-4259-99dd-08d87ee9f13e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 04:44:11.1357
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0IRmrXV22Gy0U/0JABgWDYTWCsYb3Hnjj9WBXG5xd5OWR20H44hX1TC7+aIPp2UuiydaxA2O9dhktwl47UAMew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR18MB2213
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_01:2020-10-30,2020-11-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-10-20, 16:23, Rafael J. Wysocki wrote:
-> On Fri, Oct 30, 2020 at 4:07 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Fri, Oct 30, 2020 at 8:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > The cpufreq policy's frequency limits (min/max) can get changed at any
-> > > point of time, while schedutil is trying to update the next frequency.
-> > > Though the schedutil governor has necessary locking and support in place
-> > > to make sure we don't miss any of those updates, there is a corner case
-> > > where the governor will find that the CPU is already running at the
-> > > desired frequency and so may skip an update.
-> > >
-> > > For example, consider that the CPU can run at 1 GHz, 1.2 GHz and 1.4 GHz
-> > > and is running at 1 GHz currently. Schedutil tries to update the
-> > > frequency to 1.2 GHz, during this time the policy limits get changed as
-> > > policy->min = 1.4 GHz. As schedutil (and cpufreq core) does clamp the
-> > > frequency at various instances, we will eventually set the frequency to
-> > > 1.4 GHz, while we will save 1.2 GHz in sg_policy->next_freq.
-> > >
-> > > Now lets say the policy limits get changed back at this time with
-> > > policy->min as 1 GHz. The next time schedutil is invoked by the
-> > > scheduler, we will reevaluate the next frequency (because
-> > > need_freq_update will get set due to limits change event) and lets say
-> > > we want to set the frequency to 1.2 GHz again. At this point
-> > > sugov_update_next_freq() will find the next_freq == current_freq and
-> > > will abort the update, while the CPU actually runs at 1.4 GHz.
-> > >
-> > > Until now need_freq_update was used as a flag to indicate that the
-> > > policy's frequency limits have changed, and that we should consider the
-> > > new limits while reevaluating the next frequency.
-> > >
-> > > This patch fixes the above mentioned issue by extending the purpose of
-> > > the need_freq_update flag. If this flag is set now, the schedutil
-> > > governor will not try to abort a frequency change even if next_freq ==
-> > > current_freq.
-> > >
-> > > As similar behavior is required in the case of
-> > > CPUFREQ_NEED_UPDATE_LIMITS flag as well, need_freq_update will never be
-> > > set to false if that flag is set for the driver.
-> > >
-> > > We also don't need to consider the need_freq_update flag in
-> > > sugov_update_single() anymore to handle the special case of busy CPU, as
-> > > we won't abort a frequency update anymore.
-> > >
-> > > Reported-by: zhuguangqing <zhuguangqing@xiaomi.com>
-> > > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Thanks for following my suggestion!
-> >
-> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > > ---
-> > >  kernel/sched/cpufreq_schedutil.c | 22 ++++++++++------------
-> > >  1 file changed, 10 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > index c03a5775d019..c6861be02c86 100644
-> > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > @@ -102,9 +102,12 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
-> > >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
-> > >                                    unsigned int next_freq)
-> > >  {
-> > > -       if (sg_policy->next_freq == next_freq &&
-> > > -           !cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
-> > > -               return false;
-> > > +       if (!sg_policy->need_freq_update) {
-> > > +               if (sg_policy->next_freq == next_freq)
-> > > +                       return false;
-> > > +       } else if (!cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS)) {
-> > > +               sg_policy->need_freq_update = false;
-> 
-> One nit, though.
-> 
-> This can be changed into
-> 
-> } else {
->       sg_policy->need_freq_update =
-> cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
-> }
-> 
-> to save a branch and because need_freq_update is there in the cache
-> already, this should be a fast update.
+Hi Tom,
 
-Nice.
+> -----Original Message-----
+> From: trix@redhat.com <trix@redhat.com>
+> Sent: Sunday, November 1, 2020 8:08 PM
+> To: Saurav Kashyap <skashyap@marvell.com>; Javed Hasan
+> <jhasan@marvell.com>; jejb@linux.ibm.com; martin.petersen@oracle.com
+> Cc: GR-QLogic-Storage-Upstream <GR-QLogic-Storage-
+> Upstream@marvell.com>; linux-scsi@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Tom Rix <trix@redhat.com>
+> Subject: [EXT] [PATCH] scsi: bnx2fc: remove unneeded semicolon
+>=20
+> External Email
+>=20
+> ----------------------------------------------------------------------
+> From: Tom Rix <trix@redhat.com>
+>=20
+> A semicolon is not needed after a switch statement.
+>=20
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+> b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+> index 6890bbe04a8c..a436adb6092d 100644
+> --- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+> +++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+> @@ -2275,7 +2275,7 @@ static int bnx2fc_ctlr_enabled(struct
+> fcoe_ctlr_device *cdev)
+>  	case FCOE_CTLR_UNUSED:
+>  	default:
+>  		return -ENOTSUPP;
+> -	};
+> +	}
+>  }
 
--- 
-viresh
+Thanks for a patch.
+
+Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
+
+Thanks,
+~Saurav
+>=20
+>  enum bnx2fc_create_link_state {
+> --
+> 2.18.1
+
