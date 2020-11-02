@@ -2,141 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A702A312B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BEF2A3139
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgKBRQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727521AbgKBRQL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:16:11 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5779CC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:16:11 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f38so11356100pgm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:16:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FiaA239A2PQwcQasT6cnNh3FC/zYFdQwcuNqSx9+MnE=;
-        b=JMqav19onHdxHgN0cN+/6LBFGp1c/lYlCJS0cCzcGMtYJOMAqFmeF7FBbWDmMxzIqf
-         BHCCtcEmTUg0SMmeX/vprtLJcU5+/hPf6PqySAqR+jVXVr9otFhM0rcbvEOV2EM3Aque
-         FJf/yYrsRybLIkZ9wOEuTMi/8PFbNdzqKz9GPA/GWxh7XHUgErIA3q+pS2kNon+HtGw7
-         WVXYyRd/vyn8GDD6u2Da1jYDOEDQjTTgU3Jn0M798NGuuM1YFfV71pKu651Elg1SyUrE
-         jWtRs250nOXAgQTOXHEgzhfbmLpCV9jlOqII7p63G2NKFF68SkyX7f2TMg50o4m2HTP2
-         amfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FiaA239A2PQwcQasT6cnNh3FC/zYFdQwcuNqSx9+MnE=;
-        b=kU7YORQLpOZKs3uCz61sq+dQuyOGbQqXAbd9HxN8JEL8fb9maIkoTW4ji8X6SDSL5B
-         +CeQ7tvAwl0EKTj9rMOR4A/uXfFlkGDGxd4p/aOQHYP3vURhtJRQ6Be3rucQb3ouH89l
-         KGVie4HKYvfkDidvPkrK9F85xs4Hj538ST6PyDgX6fJfWAE3GvTISBlFaQblicVn04gZ
-         1OL2Umx+ZSrmKanjI6mGZgwNRmx3KYFtmr6LUIzm/XBDs1pE0g3AruQaLszlzlii9OPZ
-         BSz7EvzXTOK0Lom8rAnqSbEVsPy9GU1n9U0PcCqK3Y24x4pCmWw3FaHoe5enVGTlzsqc
-         L1pA==
-X-Gm-Message-State: AOAM532p0teoaykBGnMptUJpuxl8/KHhvIRfKSHYvZ89ZtXHF1+Geyrz
-        +b/V8OV1R3LrcK1NM6g9XBo=
-X-Google-Smtp-Source: ABdhPJzWUXbXlsx2BdAw8cQo90IiH2be5wSFJGPhmOzuExBRvWBjzU1BWzYb/P9d2vappgwJgNm96A==
-X-Received: by 2002:a17:90a:2e07:: with SMTP id q7mr6193549pjd.103.1604337370937;
-        Mon, 02 Nov 2020 09:16:10 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id q16sm4199061pff.114.2020.11.02.09.16.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:16:10 -0800 (PST)
-Date:   Mon, 2 Nov 2020 22:46:03 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>, gregkh@linuxfoundation.org,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: [PATCH 1/6] drm/amdgpu/dce: improve code indentation and alignment
-Message-ID: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
+        id S1727801AbgKBRRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:17:02 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:28676 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727794AbgKBRRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:17:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604337420; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: To: From: Date: Sender;
+ bh=vj+zpfmdt/UrOyrf9DlMG0DgkyLSy+JL1jA0FBPdMew=; b=SWW7XJgFo1Fd8BVN1S+9y7MYP5XD5OJHoIEzZid10D4nTa/UjcN1vESAGmENf7inMGgx2+J2
+ PoTTPtzDdIJ1sJvsM/103MpIwncIr3AfNmoZlappfJDt6CYBJzvkn3bBCElWlIuJ/AD5qiqf
+ v/IWdU7wH0qRq6Rr+pe5lGmK1TE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fa03ef19f889442bba5d1a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 17:16:33
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F6D8C433AF; Mon,  2 Nov 2020 17:16:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C958BC433FE;
+        Mon,  2 Nov 2020 17:16:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C958BC433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 2 Nov 2020 10:16:26 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v18 0/4] iommu/arm-smmu: Add adreno-smmu implementation
+ and bindings
+Message-ID: <20201102171626.GA5338@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Will Deacon <will@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Krishna Reddy <vdumpa@nvidia.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201027223408.469893-1-jcrouse@codeaurora.org>
+ <20201029172607.GA30745@willie-the-truck>
+ <20201102170823.GA1032@jcrouse1-lnx.qualcomm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201102170823.GA1032@jcrouse1-lnx.qualcomm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-General code indentation and alignment changes such as replace spaces
-by tabs or align function arguments as per the coding style
-guidelines. Issue reported by checkpatch script.
+On Mon, Nov 02, 2020 at 10:08:23AM -0700, Jordan Crouse wrote:
+> On Thu, Oct 29, 2020 at 05:26:08PM +0000, Will Deacon wrote:
+> > On Tue, Oct 27, 2020 at 04:34:04PM -0600, Jordan Crouse wrote:
+> > > This short series adds support for the adreno-smmu implementation of the
+> > > arm-smmu driver and the device-tree bindings to turn on the implementation
+> > > for the sm845 and sc7180 GPUs. These changes are the last ones needed to enable
+> > > per-instance pagetables in the drm/msm driver.
+> > > 
+> > > No deltas in this patchset since the last go-around for 5.10 [1].
+> > > 
+> > > [1] https://patchwork.freedesktop.org/series/81393/
+> > > 
+> > > Jordan Crouse (3):
+> > >   iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
+> > >   dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
+> > >   arm: dts: qcom: sm845: Set the compatible string for the GPU SMMU
+> > > 
+> > > Rob Clark (1):
+> > >   iommu/arm-smmu: Add a way for implementations to influence SCTLR
+> > 
+> > FYI: this patch (patch 4/4) doesn't seem to have made it anywhere (I don't
+> > have it, and neither does the archive).
+> > 
+> > Will
+> 
+> Patch 4/4 was the bindings for sdm845 and I didn't explicitly add IOMMU to the
+> CC list and so patman did what patman does.
+> 
+> I'll resend.
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/dce_v10_0.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/dce_v11_0.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/dce_v6_0.c  | 2 +-
- drivers/gpu/drm/amd/amdgpu/dce_v8_0.c  | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Stack re-sent with you and Robin and the list on the CC for the bindings. I
+expect that Bjorn can pick up the bindings patches once the adreno-smmu patch is
+accepted but it is good for everybody to get the full picture.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
-index 5963cbe0d455..00f8e60909b2 100644
---- a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
-@@ -2677,7 +2677,7 @@ static int dce_v10_0_crtc_set_base_atomic(struct drm_crtc *crtc,
- 					 struct drm_framebuffer *fb,
- 					 int x, int y, enum mode_set_atomic state)
- {
--       return dce_v10_0_crtc_do_set_base(crtc, fb, x, y, 1);
-+	return dce_v10_0_crtc_do_set_base(crtc, fb, x, y, 1);
- }
- 
- static const struct drm_crtc_helper_funcs dce_v10_0_crtc_helper_funcs = {
-diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
-index 1954472c8e8f..80036f7ce560 100644
---- a/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/dce_v11_0.c
-@@ -2785,7 +2785,7 @@ static int dce_v11_0_crtc_set_base_atomic(struct drm_crtc *crtc,
- 					 struct drm_framebuffer *fb,
- 					 int x, int y, enum mode_set_atomic state)
- {
--       return dce_v11_0_crtc_do_set_base(crtc, fb, x, y, 1);
-+	return dce_v11_0_crtc_do_set_base(crtc, fb, x, y, 1);
- }
- 
- static const struct drm_crtc_helper_funcs dce_v11_0_crtc_helper_funcs = {
-diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
-index 3a44753a80d1..943976349346 100644
---- a/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/dce_v6_0.c
-@@ -2567,7 +2567,7 @@ static int dce_v6_0_crtc_set_base_atomic(struct drm_crtc *crtc,
- 					 struct drm_framebuffer *fb,
- 					 int x, int y, enum mode_set_atomic state)
- {
--       return dce_v6_0_crtc_do_set_base(crtc, fb, x, y, 1);
-+	return dce_v6_0_crtc_do_set_base(crtc, fb, x, y, 1);
- }
- 
- static const struct drm_crtc_helper_funcs dce_v6_0_crtc_helper_funcs = {
-diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-index 3603e5f13077..7973183fa335 100644
---- a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-@@ -2498,7 +2498,7 @@ static void dce_v8_0_crtc_disable(struct drm_crtc *crtc)
- 	case ATOM_PPLL2:
- 		/* disable the ppll */
- 		amdgpu_atombios_crtc_program_pll(crtc, amdgpu_crtc->crtc_id, amdgpu_crtc->pll_id,
--                                                 0, 0, ATOM_DISABLE, 0, 0, 0, 0, 0, false, &ss);
-+						 0, 0, ATOM_DISABLE, 0, 0, 0, 0, 0, false, &ss);
- 		break;
- 	case ATOM_PPLL0:
- 		/* disable the ppll */
-@@ -2585,7 +2585,7 @@ static int dce_v8_0_crtc_set_base_atomic(struct drm_crtc *crtc,
- 					 struct drm_framebuffer *fb,
- 					 int x, int y, enum mode_set_atomic state)
- {
--       return dce_v8_0_crtc_do_set_base(crtc, fb, x, y, 1);
-+	return dce_v8_0_crtc_do_set_base(crtc, fb, x, y, 1);
- }
- 
- static const struct drm_crtc_helper_funcs dce_v8_0_crtc_helper_funcs = {
+Jordan
+
 -- 
-2.25.1
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
