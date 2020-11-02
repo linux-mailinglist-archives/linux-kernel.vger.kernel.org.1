@@ -2,158 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3282A2881
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A1F2A2884
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgKBKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:48:16 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:46677 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728400AbgKBKsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:48:15 -0500
-Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.156])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id E24632008F;
-        Mon,  2 Nov 2020 10:48:12 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id 7E12D3F162;
-        Mon,  2 Nov 2020 11:48:10 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id B65132A2AD;
-        Mon,  2 Nov 2020 05:48:09 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604314089;
-        bh=hxyT1poswWBoJaaTTVRkPcnfH3Dt9A7ZnvVAXTURqp0=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=kwzTvnUad35wr7nSLP7jIoJnMszrTJEAXrP5VK+uYUJZQHllAcEqFU60GQXqFVbhB
-         cgolExmx4fGFYMOoJ1XEA+srW4t59POtyRxBe2xhP/HFWiLSTpPCQBHLORt6s5qGEo
-         rBJ/EkSnoK/bjcPFPNCIZVLNbkRgHFsg42TLHgJE=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Iz4ZV5Fm_N97; Mon,  2 Nov 2020 05:48:06 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Mon,  2 Nov 2020 05:48:06 -0500 (EST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 6E1C041E24;
-        Mon,  2 Nov 2020 10:48:03 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="h6AS1WVv";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id A185841E24;
-        Mon,  2 Nov 2020 10:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1604314078;
-        bh=hxyT1poswWBoJaaTTVRkPcnfH3Dt9A7ZnvVAXTURqp0=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=h6AS1WVvpr4zgF+1O2oE8n1L+6ASF9u3h/KFM+mQC+MEqIIySpIIV0LLb2iholfXC
-         4Y6l6XG4rA4zobYzSZ3wNzmLApWsZ6MUAsL/Wfa6TGcumoZWVWiH/+RqxMF2OkEpRR
-         0EcnrUrN3kywYLT+DhJXR3p+bzjN+tE7UPxwIbww=
-Subject: Re: [PATCH 1/6] MIPS: Loongson64: Do not write the read only field
- LPA of CP0_CONFIG3
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
- <1603958581-4723-2-git-send-email-yangtiezhu@loongson.cn>
- <a384c467-048d-1296-4a0d-ecbf4cea844d@flygoat.com>
- <7306f77f-b70a-862d-b4c5-d8f20102dc62@loongson.cn>
- <a3e4cd0f-7500-b994-15b1-8df1cff24ab5@flygoat.com>
-Message-ID: <f901dcdc-9724-a725-87ca-afe2aa216a94@flygoat.com>
-Date:   Mon, 2 Nov 2020 18:47:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <a3e4cd0f-7500-b994-15b1-8df1cff24ab5@flygoat.com>
+        id S1728415AbgKBKuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:50:00 -0500
+Received: from mail-eopbgr80055.outbound.protection.outlook.com ([40.107.8.55]:12590
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728005AbgKBKt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 05:49:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ONLcq+i0sKjKYDjOub5O1ls09poc+aGFgAJ8PFUOqaqoYGnfTpaLm/9GwV/LNgIMy7kYnjqkW1y20IzBrrL1/PV/ZTAcv44u8LsfRsREa4qOeF6kSUqFg/T56erHwFy3A+cDVXoLAPKxUyzvkO3/EdslyzVH24MCh38MDNqqDUSq1mGGiOSeV6XIE0wximF1DyIemA2y7nkqINxghdxwBJMboT73Vtg1ZdPtdUrlzvV07Ms4ZC/sf/4NQmzkwtgHu1yNzoymV9OG6k827wh9pKHhEwC4wT+LSQE6c3j8c/NyqjpmJRNKYgqgmB2owWx7Zag9qjnmNZhX5ruCxCC7ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qTrVNzec9lCw8G5xR/DMtwvsRrgX2obA6z3GjrTELX8=;
+ b=P0Jy2U2ZLEj6mdmthjuJuOurTM5eMZLrENjjjuhTrCttIbe2eGiL3ccw23D6evENuCBkAgJUoy2qGI0YM8Qg8PG3sZrqjkvfWJYAlBUx32O70V4rR+bVrDQMN5wXMyym8araCjexfXFgfgxwEyoP2pgYY1AuoKivt/Jooa2AsPjhGvOJpJ3IyjzPOvMOesA/DEIIvg99ZZI++G6iC5m4HyadzThpSLvWDaX943rsa3sOVweddr8vx9Bj23rctcG3Aio5HtQLWWTZvvngs9LwoAg0PCDm/OwElhsKjXUIA1h8R+q2j0z4bul0+XONqRmOsP07gBv3Shh2hwX4CM1x6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qTrVNzec9lCw8G5xR/DMtwvsRrgX2obA6z3GjrTELX8=;
+ b=Q3HJpQM7tQuIBsEGe3mNVMtTTmgZNilQLubcr1IWr7CI+OsThkuO60DFtdYYg3vPgiTCrp4GRvUUzn6QJCE23WHUltDisjcZ40UtuywvhfbRKbSxe6YMiewGpl2xTDdrwYWB0I4IdHYRTaXoSoTENOug3fuX8T8AATay11xx2k0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25) by VE1PR04MB6512.eurprd04.prod.outlook.com
+ (2603:10a6:803:120::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Mon, 2 Nov
+ 2020 10:49:55 +0000
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::ade4:e169:1f4a:28c]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::ade4:e169:1f4a:28c%4]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 10:49:55 +0000
+Subject: Re: [PATCH] crypto: caam - fix printing on xts fallback allocation
+ error path
+To:     =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     Andrei Botila <andrei.botila@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201101200553.25248-1-horia.geanta@nxp.com>
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+Message-ID: <e729817e-5c9d-112f-2c1d-514b91e19870@nxp.com>
+Date:   Mon, 2 Nov 2020 12:49:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+In-Reply-To: <20201101200553.25248-1-horia.geanta@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6E1C041E24
-X-Spamd-Result: default: False [3.90 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
-         RECEIVED_SPAMHAUS_CSS(1.00)[113.52.132.214:received];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         ARC_NA(0.00)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+X-Originating-IP: [188.26.141.79]
+X-ClientProxiedBy: AM0PR10CA0071.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::24) To VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.5] (188.26.141.79) by AM0PR10CA0071.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 2 Nov 2020 10:49:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 32480489-ac73-4890-a6f2-08d87f1d08b9
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6512:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6512347B8D9D5FC1B10222A38C100@VE1PR04MB6512.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:506;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wnjG9QfmvV63AFbh5ADLUS528A42m+VLCl4QVSfWxpVsBC/WRdxJZ7Iwk5XIc94lH/Ol8jz3koHdhybZDBydCrveMXeDsWcJDhP/vNLl+ekHH+apuNHFoCZMhNBtauWfYMKx90HU/PBmDE3O0vbl1XVbA2teyg3zV0nFVDa/a0IUv5SOZQ2Pc6T48CFF45S4GEhKUbGTWbvDWTLgb6I8I+Lr2WeR8fpKYYXQP6ZWXnjpYz74UQVQRvHrWKmXXSRfZovOZ7aNePTp3fOHYV6NAffHEC2+X4FlLZLUDk0f3kiQx2WaUFOmVMLgUn4VLQG4C4h3sUjrsq73ihZ7gMIL5+wLHb+K3t0eyO0Fl5tr8uuJN0NaWe2bisgap7OL6735
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(31686004)(83380400001)(316002)(54906003)(66946007)(110136005)(16576012)(44832011)(36756003)(478600001)(2906002)(8936002)(8676002)(16526019)(4326008)(186003)(2616005)(6486002)(26005)(956004)(52116002)(86362001)(5660300002)(66556008)(31696002)(66476007)(53546011)(6636002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: vpmBgXG5fjFxDVXgma/VaNevoGzIWsDV8nb/Cd5Va1rvklzWi62qSHbKHsk1U+L0+QgfKJizA/PJytqSqjDq/EvnSgoOfcCI9SoSXUkBhI1akEmKLte/TCbKCfaBJct3d016Oe8nxcZJrjbmjBJxMcIFJrlx5dFLTtkxwiwuIdpNiP3jAPS+AF5RDAbGNNacaESoKjOs6lE6xuKXkowUGJEFesKK3sZyYOwMSey5WKq9MuEoZSXaEN+aKti8jO1pQgK/pwV5l25YXbigSVKV6FOl1N80a1A8tSfUo/2uqZDyjXiIwPaWwAWO2GKs3oSywdfnoIcQmNnlyozUObKWh2Nvk4rw9fxTjUF174s7aJ6N6nwshcTeIdVrgWeMHJlE6thyUFCyMFZ7p3vZhf17Eix9sFcenOtq+WpWc5ylRNT4G21peJWWa0a1oKs/VNNKR/4qW49UIVGOZBZc0CUMYhIrTo9ckbi7x82AO7shovYaNnafV7UqA7d5sxrJ8ldyy4W+0mO2MaDSBUNkdpnH96UwEkA/7mZ3YowlPDjTx8jYbF9JEqyNnnUQSp3QUl07mcUeSkceyF1HJ+ct213ilrh3lmd7dfw6L3/zcD/pzAaP4eqc7fQuZPU9dgdjmCgl3Evgyka67/UKEWlhl03wMQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32480489-ac73-4890-a6f2-08d87f1d08b9
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 10:49:55.2437
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sjlGsKJLqQea1EuhevTRLYnQZ8hGFsApHhLbHN3XygudIwpN+DmhTkCLRlJ8EjlxsVM7CuxTCAvxHE9dIlMMAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/1/2020 10:05 PM, Horia Geantă wrote:
+> At the time xts fallback tfm allocation fails the device struct
+> hasn't been enabled yet in the caam xts tfm's private context.
+> 
+> Fix this by using the device struct from xts algorithm's private context
+> or, when not available, by replacing dev_err with pr_err.
+> 
+> Fixes: 9d9b14dbe077 ("crypto: caam/jr - add fallback for XTS with more than 8B IV")
+> Fixes: 83e8aa912138 ("crypto: caam/qi - add fallback for XTS with more than 8B IV")
+> Fixes: 36e2d7cfdcf1 ("crypto: caam/qi2 - add fallback for XTS with more than 8B IV")
+> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
 
-
-在 2020/10/30 20:13, Jiaxun Yang 写道:
->
->
-> 在 2020/10/30 14:22, Tiezhu Yang 写道:
->> On 10/30/2020 12:00 PM, Jiaxun Yang wrote:
->>>
->>>
->>> 在 2020/10/29 16:02, Tiezhu Yang 写道:
->>>> The field LPA of CP0_CONFIG3 register is read only for Loongson64, 
->>>> so the
->>>> write operations are meaningless, remove them.
->>>>
->>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>>> ---
->>>>   arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 
->>>> --------
->>>>   arch/mips/loongson64/numa.c | 3 ---
->>>>   2 files changed, 11 deletions(-)
->>> Hi Tiezhu,
->>>
->>> AFAIK it's not read only on 3A1000.
->>> Have you check with hardware guys?
->>
->> Hi Jiaxun,
->>
->> Yes, I checked it before send this patch,  the field LPA of CP0_CONFIG3
->> on 3A1000 is also read only,  we can see the related description in the
->> chapter 3.22 of Loongson_3A1000_cpu_user_2.
->
-> On page 36, it said:
-> "能否写ELPA位依赖于Config3寄存器的LPA域 。当Config3的LPA位为0时，
-> PageGrain的ELPA位被置位。"
->
-> Don't know if it matters.
->
-> @Huacai, Any comments? Do you know why it exists here?
-
-Confirmed by another rev of the manual that it's only a tip for implementer.
-I guess my assumption was wrong.
-LPA should be read-only though.....
-
-Thanks
-- Jiaxun
-
->
-> Thanks
->
-> - Jiaxun
+> ---
+>   drivers/crypto/caam/caamalg.c     | 4 ++--
+>   drivers/crypto/caam/caamalg_qi.c  | 4 ++--
+>   drivers/crypto/caam/caamalg_qi2.c | 3 ++-
+>   3 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+> index cf5bd7666dfc..8697ae53b063 100644
+> --- a/drivers/crypto/caam/caamalg.c
+> +++ b/drivers/crypto/caam/caamalg.c
+> @@ -3404,8 +3404,8 @@ static int caam_cra_init(struct crypto_skcipher *tfm)
+>   		fallback = crypto_alloc_skcipher(tfm_name, 0,
+>   						 CRYPTO_ALG_NEED_FALLBACK);
+>   		if (IS_ERR(fallback)) {
+> -			dev_err(ctx->jrdev, "Failed to allocate %s fallback: %ld\n",
+> -				tfm_name, PTR_ERR(fallback));
+> +			pr_err("Failed to allocate %s fallback: %ld\n",
+> +			       tfm_name, PTR_ERR(fallback));
+>   			return PTR_ERR(fallback);
+>   		}
+>   
+> diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
+> index 66f60d78bdc8..a24ae966df4a 100644
+> --- a/drivers/crypto/caam/caamalg_qi.c
+> +++ b/drivers/crypto/caam/caamalg_qi.c
+> @@ -2502,8 +2502,8 @@ static int caam_cra_init(struct crypto_skcipher *tfm)
+>   		fallback = crypto_alloc_skcipher(tfm_name, 0,
+>   						 CRYPTO_ALG_NEED_FALLBACK);
+>   		if (IS_ERR(fallback)) {
+> -			dev_err(ctx->jrdev, "Failed to allocate %s fallback: %ld\n",
+> -				tfm_name, PTR_ERR(fallback));
+> +			pr_err("Failed to allocate %s fallback: %ld\n",
+> +			       tfm_name, PTR_ERR(fallback));
+>   			return PTR_ERR(fallback);
+>   		}
+>   
+> diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+> index 98c1ff1744bb..a780e627838a 100644
+> --- a/drivers/crypto/caam/caamalg_qi2.c
+> +++ b/drivers/crypto/caam/caamalg_qi2.c
+> @@ -1611,7 +1611,8 @@ static int caam_cra_init_skcipher(struct crypto_skcipher *tfm)
+>   		fallback = crypto_alloc_skcipher(tfm_name, 0,
+>   						 CRYPTO_ALG_NEED_FALLBACK);
+>   		if (IS_ERR(fallback)) {
+> -			dev_err(ctx->dev, "Failed to allocate %s fallback: %ld\n",
+> +			dev_err(caam_alg->caam.dev,
+> +				"Failed to allocate %s fallback: %ld\n",
+>   				tfm_name, PTR_ERR(fallback));
+>   			return PTR_ERR(fallback);
+>   		}
+> 
