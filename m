@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF29E2A3504
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A882A3509
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgKBUSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S1726395AbgKBUVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgKBUSK (ORCPT
+        with ESMTP id S1725791AbgKBUVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:18:10 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E666C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:18:10 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id u19so16242090ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:18:10 -0800 (PST)
+        Mon, 2 Nov 2020 15:21:50 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4183DC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:21:50 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id c5so10138995qtw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+E8A8DVtztpBmTMQJ+pHtBxLqNBtmuuMWOzOUvWGms=;
-        b=ByDR9S1OCahLAAM99pTvRDskenJ7sTNxyBTZTm5JxJElqqILDAcN4utlP22zDNRNkG
-         A71A4fBww6lH3XhROom8Jy2xyJHf0N3rWKZp3CogiG0m5wD4GLywda94ng/LK0cYDtC9
-         68QDMDwSlroltiwi58dtbbtV2fr6zpNmoMDLrQpN9q8tdq3sF1ph/okMtAOsf7nL663T
-         jIpsMw3OjNwvMTLrOiiB2X5pIBNh6z05IEl6PSJVMfN1rf8ZVd24oHHNcBIvPvJ7Hlnt
-         AYSTeQy16OHN4tIEYBRw6MXWVG715gHP68kW+MYIkF4iAp8F/kBxz8ciqpRcgF1TTpIM
-         ImPA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
+        b=bBEKVnMgjoWujuv68Y0rl6eDm5sl+RLsRxWldpJosx8V8ORC5f5WNURvzRPF1NBv6v
+         Hw8SkPEFiVazRpc8HtbAFv6rySvi+dOgYcijpf6DGivgxo6rHAxTkqYtg7KMW/nWj0FK
+         jNVL3+jbG7w71qugmLw3Xz4ncKPZ2iWxLBTPPCt8BD1uQREeERQz3EX3KuToBY6VIz+L
+         zWgI8CrMO0KLAeTkRYk8aUfxLK5LxOxKT8l/+pOHEe6cjDYpW8aCCLwlS41l8QROI6B/
+         mwQYZlJ8/jHFIKB9IuKFrZteCWMQ5raxOMQKUfKXvcqF/2zfCoNEJ2DCqrzBN7oVKQ3f
+         3fMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+E8A8DVtztpBmTMQJ+pHtBxLqNBtmuuMWOzOUvWGms=;
-        b=bzWxSDobO78nz+fbLMeL2YRXv8jkbHE/jniK54upIJ5Gy2z3TMiIrjm7zz0iP5X25J
-         5ZxZWU/mAswPk3CBjKlcXxF3U8FTSZFY6zNlL4YDzWEni6Ci9HJhOAWDrYj/Wb4zZnFN
-         +d1oEXqtcgT5CWbpDPUCITLtAtHAfWzJmKCjNyVUJKsn8cjGSLpAeNnJBbK/k4JMHeyV
-         pn/iiiOFMtUY3pgIRpKnMAkxw9zXbWF/2Rkoem7ROhW0yVXd+pNuab8ocUHSwKH74GF2
-         b7Ksu1xlXe83yZLYE1LC2HJbfO4J41Jd8/pLvjkt2KTeLhAMklPV9VIuQVjY5HMJnt0T
-         TRpg==
-X-Gm-Message-State: AOAM531VrfWdj4V+d1g48hBCaf80qNhPkyNl4yfvasDaYq9DdvTstkfR
-        9QhPAJ6miHxOzgDDCFcMwtKSI3l8ms90tgr40EUbBWEqn/U=
-X-Google-Smtp-Source: ABdhPJxHSRySy9oxEryOb7vNWptEsi6sqTU8dN6/OWWVliGrmajlxNiJ7M/JjFI0M1kC7+oFISCMd+o6KKLJBPVGHi0=
-X-Received: by 2002:a6b:6001:: with SMTP id r1mr11373468iog.144.1604348289975;
- Mon, 02 Nov 2020 12:18:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
+        b=bVqoN4KP4pdOeu976ChzuxSzJdT4XzoeZ4r3cJtjHxpQxZHBhrCoLuJqVQnJDPnTCX
+         fnpPof7GCWkUudXimlpb/sVUPl7QrvC3wwZnvWqaKKonCpBtdPDN6WdJBYMAjIKjfp9h
+         DRtsqQNfayfnvXOOgancuNYbPn9PyVoXogILB5SN6IOI4fL4RB2oTXI7McbwHznIxxcc
+         3UhfFYI/f6S44VT29UkPKK8RMKLH6732xk8JCkViieSBf7cd20PO6yiU6Hak8voueHF+
+         bWxM8r9Boupuew1o6usgbFkLvlOa0WPU3wAksWcrbtcrmdJSBhXZRYAyWwiaRLp+mWy1
+         95fw==
+X-Gm-Message-State: AOAM530ag7GMwwjd1M6IPEyaH3vZgTU11ZeebTohcu6Wiairv7LFM9sl
+        Adl2NOE16btWbMOHoqhN9GzPCA==
+X-Google-Smtp-Source: ABdhPJwJQ2pszo1xApCrT+kXkRvTKT2LgFbWrFGxrHm118eNGOEBxjD4Dibd0ztWDPiArgTklCLYGg==
+X-Received: by 2002:ac8:76d9:: with SMTP id q25mr16151275qtr.125.1604348509453;
+        Mon, 02 Nov 2020 12:21:49 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id 6sm8812740qks.51.2020.11.02.12.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 12:21:48 -0800 (PST)
+Date:   Mon, 2 Nov 2020 15:20:03 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+Message-ID: <20201102202003.GA740958@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
 MIME-Version: 1.0
-References: <20201023211604.159074-1-ztong0001@gmail.com> <1966437.kWHqOGhHGQ@alarsen.net>
-In-Reply-To: <1966437.kWHqOGhHGQ@alarsen.net>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Mon, 2 Nov 2020 15:17:59 -0500
-Message-ID: <CAA5qM4AnWZ_bayGk3SbNYqWZb=JBVGo432AbJyrOYfQazxCZ7g@mail.gmail.com>
-Subject: Re: [PATCH] qnx4: do not interpret -EIO as a correct address
-To:     Anders Larsen <al@alarsen.net>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102144927.GN27442@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Anders!
-I'm sending out another patch fixing other callers as suggested.
-- Tong
+On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
+> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
+> > On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
+> > > From: Hugh Dickins <hughd@google.com>
+> > > 
+> > > It is necessary for page_idle_get_page() to recheck PageLRU() after
+> > > get_page_unless_zero(), but holding lru_lock around that serves no
+> > > useful purpose, and adds to lru_lock contention: delete it.
+> > > 
+> > > See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+> > > discussion that led to lru_lock there; but __page_set_anon_rmap() now
+> > > uses WRITE_ONCE(),
+> > 
+> > That doesn't seem to be the case in Linus's or Andrew's tree. Am I
+> > missing a dependent patch series?
+> > 
+> > > and I see no other risk in page_idle_clear_pte_refs() using
+> > > rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
+> > > not entirely prevented by page_count() check in ksm.c's
+> > > write_protect_page(): that risk being shared with page_referenced()
+> > > and not helped by lru_lock).
+> > 
+> > Isn't it possible, as per Minchan's description, for page->mapping to
+> > point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
+> > thinking it's looking at a struct address_space?
+> 
+> I don't think it can point to an anon_vma without the ANON bit set.
+> Minchan's concern in that email was that it might still be NULL.
 
-On Mon, Nov 2, 2020 at 4:12 AM Anders Larsen <al@alarsen.net> wrote:
->
-> On Friday, 2020-10-23 23:16 Tong Zhang wrote:
-> > qnx4_block_map() may return -EIO on funny qnx4 fs image, in this case do
-> > not interpret -EIO as a correct address
-> >
-> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> > ---
-> >  fs/qnx4/inode.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
-> > index e8da1cde87b9..d3a40c5b1a9a 100644
-> > --- a/fs/qnx4/inode.c
-> > +++ b/fs/qnx4/inode.c
-> > @@ -59,6 +59,8 @@ static int qnx4_get_block( struct inode *inode, sector_t iblock, struct buffer_h
-> >       QNX4DEBUG((KERN_INFO "qnx4: qnx4_get_block inode=[%ld] iblock=[%ld]\n",inode->i_ino,iblock));
-> >
-> >       phys = qnx4_block_map( inode, iblock );
-> > +     if (phys == -EIO)
-> > +             return -EIO;
-> >       if ( phys ) {
-> >               // logical block is before EOF
-> >               map_bh(bh, inode->i_sb, phys);
->
-> The fix looks sane to me, but how about the two other callers of
-> qnx4_block_map(), are they not affected as well?
->
-> Cheers
-> Anders
->
->
+Hm, no, the thread is a lengthy discussion about whether the store
+could be split such that page->mapping is actually pointing to
+something invalid (anon_vma without the PageAnon bit).
+
+From his email:
+
+        CPU 0                                                                           CPU 1
+
+do_anonymous_page
+  __page_set_anon_rmap
+  /* out of order happened so SetPageLRU is done ahead */
+  SetPageLRU(page)
+  /* Compilr changed store operation like below */
+  page->mapping = (struct address_space *) anon_vma;
+  /* Big stall happens */
+                                                                /* idletacking judged it as LRU page so pass the page
+                                                                   in page_reference */
+                                                                page_refernced
+                                                                        page_rmapping return true because
+                                                                        page->mapping has some vaule but not complete
+                                                                        so it calls rmap_walk_file.
+                                                                        it's okay to pass non-completed anon page in rmap_walk_file?
