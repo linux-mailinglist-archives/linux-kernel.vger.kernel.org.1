@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F0F2A2FC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02502A2FC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgKBQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgKBQZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:25:53 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1397FC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:25:53 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id b3so9408748wrx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bK5W0XSlSTx37itQb8Tn21VybnLQ6iBteojBQ7Be2NM=;
-        b=st8zikmvIfdaMGd862jzP8rJ/lAc/2eYiylH5dggvNEv1PnoOFzwzBwMVOlh1kdKWA
-         jsvpWeyEwZSJH1Wco1Qk+KFlUzNX4opGrwavfXwxiljL8Ek/u3MD8eeQA/GPb5oS2D4J
-         +SypPKxSYCEf78/n6Z8SRRt2Ks628tuc6fjpEmts6JkcktMsQAvboldYGHMBWyXI44PO
-         sUb9JNz/pS1SNJz6S4NGS34Ovn4D3tfhLrAxxDwLuTkJPz+aKnNOEhQ9t86XIijo15I8
-         buoezAcNudp9/Le7WtjGBsUbHCtPkusK0fMMQDW9WkjYtKjyL+PEfTQFSwAguiBx6DNd
-         EEPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bK5W0XSlSTx37itQb8Tn21VybnLQ6iBteojBQ7Be2NM=;
-        b=r6tweYiIdwRFaWDeuWgv0AjocMhtDZCrK1iMMdvU45MhJx1yTeZNSkkLR09vFoa1mi
-         4WYl3leRf+HjJH4VbcnRwvpmTovgR/hPanbWw8o2l2zmHiVq+EDQ+MF0u4KzBPOBl44z
-         tpipDlqxyzaq5lTiMs7rGX5Hm2ePZWJJC47NcdE6S/bPZNsiu08kcIFU1ZFG2vFKgJlo
-         6mpxJZHPApuCTWbivDJ2D0i0vBgm4uhf2GT+tbMxeup37FzwjkXPhPFbuxZtY2k9TQzZ
-         +6D0TEBdei4893ZBL97hgSpB8L/INYQ78T6aRhD4CTwDi7KqU8n9qTHF2zU08Q0v02Hk
-         TI+w==
-X-Gm-Message-State: AOAM531AV/YIHAC99eAWA8jINNary2WvwFuAMtOQsrm8UBP+YtVIlDt7
-        a3ov6ryjaWDX9zzDOugMWsFnVPBDoSkSPg==
-X-Google-Smtp-Source: ABdhPJzzMUP3fgGF01v3WIXvb8mosrwsf0BxqPiPBsQtyhSrBfRI5l590eNHyMNIg0ZUiJySmIn5Eg==
-X-Received: by 2002:adf:f20e:: with SMTP id p14mr20484980wro.376.1604334351828;
-        Mon, 02 Nov 2020 08:25:51 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id u23sm4767878wmc.22.2020.11.02.08.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 08:25:51 -0800 (PST)
-Date:   Mon, 2 Nov 2020 16:25:49 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
- qualifier
-Message-ID: <20201102162549.GF4488@dell>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
- <20201102110916.GK4127@dell>
- <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
- <20201102113034.GL4127@dell>
- <CAKMK7uHo2MMmBUic9EiFqcUh8mJeu1+=ZQfH7bWA=zdJTyRyvA@mail.gmail.com>
- <20201102161734.GA1563823@PWN>
- <20201102162447.GE4488@dell>
+        id S1726989AbgKBQ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:27:23 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:63229 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726633AbgKBQ1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:27:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604334441; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=9EbglJUVZ4bi/re4PUXJJtXP6+9xKrG6cwTTB0fB9Nw=; b=tvsNIhLaXVfFxbelujTq+96x2+D4pP133AiPihfTAtce82hNwW3lM6E8Kp3M+oR2upBtJ64z
+ Rtd4w1NQxaeAJBpCxxgY39/SQOfRCg4wLHrYiINgxWd0MpIx2cZCx69VO8bHV3DB43ldq+Lq
+ C77BBe7cOuq8CSYJ8q4gujsqKmQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fa033518646b0f26839e586 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 16:26:57
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5145AC433F0; Mon,  2 Nov 2020 16:26:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CF09C433C9;
+        Mon,  2 Nov 2020 16:26:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CF09C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc warning
+References: <20201026213040.3889546-1-arnd@kernel.org>
+        <20201026213040.3889546-8-arnd@kernel.org>
+Date:   Mon, 02 Nov 2020 18:26:51 +0200
+In-Reply-To: <20201026213040.3889546-8-arnd@kernel.org> (Arnd Bergmann's
+        message of "Mon, 26 Oct 2020 22:29:55 +0100")
+Message-ID: <87tuu7ohbo.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102162447.GE4488@dell>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Lee Jones wrote:
+Arnd Bergmann <arnd@kernel.org> writes:
 
-> On Mon, 02 Nov 2020, Peilin Ye wrote:
-> 
-> > On Mon, Nov 02, 2020 at 03:50:49PM +0100, Daniel Vetter wrote:
-> > > Maybe Peilin is going to include the full re-cosntification in a
-> > > cleanup series, dunno.
-> > 
-> > Sure, I will do it in a separate patch.
-> 
-> Are you happy to conduct a proper clean-up on top of this patch?
-> 
-> This is currently broken in all of the LTS kernels, which I would like
-> to have fixed post-haste.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc-10 shows a false-positive warning with CONFIG_KASAN:
+>
+> drivers/net/wireless/ath/ath9k/dynack.c: In function 'ath_dynack_sample_tx_ts':
+> include/linux/etherdevice.h:290:14: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
+>   290 |  *(u32 *)dst = *(const u32 *)src;
+>       |  ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+>
+> Until gcc is fixed, work around this by using memcpy() in place
+> of ether_addr_copy(). Hopefully gcc-11 will not have this problem.
+>
+> Link: https://godbolt.org/z/sab1MK
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ath/ath9k/dynack.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath9k/dynack.c b/drivers/net/wireless/ath/ath9k/dynack.c
+> index fbeb4a739d32..e4eb96b26ca4 100644
+> --- a/drivers/net/wireless/ath/ath9k/dynack.c
+> +++ b/drivers/net/wireless/ath/ath9k/dynack.c
+> @@ -247,8 +247,14 @@ void ath_dynack_sample_tx_ts(struct ath_hw *ah, struct sk_buff *skb,
+>  	ridx = ts->ts_rateindex;
+>  
+>  	da->st_rbf.ts[da->st_rbf.t_rb].tstamp = ts->ts_tstamp;
+> +#if defined(CONFIG_KASAN) && (CONFIG_GCC_VERSION >= 100000) && (CONFIG_GCC_VERSION < 110000)
+> +	/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490 */
+> +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1, ETH_ALEN);
+> +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2, ETH_ALEN);
+> +#else
+>  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1);
+>  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2);
+> +#endif
 
-Of course, if it's *just* a matter of making all of the structures
-const again, I will do that myself and post a fix either this evening
-or tomorrow morning.
+Isn't there a better way to handle this? I really would not want
+checking for GCC versions become a common approach in drivers.
+
+I even think that using memcpy() always is better than the ugly ifdef.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
