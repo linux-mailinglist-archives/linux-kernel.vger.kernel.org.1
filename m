@@ -2,286 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693942A330C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908432A330E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgKBSdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgKBSdW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:33:22 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350C6C0617A6;
-        Mon,  2 Nov 2020 10:33:22 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id x13so11856857pfa.9;
-        Mon, 02 Nov 2020 10:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=K2gP+OrgFPL2KLEFKam9Uauc1FNV+0UTOYtpfcBPmJ0=;
-        b=KV8aBRenNHEBI+YaEktdR+EPbZdcifZbgo51mzdPFrPl7mj4nJL+2KSOHXRu6APkyQ
-         /AcYouZANygDHeifj58J7bd4i9xPf8pn5rlaBECN4WBl74bAP0znNI+euPTM0Xx8anZF
-         eC5vQ7i17DXp6Nj1PzV919IsFdL3afMO5tyOq/rmLb0u6Z8WkvXJOQEgzWa0FrayAuUv
-         j8mdYb2OwNHkrNLCbLZXmJecYc9BZGVIypDaXfdG0HtueUbc+B/tLuFfFEPlvQO4X+4G
-         k8OtoZ8+A7kWmShB6v6WBVvNKnjT5kyiYLWiwJwaQ3SDo4YOJ36UWmRbYQ4euLZ9NrV7
-         yoaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K2gP+OrgFPL2KLEFKam9Uauc1FNV+0UTOYtpfcBPmJ0=;
-        b=ZoGJqPmnldhLCDQ8abMVYsI17WWJLPwPeAarqAoCdPKhxVMu2NN0rZbjm30aUJaEol
-         yCg1WYc6xawGPqP+GbN6+mDPeXEQjqU9kXKqOOXJmeEC9uy4S8aS02KuTUUSIOpTN7yu
-         0Q3q7Vq5n1+WNcciHSC9IiUyvrQDjm87EVAkZtf2TroY7vEYUUfipNOSx7HOovVo2f6b
-         KMFbnnnHWUMgXFXZLzDSDDB3ObjY7VdyleghhBY33KhJjTv06d6GiKxXJi+P/eUZAJT4
-         UxgM7gki6pv9AK+KJMhckKF82mvOmI6V3jE3dkjUmrGP+Pgbldlruy5a64zN+S6Xcfho
-         0BjA==
-X-Gm-Message-State: AOAM531lJsPsKN0d6MpmcxS4wSPg9tDeUsclDWZu02tn4/xsfzP48VxZ
-        BrCtOAaQYhgWcOBB2G6Xsw==
-X-Google-Smtp-Source: ABdhPJxrj7Y+iRxUOxNpoqBGoH+8ihA5+0nKh5ooQAnRficsSFHXmlJ5aeG+/kgQykQUx47K9UIWKQ==
-X-Received: by 2002:a17:90a:648:: with SMTP id q8mr4929640pje.176.1604342001667;
-        Mon, 02 Nov 2020 10:33:21 -0800 (PST)
-Received: from localhost.localdomain (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id 21sm5706169pfw.105.2020.11.02.10.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:33:21 -0800 (PST)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     lee.jones@linaro.org, daniel.vetter@ffwll.ch,
-        gregkh@linuxfoundation.org
-Cc:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
-Date:   Mon,  2 Nov 2020 13:32:42 -0500
-Message-Id: <20201102183242.2031659-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201030181822.570402-1-lee.jones@linaro.org>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
+        id S1726518AbgKBSeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:34:01 -0500
+Received: from mga17.intel.com ([192.55.52.151]:4765 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725801AbgKBSeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:34:01 -0500
+IronPort-SDR: bnuwXQ9emSVxR9tvMh23EZ8WQ+yCg3ifX4e/9buE8mrdGqGtDcTjX6nf25ZMYPMsqzoLfySa6r
+ O0Pjk347mfGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="148786621"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="148786621"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:34:01 -0800
+IronPort-SDR: pahTddyjF32YwYnd6OFeQd2/itlS/oc6hyqu8YMbqEDKrlmEYpuwwcjgam8jheQPbPFunfza8+
+ l8aDQFZSPGuA==
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="470475711"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 10:34:00 -0800
+Date:   Mon, 2 Nov 2020 10:33:59 -0800
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Tao Xu <tao3.xu@intel.com>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+Message-ID: <20201102183359.GE21563@linux.intel.com>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+ <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+ <20201102173130.GC21563@linux.intel.com>
+ <CALCETrV0ZsTcQKVCPPSKHnuVgERMC0x86G5y_6E5Rhf=h5JzsA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrV0ZsTcQKVCPPSKHnuVgERMC0x86G5y_6E5Rhf=h5JzsA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+On Mon, Nov 02, 2020 at 10:01:16AM -0800, Andy Lutomirski wrote:
+> On Mon, Nov 2, 2020 at 9:31 AM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > On Mon, Nov 02, 2020 at 08:43:30AM -0800, Andy Lutomirski wrote:
+> > > On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
+> > > > 2. Another patch to disable interception of #DB and #AC when notify
+> > > > VM-Exiting is enabled.
+> > >
+> > > Whoa there.
+> > >
+> > > A VM control that says "hey, CPU, if you messed up and livelocked for
+> > > a long time, please break out of the loop" is not a substitute for
+> > > fixing the livelocks.  So I don't think you get do disable
+> > > interception of #DB and #AC.
+> >
+> > I think that can be incorporated into a module param, i.e. let the platform
+> > owner decide which tool(s) they want to use to mitigate the legacy architecture
+> > flaws.
+> 
+> What's the point?  Surely the kernel should reliably mitigate the
+> flaw, and the kernel should decide how to do so.
 
-Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
-fonts") introduced the following error when building rpc_defconfig (only
-this build appears to be affected):
+IMO, setting a reasonably low threshold _is_ mitigating such flaws.  E.g. it's
+entirely possible, if not likely, that we can push the threshold below various
+ENCLS instruction latencies.  Now I'm curious as to how exactly the accounting
+is done under the hood, e.g. I assume retiring uops of a massive instruction is
+enough to reset the timer, but I haven't actually read the specs in detail.
 
- `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
- make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
- make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+If userspace is truly malicious, it can easily spawn new VMs/processes to carry
+out its attack, e.g. exiting to userspace on these VM-Exits effectively
+throttles userspace as much as straight killing the process.
 
-The .data section is discarded at link time.  Reinstating acorndata_8x8 as
-const ensures it is still available after linking.  Do the same for the
-other 12 built-in fonts as well, for consistency purposes.
+> >
+> > > I also think you should print a loud warning
+> >
+> > I'm not so sure on this one, e.g. userspace could just spin up a new instance
+> > if its malicious guest and spam the kernel log.
+> 
+> pr_warn_once()?
 
-Cc: <stable@vger.kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Changes in v2:
-  - Fix commit ID to 6735b4632def in commit message (Russell King
-    <linux@armlinux.org.uk>)
-  - Add `const` back for all 13 built-in fonts (Daniel Vetter
-    <daniel.vetter@ffwll.ch>)
-  - Add a Fixes: tag
+Or ratelimited.  My point was that a straight WARN would be less than ideal.
 
- lib/fonts/font_10x18.c     | 2 +-
- lib/fonts/font_6x10.c      | 2 +-
- lib/fonts/font_6x11.c      | 2 +-
- lib/fonts/font_6x8.c       | 2 +-
- lib/fonts/font_7x14.c      | 2 +-
- lib/fonts/font_8x16.c      | 2 +-
- lib/fonts/font_8x8.c       | 2 +-
- lib/fonts/font_acorn_8x8.c | 2 +-
- lib/fonts/font_mini_4x6.c  | 2 +-
- lib/fonts/font_pearl_8x8.c | 2 +-
- lib/fonts/font_sun12x22.c  | 2 +-
- lib/fonts/font_sun8x16.c   | 2 +-
- lib/fonts/font_ter16x32.c  | 2 +-
- 13 files changed, 13 insertions(+), 13 deletions(-)
+> If this triggers, it's a *bug*, right?  Kernel or CPU.
 
-diff --git a/lib/fonts/font_10x18.c b/lib/fonts/font_10x18.c
-index 0e2deac97da0..e02f9df24d1e 100644
---- a/lib/fonts/font_10x18.c
-+++ b/lib/fonts/font_10x18.c
-@@ -8,7 +8,7 @@
- 
- #define FONTDATAMAX 9216
- 
--static struct font_data fontdata_10x18 = {
-+static const struct font_data fontdata_10x18 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 0000000000 */
-diff --git a/lib/fonts/font_6x10.c b/lib/fonts/font_6x10.c
-index 87da8acd07db..6e3c4b7691c8 100644
---- a/lib/fonts/font_6x10.c
-+++ b/lib/fonts/font_6x10.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 2560
- 
--static struct font_data fontdata_6x10 = {
-+static const struct font_data fontdata_6x10 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
-diff --git a/lib/fonts/font_6x11.c b/lib/fonts/font_6x11.c
-index 5e975dfa10a5..2d22a24e816f 100644
---- a/lib/fonts/font_6x11.c
-+++ b/lib/fonts/font_6x11.c
-@@ -9,7 +9,7 @@
- 
- #define FONTDATAMAX (11*256)
- 
--static struct font_data fontdata_6x11 = {
-+static const struct font_data fontdata_6x11 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
-diff --git a/lib/fonts/font_6x8.c b/lib/fonts/font_6x8.c
-index 700039a9ceae..e7442a0d183d 100644
---- a/lib/fonts/font_6x8.c
-+++ b/lib/fonts/font_6x8.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data fontdata_6x8 = {
-+static const struct font_data fontdata_6x8 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 000000 */
-diff --git a/lib/fonts/font_7x14.c b/lib/fonts/font_7x14.c
-index 86d298f38505..9cc7ae2e03f7 100644
---- a/lib/fonts/font_7x14.c
-+++ b/lib/fonts/font_7x14.c
-@@ -8,7 +8,7 @@
- 
- #define FONTDATAMAX 3584
- 
--static struct font_data fontdata_7x14 = {
-+static const struct font_data fontdata_7x14 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 0000000 */
-diff --git a/lib/fonts/font_8x16.c b/lib/fonts/font_8x16.c
-index 37cedd36ca5e..bab25dc59e8d 100644
---- a/lib/fonts/font_8x16.c
-+++ b/lib/fonts/font_8x16.c
-@@ -10,7 +10,7 @@
- 
- #define FONTDATAMAX 4096
- 
--static struct font_data fontdata_8x16 = {
-+static const struct font_data fontdata_8x16 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
-diff --git a/lib/fonts/font_8x8.c b/lib/fonts/font_8x8.c
-index 8ab695538395..109d0572368f 100644
---- a/lib/fonts/font_8x8.c
-+++ b/lib/fonts/font_8x8.c
-@@ -9,7 +9,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data fontdata_8x8 = {
-+static const struct font_data fontdata_8x8 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
-diff --git a/lib/fonts/font_acorn_8x8.c b/lib/fonts/font_acorn_8x8.c
-index 069b3e80c434..fb395f0d4031 100644
---- a/lib/fonts/font_acorn_8x8.c
-+++ b/lib/fonts/font_acorn_8x8.c
-@@ -5,7 +5,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data acorndata_8x8 = {
-+static const struct font_data acorndata_8x8 = {
- { 0, 0, FONTDATAMAX, 0 }, {
- /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
- /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
-diff --git a/lib/fonts/font_mini_4x6.c b/lib/fonts/font_mini_4x6.c
-index 1449876c6a27..592774a90917 100644
---- a/lib/fonts/font_mini_4x6.c
-+++ b/lib/fonts/font_mini_4x6.c
-@@ -43,7 +43,7 @@ __END__;
- 
- #define FONTDATAMAX 1536
- 
--static struct font_data fontdata_mini_4x6 = {
-+static const struct font_data fontdata_mini_4x6 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/*{*/
- 	  	/*   Char 0: ' '  */
-diff --git a/lib/fonts/font_pearl_8x8.c b/lib/fonts/font_pearl_8x8.c
-index 32d65551e7ed..a6f95ebce950 100644
---- a/lib/fonts/font_pearl_8x8.c
-+++ b/lib/fonts/font_pearl_8x8.c
-@@ -14,7 +14,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data fontdata_pearl8x8 = {
-+static const struct font_data fontdata_pearl8x8 = {
-    { 0, 0, FONTDATAMAX, 0 }, {
-    /* 0 0x00 '^@' */
-    0x00, /* 00000000 */
-diff --git a/lib/fonts/font_sun12x22.c b/lib/fonts/font_sun12x22.c
-index 641a6b4dca42..a5b65bd49604 100644
---- a/lib/fonts/font_sun12x22.c
-+++ b/lib/fonts/font_sun12x22.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 11264
- 
--static struct font_data fontdata_sun12x22 = {
-+static const struct font_data fontdata_sun12x22 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 000000000000 */
-diff --git a/lib/fonts/font_sun8x16.c b/lib/fonts/font_sun8x16.c
-index 193fe6d988e0..e577e76a6a7c 100644
---- a/lib/fonts/font_sun8x16.c
-+++ b/lib/fonts/font_sun8x16.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 4096
- 
--static struct font_data fontdata_sun8x16 = {
-+static const struct font_data fontdata_sun8x16 = {
- { 0, 0, FONTDATAMAX, 0 }, {
- /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x7e,0x81,0xa5,0x81,0x81,0xbd,0x99,0x81,0x81,0x7e,0x00,0x00,0x00,0x00,
-diff --git a/lib/fonts/font_ter16x32.c b/lib/fonts/font_ter16x32.c
-index 91b9c283bd9c..f7c3abb6b99e 100644
---- a/lib/fonts/font_ter16x32.c
-+++ b/lib/fonts/font_ter16x32.c
-@@ -4,7 +4,7 @@
- 
- #define FONTDATAMAX 16384
- 
--static struct font_data fontdata_ter16x32 = {
-+static const struct font_data fontdata_ter16x32 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
- 	0x00, 0x00, 0x00, 0x00, 0x7f, 0xfc, 0x7f, 0xfc,
--- 
-2.25.1
+Sort of?  Many (all?) of the known of the scenarios that can trigger this exit
+are unlikely to ever be fixed in silicon.  I'm not saying they shouldn't be
+fixed, just that practically speaking they are highly unlikely to be fixed
+anytime soon.  The infinite #DB/#AC recursion flaws are inarguably dumb CPU
+behavior, but there are other scenarious that are less cut and dried, i.e. may
+not be fixable without non-trivial tradeoffs.
 
+> > > and have some intelligent handling when this new exit triggers.
+> >
+> > We discussed something similar in the context of the new bus lock VM-Exit.  I
+> > don't know that it makes sense to try and add intelligence into the kernel.
+> > In many use cases, e.g. clouds, the userspace VMM is trusted (inasmuch as
+> > userspace can be trusted), while the guest is completely untrusted.  Reporting
+> > the error to userspace and letting the userspace stack take action is likely
+> > preferable to doing something fancy in the kernel.
+> >
+> >
+> > Tao, this patch should probably be tagged RFC, at least until we can experiment
+> > with the threshold on real silicon.  KVM and kernel behavior may depend on the
+> > accuracy of detecting actual attacks, e.g. if we can set a threshold that has
+> > zero false negatives and near-zero false postives, then it probably makes sense
+> > to be more assertive in how such VM-Exits are reported and logged.
+> 
+> If you can actually find a threshold that reliably mitigates the bug
+> and does not allow a guest to cause undesirably large latency in the
+> host, then fine.  1/10 if a tick is way too long, I think.
+
+Yes, this was my internal review feedback as well.  Either that got lost along
+the way or I wasn't clear enough in stating what should be used as a placeholder
+until we have silicon in hand.
