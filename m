@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61BD2A2A28
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1F62A2A29
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKBL5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:57:13 -0500
-Received: from mout.gmx.net ([212.227.17.22]:58425 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728297AbgKBL5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:57:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604318207;
-        bh=ulH0yL49Zs5eNoVaKp+OGHU1yD5vDappgjihQPEn7Ks=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=WOPzX3clf18xjkG6cpbmvAufRSL4BLR7SHWar27PIxCzjzFD4OAWAbwOBaijiK7aF
-         yKvKL+BBepNKKPW0bg8OqzmUlcriOPZlfG6rbW+e26OwOHS7U3laNOv6lvuVS3IiMl
-         o3gkhAmcSMH3zLVcENL8ChVdjwx/i/zUndQbOJXA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [185.76.97.212] ([185.76.97.212]) by web-mail.gmx.net
- (3c-app-gmx-bap57.server.lan [172.19.172.127]) (via HTTP); Mon, 2 Nov 2020
- 12:56:47 +0100
+        id S1728666AbgKBL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgKBL5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:57:33 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251BDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:57:33 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id a9so14230944wrg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69IfAsi6LtilJcxN9H1dLNlaFHP8/FNXpQcqIkHFmFo=;
+        b=L4uYar5qRO/hFgdQ7zHxvADTV9n7y9/rmCyAqujQ9/OvyWoDa54aoap/g3Id8dk6ye
+         7E9WHASpEEnZM9jgOpndOgh9dafaSEOBRM4KHsO+vJFDVILxon9muQAwWwUOgYZqMZCc
+         n7NJlFDrYLEurp8EbBUPCmLyGU2iEr58/kabAns/pslTEKpFVPHi41HuW9sG/n5Xa7ix
+         pv9uRN/aRWzI7b29NAbDuv022CSMcvY/HpefR1/xI2RIwDWdiG21sxq+kgQIsbohpogZ
+         G+u3N+vADJ0LY50zw35btmgGgqDRZr19xCxpYFKD8sxCRDW51XEuDfdU6j+qspyXIzEA
+         Sbog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69IfAsi6LtilJcxN9H1dLNlaFHP8/FNXpQcqIkHFmFo=;
+        b=ih+d6Cs+sonXd7eqIcSWHdLMOemgpn1Ab/ObJKG8ISmFcutUg22eTFzn34YoBzUXO8
+         vkw12hGAwCW23T/ftZ87TgYxEX0HMvSOh1BIyp6wmPNwEYmKG3H0LSmhBDTsrDVPnm5C
+         ZoTvJaRKLwa8pE7I0g6uUmKOw2jAuNYr4AlLHZkft7GyoxLZfxAT2jf7Aagz4joORLbW
+         f2rxLP7mv31UdrQWE3/91mmG2FbZpD3SSCNML3DRMVg/2Xa28yY0dDe6k7DpK5XTzGG0
+         gkvurxQqEMMoeb22jhGLjLSSUHbfLKNsAyKmVuYRJvqus3k+96hhCXHmUgX/Yhxd7cwT
+         zXKw==
+X-Gm-Message-State: AOAM531XWWjvO12bHrWrMmsynk+j8PwpxPpDFmaa+PitS1K1t+jd21B8
+        tYRkqwx5XQ93uVKupJTdyp452w==
+X-Google-Smtp-Source: ABdhPJwWcnL9dwvgFiESKDq03B35ARQmCkl99XNGu3LhEH5jcWXaNtSlA8bREKi81iEREMX8YBRcig==
+X-Received: by 2002:a5d:494c:: with SMTP id r12mr19398003wrs.406.1604318251830;
+        Mon, 02 Nov 2020 03:57:31 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id v123sm15403548wme.7.2020.11.02.03.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 03:57:31 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     martin.petersen@oracle.com
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/19] Rid W=1 warnings in SCSI
+Date:   Mon,  2 Nov 2020 11:57:09 +0000
+Message-Id: <20201102115728.1077697-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <trinity-4313623b-1adf-4cc3-8b50-2d0593669995-1604318207058@3c-app-gmx-bap57>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Aw: Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 2 Nov 2020 12:56:47 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <df5565a2f1e821041c7c531ad52a3344@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <878sbm9icl.fsf@nanos.tec.linutronix.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:jYyejVeaj2brOcs4Q4UH22OqS7aiIjBeum4maSh2Zmyo+vBA0JlOayRM2AcnNYk4HcVN6
- p7yRyg/7PGHgiaviKxOOHfQIKOxIFhzucxw8UajnwnTy8ZanOEBLEXJ1b3V7MbnBnH6TmVOwOCV9
- xFUpNVFsnW996VhE7e7jSmHvVKSmVEo9neamw4RFiAWPSA3PB7CR68xGvQR7yoZiw4OeMyA/UYLv
- sLSpUt86s8JSawinnsQBP85qyWaXa2vF0Rr50ofRE7d5u9q9jY1q3GQ20290lUy5FL5mwCoEehs3
- X8=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:S3IivwM+kT4=:xaI1fXywJdp+SJdYRytlKF
- Vn2q1E3VySGKmOtACNRSqAv7fHe1soTH1bRUgz6FC5P4twwJIDoXh16+fi+p1g22oCpY53E7+
- uzZgDn+b+T8GkGeZhEWUc/Tq4zg1pEQAxbnSuQCAiEKEwnHpT+BlVicNp9gymfp5H+QTwhCKo
- uPa3YmwBuxy7L0rBYmsJhNoLexBsfrDoSVpC38qpej84z351HXtTVt8AV4lFIsGYF9dMjsp4j
- AZUmjocOHKpFMXuxk8rH0bXm6MdZeyEQb43dt58yMVaO2m+eWjsLb2T0bpMU5AlJ1ncH2MpIp
- H9kPQd4afMChDz9YCUWXN47C1lINzhOW5HAc2PSJpnbKHNcMpOyvPFXbA+sNhs1CVCb6bDwkI
- cpFUtwTvXMmoM60df0UXNiDdJZsELiN67qXDgPhYiUmVrKUdS8X3TWv0j8dHyo2MO1FpobXN3
- 788r1lzrRT10QDBFK7Q2gdljLqROoofyJkHhIyZ/TKbLDcbZVoVzL3jNHhzuwETBI0hDxZ85R
- kd/Dxt8YpzqL7iJXBYoqWgW21Zk7CU5Q9xJQ6AghZeIUCpRPDaYN0A6pRabqjU2Di1+B524Ll
- F+/t3f787BOeE=
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-looks good on bananapi-r2, no warning, pcie-card and hdd recognized
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-regards Frank
+Lee Jones (19):
+  scsi: aic7xxx: aic79xx_osm: Remove unused variable 'saved_scsiid'
+  scsi: mpt3sas: mpt3sas_scsih: Fix function documentation formatting
+  scsi: lpfc: lpfc_scsi: Fix a whole host of kernel-doc issues
+  scsi: lpfc: lpfc_attr: Demote kernel-doc format for redefined
+    functions
+  scsi: lpfc: lpfc_attr: Fix-up a bunch of kernel-doc misdemeanours
+  scsi: lpfc: lpfc_debugfs: Fix a couple of function documentation
+    issues
+  scsi: lpfc: lpfc_bsg: Provide correct documentation for a bunch of
+    functions
+  scsi: esas2r: esas2r_disc: Place brackets around a potentially empty
+    if()
+  scsi: esas2r: esas2r_init: Place brackets around a potentially empty
+    if()
+  scsi: lpfc: lpfc_nvme: Remove unused variable 'phba'
+  scsi: ufs: ufshcd: Fix some function doc-rot
+  scsi: lpfc: lpfc_nvme: Fix some kernel-doc related issues
+  scsi: esas2r: esas2r_int: Add brackets around potentially empty if()s
+  scsi: lpfc: lpfc_nvmet: Fix-up some formatting and doc-rot issues
+  scsi: esas2r: esas2r_main: Demote non-conformant kernel-doc header
+  scsi: advansys: Relocate or remove unused variables
+  scsi: dc395x: Remove a few unused variables
+  scsi: dc395x: Mark 's_stat2' as __maybe_unused
+  scsi: hpsa: Strip out a bunch of set but unused variables
 
+ drivers/scsi/advansys.c              | 16 ++------
+ drivers/scsi/aic7xxx/aic79xx_osm.c   |  3 +-
+ drivers/scsi/dc395x.c                | 15 +++-----
+ drivers/scsi/esas2r/esas2r_disc.c    |  3 +-
+ drivers/scsi/esas2r/esas2r_init.c    |  5 ++-
+ drivers/scsi/esas2r/esas2r_int.c     |  8 ++--
+ drivers/scsi/esas2r/esas2r_main.c    |  8 +---
+ drivers/scsi/hpsa.c                  | 25 ++++---------
+ drivers/scsi/lpfc/lpfc_attr.c        | 56 +++++++++++++++++-----------
+ drivers/scsi/lpfc/lpfc_bsg.c         | 34 ++++++++---------
+ drivers/scsi/lpfc/lpfc_debugfs.c     |  3 +-
+ drivers/scsi/lpfc/lpfc_nvme.c        | 37 ++++++++----------
+ drivers/scsi/lpfc/lpfc_nvmet.c       | 17 ++++-----
+ drivers/scsi/lpfc/lpfc_scsi.c        | 48 +++++++++++++++---------
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c |  8 ++--
+ drivers/scsi/ufs/ufshcd.c            |  3 +-
+ 16 files changed, 141 insertions(+), 148 deletions(-)
 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 4289030b0fff..bb363eb103a2 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus
-> *bus)
->   		d =3D pci_host_bridge_msi_domain(b);
->
->   	dev_set_msi_domain(&bus->dev, d);
-> +	if (!d)
-> +		bus->bus_flags |=3D PCI_BUS_FLAGS_NO_MSI;
->   }
->
->   static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+-- 
+2.25.1
 
