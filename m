@@ -2,176 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661372A351A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3A82A3522
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgKBU3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        id S1726705AbgKBUbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgKBU3g (ORCPT
+        with ESMTP id S1725801AbgKBUbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:29:36 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917F8C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:29:36 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c18so10670254wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:29:36 -0800 (PST)
+        Mon, 2 Nov 2020 15:31:10 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E5AC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:31:10 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y14so12137593pfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:31:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ECOxljNhNX/s1sQ6iseERJZz03J3Iz4bJCTWa11aECk=;
-        b=jPO0UrA+g8o1Z94W0ABEZZV+bkPHrnTbfSRspSkgKKEvySDQKARqABAqhAPSZhyPPu
-         egtFdNIu1i1Ue/xxkt0NhC2mEbVb59sN81GRBmSf7cnvvmDcVV7B20mnMXionPtPiRCZ
-         7Tp/ALKy6GXTAPbbS/mcYUxxtVngeYdwZH6xE9u6gnIbdPkes8jzXHjkGPlJhtRCRHOJ
-         YrIFb90mCDqzB55cBoXZjHARhiQUBIaVH+2iAnGHyYW22ppskRea8zUb97CO2UBPXWKk
-         mnHySbK9GOyi0eQ0GKdGsfg2KDJXiBW+Q+pgSC7Z82uxMbeIpAOYvh8NJmnTn0s9+Ha6
-         8wMg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=taI5V1PmKR84k5WuxRX//AHvUGNpKhqq+imLNWnt1k4=;
+        b=vLvy5N3qjQFUvEJJO5v5PRIQdTgbNoxDRQCor83tF0Uqv19vCQKM2Wcz4NIjY84WaP
+         ZDuhPcrFM5YZvvGHOFRaVOYe2BkrLh5jZzhkpzt8G2bLTi1SpSSFbvqzi5noI8vmGITL
+         rKpJxFQLBvb4yb4IxCyZgSH+w0R/pfttrVvoKqx9wEp+1drmpUchYbncawehUDXxAj+S
+         I0D8zRVbkofR+b8Ne3DkQVRkrDZBJeF1csXcB5rWr4bdXIFLjh6xzmzui8jsduIRDNRH
+         Amml1LTu86cyl1k8s/AP2lrjEIP3R04L2h7J7OkC5hBvzIduhZQYMNXeRagDjIBuaO5I
+         iaMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ECOxljNhNX/s1sQ6iseERJZz03J3Iz4bJCTWa11aECk=;
-        b=bRd7QMgXGHnn/vjlhaFck3RxNaIIUADQRn7slR5PIuT+xPAjzD7/Mwz9kHsBeSEPZO
-         Eu0hHoERgiUgEeRV+rIdjMtM71xn2FdZ/twoZWH0WVvX9W90Y3UB3kY97EyJlqG0UJOn
-         742Uel5MCIACilEktOqbJ41qwUWj0gSmAg1Lk/9Xc5W6Ytf5b6uuiKafIR0LZZvtNOMu
-         2LDIh9NdqdRjxe76TaWOcT0b+Rnob3F5sOh52mlc6wyZcSKVk9poKQaB1TpdpAtDmP1l
-         fb7iGmWZtWyOGe9YLp2EHj0o5sY+f5KNKxQcnxRdVC94Yyf7uuJfDtQUvay4QD4cUmiv
-         Qc6A==
-X-Gm-Message-State: AOAM530iMzu4Xm+Az4JUtoYafPbM5FZwkb1aAXVftejwLcEojjHyMiKP
-        j+SsuQ/RBseyUBdc5URg9C8/nkZfOnMohsbChYyoJQ==
-X-Google-Smtp-Source: ABdhPJyBqPT7hImxXae117HZTa3xYjk6cLTEcHGERmKQOGcQAtw23SsJ9EEH1gW1YbRM9hOa//4svSCGGim8n//N9+I=
-X-Received: by 2002:a1c:ba0b:: with SMTP id k11mr8999674wmf.37.1604348975030;
- Mon, 02 Nov 2020 12:29:35 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=taI5V1PmKR84k5WuxRX//AHvUGNpKhqq+imLNWnt1k4=;
+        b=Qyv/0Gd5SzPuY7CSPsDSCikXM7k4UZzAYsZtVvViviGjrZ191jgSi15ppU3+5nUXUg
+         rOo/S0IDxVyrjC6SmNvMUVrgogTPGACweyTT0iWqB4XYMeVfPaK/fHXmyGpuRAw864cY
+         u8Ync9EYIxmGMdY7xlBBLzcykJft1jFDvV1SfXZQ0kBRRQrcctNUCsiiKuXo0zDdHiNa
+         ulyQ1y/VdJNfmctaso79ia8aLlmUDt7HqPwkWKoiLKmuiperImhTyMvvCmYBoxdAtmm7
+         YiyNTvpetuGKmk16kbct1YlspNRkS1P/xil9uKXudcCfioZtzo9w9L7hWrJzmSbIz2xB
+         RDJA==
+X-Gm-Message-State: AOAM533w7SCFEKrPpGUjnS42ZKOU6suHHIHMZo9mkklXWMyJfAhGO+qM
+        4VnokyBNdE4TsfnCQegMtp0DAlwI6CrQ9A==
+X-Google-Smtp-Source: ABdhPJwd9hKXh1kE1Bcx0wezEg07bK53IiR4nPRLnnPmcSCDUsKuKPiMakIXHBOfzj21lTyawQMk2w==
+X-Received: by 2002:a17:90b:4749:: with SMTP id ka9mr19576253pjb.197.1604349069502;
+        Mon, 02 Nov 2020 12:31:09 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e13sm5210784pfm.2.2020.11.02.12.31.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 12:31:08 -0800 (PST)
+Subject: Re: [PATCH -next] fs: Fix memory leaks in do_renameat2() error paths
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Qian Cai <cai@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201030152407.43598-1-cai@redhat.com>
+ <20201030184255.GP3576660@ZenIV.linux.org.uk>
+ <ad9357e9-8364-a316-392d-7504af614cac@kernel.dk>
+ <20201030184918.GQ3576660@ZenIV.linux.org.uk>
+ <d858ba48-624f-43be-93cf-07d94f0ebefd@kernel.dk>
+ <20201030222213.GR3576660@ZenIV.linux.org.uk>
+ <a1e17902-a204-f03d-2a51-469633eca751@kernel.dk>
+ <87eelba7ai.fsf@x220.int.ebiederm.org>
+ <f33a6b5e-ecc9-2bef-ab40-6bd8cc2030c2@kernel.dk>
+ <87k0v38qlw.fsf@x220.int.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d77e2d82-22da-a7a0-54e0-f5d315f32a75@kernel.dk>
+Date:   Mon, 2 Nov 2020 13:31:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz> <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz> <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
-In-Reply-To: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 2 Nov 2020 12:29:24 -0800
-Message-ID: <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87k0v38qlw.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 12:25 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Thu, Oct 15, 2020 at 2:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 14-10-20 09:57:20, Suren Baghdasaryan wrote:
-> > > On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > > > The need is similar to why oom-reaper was introduced - when a process
-> > > > > > is being killed to free memory we want to make sure memory is freed
-> > > > > > even if the victim is in uninterruptible sleep or is busy and reaction
-> > > > > > to SIGKILL is delayed by an unpredictable amount of time. I
-> > > > > > experimented with enabling process_madvise(MADV_DONTNEED) operation
-> > > > > > and using it to force memory reclaim of the target process after
-> > > > > > sending SIGKILL. Unfortunately this approach requires the caller to
-> > > > > > read proc/pid/maps to extract the list of VMAs to pass as an input to
-> > > > > > process_madvise().
-> > > >
-> > > > Well I would argue that this is not really necessary. You can simply
-> > > > call process_madvise with the full address range and let the kernel
-> > > > operated only on ranges which are safe to tear down asynchronously.
-> > > > Sure that would require some changes to the existing code to not fail
-> > > > on those ranges if they contain incompatible vmas but that should be
-> > > > possible. If we are worried about backward compatibility then a
-> > > > dedicated flag could override.
-> > > >
-> > >
-> > > IIUC this is very similar to the last option I proposed. I think this
-> > > is doable if we treat it as a special case. process_madvise() return
-> > > value not being able to handle a large range would still be a problem.
-> > > Maybe we can return MAX_INT in those cases?
-> >
-> > madvise is documented to return
-> >        On success, madvise() returns zero.  On error, it returns -1 and
-> >        errno is set appropriately.
-> > [...]
-> > NOTES
-> >    Linux notes
-> >        The Linux implementation requires that the address addr be
-> >        page-aligned, and allows length to be zero.  If there are some
-> >        parts of the specified address range that are not mapped, the
-> >        Linux version of madvise() ignores them and applies the call to
-> >        the rest (but returns ENOMEM from the system call, as it should).
-> >
-> > I have learned about ENOMEM case only now. And it seems this is indeed
-> > what we are implementing. So if we want to add a new mode to
-> > opportunistically attempt madvise on the whole given range without a
-> > failure then we need a specific flag for that. Advice is a number rather
-> > than a bitmask but (ab)using the top bit or use negative number space
-> > (e.g. -MADV_DONTNEED) for that sounds possible albeit bit hackish.
->
-> process_madvise() has an additional flag parameter. Why not have a
-> separate flag to denote that we want to just skip VMA gaps and proceed
-> without error? Something like MADVF_SKIP_GAPS?
->
-> >
-> > [...]
-> > > > I do have a vague recollection that we have discussed a kill(2) based
-> > > > approach as well in the past. Essentially SIG_KILL_SYNC which would
-> > > > not only send the signal but it would start a teardown of resources
-> > > > owned by the task - at least those we can remove safely. The interface
-> > > > would be much more simple and less tricky to use. You just make your
-> > > > userspace oom killer or potentially other users call SIG_KILL_SYNC which
-> > > > will be more expensive but you would at least know that as many
-> > > > resources have been freed as the kernel can afford at the moment.
-> > >
-> > > Correct, my early RFC here
-> > > https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
-> > > was using a new flag for pidfd_send_signal() to request mm reaping by
-> > > oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
-> > > signal instead of a new pidfd_send_signal() flag and otherwise a very
-> > > similar solution. Is my understanding correct?
-> >
-> > Well, I think you shouldn't focus too much on the oom-reaper aspect
-> > of it. Sure it can be used for that but I believe that a new signal
-> > should provide a sync behavior. People more familiar with the process
-> > management would be better off defining what is possible for a new sync
-> > signal.  Ideally not only pro-active process destruction but also sync
-> > waiting until the target process is released so that you know that once
-> > kill syscall returns the process is gone.
->
-> If your suggestion is for SIG_KILL_SYNC to perform victim's resource
-> cleanup in the context of the caller while the victim is in
-> uninterruptible sleep that would definitely be useful. I assume there
-> are some resources which can't be reclaimed until the process itself
-> wakes up and handles the SIGKILL. If so, I hope kill(SIG_KILL_SYNC)
-> would not have to wait for the victim to wake up and handle the
-> signal. This would really complicate the userspace in cases when we
-> just want to reclaim whatever we can without victim's involvement and
-> continue. For cases when waiting is required waitid() with P_PIDFD can
-> be used.
-> Would this semantic work?
->
+On 11/2/20 1:12 PM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 11/2/20 12:27 PM, Eric W. Biederman wrote:
+>>> Jens Axboe <axboe@kernel.dk> writes:
+>>>
+>>>> On 10/30/20 4:22 PM, Al Viro wrote:
+>>>>> On Fri, Oct 30, 2020 at 02:33:11PM -0600, Jens Axboe wrote:
+>>>>>> On 10/30/20 12:49 PM, Al Viro wrote:
+>>>>>>> On Fri, Oct 30, 2020 at 12:46:26PM -0600, Jens Axboe wrote:
+>>>>>>>
+>>>>>>>> See other reply, it's being posted soon, just haven't gotten there yet
+>>>>>>>> and it wasn't ready.
+>>>>>>>>
+>>>>>>>> It's a prep patch so we can call do_renameat2 and pass in a filename
+>>>>>>>> instead. The intent is not to have any functional changes in that prep
+>>>>>>>> patch. But once we can pass in filenames instead of user pointers, it's
+>>>>>>>> usable from io_uring.
+>>>>>>>
+>>>>>>> You do realize that pathname resolution is *NOT* offloadable to helper
+>>>>>>> threads, I hope...
+>>>>>>
+>>>>>> How so? If we have all the necessary context assigned, what's preventing
+>>>>>> it from working?
+>>>>>
+>>>>> Semantics of /proc/self/..., for starters (and things like /proc/mounts, etc.
+>>>>> *do* pass through that, /dev/stdin included)
+>>>>
+>>>> Don't we just need ->thread_pid for that to work?
+>>>
+>>> No.  You need ->signal.
+>>>
+>>> You need ->signal->pids[PIDTYPE_TGID].  It is only for /proc/thread-self
+>>> that ->thread_pid is needed.
+>>>
+>>> Even more so than ->thread_pid, it is a kernel invariant that ->signal
+>>> does not change.
+>>
+>> I don't care about the pid itself, my suggestion was to assign ->thread_pid
+>> over the lookup operation to ensure that /proc/self/ worked the way that
+>> you'd expect.
+> 
+> I understand that.
+> 
+> However /proc/self/ refers to the current process not to the current
+> thread.  So ->thread_pid is not what you need to assign to make that
+> happen.  What the code looks at is: ->signal->pids[PIDTYPE_TGID].
+> 
+> It will definitely break invariants to assign to ->signal.
+> 
+> Currently only exchange_tids assigns ->thread_pid and it is nasty.  It
+> results in code that potentially results in infinite loops in
+> kernel/signal.c
+> 
+> To my knowledge nothing assigns ->signal->pids[PIDTYPE_TGID].  At best
+> it might work but I expect the it would completely confuse something in
+> the pid to task or pid to process mappings.  Which is to say even if it
+> does work it would be an extremely fragile solution.
 
-To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-which in addition to sending a kill signal would also reap the
-victim's mm in the context of the caller? Maybe having some code will
-get the discussion moving forward?
+Thanks Eric, that's useful. Sounds to me like we're better off, at least
+for now, to just expressly forbid async lookup of /proc/self/. Which
+isn't really the end of the world as far as I'm concerned.
 
-> >
-> > --
-> > Michal Hocko
-> > SUSE Labs
+-- 
+Jens Axboe
+
