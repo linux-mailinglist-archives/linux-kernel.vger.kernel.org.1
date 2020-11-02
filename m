@@ -2,165 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1902A27B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC52A27BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgKBKGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:06:35 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:47223 "EHLO
+        id S1728380AbgKBKHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:07:48 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:47783 "EHLO
         wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728004AbgKBKGf (ORCPT
+        by vger.kernel.org with ESMTP id S1728081AbgKBKHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:06:35 -0500
+        Mon, 2 Nov 2020 05:07:48 -0500
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 700BEE3B;
-        Mon,  2 Nov 2020 05:06:34 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 5B1015EC;
+        Mon,  2 Nov 2020 05:07:47 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:06:34 -0500
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:07:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=AP/YqtABarQe6MzZIB/L2nQZH3Z
-        zHxt15yvG7nEYn+o=; b=gyUFXc+38GHBJlyyQOTd8Hs+j6jdRcsA2d49cyWujE2
-        nDEB+Uy9A+ZcBnnST9h5PuepGoYEkwFvA6WcoCKgG4RUWiFfB5PNKXo7pDeE7Vtn
-        Ekxs8XIfVEfUO6adKqyvsNZd/hDaU63KIRPI8KsTSdfvp5x8QME1g6LtIqDhKLnS
-        xhQT/UjbOBMsHFrP8Z8CDqRlJwQRzoP8dG7VSUUwKgTiiba08lDj6pfnK+85eaq8
-        lkcGUG3SCzfh+qKCwbMOGDweB4ILU6QFlKr5gKY3InXotB3+xj4zejyNkEvHet48
-        3K9EcVVzi6RSiPI0Qafh2yvl2uRs10g81dOzlIM0ZzA==
+        :content-type:in-reply-to; s=fm1; bh=ksX0oJuNzRG+XdJwYwHrBBw9Tr1
+        29EcWdvlrKeW8250=; b=CYWsmIvp6j2RbgNGVHVq1kheu37/iC7efF4scuTR4sW
+        JzPo5kyXPjgI0NJ64UwRmDwanoHA5+MgZvWcwah1YyVuqE07pWPBeNWfQQpEn4mr
+        TuwZ67W6P7lGIv7t8da7PZl93kBtJSWqQF1SfcCl4JPVkqRUccxw0CLbxbhiyusM
+        XYTeCVpaqfTPSs6VCaBwfldFQX7SnnGNFGrBXSmM8ZX4hjX//shLJj27O7jMB4S+
+        Jqm9s3mq6fNv3L6adqAQBuqIRXliWCLkN0VqyriyS93qXuDaZb8U/1g9lVpN/aFV
+        3n6iLc4lJqr0RR+gBJ5O18s4zLNkT+GK+P4ibgCVfsQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AP/Yqt
-        ABarQe6MzZIB/L2nQZH3ZzHxt15yvG7nEYn+o=; b=PuRJHubtJL/D9hU6brh97Y
-        hRRSLW+3El4b7sG34mGVGCzkDwepBpzu6/81nW0/HEiI3UD1YQp6N296WBDp9iP6
-        x69xr0322rRRY2A0hv5ILQQQtBAo+yLr/17uKt+TB/ZYkMHGSx66NoJwVBGpTHlg
-        LMt9yVlPs74oe2UU1GhcblRGaldF0fcWxABS9KAHuUx83F0sCClCj5on+0cxqCic
-        fPvgLFDgs8KqA8pel5e5DeSatzgDkDAnbI2KNpJ2VnpP63mFcRk/caTwF2S3Le2d
-        nWDVx2kiQK7ifE5nq1mwH7WXPo4wK2ov07U8ZrFzjK4hOEDNPqu2uilfj6A0u5og
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ksX0oJ
+        uNzRG+XdJwYwHrBBw9Tr129EcWdvlrKeW8250=; b=nfsHu3LV0WraeEsh+QHEIp
+        l/A5MQFDdtlbwv7KlGtGkisrYmKzQMNULb7qAJ+7gLRNxxnnQjTinMUUhRB90Puf
+        7jrzq9paoLmpwDZAaG7HcWB/Ko7GUNUT2sAjF0QACoELYaybp45pCJwmNulKz7wV
+        9WHxhuZcpPCgkrZ+Ug8fSBJUEymTxnY0OTFtxpy5KvXGw7Zrid2iJxzW7TxgcW/7
+        MsqGWzHIG1XtmywZxcD9ysgeA8wIDSKZyi3pDDba0uxBc5sSFg0uGH6M53xMibgH
+        ZmmiEw0npzg4e13DXPg9d4SToXjnmgLrCiFY4NDwrDAHzN1v/5ogFDWhH/lnYp7g
         ==
-X-ME-Sender: <xms:KdqfX4GF8VZjjioHTpjx5yHFt8GYn6ItHiTmP6x3-61GhpPw_RTikg>
-    <xme:KdqfXxXaqTuJ19LMyPfLAwnHoYArR4QbmjZR6cGw2U6LzHndEgdCNSwoMnT4xMSmp
-    9dJ_ezwJiYgHed_aLQ>
+X-ME-Sender: <xms:ctqfX4f-0H4dcGo1C54v2r8yNfOdQVgfxE6lk-KfBc1Qjvw1NJEmFA>
+    <xme:ctqfX6PFE8KYbtPci6YYFRJIBPAR2ODKg7Zh0hjaD9TVYfMbt3M8V6cJwdXVL7PyZ
+    H8FHhKSP44E8z-CoJo>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddguddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
     htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudenuc
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KdqfXyIR_Tm3XmJHKLyxqMeR1SZgxM6XpbCW5aagxyUfJreoRE7j1A>
-    <xmx:KdqfX6FDYJonRXEG8L4gpcVpCiTZ774eqG-z5Vi-_a_giy4JXv770Q>
-    <xmx:KdqfX-U1b2rkB56sGcYZC-UTYJi5Kw2zIDjoRsqSGSNqd_hfrkq0Iw>
-    <xmx:KtqfX7g6s4yc1PMHupmCsOcf0lDl0Jsj3wHt7KWfrs_ukLrNEcC7MQ>
+X-ME-Proxy: <xmx:ctqfX5jwn-lGGH_tKtEYvArOBguXdTYY2m1e-ijcOLJEPSqaRWNN-g>
+    <xmx:ctqfX99sRQzTSFEGO0tlEutjfJ1FH-wE5xWOmxI0xyAQUA_KQLeC-g>
+    <xmx:ctqfX0t5N5WH1AjaeehXRcFAJXiMMumJcKzacrTqYJOAq2ReQCo_2w>
+    <xmx:ctqfX95EHopwnzPF_J4kjThwN8GYfAtCVHYTsyMJ8wFvAIMy7HybQw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 924F03064685;
-        Mon,  2 Nov 2020 05:06:33 -0500 (EST)
-Date:   Mon, 2 Nov 2020 11:06:32 +0100
+        by mail.messagingengine.com (Postfix) with ESMTPA id 80355306468B;
+        Mon,  2 Nov 2020 05:07:46 -0500 (EST)
+Date:   Mon, 2 Nov 2020 11:07:45 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Matteo Scordino <matteo.scordino@gmail.com>
 Cc:     wens@csie.org, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] ARM: dts: sun8i: s3: Add dts for the Elimo
- Initium SBC
-Message-ID: <20201102100632.g5tozkzfjzzch4ny@gilmour.lan>
+Subject: Re: [PATCH v2 6/6] ARM: dts: sunxi: align pinecube compatible
+ property to other S3 boards
+Message-ID: <20201102100745.gloe4j63cwisbhhm@gilmour.lan>
 References: <20201029022000.601913-1-matteo.scordino@gmail.com>
- <20201030234325.5865-6-matteo.scordino@gmail.com>
+ <20201030234325.5865-7-matteo.scordino@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vtixvegn4iodbojd"
+        protocol="application/pgp-signature"; boundary="4t5eww6pjmgjfel6"
 Content-Disposition: inline
-In-Reply-To: <20201030234325.5865-6-matteo.scordino@gmail.com>
+In-Reply-To: <20201030234325.5865-7-matteo.scordino@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---vtixvegn4iodbojd
+--4t5eww6pjmgjfel6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 30, 2020 at 11:43:24PM +0000, Matteo Scordino wrote:
-> The Elimo Engineering Initium is an Open Source Hardware Single Board
-> Computer based on the Elimo Impetus SoM.
->=20
-> It is meant as the first development platform for the Impetus, providing
-> convenient access to the peripherals on the Impetus.
->=20
-> It provides:
-> USB-C power input
-> UART-to-USB bridge on the USB-C connector, connected to UART1
-> USB-A connector for USB2.0 (Host, Device, OTG)
-> Audio Line In/Out
-> Pin header to access all signals on the M2 connector of the SoM
+On Fri, Oct 30, 2020 at 11:43:25PM +0000, Matteo Scordino wrote:
+> The compatible string in the Pine64 Pincube dts diverges from the ones
+> used in other S3 based boards, like the LicheePi and the Elimo Impetus
+> and Initium. Discussion on LKML decided the PineCube should align to the
+> others.
 >=20
 > Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
 > ---
->  arch/arm/boot/dts/Makefile                   |  1 +
->  arch/arm/boot/dts/sun8i-s3-elimo-initium.dts | 28 ++++++++++++++++++++
->  2 files changed, 29 insertions(+)
->  create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
+>  arch/arm/boot/dts/sun8i-s3-pinecube.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 4f0adfead547..dcfb8d39c267 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1210,6 +1210,7 @@ dtb-$(CONFIG_MACH_SUN8I) +=3D \
->  	sun8i-r40-bananapi-m2-ultra.dtb \
->  	sun8i-s3-lichee-zero-plus.dtb \
->  	sun8i-s3-pinecube.dtb \
-> +	sun8i-s3-elimo-initium.dtb \
+> diff --git a/arch/arm/boot/dts/sun8i-s3-pinecube.dts b/arch/arm/boot/dts/=
+sun8i-s3-pinecube.dts
+> index 9bab6b7f4014..4aa0ee897a0a 100644
+> --- a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> +++ b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
+> @@ -10,7 +10,7 @@
+> =20
+>  / {
+>  	model =3D "PineCube IP Camera";
+> -	compatible =3D "pine64,pinecube", "allwinner,sun8i-s3";
+> +	compatible =3D "pine64,pinecube", "sochip,s3", "allwinner,sun8i-v3";
 
-This should be sorted as well
-
->  	sun8i-t3-cqa3t-bv3.dtb \
->  	sun8i-v3s-licheepi-zero.dtb \
->  	sun8i-v3s-licheepi-zero-dock.dtb \
-> diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts b/arch/arm/boot=
-/dts/sun8i-s3-elimo-initium.dts
-> new file mode 100644
-> index 000000000000..7677ddc07bf9
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
-> + */
-> +
-> +/dts-v1/;
-> +#include "sun8i-s3-elimo-impetus.dtsi"
-> +
-> +/ {
-> +	model =3D "Elimo Initium";
-> +	compatible =3D "elimo,initium", "elimo,impetus", "sochip,s3",
-> +    "allwinner,sun8i-v3";
-
-You should indent that properly
-
-> +	aliases {
-> +		serial0 =3D &uart0;
-> +		serial1 =3D &uart1;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +};
-
-It's already in the DTSI, there's no need to duplicate it here
+I've applied it with the prefix changed a little, and s/Pincube/Pinecube/ i=
+n the commit log.
 
 Maxime
 
---vtixvegn4iodbojd
+--4t5eww6pjmgjfel6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/aKAAKCRDj7w1vZxhR
-xTCcAP9A5eaG4zp+uRq9V4pmAEZ/N8oHvIpEWTJ6DMc31yWCTwEA6q3Ozu/epgFx
-BoI6slmWzDPQKiDGl0guYHROyZ+MDAI=
-=xHsN
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/acQAKCRDj7w1vZxhR
+xX0lAQDczW23QXNN532ys0KyARoRvDttMvH5TV3UnQqgI5WnIQD8DAq6gEW6RArz
+Qm+ubfz2FErCRi09LF0Vu/XgDGh52w8=
+=nYxL
 -----END PGP SIGNATURE-----
 
---vtixvegn4iodbojd--
+--4t5eww6pjmgjfel6--
