@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDAA2A3105
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153272A3107
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727562AbgKBRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727144AbgKBRL4 (ORCPT
+        id S1727679AbgKBRMF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 12:12:05 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35980 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727589AbgKBRMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:11:56 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0137C0617A6;
-        Mon,  2 Nov 2020 09:11:55 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id w1so13980201edv.11;
-        Mon, 02 Nov 2020 09:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UDsVWn4E2MasI/jljtk38Wk49KhSUU+c+WkmrZoymUA=;
-        b=JdryO2LBa69B5Z1yfJ8xP1QMzeLwOBKBVduKKsX5ZfldhdqNSFevqa/l0+6rw0tb8p
-         z328dJrsyHglYerX+8jGqgRYmjT2MJvlKwThlkQsQCvptHSbLajvph/JJJOl7UPIVCzQ
-         69qHNZfloYeV++cOSiWnR+Uw4wLRJF3sd4bPEURUW+04pMxYxjGwV/G4n85BlAsxDINp
-         bSJRXgcVsWMhbWPL1HN63C5zSBzUBqci3cru3Ttt4yQ0FfMTDOEMyneQDz3rOIlzMwuh
-         7iwXhrJ4no+e6rzywAK+Bt5Q1loZ5WvYCkxjuHYE0tlUfQY0EbE0IporoD40c5b2tMw8
-         /jjQ==
+        Mon, 2 Nov 2020 12:12:05 -0500
+Received: by mail-oi1-f196.google.com with SMTP id d9so9395314oib.3;
+        Mon, 02 Nov 2020 09:12:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UDsVWn4E2MasI/jljtk38Wk49KhSUU+c+WkmrZoymUA=;
-        b=Kd2ZI/lqWHR4BQyVckWDAav3CFJxS3O7hDmYkVZ/EAmzyDB1XgSeQUM4xTGq8QJF3K
-         c8Dgi+378BXiv3jcbPzFLCw3PKtBFg15YpP6NXViCZcVl2CShmiVq3xrNGTgX3QbE2tl
-         kHb5aAv4jsneM5ibGh9b4/hi9NcjqIWIJncjpeEBqfnO1MmPGYWNtZwd+NuekLUQhk6A
-         /r+7jeAyafQG1SsLTy/atXyGmhMk/7Nc4Hvh8HSvlYhW7gF/GV5tNziNzZj9Sc7vVk5L
-         Ro6uzmuMQgtumHED+pgDAsk4k96kACDLJvv6Id2lDDQFTDNvn3XaoqG2GNgYcHlu9V9+
-         Maxg==
-X-Gm-Message-State: AOAM530jAy8VnvXcME+QvC5MI59gemZezQ1DBsl25a8/2OeVWWu/rcFM
-        LqHvZN85YR2Zm5xHyVPt+oGS28jnCY9LwA==
-X-Google-Smtp-Source: ABdhPJxy8egjrPYM8QyvbDqSYMiE4M0MTlh3z+5zxkzuEWmJX/3AKyXY6VLzEBi4sE0mU7wlirqLHA==
-X-Received: by 2002:a05:6402:1d13:: with SMTP id dg19mr17902988edb.217.1604337114670;
-        Mon, 02 Nov 2020 09:11:54 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id pw17sm9811284ejb.116.2020.11.02.09.11.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 09:11:54 -0800 (PST)
-Subject: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
- RK2928 and others
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Yifeng <yifeng.zhao@rock-chips.com>, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        heiko@sntech.de, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
- <20201028095326.15562-3-yifeng.zhao@rock-chips.com>
- <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>
- <e02e13a0-769d-6b73-c87e-5b7d75fd4254@rock-chips.com>
- <0b417fc2-3503-9bf6-914d-0f8b38df1914@gmail.com>
- <20201102140725.66e7dcb1@xps13>
- <5ad70fa0-05a9-e1e7-32cc-32933ff25ae9@gmail.com>
- <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
- <20201102180039.757d3234@xps13>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <cd349a1f-773d-096a-f0ae-90c5eb847769@gmail.com>
-Date:   Mon, 2 Nov 2020 18:11:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eA1YHLSLEbKjVZd8ZPCYquKLICIoPYEsjcgwYwIXONM=;
+        b=oGOtSZAPljOnzyKnWieVFzHNL2VnMXFStXtLw7gPc4/ZPxcilAsZCHGvVd9vA4p5zn
+         F290/zgHeu09Gl+jZCL1qsjLWvkNxZKi26snR39lhFzl5EsgnWDUHbFip0zAxMExCLwN
+         Kql0rHBYHeNwFi50A2Anrcw+Sjh5qKByVyEdrbT+EzrVss7wP7QfIMOlOh8uN6RptIMr
+         ipIzqh8V3Lp5dDvtX8pK/rH3axYFEMnv3tlpvFoHw5sJJswhWVUmfFtVkCtxyiR6iiQb
+         FJMH1bcpEHRNuvjSyKk0w2WkaXZk5WgjRvacbuZfhvz2/dS/45lCjtQMBDCNy7c9V6lt
+         BsXQ==
+X-Gm-Message-State: AOAM532SAAlZ2zvjkcwNWybWDFJfhYQ1GN9YXyHbsPY4OADiDJMy/t9x
+        TWoHljNCOjRtrtfCM6mKEQ==
+X-Google-Smtp-Source: ABdhPJwIP7A0eJV2FdnAxV4GkQDkNlw2WxhwivkI2jfqP/w6eBmV9pOv23Sc+uKXnoHc+lmzjesN3Q==
+X-Received: by 2002:aca:a906:: with SMTP id s6mr1968252oie.59.1604337124008;
+        Mon, 02 Nov 2020 09:12:04 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j23sm3806127otk.56.2020.11.02.09.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 09:12:03 -0800 (PST)
+Received: (nullmailer pid 4059886 invoked by uid 1000);
+        Mon, 02 Nov 2020 17:12:02 -0000
+Date:   Mon, 2 Nov 2020 11:12:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     devicetree@vger.kernel.org, hkallweit1@gmail.com,
+        davem@davemloft.net, netdev@vger.kernel.org, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
+Subject: Re: [PATCH net-next v3 3/4] dt-bindings: dp83td510: Add binding for
+ DP83TD510 Ethernet PHY
+Message-ID: <20201102171202.GA4059031@bogus>
+References: <20201030172950.12767-1-dmurphy@ti.com>
+ <20201030172950.12767-4-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201102180039.757d3234@xps13>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201030172950.12767-4-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 6:00 PM, Miquel Raynal wrote:
-> Hi Johan,
+On Fri, 30 Oct 2020 12:29:49 -0500, Dan Murphy wrote:
+> The DP83TD510 is a 10M single twisted pair Ethernet PHY
 > 
-> Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 17:31:18
-> +0100:
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  .../devicetree/bindings/net/ti,dp83td510.yaml | 62 +++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/ti,dp83td510.yaml
 > 
->> On 11/2/20 2:11 PM, Johan Jonker wrote:
->>> Hi,
->>>
->>> On 11/2/20 2:07 PM, Miquel Raynal wrote:
->>>> Hi Johan, Yifeng
->>>>
->>>> Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 13:57:56
->>>> +0100:
->>>>
->>>>> Hi Yifeng,
->>>>>
->>>>> Don't poke with "ecc->bytes" ones it is set in rk_nfc_ecc_init(). It
->>>>> will not be noted by the MTD frame work or userspace. I think there's
->>>>> currently no way to let the user know that a different ECC must be used.
->>>>> Neither can the user set ECC on the fly.
->>>>>
->>>>> Example R/W flow:
->>>>>
->>>>>         nand_select_target()
->>>>> 	chip->ecc.write_page_raw()
->>>>> 	chip->ecc.write_page()
->>>>>
->>>>> [..]
->>>>>
->>>>> 	chip->ecc.read_page_raw()
->>>>> 	chip->ecc.read_page()
->>>>>         nand_deselect_target()
->>>>>
->>>>> A write/read with:
->>>>>
->>>>> rk_nfc_read_page_hwecc()
->>>>> rk_nfc_write_page_hwecc()
->>>>>
->>>>> or
->>>>>
->>>>> rk_nfc_read_page_raw()
->>>>> rk_nfc_write_page_raw()
->>>>>
->>>>> must end up with the same result. If we can't archive that, then we
->>>>> shouldn't offer RAW mode to the user for now. If Miquel agrees you
->>>>> should just get the driver ready now without these 2 functions and round
->>>>> things up.
->>>>
->>>> What about just not supporting the BootROM area if it was marked
->>>> "reserved" by the BRom in the DT?
->>>
->>> Should we just fill the buffers with '0xff' for boot blocks?
->>
->> (part 2) ;)
->> My fault....
->> Better use:
->>
->>     if ((chip->options & NAND_IS_BOOT_MEDIUM) &&
->>         (page < (pages_per_blk * rknand->boot_blks))) {
->>
->> 	return -EIO;
->>
->>     }
-> 
-> Yup, I was about to tell you that I would prefer returning a nice
-> error, this is fine I guess.
-> 
-> Anyway, I think reading bad block markers is done in raw mode, so if
-> raw accessors refuse to return valid values for boot blocks, you won't
-> be able to access it neither with raw nor corrected hooks.
-> 
-> Perhaps refusing the access to the regular page access is ok, but maybe
-> we should be able to at least read these pages in raw mode
-> (and move the BBM to its right location). What do you think?
-
-I think that the problem with asymmetric read and write access is that a
-user reads data successful, but that it can't write it back after it's
-block is erased. You shouldn't give the illusion that the boot ROM
-blocks can be accessed in RAW mode. Something with perception...does
-user space known that Rockchip's NFC is special...
 
 
-> 
-> Thanks,
-> Miquèl
-> 
->>
->>
->>>
->>>>
->>>> Raw accessors is really a nice and basic feature that I would like to
->>>> have in every new driver.
->>>>
->>>> Thanks,
->>>> Miquèl
->>>>
->>>
->>
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/ti,dp83td510.yaml: {'$id': 'http://devicetree.org/schemas/net/ti,dp83td510.yaml#', '$schema': 'http://devicetree.org/meta-schemas/core.yaml#', 'title': 'TI DP83TD510 ethernet PHY', 'allOf': [{'$ref': 'ethernet-controller.yaml#'}, {'$ref': 'ethernet-phy.yaml#'}], 'maintainers': ['Dan Murphy <dmurphy@ti.com>'], 'description': 'The PHY is an twisted pair 10Mbps Ethernet PHY that support MII, RMII and\nRGMII interfaces.\n\nSpecifications about the Ethernet PHY can be found at:\n  http://www.ti.com/lit/ds/symlink/dp83td510e.pdf\n', 'properties': {'reg': {'maxItems': 1}, 'tx-fifo-depth': {'description': 'Transmitt FIFO depth for RMII mode.  The PHY only exposes 4 nibble\ndepths. The valid nibble depths are 4, 5, 6 and 8.\n', 'enum': [4, 5, 6, 8], 'default': 5}, 'rx-internal-delay-ps': {'description': 'Setting this property to a non-zero number sets the RX internal delay\nfor the PHY.  The internal delay for the PHY is fixed to 30ns relative\nto receive data.\n'}, 'tx-internal-delay-ps': {'description': 'Setting this property to a non-zero number sets the TX internal delay\nfor the PHY.  The internal delay for the PHY has a range of -4 to 4ns\nrelative to transmit data.\n'}}, 'required': ['reg'], 'examples': ['mdio0 {\n  #address-cells = <1>;\n  #size-cells = <0>;\n  ethphy0: ethernet-phy@0 {\n    reg = <0>;\n    tx-rx-output-high;\n    tx-fifo-depth = <5>;\n    rx-internal-delay-ps = <1>;\n    tx-internal-delay-ps = <1>;\n  };\n};\n']} is not valid under any of the given schemas
+{'oneOf': [{'required': ['unevaluatedProperties']},
+           {'required': ['additionalProperties']}]} (Possible causes of the failure):
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/ti,dp83td510.yaml: 'unevaluatedProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/ti,dp83td510.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1391184
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
