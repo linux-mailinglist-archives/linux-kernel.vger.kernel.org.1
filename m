@@ -2,70 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459692A2D01
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86792A2D14
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgKBObB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:31:01 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7445 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgKBObA (ORCPT
+        id S1726104AbgKBOiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:38:12 -0500
+Received: from smtpcmd0986.aruba.it ([62.149.156.86]:42902 "EHLO
+        smtpcmd0986.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgKBOiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:31:00 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CPwM54XZtzhff0;
-        Mon,  2 Nov 2020 22:30:57 +0800 (CST)
-Received: from localhost (10.174.176.180) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
- 22:30:50 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <tomi.valkeinen@ti.com>, <yuehaibing@huawei.com>,
-        <sebastian.reichel@collabora.com>, <sam@ravnborg.org>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/bridge: tpd12s015: Fix irq registering in tpd12s015_probe
-Date:   Mon, 2 Nov 2020 22:30:24 +0800
-Message-ID: <20201102143024.26216-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20201031031648.42368-1-yuehaibing@huawei.com>
-References: <20201031031648.42368-1-yuehaibing@huawei.com>
+        Mon, 2 Nov 2020 09:38:11 -0500
+X-Greylist: delayed 424 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 09:38:10 EST
+Received: from [192.168.1.132] ([93.146.66.165])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id ZarNkKa7aboZEZarNkb3Y0; Mon, 02 Nov 2020 15:31:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1604327465; bh=3lAxSQ5YNmharAPVFah3JlpZIkAdwJG902U33iTrXYE=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=fG0N2YPNj74VmgbI7FwElNQ6sAJs4jYtKfdZbhH1FYOSUmdhUCVQLN/AxdETnQgW2
+         ufSKv75Dn/fcDRkBzt/wtnULNYAh5uoiNfQdzDJlGgoLzKk3QJT1nE4cqr3i8p/VOe
+         7tYmYWn/tFGTxsPz13RJSfuUMA29UAJ9mITug6J0xFf/suY3IVCai02quDS1yjBemq
+         FtFDe09GikWTs9wZ5mzTk/l0YY1dFx3ip/DLBSX5lS/3a1tPQc53GZqbnwSijUzowE
+         Wp06jmdmLadfh/4UbxazFAKZ/jun0bwDMiTwS8mU1cWC8RtVMqM00BD6zGPiO84wzP
+         +4ODwiQUZBKFg==
+Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
+ more secure
+To:     Lee Jones <lee.jones@linaro.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20201102111211.1047972-1-lee.jones@linaro.org>
+ <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+ <20201102114903.GN4127@dell> <20201102121150.GA663356@kroah.com>
+ <20201102124301.GC4488@dell> <20201102125910.GA1008111@kroah.com>
+ <20201102134729.GD4488@dell>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <9f10500a-cfd7-bcbe-7b8e-edd49ab4d43c@enneenne.com>
+Date:   Mon, 2 Nov 2020 15:31:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.180]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201102134729.GD4488@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfMyb0xvHTQ86GLJYTjOFgBmnOUERpsg7xM2enmdqqyHSyksUOLIgDDLgJC40Te3nw2wb+BR5Kzy2ZrLkbqVdUZs+RTgS83jBZT9zuYmt77tJuWTz3EZP
+ 3sziKfkC7EmBWqjN4ZPN3Txjkj9HYcj3t/QhTlLZ06j/JSociUw9Wq8dc5Q3Qpy9W72JhFeTp1eT/ZOTZ2K7Vy6EpAHLLggeAMZjBFhnzUjG3SYsZ/qalBql
+ dDPlhF0SLU5PhSbIkK4nlCJMtraTgkgg5rYvikYwpU0RkjZ08fNzDcXjmgxj0Gp5OYIIt53D0aNMrYmsZmVlDAg+h4hE93kRVTrMcw8I1IFL3Q6d+q8iQenU
+ 3mlea6eMyaOswEzqdQduFl841X5yIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gpiod_to_irq() return negative value in case of error,
-the existing code doesn't handle negative error codes.
-If the HPD gpio supports IRQs (gpiod_to_irq returns a
-valid number), we use the IRQ. If it doesn't (gpiod_to_irq
-returns an error), it gets polled via detect(). 
+On 02/11/2020 14:47, Lee Jones wrote:
+> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+> 
+>> On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
+>>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+>>>
+>>>> On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
+>>>>> On Mon, 02 Nov 2020, David Laight wrote:
+>>>>>
+>>>>>> From: Lee Jones
+>>>>>>> Sent: 02 November 2020 11:12
+>>>>>>>
+>>>>>>> strncpy() may not provide a NUL terminator, which means that a 1-byte
+>>>>>>> leak would be possible *if* this was ever copied to userspace.  Ensure
+>>>>>>> the buffer will always be NUL terminated by using the kernel's
+>>>>>>> strscpy() which a) uses the destination (instead of the source) size
+>>>>>>> as the bytes to copy and b) is *always* NUL terminated.
+>>>>>>>
+>>>>>>> Cc: Rodolfo Giometti <giometti@enneenne.com>
+>>>>>>> Cc: "Eurotech S.p.A" <info@eurotech.it>
+>>>>>>> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>>>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>>>>>> ---
+>>>>>>>  drivers/misc/c2port/core.c | 2 +-
+>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+>>>>>>> index 80d87e8a0bea9..b96444ec94c7e 100644
+>>>>>>> --- a/drivers/misc/c2port/core.c
+>>>>>>> +++ b/drivers/misc/c2port/core.c
+>>>>>>> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+>>>>>>>  	}
+>>>>>>>  	dev_set_drvdata(c2dev->dev, c2dev);
+>>>>>>>
+>>>>>>> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+>>>>>>> +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+>>>>>>
+>>>>>> strscpy() doesn't zero fill so if the memory isn't zeroed
+>>>>>> and a 'blind' copy to user of the structure is done
+>>>>>> then more data is leaked.
+>>>>>>
+>>>>>> strscpy() may be better, but rational isn't right.
+>>>>>
+>>>>> The original patch zeroed the data too, but I was asked to remove that
+>>>>> part [0].  In your opinion, should it be reinstated?
+>>>>>
+>>>>> [0] https://lore.kernel.org/patchwork/patch/1272290/
+>>>>
+>>>> Just keep the kzalloc() part of the patch, this portion makes no sense
+>>>> to me.
+>>>
+>>> Can do.
+>>>
+>>>> But if you REALLY want to get it correct, call dev_set_name()
+>>>> instead please, as that is what it is there for.
+>>>
+>>> The line above isn't setting the 'struct device' name.  It looks as
+>>> though 'struct c2port' has it's own member, also called 'name'.  As to
+>>> how they differ, I'm not currently aware.  Nor do I wish to mess
+>>> around with the semantics all that much.
+>>>
+>>> Going with suggestion #1.
+>>
+>> As the "device" already has a name, I suggest just getting rid of this
+>> name field anyway, no need for duplicates.
+> 
+> That definitely goes against the point I made above:
+> 
+>  "Nor do I wish to mess around with the semantics all that much."
+> 
+> It looks as though the device name 'c2port%d' varies greatly to the
+> requested name 'uc'.  I don't have enough knowledge of how user-
+> space expects to use the provided sysfs entries to be able to
+> competently merge/decide which of these should be kept and which to
+> discard.
+> 
+> Hopefully one of the authors/maintainers are reading this and can come
+> up with an acceptable solution.
 
-Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: Add checking for >= 0 and update commit message
----
- drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+User-space usage can change its behavior so, please, consider the best solution
+from the kernel space point-of-view. :)
 
-diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-index 514cbf0eac75..e0e015243a60 100644
---- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
-+++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-@@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
- 
- 	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
- 	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
--	if (tpd->hpd_irq) {
-+	if (tpd->hpd_irq >= 0) {
- 		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
- 						tpd12s015_hpd_isr,
- 						IRQF_TRIGGER_RISING |
+Ciao,
+
+Rodolfo
+
 -- 
-2.17.1
-
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
