@@ -2,102 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62F02A3382
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB952A33AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgKBTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgKBTA1 (ORCPT
+        id S1725852AbgKBTJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:09:28 -0500
+Received: from mr85p00im-ztdg06021201.me.com ([17.58.23.189]:34169 "EHLO
+        mr85p00im-ztdg06021201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725789AbgKBTJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:00:27 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089B7C0617A6;
-        Mon,  2 Nov 2020 11:00:27 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id c16so10528101wmd.2;
-        Mon, 02 Nov 2020 11:00:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F52hESqbsB1MPJOrdkRKIslrWAc4TnNYL/WsFrJgJKw=;
-        b=toR2HRVdMm7mruxLONthC9XCLQ2NZM7kvv76jNtete8uCBDGb7+45cxZPdkRDrH59n
-         mn2jusHu9DC1CUcCHVwWrwrx9yQo08XLXrLovUsOY5/VwQ6fZZt1KTBDX5NmBVMIkDJ/
-         EqzMvk5nkdMc/DdJ3rJLd0EEbCXCRxhE6F4DpSADFhnaACYbCq0Hnc2XlDtBEEdM65eK
-         mEBe1NZXRRvstr8m9KiSpO7zQoHflmYdRbRXgRC4upO1zH0T0LlMuSyVJXcvmbZwW+F8
-         OFSAa6P+DaJTq+YT2/qF24jsGzErQR+Di5uTo15pZT5amGCHl13xKVdMKuoS8iWJur+C
-         ptag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F52hESqbsB1MPJOrdkRKIslrWAc4TnNYL/WsFrJgJKw=;
-        b=RRFw0cSFoJdbTYdkjdl/EwQBiGhJjf1Kp00gIdklUFHF9KcQC2ekBW3djHCbPfLLkP
-         R6t/fFHHeToqHRJEd0LEepOf4W7QPzxDZEE2lLL0tQ+J9UxA2XAQzvkzJyXWHx5cwxE1
-         PaQ8QjW4OKr61CDA/IKK+3juLjXfK+vA0SY56rDkSNtZpOoFq60n09RAf4Z1NTcU4L1/
-         c054qVqMP6/u6PAx5FGbP3Yrq7Kn+/tY0la5EA9ya+h8wG5aB5Pnu10Q08eguqRwWDqm
-         ySB0v6DomAcr1AjT6diUIZCoivUI3UR9BpHFjwIURnpVlimElR2UaxbpPosQ0SEUxkx+
-         vQ9w==
-X-Gm-Message-State: AOAM533p0xoO8VoloapGu+Su5URh90rF6XDS3Fs+2mOgwEdqD9FWYCtO
-        0oUladVqscw3ANWAzWp76WsFKFxyQcJTR4DkQ3/qrghE
-X-Google-Smtp-Source: ABdhPJytQUYMUMSyXdcmVlTI70Lb9uFFEdcAtoiyeavU7SDPkzfzLliepONejZLqlw/MJVxGDHVXT7e6qiW+8huN4SQ=
-X-Received: by 2002:a05:600c:25a:: with SMTP id 26mr19186350wmj.39.1604343625759;
- Mon, 02 Nov 2020 11:00:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102141654.699468-1-colin.king@canonical.com>
-In-Reply-To: <20201102141654.699468-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 2 Nov 2020 14:00:14 -0500
-Message-ID: <CADnq5_NJ=X1A+R5rHCvLZAXWpAL-3YiN_ksrzY8Kjuaoj1ybeg@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amdgpu: fix spelling mistake: "Successed" -> "Succeeded"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 2 Nov 2020 14:09:28 -0500
+X-Greylist: delayed 451 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 14:09:28 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1604343716;
+        bh=zSpQr2Fu5BqJzEGIaSLX28SzMRTOC0AZjDYMqo2fBEE=;
+        h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:To;
+        b=P7PZs4mFvyAZGovv4YBAKvdMA7IkPXIOsy1ATlsRNOxqhXLf0aefv97+LHOB6fNRo
+         tJmdvLYW74k5kgUzgU7NHgs/mgZy40pO8krCxq3qzM0am9lmOfr7qOyf82lj/jbgRI
+         1rPRyxVCWLpdBqyDuWtCVitDbdAB69ODpu6NBCsUK7cvyX0KhbfQu+leaC03Q6QtGl
+         ltyqdDs94VQ3XbYLLhd9n40kaA+25T1NwHdXnU09KZ9cQzBwhsmImxNLdgHOLV6Wte
+         5bV6IYutOQ85aA00zTDo+iCo1p+XPyeRGcVhfeWguKcEgj2pXqeg0tRCEafc4MKIn9
+         DZicDy96+oTKQ==
+Received: from [10.88.64.45] (mobile-166-171-248-27.mycingular.net [166.171.248.27])
+        by mr85p00im-ztdg06021201.me.com (Postfix) with ESMTPSA id 7384E120580;
+        Mon,  2 Nov 2020 19:01:56 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+From:   =?utf-8?Q?The_Dellia=E2=80=99s?= <denisedellia@icloud.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] mm: simplify get_next_ra_size
+Date:   Mon, 2 Nov 2020 11:01:55 -0800
+Message-Id: <55D84356-9970-4CEB-9602-E245E0AB4A2F@icloud.com>
+Cc:     akpm@linux-foundation.org, fengguang.wu@intel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+To:     hsiangkao@aol.com
+X-Mailer: iPhone Mail (18A393)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_13:2020-11-02,2020-11-02 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=465 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2011020145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
 
-On Mon, Nov 2, 2020 at 9:17 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a deb_dbg message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> index 28a5c0d21b71..c99c2180785f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> @@ -296,7 +296,7 @@ static void amdgpu_vram_mgr_do_reserve(struct ttm_resource_manager *man)
->                 if (drm_mm_reserve_node(mm, &rsv->mm_node))
->                         continue;
->
-> -               dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Successed\n",
-> +               dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Succeeded\n",
->                         rsv->mm_node.start, rsv->mm_node.size);
->
->                 vis_usage = amdgpu_vram_mgr_vis_size(adev, &rsv->mm_node);
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+Sent from my iPhone
