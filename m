@@ -2,145 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48572A3141
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8F22A3144
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgKBRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727704AbgKBRS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:18:27 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DAFC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:18:27 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t14so11370099pgg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:18:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ongijzBbU5JhggY7XsRs9RUVgnhkALPDdAHYW5noMnU=;
-        b=JjkLFkvmOwH3zDu+TtrRvT9/DODaBkhXxFr9Ngla+xzBEAzxw0ASE3vDj5LEA/KrQo
-         bNU0Sw0e/+652u5nIAervazqr5MO+wygx2UY9Fbb1QBbxnPRafQvUPPfRm6pZMG71VqO
-         IvNHbk89ZlNe9LoCr9lsNi8lacxTTLPZyd91Dr0euY0QwYJfUw0eyBkRZ2XPjdo6pgma
-         cRV4c3jlUNi4gWm5o6DXG0WM5VuC55BBz8zjZBTVRAVehfU2x+FgsgyXcVE4PFwW2+fO
-         SHH/8wjBVW6F2gh1HCWgISSUgdgKjLlyYly6nHXWo4tjgtWxkOeg4kjjck5JFH4RYHRl
-         nDHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ongijzBbU5JhggY7XsRs9RUVgnhkALPDdAHYW5noMnU=;
-        b=EgsQvapp88TVNV65dx0dCVshfCJ9CO3j8xlfecswYSsiI10AxY36C0S5xpZQ3s6yPo
-         HSqivvZhXIwOSuErSymCKoPSQRE+fd0lloMq5KiernC6ZqBYsyt8dJpTOfK41FukEGUQ
-         Owkxd5Z1HFz4OTUVnmCN1t/jrCf9v0MgHv3cyo3YX/UfQ8jtDodI0mn/ZcQSm/689GXK
-         ft+sf3HGGT0BbnhEw1mj1VLVuv/dp2FIfme3CWlglihHOsBUr4Ke0TFJyFDR54nFGMeX
-         0cCMKvi25NLpMhYNDbmS2NEjA63pJDYjGaD6yJ0gH/q49oXlUcWm0rsGh5ivOd149bkg
-         Kb/g==
-X-Gm-Message-State: AOAM533mGHdd++GXOjn0/ZPzrT57drNKz+LigrCB6IAfvDAPe3RPGa6h
-        i7/IItPD3WqCuxL4Xb9g9Ls=
-X-Google-Smtp-Source: ABdhPJyzPukp9r0F2P829WuznckwaVdiOgSt22gGhCcWY9DhcmgwB3d1g7RXRJesRJ8qX/PIQI9A4w==
-X-Received: by 2002:aa7:8281:0:b029:164:cc0f:2b3a with SMTP id s1-20020aa782810000b0290164cc0f2b3amr20031757pfm.30.1604337507299;
-        Mon, 02 Nov 2020 09:18:27 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id w6sm13164699pgr.71.2020.11.02.09.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:18:26 -0800 (PST)
-Date:   Mon, 2 Nov 2020 22:48:21 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>, gregkh@linuxfoundation.org,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
-Subject: [PATCH 3/6] drm/amdgpu/vcn: improve code indentation and alignment
-Message-ID: <0307c0682da36a5c0c091faf5f352f109df86955.1604336791.git.mh12gx2825@gmail.com>
-References: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
+        id S1727779AbgKBRTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726860AbgKBRTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:19:09 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A960320691;
+        Mon,  2 Nov 2020 17:19:04 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 12:19:02 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2] ftrace: Add recording of functions that caused
+ recursion
+Message-ID: <20201102121902.24d64aec@gandalf.local.home>
+In-Reply-To: <20201102120907.457ad2f7@gandalf.local.home>
+References: <20201030213142.096102821@goodmis.org>
+        <20201030214014.801706340@goodmis.org>
+        <20201102164147.GJ20201@alley>
+        <20201102120907.457ad2f7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-General code indentation and alignment changes such as replace spaces
-by tabs or align function arguments as per the coding style
-guidelines. Issue reported by checkpatch script.
+On Mon, 2 Nov 2020 12:09:07 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c |  2 +-
- drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c |  2 +-
- drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 10 +++++-----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+> > > +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
+> > > +{
+> > > +	int index;
+> > > +	int i = 0;
+> > > +	unsigned long old;
+> > > +
+> > > + again:
+> > > +	/* First check the last one recorded */
+> > > +	if (ip == cached_function)
+> > > +		return;
+> > > +
+> > > +	index = atomic_read(&nr_records);
+> > > +	/* nr_records is -1 when clearing records */
+> > > +	smp_mb__after_atomic();
+> > > +	if (index < 0)
+> > > +		return;
+> > > +
+> > > +	/* See below */
+> > > +	if (i > index)
+> > > +		index = i;    
+> > 
+> > This looks like a complicated way to do index++ via "i" variable.
+> > I guess that it was needed only in some older variant of the code.
+> > See below.  
+> 
+> Because we reread the index above, and index could be bigger than i (more
+> than index + 1).
+> 
+> >   
+> > > +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
+> > > +		return;
+> > > +
+> > > +	for (i = index - 1; i >= 0; i--) {
+> > > +		if (recursed_functions[i].ip == ip) {
+> > > +			cached_function = ip;
+> > > +			return;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	cached_function = ip;
+> > > +
+> > > +	/*
+> > > +	 * We only want to add a function if it hasn't been added before.
+> > > +	 * Add to the current location before incrementing the count.
+> > > +	 * If it fails to add, then increment the index (save in i)
+> > > +	 * and try again.
+> > > +	 */
+> > > +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
+> > > +	if (old != 0) {
+> > > +		/* Did something else already added this for us? */
+> > > +		if (old == ip)
+> > > +			return;
+> > > +		/* Try the next location (use i for the next index) */
+> > > +		i = index + 1;    
+> > 
+> > What about
+> > 
+> > 		index++;
+> > 
+> > We basically want to run the code again with index + 1 limit.  
+> 
+> But something else could update nr_records, and we want to use that if
+> nr_records is greater than i.
+> 
+> Now, we could swap the use case, and have
+> 
+> 	int index = 0;
+> 
+> 	[..]
+> 	i = atomic_read(&nr_records);
+> 	if (i > index)
+> 		index = i;
+> 
+> 	[..]
+> 
+> 		index++;
+> 		goto again;
+> 
+> 
+> > 
+> > Maybe, it even does not make sense to check the array again
+> > and we should just try to store the value into the next slot.  
+> 
+> We do this dance to prevent duplicates.
+> 
+> But you are correct, that this went through a few iterations. And the first
+> ones didn't have the cmpxchg on the ip itself, and that could make it so
+> that we don't need this index = i dance.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-index e5d29dee0c88..136270e4af7b 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-@@ -45,7 +45,7 @@
- #define mmUVD_SCRATCH9_INTERNAL_OFFSET				0xc01d
- 
- #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x1e1
--#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x5a6
-+#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x5a6
- #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x5a7
- #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x1e2
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-index 0f1d3ef8baa7..4094718ae27a 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-@@ -45,7 +45,7 @@
- 
- #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x431
- #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x3b4
--#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x3b5
-+#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x3b5
- #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x25c
- 
- #define VCN25_MAX_HW_INSTANCES_ARCTURUS			2
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-index e074f7ed388c..13e511d77bb1 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-@@ -44,10 +44,10 @@
- 
- #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x431
- #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x3b4
--#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x3b5
-+#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x3b5
- #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x25c
- 
--#define VCN_INSTANCES_SIENNA_CICHLID	 				2
-+#define VCN_INSTANCES_SIENNA_CICHLID				2
- 
- static int amdgpu_ih_clientid_vcns[] = {
- 	SOC15_IH_CLIENTID_VCN,
-@@ -55,8 +55,8 @@ static int amdgpu_ih_clientid_vcns[] = {
- };
- 
- static int amdgpu_ucode_id_vcns[] = {
--       AMDGPU_UCODE_ID_VCN,
--       AMDGPU_UCODE_ID_VCN1
-+		AMDGPU_UCODE_ID_VCN,
-+		AMDGPU_UCODE_ID_VCN1
- };
- 
- static int vcn_v3_0_start_sriov(struct amdgpu_device *adev);
-@@ -1371,7 +1371,7 @@ static int vcn_v3_0_start_sriov(struct amdgpu_device *adev)
- 	}
- 
- 	/* Update init table header in memory */
--        size = sizeof(struct mmsch_v3_0_init_header);
-+	size = sizeof(struct mmsch_v3_0_init_header);
- 	table_loc = (uint32_t *)table->cpu_addr;
- 	memcpy((void *)table_loc, &header, size);
- 
--- 
-2.25.1
+Playing with this more, I remember why I did this song and dance.
 
+If we have two or more writers, and one beats the other in updating the ip
+(with a different function). This one will go and try again. The reason to
+look at one passed nr_records, is because of the race between the multiple
+writers. This one may loop before the other can update nr_records, and it
+will fail to apply it again.
+
+You could just say, "hey we'll just keep looping until the other writer
+eventually updates nr_records". But this is where my paranoia gets in. What
+happens if that other writer takes an interrupt (interrupts are not
+disabled), and then deadlocks, or does something bad? This CPU will not get
+locked up spinning.
+
+Unlikely scenario, and it would require a bug someplace else. But I don't
+want a bug report stating that it found this recursion locking locking up
+the CPU and hide the real culprit.
+
+I'll add a comment to explain this in the code. And also swap the i and
+index around to make a little more sense.
+
+-- Steve
