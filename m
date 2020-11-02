@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD8D2A2BBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F12A2BC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgKBNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:42:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29833 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgKBNm7 (ORCPT
+        id S1725961AbgKBNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgKBNna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:42:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604324577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wNgI8i+pWr/ubDT2RgyT0/AFUjy2u7nNe8tclZPonss=;
-        b=hbmDihyCFFy9wcwwSyoVXUAw5cURNTWyLZLF0pkNJN+JRaO01c2n+lhAiP5CpRMzJVXakz
-        DL5TOM/yFdEAmJ6OLSbZN8Tg2yFdyw4KM+d2iJJrx4XcfhXsTspyPPJXJvdgYSwqZXOR/5
-        O4E7Vdszfin13XDPohJ63hr1As33BhU=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-AITHez6zPiixW0jo-cKFyA-1; Mon, 02 Nov 2020 08:42:55 -0500
-X-MC-Unique: AITHez6zPiixW0jo-cKFyA-1
-Received: by mail-oo1-f70.google.com with SMTP id d6so5775606ooi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:42:55 -0800 (PST)
+        Mon, 2 Nov 2020 08:43:30 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0566C061A47
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:43:28 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c9so7899350wml.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:43:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mfKBeD4fiXTCoEtzR3WkNNJyJEURTLKGrVDQO6IkliM=;
+        b=cVkQJTnCjfBar8bMUhCyQlY6NBjef7UxGui8W+iKgFzgtMfWzOKQPVzwUgSwmzU0th
+         P9Fk9hSPwRk3llvxISfb4gdJ1oLahMM1fmJ7zNVDMNx2hFWSOKyIV77SJnCdibWP6suU
+         JFerKCnRMv1SPia1lvVdFKHdFAbdXBe6Nt2o8w3Vvvdze7WlRSatKlm2uY1hbQ7BXT3P
+         5n4ZUHFTjFoA+l+/4AHonvxZjbP7xgBiMRErE2K/lPInLr6NVqyVJ38ehkyOVbbN/9we
+         v8F/mNfoXaPnLwGVCFxjOX+yO+x75jqKUzcJ8I0wM79PZDup5JBSReJcWPZXfOle1/75
+         83Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wNgI8i+pWr/ubDT2RgyT0/AFUjy2u7nNe8tclZPonss=;
-        b=PgCFDhQde8NWIvsjP7aZyec6FVoWude/TRC4U6iD/T9Ba9p6sGwWjOA4zGrKaR/aDP
-         H+VEVAoQsTfiOxl7wCTHzAxA4gq+eoH1Gk7bUU3ImyDbHZq9EAJt9FY4EiKE/AnUj4Rr
-         so8wm0WH6tNsBuPumK3LRDAyMr4fkRkeeNymsohGTOAxQ78F+E5X4pTR7M1+60yQLsXH
-         f3UAFGfPT5y+Mi8ru+DnDz5xF68wk92TKpkFqFrSskznpHsoIKDzz0iqxoLlny+mDEVF
-         Oqx+FF7+cRYchnmKy0ATkw8SE6hSfEGFf3nQPwA1NOki/fbYLrS24eJIz+k1h5mveQQZ
-         icFw==
-X-Gm-Message-State: AOAM530RWwxL1xVS7yC4v8g33SRQYs0gqmElpv6bi6M7YqYBYyGMfuIm
-        5ngWVMSAhK92L1trQLTIXgIzNS03ekkSDYQR7Q7NLKsqspelZ3MyAgCrSIq0JzFO6m8o6VkVftT
-        KMR5YszmThUhuOgbJirLc+xYw
-X-Received: by 2002:a9d:760c:: with SMTP id k12mr12470962otl.52.1604324575014;
-        Mon, 02 Nov 2020 05:42:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJ19i/H7DCLBkb1s9ygP+CrVESM+Pc7M9G106KD4uzV9wqtn7INLchqFiyTAEZvONPsYHxkw==
-X-Received: by 2002:a9d:760c:: with SMTP id k12mr12470953otl.52.1604324574793;
-        Mon, 02 Nov 2020 05:42:54 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k12sm2157256oiw.2.2020.11.02.05.42.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 05:42:54 -0800 (PST)
-Subject: Re: [PATCH] memstick: mspro_block: remove unneeded semicolon
-To:     kajoljain <kjain@linux.ibm.com>, maximlevitsky@gmail.com,
-        oakad@yahoo.com, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201031134818.2135446-1-trix@redhat.com>
- <8566b27c-2f71-16f8-1b9a-b1b79015f4d2@linux.ibm.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <df2f3ead-8bf9-144d-8a8a-9d6356f8b389@redhat.com>
-Date:   Mon, 2 Nov 2020 05:42:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mfKBeD4fiXTCoEtzR3WkNNJyJEURTLKGrVDQO6IkliM=;
+        b=erbIfS9+uCIf2bpzkltdVYjZn+BUTYzG2ilQeRmTTHVvj1HJ3/K354cEeRT1clI2y2
+         +DSic0+7sPW9SYb8+pqp4TDQf8i9Ag3xxbYtiuTFwibalaU5XvnguqXBjFgBn2lG37nJ
+         x4ks2gyQwbtrE/+IoCs+LdLm8XPhjrBOuozicp14Tbc83+IacmfcptElW3aUQqMlqbYa
+         yVPf4otcyyTz8eB82esbIEXTO6KqdXxRJ7y3TvfS9ltuxvP+Q401O7oqWa8maxziTgET
+         2MMS234qgOJuRK41mmBs3Vpdata61w3TgMkclOc6zFzZiNt30n2D8mS2B0Lkt/F/uPcY
+         Drzg==
+X-Gm-Message-State: AOAM533wLTK/zPiKVamvB2Z7W5uvMibIccKDi3hooehj0Yur1ijX+JRd
+        UroogLFZuKuEUv/hLJO8wc5RfQ==
+X-Google-Smtp-Source: ABdhPJz0K6pXqtJ2PhgnwSFED6vdeFbe2TdR5EYo4AZ7bBruyE3BYiACCQ8EYnThnBVbjiO57E5gnw==
+X-Received: by 2002:a1c:4b04:: with SMTP id y4mr5834274wma.93.1604324607307;
+        Mon, 02 Nov 2020 05:43:27 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id k84sm9970495wmf.42.2020.11.02.05.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 05:43:26 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:43:23 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
+        sboyd@kernel.org, nm@ti.com
+Subject: Re: [PATCH v3 1/4] PM / EM: Add a flag indicating units of power
+ values in Energy Model
+Message-ID: <20201102134323.GA2221764@google.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+ <20201019140601.3047-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <8566b27c-2f71-16f8-1b9a-b1b79015f4d2@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019140601.3047-2-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 19 Oct 2020 at 15:05:58 (+0100), Lukasz Luba wrote:
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index b67a51c574b9..2c31d79bb922 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -29,6 +29,8 @@ struct em_perf_state {
+>   * em_perf_domain - Performance domain
+>   * @table:		List of performance states, in ascending order
+>   * @nr_perf_states:	Number of performance states
+> + * @milliwatts:		Flag indicating the power values are in milli-Watts
+> + *			or some other scale.
+>   * @cpus:		Cpumask covering the CPUs of the domain. It's here
+>   *			for performance reasons to avoid potential cache
+>   *			misses during energy calculations in the scheduler
+> @@ -43,6 +45,7 @@ struct em_perf_state {
+>  struct em_perf_domain {
+>  	struct em_perf_state *table;
+>  	int nr_perf_states;
+> +	bool milliwatts;
+>  	unsigned long cpus[];
+>  };
 
-On 11/1/20 10:51 PM, kajoljain wrote:
->
-> On 10/31/20 7:18 PM, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> A semicolon is not needed after a switch statement.
-> Hi Tom,
->    I was checking this patch. Not sure if it will come under as fix patch. Since this is not fixing
-> any logical issue do we still need to add fix tag?
+Make that an int please, sizeof(bool) is impdef.
 
-My rule of thumb is a fix means the kernel needs to be recompiled.
+With that:
 
-This isn't a fix.
-
-Tom
-
->
-> Thanks,
-> Kajol Jain
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/memstick/core/mspro_block.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/memstick/core/mspro_block.c b/drivers/memstick/core/mspro_block.c
->> index cd6b8d4f2335..afb892e7ffc6 100644
->> --- a/drivers/memstick/core/mspro_block.c
->> +++ b/drivers/memstick/core/mspro_block.c
->> @@ -276,7 +276,7 @@ static const char *mspro_block_attr_name(unsigned char tag)
->>  		return "attr_devinfo";
->>  	default:
->>  		return NULL;
->> -	};
->> +	}
->>  }
->>  
->>  typedef ssize_t (*sysfs_show_t)(struct device *dev,
->>
-
+Reviewed-by: Quentin Perret <qperret@google.com>
