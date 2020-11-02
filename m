@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469AA2A2C7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC522A2C7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgKBOSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:18:14 -0500
-Received: from mail2.sp2max.com.br ([138.185.4.9]:45238 "EHLO
-        mail2.sp2max.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgKBOQy (ORCPT
+        id S1726184AbgKBOSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:18:09 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50319 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgKBOQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:16:54 -0500
-Received: from pgsop.sopnet.com.ar (unknown [179.40.38.12])
-        (Authenticated sender: pablo@fliagreco.com.ar)
-        by mail2.sp2max.com.br (Postfix) with ESMTPSA id 500047B04AC;
-        Mon,  2 Nov 2020 11:16:47 -0300 (-03)
-From:   Pablo Greco <pgreco@centosproject.org>
-To:     linux-sunxi@googlegroups.com
-Cc:     Pablo Greco <pgreco@centosproject.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on Ethernet PHY
-Date:   Mon,  2 Nov 2020 11:16:40 -0300
-Message-Id: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
-X-Mailer: git-send-email 1.8.3.1
-X-SP2Max-MailScanner-Information: Please contact the ISP for more information
-X-SP2Max-MailScanner-ID: 500047B04AC.A170F
-X-SP2Max-MailScanner: Sem Virus encontrado
-X-SP2Max-MailScanner-SpamCheck: nao spam, SpamAssassin (not cached,
-        escore=-2.9, requerido 6, autolearn=not spam, ALL_TRUSTED -1.00,
-        BAYES_00 -1.90)
-X-SP2Max-MailScanner-From: pgreco@centosproject.org
-X-Spam-Status: No
+        Mon, 2 Nov 2020 09:16:59 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kZadj-0002eD-1h; Mon, 02 Nov 2020 14:16:55 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu: fix spelling mistake: "Successed" -> "Succeeded"
+Date:   Mon,  2 Nov 2020 14:16:54 +0000
+Message-Id: <20201102141654.699468-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
-the PHY, using pull-ups on the RXDLY and TXDLY pins.
+From: Colin Ian King <colin.king@canonical.com>
 
-Fix the phy-mode description to correct reflect this so that the
-implementation doesn't reconfigure the delays incorrectly. This
-happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-rx/tx delay config").
+There is a spelling mistake in a deb_dbg message. Fix it.
 
-Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
-Signed-off-by: Pablo Greco <pgreco@centosproject.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/arm/boot/dts/sun7i-a20-bananapi.dts | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20-bananapi.dts b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
-index bb3987e101c2..0b3d9ae75650 100644
---- a/arch/arm/boot/dts/sun7i-a20-bananapi.dts
-+++ b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
-@@ -132,7 +132,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	phy-supply = <&reg_gmac_3v3>;
- 	status = "okay";
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+index 28a5c0d21b71..c99c2180785f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+@@ -296,7 +296,7 @@ static void amdgpu_vram_mgr_do_reserve(struct ttm_resource_manager *man)
+ 		if (drm_mm_reserve_node(mm, &rsv->mm_node))
+ 			continue;
+ 
+-		dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Successed\n",
++		dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Succeeded\n",
+ 			rsv->mm_node.start, rsv->mm_node.size);
+ 
+ 		vis_usage = amdgpu_vram_mgr_vis_size(adev, &rsv->mm_node);
 -- 
-2.18.4
+2.27.0
 
