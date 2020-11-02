@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F6B2A2DB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777902A2DC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgKBPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:11:18 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4716 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgKBPLS (ORCPT
+        id S1726493AbgKBPL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgKBPLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:11:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa021960000>; Mon, 02 Nov 2020 07:11:18 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
- 2020 15:11:16 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 2 Nov 2020 15:11:12 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v5 0/7] Audio Graph Updates
-Date:   Mon, 2 Nov 2020 20:40:07 +0530
-Message-ID: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 2 Nov 2020 10:11:55 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B114EC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:11:54 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id j31so2655869qtb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:11:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UPtv4U9PJYklpaVPZSIF4wy6HpZ+y+9XSdus7akqhs8=;
+        b=fvxCbUcg/TaoIHaH+KHaeKyaSujnKcSUTkmfqyKh/QkKJK9U7Sv6hkYTJZuE9PsDOH
+         qf1Tnz2zslvTItDBBEGYItyQGojO3aAIR8eUaSJpcqXBn5EEyU5wQLTeRy6/NiByQvOL
+         tc249Rsimsi+EMBEKIonliNDNG5ojtn9hnKe3eyWzN95l7neNpaTO8/2yelL57HdyFM/
+         ttrYwXC6tcJvxMjYh9r4+Qoj8BFXE/p+GN5LA2/SoF5V7ZReJ2GkiN1jq3m35x2uvVDc
+         xTtw2g7qK6VknF3fnO5bwz2y19yw58hf79Y22XgqerPNif0SPlCz8eN78jXHIUeirN0M
+         2Ojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UPtv4U9PJYklpaVPZSIF4wy6HpZ+y+9XSdus7akqhs8=;
+        b=d3P/2zl0nDqJ2mbFB8HOeXjZOEm9Wk34noBucWPTwm+otDorWduVa+26E0Vmv52X22
+         5p+4pj0V7MKD/iFK1VMs1OiisitHClNX0zKRA1yYtvb2GvywpL2xltrk0WRIoW/RPzkt
+         ixA46DCxiwm+G7w5EEBADnLDR76Z0B5gWD34YgmSvlmbAM3jxUHyHPZls7tD3l7vMfL0
+         krtIMaB9wigdMpL4XYkI/fJ7nfEn7jegrTI8wNsQkGzlzNhj+7e3o6zi85JaKezdLpev
+         rqAuGYvcK+bzgJZV0B4YKrk8GgqCK2/duuJR6DnU1Mun29nFQMENRwrGmN9Drqa704rQ
+         Vcdw==
+X-Gm-Message-State: AOAM530M+29lkLVL8MbwpQmEg0PjKlT9voF4WOgv+4OhLvA+qOpOiJwQ
+        4+1ygv9g+dD4BdBpSe+CR+VxyA==
+X-Google-Smtp-Source: ABdhPJxGgGlrJP934R5ihqM55D4zloX84/xMg/6bsipL0oceVlXCG3ieSqhwKu6fQ7ldx9JiYp4Lng==
+X-Received: by 2002:aed:3943:: with SMTP id l61mr14846566qte.195.1604329913801;
+        Mon, 02 Nov 2020 07:11:53 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id t70sm8003983qke.119.2020.11.02.07.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 07:11:53 -0800 (PST)
+Date:   Mon, 2 Nov 2020 10:10:08 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v20 15/20] mm/lru: introduce TestClearPageLRU
+Message-ID: <20201102151008.GH724984@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-16-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604329878; bh=87L96NLcj8xmhNDHPt+LVHpG/YRx6A+VjJPBDkXZ2H8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Type;
-        b=RytsHP0PnRhpXP6yUolp1rSrNt2+utfHZUkY6gI5VzSrIAP5xVAxsCPRFTgSbwx+5
-         SNnefiSTZT9DbBdySZ+OAZ60C6OkQ57zHxEPQfBV7+0pbI0lM50moi03Hf+Xxq7uvN
-         0OusLCV2sue9WdA/5kmIIW92AY7oGE67LSfu5HJ2Qk3nH0TSV4ZQNHuZe+P/HXGghl
-         ru6NEUKjCJ3jE9W/r3QhWR8rs1ZuiQ5ZcmFQc/70pozqn1J7FTIsosf0O4HDZSopvm
-         Qnq1GDYI5DHH0JWhmreoJogHudPWHQ7EdRB5rW8oPki3Oka67LjJDeQ77idGMhskbB
-         lnzGL5osOPhow==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603968305-8026-16-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is a prepraration for using generic graph driver for Tegra210
-audio. Tegra audio graph series will be sent in a separate series because
-it has some dependency over other series for documentation work. This
-series can focus on the generic ASoC driver updates. Below are the summary
-of changes done.
+On Thu, Oct 29, 2020 at 06:45:00PM +0800, Alex Shi wrote:
+> Currently lru_lock still guards both lru list and page's lru bit, that's
+> ok. but if we want to use specific lruvec lock on the page, we need to
+> pin down the page's lruvec/memcg during locking. Just taking lruvec
+> lock first may be undermined by the page's memcg charge/migration. To
+> fix this problem, we could clear the lru bit out of locking and use
+> it as pin down action to block the page isolation in memcg changing.
 
- * Support multiple instances of a component. For example there can be
-   multiple I2S devices which can use the same component driver.
+Small nit, but the use of "could" in this sentence sounds like you're
+describing one possible solution that isn't being taken, when in fact
+you are describing the chosen locking mechanism.
 
- * Support open platforms with empty Codec endpoint. Customers can plug
-   their own HW and can populate codec endpoint.
+Replacing "could" with "will" would make things a bit clearer IMO.
 
- * In a component model there can be many components which can be
-   connected together. In such cases Identify no-pcm DPCM DAI links which
-   can be used in BE<->BE connections.
+> So now a standard steps of page isolation is following:
+> 	1, get_page(); 	       #pin the page avoid to be free
+> 	2, TestClearPageLRU(); #block other isolation like memcg change
+> 	3, spin_lock on lru_lock; #serialize lru list access
+> 	4, delete page from lru list;
+> The step 2 could be optimzed/replaced in scenarios which page is
+> unlikely be accessed or be moved between memcgs.
 
- * Expose structures or helpers to be re-used by other similar graph
-   drivers.
+This is a bit ominous. I'd either elaborate / provide an example /
+clarify why some sites can deal with races - or just remove that
+sentence altogether from this part of the changelog.
 
-The series is based on following references where DPCM usgae for Tegra
-Audio and simple-card driver proposal were discussed.
+> This patch start with the first part: TestClearPageLRU, which combines
+> PageLRU check and ClearPageLRU into a macro func TestClearPageLRU. This
+> function will be used as page isolation precondition to prevent other
+> isolations some where else. Then there are may !PageLRU page on lru
+> list, need to remove BUG() checking accordingly.
+> 
+> There 2 rules for lru bit now:
+> 1, the lru bit still indicate if a page on lru list, just in some
+>    temporary moment(isolating), the page may have no lru bit when
+>    it's on lru list.  but the page still must be on lru list when the
+>    lru bit set.
+> 2, have to remove lru bit before delete it from lru list.
+> 
+> As Andrew Morton mentioned this change would dirty cacheline for page
+> isn't on LRU. But the lost would be acceptable in Rong Chen
+> <rong.a.chen@intel.com> report:
+> https://lore.kernel.org/lkml/20200304090301.GB5972@shao2-debian/
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
 
- * https://lkml.org/lkml/2020/4/30/519 (DPCM for Tegra)
- * https://lkml.org/lkml/2020/6/27/4 (simple-card driver)
-
-Changelog
-=========
-
-v4 -> v5
---------
- * No changes in the core/audio-graph driver patches which are
-   part of the current series.
- * Dropped Tegra audio patches and doc patches. This will be
-   sent separately once the doc depdendencies are resolved.
-
-v3 -> v4
---------
- * Added new patches to convert graph.txt and audio-graph-card.txt
-   to corresponding json-schema files. Later these references
-   are used in Tegra audio graph schema.
-
- * AHUB component binding docs are updated to reflect the usage
-   of ports/port/endpoint
-
- * More common stuff is moved into graph_parse_of() and this is
-   used by both generic and Tegra audio graph.
-
- * DT binding for Tegra audio graph is updated to included "ports { }"
-
- * As per the suggestion 'void *data' member is dropped from
-   'asoc_simple_priv' and instead container method is used to
-   maintain required custom data internal to Tegra audio graph. 
-
-v2 -> v3
---------
- * Dropped new compatible addition in generic graph driver
-   after reviewing it with Morimoto-san. Instead added Tegra
-   audio graph driver and new compatibles are added in the same.
- * Added new patches to expose new members for customization
-   in audio graph driver.
- * Added new patch for Tegra audio graph driver and related
-   documentation.
- * Minor change in below commit where mutex version of helper is used
-   "ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM"
- * DT binding is updated to use the newly exposed compatibles
- * No changes in other patches
-
-v1 -> v2
---------
- * Re-organized ports/endpoints description for ADMAIF and XBAR.
-   Updated DT patches accordingly.
- * After above change, multiple Codec endpoint support is not
-   required and hence dropped for now. This will be considered
-   separately if at all required in future.
- * Re-ordered patches in the series.
-
-Sameer Pujar (7):
-  ASoC: soc-core: Fix component name_prefix parsing
-  ASoC: soc-pcm: Get all BEs along DAPM path
-  ASoC: audio-graph: Use of_node and DAI for DPCM DAI link names
-  ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
-  ASoC: audio-graph: Support empty Codec endpoint
-  ASoC: audio-graph: Expose new members for asoc_simple_priv
-  ASoC: audio-graph: Expose helpers from audio graph
-
- include/sound/graph_card.h           |  16 ++++
- include/sound/simple_card_utils.h    |   3 +
- include/sound/soc.h                  |   1 +
- sound/soc/generic/audio-graph-card.c | 175 ++++++++++++++++++++++++-----------
- sound/soc/soc-core.c                 |   3 +-
- sound/soc/soc-pcm.c                  |   3 +-
- 6 files changed, 143 insertions(+), 58 deletions(-)
- create mode 100644 include/sound/graph_card.h
-
--- 
-2.7.4
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
