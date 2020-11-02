@@ -2,203 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382252A32FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4412F2A3302
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgKBS2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:28:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725801AbgKBS2k (ORCPT
+        id S1726302AbgKBSai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:30:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47366 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgKBSai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:28:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604341718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9YpQmMFcKiBaEPkaIebjDurDXYdtTD2oSKBxgB9b1i0=;
-        b=gqjUNsFDvAFWMDP9+hMgNmw5sIhhMdgIQ3sSyzH1v61Tq01BZmyOiyOWPPeULQjFnUAT29
-        aMpWOsWgOLlbK8Nolw2VKLJuT0hliZjOHW6gZZVEhoLVFJ33TkIvOS6UsdWykCV4Tzm6lE
-        Vn/6bn2OKriP7LtBKo6LRK2jgd5lFvw=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-usHQBcwBODClpeJiZGFXug-1; Mon, 02 Nov 2020 13:28:36 -0500
-X-MC-Unique: usHQBcwBODClpeJiZGFXug-1
-Received: by mail-qk1-f197.google.com with SMTP id s5so9190779qkj.21
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:28:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9YpQmMFcKiBaEPkaIebjDurDXYdtTD2oSKBxgB9b1i0=;
-        b=FC/zgDCbumocFkcyisffoWEzKj9liyL3JC7QXrWei1SjPc5NJGJwB9wuQ0luILXlkB
-         h2cme9as8QHPaFCs6LRUSNNFRzmB565w/pFkp10gBI+kbFfeh5Ga8hY62HKlVu8wgZpe
-         8CCjPQQcND15nREMdz3IG72Dl2PBgNOPrUM/99tLcWxWXxi0v52ARoYMK+QPsDI0A5ee
-         u/vlLCbT6/cLRe7BmlqoMoXs8Eoos6aTrJZDipNEufSWCxA75SM48isSu1IYL16kNKhD
-         3VtCAWqWsJ3z4iCEF5wphgqaWcDa6bSdMtGO5Z1kg4MB3nyuJegVBvukuH+RGyZtiUqz
-         uieg==
-X-Gm-Message-State: AOAM532FmLECHifLoOEmxaXaKJvMu2gDM4/PIHdsyPhldpI6bv+Bvl/h
-        xsUeRafWOSqVFJ3dCwp35+8eKXl+/uQuhYyX6EgNe4vSNCJGV0c1OjvXMDXZUqeHZxfn+2xSo+B
-        mjwbe0ay6yucSHsD0YtBgqF0R
-X-Received: by 2002:a0c:9004:: with SMTP id o4mr23573401qvo.17.1604341715647;
-        Mon, 02 Nov 2020 10:28:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9bRiuM9PVcEQYq1Cr0KOflbD/zGBnxCe9k1OD7WGCmbl7jWVYzc6pAAHo4SsxfUxMRmUNWQ==
-X-Received: by 2002:a0c:9004:: with SMTP id o4mr23573371qvo.17.1604341715392;
-        Mon, 02 Nov 2020 10:28:35 -0800 (PST)
-Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id p13sm8431476qkj.58.2020.11.02.10.28.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:28:34 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        peterx@redhat.com, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v2] KVM: selftests: Add get featured msrs test case
-Date:   Mon,  2 Nov 2020 13:28:33 -0500
-Message-Id: <20201102182833.20382-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 2 Nov 2020 13:30:38 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IU65f075772;
+        Mon, 2 Nov 2020 12:30:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604341806;
+        bh=eyikvyOADXRmirW8NUXz20t+vqM77BxXUZpx1lg31Aw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=JMK1sYJavYyvttH9hBYlQVtvuHh2Ato7nnuy4s7QJuAdFb/LRnob/ap/8QXocHU1A
+         CZ5KWA232p5kYBGNF56PO2JvlcoQdKLKgyjGNZNnvvRS99FTEKfYQCfXN6PvslKkhl
+         1BBT9Jw7+AYnSEJ1JDp1UifdpKbRg1OjS+a1UfpA=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2IU6Ya054554
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 2 Nov 2020 12:30:06 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
+ 2020 12:30:06 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 2 Nov 2020 12:30:05 -0600
+Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IU5AF082833;
+        Mon, 2 Nov 2020 12:30:05 -0600
+Subject: Re: [PATCH v7 0/6] Add support for the IEI WT61P803 PUZZLE MCU
+To:     Luka Kovacic <luka.kovacic@sartura.hr>, Pavel Machek <pavel@ucw.cz>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Behun <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>
+References: <20201025005916.64747-7-luka.kovacic@sartura.hr>
+ <20201025005916.64747-6-luka.kovacic@sartura.hr>
+ <20201025005916.64747-5-luka.kovacic@sartura.hr>
+ <20201025005916.64747-4-luka.kovacic@sartura.hr>
+ <20201025005916.64747-3-luka.kovacic@sartura.hr>
+ <20201025005916.64747-2-luka.kovacic@sartura.hr>
+ <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201029180105.GD26053@duo.ucw.cz>
+ <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <7821443b-ddbc-fc92-b990-14d116dda853@ti.com>
+Date:   Mon, 2 Nov 2020 12:29:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Try to fetch any supported featured msr.  Currently it won't fail, so at least
-we can check against valid ones (which should be >0).
+Hello
 
-This reproduces the issue [1] too by trying to fetch one invalid msr there.
+On 11/1/20 3:56 AM, Luka Kovacic wrote:
+> Hello Pavel,
+>
+> On Thu, Oct 29, 2020 at 7:01 PM Pavel Machek <pavel@ucw.cz> wrote:
+>> Hi!
+>>
+>>> +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
+>>> +Date:                September 2020
+>>> +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+>>> +Description: (RO) Power status indicates the host platform power on method.
+>>> +             Value mapping (bitwise list):
+>>> +             0x80 - Null
+>>> +             0x40 - Firmware flag
+>>> +             0x20 - Power loss detection flag (powered off)
+>>> +             0x10 - Power loss detection flag (AC mode)
+>>> +             0x08 - Button power on
+>>> +             0x04 - WOL power on
+>>> +             0x02 - RTC alarm power on
+>>> +             0x01 - AC recover power on
+>> It would be nice to put this into standard place somewhere. Many
+>> machines will want to expose this information.
+> As this is specific to this microcontroller and to how it encodes
+> these values, I don't see a need to change this.
+> This isn't used anywhere else.
+>
+>> If not, at least spell out WoL, as it is not that common of acronym.
+> Okay.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=209845
+WoL is a very common acronym especially in the networking space
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
---
-v2:
-- rename kvm_vm_get_feature_msrs to be prefixed with "_" [Vitaly, Drew]
-- drop the fix patch since queued with a better version
----
- .../testing/selftests/kvm/include/kvm_util.h  |  3 +
- tools/testing/selftests/kvm/lib/kvm_util.c    | 14 +++++
- .../testing/selftests/kvm/x86_64/state_test.c | 58 +++++++++++++++++++
- 3 files changed, 75 insertions(+)
+But the overall this section does not make sense
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 919e161dd289..1199f2003bee 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -66,6 +66,9 @@ int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
- 
- struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
- struct kvm_vm *_vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
-+void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
-+				       struct kvm_msr_list *list);
-+int _kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs);
- void kvm_vm_free(struct kvm_vm *vmp);
- void kvm_vm_restart(struct kvm_vm *vmp, int perm);
- void kvm_vm_release(struct kvm_vm *vmp);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 74776ee228f2..ad81d51fcf53 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -132,6 +132,20 @@ static const struct vm_guest_mode_params vm_guest_mode_params[] = {
- _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
- 	       "Missing new mode params?");
- 
-+void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
-+				       struct kvm_msr_list *list)
-+{
-+	int r = ioctl(vm->kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, list);
-+
-+	TEST_ASSERT(r == 0, "KVM_GET_MSR_FEATURE_INDEX_LIST failed: %d\n",
-+		    -errno);
-+}
-+
-+int _kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs)
-+{
-+	return ioctl(vm->kvm_fd, KVM_GET_MSRS, msrs);
-+}
-+
- /*
-  * VM Create
-  *
-diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
-index f6c8b9042f8a..2d61dc5c2dcc 100644
---- a/tools/testing/selftests/kvm/x86_64/state_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/state_test.c
-@@ -152,6 +152,61 @@ static void __attribute__((__flatten__)) guest_code(void *arg)
- 	GUEST_DONE();
- }
- 
-+#define  KVM_MSR_FEATURE_N  64
-+
-+static int test_kvm_get_feature_msr_one(struct kvm_vm *vm, __u32 index,
-+					struct kvm_msrs *msrs)
-+{
-+	msrs->nmsrs = 1;
-+	msrs->entries[0].index = index;
-+	return _kvm_vm_get_feature_msrs(vm, msrs);
-+}
-+
-+static void test_kvm_get_msr_features(struct kvm_vm *vm)
-+{
-+	struct kvm_msr_list *msr_list;
-+	struct kvm_msrs *msrs;
-+	int i, ret, sum;
-+
-+	if (!kvm_check_cap(KVM_CAP_GET_MSR_FEATURES)) {
-+		pr_info("skipping kvm get msr features test\n");
-+		return;
-+	}
-+
-+	msr_list = calloc(1, sizeof(struct kvm_msr_list) +
-+			  sizeof(__u32) * KVM_MSR_FEATURE_N);
-+	msr_list->nmsrs = KVM_MSR_FEATURE_N;
-+
-+	TEST_ASSERT(msr_list, "msr_list allocation failed\n");
-+
-+	kvm_vm_get_msr_feature_index_list(vm, msr_list);
-+
-+	msrs = calloc(1, sizeof(struct kvm_msrs) +
-+		      sizeof(struct kvm_msr_entry));
-+
-+	TEST_ASSERT(msrs, "msr entries allocation failed\n");
-+
-+	sum = 0;
-+	for (i = 0; i < msr_list->nmsrs; i++) {
-+		ret = test_kvm_get_feature_msr_one(vm, msr_list->indices[i],
-+						    msrs);
-+		TEST_ASSERT(ret >= 0, "KVM_GET_MSR failed: %d\n", ret);
-+		sum += ret;
-+	}
-+	TEST_ASSERT(sum > 0, "KVM_GET_MSR has no feature msr\n");
-+
-+	/*
-+	 * Test invalid msr.  Note the retcode can be either 0 or 1 depending
-+	 * on kvm.ignore_msrs
-+	 */
-+	ret = test_kvm_get_feature_msr_one(vm, (__u32)-1, msrs);
-+	TEST_ASSERT(ret >= 0 && ret <= 1,
-+		    "KVM_GET_MSR on invalid msr error: %d\n", ret);
-+
-+	free(msrs);
-+	free(msr_list);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	vm_vaddr_t nested_gva = 0;
-@@ -168,6 +223,9 @@ int main(int argc, char *argv[])
- 	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
- 	run = vcpu_state(vm, VCPU_ID);
- 
-+	/* Test KVM_GET_MSR for VM */
-+	test_kvm_get_msr_features(vm);
-+
- 	vcpu_regs_get(vm, VCPU_ID, &regs1);
- 
- 	if (kvm_check_cap(KVM_CAP_NESTED_STATE)) {
--- 
-2.26.2
+The description says that it indicates platform power on method but what 
+is NULL power on? There are flags for power loss detection.
+
+Does the RTC mean that the processor real time clock woke up the uC? Or 
+that the internal RTC woke up the controller?
+
+And for the 
+/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status 
+what are those values?
+
+It seems like some ABI's are documented well with formats and others are 
+just described without a format.
+
+For instance
+
+/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/version the format 
+of this version is not described but 
+/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/build_info is.
+
+
+Dan
 
