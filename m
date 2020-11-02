@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE79F2A2D37
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EEA2A2D43
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgKBOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:44:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        id S1726109AbgKBOro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgKBOo4 (ORCPT
+        with ESMTP id S1725914AbgKBOrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:44:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A7DC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LAIhWQkbEQ84z1rg6f9nPHULGOV+ks+CCN5U2ajICqs=; b=e0ip68zaNrPteHrhWIOl5+jLot
-        a30V0TtxffodM6dQWHkJ1PvhuSZVZRyixvD+OdL5BtSKd4lTerkUbmvmpSrWVYzwfsbEN40OwSYu4
-        jjAVn8feDYdIs7yS0G4zsqNo5kom/t2fHQwr/W/5Ybo8TWn0Wwkuw+GzL0A4Bb8Ihp0U01jaf7Sdn
-        W46Zhn9Oa+HliKtVaR45F5C80wwpYCrrFadfATcAtzlUoPHjTEsGEFEaQ5agi17bjiVqcWzSaFCf5
-        Uc1t2uaUzHHv5e30GhlxmI1HCuZb5IwON8qbDeHHQo4pgfHH+VJQ/PCNr32SPJfXoDuq0iRZsA4cS
-        g/Q1K2tQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZb4j-0007IO-M6; Mon, 02 Nov 2020 14:44:49 +0000
-Date:   Mon, 2 Nov 2020 14:44:49 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Increasing CMA Utilization with a GFP Flag
-Message-ID: <20201102144449.GM27442@casper.infradead.org>
-References: <cover.1604282969.git.cgoldswo@codeaurora.org>
+        Mon, 2 Nov 2020 09:47:43 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53837C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:47:43 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id x20so11658384qkn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:47:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2EQEYsdl91ythedVS5CbIaac/O1VzM4oNTqK3zX2+mk=;
+        b=XBPlkqmRr/I9IXZ93ewuFmXOVmiqScb7IKEEpyKP6hDEFveEL+2iyaWz2Rap78rQsv
+         PhSuMRS+tMZrnEoCMtNlZCNPr/b8PcyBKL+rNSFR3VUw/vyM03pEOTBYs6io9c6W/+5V
+         m+Yi9eLNS9TUDzPEVQhdtb5ey/6XoJUzJcdDErfRkkXJvIiSRGqsxEuJk9liWJNGQFDK
+         X3/YKbeCkUS27pVkmCABhGYexhEMFN/wZAFRUhCRJjL4vH691liVm8mXQIKVywQUaney
+         EkUScfWC0PqqjKvxYeTLKUz+ZuSOmqiwzWwymxMFkP+sz/oEs63OX32bcp6ytc90vdO2
+         gGuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2EQEYsdl91ythedVS5CbIaac/O1VzM4oNTqK3zX2+mk=;
+        b=mMhqU7LvIxucDed8kd6Sz2tEJ7eORVHzahFqol1XGFl0Uf6wXF7+GGCBWjdFfp+Khl
+         I1kIpZdy7rJ3/OJUlJHulpLXLpDjsC0Ot/+DSv31W4ySpHN2aVk+5MzpRuh2RYYvWH0F
+         axBv8LOXcRNKXgMBL9z+veGeKpm1Jbvg+rRYvTAL3OBy/Bjapkg2olOxceDO4dm6EWJS
+         mLqTOu9AASiwhW9a2KAaI4b7WOR+h1izFO5/k9rXlSdR18qF1r1hkYclMCaq8n2ehAAI
+         jVogQg8OYs9E3uB5HlpF26Ny6A6c/o1ZpRdQpE3pKKJf4QKyI/EOqoxN8i/BlqukUHeo
+         /tjw==
+X-Gm-Message-State: AOAM5313Bq7bONM4R3GyFNpSphhN+1rstXjdU7fPaxC/8rAaAJRwBvtt
+        7Wojbu+fB2jqNDpgePUQy+g74g==
+X-Google-Smtp-Source: ABdhPJw5RAfqHvXVJPW3dOFsENGkqy36MuBPEwzggaN8V/NFBbnS3QZ12Rx3n9/XE58tqM2s26TmEw==
+X-Received: by 2002:a05:620a:21c4:: with SMTP id h4mr13587374qka.242.1604328462641;
+        Mon, 02 Nov 2020 06:47:42 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id 66sm5935254qkd.81.2020.11.02.06.47.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 06:47:41 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:45:57 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v20 09/20] mm/memcg: add debug checking in lock_page_memcg
+Message-ID: <20201102144557.GC724984@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-10-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1604282969.git.cgoldswo@codeaurora.org>
+In-Reply-To: <1603968305-8026-10-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 06:39:20AM -0800, Chris Goldsworthy wrote:
-> The current approach to increasing CMA utilization introduced in
-> commit 16867664936e ("mm,page_alloc,cma: conditionally prefer cma
-> pageblocks for movable allocations") increases CMA utilization by
-> redirecting MIGRATE_MOVABLE allocations to a CMA region, when
-> greater than half of the free pages in a given zone are CMA pages.
-> The issue in this approach is that allocations with type
-> MIGRATE_MOVABLE can still succumb to pinning. To get around
-> this, one approach is to re-direct allocations to the CMA areas, that
-> are known not to be victims of pinning.
+On Thu, Oct 29, 2020 at 06:44:54PM +0800, Alex Shi wrote:
+> Add a debug checking in lock_page_memcg, then we could get alarm
+> if anything wrong here.
 > 
-> To this end, this series brings in __GFP_CMA, which we mark with
-> allocations that we know are safe to be redirected to a CMA area.
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
-This feels backwards to me.  What you're essentially saying is "Some
-allocations marked with GFP_MOVABLE turn out not to be movable, so we're
-going to add another GFP_REALLY_MOVABLE flag" instead of tracking down
-which GFP_MOVABLE allocations aren't really movable.
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
