@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8292A28D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1472A28D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgKBLM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        id S1728567AbgKBLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgKBLM5 (ORCPT
+        with ESMTP id S1728545AbgKBLM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:12:57 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6141C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:12:57 -0800 (PST)
-Received: from zn.tnic (p200300ec2f086a00ac0ac1fe147e3571.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6a00:ac0a:c1fe:147e:3571])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77B211EC03A0;
-        Mon,  2 Nov 2020 12:12:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604315575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3ZYZroXKEKRRFpl1USQKUyYSlb1SYVCKd+VpPzBmBEc=;
-        b=DymIQ/4Ix2ElAy/sqzE5xmMjMjVFN/gGt0vNn80T9tbXvInOcDqjcsAPjy9c8XZEGD1XLz
-        zjaEe/ZJGkUUc8ZE9N4RCb3x0bMWS/De9YTSY/Q8Fp3Ccr1eYDwyROxNAMbzUMROo41pxL
-        OnJFa00mbd7reXjCUSLUG5MjUFLk3Uw=
-Date:   Mon, 2 Nov 2020 12:12:45 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Philippe Conde <conde.philippe@skynet.be>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/mce: Enable additional error logging on certain
- Intel CPUs
-Message-ID: <20201102111245.GA15392@zn.tnic>
-References: <fcb21490-84a1-8b99-b494-3a6ac2a0e16a@skynet.be>
- <20201029100655.GA31903@zn.tnic>
- <20201029151518.GA23990@agluck-desk2.amr.corp.intel.com>
- <20201029194118.GC31903@zn.tnic>
- <87ft5wo8zn.fsf@nanos.tec.linutronix.de>
- <20201030091056.GA6532@zn.tnic>
- <20201030190400.GA13797@agluck-desk2.amr.corp.intel.com>
- <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+        Mon, 2 Nov 2020 06:12:58 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC88DC061A04;
+        Mon,  2 Nov 2020 03:12:57 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id o129so10826729pfb.1;
+        Mon, 02 Nov 2020 03:12:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qCgiqZXGNwvNh2nZMtUDnqrlrZqGGd0+W48CRCFS5Bo=;
+        b=g3oyj/8BectFHMWdpOJLUmTdLl6ao46UPyBqt4FGqyBVKmWGt5uTsIVrZlIeUg1kKp
+         BBgtWX3kj4FS86SKaIeAwtMdHwt92nFpIAVanSryUOtS79J+OMzAjXRuwKG7yRz4Q2Jd
+         2YqA+/Rr5omjYftodpgfkeo2fVcimWdr9Jty4R5BaiXWsIpYYbdvxyxNOt83QtgY1Em8
+         nkFfjzgRFv1w4XLjnRsfzoTnaxg0gl6R+7Kt4wD0XKpn9prfm6SeaZyIjvU+i9TjGvvR
+         mKotJYuoYwAmT7GuZn9jTBKaZtrrWzYZMqWdL9nsHHVapaaDei+Htw61qhtLV7EF9d8E
+         5+QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qCgiqZXGNwvNh2nZMtUDnqrlrZqGGd0+W48CRCFS5Bo=;
+        b=QILySlQ2EtXNFxv2wIK7vP4O4AEI6ADBOP808x72I96t2ulO7WuKEAI8j+3c84TH2Z
+         Us/x7lnlbqTXmTix3ycDJ510v01jS1Am5kFTB5+YspHXQrdw1HqoNHdeetjVmR8JS2aU
+         RySwNyWtB9GWFVuTy1Y8PKHR8ZRqF0MfPftTTOr4vqyGCk4p1rKSjokXWXCL0MAaeKii
+         vp3FLh7tp4KTtjUGQXComEZp5ujwWQU1MXccrvHtL06dot+cWoXyhwqg0cl/Cl+t+7LP
+         ZIt2G6e+4XwcKV/Y04BZXNHBsT32b0pA45t+kHKFFaT6yHnAfulOi6tm3kpQZFfh0dHD
+         ux+w==
+X-Gm-Message-State: AOAM533cIvaa4ujxrssK7LTXkUfar6WigrI0YY8D+EuHZNLAg+jFWO9y
+        fj8S4JUqXuPx0shahXCqyg==
+X-Google-Smtp-Source: ABdhPJyKj6yz7vBgyoh7xhGNMnD24Vj1loJ7dkpZAbbMnfJNoJPPQas76a/fl61lg2hFJOnMRs6fDg==
+X-Received: by 2002:a62:64d1:0:b029:161:ffdb:e07d with SMTP id y200-20020a6264d10000b0290161ffdbe07dmr20737550pfb.71.1604315577377;
+        Mon, 02 Nov 2020 03:12:57 -0800 (PST)
+Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id m2sm13516592pfh.44.2020.11.02.03.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 03:12:56 -0800 (PST)
+Date:   Mon, 2 Nov 2020 06:12:48 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] tty/vt: Avoid passing struct console_font_op to
+ con_font_copy()
+Message-ID: <20201102111248.GA1558630@PWN>
+References: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
+ <72c954371ed9b1d050901b2d498a979017de8a3c.1604306433.git.yepeilin.cs@gmail.com>
+ <20201102101044.GM401619@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20201102101044.GM401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:08:07PM -0700, Luck, Tony wrote:
-> On Fri, Oct 30, 2020 at 12:04:03PM -0700, Luck, Tony wrote:
+On Mon, Nov 02, 2020 at 11:10:44AM +0100, Daniel Vetter wrote:
+> I'm not sure switching from int to unsigned just here makes much sense.
+> All the console code is still using int con to index all the various
+> arrays (I just checked fbcon.c code), and using int to index arrays is
+> pretty standard. As long as we have the con < 0 check to catch evil
+> userspace.
 > 
-> Bah, didn't notice this conversation didn't include LKML.
-> 
-> > The Xeon versions of Sandy Bridge, Ivy Bridge and Haswell support an
-> > optional additional error logging mode which is enabled by an MSR.
-> > 
-> > Previously this mode was enabled from the mcelog(8) tool via /dev/cpu,
-> > but the kernel is now very picky about which MSRs may be written. So
-> > move the enabling into the kernel.
-> > 
-> > Suggested-by: Boris Petkov <bp@alien8.de>
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> > 
-> > N.B. I don't have any of these old systems in my lab any more. So
-> > this is untested :-(
+> There's still the switch from op to int for con_font_copy, but I think
+> that's better done as part of the larger cleanup we already discussed. And
+> then maybe also include patch 1 from this series in that rework.
 
-I do:
+I see. I think at the moment there's not much we can do for
+con_font_get/set/default(). _get() and _default() use *op, and _set()
+uses all except one field of *op. Maybe we can change the type of *op
+from console_font_op to font_desc, after cleaning up everything else?
 
-# rdmsr 0x0000017f
-2
+Peilin
 
-Thx for doing this, queued.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
