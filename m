@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0BB2A2A21
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858A12A2A1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgKBLzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:55:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S1728990AbgKBLzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgKBLyW (ORCPT
+        with ESMTP id S1728773AbgKBLyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:54:22 -0500
+        Mon, 2 Nov 2020 06:54:24 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E70AC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:54:22 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id y12so14250082wrp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE992C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:54:23 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id x7so14269029wrl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:54:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4n/4+2lBYe8KEpcSc+k+jaUcNkTMwSw5Q+II+p0iyss=;
-        b=iwc3rXe54abh0IHTgT8GJR7Ns9AFQ7uTzRFMH9TYCsgpN7aaTodko0Sqz7REftrzXB
-         LpBvtJR8QSrIbHwXqeLx26kD+v6j/Ucf7/lSUy4f3F0EO0vh08+76ebSvforYcOwsv4q
-         BROkYCbfu+Lu65EUy2c3+KDEe9aOlPW0JhQ0ftFNQDVg1crYkFcKu66zpbUDctqFznKT
-         XnSYA0Zh/V2iF4PdxTCiVnVjLrQHk2Bfvg5hZv3mL4bQXlCrPOTRvebZjVkwcZJ5bJOO
-         SgDW3ky2+6+Y7YyOWjSU3mxvPNuKal2OhrMAAPObvBHfXPVbimtPkZQLFx15Rr4y4yYr
-         wXdg==
+        bh=sgCfvBJWtLw81z7RjPwr6bormd4FsaQ3wcZ4l8FFWRs=;
+        b=moD0ijFtxs3YDF9szj7mvVpXUGbBcJvo25U/w2SGBdKEu2CJe2/R9I45WDZ0zBMghV
+         33Ou3U3Z8oI1pYoV1NDil2EEJmk2Jk26h50Eo1qoCzP5PKJ05JjvVMb8Hg2emu5oXtdO
+         G/G5/2QBDvcV+xwQHea1IkLwNPNqIpDoKKtCJZjyk+mYoSrpc43UQ53YC9Mfb/ICtOEH
+         1KKjRHcQwq3w9Rud0CHnJYkCGpLRFKJe3xaOCRePtSzfvCimRfWnJ3r9d6/PGbghlgae
+         SXipOAv3fpd6hLpmhNQhXlntG8L3Ky/YcpO7LvVTqTa91x+Pd4Hbd477hn6dmOeA5sMh
+         mvwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4n/4+2lBYe8KEpcSc+k+jaUcNkTMwSw5Q+II+p0iyss=;
-        b=eVqBic8Q8COlMUnDZGBqABbrQsbqjImlvor8WjjrCDIa6FNP2eHVrwDfA1sHetOfn7
-         c8MqnJjXVrDYFW8BI+sgFqq2kCuf3tIl+4vJg+r2wHCLGUflaK47FvixbhKmT6RjQmwg
-         +j029nUFa9g/zOs9zplzEUW7x8SnwvLjk/De0GB7vyywigPqdsEQnae6Q/aCS9lgc4WC
-         cOCTzGIcwNB8DVREGbLBdx0I0065u5PwCTmcYxPtQdPOlR0/15dC+ce2LK9afyaJlpjG
-         bKHZfq10DYzQOLnITvFzTP+OFcjn8udL8TEVJiBleoMf1et/voErSF8XHEL8e+jlOG6P
-         fZEg==
-X-Gm-Message-State: AOAM5326CEbaJcEjmsNx4KYFkGfgYJaqZnphQD6H9QjbyKcGp4K6B+M/
-        GHiO/b4PVQOGGUcoQCsietolcJc9j1sjDQ==
-X-Google-Smtp-Source: ABdhPJxeMB2reRQ16Bvj9g+9zwEA93NttwfMke0pPcXrs4Vw3KAh14l50poNFbDYG7hOWVp5QcZq4w==
-X-Received: by 2002:a05:6000:36f:: with SMTP id f15mr19634536wrf.78.1604318061197;
-        Mon, 02 Nov 2020 03:54:21 -0800 (PST)
+        bh=sgCfvBJWtLw81z7RjPwr6bormd4FsaQ3wcZ4l8FFWRs=;
+        b=Z/Rif2KyioBAotOW6mchYIW/jHTnQPRUl07hOpeVbBeUGitMOdz8sb2wb3mcSg7MKF
+         elAQts0zQafvNp7NOpGKXu8swHJDmAjbxlrT4YnYot/VdGqrR+oKCBg6yfXy076/1UVn
+         aiDrJtRj8AEf1NEb05TZ88dVYufA7oCrkHikz4LN/VkraEkIQa7akiKDpBOBY92RfwZ0
+         ixJVv5Ke5yhsiFT1w/OMU/SKvcxBf7XRamVJv0qYd3uP2G8Ie4yyHBF9Iwu8a0836n+d
+         XEZxoSq/FM0CRFIxak9pZWwNpMb5vrlbgzSMsWxCU6BFiR/PyZRbOyOCYvS7n+p6MwPT
+         6PSQ==
+X-Gm-Message-State: AOAM533NKiJMnsCvOLWLsP+tYmDJ87Hk2IjJz2DAbcJRH+a04rDV8jFg
+        qNMwuAciOvmtzvNpBboV1JXjig==
+X-Google-Smtp-Source: ABdhPJy4Qc6S807GOZhDFOw1vxX6caxNriQqJXpn9auBPJu7Ej+kcF0sDBj8+ECN81+2ejh4BB/VTA==
+X-Received: by 2002:adf:804b:: with SMTP id 69mr19675757wrk.274.1604318062508;
+        Mon, 02 Nov 2020 03:54:22 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.20
+        by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:54:20 -0800 (PST)
+        Mon, 02 Nov 2020 03:54:21 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     vigneshr@ti.com
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH 06/23] mtd: nand: onenand: onenand_bbt: Fix expected kernel-doc formatting
-Date:   Mon,  2 Nov 2020 11:53:49 +0000
-Message-Id: <20201102115406.1074327-7-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 07/23] mtd: spi-nor: controllers: hisi-sfc: Demote non-conformant kernel-doc
+Date:   Mon,  2 Nov 2020 11:53:50 +0000
+Message-Id: <20201102115406.1074327-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
 References: <20201102115406.1074327-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,111 +73,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/onenand/onenand_bbt.c:33: warning: Function parameter or member 'buf' not described in 'check_short_pattern'
- drivers/mtd/nand/onenand/onenand_bbt.c:33: warning: Function parameter or member 'len' not described in 'check_short_pattern'
- drivers/mtd/nand/onenand/onenand_bbt.c:33: warning: Function parameter or member 'paglen' not described in 'check_short_pattern'
- drivers/mtd/nand/onenand/onenand_bbt.c:33: warning: Function parameter or member 'td' not described in 'check_short_pattern'
- drivers/mtd/nand/onenand/onenand_bbt.c:57: warning: Function parameter or member 'mtd' not described in 'create_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:57: warning: Function parameter or member 'buf' not described in 'create_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:57: warning: Function parameter or member 'bd' not described in 'create_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:57: warning: Function parameter or member 'chip' not described in 'create_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:132: warning: Function parameter or member 'mtd' not described in 'onenand_memory_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:132: warning: Function parameter or member 'bd' not described in 'onenand_memory_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:145: warning: Function parameter or member 'mtd' not described in 'onenand_isbad_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:145: warning: Function parameter or member 'offs' not described in 'onenand_isbad_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:145: warning: Function parameter or member 'allowbbt' not described in 'onenand_isbad_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:182: warning: Function parameter or member 'mtd' not described in 'onenand_scan_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:182: warning: Function parameter or member 'bd' not described in 'onenand_scan_bbt'
- drivers/mtd/nand/onenand/onenand_bbt.c:230: warning: Function parameter or member 'mtd' not described in 'onenand_default_bbt'
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c:328: warning: Function parameter or member 'np' not described in 'hisi_spi_nor_register'
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c:328: warning: Function parameter or member 'host' not described in 'hisi_spi_nor_register'
 
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: linux-mtd@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/onenand/onenand_bbt.c | 32 +++++++++++++-------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/onenand/onenand_bbt.c b/drivers/mtd/nand/onenand/onenand_bbt.c
-index 57c31c81be186..def89f1080071 100644
---- a/drivers/mtd/nand/onenand/onenand_bbt.c
-+++ b/drivers/mtd/nand/onenand/onenand_bbt.c
-@@ -18,10 +18,10 @@
+diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+index 95c502173cbda..7c26f8f565cba 100644
+--- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+@@ -320,7 +320,7 @@ static const struct spi_nor_controller_ops hisi_controller_ops = {
+ 	.write = hisi_spi_nor_write,
+ };
  
- /**
-  * check_short_pattern - [GENERIC] check if a pattern is in the buffer
-- * @param buf		the buffer to search
-- * @param len		the length of buffer to search
-- * @param paglen	the pagelength
-- * @param td		search pattern descriptor
-+ * @buf:		the buffer to search
-+ * @len:		the length of buffer to search
-+ * @paglen:	the pagelength
-+ * @td:		search pattern descriptor
-  *
-  * Check for a pattern at the given place. Used to search bad block
-  * tables and good / bad block identifiers. Same as check_pattern, but
-@@ -44,10 +44,10 @@ static int check_short_pattern(uint8_t *buf, int len, int paglen, struct nand_bb
- 
- /**
-  * create_bbt - [GENERIC] Create a bad block table by scanning the device
-- * @param mtd		MTD device structure
-- * @param buf		temporary buffer
-- * @param bd		descriptor for the good/bad block search pattern
-- * @param chip		create the table for a specific chip, -1 read all chips.
-+ * @mtd:		MTD device structure
-+ * @buf:		temporary buffer
-+ * @bd:		descriptor for the good/bad block search pattern
-+ * @chip:		create the table for a specific chip, -1 read all chips.
-  *              Applies only if NAND_BBT_PERCHIP option is set
-  *
-  * Create a bad block table by scanning the device
-@@ -122,8 +122,8 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
- 
- /**
-  * onenand_memory_bbt - [GENERIC] create a memory based bad block table
-- * @param mtd		MTD device structure
-- * @param bd		descriptor for the good/bad block search pattern
-+ * @mtd:		MTD device structure
-+ * @bd:		descriptor for the good/bad block search pattern
-  *
-  * The function creates a memory based bbt by scanning the device
-  * for manufacturer / software marked good / bad blocks
-@@ -137,9 +137,9 @@ static inline int onenand_memory_bbt (struct mtd_info *mtd, struct nand_bbt_desc
- 
- /**
-  * onenand_isbad_bbt - [OneNAND Interface] Check if a block is bad
-- * @param mtd		MTD device structure
-- * @param offs		offset in the device
-- * @param allowbbt	allow access to bad block table region
-+ * @mtd:		MTD device structure
-+ * @offs:		offset in the device
-+ * @allowbbt:	allow access to bad block table region
+-/**
++/*
+  * Get spi flash device information and register it as a mtd device.
   */
- static int onenand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- {
-@@ -166,8 +166,8 @@ static int onenand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 
- /**
-  * onenand_scan_bbt - [OneNAND Interface] scan, find, read and maybe create bad block table(s)
-- * @param mtd		MTD device structure
-- * @param bd		descriptor for the good/bad block search pattern
-+ * @mtd:		MTD device structure
-+ * @bd:		descriptor for the good/bad block search pattern
-  *
-  * The function checks, if a bad block table(s) is/are already
-  * available. If not it scans the device for manufacturer
-@@ -221,7 +221,7 @@ static struct nand_bbt_descr largepage_memorybased = {
- 
- /**
-  * onenand_default_bbt - [OneNAND Interface] Select a default bad block table for the device
-- * @param mtd		MTD device structure
-+ * @mtd:		MTD device structure
-  *
-  * This function selects the default bad block table
-  * support for the device and calls the onenand_scan_bbt function
+ static int hisi_spi_nor_register(struct device_node *np,
 -- 
 2.25.1
 
