@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294A92A2AC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8582A2ABB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgKBMdH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 07:33:07 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:55581 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728423AbgKBMdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:33:07 -0500
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id A125E240008;
-        Mon,  2 Nov 2020 12:33:03 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 13:33:02 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     vigneshr@ti.com, linux-kernel@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Richard Weinberger <richard@nod.at>,
-        Adrian Hunter <ext-adrian.hunter@nokia.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 03/23] mtd: nand: onenand: onenand_base: Fix expected
- kernel-doc formatting
-Message-ID: <20201102133302.788e42ac@xps13>
-In-Reply-To: <20201102115406.1074327-4-lee.jones@linaro.org>
-References: <20201102115406.1074327-1-lee.jones@linaro.org>
-        <20201102115406.1074327-4-lee.jones@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728776AbgKBMcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:32:18 -0500
+Received: from mga03.intel.com ([134.134.136.65]:29804 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728359AbgKBMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:32:16 -0500
+IronPort-SDR: a0KXmzvgt21QRUlac0t+WtIjVtiFJ92oh4KZnazrbK1EeWsDkwhNOttZ478iNSzqTv4DgJZN2S
+ Pk2Xz91vO2sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="168974038"
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="168974038"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 04:32:13 -0800
+IronPort-SDR: Ym7Q+yuVHv/sCNLDgYSWuRSoHj7/RWy1GcrzQx0GSSDJRFG8SpQEIWtDB9jQP0B6zITdJHVX5d
+ ZCRpGTGsuTsw==
+X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
+   d="scan'208";a="320048475"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 04:32:11 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kZZ1N-003C94-DS; Mon, 02 Nov 2020 14:33:13 +0200
+Date:   Mon, 2 Nov 2020 14:33:13 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, kbuild-all@lists.01.org
+Subject: Re: [PATCH v1 2/2] uuid: Make guid_t completely internal type to the
+ kernel
+Message-ID: <20201102123313.GH4077@smile.fi.intel.com>
+References: <20201030182847.78753-2-andriy.shevchenko@linux.intel.com>
+ <202011020307.J2wRQToF-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202011020307.J2wRQToF-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-
-Lee Jones <lee.jones@linaro.org> wrote on Mon,  2 Nov 2020 11:53:46
-+0000:
-
-> Fixes the following W=1 kernel build warning(s):
+On Mon, Nov 02, 2020 at 03:20:29AM +0800, kernel test robot wrote:
+> Hi Andy,
 > 
->  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'mtd' not described in 'onenand_ooblayout_32_64_ecc'
->  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'section' not described in 'onenand_ooblayout_32_64_ecc'
->  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'oobregion' not described in 'onenand_ooblayout_32_64_ecc'
->  drivers/mtd/nand/onenand/onenand_base.c:200: warning: Function parameter or member 'addr' not described in 'onenand_readw'
->  drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'value' not described in 'onenand_writew'
->  drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'addr' not described in 'onenand_writew'
->  drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'this' not described in 'onenand_block_address'
->  drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'block' not described in 'onenand_block_address'
->  drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'this' not described in 'onenand_bufferram_address'
->  drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'block' not described in 'onenand_bufferram_address'
+> I love your patch! Yet something to improve:
 > 
->  NB: Snipped 200 lines for brevity.
-> 
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/nand/onenand/onenand_base.c | 438 ++++++++++++------------
->  1 file changed, 219 insertions(+), 219 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
-> index 188b8061e1f79..35f851bf90a3c 100644
-> --- a/drivers/mtd/nand/onenand/onenand_base.c
-> +++ b/drivers/mtd/nand/onenand/onenand_base.c
-> @@ -192,7 +192,7 @@ static const unsigned char ffchars[] = {
->  
+> [auto build test ERROR on hch-configfs/for-next]
+> [also build test ERROR on linus/master v5.10-rc1 next-20201030]
+> [cannot apply to linux/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 
-[...]
+Thanks, there is v2 which should have no such issue.
 
->  /**
->   * onenand_buffer_address - [DEFAULT] Get buffer address
-> - * @param dataram1	DataRAM index
-> - * @param sectors	the sector address
-> - * @param count		the number of sectors
-> + * @dataram:1	DataRAM index
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Seems that the one is on the wrong side of the colon?
 
-> + * @sectors:	the sector address
-> + * @count:		the number of sectors
->   * @return		the start buffer value
->   *
->   * Setup Start Buffer Register (F200h)
-
-The rest lgtm.
-
-Thanks,
-Miquèl
