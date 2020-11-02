@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B985A2A2E5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE552A2E5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgKBPbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:31:37 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34002 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgKBPbh (ORCPT
+        id S1726570AbgKBPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:32:47 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36171 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgKBPcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:31:37 -0500
-Received: by mail-ot1-f65.google.com with SMTP id j14so2731810ots.1;
-        Mon, 02 Nov 2020 07:31:36 -0800 (PST)
+        Mon, 2 Nov 2020 10:32:47 -0500
+Received: by mail-oi1-f196.google.com with SMTP id d9so9048180oib.3;
+        Mon, 02 Nov 2020 07:32:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VkT+mPMaNNQ1uOKIaMs+kRmIM51v2J/yVY8GqjEu4z8=;
-        b=DRQYPk+hr3bnx0TyeXxH5TnOVt/6V7xHeuweSPD43ubs3u3hNWo89sn70gE/OWI8eF
-         Dbq2IF27+n0c4EnMCMQkGtQg0nOCqhYSHoKHV7mJxwXhhh+TiLYUrJ1WXS4BG0PZT9WZ
-         EkM3imisadgdl1RziYBElxZwc5sFd6yMyUBw38cP1OqmcpUFcS9E0FEi87J3oXJ6AsKD
-         agxj/NCAEHj+xeLYa3VpgNmU/G+yATc7bmn8w/gEQihq3bxFZ0pMc++rpn/qOnQVOyVb
-         N+MzReG9castUne8VMPdZm03BY5/KX69gAJOnUDGzAflWbyTrvq4WKnp2cwy0Ez1wa8t
-         jsLA==
-X-Gm-Message-State: AOAM530mOAuaOtFTcw/GO2ESgRTh5LxjxoCZ/UJPajp+FzO5D3RkYcSs
-        i4rIYSwG/9wrDavBJMgHAg==
-X-Google-Smtp-Source: ABdhPJzSjtrS3V+u2N9M3si1fuHKu8kg2Sm7lQ8cTJN5U0K1HL/CUzmbAhyLo5Opyy+1m9o5Fnc/zg==
-X-Received: by 2002:a05:6830:16c2:: with SMTP id l2mr13167027otr.255.1604331096459;
-        Mon, 02 Nov 2020 07:31:36 -0800 (PST)
+        bh=ZIIR6Y93kJtDVN6OdQxyGkcBJEBLbqKHPY5lopcjGcM=;
+        b=rX5++5boP73N1SgdWdrXJahDyCynmLajF5A9AtoR7w4uzW1nE0m4/l4Tee51b79XTa
+         RS2DeyZBGHddOcxDNmZBZyp7YXqdaet6M9BNcZTALAvvqJdvEeTYakLpWXeX7PsZRYO7
+         QLkvwFiNNrKT9coHyOjZhxGVLLJWmDZN0sjp3GuL96H5B4SsrZsFgK8jDUewWrFMle+y
+         zymnTlTQaBRJJ7/lFbiNbtqXNR4VCjUiPd/k1ASR1j1PqyoUi/5Iu38Y1Y2qpHShX/DM
+         q++tuRXRMFpDsKa0kmu9aju1KEl24//lNCSDxCt36jqXuxjvjrYZfk4Y8nJCicnlVyiZ
+         NPRw==
+X-Gm-Message-State: AOAM531865tKqrs4R5CW6GRJSbZIz/vc+sjQ+6N+oIBrDUX6bpf67v7J
+        CUwlhrJfe5Pp00YzDeX60g==
+X-Google-Smtp-Source: ABdhPJxVmphuk8mJdLlRvmuSLnh7cCLFj0cJ3+mKBBPbdUSY81JXWlUDkb/A41ExxACV+GqRPkRrwQ==
+X-Received: by 2002:aca:b854:: with SMTP id i81mr10737409oif.6.1604331165909;
+        Mon, 02 Nov 2020 07:32:45 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t83sm3500406oie.58.2020.11.02.07.31.35
+        by smtp.gmail.com with ESMTPSA id u22sm3414989oor.13.2020.11.02.07.32.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 07:31:35 -0800 (PST)
-Received: (nullmailer pid 3927926 invoked by uid 1000);
-        Mon, 02 Nov 2020 15:31:35 -0000
-Date:   Mon, 2 Nov 2020 09:31:35 -0600
+        Mon, 02 Nov 2020 07:32:45 -0800 (PST)
+Received: (nullmailer pid 3929592 invoked by uid 1000);
+        Mon, 02 Nov 2020 15:32:44 -0000
+Date:   Mon, 2 Nov 2020 09:32:44 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        robdclark@chromium.org, Sam Ravnborg <sam@ravnborg.org>,
+To:     Evan Green <evgreen@chromium.org>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dt-bindings: dt-bindings: display: simple: Add
- BOE NV110WTM-N61
-Message-ID: <20201102153135.GA3927896@bogus>
-References: <20201028155617.v2.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
- <20201028155617.v2.3.I28d9e32b3cc0aae980ecc39d364263a3f9871298@changeid>
+Subject: Re: [PATCH v3 1/4] dt-bindings: nvmem: Add soc qfprom compatible
+ strings
+Message-ID: <20201102153244.GA3929537@bogus>
+References: <20201029002827.1729915-1-evgreen@chromium.org>
+ <20201028172737.v3.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028155617.v2.3.I28d9e32b3cc0aae980ecc39d364263a3f9871298@changeid>
+In-Reply-To: <20201028172737.v3.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 15:58:03 -0700, Douglas Anderson wrote:
-> Add yet another eDP panel.
+On Wed, 28 Oct 2020 17:28:24 -0700, Evan Green wrote:
+> Add SoC-specific compatible strings so that data can be attached
+> to it in the driver.
 > 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Evan Green <evgreen@chromium.org>
 > ---
 > 
-> (no changes since v1)
+> Changes in v3:
+>  - Fixed example (Doug and rob-bot)
 > 
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
+> Changes in v2:
+>  - Add other soc compatible strings (Doug)
+>  - Fix compatible string definition (Doug)
+> 
+>  .../devicetree/bindings/nvmem/qcom,qfprom.yaml  | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
