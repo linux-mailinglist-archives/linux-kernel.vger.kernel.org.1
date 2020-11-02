@@ -2,246 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585B22A3706
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A35D2A3703
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgKBXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S1726959AbgKBXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgKBXPu (ORCPT
+        with ESMTP id S1725841AbgKBXOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:15:50 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E173C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:15:50 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id x20so14485195ilj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:15:50 -0800 (PST)
+        Mon, 2 Nov 2020 18:14:42 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62C7C0617A6;
+        Mon,  2 Nov 2020 15:14:41 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c18so10989872wme.2;
+        Mon, 02 Nov 2020 15:14:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vANG7kCf7McNifCt4i3eNIRIg0UbrbcsPjzgcq/xupY=;
-        b=h5jLblIVHQZxx1Tha8vSPTgmFm12uAoDpNRpw9JwOnw7wxb7HaVuyg/rzFb7Uin+PK
-         zfamwZvGW9EXDR/1Z8lkaWsAd/Dzxp61RRhQEM9IsexjYWO18MheaPDRLsq0qkrJ0vxG
-         RcDDwVRGEGwjG48kWlFIKgZhG399nXw50T63xkcGwa3llVps7XdDhtP7Nh+G0GciaGvo
-         s1HvV7FrH9VimbPIGqpT6ShuZiUX6to6ls1L4Kk6DrO2Jr9K1wnrt54sOxvlDYBiDMw9
-         /j8kuVpONSCDEHxZ25boboyHsp9J9ViqY/tpiBJm+w9BneEjzgUi5d2VPT6DgDI1wuL/
-         U9Qw==
+        bh=Yd/yHPwpX3j/PkBKgMI4UlExzusZQuxmftwkBiDfwd0=;
+        b=Hp/PzG2nBC1gTiutjecqG6sDMBWHpgxt68CWrv7FKoC2KpclVQi5DiALbyOH/UcWEE
+         pQXKbYe/q6R7+nfsAwBRSWgf6LEXMHlbzywmE9ffoTe5xjvyaVB9nGgsq4MnnZnf3F7s
+         wOPYrOWMdoiPXfr+yVkOhf3z5JyZm0BSSJFj2WGltz5ZwHfd3v6p8bAs2G/TfvXs1wEA
+         tKbJBU1HxsqBWxSZc/HBWRLZWDFDclhHUrPTST+38gO/i9jnWdaBaEQ6qQp7T/bCml11
+         G5ahd5unJCmCcd0EL39PVQDFmIUVJQKmFjLpOUCpt4LGTRpkOg0yVog98tDRygh2Xky1
+         aMZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vANG7kCf7McNifCt4i3eNIRIg0UbrbcsPjzgcq/xupY=;
-        b=JelY8BolBgNR3Xana9cPzLf8GsLOPZEGh5hFgOPlnilZM6Li5G7UUI9hKVxoPMu2rR
-         oW/spnKCnJjrYs2jp/LIE9NmLO1L2mNvVJyQFBlK6JXq/7EI+q1z8NcEVQMPV7hvBYzl
-         Jp8NvQPkAlLhEsmoD8w8RhpGRFdrIQgvy/xHwdSHG6q1Uf6yObYqqobjnuFhxAnmPMuJ
-         a5IffCRok1gvHWqX8nS0A5JBgF9mS56NtS+oQUR3OS5e6c4qZ6mPB9K+ksLVZJ+EMQRH
-         SR1uKV+zuzxAdkdYPLnd3d0Kd0eTkNTkQ5PvXBOgfDr1WvIA5rtPJvJynBknfgPhIZ1X
-         rWUA==
-X-Gm-Message-State: AOAM531fFizZpkx6CwjWnPVu5xE9RUQWkV59iTy1qYQIUzhkRi3XZ3B1
-        9q2B8mjiK1BwT1PLxDwM8NwVPTpskCnbv2WwbSzOBw==
-X-Google-Smtp-Source: ABdhPJw3EE9PKY+cfyHuSQbTgzBcg7DVDf56jRmLLrBnLhMwmJ/Y8HvnlTB3ZBgfqaXgoIWHTj3ut3M69FdvESf89GI=
-X-Received: by 2002:a05:6e02:f12:: with SMTP id x18mr8305779ilj.145.1604358949644;
- Mon, 02 Nov 2020 15:15:49 -0800 (PST)
+        bh=Yd/yHPwpX3j/PkBKgMI4UlExzusZQuxmftwkBiDfwd0=;
+        b=YO47PwgeLvHbd+owvz+Y8Q0fou2CgBYyshdZlKJtJYU+SXxUtGlviyNJXHaBvRnsRj
+         B4Oc7mMuOm/82ncO9+Eh0QcfIcz5b0SmTD4XprS0iYG89CErehkF8coOKsoi5mO7OoZZ
+         BruBaHGfkgYoEskvlJET29ZT+/4P+OGXjcrNwrsZ6VPLSbqAdFZK1bJivxFR3zsSWydr
+         air3i5gTRz/YDxlXSM9XuNt4tKXRZJAn/tgTHbixKobpr7cBbmG2xbXn2pDgkySsuDY7
+         O3i9M6StB3DqAe0fDnjxx2t2toeny6fPTd57f3gjSpduuI39Yl8WqXsCIp4nYjqD30SE
+         4/OA==
+X-Gm-Message-State: AOAM531aW+AUYxH91MEt9fX6SuomRukCuS3WQCwP1QunlgBxdtMEH/hn
+        OFGzWw33FtRaY6G2czpsToXfULoY+y998bfNvpezq8CGI7YKEw==
+X-Google-Smtp-Source: ABdhPJwIDGZ0F593ZCG0Vdco3dS8P/GZ41McoEEBcPXuBq07neKqHo16c1wS1lmeymA//w36H1H4T5Bb6rszi0gxHKE=
+X-Received: by 2002:a1c:8194:: with SMTP id c142mr440404wmd.94.1604358880548;
+ Mon, 02 Nov 2020 15:14:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
- <20201025005916.64747-3-luka.kovacic@sartura.hr> <CAHp75Vd81cK+nhJ1fxgRC6cEKnBELVA9UtT8VPvq7nbHEdhecQ@mail.gmail.com>
- <CADZsf3ZtQyEK6diz6W=6tZz+=Toyj_XYU33At0JiLutsuRrizA@mail.gmail.com> <CAHp75VdiLg6br=nztormkiXcS5CZVDxcG8i0mUv2X799zpYq5A@mail.gmail.com>
-In-Reply-To: <CAHp75VdiLg6br=nztormkiXcS5CZVDxcG8i0mUv2X799zpYq5A@mail.gmail.com>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Tue, 3 Nov 2020 00:15:38 +0100
-Message-ID: <CADZsf3YmNiF+wJNUiAUzLJhQe3FBHeS-FxYywQfFWu5r2_4T7g@mail.gmail.com>
-Subject: Re: [PATCH v7 2/6] drivers: mfd: Add a driver for IEI WT61P803 PUZZLE MCU
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
+References: <20201030232324.11170-1-khsieh@codeaurora.org> <160434536802.884498.16389146296525781476@swboyd.mtv.corp.google.com>
+In-Reply-To: <160434536802.884498.16389146296525781476@swboyd.mtv.corp.google.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 2 Nov 2020 15:16:13 -0800
+Message-ID: <CAF6AEGu9pbRxncwVyRt9q=Gw1yOggj7Jg_zd+Y-rMZD=khmatw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: promote irq_hpd handle to handle link
+ trainign correctly
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, Sean Paul <sean@poorly.run>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        aravindh@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy,
-
-On Mon, Nov 2, 2020 at 12:18 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Mon, Nov 2, 2020 at 11:29 AM Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> On Sun, Nov 1, 2020 at 3:22 PM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
-> > On Mon, Oct 26, 2020 at 11:54 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Sun, Oct 25, 2020 at 3:59 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+> Subject has a typo in "training".
 >
-> ...
+> Quoting Kuogee Hsieh (2020-10-30 16:23:24)
+> > Some dongles, such as Apple, required link training done at irq_hpd
 >
-> > > > +#include <linux/of_device.h>
-> > >
-> > > Don't see a user of this, but of_platform.h seems to be missed.
+> s/required/require/
+>
+> > request instead of plugin request. This patch promote irq_hpd hanlder
+>
+> s/hanlder/handler/
+>
+> > to handle link training and setup hpd_state correctly.
 > >
-> > Okay, I'll add it.
-> > I'm still using devm_of_platform_populate() in iei_wt61p803_puzzle_probe().
+> > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> > ---
 >
-> Yes, and that's why I have mentioned of_platform.h above.
+> Any Fixes tag?
 >
-> ...
->
-> > > > +       struct kobject *kobj;
-> > >
-> > > It's quite strange you need this,
+> >  drivers/gpu/drm/msm/dp/dp_display.c | 20 ++++++++++++++++++--
+> >  1 file changed, 18 insertions(+), 2 deletions(-)
 > >
-> > This is used in iei_wt61p803_puzzle_sysfs_create() and
-> > iei_wt61p803_puzzle_sysfs_remove() to clean up afterwards.
->
-> I didn't get why you need this in the first place.
->
-> ...
->
-> > > > +       /* Return the number of processed bytes if function returns error */
-> > > > +       if (ret < 0)
-> > >
-> > > > +               return (int)size;
-> > >
-> > > Will be interesting result, maybe you wanted other way around?
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > index 13b66266cd69..55627530957c 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > @@ -483,10 +485,24 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
+> >                 return -ENODEV;
+> >         }
 > >
-> > That is intentional.
-> > A single frame is concatenated in the iei_wt61p803_puzzle_process_resp()
-> > function. In case we find ourselves in an unknown state, an error is
-> > returned there.
+> > +       hpd = dp->usbpd;
+> > +
+> >         /* check for any test request issued by sink */
+> >         rc = dp_link_process_request(dp->link);
+> > -       if (!rc)
+> > -               dp_display_handle_irq_hpd(dp);
+> > +       if (!rc) {
+> > +               sink_request = dp->link->sink_request;
+> > +               if (sink_request & DS_PORT_STATUS_CHANGED) {
+> > +                       dp->hpd_state = ST_CONNECT_PENDING;
+> > +                       hpd->hpd_high = 1;
+> > +               }
+> > +
+> > +               rc = dp_display_handle_irq_hpd(dp);
+> > +
+> > +               if (rc && sink_request & DS_PORT_STATUS_CHANGED) {
+>
+> Can you add parenthesis around this?
+>
+>                 if (rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
+>
+>
+> I honestly don't know what's going on in this patch. It talks about
+> making link training happen during irq hpd handler but this is the
+> attention handler and we're checking port status changed? This is
+> related? The code is really not clear.
+>
+> > +                       hpd->hpd_high = 0;
+> > +                       dp->hpd_state = ST_DISCONNECTED;
+> > +               }
+> > +       }
 > >
-> > We want to discard the remaining incoming data, since the frame this
-> > data belongs
-> > to is broken anyway.
->
-> Elaborate in the comment.
-
-Okay.
-
->
-> > > > +       return ret;
->
-> ...
->
-> > > > +err:
-> > >
-> > > err_unlock: ?
+> >         return rc;
+> >  }
 > >
-> > I use goto only in case there is also a mutex to unlock, so I don't see why
-> > to change this.
+> > base-commit: 0e162b10644605428cd2596c12f8ed410cf9d2d9
 >
-> The comment was about clarification of what is done at this label.
+> What commit is this?
 
-Ok, I understand. I will change the labels where mutexes are unlocked to
-indicate this as you suggested.
+Note that I skipped over a few dp related patches yesterday while
+starting to pull things into msm-next-staging.
 
->
-> > > > +       mutex_unlock(&mcu->lock);
-> > > > +       return ret;
->
-> ...
->
-> > > > +       /* Response format:
-> > > > +        * (IDX RESPONSE)
-> > > > +        * 0    @
-> > > > +        * 1    O
-> > > > +        * 2    S
-> > > > +        * 3    S
-> > > > +        * ...
-> > > > +        * 5    AC Recovery Status Flag
-> > > > +        * ...
-> > > > +        * 10   Power Loss Recovery
-> > > > +        * ...
-> > > > +        * 19   Power Status (system power on method)
-> > > > +        * 20   XOR checksum
-> > > > +        */
-> > >
-> > > Shouldn't be rather defined data structure for response?
-> >
-> > Every response, apart from the standard headers and a checksum
-> > at the end is completely different and I don't see a good way to
-> > standardize that in some other way.
->
-> And that's my point. Provide data structures for all responses you are
-> taking care of.
-> It will be way better documentation and understanding of this IPC.
+Kuogee, when you send the next version can you make sure it is based
+against v5.10-rc or msm-next-staging?
 
-Okay, I'll improve handling of these in the next patchset.
-Should I make a generic header structure for the common parts and
-define the common responses somewhere centrally?
-Then I can check those just as you suggested.
-
-For the variable ones I can reuse the generic header structure and just
-use the specific values as I would do normally.
-
->
-> ...
->
-> > > > +               if (!(resp_buf[0] == IEI_WT61P803_PUZZLE_CMD_HEADER_START &&
-> > > > +                     resp_buf[1] == IEI_WT61P803_PUZZLE_CMD_RESPONSE_OK &&
-> > > > +                     resp_buf[2] == IEI_WT61P803_PUZZLE_CHECKSUM_RESPONSE_OK)) {
-> > > > +                       ret = -EPROTO;
-> > > > +                       goto err;
-> > > > +               }
-> > >
-> > > I think it would be better to define data structure for replies and
-> > > then check would be as simple as memcmp().
-> >
-> > I'd keep this as is, because the replies are different a lot of the times.
-> > Especially when the reply isn't just an ACK.
->
-> How do you know the type of the reply? Can't you provide a data
-> structure which will have necessary fields to recognize this?
->
-
-It can be recognized by the specific header of the reply.
-I will separate the header and the checksum into some kind of a generic
-structure, but as the content itself is just an arbitrary array of characters
-I cannot generalize that sensibly for every type of a reply there is.
-
-Anyway, I agree it would be good to define the common responses...
-
-> ...
->
-> > > > +       power_loss_recovery_cmd[3] = cmd_buf[0];
-> > >
-> > > One decimal (most significant) digit?! Isn't it a bit ambiguous?
-> >
-> > The power_loss_recovery_action can only have a value of 0 - 4.
-> > My understanding is that if I give snprintf a buffer of size 1, it will
-> > truncate the one character to make space for NUL.
->
-> Why to bother with snprintf()? hex_asc[] would be sufficient. But my
-> point that the code is fragile. If it ever gets 15, you will get 1.
-
-Ok, I'll simplify this.
-
->
-> ...
->
-> > I can reduce this, but I'd just like to log the baud rate and the
-> > firmware build info.
->
-> > These two could be useful in a kernel log, if something doesn't work.
->
-> FW build info is definitely good to have, but don't you have other
-> means to retrieve baud rate?
-
-The normal boot log is completely clean, there are no serdev bus specific
-messages.
-
-The baud rate is defined in the device tree, so if something goes wrong it
-should be sufficient to only print the baud rate then.
-Can I output the versions, the firmware build info and only print the baud
-rate when an error occurs?
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+BR,
+-R
