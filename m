@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC152A2807
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57212A2809
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgKBKRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        id S1728452AbgKBKRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgKBKRA (ORCPT
+        with ESMTP id S1728438AbgKBKRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:17:00 -0500
-Received: from leonov.paulk.fr (vpn-0-22.aquilenet.fr [IPv6:2a0c:e300:4:22::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B30CC0617A6;
-        Mon,  2 Nov 2020 02:17:00 -0800 (PST)
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id 4EBD0C013D;
-        Mon,  2 Nov 2020 11:16:56 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id B257DC1515; Mon,  2 Nov 2020 11:16:55 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
-        autolearn=disabled version=3.4.2
-Received: from aptenodytes (unknown [192.168.1.1])
-        by gagarine.paulk.fr (Postfix) with ESMTPSA id 085FAC0571;
-        Mon,  2 Nov 2020 11:16:47 +0100 (CET)
-Date:   Mon, 2 Nov 2020 11:16:46 +0100
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matteo Scordino <matteo.scordino@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 4/9] dt-bindings: irq: sun7i-nmi: Add binding for the V3s
- NMI
-Message-ID: <20201102101646.GA11809@aptenodytes>
-References: <20201031182137.1879521-1-contact@paulk.fr>
- <20201031182137.1879521-5-contact@paulk.fr>
- <20201102100918.7vutmnkiwvumgkyf@gilmour.lan>
+        Mon, 2 Nov 2020 05:17:03 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BBBC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:17:02 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id n12so2718419ioc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s3EJ9zobkh7FYHYJWSJDM7encrABN6RP9bpyhE8NGbI=;
+        b=vEmXBY9dyPl+ljdMhUmIW2LKV0ba1J1zZlsugDHx2dY99d0324GJIheFAEtdgQseMO
+         tRcYTqVxFNP0MfypcMJ7Fs6o2mdQZsjEngK6hT7gOw9fbD4NbZZoo25UJskAdy22yCNM
+         xD43spaFairJobEdSKHqSJaCNDOkQvEWx+xh9Mr4x891njbSAklrvrVXPmxsSzZvTymz
+         cFBXGOT72WabirOs3enhLXHKe+kVn5eErsoNCxDHMhY1H/A9Znwh+JPyJzOk+bkDLoNt
+         UTw6fwA5DT90+cs1RREtRV1lip4/HtV23y0QLm1Q6M0IeM/2/1IiYQufnfBFeMM0JCEV
+         QVOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s3EJ9zobkh7FYHYJWSJDM7encrABN6RP9bpyhE8NGbI=;
+        b=kc/IPHrg+aismMLH5qNT31XOmgtc6deXnZ5Owg3pCGo1H/nOLMHldrCahQTrCmBn2t
+         GovAMIE/9mJnxi5GcuUBWesrVhowD0NoM+unFvyuHU9p/sOhWjeTqMW1PYhrT7r17C17
+         +lwUMr1iFMKDaUY9nciPaDbWuIXGJ/0J4nfTOGhQPjfKTn6O5rwvmVXbY53O6rVJunFY
+         gwByavuLwDEPmSgSkvuNFlia6d53neo/G8kAE7YbwjgHuYc8+ZIMlSZxt3IEXhEwZSDr
+         s6fsiqVY/iJFz3P8DrftMZWRpP7Kph/8MBVoba/vQXhssyMZsW0Rc8oPjk6K4S9PUVKh
+         KEEw==
+X-Gm-Message-State: AOAM533itdRC8+CtSJoEBa1QME5C9YoI7/q07EelWdwlBwFtwjwbmlvH
+        wYFFBeRgjV7gqmqPjtfW5ycS6nbLxZtJo0pyinuByg==
+X-Google-Smtp-Source: ABdhPJzgobcLyYX/fO0IziN9mm1MrqVoy3KRvaMJEUFjlH3w09pvUa223LBKiwM8gVMy9IWdcibg0zItd8FKWMmQiXU=
+X-Received: by 2002:a05:6638:15a:: with SMTP id y26mr909829jao.57.1604312222257;
+ Mon, 02 Nov 2020 02:17:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102100918.7vutmnkiwvumgkyf@gilmour.lan>
+References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-6-brgl@bgdev.pl>
+ <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
+In-Reply-To: <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 2 Nov 2020 11:16:51 +0100
+Message-ID: <CAMRc=MdtM-zVmvSbxjkPyLN1YTqcS7P=aYXxzWEk0xQiu8WZjQ@mail.gmail.com>
+Subject: Re: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset computation
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 26, 2020 at 3:51 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Oct 26, 2020 at 4:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Provide and use helpers for calculating the register address and bit
+> > offset instead of hand coding it in every function.
+>
+> Can you check code generation on x86, for example?
+>
+> Sometimes compilers are eager to use idiv assembly instruction which
+> does simultaneously / and %.
+> I dunno if a) it's used for / 8 and % 8 since 8 is 2^3, b) splitting
+> to functions makes the above optimisation impossible.
+>
 
-On Mon 02 Nov 20, 11:09, Maxime Ripard wrote:
-> On Sat, Oct 31, 2020 at 07:21:32PM +0100, Paul Kocialkowski wrote:
-> > The NMI interrupt controller takes a specific compatible for the V3s.
-> 
-> Why?
+Is this optimization really needed though? It's not like it's a hot
+path if it's protected by a mutex anyway. I prefer cleaner code here.
 
-Well, it's explained in details in the patch adding support in the driver
-and in less details when adding the dt nodes. But okay I'll add a short
-explanation here as well :)
-
-> > Add it to the device-tree bindings documentation.
-> > 
-> > Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
-> > ---
-> >  .../interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml         | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-> > index 8acca0ae3129..52364c2200ef 100644
-> > --- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-> > @@ -26,6 +26,7 @@ properties:
-> >        - const: allwinner,sun6i-a31-sc-nmi
-> >          deprecated: true
-> >        - const: allwinner,sun7i-a20-sc-nmi
-> > +      - const: allwinner,sun8i-v3s-sc-nmi
-> 
-> This should be sorted
-
-Ah sorry. So this should be between allwinner,sun8i-a83t-r-intc
-and allwinner,sun9i-a80-nmi then.
-
--- 
-Developer of free digital technology and hardware support.
-
-Website: https://www.paulk.fr/
-Coding blog: https://code.paulk.fr/
-Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
+Bartosz
