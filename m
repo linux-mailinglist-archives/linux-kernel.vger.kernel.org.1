@@ -2,110 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A882A2DE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BD42A2DED
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgKBPPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:15:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgKBPPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:15:38 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30D5B21556;
-        Mon,  2 Nov 2020 15:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604330137;
-        bh=HUTlle6eGdFGRRBi2JxylJ6R01dvNLPTF9EEu8JnDzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tYvaG/9dInW01K1TdO7aN/JE/ddj5YkjOdNNg69Vx3IMO/KyPHo+L3t750XHeB7cy
-         9nHtZ/YgWXPmU7Jf3+rHocYXndpyDvstMLn2JsE5CdJ3oN4Ef/dmiDi3mtetYWFv3p
-         XYQkck9tVbbZ/n1Alyl03sGboOgOce0/AdowI7CE=
-Date:   Mon, 2 Nov 2020 17:15:24 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 3/4] arch, mm: restore dependency of
- __kernel_map_pages() of DEBUG_PAGEALLOC
-Message-ID: <20201102151524.GB4879@kernel.org>
-References: <20201101170815.9795-1-rppt@kernel.org>
- <20201101170815.9795-4-rppt@kernel.org>
- <8eac2aa4-114e-f981-c8f8-ad8523175cf8@redhat.com>
+        id S1726277AbgKBPRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgKBPRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:17:16 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E9FC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:17:15 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w4so799670pgg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3SSjI8L6tAN7wnaresierGkcZcom6o46dDNzyiPHjlU=;
+        b=DkhU/qMVrvN1fx4wAGkNA9axcRMaO84W+G/hRGQCobjjbFdT50hJC+Y0P1+WsLC/fC
+         nQjYHCHoPj9rXVGzQWB7TF3L7FxjLAfh1rLJIGaWPqojCrRG0UyO/MrQueQN3REsMBzk
+         xy1+ZQCYCtioNMDJCLMNTShS0wp/dl83ZmeYPRRQTr9bOuUbhQ7KBGqBzCZmwqZde+3U
+         OjIDIuDW4ct8N6zFiAhT3BmW1YmvSSl3Ned6jfQhv2SiRUlcE8mMSszc2T9KHg5xG3gl
+         OJI2jAfwQkYpHdrke4KFyQMb2LyDzkNTrO/VuDGvlmGcTc0/fyjQFik6WagkeD6Dp+jf
+         DeKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3SSjI8L6tAN7wnaresierGkcZcom6o46dDNzyiPHjlU=;
+        b=uaykFhchNVnPlw2yw5A2Sijp4d4mAQMhnYqj2f+VxlAyh1NBcbAtvnZ9xd3yNzribt
+         ty506R3Ax3ywcQM13Mn2lzmOSWvD2N02ut5evkT6F0kGyTllfVNq/Wy6Gojws+Nt38YJ
+         CM5WYrC1LPBszCUZWPmheK4tMaHCFykiJVOkTbYPSDTbhHFGSkJrap6XpcdwVijk6oO0
+         u0tuvQC/DqHpoFJ+froCKc6TdnXvldDnevYZJ167NL7EpRyajWW75Ctrb5A5zmakJDsf
+         LPHUNrq8uHX+nljv+olY01RZkmJ4BXz4m9oq6UoPGVj5gvuUWCAUky/ZypMeOuxW1f0f
+         llaQ==
+X-Gm-Message-State: AOAM533K7B4ONd8CWMZ1CFK7PdHKkwOeUmqGotxqaNZY1Pfz2sEvIqZX
+        XPPf97K6DNElvb6sp5QRAkRUJ44QK/uyhQ+ZnHrVog==
+X-Google-Smtp-Source: ABdhPJyRJC3YZ5USOl/mcJCYzr7fXk7g4cY3TwW4VhXjTLtE65jadiAZBn5mzk3cAxoYI7xitmatRSaV0b0XNSTpUyU=
+X-Received: by 2002:a63:d456:: with SMTP id i22mr13760189pgj.440.1604330235200;
+ Mon, 02 Nov 2020 07:17:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8eac2aa4-114e-f981-c8f8-ad8523175cf8@redhat.com>
+References: <cover.1603372719.git.andreyknvl@google.com> <ce573435398f21d3e604f104c29ba65eca70d9e7.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+YF9bL8jRjVMfryr+LExYjH-rNdDEq2SvuQD+rGT4mVJQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+YF9bL8jRjVMfryr+LExYjH-rNdDEq2SvuQD+rGT4mVJQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 2 Nov 2020 16:17:04 +0100
+Message-ID: <CAAeHK+zTPyX6h+8uJvjKwryA1U3L0ErufSoAmNvBu=QC5bomXw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 16/21] kasan: optimize poisoning in kmalloc and krealloc
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:23:20AM +0100, David Hildenbrand wrote:
-> 
-> >   int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn, unsigned long address,
-> >   				   unsigned numpages, unsigned long page_flags)
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 14e397f3752c..ab0ef6bd351d 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2924,7 +2924,11 @@ static inline bool debug_pagealloc_enabled_static(void)
-> >   	return static_branch_unlikely(&_debug_pagealloc_enabled);
-> >   }
-> > -#if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
-> > +#ifdef CONFIG_DEBUG_PAGEALLOC
-> > +/*
-> > + * To support DEBUG_PAGEALLOC architecture must ensure that
-> > + * __kernel_map_pages() never fails
-> 
-> Maybe add here, that this implies mapping everything via PTEs during boot.
+On Wed, Oct 28, 2020 at 5:55 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Since kasan_kmalloc() always follows kasan_slab_alloc(), there's no need
+> > to reunpoison the object data, only to poison the redzone.
+> >
+> > This requires changing kasan annotation for early SLUB cache to
+> > kasan_slab_alloc(). Otherwise kasan_kmalloc() doesn't untag the object.
+> > This doesn't do any functional changes, as kmem_cache_node->object_size
+> > is equal to sizeof(struct kmem_cache_node).
+> >
+> > Similarly for kasan_krealloc(), as it's called after ksize(), which
+> > already unpoisoned the object, there's no need to do it again.
+>
+> Have you considered doing this the other way around: make krealloc
+> call __ksize and unpoison in kasan_krealloc?
+> This has the advantage of more precise poisoning as ksize will
+> unpoison the whole underlying object.
+>
+> But then maybe we will need to move first checks in ksize into __ksize
+> as we may need them in krealloc as well.
 
-This is more of an implementation detail, while assumption that
-__kernel_map_pages() does not fail is somewhat a requirement :)
+This might be a good idea. I won't implement this for the next
+version, but will look into this after that. Thanks!
 
-> Acked-by: David Hildenbrand <david@redhat.com>
-
-Thanks!
-
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+>
+>
+>
+>
+>
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/I4083d3b55605f70fef79bca9b90843c4390296f2
+> > ---
+> >  mm/kasan/common.c | 31 +++++++++++++++++++++----------
+> >  mm/slub.c         |  3 +--
+> >  2 files changed, 22 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> > index c5ec60e1a4d2..a581937c2a44 100644
+> > --- a/mm/kasan/common.c
+> > +++ b/mm/kasan/common.c
+> > @@ -360,8 +360,14 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+> >         if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+> >                 tag = assign_tag(cache, object, false, keep_tag);
+> >
+> > -       /* Tag is ignored in set_tag without CONFIG_KASAN_SW/HW_TAGS */
+> > -       kasan_unpoison_memory(set_tag(object, tag), size);
+> > +       /*
+> > +        * Don't unpoison the object when keeping the tag. Tag is kept for:
+> > +        * 1. krealloc(), and then the memory has already been unpoisoned via ksize();
+> > +        * 2. kmalloc(), and then the memory has already been unpoisoned by kasan_kmalloc().
+> > +        * Tag is ignored in set_tag() without CONFIG_KASAN_SW/HW_TAGS.
+> > +        */
+> > +       if (!keep_tag)
+> > +               kasan_unpoison_memory(set_tag(object, tag), size);
+> >         kasan_poison_memory((void *)redzone_start, redzone_end - redzone_start,
+> >                 KASAN_KMALLOC_REDZONE);
+> >
+> > @@ -384,10 +390,9 @@ void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object
+> >  }
+> >  EXPORT_SYMBOL(__kasan_kmalloc);
+> >
+> > -void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
+> > -                                               gfp_t flags)
+> > +static void * __must_check ____kasan_kmalloc_large(struct page *page, const void *ptr,
+> > +                                               size_t size, gfp_t flags, bool realloc)
+> >  {
+> > -       struct page *page;
+> >         unsigned long redzone_start;
+> >         unsigned long redzone_end;
+> >
+> > @@ -397,18 +402,24 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
+> >         if (unlikely(ptr == NULL))
+> >                 return NULL;
+> >
+> > -       page = virt_to_page(ptr);
+> > -       redzone_start = round_up((unsigned long)(ptr + size),
+> > -                               KASAN_GRANULE_SIZE);
+> > +       redzone_start = round_up((unsigned long)(ptr + size), KASAN_GRANULE_SIZE);
+> >         redzone_end = (unsigned long)ptr + page_size(page);
+> >
+> > -       kasan_unpoison_memory(ptr, size);
+> > +       /* ksize() in __do_krealloc() already unpoisoned the memory. */
+> > +       if (!realloc)
+> > +               kasan_unpoison_memory(ptr, size);
+> >         kasan_poison_memory((void *)redzone_start, redzone_end - redzone_start,
+> >                 KASAN_PAGE_REDZONE);
+> >
+> >         return (void *)ptr;
+> >  }
+> >
+> > +void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
+> > +                                               gfp_t flags)
+> > +{
+> > +       return ____kasan_kmalloc_large(virt_to_page(ptr), ptr, size, flags, false);
+> > +}
+> > +
+> >  void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flags)
+> >  {
+> >         struct page *page;
+> > @@ -419,7 +430,7 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+> >         page = virt_to_head_page(object);
+> >
+> >         if (unlikely(!PageSlab(page)))
+> > -               return __kasan_kmalloc_large(object, size, flags);
+> > +               return ____kasan_kmalloc_large(page, object, size, flags, true);
+> >         else
+> >                 return ____kasan_kmalloc(page->slab_cache, object, size,
+> >                                                 flags, true);
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index 1d3f2355df3b..afb035b0bf2d 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -3535,8 +3535,7 @@ static void early_kmem_cache_node_alloc(int node)
+> >         init_object(kmem_cache_node, n, SLUB_RED_ACTIVE);
+> >         init_tracking(kmem_cache_node, n);
+> >  #endif
+> > -       n = kasan_kmalloc(kmem_cache_node, n, sizeof(struct kmem_cache_node),
+> > -                     GFP_KERNEL);
+> > +       n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL);
+> >         page->freelist = get_freepointer(kmem_cache_node, n);
+> >         page->inuse = 1;
+> >         page->frozen = 0;
+> > --
+> > 2.29.0.rc1.297.gfa9743e501-goog
+> >
