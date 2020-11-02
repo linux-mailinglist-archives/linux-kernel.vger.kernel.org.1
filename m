@@ -2,267 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEA02A24AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8357F2A24B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgKBGOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 01:14:51 -0500
-Received: from mga01.intel.com ([192.55.52.88]:29661 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgKBGOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 01:14:51 -0500
-IronPort-SDR: 73bBoKCeK7UZPLhktv5oNXITlROVlJP755h5iv1wHxmrU6aUvbHDXazAif4aaAN3rR9C41W3sy
- dcEVY9ZUPa7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="186669766"
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="186669766"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2020 22:14:50 -0800
-IronPort-SDR: 8b703zXJzhYrXVZk+ziuGihKQyo6OX9XG+juqTGPlI8tHT6yrvo9B0TZY63jgx1qHGw5Pv4cpX
- PNKllSpvhqhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="526576042"
-Received: from tao-optiplex-7060.sh.intel.com ([10.239.159.33])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Nov 2020 22:14:47 -0800
-From:   Tao Xu <tao3.xu@intel.com>
-To:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tao Xu <tao3.xu@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: [PATCH] KVM: VMX: Enable Notify VM exit
-Date:   Mon,  2 Nov 2020 14:14:45 +0800
-Message-Id: <20201102061445.191638-1-tao3.xu@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728200AbgKBGPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 01:15:05 -0500
+Received: from mail-db8eur05on2059.outbound.protection.outlook.com ([40.107.20.59]:55776
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727950AbgKBGPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 01:15:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kihRuxlP0SgznCV7WrnuBU8TV8ym0yG9NfMgNPObEeplZrVcl4LgppDdHyrPM+V6NayLQ8tVc40mZ2FKIibGHPzHafIP66I/RahQAik6gMpFO7PNjYmCSb0wDhdFx47wlZRhSV01cKl7DrjrCJ18vU4KeHZPHYFDFPuueAKMSc1VoJd1uexdPq4Y7Jr+zVO+YYG8NLgRZ8T5wSc5hJqacD025YAB2ZdsOTvKARfBqJAvwILpVpKUsBU2oX4suUGJ0jx+AdlejEyR2mJHP6aypsK5ElQHAPKPx3JaIjAA1f+hIquGR8WYj6HOfxmtyGMcociRytNnqfF7L0G165i6bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mXgnPLYXab5Cet3DgisxXKTqY0nI+4ulgLStNQeRqRE=;
+ b=OejmNjNIcgwzic9FM7Q10UfzBrZWR40RwZVOwYqS9VIkJNU51SaKN8Aj7lIRAoMDg1OhFphb06Is+z3B3aIf1QSJdupNKAGSQIFjVojTm/fnXzFva2I2J9C0Y9NesEXlzUXCcFFikGan0VskJ97f/5xix9qmUIelsambAlhgNFUU8WDeMzaBOGT0Gu9aG/5N2W2h13rMfhjvcssOxnl+xO8iqvHTN3F20+PW3slhKT38T0YqNfy2kEqr04v7vF08prktMx6mc/21WjPd4BdV/TQG8kRc2/GAYuXhU8knP0rRBHpoGgpZLjDcfPFvpULlED/tMRXElX+4pihRMb+nhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mXgnPLYXab5Cet3DgisxXKTqY0nI+4ulgLStNQeRqRE=;
+ b=myrIJgAr0SNo+hYEc4hwjNne6gi7bQLIF/6M3J22thAs0OZ+HyFs47KvihOt7oVPG9vx2PZlGHWhx+sSxaC8vWZoAf6AGnS+MebmPVrucJyu4WIMPyqgzqkmwk6ir+OiTMcIXvBtTVc0wKRkmLzaciW0qgsxLfMVt+NtlJKUjWQ=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB8PR04MB7065.eurprd04.prod.outlook.com (2603:10a6:10:127::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 06:14:59 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22%11]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 06:14:59 +0000
+From:   "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+To:     Leo Li <leoyang.li@nxp.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "Z.q. Hou" <zhiqiang.hou@nxp.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jason@lakedaemon.net" <jason@lakedaemon.net>,
+        "maz@kernel.org" <maz@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        Xiaobo Xie <xiaobo.xie@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [EXT] Re: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A
+ external interrupt
+Thread-Topic: [EXT] Re: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A
+ external interrupt
+Thread-Index: AQHWrB1rT1rZT9wf3U6a6wH3dRQoQKmrEJ2AgAABvNCAAOZGAIAIbhlg
+Date:   Mon, 2 Nov 2020 06:14:58 +0000
+Message-ID: <DB6PR0401MB2438DCABBF4892ECF599D4528F100@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+ <5b1f2911-98b3-511f-404b-7d0fa44cc0c2@rasmusvillemoes.dk>
+ <DB6PR0401MB2438ED1C8F629CA1E1F469768F160@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+ <VE1PR04MB668790304253EAEEBC1B79F48F160@VE1PR04MB6687.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB668790304253EAEEBC1B79F48F160@VE1PR04MB6687.eurprd04.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fdce3176-a3d1-4e99-60a4-08d87ef6a062
+x-ms-traffictypediagnostic: DB8PR04MB7065:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB706574FB6FC7BCA233428F00CE100@DB8PR04MB7065.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C5Dv+7lMsgGIv7KkAoOls01fVOlmaGJUaxjkcYyjDILUef3G9sRV7Nc7LecSzU9oeg0epOgN7h9pC9oZqLn6LbeRQ46jDEEtP7qAL/6YQQSdguNCzd6xk8jTpruDuHgynXdqVTwuX0bV2HZ6m/PHTJNcSW+smjKyxIdV9baSJflt1Io7XhKoPEG1nmWmKdfe44a1WL/zZjRgOoXiUrEKDB0HfaKXva5NA65FLBlmlbyrnzpU1Yw82K+gjqAuwiE+NOaPeDWYXZ+PUGuG3JEvyrq6J3qcQlaPFqJK4kG6xX4ogSb6QFlajPxfV7lerLXIbxfSFMaoqGTdP+E7bu0/G8CvKzGVdwRMgTH61BzJyYJsSIpvDPQvjDZfnYnH3msJ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(396003)(376002)(66446008)(66476007)(66556008)(66946007)(76116006)(54906003)(316002)(478600001)(86362001)(55016002)(8676002)(7416002)(5660300002)(4326008)(71200400001)(64756008)(52536014)(110136005)(6506007)(2906002)(26005)(186003)(8936002)(33656002)(83380400001)(7696005)(9686003)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: OlIn/5v2svSqkmb09CiYvTYFY25V98rQtQLv6w/6Vm8atvXSe/qe26H6dYjqOVN61Kob1IQSSpDMqTJcouwZ5kOAhpxof6MOqNaW1NfuQLifsyAEKSsV2IEjy6dfFkG8uiLp3F7P0xas3L7jxKB+laJauwf0//SG3YB6hzZxedfLCMgXnq4mTfOFQ6wFbRG9PjfZkrdjNUvV7MJPkfumzu6FgjeQeKqLIjbMS92IbaQsJIkEnHeKIq4kvQtssim6zQjrZx6Nv0AwWWGByTPs6xXHrukfu8j3/mvnjbH9jsH+FdGDav6U+7RLMLg1iMHjvFjF8lD7JWUcpM1xO7og5UKRwVHHk+iwyqXwa1iv/X+YOUoiCg6USG3DFSfh7uO84zHHMFvf0l5qGBbu4toF0+yef7+vO62aSQPmtHLwUha/pnnemK5QD5W+3m8vpb2m9zV7OI+qUY6u1hfD9tgrBcOzxtLL0IwqnD/2sMtxZApOFjutlNl9f7H8jkm60EsRiJ9fN2fHuIsA0H562+NbItVEDWBYiLGbp+ezO/K5UPPW/0V9tTWZ1pLmRqrcL0b//Z5aDPqGYs0hzc7tGtI6KcF9Fe2YfGW9jwa++jg+iKEzQrw31XvCPCR/vpRL1j2+CSvBKiDVC8DprLfPYejKWw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdce3176-a3d1-4e99-60a4-08d87ef6a062
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 06:14:58.9562
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VKL7KwS4z0u+IGFkJRJMbMsaw9u0w1G1EBWBljzO65PtKsJedkHs+WmcGtBxCHU3XxUz3Zbrl90om58tqiArQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some cases that malicious virtual machines can cause CPU stuck
-(event windows don't open up), e.g., infinite loop in microcode when
-nested #AC (CVE-2015-5307). No event window obviously means no events,
-e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
-hardware CPU can't be used by host or other VM.
+> > >
+> > > Caution: EXT Email
+> > >
+> > > On 27/10/2020 05.46, Biwen Li wrote:
+> > > > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > > >
+> > > > Add an new IRQ chip declaration for LS1043A and LS1088A
+> > > > - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A.
+> SCFG_INTPCR[31:0]
+> > > >   of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
+> > > >   reverse)
+> > >
+> > > s/defaultly/by default/ I suppose. But what does that mean? Is it
+> > > still configurable, just now through some undocumented register? If
+> > > that register still exists, does it now have a reset value of
+> > > all-ones as opposed to the ls1021 case? If it's not configurable,
+> > > then describing the situation as "by default" is confusing and
+> > > wrong, it should just say "On LS1043A, LS1046A, SCFG_INTPCR is
+> > > stored/read bit-
+> > reversed."
+> > Okay, got it. Will update it in v3. Thanks.
+>=20
+> Hi Biwen,
+>=20
+> Where did you get this information that the register on LS1043 and LS1046=
+ is bit
+> reversed?  I cannot find such information in the RM.  And does this mean =
+all
+> other SCFG registers are also bit reversed?  If this is some information =
+that is
+> not covered by the RM, we probably should clarify it in the code and the =
+commit
+> message.
+Hi Leo,
 
-To resolve those cases, it can enable a notify VM exit if no
-event window occur in VMX non-root mode for a specified amount of
-time (notify window).
+I directly use the same logic to write the bit(field IRQ0~11INTP) of the re=
+gister SCFG_INTPCR
+in LS1043A and LS1046A.
+Such as,
+if I want to control the polarity of IRQ0(field IRQ0INTP, IRQ0 is active lo=
+w) of LS1043A/LS1046A,
+then I just need write a value 1 << (31 - 0) to it.
+The logic depends on register's definition in LS1043A/LS1046A's RM.
 
-Expose a module param for setting notify window, default setting it to
-the time as 1/10 of periodic tick, and user can set it to 0 to disable
-this feature.
+Regards,
+Biwen
 
-TODO:
-1. The appropriate value of notify window.
-2. Another patch to disable interception of #DB and #AC when notify
-VM-Exiting is enabled.
-
-Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Tao Xu <tao3.xu@intel.com>
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
----
- arch/x86/include/asm/vmx.h         |  7 +++++
- arch/x86/include/asm/vmxfeatures.h |  1 +
- arch/x86/include/uapi/asm/vmx.h    |  4 ++-
- arch/x86/kvm/vmx/capabilities.h    |  6 +++++
- arch/x86/kvm/vmx/vmx.c             | 42 +++++++++++++++++++++++++++++-
- include/uapi/linux/kvm.h           |  2 ++
- 6 files changed, 60 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-index f8ba5289ecb0..888faa5de895 100644
---- a/arch/x86/include/asm/vmx.h
-+++ b/arch/x86/include/asm/vmx.h
-@@ -73,6 +73,7 @@
- #define SECONDARY_EXEC_PT_USE_GPA		VMCS_CONTROL_BIT(PT_USE_GPA)
- #define SECONDARY_EXEC_TSC_SCALING              VMCS_CONTROL_BIT(TSC_SCALING)
- #define SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE	VMCS_CONTROL_BIT(USR_WAIT_PAUSE)
-+#define SECONDARY_EXEC_NOTIFY_VM_EXITING	VMCS_CONTROL_BIT(NOTIFY_VM_EXITING)
- 
- #define PIN_BASED_EXT_INTR_MASK                 VMCS_CONTROL_BIT(INTR_EXITING)
- #define PIN_BASED_NMI_EXITING                   VMCS_CONTROL_BIT(NMI_EXITING)
-@@ -267,6 +268,7 @@ enum vmcs_field {
- 	SECONDARY_VM_EXEC_CONTROL       = 0x0000401e,
- 	PLE_GAP                         = 0x00004020,
- 	PLE_WINDOW                      = 0x00004022,
-+	NOTIFY_WINDOW                   = 0x00004024,
- 	VM_INSTRUCTION_ERROR            = 0x00004400,
- 	VM_EXIT_REASON                  = 0x00004402,
- 	VM_EXIT_INTR_INFO               = 0x00004404,
-@@ -552,6 +554,11 @@ enum vm_entry_failure_code {
- #define EPT_VIOLATION_EXECUTABLE	(1 << EPT_VIOLATION_EXECUTABLE_BIT)
- #define EPT_VIOLATION_GVA_TRANSLATED	(1 << EPT_VIOLATION_GVA_TRANSLATED_BIT)
- 
-+/*
-+ * Exit Qualifications for NOTIFY VM EXIT
-+ */
-+#define NOTIFY_VM_CONTEXT_VALID     BIT(0)
-+
- /*
-  * VM-instruction error numbers
-  */
-diff --git a/arch/x86/include/asm/vmxfeatures.h b/arch/x86/include/asm/vmxfeatures.h
-index 9915990fd8cf..1a0e71b16961 100644
---- a/arch/x86/include/asm/vmxfeatures.h
-+++ b/arch/x86/include/asm/vmxfeatures.h
-@@ -83,5 +83,6 @@
- #define VMX_FEATURE_TSC_SCALING		( 2*32+ 25) /* Scale hardware TSC when read in guest */
- #define VMX_FEATURE_USR_WAIT_PAUSE	( 2*32+ 26) /* Enable TPAUSE, UMONITOR, UMWAIT in guest */
- #define VMX_FEATURE_ENCLV_EXITING	( 2*32+ 28) /* "" VM-Exit on ENCLV (leaf dependent) */
-+#define VMX_FEATURE_NOTIFY_VM_EXITING	( 2*32+ 31) /* VM-Exit when no event windows after notify window */
- 
- #endif /* _ASM_X86_VMXFEATURES_H */
-diff --git a/arch/x86/include/uapi/asm/vmx.h b/arch/x86/include/uapi/asm/vmx.h
-index b8ff9e8ac0d5..10873111980c 100644
---- a/arch/x86/include/uapi/asm/vmx.h
-+++ b/arch/x86/include/uapi/asm/vmx.h
-@@ -88,6 +88,7 @@
- #define EXIT_REASON_XRSTORS             64
- #define EXIT_REASON_UMWAIT              67
- #define EXIT_REASON_TPAUSE              68
-+#define EXIT_REASON_NOTIFY              75
- 
- #define VMX_EXIT_REASONS \
- 	{ EXIT_REASON_EXCEPTION_NMI,         "EXCEPTION_NMI" }, \
-@@ -148,7 +149,8 @@
- 	{ EXIT_REASON_XSAVES,                "XSAVES" }, \
- 	{ EXIT_REASON_XRSTORS,               "XRSTORS" }, \
- 	{ EXIT_REASON_UMWAIT,                "UMWAIT" }, \
--	{ EXIT_REASON_TPAUSE,                "TPAUSE" }
-+	{ EXIT_REASON_TPAUSE,                "TPAUSE" }, \
-+	{ EXIT_REASON_NOTIFY,                "NOTIFY"}
- 
- #define VMX_EXIT_REASON_FLAGS \
- 	{ VMX_EXIT_REASONS_FAILED_VMENTRY,	"FAILED_VMENTRY" }
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 3a1861403d73..43a0c3eb86ec 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -378,4 +378,10 @@ static inline u64 vmx_get_perf_capabilities(void)
- 	return PMU_CAP_FW_WRITES;
- }
- 
-+static inline bool cpu_has_notify_vm_exiting(void)
-+{
-+	return vmcs_config.cpu_based_2nd_exec_ctrl &
-+		SECONDARY_EXEC_NOTIFY_VM_EXITING;
-+}
-+
- #endif /* __KVM_X86_VMX_CAPS_H */
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index d14c94d0aff1..d03996913145 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -201,6 +201,10 @@ module_param(ple_window_max, uint, 0444);
- int __read_mostly pt_mode = PT_MODE_SYSTEM;
- module_param(pt_mode, int, S_IRUGO);
- 
-+/* Default is 1/10 of periodic tick, 0 disables notify window. */
-+static int __read_mostly notify_window = -1;
-+module_param(notify_window, int, 0644);
-+
- static DEFINE_STATIC_KEY_FALSE(vmx_l1d_should_flush);
- static DEFINE_STATIC_KEY_FALSE(vmx_l1d_flush_cond);
- static DEFINE_MUTEX(vmx_l1d_flush_mutex);
-@@ -2429,7 +2433,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
- 			SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE |
- 			SECONDARY_EXEC_PT_USE_GPA |
- 			SECONDARY_EXEC_PT_CONCEAL_VMX |
--			SECONDARY_EXEC_ENABLE_VMFUNC;
-+			SECONDARY_EXEC_ENABLE_VMFUNC |
-+			SECONDARY_EXEC_NOTIFY_VM_EXITING;
- 		if (cpu_has_sgx())
- 			opt2 |= SECONDARY_EXEC_ENCLS_EXITING;
- 		if (adjust_vmx_controls(min2, opt2,
-@@ -4270,6 +4275,9 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
- 	vmx_adjust_sec_exec_control(vmx, &exec_control, waitpkg, WAITPKG,
- 				    ENABLE_USR_WAIT_PAUSE, false);
- 
-+	if (cpu_has_notify_vm_exiting() && !notify_window)
-+		exec_control &= ~SECONDARY_EXEC_NOTIFY_VM_EXITING;
-+
- 	vmx->secondary_exec_control = exec_control;
- }
- 
-@@ -4326,6 +4334,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
- 		vmx->ple_window_dirty = true;
- 	}
- 
-+	if (cpu_has_notify_vm_exiting())
-+		vmcs_write32(NOTIFY_WINDOW, notify_window);
-+
- 	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
- 	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
- 	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
-@@ -5618,6 +5629,31 @@ static int handle_encls(struct kvm_vcpu *vcpu)
- 	return 1;
- }
- 
-+static int handle_notify(struct kvm_vcpu *vcpu)
-+{
-+	unsigned long exit_qualification = vmcs_readl(EXIT_QUALIFICATION);
-+
-+	/*
-+	 * Notify VM exit happened while executing iret from NMI,
-+	 * "blocked by NMI" bit has to be set before next VM entry.
-+	 */
-+	if (exit_qualification & NOTIFY_VM_CONTEXT_VALID) {
-+		if (enable_vnmi &&
-+		    (exit_qualification & INTR_INFO_UNBLOCK_NMI))
-+			vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
-+				      GUEST_INTR_STATE_NMI);
-+
-+		return 1;
-+	}
-+
-+	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-+	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_NO_EVENT_WINDOW;
-+	vcpu->run->internal.ndata = 1;
-+	vcpu->run->internal.data[0] = exit_qualification;
-+
-+	return 0;
-+}
-+
- /*
-  * The exit handlers return 1 if the exit was handled fully and guest execution
-  * may resume.  Otherwise they set the kvm_run parameter to indicate what needs
-@@ -5674,6 +5710,7 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
- 	[EXIT_REASON_VMFUNC]		      = handle_vmx_instruction,
- 	[EXIT_REASON_PREEMPTION_TIMER]	      = handle_preemption_timer,
- 	[EXIT_REASON_ENCLS]		      = handle_encls,
-+	[EXIT_REASON_NOTIFY]		      = handle_notify,
- };
- 
- static const int kvm_vmx_max_exit_handlers =
-@@ -7873,6 +7910,9 @@ static __init int hardware_setup(void)
- 	if (!enable_ept || !cpu_has_vmx_intel_pt())
- 		pt_mode = PT_MODE_SYSTEM;
- 
-+	if (notify_window == -1)
-+		notify_window = tsc_khz * 100 / HZ;
-+
- 	if (nested) {
- 		nested_vmx_setup_ctls_msrs(&vmcs_config.nested,
- 					   vmx_capability.ept);
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index ca41220b40b8..84d2c203de50 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -260,6 +260,8 @@ struct kvm_hyperv_exit {
- #define KVM_INTERNAL_ERROR_DELIVERY_EV	3
- /* Encounter unexpected vm-exit reason */
- #define KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON	4
-+/* Encounter notify vm-exit */
-+#define KVM_INTERNAL_ERROR_NO_EVENT_WINDOW   5
- 
- /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
- struct kvm_run {
--- 
-2.25.1
-
+>=20
+> Regards,
+> Leo
+>=20
+> > >
+> > >
+> > > > - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> > > >
+> > > > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > > > ---
+> > > > Change in v2:
+> > > >       - add despcription of bit reverse
+> > > >       - update copyright
+> > > >
+> > > >  drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
+> > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/irqchip/irq-ls-extirq.c
+> > > > b/drivers/irqchip/irq-ls-extirq.c index 4d1179fed77c..9587bc2607fc
+> > > > 100644
+> > > > --- a/drivers/irqchip/irq-ls-extirq.c
+> > > > +++ b/drivers/irqchip/irq-ls-extirq.c
+> > > > @@ -1,5 +1,8 @@
+> > > >  // SPDX-License-Identifier: GPL-2.0
+> > > > -
+> > > > +/*
+> > > > + * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > >
+> > > If I wanted my name splattered all over the files I touch or add,
+> > > I'd add it myself, TYVM. The git history is plenty fine for
+> > > recording authorship as far as I'm concerned, and I absolutely abhor
+> > > having to skip over any kind of legalese boilerplate when opening a f=
+ile.
+> > Okay, got it. Will drop it in v3. Thanks.
+> > >
+> > > Rasmus
