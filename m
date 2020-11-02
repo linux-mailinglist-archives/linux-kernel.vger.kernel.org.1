@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3C32A2BEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7562A2BEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgKBNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKBNrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:47:33 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF32DC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:47:32 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id k18so9560421wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:47:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DVnJguRhgSuHhwcYKzQRaLJKdcuRSoN8zs/m3lzrT8A=;
-        b=Wj+M71N1RdTes6u5Dk/LSSCt4EGD0c0ahuPykaBmLtqj5wgCCwDKpQorczrBwUZuxW
-         jxmSqJxuntk6eSsX63IzrPdaSzAGwEA6hNvc4fkb12l+Oqvle+NIL9fTwBZAt1uhP6Wi
-         TaDnKUVszH5mVBfI6frj/C4seQwVvbFzL213QQRQ7e65Ct8ONqO3adpQ7wRZwT/AT7l1
-         zNHx7Cn2WP7eY3Te4BoVsfclhGCL8OqkucRFhVDVXNiOld4XY55FKA41KkrpCSFGTunm
-         U50Fsf5VY3ndb11+hIedidMU8LPxc6rH9DiRhPl+dPfocciUMjYV8rCKb2axq0GKBq4/
-         s39g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DVnJguRhgSuHhwcYKzQRaLJKdcuRSoN8zs/m3lzrT8A=;
-        b=C238yCXzTKC1RTC3Dg7HE9W/7emYO6XmJ08sDfhyl4EowHxN815BNsag9YLswdRpDn
-         xo1AczAJNeZYNrpiaQBZ7OfNk4Um8PuD6pyxJmoihAOGN1NealCXBaOMlvB4ETMYzJmY
-         OfuGoQcq082m1AsUVI89U+5AZUjzrOONZTmrcr6nFQ7dduMomaWPj4l7K2pTJyyq7ySr
-         Pa1+/LRj4hdFGvKtPicC064cHixbYsxGT5uBmBkNTqwTY5RT90X8z3hCXPczIYYz3huC
-         ED4VDfBcL2kOm3RBh3AoCKo3Bjq3xHx4GKD+LtomWLU2sfjxDljNhuNzcoBeYSU/TzFV
-         tTpw==
-X-Gm-Message-State: AOAM5308p4O57LDx3NAEgBXnm90D+lRgwpMQ9jlElUAXPjl2X1XyNpSs
-        ++DewzJNRsxyKHVXl1Fif/M34LQjg1NmNA==
-X-Google-Smtp-Source: ABdhPJwhOF6/VnPaqD7AyqODaugILylu0MjNzP+5+j47JBh/6sO368NjKWTtz0Ovwglk43vym94Dxw==
-X-Received: by 2002:a1c:bac1:: with SMTP id k184mr11862826wmf.76.1604324851469;
-        Mon, 02 Nov 2020 05:47:31 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id s11sm22102143wrm.56.2020.11.02.05.47.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 05:47:30 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:47:29 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20201102134729.GD4488@dell>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
- <20201102114903.GN4127@dell>
- <20201102121150.GA663356@kroah.com>
- <20201102124301.GC4488@dell>
- <20201102125910.GA1008111@kroah.com>
+        id S1725846AbgKBNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:48:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgKBNsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:48:21 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E06D223AB;
+        Mon,  2 Nov 2020 13:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604324900;
+        bh=CJTsLQImvQfuFZjjUnGfXg2U2qxElGBVkEH9ynb1egQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PkqwpfNCqhd4uS4Wm9PvCWSPL0/i0x8Q9AooNZNeR+C4BwIvfn9+Ytp7Z6/BbmOO/
+         PYFRnJC2+4QAfET4bOUDb4CTgsNF7In9lij+/qwBluiV/HEb7fkkDCWVIz0GvFQU3/
+         guv+rzev3rW1p1t37T4ndg/La53J+Lq6IxuWRrDA=
+Received: by mail-ot1-f42.google.com with SMTP id i18so7895541ots.0;
+        Mon, 02 Nov 2020 05:48:20 -0800 (PST)
+X-Gm-Message-State: AOAM533/Cdd+BArgdU2ZZDoOCRUDhAdyJkFrESISNuWN9mo+yQKcFoBc
+        jzjgU+n3DxZJ8de0dEh/m8nmjUW1D+wzjIek0A==
+X-Google-Smtp-Source: ABdhPJxantw0H+8iycxFV4C0S3O8mBInCbQ+9oEeSWpWGNQn6vdFocJsnsHpYIqRbXCrcMoeZMuiTdO0HlLiLliarfI=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr11240944oti.107.1604324899397;
+ Mon, 02 Nov 2020 05:48:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102125910.GA1008111@kroah.com>
+References: <20201030013427.54086-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201030013427.54086-1-miaoqinglang@huawei.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 2 Nov 2020 07:48:08 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKRDBMXjkBLrJo1GGo-tM4s3gO0rASsTtXmO5b2_BO+qg@mail.gmail.com>
+Message-ID: <CAL_JsqKRDBMXjkBLrJo1GGo-tM4s3gO0rASsTtXmO5b2_BO+qg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: v3: fix missing clk_disable_unprepare() on error in v3_pci_probe
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+On Thu, Oct 29, 2020 at 8:28 PM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>
+> Fix the missing clk_disable_unprepare() before return
+> from v3_pci_probe() in the error handling case.
+>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/pci/controller/pci-v3-semi.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
+> index 154a53986..e24abc5b4 100644
+> --- a/drivers/pci/controller/pci-v3-semi.c
+> +++ b/drivers/pci/controller/pci-v3-semi.c
+> @@ -739,8 +739,10 @@ static int v3_pci_probe(struct platform_device *pdev)
+>
+>         regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         v3->base = devm_ioremap_resource(dev, regs);
+> -       if (IS_ERR(v3->base))
+> +       if (IS_ERR(v3->base)) {
+> +               clk_disable_unprepare(clk);
 
-> On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
-> > On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
-> > 
-> > > On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
-> > > > On Mon, 02 Nov 2020, David Laight wrote:
-> > > > 
-> > > > > From: Lee Jones
-> > > > > > Sent: 02 November 2020 11:12
-> > > > > > 
-> > > > > > strncpy() may not provide a NUL terminator, which means that a 1-byte
-> > > > > > leak would be possible *if* this was ever copied to userspace.  Ensure
-> > > > > > the buffer will always be NUL terminated by using the kernel's
-> > > > > > strscpy() which a) uses the destination (instead of the source) size
-> > > > > > as the bytes to copy and b) is *always* NUL terminated.
-> > > > > > 
-> > > > > > Cc: Rodolfo Giometti <giometti@enneenne.com>
-> > > > > > Cc: "Eurotech S.p.A" <info@eurotech.it>
-> > > > > > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > > ---
-> > > > > >  drivers/misc/c2port/core.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> > > > > > index 80d87e8a0bea9..b96444ec94c7e 100644
-> > > > > > --- a/drivers/misc/c2port/core.c
-> > > > > > +++ b/drivers/misc/c2port/core.c
-> > > > > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
-> > > > > >  	}
-> > > > > >  	dev_set_drvdata(c2dev->dev, c2dev);
-> > > > > > 
-> > > > > > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> > > > > > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
-> > > > > 
-> > > > > strscpy() doesn't zero fill so if the memory isn't zeroed
-> > > > > and a 'blind' copy to user of the structure is done
-> > > > > then more data is leaked.
-> > > > > 
-> > > > > strscpy() may be better, but rational isn't right.
-> > > > 
-> > > > The original patch zeroed the data too, but I was asked to remove that
-> > > > part [0].  In your opinion, should it be reinstated?
-> > > > 
-> > > > [0] https://lore.kernel.org/patchwork/patch/1272290/
-> > > 
-> > > Just keep the kzalloc() part of the patch, this portion makes no sense
-> > > to me.
-> > 
-> > Can do.
-> > 
-> > > But if you REALLY want to get it correct, call dev_set_name()
-> > > instead please, as that is what it is there for.
-> > 
-> > The line above isn't setting the 'struct device' name.  It looks as
-> > though 'struct c2port' has it's own member, also called 'name'.  As to
-> > how they differ, I'm not currently aware.  Nor do I wish to mess
-> > around with the semantics all that much.
-> > 
-> > Going with suggestion #1.
-> 
-> As the "device" already has a name, I suggest just getting rid of this
-> name field anyway, no need for duplicates.
+You can reorder things moving the clock enable later (after mapping
+resources, but before devm_request_irq) and avoid some of these. Also
+move this check down:
 
-That definitely goes against the point I made above:
+if (readl(v3->base + V3_LB_IO_BASE) != (regs->start >> 16))
 
- "Nor do I wish to mess around with the semantics all that much."
 
-It looks as though the device name 'c2port%d' varies greatly to the
-requested name 'uc'.  I don't have enough knowledge of how user-
-space expects to use the provided sysfs entries to be able to
-competently merge/decide which of these should be kept and which to
-discard.
+>                 return PTR_ERR(v3->base);
+> +       }
+>         /*
+>          * The hardware has a register with the physical base address
+>          * of the V3 controller itself, verify that this is the same
+> @@ -754,17 +756,22 @@ static int v3_pci_probe(struct platform_device *pdev)
+>         regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>         if (resource_size(regs) != SZ_16M) {
+>                 dev_err(dev, "config mem is not 16MB!\n");
+> +               clk_disable_unprepare(clk);
+>                 return -EINVAL;
+>         }
+>         v3->config_mem = regs->start;
+>         v3->config_base = devm_ioremap_resource(dev, regs);
+> -       if (IS_ERR(v3->config_base))
+> +       if (IS_ERR(v3->config_base)) {
+> +               clk_disable_unprepare(clk);
+>                 return PTR_ERR(v3->config_base);
+> +       }
+>
+>         /* Get and request error IRQ resource */
+>         irq = platform_get_irq(pdev, 0);
+> -       if (irq < 0)
+> +       if (irq < 0) {
+> +               clk_disable_unprepare(clk);
+>                 return irq;
+> +       }
+>
+>         ret = devm_request_irq(dev, irq, v3_irq, 0,
+>                         "PCIv3 error", v3);
+> @@ -772,6 +779,7 @@ static int v3_pci_probe(struct platform_device *pdev)
+>                 dev_err(dev,
+>                         "unable to request PCIv3 error IRQ %d (%d)\n",
+>                         irq, ret);
+> +               clk_disable_unprepare(clk);
+>                 return ret;
 
-Hopefully one of the authors/maintainers are reading this and can come
-up with an acceptable solution.
+You still leave the clock enabled if pci_host_probe() fails.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Rob
