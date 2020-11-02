@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED4E2A2895
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05E62A289C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgKBK5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:57:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgKBK5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:57:49 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAECC0617A6;
-        Mon,  2 Nov 2020 02:57:47 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id b3so10808056pfo.2;
-        Mon, 02 Nov 2020 02:57:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O5Ngz5hzNc85BqmbB6OWKGFTJb0A/tXXjeqyQrAVgLY=;
-        b=TYWIWBFgnXJvpmb/1nKkKAqAm5inoJds6DQvm/YYANNVo62D52SgKUZatxw33JKwuy
-         cypQiofSgks3Qz97U5YFUKaekYQivi1XC848ZQKI6JajYpnBHBSipqIPdQTqfMfyoX5K
-         MaaEfER6qLdyts5ktkewBdq9ruI3Ar+5xCHAC/+V/hLByC6aT3WoJpQDL5yv7yaJ60sa
-         UTwHw76MuIFBbL/YGUaz/n/GiftSyB3FhNiYbLRQObmN7vRJOAfMd4k6ZjZXd17f5st/
-         PWpvtX15dhIe38DxJyCiBoirpwjEBF0qDg651pqlSktwVGdDWXxkjG0n2sLS1IXONb2/
-         JfwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O5Ngz5hzNc85BqmbB6OWKGFTJb0A/tXXjeqyQrAVgLY=;
-        b=F83KYe37VJdmv4s5yCCy6U2TEcBXDYaS5gbF0Mkdk1LclUy9d+F1uUNCvMZQf/o/S3
-         zmg1EuKWURT8Zg+oASvPZ32uLhu3ie5WIm3tyWCuy8ZCi9XEaiFxxMPxntJ7kRr/lTsX
-         xdufqclmm1MyY8/nSjy/LFCnId18BFyDP6YlhJv2lTJAo6nN9mIJ4GWNf4o7Qz1J6hEz
-         tzF2YjnZ0wvzIb1BbhkXMg9JQSqAnTr2ZFWJxAGZiZbXsfUd6H+zU/E0gUDk/SaALWeZ
-         SHvsufEwScovb94Zx1W8MeDpOx6VRtpP2HOVcZGt+HMkY4ww8qLHSqJvAgvLSI4CKrja
-         hFJw==
-X-Gm-Message-State: AOAM533nGX25Be+AttFAQIMQ+EBNQMjaou9z4KbHB6lws8uJeQubv+6I
-        dabKzYlAjxub9KyfU2YkhZHlX7i6tmWPFCcyADk=
-X-Google-Smtp-Source: ABdhPJyt6hLxBnJd3gzN+EOmIDhkeIQ5RMrREj7qU9SiTwy9omSTWY1Vu/33LDt42Z53oyqGhKMJDx9V2yhu/9RjD18=
-X-Received: by 2002:a63:31ce:: with SMTP id x197mr969773pgx.74.1604314667279;
- Mon, 02 Nov 2020 02:57:47 -0800 (PST)
+        id S1728473AbgKBLAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:00:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37448 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728253AbgKBLAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:00:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9817AB2EC;
+        Mon,  2 Nov 2020 11:00:10 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 11:00:08 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com
+Subject: Re: [sched/fair] d8fcb81f1a: netperf.Throughput_tps -16.9% regression
+Message-ID: <20201102110008.GA3306@suse.de>
+References: <20201101082452.GC31092@shao2-debian>
 MIME-Version: 1.0
-References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-6-brgl@bgdev.pl>
-In-Reply-To: <20201026141839.28536-6-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 2 Nov 2020 12:58:36 +0200
-Message-ID: <CAHp75VfNy4j73nFd2nGSsuGdn0Yat_ENGaaARP_8R9CQKHnnZg@mail.gmail.com>
-Subject: Re: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset computation
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201101082452.GC31092@shao2-debian>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+On Sun, Nov 01, 2020 at 04:24:52PM +0800, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed a -16.9% regression of netperf.Throughput_tps due to commit:
+> 
+> 
+> commit: d8fcb81f1acf651a0e50eacecca43d0524984f87 ("sched/fair: Check for idle core in wake_affine")
+> https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git sched/core
+> 
+> 
+> in testcase: netperf
+> on test machine: 144 threads Intel(R) Xeon(R) Gold 5318H CPU @ 2.50GHz with 128G memory
+> with following parameters:
+> 
+> 	ip: ipv4
+> 	runtime: 300s
+> 	nr_threads: 25%
+> 	cluster: cs-localhost
+> 	test: SCTP_RR
+> 	cpufreq_governor: performance
+> 	ucode: 0x700001c
+> 
+> test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
+> test-url: http://www.netperf.org/netperf/
+> 
+> In addition to that, the commit also has significant impact on the following tests:
+> 
+> +------------------+------------------------------------------------------------------------+
+> | testcase: change | aim7: aim7.jobs-per-min 8.7% improvement                               |
+> | test machine     | 144 threads Intel(R) Xeon(R) Gold 5318H CPU @ 2.50GHz with 128G memory |
+> | test parameters  | cpufreq_governor=performance                                           |
+> |                  | disk=1BRD_48G                                                          |
+> |                  | fs=xfs                                                                 |
+> |                  | load=600                                                               |
+> |                  | test=sync_disk_rw                                                      |
+> |                  | ucode=0x700001c                                                        |
+> +------------------+------------------------------------------------------------------------+
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
 
-...
-
-> +static unsigned int
-> +exar_offset_to_sel_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOSEL_HI
-> +                                                  : EXAR_OFFSET_MPIOSEL_LO;
-> +}
-> +
-> +static unsigned int
-> +exar_offset_to_lvl_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOLVL_HI
-> +                                                  : EXAR_OFFSET_MPIOLVL_LO;
-> +}
-> +
-> +static unsigned int
-> +exar_offset_to_bit(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) % 8;
-> +}
-
-Answering to your question...
-
-It can be done line this:
-
-static unsigned int exar_offset_to_bank_and_bit(..., *bit)
-{
-       *bit = (offset + exar_gpio->first_pin) % 8;
-       return (offset + exar_gpio->first_pin) / 8;
-}
-
-static unsigned int exar_offset_to_lvl_addr_and_bit(, *bit)
-{
-    return exar_offset_to_bank_and_bit(..., bit) ?
-        EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
-}
-
-...
-
-> +       unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
-
-unsigned int addr, bit;
-
-addr = exar_offset_to_lvl_addr_and_bit(..., &bit);
+I know I ran tests against this patch in general and gave an Ack but
+these cases were not covered by me. For netperf, I neither vary the number
+of threads nor did I cover SCTP_RR so this could be an example of where
+the patch is a loss. I also had run reaim but not specifically for one
+sub-test like this does and the generation of machines used was much
+older than Gold 5318H. Grid or no grid, complete coverage is a challenge
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Mel Gorman
+SUSE Labs
