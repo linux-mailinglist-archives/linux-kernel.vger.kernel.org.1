@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928FF2A313D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B982A313F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727696AbgKBRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:18:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39206 "EHLO mail.kernel.org"
+        id S1727821AbgKBRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:18:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgKBRSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:18:10 -0500
+        id S1727699AbgKBRSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:18:16 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5D9D20691;
-        Mon,  2 Nov 2020 17:18:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C408822265;
+        Mon,  2 Nov 2020 17:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604337490;
-        bh=S9Ost0F6oyf1K0gMlJiyk7u6GV3N54pcPi2zPO/M92g=;
+        s=default; t=1604337496;
+        bh=rIlQqLI71vK+ZxCSq1CjmvcmTyDLZVhKtkIly/VcKS0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=bbk0Ud3nLBDD0WRjUgP7/LxTe+2TK5ZSB6X7bmQd2j/P5DuZGtVjoWxepWmu4zmP4
-         iCAbw0E+Invt8BvG/oomtyhPmvuw9Rrf+hME5DAsyYC9IM+V9bQSGxzCHejyWV7XZ+
-         3aD9J29fiMGJbCjM/I0svy1sfXU9sLhy+NIqOT1I=
-Date:   Mon, 02 Nov 2020 17:18:01 +0000
+        b=go90C1SvalxQUPofKKwjnKrZyIcQaUor3MaeiaeZf+Mir5giw/U4JLi0yIAY39TTq
+         PJMN1Fi499TSxXdb2RIeybAJDcQ83H7vSs7l6qNhuCUoGrreGUS1nbgqugYb0GAOUt
+         tbPCH9gjFUOzMvNUEx2mCQBkNCcmq+lfyvfF9nhQ=
+Date:   Mon, 02 Nov 2020 17:18:07 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, andriy.shevchenko@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, amit.kucheria@linaro.org,
-        rafael.j.wysocki@intel.com, cezary.rojewski@intel.com,
-        liam.r.girdwood@linux.intel.com,
-        "trix@redhat.com" <trix@redhat.com>, perex@perex.cz,
-        yuehaibing@huawei.com, yang.jie@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201101171943.2305030-1-trix@redhat.com>
-References: <20201101171943.2305030-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: remove unneeded semicolon
-Message-Id: <160433748157.18840.14013334012819577591.b4-ty@kernel.org>
+To:     tiwai@suse.com, Xu Wang <vulab@iscas.ac.cn>,
+        alsa-devel@alsa-project.org, perex@perex.cz, lgirdwood@gmail.com,
+        peter.ujfalusi@ti.com
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20201029082513.28233-1-vulab@iscas.ac.cn>
+References: <20201029082513.28233-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: ti: davinci-evm: Remove redundant null check before clk_disable_unprepare
+Message-Id: <160433748156.18840.4266667524928264145.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,8 +40,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Nov 2020 09:19:43 -0800, trix@redhat.com wrote:
-> A semicolon is not needed after a switch statement.
+On Thu, 29 Oct 2020 08:25:13 +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
 
 Applied to
 
@@ -52,8 +50,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: remove unneeded semicolon
-      commit: c1af06a28a0176ceb1fc71408b32aabf53db4470
+[1/1] ASoC: ti: davinci-evm: Remove redundant null check before clk_disable_unprepare
+      commit: ff3cfccba4dd87bb89ca185b58b38b9a74260138
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
