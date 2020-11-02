@@ -2,109 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914092A26CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1642A26D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgKBJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
+        id S1728323AbgKBJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:19:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgKBJSu (ORCPT
+        with ESMTP id S1727818AbgKBJTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:18:50 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582E2C0617A6;
-        Mon,  2 Nov 2020 01:18:50 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r10so10245970pgb.10;
-        Mon, 02 Nov 2020 01:18:50 -0800 (PST)
+        Mon, 2 Nov 2020 04:19:07 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B201C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 01:19:06 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id n18so13653144wrs.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 01:19:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=C6EWmjCYcjXlVuyLZRKUgfoLilwqmfMB+owPMFBnb9c=;
-        b=lqbbb1CuBH5eNHB+N9qLO4cm8cvi81NiGiv31bIGOb9Z0OAU3l/5nuLwb0vZO5VAnc
-         FEDcOl0s69baIoU66mtPLi4ns3NtJZEeV7tDuQgSWtKg/w6Uy4gsdeKKFNIMegHiwmmY
-         N1X3ePnP/HkuORodQnZZt4m9DBgpWfPfap1fji64okr+4Wr3Xt/gdHEhZX2LFsg6Yb3f
-         6yUIQRr/KxFvD0on0D87mkrrHctXOTUFCbVxIAnkH1Y2Ym+8RP07Ke8Ai/GNOyLnlSe0
-         07a3qX4l36fPErokAgiyKupIL8ICK/Ec6soFM9Kka1GSbGes/buF+kVlYgDlvlrV+j3h
-         EHOQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lJEHmFBd3cbPOId3itPZgdyXvG8tbcQnOFRnmR4UTeM=;
+        b=FplHk9O/3Aabvuq0TjN3j50JQhWdJC4NEcRFbKJD2Y129gdpW0LkBRrboK4kB8EMqU
+         7CATJTqx6uwzh16XQT+EYIlFQS5Vlxlq27FU41zTXxMDj2Is7t5up4B88gOkNY5Ljk7N
+         umYwxyT6zrolEnTdPSD+KDMbFK75DjJxrH7xdAcX7ZBr5sjdrno14/IuuUf5S7MHG6FJ
+         +WBCkEddonUskiIhEM0aC2Wlf+HI9OWZ3tXAtFNpxZPqot0aOm8L0o7V8WkqgLlXoO3r
+         WwGIKdws5nFZ5Nxq74lthS47tvfZV9fUOKVxxqoyipyNgIDcuvCG0vgmz6V4gGb+aoSf
+         1FSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=C6EWmjCYcjXlVuyLZRKUgfoLilwqmfMB+owPMFBnb9c=;
-        b=lz4TM7G424ITt2fH50bbLymL7POe6VcmiOFPkRmhHf5M7/Jz5OG+UzNk/i+lhtGDCn
-         VHZDndhjWIH5qJlL1e5Z3BouBs0SBfA2b9XxKr5GAzBEv5HGGmrQps5tvY/8lcy2z4Ky
-         dvT/4Wd/IpFUgeoV7f3ZDSCNms0AKB/Ha5hKI7KG7+ciA6vEi+3JT1Fwv1hrEFXkIcWh
-         oJ1yMUJffnHRazMO5nAuxm+cfKpItKfkdn4mX7w+oC3NswEIxNAIwzCUFlC4roiHulce
-         A6GlKwpQNVxkO8bl913oZ0CXLlfyIzj7itqeVy44TG9P1vbvz1QobVDRcAnA5kUFQc7z
-         29Vg==
-X-Gm-Message-State: AOAM532FOSiYA9g+lFlmC/HV72uJtfdsqqkI0AZXnXY3UaUWCD1RBfVS
-        /Dv14I/R1px6LeBFNCE2IxM=
-X-Google-Smtp-Source: ABdhPJwzD+VbIsMSXDRvOKgyBYSwbhoC1uwCxcueL1tYtFiAGqBfS4tnG1G/k6VNjo4gFo61zBqJAA==
-X-Received: by 2002:a17:90a:7886:: with SMTP id x6mr16220678pjk.21.1604308729837;
-        Mon, 02 Nov 2020 01:18:49 -0800 (PST)
-Received: from [192.168.1.59] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id nh24sm10707447pjb.44.2020.11.02.01.18.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lJEHmFBd3cbPOId3itPZgdyXvG8tbcQnOFRnmR4UTeM=;
+        b=eBxoeNAZsC5bdnOKWGnYdVD8ntePWsMLyMK2K7aFAFn2bDkscWx8wlP8/y0AgHkaf2
+         f/JD9+QzDw6rjRNE3cun3I2jxa1wpd4e6ylDXUdK7+OvsoZ41ugEvT2AKtSuC/3FfCuL
+         IHccodWvGaNntzu6wzendcbqJsm8PIsP48xiTiaKqYVdVFaHUV/pl3DgzQtzu9doq6iN
+         A3bnhVPHv/Vt+k7UArCFtuRWUoQXFr4vhogK5EGeGT2Xb/fGKaDPwtT/T1TCY+ee9Dfs
+         o8gX5s8PiehWdrvIBpmclEEoG1eUNCCYvz0HxJiZpA6rvjJj1ls2Ag+9GxFw+GnbziPZ
+         DJGA==
+X-Gm-Message-State: AOAM5339QoNl5uZXrnxjrNmPpB1dcloJ76E9FbxRPRYVrVd/SHW6kXh3
+        isP3AwpGhwGAsoAwLNIQQAiZTg==
+X-Google-Smtp-Source: ABdhPJyT2/vlBNWplhw7RnadVnFPjUWs2R99EVOUZkdoO+TTy4Q7kTWiCScY9h/WA2u/o1tcM8BwOw==
+X-Received: by 2002:a05:6000:3:: with SMTP id h3mr17931164wrx.215.1604308744638;
+        Mon, 02 Nov 2020 01:19:04 -0800 (PST)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id z19sm3725087wmk.12.2020.11.02.01.19.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 01:18:49 -0800 (PST)
-Message-ID: <47e149dfbf84e685f8b81e4561b8c9fd375cbcb4.camel@gmail.com>
-Subject: Re: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>, verdre@v0yd.nl
-Date:   Mon, 02 Nov 2020 18:18:44 +0900
-In-Reply-To: <20201030110246.GM4077@smile.fi.intel.com>
-References: <20201028142433.18501-1-kitakar@gmail.com>
-         <20201028142433.18501-3-kitakar@gmail.com>
-         <CA+ASDXMXoyOr9oHBjtXZ1w9XxDggv+=XS4nwn0qKWCHQ3kybdw@mail.gmail.com>
-         <837d7ecd6f8a810153d219ec0b4995856abbe458.camel@gmail.com>
-         <20201030110246.GM4077@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 
+        Mon, 02 Nov 2020 01:19:03 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:19:01 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        "David S. Miller" <davem@davemloft.net>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 6/7] kgdb: roundup: Allow runtime arch specific
+ override
+Message-ID: <20201102091901.fkxdp2wyiycdhtjm@holly.lan>
+References: <1603983387-8738-1-git-send-email-sumit.garg@linaro.org>
+ <1603983387-8738-7-git-send-email-sumit.garg@linaro.org>
+ <20201029152106.gj66mjnathsdqtoe@holly.lan>
+ <CAFA6WYOcCj=_G67QGN=8McHWvunoggN7tho9_VueH763U9K=_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYOcCj=_G67QGN=8McHWvunoggN7tho9_VueH763U9K=_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-30 at 13:02 +0200, Andy Shevchenko wrote:
-> On Fri, Oct 30, 2020 at 04:58:33PM +0900, Tsuchiya Yuto wrote:
-> > On Wed, 2020-10-28 at 15:04 -0700, Brian Norris wrote:
+On Mon, Nov 02, 2020 at 11:48:53AM +0530, Sumit Garg wrote:
+> On Thu, 29 Oct 2020 at 20:51, Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 08:26:26PM +0530, Sumit Garg wrote:
+> > > Add a new API kgdb_arch_roundup_cpus() for a particular archichecture to
+> > > override default kgdb roundup and if it detects at runtime to not support
+> > > NMI roundup then it can fallback to default implementation using async
+> > > SMP cross-calls.
+> > >
+> > > Currently such an architecture example is arm64 supporting pseudo NMIs
+> > > feature which is only available on platforms which have support for GICv3
+> > > or later version.
+> > >
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > ---
+> > >  arch/powerpc/kernel/kgdb.c |  3 ++-
+> > >  arch/sparc/kernel/smp_64.c |  3 ++-
+> > >  arch/x86/kernel/kgdb.c     |  6 ++++--
+> > >  include/linux/kgdb.h       |  5 +++--
+> > >  kernel/debug/debug_core.c  | 10 +++++++++-
+> > >  5 files changed, 20 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
+> > > index 4090802..126575d 100644
+> > > --- a/arch/powerpc/kernel/kgdb.c
+> > > +++ b/arch/powerpc/kernel/kgdb.c
+> > > @@ -125,9 +125,10 @@ static int kgdb_debugger_ipi(struct pt_regs *regs)
+> > >  }
+> > >
+> > >  #ifdef CONFIG_SMP
+> > > -void kgdb_roundup_cpus(void)
+> > > +bool kgdb_arch_roundup_cpus(void)
+> > >  {
+> > >       smp_send_debugger_break();
+> > > +     return true;
+> > >  }
+> > >  #endif
+> > >
+> > > diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+> > > index e38d8bf..c459c83 100644
+> > > --- a/arch/sparc/kernel/smp_64.c
+> > > +++ b/arch/sparc/kernel/smp_64.c
+> > > @@ -1014,9 +1014,10 @@ void flush_dcache_page_all(struct mm_struct *mm, struct page *page)
+> > >  }
+> > >
+> > >  #ifdef CONFIG_KGDB
+> > > -void kgdb_roundup_cpus(void)
+> > > +bool kgdb_arch_roundup_cpus(void)
+> > >  {
+> > >       smp_cross_call(&xcall_kgdb_capture, 0, 0, 0);
+> > > +     return true;
+> > >  }
+> > >  #endif
+> > >
+> > > diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+> > > index ff7878d..1b756d9 100644
+> > > --- a/arch/x86/kernel/kgdb.c
+> > > +++ b/arch/x86/kernel/kgdb.c
+> > > @@ -404,7 +404,8 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
+> > >
+> > >  #ifdef CONFIG_SMP
+> > >  /**
+> > > - *   kgdb_roundup_cpus - Get other CPUs into a holding pattern
+> > > + *   kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
+> > > + *                            in an architectural specific manner
+> > >   *
+> > >   *   On SMP systems, we need to get the attention of the other CPUs
+> > >   *   and get them be in a known state.  This should do what is needed
+> > > @@ -414,9 +415,10 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
+> > >   *
+> > >   *   On non-SMP systems, this is not called.
+> > >   */
+> > > -void kgdb_roundup_cpus(void)
+> > > +bool kgdb_arch_roundup_cpus(void)
+> > >  {
+> > >       apic_send_IPI_allbutself(NMI_VECTOR);
+> > > +     return true;
+> > >  }
+> > >  #endif
+> > >
+> > > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> > > index 0d6cf64..f9db5b8 100644
+> > > --- a/include/linux/kgdb.h
+> > > +++ b/include/linux/kgdb.h
+> > > @@ -200,7 +200,8 @@ kgdb_arch_handle_qxfer_pkt(char *remcom_in_buffer,
+> > >  extern void kgdb_call_nmi_hook(void *ignored);
+> > >
+> > >  /**
+> > > - *   kgdb_roundup_cpus - Get other CPUs into a holding pattern
+> > > + *   kgdb_arch_roundup_cpus - Get other CPUs into a holding pattern
+> > > + *                            in an architectural specific manner
+> > >   *
+> > >   *   On SMP systems, we need to get the attention of the other CPUs
+> > >   *   and get them into a known state.  This should do what is needed
+> > > @@ -210,7 +211,7 @@ extern void kgdb_call_nmi_hook(void *ignored);
+> > >   *
+> > >   *   On non-SMP systems, this is not called.
+> > >   */
+> > > -extern void kgdb_roundup_cpus(void);
+> > > +extern bool kgdb_arch_roundup_cpus(void);
+> > >
+> > >  /**
+> > >   *   kgdb_arch_set_pc - Generic call back to the program counter
+> > > diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> > > index 1e75a89..27e401c 100644
+> > > --- a/kernel/debug/debug_core.c
+> > > +++ b/kernel/debug/debug_core.c
+> > > @@ -241,13 +241,21 @@ void __weak kgdb_call_nmi_hook(void *ignored)
+> > >  }
+> > >  NOKPROBE_SYMBOL(kgdb_call_nmi_hook);
+> > >
+> > > -void __weak kgdb_roundup_cpus(void)
+> > > +bool __weak kgdb_arch_roundup_cpus(void)
+> > > +{
+> > > +     return false;
+> >
+> > Do we really need to introduce all these boolean return values just to
+> > call a bit of library code when one of the architectures wants to
+> > fallback to a generic implementation?
+> >
+> > Why not something more like:
+> >
+> > void kgdb_smp_call_nmi_hook(void)
+> > {
+> >     /* original weak version of kgdb_roundup_cpus goes here */
+> > }
+> >
+> > void __weak kgdb_roundup_cpus(void)
+> > {
+> >     kgdb_smp_call_nmi_hook();
+> > }
+> >
+> > arm64 can now simply call the new library function if a fallback is needed.
+> >
 > 
-> ...
+> Makes sense, I will use this approach instead.
 > 
-> > On the other hand, I agree that I don't want to break the existing users.
-> > As you mentioned in the reply to the first patch, I can set the default
-> > value of this parameter depending on the chip id (88W8897) or DMI matching.
+> > Note that same question applies to the backtrace changes...
 > 
-> Since it's a PCIe device you already have ID table where you may add a
-> driver_data with what ever quirks are needed.
+> In case of backtrace, there are already multiple APIs wrapping
+> arch_trigger_cpumask_backtrace() as follows:
+> 
+> - trigger_all_cpu_backtrace()
+> - trigger_allbutself_cpu_backtrace()
+> - trigger_cpumask_backtrace()
+> - trigger_single_cpu_backtrace()
+> 
+> And each of them already return a boolean and have corresponding
+> different fallback mechanisms. So we can't have a common fallback API
+> from arch specific code and instead need to extend that boolean return
+> to arch specific code that is implemented as part of patch #4.
 
-Sorry that my comment was misleading. I meant using the quirk framework
-(that is based on DMI matching) I sent in another series. This applies
-to the other replies from me.
-
-However, thanks to your comment, I remembered that currently, the quirk
-framework can be used only within pcie.c file. For example, the quirk
-initialization is currently done in pcie.c file. The mwifiex driver is
-divided into interface-specific modules (PCIe, SDIO, USB) (e.g.,
-mwifiex_pcie module for PCIe interface) + common module (mwifiex module).
-
-So, I need to extend the quirk framework so that it can be used by the
-mwifiex module globally.
-
-I'll make a v2 version of this series with using the updated quirk
-framework so that it won't change behaviors for existing users.
+Understood. Thanks.
 
 
+Daniel.
