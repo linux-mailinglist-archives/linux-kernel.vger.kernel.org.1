@@ -2,111 +2,462 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003582A30DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04BC2A30E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgKBRGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:06:54 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:44779 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727150AbgKBRGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:06:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 67953EB1;
-        Mon,  2 Nov 2020 12:06:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 12:06:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=uLJUrvpF319aY4AhzM7riVobLoy
-        Kzicn9yfJOYNVd1o=; b=k4nWLTvgApzLaYFjOL5MXWO/B1gMmrqlGiWxjcOgyC0
-        v+wN4m6kDFfVv2Qju/11ebFNPPHyZK2c+6qiOyCpfW9+vYzJ+4tNAH26S2TxxmvB
-        7JcJIWJC+1c6iBhGH0NWvEaFLfcvXw0nWzGwSpmmuWLz3yIWMlICXeAoIThGv8r+
-        p5+7ilOeFRRG2J3BoDOSN1vo5XXTac3U1UTiuWUlZDTY2gNLDTfXL9mDZvc2/wd3
-        X5nigwSnKefZG5lDMN+6vfdDIuqSVACi/M2E6t8AwIaEnzgUNkxe5UrniR9sZLXK
-        VAAvWGdpd/ainEM69qD/dt1esHKT53lxxgaAAD8uCMg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uLJUrv
-        pF319aY4AhzM7riVobLoyKzicn9yfJOYNVd1o=; b=MB6qZxQVv/8NG2yhowVe32
-        l902PSY7ftZs0k4VGjJt63OiRGm4GHE2ynxv6ketc5wIIWLeXqk24PsADOa7ZKVK
-        8mP0sLcP/zPEfcpPUIsNkVIo2+Y/x0EclVVZPErlWPnanSj9wiH+6Zr3Lf6YrluT
-        rEH7XlScdOIbe5daDrXJ9GetFx/U+mmu+a5V0CuVXSNCjjHwMaba/Oe9+oYH/JXw
-        mCLnDKK90dIWsJHtkHCydy7qK2punDJG3ZFgANkeJd2QBNW+s412IsTifmyfyXSZ
-        ZZiBtWQ5o4SN5AebJzQCZMGPDnE571o4KI91KGQX/vchmwTDN9BL0KrgTHtHhPUg
-        ==
-X-ME-Sender: <xms:qjygXxuspPppaRy1TAFQCVh3MFpqMmA-NwvMH0TAa69k5HzIB-z3Rw>
-    <xme:qjygX6ellwWq-0Q4p1ctqLTeuyvw54XFpIi8hwrLEjCCvK71y7lnyjuG0lIj-QB0V
-    wruUY1RQCzlSSUCutA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgleejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:qjygX0zquR9PgtWS12THzA9zlqjVjcp_CZDfCRddpwyEEKZGjvobvQ>
-    <xmx:qjygX4N2nLUbD3T7dLNbO2U3SIKcBCCQAjJNtjVMkb98XyQPUUbdPg>
-    <xmx:qjygXx_sH_0dMWO3gi_m8SRRMcgqo4MqTGGM_caV1Dgij9wPTL0irw>
-    <xmx:rDygXxxO0bSgPUXA04EWEQ37JVt-jenQeVQayDqOlSO356Sc5W3PRw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CD8EE328005A;
-        Mon,  2 Nov 2020 12:06:49 -0500 (EST)
-Date:   Mon, 2 Nov 2020 18:06:48 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Pablo Greco <pgreco@centosproject.org>
-Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on
- Ethernet PHY
-Message-ID: <20201102170648.64w3annfe72ppakn@gilmour.lan>
-References: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
+        id S1727555AbgKBRHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:07:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:34592 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727473AbgKBRHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:07:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A497E1FB;
+        Mon,  2 Nov 2020 09:06:58 -0800 (PST)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 016E73F719;
+        Mon,  2 Nov 2020 09:06:56 -0800 (PST)
+Date:   Mon, 2 Nov 2020 17:06:53 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        James Clark <James.Clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 06/21] perf arm-spe: Refactor printing string to buffer
+Message-ID: <20201102170653.GB6882@arm.com>
+References: <20201030025724.19157-1-leo.yan@linaro.org>
+ <20201030025724.19157-7-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="coo27kwkpohhsfqz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
+In-Reply-To: <20201030025724.19157-7-leo.yan@linaro.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 30, 2020 at 02:57:09AM +0000, Leo Yan wrote:
+> When outputs strings to the decoding buffer with function snprintf(),
+> SPE decoder needs to detects if any error returns from snprintf() and if
+> so needs to directly bail out.  If snprintf() returns success, it needs
+> to update buffer pointer and reduce the buffer length so can continue to
+> output the next string into the consequent memory space.
+> 
+> This complex logics are spreading in the function arm_spe_pkt_desc() so
+> there has many duplicate codes for handling error detecting, increment
+> buffer pointer and decrement buffer size.
+> 
+> To avoid the duplicate code, this patch introduces a new helper function
+> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
+> it's used by the caller arm_spe_pkt_desc(); if printing buffer is called
+> for multiple times in a flow, the error is a cumulative value and simply
+> returns its final value.
+> 
+> This patch also moves the variable 'blen' as the function's local
+> variable, this allows to remove the unnecessary braces and improve the
+> readability.
+> 
+> Suggested-by: Dave Martin <Dave.Martin@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
---coo27kwkpohhsfqz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This looks like a good refacroting now, but as pointed out by Andre this
+patch is now rather hard to review, since it combines the refactoring
+with other changes.
 
-On Mon, Nov 02, 2020 at 11:16:40AM -0300, Pablo Greco wrote:
-> The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
-> the PHY, using pull-ups on the RXDLY and TXDLY pins.
->=20
-> Fix the phy-mode description to correct reflect this so that the
-> implementation doesn't reconfigure the delays incorrectly. This
-> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> rx/tx delay config").
->=20
-> Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
-> Signed-off-by: Pablo Greco <pgreco@centosproject.org>
+If reposting this series, it would be good if this could be split into a
+first patch that introduces arm_spe_pkt_snprintf() and just updates each
+snprintf() call site to use it, but without moving other code around or
+optimising anything, followed by one or more patches that clean up and
+simplify arm_spe_pkt_desc().
 
-Applied thanks!
-Maxime
+If the series is otherwise mature though, then this rework may be
+overkill.
 
---coo27kwkpohhsfqz
-Content-Type: application/pgp-signature; name="signature.asc"
+> ---
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 267 ++++++++----------
+>  1 file changed, 117 insertions(+), 150 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 04fd7fd7c15f..1ecaf9805b79 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -9,6 +9,7 @@
+>  #include <endian.h>
+>  #include <byteswap.h>
+>  #include <linux/bitops.h>
+> +#include <stdarg.h>
+>  
+>  #include "arm-spe-pkt-decoder.h"
+>  
+> @@ -258,192 +259,158 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
+>  	return ret;
+>  }
+>  
+> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+> +				const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +	int ret;
+> +
+> +	/* Bail out if any error occurred */
+> +	if (err && *err)
+> +		return *err;
+> +
+> +	va_start(ap, fmt);
+> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+> +	va_end(ap);
+> +
+> +	if (ret < 0) {
+> +		if (err && !*err)
+> +			*err = ret;
 
------BEGIN PGP SIGNATURE-----
+What happens on buffer overrun (i.e., ret >= *blen)?
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6A8pwAKCRDj7w1vZxhR
-xX+yAP4nc1OpLwJbroeYz9j10cZwGP2/JJSHUW9IPS8fBqtVcQD9Fm8DM/6XZDeK
-N7iU/x6BV0xH6+LdIdLypwqEDKkpEg8=
-=PFUp
------END PGP SIGNATURE-----
+It looks to me like we'll advance buf_p too far, blen will wrap around,
+and the string at *buf_p won't be null terminated.  Because the return
+value is still >= 0, this condition will be returned up the stack as
+"success".
 
---coo27kwkpohhsfqz--
+Perhaps this can never happen given the actual buffer sizes and strings
+being printed, but it feels a bit unsafe.
+
+
+It may be better to clamp the adjustments to *buf_p and *blen to
+*blen - 1 in this case, and explicitly set (*buf_p)[*blen - 1] to '\0'.
+We _may_ want indicate failure in the return from arm_spe_pkt_desc() in
+this situation, but I don't know enough about how this code is called to
+enable me to judge that.
+
+(Note, this issue is not introduced by this patch, but this refactoring
+makes it easier to address it in a single place -- so it may now be
+worth doing so.)
+
+> +	} else {
+> +		*buf_p += ret;
+> +		*blen -= ret;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  		     size_t buf_len)
+>  {
+> -	int ret, ns, el, idx = packet->index;
+> +	int ns, el, idx = packet->index;
+>  	unsigned long long payload = packet->payload;
+>  	const char *name = arm_spe_pkt_name(packet->type);
+> +	size_t blen = buf_len;
+> +	int err = 0;
+>  
+>  	switch (packet->type) {
+>  	case ARM_SPE_BAD:
+>  	case ARM_SPE_PAD:
+>  	case ARM_SPE_END:
+> -		return snprintf(buf, buf_len, "%s", name);
+> -	case ARM_SPE_EVENTS: {
+> -		size_t blen = buf_len;
+> -
+> -		ret = 0;
+> -		ret = snprintf(buf, buf_len, "EV");
+> -		buf += ret;
+> -		blen -= ret;
+> -		if (payload & 0x1) {
+> -			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x2) {
+> -			ret = snprintf(buf, buf_len, " RETIRED");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x4) {
+> -			ret = snprintf(buf, buf_len, " L1D-ACCESS");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x8) {
+> -			ret = snprintf(buf, buf_len, " L1D-REFILL");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x10) {
+> -			ret = snprintf(buf, buf_len, " TLB-ACCESS");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x20) {
+> -			ret = snprintf(buf, buf_len, " TLB-REFILL");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x40) {
+> -			ret = snprintf(buf, buf_len, " NOT-TAKEN");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x80) {
+> -			ret = snprintf(buf, buf_len, " MISPRED");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s", name);
+> +	case ARM_SPE_EVENTS:
+> +		arm_spe_pkt_snprintf(&err, &buf, &blen, "EV");
+> +
+> +		if (payload & 0x1)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCEPTION-GEN");
+> +		if (payload & 0x2)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " RETIRED");
+> +		if (payload & 0x4)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-ACCESS");
+> +		if (payload & 0x8)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-REFILL");
+> +		if (payload & 0x10)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-ACCESS");
+> +		if (payload & 0x20)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-REFILL");
+> +		if (payload & 0x40)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " NOT-TAKEN");
+> +		if (payload & 0x80)
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, " MISPRED");
+>  		if (idx > 1) {
+> -			if (payload & 0x100) {
+> -				ret = snprintf(buf, buf_len, " LLC-ACCESS");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x200) {
+> -				ret = snprintf(buf, buf_len, " LLC-REFILL");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x400) {
+> -				ret = snprintf(buf, buf_len, " REMOTE-ACCESS");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> +			if (payload & 0x100)
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-ACCESS");
+> +			if (payload & 0x200)
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-REFILL");
+> +			if (payload & 0x400)
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " REMOTE-ACCESS");
+>  		}
+> -		if (ret < 0)
+> -			return ret;
+> -		blen -= ret;
+> -		return buf_len - blen;
+
+It looks like we now fall off the bottom of the switch() here.  It's
+preferable to add a break, both to document the intended code flow, and
+to avoid accidents if another case is added later.
+
+> -	}
+> +		return err ?: (int)(buf_len - blen);
+
+Nit: unexplained type cast.  Does the result definitely fit into an int?
+If not, why doesn't it matter?
+
+
+Also:
+
+If the actual return value is important for the caller to determine the
+number of bytes appended, then it would be better to compute it in one
+place.  Otherwise, it would be better to squash all success returns to 0,
+rather than spend effort computing a value that may be misleading or
+wrong anyway.
+
+In its current form, it's tricky to see whether this patch derives the
+return value consistently for all cases.  In particular, if some code
+patch does one or more arm_spe_pkt_snprintf(), followed by a
+return arm_spe_pkt_snprintf(); then the return value (which only takes
+the last arm_spe_pkt_desc() into account) would be wrong.  It would be
+preferable if the return value for the success case were always
+computed from buf_len and blen, to avoid this risk.  (I'm not saying
+this bug exists, just that it's hard to see from the patch that it
+doesn't exist.)
+
+> +
+>  	case ARM_SPE_OP_TYPE:
+>  		switch (idx) {
+> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> -					"COND-SELECT" : "INSN-OTHER");
+> -		case 1:	{
+> -			size_t blen = buf_len;
+> +		case 0:
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +					payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
+> +		case 1:
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +					     payload & 0x1 ? "ST" : "LD");
+>  
+> -			if (payload & 0x1)
+> -				ret = snprintf(buf, buf_len, "ST");
+> -			else
+> -				ret = snprintf(buf, buf_len, "LD");
+> -			buf += ret;
+> -			blen -= ret;
+>  			if (payload & 0x2) {
+> -				if (payload & 0x4) {
+> -					ret = snprintf(buf, buf_len, " AT");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> -				if (payload & 0x8) {
+> -					ret = snprintf(buf, buf_len, " EXCL");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> -				if (payload & 0x10) {
+> -					ret = snprintf(buf, buf_len, " AR");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> +				if (payload & 0x4)
+> +					arm_spe_pkt_snprintf(&err, &buf, &blen, " AT");
+> +				if (payload & 0x8)
+> +					arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCL");
+> +				if (payload & 0x10)
+> +					arm_spe_pkt_snprintf(&err, &buf, &blen, " AR");
+>  			} else if (payload & 0x4) {
+> -				ret = snprintf(buf, buf_len, " SIMD-FP");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (ret < 0)
+> -				return ret;
+> -			blen -= ret;
+> -			return buf_len - blen;
+> -		}
+> -		case 2:	{
+> -			size_t blen = buf_len;
+> -
+> -			ret = snprintf(buf, buf_len, "B");
+> -			buf += ret;
+> -			blen -= ret;
+> -			if (payload & 0x1) {
+> -				ret = snprintf(buf, buf_len, " COND");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x2) {
+> -				ret = snprintf(buf, buf_len, " IND");
+> -				buf += ret;
+> -				blen -= ret;
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " SIMD-FP");
+>  			}
+> -			if (ret < 0)
+> -				return ret;
+> -			blen -= ret;
+> -			return buf_len - blen;
+> -			}
+> -		default: return 0;
+> +
+> +			return err ?: (int)(buf_len - blen);
+> +
+> +		case 2:
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, "B");
+> +
+> +			if (payload & 0x1)
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " COND");
+> +			if (payload & 0x2)
+> +				arm_spe_pkt_snprintf(&err, &buf, &blen, " IND");
+> +
+> +			return err ?: (int)(buf_len - blen);
+> +
+> +		default:
+> +			return 0;
+>  		}
+>  	case ARM_SPE_DATA_SOURCE:
+>  	case ARM_SPE_TIMESTAMP:
+> -		return snprintf(buf, buf_len, "%s %lld", name, payload);
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %lld", name, payload);
+>  	case ARM_SPE_ADDRESS:
+>  		switch (idx) {
+>  		case 0:
+>  		case 1: ns = !!(packet->payload & NS_FLAG);
+>  			el = (packet->payload & EL_FLAG) >> 61;
+>  			payload &= ~(0xffULL << 56);
+> -			return snprintf(buf, buf_len, "%s 0x%llx el%d ns=%d",
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +					"%s 0x%llx el%d ns=%d",
+>  				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
+> -		case 2:	return snprintf(buf, buf_len, "VA 0x%llx", payload);
+> +		case 2:
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +						    "VA 0x%llx", payload);
+>  		case 3:	ns = !!(packet->payload & NS_FLAG);
+>  			payload &= ~(0xffULL << 56);
+> -			return snprintf(buf, buf_len, "PA 0x%llx ns=%d",
+> -					payload, ns);
+> -		default: return 0;
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +						    "PA 0x%llx ns=%d", payload, ns);
+> +		default:
+> +			return 0;
+>  		}
+>  	case ARM_SPE_CONTEXT:
+> -		return snprintf(buf, buf_len, "%s 0x%lx el%d", name,
+> -				(unsigned long)payload, idx + 1);
+> -	case ARM_SPE_COUNTER: {
+> -		size_t blen = buf_len;
+> -
+> -		ret = snprintf(buf, buf_len, "%s %d ", name,
+> -			       (unsigned short)payload);
+> -		buf += ret;
+> -		blen -= ret;
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%lx el%d",
+> +					    name, (unsigned long)payload, idx + 1);
+> +	case ARM_SPE_COUNTER:
+> +		arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %d ", name,
+> +				     (unsigned short)payload);
+> +
+>  		switch (idx) {
+> -		case 0:	ret = snprintf(buf, buf_len, "TOT"); break;
+> -		case 1:	ret = snprintf(buf, buf_len, "ISSUE"); break;
+> -		case 2:	ret = snprintf(buf, buf_len, "XLAT"); break;
+> -		default: ret = 0;
+> +		case 0:
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, "TOT");
+> +			break;
+> +		case 1:
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, "ISSUE");
+> +			break;
+> +		case 2:
+> +			arm_spe_pkt_snprintf(&err, &buf, &blen, "XLAT");
+> +			break;
+> +		default:
+> +			break;
+>  		}
+> -		if (ret < 0)
+> -			return ret;
+> -		blen -= ret;
+> -		return buf_len - blen;
+> -	}
+> +
+> +		return err ?: (int)(buf_len - blen);
+> +
+>  	default:
+>  		break;
+>  	}
+>  
+> -	return snprintf(buf, buf_len, "%s 0x%llx (%d)",
+> -			name, payload, packet->index);
+> +	return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%llx (%d)",
+> +				    name, payload, packet->index);
+
+Otherwise, the patch looks generally OK, but I'd like to see an answer
+on my points above.
+
+Cheers
+---Dave
