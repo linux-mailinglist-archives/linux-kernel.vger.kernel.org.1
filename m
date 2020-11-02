@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F4E2A2573
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAB92A2575
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgKBHnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:43:07 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:12166 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727689AbgKBHnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:43:06 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604302986; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=JcW6i+Qb4VgBJvdLIWaHbAHYP0+oYiGUqaNaSh4Fg0Q=; b=TvkVRd1M0xwJnUa1lqFkZJJzmoCQ3yJCvDSFV+5yKT1AkLMkY8JsUZ3jruf9P/WewLgyIfNR
- UDIc1bYTacvbj+gDb7uXy3sj0O3SF6aFa2beyGCuJ3x2kvYA/oEGMfcxrmBFkCfrjGwC8a1Q
- 5WZrMe9xR+ApRPE18D/tOcNOZIw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f9fb88803535904a02428dd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 07:43:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31978C43391; Mon,  2 Nov 2020 07:43:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728108AbgKBHnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:43:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728078AbgKBHnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:43:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604302989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qWIfKd9ZiQU29ZqGSlOhjKSzRATAwUeg5+eE8ZDGiys=;
+        b=GqDV48Dtc7Rfq0MVHduzQEoK9Py95xu86UufvOx2om7ult8FFyCIKOElYVWBoi7d+EhxIa
+        WKpuceSdA0SZlu7ThKucsvpOrHyve0coC19d3y1u2YecjoUM7ZpUNLqAX7XC+862cpMu75
+        656vz5udgZBIfBCuc43cScVmtjACtYA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-83-N2pcUwMWNBSe0q4XT1NJLg-1; Mon, 02 Nov 2020 02:43:05 -0500
+X-MC-Unique: N2pcUwMWNBSe0q4XT1NJLg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 194D5C433C6;
-        Mon,  2 Nov 2020 07:42:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 194D5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org, ath10k@lists.infradead.org
-Subject: Re: [PATCH v5 2/2] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module
-References: <20201031003845.41137-1-john.stultz@linaro.org>
-        <20201031003845.41137-2-john.stultz@linaro.org>
-Date:   Mon, 02 Nov 2020 09:42:55 +0200
-In-Reply-To: <20201031003845.41137-2-john.stultz@linaro.org> (John Stultz's
-        message of "Sat, 31 Oct 2020 00:38:45 +0000")
-Message-ID: <87imaouruo.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 034C71018F80;
+        Mon,  2 Nov 2020 07:43:04 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AA305B4AF;
+        Mon,  2 Nov 2020 07:43:01 +0000 (UTC)
+Subject: Re: [PATCH v2 0/3] md superblock write alignment on 512e devices
+To:     Christopher Unkel <cunkel@drivescale.com>,
+        linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20201029201358.29181-1-cunkel@drivescale.com>
+From:   Xiao Ni <xni@redhat.com>
+Message-ID: <265efd48-b0c6-cba5-c77e-5efb0e6b9e00@redhat.com>
+Date:   Mon, 2 Nov 2020 15:42:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201029201358.29181-1-cunkel@drivescale.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ ath10k list
 
-John Stultz <john.stultz@linaro.org> writes:
 
-> Allow the qcom_scm driver to be loadable as a permenent module.
+On 10/30/2020 04:13 AM, Christopher Unkel wrote:
+> Hello,
 >
-> This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> ensure that drivers that call into the qcom_scm driver are
-> also built as modules. While not ideal in some cases its the
-> only safe way I can find to avoid build errors without having
-> those drivers select QCOM_SCM and have to force it on (as
-> QCOM_SCM=n can be valid for those drivers).
+> Thanks for the feedback on the previous patch series.
 >
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
-> v3:
-> * Fix __arm_smccc_smc build issue reported by
->   kernel test robot <lkp@intel.com>
-> v4:
-> * Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
->   config that requires it.
-> v5:
-> * Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
-> ---
->  drivers/firmware/Kconfig                | 4 ++--
->  drivers/firmware/Makefile               | 3 ++-
->  drivers/firmware/qcom_scm.c             | 4 ++++
->  drivers/iommu/Kconfig                   | 2 ++
->  drivers/net/wireless/ath/ath10k/Kconfig | 1 +
->  5 files changed, 11 insertions(+), 3 deletions(-)
+> A updated patch series with the same function as the first patch
+> (https://lkml.org/lkml/2020/10/22/1058 "md: align superblock writes to
+> physical blocks") follows.
+>
+> As suggested, it introduces a helper function, which can be used to
+> reduce some code duplication.  It handles the case in super_1_sync()
+> where the superblock is extended by the addition of new component
+> devices.
+>
+> I think it also fixes a bug where the existing code in super_1_load()
+> ought to be rejecting the array with EINVAL: if the superblock padded
+> out to the *logical* block length runs into the bitmap.  For example, if
+> the bitmap offset is 2 (bitmap 1K after superblock) and the logical
+> block size is 4K, the superblock padded out to 4K runs into the bitmap.
+> This case may be unusual (perhaps only happens if the array is created
+> on a 512n device and then raw contents are copied onto a 4kn device) but
+> I think it is possible.
+Hi Chris
+For super1.1 and super1.2 bitmap offset is 8. It's a fixed value. So it 
+should
+not have the risk?
 
-For ath10k part:
+But for future maybe it has this problem. If the disk logical or 
+physical block size
+is larger than 4K in future, it has data corruption risk.
+>
+> With respect to the option of simply replacing
+> queue_logical_block_size() with queue_physical_block_size(), I think
+> this can result in the code rejecting devices that can be loaded, but
+In mdadm it defines the max super size of super1 is 4096
+#define MAX_SB_SIZE 4096
+/* bitmap super size is 256, but we round up to a sector for alignment */
+#define BM_SUPER_SIZE 512
+#define MAX_DEVS ((int)(MAX_SB_SIZE - sizeof(struct mdp_superblock_1)) / 2)
+#define SUPER1_SIZE     (MAX_SB_SIZE + BM_SUPER_SIZE \
+                          + sizeof(struct misc_dev_info))
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
+It should be ok to replace queue_logical_block_size with 
+queue_physical_block_size?
+Now it doesn't check physical block size and super block size. For 
+super1, we can add
+a check that if physical block size is larger than MAX_SB_SIZE, then we 
+reject to create/assmble
+the raid device.
+> for which the physical block alignment can't be respected--the longer
+> padded size would trigger the EINVAL cases testing against
+> data_offset/new_data_offset.  I think it's better to proceed in such
+> cases, just with unaligned superblock writes as would presently happen.
+> Also if I'm right about the above bug, then I think this subsitution
+> would be more likely to trigger it.
+>
+> Thanks,
+>
+>    --Chris
+>
+>
+> Christopher Unkel (3):
+>    md: factor out repeated sb alignment logic
+>    md: align superblock writes to physical blocks
+>    md: reuse sb length-checking logic
+>
+>   drivers/md/md.c | 69 +++++++++++++++++++++++++++++++++++++------------
+>   1 file changed, 52 insertions(+), 17 deletions(-)
+>
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
