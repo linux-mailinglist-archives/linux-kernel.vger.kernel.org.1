@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC6F2A295B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97282A298D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgKBL2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:28:04 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49010 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728731AbgKBL2B (ORCPT
+        id S1728738AbgKBLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:30:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728714AbgKBLai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:28:01 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-121-Fb5DaFw8N3OQLi3rvlAzmw-1; Mon, 02 Nov 2020 11:27:58 +0000
-X-MC-Unique: Fb5DaFw8N3OQLi3rvlAzmw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 2 Nov 2020 11:27:57 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 2 Nov 2020 11:27:57 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Shevchenko' <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-CC:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Mon, 2 Nov 2020 06:30:38 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBCC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:30:38 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 205so1394852wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=i8P+1ihFPTbcqcdmnuv8HM9WxJxCIqZJiXX7QB+7i7w=;
+        b=m5bLNXPJlIXPe6vWNe3sFFSqDvuKpn8KQElblDrEAUjPPJ2eqIzNOrD3K/kopR8Ase
+         RSAPoUZhcDDx3dQFrjjHC1QIKuuD6JSsE7It14yxKziSIBvaSZXu33sWRJ7uDViuTbvl
+         9kL2L2H4wJNIMI/GCwrvWmmHkxvHRxlISY03JRMcZALik0l9m0WgQj/dslfRvAR1yxC+
+         eAwXE3y4fJ/pPTlC7Ag+jgR1TRLjYFw4KpXIH93q62PTyU6cogjAnQzL15l4NPVyZ8iA
+         nG47OUy2+XRjE47dt1+j+COQE96+FTrP+xnGYV6RMYjFEvlaVqGW2ZVkKtbaHZPn3xJz
+         gzzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=i8P+1ihFPTbcqcdmnuv8HM9WxJxCIqZJiXX7QB+7i7w=;
+        b=d/X6s6AW5ODSxEEtYFCAPL+oRz20v0XZdpQI6njjZJSP9xWva0trwgTu0m43fN7zNB
+         gDLojvl+xAg1ZR0HbPm5JARI64SRjJDWT/cmj04+ruTCJRrwF72erCa2QoC4qy0tEfpb
+         XR4iJEbrM7jn/vn0hP9wvpRKBsS0vXvzKVf7MRsxLf/muRBGSXVzlKyuxErcz2ySNOvx
+         lVH6II7gtHu0T7pPRvYVBd6NTtGorjGuv/FMVLH+s+BAEO5TnVd8dM9sLJinajaLt+7+
+         43HzUnRZcX3kIXwE6PKOXFq42J39s2af4wNRov0tuGv82TCaBp9qi5fe+E1vpl8B5wWW
+         ivgA==
+X-Gm-Message-State: AOAM531c8wXAOkS8ROi7GnJL+0T8MJZQ5rTA8Zl+9Hsl1qdOcQR14iRx
+        oe4HpbxrxQR9DGsjhR9YkKZJ5g==
+X-Google-Smtp-Source: ABdhPJyukRK6/lVQPZEtTsbbFN0/7S8cO1TDZDy93qCXars0Ldc0ODXaZPWGpf44BJ2D8ZiOzJUMJg==
+X-Received: by 2002:a7b:ce85:: with SMTP id q5mr16890502wmj.35.1604316637217;
+        Mon, 02 Nov 2020 03:30:37 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id b136sm14536930wmb.21.2020.11.02.03.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 03:30:36 -0800 (PST)
+Date:   Mon, 2 Nov 2020 11:30:34 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: RE: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset
- computation
-Thread-Topic: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset
- computation
-Thread-Index: AQHWsQcDZJyTqVFuY0eBWd5K3Yt5z6m0sIKQ
-Date:   Mon, 2 Nov 2020 11:27:57 +0000
-Message-ID: <18a4358cfb0d427abed523fc2c8ec8f0@AcuMS.aculab.com>
-References: <20201026141839.28536-1-brgl@bgdev.pl>
- <20201026141839.28536-6-brgl@bgdev.pl>
- <CAHp75VfNy4j73nFd2nGSsuGdn0Yat_ENGaaARP_8R9CQKHnnZg@mail.gmail.com>
-In-Reply-To: <CAHp75VfNy4j73nFd2nGSsuGdn0Yat_ENGaaARP_8R9CQKHnnZg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        stable <stable@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
+ qualifier
+Message-ID: <20201102113034.GL4127@dell>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
+ <20201102110916.GK4127@dell>
+ <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBTaGV2Y2hlbmtvDQo+IFNlbnQ6IDAyIE5vdmVtYmVyIDIwMjAgMTA6NTkNCj4g
-DQo+IE9uIE1vbiwgT2N0IDI2LCAyMDIwIGF0IDQ6MjMgUE0gQmFydG9zeiBHb2xhc3pld3NraSA8
-YnJnbEBiZ2Rldi5wbD4gd3JvdGU6DQo+IA0KPiAuLi4NCj4gDQo+ID4gK3N0YXRpYyB1bnNpZ25l
-ZCBpbnQNCj4gPiArZXhhcl9vZmZzZXRfdG9fc2VsX2FkZHIoc3RydWN0IGV4YXJfZ3Bpb19jaGlw
-ICpleGFyX2dwaW8sIHVuc2lnbmVkIGludCBvZmZzZXQpDQo+ID4gK3sNCj4gPiArICAgICAgIHJl
-dHVybiAob2Zmc2V0ICsgZXhhcl9ncGlvLT5maXJzdF9waW4pIC8gOCA/IEVYQVJfT0ZGU0VUX01Q
-SU9TRUxfSEkNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICA6IEVYQVJfT0ZGU0VUX01QSU9TRUxfTE87DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0
-YXRpYyB1bnNpZ25lZCBpbnQNCj4gPiArZXhhcl9vZmZzZXRfdG9fbHZsX2FkZHIoc3RydWN0IGV4
-YXJfZ3Bpb19jaGlwICpleGFyX2dwaW8sIHVuc2lnbmVkIGludCBvZmZzZXQpDQo+ID4gK3sNCj4g
-PiArICAgICAgIHJldHVybiAob2Zmc2V0ICsgZXhhcl9ncGlvLT5maXJzdF9waW4pIC8gOCA/IEVY
-QVJfT0ZGU0VUX01QSU9MVkxfSEkNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICA6IEVYQVJfT0ZGU0VUX01QSU9MVkxfTE87DQo+ID4gK30NCj4g
-PiArDQo+ID4gK3N0YXRpYyB1bnNpZ25lZCBpbnQNCj4gPiArZXhhcl9vZmZzZXRfdG9fYml0KHN0
-cnVjdCBleGFyX2dwaW9fY2hpcCAqZXhhcl9ncGlvLCB1bnNpZ25lZCBpbnQgb2Zmc2V0KQ0KPiA+
-ICt7DQo+ID4gKyAgICAgICByZXR1cm4gKG9mZnNldCArIGV4YXJfZ3Bpby0+Zmlyc3RfcGluKSAl
-IDg7DQo+ID4gK30NCj4gDQo+IEFuc3dlcmluZyB0byB5b3VyIHF1ZXN0aW9uLi4uDQo+IA0KPiBJ
-dCBjYW4gYmUgZG9uZSBsaW5lIHRoaXM6DQo+IA0KPiBzdGF0aWMgdW5zaWduZWQgaW50IGV4YXJf
-b2Zmc2V0X3RvX2JhbmtfYW5kX2JpdCguLi4sICpiaXQpDQo+IHsNCj4gICAgICAgICpiaXQgPSAo
-b2Zmc2V0ICsgZXhhcl9ncGlvLT5maXJzdF9waW4pICUgODsNCj4gICAgICAgIHJldHVybiAob2Zm
-c2V0ICsgZXhhcl9ncGlvLT5maXJzdF9waW4pIC8gODsNCj4gfQ0KDQpUaGF0IGlzIGxpa2VseSB0
-byByZXF1aXJlIHRoZSBjb21waWxlciByZWxvYWQgZXhhcl9ncGlvLT5maXJzdF9waW4NCmFmdGVy
-IHRoZSB3cml0ZSB0byAqYml0Lg0KDQo+IHN0YXRpYyB1bnNpZ25lZCBpbnQgZXhhcl9vZmZzZXRf
-dG9fbHZsX2FkZHJfYW5kX2JpdCgsICpiaXQpDQo+IHsNCj4gICAgIHJldHVybiBleGFyX29mZnNl
-dF90b19iYW5rX2FuZF9iaXQoLi4uLCBiaXQpID8NCj4gICAgICAgICBFWEFSX09GRlNFVF9NUElP
-TFZMX0hJIDogRVhBUl9PRkZTRVRfTVBJT0xWTF9MTzsNCj4gfQ0KDQpHYWggd2h5IGlzIGl0IHVz
-aW5nIGRpdmlkZSB0aGVuID86ID8NCkFGQUlDVCAoZnJvbSB0aGUgYWJvdmUpIHRoZXJlIGFyZSBh
-dCBtb3N0IDE2IHBpbnMuDQoNCk11Y2ggYmV0dGVyIHdvdWxkIGJlIHVzaW5nOg0KCXRtcCA9CW9m
-ZnNldCArIGV4YXJfZ3Bpby0+Zmlyc3RfcGluOw0KCSpiaXQgPSB0bXAgJiA3Ow0KCXJldHVybiB0
-bXAgJiA4Ow0KDQpJbmxpbmVkIHRoZSBjb21waWxlciBtYXkgd2VsbCBjb21wdXRlOg0KCWV4YXJf
-b2Zmc2V0X3RvX2JhbmtfYW5kX2JpdCgpID8gSEkgOiBMTzsNCmFzOg0KCUxPICsgKEhJIC0gTE8p
-ICogZXhhcl9vZmZzZXRfdG9fYmFua19hbmRfYml0KCkuDQpUaGUgbGF0dGVyIHRlcm0gaXMgbGlr
-ZWx5IHRvIGJlIGp1c3QgKHRtcCAmIDgpID4+IG4uDQoNCkkgYWxzbyBiZXQgdGhlIGNvZGUgYWN0
-dWFsbHkgd2FudHMgKDEgPDwgYml0KS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Mon, 02 Nov 2020, Daniel Vetter wrote:
 
+> On Mon, Nov 2, 2020 at 12:09 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 02 Nov 2020, Daniel Vetter wrote:
+> >
+> > > On Fri, Oct 30, 2020 at 7:18 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
+> > > > built-in fonts") introduced the following error when building
+> > > > rpc_defconfig (only this build appears to be affected):
+> > > >
+> > > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+> > > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+> > > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+> > > >
+> > > > The .data section is discarded at link time.  Reinstating
+> > > > acorndata_8x8 as const ensures it is still available after linking.
+> > > >
+> > > > Cc: <stable@vger.kernel.org>
+> > > > Cc: Russell King <linux@armlinux.org.uk>
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > >
+> > > Shouldn't we add the const to all of them, for consistency?
+> >
+> > The thought did cross my mind.  However, I do not see any further
+> > issues which need addressing.  Nor do I have any visibility into what
+> > issues may be caused by doing so.  The only thing I know for sure is
+> > that this patch fixes the compile error pertained to in the commit
+> > message, and I'd like for this fix to be as atomic as possible, as
+> > it's designed to be routed through the Stable/LTS trees.
+> 
+> The trouble is that if we only make one of them const, then it'll take
+> so much longer to hit any issues due to code not handling this
+> correctly. Being consistent with all fonts sounds like the best
+> approach.
+> 
+> And the original patch that lost the const for the additional data
+> also went through cc: stable for all fonts together. So that shouldn't
+> be the hold-up.
+
+My plan was to keep the fix as simple as possible.
+
+This is only an issue due to the odd handling of the compressed Arm
+image which exclusively references 'acorndata_8x8' and discards it's
+.data section.
+
+I am happy to go with the majority on this though.
+
+Does anyone else have an opinion?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
