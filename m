@@ -2,108 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1350D2A2C50
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE952A2C67
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgKBOL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:11:58 -0500
-Received: from m12-12.163.com ([220.181.12.12]:45178 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKBOL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:11:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=X9akP
-        RF2DkcKO4cG0CcTnYlS18rDofVKLD9yne71XRY=; b=V+QIwIXdXK489rR8nr4ol
-        CLNie5Y3DQhPksFIgiHAK9qsBw4UFBzW0vfOg3+UtMCUs+oZx7n6CGF11APsdIqG
-        trG7JbMaf8pIjpVd9/jjWCvRWsPzfgU9FNKYzousYYhb+GSDbxjuso84OJ6zuWJT
-        D7gDSZlfC5S4x6rywft7IE=
-Received: from localhost (unknown [101.228.30.230])
-        by smtp8 (Coremail) with SMTP id DMCowABXXr5mE6BfgATWUg--.8283S2;
-        Mon, 02 Nov 2020 22:10:47 +0800 (CST)
-Date:   Mon, 2 Nov 2020 22:10:46 +0800
-From:   Hui Su <sh_def@163.com>
-To:     Phil Auld <pauld@redhat.com>, David.Laight@aculab.com,
-        linux-kernel@vger.kernel.org, bsegall@google.com, mingo@redhat.com
-Subject: Re: [PATCH] sched/fair: remove the spin_lock operations
-Message-ID: <20201102141046.GA184102@rlk>
-References: <20201030144621.GA96974@rlk>
- <xm26mu0335zz.fsf@google.com>
- <22f99ee1d9b245c2a356d4d555b54e6a@AcuMS.aculab.com>
- <20201102135341.GA154641@lorien.usersys.redhat.com>
+        id S1726031AbgKBOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgKBOOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:14:02 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E822DC061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:14:00 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 2so15095775ljj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UWSN6pUmUHVvmlI9O9ME30to/SMhrDIMong6ljJZfek=;
+        b=mH8M9jpsGa3f9fcWJHPca/931KX2U+XkxbOX64TG8Zhi5C/ZcESSCqI25qknkzRBLO
+         noKBzIlTe+kkzgJhAG7wFIWJHKb+7Biel9RAR2wvFwoQ8awGXak5DIOL/gSrErk8V9Le
+         vlO7D9AMDRl3i5YY711AIk6T0Y/LyvuwzQGcNyl4w01onM/Gmvo0d0ZnirRD4P47OtY2
+         tzxcRqUU+MRRVpIAht7p86HHVpCbRPuFXM6Wp6qrioc/0YN/b7/4RkUf4BGA22vRsC28
+         ayKlOnSmhsPnPgbQkfW35DjULd5kYMYQ9XAPr8m5Wvyv0vFY8DY7k6OmPeCE5GBKo4Wr
+         ts3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UWSN6pUmUHVvmlI9O9ME30to/SMhrDIMong6ljJZfek=;
+        b=AH0yjyh+3l3Mvlej4YFLUyd6/KQHi/t8x4zQOC7kjGAX3zw6t2ih/lDNF6K1WKn/Ex
+         Iqc5GJ9ianiYrPuG3zn+XqRCIchRG9NvW5DmX7cOloAzgJ/d0eEuTDEx9m+QfmvEV3At
+         3Kf/uZahglaX9mb+m2bpmd4hkSeBOHJzpg7aizxmvUUI2NzoqxqESNSzElgx8e+7kOSW
+         i8rysVnj934MtLU8qKyFgqiCTEL303Cy4WxKMMdT4e/+R21eIy/Adf0Ncb6FWamoxr1U
+         QK996R0/IvOSxq+Z8M4EjJfCO3+2UUnYakS+Au4Ls8CLJ/RndzVIagUlHRTX9B6tawTL
+         ADEw==
+X-Gm-Message-State: AOAM532xW6cdRSbWgaC5mb2xZ+d1weHLowGt4ec6SlKTjo5nZoUBhfnC
+        IpQQauuxRS1v0IRlTULoVoGRV0upMU5ABTlWNb2wWw==
+X-Google-Smtp-Source: ABdhPJybPO8qgl/H4+fZNekPwvUlTXpeBbE0gJrFEKhorJDspmNB/asdWQ1rEsPeRWv77CUoxL2pOk6JOxoYlGfUPn4=
+X-Received: by 2002:a2e:b888:: with SMTP id r8mr6414174ljp.138.1604326439180;
+ Mon, 02 Nov 2020 06:13:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102135341.GA154641@lorien.usersys.redhat.com>
-X-CM-TRANSID: DMCowABXXr5mE6BfgATWUg--.8283S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr15Zw1UXr4fCFWxKr1UGFg_yoW8WF1DpF
-        ZrKay5KF4DXr97XrnF93WYgF4kK3yIyr15Zr1rWF1fZws8uw13KrW7GrZIkF4avr1SyF4v
-        gF48J3s3Xrs0yw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UDMa5UUUUU=
-X-Originating-IP: [101.228.30.230]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMRzQX1UMWNDOagAAsX
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+ <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com> <CAG48ez3nH2Oiz9wMSpvUxxX_TRYTT98d3Nj1vnCuJOj9CCXH8Q@mail.gmail.com>
+ <b43b50a2-fa5c-419d-ad24-3fd40bc26dba@gmail.com>
+In-Reply-To: <b43b50a2-fa5c-419d-ad24-3fd40bc26dba@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 2 Nov 2020 15:13:31 +0100
+Message-ID: <CAG48ez000V-5KEpdHd3mNZrqvYYydJcdjZvZxeVph7AFgcxfHA@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 08:53:41AM -0500, Phil Auld wrote:
-> On Fri, Oct 30, 2020 at 10:16:29PM +0000 David Laight wrote:
-> > From: Benjamin Segall
-> > > Sent: 30 October 2020 18:48
-> > > 
-> > > Hui Su <sh_def@163.com> writes:
-> > > 
-> > > > Since 'ab93a4bc955b ("sched/fair: Remove
-> > > > distribute_running fromCFS bandwidth")',there is
-> > > > nothing to protect between raw_spin_lock_irqsave/store()
-> > > > in do_sched_cfs_slack_timer().
-> > > >
-> > > > So remove it.
-> > > 
-> > > Reviewed-by: Ben Segall <bsegall@google.com>
-> > > 
-> > > (I might nitpick the subject to be clear that it should be trivial
-> > > because the lock area is empty, or call them dead or something, but it's
-> > > not all that important)
-> > 
-> > I don't know about this case, but a lock+unlock can be used
-> > to ensure that nothing else holds the lock when acquiring
-> > the lock requires another lock be held.
-> > 
-> > So if the normal sequence is:
-> > 	lock(table)
-> > 	# lookup item
-> > 	lock(item)
-> > 	unlock(table)
-> > 	....
-> > 	unlock(item)
-> > 
-> > Then it can make sense to do:
-> > 	lock(table)
-> > 	lock(item)
-> > 	unlock(item)
-> > 	....
-> > 	unlock(table)
-> > 
-> > although that ought to deserve a comment.
+On Sat, Oct 31, 2020 at 9:51 AM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+> On 10/30/20 8:20 PM, Jann Horn wrote:
+> > On Thu, Oct 29, 2020 at 8:14 PM Michael Kerrisk (man-pages)
+> > <mtk.manpages@gmail.com> wrote:
+> >> On 10/29/20 2:42 AM, Jann Horn wrote:
+> >>> As discussed at
+> >>> <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> >>> we need to re-check checkNotificationIdIsValid() after reading remote
+> >>> memory but before using the read value in any way. Otherwise, the
+> >>> syscall could in the meantime get interrupted by a signal handler, the
+> >>> signal handler could return, and then the function that performed the
+> >>> syscall could free() allocations or return (thereby freeing buffers on
+> >>> the stack).
+> >>>
+> >>> In essence, this pread() is (unavoidably) a potential use-after-free
+> >>> read; and to make that not have any security impact, we need to check
+> >>> whether UAF read occurred before using the read value. This should
+> >>> probably be called out elsewhere in the manpage, too...
+> >>>
+> >>> Now, of course, **reading** is the easy case. The difficult case is if
+> >>> we have to **write** to the remote process... because then we can't
+> >>> play games like that. If we write data to a freed pointer, we're
+> >>> screwed, that's it. (And for somewhat unrelated bonus fun, consider
+> >>> that /proc/$pid/mem is originally intended for process debugging,
+> >>> including installing breakpoints, and will therefore happily write
+> >>> over "readonly" private mappings, such as typical mappings of
+> >>> executable code.)
+> >>>
+> >>> So, uuuuh... I guess if anyone wants to actually write memory back to
+> >>> the target process, we'd better come up with some dedicated API for
+> >>> that, using an ioctl on the seccomp fd that magically freezes the
+> >>> target process inside the syscall while writing to its memory, or
+> >>> something like that? And until then, the manpage should have a big fat
+> >>> warning that writing to the target's memory is simply not possible
+> >>> (safely).
+> >>
+> >> Thank you for your very clear explanation! It turned out to be
+> >> trivially easy to demonstrate this issue with a slightly modified
+> >> version of my program.
+> >>
+> >> As well as the change to the code example that I already mentioned
+> >> my reply of a few hours ago, I've added the following text to the
+> >> page:
+> >>
+> >>    Caveats regarding the use of /proc/[tid]/mem
+> >>        The discussion above noted the need to use the
+> >>        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) when opening the
+> >>        /proc/[tid]/mem file of the target to avoid the possibility of
+> >>        accessing the memory of the wrong process in the event that the
+> >>        target terminates and its ID is recycled by another (unrelated)
+> >>        thread.  However, the use of this ioctl(2) operation is also
+> >>        necessary in other situations, as explained in the following
+> >>        pargraphs.
 > >
-> 
-> Nah, this one used to be like this :
-> 
->         raw_spin_lock_irqsave(&cfs_b->lock, flags);
->         lsub_positive(&cfs_b->runtime, runtime);
->         cfs_b->distribute_running = 0;
->         raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
-> 
-> It's just a leftover. I agree that if it was there for some other
-> purpose that it would really need a comment. In this case, it's an
-> artifact of patch-based development I think.
-> 
-> 
-> Cheers,
-> Phil
-> 
+> > (nit: paragraphs)
+>
+> I spotted that one also already. But thanks for reading carefully!
+>
+> >>        Consider the following scenario, where the supervisor tries to
+> >>        read the pathname argument of a target's blocked mount(2) system
+> >>        call:
+> > [...]
+> >> Seem okay?
+> >
+> > Yeah, sounds good.
+> >
+> >> By the way, is there any analogous kind of issue concerning
+> >> pidfd_getfd()? I'm thinking not, but I wonder if I've missed
+> >> something.
+> >
+> > When it is used by a seccomp supervisor, you mean? I think basically
+> > the same thing applies - when resource identifiers (such as memory
+> > addresses or file descriptors) are passed to a syscall, it generally
+> > has to be assumed that those identifiers may become invalid and be
+> > reused as soon as the syscall has returned.
+>
+> I probably needed to be more explicit. Would the following (i.e., a
+> single cookie check) not be sufficient to handle the above scenario.
+> Here, the target is making a syscall a system call that employs the
+> file descriptor 'tfd':
+>
+> T: makes syscall that triggers notification
+> S: Get notification
+> S: pidfd = pidfd_open(T, 0);
+> S: sfd = pifd_getfd(pidfd, tfd, 0)
+> S: check that the cookie is still valid
+> S: do operation with sfd [*]
+>
+> By contrast, I can see that we might want to do multiple cookie
+> checks in the /proc/PID/mem case, since the supervisor might do
+> multiple reads.
 
-Yeah, thanks for your explanation, Phil.
+Aaah, okay. I didn't really understand the question at first.
 
-It is just a leftover.
+> Or, do you mean: there really needs to be another cookie check after
+> the point [*], since, if the the target's syscall was interrupted
+> and 'tfd' was closed/resused, then the supervisor would be operating
+> with a file descriptor that refers to an open file description
+> (a "struct file") that is no longer meaningful in the target?
+> (Thinking about it, I think this probably is what you mean, but
+> I want to confirm.)
 
+I wasn't thinking about your actual question when I wrote that. :P
+
+I think you could argue that leaving out the first cookie check does
+not make this incorrect if it was correct before; but you could also
+argue that it's hazardous either way (because programs might rely on
+synchronous actions that happen when closing an fd that they assume is
+the only one associated with a file description, e.g. assuming that
+close() will synchronously release an flock() lock). And if we do two
+checks, we can at least limit such potentially hazardous interference
+to processes that performed syscalls subject to interception, instead
+of risking triggering them all over the place.
