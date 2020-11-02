@@ -2,219 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4164D2A2BD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD6E2A2BE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgKBNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:44:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgKBNoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:44:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C14152074F;
-        Mon,  2 Nov 2020 13:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604324654;
-        bh=hWbWmu5LzrBoJC3M8BNKMVq79LxRAD6aoUcilKWDYGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=miqa/z5hPCiITV+nf5X7x7suBgNtVkDWU/q37MRDEwV7ZQgCrUrhlH23Ar+A30PTN
-         l53JANCdnqAV1I8ZtzE12kVVRz5Simk4JskzafFQixQAmq/55sSPxymTqrLrT7b+gX
-         d+0n5D6msvKdA+gKB34C0CRLZAJUrjZtSSbWHJ90=
-Date:   Mon, 2 Nov 2020 14:45:09 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lang Dai <lang.dai@intel.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Subject: Re: [PATCH] uio: Fix use-after-free in uio_unregister_device()
-Message-ID: <20201102134509.GA1013984@kroah.com>
-References: <20201102122819.2346270-1-shinichiro.kawasaki@wdc.com>
- <20201102123405.GA679664@kroah.com>
- <20201102130319.dqkwyr7zarcbwssc@shindev.dhcp.fujisawa.hgst.com>
+        id S1725909AbgKBNpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:45:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgKBNpl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:45:41 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D288C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:45:41 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p19so1298689wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:45:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hkDT3omg5tmZs3okZ4oY2bkRmN1w5gBeDmyiEtbctKE=;
+        b=E7L00VSgigu/+a5VpNjH+GrGshtDXQps/8MzZ7qWW5e2Pnn7kip31ZDYxAiam9Y6Rn
+         EWqamLJIA2RaSOGDJSX9DXW1R5Fb1ubHV5tQsUKIRx9tkRO65dxMdf0PBU+Rgz6nZPGD
+         GmNJXbyU9cQ7rzLI8OApAKl7pRj8Vw3shpbLHvj+21AwwB3n5rouq1jcte73UYqAux/N
+         bhwL2wPe0oCpJgOkUHXgN3bOz2o+MdIq48pbzDOx8jPrWluQOQ6gDDzWgt78QojIl2HS
+         tRpEYHKeShwItqLD6j3UBZKphJk39cOX0/ybdjk91Dr/C2/yijgXOLglVTGX3ZJseXRE
+         OcfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hkDT3omg5tmZs3okZ4oY2bkRmN1w5gBeDmyiEtbctKE=;
+        b=D5CC5kBKw2iMuZME2MlCvLjCZFfthKO5ARi93VoLI4JjQdLoWrq5IHq7ONknsMs8KR
+         uFFnaMsnjwc5SIUAWxGnM0iBXrxODmsST+YIJKh21FmAaTXoJlA4rYWvYQu12JnqW7us
+         1AxtrOxAQdvz6dFlzRMPe84sJqG3BW6JqhIK6PlZEQoksDIBJG1I0xnqIWgoQj8SbISm
+         NRac0XRV9C7xgR2AhimDBUuOhyQWDZ8MBvNv72RlJoDoL9Gg0zYVs0gK5mor87rJBid+
+         FuIGBMvAkCAaENeCDBvOxiM1CiPDD6ygCbTCB+Kg2dcVXJXIWSA+GHWhbImmm9NJAAjq
+         RigQ==
+X-Gm-Message-State: AOAM533ygdePCFPHswvVXdslSw8IyHEBxTWPzHaKtg9WNzYUEqnm7l4G
+        2jdTCpVnCCHhve3z7dQwznDgiw==
+X-Google-Smtp-Source: ABdhPJzsgYxwuc1GuB8Cd9pOIf65B7t49ybbphTz02+Iv8A7ZnJd/koxX67cb6MaxVJ66K6zl3T1Dg==
+X-Received: by 2002:a1c:46c6:: with SMTP id t189mr3384171wma.79.1604324739744;
+        Mon, 02 Nov 2020 05:45:39 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id t5sm25026509wrb.21.2020.11.02.05.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 05:45:39 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:45:36 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
+        sboyd@kernel.org, nm@ti.com
+Subject: Re: [PATCH v3 2/4] docs: Clarify abstract scale usage for power
+ values in Energy Model
+Message-ID: <20201102134536.GB2221764@google.com>
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+ <20201019140601.3047-3-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102130319.dqkwyr7zarcbwssc@shindev.dhcp.fujisawa.hgst.com>
+In-Reply-To: <20201019140601.3047-3-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 01:03:20PM +0000, Shinichiro Kawasaki wrote:
-> On Nov 02, 2020 / 13:34, Greg Kroah-Hartman wrote:
-> > On Mon, Nov 02, 2020 at 09:28:19PM +0900, Shin'ichiro Kawasaki wrote:
-> > > Commit 8fd0e2a6df26 ("uio: free uio id after uio file node is freed")
-> > > triggered KASAN use-after-free failure at deletion of TCM-user
-> > > backstores [1].
-> > > 
-> > > In uio_unregister_device(), struct uio_device *idev is passed to
-> > > uio_free_minor() to refer idev->minor. However, before uio_free_minor()
-> > > call, idev is already freed by uio_device_release() during call to
-> > > device_unregister().
-> > > 
-> > > To avoid reference to idev->minor after idev free, keep idev->minor
-> > > value in a local variable. Also modify uio_free_minor() argument to
-> > > receive the value.
-> > > 
-> > > [1]
-> > > BUG: KASAN: use-after-free in uio_unregister_device+0x166/0x190
-> > > Read of size 4 at addr ffff888105196508 by task targetcli/49158
-> > > 
-> > > CPU: 3 PID: 49158 Comm: targetcli Not tainted 5.10.0-rc1 #1
-> > > Hardware name: Supermicro Super Server/X10SRL-F, BIOS 2.0 12/17/2015
-> > > Call Trace:
-> > >  dump_stack+0xae/0xe5
-> > >  ? uio_unregister_device+0x166/0x190
-> > >  print_address_description.constprop.0+0x1c/0x210
-> > >  ? uio_unregister_device+0x166/0x190
-> > >  ? uio_unregister_device+0x166/0x190
-> > >  kasan_report.cold+0x37/0x7c
-> > >  ? kobject_put+0x80/0x410
-> > >  ? uio_unregister_device+0x166/0x190
-> > >  uio_unregister_device+0x166/0x190
-> > >  tcmu_destroy_device+0x1c4/0x280 [target_core_user]
-> > >  ? tcmu_release+0x90/0x90 [target_core_user]
-> > >  ? __mutex_unlock_slowpath+0xd6/0x5d0
-> > >  target_free_device+0xf3/0x2e0 [target_core_mod]
-> > >  config_item_cleanup+0xea/0x210
-> > >  configfs_rmdir+0x651/0x860
-> > >  ? detach_groups.isra.0+0x380/0x380
-> > >  vfs_rmdir.part.0+0xec/0x3a0
-> > >  ? __lookup_hash+0x20/0x150
-> > >  do_rmdir+0x252/0x320
-> > >  ? do_file_open_root+0x420/0x420
-> > >  ? strncpy_from_user+0xbc/0x2f0
-> > >  ? getname_flags.part.0+0x8e/0x450
-> > >  do_syscall_64+0x33/0x40
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > RIP: 0033:0x7f9e2bfc91fb
-> > > Code: 73 01 c3 48 8b 0d 9d ec 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 6d ec 0c 00 f7 d8 64 89 01 48
-> > > RSP: 002b:00007ffdd2baafe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
-> > > RAX: ffffffffffffffda RBX: 00007f9e2beb44a0 RCX: 00007f9e2bfc91fb
-> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007f9e1c20be90
-> > > RBP: 00007ffdd2bab000 R08: 0000000000000000 R09: 00007f9e2bdf2440
-> > > R10: 00007ffdd2baaf37 R11: 0000000000000246 R12: 00000000ffffff9c
-> > > R13: 000055f9abb7e390 R14: 000055f9abcf9558 R15: 00007f9e2be7a780
-> > > 
-> > > Allocated by task 34735:
-> > >  kasan_save_stack+0x1b/0x40
-> > >  __kasan_kmalloc.constprop.0+0xc2/0xd0
-> > >  __uio_register_device+0xeb/0xd40
-> > >  tcmu_configure_device+0x5a0/0xbc0 [target_core_user]
-> > >  target_configure_device+0x12f/0x760 [target_core_mod]
-> > >  target_dev_enable_store+0x32/0x50 [target_core_mod]
-> > >  configfs_write_file+0x2bb/0x450
-> > >  vfs_write+0x1ce/0x610
-> > >  ksys_write+0xe9/0x1b0
-> > >  do_syscall_64+0x33/0x40
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > Freed by task 49158:
-> > >  kasan_save_stack+0x1b/0x40
-> > >  kasan_set_track+0x1c/0x30
-> > >  kasan_set_free_info+0x1b/0x30
-> > >  __kasan_slab_free+0x110/0x150
-> > >  slab_free_freelist_hook+0x5a/0x170
-> > >  kfree+0xc6/0x560
-> > >  device_release+0x9b/0x210
-> > >  kobject_put+0x13e/0x410
-> > >  uio_unregister_device+0xf9/0x190
-> > >  tcmu_destroy_device+0x1c4/0x280 [target_core_user]
-> > >  target_free_device+0xf3/0x2e0 [target_core_mod]
-> > >  config_item_cleanup+0xea/0x210
-> > >  configfs_rmdir+0x651/0x860
-> > >  vfs_rmdir.part.0+0xec/0x3a0
-> > >  do_rmdir+0x252/0x320
-> > >  do_syscall_64+0x33/0x40
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > The buggy address belongs to the object at ffff888105196000
-> > >  which belongs to the cache kmalloc-2k of size 2048
-> > > The buggy address is located 1288 bytes inside of
-> > >  2048-byte region [ffff888105196000, ffff888105196800)
-> > > The buggy address belongs to the page:
-> > > page:0000000098e6ca81 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x105190
-> > > head:0000000098e6ca81 order:3 compound_mapcount:0 compound_pincount:0
-> > > flags: 0x17ffffc0010200(slab|head)
-> > > raw: 0017ffffc0010200 dead000000000100 dead000000000122 ffff888100043040
-> > > raw: 0000000000000000 0000000000080008 00000001ffffffff ffff88810eb55c01
-> > > page dumped because: kasan: bad access detected
-> > > page->mem_cgroup:ffff88810eb55c01
-> > > 
-> > > Memory state around the buggy address:
-> > >  ffff888105196400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > >  ffff888105196480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > > >ffff888105196500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > >                       ^
-> > >  ffff888105196580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > >  ffff888105196600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > > 
-> > > Fixes: 8fd0e2a6df26 ("uio: free uio id after uio file node is freed")
-> > > Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> > > ---
-> > >  drivers/uio/uio.c | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-> > > index 6dca744e39e9..be06f1a961c2 100644
-> > > --- a/drivers/uio/uio.c
-> > > +++ b/drivers/uio/uio.c
-> > > @@ -413,10 +413,10 @@ static int uio_get_minor(struct uio_device *idev)
-> > >  	return retval;
-> > >  }
-> > >  
-> > > -static void uio_free_minor(struct uio_device *idev)
-> > > +static void uio_free_minor(unsigned long minor)
-> > >  {
-> > >  	mutex_lock(&minor_lock);
-> > > -	idr_remove(&uio_idr, idev->minor);
-> > > +	idr_remove(&uio_idr, minor);
-> > >  	mutex_unlock(&minor_lock);
-> > >  }
-> > >  
-> > > @@ -990,7 +990,7 @@ int __uio_register_device(struct module *owner,
-> > >  err_uio_dev_add_attributes:
-> > >  	device_del(&idev->dev);
-> > >  err_device_create:
-> > > -	uio_free_minor(idev);
-> > > +	uio_free_minor(idev->minor);
-> > >  	put_device(&idev->dev);
-> > >  	return ret;
-> > >  }
-> > > @@ -1042,11 +1042,13 @@ EXPORT_SYMBOL_GPL(__devm_uio_register_device);
-> > >  void uio_unregister_device(struct uio_info *info)
-> > >  {
-> > >  	struct uio_device *idev;
-> > > +	unsigned long minor;
-> > >  
-> > >  	if (!info || !info->uio_dev)
-> > >  		return;
-> > >  
-> > >  	idev = info->uio_dev;
-> > > +	minor = idev->minor;
-> > >  
-> > >  	mutex_lock(&idev->info_lock);
-> > >  	uio_dev_del_attributes(idev);
-> > > @@ -1062,7 +1064,7 @@ void uio_unregister_device(struct uio_info *info)
-> > >  
-> > >  	device_unregister(&idev->dev);
-> > >  
-> > > -	uio_free_minor(idev);
-> > > +	uio_free_minor(minor);
-> > 
-> > Why not just move this call to uio_free_minor() up one line to be above
-> > device_unregister()?  That should solve this issue and make the change
-> > much smaller and more obvious.
-> 
-> I thought that the commit 8fd0e2a6df26 intended to move uio_free_minor()
-> after device_unregister(). Do I misunderstand the intent? If so, I will
-> simplify the patch as you commented.
+On Monday 19 Oct 2020 at 15:05:59 (+0100), Lukasz Luba wrote:
+> diff --git a/Documentation/driver-api/thermal/power_allocator.rst b/Documentation/driver-api/thermal/power_allocator.rst
+> index 67b6a3297238..b7992ae84fef 100644
+> --- a/Documentation/driver-api/thermal/power_allocator.rst
+> +++ b/Documentation/driver-api/thermal/power_allocator.rst
+> @@ -71,7 +71,10 @@ to the speed-grade of the silicon.  `sustainable_power` is therefore
+>  simply an estimate, and may be tuned to affect the aggressiveness of
+>  the thermal ramp. For reference, the sustainable power of a 4" phone
+>  is typically 2000mW, while on a 10" tablet is around 4500mW (may vary
+> -depending on screen size).
+> +depending on screen size). It is possible to have the power value
+> +expressed in an abstract scale. This is the case when the Energy Model
+> +provides the power values in an abstract scale.
 
-Ah, no, you are correct, sorry I missed that.  This patch is correct,
-I'll queue it up in a bit.
+Maybe remove one of the 2 sentences?
 
-thanks,
-
-greg k-h
+Thanks,
+Quentin
