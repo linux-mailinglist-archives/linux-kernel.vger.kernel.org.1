@@ -2,158 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D2B2A232F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9572A2329
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgKBCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:51:02 -0500
-Received: from mail-eopbgr20058.outbound.protection.outlook.com ([40.107.2.58]:23045
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727445AbgKBCvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:51:01 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ltAZ4M9AEsZtqRQ4IPO2whc2Qi630ie4HbxYZ0g5Q6s8jOTFfgx7RlZFwy6DHQLFo9Ln0TxuqBoNPfxoExGSLdSuHpy7kcalV+vRHfIMiqg5THOyycSwKzakqP31mAxOUTtCUkPwUwcFKRS/E8v5Etu82TvAqtzNWlPk+ifjLgB98IVPtBEfaf0Q5hKXxXKYJ5RWn/fG3mkV8ojcJiyY59HKV26bCblRYH/rbbz0UThT/AjDlpdvr/YS+iuS8F/k7g5a+cuLmZ2m5KNc87ZG5jcPZZx1WpVmlwMQk+WyUhtlzdFZhkG5gWDty+ariDkuUzzoyj9N3xESo6CHTf9e6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d7hk+/YCRKe6uz6K3w7er8FM1aK2eW1cfUiQpbfJkio=;
- b=TwxaOQ4K3/9xIIrzLx4415hqBuHnG13TMC4n6bfTq5OWX9k6sVBSgIT36js8wW6930GyHRvj3HhPoyClzVV1S++Po1hyOQTUZt+X/dQPjAcjSFa8rMNYF02Pf9XscPb6HpEysB6xrTxMjdFvOfxYbZYu6NRbjR0/XwuVhR4ysAfMZUVEvI6H+X1ovLr0hTBmTJKeV7/RGrMCbqVH7NJcYGGVDPEhMGbJ5Xet+LGVKjX2mRYuKpYPkOdUr3w0u2eEg6pKa0fphIszCRRX+Mv7Wuk3Y7dTk/BrYCqprlQJRuO2RTMKESKsT/yQAp6fmhTQj6tk+OVXaA3N5xACRC6WKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d7hk+/YCRKe6uz6K3w7er8FM1aK2eW1cfUiQpbfJkio=;
- b=NjYIru8dpBwqcefPdWfh8V5oy0sWcUgyCm7rGYMbJi89UnMGgR6+ZZuOU00HSQ+lSyybw9GwnfVzgv7PHJI/aJv5SVuvXatZ2C8/gGcrTX1WVSqv3hXXKqJg5PzmPOOWuh3E2Dq9avSF0ffYIqWRIBsx6KIk7fTdSc8TbqM/S7A=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DBAPR04MB7430.eurprd04.prod.outlook.com (2603:10a6:10:1aa::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
- 2020 02:50:55 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc%8]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 02:50:55 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-CC:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V4 1/6] firmware: imx: always export SCU symbols
-Thread-Topic: [PATCH V4 1/6] firmware: imx: always export SCU symbols
-Thread-Index: AQHWp2phbfWjD2H3H0e5mz6xLBAGVamy9mqAgAE+UUA=
-Date:   Mon, 2 Nov 2020 02:50:55 +0000
-Message-ID: <DB8PR04MB679590BED0CD0D8FC5C4C418E6100@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20201021052437.3763-1-qiangqing.zhang@nxp.com>
- <20201021052437.3763-2-qiangqing.zhang@nxp.com>
- <20201101074300.GF31601@dragon>
-In-Reply-To: <20201101074300.GF31601@dragon>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 361f25d0-0c76-414c-0b34-08d87eda1ebf
-x-ms-traffictypediagnostic: DBAPR04MB7430:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBAPR04MB7430594B4B77368D1637A9E5E6100@DBAPR04MB7430.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OxIYu/zZrEfU7l/Lgv+v0AFelcz34R9hf1yhlTjXgXRiq8eECewiRXDW3TGZHfxLEp9d3d03C1NGLoiftfJZB1bWkQaRwTSxNBV0EUbuEQXI42VmyLm/ePA5vRX+U04G84oaPNGBECKK/6AZQ5V0YFsDwtHPTZ8Td9y8UsxWjczC3hm3T4+371o4PNUGE3ILJYRHy1PZenbQ/u5kJrFj3+73T01l4+VXWelp0jt7TDitv7YTXpTEXwmzA9QtT3S8hk0jP3QslxbVe/M1LPICMYss34jb8h/g7/l5RU+vej7W1RfKbtKJtsJtilfKyZ2ZXVNNoG6f5oC+p196kditlw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(54906003)(316002)(6916009)(71200400001)(8936002)(8676002)(66556008)(9686003)(66446008)(76116006)(64756008)(66476007)(66946007)(83380400001)(2906002)(4326008)(5660300002)(186003)(6506007)(26005)(478600001)(53546011)(86362001)(33656002)(55016002)(7696005)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: +lV/BdxZfH2MYl7A1GpJdAgbjbogt17icRAzZv99MXspXP+fbUmm5nTaJWmVu/mzL7NF5IzJ6Oo3dAacBOl6Y9yXYqZD6evgOxZhx0ut97u4UI+xE74IGDMd0W1q4h+/YVKP6ZAGp69nKOZpXs6R/Wgaq9YfH2gq8pM48SyFYrqF6FCd5Vk+kBhfL3LDMPoP7OCzgsgb6dcliAoFYBWFeye7bW6gtZvsmSLBwo3OC6Axx+ScFrxJudgEZQ5Jsq63yjzDzTLKQkY08ai+hKKis1Qyig5KMKQOCQld3CYPUEAUzGPmJByUYn1mTA4L03R9xj4eU8JEhdHpuepQxlaIb3lBHcf6+keu6ktOLPfvGvNBHbtzb518eVOYhOqhF0Zx4OM9L5FJ6fnF7o+TzJCEM3evrwHbZiz/54bZ/MVLTaY9BE+zW9SZGSDXHPMdGFeY4cJ+54riEynvC/0T3FFxZzBeX+Q1leLrMt8aid8xXyU2ycGpp/iVKBtUE1bU/4ghwwcrRtirJPJUx++KrjHEF8epA7pw+eegMxRBMN9AIbB0v75xIKgXMiGlgBOa55QSEg2zhzJ75TfaeX5u99Rfli/vR2u7VJZ/SGEON2HI0IlAu7UimF50JgJaUClpa0UQsMaZHkX2XPnvevnpgH2Oxw==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1727662AbgKBCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:46:04 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:22990 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727470AbgKBCqD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 21:46:03 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201102024558epoutp0474ffc99b4ed93bd0235b03531b874c50~DkNolAH7K2540325403epoutp04O
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:45:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201102024558epoutp0474ffc99b4ed93bd0235b03531b874c50~DkNolAH7K2540325403epoutp04O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604285158;
+        bh=XVGcPifSFh7P2qC7KRnT9MItGbQhV0RaAub8F07Y3zI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=kTTBuWzrIomZZDXa28+qBLyehoDoXCclUIVFe0Xju6+7locg5CMXvzri06d68N1Vn
+         Rv0e+JXlt5jvg0u/318UnCB05MG8QKeipzNZBBrEbAePEEFwc/uYIUR4/RsvpdVNSq
+         47SHYD5nziDabOWHEdmy7jSG+oHDY6bhY1aTJDlA=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201102024558epcas1p31e3ebb8e0b0512e27a7acabf01470a0b~DkNoJETHR1272812728epcas1p3F;
+        Mon,  2 Nov 2020 02:45:58 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4CPcjb1y1lzMqYlh; Mon,  2 Nov
+        2020 02:45:55 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6F.5A.02418.2E27F9F5; Mon,  2 Nov 2020 11:45:54 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201102024553epcas1p3dedcbb6b82d0ae97f68d4b1cae4ff3c4~DkNj1K5sL0583105831epcas1p3X;
+        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201102024553epsmtrp29397436ccc5e48642f9ffc310a7b936d~DkNj0gEn01660616606epsmtrp23;
+        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
+X-AuditID: b6c32a35-c23ff70000010972-87-5f9f72e2efe2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6D.FA.08745.1E27F9F5; Mon,  2 Nov 2020 11:45:53 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201102024553epsmtip29cbe66f05aaa0fe522995f2d103cb394~DkNjqmTG71554315543epsmtip2a;
+        Mon,  2 Nov 2020 02:45:53 +0000 (GMT)
+Subject: Re: [PATCH 1/2] extcon: fsa9480: Rewrite bindings in YAML and
+ extend
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <ae62b1b2-87ab-4d87-519a-ea341a729995@samsung.com>
+Date:   Mon, 2 Nov 2020 11:59:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 361f25d0-0c76-414c-0b34-08d87eda1ebf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 02:50:55.5676
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Vwop8m1gZXp5dCHMj7gIOaZ3cLEf1zhP5VVSsZqIDkQnOmjS3XOE61J6babarN+625lxlgC2R5fSDZ4vmsKdyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7430
+In-Reply-To: <20201101004357.1076876-1-linus.walleij@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmru6jovnxBhOvSFrMP3KO1WLKn+VM
+        Fpd3zWGzuN24gs2BxePOtT1sHn1bVjF6fN4kF8AclW2TkZqYklqkkJqXnJ+SmZduq+QdHO8c
+        b2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA7RNSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKr
+        lFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCd0f9tK2vBNfmKp1fvMDYwbpDsYuTkkBAw
+        kVjxaTdjFyMXh5DADkaJs5PbWCGcT4wSl47/ZYZwPjNKnLnRwwbTcnDxI6iqXYwSr2b+ZQJJ
+        CAm8Z5TYdD4OxBYW8Jc4dvgkWIOIQLjEvmMHmEFsZgEbiY7f51hAbDYBLYn9L26A1fALKEpc
+        /fGYEcTmFbCT+HlrGVicRUBF4s6/Y2BxUYEwiZPbWqBqBCVOznwCNodTwEFixr8tUPPFJW49
+        mc8EYctLbH87hxni6K/sEo1NkRC2i8Sbd38ZIWxhiVfHt7BD2FISn9/thXqyWmLlySNsIE9K
+        CHQwSmzZf4EVImEssX/pZKAFHEALNCXW79KHCCtK7Pw9lxFiL5/Eu689rCAlEgK8Eh1tQhAl
+        yhKXH9xlgrAlJRa3d7JNYFSaheSbWUg+mIXkg1kIyxYwsqxiFEstKM5NTy02LDBEjuxNjOCE
+        qGW6g3Hi2w96hxiZOBgPMUpwMCuJ8NZEzosX4k1JrKxKLcqPLyrNSS0+xGgKDN+JzFKiyfnA
+        lJxXEm9oamRsbGxhYmhmamioJM77R7sjXkggPbEkNTs1tSC1CKaPiYNTqoHJZvJx7lebzq2X
+        9l8uOeFpopF966KXt/LnS3dtqmlSuduv2S80592lDw5+GxQE7we8OBY2Zcb2ibbqtoydC5mO
+        MpXkvY2/xLKqtlM0xP6r8+uZdt0RU8TOhZSwnD+3T1NMNfXPkn3rk83MnPdOP+pUVf7lcAYD
+        79OFn+5P3xJ3v9py/sqEnU9m6F7fc/Dp3zNXOTeItXStZPwVo1x5cbWure0L8bX39PjscnWZ
+        u1TOZfkfuLswRHm/tY6Ku36++MTZgY4749qfBf5aGMpptElwT8X2+baPPnmHF9h8mekm/n1D
+        wSxVnb75Ugnziz52PFOpzNPnMJOU6mmNNuNsOqn9VMA9JuxF0zn5590brnMpsRRnJBpqMRcV
+        JwIAjQBglhEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvO7DovnxBqfvaVnMP3KO1WLKn+VM
+        Fpd3zWGzuN24gs2BxePOtT1sHn1bVjF6fN4kF8AcxWWTkpqTWZZapG+XwJXR/20ra8E1+Yqn
+        V+8wNjBukOxi5OSQEDCROLj4EWsXIxeHkMAORol5hy6wQiQkJaZdPMrcxcgBZAtLHD5cDFHz
+        llHizOyfYDXCAr4Sm5deZQexRQTCJWYveM8MYjML2Eh0/D7HAtEwmVFiXddjsASbgJbE/hc3
+        2EBsfgFFias/HjOC2LwCdhI/by0Di7MIqEjc+XcMLC4qECaxc8ljJogaQYmTM5+wgNicAg4S
+        M/5tgVqmLvFn3iUoW1zi1pP5TBC2vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxgZFnFKJlaUJyb
+        nltsWGCUl1quV5yYW1yal66XnJ+7iREcHVpaOxj3rPqgd4iRiYPxEKMEB7OSCG9N5Lx4Id6U
+        xMqq1KL8+KLSnNTiQ4zSHCxK4rxfZy2MExJITyxJzU5NLUgtgskycXBKNTCZvZyxs/+kxIeb
+        jsFmLnPP8hyUW8xTJ8RhEpx7p2lJ5PuWzm2LQ5bHzmG4r3vXMLXx46Ha9DeiPs7b3I/W97bt
+        2PO+aYl6ynzPMi07i7oT9zat4lZMu7Z/uZ+G2TE7gYz5T7mzlv7YWKK5evOfBdvO1u0Jcklz
+        /L9s7fobp9Rl39zLXXwm2Wb15IV2ymEPD/W2fBPvUF+55yBLZWnEHN6d+xmDvReHyoh5Bm9/
+        LfqUo2FbiltWEOd9H686wXMf3TgMj0zd2fp4ftzp3qsf9k4403dLsGC6r+nSiY7yxYtKpx10
+        2PHLdl/u9ASxjF0vDGu+XTtk8Vho+tFV7tuOGbLITc4Tqb0iyBx9dLH+d9HNSizFGYmGWsxF
+        xYkAb+E3uP0CAAA=
+X-CMS-MailID: 20201102024553epcas1p3dedcbb6b82d0ae97f68d4b1cae4ff3c4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201101004410epcas1p36f8a3469611fbc27eed6803d383df06e
+References: <CGME20201101004410epcas1p36f8a3469611fbc27eed6803d383df06e@epcas1p3.samsung.com>
+        <20201101004357.1076876-1-linus.walleij@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNoYXduIEd1byA8c2hhd25n
-dW9Aa2VybmVsLm9yZz4NCj4gU2VudDogMjAyMMTqMTHUwjHI1SAxNTo0Mw0KPiBUbzogSm9ha2lt
-IFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gQ2M6IG1rbEBwZW5ndXRyb25peC5k
-ZTsgcm9iaCtkdEBrZXJuZWwub3JnOyBzLmhhdWVyQHBlbmd1dHJvbml4LmRlOw0KPiBrZXJuZWxA
-cGVuZ3V0cm9uaXguZGU7IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBZaW5nIExp
-dQ0KPiA8dmljdG9yLmxpdUBueHAuY29tPjsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgbmV0
-ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBT
-dWJqZWN0OiBSZTogW1BBVENIIFY0IDEvNl0gZmlybXdhcmU6IGlteDogYWx3YXlzIGV4cG9ydCBT
-Q1Ugc3ltYm9scw0KPiANCj4gT24gV2VkLCBPY3QgMjEsIDIwMjAgYXQgMDE6MjQ6MzJQTSArMDgw
-MCwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+IEZyb206IExpdSBZaW5nIDx2aWN0b3IubGl1QG54
-cC5jb20+DQo+ID4NCj4gPiBBbHdheXMgZXhwb3J0IFNDVSBzeW1ib2xzIGZvciBib3RoIFNDVSBT
-b0NzIGFuZCBub24tU0NVIFNvQ3MgdG8gYXZvaWQNCj4gPiBidWlsZCBlcnJvci4NCj4gPg0KPiA+
-IFNpZ25lZC1vZmYtYnk6IExpdSBZaW5nIDx2aWN0b3IubGl1QG54cC5jb20+DQo+ID4gU2lnbmVk
-LW9mZi1ieTogUGVuZyBGYW4gPHBlbmcuZmFuQG54cC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgaW5j
-bHVkZS9saW51eC9maXJtd2FyZS9pbXgvaXBjLmggICAgICB8IDE1ICsrKysrKysrKysrKysrKw0K
-PiANCj4gQ291bGQgeW91IHJlYmFzZSBpdCB0byBteSBpbXgvZHJpdmVycyBicmFuY2g/ICBUaGVy
-ZSBpcyBvbmUgcGF0Y2ggZnJvbSBQZW5nDQo+IEZhbiB0aGF0IGFscmVhZHkgY2hhbmdlZCBpcGMu
-aC4NCg0KDQpIaSBTaGF3biwNCg0KUGxlYXNlIGlnbm9yZSAxLzYgcGF0Y2ggc2luY2UgaXQgaGFz
-IGJlZW4gZG9uZSB3aXRoIFBlbmcncyBwYXRjaC4gSSB3aWxsIHJlc2VuZCBmbGV4Y2FuIHBhdGNo
-IHNldCBhZnRlciBQZW5nJ3MgcGF0Y2ggZ29lcyBpbnRvIG1haW5saW5lLg0KDQpDb3VsZCB5b3Ug
-cGxlYXNlIHJldmlldyA1LzYgcGF0Y2ggd2hpY2ggaXMgc3VnZ2VzdGVkIGJ5IEZsZXhjYW4gZHJp
-dmVyIG1haW50YWluZXI/IFRoYW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoN
-Cg0KPiBTaGF3bg0KPiANCj4gPiAgaW5jbHVkZS9saW51eC9maXJtd2FyZS9pbXgvc3ZjL21pc2Mu
-aCB8IDIzICsrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMzgg
-aW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvZmlybXdh
-cmUvaW14L2lwYy5oDQo+ID4gYi9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lteC9pcGMuaA0KPiA+
-IGluZGV4IDg5MTA1NzQzNDg1OC4uMzAwZmEyNTNmYzMwIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1
-ZGUvbGludXgvZmlybXdhcmUvaW14L2lwYy5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9maXJt
-d2FyZS9pbXgvaXBjLmgNCj4gPiBAQCAtMzQsNiArMzQsNyBAQCBzdHJ1Y3QgaW14X3NjX3JwY19t
-c2cgew0KPiA+ICAJdWludDhfdCBmdW5jOw0KPiA+ICB9Ow0KPiA+DQo+ID4gKyNpZiBJU19FTkFC
-TEVEKENPTkZJR19JTVhfU0NVKQ0KPiA+ICAvKg0KPiA+ICAgKiBUaGlzIGlzIGFuIGZ1bmN0aW9u
-IHRvIHNlbmQgYW4gUlBDIG1lc3NhZ2Ugb3ZlciBhbiBJUEMgY2hhbm5lbC4NCj4gPiAgICogSXQg
-aXMgY2FsbGVkIGJ5IGNsaWVudC1zaWRlIFNDRlcgQVBJIGZ1bmN0aW9uIHNoaW1zLg0KPiA+IEBA
-IC01NSw0ICs1NiwxOCBAQCBpbnQgaW14X3NjdV9jYWxsX3JwYyhzdHJ1Y3QgaW14X3NjX2lwYyAq
-aXBjLCB2b2lkDQo+ICptc2csIGJvb2wgaGF2ZV9yZXNwKTsNCj4gPiAgICogQHJldHVybiBSZXR1
-cm5zIGFuIGVycm9yIGNvZGUgKDAgPSBzdWNjZXNzLCBmYWlsZWQgaWYgPCAwKQ0KPiA+ICAgKi8N
-Cj4gPiAgaW50IGlteF9zY3VfZ2V0X2hhbmRsZShzdHJ1Y3QgaW14X3NjX2lwYyAqKmlwYyk7DQo+
-ID4gKw0KPiA+ICsjZWxzZQ0KPiA+ICtzdGF0aWMgaW5saW5lIGludA0KPiA+ICtpbXhfc2N1X2Nh
-bGxfcnBjKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHZvaWQgKm1zZywgYm9vbCBoYXZlX3Jlc3Ap
-IHsNCj4gPiArCXJldHVybiAtRUlPOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5l
-IGludCBpbXhfc2N1X2dldF9oYW5kbGUoc3RydWN0IGlteF9zY19pcGMgKippcGMpIHsNCj4gPiAr
-CXJldHVybiAtRUlPOw0KPiA+ICt9DQo+ID4gKyNlbmRpZg0KPiA+ICsNCj4gPiAgI2VuZGlmIC8q
-IF9TQ19JUENfSCAqLw0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lt
-eC9zdmMvbWlzYy5oDQo+ID4gYi9pbmNsdWRlL2xpbnV4L2Zpcm13YXJlL2lteC9zdmMvbWlzYy5o
-DQo+ID4gaW5kZXggMDMxZGQ0ZDNjNzY2Li5kMjU1MDQ4ZjE3ZGUgMTAwNjQ0DQo+ID4gLS0tIGEv
-aW5jbHVkZS9saW51eC9maXJtd2FyZS9pbXgvc3ZjL21pc2MuaA0KPiA+ICsrKyBiL2luY2x1ZGUv
-bGludXgvZmlybXdhcmUvaW14L3N2Yy9taXNjLmgNCj4gPiBAQCAtNDYsNiArNDYsNyBAQCBlbnVt
-IGlteF9taXNjX2Z1bmMgew0KPiA+ICAgKiBDb250cm9sIEZ1bmN0aW9ucw0KPiA+ICAgKi8NCj4g
-Pg0KPiA+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfSU1YX1NDVSkNCj4gPiAgaW50IGlteF9zY19t
-aXNjX3NldF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4g
-PiAgCQkJICAgIHU4IGN0cmwsIHUzMiB2YWwpOw0KPiA+DQo+ID4gQEAgLTU1LDQgKzU2LDI2IEBA
-IGludCBpbXhfc2NfbWlzY19nZXRfY29udHJvbChzdHJ1Y3QgaW14X3NjX2lwYyAqaXBjLA0KPiA+
-IHUzMiByZXNvdXJjZSwgIGludCBpbXhfc2NfcG1fY3B1X3N0YXJ0KHN0cnVjdCBpbXhfc2NfaXBj
-ICppcGMsIHUzMg0KPiByZXNvdXJjZSwNCj4gPiAgCQkJYm9vbCBlbmFibGUsIHU2NCBwaHlzX2Fk
-ZHIpOw0KPiA+DQo+ID4gKyNlbHNlDQo+ID4gK3N0YXRpYyBpbmxpbmUgaW50DQo+ID4gK2lteF9z
-Y19taXNjX3NldF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwN
-Cj4gPiArCQkJdTggY3RybCwgdTMyIHZhbCkNCj4gPiArew0KPiA+ICsJcmV0dXJuIC1FSU87DQo+
-ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgaW50DQo+ID4gK2lteF9zY19taXNjX2dl
-dF9jb250cm9sKHN0cnVjdCBpbXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4gPiArCQkJ
-dTggY3RybCwgdTMyICp2YWwpDQo+ID4gK3sNCj4gPiArCXJldHVybiAtRUlPOw0KPiA+ICt9DQo+
-ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5lIGludCBpbXhfc2NfcG1fY3B1X3N0YXJ0KHN0cnVjdCBp
-bXhfc2NfaXBjICppcGMsIHUzMiByZXNvdXJjZSwNCj4gPiArCQkJCSAgICAgIGJvb2wgZW5hYmxl
-LCB1NjQgcGh5c19hZGRyKSB7DQo+ID4gKwlyZXR1cm4gLUVJTzsNCj4gPiArfQ0KPiA+ICsjZW5k
-aWYNCj4gPiArDQo+ID4gICNlbmRpZiAvKiBfU0NfTUlTQ19BUElfSCAqLw0KPiA+IC0tDQo+ID4g
-Mi4xNy4xDQo+ID4NCg==
+Hi Linus,
+
+On 11/1/20 9:43 AM, Linus Walleij wrote:
+> This rewrites the FSA9480 DT bindings using YAML and
+> extends them with the compatible TI TSU6111.
+> 
+> I chose to name the file fcs,fsa880 since this is the
+> first switch, later versions are improvements.
+> 
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../bindings/extcon/extcon-fsa9480.txt        | 21 --------
+>  .../bindings/extcon/fcs,fsa880.yaml           | 52 +++++++++++++++++++
+>  2 files changed, 52 insertions(+), 21 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
+>  create mode 100644 Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt b/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
+> deleted file mode 100644
+> index 624bd76f468e..000000000000
+> --- a/Documentation/devicetree/bindings/extcon/extcon-fsa9480.txt
+> +++ /dev/null
+> @@ -1,21 +0,0 @@
+> -FAIRCHILD SEMICONDUCTOR FSA9480 MICROUSB SWITCH
+> -
+> -The FSA9480 is a USB port accessory detector and switch. The FSA9480 is fully
+> -controlled using I2C and enables USB data, stereo and mono audio, video,
+> -microphone, and UART data to use a common connector port.
+> -
+> -Required properties:
+> - - compatible : Must be one of
+> -   "fcs,fsa9480"
+> -   "fcs,fsa880"
+> - - reg : Specifies i2c slave address. Must be 0x25.
+> - - interrupts : Should contain one entry specifying interrupt signal of
+> -   interrupt parent to which interrupt pin of the chip is connected.
+> -
+> - Example:
+> -	musb@25 {
+> -		compatible = "fcs,fsa9480";
+> -		reg = <0x25>;
+> -		interrupt-parent = <&gph2>;
+> -		interrupts = <7 0>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml b/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
+> new file mode 100644
+> index 000000000000..ef6a246a1337
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/extcon/fcs,fsa880.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: https://protect2.fireeye.com/v1/url?k=da7a3fd4-85e106de-da7bb49b-0cc47a31384a-f57ab7f026383135&q=1&e=f8ca331d-3c11-4257-8322-d97ac13418ef&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fextcon%2Ffcs%2Cfsa880.yaml%23
+> +$schema: https://protect2.fireeye.com/v1/url?k=0449819e-5bd2b894-04480ad1-0cc47a31384a-07ad90468a2ed371&q=1&e=f8ca331d-3c11-4257-8322-d97ac13418ef&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
+> +
+> +title: Fairchild Semiconductor FSA880, FSA9480 and compatibles
+> +
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +description:
+> +  The FSA880 and FSA9480 are USB port accessory detectors and switches.
+> +  The switch is fully controlled using I2C and enables USB data, stereo
+> +  and mono audio, video, microphone, and UART data to use a common
+> +  connector port. Compatible switches exist from other manufacturers.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fcs,fsa880
+> +      - fcs,fsa9480
+> +      - ti,tsu6111
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: The I2C address for an FSA880 compatible device is
+> +      usually 0x25.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        usb-switch@25 {
+> +            compatible = "fcs,fsa880";
+> +            reg = <0x25>;
+> +            interrupt-parent = <&gpio>;
+> +            interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
+> +        };
+> +    };
+> 
+
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+I'm waiting the reply from DT maintainer for a while.
+After that, I'll merge them.
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
