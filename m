@@ -2,97 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F218F2A3171
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711162A3186
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgKBRYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:24:19 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44654 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgKBRYR (ORCPT
+        id S1727645AbgKBR3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727221AbgKBR3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:24:17 -0500
-Received: by mail-ot1-f66.google.com with SMTP id m26so13292126otk.11;
-        Mon, 02 Nov 2020 09:24:16 -0800 (PST)
+        Mon, 2 Nov 2020 12:29:35 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D41C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:29:35 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 72so4998161pfv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p/DEdqfzjHqREFiiQ64DzLAqMoklspJdVfF8M1QhzKo=;
+        b=IlK8VBmv+2S4zFzKyOyhA5i2aI+QNJOQiCtjAsPuDj0QKs+j/LCVO+nUPRyqryqFFB
+         6zvVk9hjXuOWgnyNlZEHbdKQcNnoW4WKNdocORFPgcUNSU8n0BH9Kdn7j3IRrGrBo4IM
+         Xa8h1LFCHeiovv41XVGiHSRZL9yNkA0OVcys5Fz3396NLUTgMeejL+9/DoKi/7j9Sn47
+         w6lBu7XMlIatXT8139sFwH3yLJ9pCSPvIqn7YnzuXPezAh5x40vm1HB310nhZu/7VqLW
+         QN/fwVqwiyfiSENWEgFaWXOPUKty5KVis5vhxeV2l7AdkcGNTp4IPovC4+L6ahyAnYHE
+         4dLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=q/YrpkethS2j8QO8IRcDofvaDwCjqPfhR/1+7qq4d7g=;
-        b=VJbU5PspvFOJCZMEvv9/Wpj4EOSekJjPuVkIurBnnRH03tn3SXiSUgk1eS2ifnvD3E
-         NMeBWRxkMZh9ONrZgk2QRk26OfsPO8SXczsUv7/+ays+BLF6OkXoKFg1cx9ZN9Ib2rdT
-         HvoVkuMw9cQwRrMnKEOrjCo4B9KxSzG+bOBQ5vwNV080xmrFiUlbprUB1JcHeGF7H1Om
-         /i9bwdl4u+eJ7Df+nW2hDIkqwquzZyoWPvDEXHxbpleK96x9fTTgevBoEqUHyvNGkqiA
-         k07SJIEUZ2ip3qu9qgArXGyzSws9tSTCmkfGS9cRT2VLokgbBA3WMOyyc2ktWfOqJdk0
-         Sb3Q==
-X-Gm-Message-State: AOAM533csCNvq/DsOyfL+PgKk3DobzRdQsrLTpSUJm0iqvR70v9VdOVP
-        pvcqcP8iiW9kKrLJTJGVlwX3CwESrg==
-X-Google-Smtp-Source: ABdhPJwjW84PZr6f6lPf4Z5p1grRTiYxv8VWUSIiLv5E/2IYXyIn7VH4L1wDxKMe6J/5TbpaLMqwAQ==
-X-Received: by 2002:a9d:21c5:: with SMTP id s63mr13031908otb.171.1604337856583;
-        Mon, 02 Nov 2020 09:24:16 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d26sm3746977otp.3.2020.11.02.09.24.15
+        bh=p/DEdqfzjHqREFiiQ64DzLAqMoklspJdVfF8M1QhzKo=;
+        b=RrzCN09lmWPsGptvqUh3NjY7gG7JvPEMLbud5i1ANVOxFmeS/wEMdEVSpsTAjmlhQb
+         h/rrB3ZK+My+lU2w10Zxg7I5xwIn/kAxvSz5vCSSq3Oy1rCsT9GeTk3A+TzD/+ICePZ4
+         jwWOnXXB4RgHwHZLH/MpNWAY/e1OsbnM/aX7PD700DK2ZU5op8obkaq8jWt/Iah/y4nl
+         MnSUsdGF27ajl4qBbgZy6C+rLkQcy8Gf+82v79Roq8esWHreVCwrvZ+4LAx/WwsxffBL
+         DdrEpi54BVki2cw9HqIcAsHu2TLB6bMxnKPfsGfmn/3AVM/jyL79mCRjVdJUh3RjxKS0
+         Pwnw==
+X-Gm-Message-State: AOAM532cC4IKV4SzLwkRVpA6YmiAgpp2tfJyHc1bSkHDwlO+UchXGDiX
+        0DOOlDbjfxSL1spYsXeIrjYpCw==
+X-Google-Smtp-Source: ABdhPJx532e13/KUkQ+mVSrMvCQCWuokkeyADaha7+OUrMcyX0L0pOI5gUSS0AQrUNzkwrsRubANdg==
+X-Received: by 2002:a65:4b84:: with SMTP id t4mr13900931pgq.138.1604338174656;
+        Mon, 02 Nov 2020 09:29:34 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id u14sm2904349pfc.87.2020.11.02.09.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:24:15 -0800 (PST)
-Received: (nullmailer pid 4076630 invoked by uid 1000);
-        Mon, 02 Nov 2020 17:24:15 -0000
-Date:   Mon, 2 Nov 2020 11:24:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, sre@kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3] dt-bindings: power/supply: Add ltc4162-l-charger
-Message-ID: <20201102172415.GA4074876@bogus>
-References: <20201102092039.16520-1-mike.looijmans@topic.nl>
+        Mon, 02 Nov 2020 09:29:33 -0800 (PST)
+Date:   Mon, 2 Nov 2020 10:29:31 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Linu Cherian <linuc.decode@gmail.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linu Cherian <lcherian@marvell.com>
+Subject: Re: [PATCH AUTOSEL 5.9 075/147] coresight: Make sysfs functional on
+ topologies with per core sink
+Message-ID: <20201102172931.GC2749502@xps15>
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-75-sashal@kernel.org>
+ <CAAHhmWjcP-3oAdhr2Nh_+QGbOi59PVDg763_avKgxFqjiYqMzQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102092039.16520-1-mike.looijmans@topic.nl>
+In-Reply-To: <CAAHhmWjcP-3oAdhr2Nh_+QGbOi59PVDg763_avKgxFqjiYqMzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020 10:20:39 +0100, Mike Looijmans wrote:
-> Add support for the LTC4162-L Li-Ion battery charger. The driver allows
-> reading back telemetry and to set some charging options like the input
-> current limit.
+On Mon, Nov 02, 2020 at 12:29:34PM +0530, Linu Cherian wrote:
+> Hi,
 > 
-> This adds the devicetree bindings.
+> Upstream commit,
 > 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
-> v2: Use microohms, add lltc,cell-count
-> v3: Fix example dts to match description
-> resent, previous patch mail bounced
+> commit bb1860efc817c18fce4112f25f51043e44346d1b
+> Author: Linu Cherian <lcherian@marvell.com>
+> Date:   Wed Sep 16 13:17:34 2020 -0600
 > 
->  .../bindings/power/supply/ltc4162-l.yaml      | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
 > 
+> 
+> 
+> coresight: etm: perf: Sink selection using sysfs is deprecated
+> 
+> 
+> need to go along with this, else there will be build breakage.
+> This applies for 5.4, 5.8 and 5.9
+> 
+> Mathieu, could you please ACK ?
 
+Top posting makes it very difficult to follow what is going on.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Based on your above comment Sasha has probably dropped this patch.  The best way
+to proceed is likely to send a patchset to stable with all the required
+patches.
 
-yamllint warnings/errors:
+Thanks,
+Mathieu
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.example.dt.yaml: battery-charger@68: 'lltc,rsnsb' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.example.dt.yaml: battery-charger@68: 'lltc,rsnsi' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1392005
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> 
+> Please let me know if i need to send the patch to
+> stable@vger.kernel.org separately.
+> Thanks.
+> 
+> 
+> 
+> 
+> On Tue, Oct 27, 2020 at 5:20 AM Sasha Levin <sashal@kernel.org> wrote:
+> >
+> > From: Linu Cherian <lcherian@marvell.com>
+> >
+> > [ Upstream commit 6d578258b955fc8888e1bbd9a8fefe7b10065a84 ]
+> >
+> > Coresight driver assumes sink is common across all the ETMs,
+> > and tries to build a path between ETM and the first enabled
+> > sink found using bus based search. This breaks sysFS usage
+> > on implementations that has multiple per core sinks in
+> > enabled state.
+> >
+> > To fix this, coresight_get_enabled_sink API is updated to
+> > do a connection based search starting from the given source,
+> > instead of bus based search.
+> > With sink selection using sysfs depecrated for perf interface,
+> > provision for reset is removed as well in this API.
+> >
+> > Signed-off-by: Linu Cherian <lcherian@marvell.com>
+> > [Fixed indentation problem and removed obsolete comment]
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Link: https://lore.kernel.org/r/20200916191737.4001561-15-mathieu.poirier@linaro.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  drivers/hwtracing/coresight/coresight-priv.h |  3 +-
+> >  drivers/hwtracing/coresight/coresight.c      | 62 +++++++++-----------
+> >  2 files changed, 29 insertions(+), 36 deletions(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+> > index f2dc625ea5856..5fe773c4d6cc5 100644
+> > --- a/drivers/hwtracing/coresight/coresight-priv.h
+> > +++ b/drivers/hwtracing/coresight/coresight-priv.h
+> > @@ -148,7 +148,8 @@ static inline void coresight_write_reg_pair(void __iomem *addr, u64 val,
+> >  void coresight_disable_path(struct list_head *path);
+> >  int coresight_enable_path(struct list_head *path, u32 mode, void *sink_data);
+> >  struct coresight_device *coresight_get_sink(struct list_head *path);
+> > -struct coresight_device *coresight_get_enabled_sink(bool reset);
+> > +struct coresight_device *
+> > +coresight_get_enabled_sink(struct coresight_device *source);
+> >  struct coresight_device *coresight_get_sink_by_id(u32 id);
+> >  struct coresight_device *
+> >  coresight_find_default_sink(struct coresight_device *csdev);
+> > diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
+> > index e9c90f2de34ac..bb4f9e0a5438d 100644
+> > --- a/drivers/hwtracing/coresight/coresight.c
+> > +++ b/drivers/hwtracing/coresight/coresight.c
+> > @@ -540,50 +540,46 @@ struct coresight_device *coresight_get_sink(struct list_head *path)
+> >         return csdev;
+> >  }
+> >
+> > -static int coresight_enabled_sink(struct device *dev, const void *data)
+> > +static struct coresight_device *
+> > +coresight_find_enabled_sink(struct coresight_device *csdev)
+> >  {
+> > -       const bool *reset = data;
+> > -       struct coresight_device *csdev = to_coresight_device(dev);
+> > +       int i;
+> > +       struct coresight_device *sink;
+> >
+> >         if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+> >              csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
+> > -            csdev->activated) {
+> > -               /*
+> > -                * Now that we have a handle on the sink for this session,
+> > -                * disable the sysFS "enable_sink" flag so that possible
+> > -                * concurrent perf session that wish to use another sink don't
+> > -                * trip on it.  Doing so has no ramification for the current
+> > -                * session.
+> > -                */
+> > -               if (*reset)
+> > -                       csdev->activated = false;
+> > +            csdev->activated)
+> > +               return csdev;
+> >
+> > -               return 1;
+> > +       /*
+> > +        * Recursively explore each port found on this element.
+> > +        */
+> > +       for (i = 0; i < csdev->pdata->nr_outport; i++) {
+> > +               struct coresight_device *child_dev;
+> > +
+> > +               child_dev = csdev->pdata->conns[i].child_dev;
+> > +               if (child_dev)
+> > +                       sink = coresight_find_enabled_sink(child_dev);
+> > +               if (sink)
+> > +                       return sink;
+> >         }
+> >
+> > -       return 0;
+> > +       return NULL;
+> >  }
+> >
+> >  /**
+> > - * coresight_get_enabled_sink - returns the first enabled sink found on the bus
+> > - * @deactivate:        Whether the 'enable_sink' flag should be reset
+> > - *
+> > - * When operated from perf the deactivate parameter should be set to 'true'.
+> > - * That way the "enabled_sink" flag of the sink that was selected can be reset,
+> > - * allowing for other concurrent perf sessions to choose a different sink.
+> > + * coresight_get_enabled_sink - returns the first enabled sink using
+> > + * connection based search starting from the source reference
+> >   *
+> > - * When operated from sysFS users have full control and as such the deactivate
+> > - * parameter should be set to 'false', hence mandating users to explicitly
+> > - * clear the flag.
+> > + * @source: Coresight source device reference
+> >   */
+> > -struct coresight_device *coresight_get_enabled_sink(bool deactivate)
+> > +struct coresight_device *
+> > +coresight_get_enabled_sink(struct coresight_device *source)
+> >  {
+> > -       struct device *dev = NULL;
+> > -
+> > -       dev = bus_find_device(&coresight_bustype, NULL, &deactivate,
+> > -                             coresight_enabled_sink);
+> > +       if (!source)
+> > +               return NULL;
+> >
+> > -       return dev ? to_coresight_device(dev) : NULL;
+> > +       return coresight_find_enabled_sink(source);
+> >  }
+> >
+> >  static int coresight_sink_by_id(struct device *dev, const void *data)
+> > @@ -988,11 +984,7 @@ int coresight_enable(struct coresight_device *csdev)
+> >                 goto out;
+> >         }
+> >
+> > -       /*
+> > -        * Search for a valid sink for this session but don't reset the
+> > -        * "enable_sink" flag in sysFS.  Users get to do that explicitly.
+> > -        */
+> > -       sink = coresight_get_enabled_sink(false);
+> > +       sink = coresight_get_enabled_sink(csdev);
+> >         if (!sink) {
+> >                 ret = -EINVAL;
+> >                 goto out;
+> > --
+> > 2.25.1
+> >
+> > _______________________________________________
+> > CoreSight mailing list
+> > CoreSight@lists.linaro.org
+> > https://lists.linaro.org/mailman/listinfo/coresight
