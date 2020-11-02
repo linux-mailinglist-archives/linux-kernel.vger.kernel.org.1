@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3AE2A29D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EB52A2A46
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgKBLsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:48:00 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7031 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728638AbgKBLpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:45:53 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPrhW4vdwzhf2W;
-        Mon,  2 Nov 2020 19:45:47 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
- 19:45:39 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Khalil Blaiech <kblaiech@mellanox.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Vadim Pasternak <vadimp@mellanox.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
-Date:   Mon, 2 Nov 2020 20:12:34 +0800
-Message-ID: <20201102121234.1343672-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728613AbgKBMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:01:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:58556 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728288AbgKBMBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 07:01:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 781B030E;
+        Mon,  2 Nov 2020 04:01:52 -0800 (PST)
+Received: from ubuntu.arm.com (unknown [10.57.53.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2C9FB3F66E;
+        Mon,  2 Nov 2020 04:01:50 -0800 (PST)
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org
+Cc:     morten.rasmussen@arm.com, chris.redpath@arm.com,
+        nicola.mazzucato@arm.com
+Subject: [PATCH v3 0/3] CPUFreq: Add support for cpu performance dependencies
+Date:   Mon,  2 Nov 2020 12:01:12 +0000
+Message-Id: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/i2c/busses/i2c-mlxbf.c: In function ‘mlxbf_i2c_acpi_probe’:
-drivers/i2c/busses/i2c-mlxbf.c:2296:8: error: implicit declaration of function ‘acpi_device_uid’; did you mean ‘cpu_device_up’? [-Werror=implicit-function-declaration]
-  uid = acpi_device_uid(adev);
-        ^~~~~~~~~~~~~~~
-        cpu_device_up
+Hi All,
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- drivers/i2c/busses/i2c-mlxbf.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+In this V3 posting I have replaced the new dt-binding with minor changes/
+improvements for opp (since we are now using opp tables instead).
+The RFC still stands on how to make this info available to sw consumers.
 
-diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxbf.c
-index ee59e0da082d..cd8a909431a9 100644
---- a/drivers/i2c/busses/i2c-mlxbf.c
-+++ b/drivers/i2c/busses/i2c-mlxbf.c
-@@ -2272,6 +2272,7 @@ static const struct acpi_device_id mlxbf_i2c_acpi_ids[] = {
- 
- MODULE_DEVICE_TABLE(acpi, mlxbf_i2c_acpi_ids);
- 
-+#ifdef CONFIG_ACPI
- static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
- {
- 	const struct acpi_device_id *aid;
-@@ -2305,6 +2306,12 @@ static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
- 
- 	return ret;
- }
-+#else
-+static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
-+{
-+	return -ENODEV;
-+}
-+#endif
- 
- static int mlxbf_i2c_of_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
- {
+In the RFC, I am proposing a simple addition of a performance dependencies
+cpumask in CPUFreq core and an example of how drivers and consumers would
+make use of it.
+I also propose an alternative approach, which does not require changes in
+CPUFreq core, but - possibly - in all the consumers.
+
+This is to support systems where exposed cpu performance controls are more
+fine-grained that the platform's ability to scale cpus independently.
+
+[v3]
+  * Remove proposal for new 'cpu-performance-dependencies' as we instead
+    can reuse the opp table.
+  * Update documentation for devicetree/bindings/opp
+  * Minor changes within opp to support empty opp table
+  * Rework the RFC by adding a second proposal
+
+[v2]
+  * Fix errors when running make dt_binding_check
+  * Improve commit message description for the dt-binding
+  * Add RFC for implementation in cpufreq-core and one of its
+    drivers.
+
+Nicola Mazzucato (3):
+  dt-bindings/opp: Update documentation for opp-shared
+  opp/of: Allow empty opp-table with opp-shared
+  [RFC] CPUFreq: Add support for cpu-perf-dependencies
+
+ Documentation/devicetree/bindings/opp/opp.txt | 53 +++++++++++++++++++
+ drivers/opp/of.c                              | 13 ++++-
+ 2 files changed, 64 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
