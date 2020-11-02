@@ -2,163 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072072A360F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD982A3612
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgKBVhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        id S1726727AbgKBVhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBVhL (ORCPT
+        with ESMTP id S1725833AbgKBVhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:37:11 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FAEC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:37:11 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id a126so13220499ybb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=6QhI3kHimGu8AWgc0fDAH50nxnuO9Boew+8qHoNE/Eo=;
-        b=BApIjvn7QJ3hkYCJqm1ZEr4y5XnuniIqZJW0Q7lYJLi1jVypbSF5D90TrXEnym+bOJ
-         B1ztMqsbPnPQ4SMdybfWkdITi8ZQnCByAMmpISsEN5Md1tcnwIPHvCjlZf4nQOh8T6u0
-         4DkOL+GJcGN40B3SWlpoARtY0uHtr7jOW0uWxqlauUKzgwTxgifEGdFaTCPbvmXrtzm/
-         YlScuqb6LpbvGxxN+mDRKPb/rNhwU2HDDl2vA6udlo9NabPcbA6aXok5sWeQVWsUf2zi
-         uZrImi3XCItHlC/2uaWfp4x1ut/4y86g/1Gvqy8WsbtfV8a+m5Z1JOrEqHCJ45WBTVMt
-         RDUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=6QhI3kHimGu8AWgc0fDAH50nxnuO9Boew+8qHoNE/Eo=;
-        b=geDBTmikKnr1QOqFjypkOhxM/fGh4UyQZsjB6YbqFiYTRpLDxRd0BZ6Yekk4Nqk7cG
-         X/joymKuPYso5GJREH9P26msPKdPskoBH2kG3lMnDYoQCWy+viZX1kSrE7101PTdU69s
-         Su+9gCFMa3Q/CG0vjb8RYL0PIReZVZBnJbZC2OPOe5YSUOjKlcAqi5Qb/haVwUyBbhkd
-         n34nwgICfvDKZ67XnGrLrGqA+l2xRuJocQDBbv+3MxEjjbMN7jCap+tMcwBYZODkJoJN
-         lsWHjA/vVJaa/oMWzv2gSSEtq7OLYAw51zFdJptnP/Ll/DP20ts9jzhJ3yysST8Zti/X
-         Pa8w==
-X-Gm-Message-State: AOAM533zb+OSOVXbp4Ws8QO2i9GODbAiE13o6M6Xeu4bIGhbBK3QrwdA
-        1DpuDq9EKqBpAOSI1YqC9uFw6yvs8y6Qwg==
-X-Google-Smtp-Source: ABdhPJz4uKIj6Q4SL0hNCQEkGUOcERyuUqYeqLGnw1+q8cf714ZYJ06FmUwShvkid2AmogORNtzrpYJnXL77GA==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:b68a:: with SMTP id
- s10mr22646893ybj.455.1604353030242; Mon, 02 Nov 2020 13:37:10 -0800 (PST)
-Date:   Mon,  2 Nov 2020 13:36:56 -0800
-Message-Id: <20201102213656.2700500-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] Documentation: kunit: provide guidance for testing many inputs
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, andriy.shevchenko@linux.intel.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 2 Nov 2020 16:37:36 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1741EC0617A6;
+        Mon,  2 Nov 2020 13:37:36 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQ5qJ5WTBz9sTD;
+        Tue,  3 Nov 2020 08:37:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604353053;
+        bh=7rpW1Mb32DfOkhwiOa7Tx0Ai8GDdJ/hmk946rvTZ72c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Fyvvoi6gwAAjJxJfkqG4Ao64zEW3MBOL6Jr4FDPe/tOxfDoYoUV4bm5J4pGdg2QFt
+         iDedyscCakmbD+Mns3+UUegKNHsdo9nk9pO7qnmLKcCsIkadZx0sL6O8wbh4EBPhFl
+         6OzGVj/1Dx9H8lq7m99GEJTn7EWOfhetuypxUrcqMDqXAWZnw6Jj7/ZJGDKsMf2jyG
+         RBsUtHhiSsDQEynPVqeWyOdDd7baa1Graf2QOmIKrBXwy+lgRODIxPTbRGOKIkEa9C
+         c7uZfO+3aIGUBLhoFrhKO0IBap3WRuYANn5DMgmtZBYAQxRRkyhCSqGIY9UwYo68Ad
+         2ghsn6sGWT/TA==
+Date:   Tue, 3 Nov 2020 08:37:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tags need some work in the rdma tree
+Message-ID: <20201103083730.539fe81c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/lk.ZAxSxMhtzy7dof_tlO9n";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usage.rst goes into a detailed about faking out classes, but currently
-lacks wording about how one might idiomatically test a range of inputs.
+--Sig_/lk.ZAxSxMhtzy7dof_tlO9n
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Give an example of how one might test a hash function via macros/helper
-funcs and a table-driven test and very briefly discuss pros and cons.
+Hi all,
 
-Also highlight the KUNIT_EXPECT_*_MSG() variants (that aren't mentioned
-elsewhere [1]) which are particularly useful in these situations.
+In commit
 
-It is also criminally underused at the moment, only appearing in 2
-tests (both written by people involved in KUnit).
+  32fabd9b163b ("RDMA/rxe: Compute PSN windows correctly")
 
-[1] not even on
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html
+Fixes tag
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 66 +++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+  Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 62142a47488c..317390df2b96 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -451,6 +451,72 @@ We can now use it to test ``struct eeprom_buffer``:
- 		destroy_eeprom_buffer(ctx->eeprom_buffer);
- 	}
- 
-+Testing various inputs
-+----------------------
-+
-+Testing just a few inputs might not be enough to have confidence that the code
-+works correctly, e.g. for a hash function.
-+
-+In such cases, it can be helpful to have a helper macro or function, e.g. this
-+fictitious example for ``md5sum(1)``
-+
-+.. code-block:: c
-+
-+	/* Note: the cast is to satisfy overly strict type-checking. */
-+	#define TEST_MD5(in, want) \
-+		md5sum(in, out); \
-+		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, want, "md5sum(%s)", in);
-+
-+	char out[16];
-+	TEST_MD5("hello world",   "5eb63bbbe01eeed093cb22bb8f5acdc3");
-+	TEST_MD5("hello world!",  "fc3ff98e8c6a0d3087d515c0473f8677");
-+
-+Note the use of ``KUNIT_EXPECT_STREQ_MSG`` to give more context when it fails
-+and make it easier to track down. (Yes, in this example, ``want`` is likely
-+going to be unique enough on its own).
-+
-+The ``_MSG`` variants are even more useful when the same expectation is called
-+multiple times (in a loop or helper function) and thus the line number isn't
-+enough to identify what failed, like below.
-+
-+In some cases, it can be helpful to write a *table-driven test* instead, e.g.
-+
-+.. code-block:: c
-+
-+	int i;
-+	char out[16];
-+
-+	struct md5_test_case {
-+		const char *str;
-+		const char *md5;
-+	};
-+
-+	struct md5_test_case cases[] = {
-+		{
-+			.str = "hello world",
-+			.md5 = "5eb63bbbe01eeed093cb22bb8f5acdc3",
-+		},
-+		{
-+			.str = "hello world!",
-+			.md5 = "fc3ff98e8c6a0d3087d515c0473f8677",
-+		},
-+	};
-+	for (i = 0; i < ARRAY_SIZE(cases); ++i) {
-+		md5sum(cases[i].str, out);
-+		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, cases[i].md5,
-+		                      "md5sum(%s)", cases[i].str);
-+	}
-+
-+
-+There's more boilerplate involved, but it can:
-+
-+* be more readable when there are multiple inputs/outputs thanks to field names,
-+
-+  * E.g. see ``fs/ext4/inode-test.c`` for an example of both.
-+* reduce duplication if test cases can be shared across multiple tests.
-+
-+  * E.g. if we had a magical ``undo_md5sum`` function, we could reuse ``cases``.
-+
- .. _kunit-on-non-uml:
- 
- KUnit on non-UML architectures
+has these problem(s):
 
-base-commit: 77c8473edf7f7664137f555cfcdc8c460bbd947d
--- 
-2.29.1.341.ge80a0c044ae-goog
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
 
+Maybe you meant
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+
+In commit
+
+  b67ffe884bdd ("RDMA/bnxt_re: Fix entry size during SRQ create")
+
+Fixes tag
+
+  Fixes: 2bb3c32c5c5f ("RDMA/bnxt_re: Change wr posting logic to accommodat=
+e  variable wqes")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lk.ZAxSxMhtzy7dof_tlO9n
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+gfBoACgkQAVBC80lX
+0GxKxgf9EGuPZmL8Y1T7ZKCJSAjwrirsRLTTcXzJqOOwt5bKvFAd8Jo/0oOYbN7f
+ZQwziLicXN9W7S8spCbfXTgAcfTfRlu7NZDHJ1hIuVTeMO7sOsIDMJUjouv5cfdq
+WUXrW4jTFXQjXuk3IPFDnDfKAs5c1RxRj6lItX1Hl/Q7vqGbA5+B7qK2npD8GuQJ
+FYzKXY8OymETbv4FJthndsb6E9lt1azzKOTyrphKakiiAhrj16/KiJDoPzxN1GXg
+rcxjAMTIago6rFlQZb+J9IwJt/AhibwQxRpDmBUY6kP5VgAIWQDqErt+BpnqZou7
+SDP4e1iWWtrJYaLE1XXvbjec0nx/ng==
+=it1J
+-----END PGP SIGNATURE-----
+
+--Sig_/lk.ZAxSxMhtzy7dof_tlO9n--
