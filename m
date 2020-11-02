@@ -2,147 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970FA2A28F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045BF2A28F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgKBLXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:23:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S1728545AbgKBLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgKBLXp (ORCPT
+        with ESMTP id S1728288AbgKBLYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:23:45 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2F2C0617A6;
-        Mon,  2 Nov 2020 03:23:44 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x13so10829455pfa.9;
-        Mon, 02 Nov 2020 03:23:44 -0800 (PST)
+        Mon, 2 Nov 2020 06:24:19 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8F9C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:24:19 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p19so1043853wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:24:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IhmqATifEcViK+e9MGPWvhRFN0kIxrnVQe+ipF7dQNc=;
-        b=clmoZITrEvKUnP0B/bc0cWKdoBou4VKg7O2epLQNvKtPbX6OrmNf+03/tlspKl/wKn
-         61FHVSNuGDFcHUvPH+ogg6G8eUAOJnM2mX6skODpJMQxYF8ZYWDnfP3eYbhhNadlkM8w
-         Bbi5jaOVpLqtHTtJFq4JcKXuAuYTgOpbmx6DSBF43vQxzHcoeqNHmKrJzMzn6Wpcr0VP
-         VMWORHbv2UZClNb3ttYgT7lUsWNtO0440LhiSIKH8B+1GDnTxI+br4PyNViI0Ban0FyH
-         8xTyNR1ShKXWjDuuuKQLWYmH6d8z/kvPY+s2hFi1SEjxhhEgQ/D94roHcy3RLs9qGE2B
-         2Fnw==
+        bh=kfCY59oNjggvF0pXnEdWdUr+3BwEi6Y/3P8DecThe14=;
+        b=uvqiBJUtr1Y8S2jtjRl3aIarqDpan9LCk86rgKPo8rAt6zbob8QDqIlo668wn8bYAB
+         VSaf8xR2nQ2Qoayi9wblr4So+rnl/tm02qpa0/r2wHDrd6qPWehHbWS+UUNT8bQstkYA
+         YJZ2Jip4hMzzvue7lv++JwK++yjO5iquHNEBasRaQumPN5wF8Q5Asad5DLxhwCcM686R
+         Du6UBsQ44cBPuBQMG//e2CeyLCGPDpSpjQgYM83OU5IpPlgeIcJu4cSGgB6cTUwj7UYk
+         yI1cvNqMKnQh7RmKdBo0/pF4Wbt44uEm2fxV7kbPGUNUWAIikVIe0iP+xpV+yo47nYzo
+         LE4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IhmqATifEcViK+e9MGPWvhRFN0kIxrnVQe+ipF7dQNc=;
-        b=Q1c6DiO7oeZRietIlQ86wo9HyBn/0tnKH1T26oYyNtB5YSFzcZm5iEXepTf2gR//J9
-         VWhMXdKuoPxuLhT9jd9dyJM6amGhpPNZLqohTDdB+UjgWCLdHlq/oLLhEfvqzE3jSmRX
-         sorBSY/6bCyFoC+9+1A1D7It0xzkMlAOcve0RphG/yU8FGFHbQwuUA1fVEkvUfb8vL+Z
-         jm1xN5w0F9Agbgk9GDMI00Ebcmw5mGwYGAwO0C7zZSJym7XufZNCiNub0ZcnncEoonCJ
-         EISLFcmovuVE3PZG9A4z4FoMhyjyeu5joEC0jCwq6sYbPbgRqxhsI5C8XsgcaOIuC5+6
-         LA7A==
-X-Gm-Message-State: AOAM531pEFrCaaXlEYYSEPjfb5TYnQIMNp/ulkXzk77JK1X+smLyoonR
-        eu/PcvY3faMVttcvZAtuJ5g=
-X-Google-Smtp-Source: ABdhPJyvOJYESLJDoZaggrjuIpt4OyL+3gSC7dJWfRhNDgRqL+g41fqjKxmc5BlyM/JABx5GO7hdOA==
-X-Received: by 2002:a17:90a:fb90:: with SMTP id cp16mr5693087pjb.232.1604316224427;
-        Mon, 02 Nov 2020 03:23:44 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id e6sm13727005pfn.190.2020.11.02.03.23.40
+        bh=kfCY59oNjggvF0pXnEdWdUr+3BwEi6Y/3P8DecThe14=;
+        b=lN0NJI2WdQvw0cXeRgp8l6NxtB2JnNW4TXm7B51BFlHLsE+MWmEnzigRxjgeqzhFJ4
+         7CIUYZ6h3URWmeLhlgH/df6AuI4HlTdPpYP9r5vHZ4FAcIBbDw31TwVH+XhR62Kwx6ML
+         N0Or/2wyP/lnNdsLHJr/as1raR5qQY3wkRJLLP+vlMEWpOSQ8gHCBpOprPvupUwBWSe5
+         5+huxPiC65+2uBZrAJBXqsfH5oL3vHh1C+1yqjXH2L7QAz2fAf5bPVygJp1zcn70MyfO
+         QvIX0FqtbcP7KjFWSpN62HfSldBKdjyIxdFDwvFUUu7fgvP/WufvhrknMXIZ52d/mzRn
+         4A3A==
+X-Gm-Message-State: AOAM532vW901g4oxZfxkBuxwlKLx20HqGy0XKF7hL8hsh56d0/AnLlDm
+        410pRzeZUW1Pm9hwCwPcKsGoMPQADPGR2A==
+X-Google-Smtp-Source: ABdhPJxwkaZx6wLhk8G0L+vx/gm+rQBseHGAsK2n8C3fqXrqDHHf+EzqVgUzxMq+Z9Z7I1isNlanSQ==
+X-Received: by 2002:a1c:5946:: with SMTP id n67mr2066568wmb.162.1604316258130;
+        Mon, 02 Nov 2020 03:24:18 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:23:43 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Bangzheng Liu <bangzheng.liu@unisoc.com>
-Subject: [PATCH] spi: add runtime PM for transfer_one_message
-Date:   Mon,  2 Nov 2020 19:22:39 +0800
-Message-Id: <20201102112239.19218-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 02 Nov 2020 03:24:17 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     kvalo@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/41] [Set 4] Rid W=1 warnings in Wireless
+Date:   Mon,  2 Nov 2020 11:23:29 +0000
+Message-Id: <20201102112410.1049272-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+ [Last batch!]
 
-Before transfer message, spi devices probably have been in runtime suspended,
-that would cause the kernel crash on some platforms once access spi
-registers, such as on Unisoc's SoCs. The spi devices can be suspended
-until message transfer completed.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Also this patch move the API spi_idle_runtime_pm() above to
-spi_transfer_one_message() which need to call that API.
+Lee Jones (41):
+  wil6210: wmi: Correct misnamed function parameter 'ptr_'
+  rsi_91x_usb: Fix some basic kernel-doc issues
+  rtl8192cu: mac: Fix some missing/ill-documented function parameters
+  rsi_91x_usb_ops: Source file headers are not good candidates for
+    kernel-doc
+  rtl8192cu: trx: Demote clear abuse of kernel-doc format
+  brcmfmac: bcmsdh: Fix description for function parameter 'pktlist'
+  brcmfmac: pcie: Provide description for missing function parameter
+    'devinfo'
+  iwlwifi: mvm: rs: Demote non-conformant function documentation headers
+  wl1251: cmd: Rename 'len' to 'buf_len' in the documentation
+  ath9k: ar9330_1p1_initvals: Remove unused const variable
+    'ar9331_common_tx_gain_offset1_1'
+  ath9k: ar9340_initvals: Remove unused const variable
+    'ar9340Modes_ub124_tx_gain_table_1p0'
+  ath9k: ar9485_initvals: Remove unused const variable
+    'ar9485_fast_clock_1_1_baseband_postamble'
+  ath9k: ar9003_2p2_initvals: Remove unused const variables
+  prism54: isl_ioctl: Fix one function header and demote another
+  iwlwifi: iwl-eeprom-read: Demote one nonconformant function header
+  iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's
+    header
+  intersil: hostap_hw: Prevent incompatible function type cast
+  brcm80211: fweh: Add missing description for 'gfp'
+  ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg'
+    param
+  ath9k: ar5008_phy: Demote half completed function headers
+  ath: dfs_pattern_detector: Fix some function kernel-doc headers
+  ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
+  iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
+  wl3501_cs: Fix misspelling and provide missing documentation
+  rtlwifi: halbtc8723b2ant: Remove a bunch of set but unused variables
+  rtlwifi: phy: Remove set but unused variable 'bbvalue'
+  rtlwifi: halbtc8821a1ant: Remove set but unused variable
+    'wifi_rssi_state'
+  rtl8723be: phy: Remove set but unused variable 'lc_cal'
+  rtl8188ee: phy: Remove set but unused variable 'reg_ea4'
+  rtlwifi: halbtc8821a2ant: Remove a bunch of unused variables
+  mwifiex: pcie: Remove a couple of unchecked 'ret's
+  rtl8723be: trx: Remove set but unused variable 'cck_highpwr'
+  rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
+  rtl8821ae: phy: Place braces around empty if() body
+  wlcore: spi: Demote a non-compliant function header, fix another
+  rtw8822b: Return type is not const
+  iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
+  realtek: rtw8822c: Remove unused variable 'corr_val'
+  ath9k: dynack: Demote non-compliant function header
+  iwlwifi: fw: acpi: Demote non-conformant function headers
+  realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
 
-Fixes: b158935f70b9 ("spi: Provide common spi_message processing loop")
-Reported-by: Bangzheng Liu <bangzheng.liu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/spi/spi.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath9k/ar5008_phy.c   |  15 +--
+ .../wireless/ath/ath9k/ar9003_2p2_initvals.h  |  14 ---
+ .../wireless/ath/ath9k/ar9330_1p1_initvals.h  |   7 --
+ .../net/wireless/ath/ath9k/ar9340_initvals.h  | 101 ------------------
+ .../net/wireless/ath/ath9k/ar9485_initvals.h  |   7 --
+ drivers/net/wireless/ath/ath9k/dynack.c       |   3 +-
+ .../net/wireless/ath/dfs_pattern_detector.c   |  14 +--
+ drivers/net/wireless/ath/dfs_pri_detector.c   |   9 +-
+ drivers/net/wireless/ath/regd.c               |   1 +
+ drivers/net/wireless/ath/wil6210/wmi.c        |   2 +-
+ .../broadcom/brcm80211/brcmfmac/bcmsdh.c      |   2 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.c        |   1 +
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |   1 +
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c  |  12 +--
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c   |   2 +-
+ .../wireless/intel/iwlwifi/iwl-eeprom-parse.c |  12 +--
+ .../wireless/intel/iwlwifi/iwl-eeprom-read.c  |   2 +-
+ .../net/wireless/intel/iwlwifi/iwl-phy-db.c   |   2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c   |  10 +-
+ .../net/wireless/intersil/hostap/hostap_hw.c  |  19 ++--
+ .../net/wireless/intersil/prism54/isl_ioctl.c |   5 +-
+ drivers/net/wireless/marvell/mwifiex/pcie.c   |   6 +-
+ .../rtlwifi/btcoexist/halbtc8723b2ant.c       |  48 ++++-----
+ .../rtlwifi/btcoexist/halbtc8821a1ant.c       |   4 +-
+ .../rtlwifi/btcoexist/halbtc8821a2ant.c       |  27 +++--
+ .../wireless/realtek/rtlwifi/rtl8188ee/phy.c  |   4 +-
+ .../wireless/realtek/rtlwifi/rtl8192cu/mac.c  |   7 +-
+ .../wireless/realtek/rtlwifi/rtl8192cu/trx.c  |   2 +-
+ .../wireless/realtek/rtlwifi/rtl8723ae/phy.c  |   4 +-
+ .../wireless/realtek/rtlwifi/rtl8723be/phy.c  |   4 +-
+ .../wireless/realtek/rtlwifi/rtl8723be/trx.c  |   4 +-
+ .../wireless/realtek/rtlwifi/rtl8821ae/phy.c  |   8 +-
+ drivers/net/wireless/realtek/rtw88/pci.h      |   4 +
+ drivers/net/wireless/realtek/rtw88/rtw8822b.c |   2 +-
+ drivers/net/wireless/realtek/rtw88/rtw8822c.c |   4 +-
+ drivers/net/wireless/rsi/rsi_91x_usb.c        |   6 +-
+ drivers/net/wireless/rsi/rsi_91x_usb_ops.c    |   2 +-
+ drivers/net/wireless/ti/wl1251/cmd.c          |   2 +-
+ drivers/net/wireless/ti/wlcore/spi.c          |   3 +-
+ drivers/net/wireless/wl3501_cs.c              |   8 +-
+ 40 files changed, 120 insertions(+), 270 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 0cab239d8e7f..63f7ebea7076 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1224,6 +1224,14 @@ static void _spi_transfer_cs_change_delay(struct spi_message *msg,
- 	}
- }
- 
-+static void spi_idle_runtime_pm(struct spi_controller *ctlr)
-+{
-+	if (ctlr->auto_runtime_pm) {
-+		pm_runtime_mark_last_busy(ctlr->dev.parent);
-+		pm_runtime_put_autosuspend(ctlr->dev.parent);
-+	}
-+}
-+
- /*
-  * spi_transfer_one_message - Default implementation of transfer_one_message()
-  *
-@@ -1240,6 +1248,16 @@ static int spi_transfer_one_message(struct spi_controller *ctlr,
- 	struct spi_statistics *statm = &ctlr->statistics;
- 	struct spi_statistics *stats = &msg->spi->statistics;
- 
-+	if (ctlr->auto_runtime_pm) {
-+		ret = pm_runtime_get_sync(ctlr->dev.parent);
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(ctlr->dev.parent);
-+			dev_err(&ctlr->dev, "Failed to power device: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
- 	spi_set_cs(msg->spi, true);
- 
- 	SPI_STATISTICS_INCREMENT_FIELD(statm, messages);
-@@ -1329,6 +1347,8 @@ static int spi_transfer_one_message(struct spi_controller *ctlr,
- 
- 	spi_finalize_current_message(ctlr);
- 
-+	spi_idle_runtime_pm(ctlr);
-+
- 	return ret;
- }
- 
-@@ -1346,14 +1366,6 @@ void spi_finalize_current_transfer(struct spi_controller *ctlr)
- }
- EXPORT_SYMBOL_GPL(spi_finalize_current_transfer);
- 
--static void spi_idle_runtime_pm(struct spi_controller *ctlr)
--{
--	if (ctlr->auto_runtime_pm) {
--		pm_runtime_mark_last_busy(ctlr->dev.parent);
--		pm_runtime_put_autosuspend(ctlr->dev.parent);
--	}
--}
--
- /**
-  * __spi_pump_messages - function which processes spi message queue
-  * @ctlr: controller to process queue for
 -- 
-2.20.1
+2.25.1
 
