@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C5D2A2F83
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60E62A2F85
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgKBQRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgKBQRr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:17:47 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB0CC0617A6;
-        Mon,  2 Nov 2020 08:17:46 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c20so11517151pfr.8;
-        Mon, 02 Nov 2020 08:17:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2MzVyafZD/d5S58iqSdaOROaljhCCbTE4cyjcOCGRyc=;
-        b=eAgBQn8rRwIyQ5exdhH6P4I82a89cPPxF86BrrpM/IN+U6eN+AwhZ5B2xu/ixuQVSF
-         2d4qkc5+Lfl3sJhTRupPr2A56nLUmVPZPcZrM3IVYRsb5LCeHy+YImVx4GFeXNT24kiL
-         tmnuv1adCIPOLUM16TunUK8jwo04EBA1lK++TyB7N4QByOlTfXg6uWMwxf5Q9rLsVT4n
-         0RzyYiqjubRWegLGHhdouFAxGoujULL6VE65atxIL/woopSnyiDo8+FIs3zvuNfJHlLB
-         z5FCkZltWyYU3M6f5EB5KR+ZhqxKwwWmOzC/OJq2HWk4mE2+yEORoRY+2A5MqJ5cstPq
-         xVCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2MzVyafZD/d5S58iqSdaOROaljhCCbTE4cyjcOCGRyc=;
-        b=bqgBKYvNvGC6d/Z3KYAVWu8wLnf97rWpEy/D6+cL1cFLR1xip9sMaHtsqYLVXwSNGF
-         T8C7rAcvCz/wmxr5f7lLFPK5WweKjUPb2tgLjjDoDyIw78J6Jp2Q6zZO0j0RpjPyKQST
-         lWS9z8lPXwXaNKYNwPgrO39PDUwU4wqkAkZuB5DVlQrNLh9TDzHZ3IxownNu+ScVrSSq
-         oJh9OTJpnF8F4NOgmQkHApgOMtXZJnUNeQUbkdYozzN5CW2hVnvpmEFUzTmlkaFCY1cu
-         0bk18y05cdbI+x4RTglzgWgQixTe6OBt9qaki6EETibMsaUvFcDZOl1AYhtXk/mJU0ec
-         Hilw==
-X-Gm-Message-State: AOAM532N7kAB6+tspq7pvz6cf8Lwp2m8gRLNnSEXLgVDs0UoCohgz1bq
-        3XTO6Li8buBLTS7eqxOWjg==
-X-Google-Smtp-Source: ABdhPJxX8xbW2drAiJIg46qxzs2k97iF4UlLerUuQKowRTiwOnryMAFSTKKEYo0Rdc2mNgwUFzKuRg==
-X-Received: by 2002:aa7:8545:0:b029:163:c9a5:97d with SMTP id y5-20020aa785450000b0290163c9a5097dmr22120606pfn.38.1604333866557;
-        Mon, 02 Nov 2020 08:17:46 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id v3sm13784875pjk.23.2020.11.02.08.17.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 08:17:45 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:17:34 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
- qualifier
-Message-ID: <20201102161734.GA1563823@PWN>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
- <20201102110916.GK4127@dell>
- <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
- <20201102113034.GL4127@dell>
- <CAKMK7uHo2MMmBUic9EiFqcUh8mJeu1+=ZQfH7bWA=zdJTyRyvA@mail.gmail.com>
+        id S1726837AbgKBQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:18:36 -0500
+Received: from mail-vi1eur05on2075.outbound.protection.outlook.com ([40.107.21.75]:31195
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726587AbgKBQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:18:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O+/VsncUlsaIGFPd/96na8iu+5rWBr7pqzF3S6De345nlcw573FKSv5f9XthXRstvxnIzMggQl0mfRfy6dQ/H+HASruD2eIKjbsqb2aWqhwQ3nIU2EcS72bXoNGY9VdOjsfkgzTViYw99eOnAXg6VDxNx5vb4PCPYyaFwgfWzvmZz75gNC+MvNck+AzdJQ+s/oT2NEiWHvQO+MG0IihjjyOpKpkYy8tUSykJBfOUZAmdCoC2+QcJt8uPCD2jhqRF8dSt/8skQ+npoJMveG+Z7VsqwXjzTXNT4n6PARiYW5uZDvbDdrAAivS9Ts6D3hOW779R6qzQH7Jn9IzcstoJww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CQucECVRfJAiUp25lU24CH6Tl5fSUwJsWHxeid69ixk=;
+ b=PMcYKArHds22Mj6lfY3oeK5NInY8+IDxqXsVxVxqKPr28NhNEk8kMzUhQXtYLKuhMq4iV0DPnqiw0UYDRmr/XOvKtHi8A2Yi1sQJg9bht0OeRn4q4RU1sDiZbwJL8tgEu/Y9aE6wJyTtNGzD5fqZ62B/NGPR66myTY/YFCWt+17jjleow2hb2+coCYKSeFy0WSnMbg74BMUcwtqSOdR7vznznSMWfRooz19aNKfVwH0KNumpwQXuVBjGoiFAdvgbSRk5T0OAgONIrhSruIRNq2PJe7lKcgFIrjpxzkHjI1lnyuTmhzhnJVnMWZD2yc7HpO5gxp/VSl5PLz168dqUEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CQucECVRfJAiUp25lU24CH6Tl5fSUwJsWHxeid69ixk=;
+ b=Db/sB/6RU6mDITGxBjrIJ8fO7SKjr++74mmL3tBLdpgkOs26p8KpFQlCUW+CmWRQvb4WG0oh+n34ehRRPFL5fL/oBiH2FLtk79EO1tSGpFKVq4ze6sdcmEVTjR9ECPA9keq7LZ8mIIruphd9BjZ/AdrwkIXmJ/mp8yAsG1Dkyhw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB5517.eurprd04.prod.outlook.com
+ (2603:10a6:803:d9::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 16:18:30 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 16:18:29 +0000
+From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH] ASoC: fsl_xcvr: fix break condition
+Date:   Mon,  2 Nov 2020 18:18:10 +0200
+Message-Id: <20201102161810.902464-1-viorel.suman@oss.nxp.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [5.12.106.221]
+X-ClientProxiedBy: VI1PR02CA0048.eurprd02.prod.outlook.com
+ (2603:10a6:802:14::19) To VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uHo2MMmBUic9EiFqcUh8mJeu1+=ZQfH7bWA=zdJTyRyvA@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (5.12.106.221) by VI1PR02CA0048.eurprd02.prod.outlook.com (2603:10a6:802:14::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.22 via Frontend Transport; Mon, 2 Nov 2020 16:18:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1d589a03-ab26-44a4-9000-08d87f4aef77
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5517:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5517A193B9DBF14A27A5C1DFD3100@VI1PR04MB5517.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l3cAyd6fULIaxPeSizHExz2tnDAgbuCCGNRaJdN/pywFuxcwj98wi1hQR5M0rSzOdlYMmLkAFNkOJNMu18PMoGCF+e4h4ynAl5t9RUj9+ZkDRlEf4nZK6aoNJqsNCE9VEmKOMJlkvq+krnfTSkG1ej1X+HG/Y1KsIlth0ohZQXaRhfTDSg/SgGMq/DjdS4PQrfbI4s82VkiCsgobCem+M3Jkl+nSK/jhK/rK+gBb7dMq1i3VavFYMX09CBSEJHvMqyMpMNN4FdpUSZOad058TbMRZO8ZJHlvJZYZz7NXDBSv08Wboqn953O0YmgwVA/phB/hBbuYM+pPyxvULOTSRJUCu5ZY/vIq3vEBm5r1Mpiqdu0GlzfAAGLLXBVdsH0TrgWVTUGQT+YOybDp09yi9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(69590400008)(26005)(956004)(186003)(83380400001)(2616005)(110136005)(66476007)(66946007)(478600001)(66556008)(16526019)(316002)(6506007)(4326008)(52116002)(8676002)(6486002)(6512007)(86362001)(8936002)(4744005)(6666004)(2906002)(5660300002)(7416002)(1076003)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 4hweiy+ZCeRCV0hpTv09ywtj+D1NLx9vvNeLMEHfesh1Xw5KNrMwwKrRHI3RnQTK3ywFcAtkjxCJjyBoJWTZwc0244W6R72CPL1tHedzfrymQAHRL8NsvslRIgQHnPrT2ytm9ivoeohGDG2eEwrY3Jv4rlxJyPXQUWm8agVzzFTbVhlmyX5/PUIw/t44x+o0qp/lZX1vGkQxoHlFWevSUophu11oZWrrQNL+lRpU1UB1nsfQyO5jbeZQGEW8ZSv/jTw8gwRKA1PkPzqWhQfzpnop5CZkPsp0kEMTEoc1A5497r0XOzKNF5qO4YJjIR0bARTW8eaNrashuSoZ7BVGSZ/whqxHDXjGYgaRMxZVpILHnSNAslGJ6GmPCiOCG4PP0CIu7zYFuBCWdbJmEyzfLgeKZmEOiErLyJeFL8xXJWS4mC9Q8nDOy08qaj+rt/en2SJhbVHC9Wm0CySRF7WM+Uz92hn9MIhEycHenBNz3zMRiEGf367H3OuVIEk5gT2CibaCJP03CMbr9aW5rGRAx/uJjwbFQQsrMMpKzrIiMQMhu97NsECAN6RyGN56LX/uLVWHF0gnIPEN6T2RJHbEpKmvRO1CbLSAXp49DpR4gZtF+o3yHilgC/8PmO1yISIyiTD/+LIdyYNZxRmVpfnefg==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d589a03-ab26-44a4-9000-08d87f4aef77
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 16:18:29.6981
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +XvervRLink86RRMOrbDVnmPbNWmNZjYNCwKhQoVvETDkxws25wuh8MMO0ddrmaxBts4WfGu41Z/bXjPpnjlRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5517
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:50:49PM +0100, Daniel Vetter wrote:
-> Maybe Peilin is going to include the full re-cosntification in a
-> cleanup series, dunno.
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Sure, I will do it in a separate patch.
+The break condition copied by mistake as same
+as loop condition in the previous version, but must
+be the opposite. So fix it.
 
-Thank you,
-Peilin Ye
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index c055179e6d11..2a28810d0e29 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -247,7 +247,7 @@ static int fsl_xcvr_ai_write(struct fsl_xcvr *xcvr, u8 reg, u32 data, bool phy)
+ 	regmap_write(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL_TOG, idx);
+ 
+ 	ret = regmap_read_poll_timeout(xcvr->regmap, FSL_XCVR_PHY_AI_CTRL, val,
+-				       (val & idx) != ((val & tidx) >> 1),
++				       (val & idx) == ((val & tidx) >> 1),
+ 				       10, 10000);
+ 	if (ret)
+ 		dev_err(dev, "AI timeout: failed to set %s reg 0x%02x=0x%08x\n",
+-- 
+2.26.2
 
