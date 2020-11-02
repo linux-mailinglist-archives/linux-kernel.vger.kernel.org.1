@@ -2,108 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0232A25BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA262A25C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbgKBH6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:58:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbgKBH6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:58:46 -0500
-Received: from coco.lan (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728069AbgKBICN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:02:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727806AbgKBICN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:02:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604304131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MAcCSziPSZLxQtchkW5FgE96MjPeBrhusgB4MKSuagU=;
+        b=BG0XVRjAcjyNqqhJrynu4XPin+P1c3fOJ8Kvf3jdJmwfSLAx1xO93JmB3pOw9zAmE9b2g7
+        kn8cSXUUjSaSex0qiS6UZ83Gt7vjSkAtvG47bA4jruyZI5joKaLw2PERECmfSVx+Z2L1gt
+        nohbRsUc+jZHhudf6Tu2ra5IoPVUwHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-VvGprGT4MWWzijxkfL_I7Q-1; Mon, 02 Nov 2020 03:02:07 -0500
+X-MC-Unique: VvGprGT4MWWzijxkfL_I7Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7943421556;
-        Mon,  2 Nov 2020 07:58:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604303926;
-        bh=reFXUFkZyreQdSjvxNIW/3zmr/r2nAc+7XF6Gl9WkEk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YyIOOKlGgEYnez7PGXlkhgyDy9YZgDb0zIfFZQiknJ+VuzcrsxJwQyQsjmj5l2at6
-         7fvLh0G8fopdVFdeBVhbqlP20u0FLdnnDIWTF5f/8DOCX5bgLA0egw0XojdweEYT+v
-         9Nw82X29S/6LXJjkAl9hzxQTWgd+fKyQ2XIz89uA=
-Date:   Mon, 2 Nov 2020 08:58:41 +0100
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.10-rc2 (docs build)
-Message-ID: <20201102085841.5490f6da@coco.lan>
-In-Reply-To: <ff1301ed-6040-3aac-c057-7f37184604d3@infradead.org>
-References: <CAHk-=wiGc62spBHh+i1yH9sVLpCqZBznUF8QdO7H5772qO1xqQ@mail.gmail.com>
-        <ff1301ed-6040-3aac-c057-7f37184604d3@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 571158015B1;
+        Mon,  2 Nov 2020 08:02:06 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 793EA5B4D1;
+        Mon,  2 Nov 2020 08:02:03 +0000 (UTC)
+Subject: Re: [PATCH 2/3] md: align superblock writes to physical blocks
+To:     Christopher Unkel <cunkel@drivescale.com>,
+        linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20201029201358.29181-1-cunkel@drivescale.com>
+ <20201029201358.29181-3-cunkel@drivescale.com>
+From:   Xiao Ni <xni@redhat.com>
+Message-ID: <070b938f-472e-83b5-96ab-376a6e5fa6ec@redhat.com>
+Date:   Mon, 2 Nov 2020 16:02:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201029201358.29181-3-cunkel@drivescale.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-Em Sun, 1 Nov 2020 16:01:54 -0800
-Randy Dunlap <rdunlap@infradead.org> escreveu:
-
-> Something broke the docs build (SEVERE):
-> 
-> 
-> Sphinx parallel build error:
-> docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-bus-rapidio:2: (SEVERE/4) Title level inconsistent:
-> 
-> Attributes Common for All RapidIO Devices
-> -----------------------------------------
-> 
-> 
-
-On what tree did you notice this? Linux-next or upstream?
-
-Using title markups on ABI files is problematic. As they'll
-all be placed as a single document, the markups for level
-1, level 2, etc should be identical on all files that use them.
-
-A quick fix would be to replace the above to either:
-
-	**Attributes Common for All RapidIO Devices**
-
-or just:
 
 
-	Attributes Common for All RapidIO Devices
+On 10/30/2020 04:13 AM, Christopher Unkel wrote:
+> Writes of the md superblock are aligned to the logical blocks of the
+> containing device, but no attempt is made to align them to physical
+> block boundaries.  This means that on a "512e" device (4k physical, 512
+> logical) every superblock update hits the 512-byte emulation and the
+> possible associated performance penalty.
+>
+> Respect the physical block alignment when possible, that is, when the
+> write padded out to the physical block doesn't run into the data or
+> bitmap.
+>
+> Signed-off-by: Christopher Unkel <cunkel@drivescale.com>
+> ---
+> This series replaces the first patch of the previous series
+> (https://lkml.org/lkml/2020/10/22/1058), with the following changes:
+>
+> 1. Creates a helper function super_1_sb_length_ok().
+> 2. Fixes operator placement style violation.
+> 3. Covers case in super_1_sync().
+> 4. Refactors duplicate logic.
+> 5. Covers a case in existing code where aligned superblock could
+>     run into bitmap.
+>
+>   drivers/md/md.c | 45 +++++++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 41 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index d6a55ca1d52e..802a9a256fe5 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -1646,15 +1646,52 @@ static __le32 calc_sb_1_csum(struct mdp_superblock_1 *sb)
+>   	return cpu_to_le32(csum);
+>   }
+>   
+> +static int
+> +super_1_sb_length_ok(struct md_rdev *rdev, int minor_version, int sb_len)
+> +{
+> +	int sectors = sb_len / 512;
+> +	struct mdp_superblock_1 *sb;
+> +
+> +	/* superblock is stored in memory as a single page */
+> +	if (sb_len > PAGE_SIZE)
+> +		return 0;
+> +
+> +	/* check if sb runs into data */
+> +	if (minor_version) {
+> +		if (rdev->sb_start + sectors > rdev->data_offset
+> +		    || rdev->sb_start + sectors > rdev->new_data_offset)
+> +			return 0;
+> +	} else if (sb_len > 4096)
+> +		return 0;
+> +
+> +	/* check if sb runs into bitmap */
+> +	sb = page_address(rdev->sb_page);
+> +	if (le32_to_cpu(sb->feature_map) & MD_FEATURE_BITMAP_OFFSET) {
+> +		__s32 bitmap_offset = (__s32)le32_to_cpu(sb->bitmap_offset);
+> +		if (bitmap_offset > 0 && sectors > bitmap_offset)
+> +			return 0;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+For super1.0 it doesn't need to consider this. Because the data and 
+bitmap is before superblock.
+For super1.1 and 1.2 it only needs to check whether it runs into bitmap. 
+The data is behind the
+bitmap.
 
-I guess it should be easy to change the get_abi.pl script to
-just ignore markups that matches something like:
+Regards
+Xiao
+>   /*
+>    * set rdev->sb_size to that required for number of devices in array
+>    * with appropriate padding to underlying sectors
+>    */
+>   static void
+> -super_1_set_rdev_sb_size(struct md_rdev *rdev, int max_dev)
+> +super_1_set_rdev_sb_size(struct md_rdev *rdev, int max_dev, int minor_version)
+>   {
+>   	int sb_size = max_dev * 2 + 256;
+> -	rdev->sb_size = round_up(sb_size, bdev_logical_block_size(rdev->bdev));
+> +	int pb_aligned_size = round_up(sb_size,
+> +				       bdev_physical_block_size(rdev->bdev));
+> +
+> +	/* generate physical-block aligned writes if legal */
+> +	if (super_1_sb_length_ok(rdev, minor_version, pb_aligned_size))
+> +		rdev->sb_size = pb_aligned_size;
+> +	else
+> +		rdev->sb_size = round_up(sb_size,
+> +					 bdev_logical_block_size(rdev->bdev));
+>   }
+>   
+>   static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_version)
+> @@ -1730,7 +1767,7 @@ static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_
+>   		rdev->new_data_offset += (s32)le32_to_cpu(sb->new_offset);
+>   	atomic_set(&rdev->corrected_errors, le32_to_cpu(sb->cnt_corrected_read));
+>   
+> -	super_1_set_rdev_sb_size(rdev, le32_to_cpu(sb->max_dev));
+> +	super_1_set_rdev_sb_size(rdev, le32_to_cpu(sb->max_dev), minor_version);
+>   
+>   	if (minor_version
+>   	    && rdev->data_offset < sb_start + (rdev->sb_size/512))
+> @@ -2140,7 +2177,7 @@ static void super_1_sync(struct mddev *mddev, struct md_rdev *rdev)
+>   
+>   	if (max_dev > le32_to_cpu(sb->max_dev)) {
+>   		sb->max_dev = cpu_to_le32(max_dev);
+> -		super_1_set_rdev_sb_size(rdev, max_dev);
+> +		super_1_set_rdev_sb_size(rdev, max_dev, mddev->minor_version);
+>   	} else
+>   		max_dev = le32_to_cpu(sb->max_dev);
+>   
 
-	^[=-]+$
-
-That should be more reliable long-term. I'll write such patch
-and submit it.
-
-> and then it stops/hangs. Does not terminate normally but is no longer
-> executing.
-
-That's a docutils/Sphinx bug. Once I wrote a dirty patch fixing it, 
-but I ended losing the patch[1]. Basically, when severe errors occur there,
-it tries to wait for all processes to die, but this never happens,
-causing it to wait forever.
-
-
-[1] I guess I did something similar to this very dirty hack:
-
---- sphinx_3.2.1/lib/python3.8/site-packages/docutils/parsers/rst/states.py	2020-11-02 08:50:21.602785381 +0100
-+++ sphinx_3.2.1/lib/python3.8/site-packages/docutils/parsers/rst/states.py	2020-11-02 08:52:45.216612493 +0100
-@@ -371,7 +371,7 @@ class RSTState(StateWS):
-         error = self.reporter.severe(
-             'Title level inconsistent:', nodes.literal_block('', sourcetext),
-             line=lineno)
--        return error
-+        sys.exit()
- 
-     def new_subsection(self, title, lineno, messages):
-         """Append new subsection to document tree. On return, check level."""
-
-Thanks,
-Mauro
