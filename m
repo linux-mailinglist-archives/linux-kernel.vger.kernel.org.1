@@ -2,231 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761642A24F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EE52A24F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgKBHCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:02:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727306AbgKBHCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:02:40 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04075221FF;
-        Mon,  2 Nov 2020 07:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604300559;
-        bh=Ia2rEy7T/8Pj6M9lSXNjkeYJCQZVX55ae/vLJW/sapw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MY3gsrR+6pJXgIbApvQsqgD1qXsK49/FJrmNgTHD9aox+h3vFcGXTPkjnx7lrpbgO
-         m+AJBfZvGgQi/PM+I9RsEOzfav5bZc7Gf+yKD1UNvjpzuV+tC6pMUADMlfjZCfijv9
-         ixP33hXWylgpQiKVD0VbbA6SgOzQr7Ci4q/Nug38=
-Date:   Mon, 2 Nov 2020 16:02:34 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-Id: <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-In-Reply-To: <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727952AbgKBHDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727306AbgKBHDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:03:31 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F457C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 23:03:31 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id y12so13234409wrp.6
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:03:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:cc:to:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=+Aqiym4GzKMgHshVO6JSUoZfk+nIQSE6aHVJe2K3jxE=;
+        b=t2JXUNaGc/d+qMWWRQSEQwAfLWFc1ZdEKgkHkKOtlL5HXYSHcXxbhXu9VynZHb6ihm
+         WXX+DAtp1aC2DrP2Mi/nnVF3WJT/q0a4HurVu86H/7cMYx3h0/I/ABqsQSWdCifGj5C1
+         ve83OcGvXO7TQDSHzpnbFy8gaGNU0MRSfWuDBj3Iwia9TrQbJ6kuO4oEzvHUpXmho+rg
+         71l2veRFOQDSPvuys/oz9/HyeZ27vkOr1ERBrCTtg3rsRJKM3eLndEGbCF5GS0YAFoRA
+         6lXSEn4dIl33vqPDa8BdO0kH2q5bbepFsDEuoMLDrPL3jEfAMrbEgMhwhUKt2zA+QqKE
+         RG8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:cc:to:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=+Aqiym4GzKMgHshVO6JSUoZfk+nIQSE6aHVJe2K3jxE=;
+        b=ejSoHW3/UwnnXPIMHhzcbzw+SJPhBWDtm8qJRz9yC+ojUjaIIiiV1L4rknAOBTC+5g
+         NzQTVJYQHD5NAYwAgVNhccDIBP5a+iILwwR1jNWhd2+lFXiD/zMfyC0HdZOWHzWKm1+3
+         dQhq+IRiPvug4YkDOILbREMSHiwQTWn+aDpQmrzMzkaSgCNkY93yiNgnGigKlvRPtJqc
+         Y1wVcIsp0F5KdwOfmJ5T723BXsktpvh23vafPxlSdoX5cEi0brPayXso36mqGstYLlPW
+         gFmE0K/RXClUMcdy1qlvIJUyqea64Km3Jrmq8DtygtHpAX8I2GQnhJMg5TJQyfr+47eF
+         3wxg==
+X-Gm-Message-State: AOAM530MGEEpKYqjcHlgy85PZ+SxH7EHsGs5GekgyAlS/fQCR4uimU0Y
+        vPRuvlrgmSFZxctDzx05E2O0nZGB588=
+X-Google-Smtp-Source: ABdhPJwVJI/zbJU/B9iPWxfINsmRWjnxlBwVcHzfMzmwwqaoLisUmKZp84xtlXEG5mvYxkASxgMpRw==
+X-Received: by 2002:adf:ea49:: with SMTP id j9mr18324311wrn.391.1604300610134;
+        Sun, 01 Nov 2020 23:03:30 -0800 (PST)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id x7sm18311315wrt.78.2020.11.01.23.03.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Nov 2020 23:03:29 -0800 (PST)
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: man-pages-5.09 is released
+Cc:     mtk.manpages@gmail.com
+To:     lkml <linux-kernel@vger.kernel.org>
+Message-ID: <83cfbc65-7524-5b26-11b3-6177b158c85d@gmail.com>
+Date:   Mon, 2 Nov 2020 08:03:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 14:53:34 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Gidday,
 
-> On Mon, 2 Nov 2020 14:11:38 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > On Fri, 30 Oct 2020 21:38:31 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > On Sat, 29 Aug 2020 22:02:36 +0900
-> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > 
-> > > > Since the commit 9b38cc704e84 ("kretprobe: Prevent triggering
-> > > > kretprobe from within kprobe_flush_task") sets a dummy current
-> > > > kprobe in the trampoline handler by kprobe_busy_begin/end(),
-> > > > it is not possible to run a kretprobe pre handler in kretprobe
-> > > > trampoline handler context even with the NMI. If the NMI interrupts
-> > > > a kretprobe_trampoline_handler() and it hits a kretprobe, the
-> > > > 2nd kretprobe will detect recursion correctly and it will be
-> > > > skipped.
-> > > > This means we have almost no double-lock issue on kretprobes by NMI.
-> > > > 
-> > > > The last one point is in cleanup_rp_inst() which also takes
-> > > > kretprobe_table_lock without setting up current kprobes.
-> > > > So adding kprobe_busy_begin/end() there allows us to remove
-> > > > in_nmi() check.
-> > > > 
-> > > > The above commit applies kprobe_busy_begin/end() on x86, but
-> > > > now all arch implementation are unified to generic one, we can
-> > > > safely remove the in_nmi() check from arch independent code.
-> > > >
-> > > 
-> > > So are you saying that lockdep is lying?
-> > > 
-> > > Kprobe smoke test: started
-> > > 
-> > > ================================
-> > > WARNING: inconsistent lock state
-> > > 5.10.0-rc1-test+ #29 Not tainted
-> > > --------------------------------
-> > > inconsistent {INITIAL USE} -> {IN-NMI} usage.
-> > > swapper/0/1 [HC1[1]:SC0[0]:HE0:SE1] takes:
-> > > ffffffff82b07118 (&rp->lock){....}-{2:2}, at: pre_handler_kretprobe+0x4b/0x193
-> > > {INITIAL USE} state was registered at:
-> > >   lock_acquire+0x280/0x325
-> > >   _raw_spin_lock+0x30/0x3f
-> > >   recycle_rp_inst+0x3f/0x86
-> > >   __kretprobe_trampoline_handler+0x13a/0x177
-> > >   trampoline_handler+0x48/0x57
-> > >   kretprobe_trampoline+0x2a/0x4f
-> > >   kretprobe_trampoline+0x0/0x4f
-> > >   init_kprobes+0x193/0x19d
-> > >   do_one_initcall+0xf9/0x27e
-> > >   kernel_init_freeable+0x16e/0x2b6
-> > >   kernel_init+0xe/0x109
-> > >   ret_from_fork+0x22/0x30
-> > > irq event stamp: 1670
-> > > hardirqs last  enabled at (1669): [<ffffffff811cc344>] slab_free_freelist_hook+0xb4/0xfd
-> > > hardirqs last disabled at (1670): [<ffffffff81da0887>] exc_int3+0xae/0x10a
-> > > softirqs last  enabled at (1484): [<ffffffff82000352>] __do_softirq+0x352/0x38d
-> > > softirqs last disabled at (1471): [<ffffffff81e00f82>] asm_call_irq_on_stack+0x12/0x20
-> > > 
-> > > other info that might help us debug this:
-> > >  Possible unsafe locking scenario:
-> > > 
-> > >        CPU0
-> > >        ----
-> > >   lock(&rp->lock);
-> > >   <Interrupt>
-> > >     lock(&rp->lock);
-> > > 
-> > >  *** DEADLOCK ***
-> > > 
-> > > no locks held by swapper/0/1.
-> > > 
-> > > stack backtrace:
-> > > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-test+ #29
-> > > Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
-> > > Call Trace:
-> > >  dump_stack+0x7d/0x9f
-> > >  print_usage_bug+0x1c0/0x1d3
-> > >  lock_acquire+0x302/0x325
-> > >  ? pre_handler_kretprobe+0x4b/0x193
-> > >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> > >  _raw_spin_lock_irqsave+0x43/0x58
-> > >  ? pre_handler_kretprobe+0x4b/0x193
-> > >  pre_handler_kretprobe+0x4b/0x193
-> > >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> > >  ? kprobe_target+0x1/0x16
-> > >  kprobe_int3_handler+0xd0/0x109
-> > >  exc_int3+0xb8/0x10a
-> > >  asm_exc_int3+0x31/0x40
-> > > RIP: 0010:kprobe_target+0x1/0x16
-> > >  5d c3 cc
-> > > RSP: 0000:ffffc90000033e00 EFLAGS: 00000246
-> > > RAX: ffffffff8110ea77 RBX: 0000000000000001 RCX: ffffc90000033cb4
-> > > RDX: 0000000000000231 RSI: 0000000000000000 RDI: 000000003ca57c35
-> > > RBP: ffffc90000033e20 R08: 0000000000000000 R09: ffffffff8111d207
-> > > R10: ffff8881002ab480 R11: ffff8881002ab480 R12: 0000000000000000
-> > > R13: ffffffff82a52af0 R14: 0000000000000200 R15: ffff888100331130
-> > >  ? register_kprobe+0x43c/0x492
-> > >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> > >  ? kprobe_target+0x1/0x16
-> > >  ? init_test_probes+0x2c6/0x38a
-> > >  init_kprobes+0x193/0x19d
-> > >  ? debugfs_kprobe_init+0xb8/0xb8
-> > >  do_one_initcall+0xf9/0x27e
-> > >  ? rcu_read_lock_sched_held+0x3e/0x75
-> > >  ? init_mm_internals+0x27b/0x284
-> > >  kernel_init_freeable+0x16e/0x2b6
-> > >  ? rest_init+0x152/0x152
-> > >  kernel_init+0xe/0x109
-> > >  ret_from_fork+0x22/0x30
-> > > Kprobe smoke test: passed successfully
-> > > 
-> > > Config attached.
-> > 
-> > Thanks for the report! Let me check what happen.
-> 
-> OK, confirmed. But this is actually false-positive report.
-> 
-> The lockdep reports rp->lock case between pre_handler_kretprobe()
-> and recycle_rp_inst() from __kretprobe_trampoline_handler().
-> Since kretprobe_trampoline_handler() sets current_kprobe,
-> if other kprobes hits on same CPU, those are skipped. This means
-> pre_handler_kretprobe() is not called while executing
-> __kretprobe_trampoline_handler().
-> 
-> Actually, since this rp->lock is expected to be removed in the last
-> patch in this series ([21/21]), I left this as is, but we might better
-> to treat this case because the latter half of this series will be
-> merged in 5.11.
-> 
-> Hmm, are there any way to tell lockdep this is safe?
-> 
+The Linux man-pages maintainer proudly announces:
 
-This can supress the warnings. After introducing the lockless patch,
-we don't need this anymore.
+    man-pages-5.09 - man pages for Linux
+
+This release resulted from patches, bug reports, reviews, and
+comments from more than 40 people, with just over 500 commits making
+changes to nearly 600 pages. Nine new pages have been added (six
+of these are the result of splitting the rather unwieldy queue(3)
+page into a number of small pieces). Special shout out to
+Alejandro Colomar, who provided more than half (265!) of the commits.
+
+Tarball download:
+    http://www.kernel.org/doc/man-pages/download.html
+Git repository:
+    https://git.kernel.org/cgit/docs/man-pages/man-pages.git/
+Online changelog:
+    http://man7.org/linux/man-pages/changelog.html#release_5.09
+
+A short summary of the release is blogged at:
+https://linux-man-pages.blogspot.com/2020/11/man-pages-509-is-released.html
+
+The current version of the pages is browsable at:
+http://man7.org/linux/man-pages/
+
+A selection of changes in this release that may be of interest
+to readers of LKML is shown below.
+
+Cheers,
+
+Michael
 
 
-From 509b27efef8c7dbf56cab2e812916d6cd778c745 Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Mon, 2 Nov 2020 15:37:28 +0900
-Subject: [PATCH] kprobes: Disable lockdep for kprobe busy area
+==================== Changes in man-pages-5.09 ====================
 
-Since the code area in between kprobe_busy_begin()/end() prohibits
-other kprobs to call probe handlers, we can avoid inconsitent
-locks there. But lockdep doesn't know that, so it warns rp->lock
-or kretprobe_table_lock.
+New and rewritten pages
+-----------------------
 
-To supress those false-positive errors, disable lockdep while
-kprobe_busy is set.
+system_data_types.7
+    Alejandro Colomar, Michael Kerrisk
+        A new page documenting a wide range of system data types.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kprobes.c | 2 ++
- 1 file changed, 2 insertions(+)
+kernel_lockdown.7
+    David Howells, Heinrich Schuchardt  [Michael Kerrisk]
+        New page documenting the Kernel Lockdown feature
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 8a12a25fa40d..c7196e583600 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1295,10 +1295,12 @@ void kprobe_busy_begin(void)
- 	__this_cpu_write(current_kprobe, &kprobe_busy);
- 	kcb = get_kprobe_ctlblk();
- 	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+	lockdep_off();
- }
- 
- void kprobe_busy_end(void)
- {
-+	lockdep_on();
- 	__this_cpu_write(current_kprobe, NULL);
- 	preempt_enable();
- }
--- 
-2.25.1
 
+Newly documented interfaces in existing pages
+---------------------------------------------
+
+fanotify_init.2
+fanotify.7
+    Amir Goldstein  [Jan Kara, Matthew Bobrowski]
+        Document FAN_REPORT_DIR_FID
+
+fanotify_init.2
+fanotify.7
+    Amir Goldstein  [Jan Kara, Matthew Bobrowski]
+        Document FAN_REPORT_NAME
+
+statx.2
+    Ira Weiny
+        Add STATX_ATTR_DAX
+
+strerror.3
+    Michael Kerrisk
+        Document strerrorname_np() and strerrordesc_np()
+
+strsignal.3
+    Michael Kerrisk
+        Document sigabbrev_np() and sigdescr_np().
+
+loop.4
+    Yang Xu
+        Document LOOP_CONFIGURE ioctl
+    Yang Xu
+        Document LO_FLAGS_DIRECT_IO flag
+
+capabilities.7
+    Michael Kerrisk
+        Document the CAP_CHECKPOINT_RESTORE capability added in Linux 5.9
+
+ip.7
+    Stephen Smalley  [Paul Moore]
+        Document IP_PASSSEC for UDP sockets
+
+ip.7
+socket.7
+    Stephen Smalley
+        Document SO_PEERSEC for AF_INET sockets
+    Sridhar Samudrala
+        Document SO_INCOMING_NAPI_ID
+
+socket.7
+unix.7
+    Stephen Smalley  [Serge Hallyn, Simon McVittie]
+        Add initial description for SO_PEERSEC
+
+
+Changes to individual pages
+---------------------------
+
+clone.2
+    Michael Kerrisk
+        CAP_CHECKPOINT_RESTORE can now be used to employ 'set_tid'
+
+epoll_ctl.2
+    Michael Kerrisk
+        epoll instances can be nested to a maximum depth of 5
+            This limit appears to be an off-by-one count against
+            EP_MAX_NESTS (4).
+perf_event_open.2
+    Alexey Budankov
+        Update the man page with CAP_PERFMON related information
+
+seccomp.2
+    Michael Kerrisk  [Jann Horn]
+        Warn reader that SECCOMP_RET_TRACE can be overridden
+            Highlight to the reader that if another filter returns a
+            higher-precedence action value, then the ptracer will not
+            be notified.
+    Michael Kerrisk  [Rich Felker]
+        Warn against the use of SECCOMP_RET_KILL_THREAD
+            Killing a thread with SECCOMP_RET_KILL_THREAD is very likely
+            to leave the rest of the process in a broken state.
+
+dlopen.3
+    Michael Kerrisk
+        Clarify DT_RUNPATH/DT_RPATH details
+            It is the DT_RUNPATH/DT_RPATH of the calling object (not the
+            executable) that is relevant for the library search. Verified
+            by experiment.
+
+loop.4
+    Yang Xu
+        Add some details about lo_flags
+
+proc.5
+    Michael Kerrisk
+        Update capability requirements for accessing /proc/[pid]/map_files
+    Jann Horn  [Mark Mossberg]
+        Document inaccurate RSS due to SPLIT_RSS_COUNTING
+    Michael Kerrisk
+        Note "open file description" as (better) synonym for "file handle"
+
+bpf-helpers.7
+    Michael Kerrisk  [Jakub Wilk]
+        Resync with current kernel source
+
+capabilities.7
+    Michael Kerrisk
+        Under CAP_SYS_ADMIN, group "sub-capabilities" together
+            CAP_BPF, CAP_PERFMON, and CAP_CHECKPOINT_RESTORE have all been
+            added to split out the power of CAP_SYS_ADMIN into weaker pieces.
+            Group all of these capabilities together in the list under
+            CAP_SYS_ADMIN, to make it clear that there is a pattern to these
+            capabilities.
+
+fanotify.7
+fanotify_mark.2
+    Amir Goldstein  [Jan Kara, Matthew Bobrowski]
+        Generalize documentation of FAN_REPORT_FID
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
