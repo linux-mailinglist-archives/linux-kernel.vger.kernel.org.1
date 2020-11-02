@@ -2,231 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7396A2A3714
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D4E2A3715
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgKBXW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:22:56 -0500
-Received: from mga03.intel.com ([134.134.136.65]:23785 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726432AbgKBXWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:22:55 -0500
-IronPort-SDR: LH6cgWy35dumWVcdC5V2MOBpvm2zCzy+Ud8mVOfcG0T1bvqgDsPjZcL/PQECSWk24Kc7vVuibR
- xzQJ5kuzmbjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169070935"
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="169070935"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 15:22:55 -0800
-IronPort-SDR: GrAW0E/DyPbhIr+cyIM3P0cC4AN20RbEpYJsvv9ONb7zqGVBs2YrwA466ApqJ5MA0admK1hfLG
- NXio0outyGWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="470557231"
-Received: from lkp-server02.sh.intel.com (HELO 9353403cd79d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 02 Nov 2020 15:22:53 -0800
-Received: from kbuild by 9353403cd79d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZjA5-0000DZ-7T; Mon, 02 Nov 2020 23:22:53 +0000
-Date:   Tue, 03 Nov 2020 07:22:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 68299a42f84288537ee3420c431ac0115ccb90b1
-Message-ID: <5fa094b0.8W3K4OEpWfYQDJGl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726776AbgKBXX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgKBXX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:23:26 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A9DC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:23:26 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id eh4so9225844qvb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=GbyuVG1wDz+a4ocG3UBehbK3zCwGC07ew5NmRS3bOVM=;
+        b=My1duO+uoPb8mcgNVqygZbmHNyuAkUYTyhHn2AUKfL0aa5COST8Lr4wvLbznN17KHt
+         BbKUy0jW3JSqYyxNVemEQ5XgGf/Bem+y4rc6VmarxnqALWb6gRTZnxjZjV68rU6aq0ER
+         xg62eelGUPgPE1zwTpFNVXeb9v7agH9EgRRMJ6zTRqBFVut/vYaHFPu60AwQsqFn9l2t
+         4sWuC+p18L6Spofw+fNlrgVrGLppJ9Qv8ULHh2ZZpoegLY/zwzkAXadgL2K+BiPkhNCT
+         Q47wPQO0gjv5YfQRRpPLGuvjGAdQk2ZTtAHsmvg+ChAJrPMXork+xzsGC3OlAVTZUfMM
+         mPBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=GbyuVG1wDz+a4ocG3UBehbK3zCwGC07ew5NmRS3bOVM=;
+        b=PasBVj493N+vJs4Z8KLOsEgXxzR96IRzq33zdgx3uU1SRVP+Jg1htsixt3YqI7bA57
+         XBeObjZZJ6Gmop4aFnQ2vQDEYRf+Vpz2ZUee/vE7UffTes12ilahLfqnA+SfjO5JpMKO
+         Iz+kU1fJdZ5CKJLc6WBpCldfGpWZapQ+oqoCEoZZT/3gA7BjNnuM4yLNJPipP0dgrpiI
+         a89pvrEC7zy2DfJCLTO9JVTuhc6LS+sjc8sKjb99X6NUJd+YHIw5H169zh6nBVlZIW9a
+         mgc12Xp2uOrONt5dAnhWl9r25Ch0i7fH0T7h8rPzg4CU5wZzf21YzBxbB9I51R9AIga0
+         +M+A==
+X-Gm-Message-State: AOAM533qDUMSt93kwe92r7j1Wp1Cehi+WN8r6R3oSQfgJQSuSxK6o3Vt
+        vrGuEy2x5vXwQIs3wqtMBvXOwkOp/U9n+g==
+X-Google-Smtp-Source: ABdhPJzokfL8AN+cZGQWZE8+c+2ADQxa+FPEl3xaRaXhYN2yQjkcvwH+NjxE5PJ6aEY1zMxjGmc+8d6+vURTEg==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:ad4:4770:: with SMTP id
+ d16mr21337611qvx.61.1604359405795; Mon, 02 Nov 2020 15:23:25 -0800 (PST)
+Date:   Mon,  2 Nov 2020 15:23:04 -0800
+Message-Id: <20201102232304.2735187-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] kunit: fix display of failed expectations for strings
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
-branch HEAD: 68299a42f84288537ee3420c431ac0115ccb90b1  x86/mce: Enable additional error logging on certain Intel CPUs
+Currently the following expectation
+  KUNIT_EXPECT_STREQ(test, "hi", "bye");
+will produce:
+  Expected "hi" == "bye", but
+      "hi" == 1625079497
+      "bye" == 1625079500
 
-elapsed time: 723m
+After this patch:
+  Expected "hi" == "bye", but
+      "hi" == hi
+      "bye" == bye
 
-configs tested: 167
-configs skipped: 36
+KUNIT_INIT_BINARY_STR_ASSERT_STRUCT() was written but just mistakenly
+not actually used by KUNIT_EXPECT_STREQ() and friends.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-c6x                        evmc6457_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      cm5200_defconfig
-arm                        magician_defconfig
-powerpc                     skiroot_defconfig
-sh                        sh7757lcr_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                    amigaone_defconfig
-arm                        spear6xx_defconfig
-arm                            mmp2_defconfig
-ia64                        generic_defconfig
-mips                    maltaup_xpa_defconfig
-sh                          rsk7269_defconfig
-arm                      tct_hammer_defconfig
-arm                            xcep_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                      maltasmvp_defconfig
-m68k                             alldefconfig
-sh                           se7724_defconfig
-arm                            lart_defconfig
-sh                           se7750_defconfig
-arm                         at91_dt_defconfig
-arm                              zx_defconfig
-sh                           se7343_defconfig
-sh                            hp6xx_defconfig
-powerpc                      makalu_defconfig
-sh                          polaris_defconfig
-m68k                       bvme6000_defconfig
-arm                         lpc32xx_defconfig
-ia64                            zx1_defconfig
-powerpc                       maple_defconfig
-mips                           ip28_defconfig
-arm                         lpc18xx_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     kilauea_defconfig
-arc                          axs101_defconfig
-arc                        vdk_hs38_defconfig
-arm                           omap1_defconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                      ppc6xx_defconfig
-m68k                        mvme16x_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-powerpc                 mpc837x_mds_defconfig
-alpha                               defconfig
-m68k                       m5208evb_defconfig
-powerpc                      obs600_defconfig
-powerpc                     asp8347_defconfig
-mips                         tb0226_defconfig
-mips                          ath25_defconfig
-arm                     davinci_all_defconfig
-mips                     decstation_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arc                     haps_hs_smp_defconfig
-arm                         vf610m4_defconfig
-arm                         mv78xx0_defconfig
-powerpc                      ppc40x_defconfig
-sh                          sdk7780_defconfig
-powerpc                       eiger_defconfig
-m68k                          multi_defconfig
-arm                         socfpga_defconfig
-riscv                            allyesconfig
-arm                          badge4_defconfig
-arm                           sunxi_defconfig
-mips                      maltaaprp_defconfig
-xtensa                generic_kc705_defconfig
-sh                   sh7770_generic_defconfig
-nds32                            alldefconfig
-riscv                    nommu_k210_defconfig
-sh                         ecovec24_defconfig
-riscv                          rv32_defconfig
-mips                        workpad_defconfig
-x86_64                           allyesconfig
-powerpc                       holly_defconfig
-mips                malta_kvm_guest_defconfig
-mips                        jmr3927_defconfig
-powerpc                   currituck_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                    gamecube_defconfig
-powerpc                          allmodconfig
-sh                           se7206_defconfig
-microblaze                      mmu_defconfig
-powerpc                     tqm8541_defconfig
-sh                ecovec24-romimage_defconfig
-arm                        multi_v5_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                   lite5200b_defconfig
-m68k                        mvme147_defconfig
-c6x                                 defconfig
-sh                     sh7710voipgw_defconfig
-mips                           ip27_defconfig
-xtensa                    smp_lx200_defconfig
-m68k                           sun3_defconfig
-powerpc                        cell_defconfig
-arm                          pxa3xx_defconfig
-arm                       cns3420vb_defconfig
-arm                  colibri_pxa270_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201102
-i386                 randconfig-a006-20201102
-i386                 randconfig-a005-20201102
-i386                 randconfig-a001-20201102
-i386                 randconfig-a002-20201102
-i386                 randconfig-a003-20201102
-x86_64               randconfig-a012-20201102
-x86_64               randconfig-a015-20201102
-x86_64               randconfig-a011-20201102
-x86_64               randconfig-a013-20201102
-x86_64               randconfig-a014-20201102
-x86_64               randconfig-a016-20201102
-i386                 randconfig-a013-20201102
-i386                 randconfig-a015-20201102
-i386                 randconfig-a014-20201102
-i386                 randconfig-a016-20201102
-i386                 randconfig-a011-20201102
-i386                 randconfig-a012-20201102
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201102
-x86_64               randconfig-a005-20201102
-x86_64               randconfig-a003-20201102
-x86_64               randconfig-a002-20201102
-x86_64               randconfig-a006-20201102
-x86_64               randconfig-a001-20201102
-
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/kunit/test.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 9197da792336..2c1553105958 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -1105,7 +1105,7 @@ do {									       \
+ 	KUNIT_ASSERTION(test,						       \
+ 			strcmp(__left, __right) op 0,			       \
+ 			kunit_binary_str_assert,			       \
+-			KUNIT_INIT_BINARY_ASSERT_STRUCT(test,		       \
++			KUNIT_INIT_BINARY_STR_ASSERT_STRUCT(test,	       \
+ 							assert_type,	       \
+ 							#op,		       \
+ 							#left,		       \
+
+base-commit: 495023e4e49e4b7dee35928800bf0317276576c1
+-- 
+2.29.1.341.ge80a0c044ae-goog
+
