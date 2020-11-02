@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E592A3345
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4332A3346
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgKBSsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:48:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:36206 "EHLO foss.arm.com"
+        id S1726337AbgKBSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:48:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:36218 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgKBSsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:48:05 -0500
+        id S1725846AbgKBSsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:48:07 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CF47139F;
-        Mon,  2 Nov 2020 10:48:05 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 772CC1424;
+        Mon,  2 Nov 2020 10:48:06 -0800 (PST)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C94AA3F719;
-        Mon,  2 Nov 2020 10:48:03 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4081B3F719;
+        Mon,  2 Nov 2020 10:48:05 -0800 (PST)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -26,65 +26,63 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v4 0/3] sched: Get rid of select_task_rq()'s sd_flag parameter
-Date:   Mon,  2 Nov 2020 18:45:11 +0000
-Message-Id: <20201102184514.2733-1-valentin.schneider@arm.com>
+Subject: [PATCH v4 1/3] sched: Add WF_TTWU, WF_EXEC wakeup flags
+Date:   Mon,  2 Nov 2020 18:45:12 +0000
+Message-Id: <20201102184514.2733-2-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201102184514.2733-1-valentin.schneider@arm.com>
+References: <20201102184514.2733-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+To remove the sd_flag parameter of select_task_rq(), we need another way of
+encoding wakeup types. There already is a WF_FORK flag, add the missing two.
 
-This is v4 of that one series I've had stashed for a while [1]. I haven't
-revisited the outstanding discussion bits, the most interesting part being that
-we could get rid of the for_each_domain() loop in select_task_rq_fair() (or at
-the very least simplify it). In any case, the first few patches are IMO a decent
-cleanup on their own, hence me resubmitting them. 
+With that said, we still need an easy way to turn WF_foo into
+SD_bar (e.g. WF_TTWU into SD_BALANCE_WAKE). As suggested by Peter, let's
+make our lives easier and make them match exactly, and throw in some
+compile-time checks for good measure.
 
-Links
-=====
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/sched/sched.h | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-[1]: https://lore.kernel.org/lkml/20200415210512.805-1-valentin.schneider@arm.com/
-
-Revisions
-=========
-
-v3 -> v4
---------
-o Dropped want_affine related patches
-o Made WF_{TTWU, FORK, EXEC} and SD_BALANCE_{WAKE, FORK, EXEC} share a nibble
-  (Peter)
-
-v2 -> v3
---------
-o Rebased on top of v5.7-rc1 (didn't re-run performance tests)
-o Collected Reviewed-by (Dietmar)
-o Updated changelog of 3/9 (Dietmar)
-
-v1 -> v2
---------
-o Removed the 'RFC' tag
-o Made the sd_flags syctl read-only
-o Removed the SD_LOAD_BALANCE flag
-o Cleaned up ugly changes thanks to the above
-
-Valentin Schneider (3):
-  sched: Add WF_TTWU, WF_EXEC wakeup flags
-  sched: Remove select_task_rq()'s sd_flag parameter
-  sched/fair: Dissociate wakeup decisions from SD flag value
-
- kernel/sched/core.c      | 10 +++++-----
- kernel/sched/deadline.c  |  4 ++--
- kernel/sched/fair.c      | 13 +++++++------
- kernel/sched/idle.c      |  2 +-
- kernel/sched/rt.c        |  4 ++--
- kernel/sched/sched.h     | 23 +++++++++++++++--------
- kernel/sched/stop_task.c |  2 +-
- 7 files changed, 33 insertions(+), 25 deletions(-)
-
---
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index df80bfcea92e..65666c52f347 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1714,13 +1714,20 @@ static inline int task_on_rq_migrating(struct task_struct *p)
+ 	return READ_ONCE(p->on_rq) == TASK_ON_RQ_MIGRATING;
+ }
+ 
+-/*
+- * wake flags
+- */
+-#define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
+-#define WF_FORK			0x02		/* Child wakeup after fork */
+-#define WF_MIGRATED		0x04		/* Internal use, task got migrated */
+-#define WF_ON_CPU		0x08		/* Wakee is on_cpu */
++/* Wake flags. The first three directly map to some SD flag value */
++#define WF_EXEC     0x02 /* Wakeup after exec; maps to SD_BALANCE_EXEC */
++#define WF_FORK     0x04 /* Wakeup after fork; maps to SD_BALANCE_FORK */
++#define WF_TTWU     0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
++
++#define WF_SYNC     0x10 /* Waker goes to sleep after wakeup */
++#define WF_MIGRATED 0x20 /* Internal use, task got migrated */
++#define WF_ON_CPU   0x40 /* Wakee is on_cpu */
++
++#ifdef CONFIG_SMP
++static_assert(WF_EXEC == SD_BALANCE_EXEC);
++static_assert(WF_FORK == SD_BALANCE_FORK);
++static_assert(WF_TTWU == SD_BALANCE_WAKE);
++#endif
+ 
+ /*
+  * To aid in avoiding the subversion of "niceness" due to uneven distribution
+-- 
 2.27.0
 
