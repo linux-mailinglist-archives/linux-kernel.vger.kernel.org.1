@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9D62A341D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE912A3434
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgKBTeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgKBTeL (ORCPT
+        id S1726834AbgKBTei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:34:38 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33314 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbgKBTeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:34:11 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C078C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:34:11 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id y14so12000162pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=zJZ6RJTnErujF0lDgi2VwA7AjjA905AP/3ViCZfttXI=;
-        b=di4hLUugm7xL+TP/he0btTeUvJrmVti8iHMyENl31g2iL4BNNIAV+0GJwxCa/0WjqF
-         IZt6jGVS/BKUrkKRmmsqnIegGFN2MDvg9WqVFspazwUtrtbtMZf+gi8taGjyH4re5NZr
-         ipDmLQaviyI1JyO2gdbeTRj+j/5N1dKGghpwNnHQZlM9yY4JhetlVrsEgj8uniduuZtn
-         ELyKQMqkGFjd53hU4v5YcoT+Mo+c/P5g2Fe2fbumGmQUK/zXxMyGFixYOc4SqWH0hlIY
-         yZjqUJcgzhT5fluHP5/SGEBr9LnVSiT5VVvdri/ru1BCN+vKi3tSbT2ZehvflAPJOf34
-         5SBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=zJZ6RJTnErujF0lDgi2VwA7AjjA905AP/3ViCZfttXI=;
-        b=TFA5NeEYY8VxjjLl7FOMuvu3ARehzofQVLaVscvmwDGBw3d0+xQsmg2mebWTuDuWIQ
-         eR3pxSRtQG8GGuO5wppc3nVOF8tq5hOQ6xdnd7MEFMOWAfnt/Jfzf666NTaovn78eP1L
-         CUnCXZkYSe1pnVumZixsyxmcRQOIl18joU2mJKYHvv/PL5witOkLm2NeZEw/dVZboHZN
-         21lMDMmVoBBh/wLRuFvhaOIfV1ILiqe01TJ9rIT51eeM6lqpG+JKzjNxO1IJ7r2EuX2g
-         qq7m5oUyRGBI3WsY89hQ0yW4dGayfkaalXp2IvywEv7Dpyl21i26UiPM7cxQiVDPj+x+
-         Zlxg==
-X-Gm-Message-State: AOAM531ANjzR5a7sUjQycW6ompCtqBW17UtYbmN+uEXOMF9qPCQqqBVc
-        wGMlRexNVGyrRr2ryj47skMJqf+g39Zdo/4=
-X-Google-Smtp-Source: ABdhPJz2aIASybo0JHfjTrKlJ/Au7tLUDgP3dPA6SyAkLoYz59E1MddDTm1sXjFQWZgttz2aLJVtLw==
-X-Received: by 2002:a62:1991:0:b029:155:f476:2462 with SMTP id 139-20020a6219910000b0290155f4762462mr23426168pfz.43.1604345651018;
-        Mon, 02 Nov 2020 11:34:11 -0800 (PST)
-Received: from Sleakybeast ([2405:205:c82e:472d:f3dc:c193:6b6:3d7b])
-        by smtp.gmail.com with ESMTPSA id e15sm14643816pff.121.2020.11.02.11.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 11:34:10 -0800 (PST)
-Date:   Tue, 3 Nov 2020 01:04:02 +0530
-From:   "siddhant gupta(siddhant1223)" <siddhantgupta416@gmail.com>
-To:     matthias.bgg@gmail.com
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        siddhantgupta416@gmail.com, mamatashukla555@gmail.com,
-        himadrispandya@gmail.com
-Subject: [PATCH] staging: mt7621-dma: Prefer Using BIT Macro instead of left
- shifting on 1.
-Message-ID: <20201102193402.GA14965@Sleakybeast>
+        Mon, 2 Nov 2020 14:34:36 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2JYMU5091528;
+        Mon, 2 Nov 2020 13:34:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604345662;
+        bh=eZyetkFj1QHofroFApzpQ89xviZ2HnFz5qa4zQeQBJs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=KcmZzkzlLOkWub7LSjcIcLsl3YuBa0RzJwB8IZovN39N5mAtlT13i9latzA3HODcn
+         O0A6k2Ys5LskBtDj5piwFS2EiRHP7jAyQcRe67aXrun4b69sMKaHsaYfsEReu9li51
+         t4STdkA2/VoiQ8Fx1YUQ3Lh7Y9Fi64tQ+yLp39qY=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2JYMFe125135
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 2 Nov 2020 13:34:22 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
+ 2020 13:34:22 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 2 Nov 2020 13:34:22 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2JYL9q127402;
+        Mon, 2 Nov 2020 13:34:21 -0600
+Date:   Mon, 2 Nov 2020 13:34:20 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Faiz Abbas <faiz_abbas@ti.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <t-kristo@ti.com>
+Subject: Re: [PATCH v2] arm64: defconfig: Enable GPIO and I2C configs for
+ TI's J721e platform
+Message-ID: <20201102193420.4hm37mkkq2dhn3uq@coherent>
+References: <20201102183005.14174-1-faiz_abbas@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
+In-Reply-To: <20201102183005.14174-1-faiz_abbas@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 00:00-20201103, Faiz Abbas wrote:
+> Add configs to help enable regulators that supply power to the SD card
+> on TI's J721e platform. These regulators are controlled by either
+> SoC gpios or gpios over i2c expander.
+> 
+> Acked-by: Tero Kristo <t-kristo@ti.com>
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> ---
+> 
+> Changes in v2: Squashed changes into a single patch
+> 
+> v1: https://lore.kernel.org/linux-arm-kernel/20201002164535.9920-1-faiz_abbas@ti.com/
 
-Replace left shifting on 1 by a BIT macro to fix checkpatch warning.
 
-Signed-off-by: Siddhant Gupta <siddhantgupta416@gmail.com>
+Faiz, See:
+https://lore.kernel.org/linux-arm-kernel/CAK8P3a2dxGV4ussfC16XN98xeSwsKum=Hu8_GJ+E3ZS=wu8oYw@mail.gmail.com/
 
----
- drivers/staging/mt7621-dma/mtk-hsdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Do you mind indicating size delta introduced by this change since this
+is going to impact a lot of folks?
 
-diff --git a/drivers/staging/mt7621-dma/mtk-hsdma.c b/drivers/staging/mt7621-dma/mtk-hsdma.c
-index 354536783e1c..a9e1a1b14035 100644
---- a/drivers/staging/mt7621-dma/mtk-hsdma.c
-+++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
-@@ -72,7 +72,7 @@
- #define HSDMA_GLO_TX_DMA		BIT(0)
- 
- #define HSDMA_BT_SIZE_16BYTES		(0 << HSDMA_GLO_BT_SHIFT)
--#define HSDMA_BT_SIZE_32BYTES		(1 << HSDMA_GLO_BT_SHIFT)
-+#define HSDMA_BT_SIZE_32BYTES		BIT(HSDMA_GLO_BT_SHIFT)
- #define HSDMA_BT_SIZE_64BYTES		(2 << HSDMA_GLO_BT_SHIFT)
- #define HSDMA_BT_SIZE_128BYTES		(3 << HSDMA_GLO_BT_SHIFT)
- 
+> 
+>  arch/arm64/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 5cfe3cf6f2ac..bbf42faaddfe 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -438,6 +438,7 @@ CONFIG_I2C_IMX=y
+>  CONFIG_I2C_IMX_LPI2C=y
+>  CONFIG_I2C_MESON=y
+>  CONFIG_I2C_MV64XXX=y
+> +CONFIG_I2C_OMAP=y
+>  CONFIG_I2C_OWL=y
+>  CONFIG_I2C_PXA=y
+>  CONFIG_I2C_QCOM_CCI=m
+> @@ -497,6 +498,7 @@ CONFIG_PINCTRL_SDM845=y
+>  CONFIG_PINCTRL_SM8150=y
+>  CONFIG_PINCTRL_SM8250=y
+>  CONFIG_GPIO_ALTERA=m
+> +CONFIG_GPIO_DAVINCI=y
+>  CONFIG_GPIO_DWAPB=y
+>  CONFIG_GPIO_MB86S7X=y
+>  CONFIG_GPIO_MPC8XXX=y
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.25.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
