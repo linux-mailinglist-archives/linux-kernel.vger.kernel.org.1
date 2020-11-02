@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6F42A285C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82FB2A2859
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgKBKc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:32:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728511AbgKBKc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728519AbgKBKc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 2 Nov 2020 05:32:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728316AbgKBKcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 05:32:25 -0500
 Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D4E2223BE;
-        Mon,  2 Nov 2020 10:32:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6ABA21D40;
+        Mon,  2 Nov 2020 10:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604313146;
-        bh=QUaGIBoAWPb8+PT+LW3xf4ASGlV2LfNoMZjtoIDfME8=;
+        s=default; t=1604313144;
+        bh=9efCYTGYRVtE4kCdSDD1KGshldTV5JK6i7XyHpIKFQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jh8zHrLElk5jGAdQLOhXbDwJ34GKZDZhs2tgIYkspzeyp0AnSLmnSPOCLRULrT4JF
-         Pd98UhejS9F8EoKm8LHj6LPilIB4ruys0m4Z+GRWrEL936pYlJGzIkLiy3v8C7veMS
-         pZBnI3hBTyVMs5QZfjAMUtqHTGjs+aXdiJdgLNxA=
+        b=ueDCISqsRyB3t7lIEDYMtCUq9Kdxs/7rZ5CMXTRpVBrE+JvFizqnDF2zXDh/Bgio1
+         hxWlex5MmuCKCr7IQBjVuGBgDo1iYONKdGsJSXP3iid++f8bqRGNYxqq8iT9T/DSJn
+         xPQoGKSzGGA0qgsNKZaXxQoj0VRCYMrTzM2ISh2M=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kZX8P-005tug-UJ; Mon, 02 Nov 2020 11:32:21 +0100
+        id 1kZX8P-005tuk-Vt; Mon, 02 Nov 2020 11:32:21 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -33,12 +33,11 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
         "Linus Torvalds" <torvalds@linux-foundation.org>,
         "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Oded Gabbay <oded.gabbay@gmail.com>
-Subject: [PATCH 4/5] scripts: get_abi.pl: Don't let ABI files to create subtitles
-Date:   Mon,  2 Nov 2020 11:32:15 +0100
-Message-Id: <6c62ef5c01d39dee8d891f8390c816d2a889670a.1604312590.git.mchehab+huawei@kernel.org>
+        "Randy Dunlap" <rdunlap@infradead.org>, Tom Rix <trix@redhat.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>
+Subject: [PATCH 5/5] scripts: get_api.pl: Add sub-titles to ABI output
+Date:   Mon,  2 Nov 2020 11:32:16 +0100
+Message-Id: <64752a5de06ab8263c296e3ed01414b25861e1eb.1604312590.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1604312590.git.mchehab+huawei@kernel.org>
 References: <cover.1604312590.git.mchehab+huawei@kernel.org>
@@ -49,81 +48,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ReST output should only contain documentation titles
-automatically created by the script.
+Instead of adding titles just for the files, add titles
+for each part of the ABI output, in order to make easier
+to search for a symbol there.
 
-There are two reasons for that:
-
-1) Consistency.
-
-   just a handful ABI docs define titles
-
-2) To avoid critical errors.
-
-   Docutils (which is the basis for Sphinx) allows a free
-   assign of documentation title markups. So, one document
-   could be doing things like:
-
-	Level 1
-	=======
-
-	Level 2
-	-------
-
-   While another one could do the reverse:
-
-	Level 1
-	-------
-
-	Level 2
-	=======
-
-   But the same document can't mix.
-
-   As the output of get_abi.pl will join contents from multiple
-   files, if they don't define the levels on a consistent errors,
-   errors like this can happen:
-
-	Sphinx parallel build error:
-	docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-bus-rapidio:2: (SEVERE/4) Title level inconsistent:
-
-	Attributes Common for All RapidIO Devices
-	-----------------------------------------
-
-   Which cause some versions of Sphinx to go into an endless
-   loop.
-
-   It should be noticed that an alternative to that would
-   be to replace all title occurrences by a single markup,
-   but that will make the parser more complex, and, due to
-   (1) it would generate an inconsistent output.
-
-   So, better to just remove the titles defined at the ABI
-   files from the output.
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.pl | 6 ++++++
- 1 file changed, 6 insertions(+)
+ scripts/get_abi.pl | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index 2cb592f8eba4..459f169f834c 100755
+index 459f169f834c..68dab828a722 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -352,6 +352,12 @@ sub output_rest {
+@@ -287,6 +287,8 @@ my $bondary = qr { (?<![\w\/\`\{])(?=[\w\/\`\{])|(?<=[\w\/\`\{])(?![\w\/\`\{]) }
+ sub output_rest {
+ 	create_labels();
  
- 		if (!($desc =~ /^\s*$/)) {
- 			if ($description_is_rst) {
-+				# Remove title markups from the description
-+				# Having titles inside ABI files will only work if extra
-+				# care would be taken in order to strictly follow the same
-+				# level order for each markup.
-+				$desc =~ s/\n[\-\*\=\^\~]+\n/\n\n/g;
++	my $part = "";
 +
- 				# Enrich text by creating cross-references
+ 	foreach my $what (sort {
+ 				($data{$a}->{type} eq "File") cmp ($data{$b}->{type} eq "File") ||
+ 				$a cmp $b
+@@ -306,6 +308,21 @@ sub output_rest {
+ 		$w =~ s/([\(\)\_\-\*\=\^\~\\])/\\$1/g;
  
- 				$desc =~ s,Documentation/(?!devicetree)(\S+)\.rst,:doc:`/$1`,g;
+ 		if ($type ne "File") {
++			my $cur_part = $what;
++			if ($what =~ '/') {
++				if ($what =~ m#^(\/?(?:[\w\-]+\/?){1,2})#) {
++					$cur_part = "Symbols under $1";
++					$cur_part =~ s,/$,,;
++				}
++			}
++
++			if ($cur_part ne "" && $part ne $cur_part) {
++			    $part = $cur_part;
++			    my $bar = $part;
++			    $bar =~ s/./-/g;
++			    print "$part\n$bar\n\n";
++			}
++
+ 			printf ".. _%s:\n\n", $data{$what}->{label};
+ 
+ 			my @names = split /, /,$w;
 -- 
 2.26.2
 
