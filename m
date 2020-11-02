@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4412F2A3302
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA652A32FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgKBSai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:30:38 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47366 "EHLO
+        id S1726070AbgKBSa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:30:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47270 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKBSai (ORCPT
+        with ESMTP id S1725789AbgKBSa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:30:38 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IU65f075772;
-        Mon, 2 Nov 2020 12:30:06 -0600
+        Mon, 2 Nov 2020 13:30:27 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IUADm075894;
+        Mon, 2 Nov 2020 12:30:10 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604341806;
-        bh=eyikvyOADXRmirW8NUXz20t+vqM77BxXUZpx1lg31Aw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JMK1sYJavYyvttH9hBYlQVtvuHh2Ato7nnuy4s7QJuAdFb/LRnob/ap/8QXocHU1A
-         CZ5KWA232p5kYBGNF56PO2JvlcoQdKLKgyjGNZNnvvRS99FTEKfYQCfXN6PvslKkhl
-         1BBT9Jw7+AYnSEJ1JDp1UifdpKbRg1OjS+a1UfpA=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2IU6Ya054554
+        s=ti-com-17Q1; t=1604341810;
+        bh=0Nrlmr+WA0tymRRQkTOvMZD2muzS4xdx01WK6tTzwWg=;
+        h=From:To:CC:Subject:Date;
+        b=MmE1a7LaVZsgPjfPC+ApspODKbWQLQvC2mUSMqFiZmOWb27RsYKv5k9DB341JWkJw
+         IF1DGa9Ba6IXdgTMiTN8DsIin8inHjNXYHK5AL8S9/++Aiw/ZhX9mij4izBDXHR3+U
+         5I/1VonY1b7aLURbXb8DNl2+UnHsbHHaTOk71TVQ=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2IUAwo045941
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Nov 2020 12:30:06 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 2 Nov 2020 12:30:10 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 12:30:06 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 12:30:10 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 12:30:05 -0600
-Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IU5AF082833;
-        Mon, 2 Nov 2020 12:30:05 -0600
-Subject: Re: [PATCH v7 0/6] Add support for the IEI WT61P803 PUZZLE MCU
-To:     Luka Kovacic <luka.kovacic@sartura.hr>, Pavel Machek <pavel@ucw.cz>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-hwmon@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Behun <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Robert Marko <robert.marko@sartura.hr>
-References: <20201025005916.64747-7-luka.kovacic@sartura.hr>
- <20201025005916.64747-6-luka.kovacic@sartura.hr>
- <20201025005916.64747-5-luka.kovacic@sartura.hr>
- <20201025005916.64747-4-luka.kovacic@sartura.hr>
- <20201025005916.64747-3-luka.kovacic@sartura.hr>
- <20201025005916.64747-2-luka.kovacic@sartura.hr>
- <20201025005916.64747-1-luka.kovacic@sartura.hr>
- <20201029180105.GD26053@duo.ucw.cz>
- <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <7821443b-ddbc-fc92-b990-14d116dda853@ti.com>
-Date:   Mon, 2 Nov 2020 12:29:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Frontend Transport; Mon, 2 Nov 2020 12:30:10 -0600
+Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2IU6Lf083062;
+        Mon, 2 Nov 2020 12:30:07 -0600
+From:   Faiz Abbas <faiz_abbas@ti.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>,
+        <t-kristo@ti.com>, <faiz_abbas@ti.com>
+Subject: [PATCH v2] arm64: defconfig: Enable GPIO and I2C configs for TI's J721e platform
+Date:   Tue, 3 Nov 2020 00:00:05 +0530
+Message-ID: <20201102183005.14174-1-faiz_abbas@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CADZsf3YE3d=dtMVVYHL91Z1WFcpNN4vyJJ6RG7VnJ2V-DqE+wQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+Add configs to help enable regulators that supply power to the SD card
+on TI's J721e platform. These regulators are controlled by either
+SoC gpios or gpios over i2c expander.
 
-On 11/1/20 3:56 AM, Luka Kovacic wrote:
-> Hello Pavel,
->
-> On Thu, Oct 29, 2020 at 7:01 PM Pavel Machek <pavel@ucw.cz> wrote:
->> Hi!
->>
->>> +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
->>> +Date:                September 2020
->>> +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
->>> +Description: (RO) Power status indicates the host platform power on method.
->>> +             Value mapping (bitwise list):
->>> +             0x80 - Null
->>> +             0x40 - Firmware flag
->>> +             0x20 - Power loss detection flag (powered off)
->>> +             0x10 - Power loss detection flag (AC mode)
->>> +             0x08 - Button power on
->>> +             0x04 - WOL power on
->>> +             0x02 - RTC alarm power on
->>> +             0x01 - AC recover power on
->> It would be nice to put this into standard place somewhere. Many
->> machines will want to expose this information.
-> As this is specific to this microcontroller and to how it encodes
-> these values, I don't see a need to change this.
-> This isn't used anywhere else.
->
->> If not, at least spell out WoL, as it is not that common of acronym.
-> Okay.
+Acked-by: Tero Kristo <t-kristo@ti.com>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+---
 
-WoL is a very common acronym especially in the networking space
+Changes in v2: Squashed changes into a single patch
 
-But the overall this section does not make sense
+v1: https://lore.kernel.org/linux-arm-kernel/20201002164535.9920-1-faiz_abbas@ti.com/
 
-The description says that it indicates platform power on method but what 
-is NULL power on? There are flags for power loss detection.
+ arch/arm64/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Does the RTC mean that the processor real time clock woke up the uC? Or 
-that the internal RTC woke up the controller?
-
-And for the 
-/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status 
-what are those values?
-
-It seems like some ABI's are documented well with formats and others are 
-just described without a format.
-
-For instance
-
-/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/version the format 
-of this version is not described but 
-/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/build_info is.
-
-
-Dan
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 5cfe3cf6f2ac..bbf42faaddfe 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -438,6 +438,7 @@ CONFIG_I2C_IMX=y
+ CONFIG_I2C_IMX_LPI2C=y
+ CONFIG_I2C_MESON=y
+ CONFIG_I2C_MV64XXX=y
++CONFIG_I2C_OMAP=y
+ CONFIG_I2C_OWL=y
+ CONFIG_I2C_PXA=y
+ CONFIG_I2C_QCOM_CCI=m
+@@ -497,6 +498,7 @@ CONFIG_PINCTRL_SDM845=y
+ CONFIG_PINCTRL_SM8150=y
+ CONFIG_PINCTRL_SM8250=y
+ CONFIG_GPIO_ALTERA=m
++CONFIG_GPIO_DAVINCI=y
+ CONFIG_GPIO_DWAPB=y
+ CONFIG_GPIO_MB86S7X=y
+ CONFIG_GPIO_MPC8XXX=y
+-- 
+2.17.1
 
