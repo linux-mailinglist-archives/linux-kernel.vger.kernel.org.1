@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB32A2C79
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59A72A2C92
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgKBOR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:17:57 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:38440 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726114AbgKBORm (ORCPT
+        id S1726124AbgKBOUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:20:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726094AbgKBOUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:17:42 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2ECNpm001670;
-        Mon, 2 Nov 2020 09:17:40 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34j3bwkrdg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Nov 2020 09:17:40 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0A2EHd2c037203
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 2 Nov 2020 09:17:39 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 2 Nov 2020
- 09:17:38 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 2 Nov 2020 09:17:38 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0A2EHJQF027353;
-        Mon, 2 Nov 2020 09:17:35 -0500
-From:   Cristian Pop <cristian.pop@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, Cristian Pop <cristian.pop@analog.com>
-Subject: [PATCH v7 5/5] dt-bindings:iio:adc:adc.txt: Add documentation for channel label attribute
-Date:   Mon, 2 Nov 2020 16:20:00 +0200
-Message-ID: <20201102142000.68916-5-cristian.pop@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201102142000.68916-1-cristian.pop@analog.com>
-References: <20201102142000.68916-1-cristian.pop@analog.com>
+        Mon, 2 Nov 2020 09:20:07 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC509C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:20:06 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h62so4845153wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WMZ5E1t1qQDSNwAwpQ30Zb2v4pyVaA5GpDGSolOQX1Q=;
+        b=oiIaP9Badbgwu6QFpYJ9CsxpG5czjN2vku9ZNvB9kwytZowUyfn5yg5e7GsH5eW8i+
+         HvHd1MPW6YkXOEFu21i7+zAtirx2opS8FAGdXxByo+GH8iovk7bW76+knFUVPlZvn80z
+         bbXbT+LKuopP0Rqx0gUdeIxSmjn/ON5sFVUdhIVdUMrPYo7Exafg3O/eWZZdTtoW5LBX
+         qVVKY1FKlnRvE2JEAA/jCFm+Hqvs32Bnr2BIDc5wjpvqIJUnhivVymzYlTiR4ERXqV/9
+         q6JpXpILw8YhI1gNELoSTHceJjOa5EMn5KGh4hbQm2/C0PDcV3cqv8v3Q9TMcfNn4NiI
+         +wGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WMZ5E1t1qQDSNwAwpQ30Zb2v4pyVaA5GpDGSolOQX1Q=;
+        b=TFukWsThTk4tfbb+Lc4r/WX5D/ovTJzH9Rtr1ub7RgRPAexVmR52TQ+BVXzrZ0shf9
+         /Qeij2Rl96+CyFIdkeDw8qCExX9FxeIR7Zr5veO2LzmuA3Ci67/CK0IaWuVCQ07+dTP7
+         O1CM/r1vxu/QkFXca10w7RF8gVz5tOs0GHmm7NQF2XnNQwca+1TsVDVMvH9dTTfJeQyR
+         d7u8iitqmr9og6lnlIkRLkAJW3VrIJ9wY5oNJ/oD5KozG1nGHrPdMFpTjZireqEw0FrG
+         u2GR10nZmRbb1G2WC5y56qKDjJGggB4ix2YkV2KXShcCJbucdVdm3CmGqzpfz5+iw3oA
+         jfog==
+X-Gm-Message-State: AOAM530w1OnZLvF1PfVGNoI6irUocZ9leAjd87tHqxKa0w8ZyhEZhDdf
+        WLkuhizn1q6AoT0dFolgp213Kg==
+X-Google-Smtp-Source: ABdhPJytjMicCjCL83paCEpnhL0UDEWTAFZl6rkXpfqixkC7yRArs0HNsBUVxg5/5SbL4TgRS5uu3A==
+X-Received: by 2002:a7b:c418:: with SMTP id k24mr18745179wmi.118.1604326805546;
+        Mon, 02 Nov 2020 06:20:05 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id 30sm22331472wrs.84.2020.11.02.06.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 06:20:04 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     gregkh@linuxfoundation.org, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2 2/2] misc: ocxl: config: Rename function attribute description
+Date:   Mon,  2 Nov 2020 14:20:01 +0000
+Message-Id: <20201102142001.560490-2-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201102142001.560490-1-lee.jones@linaro.org>
+References: <20201102142001.560490-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-02_07:2020-11-02,2020-11-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- adultscore=0 spamscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011020113
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optional attribute for better identification of the channels.
+Fixes the following W=1 kernel build warning(s):
 
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+ drivers/misc/ocxl/config.c:81: warning: Function parameter or member 'dev' not described in 'get_function_0'
+ drivers/misc/ocxl/config.c:81: warning: Excess function parameter 'device' description in 'get_function_0'
+
+Cc: Frederic Barrat <fbarrat@linux.ibm.com>
+Cc: Andrew Donnellan <ajd@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
-Changes in v7:
- - Add this extra commit
- Documentation/devicetree/bindings/iio/adc/adc.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/misc/ocxl/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adc.txt b/Documentation/devicetree/bindings/iio/adc/adc.txt
-index 5bbaa330a250..4b37575bbddc 100644
---- a/Documentation/devicetree/bindings/iio/adc/adc.txt
-+++ b/Documentation/devicetree/bindings/iio/adc/adc.txt
-@@ -5,18 +5,24 @@ Optional properties for child nodes:
- - diff-channels : Differential channels muxed for this ADC. The first value
- 		specifies the positive input pin, the second value the negative
- 		input pin.
-+- reg: The channel number.
-+- label: Unique name to identify which channel this is.
+diff --git a/drivers/misc/ocxl/config.c b/drivers/misc/ocxl/config.c
+index 4d490b92d951f..a68738f382521 100644
+--- a/drivers/misc/ocxl/config.c
++++ b/drivers/misc/ocxl/config.c
+@@ -73,7 +73,7 @@ static int find_dvsec_afu_ctrl(struct pci_dev *dev, u8 afu_idx)
  
- Example:
- 	adc@0 {
- 		compatible = "some,adc";
- 		...
- 		channel@0 {
-+			reg = <0>;
-+			label = "channel_0_name";
- 			bipolar;
- 			diff-channels = <0 1>;
- 			...
- 		};
- 
- 		channel@1 {
-+			reg = <1>;
-+			label = "channel_1_name";
- 			diff-channels = <2 3>;
- 			...
- 		};
+ /**
+  * get_function_0() - Find a related PCI device (function 0)
+- * @device: PCI device to match
++ * @dev: PCI device to match
+  *
+  * Returns a pointer to the related device, or null if not found
+  */
 -- 
-2.17.1
+2.25.1
 
