@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787152A2AB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4280C2A2AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728796AbgKBM34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728359AbgKBM34 (ORCPT
+        id S1728641AbgKBMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:30:41 -0500
+Received: from mail.efficios.com ([167.114.26.124]:54990 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728359AbgKBMak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:29:56 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19D7C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:29:55 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id c18so9211380wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:29:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4ILeNdi6oZHwCJ6iUbV3quJceEqtA1JSpxIiTg6qDXc=;
-        b=G1YSAkrhaSYGxB3ZzXLFbutEnLIugxjFS/MnHvwogKJ/2z9t6lYistGV8bYmpqP6tr
-         bblR8mBLvTeJ1fhCVf6rwZPdXoxj0ggzYVdS/Boub9l/Km3XhxqMjTeRGteaeIHEtb3y
-         5jgrMQkRG7MiScwoe8GTo5azdVwCfrm8jFEXmgReGPv3Ml7rzoBYDu36ZD8wM0NkUniP
-         4DiPp1ycgkolSM8Mkibl4pMVti5RxZN+FpPQgCUCmECtLqib47VmUFugMi+22C6rHGuj
-         a3IDhz7wmWyxQVj7oDiyBIav9n4OAS+RiRevgZv23EvNPhBofheeruXXF74Sp8fz0+ri
-         aj0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4ILeNdi6oZHwCJ6iUbV3quJceEqtA1JSpxIiTg6qDXc=;
-        b=YM43UQAr5n8UywHAjLbrlc8GqQwLcZ/Xvcap43zLlEcy995PfJFdZ3pmo2BPMkAaqt
-         +NTePfFEpM73au0bqypCT4cLlQ9WGKLf8/diwQrdHL4eTuz1j6REigTMnQLrXz7zb0Or
-         8nObqzqLD790XkdzH5wYzneCmKtSivxQabfNUBUpku44NE3ZNwFshmzkzzKli5FoW8R5
-         OIl0bjZOrorKzY6X3HrdZ8H+ZZJlrW7XIRFharQcSGw2J1nEX9iJJtqFJ0WorPUArAdu
-         7rATnatiQ8IFH/3v5GQOD8x5SdHXFS7e01PHNpSR0ZsLZqoVjRy1AjxBudZloycYdFmN
-         8ZzQ==
-X-Gm-Message-State: AOAM5328B5ZBZ2scrlOVm3DqSJoHC9+faUKxTBih+J1fKyEnKefh240Y
-        DlYExwc2btfs/UzxTp7EUJUoFQ==
-X-Google-Smtp-Source: ABdhPJwUIfYXvZE9GcYuAEbLNWA2EEvj2uHM3TWkdRQSTGZfJMk9FgilHnSAFA8PxIJijlcW1NsSSw==
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr17247812wmb.22.1604320194705;
-        Mon, 02 Nov 2020 04:29:54 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id p13sm21671382wrt.73.2020.11.02.04.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 04:29:54 -0800 (PST)
-Date:   Mon, 2 Nov 2020 12:29:52 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Codrin.Ciubotariu@microchip.com
-Cc:     Nicolas.Ferre@microchip.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        richard.genoud@gmail.com, alexandre.belloni@bootlin.com,
-        Ludovic.Desroches@microchip.com
-Subject: Re: [PATCH] ARM: dts: at91: add serial MFD sub-node for usart
-Message-ID: <20201102122952.GB4488@dell>
-References: <20201030110702.886638-1-codrin.ciubotariu@microchip.com>
- <b054ce5c-58fd-dd86-2cb6-1e1f06a0899e@microchip.com>
- <20201102090122.GF4127@dell>
- <780303c7-2c32-f2e1-c9ce-1e2ee6bf0533@microchip.com>
+        Mon, 2 Nov 2020 07:30:40 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 78A672A8EE8;
+        Mon,  2 Nov 2020 07:30:39 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id VEAcYRSz4_Nl; Mon,  2 Nov 2020 07:30:39 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 13B542A8CFA;
+        Mon,  2 Nov 2020 07:30:39 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 13B542A8CFA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1604320239;
+        bh=aEmTwdrj/btdI0e9i4Qe2sfidXbJVUp9cG/w1eskNQg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=h96f4hXAphpLmzUTxftbVRtNAPpIgp63IaJnSCGhg2a2kU7yJ3XpPvxOTRPZHUfdm
+         kkhWz/Sx3b4gzZIleAvkpS9K9AtmZoYEWnajYEtiLsu9mdVR5VnJrH73re5fCt/EvX
+         ysASZt14XRfFsGEWgYhqZ7gojT5ZFA9A6kUpJI61G4oXLnHoVZQ3ix7w83w9uTawfp
+         9y5AB6w+v2zQD1GPg6Wf8eQbjdSPdEVwvOJnN2H7CSac9Qt8V9saC6N9My7+5Se/HH
+         EdLcvmhRcocoZU4KIz6C7mTyt2gv1x6MHSCAld1xs6Dd9fCCDW90FVJN+GFZjsiDyN
+         j2+wPWMOz5Cug==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id G67eehZORpFi; Mon,  2 Nov 2020 07:30:39 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 025942A8CF3;
+        Mon,  2 Nov 2020 07:30:39 -0500 (EST)
+Date:   Mon, 2 Nov 2020 07:30:38 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        Peter Oskolkov <posk@posk.io>, Peter Oskolkov <posk@google.com>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>, shuah <shuah@kernel.org>
+Message-ID: <786665141.6911.1604320238880.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201101200440.17328-1-colomar.6.4.3@gmail.com>
+References: <20201101200440.17328-1-colomar.6.4.3@gmail.com>
+Subject: Re: [PATCH] membarrier.2: Update prototype
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <780303c7-2c32-f2e1-c9ce-1e2ee6bf0533@microchip.com>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
+Thread-Topic: membarrier.2: Update prototype
+Thread-Index: w5tP907+9MIdNZJcHNtLSNKET8NG7w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Codrin.Ciubotariu@microchip.com wrote:
+----- On Nov 1, 2020, at 3:04 PM, Alejandro Colomar colomar.6.4.3@gmail.com wrote:
 
-> On 02.11.2020 11:01, Lee Jones wrote:
-> > On Fri, 30 Oct 2020, Nicolas Ferre wrote:
-> > 
-> >> On 30/10/2020 at 12:07, Codrin Ciubotariu wrote:
-> >>> The "atmel,at91sam9260-usart" driver is a MFD driver, so it needs sub-nodes
-> >>> to match the registered platform device. For this reason, we add a serial
-> >>> subnode to all the "atmel,at91sam9260-usart" serial compatible nods. This
-> >>> will also remove the boot warning:
-> >>> "atmel_usart_serial: Failed to locate of_node [id: -2]"
-> >>
-> >> I don't remember this warning was raised previously even if the MFD driver
-> >> was added a while ago (Sept. 2018).
-> >>
-> >> I would say it's due to 466a62d7642f ("mfd: core: Make a best effort attempt
-> >> to match devices with the correct of_nodes") which was added on mid August
-> >> and corrected with 22380b65dc70 ("mfd: mfd-core: Ensure disabled devices are
-> >> ignored without error") but maybe not covering our case.
-> >>
-> >> So, well, I don't know what's the best option to this change. Moreover, I
-> >> would say that all other USART related properties go into the child not if
-> >> there is a need for one.
-> >>
-> >> Lee, I suspect that we're not the only ones experiencing this ugly warning
-> >> during the boot log: can you point us out how to deal with it for our
-> >> existing atmel_serial.c users?
-> > 
-> > You should not be instantiating drivers through Device Tree which are
-> > not described there.  If the correct representation of the H/W already
-> > exists in Device Tree i.e. no SPI and UART IP really exists, use the
-> > MFD core API to register them utilising the platform API instead.
-> > 
-> > This should do it:
-> > 
-> > diff --git a/drivers/mfd/at91-usart.c b/drivers/mfd/at91-usart.c
-> > index 6a8351a4588e2..939bd2332a4f6 100644
-> > --- a/drivers/mfd/at91-usart.c
-> > +++ b/drivers/mfd/at91-usart.c
-> > @@ -17,12 +17,10 @@
-> > 
-> >   static const struct mfd_cell at91_usart_spi_subdev = {
-> >          .name = "at91_usart_spi",
-> > -       .of_compatible = "microchip,at91sam9g45-usart-spi",
-> >   };
-> > 
-> >   static const struct mfd_cell at91_usart_serial_subdev = {
-> >          .name = "atmel_usart_serial",
-> > -       .of_compatible = "atmel,at91rm9200-usart-serial",
-> >   };
-> > 
-> >   static int at91_usart_mode_probe(struct platform_device *pdev)
-> 
-> [snip]
-> 
-> Hi Lee, thank you for looking through our usart driver and for sharing 
-> your thoughts. Removing the usage of compatible string means that for 
-> similar serial/SPI IPs we would need to create new platform drivers. 
+> The Linux kernel now uses 'flags' and added a new argument: 'cpu_id'.
+> These changes were introduced to the kernel
+> in commit 2a36ab717e8fe678d98f81c14a0b124712719840.
 
-Why would you need to do that?
+I doubt the proposed patch with a FIXME and a TODO is appropriate for the man pages project.
+It does point out the fact that the membarrier man page needs updating following
+Peter's commit though.
 
-> This is not ideal, but it's a solution. What I proposed is more 
-> flexible, but, as you pointed out, I am not sure it correctly describes 
-> the HW, because the decision of whether to use this IP as a serial or a 
-> SPI is a configurable one.
+Peter (Oskolkov), can you contribute a patch detailing the new membarrier flags and cpu_id
+arguments to the man pages project ?
+
+Thanks,
+
+Mathieu
+
 > 
-> Thanks and best regards,
-> Codrin
+> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+> ---
+> man2/membarrier.2 | 9 ++++++++-
+> 1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/man2/membarrier.2 b/man2/membarrier.2
+> index 24a24ba86..42b7e2acc 100644
+> --- a/man2/membarrier.2
+> +++ b/man2/membarrier.2
+> @@ -23,6 +23,13 @@
+> .\" %%%LICENSE_END
+> .\"
+> .TH MEMBARRIER 2 2020-06-09 "Linux" "Linux Programmer's Manual"
+> +.\" FIXME:
+> +.\" The Linux kernel now uses 'flags' and added a new argument: 'cpu_id'.
+> +.\" These changes were introduced to the kernel
+> +.\" in commit 2a36ab717e8fe678d98f81c14a0b124712719840.
+> +.\" The prototype has been updated,
+> +.\" but the new features have not yet been documented.
+> +.\" TODO: Document those new features.
+> .SH NAME
+> membarrier \- issue memory barriers on a set of threads
+> .SH SYNOPSIS
+> @@ -30,7 +37,7 @@ membarrier \- issue memory barriers on a set of threads
+> .PP
+> .B #include <linux/membarrier.h>
+> .PP
+> -.BI "int membarrier(int " cmd ", int " flags ");"
+> +.BI "int membarrier(int " cmd ", unsigned int " flags ", int " cpu_id );
+> .fi
+> .PP
+> .IR Note :
+> --
+> 2.28.0
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
