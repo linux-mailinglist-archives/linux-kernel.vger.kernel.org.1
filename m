@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEE92A2CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DB12A2CCA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgKBOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
+        id S1726440AbgKBOZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgKBOYN (ORCPT
+        with ESMTP id S1726221AbgKBOYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:24:13 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B16C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:24:12 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id h62so4858193wme.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:24:12 -0800 (PST)
+        Mon, 2 Nov 2020 09:24:14 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B1AC061A49
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:24:14 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s9so14806196wro.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 06:24:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mzeTsnVBQeYqxq9T62Y4dbDZSOnvVH0q+uB/IaQ0f7A=;
-        b=DmDYPWXtnNuGHa6+tatUFk5QuHY4P4xSS6RYT8Gi1DqL5YQAxlVL6dREZDhAANp77/
-         Sm5qufyo+ehieT15KjiZ7iqVwv0J6Qyf17VXXGYXDHX9jh3Kx6QqNU/9ZeJbWFbJSApC
-         phoXu4Rja9nt7CMqDsO7n2jJhL/cjpXI0m2sPX35uE/TEVufO7DA1dxRjWjMwSFlyWkY
-         Yy0x7/2YHj4IVGPYmSc/jY6lUh/rmRc06x0hJmB8MKjqHjder1Ym829TJjzvEADuVSKX
-         f+SncEEEEndwGzXPYtPvk8yArX1v/OE1/MhWarv5FmdExUK7EjHy3TNciwei95VccO5m
-         uRiw==
+        bh=FJ/LOjMku45L05ImuriGkJJnEcZ0YQY/VNlADFyGWZ8=;
+        b=JmCQqHYioQuOSTa0wh7XMjtz6O+WrpRl0wDmJB4Yzj14frBYjV/8gUqkNzkcYs5kBX
+         dt2+BVZjdCbj/aMeQClwa2nnU6JcirankbzQ7hiBKOgI1IxrJLTcgNVnIKpRprP4cq0K
+         XdNSP3a/Mz5d8oYtJRB27SIy+tmzF42ADeLEMGY0Kk+05v/cy2zg17/MvlqO0au+USZj
+         VY1JTd9vFwgLE3GBPgcwtfOu7LOnDIJUwktioIfvvGZoaPPXO1KrFnjPXxNszR0wNBHd
+         gPaeGdBM2pyZv0ITqknZPIlpJTpc5BiRG7r5p3W24gOXmPGtCNMUeGWdAbkurbyA9mOf
+         d6ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mzeTsnVBQeYqxq9T62Y4dbDZSOnvVH0q+uB/IaQ0f7A=;
-        b=rCB5qy3nk0z0jPePnHFZTnltzNelY1VZ3YvCqCsg60HNWyQdTBmnBud6BwD1Ho7SlJ
-         La4Qpwc9TO6ihX9+ETqS7KaO7aQ+bIMb3yY5ehhomC4XbrRpdeoECeNHTePz9tMryu6+
-         lYrfiHU22E16Su0jSNLey1U1b1IilFCvTJ93I6ZkAySeMKr4MhAEiA/7OMuObJ1v5yjk
-         YsSb7N9KVJtSDUSaCrT8Y2a+BbTSh3VOLnNw33cZRFNcJTBINh+Wb4dariYl6llIIavu
-         25/VumVJc1cNBnh3rB2G9IhQy/BtSxjOEAyIFaaC7nEruoUOaFKGr51zGYag635nWJ/s
-         L3yQ==
-X-Gm-Message-State: AOAM531U335jjJICoRWOg10Pu1kWZK6M0iVCl4OmflQd1Puz6XxvXYEH
-        6M973qp3+C/krB2iakOxqlQhMA==
-X-Google-Smtp-Source: ABdhPJzGG8Kirb9ed21xWpDkJf4IlXV5eshgVVQ2V2F96eVC5pVPn5sCprzulPBLnTyJ9tet1oQuXA==
-X-Received: by 2002:a1c:2901:: with SMTP id p1mr18492705wmp.170.1604327051506;
-        Mon, 02 Nov 2020 06:24:11 -0800 (PST)
+        bh=FJ/LOjMku45L05ImuriGkJJnEcZ0YQY/VNlADFyGWZ8=;
+        b=GQ70G4ZTdfUxg1862QiPFM2m2DEWpzNfOdU0/7c+/ZGtU500fH1PiuWF21qHchJh7R
+         8wmiBoVlMxvtZ6j+5bni8J6vzCdGoD+euYFQOn+2SJuAT+ERT6C8qLpSOnh04txYxgnQ
+         Wu7GITJcVA2vpDJCL+PIa4wy5d+P9fTcvA9p0EX2Hanq+s7tQxf2VzRyTStR6Fwuqq1H
+         lexVMhEpGkJHRQP1DjCbP+9WakDfBS8w7xAJQUgSxrEgB3mS5jl6sbyrFn/gh+PmfMit
+         l418aBIWJtLVSxddpNTt6cECo0q9Z3sT6wSpDeoGk8to9YiKre+OERrchEHR2e9bJqsC
+         lKaQ==
+X-Gm-Message-State: AOAM531FHr9g1pllvLFi4Bsddjed7JejUnA/RW0FYAMZjnjepIgFy0YB
+        oe8kJgq8MLZBv3TqfbbrAybiow==
+X-Google-Smtp-Source: ABdhPJwr++JFubsc+a4CRccQfKmS1YyaJ2OqPZalLE6DCOaMrfb/6qZSQWeSn51M4MV33skLxc9nUg==
+X-Received: by 2002:adf:f74e:: with SMTP id z14mr20403765wrp.312.1604327052849;
+        Mon, 02 Nov 2020 06:24:12 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id f7sm23542501wrx.64.2020.11.02.06.24.10
+        by smtp.gmail.com with ESMTPSA id f7sm23542501wrx.64.2020.11.02.06.24.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 06:24:10 -0800 (PST)
+        Mon, 02 Nov 2020 06:24:12 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     martin.petersen@oracle.com, jejb@linux.ibm.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         James Smart <james.smart@broadcom.com>,
         Dick Kennedy <dick.kennedy@broadcom.com>
-Subject: [RESEND 06/19] scsi: lpfc: lpfc_debugfs: Fix a couple of function documentation issues
-Date:   Mon,  2 Nov 2020 14:23:46 +0000
-Message-Id: <20201102142359.561122-7-lee.jones@linaro.org>
+Subject: [RESEND 07/19] scsi: lpfc: lpfc_bsg: Provide correct documentation for a bunch of functions
+Date:   Mon,  2 Nov 2020 14:23:47 +0000
+Message-Id: <20201102142359.561122-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102142359.561122-1-lee.jones@linaro.org>
 References: <20201102142359.561122-1-lee.jones@linaro.org>
@@ -68,38 +68,153 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/lpfc/lpfc_debugfs.c:4204: warning: Function parameter or member 'len' not described in 'lpfc_idiag_queacc_read_qe'
- drivers/scsi/lpfc/lpfc_debugfs.c:4781: warning: Function parameter or member 'ctlregid' not described in 'lpfc_idiag_ctlacc_read_reg'
- drivers/scsi/lpfc/lpfc_debugfs.c:4781: warning: Excess function parameter 'drbregid' description in 'lpfc_idiag_ctlacc_read_reg'
+ drivers/scsi/lpfc/lpfc_bsg.c:917: warning: Function parameter or member 'phba' not described in 'lpfc_bsg_ct_unsol_event'
+ drivers/scsi/lpfc/lpfc_bsg.c:917: warning: Function parameter or member 'pring' not described in 'lpfc_bsg_ct_unsol_event'
+ drivers/scsi/lpfc/lpfc_bsg.c:1484: warning: Function parameter or member 'cmp' not described in 'lpfc_issue_ct_rsp'
+ drivers/scsi/lpfc/lpfc_bsg.c:3900: warning: Function parameter or member 'job' not described in 'lpfc_bsg_sli_cfg_read_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:3900: warning: Function parameter or member 'dmabuf' not described in 'lpfc_bsg_sli_cfg_read_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:3900: warning: Excess function parameter 'mb' description in 'lpfc_bsg_sli_cfg_read_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:3900: warning: Excess function parameter 'dmabuff' description in 'lpfc_bsg_sli_cfg_read_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4088: warning: Function parameter or member 'job' not described in 'lpfc_bsg_sli_cfg_write_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4088: warning: Function parameter or member 'nemb_tp' not described in 'lpfc_bsg_sli_cfg_write_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4088: warning: Function parameter or member 'dmabuf' not described in 'lpfc_bsg_sli_cfg_write_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4088: warning: Excess function parameter 'mb' description in 'lpfc_bsg_sli_cfg_write_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4088: warning: Excess function parameter 'dmabuff' description in 'lpfc_bsg_sli_cfg_write_cmd_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4254: warning: Function parameter or member 'job' not described in 'lpfc_bsg_handle_sli_cfg_mbox'
+ drivers/scsi/lpfc/lpfc_bsg.c:4254: warning: Function parameter or member 'dmabuf' not described in 'lpfc_bsg_handle_sli_cfg_mbox'
+ drivers/scsi/lpfc/lpfc_bsg.c:4254: warning: Excess function parameter 'mb' description in 'lpfc_bsg_handle_sli_cfg_mbox'
+ drivers/scsi/lpfc/lpfc_bsg.c:4254: warning: Excess function parameter 'dmabuff' description in 'lpfc_bsg_handle_sli_cfg_mbox'
+ drivers/scsi/lpfc/lpfc_bsg.c:4403: warning: Function parameter or member 'job' not described in 'lpfc_bsg_read_ebuf_get'
+ drivers/scsi/lpfc/lpfc_bsg.c:4403: warning: Excess function parameter 'dmabuf' description in 'lpfc_bsg_read_ebuf_get'
+ drivers/scsi/lpfc/lpfc_bsg.c:4474: warning: Function parameter or member 'job' not described in 'lpfc_bsg_write_ebuf_set'
+ drivers/scsi/lpfc/lpfc_bsg.c:4600: warning: Function parameter or member 'job' not described in 'lpfc_bsg_handle_sli_cfg_ebuf'
+ drivers/scsi/lpfc/lpfc_bsg.c:4600: warning: Function parameter or member 'dmabuf' not described in 'lpfc_bsg_handle_sli_cfg_ebuf'
+ drivers/scsi/lpfc/lpfc_bsg.c:4600: warning: Excess function parameter 'mb' description in 'lpfc_bsg_handle_sli_cfg_ebuf'
+ drivers/scsi/lpfc/lpfc_bsg.c:4600: warning: Excess function parameter 'dmabuff' description in 'lpfc_bsg_handle_sli_cfg_ebuf'
+ drivers/scsi/lpfc/lpfc_bsg.c:4645: warning: Function parameter or member 'job' not described in 'lpfc_bsg_handle_sli_cfg_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4645: warning: Function parameter or member 'dmabuf' not described in 'lpfc_bsg_handle_sli_cfg_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4645: warning: Excess function parameter 'mb' description in 'lpfc_bsg_handle_sli_cfg_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4645: warning: Excess function parameter 'dmabuff' description in 'lpfc_bsg_handle_sli_cfg_ext'
+ drivers/scsi/lpfc/lpfc_bsg.c:4723: warning: Function parameter or member 'job' not described in 'lpfc_bsg_issue_mbox'
+ drivers/scsi/lpfc/lpfc_bsg.c:4723: warning: Excess function parameter 'mb' description in 'lpfc_bsg_issue_mbox'
 
 Cc: James Smart <james.smart@broadcom.com>
 Cc: Dick Kennedy <dick.kennedy@broadcom.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/lpfc/lpfc_debugfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_bsg.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index 325081ac65539..5a354abcbafc4 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -4186,6 +4186,7 @@ lpfc_idiag_que_param_check(struct lpfc_queue *q, int index, int count)
+diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
+index 5b66b8ea83635..abe7c53f8caa4 100644
+--- a/drivers/scsi/lpfc/lpfc_bsg.c
++++ b/drivers/scsi/lpfc/lpfc_bsg.c
+@@ -902,11 +902,8 @@ diag_cmd_data_free(struct lpfc_hba *phba, struct lpfc_dmabufext *mlist)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * lpfc_bsg_ct_unsol_event - process an unsolicited CT command
+- * @phba:
+- * @pring:
+- * @piocbq:
+  *
+  * This function is called when an unsolicited CT command is received.  It
+  * forwards the event to any processes registered to receive CT events.
+@@ -1455,7 +1452,8 @@ lpfc_issue_ct_rsp_cmp(struct lpfc_hba *phba,
+  * @phba: Pointer to HBA context object.
+  * @job: Pointer to the job object.
+  * @tag: tag index value into the ports context exchange array.
+- * @bmp: Pointer to a dma buffer descriptor.
++ * @cmp: Pointer to a cmp dma buffer descriptor.
++ * @bmp: Pointer to a bmp dma buffer descriptor.
+  * @num_entry: Number of enties in the bde.
+  **/
+ static int
+@@ -3867,9 +3865,9 @@ lpfc_bsg_sli_cfg_dma_desc_setup(struct lpfc_hba *phba, enum nemb_type nemb_tp,
  /**
-  * lpfc_idiag_queacc_read_qe - read a single entry from the given queue index
-  * @pbuffer: The pointer to buffer to copy the read data into.
-+ * @len: Length of the buffer.
-  * @pque: The pointer to the queue to be read.
-  * @index: The index into the queue entry.
+  * lpfc_bsg_sli_cfg_mse_read_cmd_ext - sli_config non-embedded mailbox cmd read
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a BSG mailbox object.
++ * @job: Pointer to the job object.
+  * @nemb_tp: Enumerate of non-embedded mailbox command type.
+- * @dmabuff: Pointer to a DMA buffer descriptor.
++ * @dmabuf: Pointer to a DMA buffer descriptor.
   *
-@@ -4762,7 +4763,7 @@ lpfc_idiag_drbacc_write(struct file *file, const char __user *buf,
-  * @phba: The pointer to hba structure.
-  * @pbuffer: The pointer to the buffer to copy the data to.
-  * @len: The length of bytes to copied.
-- * @drbregid: The id to doorbell registers.
-+ * @ctlregid: The id to doorbell registers.
+  * This routine performs SLI_CONFIG (0x9B) read mailbox command operation with
+  * non-embedded external bufffers.
+@@ -4056,8 +4054,9 @@ lpfc_bsg_sli_cfg_read_cmd_ext(struct lpfc_hba *phba, struct bsg_job *job,
+ /**
+  * lpfc_bsg_sli_cfg_write_cmd_ext - sli_config non-embedded mailbox cmd write
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a BSG mailbox object.
+- * @dmabuff: Pointer to a DMA buffer descriptor.
++ * @job: Pointer to the job object.
++ * @nemb_tp: Enumerate of non-embedded mailbox command type.
++ * @dmabuf: Pointer to a DMA buffer descriptor.
   *
-  * Description:
-  * This routine reads a control register and copies its content to the
+  * This routine performs SLI_CONFIG (0x9B) write mailbox command operation with
+  * non-embedded external bufffers.
+@@ -4222,8 +4221,8 @@ lpfc_bsg_sli_cfg_write_cmd_ext(struct lpfc_hba *phba, struct bsg_job *job,
+ /**
+  * lpfc_bsg_handle_sli_cfg_mbox - handle sli-cfg mailbox cmd with ext buffer
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a BSG mailbox object.
+- * @dmabuff: Pointer to a DMA buffer descriptor.
++ * @job: Pointer to the job object.
++ * @dmabuf: Pointer to a DMA buffer descriptor.
+  *
+  * This routine handles SLI_CONFIG (0x9B) mailbox command with non-embedded
+  * external bufffers, including both 0x9B with non-embedded MSEs and 0x9B
+@@ -4374,7 +4373,7 @@ lpfc_bsg_mbox_ext_abort(struct lpfc_hba *phba)
+ /**
+  * lpfc_bsg_read_ebuf_get - get the next mailbox read external buffer
+  * @phba: Pointer to HBA context object.
+- * @dmabuf: Pointer to a DMA buffer descriptor.
++ * @job: Pointer to the job object.
+  *
+  * This routine extracts the next mailbox read external buffer back to
+  * user space through BSG.
+@@ -4444,6 +4443,7 @@ lpfc_bsg_read_ebuf_get(struct lpfc_hba *phba, struct bsg_job *job)
+ /**
+  * lpfc_bsg_write_ebuf_set - set the next mailbox write external buffer
+  * @phba: Pointer to HBA context object.
++ * @job: Pointer to the job object.
+  * @dmabuf: Pointer to a DMA buffer descriptor.
+  *
+  * This routine sets up the next mailbox read external buffer obtained
+@@ -4569,8 +4569,8 @@ lpfc_bsg_write_ebuf_set(struct lpfc_hba *phba, struct bsg_job *job,
+ /**
+  * lpfc_bsg_handle_sli_cfg_ebuf - handle ext buffer with sli-cfg mailbox cmd
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a BSG mailbox object.
+- * @dmabuff: Pointer to a DMA buffer descriptor.
++ * @job: Pointer to the job object.
++ * @dmabuf: Pointer to a DMA buffer descriptor.
+  *
+  * This routine handles the external buffer with SLI_CONFIG (0x9B) mailbox
+  * command with multiple non-embedded external buffers.
+@@ -4614,8 +4614,8 @@ lpfc_bsg_handle_sli_cfg_ebuf(struct lpfc_hba *phba, struct bsg_job *job,
+ /**
+  * lpfc_bsg_handle_sli_cfg_ext - handle sli-cfg mailbox with external buffer
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a BSG mailbox object.
+- * @dmabuff: Pointer to a DMA buffer descriptor.
++ * @job: Pointer to the job object.
++ * @dmabuf: Pointer to a DMA buffer descriptor.
+  *
+  * This routine checkes and handles non-embedded multi-buffer SLI_CONFIG
+  * (0x9B) mailbox commands and external buffers.
+@@ -4688,7 +4688,7 @@ lpfc_bsg_handle_sli_cfg_ext(struct lpfc_hba *phba, struct bsg_job *job,
+ /**
+  * lpfc_bsg_issue_mbox - issues a mailbox command on behalf of an app
+  * @phba: Pointer to HBA context object.
+- * @mb: Pointer to a mailbox object.
++ * @job: Pointer to the job object.
+  * @vport: Pointer to a vport object.
+  *
+  * Allocate a tracking object, mailbox command memory, get a mailbox
 -- 
 2.25.1
 
