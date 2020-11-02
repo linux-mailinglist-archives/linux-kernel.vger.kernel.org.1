@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B132A3117
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E562A3125
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgKBROm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:14:42 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:62148 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727470AbgKBROl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:14:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604337280; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=oCS6rrjus9PAM663x7+ECmgucjExZnYZnUqtOqwzQxQ=; b=Ow6RO9RqhiiW4/e4FHwbC1AScBUWoEnKukRzCk+dU8XFgwgNHqGBL7BZ7s9nUOFEqcTaln6Q
- fDtxZqKl4zpH4Lrv6UzBpY1vgvF3meBDDqLhGxGVOM6Kye7h+O6G4gfMgx9QlhfdweDUvgIu
- ZDKR/YUv1eloOBtppHhMrL/OR+4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fa03e80875877e3ed9669a0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 17:14:40
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 011ACC433C6; Mon,  2 Nov 2020 17:14:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9103C433FF;
-        Mon,  2 Nov 2020 17:14:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9103C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v18 4/4] arm: dts: qcom: sm845: Set the compatible string for the GPU SMMU
-Date:   Mon,  2 Nov 2020 10:14:16 -0700
-Message-Id: <20201102171416.654337-5-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201102171416.654337-1-jcrouse@codeaurora.org>
-References: <20201102171416.654337-1-jcrouse@codeaurora.org>
+        id S1726766AbgKBRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgKBRP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:15:27 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8935BC0617A6;
+        Mon,  2 Nov 2020 09:15:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=kY8nxtxSx3r09CKBimdC1BarQSeukB+zCO2mlqb8faY=; b=tIixBm7W0Y1H8b5N42QUk5f3B/
+        bL1aZRjqJB924clhDCkViGl9XyFgFec5O98RQlI1MhkEB6xiI8CkSe4mkGK2o8ah9hV2s9Z3Zkgn0
+        stfnuEvc7of/dq7R8hLZpoWoPzBS89Pt6MxJ8sobm1lQaP6WfKncGWHsAEEfN3jRpp7ls6yE4PAvS
+        5h6eCHqSyxVkCUgPJyyiGh9OJrRbhv8HFXspp1n45801jYDHd+RCL59vjZqJjRBSswEa+X7c2Da5c
+        9ga87RESykW6w3ydH/GeluGqW5FCCBO0hCCiBVPN32FQyDfQI8H5LWhUT5BZ1iqQ/zFwmGIoKypPW
+        91vLvnZA==;
+Received: from [2601:1c0:6280:3f0::60d5]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZdQS-0005BM-Ms; Mon, 02 Nov 2020 17:15:25 +0000
+Subject: Re: [PATCH] clk: imx: scu: Fix compile error with module build of
+ clk-scu.o
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <208469.1604318525@turing-police>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6e5a8fdb-0a02-5eae-ca1f-37df8a454e34@infradead.org>
+Date:   Mon, 2 Nov 2020 09:15:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <208469.1604318525@turing-police>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the qcom,adreno-smmu compatible string for the GPU SMMU to enable
-split pagetables and per-instance pagetables for drm/msm.
+On 11/2/20 4:02 AM, Valdis Klētnieks wrote:
+> commit 77d8f3068c63ee0983f0b5ba3207d3f7cce11be4 (HEAD)
+> Author: Dong Aisheng <aisheng.dong@nxp.com>
+> Date:   Wed Jul 29 16:00:10 2020 +0800
+> 
+>     clk: imx: scu: add two cells binding support
+> 
+> This missed a #include, which results in some nasty errors when
+> built as a module
+> 
+>   CC [M]  drivers/clk/imx/clk-scu.o
+> In file included from ./include/linux/device.h:32,
+>                  from ./include/linux/of_platform.h:9,
+>                  from drivers/clk/imx/clk-scu.c:11:
+> ./include/linux/device/driver.h:290:1: warning: data definition has no type or storage class
+>  device_initcall(__driver##_init);
+>  ^~~~~~~~~~~~~~~
+> ./include/linux/platform_device.h:258:2: note: in expansion of macro 'builtin_driver'
+>   builtin_driver(__platform_driver, platform_driver_register)
+>   ^~~~~~~~~~~~~~
+> drivers/clk/imx/clk-scu.c:545:1: note: in expansion of macro 'builtin_platform_driver'
+>  builtin_platform_driver(imx_clk_scu_driver);
+>  ^~~~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/device/driver.h:290:1: error: type defaults to 'int' in declaration of 'device_initcall' [-Werror=implicit-int]
+>  device_initcall(__driver##_init);
+>  ^~~~~~~~~~~~~~~
+> ./include/linux/platform_device.h:258:2: note: in expansion of macro 'builtin_driver'
+>   builtin_driver(__platform_driver, platform_driver_register)
+>   ^~~~~~~~~~~~~~
+> drivers/clk/imx/clk-scu.c:545:1: note: in expansion of macro 'builtin_platform_driver'
+>  builtin_platform_driver(imx_clk_scu_driver);
+>  ^~~~~~~~~~~~~~~~~~~~~~~
+> drivers/clk/imx/clk-scu.c:545:1: warning: parameter names (without types) in function declaration
+> In file included from ./include/linux/device.h:32,
+>                  from ./include/linux/of_platform.h:9,
+>                  from drivers/clk/imx/clk-scu.c:11:
+> drivers/clk/imx/clk-scu.c:545:25: warning: 'imx_clk_scu_driver_init' defined but not used [-Wunused-function]
+>  builtin_platform_driver(imx_clk_scu_driver);
+>                          ^~~~~~~~~~~~~~~~~~
+> ./include/linux/device/driver.h:286:19: note: in definition of macro 'builtin_driver'
+>  static int __init __driver##_init(void) \
+>                    ^~~~~~~~
+> drivers/clk/imx/clk-scu.c:545:1: note: in expansion of macro 'builtin_platform_driver'
+>  builtin_platform_driver(imx_clk_scu_driver);
+>  ^~~~~~~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
+> make[3]: *** [scripts/Makefile.build:283: drivers/clk/imx/clk-scu.o] Error 1
+> 
+> Fix by providing the include.
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
 
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 9 +++++++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi       | 2 +-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+also
+Reported-by: kernel test robot <lkp@intel.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index 64fc1bfd66fa..39f23cdcbd02 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -633,6 +633,15 @@ &mdss_mdp {
- 	status = "okay";
- };
- 
-+/*
-+ * Cheza fw does not properly program the GPU aperture to allow the
-+ * GPU to update the SMMU pagetables for context switches.  Work
-+ * around this by dropping the "qcom,adreno-smmu" compat string.
-+ */
-+&adreno_smmu {
-+	compatible = "qcom,sdm845-smmu-v2", "qcom,smmu-v2";
-+};
-+
- &mss_pil {
- 	iommus = <&apps_smmu 0x781 0x0>,
- 		 <&apps_smmu 0x724 0x3>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 40e8c11f23ab..0508e86140bd 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -4103,7 +4103,7 @@ opp-257000000 {
- 		};
- 
- 		adreno_smmu: iommu@5040000 {
--			compatible = "qcom,sdm845-smmu-v2", "qcom,smmu-v2";
-+			compatible = "qcom,sdm845-smmu-v2", "qcom,adreno-smmu", "qcom,smmu-v2";
- 			reg = <0 0x5040000 0 0x10000>;
- 			#iommu-cells = <1>;
- 			#global-interrupts = <2>;
+However, this driver does not directly use <linux/module.h>.
+platform_device.h #includes <linux/device.h>, which is where the
+problem lies:
+
+<linux/device.h> uses macros that are provided by <linux/module.h>
+so <linux/device.h> should #include <linux/module.h>.
+
+and that fixes this commit:
+
+commit 4c002c978b7f2f2306d53de051c054504af920a9
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Mon Dec 9 20:33:03 2019 +0100
+
+    device.h: move 'struct driver' stuff out to device/driver.h
+
+> 
+> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+> 
+> diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
+> index 229a290ca5b6..15d382f6f9f8 100644
+> --- a/drivers/clk/imx/clk-scu.c
+> +++ b/drivers/clk/imx/clk-scu.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/arm-smccc.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/err.h>
+> +#include <linux/module.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+> 
+> 
+
+
 -- 
-2.25.1
+~Randy
 
