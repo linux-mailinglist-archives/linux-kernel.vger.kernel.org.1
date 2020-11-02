@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B837E2A2826
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A31742A2829
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728439AbgKBKXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:23:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728005AbgKBKXo (ORCPT
+        id S1728446AbgKBKXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgKBKXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:23:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604312622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wp9LWIdQQeaVWYBrapN4RJch0BVmepD/23UqIg4kz2Q=;
-        b=Kl2vfjVFoXvTlsK3Xx57pHqVNA6um6BJYdoh4KA2sT+dErzxpzaRbFZWGhIT0ZARaDrxEx
-        /pClIzpTvmI9yJd2KqrAX2GrTy/fwdgI5K02mXPg/NVCpvdNK2A7wAqeOjDcf/YEufF9jC
-        T/RazfGcdsxUEW8C9sBouJRs1P5WjnQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-6iKsuRHHNG2LvB_wUHNf2Q-1; Mon, 02 Nov 2020 05:23:40 -0500
-X-MC-Unique: 6iKsuRHHNG2LvB_wUHNf2Q-1
-Received: by mail-wr1-f70.google.com with SMTP id b6so6202658wrn.17
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:23:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wp9LWIdQQeaVWYBrapN4RJch0BVmepD/23UqIg4kz2Q=;
-        b=PKhViLS3V3EIyyxomYPnQCm5wOVwOepeWXeNyvi/O3IEIBo53RKX0zsuh1sz+wM6PF
-         blFEfv2s4tW/qxNIXoQQtug1w1gO+Mo8U0JLxYP75hZnYnOSddHJlpRYCBQbL4I9BJXB
-         H5/d63fmg6Sfst8ZcuLgKgBQL2XlbtnztROh1KUK7ZQmCdac8bZG4UDFn1DQDhzpaFc9
-         uV4dU4IvhFQ+itAXlKgVeIZZojobYbAi5tKSSwf9t9PylkqU6ZMxCKSeXyx+Z6BxGarJ
-         QGfBcqljkY0ehXFc0diJ2p2huc3/IrLU2xSmwmGmWwA42Fm4khVdOKK2yIQKQ49CBHlx
-         UsGw==
-X-Gm-Message-State: AOAM533sxvsfzA3Nycdukq1WiWpeE662lft4eLAp/D8/RML1SK38zrN4
-        3ueE03tOwidb+yQ1NiTtFnT4A+MCRaGX1CiLYV7gPvHPvb1DdVXpqjdG7+rirNGJ49i8y0scxug
-        BRusvGrKsa8wpOdeI06inrNm7
-X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr12460072wrx.185.1604312618487;
-        Mon, 02 Nov 2020 02:23:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJznFGNmmLYGwZJwr0mGaJjbUUa+GHkURX7Blm6FFeB1v9AnrgQ4pPjIhkgBVh1ilzBqxxD+OQ==
-X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr12460054wrx.185.1604312618293;
-        Mon, 02 Nov 2020 02:23:38 -0800 (PST)
-Received: from redhat.com (bzq-79-182-97-190.red.bezeqint.net. [79.182.97.190])
-        by smtp.gmail.com with ESMTPSA id z15sm20847366wrq.24.2020.11.02.02.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 02:23:37 -0800 (PST)
-Date:   Mon, 2 Nov 2020 05:23:28 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christoph Hellwig <hch@infradead.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201102052254-mutt-send-email-mst@kernel.org>
-References: <20201102124327.2f82b2a7@canb.auug.org.au>
- <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
+        Mon, 2 Nov 2020 05:23:52 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E63C0617A6;
+        Mon,  2 Nov 2020 02:23:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=T4edEfzDUp94a5geNCa69OK/7pLd8nv3AuvG+qE7Gx8=; b=kQFchl4ezQ8E5WVCay0B/CFxi
+        mpOZ2oXboumTunBiZLsnLmmEhQJ9lVJ72eVnXe0eD5kMeFTooDo/VetJeR2Ifz6IzPpuVR7pgsH8W
+        FOfjZner98iLKZ+ztDyLs0Nwc3JjiXofOUqiG/wEoQHqZgP1ENF9252KXi5PK1q9OGyCsLv/CxDlm
+        6lDTsJQneU93+R7qWyvF8D4mOl7/FT1JFbbOCMWcQ3M2PgVBUxoRWTdoz8oz0MOywKZObNIdqY0IK
+        lVGgUHWHlUSq6HpVP9m8czF3l4VNxMAnc80a1FgirNF5bqc8nraNjSGso9rbmdrdXoIgfDIarVjqI
+        nVba+1n9Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54086)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kZX04-0000QP-7N; Mon, 02 Nov 2020 10:23:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kZX03-0001gX-7p; Mon, 02 Nov 2020 10:23:43 +0000
+Date:   Mon, 2 Nov 2020 10:23:43 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     daniel.vetter@ffwll.ch, gregkh@linuxfoundation.org,
+        yepeilin.cs@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
+ qualifier
+Message-ID: <20201102102343.GK1551@shell.armlinux.org.uk>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <20201031102709.GH1551@shell.armlinux.org.uk>
+ <20201101131122.GD4127@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
+In-Reply-To: <20201101131122.GD4127@dell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:28:34AM +0100, Daniel Vetter wrote:
-> On Mon, Nov 2, 2020 at 2:43 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > After merging the drm-misc tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >
-> > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-> > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-> > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
-> >    99 |  return SIZE_MAX;
-> >       |         ^~~~~~~~
-> > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
-> >     6 | #include <linux/init.h>
-> >   +++ |+#include <stdint.h>
-> >     7 | #include <linux/types.h>
-> > include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
-> >    99 |  return SIZE_MAX;
-> >       |         ^~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> >
-> > but only exposed by commit
-> >
-> >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
-> >
-> > I applied the following fix for today:
-> >
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 2 Nov 2020 12:34:57 +1100
-> > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
-> >
-> > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+On Sun, Nov 01, 2020 at 01:11:22PM +0000, Lee Jones wrote:
+> On Sat, 31 Oct 2020, Russell King - ARM Linux admin wrote:
 > 
-> I think simplest if this lands through dma-api tree into current -rc
-> kernels. Or should we just put this into drm-misc-next since that's
-> where the problem shows up? Christoph, any preference from dma-api
-> side?
-> -Daniel
-
-
-Or I can merge it since I merged the original patch causing the
-issue ...
-
-> > ---
-> >  include/linux/swiotlb.h | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> > index 513913ff7486..ed9de7855d3b 100644
-> > --- a/include/linux/swiotlb.h
-> > +++ b/include/linux/swiotlb.h
-> > @@ -5,6 +5,9 @@
-> >  #include <linux/dma-direction.h>
-> >  #include <linux/init.h>
-> >  #include <linux/types.h>
-> > +#ifndef CONFIG_SWIOTLB
-> > +#include <linux/limits.h>
-> > +#endif
-> >
-> >  struct device;
-> >  struct page;
-> > --
-> > 2.28.0
-> >
-> > --
-> > Cheers,
-> > Stephen Rothwell
+> > On Fri, Oct 30, 2020 at 06:18:22PM +0000, Lee Jones wrote:
+> > > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
+> > 
+> > Your commit ID does not exist in mainline kernels, which makes this
+> > confusing. The commit ID you should be using is 6735b4632def.
 > 
+> Ah yes, quite right.  That is the ID from android-3.18 where this
+> issue was first seen and fixed against.  I will fix it up for
+> Mainline.
 > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> Does the fix look okay to you though Russell?
 
+Frankly, I don't know. Looking at the commit itself, it looks safe,
+but it depends what this "extra" data is being used for. From what
+I can see, the commit in question just adds the additional opaque
+data as a member named "extra", and one is left to guess what it's
+use as.
+
+I'd have thought a small structure with named members would have
+been the minimum given our standards for in-kernel code.
+
+Why was the "const" dropped in the first place? Does this "extra"
+member get written to somewhere?
+
+So, sorry, no idea. This looks to me like a very unsatisfactory
+commit, and probably something that got a very poor review.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
