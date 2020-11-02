@@ -2,136 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6E52A348C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE4D2A349F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgKBTup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBTuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:50:10 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A285C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:50:10 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id e7so12026106pfn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k4LTKkpRl0FzdtxEEsZ6XXMq2NyJ1sWqeT5BlT+fbPU=;
-        b=cGuqCduPzEgd/U4CfrmT9i2W6DEOg2+5twTXOeUrVL4q+7FAzIo7NMOf2Xf5RRtLPK
-         ZYXJZXDQQOqS7iPFunDyxoVOU5vQvT0C0bqujtwFlPU58AYjsBF2PuzOczAWy+//0Ygb
-         IMQbxVzkpbvteFRsPtfoI3jbp3YyG5olfxXU39bVkvL9COWFoJPydLezTsDyViuNRiml
-         jmsUlFq/4hrKYkc/+X6cfOsTnvkwD/8092y3EJck1nVMJy3TW9PhMjIuS2hIpbdukJhd
-         2cbJSqLZn17elN/KlXCAbIxKxtiAC7eQ4y3HbS6V8o0EQLN1JhIbxoInRTrPiCjjj+uU
-         KVLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k4LTKkpRl0FzdtxEEsZ6XXMq2NyJ1sWqeT5BlT+fbPU=;
-        b=NmayoHhouRuvSsQO8orL7qw4+1RWfIVtmB6C+KhYdiwYNNsU91DyFnrDfCS5twvlR8
-         bh/hFQL9ncKVenlVTtG8dtmW7XMLpICn+4puTAv8S3XLYGvJI7J8P5IANHRjXDsZ3n2R
-         w9/KPeIxdJy4licKSZY/EHPZWZ++seb2TWi3RJbTB94nrl0LqjVUkrR2weTHhLo6t+fj
-         3QtKwREbxEgvEeq1rtZjISL/ZpjZDrd4xci7bd32mWMJ2MKuz2lTi10OYJAjZdTh/rME
-         oQdGjgIYXFytr1TpArBW0CUfM4gDLj3jxfp5vkAu5zDigalD4ElyPQ6PzpdTMkOIp1t9
-         w92w==
-X-Gm-Message-State: AOAM532541+mBhzOk9W3qz+DCd0xgaeVhNOXoaPmpzfcYdfVxejHofwY
-        ZpDOrlibYWr8gEPt3OK99+7lZg==
-X-Google-Smtp-Source: ABdhPJzFIIBM3l0G072FO0GIJKQVEMcIN1PZ2MbsRhJVPGJSVSVtZm2BtBwakRNn8fePrbXCm0Wqmw==
-X-Received: by 2002:a17:90a:5211:: with SMTP id v17mr18157629pjh.200.1604346609603;
-        Mon, 02 Nov 2020 11:50:09 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id fy13sm284489pjb.10.2020.11.02.11.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 11:50:08 -0800 (PST)
-Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
-To:     Qian Cai <cai@redhat.com>
-Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        oleg@redhat.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <20201101173153.GC9375 () osiris>
- <362e3645e2c0891309c07e244a147f0c32f106da.camel@redhat.com>
- <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
- <d60d24de6b7c9b948333e4e288452fe0a39d2380.camel@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b7b2fa41-fab2-7fd4-f10f-9c352bc9c692@kernel.dk>
-Date:   Mon, 2 Nov 2020 12:50:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727132AbgKBTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:52:51 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:16863 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgKBTus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:50:48 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa063160001>; Tue, 03 Nov 2020 03:50:46 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
+ 2020 19:50:46 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 2 Nov 2020 19:50:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aJwhsk3YNt9UhE/AadufqK3LcYFLro1Fi48Skuo+S1c4OjUs6gMSo//HOYMoCY94glYov5oLkj8xZNWmDAG2OuCe1RRDVzHhxeKiIv7TUlGBVIgQIpXlBKLfvl1qChZK1Y8YQFfjlnS+fwKQQ14SAiM39GzA3ZpAWKmXsGDfmSC/R/7DXdXytIoq5t9tg3QvkuhRLwfR45Z5kI4XQD93rQ9I0Cb0iHooUFk7JuoVrZTCuq+hV1xVO1snvXy6QsSJ0f/G25aZUo8JgCwHtfh8KP1IZbeMO93YWyPKovBB4+WXzkt1dUeZrzvS21G4Xl1YYiLrImyC93Uvd0JWudC0Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KSaAaGRztEdroOPAo+PNLpaF1rW0l3BT+qD7UCXQ3es=;
+ b=EN7kvcc64fyCurXij2J9caMEtqSPqUassHUinzpdUAmUIh7l8mVmFiJtukAFXP9zkiYjnp0i4iAqVs/xyz5v4aHjMDSlWg70DjcZv95nwMQUTI73NMvFotN+Uk6xE7TpHGO7slArDo/bwOmtaAtHje8KA4MqNS+Fw4krmeYxSty6kNb4FZ44PN1pvhQ9xe0UOChk0rB8n8yulRHXq13nmSXoOaXfrv2euOb2uSEHpSjj4Fq1eToLHovEoDOnstXVPAuF1VUA8nOiF2KN1kGRzHAWyS7KVHXvzoPP0NL1RyJRGa5v2OnHqYLaqqGlZiqFwV7BHYdE7Kz2q0Qkfx8HIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3017.namprd12.prod.outlook.com (2603:10b6:5:3e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Mon, 2 Nov
+ 2020 19:50:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 19:50:43 +0000
+Date:   Mon, 2 Nov 2020 15:50:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Meir Lichtinger <meirl@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/2] Extra patches with NDR support
+Message-ID: <20201102195041.GB3726340@nvidia.com>
+References: <20201026133738.1340432-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201026133738.1340432-1-leon@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0131.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <d60d24de6b7c9b948333e4e288452fe0a39d2380.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0131.namprd13.prod.outlook.com (2603:10b6:208:2bb::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Mon, 2 Nov 2020 19:50:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZfqj-00FdPJ-Jh; Mon, 02 Nov 2020 15:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604346646; bh=KSaAaGRztEdroOPAo+PNLpaF1rW0l3BT+qD7UCXQ3es=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=Na+sBhjpBOd3KNKcvfYuZ+aUxLijYcz2MOW3eXvply/da91i0iUQa3aFYx+rtk/N7
+         83QViNMA4OwBdFMBA6ouPVzXs+xaI0jTkUt5I6Isjc/r7n4VtVtXmQ/uqg6VsgA4zc
+         jUyLInLwLMupEOHPw/PifNb337x/4qqKpuXOowvPM8W3FdIFG+Lm0a8roUT1QHUU+k
+         PPYeIIPEyDfsR5ipmtemM3wz2dZGdmNxSo27fy1HCstPOr0oFzm35PSlz8GFfuvO4D
+         DM1zx4QxPsb4tk6yDYM10nVMtwZ7UGoDdnOojlU5dxFfma3o93jTclDSImOWUYW01V
+         an+JtQ23Wz6Rw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 11:58 AM, Qian Cai wrote:
-> On Mon, 2020-11-02 at 10:07 -0700, Jens Axboe wrote:
->> On 11/2/20 9:59 AM, Qian Cai wrote:
->>> On Sun, 2020-11-01 at 17:31 +0000, Heiko Carstens wrote:
->>>> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
->>>>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
->>>>>
->>>>> Cc: linux-s390@vger.kernel.org
->>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>
->>> Even though I did confirm that today's linux-next contains this additional
->>> patch
->>> from Heiko below, a z10 guest is still unable to boot. Reverting the whole
->>> series (reverting only "s390: add support for TIF_NOTIFY_SIGNAL" introduced
->>> compiling errors) fixed the problem, i.e., git revert --no-edit
->>> af0dd809f3d3..7b074c15374c [1]
->>
->> That's odd, it should build fine without that patch. How did it fail for you?
+On Mon, Oct 26, 2020 at 03:37:36PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> In file included from ./arch/s390/include/asm/bug.h:5,
->                  from ./include/linux/bug.h:5,
->                  from ./include/linux/mmdebug.h:5,
->                  from ./include/linux/percpu.h:5,
->                  from ./include/linux/context_tracking_state.h:5,
->                  from ./include/linux/hardirq.h:5,
->                  from ./include/linux/kvm_host.h:7,
->                  from arch/s390/kernel/asm-offsets.c:11:
-> ./include/linux/sched/signal.h: In function ‘signal_pending’:
-> ./include/linux/sched/signal.h:368:39: error: ‘TIF_NOTIFY_SIGNAL’ undeclared
-> (first use in this function); did you mean ‘TIF_NOTIFY_RESUME’?
->   if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
->                                        ^~~~~~~~~~~~~~~~~
-> ./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
->  # define unlikely(x) __builtin_expect(!!(x), 0)
->                                           ^
-> ./include/linux/sched/signal.h:368:39: note: each undeclared identifier is
-> reported only once for each function it appears in
->   if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
->                                        ^~~~~~~~~~~~~~~~~
-> ./include/linux/compiler.h:78:42: note: in definition of macro ‘unlikely’
->  # define unlikely(x) __builtin_expect(!!(x), 0)
->                                           ^
-> make[1]: *** [scripts/Makefile.build:117: arch/s390/kernel/asm-offsets.s] Error
-> 1
-> make: *** [Makefile:1198: prepare0] Error 2
+> Addition to the IPoIB patches https://lore.kernel.org/linux-rdma/20201026132904.1338526-1-leon@kernel.org/T/#u
+> 
+> Thanks
+> 
+> Meir Lichtinger (2):
+>   IB/core: Add support for NDR link speed
+>   IB/mlx5: Add support for NDR link speed
 
-Ah, but that's because later patches assume that TIF_NOTIFY_SIGNAL is
-always there once all archs have been converted. If you just want to back
-out that patch, you'll need to just revert this one:
+Applied to for-next, thanks
 
-commit 82ef6998ed9d488e56bbfbcc2ec9adf62bf78f08
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Fri Oct 9 16:04:39 2020 -0600
-
-    kernel: remove checking for TIF_NOTIFY_SIGNAL
-
-as well and I suspect it should build.
-
--- 
-Jens Axboe
-
+Jason
