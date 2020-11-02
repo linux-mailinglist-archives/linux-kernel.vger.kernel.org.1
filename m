@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937CD2A2398
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBFF2A239B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgKBDi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 22:38:58 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:41944 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727470AbgKBDi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 22:38:58 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kZQgC-00072h-Gs; Mon, 02 Nov 2020 14:38:49 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 02 Nov 2020 14:38:48 +1100
-Date:   Mon, 2 Nov 2020 14:38:48 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Alistair Delva <adelva@google.com>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, kernel-team@android.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: Re: [PATCH] xfrm/compat: Remove use of kmalloc_track_caller
-Message-ID: <20201102033848.GA1861@gondor.apana.org.au>
-References: <20201101220845.2391858-1-adelva@google.com>
+        id S1727716AbgKBDk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 22:40:57 -0500
+Received: from conuserg-08.nifty.com ([210.131.2.75]:56789 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727461AbgKBDk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 22:40:57 -0500
+Received: from grover.RMN.KIBA.LAB.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 0A23e2Gx007813;
+        Mon, 2 Nov 2020 12:40:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 0A23e2Gx007813
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1604288408;
+        bh=gpml3RQZVXbbe4n9D9DZTs3pRYLXmv+1iU0BKpxfrxE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sgRY7l2ZT+Dy/mN7tUQTE57CAath2WYbskYyiUF9CTwvLp8/OzeEdHqcCqidAyVnO
+         T9RadavsgTx5ykiOfQF+PEpuu+YMQRhsA+d0Fjg0k2MCkkmHsbmsbKNWnayERant9m
+         0oM4GhUd9kSdRsd8HhOCHmRnEUhQBlVHxDVarJN3cpPR9hMD8WIe4jbN6DVORyC+1E
+         elCVt7A+4rHZe1lPInJy1JyHvxswqhJjEc3cRAE8ohH8QJuQn89t9JYgxpVBKXUSe7
+         sDWN1JrcKOzqvSxVSxM2DPYmZ/pGMmeXlhTEPUYImEX4pF37VnXLE1gvabwxWOuwXO
+         QdcpCxNlJ7eKw==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Boris Kolpackov <boris@codesynthesis.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kconfig: qconf: show Qt version in the About dialog
+Date:   Mon,  2 Nov 2020 12:40:01 +0900
+Message-Id: <20201102034001.409945-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101220845.2391858-1-adelva@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 02:08:45PM -0800, Alistair Delva wrote:
-> The __kmalloc_track_caller symbol is not exported if SLUB/SLOB are
-> enabled instead of SLAB, which breaks the build on such configs when
-> CONFIG_XFRM_USER_COMPAT=m.
-> 
-> ERROR: "__kmalloc_track_caller" [net/xfrm/xfrm_compat.ko] undefined!
+You can get the Qt version by running "pkg-config --modversion Qt5Core"
+or something, but this might be useful to get the runtime Qt version
+more easily. Go to the menu "Help" -> "About", then you can see it.
 
-Is this with a recent kernel? Because they should be exported:
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-commit fd7cb5753ef49964ea9db5121c3fc9a4ec21ed8e
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon Mar 23 15:49:00 2020 +0100
+ scripts/kconfig/qconf.cc | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-    mm/sl[uo]b: export __kmalloc_track(_node)_caller
-
-Cheers,
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index cbe749b44b1a..d000869b787c 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -1799,10 +1799,13 @@ void ConfigMainWindow::showIntro(void)
+ void ConfigMainWindow::showAbout(void)
+ {
+ 	static const QString str = "qconf is Copyright (C) 2002 Roman Zippel <zippel@linux-m68k.org>.\n"
+-		"Copyright (C) 2015 Boris Barbulovski <bbarbulovski@gmail.com>.\n\n"
+-		"Bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n";
++		"Copyright (C) 2015 Boris Barbulovski <bbarbulovski@gmail.com>.\n"
++		"\n"
++		"Bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n"
++		"\n"
++		"Qt Version: ";
+ 
+-	QMessageBox::information(this, "qconf", str);
++	QMessageBox::information(this, "qconf", str + qVersion());
+ }
+ 
+ void ConfigMainWindow::saveSettings(void)
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
