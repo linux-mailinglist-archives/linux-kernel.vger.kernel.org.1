@@ -2,65 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464252A3344
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529E12A3353
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgKBSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:47:29 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:39664 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgKBSr3 (ORCPT
+        id S1726104AbgKBSv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:51:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgKBSv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:47:29 -0500
-Received: by mail-wr1-f52.google.com with SMTP id y12so15813580wrp.6;
-        Mon, 02 Nov 2020 10:47:28 -0800 (PST)
+        Mon, 2 Nov 2020 13:51:29 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFBDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:51:28 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id r7so12456944qkf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:51:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rxilry/ji3nfiO3JLB2z5Ve/eVy0zWt8AyEvNUngD2c=;
+        b=dKtG6LmAlh3COooqJe2opsc1vsdAPado7jNhzT70IvKawfZtenI/Woq5VZgoB0+zZ1
+         m6OKk6LlKYnTnR6JxLDAm7d42kdgHj268lvzUjwxWfTYn5ds2bZAC9IgCf0sbhuiKKyl
+         HxSiwHd5jFd/3DD72IanvqHDuEWCb2grAqguE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dg9EShpcKxlJPUbHT3kMYzrq5qz/PbL6jzwabolFfdE=;
-        b=Q/CL0Bna3yDS4ec/bnOLBVuysYvFtYmZZ6KIdJKr0+FyPSEnUMRcJcfvJujm6KHUHI
-         8Uighjhj5WHpR6Tfvno6+ACkAkBq161GqXHn8GeNADxn17AMqJu65iMkhuZ54lwzDvw0
-         Z+GX5a2A1C5S0Yv7anaNjeL33e1eMF3DHofbkR6FDZiM/KNSOiJOXRcSvZePFh1RSwNP
-         PkojqDO93PJYnm3cxQxaMy5TnLY/Yc3hbPUTkvM6SDl1NjWtG9TSOAnRoVxVJJbyJI3J
-         FvYkZ++w+mRhvZELUNNC8ggejMUkZkhAkclFyo3tQtqAJJ1kGHjCZFnmqRQootahhnTN
-         cRCg==
-X-Gm-Message-State: AOAM532BPkEgqrovYcfvzbD19UjVhqmIB4CgF73SjhghvEqL1BzHy/0D
-        vGFYJCrH4u9KN/z8LB2IDFI=
-X-Google-Smtp-Source: ABdhPJx5OKI4gIWQavh/Pw9YDmD4VTnBOTxroFyG0YjMx+yynudJQufTDn1TfqH6w2QLdcroPqiNuA==
-X-Received: by 2002:a5d:56d0:: with SMTP id m16mr21286309wrw.120.1604342847708;
-        Mon, 02 Nov 2020 10:47:27 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y206sm362603wmd.34.2020.11.02.10.47.25
+        bh=Rxilry/ji3nfiO3JLB2z5Ve/eVy0zWt8AyEvNUngD2c=;
+        b=Q+TucLtMquXNTAFhK03+d9NkvM5IdZ6s1J5o1QtoI3F1H/EpRHJmG0zp5QXDyTtzTy
+         8iFWQel06rFUZrZV2QHtBCVGCPrFFClaK1Yo1G6AYapbbe5qvRyuGi7jTfoxmoIs73l1
+         6AUOgXkSJe3m7AjZ5Vz9EskS91/jKnljnMbPJfDK64D15jaT4gzKINSZweAI3lmUSbHL
+         OywQUSzvJc9Sf2YEnDit0YNAu/I9+0/4NFHsFi0Amo6Fz9fqnSW9BEoi5pQ+lNe4b4bE
+         jH6bfSRW6qrLGdEXB8ge6FUFM46PQPDnyFy9PHuWRXeUfpT8HWhxTagxH7Ai+pKU1nTb
+         ml9w==
+X-Gm-Message-State: AOAM53030CVHVn7DR1/LNF/IS724wSpdGhpeKl4Sg1XkBkw738W9UFR3
+        xpqj4ZQrvrFxoS+xSCS6+XenWw==
+X-Google-Smtp-Source: ABdhPJzV3CsOTGlK/Pijavy7T/2537LjiZA3HhuqFIwRJyt8vCTUlZuhQJM8aH8pir7Z8yJb9pi6Qg==
+X-Received: by 2002:a37:9a46:: with SMTP id c67mr16146337qke.292.1604343087896;
+        Mon, 02 Nov 2020 10:51:27 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id x22sm8543868qki.104.2020.11.02.10.51.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:47:26 -0800 (PST)
-Date:   Mon, 2 Nov 2020 19:47:24 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     trix@redhat.com
-Cc:     kgene@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: samsung: remove unneeded semicolon
-Message-ID: <20201102184724.GA13405@kozik-lap>
-References: <20201101152844.2290728-1-trix@redhat.com>
+        Mon, 02 Nov 2020 10:51:27 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:51:26 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
+Message-ID: <20201102185126.GB595952@google.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-2-mjeanson@efficios.com>
+ <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
+ <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201101152844.2290728-1-trix@redhat.com>
+In-Reply-To: <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 07:28:44AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Tue, Oct 27, 2020 at 09:37:08AM -0400, Mathieu Desnoyers wrote:
 > 
-> A semicolon is not needed after a switch statement.
+> ----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/soc/samsung/exynos5422-asv.c | 2 +-
+> > On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
+> >> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+> >> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
+> >>  	do {								\
+> >>  		struct tracepoint_func *it_func_ptr;			\
+> >>  		void *it_func;						\
+> >>  		void *__data;						\
+> >>  		int __maybe_unused __idx = 0;				\
+> >> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
+> >>  									\
+> >>  		if (!(cond))						\
+> >>  			return;						\
+> >> @@ -170,8 +178,13 @@ static inline struct tracepoint
+> >> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> >>  		/* srcu can't be used from NMI */			\
+> >>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
+> >>  									\
+> >> -		/* keep srcu and sched-rcu usage consistent */		\
+> >> -		preempt_disable_notrace();				\
+> >> +		if (maysleep) {						\
+> >> +			might_sleep();					\
+> > 
+> > The main purpose of the patch set is to access user memory in tracepoints,
+> > right?
+> 
+> Yes, exactly.
+> 
+> > In such case I suggest to use stronger might_fault() here.
+> > We used might_sleep() in sleepable bpf and it wasn't enough to catch
+> > a combination where sleepable hook was invoked while mm->mmap_lock was
+> > taken which may cause a deadlock.
+> 
+> Good point! We will do that for the next round.
+> 
+> By the way, we named this "sleepable" tracepoint (with flag TRACEPOINT_MAYSLEEP),
+> but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive ?
+> (a "faultable" tracepoint sounds weird though)
 
-Thanks, applied.
+What about keeping it might_sleep() here and then adding might_fault() in the
+probe handler? Since the probe handler knows that it may cause page fault, it
+could itself make sure about it.
 
-Best regards,
-Krzysztof
+One more thought: Should we make _all_ tracepoints sleepable, and then move
+the preempt_disable() bit to the probe handler as needed? That could simplify
+the tracepoint API as well. Steven said before that whoever registers probes
+knows what they are doing so I am ok with that.
 
+No strong feelings one way or the other, for either of these though.
+
+thanks,
+
+ - Joel
+
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> > 
+> >> +			rcu_read_lock_trace();				\
+> >> +		} else {						\
+> >> +			/* keep srcu and sched-rcu usage consistent */	\
+> >> +			preempt_disable_notrace();			\
+> > > +		}							\
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
