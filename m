@@ -2,447 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B772A3568
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390C52A354C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgKBUv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:51:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
+        id S1726536AbgKBUmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgKBUnX (ORCPT
+        with ESMTP id S1725940AbgKBUmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:43:23 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023D8C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:43:23 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id da2so4569021qvb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AbDs2dN7Jt+QRKOoiLVySZllhw2KT6caTbaTcp411x0=;
-        b=wu4XRdNeKLEAXc9VQrMkvhLH9oxsd2GWT4gnPF+3zM+YhzTFgFAxZutNDHrRF3XSGr
-         GN1q5got/QTqcYfUDDnTQUYnVMp8TzeVmGr2IVq5BelimKn7vMynjggyMCrl5U75xc7Z
-         6zWmec8kkvuPH3RdMBlHIMSAKwMfH90paC4+FCWOFR9R0aMs8sym9UEnntpxi2kyIOzY
-         WwagFQ6+Q3q0L2NCwsF31Vbe3m8zHux7mrRC/uIg/rhSIH62mCj6inPWVhBRaftxcjKA
-         DywmbMlLj6b73xK1/9/ZAR8a0hbuQa/QhoKW9teHTa1kLgRUA9vMQyZF5M+mMQHswx1u
-         NtAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AbDs2dN7Jt+QRKOoiLVySZllhw2KT6caTbaTcp411x0=;
-        b=Z1c9QzFPTARh7iehDKK0uVtN8CD9p0cyKHbNxxpGjzdSNFNm+B/E98myLPIyc80UGx
-         pBiZ8erSTzMvUH1qEWT0dBh5qd72Pk4QOhfFTa1HT1LKfdy3mBhn2BvqPJbGn1iRw5QS
-         0WAuzDNs3U48uQSPT30PL6HKTYw/l4j90WOf+8kKxLMDdWu6/7Iz6zmHvPQKRKyv4JP6
-         3rNh8Ca0nJMfWFAiY3jOU3T2HI6inyK92zPF2oKnjmPVHaqgQASUa9FlLECv3CVhVtqW
-         xKZijZLtipyP1u5NRCblyNYLWbE9jPFHSH7I9hQY+tQ+Sww4JR0e4glmcc4yQm4Jr9us
-         ouhw==
-X-Gm-Message-State: AOAM530lnGhNhGpEmEb/PJdEqnLnnfhvAYvjphxt8NS1FDuc/ULnfGnm
-        kwU6G5eI/OQOhNWsGZN4iA5CcJ/2XO+pFA==
-X-Google-Smtp-Source: ABdhPJxZ0/4PDGxqrlvdw+buMsc4rlvHucnM8pqZGHeil05NxW2oOxP7mYZrhOyS4awq7QGIgUvMfA==
-X-Received: by 2002:ad4:44b3:: with SMTP id n19mr24015626qvt.39.1604349802186;
-        Mon, 02 Nov 2020 12:43:22 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:2f6e])
-        by smtp.gmail.com with ESMTPSA id j10sm8562102qtn.46.2020.11.02.12.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 12:43:21 -0800 (PST)
-Date:   Mon, 2 Nov 2020 15:41:36 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>
-Subject: Re: [PATCH v20 18/20] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20201102204136.GB740958@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-19-git-send-email-alex.shi@linux.alibaba.com>
- <ef279dfe-afa5-45cb-4013-6c34169ff55e@linux.alibaba.com>
+        Mon, 2 Nov 2020 15:42:03 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B71C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ZNSdlUO+BdQE/AgESRHfidZ2756QotpLAzXef4JePuo=; b=Y1STMur+V2jlefJWeRKuMf2MaV
+        jUGCm4/scCsftVDErOePAMSnumzRhp4BOcVMdiELdHIiwD5EKSVuncAqm1vhWPhmVxHV5EZw4twwK
+        aqYzeEdzs8hKguZHtvLBoKVBTn1PIAK91Suq92sbuP3Bg9slgatHCqszDN20bYQhCKbTYFMSYcvu5
+        NG/i0Zc3vvAKgLmBe0Kt3L2+24kO9/1TIFm6/v0JW3Uiq1os8xCq2Z/8U1nayo3RSAsWkaYqrGi9y
+        +D0m/safeWJjC70dQopyeAKVq+3aWbH5A8lQX6BmEDSYPlIRUUSgPgyskY8SIAWS4Z+IAwmyjEYwR
+        XYrMAiHg==;
+Received: from [2601:1c0:6280:3f0::60d5]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZgeM-0000El-8Z; Mon, 02 Nov 2020 20:41:58 +0000
+Subject: Re: Linux 5.10-rc2 (docs build)
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <CAHk-=wiGc62spBHh+i1yH9sVLpCqZBznUF8QdO7H5772qO1xqQ@mail.gmail.com>
+ <ff1301ed-6040-3aac-c057-7f37184604d3@infradead.org>
+ <20201102085841.5490f6da@coco.lan> <20201102093305.34ba4ff5@coco.lan>
+ <d9b5a400-0dbb-3be8-66f2-f629ffe4a6b8@infradead.org>
+ <20201102175922.4ed74e7a@coco.lan>
+ <4a538b19-2bfd-5c7c-047c-7ed4292b89c8@infradead.org>
+ <20201102213532.4d0706c4@coco.lan>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fccc0ef0-e96a-0e0d-69d9-f72f6a31a201@infradead.org>
+Date:   Mon, 2 Nov 2020 12:41:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef279dfe-afa5-45cb-4013-6c34169ff55e@linux.alibaba.com>
+In-Reply-To: <20201102213532.4d0706c4@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:49:41AM +0800, Alex Shi wrote:
+On 11/2/20 12:35 PM, Mauro Carvalho Chehab wrote:
+> Em Mon, 2 Nov 2020 11:23:25 -0800
+> Randy Dunlap <rdunlap@infradead.org> escreveu:
 > 
+>> On 11/2/20 8:59 AM, Mauro Carvalho Chehab wrote:
+>>> Em Mon, 2 Nov 2020 08:02:34 -0800
+>>> Randy Dunlap <rdunlap@infradead.org> escreveu:
+>>>   
+>>>> On 11/2/20 12:33 AM, Mauro Carvalho Chehab wrote:  
+>>>>> Em Mon, 2 Nov 2020 08:58:41 +0100
+>>>>> Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
+>>>>>     
+>>>>>> Hi Randy,
+>>>>>>
+>>>>>> Em Sun, 1 Nov 2020 16:01:54 -0800
+>>>>>> Randy Dunlap <rdunlap@infradead.org> escreveu:
+>>>>>>    
+>>>>>>> Something broke the docs build (SEVERE):
+>>>>>>>
+>>>>>>>
+>>>>>>> Sphinx parallel build error:
+>>>>>>> docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-bus-rapidio:2: (SEVERE/4) Title level inconsistent:
+>>>>>>>
+>>>>>>> Attributes Common for All RapidIO Devices
+>>>>>>> -----------------------------------------
+>>>>>>>
+>>>>>>>    
+>>>>>>
+>>>>>> On what tree did you notice this? Linux-next or upstream?    
+>>>>
+>>>> See $Subject:  5.10-rc2
+>>>>
+>>>>  
+>>>>> Also: on what Sphinx version are you getting it? I'm not
+>>>>> able to reproduce the issue here, neither with Sphinx 2.4.4
+>>>>> nor with Sphinx 3.2.1.    
+>>>>
+>>>> That could be one source of the problem:  ;)
+>>>>
+>>>> from my docs build:
+>>>>
+>>>> Sphinx version: 1.7.6
+>>>> Warning: It is recommended at least Sphinx version 1.7.9.
+>>>>          If you want pdf, you need at least 2.4.4.  
+>>>
+>>> Could be... From 1.7.6 to 1.7.9, there were bug fixes ;-)
+>>>
+>>> Also, on Sphinx, they stop maintaining old versions once newer
+>>> stable ones are launched. So, any bug on 1.7.x (up to 3.2.x) will
+>>> remain unfixed[1].
+>>>
+>>> In any case, could you please check if this patch solves the
+>>> issue?
+>>>
+>>> 	https://lore.kernel.org/lkml/6c62ef5c01d39dee8d891f8390c816d2a889670a.1604312590.git.mchehab+huawei@kernel.org/  
+>>
+>> Nope, sorry, with that patch applied to v5.10-rc2, I get:
+>>
+>> reading sources... [ 93%] userspace-api/media/v4l/pixfmt-y8i .. userspace-api/media/v4l/vidioc-querybuf
+>> reading sources... [ 96%] userspace-api/media/v4l/vidioc-querycap .. vm/transhuge
+>> reading sources... [100%] vm/unevictable-lru .. xtensa/mmu
+>>
+>> waiting for workers...
+>>
+>> {hangs; enter ^C}
+>>
+>> Sphinx parallel build error:
+>> docutils.utils.SystemMessage: /home/rdunlap/lnx/lnx-510-rc2/Documentation/ABI/testing/sysfs-class-led-trigger-pattern.orig:16: (SEVERE/4) Unexpected section title.
 > 
-> patch changed since variable renaming in 04th patch:
+> Hmm...
+> 	sysfs-class-led-trigger-pattern.orig
 > 
-> From e892e74a35c27e69bebb73d2e4cff54e438f8d7d Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Tue, 18 Aug 2020 16:44:21 +0800
-> Subject: [PATCH v21 18/20] mm/lru: replace pgdat lru_lock with lruvec lock
-> 
-> This patch moves per node lru_lock into lruvec, thus bring a lru_lock for
-> each of memcg per node. So on a large machine, each of memcg don't
-> have to suffer from per node pgdat->lru_lock competition. They could go
-> fast with their self lru_lock.
-> 
-> After move memcg charge before lru inserting, page isolation could
-> serialize page's memcg, then per memcg lruvec lock is stable and could
-> replace per node lru lock.
-> 
-> In func isolate_migratepages_block, compact_unlock_should_abort and
-> lock_page_lruvec_irqsave are open coded to work with compact_control.
-> Also add a debug func in locking which may give some clues if there are
-> sth out of hands.
-> 
-> Daniel Jordan's testing show 62% improvement on modified readtwice case
-> on his 2P * 10 core * 2 HT broadwell box.
-> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
-> 
-> On a large machine with memcg enabled but not used, the page's lruvec
-> seeking pass a few pointers, that may lead to lru_lock holding time
-> increase and a bit regression.
-> 
-> Hugh Dickins helped on the patch polish, thanks!
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Rong Chen <rong.a.chen@intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: cgroups@vger.kernel.org
-> ---
->  include/linux/memcontrol.h |  58 +++++++++++++++++++++++++
->  include/linux/mmzone.h     |   3 +-
->  mm/compaction.c            |  56 +++++++++++++++---------
->  mm/huge_memory.c           |  11 ++---
->  mm/memcontrol.c            |  62 ++++++++++++++++++++++++--
->  mm/mlock.c                 |  22 +++++++---
->  mm/mmzone.c                |   1 +
->  mm/page_alloc.c            |   1 -
->  mm/swap.c                  | 105 +++++++++++++++++++++------------------------
->  mm/vmscan.c                |  55 +++++++++++-------------
->  10 files changed, 249 insertions(+), 125 deletions(-)
+> That doesn't sound right! It seems you have a backup of an old file
+> there ;-)
 
-This came out really well. Thanks for persisting!
+Ha! I didn't even notice that.  :(
 
-A few inline comments:
+Anyway, it's not illegal to have such files, so Documentation builds
+should ignore them (IMO).
 
-> @@ -1367,6 +1380,51 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
->  	return lruvec;
->  }
->  
-> +struct lruvec *lock_page_lruvec(struct page *page)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock(&lruvec->lru_lock);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
-> +
-> +struct lruvec *lock_page_lruvec_irq(struct page *page)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock_irq(&lruvec->lru_lock);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
-> +
-> +struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock_irqsave(&lruvec->lru_lock, *flags);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
 
-As these are used quite widely throughout the VM code now, it would be
-good to give them kerneldoc comments that explain the interface.
-
-In particular, I think it's necessary to explain the contexts from
-which this is safe to use (in particular wrt pages moving between
-memcgs - see the comment in commit_charge()).
-
-I'm going to go through the callsites that follow and try to identify
-what makes them safe. It's mostly an exercise to double check our
-thinking here.
-
-Most of them are straight-forward, and I don't think they warrant
-individual comments. But some do, IMO. And it appears at least one
-actually isn't safe yet:
-
-> @@ -277,10 +277,16 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
->  			 * so we can spare the get_page() here.
->  			 */
->  			if (TestClearPageLRU(page)) {
-> -				struct lruvec *lruvec;
-> +				struct lruvec *new_lruvec;
-> +
-> +				new_lruvec = mem_cgroup_page_lruvec(page,
-> +						page_pgdat(page));
-> +				if (new_lruvec != lruvec) {
-> +					if (lruvec)
-> +						unlock_page_lruvec_irq(lruvec);
-> +					lruvec = lock_page_lruvec_irq(page);
-
-This is safe because PageLRU has been cleared.
-
-> @@ -79,16 +79,14 @@ static DEFINE_PER_CPU(struct lru_pvecs, lru_pvecs) = {
->  static void __page_cache_release(struct page *page)
->  {
->  	if (PageLRU(page)) {
-> -		pg_data_t *pgdat = page_pgdat(page);
->  		struct lruvec *lruvec;
->  		unsigned long flags;
->  
-> -		spin_lock_irqsave(&pgdat->lru_lock, flags);
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		lruvec = lock_page_lruvec_irqsave(page, &flags);
->  		VM_BUG_ON_PAGE(!PageLRU(page), page);
->  		__ClearPageLRU(page);
->  		del_page_from_lru_list(page, lruvec, page_off_lru(page));
-> -		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +		unlock_page_lruvec_irqrestore(lruvec, flags);
-
-This is safe because the page refcount is 0.
-
-> @@ -207,32 +205,30 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
->  	void (*move_fn)(struct page *page, struct lruvec *lruvec))
->  {
->  	int i;
-> -	struct pglist_data *pgdat = NULL;
-> -	struct lruvec *lruvec;
-> +	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
->  
->  	for (i = 0; i < pagevec_count(pvec); i++) {
->  		struct page *page = pvec->pages[i];
-> -		struct pglist_data *pagepgdat = page_pgdat(page);
 > -
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irqsave(&pgdat->lru_lock, flags);
-> -		}
-> +		struct lruvec *new_lruvec;
->  
->  		/* block memcg migration during page moving between lru */
->  		if (!TestClearPageLRU(page))
->  			continue;
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +			lruvec = lock_page_lruvec_irqsave(page, &flags);
+> 
+> In order to double-check, I tested it here with:
+> 
+> 	$ /usr/bin/python3 -m venv sphinx_1.7.6
+> 	$ pip install docutils sphinx_rtd_theme Sphinx==1.7.6
+> 	$ pip install docutils==0.15 sphinx_rtd_theme Sphinx==1.7.6
+> 
+> 
+> And then built the docs with:
+> 
+> 	$ time make O="sphinx1.7" SPHINXOPTS="-w new_warnings --no-color" cleandocs htmldocs
+> 
+> Everything build fine (except for a huge amount of warnings that seem
+> to indicate some bug at the cross-reference logic with 1.7.6).
 
-This is safe because PageLRU has been cleared.
+OK, I'll wait to see how things are in -rc2 or so.
 
-> @@ -274,9 +270,8 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
->  {
->  	do {
->  		unsigned long lrusize;
-> -		struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  
-> -		spin_lock_irq(&pgdat->lru_lock);
-> +		spin_lock_irq(&lruvec->lru_lock);
->  		/* Record cost event */
->  		if (file)
->  			lruvec->file_cost += nr_pages;
-> @@ -300,7 +295,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
->  			lruvec->file_cost /= 2;
->  			lruvec->anon_cost /= 2;
->  		}
-> -		spin_unlock_irq(&pgdat->lru_lock);
-> +		spin_unlock_irq(&lruvec->lru_lock);
->  	} while ((lruvec = parent_lruvec(lruvec)));
->  }
+thanks.
+-- 
+~Randy
 
-This is safe because it either comes from
-
-	1) the pinned lruvec in reclaim, or
-
-	2) from a pre-LRU page during refault (which also holds the
-	   rcu lock, so would be safe even if the page was on the LRU
-	   and could move simultaneously to a new lruvec).
-
-The second one seems a bit tricky. It could be good to add a comment
-to lru_note_cost_page() that explains why its mem_cgroup_page_lruvec()
-is safe.
-
-> @@ -364,13 +359,13 @@ static inline void activate_page_drain(int cpu)
->  
->  static void activate_page(struct page *page)
->  {
-> -	pg_data_t *pgdat = page_pgdat(page);
-> +	struct lruvec *lruvec;
->  
->  	page = compound_head(page);
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	lruvec = lock_page_lruvec_irq(page);
-
-I don't see what makes this safe. There is nothing that appears to
-lock out a concurrent page move between memcgs/lruvecs, which means
-the following could manipulate an unlocked lru list:
-
->  	if (PageLRU(page))
-> -		__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +		__activate_page(page, lruvec);
-> +	unlock_page_lruvec_irq(lruvec);
->  }
->  #endif
-
-Shouldn't this be something like this?
-
-	if (TestClearPageLRU()) {
-		lruvec = lock_page_lruvec_irq(page);
-		__activate_page(page, lruvec);
-		unlock_page_lruvec_irq(lruvec);
-		SetPageLRU(page);
-	}
-
-> @@ -904,27 +897,27 @@ void release_pages(struct page **pages, int nr)
->  			continue;
->  
->  		if (PageCompound(page)) {
-> -			if (locked_pgdat) {
-> -				spin_unlock_irqrestore(&locked_pgdat->lru_lock, flags);
-> -				locked_pgdat = NULL;
-> +			if (lruvec) {
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +				lruvec = NULL;
->  			}
->  			__put_compound_page(page);
->  			continue;
->  		}
->  
->  		if (PageLRU(page)) {
-> -			struct pglist_data *pgdat = page_pgdat(page);
-> +			struct lruvec *new_lruvec;
->  
-> -			if (pgdat != locked_pgdat) {
-> -				if (locked_pgdat)
-> -					spin_unlock_irqrestore(&locked_pgdat->lru_lock,
-> +			new_lruvec = mem_cgroup_page_lruvec(page,
-> +							page_pgdat(page));
-> +			if (new_lruvec != lruvec) {
-> +				if (lruvec)
-> +					unlock_page_lruvec_irqrestore(lruvec,
->  									flags);
->  				lock_batch = 0;
-> -				locked_pgdat = pgdat;
-> -				spin_lock_irqsave(&locked_pgdat->lru_lock, flags);
-> +				lruvec = lock_page_lruvec_irqsave(page, &flags);
-
-Safe because page refcount=0.
-
-> @@ -1023,26 +1016,24 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->  void __pagevec_lru_add(struct pagevec *pvec)
->  {
->  	int i;
-> -	struct pglist_data *pgdat = NULL;
-> -	struct lruvec *lruvec;
-> +	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
->  
->  	for (i = 0; i < pagevec_count(pvec); i++) {
->  		struct page *page = pvec->pages[i];
-> -		struct pglist_data *pagepgdat = page_pgdat(page);
-> +		struct lruvec *new_lruvec;
->  
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irqsave(&pgdat->lru_lock, flags);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +			lruvec = lock_page_lruvec_irqsave(page, &flags);
-
-Safe because PageLRU hasn't been set yet.
-
-> @@ -1765,14 +1765,12 @@ int isolate_lru_page(struct page *page)
->  	WARN_RATELIMIT(PageTail(page), "trying to isolate tail page");
->  
->  	if (TestClearPageLRU(page)) {
-> -		pg_data_t *pgdat = page_pgdat(page);
->  		struct lruvec *lruvec;
->  
->  		get_page(page);
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> -		spin_lock_irq(&pgdat->lru_lock);
-> +		lruvec = lock_page_lruvec_irq(page);
-
-Safe because PageLRU is cleared.
-
-> @@ -1839,7 +1837,6 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
->  static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  						     struct list_head *list)
->  {
-> -	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	int nr_pages, nr_moved = 0;
->  	LIST_HEAD(pages_to_free);
->  	struct page *page;
-> @@ -1850,9 +1847,9 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		VM_BUG_ON_PAGE(PageLRU(page), page);
->  		list_del(&page->lru);
->  		if (unlikely(!page_evictable(page))) {
-> -			spin_unlock_irq(&pgdat->lru_lock);
-> +			spin_unlock_irq(&lruvec->lru_lock);
-
-[snipped all the reclaim lock sites as they start with lruvec]
-
-> @@ -4289,13 +4285,12 @@ void check_move_unevictable_pages(struct pagevec *pvec)
->  		if (!TestClearPageLRU(page))
->  			continue;
->  
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irq(&pgdat->lru_lock);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irq(&pgdat->lru_lock);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irq(lruvec);
-> +			lruvec = lock_page_lruvec_irq(page);
-
-Safe because PageLRU is clear.
