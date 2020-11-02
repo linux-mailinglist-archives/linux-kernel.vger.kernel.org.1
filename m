@@ -2,270 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F328C2A35A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A582A359E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbgKBU6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:58:08 -0500
-Received: from mg.ssi.bg ([178.16.128.9]:34594 "EHLO mg.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbgKBU4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:56:24 -0500
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id 9129C226C5;
-        Mon,  2 Nov 2020 22:56:21 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
-        by mg.ssi.bg (Proxmox) with ESMTP id E7A1C226C0;
-        Mon,  2 Nov 2020 22:56:19 +0200 (EET)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id C774E3C09BA;
-        Mon,  2 Nov 2020 22:56:18 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 0A2KuEs6007809;
-        Mon, 2 Nov 2020 22:56:16 +0200
-Date:   Mon, 2 Nov 2020 22:56:14 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Cezar Sa Espinola <cezarsa@gmail.com>
-cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>
-Subject: Re: [PATCH RFC] ipvs: add genetlink cmd to dump all services and
- destinations
-In-Reply-To: <20201030202727.1053534-1-cezarsa@gmail.com>
-Message-ID: <9140ef65-f76d-4bf1-b211-e88c101a5461@ssi.bg>
-References: <20201030202727.1053534-1-cezarsa@gmail.com>
+        id S1726342AbgKBU6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgKBU5T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 15:57:19 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C67C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:57:19 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f38so11840795pgm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=N5pMn8uY9KjhkQw9GAL9dYuLKsypXjK6hMGajbqAfFk=;
+        b=V2rP72p0areoWEBA+BVUgHwnwzMu30qtnBjXGJBo5T06iZUVtZZ3Ol1VriTMdBbwKe
+         A3cE78GaEllijmqJvZpxFs0s3EkemzGAyMc+gf3XbKiVqHeB+D8r/Lrrfpkjr3nLTnm0
+         39axcYLuwKR8ajm+OnifglWPr15SEjdxxV1wk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=N5pMn8uY9KjhkQw9GAL9dYuLKsypXjK6hMGajbqAfFk=;
+        b=TxqIuJIfmH0e/1wFgv8NnpCQSOaegJTRFynpl257p/QprV5ORYcijZvAOF0HAwHYsd
+         LwzX1S2LSGe7U0fwLGt9CVW3zFHZ7dD9c/b5Fx32Hd4M5tr/q+ZngPKkjhH5jIzJdHYF
+         8spOTSIeQxcdXKQkROpMEOrTIm9rhwiAi9GTmdcwYV11WlfG28pZ2Qp0REeUSoCJui4c
+         D2vlOy2b6hcJLF5GmFidZAt8j2zC/kvA/tjhScdUXr7XSz4wnMFcKtHEaAXNbaZUczYE
+         +3fAaWBpu5hslA+oZpYVeNP0ZGDOuaQVHeG1dXcEw6bAhQyYYwdPAh05x0iFEHeO+X8r
+         FaHg==
+X-Gm-Message-State: AOAM531dtG31h8xw08S5DkQQtOR2eDkEppRmqK3ljM5ejSs3brM/VHSr
+        pUeD0vBq+N/Y3CUBfue6dx6VxQ==
+X-Google-Smtp-Source: ABdhPJxdxkJSK4ZxFxzY/iQS0ILOjNZ9PrkofiyeQ35qAF2NxZKvQYvSxaPklRKJ0ehuQGqDW3Siyg==
+X-Received: by 2002:a63:9d8d:: with SMTP id i135mr759867pgd.213.1604350638383;
+        Mon, 02 Nov 2020 12:57:18 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id 136sm14917277pfa.132.2020.11.02.12.57.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 12:57:17 -0800 (PST)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        james.quinlan@broadcom.com,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1] PCI: brcmstb: variable is missing proper initialization
+Date:   Mon,  2 Nov 2020 15:57:12 -0500
+Message-Id: <20201102205712.23332-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000eb2f9205b325fd2d"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000eb2f9205b325fd2d
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-	Hello,
+The variable 'tmp' is used multiple times in the brcm_pcie_setup()
+function.  One such usage did not initialize 'tmp' to the current value of
+the target register.  By luck the mistake does not currently affect
+behavior;  regardless 'tmp' is now initialized properly.
 
-On Fri, 30 Oct 2020, Cezar Sa Espinola wrote:
+Fixes: c0452137034b ("PCI: brcmstb: Add Broadcom STB PCIe host controller driver")
+Suggested-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+---
+ drivers/pci/controller/pcie-brcmstb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> A common operation for userspace applications managing ipvs is to dump
-> all services and all destinations and then sort out what needs to be
-> done. Previously this could only be accomplished by issuing 1 netlink
-> IPVS_CMD_GET_SERVICE dump command followed by N IPVS_CMD_GET_DEST dump
-> commands. For a dynamic system with a very large number of services this
-> could be cause a performance impact.
-> 
-> This patch introduces a new way of dumping all services and destinations
-> with the new IPVS_CMD_GET_SERVICE_DEST command. A dump call for this
-> command will send the services as IPVS_CMD_NEW_SERVICE messages
-> imediatelly followed by its destinations as multiple IPVS_CMD_NEW_DEST
-> messages. It's also possible to dump a single service and its
-> destinations by sending a IPVS_CMD_ATTR_SERVICE argument to the dump
-> command.
-> 
-> Signed-off-by: Cezar Sa Espinola <cezarsa@gmail.com>
-> ---
-> 
-> To ensure that this patch improves performance I decided to also patch
-> ipvsadm in order to run some benchmarks comparing 'ipvsadm -Sn' with the
-> unpatched version. The ipvsadm patch is available on github in [1] for
-> now but I intend to submit it if this RFC goes forward.
-> 
-> The benchmarks look nice and detailed results and some scripts to allow
-> reproducing then are available in another github repository [2]. The
-> summary of the benchmarks is:
-> 
-> svcs  | dsts | run time compared to unpatched
-> ----- | ---- | ------------------------------
->  1000 |    4 | -60.63%
->  2000 |    2 | -71.10%
->  8000 |    2 | -52.83%
-> 16000 |    1 | -54.13%
->   100 |  100 |  -4.76%
-> 
-> [1] - https://github.com/cezarsa/ipvsadm/compare/master...dump-svc-ds
-> [2] - https://github.com/cezarsa/ipvsadm-validate#benchmark-results
-> 
->  include/uapi/linux/ip_vs.h     |   2 +
->  net/netfilter/ipvs/ip_vs_ctl.c | 109 +++++++++++++++++++++++++++++++++
->  2 files changed, 111 insertions(+)
-> 
-> diff --git a/include/uapi/linux/ip_vs.h b/include/uapi/linux/ip_vs.h
-> index 4102ddcb4e14..353548cb7b81 100644
-> --- a/include/uapi/linux/ip_vs.h
-> +++ b/include/uapi/linux/ip_vs.h
-> @@ -331,6 +331,8 @@ enum {
->  	IPVS_CMD_ZERO,			/* zero all counters and stats */
->  	IPVS_CMD_FLUSH,			/* flush services and dests */
->  
-> +	IPVS_CMD_GET_SERVICE_DEST,	/* get service and destination info */
-> +
->  	__IPVS_CMD_MAX,
->  };
->  
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index e279ded4e306..09a7dd823dc0 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -3396,6 +3396,109 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
->  	return skb->len;
->  }
->  
-> +struct dump_services_dests_ctx {
-> +	struct ip_vs_service	*last_svc;
-> +	int			idx_svc;
-> +	int			idx_dest;
-> +	int			start_svc;
-> +	int			start_dest;
-> +};
-> +
-> +static int ip_vs_genl_dump_service_destinations(struct sk_buff *skb,
-> +						struct netlink_callback *cb,
-> +						struct ip_vs_service *svc,
-> +						struct dump_services_dests_ctx *ctx)
-> +{
-> +	struct ip_vs_dest *dest;
-> +
-> +	if (++ctx->idx_svc < ctx->start_svc)
-> +		return 0;
-> +
-> +	if (ctx->idx_svc == ctx->start_svc && ctx->last_svc != svc)
-> +		return 0;
-> +
-> +	if (ctx->idx_svc > ctx->start_svc) {
-> +		if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
-> +			ctx->idx_svc--;
-> +			return -EMSGSIZE;
-> +		}
-> +		ctx->last_svc = svc;
-> +		ctx->start_dest = 0;
-> +	}
-> +
-> +	ctx->idx_dest = 0;
-> +	list_for_each_entry(dest, &svc->destinations, n_list) {
-> +		if (++ctx->idx_dest <= ctx->start_dest)
-> +			continue;
-> +		if (ip_vs_genl_dump_dest(skb, dest, cb) < 0) {
-> +			ctx->idx_dest--;
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index bea86899bd5d..9c3d2982248d 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -893,6 +893,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+ 		burst = 0x2; /* 512 bytes */
+ 
+ 	/* Set SCB_MAX_BURST_SIZE, CFG_READ_UR_MODE, SCB_ACCESS_EN */
++	tmp = readl(base + PCIE_MISC_MISC_CTRL);
+ 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK);
+ 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK);
+ 	u32p_replace_bits(&tmp, burst, PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK);
+-- 
+2.17.1
 
-	At this point idx_svc is incremented and we
-stop at the middle of dest list, so we need ctx->idx_svc-- too.
 
-	And now what happens if all dests can not fit in a packet?
-We should start next packet with the same svc? And then
-user space should merge the dests when multiple packets
-start with same service?
+--000000000000eb2f9205b325fd2d
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-	The main points are:
-
-- the virtual services are in hash table, their order is
-not important, user space can sort them
-
-- order of dests in a service is important for the schedulers
-
-- every packet should contain info for svc, so that we can
-properly add dests to the right svc
-
-> +			return -EMSGSIZE;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ip_vs_genl_dump_services_destinations(struct sk_buff *skb,
-> +						 struct netlink_callback *cb)
-> +{
-> +	/* Besides usual index based counters, saving a pointer to the last
-> +	 * dumped service is useful to ensure we only dump destinations that
-> +	 * belong to it, even when services are removed while the dump is still
-> +	 * running causing indexes to shift.
-> +	 */
-> +	struct dump_services_dests_ctx ctx = {
-> +		.idx_svc = 0,
-> +		.idx_dest = 0,
-> +		.start_svc = cb->args[0],
-> +		.start_dest = cb->args[1],
-> +		.last_svc = (struct ip_vs_service *)(cb->args[2]),
-> +	};
-> +	struct net *net = sock_net(skb->sk);
-> +	struct netns_ipvs *ipvs = net_ipvs(net);
-> +	struct ip_vs_service *svc = NULL;
-> +	struct nlattr *attrs[IPVS_CMD_ATTR_MAX + 1];
-> +	int i;
-> +
-> +	mutex_lock(&__ip_vs_mutex);
-> +
-> +	if (nlmsg_parse_deprecated(cb->nlh, GENL_HDRLEN, attrs, IPVS_CMD_ATTR_MAX,
-> +				   ip_vs_cmd_policy, cb->extack) == 0) {
-> +		svc = ip_vs_genl_find_service(ipvs, attrs[IPVS_CMD_ATTR_SERVICE]);
-> +
-> +		if (!IS_ERR_OR_NULL(svc)) {
-> +			ip_vs_genl_dump_service_destinations(skb, cb, svc, &ctx);
-> +			goto nla_put_failure;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
-> +		hlist_for_each_entry(svc, &ip_vs_svc_table[i], s_list) {
-> +			if (svc->ipvs != ipvs)
-> +				continue;
-> +			if (ip_vs_genl_dump_service_destinations(skb, cb, svc, &ctx) < 0)
-> +				goto nla_put_failure;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
-> +		hlist_for_each_entry(svc, &ip_vs_svc_fwm_table[i], s_list) {
-> +			if (svc->ipvs != ipvs)
-> +				continue;
-> +			if (ip_vs_genl_dump_service_destinations(skb, cb, svc, &ctx) < 0)
-> +				goto nla_put_failure;
-> +		}
-> +	}
-> +
-> +nla_put_failure:
-> +	mutex_unlock(&__ip_vs_mutex);
-> +	cb->args[0] = ctx.idx_svc;
-> +	cb->args[1] = ctx.idx_dest;
-> +	cb->args[2] = (long)ctx.last_svc;
-
-	last_svc is used out of __ip_vs_mutex region,
-so it is not safe. We can get a reference count but this
-is bad if user space blocks.
-
-	But even if we use just indexes it should be ok.
-If multiple agents are used in parallel it is not our
-problem. What can happen is that we can send duplicates
-or to skip entries (both svcs and dests). It is impossible
-to keep any kind of references to current entries or even
-keys to lookup them if another agent can remove them.
-
-> +
-> +	return skb->len;
-> +}
-> +
->  static int ip_vs_genl_parse_dest(struct ip_vs_dest_user_kern *udest,
->  				 struct nlattr *nla, bool full_entry)
->  {
-> @@ -3991,6 +4094,12 @@ static const struct genl_small_ops ip_vs_genl_ops[] = {
->  		.flags	= GENL_ADMIN_PERM,
->  		.doit	= ip_vs_genl_set_cmd,
->  	},
-> +	{
-> +		.cmd	= IPVS_CMD_GET_SERVICE_DEST,
-> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-> +		.flags	= GENL_ADMIN_PERM,
-> +		.dumpit	= ip_vs_genl_dump_services_destinations,
-> +	},
->  };
->  
->  static struct genl_family ip_vs_genl_family __ro_after_init = {
-> -- 
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
-
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDZo8v5+M3IQ
+MJ/g3Rtom7XYVaRjOrWlxss7SNUvhI0UMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEwMjIwNTcxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA1Dt+IQeJTWiXmePLRHJAqFxBCRDG8
+A7fzflnwHn48SK2Q2tqEY80qFQEdrKqIl7AXUFoFmG6qQ7jleUk92sRlsjUoy5zL01rx1Lp2lR55
+OO+ClrDG4LmH+r242aiP9za5rnvONUkBPlWx8cuBq9dYh92DPMeJX1g+QECKzN5vhkxZRMNccq64
+iHNkhFnHMZP1DJBY873GIUGU8e7h1mss1MuD8UylFlT0eE9JRE2sILe0vwIFLP4DFqUakPHT2Sv+
+wSwhFpjldmxZX2TnyzPcmdxXiVd850ZY8mODy6ouEUhWGJU/MImdtO/QH3uAFLdXQoYlqBOpFl6p
+nkAAt51d
+--000000000000eb2f9205b325fd2d--
