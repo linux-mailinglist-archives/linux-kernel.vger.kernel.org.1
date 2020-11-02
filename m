@@ -2,186 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55452A3597
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1352D2A3591
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgKBUy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgKBUxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:53:07 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D70C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:53:06 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id j18so12226239pfa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:53:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=l5vIbL7zQ7n4XZHyhwW01YWfGRyYMBZYUrSZpG6FbLs=;
-        b=N0yLEXezBABYB2tPL4AuEEXwYGKOXDecmwzSVE8bnDq1ew8Ubu+drYtDQ/NkpIwcJf
-         L3moZQiC5mITS4SqyL/PT6mN0ypSPUqxLBDFRjbu8vIECqjZCFTggm2bmAKVkQOiW7kM
-         58q6lALMnQgpix4nh/2pSGxpVTZSZ9/N1Ym6I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=l5vIbL7zQ7n4XZHyhwW01YWfGRyYMBZYUrSZpG6FbLs=;
-        b=SyPndh2UnLbKG/nGVfRWyVk0Vu6LfB0wfL+71K0F8vedS8GW0KiSjInObGg4V85P/Y
-         uZ8R7PgRLsr/1mvBsETh43CS8VCvnMYswVTp/PJ1M0YTDNfXMAkSijkHKThYSf1LBZIJ
-         UbZfEk2DO2jSiSTI9LGYXof10gMyg9wzHMEsJuKkSt2xLTRzG6Ux18k4P8hsC2e2bDUH
-         oQXrFPB+V3B8ZZyweoBwmL8wX1CEUHzmfE6+OQcMukwpGkpaxm6h6eQ+yeV0lhaMXU3x
-         OMiORkFKJskJSqrwwHIKesEmzCyDVzsiLhAmKmezbC58cMVX58XixJjb3QZUuJdoQ7rU
-         2Czg==
-X-Gm-Message-State: AOAM530mfDSLguaeZaEvV1wReMfCJ4oXwygj/1M2+gjkMj/8wQt561/O
-        XfCDbA/ZfiQUAJW5lvYh1WOuIyQvvwqS5Q==
-X-Google-Smtp-Source: ABdhPJw1NO5xOgyXHyhI3oWwQJeO56qgUTuPxt4QU+RDUNnB48VToL/F4DAVmG01MfXtEfgKrDhsEw==
-X-Received: by 2002:a17:90a:4742:: with SMTP id y2mr13520pjg.228.1604350386498;
-        Mon, 02 Nov 2020 12:53:06 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y5sm15250451pfq.79.2020.11.02.12.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 12:53:05 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1727349AbgKBUyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:54:01 -0500
+Received: from mga09.intel.com ([134.134.136.24]:13887 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726536AbgKBUx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 15:53:26 -0500
+IronPort-SDR: a7kFECOG7YaeW6LBMgUwKkoilY/ObbNQKZ5IyiFeMw+ovS+uFxmn7WymimfvWfvyrXCLw9mBz5
+ 0tHD7hnc19HA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169083196"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="169083196"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 12:53:26 -0800
+IronPort-SDR: eruNOjlfVsT+d2xNmKeCN+wdpmM7mqC5KYx6km3g5kJ42UeIdR4MSsgP0ql6/hnCLDIR4njc9h
+ tNYZRr8Q7pRw==
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="538165889"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 12:53:25 -0800
+From:   ira.weiny@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH V2 00/10] PKS: Add Protection Keys Supervisor (PKS) support
+Date:   Mon,  2 Nov 2020 12:53:10 -0800
+Message-Id: <20201102205320.1458656-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201030232310.11100-1-khsieh@codeaurora.org>
-References: <20201030232310.11100-1-khsieh@codeaurora.org>
-Subject: Re: [PATCH v2] drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org,
-        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Mon, 02 Nov 2020 12:53:04 -0800
-Message-ID: <160435038402.884498.10403326257118588679@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2020-10-30 16:23:10)
-> Some dongle will not clear LINK_STATUS_UPDATED bit after
-> DPCD read which cause link training failed. This patch
+From: Ira Weiny <ira.weiny@intel.com>
 
-$ git grep 'this patch' -- Documentation/process/submitting-patches.rst
+Changes from V1
+	Rebase to TIP master; resolve conflicts and test
+	Clean up some kernel docs updates missed in V1
+	Add irqentry_state_t kernel doc for PKRS field
+	Removed redundant irq_state->pkrs
+		This is only needed when we add the global state and somehow
+		ended up in this patch series.  That will come back when we add
+		the global functionality in.
+	From Thomas Gleixner
+		Update commit messages
+		Add kernel doc for struct irqentry_state_t
+	From Dave Hansen add flags to pks_key_alloc()
 
-> just read 6 bytes of DPCD link status from sink and return
-> without checking LINK_STATUS_UPDATED bit.
-> Link rate read back from sink need to be convert into
-> really rate by timing 2.7Mb.=20
+Changes from RFC V3[3]
+	Rebase to TIP master
+	Update test error output
+	Standardize on 'irq_state' for state variables
+	From Dave Hansen
+		Update commit messages
+		Add/clean up comments
+		Add X86_FEATURE_PKS to disabled-features.h and remove some
+			explicit CONFIG checks
+		Move saved_pkrs member of thread_struct
+		Remove superfluous preempt_disable()
+		s/irq_save_pks/irq_save_set_pks/
+		Ensure PKRS is not seen in faults if not configured or not
+			supported
+		s/pks_mknoaccess/pks_mk_noaccess/
+		s/pks_mkread/pks_mk_readonly/
+		s/pks_mkrdwr/pks_mk_readwrite/
+		Change pks_key_alloc return to -EOPNOTSUPP when not supported
+	From Peter Zijlstra
+		Clean up Attribution
+		Remove superfluous preempt_disable()
+		Add union to differentiate exit_rcu/lockdep use in
+			irqentry_state_t
+	From Thomas Gleixner
+		Add preliminary clean up patch and adjust series as needed
 
-This last sentence doesn't make sense to me, sorry. What is being said?
 
-> For example 0x0A is equivalent
-> to 2.7Gb. This patch also convert link rate correctly to fix
-> phy compliance test link rate error.
->=20
-> Chanegs in V2:
-> -- revise commit text
->=20
-> Fixes: fd4a29bed29b (drm/msm/dp: DisplayPort PHY compliance tests fixup)
->=20
+Introduce a new page protection mechanism for supervisor pages, Protection Key
+Supervisor (PKS).
 
-Shouldn't be any space here between SoB and Fixes tag.
+2 use cases for PKS are being developed, trusted keys and PMEM.  Trusted keys
+is a newer use case which is still being explored.  PMEM was submitted as part
+of the RFC (v2) series[1].  However, since then it was found that some callers
+of kmap() require a global implementation of PKS.  Specifically some users of
+kmap() expect mappings to be available to all kernel threads.  While global use
+of PKS is rare it needs to be included for correctness.  Unfortunately the
+kmap() updates required a large patch series to make the needed changes at the
+various kmap() call sites so that patch set has been split out.  Because the
+global PKS feature is only required for that use case it will be deferred to
+that set as well.[2]  This patch set is being submitted as a precursor to both
+of the use cases.
 
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_ctrl.c | 20 ++++++--------------
->  drivers/gpu/drm/msm/dp/dp_link.c | 24 +++++++++++-------------
->  2 files changed, 17 insertions(+), 27 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp=
-_ctrl.c
-> index 904698dfc7f7..844ba756a2c6 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -1061,23 +1061,15 @@ static bool dp_ctrl_train_pattern_set(struct dp_c=
-trl_private *ctrl,
->  static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
->                                     u8 *link_status)
->  {
-> -       int len =3D 0;
-> -       u32 const offset =3D DP_LANE_ALIGN_STATUS_UPDATED - DP_LANE0_1_ST=
-ATUS;
-> -       u32 link_status_read_max_retries =3D 100;
-> -
-> -       while (--link_status_read_max_retries) {
-> -               len =3D drm_dp_dpcd_read_link_status(ctrl->aux,
-> -                       link_status);
-> -               if (len !=3D DP_LINK_STATUS_SIZE) {
-> -                       DRM_ERROR("DP link status read failed, err: %d\n"=
-, len);
-> -                       return len;
-> -               }
-> +       int ret =3D 0, len;
-> =20
-> -               if (!(link_status[offset] & DP_LINK_STATUS_UPDATED))
-> -                       return 0;
-> +       len =3D drm_dp_dpcd_read_link_status(ctrl->aux, link_status);
-> +       if (len !=3D DP_LINK_STATUS_SIZE) {
-> +               DRM_ERROR("DP link status read failed, err: %d\n", len);
-> +               ret =3D len;
+For an overview of the entire PKS ecosystem, a git tree including this series
+and 2 proposed use cases can be found here:
 
-So if this returns the integer 2 it's OK? Shouldn't it return some error
-value?
+	https://lore.kernel.org/lkml/20201009195033.3208459-1-ira.weiny@intel.com/
+	https://lore.kernel.org/lkml/20201009201410.3209180-1-ira.weiny@intel.com/
 
->         }
-> =20
-> -       return -ETIMEDOUT;
-> +       return ret;
->  }
-> =20
->  static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
-> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp=
-_link.c
-> index 49d7fad36fc4..64a002d100c7 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_link.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
-> @@ -943,20 +944,17 @@ static u8 get_link_status(const u8 link_status[DP_L=
-INK_STATUS_SIZE], int r)
->   */
->  static int dp_link_process_link_status_update(struct dp_link_private *li=
-nk)
->  {
-> -       if (!(get_link_status(link->link_status,
-> -                               DP_LANE_ALIGN_STATUS_UPDATED) &
-> -                               DP_LINK_STATUS_UPDATED) ||
-> -                       (drm_dp_clock_recovery_ok(link->link_status,
-> -                                       link->dp_link.link_params.num_lan=
-es) &&
-> -                       drm_dp_channel_eq_ok(link->link_status,
-> -                                       link->dp_link.link_params.num_lan=
-es)))
-> -               return -EINVAL;
-> +       bool channel_eq_done =3D drm_dp_channel_eq_ok(link->link_status,
-> +                       link->dp_link.link_params.num_lanes);
-> +
-> +       bool clock_recovery_done =3D drm_dp_clock_recovery_ok(link->link_=
-status,
-> +                       link->dp_link.link_params.num_lanes);
-> =20
->         DRM_DEBUG_DP("channel_eq_done =3D %d, clock_recovery_done =3D %d\=
-n",
-> -                       drm_dp_clock_recovery_ok(link->link_status,
-> -                       link->dp_link.link_params.num_lanes),
-> -                       drm_dp_clock_recovery_ok(link->link_status,
-> -                       link->dp_link.link_params.num_lanes));
-> +                       channel_eq_done, clock_recovery_done);
-> +
-> +       if (channel_eq_done && clock_recovery_done)
-> +               return -EINVAL;
-> =20
->         return 0;
->  }
->=20
-> base-commit: 03a9adc88c206b3857ce95f4f4d3b185d429fa31
 
-What is this commit?
+PKS enables protections on 'domains' of supervisor pages to limit supervisor
+mode access to those pages beyond the normal paging protections.  PKS works in
+a similar fashion to user space pkeys, PKU.  As with PKU, supervisor pkeys are
+checked in addition to normal paging protections and Access or Writes can be
+disabled via a MSR update without TLB flushes when permissions change.  Also
+like PKU, a page mapping is assigned to a domain by setting pkey bits in the
+page table entry for that mapping.
+
+Access is controlled through a PKRS register which is updated via WRMSR/RDMSR.
+
+XSAVE is not supported for the PKRS MSR.  Therefore the implementation
+saves/restores the MSR across context switches and during exceptions.  Nested
+exceptions are supported by each exception getting a new PKS state.
+
+For consistent behavior with current paging protections, pkey 0 is reserved and
+configured to allow full access via the pkey mechanism, thus preserving the
+default paging protections on mappings with the default pkey value of 0.
+
+Other keys, (1-15) are allocated by an allocator which prepares us for key
+contention from day one.  Kernel users should be prepared for the allocator to
+fail either because of key exhaustion or due to PKS not being supported on the
+arch and/or CPU instance.
+
+The following are key attributes of PKS.
+
+   1) Fast switching of permissions
+	1a) Prevents access without page table manipulations
+	1b) No TLB flushes required
+   2) Works on a per thread basis
+
+PKS is available with 4 and 5 level paging.  Like PKRU it consumes 4 bits from
+the PTE to store the pkey within the entry.
+
+
+[1] https://lore.kernel.org/lkml/20200717072056.73134-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20201009195033.3208459-2-ira.weiny@intel.com/
+[3] https://lore.kernel.org/lkml/20201009194258.3207172-1-ira.weiny@intel.com/
+
+
+Fenghua Yu (2):
+  x86/pks: Enable Protection Keys Supervisor (PKS)
+  x86/pks: Add PKS kernel API
+
+Ira Weiny (7):
+  x86/pkeys: Create pkeys_common.h
+  x86/fpu: Refactor arch_set_user_pkey_access() for PKS support
+  x86/pks: Preserve the PKRS MSR on context switch
+  x86/entry: Pass irqentry_state_t by reference
+  x86/entry: Preserve PKRS MSR across exceptions
+  x86/fault: Report the PKRS state on fault
+  x86/pks: Add PKS test code
+
+Thomas Gleixner (1):
+  x86/entry: Move nmi entry/exit into common code
+
+ Documentation/core-api/protection-keys.rst  | 103 ++-
+ arch/x86/Kconfig                            |   1 +
+ arch/x86/entry/common.c                     |  64 +-
+ arch/x86/include/asm/cpufeatures.h          |   1 +
+ arch/x86/include/asm/disabled-features.h    |   8 +-
+ arch/x86/include/asm/idtentry.h             |  28 +-
+ arch/x86/include/asm/msr-index.h            |   1 +
+ arch/x86/include/asm/pgtable.h              |  13 +-
+ arch/x86/include/asm/pgtable_types.h        |  12 +
+ arch/x86/include/asm/pkeys.h                |  15 +
+ arch/x86/include/asm/pkeys_common.h         |  40 ++
+ arch/x86/include/asm/processor.h            |  18 +-
+ arch/x86/include/uapi/asm/processor-flags.h |   2 +
+ arch/x86/kernel/cpu/common.c                |  15 +
+ arch/x86/kernel/cpu/mce/core.c              |   6 +-
+ arch/x86/kernel/fpu/xstate.c                |  22 +-
+ arch/x86/kernel/kvm.c                       |   6 +-
+ arch/x86/kernel/nmi.c                       |   6 +-
+ arch/x86/kernel/process.c                   |  26 +
+ arch/x86/kernel/traps.c                     |  24 +-
+ arch/x86/mm/fault.c                         |  87 ++-
+ arch/x86/mm/pkeys.c                         | 194 +++++-
+ include/linux/entry-common.h                |  64 +-
+ include/linux/pgtable.h                     |   4 +
+ include/linux/pkeys.h                       |  24 +
+ kernel/entry/common.c                       |  62 +-
+ lib/Kconfig.debug                           |  12 +
+ lib/Makefile                                |   3 +
+ lib/pks/Makefile                            |   3 +
+ lib/pks/pks_test.c                          | 691 ++++++++++++++++++++
+ mm/Kconfig                                  |   2 +
+ tools/testing/selftests/x86/Makefile        |   3 +-
+ tools/testing/selftests/x86/test_pks.c      |  66 ++
+ 33 files changed, 1465 insertions(+), 161 deletions(-)
+ create mode 100644 arch/x86/include/asm/pkeys_common.h
+ create mode 100644 lib/pks/Makefile
+ create mode 100644 lib/pks/pks_test.c
+ create mode 100644 tools/testing/selftests/x86/test_pks.c
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
