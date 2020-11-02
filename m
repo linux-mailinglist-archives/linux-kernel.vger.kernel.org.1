@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00742A2D11
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F39B2A2D15
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgKBOhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:37:21 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47324 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgKBOhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:37:20 -0500
-Received: from zn.tnic (p200300ec2f086a005eef14ece2bfc9a7.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6a00:5eef:14ec:e2bf:c9a7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B96D1EC0328;
-        Mon,  2 Nov 2020 15:37:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604327839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CrGg9rK4uvm4Q0y8bZd5vyUgp74wB3OKjww/RvmQ3bc=;
-        b=VKYNztmH3e6yxoLu4KiMwGTgYAffpJTGSTVnIVpUx9RR78Znmnop8oXFmtYiubFMpjo01O
-        bf7LQOakzENwY7f62FyaTm5bZGTiEyJz0hLZzUDj66CNU8w87Wwd2wsNTcG4T69rE+w8ht
-        JLrcZFjemQ4ntG50P9FQVZFpCCVxN/c=
-Date:   Mon, 2 Nov 2020 15:37:07 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v5 03/17] x86/acrn: Introduce an API to check if a VM is
- privileged
-Message-ID: <20201102143707.GC15392@zn.tnic>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-4-shuo.a.liu@intel.com>
+        id S1726115AbgKBOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgKBOit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:38:49 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF5DC0617A6;
+        Mon,  2 Nov 2020 06:38:49 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id f21so6894361plr.5;
+        Mon, 02 Nov 2020 06:38:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2sn9IlsAf/o9PWSnZUDacWvGJDMDAyE7jKOu80Z9/XQ=;
+        b=NQ/gal9zzj2UqO3cAXsmHskedL493eGjFym6fPXH9qBstkQNuhYGfz/cumaLHhEwy5
+         Q0lRD9kCA7ftBWsukFlgcPDc+FqT8IMRZSZO1/5f0lcStW8e8U+Y3l7EGiSzns7Aej0k
+         IEz3QV61BRuLkPW+698vYxNtt3okkp/W2imR6Cjkr0flzsQg7WmhohibsRE5ebqGx2/2
+         swHHF4uixV6q2Qu2iJSDAhp+Ucnskdcl/SFc9cmiPnNb6hdHPf74yxNcWgTllh+Q2In/
+         njKUbFGis5ARnc2axQpcS1TyWxxZ7fZf/etN+/m1URj5yE54tbrL1S3OGxjZcPivRPST
+         qGkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2sn9IlsAf/o9PWSnZUDacWvGJDMDAyE7jKOu80Z9/XQ=;
+        b=bumkVOkHKMXkfg+2cPA8lROZY9mI+LLMucnR0dMYl3z/2xZNbGT9UbVRZIi0BmNweM
+         uC5b1S+0MaANT5brTietXZKxl/8rbrvjuFcRVTGbmd/4jjd0QqEde1yKkuPBWdX8NpGX
+         8KsNTP1XgLa4BY3EgTN8H/EB0oG4Xg4mziCdrEWb7IYkhWE4JcIP2YCqGRJ8yhQHFJHF
+         ZHUS3Y9j5dwJoQxYRi/RG5R2HmX2lyWfnbo+F/eRHMhH/IsEAd+OaORd5bq1DmuIOwHg
+         x8KDtwzE7BgRVjmbTE5vGnSOn8lYPGjXRI5TB7g3lG/dlggeu+aQzyHWfVw1tQiyeTD/
+         FM2w==
+X-Gm-Message-State: AOAM531eoTrh1u3Oo8hiWwOBpBny1e64SeN6TlizcZKJvQT1NfTorm9c
+        O12NbUP790/MfX5HYaBTuOw=
+X-Google-Smtp-Source: ABdhPJw2IijvFH0YG4q0KgzcaAPpdd6MlJv8jjS6BLDflCWUrk9NvLv0pzwQ1iGIwwaiLl1SFqK6sw==
+X-Received: by 2002:a17:902:848e:b029:d6:d2c9:1d4c with SMTP id c14-20020a170902848eb02900d6d2c91d4cmr3358980plo.40.1604327928861;
+        Mon, 02 Nov 2020 06:38:48 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id l129sm12900610pgl.3.2020.11.02.06.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 06:38:48 -0800 (PST)
+From:   Menglong Dong <menglong8.dong@gmail.com>
+To:     roopa@nvidia.com
+Cc:     nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] net: bridge: disable multicast while delete bridge
+Date:   Mon,  2 Nov 2020 22:38:28 +0800
+Message-Id: <20201102143828.5286-1-menglong8.dong@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201019061803.13298-4-shuo.a.liu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:17:49PM +0800, shuo.a.liu@intel.com wrote:
-> +bool acrn_is_privileged_vm(void)
-> +{
-> +	return cpuid_eax(acrn_cpuid_base() | ACRN_CPUID_FEATURES) &
-> +			 ACRN_FEATURE_PRIVILEGED_VM;
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-I asked in the previous review why that acrn_cpuid_base() is used here,
-you said that the base might vary. Looking at hypervisor_cpuid_base(),
-it searches in the range [0x40000000, 0x40010000] with an 0x100 offset.
+This commit seems make no sense, as bridge is destroyed when
+br_multicast_dev_del is called.
 
-So you're saying that ACRN_CPUID_FEATURES is the first leaf beyond the
-base. Close?
+In commit b1b9d366028f
+("bridge: move bridge multicast cleanup to ndo_uninit"), Xin Long
+fixed the use-after-free panic in br_multicast_group_expired by
+moving br_multicast_dev_del to ndo_uninit. However, that patch is
+not applied to 4.4.X, and the bug exists.
 
-If so, why isn't the code doing this?
+Fix that bug by disabling multicast in br_multicast_dev_del for
+4.4.X, and there is no harm for other branches.
 
-	return cpuid_eax(acrn_cpuid_base() + 1)...
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/bridge/br_multicast.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-and why doesn't it have a comment above it explaining that the base can
-change and it needs to be discovered each time?
-
-> +EXPORT_SYMBOL_GPL(acrn_is_privileged_vm);
-
-Also, that acrn_is_privileged_vm() silly helper is used only once and
-I don't like the exported symbols pollution we're doing. So make that
-function give you the eax of ACRN_CPUID_FEATURES and callers can do
-their testing themselves.
-
-When it turns out that code patterns get repeated, you can then
-aggregate stuff into a helper.
-
-Thx.
-
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index eae898c3cff7..9992fdff2951 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -3369,6 +3369,7 @@ void br_multicast_dev_del(struct net_bridge *br)
+ 	hlist_for_each_entry_safe(mp, tmp, &br->mdb_list, mdb_node)
+ 		br_multicast_del_mdb_entry(mp);
+ 	hlist_move_list(&br->mcast_gc_list, &deleted_head);
++	br_opt_toggle(br, BROPT_MULTICAST_ENABLED, false);
+ 	spin_unlock_bh(&br->multicast_lock);
+ 
+ 	br_multicast_gc(&deleted_head);
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
