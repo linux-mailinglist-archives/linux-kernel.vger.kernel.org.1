@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4C62A301C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61B52A3021
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgKBQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:42:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726865AbgKBQmY (ORCPT
+        id S1727349AbgKBQmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:42:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727334AbgKBQmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:42:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604335343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5EySfE5/KX52CRxGXz90zdeGjq93k6VPREHvKcPrTq0=;
-        b=UbSIKheDJLC/Z8gWhbnIeA7EAuK3vFtxjVNMrpjF5kL9FY/AZQ2Z03ZFk8C+y82f7usY3V
-        VySuGvmt3Wu+Rrk1dbQg3BRrZ6HEXjUH4DhCKjEHUIQK3xGrtbN9FMTT52G/fXdKZqzJ5N
-        0oJelQKHHZOOCycWNxD/wGrisPM7ADI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-yT3E2-5-MgWLRrydahSFWg-1; Mon, 02 Nov 2020 11:42:19 -0500
-X-MC-Unique: yT3E2-5-MgWLRrydahSFWg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90ABD1084C8B;
-        Mon,  2 Nov 2020 16:42:17 +0000 (UTC)
-Received: from krava (unknown [10.40.192.162])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DB95019C78;
-        Mon,  2 Nov 2020 16:42:14 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 17:42:13 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] perf lock: Correct field name "flags"
-Message-ID: <20201102164213.GC3405508@krava>
-References: <20201021003948.28817-1-leo.yan@linaro.org>
+        Mon, 2 Nov 2020 11:42:33 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3646C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:42:32 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id z16so8006730otq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:42:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LkcPNNpMLX6kEqUed20/jhdzhJZXy+qPlqOir1Z4UWg=;
+        b=DejrOT1ET977KzMedOZFf/nvESeZd35VW615DHzfUVNv/jtr5S39tQRR1rkXRrNQsS
+         8e7QakA0NQZajazNYknFTyPn7wzCTD0MaLh6LD79vAKy5J2WjkyqZwU1hUMlTMpcVTcY
+         aRcqJL/19jZSjJmXa+xeFfRoO2oW4s/0IBZV8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LkcPNNpMLX6kEqUed20/jhdzhJZXy+qPlqOir1Z4UWg=;
+        b=LB50Iy3ALgfY0H/MP8IC1/ixodiAAo14lf8FkseEo+ePoIdljh0LXks/rPrd0BOSbs
+         IGSu2bHVAJwGPe56IbYK6sS5vm70VS6tESXAxouQG5j3YFNcShCfBYVqKCDfdT5u0p3X
+         ZiFFhuM1ouPRZtMPC7XkJhIGvi6CAUCbFNpon7WBDQnyNR2WHzChAiMQHDtXVI905jDM
+         3OOK4A+/wr3UJsqK1WL82hw/dbHVB1Ytfjeih4PTbn81urWlcyZdRi5/oL8wlFz1AhX2
+         9FB+U2I/NQl/e85AaJD0ZEaIE6fHwLubi+OIc8cdN/XC43yScP/aZcsl6EJqcfFmYfpa
+         naAQ==
+X-Gm-Message-State: AOAM532Igk7YgYeUKGWwN4CmyRpZ9CxoIWAcoJDSSc+KAS4dVo2JrTce
+        hqeudCssyVYAjoPbE5EY2JsNKokB/lWoza3tCMug0A==
+X-Google-Smtp-Source: ABdhPJw6fgeaE8WrMv6/yjTLi0nLsEgIsTJGq7lnieyfjRKsxeZQjFjVvPlXPA1vJ6n1s7o3wIRvF8cXTGM5e/OE7rM=
+X-Received: by 2002:a05:6830:1647:: with SMTP id h7mr13325941otr.281.1604335352341;
+ Mon, 02 Nov 2020 08:42:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021003948.28817-1-leo.yan@linaro.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch> <20201030100815.2269-9-daniel.vetter@ffwll.ch>
+ <20201102072931.GA16419@infradead.org> <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
+ <20201102130115.GC36674@ziepe.ca> <CAKMK7uHeL=w7GoBaY4XrbRcpJabR9UWnP+oQ9Fg51OzL7=KxiA@mail.gmail.com>
+ <20201102155256.GG36674@ziepe.ca>
+In-Reply-To: <20201102155256.GG36674@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 2 Nov 2020 17:42:20 +0100
+Message-ID: <CAKMK7uFqkieBAXEmoeoBfnJBXcuHaNwrsaVyPsLQaXnrJo=scg@mail.gmail.com>
+Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "J??r??me Glisse" <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 08:39:47AM +0800, Leo Yan wrote:
-> The tracepoint "lock:lock_acquire" contains field "flags" but not
-> "flag".  Current code wrongly retrieves value from field "flag" and it
-> always gets zero for the value, thus "perf lock" doesn't report the
-> correct result.
-> 
-> This patch replaces the field name "flag" with "flags", so can read out
-> the correct flags for locking.
-> 
-> Fixes: 746f16ec6ae3 ("perf lock: Use perf_evsel__intval and perf_session__set_tracepoints_handlers")
+On Mon, Nov 2, 2020 at 4:52 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Mon, Nov 02, 2020 at 02:23:58PM +0100, Daniel Vetter wrote:
+> > On Mon, Nov 2, 2020 at 2:01 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Mon, Nov 02, 2020 at 01:56:10PM +0100, Daniel Vetter wrote:
+> > > > On Mon, Nov 2, 2020 at 8:29 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > > > >
+> > > > > On Fri, Oct 30, 2020 at 11:08:08AM +0100, Daniel Vetter wrote:
+> > > > > > Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
+> > > > > > that by drivers/modules is together with an mmu_notifier, and that's
+> > > > > > all _GPL stuff.
+> > > > >
+> > > > > I also think it also needs to be renamed to explicitly break any existing
+> > > > > users out of tree or int the submission queue.
+> > > >
+> > > > Ok I looked at the mmu notifier locking again and noticed that
+> > > > mm->subscriptions has its own spinlock. Since there usually shouldn't
+> > > > be a huge pile of these I think it's feasible to check for the mmu
+> > > > notifier in follow_pfn. And that would stuff this gap for good. I'll
+> > > > throw that on top as a final patch and see what people think.
+> > >
+> > > Probably the simplest is to just check mm_has_notifiers() when in
+> > > lockdep or something very simple like that
+> >
+> > lockdep feels wrong, was locking more at CONFIG_DEBUG_VM. And since
+> > generally you only have 1 mmu notifier (especially for kvm) I think we
+> > can also pay the 2nd cacheline miss and actually check the right mmu
+> > notifier is registered.
+>
+> Need to hold the lock to check that and there are two ways to register
+> notifiers these days, so it feels to expensive to me.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Uh I mixed stuff up all along, struct mmu_notifier *subcription that
+all the mmu notifier users use has the ->mm pointer we want right
+there. That's good enough I think.
 
-btw it seems the issue was there event before that commit:
-  acquire_event.flag = (int)raw_field_value(event, "flag", data);
+Now I'm kinda lost in kvm code trying to wire it through, but it's
+looking ok-ish thus far :-)
+-Daniel
 
-thanks,
-jirka
+> CH's 'export symbol only for kvm' really does seem the most robust way
+> to handle this though.
+>
+> Jason
 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/builtin-lock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index f0a1dbacb46c..5cecc1ad78e1 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -406,7 +406,7 @@ static int report_lock_acquire_event(struct evsel *evsel,
->  	struct lock_seq_stat *seq;
->  	const char *name = evsel__strval(evsel, sample, "name");
->  	u64 tmp	 = evsel__intval(evsel, sample, "lockdep_addr");
-> -	int flag = evsel__intval(evsel, sample, "flag");
-> +	int flag = evsel__intval(evsel, sample, "flags");
->  
->  	memcpy(&addr, &tmp, sizeof(void *));
->  
-> -- 
-> 2.17.1
-> 
 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
