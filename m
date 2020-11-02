@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE1A2A283B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD2E2A2843
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgKBK22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S1728347AbgKBKaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgKBK21 (ORCPT
+        with ESMTP id S1728132AbgKBKae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:28:27 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D47C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:28:26 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id 6so5025988oiy.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:28:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Z8GQ3+dlPgWj8N6iGHuphE6RpytAvFZo39Sbtwdhws=;
-        b=EzwfEuuEwGYTUTjIasAnUKUIVmBIxn7qJYQhUc2GVEKajha3SO3J3d/VjzMgnwV94F
-         V1xFvThPUl79p5+V+oEa5uZ2gpuitZ5MzSvlI5wHu8TwB48Z8uCSz1bX+J83hOAQl2Mc
-         ybmPexJOB3IDKeTvAmmWQSMGJBSZzm4EiWwGE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Z8GQ3+dlPgWj8N6iGHuphE6RpytAvFZo39Sbtwdhws=;
-        b=TKsGDCI4l9zCRkysmkjKV02pknocWnxeU9aOmLQoswo+vZqdjqozKCA8f5YvUrxQTZ
-         O9XnkdUo/ueBsXEdtpakTwnoWEwmLTGVWvroWcnRPIt+Q0eRxFz1J0r30a7yhImiACZV
-         lWoyLeczAXlf/1huZEUoiF3mmaQeYMiRrKfidAsm7Z8SfCKtkJJjQOk9qaqXydRCtebG
-         fPetpuQK21JQJEQjEmccOGZXM0jRbpNlPTUTUazyi5uC+w4GAv8l1PWIvDYN3sW7kOF/
-         vsqw+j/3f3zWPyj+IkcQhh4leHVQrPRunVSen4edZlq1Oc8Cq9s5/f++feat7YzwN+HG
-         jqcQ==
-X-Gm-Message-State: AOAM532zd1pSvEtJob68cH59zbDTijLDr1BHR0aAzzfqVBvzbco9TFsG
-        hi6DdEz0fu6ajdK8qHd94CeSNkPIzo2D8lrooqcIeA==
-X-Google-Smtp-Source: ABdhPJxtPz32ksTu7x/wIQLWRExfPZVZ9cFoMP8T8mP3YC5ZyI58He8otzTX9cJ+0Sx2RumLcBUlS7qWt0oefuIvIy0=
-X-Received: by 2002:aca:b141:: with SMTP id a62mr8909832oif.101.1604312906398;
- Mon, 02 Nov 2020 02:28:26 -0800 (PST)
+        Mon, 2 Nov 2020 05:30:34 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853F4C0617A6;
+        Mon,  2 Nov 2020 02:30:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=gH6cU0WjGIcLU1WLwkM2Gr2ClysO1THsAmJqx+M+7fA=; b=V0s1igeCcWjchc3yKAAw+HG+S
+        Y+vuhHjJul7EwUWak7bzSsvc8pQKqvZYJHEuETqek8B+nwPHsr7/b1FRqQamr2sm5A4cJnhmmW4yK
+        vM+vZKRpyyDBqAlEEVw3CU279DQ//50Dffb/rcs4HhFApBiqNBmIlqY+esNPDHtyjannYD3Lm20a6
+        vBFQc0QwE4NTnyx5XxJjxdq4KJOBj4e/4c9j2pHf904vWwHrKKWuU+YPjd5oIOpwSdBMNY34K6R+G
+        Mg6ZEesLOFvHUnHybGZuUI3QmqG2jcCFwnMcuEaI3zsR4/RFId8fQYKAHG7HH/F5ldxsb1szNI7Hy
+        RzieoJ2zw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54096)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kZX6e-0000RB-Ld; Mon, 02 Nov 2020 10:30:32 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kZX6d-0001gp-TX; Mon, 02 Nov 2020 10:30:32 +0000
+Date:   Mon, 2 Nov 2020 10:30:31 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        yepeilin.cs@gmail.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
+ qualifier
+Message-ID: <20201102103031.GL1551@shell.armlinux.org.uk>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <20201031102709.GH1551@shell.armlinux.org.uk>
+ <20201101131122.GD4127@dell>
+ <20201102102343.GK1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20201102124327.2f82b2a7@canb.auug.org.au> <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
- <20201102052254-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20201102052254-mutt-send-email-mst@kernel.org>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 2 Nov 2020 11:28:15 +0100
-Message-ID: <CAKMK7uFKRHnYFYw19b-iQHfzQisqn0Zms+1+bxVa6CSbExTP8w@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christoph Hellwig <hch@infradead.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102102343.GK1551@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 11:23 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Nov 02, 2020 at 10:28:34AM +0100, Daniel Vetter wrote:
-> > On Mon, Nov 2, 2020 at 2:43 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > After merging the drm-misc tree, today's linux-next build (arm
-> > > multi_v7_defconfig) failed like this:
-> > >
-> > > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
-> > > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
-> > > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
-> > >    99 |  return SIZE_MAX;
-> > >       |         ^~~~~~~~
-> > > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
-> > >     6 | #include <linux/init.h>
-> > >   +++ |+#include <stdint.h>
-> > >     7 | #include <linux/types.h>
-> > > include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
-> > >    99 |  return SIZE_MAX;
-> > >       |         ^~~~~~~~
-> > >
-> > > Caused by commit
-> > >
-> > >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > >
-> > > but only exposed by commit
-> > >
-> > >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
-> > >
-> > > I applied the following fix for today:
-> > >
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Date: Mon, 2 Nov 2020 12:34:57 +1100
-> > > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
-> > >
-> > > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> >
-> > I think simplest if this lands through dma-api tree into current -rc
-> > kernels. Or should we just put this into drm-misc-next since that's
-> > where the problem shows up? Christoph, any preference from dma-api
-> > side?
-> > -Daniel
->
->
-> Or I can merge it since I merged the original patch causing the
-> issue ...
+On Mon, Nov 02, 2020 at 10:23:43AM +0000, Russell King - ARM Linux admin wrote:
+> On Sun, Nov 01, 2020 at 01:11:22PM +0000, Lee Jones wrote:
+> > On Sat, 31 Oct 2020, Russell King - ARM Linux admin wrote:
+> > 
+> > > On Fri, Oct 30, 2020 at 06:18:22PM +0000, Lee Jones wrote:
+> > > > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
+> > > 
+> > > Your commit ID does not exist in mainline kernels, which makes this
+> > > confusing. The commit ID you should be using is 6735b4632def.
+> > 
+> > Ah yes, quite right.  That is the ID from android-3.18 where this
+> > issue was first seen and fixed against.  I will fix it up for
+> > Mainline.
+> > 
+> > Does the fix look okay to you though Russell?
+> 
+> Frankly, I don't know. Looking at the commit itself, it looks safe,
+> but it depends what this "extra" data is being used for. From what
+> I can see, the commit in question just adds the additional opaque
+> data as a member named "extra", and one is left to guess what it's
+> use as.
+> 
+> I'd have thought a small structure with named members would have
+> been the minimum given our standards for in-kernel code.
+> 
+> Why was the "const" dropped in the first place? Does this "extra"
+> member get written to somewhere?
+> 
+> So, sorry, no idea. This looks to me like a very unsatisfactory
+> commit, and probably something that got a very poor review.
 
-Works for me too.
--Daniel
->
-> > > ---
-> > >  include/linux/swiotlb.h | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> > > index 513913ff7486..ed9de7855d3b 100644
-> > > --- a/include/linux/swiotlb.h
-> > > +++ b/include/linux/swiotlb.h
-> > > @@ -5,6 +5,9 @@
-> > >  #include <linux/dma-direction.h>
-> > >  #include <linux/init.h>
-> > >  #include <linux/types.h>
-> > > +#ifndef CONFIG_SWIOTLB
-> > > +#include <linux/limits.h>
-> > > +#endif
-> > >
-> > >  struct device;
-> > >  struct page;
-> > > --
-> > > 2.28.0
-> > >
-> > > --
-> > > Cheers,
-> > > Stephen Rothwell
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
->
+Also, the commit description is missing a chunk:
 
+    For user-provided fonts, the framebuffer layer resolves this issue by
+    reserving four extra words at the beginning of data buffers. Later,
+    whenever a function needs to access them, it simply uses the following
+    macros:
+
+    Recently we have gathered all the above macros to <linux/font.h>.
+
+So what were these macros that have been nicely removed from the commit
+description? I guess they started with a '#' character and git thought
+they were a comment.
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
