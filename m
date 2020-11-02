@@ -2,141 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2112A2AA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D267D2A2AA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgKBMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:23:33 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:47974 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728444AbgKBMXc (ORCPT
+        id S1728604AbgKBMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:25:18 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7574 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728421AbgKBMZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:23:32 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201102122320euoutp0269058869ce392276b5e659be101be149~DsFvQq6vy0254702547euoutp02T
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:23:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201102122320euoutp0269058869ce392276b5e659be101be149~DsFvQq6vy0254702547euoutp02T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604319800;
-        bh=q7+ilGGLT18/vuSxWDQthCN3467HY9jEgT+ik8brKQk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=nJ70JShet0S2a6Dqq8HgE/zaqAzGsrHM/nI+F5Iu7rDjZjC9ey0YXT3F8lRphW91K
-         zagjVTkvu79AYGpDb7zgRtPlsJfW+U7opWVjDZTQ831O6gLBXBAGxG4fW/9V+7/ONk
-         PKRtl4TBLewbaysAyJO2Rm47it72RrHttiZOswd0=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201102122311eucas1p10c5ad39eb4e356d254f268fbda6ad4b4~DsFmsUMu80490104901eucas1p1R;
-        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 77.30.06456.F2AFF9F5; Mon,  2
-        Nov 2020 12:23:11 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201102122311eucas1p1805e9f745babaa133d80418bddf108a7~DsFmSwRB-2982429824eucas1p1e;
-        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201102122311eusmtrp2d1c125a97c0549688cb333b9b5616db6~DsFmRWqTd2919729197eusmtrp2G;
-        Mon,  2 Nov 2020 12:23:11 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-eb-5f9ffa2f975d
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 85.B2.06314.E2AFF9F5; Mon,  2
-        Nov 2020 12:23:10 +0000 (GMT)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201102122309eusmtip27199189c706b9bdf043f5960224f430e~DsFlQd0A40348203482eusmtip2a;
-        Mon,  2 Nov 2020 12:23:09 +0000 (GMT)
-Subject: Re: [PATCH v7 2/6] interconnect: Add generic interconnect driver
- for Exynos SoCs
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <9ef1cf71-0729-d4f7-6a15-eb4ba1ffbefc@samsung.com>
-Date:   Mon, 2 Nov 2020 13:23:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.1
+        Mon, 2 Nov 2020 07:25:18 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPsZ06Qs7zLsjr;
+        Mon,  2 Nov 2020 20:25:12 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 2 Nov 2020 20:25:05 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: compress: support chksum
+Date:   Mon, 2 Nov 2020 20:23:33 +0800
+Message-ID: <20201102122333.76667-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201031121747.GB9399@kozik-lap>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTm3e7ursPZdSo7zFKY/iihmSVxyTATi0EU/q3IufKmK522qaUQ
-        +JGl+cFwhbrMjQK1lZjDWX5iMlshurBIScWyofkxxKaFWpp3V8l/z3PO85xznpeX4IqGeRJC
-        pc6kNWplqhQXYG1vVx0Hw9eMikNl0xJqsq4IUS3VzTxqZHmGRxltQzzq08oiTlV1W3CqclKH
-        UQ7HSz71saMWp9zlNkRVO3o4VJNtgk+N5TfiVFG3jU9V62fxmD1yi7kEl49/7sLlk6V2jryi
-        1YzkbktQPO+C4HgSnarKpjXh0YmClM6pN5yM7163GrosvDzk5t9HXgSQkbDont/CAkJENiJY
-        sM/xWLKM4GFPPZclbgQlw1P4jsX1dHVb1YBgetyJsWQJgaG316PyIy/CN30Hl8H+5AEY+fvb
-        4+CS6xwoNA96tuNkBJT3VyAGC8lo6P9T66ljZCg4n1V5zAFkAuha7mCsxhfe1zDbCMKLlMEL
-        61GmzCXF8MVp5LA4GAqtjzxnA7nEhy5dDWL0QMZB04SCTeAHc/bW7QfYC5vtjJfRFyIo6xzj
-        s0SHYNJuQqwqCsaH1nBmEHcrTXNHODvzJAzb9rPQB0ZdvuwJPlDZxlzPlIVQfFfEzgiFdXMV
-        h8USKHVuYjokNezKZdgVxrArjOH/WhPCzEhMZ2nTkmlthJq+KdMq07RZ6mTZlfQ0C9r6aQMb
-        9p+v0crw5T5EEkjqLez1MypEPGW2NietDwHBlfoLYwcHEkTCJGVOLq1JV2iyUmltHwokMKlY
-        eOTJ7CURmazMpK/TdAat2elyCC9JHuoOmLlmDBtzxmwcjiwMOX2GPmtNVp9vedBW8UGc5Doh
-        vl3T/C6GLtgXJ5Wd+iHo94uOqss6duPVeEHfdL2+4B6uShxMUKktgbEb0K6vQ93eY7+C1kcf
-        W0OCu75GufV6k8l17mp121pxfMBa8fPR3IWm+WJBTcGm0wTL+fcVzVJMm6KMCONqtMp/5Yoh
-        qWUDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xe7p6v+bHG/x9ZWlxf14ro8XGGetZ
-        La5/ec5qMf/IOVaLK1/fs1lM37uJzWLS/QksFufPb2C3uLxrDpvF594jjBYzzu9jslh75C67
-        xe3GFWwWrXuPsFvMmPySzYHfY9OqTjaPO9f2sHnc7z7O5NG3ZRWjx+dNcgGsUXo2RfmlJakK
-        GfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZux8dZCp4zFmxfM8m
-        1gbGz+xdjJwcEgImEm8X/2TtYuTiEBJYyiixv3sqWxcjB1BCSmJ+ixJEjbDEn2tdbBA17xkl
-        JixZyQJSIywQLTH1gyNIjYiApsT1v9/B5jAL/GaSOHDvMgtEw2NGibVzj4BtYxMwlOg92scI
-        YvMK2Ekc/TMHLM4ioCLxZOV0ZhBbVCBO4sfEXjaIGkGJkzOfgC3jFNCTWLPVDCTMLKAu8Wfe
-        JWYIW1zi1pP5TBC2vETz1tnMExiFZiHpnoWkZRaSlllIWhYwsqxiFEktLc5Nzy021CtOzC0u
-        zUvXS87P3cQIjOFtx35u3sF4aWPwIUYBDkYlHt4DwvPjhVgTy4orcw8xSnAwK4nwOp09HSfE
-        m5JYWZValB9fVJqTWnyI0RTot4nMUqLJ+cD0klcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9
-        sSQ1OzW1ILUIpo+Jg1OqgVFaYvOjLJ00Fn9z52VvVtq+ZPEvP/6Wx/q2QHrLFfcdZsI7Zj/6
-        djMzcNr9yRZX381ill9aZlY70ex3QlVLzKHQL7+KPu5YG6cm7PV/37uQ5Pr7cTZxlgw1LMmh
-        sWsy+Ga9vTJHVFeyKu5uPcfsFbav7qst71yQK71cwOOK4lFW4d0e9ak5lkosxRmJhlrMRcWJ
-        AHWDOub3AgAA
-X-CMS-MailID: 20201102122311eucas1p1805e9f745babaa133d80418bddf108a7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
-References: <20201030125149.8227-1-s.nawrocki@samsung.com>
-        <CGME20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9@eucas1p2.samsung.com>
-        <20201030125149.8227-3-s.nawrocki@samsung.com>
-        <20201031121747.GB9399@kozik-lap>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.10.2020 13:17, Krzysztof Kozlowski wrote:
-> On Fri, Oct 30, 2020 at 01:51:45PM +0100, Sylwester Nawrocki wrote:
->> This patch adds a generic interconnect driver for Exynos SoCs in order
->> to provide interconnect functionality for each "samsung,exynos-bus"
->> compatible device.
+This patch supports to store chksum value with compressed
+data, and verify the integrality of compressed data while
+reading the data.
 
->> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+The feature can be enabled through specifying mount option
+'compress_chksum'.
 
->>  drivers/interconnect/Kconfig         |   1 +
->>  drivers/interconnect/Makefile        |   1 +
->>  drivers/interconnect/exynos/Kconfig  |   6 ++
->>  drivers/interconnect/exynos/Makefile |   4 +
->>  drivers/interconnect/exynos/exynos.c | 198 +++++++++++++++++++++++++++++++++++
-> 
-> How about naming the directory as "samsung"? I don't expect interconnect
-> drivers for the old Samsung S3C or S5P platforms, but it would be
-> consisteny with other names (memory, clk, pinctrl).
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ Documentation/filesystems/f2fs.rst |  1 +
+ fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
+ fs/f2fs/f2fs.h                     | 13 ++++++++++++-
+ fs/f2fs/inode.c                    |  3 +++
+ fs/f2fs/super.c                    |  9 +++++++++
+ include/linux/f2fs_fs.h            |  2 +-
+ 6 files changed, 46 insertions(+), 2 deletions(-)
 
-Sure, I will rename the directory.
-
-> How about adding separate maintainers entry for the driver with you and
-> Artur (if he still works on this)?
-
-I'm not sure what's the preference in the subsystem, I'm going to add
-a patch introducing such a maintainers entry as it might be helpful 
-for reviews/testing.  
-
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index b8ee761c9922..985ae7d35066 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
+ 			 For other files, we can still enable compression via ioctl.
+ 			 Note that, there is one reserved special extension '*', it
+ 			 can be set to enable compression for all files.
++compress_chksum		 Support verifying chksum of raw data in compressed cluster.
+ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 files using the blk-crypto framework rather than
+ 			 filesystem-layer encryption. This allows the use of
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 14262e0f1cd6..a4e0d2c745b6 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 				f2fs_cops[fi->i_compress_algorithm];
+ 	unsigned int max_len, new_nr_cpages;
+ 	struct page **new_cpages;
++	u32 chksum = 0;
+ 	int i, ret;
+ 
+ 	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+@@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 
+ 	cc->cbuf->clen = cpu_to_le32(cc->clen);
+ 
++	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
++		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
++					cc->cbuf->cdata, cc->clen);
++	cc->cbuf->chksum = cpu_to_le32(chksum);
++
+ 	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+ 		cc->cbuf->reserved[i] = cpu_to_le32(0);
+ 
+@@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 			(struct decompress_io_ctx *)page_private(page);
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 	const struct f2fs_compress_ops *cops =
+ 			f2fs_cops[fi->i_compress_algorithm];
+ 	int ret;
+@@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 
+ 	ret = cops->decompress_pages(dic);
+ 
++	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
++		u32 provided = le32_to_cpu(dic->cbuf->chksum);
++		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
++
++		if (provided != calculated) {
++			printk_ratelimited(
++				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
++				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
++				provided, calculated);
++			ret = -EFSCORRUPTED;
++		}
++	}
++
+ out_vunmap_cbuf:
+ 	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
+ out_vunmap_rbuf:
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 99bcf4b44a9c..2ae254ab7b7d 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -147,7 +147,8 @@ struct f2fs_mount_info {
+ 
+ 	/* For compression */
+ 	unsigned char compress_algorithm;	/* algorithm type */
+-	unsigned compress_log_size;		/* cluster log size */
++	unsigned char compress_log_size;	/* cluster log size */
++	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+ 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+ };
+@@ -731,6 +732,7 @@ struct f2fs_inode_info {
+ 	atomic_t i_compr_blocks;		/* # of compressed blocks */
+ 	unsigned char i_compress_algorithm;	/* algorithm type */
+ 	unsigned char i_log_cluster_size;	/* log of cluster size */
++	unsigned short i_compress_flag;		/* compress flag */
+ 	unsigned int i_cluster_size;		/* cluster size */
+ };
+ 
+@@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
+ 	COMPRESS_MAX,
+ };
+ 
++enum compress_flag {
++	COMPRESS_CHKSUM,
++	COMPRESS_MAX_FLAG,
++};
++
+ #define COMPRESS_DATA_RESERVED_SIZE		5
+ struct compress_data {
+ 	__le32 clen;			/* compressed data size */
++	__le32 chksum;			/* compressed data chksum */
+ 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+ 	u8 cdata[];			/* compressed data */
+ };
+@@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
+ 			F2FS_OPTION(sbi).compress_algorithm;
+ 	F2FS_I(inode)->i_log_cluster_size =
+ 			F2FS_OPTION(sbi).compress_log_size;
++	F2FS_I(inode)->i_compress_flag =
++			F2FS_OPTION(sbi).compress_chksum ?
++				1 << COMPRESS_CHKSUM : 0;
+ 	F2FS_I(inode)->i_cluster_size =
+ 			1 << F2FS_I(inode)->i_log_cluster_size;
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 657db2fb6739..de8f7fc89efa 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
+ 					le64_to_cpu(ri->i_compr_blocks));
+ 			fi->i_compress_algorithm = ri->i_compress_algorithm;
+ 			fi->i_log_cluster_size = ri->i_log_cluster_size;
++			fi->i_compress_flag = ri->i_compress_flag;
+ 			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
+ 			set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 		}
+@@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+ 					&F2FS_I(inode)->i_compr_blocks));
+ 			ri->i_compress_algorithm =
+ 				F2FS_I(inode)->i_compress_algorithm;
++			ri->i_compress_flag =
++				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
+ 			ri->i_log_cluster_size =
+ 				F2FS_I(inode)->i_log_cluster_size;
+ 		}
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f51807..f8de4d83a5be 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -146,6 +146,7 @@ enum {
+ 	Opt_compress_algorithm,
+ 	Opt_compress_log_size,
+ 	Opt_compress_extension,
++	Opt_compress_chksum,
+ 	Opt_atgc,
+ 	Opt_err,
+ };
+@@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_compress_algorithm, "compress_algorithm=%s"},
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
++	{Opt_compress_chksum, "compress_chksum"},
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_err, NULL},
+ };
+@@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			F2FS_OPTION(sbi).compress_ext_cnt++;
+ 			kfree(name);
+ 			break;
++		case Opt_compress_chksum:
++			F2FS_OPTION(sbi).compress_chksum = true;
++			break;
+ #else
+ 		case Opt_compress_algorithm:
+ 		case Opt_compress_log_size:
+ 		case Opt_compress_extension:
++		case Opt_compress_chksum:
+ 			f2fs_info(sbi, "compression options not supported");
+ 			break;
+ #endif
+@@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 		seq_printf(seq, ",compress_extension=%s",
+ 			F2FS_OPTION(sbi).extensions[i]);
+ 	}
++
++	if (F2FS_OPTION(sbi).compress_chksum)
++		seq_puts(seq, ",compress_chksum");
+ }
+ 
+ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index a5dbb57a687f..7dc2a06cf19a 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -273,7 +273,7 @@ struct f2fs_inode {
+ 			__le64 i_compr_blocks;	/* # of compressed blocks */
+ 			__u8 i_compress_algorithm;	/* compress algorithm */
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+-			__le16 i_padding;		/* padding */
++			__le16 i_compress_flag;		/* compress flag */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+ 		} __packed;
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
 -- 
-Regards,
-Sylwester
+2.26.2
+
