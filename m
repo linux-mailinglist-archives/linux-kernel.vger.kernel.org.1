@@ -2,135 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1952A30B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94A82A30B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgKBRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:00:26 -0500
-Received: from leonov.paulk.fr ([185.233.101.22]:56592 "EHLO leonov.paulk.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726613AbgKBRA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:00:26 -0500
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id E7D3EC0139;
-        Mon,  2 Nov 2020 18:00:23 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id 543C3C1DDC; Mon,  2 Nov 2020 18:00:23 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
-        autolearn=disabled version=3.4.2
-Received: from collins (unknown [192.168.1.1])
-        by gagarine.paulk.fr (Postfix) with ESMTPSA id B75C2C0888;
-        Mon,  2 Nov 2020 18:00:14 +0100 (CET)
-Date:   Mon, 2 Nov 2020 18:00:13 +0100
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matteo Scordino <matteo.scordino@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 8/9] dt-bindings: arm: sunxi: Add SL631 with IMX179
- bindings
-Message-ID: <20201102170013.GC2037@collins>
-References: <20201031182137.1879521-1-contact@paulk.fr>
- <20201031182137.1879521-9-contact@paulk.fr>
- <20201102101333.4bm2lfqpqnbpyp63@gilmour.lan>
- <20201102103340.GD11809@aptenodytes>
- <20201102142744.lxjvu67pr7dmxzo7@gilmour.lan>
+        id S1727412AbgKBRAq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 12:00:46 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:57173 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgKBRAq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:00:46 -0500
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 2B6131BF20A;
+        Mon,  2 Nov 2020 17:00:41 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 18:00:39 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     Yifeng <yifeng.zhao@rock-chips.com>, richard@nod.at,
+        vigneshr@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        heiko@sntech.de, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v13 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
+ RK2928 and others
+Message-ID: <20201102180039.757d3234@xps13>
+In-Reply-To: <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
+References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
+        <20201028095326.15562-3-yifeng.zhao@rock-chips.com>
+        <a8a7875b-f08b-62c6-a630-245687e0df3b@gmail.com>
+        <e02e13a0-769d-6b73-c87e-5b7d75fd4254@rock-chips.com>
+        <0b417fc2-3503-9bf6-914d-0f8b38df1914@gmail.com>
+        <20201102140725.66e7dcb1@xps13>
+        <5ad70fa0-05a9-e1e7-32cc-32933ff25ae9@gmail.com>
+        <803e291f-67e0-f66c-6c9e-041db1b3847c@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
-Content-Disposition: inline
-In-Reply-To: <20201102142744.lxjvu67pr7dmxzo7@gilmour.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Johan,
 
---KdquIMZPjGJQvRdI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 17:31:18
++0100:
 
-On Mon 02 Nov 20, 15:27, Maxime Ripard wrote:
-> On Mon, Nov 02, 2020 at 11:33:40AM +0100, Paul Kocialkowski wrote:
+> On 11/2/20 2:11 PM, Johan Jonker wrote:
 > > Hi,
-> >=20
-> > On Mon 02 Nov 20, 11:13, Maxime Ripard wrote:
-> > > On Sat, Oct 31, 2020 at 07:21:36PM +0100, Paul Kocialkowski wrote:
-> > > > Document the compatible strings for the SL631 Action Camera with IM=
-X179.
-> > > >=20
-> > > > Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/arm/sunxi.yaml | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Doc=
-umentation/devicetree/bindings/arm/sunxi.yaml
-> > > > index afa00268c7db..0fa0c0b5d89f 100644
-> > > > --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-> > > > +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-> > > > @@ -754,6 +754,12 @@ properties:
-> > > >            - const: sinlinx,sina33
-> > > >            - const: allwinner,sun8i-a33
-> > > > =20
-> > > > +      - description: SL631 Action Camera with IMX179
-> > > > +        items:
-> > > > +          - const: unknown,sl631-imx179
-> > > > +          - const: unknown,sl631
-> > > > +          - const: allwinner,sun8i-v3
-> > > > +
-> > >=20
-> > > unknown is not a valid vendor (and you should explain why you picked
-> > > that vendor name in the first place).
-> >=20
-> > Ah right, it's not in the vendor prefixes. The rationale is that there =
-is no
-> > indication of what the vendor might be on the PCB. Should I maybe use
-> > allwinner here?
->=20
-> You should mention it in the commit log for a start :)
+> > 
+> > On 11/2/20 2:07 PM, Miquel Raynal wrote:
+> >> Hi Johan, Yifeng
+> >>
+> >> Johan Jonker <jbx6244@gmail.com> wrote on Mon, 2 Nov 2020 13:57:56
+> >> +0100:
+> >>
+> >>> Hi Yifeng,
+> >>>
+> >>> Don't poke with "ecc->bytes" ones it is set in rk_nfc_ecc_init(). It
+> >>> will not be noted by the MTD frame work or userspace. I think there's
+> >>> currently no way to let the user know that a different ECC must be used.
+> >>> Neither can the user set ECC on the fly.
+> >>>
+> >>> Example R/W flow:
+> >>>
+> >>>         nand_select_target()
+> >>> 	chip->ecc.write_page_raw()
+> >>> 	chip->ecc.write_page()
+> >>>
+> >>> [..]
+> >>>
+> >>> 	chip->ecc.read_page_raw()
+> >>> 	chip->ecc.read_page()
+> >>>         nand_deselect_target()
+> >>>
+> >>> A write/read with:
+> >>>
+> >>> rk_nfc_read_page_hwecc()
+> >>> rk_nfc_write_page_hwecc()
+> >>>
+> >>> or
+> >>>
+> >>> rk_nfc_read_page_raw()
+> >>> rk_nfc_write_page_raw()
+> >>>
+> >>> must end up with the same result. If we can't archive that, then we
+> >>> shouldn't offer RAW mode to the user for now. If Miquel agrees you
+> >>> should just get the driver ready now without these 2 functions and round
+> >>> things up.
+> >>
+> >> What about just not supporting the BootROM area if it was marked
+> >> "reserved" by the BRom in the DT?
+> > 
+> > Should we just fill the buffers with '0xff' for boot blocks?
+> 
+> (part 2) ;)
+> My fault....
+> Better use:
+> 
+>     if ((chip->options & NAND_IS_BOOT_MEDIUM) &&
+>         (page < (pages_per_blk * rknand->boot_blks))) {
+> 
+> 	return -EIO;
+> 
+>     }
 
-Definitely.
+Yup, I was about to tell you that I would prefer returning a nice
+error, this is fine I guess.
 
-> But yeah, we've used allwinner as a fallback for those cases so far.
+Anyway, I think reading bad block markers is done in raw mode, so if
+raw accessors refuse to return valid values for boot blocks, you won't
+be able to access it neither with raw nor corrected hooks.
 
-Okay then, I'll go with that and add some explanation in the commit log.
+Perhaps refusing the access to the regular page access is ok, but maybe
+we should be able to at least read these pages in raw mode
+(and move the BBM to its right location). What do you think?
 
-Thanks for the review!
+Thanks,
+Miquèl
 
-Cheers,
-
-Paul
-
---=20
-Developer of free digital technology and hardware support.
-
-Website: https://www.paulk.fr/
-Coding blog: https://code.paulk.fr/
-Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
-
---KdquIMZPjGJQvRdI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEAbcMXZQMtj1fphLChP3B6o/ulQwFAl+gOx0ACgkQhP3B6o/u
-lQyZjg//bI9Bjbp/LlD/A9/teDuAzTJbir0itEikjyEReXElCuoX7l7qE05+p4jP
-gm/YaZKIux8D8HZggC+oHbw0VaTyLHj0vxcQ10NwHJoVAhChcH+Ucf+WX3L2+qxl
-FKdt9cn610jXl7CscZg9KcwWBC3a9EVpVXR73yVluwHN3y4iPE+c6geiatiReRI2
-Pjh7LUc5u5GNv+HQPjOdp/SpNUdoo1KvUPyb8AWIaPHYoj5PoORa8u95vgG6xLSi
-TbbC35O3ctNCWCOM73me2nDBJEQ5c2jTuyy1lPW2uCA+HdO00I/YrTfOyw3x+6XI
-PLOP6QC818BnSE2+Y/aa4xoTvU+PNAu5j6Fp6bLLF0WRVqgSb/QUGclcdbD55jux
-p6zvSpXjvAqz+VFjloNbcZQ5tc7gvFowP9lFUMLa9I0Y0nlX3gzuLHIBPo4ahOes
-f5UKjYHyRZlGK4MKPOc17A90Oc+bPTb3Nk0ctnXLRpeTLBO/q4qXymhNeTcG4D3K
-/9lICNidpUs7Vp3zT/OaJfBKsvWL+BTDy++Hrz3JgZ4AYtkE/iZzP5ofNK7Vj/iR
-XG5ZuhR0z42CeoHwzWrp8xijGkaQkEF4rPvNzOP4ambN3iCL0jftoj6RQvDZ9Y70
-aPlwg+JKF/M7/8qzSmn2ldH1rZhkAHqFHn9v2DX8DAuy7p/mJnU=
-=Axqj
------END PGP SIGNATURE-----
-
---KdquIMZPjGJQvRdI--
+> 
+> 
+> > 
+> >>
+> >> Raw accessors is really a nice and basic feature that I would like to
+> >> have in every new driver.
+> >>
+> >> Thanks,
+> >> Miquèl
+> >>
+> > 
+> 
