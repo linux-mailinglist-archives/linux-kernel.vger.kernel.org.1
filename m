@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F90B2A2B1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220082A2B20
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgKBM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:58:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728288AbgKBM6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:58:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95DC222273;
-        Mon,  2 Nov 2020 12:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604321895;
-        bh=fQ8P5yc8YQIpIUWE0C/hVRoq6teUjZGUWQYNFBcbt1c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lPZZIwoUuMhJhCo92GeozYcqPk7Lb8nc4ylpcD9fRDASDy5+193i2ip+L4cPGdvUU
-         TaY2tEWraTAUspuZDT1R3HbA76aZP8LJF7dAwMGUFoZ0XbHTRBy/9cS3dJo9wXDZaW
-         +C5XbMkKBVtqxTlk/Vxd6i2K66rL+ALl9gFuIAf4=
-Date:   Mon, 2 Nov 2020 13:59:10 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20201102125910.GA1008111@kroah.com>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
- <20201102114903.GN4127@dell>
- <20201102121150.GA663356@kroah.com>
- <20201102124301.GC4488@dell>
+        id S1728339AbgKBNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728253AbgKBNBR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:01:17 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CF6C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:01:17 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id a64so7957828qkc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ywfiDbg6XCEWmoBx9eC29OtR/MyEWOW93XTelnAXaBk=;
+        b=ir3GR39YhTRDVVIubqbd2b6fYJQqoYzGlGzQhJGPgx/IpIwERjn3x6j0FKgwPju8tJ
+         K346RwtLd1HrF6IYofhsCSTJj3QK+10oMg2YllJh/KpA3n62CbFQnKL6ivWZ5KZSOniq
+         QwLvLlA6x1j/aJc2hKzXChvGjpbbw6GWq/KNk/8R9NhESFTt0yrJ0KQKjkdmTuloLwW/
+         Zwps2gbtqPniuVum2Pfu8S68SKxWxd0HMyfFBAbv4qCeVCCuOZxQnUab9RNI4DYrsJao
+         v2N/I2zDZif6Md4+OJsi4IvpXjI5tOvsKPLa0IKjhrcIMk4ZoUB68GDdMIbIvaBwF1NM
+         /xmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ywfiDbg6XCEWmoBx9eC29OtR/MyEWOW93XTelnAXaBk=;
+        b=JIVx8NUFJecuqCZC4hwQF4d4TWE0uMocrcI8RQWKvJziZqcItTTPg+P9CfprqfINKW
+         AP9QsGrbUK5//bYzyDxYNl8RcfUb4oNJydbOtbBaR4nBNqkTD5vylxEOwOv2zvHavWnR
+         ftuuwXriwh5ueOilpj1UBJ1VB6Pa7RI4rQEIGvt4cx6IuTiT7fFXvyikjR+NoF0i+JH/
+         KLF1JeIZlv+l6PFIUClaV7V0mVY/8mpK3LUejeE/6Uz64NTdM8jyW1P91YQ1RlsfbAF5
+         kJr4O7C8CPDGdEivBCG1otoX6trmKzYXgHGOTaOhBic30ksJWmQqhGNDF+I7161hfRUr
+         /qSw==
+X-Gm-Message-State: AOAM532rglcp8hk+8cnLwBjGSAI75/T7Ssu8VU3MxZ1LZ2ja9/cog2yY
+        tKcU0WgoPqrS2dqgk/kpYseZzw==
+X-Google-Smtp-Source: ABdhPJzRrsH3Zfgny2Ycg3bBy2Q+SuhdpwI09cYL0ZnBVzwrgv7GmXDFxfx3kiLU2YMRfbo6u8i3PQ==
+X-Received: by 2002:a37:8c41:: with SMTP id o62mr13561782qkd.240.1604322076971;
+        Mon, 02 Nov 2020 05:01:16 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b8sm7742829qkn.133.2020.11.02.05.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 05:01:16 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kZZSV-00EvRo-QJ; Mon, 02 Nov 2020 09:01:15 -0400
+Date:   Mon, 2 Nov 2020 09:01:15 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        J??r??me Glisse <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
+Message-ID: <20201102130115.GC36674@ziepe.ca>
+References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
+ <20201030100815.2269-9-daniel.vetter@ffwll.ch>
+ <20201102072931.GA16419@infradead.org>
+ <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102124301.GC4488@dell>
+In-Reply-To: <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
-> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+On Mon, Nov 02, 2020 at 01:56:10PM +0100, Daniel Vetter wrote:
+> On Mon, Nov 2, 2020 at 8:29 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Fri, Oct 30, 2020 at 11:08:08AM +0100, Daniel Vetter wrote:
+> > > Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
+> > > that by drivers/modules is together with an mmu_notifier, and that's
+> > > all _GPL stuff.
+> >
+> > I also think it also needs to be renamed to explicitly break any existing
+> > users out of tree or int the submission queue.
 > 
-> > On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
-> > > On Mon, 02 Nov 2020, David Laight wrote:
-> > > 
-> > > > From: Lee Jones
-> > > > > Sent: 02 November 2020 11:12
-> > > > > 
-> > > > > strncpy() may not provide a NUL terminator, which means that a 1-byte
-> > > > > leak would be possible *if* this was ever copied to userspace.  Ensure
-> > > > > the buffer will always be NUL terminated by using the kernel's
-> > > > > strscpy() which a) uses the destination (instead of the source) size
-> > > > > as the bytes to copy and b) is *always* NUL terminated.
-> > > > > 
-> > > > > Cc: Rodolfo Giometti <giometti@enneenne.com>
-> > > > > Cc: "Eurotech S.p.A" <info@eurotech.it>
-> > > > > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/misc/c2port/core.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> > > > > index 80d87e8a0bea9..b96444ec94c7e 100644
-> > > > > --- a/drivers/misc/c2port/core.c
-> > > > > +++ b/drivers/misc/c2port/core.c
-> > > > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
-> > > > >  	}
-> > > > >  	dev_set_drvdata(c2dev->dev, c2dev);
-> > > > > 
-> > > > > -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> > > > > +	strscpy(c2dev->name, name, sizeof(c2dev->name));
-> > > > 
-> > > > strscpy() doesn't zero fill so if the memory isn't zeroed
-> > > > and a 'blind' copy to user of the structure is done
-> > > > then more data is leaked.
-> > > > 
-> > > > strscpy() may be better, but rational isn't right.
-> > > 
-> > > The original patch zeroed the data too, but I was asked to remove that
-> > > part [0].  In your opinion, should it be reinstated?
-> > > 
-> > > [0] https://lore.kernel.org/patchwork/patch/1272290/
-> > 
-> > Just keep the kzalloc() part of the patch, this portion makes no sense
-> > to me.
-> 
-> Can do.
-> 
-> > But if you REALLY want to get it correct, call dev_set_name()
-> > instead please, as that is what it is there for.
-> 
-> The line above isn't setting the 'struct device' name.  It looks as
-> though 'struct c2port' has it's own member, also called 'name'.  As to
-> how they differ, I'm not currently aware.  Nor do I wish to mess
-> around with the semantics all that much.
-> 
-> Going with suggestion #1.
+> Ok I looked at the mmu notifier locking again and noticed that
+> mm->subscriptions has its own spinlock. Since there usually shouldn't
+> be a huge pile of these I think it's feasible to check for the mmu
+> notifier in follow_pfn. And that would stuff this gap for good. I'll
+> throw that on top as a final patch and see what people think.
 
-As the "device" already has a name, I suggest just getting rid of this
-name field anyway, no need for duplicates.
+Probably the simplest is to just check mm_has_notifiers() when in
+lockdep or something very simple like that
 
-thanks,
-
-greg k-h
+Jason
