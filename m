@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE5B2A2C34
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE402A2C38
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgKBN6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:58:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgKBN6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:58:16 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D96092227F;
-        Mon,  2 Nov 2020 13:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604325495;
-        bh=4vBetSmkaAnipo22H++gE1vnC0urlGdr/4l9rZltXFE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b+8i5rz2fNvGL/J6h4wEUkI4ox8rsUkM8bbbQBOG71JqSsWi1gVwTT0Mo82faN1td
-         /KMhiFuGwK7cRt0J4BfT9L7nWYKypu8/fdn/U0HtQBjKJFeAB9BDprMjxJv47a4iue
-         6vtU7qZPCSdHWVnb29WtdnR5uM/nDL8Xv0AplhW0=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kZaLc-006g2w-Bj; Mon, 02 Nov 2020 13:58:12 +0000
+        id S1725841AbgKBN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:59:38 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15452 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgKBN7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:59:37 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa010c90004>; Mon, 02 Nov 2020 05:59:37 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 2 Nov
+ 2020 13:59:32 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 2 Nov 2020 13:59:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KVuilbOKfbTzqA0BY1KEg0pK0qI4yaW6cZWIzL9z95k8xlgw/T5yC6nX/coD4PAYOtTlyBdF9lmH1T0BnmN5ypSMG+/1VRjlvZrUKP65K4MWT0stk23thllp7WeM/hqVZRWIHVQ6IoArMQ8K+pOiSk7Zpw6Tsak7JCDLtgfEvW4dwvTSRQgNKkzN6pB/XV/63w5tAshYMKNgffsTnrQLiQflbKIwTONsTMxAXbGKEDTKOoMSlhnjm9ahY3grptzryW/ah4XBnnM5h9EGt+2ZV7ccS9EtriBjwXUqVO4drrZ/pmy9HlBY26wOwNDgzNYMkskugP0z9XhaUtjpUrSlFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eaxdqnV+5NJwAbgGUQjEwpfZT9xii7YG4HGl0P1NCrU=;
+ b=JrP9jevNZx2E8n2rlujnM967GA3QAJEh4XWQ0lmSzlRBvYjTUMsK/iN9CkKIKDN6f2VlL80EbO7hkAbotECeDFXNMGEkYg6giWSUNzStFvhKwPZSrL/BY9EhmIgTneWMnmrFKeOgTCytRpvl0rX709OYagb/cetXNrXoGEz29bRP16C3nU1S/GgVmwdjuc2yWoue4oSVEyjOYCCUSXe4GKjnA86EItk5Zc0fhdQy3x2J1CIbOVnnOXHbV//T+TLifI3KIa8vzBbTxz6KU/8rghXKoZVyVM3IF1viBBb6tQdKYyRTk25yAWsnHcL2vVp+JZId7fDwoAaZWZWwx/+ekQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1339.namprd12.prod.outlook.com (2603:10b6:3:70::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Mon, 2 Nov
+ 2020 13:59:31 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 13:59:31 +0000
+Date:   Mon, 2 Nov 2020 09:59:29 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Sang, Oliver" <oliver.sang@intel.com>
+CC:     Yamin Friedman <yaminf@mellanox.com>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg+lists@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, "Li, Philip" <philip.li@intel.com>
+Subject: Re: [LKP] Re: [IB/srpt] c804af2c1d:
+ last_state.test.blktests.exit_code.143
+Message-ID: <20201102135929.GD2620339@nvidia.com>
+References: <20201102140235.GA20030@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201102140235.GA20030@xsang-OptiPlex-9020>
+X-ClientProxiedBy: MN2PR16CA0032.namprd16.prod.outlook.com
+ (2603:10b6:208:134::45) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Nov 2020 13:58:12 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <trinity-4313623b-1adf-4cc3-8b50-2d0593669995-1604318207058@3c-app-gmx-bap57>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <878sbm9icl.fsf@nanos.tec.linutronix.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
- <trinity-4313623b-1adf-4cc3-8b50-2d0593669995-1604318207058@3c-app-gmx-bap57>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <336d6588567949029c52ecfbb87660c1@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: frank-w@public-files.de, tglx@linutronix.de, ryder.lee@mediatek.com, linux-mediatek@lists.infradead.org, linux@fw-web.de, linux-kernel@vger.kernel.org, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, bhelgaas@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0032.namprd16.prod.outlook.com (2603:10b6:208:134::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 2 Nov 2020 13:59:30 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZaMr-00F6fG-FJ; Mon, 02 Nov 2020 09:59:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604325577; bh=eaxdqnV+5NJwAbgGUQjEwpfZT9xii7YG4HGl0P1NCrU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=LB4gcr8hwZPHxMgcy1rcJMJonJkcgk9bz4CCp3CsRC4kSYUELG4zDq+wpiZqcDj0h
+         d5oOC0AmIPTGyTdS4qYbxoXeErNdQqI+YsGPHVLkitpPK4CdaTNIwuqTUNegU67CsR
+         4y0mHe+v6h8HypyPDrLL5Xlc0foNESORFwCbuWjh7ixq+KKtUWZWAYqQWEqD0CSUEH
+         rzCps2LuEMpQa2ja3+k+71mUjpd8ZVUsPSjByyOwK8FzD8APhSY+hkMDxNySVjXtwf
+         a8MuJSFNc4273anBuhphZHE4F40dvdesBuainsdJrOroPnkuz+LsfPl6gD/a3dpQ/E
+         amZB9UH27XHNA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-02 11:56, Frank Wunderlich wrote:
-> looks good on bananapi-r2, no warning, pcie-card and hdd recognized
+On Mon, Nov 02, 2020 at 10:02:36PM +0800, Sang, Oliver wrote:
+> Hi,
+> 
+> want to consult if all fix merged into mainline?
+> 
+> we found below commit merged rdma updates into mainline
 
-Thanks for giving it a shot. Still needs a bit of tweaking, as I expect
-it to break configurations that select CONFIG_PCI_MSI_ARCH_FALLBACKS
-(we have to assume that MSIs can be handled until we hit the 
-arch-specific
-stuff).
+rc2 probably fixes the error these logs have
 
-There is also a small nit in the way we allow userspace to mess with
-this flag via sysfs, and similar restrictions should probably apply.
+But I think you'll hit a WARN_ON that isn't fixed yet
 
-Updated patch below.
-
-         M.
-
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index d15c881e2e7e..5bb1306162c7 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -387,10 +387,20 @@ static ssize_t msi_bus_store(struct device *dev, 
-struct device_attribute *attr,
-  		return count;
-  	}
-
--	if (val)
-+	if (val) {
-+		/*
-+		 * If there is no possibility for this bus to deal with
-+		 * MSIs, then allowing them to be requested would lead to
-+		 * the kernel complaining loudly. In this situation, don't
-+		 * let userspace mess things up.
-+		 */
-+		if (!pci_bus_is_msi_capable(subordinate))
-+			return -EINVAL;
-+
-  		subordinate->bus_flags &= ~PCI_BUS_FLAGS_NO_MSI;
--	else
-+	} else {
-  		subordinate->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
-+	}
-
-  	dev_info(&subordinate->dev, "MSI/MSI-X %s for future drivers of 
-devices on this bus\n",
-  		 val ? "allowed" : "disallowed");
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 4289030b0fff..28861cc6435a 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus 
-*bus)
-  		d = pci_host_bridge_msi_domain(b);
-
-  	dev_set_msi_domain(&bus->dev, d);
-+	if (!pci_bus_is_msi_capable(bus))
-+		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
-  }
-
-  static int pci_register_host_bridge(struct pci_host_bridge *bridge)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 22207a79762c..6aadb863dff4 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -2333,6 +2333,12 @@ pci_host_bridge_acpi_msi_domain(struct pci_bus 
-*bus) { return NULL; }
-  static inline bool pci_pr3_present(struct pci_dev *pdev) { return 
-false; }
-  #endif
-
-+static inline bool pci_bus_is_msi_capable(struct pci_bus *bus)
-+{
-+	return (IS_ENABLED(CONFIG_PCI_MSI_ARCH_FALLBACKS) ||
-+		dev_get_msi_domain(&bus->dev));
-+}
-+
-  #ifdef CONFIG_EEH
-  static inline struct eeh_dev *pci_dev_to_eeh_dev(struct pci_dev *pdev)
-  {
-
--- 
-Jazz is not dead. It just smells funny...
+Jason
