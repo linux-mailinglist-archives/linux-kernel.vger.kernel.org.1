@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06062A2E88
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15662A2E8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKBPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:43:31 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:49236 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgKBPnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:43:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604331810; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=X6sUojaWNycTrfbp3CsmOA74M4M7b93vLHJQol2uZqg=; b=soqOOZSeVXObGraf7gIzemkXfpqva7rgB1rGZ4PfQ8UtVraWOwRZGcjx6bUHuAjYe8uCA79I
- SJ0/ZGm8I7iOO1qNT3RBR0FhUgXlXnB0SdYFDRpZdszJk7ceRym/TO/R01y33Ayn1ORBP45Z
- 8lJ9AbHI37vQh60vS9J2l6atKIw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fa02906d981633da313740d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 15:43:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18758C433CB; Mon,  2 Nov 2020 15:43:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93753C433C8;
-        Mon,  2 Nov 2020 15:43:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93753C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 00/41] [Set 4] Rid W=1 warnings in Wireless
-References: <20201102112410.1049272-1-lee.jones@linaro.org>
-Date:   Mon, 02 Nov 2020 17:42:58 +0200
-In-Reply-To: <20201102112410.1049272-1-lee.jones@linaro.org> (Lee Jones's
-        message of "Mon, 2 Nov 2020 11:23:29 +0000")
-Message-ID: <87mtzzpxx9.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726302AbgKBPnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:43:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgKBPnf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:43:35 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C7CC061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:43:35 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id oq3so17637142ejb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nS8GcWnRvgAze9eGONKgTm54dvXOecWjyagLlZce7Is=;
+        b=GeZOTcELL0wHCC2LsYMp4AHDK/U4F0TpiMBx0TLSL9ySl4L4C8XcHcbUz5fZNLjniM
+         TuvyR4acGxkL9PjF4zrWBiY258C6IcsF0J9LR6SowCpPKmCKno9m8GSu4pQU9/WnDZH7
+         7UkFNkQaU4R7nVWteNdPvBIJxPPgU8WHblr0zM6zQdwUqyKaEmqLaDFu3SLFEdkz8070
+         +tw2ItP8FRhBWa/R+2tqWgkisP8VzJCQvEhMDs6cgObDq+FQOIe0RTsRoPUGJizua2af
+         DerEr/5gFY6bKe9hU6ejx4bsKfOsV8bd9SlGakYbkn/eCz8qeemmHfgRz2JwvgXFT4AO
+         tsEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nS8GcWnRvgAze9eGONKgTm54dvXOecWjyagLlZce7Is=;
+        b=KGk5TYjheNngCHFVWWjDTebhc1OJiyuHwaTVQiarFb1f8zZUmj3z3kDuqB/CnyN674
+         g3gAZj6K3PSXFwJtVkWZJgaDF5uj16wntXFYo7WN/mFZ7mDZs00yLFF76bR4LRrxuMFW
+         R00NyFUwHNhMBKxMjyY1pL1O3c1qsSMOMMTvqyXoeJgsgNOw8DwIdLLSDwn4+HkyT1za
+         kX8or4b0l48X6MJWdSPrxN3mYoYWiMw4TPSg4d6aXB5wzg5FOf6U6FaawAj93FmKVKCs
+         lsM9YgOYZBt4D3zonqi1J+Ls3MJz1gawYpxY/yjEA9gZoYmJm2rH4JntbPyK0LIsa99y
+         DXWA==
+X-Gm-Message-State: AOAM530hQqMKsWzHcUho4caDcyID0UCO2DZgYLHknuoifoum8ZStn0U5
+        PVCx5Pm9lLsPi5gSWf7f5lTtqHkf0x2LzgZ5Vv4EmA==
+X-Google-Smtp-Source: ABdhPJyfQCPRUI5fZkO4PkZURO7NzoV9R0m8AUPk0K6Fot5LT+TZuLggUEPGTEcOXrVbpzMXVwNY7147yllEhTQsoPY=
+X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr2189231ejh.155.1604331814011;
+ Mon, 02 Nov 2020 07:43:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201102152037.963-1-brgl@bgdev.pl> <20201102152037.963-2-brgl@bgdev.pl>
+ <20201102154101.GO27442@casper.infradead.org>
+In-Reply-To: <20201102154101.GO27442@casper.infradead.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 2 Nov 2020 16:43:22 +0100
+Message-ID: <CAMpxmJUOb+tR25_h0R1kq7K0d=4DpmutW_V6UggL-+u8u3271g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] mm: slab: provide krealloc_array()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-drm <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>, linux-mm@kvack.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
-
->  [Last batch!]
+On Mon, Nov 2, 2020 at 4:41 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+> On Mon, Nov 02, 2020 at 04:20:30PM +0100, Bartosz Golaszewski wrote:
+> > +Chunks allocated with `kmalloc` can be resized with `krealloc`. Similarly
+> > +to `kmalloc_array`: a helper for resising arrays is provided in the form of
+> > +`krealloc_array`.
 >
-> Lee Jones (41):
->   wil6210: wmi: Correct misnamed function parameter 'ptr_'
->   rsi_91x_usb: Fix some basic kernel-doc issues
->   rtl8192cu: mac: Fix some missing/ill-documented function parameters
->   rsi_91x_usb_ops: Source file headers are not good candidates for
->     kernel-doc
->   rtl8192cu: trx: Demote clear abuse of kernel-doc format
->   brcmfmac: bcmsdh: Fix description for function parameter 'pktlist'
->   brcmfmac: pcie: Provide description for missing function parameter
->     'devinfo'
->   iwlwifi: mvm: rs: Demote non-conformant function documentation headers
->   wl1251: cmd: Rename 'len' to 'buf_len' in the documentation
->   ath9k: ar9330_1p1_initvals: Remove unused const variable
->     'ar9331_common_tx_gain_offset1_1'
->   ath9k: ar9340_initvals: Remove unused const variable
->     'ar9340Modes_ub124_tx_gain_table_1p0'
->   ath9k: ar9485_initvals: Remove unused const variable
->     'ar9485_fast_clock_1_1_baseband_postamble'
->   ath9k: ar9003_2p2_initvals: Remove unused const variables
->   prism54: isl_ioctl: Fix one function header and demote another
->   iwlwifi: iwl-eeprom-read: Demote one nonconformant function header
->   iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's
->     header
->   intersil: hostap_hw: Prevent incompatible function type cast
->   brcm80211: fweh: Add missing description for 'gfp'
->   ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg'
->     param
->   ath9k: ar5008_phy: Demote half completed function headers
->   ath: dfs_pattern_detector: Fix some function kernel-doc headers
->   ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
->   iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
->   wl3501_cs: Fix misspelling and provide missing documentation
->   rtlwifi: halbtc8723b2ant: Remove a bunch of set but unused variables
->   rtlwifi: phy: Remove set but unused variable 'bbvalue'
->   rtlwifi: halbtc8821a1ant: Remove set but unused variable
->     'wifi_rssi_state'
->   rtl8723be: phy: Remove set but unused variable 'lc_cal'
->   rtl8188ee: phy: Remove set but unused variable 'reg_ea4'
->   rtlwifi: halbtc8821a2ant: Remove a bunch of unused variables
->   mwifiex: pcie: Remove a couple of unchecked 'ret's
->   rtl8723be: trx: Remove set but unused variable 'cck_highpwr'
->   rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
->   rtl8821ae: phy: Place braces around empty if() body
->   wlcore: spi: Demote a non-compliant function header, fix another
->   rtw8822b: Return type is not const
->   iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
->   realtek: rtw8822c: Remove unused variable 'corr_val'
->   ath9k: dynack: Demote non-compliant function header
->   iwlwifi: fw: acpi: Demote non-conformant function headers
->   realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
+> Is there any reason you chose to `do_this` instead of do_this()?  The
+> automarkup script turns do_this() into a nice link to the documentation
+> which you're adding below.
+>
 
-The cover letter was not CCed to linux-wireless, adding that. But the
-patches itself look ok, I see all 41 of them in pathwork:
+No, I just didn't know better. Thanks for bringing this to my attention.
 
-https://patchwork.kernel.org/project/linux-wireless/list/?series=375401&order=date
+> Typo 'resising' resizing.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Will fix in the next iteration.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Bartosz
