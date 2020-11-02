@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCA32A3028
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691AD2A302A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgKBQnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbgKBQnn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:43:43 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E714CC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:43:42 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p19so1634230wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:43:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z+d818YUCcbVlR/JysJp1RAmAEoaBLjpuG8D8U7SqKQ=;
-        b=1Hqt4xIZOLZwyC8O6kYf7k/TFdaN+YLxie4zOSb3Kfz619j9++lDs8+YyskxeHCuVX
-         YQpy8FXElZEO13ZXFGmJqPlntw0YuvD6V1gIIHIb62HTf4JyqtmezUJAKXR5JsfPEJ6A
-         3cMVkS9NWl1B78Ci3com5rTqA7Izg1vIYtKgZ0R/R/qr+hMJPfu6md2WRoQqYwMWs0ED
-         i0ly/SkwfL222dQS6QWV6njxuIfo49TJG8B/xEebzssMx6+2Jn5iaGpcZLwQQjEkACOQ
-         IRYAkl/D8ZuWQP3s/mcDVdH490+5d2qhPW1Vio6rY4Va5z6vCeLaJVYm/tKvSW1GB+JL
-         y3rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z+d818YUCcbVlR/JysJp1RAmAEoaBLjpuG8D8U7SqKQ=;
-        b=AsbCgvEOCrd8dYt9z2Vv0/87xxK0RVNXpQ/+mJwH/z+oBe2UzrlojP10NXHypygYOQ
-         OanfjgbuQ+Y7/eeaDLH7j4YXU7KT9ImTy9VIJoD0VhqcWSe4A0sobWYu7xEgY/ssN6Vu
-         JbzOlpB94pVprSXRruPMEw74lqPJfG19p2khUCG/2VUk1L8MDvarubGTLc9MYDB23G+S
-         vjZx5HsetUo4vxTavrzusZLwkaD4/APUKmkG8w2Ylh0C6xQMU+Lyw1yZ3Lm99MBxCu/i
-         EJg+l7TkKsTksUuU4n8fmqNAhaJD3kLKHxrHVmRSeyHDoLE0ZBMgbhF1/uT9Cqttf3Km
-         Jm6w==
-X-Gm-Message-State: AOAM530s1/UKxw5InEr7mWZW0Gm2klTisS0k51Do0+7IvGhq4wj9Cb1o
-        caAWO3X/YH/T59G4m7F/2bVEONIUFUUX+jdkqBV4BA==
-X-Google-Smtp-Source: ABdhPJxjeUxDOHDsKgP6AlKH+uqmmUrG2sadDyDN0C4gxRiCaUwNX+0kUmVfTFyDwxdxAfnUxRbbn9lNLGN9VAuwcUc=
-X-Received: by 2002:a1c:20ce:: with SMTP id g197mr2496715wmg.49.1604335421664;
- Mon, 02 Nov 2020 08:43:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20201102061445.191638-1-tao3.xu@intel.com>
-In-Reply-To: <20201102061445.191638-1-tao3.xu@intel.com>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Mon, 2 Nov 2020 08:43:30 -0800
-Message-ID: <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
-To:     Tao Xu <tao3.xu@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727248AbgKBQnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:43:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727201AbgKBQnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:43:50 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A82DA22268;
+        Mon,  2 Nov 2020 16:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604335429;
+        bh=A4CrSl0xCUEbjxHUHtrDjJ4RCOsU/ynwC3kjXjcWM1M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iDFfGvn4cAesZ5C8deKe2W3JopbFeQNtNbhLTW5Zdo4HY8pdV+1p0SAnF7w9ja2V7
+         fu6NH98jGrmGtl4K+Lx3m0rH9y4dDtvzyrUFJQ5NsPpjKWJjeswVFFVqBZbnZq0YTt
+         juT/y2HhsmE8GcVGkzXaXfYJs4rw3+YdbCk4FNVo=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/2] habanalabs/gaudi: move coresight mmu config
+Date:   Mon,  2 Nov 2020 18:43:43 +0200
+Message-Id: <20201102164343.17268-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
->
-> There are some cases that malicious virtual machines can cause CPU stuck
-> (event windows don't open up), e.g., infinite loop in microcode when
-> nested #AC (CVE-2015-5307). No event window obviously means no events,
-> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
-> hardware CPU can't be used by host or other VM.
->
-> To resolve those cases, it can enable a notify VM exit if no
-> event window occur in VMX non-root mode for a specified amount of
-> time (notify window).
->
-> Expose a module param for setting notify window, default setting it to
-> the time as 1/10 of periodic tick, and user can set it to 0 to disable
-> this feature.
->
-> TODO:
-> 1. The appropriate value of notify window.
-> 2. Another patch to disable interception of #DB and #AC when notify
-> VM-Exiting is enabled.
+From: Ofir Bitton <obitton@habana.ai>
 
-Whoa there.
+We must relocate the coresight mmu configuration to the coresight
+flow to make it work in case the first submission is to configure
+the profiler.
 
-A VM control that says "hey, CPU, if you messed up and livelocked for
-a long time, please break out of the loop" is not a substitute for
-fixing the livelocks.  So I don't think you get do disable
-interception of #DB and #AC.  I also think you should print a loud
-warning and have some intelligent handling when this new exit
-triggers.
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/gaudi/gaudi.c           | 5 +----
+ drivers/misc/habanalabs/gaudi/gaudiP.h          | 1 +
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c | 5 +++++
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
-> +static int handle_notify(struct kvm_vcpu *vcpu)
-> +{
-> +       unsigned long exit_qualification = vmcs_readl(EXIT_QUALIFICATION);
-> +
-> +       /*
-> +        * Notify VM exit happened while executing iret from NMI,
-> +        * "blocked by NMI" bit has to be set before next VM entry.
-> +        */
-> +       if (exit_qualification & NOTIFY_VM_CONTEXT_VALID) {
-> +               if (enable_vnmi &&
-> +                   (exit_qualification & INTR_INFO_UNBLOCK_NMI))
-> +                       vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
-> +                                     GUEST_INTR_STATE_NMI);
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index b071965fa10a..2519a34e25b7 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -4742,7 +4742,7 @@ static void gaudi_write_pte(struct hl_device *hdev, u64 addr, u64 val)
+ 			(addr - gaudi->hbm_bar_cur_addr));
+ }
+ 
+-static void gaudi_mmu_prepare_reg(struct hl_device *hdev, u64 reg, u32 asid)
++void gaudi_mmu_prepare_reg(struct hl_device *hdev, u64 reg, u32 asid)
+ {
+ 	/* mask to zero the MMBP and ASID bits */
+ 	WREG32_AND(reg, ~0x7FF);
+@@ -4910,9 +4910,6 @@ static void gaudi_mmu_prepare(struct hl_device *hdev, u32 asid)
+ 	gaudi_mmu_prepare_reg(hdev, mmMME2_ACC_WBC, asid);
+ 	gaudi_mmu_prepare_reg(hdev, mmMME3_ACC_WBC, asid);
+ 
+-	gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_ARUSER, asid);
+-	gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_AWUSER, asid);
+-
+ 	hdev->asic_funcs->set_clock_gating(hdev);
+ 
+ 	mutex_unlock(&gaudi->clk_gate_mutex);
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index 83ad2b0a3a61..8eb598db81b2 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -271,5 +271,6 @@ void gaudi_set_pll_profile(struct hl_device *hdev, enum hl_pll_frequency freq);
+ int gaudi_debug_coresight(struct hl_device *hdev, void *data);
+ void gaudi_halt_coresight(struct hl_device *hdev);
+ int gaudi_get_clk_rate(struct hl_device *hdev, u32 *cur_clk, u32 *max_clk);
++void gaudi_mmu_prepare_reg(struct hl_device *hdev, u64 reg, u32 asid);
+ 
+ #endif /* GAUDIP_H_ */
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_coresight.c b/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
+index 881531d4d9da..3d2b0f0f4650 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
+@@ -623,6 +623,11 @@ static int gaudi_config_etr(struct hl_device *hdev,
+ 			return -EINVAL;
+ 		}
+ 
++		gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_ARUSER,
++						hdev->compute_ctx->asid);
++		gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_AWUSER,
++						hdev->compute_ctx->asid);
++
+ 		msb = upper_32_bits(input->buffer_address) >> 8;
+ 		msb &= PSOC_GLOBAL_CONF_TRACE_ADDR_MSB_MASK;
+ 		WREG32(mmPSOC_GLOBAL_CONF_TRACE_ADDR, msb);
+-- 
+2.17.1
 
-This needs actual documentation in the SDM or at least ISE please.
