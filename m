@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7682A3557
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668A92A3558
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgKBUqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S1726299AbgKBUqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgKBUqC (ORCPT
+        with ESMTP id S1726506AbgKBUox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:46:02 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFEBC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:46:00 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id h12so10159887qtc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:46:00 -0800 (PST)
+        Mon, 2 Nov 2020 15:44:53 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CD1C0617A6;
+        Mon,  2 Nov 2020 12:44:53 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id 7so20763995ejm.0;
+        Mon, 02 Nov 2020 12:44:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gB2e508EdlwqwocPMg7gSFq3mG+QyX2QZ372rPOjJ/0=;
-        b=GkYdoJDP3SQawBGQzX6f6vlVSfuqoKuZi6YHT2czkvxud7XGR/gxb7pT8E9JRX0BM7
-         AvNke3kr4copQpUNeKato3NWktKZn1lTJDOtigAcUl2jZbZ9bjT/vOoyEMuOLG1qDpg8
-         GOM7xz+0GZBVO+TPEwNSNzSbvcfbflDoxFA4zLtKuH3uO3oqHajPdTEAVlB9bHCruMNX
-         fW4rf3TPJJhY2i/p0WdoPnGZRHioMKc53ApqR1SLSSKZHh4ZR76W9xVQ7P9PiCjF1iFw
-         S+fOHmuwKkLPOZ9wtu80sukk1jYcLnFOjCAIj8TxGvfQlIb/LfI7K0YOmmFMR6D97BOw
-         7iJQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZQv/n+Pc9gBufpL9P6pIO2ZINXQcbOdsmattdguwTpU=;
+        b=UTrUitm/iFhoWSEF85q+yqCp6MJqJjJgTV8nE8lIAXmJsobPMZjm8SKfw+m2lYCgVZ
+         tvd94mMJ4JAt5GX7E3u3WSAn3ghS/JybNRh6Wshh+/S2aKCH7VxF2X/mqpq804FPQeEA
+         /K+6bi9gEg5hUU00OVeSV2itQq96P+ZVqfiRQt1+KgvzaPv0NMCuzSEcsjUJZAZHdBtf
+         TLyj/TFTfjZYkoaqTylAm/ne4oYCNYXxRLGEIMQMbINzbH6Vl6nlcIt5RDHa+x0grlsm
+         coTWqIXrgQT3xtXUdnwvQg2XMMGVLUaM6E7lx47IWrWqh5VJGMzhDfP0hSMRZg1c2LcA
+         xAVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gB2e508EdlwqwocPMg7gSFq3mG+QyX2QZ372rPOjJ/0=;
-        b=gQX1X8zbWbZbHds8VTgNWT33neypeTqdlYM79Ol9zcrr7it2MZQLo8FU4fogxMPCw5
-         R1vRe5P7us0JI8cBqnBlqjwPkHpVjTYTmdFaS2Wbw+SpTuTm9DXg7sNL707OD3eKnldY
-         LsgEf9e+nEUtoxX9W6/mEScPjgmgnEEFGnBDeMFmmRTI6wlGM3yvNdLBNKcrFpzYAkzm
-         agd68GE/QpqEypRFyIGdOOj2FQXvCmHWuhomh70nCEweefd7ByG05hed9sxJAZxtQEbb
-         23NDAD8s4mBvQcjfM/711HhERBEIuZmlSq3Fud5c2Fpn9dR5wP/Y54lTLZvVJQ2cYHfW
-         EXqw==
-X-Gm-Message-State: AOAM5310ppSNiQ7UXM/jPw2SuyJsFaw9ryRAJeVrhkCC5dQX9xiAXjBz
-        dLGz+asOVY7Q9qIjO4tLoAK6Ow==
-X-Google-Smtp-Source: ABdhPJxudlJHRrYzOFWNo8jeGkzWZZdZucQ6P+YEDzHlTPpQ1eFVaOSr7/XsAs+QhppEnZoVEhob5g==
-X-Received: by 2002:ac8:6045:: with SMTP id k5mr15221157qtm.216.1604349959591;
-        Mon, 02 Nov 2020 12:45:59 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:2f6e])
-        by smtp.gmail.com with ESMTPSA id 67sm8636195qkd.14.2020.11.02.12.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 12:45:58 -0800 (PST)
-Date:   Mon, 2 Nov 2020 15:44:13 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-Subject: Re: [PATCH v20 19/20] mm/lru: introduce the relock_page_lruvec
- function
-Message-ID: <20201102204413.GC740958@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-20-git-send-email-alex.shi@linux.alibaba.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZQv/n+Pc9gBufpL9P6pIO2ZINXQcbOdsmattdguwTpU=;
+        b=HmwAmXDeQnGQ+iMBU5BbvFN/8mNoDlP6ZLYPFNMHGCM14jKCk95yDIO8rF45W6pb/6
+         obWDKmoxQkZnKj0PKsazDQVlGOCzWtWCRh112Pzl/OBw0fw5ShYYxRr97JBd+nF+7bua
+         M3C9qM+85U2wMh61wjonkwlJ4fhGYiyaToqKp3Sv5Ay/oUVBzFB9j/k9e5kl8wTNG408
+         ZA5O0CfGgjthbP2Y5THsgcP0268lwlKWheJpgJiyE5LtbYuAFg9y4P6USAgauZo/gKq9
+         kGUKIhUqF8u3SWUre8FS+bkHt6saC/EmUAbPOHnuLQlqTDEvC8i6w3ktx2DMHzcMhT2m
+         P5fQ==
+X-Gm-Message-State: AOAM533gGBx68ydS65MA210GUD4FyYnqpCljDy5FoeSGBSxGVrkP2LED
+        /nWK/XhAVOh3Y96D6hdZ9ie8VvGPFdg=
+X-Google-Smtp-Source: ABdhPJzYXHsBLvi55P1UZFx56hbwWS3tJBwAzM3b0wkhceNV4ZIflZenWgtXLCtu2uycKweqMlQdWw==
+X-Received: by 2002:a17:906:7805:: with SMTP id u5mr7762253ejm.379.1604349891925;
+        Mon, 02 Nov 2020 12:44:51 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:f8a5:eb38:336d:d2dc? ([2a01:110f:b59:fd00:f8a5:eb38:336d:d2dc])
+        by smtp.gmail.com with ESMTPSA id u14sm10821756edv.6.2020.11.02.12.44.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 12:44:51 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] leds: rt4505: Add support for Richtek RT4505 flash
+ LED controller
+To:     cy_huang <u0084500@gmail.com>, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, devicetree@vger.kernel.org
+References: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <3cf3ee50-3dd8-d3b1-66a9-cea2ba487de3@gmail.com>
+Date:   Mon, 2 Nov 2020 21:44:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603968305-8026-20-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 06:45:04PM +0800, Alex Shi wrote:
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> 
-> Use this new function to replace repeated same code, no func change.
-> 
-> When testing for relock we can avoid the need for RCU locking if we simply
-> compare the page pgdat and memcg pointers versus those that the lruvec is
-> holding. By doing this we can avoid the extra pointer walks and accesses of
-> the memory cgroup.
-> 
-> In addition we can avoid the checks entirely if lruvec is currently NULL.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
+Hi ChiYuan,
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On 11/2/20 3:42 AM, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> Add support for RT4505 flash LED controller. It can support up to 1.5A
+> flash current with hardware timeout and low input voltage protection.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+> Changes since v1 to v2
+> 
+> - Create flash directory into drvers/leds.
+> - Coding style fix to meet 80 charactors per line limit.
+> - Refine the description in the Kconfig help text.
+> - Change all descriptions for 'led' text to uppercase 'LED'.
+> 
+> ---
+>   drivers/leds/Kconfig             |   2 +
+>   drivers/leds/Makefile            |   3 +
+>   drivers/leds/flash/Kconfig       |  17 ++
+>   drivers/leds/flash/Makefile      |   2 +
+>   drivers/leds/flash/leds-rt4505.c | 430 +++++++++++++++++++++++++++++++++++++++
+>   5 files changed, 454 insertions(+)
+>   create mode 100644 drivers/leds/flash/Kconfig
+>   create mode 100644 drivers/leds/flash/Makefile
+>   create mode 100644 drivers/leds/flash/leds-rt4505.c
+
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+
+-- 
+Best regards,
+Jacek Anaszewski
