@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FD02A2F1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDD42A2F17
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKBQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
+        id S1726928AbgKBQE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbgKBQEv (ORCPT
+        with ESMTP id S1726445AbgKBQEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:04:51 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA494C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:04:51 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id i2so9033999qkk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:04:51 -0800 (PST)
+        Mon, 2 Nov 2020 11:04:54 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D71C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:04:54 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id j15so6610426wrd.16
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:04:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=EAVCYXK+qwXTj64iW4lXgFSidDhKD1r7M09orz7ePT4=;
-        b=k5i20QIvLpjM6vF429n9Tl6xCmJqK07WcfN0xIkxzRzAfU68Zi9Jbuh1zMcB+Du1TD
-         JRQCD3fFOBoMWG10dSXHiGLJwfFP1YKhmDRVX8DO3mPpwfTL5vhxGolxVDmt0g0HfRNe
-         pOigvu++IGnprsHUuYqBsqFbQAlTc6OwkZORnbGWiels6Q5UmcOOMZRcwBYqNL2tRkc/
-         8pxTgN6s63Ta5PTNCcf37fuajp7flt088rDg8Y68OHRIrsGNJ28K7CK4UdIxpjIOlyiL
-         uhiAOYT8bkMvS+neymEUDwhQs+IH/pPyggqY0aX7W+K2SXOaoAHS6CewwRBx+N9vNwgT
-         V7zg==
+        bh=LIY2nrONxUEpI3abKUGgXLbsvOzrU8dATPLwmTEHaeU=;
+        b=U8TbU6Or9tF6NdTdyIM/i7kxRRXG3zvwVg7uJei8rIMJcTZSkDhiinrbl76M34dfdu
+         HvgsRAKkA1wp12YthpAIpaiE9heJWdRi32o4EAqBDOIHF7Tnf/8o7pzDjNfW6S1747gi
+         U4JmjsAa6xgvRzBf9TCxH6snmyetzmYhWeYGxzp6rI2Brt8AuSqMd/IR1d/W6sWFmT/1
+         2dJCIYZt6R8kYUbYXF68Zcj22CCskjPd/UPpa2l1RlRztpQKbNNp4eNHW4y/WF2BS3C9
+         IQ4+ZkIfq4BOu9N51riq6cJAEe5TNJh06qUmMn3JMdV0f66nJfAEXyyYfvyhxH9ID0vJ
+         t0vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=EAVCYXK+qwXTj64iW4lXgFSidDhKD1r7M09orz7ePT4=;
-        b=p1QeKbxhXzkxDDFZFnyr12YCxSttM3kb0ir9mkyaRFEXCj/TtK7UgL1HzC0s4d/Wu+
-         4ScLJaLVnIp51e8LHBZ05pgMVZdfBUp8QfoVPm0sDE148pv4wg9nZcnOWmpkllkc0HGj
-         S8T7YQ53mTHBOMqGiG86g2JwKn7k4rdf7Td+xLLMIQv1PWjGG1vt6IZOjwQBx8dbUQlq
-         V4Pp7m4+0xI8bHwpY9e0D598IXjP9PYBk+j/ws0Y5Jf+6GmIQN+oDxhtxjn9yaJON+qE
-         Zr7Da4WOJvqu39Jj1IT6MmyXYyoB1d2roJEhu+EGGl+Djg8mPn3VHOLh2AsZqpC5mTQu
-         mKrw==
-X-Gm-Message-State: AOAM531kytRJlRzmCqKY8AE5wb6wGTM7L3raE5NazRMBIL9Q02YLoHt9
-        SIJUO0Gjkn1LB9tBiqm4GIHnhp5qbuQ3tN9a
-X-Google-Smtp-Source: ABdhPJwsMN6oqU3Wt4KjIH6HlbW0rb1wTTVGLETIV417Vv4qAkdfcUR1AXfawvPU4vqyxoDjM2GMgqAep9SiMiIh
+        bh=LIY2nrONxUEpI3abKUGgXLbsvOzrU8dATPLwmTEHaeU=;
+        b=BOY4m0N7TbIpRfCrqkKIP+pySKhEBp5ynUbUi+s069n88xIr3pIL1a7Rwnwqr8MixY
+         L6W/gSJP6it3KpbBFoFyJ9IrXcC8nz/QxPUZVt2dOA7xIEznuGY+3sDVsQ9Jwaf7ugFt
+         s6EDqcZz7v22rFpQkVa5D7nDlEhRPX2UjgYourgRFJwhyEXrvV2kDqFyB4qbdzEBePDN
+         2Se5ACbf5wR5TllSHU4K0nkiM4uNMPZCsl3f6eUAUFd9jddzUnMwv4tXkxSjmAcJTbel
+         qNFm6gKPdrPqxzJHUb+1ZOeUTXIj6iLKStz512tUg7eeLQSkWACiZQN9kqxsU3P1cgCg
+         aTMQ==
+X-Gm-Message-State: AOAM531z7gRzgZdzRHB2eMBM1RV41/b5HUjDMgLuTqeI6xo4Zx0KEqjE
+        1yX5yrzXr0ptz0cjDZ7VNCR0PwUG97p4aWdL
+X-Google-Smtp-Source: ABdhPJxCEvp+v/YzAfjQjY0zm0EyrvfnbcJNKOHkfPgL9GS4J1VHkjBo0q8nWAvofosG96BJyurF9OCJIDe9ka50
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:58d3:: with SMTP id
- dh19mr23053645qvb.14.1604333090834; Mon, 02 Nov 2020 08:04:50 -0800 (PST)
-Date:   Mon,  2 Nov 2020 17:03:50 +0100
+ (user=andreyknvl job=sendgmr) by 2002:adf:dc4c:: with SMTP id
+ m12mr8197981wrj.177.1604333093213; Mon, 02 Nov 2020 08:04:53 -0800 (PST)
+Date:   Mon,  2 Nov 2020 17:03:51 +0100
 In-Reply-To: <cover.1604333009.git.andreyknvl@google.com>
-Message-Id: <0bfb63a90126521a6e0ba98b545c7ea2bb37b0e4.1604333009.git.andreyknvl@google.com>
+Message-Id: <d8fef04e7ddb79187d76865d7f3da7077288da44.1604333009.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604333009.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v7 10/41] kasan: drop unnecessary GPL text from comment headers
+Subject: [PATCH v7 11/41] kasan: KASAN_VMALLOC depends on KASAN_GENERIC
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>
@@ -74,158 +74,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't mention "GNU General Public License version 2" text explicitly,
-as it's already covered by the SPDX-License-Identifier.
+Currently only generic KASAN mode supports vmalloc, reflect that
+in the config.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: If0a2690042a2aa0fca70cea601ae9aabe72fa233
+Change-Id: I1889e5b3bed28cc5d607802fb6ae43ba461c0dc1
 ---
- mm/kasan/common.c         |  5 -----
- mm/kasan/generic.c        |  5 -----
- mm/kasan/generic_report.c |  5 -----
- mm/kasan/init.c           |  5 -----
- mm/kasan/quarantine.c     | 10 ----------
- mm/kasan/report.c         |  5 -----
- mm/kasan/tags.c           |  5 -----
- mm/kasan/tags_report.c    |  5 -----
- 8 files changed, 45 deletions(-)
+ lib/Kconfig.kasan | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 950fd372a07e..33d863f55db1 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -7,11 +7,6 @@
-  *
-  * Some code borrowed from https://github.com/xairy/kasan-prototype by
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index 542a9c18398e..8f0742a0f23e 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -155,7 +155,7 @@ config KASAN_SW_TAGS_IDENTIFY
  
- #include <linux/export.h>
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 248264b9cb76..37ccfadd3263 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -7,11 +7,6 @@
-  *
-  * Some code borrowed from https://github.com/xairy/kasan-prototype by
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-diff --git a/mm/kasan/generic_report.c b/mm/kasan/generic_report.c
-index a38c7a9e192a..6bb3f66992df 100644
---- a/mm/kasan/generic_report.c
-+++ b/mm/kasan/generic_report.c
-@@ -7,11 +7,6 @@
-  *
-  * Some code borrowed from https://github.com/xairy/kasan-prototype by
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #include <linux/bitops.h>
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index fe6be0be1f76..9ce8cc5b8621 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -4,11 +4,6 @@
-  *
-  * Copyright (c) 2015 Samsung Electronics Co., Ltd.
-  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #include <linux/memblock.h>
-diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-index 4c5375810449..580ff5610fc1 100644
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@ -6,16 +6,6 @@
-  * Copyright (C) 2016 Google, Inc.
-  *
-  * Based on code by Dmitry Chernenkov.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-  */
- 
- #include <linux/gfp.h>
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 00a53f1355ae..d500923abc8b 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -7,11 +7,6 @@
-  *
-  * Some code borrowed from https://github.com/xairy/kasan-prototype by
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #include <linux/bitops.h>
-diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-index e02a36a51f42..5c8b08a25715 100644
---- a/mm/kasan/tags.c
-+++ b/mm/kasan/tags.c
-@@ -4,11 +4,6 @@
-  *
-  * Copyright (c) 2018 Google, Inc.
-  * Author: Andrey Konovalov <andreyknvl@google.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-diff --git a/mm/kasan/tags_report.c b/mm/kasan/tags_report.c
-index bee43717d6f0..5f183501b871 100644
---- a/mm/kasan/tags_report.c
-+++ b/mm/kasan/tags_report.c
-@@ -7,11 +7,6 @@
-  *
-  * Some code borrowed from https://github.com/xairy/kasan-prototype by
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  */
- 
- #include <linux/bitops.h>
+ config KASAN_VMALLOC
+ 	bool "Back mappings in vmalloc space with real shadow memory"
+-	depends on HAVE_ARCH_KASAN_VMALLOC
++	depends on KASAN_GENERIC && HAVE_ARCH_KASAN_VMALLOC
+ 	help
+ 	  By default, the shadow region for vmalloc space is the read-only
+ 	  zero page. This means that KASAN cannot detect errors involving
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
