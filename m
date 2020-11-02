@@ -2,142 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63072A3709
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585B22A3706
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKBXQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
+        id S1726633AbgKBXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:15:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgKBXQZ (ORCPT
+        with ESMTP id S1725831AbgKBXPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:16:25 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1A7C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:16:24 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id 140so13160598qko.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:16:24 -0800 (PST)
+        Mon, 2 Nov 2020 18:15:50 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E173C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 15:15:50 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id x20so14485195ilj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 15:15:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gHxtWmvNylnf6rQzFb0RZ+Rsys7/Rl/YzUaq91gRse4=;
-        b=It7uQ2k7bjq8BKf/Fouo7sRWQsHa1XaQsV6zfNj4D0mHdlGBklYHTZELkSblWDF+tB
-         t8zcSvDUacjYmU9/PqKsH9OmWhtjqam28TeCJK+4f/CVAJVYH5/siX4JUNtQOZFvTWZN
-         C5bNwtHfeez4ZMTnNLE6FQbz+91pEWDySyuPkC7fEaMccvif6Z2zG13AJcLWA4gOG/ex
-         4dn4cZIDa2d74nH+UhlH4gNHl1BPBRr6Lw29qIRcpdagazR3HAKYC3ht1RvLz2RT932c
-         lw4Llp88yl3UDAAO4OIOR8Knik1pGZNGR3F57eD5A6UY5BHKxrnTA1MzLJwIboBUHI1d
-         uveg==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vANG7kCf7McNifCt4i3eNIRIg0UbrbcsPjzgcq/xupY=;
+        b=h5jLblIVHQZxx1Tha8vSPTgmFm12uAoDpNRpw9JwOnw7wxb7HaVuyg/rzFb7Uin+PK
+         zfamwZvGW9EXDR/1Z8lkaWsAd/Dzxp61RRhQEM9IsexjYWO18MheaPDRLsq0qkrJ0vxG
+         RcDDwVRGEGwjG48kWlFIKgZhG399nXw50T63xkcGwa3llVps7XdDhtP7Nh+G0GciaGvo
+         s1HvV7FrH9VimbPIGqpT6ShuZiUX6to6ls1L4Kk6DrO2Jr9K1wnrt54sOxvlDYBiDMw9
+         /j8kuVpONSCDEHxZ25boboyHsp9J9ViqY/tpiBJm+w9BneEjzgUi5d2VPT6DgDI1wuL/
+         U9Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gHxtWmvNylnf6rQzFb0RZ+Rsys7/Rl/YzUaq91gRse4=;
-        b=VfRqG5EomKGxMhF58GAJX+xqXs4v5tBfcClcR2wiveeAmfbVKklaX2sZo/tomLBcQm
-         WELfKQOm2Io0p2sc7m1DVTJsEH/UYpXIBFrD8W70AC2yZrcL3a2BeEG1nDLY44z84BAi
-         8TiqUxBx7TN4fWtbaTgj4PvNAnkkcDvQw3Y3QQSoMArExBE7QRZBBlYV2q57qZEyMOkO
-         XZjj3BxSn/j5d1OCQhPtPkYXQV1NQ6Urv9ra8x1Hp8ZgwltaYMe0pf+0epF+H8JGBgj8
-         gC9pIxu/VwsrZWkq2/qZaoMxdrYi1DEI+PHZIjewWvYz3D7sVIEpIFkIxcagHEwY/e/q
-         eC1A==
-X-Gm-Message-State: AOAM530a9gY4cMYjjz6eLh+092yXCZgbOHnvsQzBuc8UhrhMj6ChCMeA
-        iwiRGIJsPVqDRimoL0cSgCaNumJBhVzV/A==
-X-Google-Smtp-Source: ABdhPJyDaczguS96yeYRAd6X1o/f4eh5LCyfUzJKm7wkhLUZ+DZr970kItKctnqKe/QYC6KgtfikrQ==
-X-Received: by 2002:a37:a58d:: with SMTP id o135mr15821909qke.480.1604358984107;
-        Mon, 02 Nov 2020 15:16:24 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:e5d5:3d1c:2a85:1515])
-        by smtp.googlemail.com with ESMTPSA id p5sm9201948qtu.13.2020.11.02.15.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 15:16:23 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH v3] qnx4: qnx4_block_map error handling
-Date:   Mon,  2 Nov 2020 18:14:21 -0500
-Message-Id: <20201102231420.1833852-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
-References: <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vANG7kCf7McNifCt4i3eNIRIg0UbrbcsPjzgcq/xupY=;
+        b=JelY8BolBgNR3Xana9cPzLf8GsLOPZEGh5hFgOPlnilZM6Li5G7UUI9hKVxoPMu2rR
+         oW/spnKCnJjrYs2jp/LIE9NmLO1L2mNvVJyQFBlK6JXq/7EI+q1z8NcEVQMPV7hvBYzl
+         Jp8NvQPkAlLhEsmoD8w8RhpGRFdrIQgvy/xHwdSHG6q1Uf6yObYqqobjnuFhxAnmPMuJ
+         a5IffCRok1gvHWqX8nS0A5JBgF9mS56NtS+oQUR3OS5e6c4qZ6mPB9K+ksLVZJ+EMQRH
+         SR1uKV+zuzxAdkdYPLnd3d0Kd0eTkNTkQ5PvXBOgfDr1WvIA5rtPJvJynBknfgPhIZ1X
+         rWUA==
+X-Gm-Message-State: AOAM531fFizZpkx6CwjWnPVu5xE9RUQWkV59iTy1qYQIUzhkRi3XZ3B1
+        9q2B8mjiK1BwT1PLxDwM8NwVPTpskCnbv2WwbSzOBw==
+X-Google-Smtp-Source: ABdhPJw3EE9PKY+cfyHuSQbTgzBcg7DVDf56jRmLLrBnLhMwmJ/Y8HvnlTB3ZBgfqaXgoIWHTj3ut3M69FdvESf89GI=
+X-Received: by 2002:a05:6e02:f12:: with SMTP id x18mr8305779ilj.145.1604358949644;
+ Mon, 02 Nov 2020 15:15:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201025005916.64747-1-luka.kovacic@sartura.hr>
+ <20201025005916.64747-3-luka.kovacic@sartura.hr> <CAHp75Vd81cK+nhJ1fxgRC6cEKnBELVA9UtT8VPvq7nbHEdhecQ@mail.gmail.com>
+ <CADZsf3ZtQyEK6diz6W=6tZz+=Toyj_XYU33At0JiLutsuRrizA@mail.gmail.com> <CAHp75VdiLg6br=nztormkiXcS5CZVDxcG8i0mUv2X799zpYq5A@mail.gmail.com>
+In-Reply-To: <CAHp75VdiLg6br=nztormkiXcS5CZVDxcG8i0mUv2X799zpYq5A@mail.gmail.com>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Tue, 3 Nov 2020 00:15:38 +0100
+Message-ID: <CADZsf3YmNiF+wJNUiAUzLJhQe3FBHeS-FxYywQfFWu5r2_4T7g@mail.gmail.com>
+Subject: Re: [PATCH v7 2/6] drivers: mfd: Add a driver for IEI WT61P803 PUZZLE MCU
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qnx4_block_map() may return -EIO on funny qnx4 fs image, in this case do
-not interpret -EIO as a correct block number
+Hello Andy,
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
-v2: also check other callers according to Anders Larsen's<al@alarsen.net> comment
-v3: change error code from EIO to ~0ull to avoid potential compiler
-warning on signed/unsigned comparison
- fs/qnx4/dir.c   | 2 ++
- fs/qnx4/inode.c | 6 ++++--
- fs/qnx4/namei.c | 3 +++
- 3 files changed, 9 insertions(+), 2 deletions(-)
+On Mon, Nov 2, 2020 at 12:18 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sun, Nov 1, 2020 at 3:22 PM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+> > On Mon, Oct 26, 2020 at 11:54 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Sun, Oct 25, 2020 at 3:59 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> ...
+>
+> > > > +#include <linux/of_device.h>
+> > >
+> > > Don't see a user of this, but of_platform.h seems to be missed.
+> >
+> > Okay, I'll add it.
+> > I'm still using devm_of_platform_populate() in iei_wt61p803_puzzle_probe().
+>
+> Yes, and that's why I have mentioned of_platform.h above.
+>
+> ...
+>
+> > > > +       struct kobject *kobj;
+> > >
+> > > It's quite strange you need this,
+> >
+> > This is used in iei_wt61p803_puzzle_sysfs_create() and
+> > iei_wt61p803_puzzle_sysfs_remove() to clean up afterwards.
+>
+> I didn't get why you need this in the first place.
+>
+> ...
+>
+> > > > +       /* Return the number of processed bytes if function returns error */
+> > > > +       if (ret < 0)
+> > >
+> > > > +               return (int)size;
+> > >
+> > > Will be interesting result, maybe you wanted other way around?
+> >
+> > That is intentional.
+> > A single frame is concatenated in the iei_wt61p803_puzzle_process_resp()
+> > function. In case we find ourselves in an unknown state, an error is
+> > returned there.
+> >
+> > We want to discard the remaining incoming data, since the frame this
+> > data belongs
+> > to is broken anyway.
+>
+> Elaborate in the comment.
 
-diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
-index a6ee23aadd28..0ff7b9f6a887 100644
---- a/fs/qnx4/dir.c
-+++ b/fs/qnx4/dir.c
-@@ -31,6 +31,8 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- 
- 	while (ctx->pos < inode->i_size) {
- 		blknum = qnx4_block_map(inode, ctx->pos >> QNX4_BLOCK_SIZE_BITS);
-+		if (blknum == ~0ull)
-+			return -EIO;
- 		bh = sb_bread(inode->i_sb, blknum);
- 		if (bh == NULL) {
- 			printk(KERN_ERR "qnx4_readdir: bread failed (%ld)\n", blknum);
-diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
-index e8da1cde87b9..b4fff2db6c7e 100644
---- a/fs/qnx4/inode.c
-+++ b/fs/qnx4/inode.c
-@@ -59,6 +59,8 @@ static int qnx4_get_block( struct inode *inode, sector_t iblock, struct buffer_h
- 	QNX4DEBUG((KERN_INFO "qnx4: qnx4_get_block inode=[%ld] iblock=[%ld]\n",inode->i_ino,iblock));
- 
- 	phys = qnx4_block_map( inode, iblock );
-+	if (phys == ~0ull)
-+		return -EIO;
- 	if ( phys ) {
- 		// logical block is before EOF
- 		map_bh(bh, inode->i_sb, phys);
-@@ -98,12 +100,12 @@ unsigned long qnx4_block_map( struct inode *inode, long iblock )
- 				bh = sb_bread(inode->i_sb, i_xblk - 1);
- 				if ( !bh ) {
- 					QNX4DEBUG((KERN_ERR "qnx4: I/O error reading xtnt block [%ld])\n", i_xblk - 1));
--					return -EIO;
-+					return ~0ull;
- 				}
- 				xblk = (struct qnx4_xblk*)bh->b_data;
- 				if ( memcmp( xblk->xblk_signature, "IamXblk", 7 ) ) {
- 					QNX4DEBUG((KERN_ERR "qnx4: block at %ld is not a valid xtnt\n", qnx4_inode->i_xblk));
--					return -EIO;
-+					return ~0ull;
- 				}
- 			}
- 			block = try_extent(&xblk->xblk_xtnts[ix], &offset);
-diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
-index 8d72221735d7..c665ba730c11 100644
---- a/fs/qnx4/namei.c
-+++ b/fs/qnx4/namei.c
-@@ -66,6 +66,8 @@ static struct buffer_head *qnx4_find_entry(int len, struct inode *dir,
- 	while (blkofs * QNX4_BLOCK_SIZE + offset < dir->i_size) {
- 		if (!bh) {
- 			block = qnx4_block_map(dir, blkofs);
-+			if (block == ~0ull)
-+				goto out;
- 			if (block)
- 				bh = sb_bread(dir->i_sb, block);
- 			if (!bh) {
-@@ -88,6 +90,7 @@ static struct buffer_head *qnx4_find_entry(int len, struct inode *dir,
- 		blkofs++;
- 	}
- 	brelse(bh);
-+out:
- 	*res_dir = NULL;
- 	return NULL;
- }
--- 
-2.25.1
+Okay.
 
+>
+> > > > +       return ret;
+>
+> ...
+>
+> > > > +err:
+> > >
+> > > err_unlock: ?
+> >
+> > I use goto only in case there is also a mutex to unlock, so I don't see why
+> > to change this.
+>
+> The comment was about clarification of what is done at this label.
+
+Ok, I understand. I will change the labels where mutexes are unlocked to
+indicate this as you suggested.
+
+>
+> > > > +       mutex_unlock(&mcu->lock);
+> > > > +       return ret;
+>
+> ...
+>
+> > > > +       /* Response format:
+> > > > +        * (IDX RESPONSE)
+> > > > +        * 0    @
+> > > > +        * 1    O
+> > > > +        * 2    S
+> > > > +        * 3    S
+> > > > +        * ...
+> > > > +        * 5    AC Recovery Status Flag
+> > > > +        * ...
+> > > > +        * 10   Power Loss Recovery
+> > > > +        * ...
+> > > > +        * 19   Power Status (system power on method)
+> > > > +        * 20   XOR checksum
+> > > > +        */
+> > >
+> > > Shouldn't be rather defined data structure for response?
+> >
+> > Every response, apart from the standard headers and a checksum
+> > at the end is completely different and I don't see a good way to
+> > standardize that in some other way.
+>
+> And that's my point. Provide data structures for all responses you are
+> taking care of.
+> It will be way better documentation and understanding of this IPC.
+
+Okay, I'll improve handling of these in the next patchset.
+Should I make a generic header structure for the common parts and
+define the common responses somewhere centrally?
+Then I can check those just as you suggested.
+
+For the variable ones I can reuse the generic header structure and just
+use the specific values as I would do normally.
+
+>
+> ...
+>
+> > > > +               if (!(resp_buf[0] == IEI_WT61P803_PUZZLE_CMD_HEADER_START &&
+> > > > +                     resp_buf[1] == IEI_WT61P803_PUZZLE_CMD_RESPONSE_OK &&
+> > > > +                     resp_buf[2] == IEI_WT61P803_PUZZLE_CHECKSUM_RESPONSE_OK)) {
+> > > > +                       ret = -EPROTO;
+> > > > +                       goto err;
+> > > > +               }
+> > >
+> > > I think it would be better to define data structure for replies and
+> > > then check would be as simple as memcmp().
+> >
+> > I'd keep this as is, because the replies are different a lot of the times.
+> > Especially when the reply isn't just an ACK.
+>
+> How do you know the type of the reply? Can't you provide a data
+> structure which will have necessary fields to recognize this?
+>
+
+It can be recognized by the specific header of the reply.
+I will separate the header and the checksum into some kind of a generic
+structure, but as the content itself is just an arbitrary array of characters
+I cannot generalize that sensibly for every type of a reply there is.
+
+Anyway, I agree it would be good to define the common responses...
+
+> ...
+>
+> > > > +       power_loss_recovery_cmd[3] = cmd_buf[0];
+> > >
+> > > One decimal (most significant) digit?! Isn't it a bit ambiguous?
+> >
+> > The power_loss_recovery_action can only have a value of 0 - 4.
+> > My understanding is that if I give snprintf a buffer of size 1, it will
+> > truncate the one character to make space for NUL.
+>
+> Why to bother with snprintf()? hex_asc[] would be sufficient. But my
+> point that the code is fragile. If it ever gets 15, you will get 1.
+
+Ok, I'll simplify this.
+
+>
+> ...
+>
+> > I can reduce this, but I'd just like to log the baud rate and the
+> > firmware build info.
+>
+> > These two could be useful in a kernel log, if something doesn't work.
+>
+> FW build info is definitely good to have, but don't you have other
+> means to retrieve baud rate?
+
+The normal boot log is completely clean, there are no serdev bus specific
+messages.
+
+The baud rate is defined in the device tree, so if something goes wrong it
+should be sufficient to only print the baud rate then.
+Can I output the versions, the firmware build info and only print the baud
+rate when an error occurs?
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
