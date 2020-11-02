@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65F72A228A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559CC2A2295
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 01:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgKBANs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 19:13:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727062AbgKBANs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 19:13:48 -0500
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3416B21D91;
-        Mon,  2 Nov 2020 00:13:45 +0000 (UTC)
-Subject: Re: [PATCH 2/2] m68k: m68328: remove duplicate code
-To:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201015123258.2644027-1-arnd@arndb.de>
- <20201015123258.2644027-2-arnd@arndb.de>
- <ab3a33d0-7a3a-f12b-244d-24195c06f3fc@linux-m68k.org>
- <CAK8P3a2X3R1Rg3=FFaPQd4MHNJgBMDoVwcq+Fk8fNPoA42tTJQ@mail.gmail.com>
- <CAK8P3a3POARBq+6HxRyqPb3Vs93pTnmAm8ecMN2PpbQtgU4VCA@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <f832d98d-d189-7562-f63a-638491eee690@linux-m68k.org>
-Date:   Mon, 2 Nov 2020 10:13:42 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3POARBq+6HxRyqPb3Vs93pTnmAm8ecMN2PpbQtgU4VCA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727512AbgKBAew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 19:34:52 -0500
+Received: from m15111.mail.126.com ([220.181.15.111]:32806 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727333AbgKBAew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 19:34:52 -0500
+X-Greylist: delayed 1885 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Nov 2020 19:34:51 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=RIrWh638uBEKYF3A2h
+        R0szq8nONGR2032LXrtbL5g3I=; b=g0sNa4FKdrrpnC5GTXurjGP7HBPV7ee32y
+        WZRp0pxxR2RmeUUv0yrPcwpGkJ8xnXE1ICCtW0zNCQvby3du061YHdlBkUvNLRZE
+        Tnq4N8OZq31xScsp0xCXfCZqw4b3hInchQYSTj/1Fba2MmxCmffUjTX0VcJgm42I
+        kaXVnWDjQ=
+Received: from localhost.localdomain (unknown [112.17.240.93])
+        by smtp1 (Coremail) with SMTP id C8mowAA3uljFTJ9fgGG+Kw--.39873S2;
+        Mon, 02 Nov 2020 08:03:18 +0800 (CST)
+From:   Fengfei Xi <fengfei_xi@126.com>
+To:     darrick.wong@oracle.com
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fengfei Xi <fengfei_xi@126.com>
+Subject: [PATCH] xfs: Drop useless comments
+Date:   Mon,  2 Nov 2020 08:03:16 +0800
+Message-Id: <1604275396-4565-1-git-send-email-fengfei_xi@126.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: C8mowAA3uljFTJ9fgGG+Kw--.39873S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFykKF4xAw1fAr4xGr43trb_yoWxZFb_Ga
+        17tF4Ikw4UJFy7ta1UurnYyFyUW39rKrs7uanIqFyaq3W8Xan7ArykJF4YgwnrWrs3ZFn5
+        Jwn5Gry5tr9ayjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYcNVDUUUUU==
+X-Originating-IP: [112.17.240.93]
+X-CM-SenderInfo: pihqwwxhlb5xa6rslhhfrp/1tbi1wbQkl53U+6zvgAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+The names of functions xfs_buf_get_maps and _xfs_buf_free_pages
+can fully express their roles. So their comments are redundant.
+We could drop them entirely.
 
-On 31/10/20 12:25 am, Arnd Bergmann wrote:
-> On Mon, Oct 19, 2020 at 2:06 PM Arnd Bergmann <arnd@arndb.de> wrote:
->>
->> On Mon, Oct 19, 2020 at 1:45 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
->>> On 15/10/20 10:32 pm, Arnd Bergmann wrote:
->>
->>>> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
->>>> index 17e8c3a292d7..1851c66e8667 100644
->>>> --- a/arch/m68k/Kconfig.machine
->>>> +++ b/arch/m68k/Kconfig.machine
->>>> @@ -136,14 +136,13 @@ config SUN3
->>>>
->>>>          If you don't want to compile a kernel exclusively for a Sun 3, say N.
->>>>
->>>> -endif # M68KCLASSIC
->>>> -
->>>>    config PILOT
->>>>        bool
->>>>
->>>>    config PILOT3
->>>>        bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
->>>> -     depends on M68328
->>>> +     depends on !MMU
->>>> +     select M68328
->>>
->>> Given that M68328 depends on !MMU do you also need or want that here?
->>
->> Yes, that is exactly the reason: if M68328 depends on !MMU and gets
->> selected by something that lacks the !MMU dependency, we'd get a
->> Kconfig warning and a failed build when enabling PILOT3 with MMU
->> enabled.
-> 
-> It looks like my reply never made it out because of mail server issues.
-> I hope the above answers your question.
-> 
-> I'm rebasing this series (along with some others) now, and will resend in a bit.
+Signed-off-by: Fengfei Xi <fengfei_xi@126.com>
+---
+ fs/xfs/xfs_buf.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Ok, no worries.
-Otherwise looked good.
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 4e4cf91..2aeed30 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -197,9 +197,6 @@
+ 	return 0;
+ }
+ 
+-/*
+- *	Frees b_pages if it was allocated.
+- */
+ static void
+ xfs_buf_free_maps(
+ 	struct xfs_buf	*bp)
+@@ -297,9 +294,6 @@
+ 	return 0;
+ }
+ 
+-/*
+- *	Frees b_pages if it was allocated.
+- */
+ STATIC void
+ _xfs_buf_free_pages(
+ 	xfs_buf_t	*bp)
+-- 
+1.9.1
 
-I will review v2 and most likely push into the m68knommu git tree.
-
-Regards
-Greg
