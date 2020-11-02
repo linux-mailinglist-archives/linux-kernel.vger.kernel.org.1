@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A1A2A2645
+	by mail.lfdr.de (Postfix) with ESMTP id EBEDD2A2647
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgKBIkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:40:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgKBIj7 (ORCPT
+        id S1728310AbgKBIkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:40:04 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6728 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728284AbgKBIkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:39:59 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EC2C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:39:59 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id y12so13519986wrp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OMtdPb6LnBs2o8609X+/CDMxz2ZpifV70659Imyscbo=;
-        b=lobBqDZ6esd91umHVbKgZ6eN7PdwOjk3UVerthjBgCJe0qEnQllqVFj2clXRdvKKgy
-         wf+fI0izdvXxozyEWz4G77IMmJZiQSviDLAJKOdiZOe24u/JizFc4DRF2IIjH0LeOrdZ
-         /at161502L4b+/QEgoh+x7zb/Cf73DqiWnd9DcYocLKGJEQS852xpVLczCtV+DTsyICm
-         4ZoTMqcuKxDOJdMjXqOsEEZ+EB1UEFte3JU0Hdp68L9WBzKNgWb2d+bpH0W44QvP4mCW
-         X8UABD2VFSpUGzqEi3tfvmTTVP1GszXzs3hUt7wyThINK1irLzJZO3049BnLlJYuVZ/a
-         hFhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OMtdPb6LnBs2o8609X+/CDMxz2ZpifV70659Imyscbo=;
-        b=iWBnK/HxTQKnWNx/OWSoOLMGWl1lpaTnJ+pwDbeIsl7tsbJ44+F6hzufSTlE7AiASD
-         0G9yrVFKDCsXIfzJhV2c6ghmCYWsuOZfLDEEGYbs/sZ0xYUuruwdoCg3N1nIt25H+YBU
-         0CHR85Upa914+EKXZuvmd0+I6tcTNGYon42BDQoMYCEcZWqk0YHkbF55M5ej1hTuK6IZ
-         znAFsMCgIN9K5422rKMxlloQMVPTcmNKKKigUYsc2du8hD6v5C2wYhFA+lQn2B3fMzXW
-         ef44J09XMoUjhhwTa1dB1fYff+XamNJ8to+C1JU7QJAoH/Q/l/xh5rsLf4MUJSOKS5CW
-         xb7Q==
-X-Gm-Message-State: AOAM533nVQlgu24+M2fxeggEx5Kx7pCZeHZ2QvP94LTE4IrtWVOdGtBd
-        B5TvrlZT4X30TBglU7VvuA2YPg==
-X-Google-Smtp-Source: ABdhPJzReDGb8okG9azJgmiP0pibAPCPpScSyrXxzLi0JlXy64HWDBL7P6fToqKR0I+6OdG2NqJfig==
-X-Received: by 2002:adf:f6cc:: with SMTP id y12mr18845510wrp.107.1604306398236;
-        Mon, 02 Nov 2020 00:39:58 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id o7sm21400949wrp.23.2020.11.02.00.39.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 00:39:57 -0800 (PST)
-Date:   Mon, 2 Nov 2020 08:39:55 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Coiby Xu <coiby.xu@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/9] mfd: intel_soc_pmic: remove unnecessary
- CONFIG_PM_SLEEP
-Message-ID: <20201102083955.GE4127@dell>
-References: <20201029100647.233361-1-coiby.xu@gmail.com>
- <20201029100647.233361-3-coiby.xu@gmail.com>
- <20201029110029.GF4077@smile.fi.intel.com>
- <20201029142911.p54mbwbfaeymrqy5@Rk>
- <20201029152719.GC4127@dell>
- <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
+        Mon, 2 Nov 2020 03:40:01 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CPmZ45LSBzkdcy;
+        Mon,  2 Nov 2020 16:39:56 +0800 (CST)
+Received: from [10.174.176.180] (10.174.176.180) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 2 Nov 2020 16:39:56 +0800
+Subject: Re: [PATCH] usb: dwc2: Fix unused label warning
+To:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+References: <20201031060342.43384-1-yuehaibing@huawei.com>
+ <d3249c9c-e937-7ba1-e21b-3c89a79cb184@synopsys.com>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <2aa957ab-d31d-f22f-e470-19169220e6a9@huawei.com>
+Date:   Mon, 2 Nov 2020 16:39:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <d3249c9c-e937-7ba1-e21b-3c89a79cb184@synopsys.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
+X-Originating-IP: [10.174.176.180]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020, Andy Shevchenko wrote:
+On 2020/11/2 15:04, Minas Harutyunyan wrote:
+> On 10/31/2020 10:03 AM, YueHaibing wrote:
+>> drivers/usb/dwc2/platform.c: In function ‘dwc2_driver_probe’:
+>> drivers/usb/dwc2/platform.c:611:1: warning: label ‘error_debugfs’ defined but not used [-Wunused-label]
+>>   error_debugfs:
+>>   ^~~~~~~~~~~~~
+>>
+>> Move label 'error_debugfs' to ifdef block.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>   drivers/usb/dwc2/platform.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+>> index e2820676beb1..5f18acac7406 100644
+>> --- a/drivers/usb/dwc2/platform.c
+>> +++ b/drivers/usb/dwc2/platform.c
+>> @@ -608,10 +608,13 @@ static int dwc2_driver_probe(struct platform_device *dev)
+>>   #endif /* CONFIG_USB_DWC2_PERIPHERAL || CONFIG_USB_DWC2_DUAL_ROLE */
+>>   	return 0;
+>>   
+>> +#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || \
+>> +	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
+>>   error_debugfs:
+>>   	dwc2_debugfs_exit(hsotg);
+>>   	if (hsotg->hcd_enabled)
+>>   		dwc2_hcd_remove(hsotg);
+>> +#endif
+>>   error_drd:
+>>   	dwc2_drd_exit(hsotg);
+>>   
+>>
+> Thank you for patch. Identical patch submitted by on 10/17/2020 by 
+> Martin Blumenstingl: [PATCH] usb: dwc2: Avoid leaving the error_debugfs 
+> label unused. I'm already ACKed it.
 
-> On Thu, Oct 29, 2020 at 5:27 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > On Thu, 29 Oct 2020, Coiby Xu wrote:
-> > > On Thu, Oct 29, 2020 at 01:00:29PM +0200, Andy Shevchenko wrote:
-> > > > On Thu, Oct 29, 2020 at 06:06:41PM +0800, Coiby Xu wrote:
-> > > > > SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
-> > > >
-> > > > Have you compiled this with
-> > > >     % make W=1 ...
-> > > > ?
-> > > >
-> > >
-> > > Sorry my bad. I thought I had run "make modules" with CONFIG_PM_SLEEP
-> > > disabled. I'll run "make W=1 M=..." for each driver after adding
-> > > __maybe_unused in v2.
-> >
-> > No, thank you.  Just keep it as it is.
-> >
-> > The current code is space saving.
+Thanks for this info.
+> Thanks,
+> Minas
 > 
-> Perhaps you need to go thru __maybe_unused handling.
-> There are pros and cons of each approach, but not above.
-
-Do you know that all compilers drop the section?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
