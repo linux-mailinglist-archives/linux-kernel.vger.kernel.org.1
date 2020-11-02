@@ -2,265 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559822A25E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43BF2A25E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgKBIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        id S1728112AbgKBINN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgKBIIO (ORCPT
+        with ESMTP id S1728046AbgKBIME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:08:14 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE7AC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:08:12 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id gn41so323666ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:08:12 -0800 (PST)
+        Mon, 2 Nov 2020 03:12:04 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A54C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:12:04 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w65so10428990pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:12:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVZ44lAakVATpaZn6AFMxLNo91zcFdfPA6KergmIid0=;
-        b=soliju8DduPmBCZLNq75kh9Cjsyu3/wq1kAN37XH8goV0Up7F182Vp9DHzuuUBhMF7
-         jqBgZ7ZzKJqc5CIdq82G7mDGVnFLoK8BiHObC4pnK1LH45Vz7jnV8eeV3IgQTVuPFg12
-         WZebtk8+oMrxX+jk59A8UgduGtdfL57NKzi4k=
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2lbRxRCm6YJ/XgJATRJyEyLX4vRUjWqIBI7bdt9ix0=;
+        b=rTYOIXoaERUMqqFWrKz5r963tOK5UvxmwILHg/dNBgIyFKveGTlbRc0W1MgBlZcvtH
+         xS9BXyhubL7euN/5c5vZt8N8Rx0hDfpaR/bCaCM8U2BI6f5ylc7QWpsYeacF4CEkHV3r
+         gH9Yuf1GSBDKSjaVJGjkUR4ojpI2GvlpGStZwpr3FsA+U5wm9Wj3KkdSP2fuNiXvG3mj
+         AkGqzhbpeU08Ix6nU+8Lzs2QhDUMttrQ946on4pzF4gyqHmAYNggwEbmVkDC2LDzULke
+         GzP+ooh50vwcK+2Lezl5a7CeZRCdlxlmhI2oT/qvz3cO5nL0Txj2/XnBWR5hnYzJuyJX
+         HWhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVZ44lAakVATpaZn6AFMxLNo91zcFdfPA6KergmIid0=;
-        b=IdVkC329AIhARAcS8NwsD0FohSc02SFLDv8QUvn8Ybc+J7C/E7iTpLkbckShON9iEs
-         xjo4A5WEjrffRnwRMGPw1vkrOyM9zRAOKqteqnKvlRZ5ng8+OTK6tMBL3+442CBIDU6l
-         2hyAqhGmh87lP6FPwaTdTAANqzT5JLpgkel5+TGzHcdrDncGRIm2IfalFMYYZWr8Fxpq
-         HvawT0M4jBOk+RfFspyi6v5fGCy/esq0NOHiAdq6QoKNJBXcaBHE/6aOZVvk6y7WEub3
-         8pqYPe3SsH5UHE4RuSQnGyB7xdBkf7DYe2W70IWUXUzFImBPm6L7XrFndnPR0PfhcLAE
-         56fA==
-X-Gm-Message-State: AOAM533NL4f5Rlxn7yUdEOiFcVc2UQqKXfjLEQf81KWtLSIDDr5QzmpO
-        yY6scG/i4+zZSdTKtw4QYp+TMYn1+A8rEIoy1DJYFGv9KKBO/KYK
-X-Google-Smtp-Source: ABdhPJyJ0vM7BjDtdEvFrChTYmDsUK3Y0Vog1NSqXCYj/o5upyCHDtPrccnZ5JayxBS8Fg5dur90nO5Uh2xWbLdvISA=
-X-Received: by 2002:a17:907:1008:: with SMTP id ox8mr8177911ejb.189.1604304490618;
- Mon, 02 Nov 2020 00:08:10 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2lbRxRCm6YJ/XgJATRJyEyLX4vRUjWqIBI7bdt9ix0=;
+        b=Hwgviucw95haTasoRsac96uK6wIFSfRTBlFe/zACe1OqFOi5CJlNP5j48DzbN3C3Jm
+         HlRYZQj9L8+fmE2Wia7eyp4uj4WtJjc9l29HCwxKhJ468P4AlLwhPIWyxydFflTFt8r/
+         HnQEaOcCpjPGx+hZSFAphQ54KqIgkD/XqjD0B5CHwEKEZOYUlVhueSv1TqYCBkUa1RSV
+         HJazt/RLlfBHeuHL0i+Vt08KwygoarRxH5VW/3WzWpT9Kb9iwUfDeYI9Ifn6qQeYBj4w
+         m2rD1BMAhF4s/J7y+M3AU290fOt75+Jdj1Y86VaEn6I/rz3TQI52nd9rv1rGfQBbUPtN
+         GBpA==
+X-Gm-Message-State: AOAM530ygZGzmae6jHeHJGDFSOkqjHKT/IlsuTo6Xh3Eg9ygEauLC775
+        QcTHRY0jhLqgPxuZy3EH3gFH+g==
+X-Google-Smtp-Source: ABdhPJzhWRwM9T+K7YXOdYW/f/MLs7UkfWf9rR7zJarQUKacM61QVlTaewhaM0+Q2A5PdiGqQnNf2Q==
+X-Received: by 2002:aa7:931a:0:b029:164:115:33ca with SMTP id 26-20020aa7931a0000b0290164011533camr21021035pfj.62.1604304724131;
+        Mon, 02 Nov 2020 00:12:04 -0800 (PST)
+Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
+        by smtp.googlemail.com with ESMTPSA id a18sm13885502pfg.54.2020.11.02.00.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:12:03 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
+Subject: [PATCH] Bluetooth: btusb: Add support for 13d3:3560 MediaTek MT7615E device
+Date:   Mon,  2 Nov 2020 16:11:57 +0800
+Message-Id: <20201102081157.25012-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
- <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com> <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
- <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com>
-In-Reply-To: <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Mon, 2 Nov 2020 00:07:34 -0800
-Message-ID: <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 9:27 AM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello Sargun,
->
-> Thanks for your reply.
->
-> On 10/30/20 9:27 PM, Sargun Dhillon wrote:
-> > On Thu, Oct 29, 2020 at 09:37:21PM +0100, Michael Kerrisk (man-pages)
-> > wrote:
->
-> [...]
->
-> >>> I think I commented in another thread somewhere that the
-> >>> supervisor is not notified if the syscall is preempted. Therefore
-> >>> if it is performing a preemptible, long-running syscall, you need
-> >>> to poll SECCOMP_IOCTL_NOTIF_ID_VALID in the background, otherwise
-> >>> you can end up in a bad situation -- like leaking resources, or
-> >>> holding on to file descriptors after the program under
-> >>> supervision has intended to release them.
-> >>
-> >> It's been a long day, and I'm not sure I reallu understand this.
-> >> Could you outline the scnario in more detail?
-> >>
-> > S: Sets up filter + interception for accept T: socket(AF_INET,
-> > SOCK_STREAM, 0) = 7 T: bind(7, {127.0.0.1, 4444}, ..) T: listen(7,
-> > 10) T: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
->
-> Presumably, the preceding line should have been:
->
-> S: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
-> (s/T:/S:/)
->
-> right?
+The ASUS X532EQ laptop contains AzureWave AW-CB434NF module with an
+associated MT7615E BT chip using a USB ID of 13d3:3560.
 
-Right.
->
->
-> > T: accept(7, ...) S: Intercepts accept S: Does accept in background
-> > T: Receives signal, and accept(...) responds in EINTR T: close(7) S:
-> > Still running accept(7, ....), holding port 4444, so if now T
-> > retries to bind to port 4444, things fail.
->
-> Okay -- I understand. Presumably the solution here is not to
-> block in accept(), but rather to use poll() to monitor both the
-> notification FD and the listening socket FD?
->
-You need to have some kind of mechanism to periodically check
-if the notification is still alive, and preempt the accept. It doesn't
-matter how exactly you "background" the accept (threads, or
-O_NONBLOCK + epoll).
+T:  Bus=03 Lev=01 Prnt=01 Port=09 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
+D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=13d3 ProdID=3560 Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
 
-The thing is you need to make sure that when the process
-cancels a syscall, you need to release the resources you
-may have acquired on its behalf or bad things can happen.
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+---
+ drivers/bluetooth/btusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> >>> A very specific example is if you're performing an accept on
-> >>> behalf of the program generating the notification, and the
-> >>> program intends to reuse the port. You can get into all sorts of
-> >>> awkward situations there.
-> >>
-> >> [...]
-> >>
-> > See above
->
-> [...]
->
-> >>> In addition, if it is a socket, it inherits the cgroup v1 classid
-> >>> and netprioidx of the receiving process.
-> >>>
-> >>> The argument of this is as follows:
-> >>>
-> >>> struct seccomp_notif_addfd { __u64 id; __u32 flags; __u32 srcfd;
-> >>> __u32 newfd; __u32 newfd_flags; };
-> >>>
-> >>> id This is the cookie value that was obtained using
-> >>> SECCOMP_IOCTL_NOTIF_RECV.
-> >>>
-> >>> flags A bitmask that includes zero or more of the
-> >>> SECCOMP_ADDFD_FLAG_* bits set
-> >>>
-> >>> SECCOMP_ADDFD_FLAG_SETFD - Use dup2 (or dup3?) like semantics
-> >>> when copying the file descriptor.
-> >>>
-> >>> srcfd The file descriptor number to copy in the supervisor
-> >>> process.
-> >>>
-> >>> newfd If the SECCOMP_ADDFD_FLAG_SETFD flag is specified this will
-> >>> be the file descriptor that is used in the dup2 semantics. If
-> >>> this file descriptor exists in the receiving process, it is
-> >>> closed and replaced by this file descriptor in an atomic fashion.
-> >>> If the copy process fails due to a MAC failure, or if srcfd is
-> >>> invalid, the newfd will not be closed in the receiving process.
-> >>
-> >> Great description!
-> >>
-> >>> If SECCOMP_ADDFD_FLAG_SETFD it not set, then this value must be
-> >>> 0.
-> >>>
-> >>> newfd_flags The file descriptor flags to set on the file
-> >>> descriptor after it has been received by the process. The only
-> >>> flag that can currently be specified is O_CLOEXEC.
-> >>>
-> >>> On success, this operation returns the file descriptor number in
-> >>> the receiving process. On failure, -1 is returned.
-> >>>
-> >>> It can fail with the following error codes:
-> >>>
-> >>> EINPROGRESS The cookie number specified hasn't been received by
-> >>> the listener
-> >>
-> >> I don't understand this. Can you say more about the scenario?
-> >>
-> >
-> > This should not really happen. But if you do a ADDFD(...), on a
-> > notification *before* you've received it, you will get this error. So
-> > for example,
-> > --> epoll(....) -> returns
-> > --> RECV(...) cookie id is 777
-> > --> epoll(...) -> returns
-> > <-- ioctl(ADDFD, id = 778) # Notice how we haven't done a receive yet
-> > where we've received a notification for 778.
->
-> Got it. Looking also at the source code, I came up with the
-> following:
->
->               EINPROGRESS
->                      The user-space notification specified in the id
->                      field exists but has not yet been fetched (by a
->                      SECCOMP_IOCTL_NOTIF_RECV) or has already been
->                      responded to (by a SECCOMP_IOCTL_NOTIF_SEND).
->
-> Does that seem okay?
->
-Looks good to me.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 5af2e3f30a5e..a0bfd41fdfee 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -367,6 +367,7 @@ static const struct usb_device_id blacklist_table[] = {
+ 	/* MediaTek Bluetooth devices */
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0e8d, 0xe0, 0x01, 0x01),
+ 	  .driver_info = BTUSB_MEDIATEK },
++	{ USB_DEVICE(0x13d3, 0x3560), .driver_info = BTUSB_MEDIATEK},
+ 
+ 	/* Additional Realtek 8723AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
+-- 
+2.20.1
 
-> >>> ENOENT The cookie number is not valid. This can happen if a
-> >>> response has already been sent, or if the syscall was
-> >>> interrupted
-> >>>
-> >>> EBADF If the file descriptor specified in srcfd is invalid, or if
-> >>> the fd is out of range of the destination program.
-> >>
-> >> The piece "or if the fd is out of range of the destination program"
-> >> is not clear to me. Can you say some more please.
-> >>
-> >
-> > IIRC the maximum fd range is specific in proc by some sysctl named
-> > nr_open. It's also evaluated against RLIMITs, and nr_max.
-> >
-> > If nr-open (maximum fds open per process, iiirc) is 1000, even if 10
-> > FDs are open, it wont work if newfd is 1001.
->
-> Actually, the relevant limit seems to be just the RLIMIT_NOFILE
-> resource limit at least in my reading of fs/file.c::replace_fd().
-> So I made the text
->
->               EBADF  Allocating the file descriptor in the target would
->                      cause the target's RLIMIT_NOFILE limit to be
->                      exceeded (see getrlimit(2)).
->
->
-
-If you're above RLIMIT_NOFILE, you get EBADF.
-
-When we do __receive_fd with a specific fd (newfd specified):
-https://elixir.bootlin.com/linux/latest/source/fs/file.c#L1086
-
-it calls replace_fd, which calls expand_files. expand_files
-can fail with EMFILE.
-
-> >>> EINVAL If flags or new_flags were unrecognized, or if newfd is
-> >>> non-zero, and SECCOMP_ADDFD_FLAG_SETFD has not been set.
-> >>>
-> >>> EMFILE Too many files are open by the destination process.
->
-> I'm not sure that the error can really occur. That's the error
-> that in most other places occurs when RLIMIT_NOFILE is exceeded.
-> But I may have missed something. More precisely, when do you think
-> EMFILE can occur?
->
-It can happen if the user specifies a newfd which is too large.
-
-> [...]
->
-> Thanks,
->
-> Michael
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
