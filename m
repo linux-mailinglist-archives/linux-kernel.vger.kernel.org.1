@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADEF2A23E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E782A23E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgKBFGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgKBFGV (ORCPT
+        id S1727843AbgKBFG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 00:06:59 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:17026 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725208AbgKBFG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:06:21 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163FFC0617A6;
-        Sun,  1 Nov 2020 21:06:21 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id j5so6248822plk.7;
-        Sun, 01 Nov 2020 21:06:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0i5kulrXeAXUUmHumUD66U2ITbxD8qnUW4/n36OfF0g=;
-        b=oxLWWeV0SaX8q4sdK7/2sB2mbbneJH+6xiBYeqoFyU0KRp6CX4AAHRz6ZcIpCMuGs1
-         K57ec6IiNS0f09FIv7F0ALXBwtlgJkApB7AmFEzolud2Scts1RGkIMpChWza8ZWYqq32
-         iG9jnd6FoC1qoTUt8FG+Tqh96LB63osUaZFzASsd331qTXlfszZF8qEYTXDyIEPza1g6
-         rCQ6+kS0iVGm1BZVWvdi5ujQ+XT4q5cIgozr9tH4CuJAWawDb1tPvyX1UyBa64dZOmY/
-         Qseu2Xk2wdM8W4NJUc/aIg4txizhbYAMC1xRU1E+saPOrw0Lb6Opw2ZfetN7H7my9w9C
-         FGgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0i5kulrXeAXUUmHumUD66U2ITbxD8qnUW4/n36OfF0g=;
-        b=TdFcON4xECEqAq8l0KuK9gJOM6sIOmDzkqV+exAz+lpzk+7XzgO6tNO4u3hrrV86sl
-         98XD0xf+z6fG5x1vH6qxichtqWYHpiPuR/H3QWC4Jw72gi+bYkh1GbM0s5zSrWMXByQp
-         f5z8Zy/OhZ/RdZl3r00YVaxzE4DbgO5YLvsIaQA1f86QGI6jlebnYCEAPg8L3FYL/VwA
-         rC8NQHIiQYqdd2BpdgC8LMI6kGHaRrZWViJ3rO+YPlof8abuzgddeHb3CfcFiSSe5AVi
-         XayiZDuisKorGgIC2n9rQwG1wP9W4UKuC0ixVWzpdYGIPanUjb9uNwoNANEtv8CM0+Xr
-         f7Vg==
-X-Gm-Message-State: AOAM533ZRYskGWpmWSMM+cpSfV4F6DsvD9oGLy16MdT2Na4WMB+yrmsI
-        7EYNs7Xea6+4AKAOSMJiy0HfLSR8BYpoHkDLO9I=
-X-Google-Smtp-Source: ABdhPJzWpC1jLa2KqR8b6+I+di15SNciBGq8RyUOeA6dDIbQSFfhtHxvZw1hOKfw0BDne7Nf3l3IdI42sswxOrnNTvA=
-X-Received: by 2002:a17:902:8eca:b029:d2:4276:1b2d with SMTP id
- x10-20020a1709028ecab02900d242761b2dmr19651785plo.17.1604293580359; Sun, 01
- Nov 2020 21:06:20 -0800 (PST)
+        Mon, 2 Nov 2020 00:06:59 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A255Xrh013119;
+        Sun, 1 Nov 2020 21:06:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=xSoLjXb0B85PfUHERptiyF/QueGdjc/bfi/Ey6OUUOA=;
+ b=go/1BOdWa1+PV7Nvw0V2sw53XPYMkeJi/Kll/fMIN6CZ/iiMIAUz5Q8wLMOgJ8CshKC1
+ k2UJFzbqSBTqgPglpqIDT6PkLXoonW/pyBZZsVW7qSw10N6jBThuWqjK5/D+KOsef43K
+ IowDdioo4rTBSp5qkc/sAHbiE9l9fjC4ljd3tDV9Eazs0jfpjYiGjtuc8QeN460n4YJf
+ vJxqtc7FHXzx+Y9WxTJaC9J8HBCHE/e3yVVLwmtCk37FanlNUpgqIVTd2fLmb6Y1medf
+ THTUXYfXZVVc4KMLqLNU5Gd7WQCGcENef/wX5J08axRpYkHaFALqj+UruhQ4V+vT/xH7 7Q== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 34h7ennyu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 01 Nov 2020 21:06:55 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 1 Nov
+ 2020 21:06:53 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 1 Nov 2020 21:06:54 -0800
+Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
+        by maili.marvell.com (Postfix) with ESMTP id 1B7F23F703F;
+        Sun,  1 Nov 2020 21:06:50 -0800 (PST)
+From:   George Cherian <george.cherian@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>,
+        <masahiroy@kernel.org>, <george.cherian@marvell.com>
+Subject: [net-next PATCH 0/3] Add devlink and devlink health reporters to
+Date:   Mon, 2 Nov 2020 10:36:46 +0530
+Message-ID: <20201102050649.2188434-1-george.cherian@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201030075724.1616766-1-ajye_huang@compal.corp-partner.google.com>
- <20201030075724.1616766-3-ajye_huang@compal.corp-partner.google.com>
- <CA+Px+wXPRg7aDU5+vr6R_BxuFfhuDeG3iEQeAUKWNtX8YmVC1Q@mail.gmail.com>
- <CALprXBZ+NmR8Y4sMkh4Y-N_FG+rGEOhUBVTKXRXNFp8H+f0btw@mail.gmail.com> <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
-In-Reply-To: <CA+Px+wWouXWS2F+Bqs3MkJxCuXORhpXcUF5ZuSHo6exprBF4hg@mail.gmail.com>
-From:   ajye huang <ajye.huang@gmail.com>
-Date:   Mon, 2 Nov 2020 13:06:06 +0800
-Message-ID: <CACCVik-enBjUsaB1cZPb4Dp01Wj222jsT5Y-fjSL5E50XAFLcA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-02_01:2020-10-30,2020-11-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tzung-Bi
-I will release v3 version base on your suggestion
+Add basic devlink and devlink health reporters.
+Devlink health reporters are added for NPA and NIX blocks.
+These reporters report the error count in respective blocks.
 
-Thank you for your reply
-Ajye
+Address Jakub's comment to add devlink support for error reporting.
+https://www.spinics.net/lists/netdev/msg670712.html
 
-Tzung-Bi Shih <tzungbi@google.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8830=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=887:19=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, Oct 30, 2020 at 6:55 PM Ajye Huang
-> <ajye_huang@compal.corp-partner.google.com> wrote:
-> > But dmic_get() will need dmic_switch, should i keep dmic_switch?
->
-> I see.  I overlooked it.  You can keep the dmic_switch for this
-> purpose or just call gpiod_get_value_cansleep().
+
+George Cherian (3):
+  octeontx2-af: Add devlink suppoort to af driver
+  octeontx2-af: Add devlink health reporters for NPA
+  octeontx2-af: Add devlink health reporters for NIX
+
+ .../net/ethernet/marvell/octeontx2/Kconfig    |   1 +
+ .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |   9 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   5 +-
+ .../marvell/octeontx2/af/rvu_devlink.c        | 875 ++++++++++++++++++
+ .../marvell/octeontx2/af/rvu_devlink.h        |  67 ++
+ .../marvell/octeontx2/af/rvu_struct.h         |  33 +
+ 7 files changed, 990 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
+
+-- 
+2.25.1
+
