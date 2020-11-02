@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515072A2CB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9872A2CDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgKBOYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgKBOYj (ORCPT
+        id S1726121AbgKBO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:26:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31153 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgKBO0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:24:39 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E155BC0617A6;
-        Mon,  2 Nov 2020 06:24:38 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id a200so11226933pfa.10;
-        Mon, 02 Nov 2020 06:24:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WSOubX35enZzF+yjGfPIE2Q+g0AGYASa3BDpwq7MYJ4=;
-        b=bWyWwnQm2EfjR6LukMJ3EILB+QqJuGH3FSpE85BSg12ipGL7dFFaYFcTfKH+4NqgQC
-         Ejedvs4xBDI2TzlpcOBN2CKfMm++FXCMKCQvl9drYS12OUMQyNkCv8QnUIMz4oJ0VvXi
-         7NWzNlhDIvF53dbukupWL20af5vdrt8imqjBt4dcnbgtty584R8r3Um6B2h2Lp4QjPzi
-         vGM1CfOgRs3RJ1B3clWAP2jrEbXIHBk4ejR4gBd48lDUsQe6p3maxonNys579Q+F04ly
-         LHGnB//3XFPxPTBS06dMlz0La0scQgtt9lZ0OVf2XjLebzF2/GIq6aUOUC5+bbHs9JIo
-         mAew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WSOubX35enZzF+yjGfPIE2Q+g0AGYASa3BDpwq7MYJ4=;
-        b=a668wdxpnjGjJ1zcXAiJAFCfmSsax11hGSVOIj+mi8XfNa9jlsYTx7RqtDyE8yZg6y
-         M3QbhjfbMjmC6Psb9eG6XzfFneIyraevfO30uT/JPXQdVo8BZIvborVVE1ZQbBliJAXQ
-         vfBgVVV0BRgusqd4KK2JdUzZ+RNWTVLhxZIO/zA9DnpFjruO/ROIwDliAA2Bq7Zwxglm
-         NuERJxrakqRXVs9EJ9AeuY/IaDw0Lji723I3DRjLhSGkKwyibSQ2Gjau64JY9vFbJUCK
-         wnUMLcZKfe31LEx1uL73palgpkEu0NTxJ4lBZuW1hqY51GzRIrjnIustz0BkFHcq3oVg
-         uJAQ==
-X-Gm-Message-State: AOAM53108BV7PLrepmHQXIbOp4IfTXrxYeK9dKrBysKrn2rkZi0GJuO0
-        tDVvNSnE99KyN4bJhgqmtrs=
-X-Google-Smtp-Source: ABdhPJwGdyAw93JFhDfWZG58oOkjju5Ya20TSkAWdMHObkecatzOZ8bOxhSM3h0zCOi3c55ZeCGP3Q==
-X-Received: by 2002:a62:1b58:0:b029:18a:df98:24fa with SMTP id b85-20020a621b580000b029018adf9824famr6915372pfb.25.1604327078217;
-        Mon, 02 Nov 2020 06:24:38 -0800 (PST)
-Received: from localhost.localdomain ([154.93.3.113])
-        by smtp.gmail.com with ESMTPSA id z5sm12366012pjr.22.2020.11.02.06.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 06:24:37 -0800 (PST)
-From:   Menglong Dong <menglong8.dong@gmail.com>
-To:     davem@davemloft.net
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH] net: ipv6: remove redundant blank in ip6_frags_ns_sysctl_register
-Date:   Mon,  2 Nov 2020 22:24:03 +0800
-Message-Id: <20201102142403.4063-1-menglong8.dong@gmail.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 2 Nov 2020 09:26:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604327171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l2zRKLgNsnXTGjSSS56WpLlhmJPfrlhiyUVGzUpqBHE=;
+        b=fdEAAQVJoKmcLt0lzRJrptxqXC8yKPyI/UxaQCQYAQ69G0lNT46Xg7p55eIF3JuSAOwWEI
+        dbgrm5VcuiGzJ48pXmPuIfktqLAJNYEBt2Vr/uf+Cnv5bb3PU+Apw7qouJIO56VMnmlBx0
+        n5J6rvm51eBlVEWygo0toXPyBAW+yuc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-L8aQTOltN0aPgeK5VZD5WQ-1; Mon, 02 Nov 2020 09:26:10 -0500
+X-MC-Unique: L8aQTOltN0aPgeK5VZD5WQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A83FA18BA283;
+        Mon,  2 Nov 2020 14:26:08 +0000 (UTC)
+Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A5EB05DA6B;
+        Mon,  2 Nov 2020 14:25:57 +0000 (UTC)
+Message-ID: <77529e99ca9c2d228a67dd8d789d83afdcd1ace3.camel@redhat.com>
+Subject: Re: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
+From:   Qian Cai <cai@redhat.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>
+Date:   Mon, 02 Nov 2020 09:25:57 -0500
+In-Reply-To: <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com>
+References: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
+         <89f0dbf6713ebd44ec519425e3a947e71f7aed55.camel@redhat.com>
+         <CAJfpegv4jLewQ4G_GdxraTE8fGHy7-d52gPSi4ZAOp0N4aYJnw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Thu, 2020-10-29 at 16:20 +0100, Miklos Szeredi wrote:
+> On Thu, Oct 29, 2020 at 4:02 PM Qian Cai <cai@redhat.com> wrote:
+> > On Wed, 2020-10-07 at 16:08 -0400, Qian Cai wrote:
+> > > Running some fuzzing by a unprivileged user on virtiofs could trigger the
+> > > warning below. The warning was introduced not long ago by the commit
+> > > c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
+> > > insertion").
+> > > 
+> > > From the logs, the last piece of the fuzzing code is:
+> > > 
+> > > fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
+> > 
+> > I can still reproduce it on today's linux-next. Any idea on how to debug it
+> > further?
+> 
+> Can you please try the attached patch?
 
-This blank seems redundant.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- net/ipv6/reassembly.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index 1f5d4d196dcc..b1b8d104063b 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -437,7 +437,6 @@ static int __net_init ip6_frags_ns_sysctl_register(struct net *net)
- 		table = kmemdup(table, sizeof(ip6_frags_ns_ctl_table), GFP_KERNEL);
- 		if (!table)
- 			goto err_alloc;
--
- 	}
- 	table[0].data	= &net->ipv6.fqdir->high_thresh;
- 	table[0].extra1	= &net->ipv6.fqdir->low_thresh;
--- 
-2.28.0
+It has survived the testing over the weekend. There is a issue that virtiofsd
+hung, but it looks like a separate issue.
 
