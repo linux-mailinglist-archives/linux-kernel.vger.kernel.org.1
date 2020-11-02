@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B782E2A282F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02AE2A2837
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgKBKZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:25:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S1728386AbgKBK11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgKBKZ2 (ORCPT
+        with ESMTP id S1728005AbgKBK11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:25:28 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550ADC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:25:28 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id a200so10700321pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dNNowZwaId4lL8bkjeaWp8YIiJoynfucYmjjJeQcb8Q=;
-        b=fXPm417xFDtOYLRiwNZk9sZ6a1RCzEhyGcNuRuO1BDqFVCO92umeB8TT8u29DDiQvU
-         WuQT+AinSRF0hupunZ3j8vMzxIQaKjI/vlJZzb5VWaonDDskx19BqlbsPeq57dITje1J
-         f/p73BslS1cauJD5f8PJYOfmyWfTbzd/eWLJM21r5vekCPQxwq3eCYQI7RYJEVEVbEK1
-         NIm3hbpveFqRQ16BHLAHKWl9dXUE23vaWObcxNxL+gUBOrupluUzFkIMULktPmcdDtdV
-         xH/Zzxcy4uL7/hOFqCLV1MJFkBT4vgEGS857F8x11zaFJphmCSquBY5Dd/if4lFtGl9J
-         MJJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dNNowZwaId4lL8bkjeaWp8YIiJoynfucYmjjJeQcb8Q=;
-        b=conA3ZZpQq7QatQr7uGgfh8Bc8XEf74pOcKcaqQhRRQX4HKXzdxcH7a2FQscSbODxU
-         0RPXOuqJ6Ju2R1Z+97xM92B86IzriyzE/m0Vy1DNr+nkDGtBIIb3F1tadXlJce1BDs+S
-         dqfaceUxwyZuwrDP2aRL3rqaDR5RMbjX7NatBOINepsfT29/tBomrUTa+qqXQGfD1Kvc
-         3CmqbjIXcdRO699qEyxVNgSfQwPGTVt9Eov/bSjTtvY1vF0AmSKv63BC6ALQ9nZqs/rS
-         VwqQGEljZeZr59unuGqXxyatWoml2XeCJrWqyVrGipKTsVNa1YECvMGhrQFpHNdfkmaS
-         jl9Q==
-X-Gm-Message-State: AOAM530pxLOYReDAwhJbsPlMfZ0zIGg96luceTU4r+AlN4dxahyAU2gh
-        IwDE0Y4jVxUegvzEFJX9My/QHYiHAk8F+dqMtb4=
-X-Google-Smtp-Source: ABdhPJxSAwIxQWtSkJvpoTIO96eglrEfyyHAl92jaxnAwvp1LGGHLlDxHNOiCzqmmX2BGiJmX60A07NXztbjGVmWhU0=
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr16441470pjs.181.1604312727932;
- Mon, 02 Nov 2020 02:25:27 -0800 (PST)
+        Mon, 2 Nov 2020 05:27:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29289C0617A6;
+        Mon,  2 Nov 2020 02:27:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=chyZPXcPEyftbKLXMlXQpUobVD4NM6uuWUEYM6jzZNM=; b=iCGmG442EfucMcTK1LSK+U23GI
+        kMK1F9AjY28qTha7x5hJJWoFArFEjstM3urLt9nLcDk/17d2cNV6bjwO+kHKthVN+rTGnALJ66FOo
+        CjUEPX3ceQvSm4Gir7JtoBKIjlEP2GMhqQInBZ5w+iuj0kJD5MNpYoj1/7V+vvilMxP16XCXytVka
+        jrPgzILWDbTyoE8zYtXJMv2DVPBoACIgO4c2ioi3l6zUagyPPhu6MrXtMMAkmbS1YmOe7mCn+GD+2
+        RfUToqhXuJ8DKaLLrkViO/1EKjPt9GTAnJsS6i2DCMNANIH47yryu1tmabxC/M9PUf+pmn8JGzDJH
+        KBuKDK+g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZX3P-0007Ua-Em; Mon, 02 Nov 2020 10:27:11 +0000
+Date:   Mon, 2 Nov 2020 10:27:11 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christoph Hellwig <hch@infradead.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Christian K??nig <christian.koenig@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20201102102711.GA28511@infradead.org>
+References: <20201102124327.2f82b2a7@canb.auug.org.au>
+ <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201029100647.233361-1-coiby.xu@gmail.com> <20201029100647.233361-3-coiby.xu@gmail.com>
- <20201029110029.GF4077@smile.fi.intel.com> <20201029142911.p54mbwbfaeymrqy5@Rk>
- <20201029152719.GC4127@dell> <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
- <20201102083955.GE4127@dell>
-In-Reply-To: <20201102083955.GE4127@dell>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 2 Nov 2020 12:26:17 +0200
-Message-ID: <CAHp75VeWbhEbVg2HYaeU2trASJt1EKzJfUG1VRJpD0CL+onbrg@mail.gmail.com>
-Subject: Re: [PATCH 3/9] mfd: intel_soc_pmic: remove unnecessary CONFIG_PM_SLEEP
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Coiby Xu <coiby.xu@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 10:39 AM Lee Jones <lee.jones@linaro.org> wrote:
-> On Thu, 29 Oct 2020, Andy Shevchenko wrote:
-> > On Thu, Oct 29, 2020 at 5:27 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > On Thu, 29 Oct 2020, Coiby Xu wrote:
-> > > > On Thu, Oct 29, 2020 at 01:00:29PM +0200, Andy Shevchenko wrote:
-> > > > > On Thu, Oct 29, 2020 at 06:06:41PM +0800, Coiby Xu wrote:
-> > > > > > SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
-> > > > >
-> > > > > Have you compiled this with
-> > > > >     % make W=1 ...
-> > > > > ?
-> > > > >
-> > > >
-> > > > Sorry my bad. I thought I had run "make modules" with CONFIG_PM_SLEEP
-> > > > disabled. I'll run "make W=1 M=..." for each driver after adding
-> > > > __maybe_unused in v2.
-> > >
-> > > No, thank you.  Just keep it as it is.
-> > >
-> > > The current code is space saving.
-> >
-> > Perhaps you need to go thru __maybe_unused handling.
-> > There are pros and cons of each approach, but not above.
->
-> Do you know that all compilers drop the section?
+On Mon, Nov 02, 2020 at 10:28:34AM +0100, Daniel Vetter wrote:
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -5,6 +5,9 @@
+> >  #include <linux/dma-direction.h>
+> >  #include <linux/init.h>
+> >  #include <linux/types.h>
+> > +#ifndef CONFIG_SWIOTLB
+> > +#include <linux/limits.h>
+> > +#endif
 
-At least all that Linux kernel can be officially built with.
-
--- 
-With Best Regards,
-Andy Shevchenko
+No conditional includes please.  And the proper fix for the reported
+issue is to stop poking into swiotlb internals in random drivers..
