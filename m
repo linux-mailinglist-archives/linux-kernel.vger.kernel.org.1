@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B832A2831
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B782E2A282F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgKBKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:25:33 -0500
-Received: from leonov.paulk.fr ([185.233.101.22]:56318 "EHLO leonov.paulk.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728005AbgKBKZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:25:32 -0500
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id B79A4C0121;
-        Mon,  2 Nov 2020 11:25:28 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id 048E3C1D6F; Mon,  2 Nov 2020 11:25:27 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
-        autolearn=disabled version=3.4.2
-Received: from aptenodytes (unknown [192.168.1.1])
-        by gagarine.paulk.fr (Postfix) with ESMTPSA id 220ACC1D6C;
-        Mon,  2 Nov 2020 11:25:23 +0100 (CET)
-Date:   Mon, 2 Nov 2020 11:25:22 +0100
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matteo Scordino <matteo.scordino@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 6/9] ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
-Message-ID: <20201102102522.GB11809@aptenodytes>
-References: <20201031182137.1879521-1-contact@paulk.fr>
- <20201031182137.1879521-7-contact@paulk.fr>
- <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
+        id S1728476AbgKBKZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728005AbgKBKZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 05:25:28 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550ADC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:25:28 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id a200so10700321pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dNNowZwaId4lL8bkjeaWp8YIiJoynfucYmjjJeQcb8Q=;
+        b=fXPm417xFDtOYLRiwNZk9sZ6a1RCzEhyGcNuRuO1BDqFVCO92umeB8TT8u29DDiQvU
+         WuQT+AinSRF0hupunZ3j8vMzxIQaKjI/vlJZzb5VWaonDDskx19BqlbsPeq57dITje1J
+         f/p73BslS1cauJD5f8PJYOfmyWfTbzd/eWLJM21r5vekCPQxwq3eCYQI7RYJEVEVbEK1
+         NIm3hbpveFqRQ16BHLAHKWl9dXUE23vaWObcxNxL+gUBOrupluUzFkIMULktPmcdDtdV
+         xH/Zzxcy4uL7/hOFqCLV1MJFkBT4vgEGS857F8x11zaFJphmCSquBY5Dd/if4lFtGl9J
+         MJJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dNNowZwaId4lL8bkjeaWp8YIiJoynfucYmjjJeQcb8Q=;
+        b=conA3ZZpQq7QatQr7uGgfh8Bc8XEf74pOcKcaqQhRRQX4HKXzdxcH7a2FQscSbODxU
+         0RPXOuqJ6Ju2R1Z+97xM92B86IzriyzE/m0Vy1DNr+nkDGtBIIb3F1tadXlJce1BDs+S
+         dqfaceUxwyZuwrDP2aRL3rqaDR5RMbjX7NatBOINepsfT29/tBomrUTa+qqXQGfD1Kvc
+         3CmqbjIXcdRO699qEyxVNgSfQwPGTVt9Eov/bSjTtvY1vF0AmSKv63BC6ALQ9nZqs/rS
+         VwqQGEljZeZr59unuGqXxyatWoml2XeCJrWqyVrGipKTsVNa1YECvMGhrQFpHNdfkmaS
+         jl9Q==
+X-Gm-Message-State: AOAM530pxLOYReDAwhJbsPlMfZ0zIGg96luceTU4r+AlN4dxahyAU2gh
+        IwDE0Y4jVxUegvzEFJX9My/QHYiHAk8F+dqMtb4=
+X-Google-Smtp-Source: ABdhPJxSAwIxQWtSkJvpoTIO96eglrEfyyHAl92jaxnAwvp1LGGHLlDxHNOiCzqmmX2BGiJmX60A07NXztbjGVmWhU0=
+X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr16441470pjs.181.1604312727932;
+ Mon, 02 Nov 2020 02:25:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
+References: <20201029100647.233361-1-coiby.xu@gmail.com> <20201029100647.233361-3-coiby.xu@gmail.com>
+ <20201029110029.GF4077@smile.fi.intel.com> <20201029142911.p54mbwbfaeymrqy5@Rk>
+ <20201029152719.GC4127@dell> <CAHp75Vd6dV18x9BLOSSEqL-nVSRhAEc9zQCyOJF7P7tur86BDA@mail.gmail.com>
+ <20201102083955.GE4127@dell>
+In-Reply-To: <20201102083955.GE4127@dell>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 2 Nov 2020 12:26:17 +0200
+Message-ID: <CAHp75VeWbhEbVg2HYaeU2trASJt1EKzJfUG1VRJpD0CL+onbrg@mail.gmail.com>
+Subject: Re: [PATCH 3/9] mfd: intel_soc_pmic: remove unnecessary CONFIG_PM_SLEEP
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Nov 2, 2020 at 10:39 AM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 29 Oct 2020, Andy Shevchenko wrote:
+> > On Thu, Oct 29, 2020 at 5:27 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Thu, 29 Oct 2020, Coiby Xu wrote:
+> > > > On Thu, Oct 29, 2020 at 01:00:29PM +0200, Andy Shevchenko wrote:
+> > > > > On Thu, Oct 29, 2020 at 06:06:41PM +0800, Coiby Xu wrote:
+> > > > > > SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
+> > > > >
+> > > > > Have you compiled this with
+> > > > >     % make W=1 ...
+> > > > > ?
+> > > > >
+> > > >
+> > > > Sorry my bad. I thought I had run "make modules" with CONFIG_PM_SLEEP
+> > > > disabled. I'll run "make W=1 M=..." for each driver after adding
+> > > > __maybe_unused in v2.
+> > >
+> > > No, thank you.  Just keep it as it is.
+> > >
+> > > The current code is space saving.
+> >
+> > Perhaps you need to go thru __maybe_unused handling.
+> > There are pros and cons of each approach, but not above.
+>
+> Do you know that all compilers drop the section?
 
-On Mon 02 Nov 20, 11:12, Maxime Ripard wrote:
-> On Sat, Oct 31, 2020 at 07:21:34PM +0100, Paul Kocialkowski wrote:
-> > The V3s/V3 has a NMI interrupt controller, mainly used for the AXP209.
-> > Its address follows the sytsem controller block, which was previously
-> > incorrectly described as spanning over 0x1000 address bytes.
-> 
-> Is it after, or right in the middle of it?
-
-That's up for interpretation actually:
-- The V3 datasheet mentions that System Control is 0x01C00000 --- 0x01C00FFF;
-- In practice, sunxi_sram.c uses a regmap with max_reg set to 0x30 for the
-  V3s/H3 so this gives us some room.
-
-Looking at other SoCs with the same setup (take sun8i-r40 for instance),
-system-control is limited to 0x30 and the NMI controller follows it.
-In the case of R40, the SRAM controlled is also said to be 4K-long in the
-Allwinner docs.
-
-So all in all, this leads me to believe that the system-controller instance
-stops well before 0x1c000d0 on the V3s as well. Otherwise, we should also
-make the R40 consistent.
-
-Cheers,
-
-Paul
+At least all that Linux kernel can be officially built with.
 
 -- 
-Developer of free digital technology and hardware support.
-
-Website: https://www.paulk.fr/
-Coding blog: https://code.paulk.fr/
-Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
+With Best Regards,
+Andy Shevchenko
