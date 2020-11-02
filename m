@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DAA2A31A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200AE2A3193
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgKBRda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:33:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:35158 "EHLO foss.arm.com"
+        id S1727792AbgKBRcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:32:39 -0500
+Received: from mga09.intel.com ([134.134.136.24]:60774 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727862AbgKBRdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:33:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D80B71424;
-        Mon,  2 Nov 2020 09:33:16 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31C43F719;
-        Mon,  2 Nov 2020 09:33:14 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com,
-        etienne.carriere@linaro.org, f.fainelli@gmail.com,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        cristian.marussi@arm.com
-Subject: [PATCH v4 3/5] regulator: core: add of_match_full_name boolean flag
-Date:   Mon,  2 Nov 2020 17:32:36 +0000
-Message-Id: <20201102173238.4515-4-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201102173238.4515-1-cristian.marussi@arm.com>
-References: <20201102173238.4515-1-cristian.marussi@arm.com>
+        id S1726587AbgKBRci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:32:38 -0500
+IronPort-SDR: 5GYPaCuZgQaEpPHK3BSx7kzgVcq5QwNsINTf02SmvRsjRqBT+AOn6Jp+jZq0jzlSS/v30NMwlx
+ A37yo2HwmaFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169054546"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="169054546"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 09:32:38 -0800
+IronPort-SDR: b2zKfegSK6u2fKZJCw6Gaf/EocNmnRgzgPtTJHciwnCyb8+DMpI9FJ133BAjKXmGfOT9DNxNSc
+ 53UxS1zaFlUw==
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="324927291"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 09:32:38 -0800
+Date:   Mon, 2 Nov 2020 09:32:37 -0800
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tao Xu <tao3.xu@intel.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+Message-ID: <20201102173236.GD21563@linux.intel.com>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102061445.191638-1-tao3.xu@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During regulators registration, if .of_match and .regulators_node are
-defined as non-null strings in struct regulator_desc the core searches the
-DT subtree rooted at .regulators_node trying to match, at first, .of_match
-against the 'regulator-compatible' property and, then, falling back to use
-the name of the node itself to determine a good match.
+On Mon, Nov 02, 2020 at 02:14:45PM +0800, Tao Xu wrote:
+> There are some cases that malicious virtual machines can cause CPU stuck
+> (event windows don't open up), e.g., infinite loop in microcode when
+> nested #AC (CVE-2015-5307). No event window obviously means no events,
+> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
+> hardware CPU can't be used by host or other VM.
+> 
+> To resolve those cases, it can enable a notify VM exit if no
+> event window occur in VMX non-root mode for a specified amount of
+> time (notify window).
+> 
+> Expose a module param for setting notify window, default setting it to
+> the time as 1/10 of periodic tick, and user can set it to 0 to disable
+> this feature.
+> 
+> TODO:
+> 1. The appropriate value of notify window.
+> 2. Another patch to disable interception of #DB and #AC when notify
+> VM-Exiting is enabled.
+> 
+> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Tao Xu <tao3.xu@intel.com>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-Property 'regulator-compatible', though, is now deprecated and falling back
-to match against the node name, works fine only as long as the involved
-nodes are named in an unique way across the searched subtree; if that's not
-the case, like when using <common-name>@<unit> style naming for properties
-indexed via 'reg' property (as advised by the standard), the above matching
-mechanism based on the simple common name will lead to multiple matches and
-the only viable alternative would be to properly define the now deprecated
-'regulator-compatible' as the node full name, i.e. <common-name>@<unit>.
+Incorrect ordering, since you're sending the patch, you "handled" it last,
+therefore your SOB should come last, i.e.:
 
-In order to address this case without using such deprecated binding, define
-a new boolean flag .of_match_full_name in struct regulator_desc to force
-the core to match against the node full-name instead of the plain name.
-
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/regulator/of_regulator.c | 8 ++++++--
- include/linux/regulator/driver.h | 3 +++
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
-index 06c0b15fe4c0..564f928eb1db 100644
---- a/drivers/regulator/of_regulator.c
-+++ b/drivers/regulator/of_regulator.c
-@@ -413,8 +413,12 @@ device_node *regulator_of_get_init_node(struct device *dev,
- 
- 	for_each_available_child_of_node(search, child) {
- 		name = of_get_property(child, "regulator-compatible", NULL);
--		if (!name)
--			name = child->name;
-+		if (!name) {
-+			if (!desc->of_match_full_name)
-+				name = child->name;
-+			else
-+				name = child->full_name;
-+		}
- 
- 		if (!strcmp(desc->of_match, name)) {
- 			of_node_put(search);
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 8539f34ae42b..5d9b011fcef6 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -223,6 +223,8 @@ enum regulator_type {
-  * @name: Identifying name for the regulator.
-  * @supply_name: Identifying the regulator supply
-  * @of_match: Name used to identify regulator in DT.
-+ * @of_match_full_name: A flag to indicate that the of_match string, if
-+ *			present, should be matched against the node full_name.
-  * @regulators_node: Name of node containing regulator definitions in DT.
-  * @of_parse_cb: Optional callback called only if of_match is present.
-  *               Will be called for each regulator parsed from DT, during
-@@ -314,6 +316,7 @@ struct regulator_desc {
- 	const char *name;
- 	const char *supply_name;
- 	const char *of_match;
-+	bool of_match_full_name;
- 	const char *regulators_node;
- 	int (*of_parse_cb)(struct device_node *,
- 			    const struct regulator_desc *,
--- 
-2.17.1
-
+  Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+  Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+  Signed-off-by: Tao Xu <tao3.xu@intel.com>
