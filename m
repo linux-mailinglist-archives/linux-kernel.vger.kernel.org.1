@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474002A252B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3ACE2A252C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgKBH2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:28:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42832 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727802AbgKBH2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:28:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604302118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vIeSJu/dxQMs46dPuG/9Z0PrnYcPG7vnkDWSjn2yCPc=;
-        b=t3kkl6+BY+//ALDZFl4LH/zzn9lEK17PsBuQJOG4gFXTiEhMJtwEHDKk+6PBTvXUMY4qFF
-        aOTAr32BOyEFFBx3huA3vrGlZfq49MNUifeOFqftPzL/YnudR8gNPUEuuEmMOXSTlQDfUd
-        A2a6nupcbgZrgV91Fz//CP4kH6/8f/8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4EE79ACF6;
-        Mon,  2 Nov 2020 07:28:38 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 08:28:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hui Su <sh_def@163.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] mm/oom_kill: change comment and rename
- is_dump_unreclaim_slabs()
-Message-ID: <20201102072836.GA22613@dhcp22.suse.cz>
-References: <20201027144529.GA3558@rlk>
- <20201027145814.GY20500@dhcp22.suse.cz>
- <20201027151156.GA4336@rlk>
- <20201027192322.GA20500@dhcp22.suse.cz>
- <20201028153141.GB77196@rlk>
- <20201030182704.GA53949@rlk>
+        id S1728049AbgKBH3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:29:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727743AbgKBH3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:29:03 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1E2C0617A6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 23:29:03 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r12so4954542iot.4
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:29:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=LC4LD7vOLpY4WiibJdTNoTsnGYU+uUDvNd7qqbKW02w=;
+        b=L+UzVL2nPt4s62aX/op3HOiEnnRYY4wqo5f/Uovf0Nt95ZYrT3gu9n1YHCBazzOX5f
+         jkLW2g3qtEGLDKOtZpCL04FuBnkJ9dtfN3RPMg+ackRZazjpgSAwVH2Nd0SBrhpl53PJ
+         XMhVlWz8RO0CaxUPHRcQB+xn2VKMs6N17w0EKMdtwdOGSfKADkKr/VBW8xiHJ8NXG5Cq
+         zXlkkPkRRdm88twaAVEp+cIP3qGgL3Y48bbcqGSz4+e8F0F2bKAdtl9a2JkUcHL+HSkf
+         vbf9LnuwnTkKDIE/u0ffp+lEZt7k1lrU5cIL7Qj3Zpl87eHJniFY4zL7BuqsphqXQEXM
+         CEtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=LC4LD7vOLpY4WiibJdTNoTsnGYU+uUDvNd7qqbKW02w=;
+        b=MLyGrKNBc8kUkRcX/tRCa0vhS6/W5AYdyuv0RDUYPnaIJbT5h75xLPG1yWMU4yCG3J
+         U7NIUNBmTq9WNdfkmPNk3/8qvwREiRDlPbOLt8yo+uvAFecLGlSNf3wl/M2QNKR8Q2rA
+         uzFmPiEAyH9eonwHTqzaXV2ceLISiVukbKEQKnKiPJiNqesnK4OftwLv1l1aJYemkzBu
+         7UWBX3RaTZzC1JQuiKIicrhsYSyPcSdt2FcHtLbBc3sYMm0U3gbM/Wuoav2kpmCiEnwd
+         bfAMaTErGZ9S/3BmELDdcgAaX2r3hopruepPwxMtGi+1VsjBH3f26Ku2QS6IupwpFli7
+         q76w==
+X-Gm-Message-State: AOAM530LbK413HwKRcOWTpVg3xMHVoi0WWRBIo8Kzlah+6Lw5ZD3BHux
+        tJKTCKdsOzrb04l3TTLZmdU=
+X-Google-Smtp-Source: ABdhPJyh6lD72OdnXc+HxglsY9xt3UO3iQph7UWSKAL/4W0Bw3q4XJaJDqhX2+DUAZQeNtjworHP/A==
+X-Received: by 2002:a02:cd02:: with SMTP id g2mr10863414jaq.22.1604302142843;
+        Sun, 01 Nov 2020 23:29:02 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id z87sm11173713ilf.9.2020.11.01.23.29.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 23:29:02 -0800 (PST)
+Date:   Mon, 2 Nov 2020 00:29:00 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Hard lockup on Raspberry Pi 4 after v5.10-rc1
+Message-ID: <20201102072900.GA2124436@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201030182704.GA53949@rlk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 31-10-20 02:27:04, Hui Su wrote:
-> Change the comment of is_dump_unreclaim_slabs(), it just check
-> whether nr_unreclaimable slabs amount is greater than user
-> memory, and explain why we dump unreclaim slabs.
-> 
-> Rename it to should_dump_unreclaim_slab() maybe better.
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
+Hi everyone,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Starting with v5.10-rc1, I appear to be experiencing hard lockups on my
+Raspberry Pi 4 when compiling LLVM. My standard workflow for testing the
+Raspberry Pi 4 has been compiling tip of tree LLVM (to catch host
+AArch64 issues), compiling linux-next ARCH=arm64 defconfig, then booting
+it with QEMU + KVM, which has caught a few issues so far. Starting with
+v5.10-rc1, compiling LLVM causes the serial console to print junk like
 
-Thanks!
+ |▒pp▒p▒p▒p
+ p|▒|▒|p▒p▒p|▒▒|▒|▒|p|▒▒|▒|▒|
+ p▒pp▒▒▒|▒▒
+ ▒
+ ▒|▒|▒▒▒▒
+ p▒
+ ▒
+ ▒▒
+ ▒
+ ▒p|p
 
-> ---
->  mm/oom_kill.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 8b84661a6410..04b19b7b5435 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -170,11 +170,13 @@ static bool oom_unkillable_task(struct task_struct *p)
->  	return false;
->  }
->  
-> -/*
-> - * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
-> - * than all user memory (LRU pages)
-> - */
-> -static bool is_dump_unreclaim_slabs(void)
-> +/**
-> + * Check whether unreclaimable slab amount is greater than
-> + * all user memory(LRU pages).
-> + * dump_unreclaimable_slab() could help in the case that
-> + * oom due to too much unreclaimable slab used by kernel.
-> +*/
-> +static bool should_dump_unreclaim_slab(void)
->  {
->  	unsigned long nr_lru;
->  
-> @@ -463,7 +465,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
->  		mem_cgroup_print_oom_meminfo(oc->memcg);
->  	else {
->  		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
-> -		if (is_dump_unreclaim_slabs())
-> +		if (should_dump_unreclaim_slab())
->  			dump_unreclaimable_slab();
->  	}
->  	if (sysctl_oom_dump_tasks)
-> -- 
-> 2.29.0
-> 
-> 
+then I lose my mosh connection and I see the lights on the front of the
+Pi stop blinking.
 
--- 
-Michal Hocko
-SUSE Labs
+I have managed to narrow it down to a commit somewhere in the armsoc DT
+merge.
+
+Good: 2e368dd2bbea ("Merge tag 'armsoc-drivers' of
+git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc")
+Bad: e533cda12d8f ("Merge tag 'armsoc-dt' of
+git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc")
+
+I have not been able to complete a full bisect due to a lack of time
+unfortunately, I am sending this email to hopefully get some more eyes
+on the issue.
+
+$ head -n6 /boot/config.txt
+# My settings
+enable_uart=1
+core_freq_min=500
+kernel=Image
+os_prefix=custom-mainline-gcc-arm64/
+upstream_kernel=1
+
+$ cat /boot/.firmware_revision
+e8ddac7cd34b179efd702d4dc1efd0ccf44559b9
+
+I can reproduce the issue with:
+
+$ git clone --depth=1 https://github.com/llvm/llvm-project
+
+$ mkdir -p llvm-project/build && cd llvm-project/build
+
+$ cmake \
+-G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DLLVM_ENABLE_PROJECTS="clang;lld" \
+../llvm &&
+ninja
+
+If you need any more information or testing, please let me know!
+
+Cheers,
+Nathan
