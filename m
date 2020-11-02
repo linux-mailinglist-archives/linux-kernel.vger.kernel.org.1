@@ -2,182 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3894A2A2757
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDED2A275C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgKBJsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:48:01 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:44269 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728156AbgKBJsA (ORCPT
+        id S1728371AbgKBJtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgKBJtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:48:00 -0500
-Received: by mail-ej1-f66.google.com with SMTP id j24so17958517ejc.11;
-        Mon, 02 Nov 2020 01:47:58 -0800 (PST)
+        Mon, 2 Nov 2020 04:49:00 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7834C0617A6;
+        Mon,  2 Nov 2020 01:49:00 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id t14so10341539pgg.1;
+        Mon, 02 Nov 2020 01:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3m1fHdBEtF1GXzLrh850WEeEvbCCehA35f+ouhTNIb4=;
+        b=XvUXUJuL6qRbbHHE37BR1yj5zge+FGcohhhSr9DibJyoVAgPD3yh4854zlthhh55pY
+         dJ53dLzVbUZX/VauXVrtDSpy/xDKMWzxwXsOsM1gxDJ8KJk3ApdX3dv3n8vytmWUBmEY
+         6q4/GmTBBkuSmLgTTKsBTrrydZOerP6YMbBq1OvlAjS5ByHpOvn2Db3ErrwCKfDSGAN8
+         1I1d9Kld79mgupONsYK35BPmEzuAQtbxDwUrqdR8q9RHATaO8VWqE8IGDECWYp3l7C/f
+         TdEuasQNcbwXSmQyT7k3km7N1Pn4u1qpY50d+hjxczezkxT8+4164serbeX2nzQEeIx/
+         p8gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aBL58c34rn6nb4fMXeoXHFwH4EN0oABK7+YoRvnww4A=;
-        b=FVehcp7B6jXGPG4/aN81kjLJETFIFCmrbhc5fml2g4dyLdCGhON77jh5+XiD66KtyU
-         /n/kaO0rxUIJHy8SBcxyseo6/JEKhdOtk/UrbabSxUSKTWcGIC9XZkS/EZs+5R2LQ9WX
-         mTtV7KbNritZLToxLA5S6qTcuYBCveNeYgwwiCdN7u00reusjUjp9rqnQzKvMIUFX9q2
-         UuyhpepNsbwpjXiKA5vz+4RYe2cPmwYhJsYBYM5ElC844aPYlWh7foyQfAgXbVSTHWFs
-         bUK6BHD4KOx24pC50qUuj+KsbfL3WYWCsSpvZEmgYDYPgu2XLhz0yqRP1+PPcR5qma1s
-         pxeg==
-X-Gm-Message-State: AOAM531jiRG5hXvYxyysZpFFyTfb0Hq6i+neqPQOlWXh9RxpSmy8IcPq
-        +GxEfQCH0+VFOlg9a1TFkIKKoUC1B7c2JA==
-X-Google-Smtp-Source: ABdhPJyT6Zvze4YHMIYPFL++Xloau/cxO3dOk0KGmbVTqK3nh34aV7jQ6EYhRNwau95TEnaQlTZSvQ==
-X-Received: by 2002:a17:906:580e:: with SMTP id m14mr14018843ejq.237.1604310477608;
-        Mon, 02 Nov 2020 01:47:57 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id e13sm8525101ejh.65.2020.11.02.01.47.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 01:47:56 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] console: Remove dummy con_font_op() callback
- implementations
-To:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Winischhofer <thomas@winischhofer.net>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-References: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604128639.git.yepeilin.cs@gmail.com>
- <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a8157089-bc72-c409-c7cc-2fd7eb087ebc@kernel.org>
-Date:   Mon, 2 Nov 2020 10:47:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        bh=3m1fHdBEtF1GXzLrh850WEeEvbCCehA35f+ouhTNIb4=;
+        b=cw7ZjnF1DmJpRUe0ksMtCsRWMvTVZzgUe8sgeIk2F6WXh1jpE83QOMZaslIo+NV0eQ
+         GSdoye8SxQbCLV1Dsl91Fput4w/OJ4ZBT6bb1Y8hldHNFIn3P5JKG4hvNLOVQGsD3AcV
+         xLt3JACgn8HMJXNTPvMll+5mpUh66h1HQMVg9+zH9MCW/wX/4SULysOBW2qVtUD+K7t7
+         ft5YRPfcE5K/Xn0mdtSCzpqCOY1VZWcqc2rxFmeLq27T80mF7JmTVUfwnZoZPjBJdTCe
+         eHswy21TRmsDKacGEKV+dLI7iJQtsxhxa2EpicxC6+4j6F4xsJoU6yK9niuqHQg92X0x
+         zZcg==
+X-Gm-Message-State: AOAM531leOVWNGRNRRUHJ0PJVFGrECWcdpjf8uPpwuFvkMXmjh9LNHUY
+        jGKCPqSWjou8+HHnfZvF43U=
+X-Google-Smtp-Source: ABdhPJwreE9z7RRc0vFoAeA0Lz2EEKr1GBHEHKjUlqhr4NgX9Nm4D38t33oM4QFE6BE2NTID3iv9mg==
+X-Received: by 2002:a17:90a:d104:: with SMTP id l4mr12013746pju.194.1604310540059;
+        Mon, 02 Nov 2020 01:49:00 -0800 (PST)
+Received: from ruantu-3.localdomain ([103.230.142.242])
+        by smtp.gmail.com with ESMTPSA id y5sm6935453pfc.165.2020.11.02.01.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 01:48:59 -0800 (PST)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yu-Tung Chang <mtwget@gmail.com>
+Subject: [PATCH v1 0/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
+Date:   Mon,  2 Nov 2020 17:48:50 +0800
+Message-Id: <20201102094851.85301-1-mtwget@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604306433.git.yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 11. 20, 10:36, Peilin Ye wrote:
-> `struct console_font` is a UAPI structure, thus ideally should not be
-> used for kernel internal abstraction. Remove some dummy .con_font_set,
-> .con_font_default and .con_font_copy `struct consw` callback
-> implementations, to make it cleaner.
+v1:
+- use SPDX header
+- rename led node to led-[0-9]
+- use "function" and "color" properties for led node
+- add aliases for uart1, emac, wifi
+- modify usb_otg->dr_mode property to otg
 
-ESEMANTIC_ERROR.
+Yu-Tung Chang (1):
+  ARM: dts: sun8i: add FriendlyArm ZeroPi support
 
-1) What do you refer to with the last "it"?
-
-2) What's the purpose of mentioning struct console_font at all?
-
-3) Could you clarify whether you checked it is safe to remove the hooks?
-
-4) All the hooks now return ENOSYS for both consoles (and not 0). Is 
-this intentional?
-
-I know answers to the first 3 questions, but you need to elaborate a bit 
-in the commit log to connect those sentences. Esp. for people not 
-dealing with the code on a daily basis. Ad 4) I am not sure.
-
-> Suggested-by: Daniel Vetter <daniel@ffwll.ch>
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> ---
-> Change in v2:
->    - [v2 2/2] no longer Cc: stable, so do not Cc: stable
-> 
-> Context: https://lore.kernel.org/lkml/CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com/
-> 
->   drivers/usb/misc/sisusbvga/sisusb_con.c | 21 ---------------------
->   drivers/video/console/dummycon.c        | 20 --------------------
->   2 files changed, 41 deletions(-)
-> 
-> diff --git a/drivers/usb/misc/sisusbvga/sisusb_con.c b/drivers/usb/misc/sisusbvga/sisusb_con.c
-> index c63e545fb105..dfa0d5ce6012 100644
-> --- a/drivers/usb/misc/sisusbvga/sisusb_con.c
-> +++ b/drivers/usb/misc/sisusbvga/sisusb_con.c
-> @@ -1345,24 +1345,6 @@ static int sisusbdummycon_blank(struct vc_data *vc, int blank, int mode_switch)
->   	return 0;
->   }
->   
-> -static int sisusbdummycon_font_set(struct vc_data *vc,
-> -				   struct console_font *font,
-> -				   unsigned int flags)
-> -{
-> -	return 0;
-> -}
-> -
-> -static int sisusbdummycon_font_default(struct vc_data *vc,
-> -				       struct console_font *font, char *name)
-> -{
-> -	return 0;
-> -}
-> -
-> -static int sisusbdummycon_font_copy(struct vc_data *vc, int con)
-> -{
-> -	return 0;
-> -}
-> -
->   static const struct consw sisusb_dummy_con = {
->   	.owner =		THIS_MODULE,
->   	.con_startup =		sisusbdummycon_startup,
-> @@ -1375,9 +1357,6 @@ static const struct consw sisusb_dummy_con = {
->   	.con_scroll =		sisusbdummycon_scroll,
->   	.con_switch =		sisusbdummycon_switch,
->   	.con_blank =		sisusbdummycon_blank,
-> -	.con_font_set =		sisusbdummycon_font_set,
-> -	.con_font_default =	sisusbdummycon_font_default,
-> -	.con_font_copy =	sisusbdummycon_font_copy,
->   };
->   
->   int
-> diff --git a/drivers/video/console/dummycon.c b/drivers/video/console/dummycon.c
-> index 2a0d0bda7faa..f1711b2f9ff0 100644
-> --- a/drivers/video/console/dummycon.c
-> +++ b/drivers/video/console/dummycon.c
-> @@ -124,23 +124,6 @@ static int dummycon_switch(struct vc_data *vc)
->   	return 0;
->   }
->   
-> -static int dummycon_font_set(struct vc_data *vc, struct console_font *font,
-> -			     unsigned int flags)
-> -{
-> -	return 0;
-> -}
-> -
-> -static int dummycon_font_default(struct vc_data *vc,
-> -				 struct console_font *font, char *name)
-> -{
-> -	return 0;
-> -}
-> -
-> -static int dummycon_font_copy(struct vc_data *vc, int con)
-> -{
-> -	return 0;
-> -}
-> -
->   /*
->    *  The console `switch' structure for the dummy console
->    *
-> @@ -159,8 +142,5 @@ const struct consw dummy_con = {
->   	.con_scroll =	dummycon_scroll,
->   	.con_switch =	dummycon_switch,
->   	.con_blank =	dummycon_blank,
-> -	.con_font_set =	dummycon_font_set,
-> -	.con_font_default =	dummycon_font_default,
-> -	.con_font_copy =	dummycon_font_copy,
->   };
->   EXPORT_SYMBOL_GPL(dummy_con);
-> 
-
+ .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 85 +++++++++++++++++++
+ 3 files changed, 91 insertions(+)
+ create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
 
 -- 
-js
-suse labs
+2.29.0
+
