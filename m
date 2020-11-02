@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC252A35C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEA42A35BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgKBVD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:03:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
+        id S1726055AbgKBVDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:03:50 -0500
+Received: from mga03.intel.com ([134.134.136.65]:13122 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgKBVDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:03:55 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDB62208B6;
-        Mon,  2 Nov 2020 21:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604351034;
-        bh=QIKekPJv96xapfmbeqZyRV7a8wmsfIVO5Ur1tFoBsxQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CRnAq/wtmByBOoYx6V660YQRskTnHR9OSZtGMGbDhceo0HaOQq8ExSCwlBTJZU67/
-         7+EdwCiOci/5xcpmUCMEKbhzur7k8vzQm+klaLkVJwNkE9a4SWOr4V0X9/EFV+EPl7
-         hdeF+vxR15bfQ3DHwlRqmx/Ac5qW0dNeY937DLcs=
-Received: by mail-oi1-f179.google.com with SMTP id x1so16060285oic.13;
-        Mon, 02 Nov 2020 13:03:54 -0800 (PST)
-X-Gm-Message-State: AOAM532afU8upChQxncV+3hkGuVuGQPjsAj4JxrTvfj8Q6IxGmkayGPz
-        WiJ4j5g7Gz2kzuG5HqMwr7hpw1Q/GEHHvH+wKg==
-X-Google-Smtp-Source: ABdhPJxFDSpXQtYVkltDyCL0k7wfhpIaDYr2QVmapb626fGuhI4EWsl4osaRewc4U9X7lcZXH/ws1+nFb7iAqLwe9h8=
-X-Received: by 2002:a54:4588:: with SMTP id z8mr15353oib.147.1604351034017;
- Mon, 02 Nov 2020 13:03:54 -0800 (PST)
+        id S1725806AbgKBVDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:03:50 -0500
+IronPort-SDR: FAPs1q039TcIJvoHedofd9Nry6pQhzSrM2NXbHhhbNQhU0lIaFDMXE1M8hVgrBXbfbzeXk/aaM
+ Lbqwy6ZbmUgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169054654"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="169054654"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 13:03:49 -0800
+IronPort-SDR: cjrnBwfD6Cv0W1Cz1TfVFi4CFmmoEBQHoWx4+PHz5rGHbHzIDZrG0kqS3y+ykElKjFj1P9S+z/
+ PRdK287dMjig==
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="470521444"
+Received: from lginuga-mobl.amr.corp.intel.com (HELO [10.255.228.220]) ([10.255.228.220])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 13:03:49 -0800
+Subject: Re: [PATCH v4 5/6] PCI/ACPI: Replace open coded variant of
+ resource_union()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
+ <20201102210025.53520-6-andriy.shevchenko@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <510543c4-0abe-7582-32cd-404656e818d8@linux.intel.com>
+Date:   Mon, 2 Nov 2020 13:03:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201029172550.3523-1-nsaenzjulienne@suse.de> <20201029172550.3523-4-nsaenzjulienne@suse.de>
-In-Reply-To: <20201029172550.3523-4-nsaenzjulienne@suse.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 2 Nov 2020 15:03:42 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK17XTkHg1YVeyKmfEL7BO2xGxjUC2WccBEbcY+vOngDA@mail.gmail.com>
-Message-ID: <CAL_JsqK17XTkHg1YVeyKmfEL7BO2xGxjUC2WccBEbcY+vOngDA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/7] of/address: Introduce of_dma_get_max_cpu_address()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201102210025.53520-6-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:26 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Introduce of_dma_get_max_cpu_address(), which provides the highest CPU
-> physical address addressable by all DMA masters in the system. It's
-> specially useful for setting memory zones sizes at early boot time.
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->
-> ---
->
-> Changes since v4:
->  - Return max address, not address limit (one-off difference)
->
-> Changes since v3:
->  - use u64 with cpu_end
->
-> Changes since v2:
->  - Use PHYS_ADDR_MAX
->  - return phys_dma_t
->  - Rename function
->  - Correct subject
->  - Add support to start parsing from an arbitrary device node in order
->    for the function to work with unit tests
->
->  drivers/of/address.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/of.h   |  7 +++++++
->  2 files changed, 49 insertions(+)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+On 11/2/20 1:00 PM, Andy Shevchenko wrote:
+> Since we have resource_union() helper, let's utilize it here.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>   drivers/acpi/pci_root.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index c12b5fb3e8fb..0bf072cef6cf 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -722,9 +722,7 @@ static void acpi_pci_root_validate_resources(struct device *dev,
+>   			 * our resources no longer match the ACPI _CRS, but
+>   			 * the kernel resource tree doesn't allow overlaps.
+>   			 */
+> -			if (resource_overlaps(res1, res2)) {
+> -				res2->start = min(res1->start, res2->start);
+> -				res2->end = max(res1->end, res2->end);
+> +			if (resource_union(res1, res2, res2)) {
+>   				dev_info(dev, "host bridge window expanded to %pR; %pR ignored\n",
+>   					 res2, res1);
+>   				free = true;
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
