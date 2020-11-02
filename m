@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836252A29A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9602A29B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgKBLgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:36:53 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60488 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbgKBLgv (ORCPT
+        id S1728574AbgKBLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:44:31 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:38613 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728487AbgKBLoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:36:51 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 95CE01C0B7D; Mon,  2 Nov 2020 12:36:48 +0100 (CET)
-Date:   Mon, 2 Nov 2020 12:36:48 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
-Message-ID: <20201102113648.GB9840@duo.ucw.cz>
-References: <20201027135430.632029009@linuxfoundation.org>
- <20201028171035.GD118534@roeck-us.net>
- <20201028195619.GC124982@roeck-us.net>
- <20201031094500.GA271135@eldamar.lan>
- <7608060e-f48b-1a7c-1a92-9c41d81d9a40@roeck-us.net>
+        Mon, 2 Nov 2020 06:44:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UDzBHD5_1604317461;
+Received: from 30.0.183.43(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UDzBHD5_1604317461)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 02 Nov 2020 19:44:22 +0800
+Subject: Re: [PATCH] nvme: Simplify the nvme_req_qid()
+To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     baolin.wang7@gmail.com, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <3ddb02eee7765d63328da3e1499a26da5cd20f1b.1603785673.git.baolin.wang@linux.alibaba.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <2735ac5c-3d7a-0829-368a-2066e75fe635@linux.alibaba.com>
+Date:   Mon, 2 Nov 2020 19:44:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
-Content-Disposition: inline
-In-Reply-To: <7608060e-f48b-1a7c-1a92-9c41d81d9a40@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3ddb02eee7765d63328da3e1499a26da5cd20f1b.1603785673.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---s2ZSL+KKDSLx8OML
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Use the request's '->mq_hctx->queue_num' directly to simplify the
+> nvme_req_qid() function.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Hi!
+Gentle ping?
 
-> >>> perf failures are as usual. powerpc:
-> >=20
-> > Regarding the perf failures, do you plan to revert b801d568c7d8 ("perf
-> > cs-etm: Move definition of 'traceid_list' global variable from header
-> > file") included in 4.19.152 or is a bugfix underway?
-> >=20
->=20
-> The problem is:
->=20
-> In file included from util/evlist.h:15:0,
->                  from util/evsel.c:30:
-> util/evsel.c: In function =E2=80=98perf_evsel__exit=E2=80=99:
-> util/util.h:25:28: error: passing argument 1 of =E2=80=98free=E2=80=99 di=
-scards =E2=80=98const=E2=80=99 qualifier from pointer target type
-> /usr/include/stdlib.h:563:13: note: expected =E2=80=98void *=E2=80=99 but=
- argument is of type =E2=80=98const char *=E2=80=99
->  extern void free (void *__ptr) __THROW;
->=20
-> This is seen with older versions of gcc (6.5.0 in my case). I have no ide=
-a why
-> newer versions of gcc/glibc accept this (afaics free() still expects a ch=
-ar *,
-> not a const char *). The underlying problem is that pmu_name should not be
-> declared const char *, but char *, since it is allocated. The upstream ve=
-rsion
-> of perf no longer uses the same definition of zfree(). It was changed from
-> 	#define zfree(ptr) ({ free(*ptr); *ptr =3D NULL; })
-> to
-> 	#define zfree(ptr) __zfree((void **)(ptr))
-> which does the necessary typecast. The fix would be to either change the =
-definition
-> of zfree to add the typecast, or to change the definition of pmu_name to =
-drop the const.
-> Both would only apply to v4.19.y. I don't know if either would be accepta=
-ble.
-
-As the problem is already fixed in the mainline, either solution
-should be acceptable for -stable.
-
-Probably the one adjusting the zfree() is more suitable, as that is
-the way it was solved in the mainline.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---s2ZSL+KKDSLx8OML
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5/vUAAKCRAw5/Bqldv6
-8mfgAJ9bqTjoqjGvlZk42QcL0GkMgyXv5wCcD6REtgSe4R0YPakDwLMVM0xteAo=
-=eUJL
------END PGP SIGNATURE-----
-
---s2ZSL+KKDSLx8OML--
+> ---
+>   drivers/nvme/host/nvme.h | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+> index cc11113..0b62b62 100644
+> --- a/drivers/nvme/host/nvme.h
+> +++ b/drivers/nvme/host/nvme.h
+> @@ -178,7 +178,8 @@ static inline u16 nvme_req_qid(struct request *req)
+>   {
+>   	if (!req->q->queuedata)
+>   		return 0;
+> -	return blk_mq_unique_tag_to_hwq(blk_mq_unique_tag(req)) + 1;
+> +
+> +	return req->mq_hctx->queue_num + 1;
+>   }
+>   
+>   /* The below value is the specific amount of delay needed before checking
+> 
