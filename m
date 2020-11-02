@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3B72A2649
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5FD2A264C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgKBIlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:41:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:55932 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgKBIlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:41:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C524101E;
-        Mon,  2 Nov 2020 00:41:01 -0800 (PST)
-Received: from [10.57.13.99] (unknown [10.57.13.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 71DE23F718;
-        Mon,  2 Nov 2020 00:40:58 -0800 (PST)
-Subject: Re: [PATCH 1/4] dt-bindings: opp: Introduce opp-sustainable bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        vireshk@kernel.org, sboyd@kernel.org, nm@ti.com, rafael@kernel.org,
-        sudeep.holla@arm.com, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com
-References: <20201028140847.1018-1-lukasz.luba@arm.com>
- <20201028140847.1018-2-lukasz.luba@arm.com> <20201030193427.GA4186428@bogus>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <569a07c0-be6b-7ffe-2920-accea1f932f0@arm.com>
-Date:   Mon, 2 Nov 2020 08:40:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728282AbgKBIl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:41:29 -0500
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:38415 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBIl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:41:28 -0500
+Received: by mail-wr1-f47.google.com with SMTP id n18so13515447wrs.5;
+        Mon, 02 Nov 2020 00:41:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LE6jfeBaedNtUOiZilvHvmLOozgEEEYdnPDcbbq+vus=;
+        b=my/WtJycsWZ9yj1SIHdsdh1NQZ813UEVAITpjlOVN6D15ldRlpigzUqfsBAbd7c2Gx
+         O/2Dc5GlWY8q7yQi8lwiZQ94fM+NiXWDf+xH4g+5xZ7m4wOAzpR7toYedk7THcUyrEGg
+         TXeyMGhzbtKSjJkFEse8RJBKJFD91aDMHkd5nsDimtnuNBG3nqAoeGJr50JztBimxQHz
+         8A8ouMAhxclU3g1Me+Hrp8loDG0CgnI61s4HEGI4fd1ubsqdkVVvZqkHJPIyy6mJsgj8
+         l5GC8cJZ6+ljgubXhWQV5FGMk1PxWOX7XGUZPNnWJMwGsvLGwwZH+mI9y5wMSMQqz6Z0
+         nlDg==
+X-Gm-Message-State: AOAM532Eqh9Nf9wF3LOge+vwd/+13JtcGUOmsuSsNmoVG7Xapl2Zfz+3
+        lnm8q99rM3LEdCq7VOOXBrANwHzn+A26ZQ==
+X-Google-Smtp-Source: ABdhPJxEntbrtRvffSWB2E3xhXP8aL9tfpqwwm0A3s92KIa06PgNflQihgMrxmliDhgFc5ONdad7cg==
+X-Received: by 2002:a5d:5106:: with SMTP id s6mr18215180wrt.51.1604306485033;
+        Mon, 02 Nov 2020 00:41:25 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n8sm1907613wmc.11.2020.11.02.00.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:41:23 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:41:22 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: dmaengine: pl330 rare NULL pointer dereference in pl330_tasklet
+Message-ID: <20201102084122.GA7331@kozik-lap>
+References: <CGME20201031190133eucas1p2a90b3a7a1e39f4e778e288bb11a3ff9d@eucas1p2.samsung.com>
+ <20201031190124.GA486187@kozik-lap>
+ <a4bbe5e8-dd3d-d66f-a9fe-012bf7910943@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201030193427.GA4186428@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a4bbe5e8-dd3d-d66f-a9fe-012bf7910943@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 10/30/20 7:34 PM, Rob Herring wrote:
-> On Wed, Oct 28, 2020 at 02:08:44PM +0000, Lukasz Luba wrote:
->> Add opp-sustainable as an additional property in the OPP node to describe
->> the sustainable performance level of the device. This will help to
->> estimate the sustainable performance of the whole system.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   Documentation/devicetree/bindings/opp/opp.txt | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
->> index 9847dfeeffcb..cd01028de305 100644
->> --- a/Documentation/devicetree/bindings/opp/opp.txt
->> +++ b/Documentation/devicetree/bindings/opp/opp.txt
->> @@ -154,6 +154,10 @@ Optional properties:
->>   - opp-suspend: Marks the OPP to be used during device suspend. If multiple OPPs
->>     in the table have this, the OPP with highest opp-hz will be used.
->>   
->> +- opp-sustainable: Marks the OPP as sustainable. This property can be used for
->> +  estimating sustainable performance of the whole system. If multiple OPPs in
->> +  the table have this, the OPP with highest opp-hz will be used.
->> +
+On Mon, Nov 02, 2020 at 08:38:14AM +0100, Marek Szyprowski wrote:
+> Hi Krzysztof,
 > 
-> Isn't this just the inverse of the turbo? or boost? flag we already
-> have?
-
-True, it could be possible to use those flags. Then a function which
-returns one OPP below, would be 'sustainable'. I've already
-suggested to skip binding and only have get/set functions for OPP
-framework to mark 'sustainable' level, but Viresh is against.
-We have discussed this new opp sustainable with Viresh and since it
-would be only used by IPA but the definition is a bit blurry,
-we decided to drop this series. Maybe in future when there will be
-another user, we will come back to this.
-I am going to use Energy Model and mark the em_perf_state as sustained.
-
+> On 31.10.2020 20:01, Krzysztof Kozlowski wrote:
+> > I hit quite rare issue with pl330 DMA driver, difficult to reproduce
+> > (actually failed to do so):
+> >
+> > Happened during early reboot
+> >
+> > [  OK  ] Stopped target Graphical Interface.
+> > [  OK  ] Stopped target Multi-User System.
+> > [  OK  ] Stopped target RPC Port Mapper.
+> >           Stopping OpenSSH Daemonti[   75.447904] 8<--- cut here ---
+> > [   75.449506] Unable to handle kernel NULL pointer dereference at virtual address 0000000c
+> > ...
+> > [   75.690850] [<c0902f70>] (pl330_tasklet) from [<c034d460>] (tasklet_action_common+0x88/0x1f4)
+> > [   75.699340] [<c034d460>] (tasklet_action_common) from [<c03013f8>] (__do_softirq+0x108/0x428)
+> > [   75.707850] [<c03013f8>] (__do_softirq) from [<c034dadc>] (run_ksoftirqd+0x2c/0x4c)
+> > [   75.715486] [<c034dadc>] (run_ksoftirqd) from [<c036fbfc>] (smpboot_thread_fn+0x13c/0x24c)
+> > [   75.723693] [<c036fbfc>] (smpboot_thread_fn) from [<c036c18c>] (kthread+0x13c/0x16c)
+> > [   75.731390] [<c036c18c>] (kthread) from [<c03001a8>] (ret_from_fork+0x14/0x2c)
+> >
+> > Full log:
+> > https://protect2.fireeye.com/v1/url?k=7445a1ab-2bde98a7-74442ae4-000babff3563-a368d542db0c5500&q=1&e=62e4887b-e224-48e5-80a2-71163caeeec8&u=https%3A%2F%2Fkrzk.eu%2F%23%2Fbuilders%2F20%2Fbuilds%2F954%2Fsteps%2F22%2Flogs%2Fserial0
+> >
+> > 1. Arch ARM Linux
+> > 2. multi_v7_defconfig
+> > 3. Odroid HC1, ARMv7, octa-core (Cortex-A7+A15), Exynos5422 SoC
+> > 4. systemd, boot up with static IP set in kernel command line
+> > 5. No swap
+> > 6. Kernel, DTB and initramfs are downloaded with TFTP
+> > 7. NFS root (NFS client) mounted from a NFSv4 server
+> >
+> > Since I was not able to reproduce it, obviously I did not run bisect. If
+> > anyone has ideas, please share.
 > 
-> Couldn't this be learned? I ran at this frequency and then overheated.
-> That could be dependent on ambient temperatures or dust build up on
-> fans/heatsink.
+> Well, I've also observed it a few times. IMHO it is related to the 
+> broken UART (in DMA mode) shutdown procedure. Usually it can be easily 
+> observed by flushing some random parts of the previously transmitted 
+> data to the UART console during the system shutdown. This also depends 
+> on the board and used system (especially the presence of systemd, which 
+> plays with UART differently than the old sysv init). IMHO there is a 
+> kind of use-after-free issue there, so the above pl330 stacktrace can be 
+> also observed depending on the timing and system load. This issue is 
+> there from the beginning of the DMA support. I have it on my todo list, 
+> but it had too low priority to take a look into it. I only briefly 
+> checked the related code a few years ago and noticed that the UART 
+> shutdown is not really synchronized with DMA. However that time I didn't 
+> find any simple fix, so I gave up.
 
-Yes it could be learned. IPA tries to do that for different workloads,
-but it needs some starting conditions (coefficients and sustainable
-power) to converge in short time. Sustainable power is currently
-estimated based on lowest OPP. With that new 'sustainable' flag,
-it would be much easier for IPA to converge.
+Thanks for the explanation.
 
-Regards,
-Lukasz
+Best regards,
+Krzysztof
 
-> 
-> Rob
-> 
