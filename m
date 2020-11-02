@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879272A36DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2E12A36E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgKBW7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgKBW7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:59:40 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE48C061A48
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 14:59:40 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id e16so126613ile.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 14:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WLiJRSZDtXGLiZVllQRQGLaR655Hs+rHimHW4Xh2uCI=;
-        b=Xy3858vI46rSFVYKB418SAOtR8xhErvTZXC0kS+Ij+3CB4nlLReyT5p3EwP4xoog4L
-         U806CmRrgiBeMvnFR4bOG0UPR0HyT64powJ0A0+HYqyoTEAuNKkPtFKD+xrD169A8aRt
-         nAKCxmCfGuYjcYJ1rOVxcBsaxXPzKGcevIudZafx35sBjHUhzBjsHE2A/1nCjqOnNVjH
-         1SL+rWTrPweOT0JQ1kX/3wzU6QrNZ2+Jw2kO1SvCOdgPO/j91ror3BcgyeGl40KLm9mk
-         z8s1LkKFkuh37nPpbtLMWNh0S9upOlQ3xg8jUDN16g7AjO8BX1NFG3X5XzOli2F+fR++
-         hgdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WLiJRSZDtXGLiZVllQRQGLaR655Hs+rHimHW4Xh2uCI=;
-        b=K09T2gRFgMVRbv+1JBqXTNSuRRtJFjP2SLcXkpnluVSch6h88b+yyEUbSKl+DDW92y
-         YYTB8mVwIFfKKi0LGOdOlg52G+t06MVqc8KCENyShyBuI+8JyXW6V7KLs164YnjF2ceM
-         nkxZrZQZDMgTESeMYkV7N4JTyML98jEgp5btQ5NzIULMD2udBEA2gWROHycz91Df5zu4
-         dYBoqxe8k9dk05/TfIwsiIxfUnIDkqSPsj/Xv2+IGtlBMMY5GBvah4/hU+H7wC63vESu
-         pVzJ0CENTIuRiLrm2wXuP5nhmlcI6Uh5ttFUPmX1C6ObYpE5wUbL2jMKRSZTLaroxKvx
-         ejsw==
-X-Gm-Message-State: AOAM531NqgnYN9y2c3NSH/uIUf91u7Z6GrjYukkolxwOopnqELUujZXG
-        zVsZRJs4SFJXxYybs3vtmyeOOplMY9gaOoiWT1YMPsG0ELk=
-X-Google-Smtp-Source: ABdhPJyZNnTkCSdkuybuVtY86i/+/FnnBOksLKyQaq2Hm6+ySGMeObsSQN7r9P2EcPwqKSnG9hQemoVBYyH9q3cbPz8=
-X-Received: by 2002:a92:7914:: with SMTP id u20mr12435436ilc.203.1604357979556;
- Mon, 02 Nov 2020 14:59:39 -0800 (PST)
+        id S1726172AbgKBXCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725829AbgKBXCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:02:37 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B3A622275;
+        Mon,  2 Nov 2020 23:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604358156;
+        bh=UetnTkfxmIeigSUnTzIy4Yhiiax8tZDtOAfnjNIIyzY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PogIUT2LNonVuaoI7ZyRkDQtUiAyGTT/ikFUhgJFk7bB2+AcOKC5yP02VQMVRzWoz
+         fnA6EVQwgVgfz/HZN8WlZgw1DpvwuoJFyXhs493aQ6WVaw1iGS3p3NEkNIeXq/RoPH
+         bAvn3I/ttprRXzzQ+Af4TOJsqh9gge64Xn++WYfA=
+Date:   Mon, 2 Nov 2020 17:02:34 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        amurray@thegoodpenguin.co.uk, robh@kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Message-ID: <20201102230234.GA62945@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201027233733.1484855-1-bgardon@google.com> <20201027233733.1484855-4-bgardon@google.com>
- <20201102212715.GD20600@xz-x1>
-In-Reply-To: <20201102212715.GD20600@xz-x1>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 2 Nov 2020 14:59:28 -0800
-Message-ID: <CANgfPd8BDze5yeiyzdmdOV_p3as-KyqeoQuCT5UEAaUx6OMJ=A@mail.gmail.com>
-Subject: Re: [PATCH 3/5] KVM: selftests: Simplify demand_paging_test with timespec_diff_now
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Peter Feiner <pfeiner@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029053959.31361-3-vidyas@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 1:27 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Oct 27, 2020 at 04:37:31PM -0700, Ben Gardon wrote:
-> > Add a helper function to get the current time and return the time since
-> > a given start time. Use that function to simplify the timekeeping in the
-> > demand paging test.
->
-> Nit: timespec_diff_now() sounds less charming than timespec_elapsed() to
-> me... "diff_now" is longer, and it also does not show positive/negative of the
-> results (which in this case should always be end-start). "elapsed" should
-> always mean something positive.
+On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
+> DesignWare core has a TLP digest (TD) override bit in one of the control
+> registers of ATU. This bit also needs to be programmed for proper ECRC
+> functionality. This is currently identified as an issue with DesignWare
+> IP version 4.90a. This patch does the required programming in ATU upon
+> querying the system policy for ECRC.
 
-That's a great suggestion and much clearer. I'll make that change in v2.
+I guess this is a hardware defect, right?
 
->
-> With/Without the change above:
->
-> Reviewed-by: Peter Xu <peterx@redhat.com>
->
-> --
-> Peter Xu
->
+How much of a problem would it be if we instead added a "no_ecrc"
+quirk for this hardware so we never enabled ECRC?
+
+IIUC, the current Linux support of ECRC is a single choice at
+boot-time: by default ECRC is not enabled, but if you boot with
+"pci=ecrc=on", we turn on ECRC for every device.
+
+That seems like the minimal support, but I think the spec allows ECRC
+to be enabled selectively, on individual devices.  I can imagine a
+sysfs knob that would allow us to enable/disable ECRC per-device at
+run-time.
+
+If we had such a sysfs knob, it would be pretty ugly and maybe
+impractical to work around this hardware issue.  So I'm a little bit
+hesitant to add functionality that might have to be removed in the
+future.
+
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
+> ---
+> V3:
+> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
+> 
+> V2:
+> * Addressed Jingoo's review comment
+> * Removed saving 'td' bit information in 'dw_pcie' structure
+> 
+>  drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
+>  drivers/pci/controller/dwc/pcie-designware.h | 1 +
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index b5e438b70cd5..cbd651b219d2 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>  				 upper_32_bits(pci_addr));
+>  	val = type | PCIE_ATU_FUNC_NUM(func_no);
+> +	if (pci->version == 0x490A)
+> +		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+>  	val = upper_32_bits(size - 1) ?
+>  		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>  			   lower_32_bits(pci_addr));
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+>  			   upper_32_bits(pci_addr));
+> -	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+> -			   PCIE_ATU_FUNC_NUM(func_no));
+> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
+> +	if (pci->version == 0x490A)
+> +		val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+> +	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+>  
+>  	/*
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index e7f441441db2..b01ef407fd52 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -89,6 +89,7 @@
+>  #define PCIE_ATU_TYPE_IO		0x2
+>  #define PCIE_ATU_TYPE_CFG0		0x4
+>  #define PCIE_ATU_TYPE_CFG1		0x5
+> +#define PCIE_ATU_TD_SHIFT		8
+>  #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+>  #define PCIE_ATU_CR2			0x908
+>  #define PCIE_ATU_ENABLE			BIT(31)
+> -- 
+> 2.17.1
+> 
