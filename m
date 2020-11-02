@@ -2,113 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8122F2A365C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6370B2A365F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgKBWTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:19:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33452 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKBWTx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:19:53 -0500
-Date:   Mon, 2 Nov 2020 23:19:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604355592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=gqiPjScE5SdOJ0m0YaDRtOtnRuC/cXWpfBGliTbmIWA=;
-        b=aWf+gXTCp80n+HKo7bnq7KVcNRhJg5jV6Mn1jzD6rqAOFg4jfeamDbshYhRaQJrqWA1Nfe
-        +yw6XD2+GFvlbM/Yo2NyPo0latCJPJhPvdSn070cbBTvk8b/HNr5Tpnw8cHoorC8lIXnSM
-        8cD8TPHyEMjmGPSJneV0F408rQOvIAgjsDBv5eYE8omhA2mtfxTh8s9esxZ2U8zCXCdNmi
-        l+5BHuHVSA2FFHc8BM7mC/op3uxMO9WoTeTOJ4zeVkmssqIbldJFKgfBJiK1OfOLhd7Onu
-        j//iNS947DFS2ogjviPGyWkNjkjvy93qCA0nQRdThDCbJCjKEMu1gBUsmr+fTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604355592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=gqiPjScE5SdOJ0m0YaDRtOtnRuC/cXWpfBGliTbmIWA=;
-        b=93ql7T2QRhClLbpJIwM7Al1jkiMyWdZWc/BTBv31stUKAlEBHKpomzkxdb9PPsxAQ3Yk54
-        1oK4EX69XnwrB9CA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 0/2] Add a seqcount between gup_fast and
- copy_page_range()
-Message-ID: <20201102221945.GA48454@lx-t490>
+        id S1726489AbgKBWUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:20:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725829AbgKBWUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 17:20:42 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2100120786;
+        Mon,  2 Nov 2020 22:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604355641;
+        bh=RPnrsyxMAkztMhvusutWD4TqjQCquKiSwYb/vlIe3Gg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=peaRwy53vhIUeGizgjAikIlKSTfvxLSDemKEiiaCBJ8WYSP/eBkAKd8aYXFus2msc
+         eLMVwTfEdhalqAt1tT6fINLZMD/foRO88k2iv+GDmIqvalVm8vkNX9h/pOyjR4nYdz
+         AorXyOZH6SmpJD5ZDVWGEglJJLaEDCmjrOOq8W98=
+Date:   Mon, 2 Nov 2020 14:20:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH] net: ethernet: ti: cpsw: disable PTPv1 hw timestamping
+ advertisement
+Message-ID: <20201102142040.4c9decbe@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201101020227.GB2683@hoboy.vegasvil.org>
+References: <20201029190910.30789-1-grygorii.strashko@ti.com>
+        <20201031114042.7ccdf507@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201101020227.GB2683@hoboy.vegasvil.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jason,
+On Sat, 31 Oct 2020 19:02:27 -0700 Richard Cochran wrote:
+> On Sat, Oct 31, 2020 at 11:40:42AM -0700, Jakub Kicinski wrote:
+> > On Thu, 29 Oct 2020 21:09:10 +0200 Grygorii Strashko wrote:  
+> > > The TI CPTS does not natively support PTPv1, only PTPv2. But, as it
+> > > happens, the CPTS can provide HW timestamp for PTPv1 Sync messages, because
+> > > CPTS HW parser looks for PTP messageType id in PTP message octet 0 which
+> > > value is 0 for PTPv1. As result, CPTS HW can detect Sync messages for PTPv1
+> > > and PTPv2 (Sync messageType = 0 for both), but it fails for any other PTPv1
+> > > messages (Delay_req/resp) and will return PTP messageType id 0 for them.
+> > > 
+> > > The commit e9523a5a32a1 ("net: ethernet: ti: cpsw: enable
+> > > HWTSTAMP_FILTER_PTP_V1_L4_EVENT filter") added PTPv1 hw timestamping
+> > > advertisement by mistake, only to make Linux Kernel "timestamping" utility
+> > > work, and this causes issues with only PTPv1 compatible HW/SW - Sync HW
+> > > timestamped, but Delay_req/resp are not.
+> > > 
+> > > Hence, fix it disabling PTPv1 hw timestamping advertisement, so only PTPv1
+> > > compatible HW/SW can properly roll back to SW timestamping.
+> > > 
+> > > Fixes: e9523a5a32a1 ("net: ethernet: ti: cpsw: enable HWTSTAMP_FILTER_PTP_V1_L4_EVENT filter")
+> > > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>  
+> > 
+> > CC: Richard  
+> 
+> Acked-by: Richard Cochran <richardcochran@gmail.com>
 
-Thanks for keeping me in the loop on this.
-
-I've also added the locking maintainers in Cc. IMHO there are some
-seqlock.h API violations in this series, and they should have the final
-say on this.
-
-On Fri, Oct 30, 2020 at 11:46:19AM -0300, Jason Gunthorpe wrote:
->
-> As discussed and suggested by Linus use a seqcount to close the small race
-> between gup_fast and copy_page_range().
->
-> Unfortunately the good suggestion to just use write_seqcount_begin() blows
-> up lockdep immediately due to the (new?) requirement that the write side
-> of seqcount be in a preempt disabled region.
-
-Disabling preemption for seqcount_t write-side critical sections was
-never a new requirement. It has always been this way, for the reasons
-explained at Documentation/locking/seqlock.rst, "Introduction" section.
-
-The recent seqcount_t changes did not mandate any new rules. This was
-done explicitly, and on-purpose, not to break any of the *large* set of
-existing seqcount_t call sites. It added multiple lockdep asserts
-though, to catch a number of (already) buggy users, and they were fixed
-beforehand.
-
-It seems you have a special case here, so I'll continue discussing this
-at patch #2 where the code resides. Just wanted to answer the "(new?)"
-part above.
-
->                                               For this application it does
-> not seem like a good idea, nor is it necessary as we don't spin on retry.
-> This is solved by being the first place to use raw_write_seqcount_t_begin()
->
-
-Regardless of this series write side preemptibility requirements, the
-"_write_seqcount_*t*_()" interfaces are internal to seqlock.h and should
-_never_ be used outside of it.
-
-For plain seqcount_t, raw_write_seqcount_begin() is equivalent to
-raw_write_seqcount_*t*_begin() anyway, and should already satisfy your
-needs.
-
-/me jumps to patch #2 now...
-
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+Applied, thanks!
