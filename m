@@ -2,120 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAB32A297D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9442A2979
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgKBL3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:29:12 -0500
+        id S1728997AbgKBL24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:28:56 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728618AbgKBLY2 (ORCPT
+        with ESMTP id S1728635AbgKBLY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:24:28 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB60C061A48
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:24:27 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id b3so8229058wrx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:24:27 -0800 (PST)
+        Mon, 2 Nov 2020 06:24:29 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15259C061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:24:29 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p22so9018559wmg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:24:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ka6oG61s56uSi20zjZOTu4QIASes47AodXCRjQdroWM=;
-        b=hMv2NTjPlHuthCM9UUVLtzFXjBs0VVOim6KBb8hepefDkfx8HzOilWlHKbADVy53mR
-         HrEsOllfzBNwQjIS3Dh+EbIZ1PvdU59dmYvHGGxhd/2SqsjmHoprnfFu3yr57tWm7XoW
-         Ms+zcnJpt9oSSip1LfExS2m283N63Hv6W5fd/dJqNJGmVsOHadtbd1r2Ul+hTzSNj8S3
-         naUiQkmhngjJQOyopaca7rZWYr4PIwZ8Q+2r/jJADgklPXfkTmAQuTyTim4vgwsHKrvv
-         ucUC4UQNMG2Lt5mLhIBQTpR+hpL69TtgFledAviFxkpcqXS78yROoHlrCNWJkGoYyREw
-         bytg==
+        bh=AFvxbCSBD0dyE27qjUGJ2Xb0Ms2F6Ys3MDSISyE2R+M=;
+        b=udOd7bGBOYKR4UprYlENO30OIAdWtb7NI3dl14b2U5dwS3lMoFi3AylTynoEmHqv7z
+         rG1pcwZcA2GODT7vbsuT6GQ8pbldsq6Jeod8EM2YQfV5uxNSuAArsgJRMP1vm76MzIcx
+         QI+9+mvC7fJZoInVjIf8AGVT0tpYx6YOdDl+EezDJ4VWJ/VUGjP3WIJRNERcZh4C0JzO
+         87/q9MWt02/X9b0Sw1/SQtXKR6aWpxDdZPKLH45i9Qnorx7B4H5dqUFd9GBvrhMz5Fgr
+         ELKdmNunluybHaK6LEIFgCm72LSkMDgX3+gOehmagAtZaHgml1cIAegkCqkA9dKakvGP
+         GeyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ka6oG61s56uSi20zjZOTu4QIASes47AodXCRjQdroWM=;
-        b=PC7PSCKbqwWgWBvaPc6fikEQt0Hcamy4oV2wTeDRaxBfRI9HYPmuwqi2j6DdvwFPpG
-         Wpf51bvli0nnE0jlMOMOdIJItzFMHNofJ4LENhattvnYRbPZw89phaPsIimDFMez5M8V
-         D7ciFBzGJeQ9ScQUR8LH57j9KOxJEcR/4wnS3yViMFPI0/FzzUj0WZ2O2JbsAS09Oxeo
-         8v4aHQQsIcyKAkfve2sCavOxiEoQjTIp3fnQRMSTo2vCgtGvUDZ226m9dmSjfbUeUie3
-         HUDxam3e1X8hg8h+0BLScw0Gdxrz37uki1GG7E8vivcqtVXShzVEAOhBLlpegBaPvG2o
-         gNsQ==
-X-Gm-Message-State: AOAM532ZNYLCSM+82/2oUXFYf0e3Rf0Desy44Mbx0HJJDpGuNFpaqhMC
-        MCyzHkwpjgTEa3u6qMqH0Pk6wA==
-X-Google-Smtp-Source: ABdhPJxeqB5NmAXe81Eexs63FfVCwNj4sGmOhyU4D4wEPt10+eqOdNq7ow/T47NsthmDxpFZzShvSQ==
-X-Received: by 2002:adf:e8d0:: with SMTP id k16mr19555994wrn.362.1604316266442;
-        Mon, 02 Nov 2020 03:24:26 -0800 (PST)
+        bh=AFvxbCSBD0dyE27qjUGJ2Xb0Ms2F6Ys3MDSISyE2R+M=;
+        b=GnhKJRZv0Q66ktOaTH/Tn9o2CMugs7BtztZJ7KUOwxIj1Hcw96uuS2eN48PB5HJ+Vt
+         vDhIX/QeR7HT2OH/eupMTllcwuA/plufHO19fHTkcBePq960yX6ciLdEGgjh0/OLyfLp
+         NNEnhCYv2aRQz34cSmInhB9PADga445As8biHuogT8EjpMgikA3rn/4Cial7TqKySjIM
+         4S/Ajd0E+mhRF6hWhBXKS0JqtvndrOW6aYJoy2nJOEDgE8a9VKhFrGa8/1dnre57mcV6
+         Gey3Fl73KFFX7ngj9uID2ioRzm9AA2CaQQqll0W0Mkv4twTyN/DlOHu/MkcxXxD67/Nw
+         N2bw==
+X-Gm-Message-State: AOAM533hRys597JWlOoJINw4iKsxcI0ETzdWdC7E6VZfQY9I+X99Oi+J
+        vcOF4N3swtdjV4kCvztSWD3p7Q==
+X-Google-Smtp-Source: ABdhPJxV5TIbJuJEaGgVUX4DCaO0rJIH/Q2FlVRkiX97D+yCvj5LLTK0kFVE53PSH8kYpjObYrvtsA==
+X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr16926849wmk.43.1604316267805;
+        Mon, 02 Nov 2020 03:24:27 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.25
+        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:24:25 -0800 (PST)
+        Mon, 02 Nov 2020 03:24:27 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 07/41] brcmfmac: pcie: Provide description for missing function parameter 'devinfo'
-Date:   Mon,  2 Nov 2020 11:23:36 +0000
-Message-Id: <20201102112410.1049272-8-lee.jones@linaro.org>
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 08/41] iwlwifi: mvm: rs: Demote non-conformant function documentation headers
+Date:   Mon,  2 Nov 2020 11:23:37 +0000
+Message-Id: <20201102112410.1049272-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102112410.1049272-1-lee.jones@linaro.org>
 References: <20201102112410.1049272-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Also add documentation for 'mvm'.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c:766: warning: Function parameter or member 'devinfo' not described in 'brcmf_pcie_bus_console_read'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:400: warning: cannot understand function prototype: 'const u16 expected_tpt_legacy[IWL_RATE_COUNT] = '
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'mvm' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'tbl' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'scale_index' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'attempts' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'successes' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:684: warning: Function parameter or member 'window' not described in '_rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:2677: warning: duplicate section name 'NOTE'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:2682: warning: Function parameter or member 'mvm' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:2682: warning: Function parameter or member 'sta' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:2682: warning: Function parameter or member 'lq_sta' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:2682: warning: Function parameter or member 'band' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:3761: warning: Function parameter or member 'mvm' not described in 'rs_program_fix_rate'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:3761: warning: Function parameter or member 'lq_sta' not described in 'rs_program_fix_rate'
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c:4213: warning: Function parameter or member 'mvm' not described in 'iwl_mvm_tx_protection'
 
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: Franky Lin <franky.lin@broadcom.com>
-Cc: Hante Meuleman <hante.meuleman@broadcom.com>
-Cc: Chi-Hsien Lin <chi-hsien.lin@cypress.com>
-Cc: Wright Feng <wright.feng@cypress.com>
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Cc: Luca Coelho <luciano.coelho@intel.com>
+Cc: Intel Linux Wireless <linuxwifi@intel.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
 Cc: linux-wireless@vger.kernel.org
-Cc: brcm80211-dev-list.pdl@broadcom.com
-Cc: brcm80211-dev-list@cypress.com
 Cc: netdev@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index 39381cbde89e6..1d3cc1c7c9c50 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-@@ -759,6 +759,7 @@ static void brcmf_pcie_bus_console_init(struct brcmf_pciedev_info *devinfo)
- /**
-  * brcmf_pcie_bus_console_read - reads firmware messages
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rs.c b/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
+index ed7382e7ea177..91b6541d579f5 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
+@@ -386,7 +386,7 @@ static void rs_fill_lq_cmd(struct iwl_mvm *mvm,
+ 			   const struct rs_rate *initial_rate);
+ static void rs_stay_in_table(struct iwl_lq_sta *lq_sta, bool force_search);
+ 
+-/**
++/*
+  * The following tables contain the expected throughput metrics for all rates
   *
-+ * @devinfo: pointer to the device data structure
-  * @error: specifies if error has occurred (prints messages unconditionally)
+  *	1, 2, 5.5, 11, 6, 9, 12, 18, 24, 36, 48, 54, 60 MBits
+@@ -396,7 +396,6 @@ static void rs_stay_in_table(struct iwl_lq_sta *lq_sta, bool force_search);
+  * CCK rates are only valid in legacy table and will only be used in G
+  * (2.4 GHz) band.
   */
- static void brcmf_pcie_bus_console_read(struct brcmf_pciedev_info *devinfo,
+-
+ static const u16 expected_tpt_legacy[IWL_RATE_COUNT] = {
+ 	7, 13, 35, 58, 40, 57, 72, 98, 121, 154, 177, 186, 0, 0, 0
+ };
+@@ -670,7 +669,7 @@ static s32 get_expected_tpt(struct iwl_scale_tbl_info *tbl, int rs_index)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * rs_collect_tx_data - Update the success/failure sliding window
+  *
+  * We keep a sliding window of the last 62 packets transmitted
+@@ -2667,7 +2666,7 @@ void rs_update_last_rssi(struct iwl_mvm *mvm,
+ 	}
+ }
+ 
+-/**
++/*
+  * rs_initialize_lq - Initialize a station's hardware rate table
+  *
+  * The uCode's station table contains a table of fallback rates
+@@ -3756,7 +3755,7 @@ int rs_pretty_print_rate(char *buf, int bufsz, const u32 rate)
+ }
+ 
+ #ifdef CONFIG_MAC80211_DEBUGFS
+-/**
++/*
+  * Program the device to use fixed rate for frame transmit
+  * This is for debugging/testing only
+  * once the device start use fixed rate, we need to reload the module
+@@ -4211,6 +4210,7 @@ static int rs_drv_tx_protection(struct iwl_mvm *mvm, struct iwl_mvm_sta *mvmsta,
+ 
+ /**
+  * iwl_mvm_tx_protection - ask FW to enable RTS/CTS protection
++ * @mvm: The mvm component
+  * @mvmsta: The station
+  * @enable: Enable Tx protection?
+  */
 -- 
 2.25.1
 
