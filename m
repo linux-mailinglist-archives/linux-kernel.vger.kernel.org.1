@@ -2,184 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A582A359E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A8D2A35A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgKBU6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:58:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        id S1726246AbgKBU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgKBU5T (ORCPT
+        with ESMTP id S1725841AbgKBU7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:57:19 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C67C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:57:19 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f38so11840795pgm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:57:19 -0800 (PST)
+        Mon, 2 Nov 2020 15:59:51 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33119C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:59:51 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w65so12233902pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:59:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=N5pMn8uY9KjhkQw9GAL9dYuLKsypXjK6hMGajbqAfFk=;
-        b=V2rP72p0areoWEBA+BVUgHwnwzMu30qtnBjXGJBo5T06iZUVtZZ3Ol1VriTMdBbwKe
-         A3cE78GaEllijmqJvZpxFs0s3EkemzGAyMc+gf3XbKiVqHeB+D8r/Lrrfpkjr3nLTnm0
-         39axcYLuwKR8ajm+OnifglWPr15SEjdxxV1wk=
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=q5hRvg/6DcxtLnxjORl58B2jfVZHXF3KMM5lzOgdOn8=;
+        b=WXN69DxJRYJaU89iA6C2pmGpQL77jy5U0jrVQodzYXRCCdAdOg9KwFE3ExQf0m4LHw
+         xW51LYrHhEISI2WyLtV5h0ymbtc652jMW0sVwFZGuATC9s/0gqElIq6FJShqYlVee7yP
+         NmmIyz4G6EWyvZ+upWJY8R9WH678D/3vZ2yA4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=N5pMn8uY9KjhkQw9GAL9dYuLKsypXjK6hMGajbqAfFk=;
-        b=TxqIuJIfmH0e/1wFgv8NnpCQSOaegJTRFynpl257p/QprV5ORYcijZvAOF0HAwHYsd
-         LwzX1S2LSGe7U0fwLGt9CVW3zFHZ7dD9c/b5Fx32Hd4M5tr/q+ZngPKkjhH5jIzJdHYF
-         8spOTSIeQxcdXKQkROpMEOrTIm9rhwiAi9GTmdcwYV11WlfG28pZ2Qp0REeUSoCJui4c
-         D2vlOy2b6hcJLF5GmFidZAt8j2zC/kvA/tjhScdUXr7XSz4wnMFcKtHEaAXNbaZUczYE
-         +3fAaWBpu5hslA+oZpYVeNP0ZGDOuaQVHeG1dXcEw6bAhQyYYwdPAh05x0iFEHeO+X8r
-         FaHg==
-X-Gm-Message-State: AOAM531dtG31h8xw08S5DkQQtOR2eDkEppRmqK3ljM5ejSs3brM/VHSr
-        pUeD0vBq+N/Y3CUBfue6dx6VxQ==
-X-Google-Smtp-Source: ABdhPJxdxkJSK4ZxFxzY/iQS0ILOjNZ9PrkofiyeQ35qAF2NxZKvQYvSxaPklRKJ0ehuQGqDW3Siyg==
-X-Received: by 2002:a63:9d8d:: with SMTP id i135mr759867pgd.213.1604350638383;
-        Mon, 02 Nov 2020 12:57:18 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id 136sm14917277pfa.132.2020.11.02.12.57.16
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=q5hRvg/6DcxtLnxjORl58B2jfVZHXF3KMM5lzOgdOn8=;
+        b=M9VSJsRNRpYD4C3IXPRJXURmhICeVOkuxVJgp9iqHvi+dqahcRLO1x+uh14XIPy8bF
+         aqnUrMzPU7BUKOW5ddq5o9Qqw3e41WyovLLL9PjekDCFMY82HvsqkoSZatYmk8yVR8RI
+         fpDT1HPkIIg41UsTxB3HEkaHt+BTKVOpnn0wBpg5WFuD8AkjgQ3/rJhL0cVYUGZav8Os
+         nCD5ZE9D1fylkPTy8cpVNzbVcDwcp8I+sk1yL9O7NoC1reOyAlF4my/hJ+XIeT1+eaLR
+         PInRzQHwocG09Wwe0ac+3gx08IOLRTq/ZVEwM3DOFS4ltXiMgE6UV3sFiDJ/xPxqwIq0
+         fT2w==
+X-Gm-Message-State: AOAM53126HS9lOguBEnhlWkmMCfQ7aGv9JQl9OXRc+nyhTuiEMNLL54J
+        c2698JoQ0leLRnUt0RPLCBYpCg==
+X-Google-Smtp-Source: ABdhPJwnIySJ6epBGGGPfeprbUrDnqAx9bdhANANxFSbp8CC2E/eKgMoO1YKlBDE6hCkoXzIyXYzmw==
+X-Received: by 2002:a63:1e5e:: with SMTP id p30mr14585323pgm.159.1604350790604;
+        Mon, 02 Nov 2020 12:59:50 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id w19sm10682371pff.76.2020.11.02.12.59.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 12:57:17 -0800 (PST)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        james.quinlan@broadcom.com,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1] PCI: brcmstb: variable is missing proper initialization
-Date:   Mon,  2 Nov 2020 15:57:12 -0500
-Message-Id: <20201102205712.23332-1-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 02 Nov 2020 12:59:50 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000eb2f9205b325fd2d"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201030232253.11049-1-khsieh@codeaurora.org>
+References: <20201030232253.11049-1-khsieh@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: deinitialize mainlink if link training failedo
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Mon, 02 Nov 2020 12:59:48 -0800
+Message-ID: <160435078857.884498.13223713108695196370@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000eb2f9205b325fd2d
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Quoting Kuogee Hsieh (2020-10-30 16:22:53)
+> DP compo phy have to be enable to start link training. When
+> link training failed phy need to be disabled so that next
+> link trainng can be proceed smoothly at next plug in. This
 
-The variable 'tmp' is used multiple times in the brcm_pcie_setup()
-function.  One such usage did not initialize 'tmp' to the current value of
-the target register.  By luck the mistake does not currently affect
-behavior;  regardless 'tmp' is now initialized properly.
+s/trainng/training/
 
-Fixes: c0452137034b ("PCI: brcmstb: Add Broadcom STB PCIe host controller driver")
-Suggested-by: Rafał Miłecki <zajec5@gmail.com>
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 1 +
- 1 file changed, 1 insertion(+)
+> patch de initialize mainlink to disable phy if link training
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index bea86899bd5d..9c3d2982248d 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -893,6 +893,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 		burst = 0x2; /* 512 bytes */
- 
- 	/* Set SCB_MAX_BURST_SIZE, CFG_READ_UR_MODE, SCB_ACCESS_EN */
-+	tmp = readl(base + PCIE_MISC_MISC_CTRL);
- 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK);
- 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK);
- 	u32p_replace_bits(&tmp, burst, PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK);
--- 
-2.17.1
+s/de/de-/
 
+> failed. This prevent system crash due to
+> disp_cc_mdss_dp_link_intf_clk stuck at "off" state.  This patch
+> also perform checking power_on flag at dp_display_enable() and
+> dp_display_disable() to avoid crashing when unplug cable while
+> display is off.
+>=20
+> Fixes: fdaf9a5e3c15 (drm/msm/dp: fixes wrong connection state caused by f=
+ailure of link train
+>=20
 
---000000000000eb2f9205b325fd2d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Drop newline please.
 
-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
-mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
-AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
-4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
-wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
-VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
-V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
-lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
-5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDZo8v5+M3IQ
-MJ/g3Rtom7XYVaRjOrWlxss7SNUvhI0UMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTEwMjIwNTcxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA1Dt+IQeJTWiXmePLRHJAqFxBCRDG8
-A7fzflnwHn48SK2Q2tqEY80qFQEdrKqIl7AXUFoFmG6qQ7jleUk92sRlsjUoy5zL01rx1Lp2lR55
-OO+ClrDG4LmH+r242aiP9za5rnvONUkBPlWx8cuBq9dYh92DPMeJX1g+QECKzN5vhkxZRMNccq64
-iHNkhFnHMZP1DJBY873GIUGU8e7h1mss1MuD8UylFlT0eE9JRE2sILe0vwIFLP4DFqUakPHT2Sv+
-wSwhFpjldmxZX2TnyzPcmdxXiVd850ZY8mODy6ouEUhWGJU/MImdtO/QH3uAFLdXQoYlqBOpFl6p
-nkAAt51d
---000000000000eb2f9205b325fd2d--
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+
+Can you send this as a patch series? There were three patches sent near
+each other and presumably they're related.
+
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 34 +++++++++++++++++++++++++++--
+>  drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++
+>  2 files changed, 45 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp=
+_ctrl.c
+> index cee161c8ecc6..904698dfc7f7 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1468,6 +1468,29 @@ static int dp_ctrl_reinitialize_mainlink(struct dp=
+_ctrl_private *ctrl)
+>         return ret;
+>  }
+> =20
+> +static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+> +{
+> +       struct dp_io *dp_io;
+> +       struct phy *phy;
+> +       int ret =3D 0;
+
+Please drop this initialization to 0.
+
+> +
+> +       dp_io =3D &ctrl->parser->io;
+> +       phy =3D dp_io->phy;
+> +
+> +       dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
+> +
+> +       dp_catalog_ctrl_reset(ctrl->catalog);
+> +
+> +       ret =3D dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
+
+As it's overwritten here.
+
+> +       if (ret)
+> +               DRM_ERROR("Failed to disable link clocks. ret=3D%d\n", re=
+t);
+> +
+> +       phy_power_off(phy);
+> +       phy_exit(phy);
+> +
+> +       return -ECONNRESET;
+
+Isn't this an error for networking connections getting reset? Really it
+should return 0 because it didn't fail.
+
+> +}
+> +
+>  static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
+>  {
+>         int ret =3D 0;
+> @@ -1648,8 +1671,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>         if (rc)
+>                 return rc;
+> =20
+> -       while (--link_train_max_retries &&
+> -               !atomic_read(&ctrl->dp_ctrl.aborted)) {
+> +       while (--link_train_max_retries) {
+>                 rc =3D dp_ctrl_reinitialize_mainlink(ctrl);
+>                 if (rc) {
+>                         DRM_ERROR("Failed to reinitialize mainlink. rc=3D=
+%d\n",
+> @@ -1664,6 +1686,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>                         break;
+>                 } else if (training_step =3D=3D DP_TRAINING_1) {
+>                         /* link train_1 failed */
+> +                       if (!dp_catalog_hpd_get_state_status(ctrl->catalo=
+g))
+> +                               break;          /* link cable unplugged */
+> +
+>                         rc =3D dp_ctrl_link_rate_down_shift(ctrl);
+>                         if (rc < 0) { /* already in RBR =3D 1.6G */
+>                                 if (cr.lane_0_1 & DP_LANE0_1_CR_DONE) {
+> @@ -1683,6 +1708,9 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>                         }
+>                 } else if (training_step =3D=3D DP_TRAINING_2) {
+>                         /* link train_2 failed, lower lane rate */
+> +                       if (!dp_catalog_hpd_get_state_status(ctrl->catalo=
+g))
+
+Maybe make a function called dp_catalog_link_disconnected()? Then the
+comment isn't needed.
+
+> +                               break;          /* link cable unplugged */
+> +
+>                         rc =3D dp_ctrl_link_lane_down_shift(ctrl);
+>                         if (rc < 0) {
+>                                 /* end with failure */
+> @@ -1703,6 +1731,8 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>          */
+>         if (rc =3D=3D 0)  /* link train successfully */
+>                 dp_ctrl_push_idle(dp_ctrl);
+> +       else
+> +               rc =3D dp_ctrl_deinitialize_mainlink(ctrl);
+
+So if it fails we deinitialize and then return success? Shouldn't we
+keep the error code from the link train attempt instead of overwrite it
+with (most likely) zero? I see that it returns -ECONNRESET but that's
+really odd and seeing this code here means you have to look at the
+function to figure out that it's still returning an error code. Please
+don't do that, just ignore the error code from this function.
+
+> =20
+>         return rc;
+>  }
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
+/dp_display.c
+> index 3eb0d428abf7..13b66266cd69 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -529,6 +529,11 @@ static int dp_hpd_plug_handle(struct dp_display_priv=
+ate *dp, u32 data)
+>         if (ret) {      /* link train failed */
+>                 hpd->hpd_high =3D 0;
+>                 dp->hpd_state =3D ST_DISCONNECTED;
+> +
+> +               if (ret =3D=3D -ECONNRESET) { /* cable unplugged */
+> +                       dp->core_initialized =3D false;
+> +               }
+
+Style: Drop braces on single line if statements.
+
+> +
+>         } else {
+>                 /* start sentinel checking in case of missing uevent */
+>                 dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+> @@ -794,6 +799,11 @@ static int dp_display_enable(struct dp_display_priva=
+te *dp, u32 data)
+> =20
+>         dp_display =3D g_dp_display;
+> =20
+> +       if (dp_display->power_on) {
+> +               DRM_DEBUG_DP("Link already setup, return\n");
+> +               return 0;
+> +       }
+> +
+>         rc =3D dp_ctrl_on_stream(dp->ctrl);
+>         if (!rc)
+>                 dp_display->power_on =3D true;
+> @@ -826,6 +836,9 @@ static int dp_display_disable(struct dp_display_priva=
+te *dp, u32 data)
+> =20
+>         dp_display =3D g_dp_display;
+> =20
+> +       if (!dp_display->power_on)
+> +               return -EINVAL;
+> +
+>         /* wait only if audio was enabled */
+>         if (dp_display->audio_enabled) {
+>                 if (!wait_for_completion_timeout(&dp->audio_comp,
+>=20
+> base-commit: fd4a29bed29b3d8f15942fdf77e7a0a52796d836
+
+What is this commit?
