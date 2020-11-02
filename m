@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACE72A266B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259F12A2672
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgKBIyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:54:33 -0500
-Received: from mga17.intel.com ([192.55.52.151]:47631 "EHLO mga17.intel.com"
+        id S1728280AbgKBIyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:54:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:56080 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbgKBIyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:54:33 -0500
-IronPort-SDR: XqpctjZmgDbmjA+oQS8tzYaMAPEz10snycNWizGTQYGuceDfmD9eQ7iea+xsK8zSAPBOIwLvKu
- YnWKd8zgCgZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="148708873"
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="148708873"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 00:54:31 -0800
-IronPort-SDR: cVyAzr8doxaMI9PpzTeppD+DYNbkWDZgKifldHjUmuh0Q/0nmuSM2v8mFg5Ylm2dgUKEhekmdN
- Xul1PKelQEyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="305380174"
-Received: from lkp-server02.sh.intel.com (HELO 2b057d7acab6) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Nov 2020 00:54:27 -0800
-Received: from kbuild by 2b057d7acab6 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZVbf-00002x-6v; Mon, 02 Nov 2020 08:54:27 +0000
-Date:   Mon, 2 Nov 2020 16:53:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     kbuild-all@lists.01.org, Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [RFC PATCH] pinctrl: pinctrl-microchip-sgpio: properties_luton can
- be static
-Message-ID: <20201102085330.GA17314@d07872ef61d7>
-References: <20201029134027.232951-3-lars.povlsen@microchip.com>
+        id S1728254AbgKBIyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:54:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 548E5101E;
+        Mon,  2 Nov 2020 00:54:44 -0800 (PST)
+Received: from [10.57.13.99] (unknown [10.57.13.99])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 458FE3F718;
+        Mon,  2 Nov 2020 00:54:39 -0800 (PST)
+Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, daniel.lezcano@linaro.org,
+        qperret@google.com
+Cc:     robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
+        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
+        sboyd@kernel.org, nm@ti.com
+References: <20201019140601.3047-1-lukasz.luba@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
+Date:   Mon, 2 Nov 2020 08:54:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029134027.232951-3-lars.povlsen@microchip.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201019140601.3047-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- pinctrl-microchip-sgpio.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 1a9c01e2ad99f6..439779bc6e4e0b 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -58,7 +58,7 @@ struct sgpio_properties {
- #define SGPIO_F_PORT_CFG_BIT_SOURCE(p, x) __BF_PREP((p)->properties->bit_source, x)
- #define SGPIO_X_PORT_CFG_BIT_SOURCE(p, x) __BF_GET((p)->properties->bit_source, x)
- 
--const struct sgpio_properties properties_luton = {
-+static const struct sgpio_properties properties_luton = {
- 	.regoff = { 0x00, 0x09, 0x29, 0x2a, 0x2b },
- 	.auto_repeat = BIT(5),
- 	.port_width  = GENMASK(3, 2),
-@@ -66,7 +66,7 @@ const struct sgpio_properties properties_luton = {
- 	.bit_source  = GENMASK(11, 0),
- };
- 
--const struct sgpio_properties properties_ocelot = {
-+static const struct sgpio_properties properties_ocelot = {
- 	.regoff = { 0x00, 0x06, 0x26, 0x04, 0x05 },
- 	.auto_repeat = BIT(10),
- 	.port_width  = GENMASK(8, 7),
-@@ -74,7 +74,7 @@ const struct sgpio_properties properties_ocelot = {
- 	.bit_source  = GENMASK(23, 12),
- };
- 
--const struct sgpio_properties properties_sparx5 = {
-+static const struct sgpio_properties properties_sparx5 = {
- 	.regoff = { 0x00, 0x06, 0x26, 0x04, 0x05 },
- 	.auto_repeat = BIT(6),
- 	.port_width  = GENMASK(4, 3),
+On 10/19/20 3:05 PM, Lukasz Luba wrote:
+> Hi all,
+> 
+> The Energy Model supports power values expressed in an abstract scale.
+> This has an impact on Intelligent Power Allocation (IPA) and should be
+> documented properly. Kernel sub-systems like EAS, IPA and DTPM
+> (new comming PowerCap framework) would use the new flag to capture
+> potential miss-configuration where the devices have registered different
+> power scales, thus cannot operate together.
+> 
+> There was a discussion below v2 of this patch series, which might help
+> you to get context of these changes [2].
+> 
+> The agreed approach is to have the DT as a source of power values expressed
+> always in milli-Watts and the only way to submit with abstract scale values
+> is via the em_dev_register_perf_domain() API.
+> 
+> Changes:
+> v3:
+> - added boolean flag to struct em_perf_domain and registration function
+>    indicating if EM holds real power values in milli-Watts (suggested by
+>    Daniel and aggreed with Quentin)
+> - updated documentation regarding this new flag
+> - dropped DT binding change for 'sustainable-power'
+> - added more maintainers on CC (due to patch 1/4 touching different things)
+> v2 [2]:
+> - updated sustainable power section in IPA documentation
+> - updated DT binding for the 'sustainable-power'
+> v1 [1]:
+> - simple documenation update with new 'abstract scale' in EAS, EM, IPA
+> 
+> Regards,
+> Lukasz Luba
+> 
+> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+> [2] https://lore.kernel.org/lkml/20201002114426.31277-1-lukasz.luba@arm.com/
+> 
+> Lukasz Luba (4):
+>    PM / EM: Add a flag indicating units of power values in Energy Model
+>    docs: Clarify abstract scale usage for power values in Energy Model
+>    PM / EM: update the comments related to power scale
+>    docs: power: Update Energy Model with new flag indicating power scale
+> 
+>   .../driver-api/thermal/power_allocator.rst    | 13 +++++++-
+>   Documentation/power/energy-model.rst          | 30 +++++++++++++++----
+>   Documentation/scheduler/sched-energy.rst      |  5 ++++
+>   drivers/cpufreq/scmi-cpufreq.c                |  3 +-
+>   drivers/opp/of.c                              |  2 +-
+>   include/linux/energy_model.h                  | 20 ++++++++-----
+>   kernel/power/energy_model.c                   | 26 ++++++++++++++--
+>   7 files changed, 81 insertions(+), 18 deletions(-)
+> 
+
+
+Gentle ping to Quentin and Daniel for sharing opinion on this patch set.
+If you are OK, then I could use this as a base for next work.
+
+As you probably know I am working also on 'sustainable power' estimation
+which could be used when there is no DT value but it comes from FW.
+That would meet requirement from Doug, when the DT cannot be used,
+but we have sustainable levels from FW [1].
+
+Regards,
+Lukasz
+
+[1] https://lore.kernel.org/lkml/20201028140847.1018-5-lukasz.luba@arm.com/
