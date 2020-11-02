@@ -2,133 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319812A31BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171252A31BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgKBRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
+        id S1727945AbgKBRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbgKBRiQ (ORCPT
+        with ESMTP id S1727227AbgKBRij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:38:16 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD494C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:38:14 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id x13so11712039pfa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:38:14 -0800 (PST)
+        Mon, 2 Nov 2020 12:38:39 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEC5C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:38:38 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id p7so15768715ioo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=8TTac8powIKxnrBZ37Qjfao9bhPKPpAxX0Xh5E4KL5E=;
-        b=jK3ykP36tExYCAPVVAm2YTynBYGQPqQPtkKu+VT/+wxZypJUrIf06+iHJXRt7rvc7f
-         eZvXoF2Gy3WcpC9qxFhN8Rqk1L8vuWPTngdn0V2yrmvRnruxfJ6A7F0M3TxZ+h1KHdvo
-         tLkwUBvMmGO7zlP0m8dd8dceaXDiHrbBxsy/c=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=XgHK+n73DGSjTlF4tReOQabxZrHP7prERV8ecq6Sut4=;
+        b=zjCJWGvRvEzzaS5KGlJUC1dFqwplLVJk01FNJYHeRqNkbT9zkXeL/ae9FSPhpyp1q0
+         nFn3GVmuHBfpz93h5PAflmCKQzU9LmiD0wZuY+IWuD1p+yQV/Lpdl8T/xukIcpeOF40T
+         nb2DsGZz0ffUJliV4/uN3XSrcPRI11fm+o/2+UZsYHDzdoHlzkT7F/XchGZEmpk9mXsB
+         oMcrMfPvAUPdUJF6XuZMg3TG6Xj97zvLFDCJRZN9eNkAKnMv/jzMrGTnZD5FWjF78GO1
+         h8QUgiawSnLNGi8qLiljhEoD5G1rK+YgIlNCHbrhx6S5M1s4g+QtZXEnL4ycaqbt8eYt
+         4tog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=8TTac8powIKxnrBZ37Qjfao9bhPKPpAxX0Xh5E4KL5E=;
-        b=aqFgz3FpyJdFlWMtVMPMocDCMrJPsTqDrGLY26Nw7YXKcNPUUEeUcON3nHBE/Pljxc
-         enEQxYJoIW52DRSjctwJWUMSlvNGMr7e90xlB2lKTVfIhuHVmBDD0l947PyLfqxta31I
-         GxAwJG9RH67JZRTuoy6AKpK7gxk5ixSTm5t7xy3H2/VmOL9m2JMYQtY4klvkX0WwLT5U
-         +BO+aPKqp/kpT/FU3Otkxe3nz6scN0gRQQjkSpGAeYA6FzGxvUuSrOsemYbqHSUKs/tQ
-         LJ3SduPDh8VHIlhF+3kGkN5vRSpSiRW3UYHwDMm3MMlTutiFKzAoHbAro/P8ZsElcven
-         Zawg==
-X-Gm-Message-State: AOAM531qiyL9X1AAZ1oQs8oPKQm1fXFBel4a+qrzwyo0OINLWnp9ANnH
-        4spDdHz27nUWKGEGQxx2c6ICY0J5sS0RZQ==
-X-Google-Smtp-Source: ABdhPJzv8jGtg/TxPSmziKdWoyu4EAbnBFaw7EnnZAW2MW+yGDBYCGFXtHl/8GkSlcNeKcwHVG9BUg==
-X-Received: by 2002:a17:90a:ec13:: with SMTP id l19mr19246817pjy.51.1604338694299;
-        Mon, 02 Nov 2020 09:38:14 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id i25sm710301pfo.167.2020.11.02.09.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:38:13 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XgHK+n73DGSjTlF4tReOQabxZrHP7prERV8ecq6Sut4=;
+        b=J97+cNXI75C0U3o6HWKL1rpTXi6BnBVkARa7L2Ti2IjLVcdG8Pw9PIE7YLU9Z9qdpw
+         Oe8dFvn8K6TwZ/jxxBB+DBrJz0VeRQDbTboWgMOdWkPs2Tsmh7I4BD2ytG7YP8Odtn2f
+         +oYEsFBQiFJIKjWKY5B6ZFti2EXkh6nuOPwjSGhnp+tchu0QgCPaETM7HDz9+WY6eO8+
+         xCO1vCGVDcGgqrEe4O6ILZ/ShRBophsqUTYFwyvusR/KgbzdjsB2xJEvt3h6070iJ/jS
+         FBvjykuVkgrnqaWM/uitwu3JyJFlTKp8KXE+L07IhXbBVHtCA0POAWscE3WtIqPWZn1+
+         VStg==
+X-Gm-Message-State: AOAM532B+DFyuxWQjkV/LVC6ywds4r3I9qyANOMmLQMd9a/AK0svxpB2
+        B+Z6dQbEutlCF7PDgnLCKe966ePnNTKvMg==
+X-Google-Smtp-Source: ABdhPJzLYKP4xBEydsBHfpr2/aVGTAX5oAa8OeKplgO09s2gpfHx4JJivnwZhV4NWx5yRt0KLomPpA==
+X-Received: by 2002:a05:6602:2c41:: with SMTP id x1mr11554294iov.58.1604338717964;
+        Mon, 02 Nov 2020 09:38:37 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id f203sm10313277ioa.23.2020.11.02.09.38.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 09:38:37 -0800 (PST)
+Subject: Re: KASAN: null-ptr-deref Write in kthread_use_mm
+To:     syzbot <syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+References: <00000000000008604f05b31e6867@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d74a8b22-bd5e-102f-e896-79e66b09a4a4@kernel.dk>
+Date:   Mon, 2 Nov 2020 10:38:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=VKTS7G9a3x8iHg=eWRFtrcwKBdwbdtynmHhV4KPCnDKQ@mail.gmail.com>
-References: <20201030011738.2028313-1-swboyd@chromium.org> <20201030011738.2028313-4-swboyd@chromium.org> <20201101192027.GA7612@pendragon.ideasonboard.com> <CAD=FV=VKTS7G9a3x8iHg=eWRFtrcwKBdwbdtynmHhV4KPCnDKQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sean Paul <seanpaul@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Date:   Mon, 02 Nov 2020 09:38:12 -0800
-Message-ID: <160433869233.884498.1989382962614280308@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <00000000000008604f05b31e6867@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-11-02 08:06:14)
-> On Sun, Nov 1, 2020 at 11:21 AM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> > On Thu, Oct 29, 2020 at 06:17:37PM -0700, Stephen Boyd wrote:
-> > > @@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *=
-connector)
-> > >  static int ti_sn_bridge_connector_get_modes(struct drm_connector *co=
-nnector)
-> > >  {
-> > >       struct ti_sn_bridge *pdata =3D connector_to_ti_sn_bridge(connec=
-tor);
-> > > +     struct edid *edid =3D pdata->edid;
-> > > +     int num, ret;
-> > > +
-> > > +     if (!edid) {
-> > > +             pm_runtime_get_sync(pdata->dev);
-> > > +             edid =3D pdata->edid =3D drm_get_edid(connector, &pdata=
-->aux.ddc);
-> > > +             pm_runtime_put(pdata->dev);
-> > > +     }
-> >
-> > Do we need to cache the EDID ? It seems like something that should be
-> > done by the DRM core (well, caching modes in that case), not by
-> > individual bridge drivers.
->=20
-> I can take the blame for the fact that it does caching, since I
-> requested it in early reviews.  In general boot speed is pretty
-> important to me and each read of the EDID take 20 ms.  There are
-> definitely several calls to get the EDID during a normal bootup.
-> Stephen did a little more digging into exactly what was causing all
-> these calls and can chime in,=20
+On 11/2/20 4:54 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4e78c578 Add linux-next specific files for 20201030
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=148969d4500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b57abf7ee60829090495
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e1346c500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1388fbca500000
+> 
+> The issue was bisected to:
+> 
+> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Fri Oct 2 09:04:21 2020 +0000
+> 
+>     lockdep: Fix lockdep recursion
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1354e614500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d4e614500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1754e614500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b57abf7ee60829090495@syzkaller.appspotmail.com
+> Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+> 
+> ==================================================================
+> BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+> BUG: KASAN: null-ptr-deref in mmgrab include/linux/sched/mm.h:36 [inline]
+> BUG: KASAN: null-ptr-deref in kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+> Write of size 4 at addr 0000000000000060 by task io_uring-sq/26191
+> 
+> CPU: 1 PID: 26191 Comm: io_uring-sq Not tainted 5.10.0-rc1-next-20201030-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  __kasan_report mm/kasan/report.c:549 [inline]
+>  kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
+>  check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>  check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>  atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+>  mmgrab include/linux/sched/mm.h:36 [inline]
+>  kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+>  __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
+>  __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
+>  io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
+>  io_init_req fs/io_uring.c:6661 [inline]
+>  io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
+>  __io_sq_thread fs/io_uring.c:6904 [inline]
+>  io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
+>  kthread+0x3af/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> ==================================================================
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 26191 Comm: io_uring-sq Tainted: G    B             5.10.0-rc1-next-20201030-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  panic+0x306/0x73d kernel/panic.c:231
+>  end_report+0x58/0x5e mm/kasan/report.c:106
+>  __kasan_report mm/kasan/report.c:552 [inline]
+>  kasan_report.cold+0xd/0x37 mm/kasan/report.c:562
+>  check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>  check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>  atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+>  mmgrab include/linux/sched/mm.h:36 [inline]
+>  kthread_use_mm+0x11c/0x2a0 kernel/kthread.c:1257
+>  __io_sq_thread_acquire_mm fs/io_uring.c:1092 [inline]
+>  __io_sq_thread_acquire_mm+0x1c4/0x220 fs/io_uring.c:1085
+>  io_sq_thread_acquire_mm_files.isra.0+0x125/0x180 fs/io_uring.c:1104
+>  io_init_req fs/io_uring.c:6661 [inline]
+>  io_submit_sqes+0x89d/0x25f0 fs/io_uring.c:6757
+>  __io_sq_thread fs/io_uring.c:6904 [inline]
+>  io_sq_thread+0x462/0x1630 fs/io_uring.c:6971
+>  kthread+0x3af/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
 
-In ChromeOS we get modes a couple times and then whenever we connect or
-disconnect a DP cable for external display we also get modes. It seems
-that we also run modetest at boot but I'm not sure why we do that. I
-think it is to gather diagnostic data for all the EDIDs on the device at
-boot so we know what all is connected.
+I think this should fix it - we could _probably_ get by with a
+READ_ONCE() of the task mm for this case, but let's play it safe and
+lock down the task for a guaranteed consistent view of the current
+state.
 
-> but in general until we can eliminate
-> the extra calls it seems like it'd be nice to keep the caching?  This
-> bridge chip is intended for use for eDP for internal panels, so there
-> should be no downside to caching.  If we can later optimize the DRM
-> core, we can fix this and a pre-existing driver that does the same
-> type of caching (analogix-anx6345.c) at the same time?
 
-I'd like to add the caching somewhere in the core (maybe the bridge
-connector code?) but I don't know what the logic should be. Is it eDP
-and if not hpd notify then cache all the time and if it is eDP and hpd
-notify then cache once hpd notify says detected and drop cache when no
-longer detected?
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index dd2ee77feec6..610332f443bd 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -995,20 +995,33 @@ static void io_sq_thread_drop_mm(void)
+ 	if (mm) {
+ 		kthread_unuse_mm(mm);
+ 		mmput(mm);
++		current->mm = NULL;
+ 	}
+ }
+ 
+ static int __io_sq_thread_acquire_mm(struct io_ring_ctx *ctx)
+ {
+-	if (!current->mm) {
+-		if (unlikely(!(ctx->flags & IORING_SETUP_SQPOLL) ||
+-			     !ctx->sqo_task->mm ||
+-			     !mmget_not_zero(ctx->sqo_task->mm)))
+-			return -EFAULT;
+-		kthread_use_mm(ctx->sqo_task->mm);
++	struct mm_struct *mm;
++
++	if (current->mm)
++		return 0;
++
++	/* Should never happen */
++	if (unlikely(!(ctx->flags & IORING_SETUP_SQPOLL)))
++		return -EFAULT;
++
++	task_lock(ctx->sqo_task);
++	mm = ctx->sqo_task->mm;
++	if (unlikely(!mm || !mmget_not_zero(mm)))
++		mm = NULL;
++	task_unlock(ctx->sqo_task);
++
++	if (mm) {
++		kthread_use_mm(mm);
++		return 0;
+ 	}
+ 
+-	return 0;
++	return -EFAULT;
+ }
+ 
+ static int io_sq_thread_acquire_mm(struct io_ring_ctx *ctx,
 
-	if (eDP) {
-		if (!hpd)
-			cache();
-		else if (hpd_detected()) {
-			cache();
-		else if (!hpd_detected()) {
-			drop_cache();
-		}
-	}
+-- 
+Jens Axboe
 
-I thought that EDID could change and HPD can be pulsed to notify that it
-should be read again.
