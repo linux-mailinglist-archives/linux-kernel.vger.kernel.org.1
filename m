@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BC62A30E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C0E2A30EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbgKBRHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:07:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbgKBRHh (ORCPT
+        id S1727608AbgKBRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:07:42 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:53069 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727150AbgKBRHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:07:37 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2245C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:07:35 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id u21so5065787iol.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RgzfsRmXFhqBHSdx1zZ8lf3nx1SGdRkGq7oD4cRkyMc=;
-        b=GtJ/HfBU+CPqw01bKDnZ2U+zd8bF/riSntMlucKhNZE3SoczRSuXICyc3XW52ZgUc8
-         GD/Mfa7SnGorzR/clsnZitFqhY0KsB/U9TCShYxA/IS/vSpBF4jauNLBoOokc+AiTqoa
-         juNawangws7wBF9F8sY/Qrh+nWuMdd16GaawLZ/6eXIKwqGohYVCG3CcQp9JxNHKfTCi
-         M1F2tEFI/IdCRTVVIremah96R2VqhF4cOCa8/Ma8dV8JQpEx7loaul2HFnt5NIJodWPO
-         mqWpJAX0bLXXN4XNPEr5ZyveNAFOWFfFDrxGgoq+wOguhY2xCdpCab932rhn886y5Vap
-         /jjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RgzfsRmXFhqBHSdx1zZ8lf3nx1SGdRkGq7oD4cRkyMc=;
-        b=rbL3YiGZiKGA29MjfsfeS7CxB3ssl+euMPd2t86lOBVtsotyHUPOMBR6kj7G3GIpgG
-         wjlPe2thyYCqjztc6Ifg46nTcJ7duOPnVMXRvwN0kTi/SUqmNketcldI4u2Pv/o5ZxNp
-         GL9dgvoRV1inuLJugkUj7IJVMEYFMAccokkYKx6RAs0K5U0vdkbnEGJyHqGjSvAT+6b6
-         tqkVd+c3pTguU3HKGULUVOW/LP5r16KihB5JYyF1zFjUA3eJ01mDgCZzSTd9gn5nTYVZ
-         eVI6p1IGAeP2D8VRiM8XKVAjhYf/frW/hRzSags84mIcqrdLUNgIs9rpiXq6wbjeiKSX
-         hZ/g==
-X-Gm-Message-State: AOAM531XHkUepi63dDOgAe2hejrG9jZQr+HuwAgiKUpYJOUGZTKn+fbS
-        vB3T3JbfO/ooSZptQT+ecNE6xA==
-X-Google-Smtp-Source: ABdhPJxCzhJ2kVZnH/SNlybES85WLNtcHCLpI1yn+HlYU+Py0bPcfOnkGw2Jr4i1CpF8nsgxWhfrIQ==
-X-Received: by 2002:a05:6602:164b:: with SMTP id y11mr4370751iow.36.1604336855108;
-        Mon, 02 Nov 2020 09:07:35 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z9sm10731628ilm.21.2020.11.02.09.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 09:07:34 -0800 (PST)
-Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
-To:     Qian Cai <cai@redhat.com>
-Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        oleg@redhat.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <20201101173153.GC9375 () osiris>
- <362e3645e2c0891309c07e244a147f0c32f106da.camel@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <54c02fa6-8c8a-667f-af99-e83a1f150586@kernel.dk>
-Date:   Mon, 2 Nov 2020 10:07:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 2 Nov 2020 12:07:40 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id B27821396;
+        Mon,  2 Nov 2020 12:07:39 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 12:07:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=belBut/IjfCe+Zspk1KQvjfVDOP
+        23hqCux2qUZseddw=; b=RtNWP2DOsbZNFKCEDv5hKkyeVJR1S8+adTeHkOKbEQ2
+        HnjmV310C381XjX3atRIvfIv373pUQpFZRSRDASRthGosQjpHJmnzwT7rJiL22bT
+        mWSaNdpyeGSAmNsPwu9sqeKoj+6G40NHukjNvDlY8p0QUYX1tK6zXjVZ0E6dKhyy
+        eXIO/mdiRj41XFHy+6hTgj2zctVRxAHXVyhceaV7mcAhKS9yN3kYwx2il2wFgF4M
+        B5298YM9f1H3VmUP3N8WdK1AlV0EtJTUbTJjC0KoQhHKySBLpHrxhxkt9tTLwBod
+        cP63XXJG5ocVXXo/jDFbp2hsPPPb3uKaUfo/UV8dVrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=belBut
+        /IjfCe+Zspk1KQvjfVDOP23hqCux2qUZseddw=; b=ZNtfMkxQMk0GjxHCiNyRHS
+        PrPX0EH8HHkivT4lpwpW6ZeNYCaPlJisySDVNuZxfWKxlSc7ZIBWxAvTFNdhu7KN
+        GA75OezgYZ8lIzbmL96Y8pAkyJjsL5M1xU7ej01V1pXOzxCCqXpfZwwlWz1kob9x
+        dPUswv7aV1qrgN8BLsqLfl0pnxWjHDTntjOuDpJ9iyKIx7Pw266CZqhLjQplADBO
+        oEEAPWrgNkHC7xmGDWUsnqw2UxynROrPdOEHTxjCNtjiDbsTMn8CmVypfBqE6xOe
+        lIaQBNTJ+iZy+NtG+3jx7OxybdA1d7gUUzpqxlAi89iHB9j6bFTLppf9Z0gjZCJg
+        ==
+X-ME-Sender: <xms:2zygX6kd3-S0NEyX8YytC3oyoWdIgyw_GDfREHF2MQB1t2924UCCjg>
+    <xme:2zygXx2TZxVvpk0RkRwyEWlXzSbyA8DVO6rR_Fe08GanAcrww254vAFFpIxaryqFd
+    2CUbQCXzE1GVe-RGlU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:2zygX4oJYud9edCtFCCONm8jO7_zTAEHy3ddqTIdaXlNVC7kAj9x0A>
+    <xmx:2zygX-l3a1VeW2hrF_opSU365vRmeFPLKX59zjGY0tIFPwUbxbuKbw>
+    <xmx:2zygX40ojcEIRqLnqCalwA2X3xKihdBeADKBjXCrXPn5MNVLvADWlA>
+    <xmx:2zygX8-0jtcS165KQLO1v84Uz0bZqJy7PaHS9fh8N4I5swZhImzdow>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C522C3064683;
+        Mon,  2 Nov 2020 12:07:38 -0500 (EST)
+Date:   Mon, 2 Nov 2020 18:07:37 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Pablo Greco <pgreco@centosproject.org>
+Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: v40: bananapi-m2-berry: Fix ethernet
+ node
+Message-ID: <20201102170737.fqcx2hzuazojr72b@gilmour.lan>
+References: <1604326769-39802-1-git-send-email-pgreco@centosproject.org>
 MIME-Version: 1.0
-In-Reply-To: <362e3645e2c0891309c07e244a147f0c32f106da.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2jn44me55dk3k4hb"
+Content-Disposition: inline
+In-Reply-To: <1604326769-39802-1-git-send-email-pgreco@centosproject.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 9:59 AM, Qian Cai wrote:
-> On Sun, 2020-11-01 at 17:31 +0000, Heiko Carstens wrote:
->> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
->>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
->>>
->>> Cc: linux-s390@vger.kernel.org
->>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> 
-> Even though I did confirm that today's linux-next contains this additional patch
-> from Heiko below, a z10 guest is still unable to boot. Reverting the whole
-> series (reverting only "s390: add support for TIF_NOTIFY_SIGNAL" introduced
-> compiling errors) fixed the problem, i.e., git revert --no-edit
-> af0dd809f3d3..7b074c15374c [1]
 
-That's odd, it should build fine without that patch. How did it fail for you?
+--2jn44me55dk3k4hb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can you try and add this on top? Looks like I forgot the signal change for
-s390, though that shouldn't really cause any issues.
+On Mon, Nov 02, 2020 at 11:19:29AM -0300, Pablo Greco wrote:
+> Ethernet PHY on BananaPi M2 Berry provides RX and TX delays. Fix ethernet
+> node to reflect that fact.
+>=20
+> Fixes: 27e81e1970a8 ("ARM: dts: sun8i: v40: bananapi-m2-berry: Enable GMA=
+C ethernet controller")
+> Signed-off-by: Pablo Greco <pgreco@centosproject.org>
 
+Applied, thanks!
+Maxime
 
-diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
-index 9e900a8977bd..a68c3796a1bf 100644
---- a/arch/s390/kernel/signal.c
-+++ b/arch/s390/kernel/signal.c
-@@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
- 	current->thread.system_call =
- 		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
- 
--	if (get_signal(&ksig)) {
-+	if (test_thread_flag(TIF_NOTIFY_SIGNAL) && get_signal(&ksig)) {
- 		/* Whee!  Actually deliver the signal.  */
- 		if (current->thread.system_call) {
- 			regs->int_code = current->thread.system_call;
+--2jn44me55dk3k4hb
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Jens Axboe
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6A82QAKCRDj7w1vZxhR
+xTwBAP9U5uL7CZ5nEes/4V0v23JTWzPGlxjTouVfaJVy66wg2QD7BxPHEAvTsQu7
+SWNvurd/mplFB/GePVh1pU3jhK+sOgw=
+=97Sv
+-----END PGP SIGNATURE-----
+
+--2jn44me55dk3k4hb--
