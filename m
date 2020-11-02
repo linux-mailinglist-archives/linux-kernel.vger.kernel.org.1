@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354712A3012
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1952A301F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgKBQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727202AbgKBQlk (ORCPT
+        id S1727329AbgKBQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:42:32 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46626 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727314AbgKBQmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:41:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31786C0617A6;
-        Mon,  2 Nov 2020 08:41:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ytzVAE2XCkwajxNhr8bJkGONDthc4ed0WgNEJDU139o=; b=nE3J0Pfg3W6SPnONobv6XQp1hy
-        owdsSlNiW+Y+bXs25cf+31F3D+mxsgHuDIuqdWfnAnRlHJ1s5R+ctP8rcgh+DxSSBBpSXd6axdU4J
-        sRMEd3Y+YpSCakvhT0EkTeN6kVU5UD1aRFi6OCuHy5CgoyGRpl+5R238VwjWhH7cwoyPEK4yiZ1X6
-        Cgs3zHL/wjscvr7GJ1R0kxcjsQaBy+BbvD8cAQG1QY+FZNbFHH3KZDCtM7wOsPa/epJ2/S6Z4tq1E
-        eqqc5m7o1oaEZFRUN2OlMu229aZwM0UmKcHYyLco2iOqHMFfV7rvlyxhX+6qaKX5md8tUWMzty3Ex
-        sDCyYxGQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZctf-0006jm-CW; Mon, 02 Nov 2020 16:41:31 +0000
-Date:   Mon, 2 Nov 2020 16:41:31 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christoph Hellwig <hch@infradead.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        J??r??me Glisse <jglisse@redhat.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v5 08/15] mm: Add unsafe_follow_pfn
-Message-ID: <20201102164131.GA25526@infradead.org>
-References: <20201030100815.2269-1-daniel.vetter@ffwll.ch>
- <20201030100815.2269-9-daniel.vetter@ffwll.ch>
- <20201102072931.GA16419@infradead.org>
- <CAKMK7uEe5FQuukYU7RhL90ttC9XyWw6wvdQrZ2JpP0jpbYTO6g@mail.gmail.com>
- <20201102130115.GC36674@ziepe.ca>
- <CAKMK7uHeL=w7GoBaY4XrbRcpJabR9UWnP+oQ9Fg51OzL7=KxiA@mail.gmail.com>
- <20201102155256.GG36674@ziepe.ca>
+        Mon, 2 Nov 2020 11:42:31 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2GgGSo023795;
+        Mon, 2 Nov 2020 10:42:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604335336;
+        bh=x+tyR6fP9WKVbjUiVjfKW+ZwHBtSovlLDSYOMaR4IEg=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=azl9puHdhASIGZkeOm73EbM5Tgm3iurp0KS7wGgLNgBUyQpNXS0mjX9O6U1asiqKC
+         /GgABxzuPpV/BVKNq5ezEvranj07KeoJSg+hA43srAcGFyRlH2OJVHZDo9Xe9pYs69
+         EByddWvafnIlf4aOADQl9+c/a0Hez5qKfZxpEE8k=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2GgGrB017089
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 2 Nov 2020 10:42:16 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
+ 2020 10:41:39 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 2 Nov 2020 10:41:39 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2Gfc4h073505;
+        Mon, 2 Nov 2020 10:41:38 -0600
+Date:   Mon, 2 Nov 2020 10:41:37 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Tero Kristo <t-kristo@ti.com>, Roger Quadros <rogerq@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 8/8] arm64: dts: ti: k3-j721e-main: Fix PCIe maximum
+ outbound regions
+Message-ID: <20201102164137.ntl3v6gu274ek2r2@gauze>
+References: <20201102101154.13598-1-kishon@ti.com>
+ <20201102101154.13598-9-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201102155256.GG36674@ziepe.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201102101154.13598-9-kishon@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:52:56AM -0400, Jason Gunthorpe wrote:
-> Need to hold the lock to check that and there are two ways to register
-> notifiers these days, so it feels to expensive to me.
+On 15:41-20201102, Kishon Vijay Abraham I wrote:
+> PCIe controller in J721E supports a maximum of 32 outbound regions.
+> commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree
+> nodes") incorrectly added maximum number of outbound regions to 16. Fix
+> it here.
 > 
-> CH's 'export symbol only for kvm' really does seem the most robust way
-> to handle this though.
+> Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> index e2a96b2c423c..61b533130ed1 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -652,7 +652,7 @@
+>  		power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 239 1>;
+>  		clock-names = "fck";
+> -		cdns,max-outbound-regions = <16>;
+> +		cdns,max-outbound-regions = <32>;
+>  		max-functions = /bits/ 8 <6>;
+>  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
+>  		dma-coherent;
+> @@ -701,7 +701,7 @@
+>  		power-domains = <&k3_pds 240 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 240 1>;
+>  		clock-names = "fck";
+> -		cdns,max-outbound-regions = <16>;
+> +		cdns,max-outbound-regions = <32>;
+>  		max-functions = /bits/ 8 <6>;
+>  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
+>  		dma-coherent;
+> @@ -750,7 +750,7 @@
+>  		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 241 1>;
+>  		clock-names = "fck";
+> -		cdns,max-outbound-regions = <16>;
+> +		cdns,max-outbound-regions = <32>;
+>  		max-functions = /bits/ 8 <6>;
+>  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
+>  		dma-coherent;
+> @@ -799,7 +799,7 @@
+>  		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 242 1>;
+>  		clock-names = "fck";
+> -		cdns,max-outbound-regions = <16>;
+> +		cdns,max-outbound-regions = <32>;
+>  		max-functions = /bits/ 8 <6>;
+>  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
+>  		dma-coherent;
+> -- 
+> 2.17.1
+> 
 
-I hope I can get that done for this merge window, but I'm not sure.
+Does this need to be part of this series? If NOT, please pull this  out
+and repost so that it can be independently picked up since there is no
+dependency on the bindings or any part of this series?
 
-I still think we should at least have a new name for the old follow_pfn
-that no one should use.  And it should sound more scary than
-unsafe_follow_pfn :)
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
