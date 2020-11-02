@@ -2,140 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1D62A3268
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4462A326C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgKBR65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:58:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbgKBR65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:58:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604339935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tTGxmloRlosiHcrkblVZKAex8K4UmQqhkKABRK1uCH0=;
-        b=C9zaZGXNo+TDLv2h+wjRZH1Tvbunz+KrxDxPasZEs7237KHD5bMk2LUifxPlPIz/OY4jhf
-        52cOkXcpCM8ZmWg0ud5SE/Dq0hrwDqNna1G8Kd6zQeNP6QLxFBbsDAD82gsQWGQtCObYV0
-        f6ROfUmpcZM3QTk8Q8fZyHD6C2HA+e8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 821A9AE7D;
-        Mon,  2 Nov 2020 17:58:55 +0000 (UTC)
-Subject: Re: possible lockdep regression introduced by 4d004099a668 ("lockdep:
- Fix lockdep recursion")
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>, matorola@gmail.com,
-        mingo@kernel.org
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
- <20201026114009.GN2594@hirez.programming.kicks-ass.net>
- <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
- <20201026125524.GP2594@hirez.programming.kicks-ass.net>
- <20201026152256.GB2651@hirez.programming.kicks-ass.net>
-From:   Filipe Manana <fdmanana@suse.com>
-Message-ID: <968c6023-612c-342b-aa69-ec9e1e428eb0@suse.com>
-Date:   Mon, 2 Nov 2020 17:58:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725959AbgKBSAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgKBSAW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:00:22 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C388C0617A6;
+        Mon,  2 Nov 2020 10:00:20 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kZe7i-00HNsA-H4; Mon, 02 Nov 2020 19:00:06 +0100
+Message-ID: <47b04bd1da38a2356546284eb3576156899965de.camel@sipsolutions.net>
+Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc
+ warning
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kalle Valo <kvalo@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 02 Nov 2020 18:59:49 +0100
+In-Reply-To: <87tuu7ohbo.fsf@codeaurora.org> (sfid-20201102_172730_808878_841241B0)
+References: <20201026213040.3889546-1-arnd@kernel.org>
+         <20201026213040.3889546-8-arnd@kernel.org> <87tuu7ohbo.fsf@codeaurora.org>
+         (sfid-20201102_172730_808878_841241B0)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201026152256.GB2651@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-11-02 at 18:26 +0200, Kalle Valo wrote:
+> Arnd Bergmann <arnd@kernel.org> writes:
+> 
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > gcc-10 shows a false-positive warning with CONFIG_KASAN:
+> > 
+> > drivers/net/wireless/ath/ath9k/dynack.c: In function 'ath_dynack_sample_tx_ts':
+> > include/linux/etherdevice.h:290:14: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
+> >   290 |  *(u32 *)dst = *(const u32 *)src;
+> >       |  ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> > 
+> > Until gcc is fixed, work around this by using memcpy() in place
+> > of ether_addr_copy(). Hopefully gcc-11 will not have this problem.
+> > 
+> > Link: https://godbolt.org/z/sab1MK
+> > Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/net/wireless/ath/ath9k/dynack.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/net/wireless/ath/ath9k/dynack.c b/drivers/net/wireless/ath/ath9k/dynack.c
+> > index fbeb4a739d32..e4eb96b26ca4 100644
+> > --- a/drivers/net/wireless/ath/ath9k/dynack.c
+> > +++ b/drivers/net/wireless/ath/ath9k/dynack.c
+> > @@ -247,8 +247,14 @@ void ath_dynack_sample_tx_ts(struct ath_hw *ah, struct sk_buff *skb,
+> >  	ridx = ts->ts_rateindex;
+> >  
+> >  	da->st_rbf.ts[da->st_rbf.t_rb].tstamp = ts->ts_tstamp;
+> > +#if defined(CONFIG_KASAN) && (CONFIG_GCC_VERSION >= 100000) && (CONFIG_GCC_VERSION < 110000)
+> > +	/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490 */
+> > +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1, ETH_ALEN);
+> > +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2, ETH_ALEN);
+> > +#else
+> >  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1);
+> >  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2);
+> > +#endif
+> 
+> Isn't there a better way to handle this? I really would not want
+> checking for GCC versions become a common approach in drivers.
+> 
+> I even think that using memcpy() always is better than the ugly ifdef.
 
+If you put memcpy() always somebody will surely go and clean it up to
+use ether_addr_copy() soon ...
 
-On 26/10/20 15:22, Peter Zijlstra wrote:
-> On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
->> On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
->>>> That smells like the same issue reported here:
->>>>
->>>>   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
->>>>
->>>> Make sure you have commit:
->>>>
->>>>   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
->>>>
->>>> (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
->>>
->>> Yes, CONFIG_DEBUG_PREEMPT is enabled.
->>
->> Bummer :/
->>
->>> I'll try with that commit and let you know, however it's gonna take a
->>> few hours to build a kernel and run all fstests (on that test box it
->>> takes over 3 hours) to confirm that fixes the issue.
->>
->> *ouch*, 3 hours is painful. How long to make it sick with the current
->> kernel? quicker I would hope?
->>
->>> Thanks for the quick reply!
->>
->> Anyway, I don't think that commit can actually explain the issue :/
->>
->> The false positive on lockdep_assert_held() happens when the recursion
->> count is !0, however we _should_ be having IRQs disabled when
->> lockdep_recursion > 0, so that should never be observable.
->>
->> My hope was that DEBUG_PREEMPT would trigger on one of the
->> __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
->> then be a clear violation.
->>
->> And you're seeing this on x86, right?
->>
->> Let me puzzle moar..
-> 
-> So I might have an explanation for the Sparc64 fail, but that can't
-> explain x86 :/
-> 
-> I initially thought raw_cpu_read() was OK, since if it is !0 we have
-> IRQs disabled and can't get migrated, so if we get migrated both CPUs
-> must have 0 and it doesn't matter which 0 we read.
-> 
-> And while that is true; it isn't the whole store, on pretty much all
-> architectures (except x86) this can result in computing the address for
-> one CPU, getting migrated, the old CPU continuing execution with another
-> task (possibly setting recursion) and then the new CPU reading the value
-> of the old CPU, which is no longer 0.
-> 
-> I already fixed a bunch of that in:
-> 
->   baffd723e44d ("lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"")
-> 
-> but clearly this one got crossed.
-> 
-> Still, that leaves me puzzled over you seeing this on x86 :/
+That said, if there's a gcc issue with ether_addr_copy() then how come
+it's specific to this place?
 
-Hi Peter,
+johannes
 
-I still get the same issue with 5.10-rc2.
-Is there any non-merged patch I should try, or anything I can help with?
-
-Thanks.
-
-> 
-> Anatoly, could you try linus+tip/locking/urgent and the below on your
-> Sparc, please?
-> 
-> ---
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 3e99dfef8408..a3041463e42d 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -84,7 +84,7 @@ static inline bool lockdep_enabled(void)
->  	if (!debug_locks)
->  		return false;
->  
-> -	if (raw_cpu_read(lockdep_recursion))
-> +	if (this_cpu_read(lockdep_recursion))
->  		return false;
->  
->  	if (current->lockdep_recursion)
-> 
