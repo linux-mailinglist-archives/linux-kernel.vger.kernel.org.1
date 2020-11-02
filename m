@@ -2,187 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D8B2A2479
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C759B2A2480
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgKBFxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:53:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S1727757AbgKBF4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 00:56:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727806AbgKBFxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:53:39 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S1725208AbgKBF4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 00:56:31 -0500
+Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DD5220874;
-        Mon,  2 Nov 2020 05:53:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7DC820870;
+        Mon,  2 Nov 2020 05:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604296418;
-        bh=+KU1omEFBkVRgfGxLe2vEQ3iEYJqUz7y0umDF0WAUbw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=B9dZTRKrWbPiwtw9bMOjJ25Ulh6xsi03I1JIIfPIt01HF1oPDjgckPjn1y50Kxo/d
-         EBhdWKuqSU3L7Dtzzh0oe+Sfvb3EFLbpvym1arRV446YBgXl4RhfYRl1tlm1w0P2l9
-         992DdekU2Xygja8cxrSXz4R3ey+Sxl60+HeVGrt0=
-Date:   Mon, 2 Nov 2020 14:53:34 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-Id: <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-In-Reply-To: <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1604296590;
+        bh=H4bxrHgb7QzAd4s6R7ZAcPSYQsd0k6a8eql72d8Wh3g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IVgUDyjOS+GO22O0osaO3K3VzLaZ5+NfqDzIdn3mEMC6Vw5Yp7Pm/EgRYKkZQqnLK
+         R1Gw0mAB9KsxH2iSTGv+VOVRvic3kO2Q+DRP+NkrKNolUy5EZgtKHfaAXdGEBNeGb7
+         7kW+SggiAe5YWsZ2eXZnpDk8Hnz9ZN5kCTnuZ+Jo=
+Date:   Mon, 2 Nov 2020 07:56:26 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "kiran.patil@intel.com" <kiran.patil@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next v1 03/11] net/mlx5_core: Clean driver version
+ and name
+Message-ID: <20201102055626.GD5429@unreal>
+References: <20201101201542.2027568-1-leon@kernel.org>
+ <20201101201542.2027568-4-leon@kernel.org>
+ <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 14:11:38 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Nov 02, 2020 at 05:07:59AM +0000, Parav Pandit wrote:
+>
+>
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Monday, November 2, 2020 1:46 AM
+> >
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Remove exposed driver version as it was done in other drivers, so module
+> > version will work correctly by displaying the kernel version for which it is
+> > compiled.
+> >
+> > And move mlx5_core module name to general include, so auxiliary drivers
+> > will be able to use it as a basis for a name in their device ID tables.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/devlink.c     |  2 +-
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c  |  4 +---
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c      |  1 -
+> >  .../net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c   |  2 +-
+> >  drivers/net/ethernet/mellanox/mlx5/core/main.c        | 11 +++++++----
+> >  drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h   |  3 ---
+> >  include/linux/mlx5/driver.h                           |  2 ++
+> >  7 files changed, 12 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> > index a28f95df2901..1a351e2f6ace 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> > @@ -52,7 +52,7 @@ mlx5_devlink_info_get(struct devlink *devlink, struct
+> > devlink_info_req *req,
+> >  	u32 running_fw, stored_fw;
+> >  	int err;
+> >
+> > -	err = devlink_info_driver_name_put(req, DRIVER_NAME);
+> > +	err = devlink_info_driver_name_put(req, KBUILD_MODNAME);
+> >  	if (err)
+> >  		return err;
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > index d25a56ec6876..bcff18a87bcd 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > @@ -40,9 +40,7 @@ void mlx5e_ethtool_get_drvinfo(struct mlx5e_priv
+> > *priv,  {
+> >  	struct mlx5_core_dev *mdev = priv->mdev;
+> >
+> > -	strlcpy(drvinfo->driver, DRIVER_NAME, sizeof(drvinfo->driver));
+> > -	strlcpy(drvinfo->version, DRIVER_VERSION,
+> > -		sizeof(drvinfo->version));
+> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo-
+> > >driver));
+> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
+> >  		 "%d.%d.%04d (%.16s)",
+> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
+> > fw_rev_sub(mdev), diff --git
+> > a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > index 67247c33b9fd..ef2f8889ba0f 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > @@ -64,7 +64,6 @@ static void mlx5e_rep_get_drvinfo(struct net_device
+> > *dev,
+> >
+> >  	strlcpy(drvinfo->driver, mlx5e_rep_driver_name,
+> >  		sizeof(drvinfo->driver));
+> > -	strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
+> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
+> >  		 "%d.%d.%04d (%.16s)",
+> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+> > index cac8f085b16d..97d96fc38a65 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
+> > @@ -39,7 +39,7 @@ static void mlx5i_get_drvinfo(struct net_device *dev,
+> >  	struct mlx5e_priv *priv = mlx5i_epriv(dev);
+> >
+> >  	mlx5e_ethtool_get_drvinfo(priv, drvinfo);
+> > -	strlcpy(drvinfo->driver, DRIVER_NAME "[ib_ipoib]",
+> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME "[ib_ipoib]",
+> >  		sizeof(drvinfo->driver));
+> >  }
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> > index 71e210f22f69..9827127cb674 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> > @@ -77,7 +77,6 @@
+> >  MODULE_AUTHOR("Eli Cohen <eli@mellanox.com>");
+> > MODULE_DESCRIPTION("Mellanox 5th generation network adapters
+> > (ConnectX series) core driver");  MODULE_LICENSE("Dual BSD/GPL"); -
+> > MODULE_VERSION(DRIVER_VERSION);
+> >
+> >  unsigned int mlx5_core_debug_mask;
+> >  module_param_named(debug_mask, mlx5_core_debug_mask, uint, 0644);
+> > @@ -228,7 +227,7 @@ static void mlx5_set_driver_version(struct
+> > mlx5_core_dev *dev)
+> >  	strncat(string, ",", remaining_size);
+> >
+> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+> > -	strncat(string, DRIVER_NAME, remaining_size);
+> > +	strncat(string, KBUILD_MODNAME, remaining_size);
+> >
+> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+> >  	strncat(string, ",", remaining_size);
+> > @@ -313,7 +312,7 @@ static int request_bar(struct pci_dev *pdev)
+> >  		return -ENODEV;
+> >  	}
+> >
+> > -	err = pci_request_regions(pdev, DRIVER_NAME);
+> > +	err = pci_request_regions(pdev, KBUILD_MODNAME);
+> >  	if (err)
+> >  		dev_err(&pdev->dev, "Couldn't get PCI resources,
+> > aborting\n");
+> >
+> > @@ -1617,7 +1616,7 @@ void mlx5_recover_device(struct mlx5_core_dev
+> > *dev)  }
+> >
+> >  static struct pci_driver mlx5_core_driver = {
+> > -	.name           = DRIVER_NAME,
+> > +	.name           = KBUILD_MODNAME,
+> >  	.id_table       = mlx5_core_pci_table,
+> >  	.probe          = init_one,
+> >  	.remove         = remove_one,
+> > @@ -1643,6 +1642,10 @@ static int __init init(void)  {
+> >  	int err;
+> >
+> > +	WARN_ONCE(strcmp(MLX5_ADEV_NAME, KBUILD_MODNAME) ||
+> > +		  strlen(MLX5_ADEV_NAME) != strlen(KBUILD_MODNAME),
+> > +		  "mlx5_core name not in sync with kernel module name");
+> > +
+> In which case, both the strings are same but their length not?
+> You likely don't need the string length check.
 
-> On Fri, 30 Oct 2020 21:38:31 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Sat, 29 Aug 2020 22:02:36 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > > Since the commit 9b38cc704e84 ("kretprobe: Prevent triggering
-> > > kretprobe from within kprobe_flush_task") sets a dummy current
-> > > kprobe in the trampoline handler by kprobe_busy_begin/end(),
-> > > it is not possible to run a kretprobe pre handler in kretprobe
-> > > trampoline handler context even with the NMI. If the NMI interrupts
-> > > a kretprobe_trampoline_handler() and it hits a kretprobe, the
-> > > 2nd kretprobe will detect recursion correctly and it will be
-> > > skipped.
-> > > This means we have almost no double-lock issue on kretprobes by NMI.
-> > > 
-> > > The last one point is in cleanup_rp_inst() which also takes
-> > > kretprobe_table_lock without setting up current kprobes.
-> > > So adding kprobe_busy_begin/end() there allows us to remove
-> > > in_nmi() check.
-> > > 
-> > > The above commit applies kprobe_busy_begin/end() on x86, but
-> > > now all arch implementation are unified to generic one, we can
-> > > safely remove the in_nmi() check from arch independent code.
-> > >
-> > 
-> > So are you saying that lockdep is lying?
-> > 
-> > Kprobe smoke test: started
-> > 
-> > ================================
-> > WARNING: inconsistent lock state
-> > 5.10.0-rc1-test+ #29 Not tainted
-> > --------------------------------
-> > inconsistent {INITIAL USE} -> {IN-NMI} usage.
-> > swapper/0/1 [HC1[1]:SC0[0]:HE0:SE1] takes:
-> > ffffffff82b07118 (&rp->lock){....}-{2:2}, at: pre_handler_kretprobe+0x4b/0x193
-> > {INITIAL USE} state was registered at:
-> >   lock_acquire+0x280/0x325
-> >   _raw_spin_lock+0x30/0x3f
-> >   recycle_rp_inst+0x3f/0x86
-> >   __kretprobe_trampoline_handler+0x13a/0x177
-> >   trampoline_handler+0x48/0x57
-> >   kretprobe_trampoline+0x2a/0x4f
-> >   kretprobe_trampoline+0x0/0x4f
-> >   init_kprobes+0x193/0x19d
-> >   do_one_initcall+0xf9/0x27e
-> >   kernel_init_freeable+0x16e/0x2b6
-> >   kernel_init+0xe/0x109
-> >   ret_from_fork+0x22/0x30
-> > irq event stamp: 1670
-> > hardirqs last  enabled at (1669): [<ffffffff811cc344>] slab_free_freelist_hook+0xb4/0xfd
-> > hardirqs last disabled at (1670): [<ffffffff81da0887>] exc_int3+0xae/0x10a
-> > softirqs last  enabled at (1484): [<ffffffff82000352>] __do_softirq+0x352/0x38d
-> > softirqs last disabled at (1471): [<ffffffff81e00f82>] asm_call_irq_on_stack+0x12/0x20
-> > 
-> > other info that might help us debug this:
-> >  Possible unsafe locking scenario:
-> > 
-> >        CPU0
-> >        ----
-> >   lock(&rp->lock);
-> >   <Interrupt>
-> >     lock(&rp->lock);
-> > 
-> >  *** DEADLOCK ***
-> > 
-> > no locks held by swapper/0/1.
-> > 
-> > stack backtrace:
-> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-test+ #29
-> > Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
-> > Call Trace:
-> >  dump_stack+0x7d/0x9f
-> >  print_usage_bug+0x1c0/0x1d3
-> >  lock_acquire+0x302/0x325
-> >  ? pre_handler_kretprobe+0x4b/0x193
-> >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> >  _raw_spin_lock_irqsave+0x43/0x58
-> >  ? pre_handler_kretprobe+0x4b/0x193
-> >  pre_handler_kretprobe+0x4b/0x193
-> >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> >  ? kprobe_target+0x1/0x16
-> >  kprobe_int3_handler+0xd0/0x109
-> >  exc_int3+0xb8/0x10a
-> >  asm_exc_int3+0x31/0x40
-> > RIP: 0010:kprobe_target+0x1/0x16
-> >  5d c3 cc
-> > RSP: 0000:ffffc90000033e00 EFLAGS: 00000246
-> > RAX: ffffffff8110ea77 RBX: 0000000000000001 RCX: ffffc90000033cb4
-> > RDX: 0000000000000231 RSI: 0000000000000000 RDI: 000000003ca57c35
-> > RBP: ffffc90000033e20 R08: 0000000000000000 R09: ffffffff8111d207
-> > R10: ffff8881002ab480 R11: ffff8881002ab480 R12: 0000000000000000
-> > R13: ffffffff82a52af0 R14: 0000000000000200 R15: ffff888100331130
-> >  ? register_kprobe+0x43c/0x492
-> >  ? stop_machine_from_inactive_cpu+0x120/0x120
-> >  ? kprobe_target+0x1/0x16
-> >  ? init_test_probes+0x2c6/0x38a
-> >  init_kprobes+0x193/0x19d
-> >  ? debugfs_kprobe_init+0xb8/0xb8
-> >  do_one_initcall+0xf9/0x27e
-> >  ? rcu_read_lock_sched_held+0x3e/0x75
-> >  ? init_mm_internals+0x27b/0x284
-> >  kernel_init_freeable+0x16e/0x2b6
-> >  ? rest_init+0x152/0x152
-> >  kernel_init+0xe/0x109
-> >  ret_from_fork+0x22/0x30
-> > Kprobe smoke test: passed successfully
-> > 
-> > Config attached.
-> 
-> Thanks for the report! Let me check what happen.
+Yes, I was overzealous, I'll remove when will apply the series.
 
-OK, confirmed. But this is actually false-positive report.
+>
+> >  	get_random_bytes(&sw_owner_id, sizeof(sw_owner_id));
+> >
+> >  	mlx5_core_verify_params();
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+> > b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+> > index 8cec85ab419d..b285f1515e4e 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+> > @@ -42,9 +42,6 @@
+> >  #include <linux/mlx5/fs.h>
+> >  #include <linux/mlx5/driver.h>
+> >
+> > -#define DRIVER_NAME "mlx5_core"
+> > -#define DRIVER_VERSION "5.0-0"
+> > -
+> >  extern uint mlx5_core_debug_mask;
+> >
+> >  #define mlx5_core_dbg(__dev, format, ...)				\
+> > diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h index
+> > 317257f8e0ad..ed1d030658d2 100644
+> > --- a/include/linux/mlx5/driver.h
+> > +++ b/include/linux/mlx5/driver.h
+> > @@ -56,6 +56,8 @@
+> >  #include <linux/ptp_clock_kernel.h>
+> >  #include <net/devlink.h>
+> >
+> > +#define MLX5_ADEV_NAME "mlx5_core"
+> > +
+> >  enum {
+> >  	MLX5_BOARD_ID_LEN = 64,
+> >  };
+> > --
+> > 2.28.0
+>
+>
+> Other than strlen removal check,
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
+>
 
-The lockdep reports rp->lock case between pre_handler_kretprobe()
-and recycle_rp_inst() from __kretprobe_trampoline_handler().
-Since kretprobe_trampoline_handler() sets current_kprobe,
-if other kprobes hits on same CPU, those are skipped. This means
-pre_handler_kretprobe() is not called while executing
-__kretprobe_trampoline_handler().
-
-Actually, since this rp->lock is expected to be removed in the last
-patch in this series ([21/21]), I left this as is, but we might better
-to treat this case because the latter half of this series will be
-merged in 5.11.
-
-Hmm, are there any way to tell lockdep this is safe?
-
-Thank you,
-
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks
