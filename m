@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EFE2A337D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62F02A3382
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgKBTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:00:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S1726540AbgKBTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgKBS77 (ORCPT
+        with ESMTP id S1726423AbgKBTA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:59:59 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E36C0617A6;
-        Mon,  2 Nov 2020 10:59:59 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id b138so12625361yba.5;
-        Mon, 02 Nov 2020 10:59:58 -0800 (PST)
+        Mon, 2 Nov 2020 14:00:27 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089B7C0617A6;
+        Mon,  2 Nov 2020 11:00:27 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id c16so10528101wmd.2;
+        Mon, 02 Nov 2020 11:00:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dpf57obcTDUfpgE4X4aU2uC5mE04uKRHqZ7salaebWY=;
-        b=uIuQHo1bXiaGsEZs1SD690jNAApi1irtsV2HmJhEYpjfIvNYYDblmOlMnBE+35n9in
-         yjkEiUizRO2qnAsIGDqxw//QMoA9DYkrSzTqflaiCczVSAIovv9ZVSbWCkPjRwPVjWg0
-         gB17Xe4pdfDCK4rypE2cdD/w2tS1iHIz5E8RIL/IGHIhHPRTrIR4JlevYkUbYIiIeqzo
-         lyHtNLcm2U8XvmB0PkcL78GGmvSlB45Z7KeK3I0wBkIXBrpwfSRvBPhGb65vdF6zISWi
-         /W9r3Z0AR9CL9kezruGAvSECiCBYBuh2/C5+E/SgjQO1NLErI+LG8C3Mh9V+KJhyej5L
-         lRmQ==
+        bh=F52hESqbsB1MPJOrdkRKIslrWAc4TnNYL/WsFrJgJKw=;
+        b=toR2HRVdMm7mruxLONthC9XCLQ2NZM7kvv76jNtete8uCBDGb7+45cxZPdkRDrH59n
+         mn2jusHu9DC1CUcCHVwWrwrx9yQo08XLXrLovUsOY5/VwQ6fZZt1KTBDX5NmBVMIkDJ/
+         EqzMvk5nkdMc/DdJ3rJLd0EEbCXCRxhE6F4DpSADFhnaACYbCq0Hnc2XlDtBEEdM65eK
+         mEBe1NZXRRvstr8m9KiSpO7zQoHflmYdRbRXgRC4upO1zH0T0LlMuSyVJXcvmbZwW+F8
+         OFSAa6P+DaJTq+YT2/qF24jsGzErQR+Di5uTo15pZT5amGCHl13xKVdMKuoS8iWJur+C
+         ptag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dpf57obcTDUfpgE4X4aU2uC5mE04uKRHqZ7salaebWY=;
-        b=RrkuB7aeqCsSzlnu9kyeZhxi4eZwJXzOBbWz84SwvNe++bNZhTzZjTU1a0fckXYwOf
-         geKL2QxovY+fKhyA/8AM2txg5zWSzrK18UqVtF03WRRH88MUyn2n5zFj1VcDYDhtK2OL
-         x85r4/dWokT8NmLtBHIIark724q9LFNrGaSdYPdVPdENKfBSxbpH8iOfQ+SFSpgOdGB6
-         2s3jEhiCfLgF7gFROUJtUVOVAo0TwggbwReF6L5tCkh2SqMqsRFu7PNMfWuwepgJwJ3W
-         qPum/TEBmLm9O4RJT419+iVlmfmC7J92dqYdwkv+pGeoaJ/OJI7VuLVIzB9vjTUvnT7s
-         X/jA==
-X-Gm-Message-State: AOAM531LwKrIU4kFI+9KgJseWOFX69D3rWWBuiwgXHj8GdDrVxImBG1h
-        ScHmIvAz33OxNqZIha6LWvUcPHydF9BNE0qwvwoDKYV62Cklxw==
-X-Google-Smtp-Source: ABdhPJxeZbSScoQ+As7CbT+Gg8VIx5tt5UejlPgz4LaSFdFAdNjkpOYBr4EFlysevakPxMbUijmoyLqWGxxZKj9Af94=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr22709876ybf.425.1604343598235;
- Mon, 02 Nov 2020 10:59:58 -0800 (PST)
+        bh=F52hESqbsB1MPJOrdkRKIslrWAc4TnNYL/WsFrJgJKw=;
+        b=RRFw0cSFoJdbTYdkjdl/EwQBiGhJjf1Kp00gIdklUFHF9KcQC2ekBW3djHCbPfLLkP
+         R6t/fFHHeToqHRJEd0LEepOf4W7QPzxDZEE2lLL0tQ+J9UxA2XAQzvkzJyXWHx5cwxE1
+         PaQ8QjW4OKr61CDA/IKK+3juLjXfK+vA0SY56rDkSNtZpOoFq60n09RAf4Z1NTcU4L1/
+         c054qVqMP6/u6PAx5FGbP3Yrq7Kn+/tY0la5EA9ya+h8wG5aB5Pnu10Q08eguqRwWDqm
+         ySB0v6DomAcr1AjT6diUIZCoivUI3UR9BpHFjwIURnpVlimElR2UaxbpPosQ0SEUxkx+
+         vQ9w==
+X-Gm-Message-State: AOAM533p0xoO8VoloapGu+Su5URh90rF6XDS3Fs+2mOgwEdqD9FWYCtO
+        0oUladVqscw3ANWAzWp76WsFKFxyQcJTR4DkQ3/qrghE
+X-Google-Smtp-Source: ABdhPJytQUYMUMSyXdcmVlTI70Lb9uFFEdcAtoiyeavU7SDPkzfzLliepONejZLqlw/MJVxGDHVXT7e6qiW+8huN4SQ=
+X-Received: by 2002:a05:600c:25a:: with SMTP id 26mr19186350wmj.39.1604343625759;
+ Mon, 02 Nov 2020 11:00:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20201101153647.2292322-1-trix@redhat.com>
-In-Reply-To: <20201101153647.2292322-1-trix@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Nov 2020 10:59:47 -0800
-Message-ID: <CAEf4BzY+_aqCpww9ZCHOMCnunvWrszWTUFDP=cEy2CY75S1yRg@mail.gmail.com>
-Subject: Re: [PATCH] net: core: remove unneeded semicolon
-To:     trix@redhat.com
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>, ap420073@gmail.com,
-        Cong Wang <xiyou.wangcong@gmail.com>, jiri@mellanox.com,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201102141654.699468-1-colin.king@canonical.com>
+In-Reply-To: <20201102141654.699468-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 2 Nov 2020 14:00:14 -0500
+Message-ID: <CADnq5_NJ=X1A+R5rHCvLZAXWpAL-3YiN_ksrzY8Kjuaoj1ybeg@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu: fix spelling mistake: "Successed" -> "Succeeded"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 7:38 AM <trix@redhat.com> wrote:
+Applied.  Thanks!
+
+Alex
+
+On Mon, Nov 2, 2020 at 9:17 AM Colin King <colin.king@canonical.com> wrote:
 >
-> From: Tom Rix <trix@redhat.com>
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> A semicolon is not needed after a switch statement.
+> There is a spelling mistake in a deb_dbg message. Fix it.
 >
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
-
-Yep.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  net/core/dev.c | 2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 751e5264fd49..10f5d0c3d0d7 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -8898,7 +8898,7 @@ static bpf_op_t dev_xdp_bpf_op(struct net_device *dev, enum bpf_xdp_mode mode)
->                 return dev->netdev_ops->ndo_bpf;
->         default:
->                 return NULL;
-> -       };
-> +       }
->  }
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> index 28a5c0d21b71..c99c2180785f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> @@ -296,7 +296,7 @@ static void amdgpu_vram_mgr_do_reserve(struct ttm_resource_manager *man)
+>                 if (drm_mm_reserve_node(mm, &rsv->mm_node))
+>                         continue;
 >
->  static struct bpf_xdp_link *dev_xdp_link(struct net_device *dev,
+> -               dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Successed\n",
+> +               dev_dbg(adev->dev, "Reservation 0x%llx - %lld, Succeeded\n",
+>                         rsv->mm_node.start, rsv->mm_node.size);
+>
+>                 vis_usage = amdgpu_vram_mgr_vis_size(adev, &rsv->mm_node);
 > --
-> 2.18.1
+> 2.27.0
 >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
