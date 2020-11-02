@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FC62A2C7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469AA2A2C7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgKBOSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgKBOQh (ORCPT
+        id S1726204AbgKBOSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:18:14 -0500
+Received: from mail2.sp2max.com.br ([138.185.4.9]:45238 "EHLO
+        mail2.sp2max.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgKBOQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:16:37 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377BDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:16:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UD/OkCMd1FoU3EgKfSru1bYvN7JBNcEWgNchKvRXMSM=; b=W+zuVylnGl4SAsNM85FlVkuMLf
-        iBAwv+Ow46wK0I0qTRTpgV4fXAxHAJlvx8bR6cX2taNKpNPlT+9kOLWDmQEy+L/wyDSAXc8wF38gF
-        u0HyEM9cwy/o8uDy09QdzPHgRS2BAInsivfWoryyGEHYg+tKYRuzcxJyVwdeWwbqLfDYgidYg+OoL
-        v1xQHlMtgujMNSrk7N9f/EfKFX05/rXu97E8PAovxV63g3SfA4lwN9dDVQqdEMmhb8OFtWAcj/FOB
-        UOtY+uY5OX6YH82efGC5rnB5949UAyH0kWoJfKQL4mmwFuWUvcv1RabS6GnsowFQGxZ4IFOk5goU7
-        DFoRgHDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZadJ-00083a-2u; Mon, 02 Nov 2020 14:16:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DEAFE3011E6;
-        Mon,  2 Nov 2020 15:16:25 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 929D72BEF6301; Mon,  2 Nov 2020 15:16:25 +0100 (CET)
-Date:   Mon, 2 Nov 2020 15:16:25 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2 0/4] perf: Fix perf_event_attr::exclusive rotation
-Message-ID: <20201102141625.GX2594@hirez.programming.kicks-ass.net>
-References: <20201029162719.519685265@infradead.org>
- <20201031234418.GE3380099@krava>
- <20201102035238.GI466880@tassilo.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102035238.GI466880@tassilo.jf.intel.com>
+        Mon, 2 Nov 2020 09:16:54 -0500
+Received: from pgsop.sopnet.com.ar (unknown [179.40.38.12])
+        (Authenticated sender: pablo@fliagreco.com.ar)
+        by mail2.sp2max.com.br (Postfix) with ESMTPSA id 500047B04AC;
+        Mon,  2 Nov 2020 11:16:47 -0300 (-03)
+From:   Pablo Greco <pgreco@centosproject.org>
+To:     linux-sunxi@googlegroups.com
+Cc:     Pablo Greco <pgreco@centosproject.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: sun7i: bananapi: Enable RGMII RX/TX delay on Ethernet PHY
+Date:   Mon,  2 Nov 2020 11:16:40 -0300
+Message-Id: <1604326600-39544-1-git-send-email-pgreco@centosproject.org>
+X-Mailer: git-send-email 1.8.3.1
+X-SP2Max-MailScanner-Information: Please contact the ISP for more information
+X-SP2Max-MailScanner-ID: 500047B04AC.A170F
+X-SP2Max-MailScanner: Sem Virus encontrado
+X-SP2Max-MailScanner-SpamCheck: nao spam, SpamAssassin (not cached,
+        escore=-2.9, requerido 6, autolearn=not spam, ALL_TRUSTED -1.00,
+        BAYES_00 -1.90)
+X-SP2Max-MailScanner-From: pgreco@centosproject.org
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 07:52:38PM -0800, Andi Kleen wrote:
-> The main motivation is actually that the "multiple groups" algorithm
-> in perf doesn't work all that great: it has quite a few cases where it
-> starves groups or makes the wrong decisions. That is because it is very
-> difficult (likely NP complete) problem and the kernel takes a lot
-> of short cuts to avoid spending too much time on it.
+The Ethernet PHY on the Bananapi M1 has the RX and TX delays enabled on
+the PHY, using pull-ups on the RXDLY and TXDLY pins.
 
-The event scheduling should be starvation free, except in the presence
-of pinned events.
+Fix the phy-mode description to correct reflect this so that the
+implementation doesn't reconfigure the delays incorrectly. This
+happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+rx/tx delay config").
 
-If you can show starvation without pinned events, it's a bug.
+Fixes: 8a5b272fbf44 ("ARM: dts: sun7i: Add Banana Pi board")
+Signed-off-by: Pablo Greco <pgreco@centosproject.org>
+---
+ arch/arm/boot/dts/sun7i-a20-bananapi.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It will also always do equal or better than exclusive mode wrt PMU
-utilization. Again, if it doesn't it's a bug.
+diff --git a/arch/arm/boot/dts/sun7i-a20-bananapi.dts b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
+index bb3987e101c2..0b3d9ae75650 100644
+--- a/arch/arm/boot/dts/sun7i-a20-bananapi.dts
++++ b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
+@@ -132,7 +132,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac_rgmii_pins>;
+ 	phy-handle = <&phy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	status = "okay";
+ };
+-- 
+2.18.4
 
-Please provide concrete examples for these two cases, or stop spreading
-FUD like this.
