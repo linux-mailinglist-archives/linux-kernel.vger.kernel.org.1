@@ -2,97 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F592A3609
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072072A360F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgKBVeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:34:21 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:49525 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBVeV (ORCPT
+        id S1726670AbgKBVhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgKBVhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:34:21 -0500
-Received: from 'smile.earth' ([95.89.3.76]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MAOeB-1kTsaM0jEJ-00Bw3Y; Mon, 02 Nov 2020 22:34:13 +0100
-X-Virus-Scanned: amavisd at 'smile.earth'
-From:   Hans-Peter Jansen <hpj@urpla.net>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 5.9 24/74] x86,
- powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()
-Date:   Mon, 02 Nov 2020 22:34:08 +0100
-Message-ID: <5149714.arhZky3dcl@xrated>
-In-Reply-To: <20201031113501.207349375@linuxfoundation.org>
-References: <20201031113500.031279088@linuxfoundation.org>
- <20201031113501.207349375@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:fCln/6GVs0RmP5szWXiMyIMh1DBFBsohmVL/zpZTQM0hYf4jycU
- f2QX/ujtwzDaXvcyQC+5uA203zV6yUUETEDkhP1wCYllCUaBlFpzVajOmnoLkG0uf5bU3Xy
- PAKtk8lFgcFO2ymtXn7W0/CEeHEdMhIQ4IjyMplDEZC1T115EUhsFDDhehvQaJeyoiB1slY
- /C+BUeK2leL1c/HXdBB0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d2FUqD3q9Hw=:xvbzKxSdAoL6yiS1afqNG1
- VHpKnHiYaz0gQ8LQr4tZ3HTmJeE+ZOH7KQZ1nSwo70wLLFvFID70qW73yF0J0mAqMimdWJCa8
- TTQ88zjRHRPBrRDRj6X2XyTMho2wk4xV10r9lkid79UIXm23gcqPLKZxfVY940Ujg3tIMov6k
- xf8a9zggGvJQdHcj6L8mv2XabAyD9Zo6auKaaGk5LyYwT4nyAKpebccjm9jPGDcJtq6o9yUpp
- v20NnZJssP0zTnogjvIWM8TQ0wX5zIoZ1vZUmn9iMgTftQ9BYilJlZgvZ/PVr+Yvjbk7MxyA9
- puV6XI3DHNCylamsE2Ln0Au35bnxqaqFh2InuKzq46xwpkCNR6CTmeXFBC8ym592Q9B5aaEDH
- NQ0EFxnOIgZunM47J15makMSkwLIjhKjcpa3ywTxEXppBw9EFPfkU4rFyLuS3
+        Mon, 2 Nov 2020 16:37:11 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FAEC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 13:37:11 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a126so13220499ybb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 13:37:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=6QhI3kHimGu8AWgc0fDAH50nxnuO9Boew+8qHoNE/Eo=;
+        b=BApIjvn7QJ3hkYCJqm1ZEr4y5XnuniIqZJW0Q7lYJLi1jVypbSF5D90TrXEnym+bOJ
+         B1ztMqsbPnPQ4SMdybfWkdITi8ZQnCByAMmpISsEN5Md1tcnwIPHvCjlZf4nQOh8T6u0
+         4DkOL+GJcGN40B3SWlpoARtY0uHtr7jOW0uWxqlauUKzgwTxgifEGdFaTCPbvmXrtzm/
+         YlScuqb6LpbvGxxN+mDRKPb/rNhwU2HDDl2vA6udlo9NabPcbA6aXok5sWeQVWsUf2zi
+         uZrImi3XCItHlC/2uaWfp4x1ut/4y86g/1Gvqy8WsbtfV8a+m5Z1JOrEqHCJ45WBTVMt
+         RDUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=6QhI3kHimGu8AWgc0fDAH50nxnuO9Boew+8qHoNE/Eo=;
+        b=geDBTmikKnr1QOqFjypkOhxM/fGh4UyQZsjB6YbqFiYTRpLDxRd0BZ6Yekk4Nqk7cG
+         X/joymKuPYso5GJREH9P26msPKdPskoBH2kG3lMnDYoQCWy+viZX1kSrE7101PTdU69s
+         Su+9gCFMa3Q/CG0vjb8RYL0PIReZVZBnJbZC2OPOe5YSUOjKlcAqi5Qb/haVwUyBbhkd
+         n34nwgICfvDKZ67XnGrLrGqA+l2xRuJocQDBbv+3MxEjjbMN7jCap+tMcwBYZODkJoJN
+         lsWHjA/vVJaa/oMWzv2gSSEtq7OLYAw51zFdJptnP/Ll/DP20ts9jzhJ3yysST8Zti/X
+         Pa8w==
+X-Gm-Message-State: AOAM533zb+OSOVXbp4Ws8QO2i9GODbAiE13o6M6Xeu4bIGhbBK3QrwdA
+        1DpuDq9EKqBpAOSI1YqC9uFw6yvs8y6Qwg==
+X-Google-Smtp-Source: ABdhPJz4uKIj6Q4SL0hNCQEkGUOcERyuUqYeqLGnw1+q8cf714ZYJ06FmUwShvkid2AmogORNtzrpYJnXL77GA==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a25:b68a:: with SMTP id
+ s10mr22646893ybj.455.1604353030242; Mon, 02 Nov 2020 13:37:10 -0800 (PST)
+Date:   Mon,  2 Nov 2020 13:36:56 -0800
+Message-Id: <20201102213656.2700500-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+Subject: [PATCH] Documentation: kunit: provide guidance for testing many inputs
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, andriy.shevchenko@linux.intel.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg, hi Dan,
+usage.rst goes into a detailed about faking out classes, but currently
+lacks wording about how one might idiomatically test a range of inputs.
 
-Am Samstag, 31. Oktober 2020, 12:36:06 CET schrieb Greg Kroah-Hartman:
-> From: Dan Williams <dan.j.williams@intel.com>
-> 
-> commit ec6347bb43395cb92126788a1a5b25302543f815 upstream.
-> 
-> In reaction to a proposal to introduce a memcpy_mcsafe_fast()
-> implementation Linus points out that memcpy_mcsafe() is poorly named
-> relative to communicating the scope of the interface. Specifically what
-> addresses are valid to pass as source, destination, and what faults /
-> exceptions are handled.
-> 
-> 
-> Introduce an x86 copy_mc_fragile() name as the rename for the
-> low-level x86 implementation formerly named memcpy_mcsafe(). It is used
-> as the slow / careful backend that is supplanted by a fast
-> copy_mc_generic() in a follow-on patch.
-> 
-> One side-effect of this reorganization is that separating copy_mc_64.S
-> to its own file means that perf no longer needs to track dependencies
-> for its memcpy_64.S benchmarks.
-> 
-> ---
-> arch/powerpc/lib/copy_mc_64.S                          |  242 +++++++++++++++++
-> arch/powerpc/lib/memcpy_mcsafe_64.S                    |  242 -----------------
+Give an example of how one might test a hash function via macros/helper
+funcs and a table-driven test and very briefly discuss pros and cons.
 
-> tools/testing/selftests/powerpc/copyloops/copy_mc_64.S |  242 +++++++++++++++++ 
+Also highlight the KUNIT_EXPECT_*_MSG() variants (that aren't mentioned
+elsewhere [1]) which are particularly useful in these situations.
 
-This change leaves a dangling symlink in 
-tools/testing/selftests/powerpc/copyloops behind. At least, this is, what I 
-could track down, when building 5.9.3 within an environment, that bails out 
-on this:
+It is also criminally underused at the moment, only appearing in 2
+tests (both written by people involved in KUnit).
 
-[ 2908s] calling /usr/lib/rpm/brp-suse.d/brp-25-symlink
-[ 2908s] ERROR: link target doesn't exist (neither in build root nor in installed system):
-[ 2908s]   /usr/src/linux-5.9.3-lp152.3-vanilla/tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S -> /usr/src/linux-5.9.3-lp152.3-vanilla/arch/powerpc/lib/memcpy_mcsafe_64.S
-[ 2908s] Add the package providing the target to BuildRequires and Requires
-[ 2909s] INFO: relinking /usr/src/linux-5.9.3-lp152.3-vanilla/tools/testing/selftests/powerpc/primitives/asm/asm-compat.h -> ../../../../../../arch/powerpc/include/asm/asm-compat.h (was ../.././../../../../arch/powerpc/include/asm/asm-compat.h)
+[1] not even on
+https://www.kernel.org/doc/html/latest/dev-tools/kunit/api/test.html
 
-Linus` tree seems to not suffer from this, though.
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ Documentation/dev-tools/kunit/usage.rst | 66 +++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-Cheers,
-Pete
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index 62142a47488c..317390df2b96 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -451,6 +451,72 @@ We can now use it to test ``struct eeprom_buffer``:
+ 		destroy_eeprom_buffer(ctx->eeprom_buffer);
+ 	}
+ 
++Testing various inputs
++----------------------
++
++Testing just a few inputs might not be enough to have confidence that the code
++works correctly, e.g. for a hash function.
++
++In such cases, it can be helpful to have a helper macro or function, e.g. this
++fictitious example for ``md5sum(1)``
++
++.. code-block:: c
++
++	/* Note: the cast is to satisfy overly strict type-checking. */
++	#define TEST_MD5(in, want) \
++		md5sum(in, out); \
++		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, want, "md5sum(%s)", in);
++
++	char out[16];
++	TEST_MD5("hello world",   "5eb63bbbe01eeed093cb22bb8f5acdc3");
++	TEST_MD5("hello world!",  "fc3ff98e8c6a0d3087d515c0473f8677");
++
++Note the use of ``KUNIT_EXPECT_STREQ_MSG`` to give more context when it fails
++and make it easier to track down. (Yes, in this example, ``want`` is likely
++going to be unique enough on its own).
++
++The ``_MSG`` variants are even more useful when the same expectation is called
++multiple times (in a loop or helper function) and thus the line number isn't
++enough to identify what failed, like below.
++
++In some cases, it can be helpful to write a *table-driven test* instead, e.g.
++
++.. code-block:: c
++
++	int i;
++	char out[16];
++
++	struct md5_test_case {
++		const char *str;
++		const char *md5;
++	};
++
++	struct md5_test_case cases[] = {
++		{
++			.str = "hello world",
++			.md5 = "5eb63bbbe01eeed093cb22bb8f5acdc3",
++		},
++		{
++			.str = "hello world!",
++			.md5 = "fc3ff98e8c6a0d3087d515c0473f8677",
++		},
++	};
++	for (i = 0; i < ARRAY_SIZE(cases); ++i) {
++		md5sum(cases[i].str, out);
++		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, cases[i].md5,
++		                      "md5sum(%s)", cases[i].str);
++	}
++
++
++There's more boilerplate involved, but it can:
++
++* be more readable when there are multiple inputs/outputs thanks to field names,
++
++  * E.g. see ``fs/ext4/inode-test.c`` for an example of both.
++* reduce duplication if test cases can be shared across multiple tests.
++
++  * E.g. if we had a magical ``undo_md5sum`` function, we could reuse ``cases``.
++
+ .. _kunit-on-non-uml:
+ 
+ KUnit on non-UML architectures
 
+base-commit: 77c8473edf7f7664137f555cfcdc8c460bbd947d
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
