@@ -2,111 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CA22A2788
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C822A2796
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgKBJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:55:37 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57974 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgKBJzh (ORCPT
+        id S1728248AbgKBJ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgKBJ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:55:37 -0500
-Date:   Mon, 2 Nov 2020 10:55:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604310935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=My5bl5kX+DtJfjGcAm8wru8FkX6173R2moUSDiddh+E=;
-        b=YycuQOgLpxEAheAVchd9mghKl8yr8SvnNKA/vC7tB/MF77JnI5oMVAFGVCzwblfDsxCYH3
-        AGVd/7YiPry7GU6wqkyfy93LHT1PZUsK+W6KGmVYY3mHq0kBX6SRrBz07CRH0K8o62EVNN
-        84SOfXmilSCRat5B5iHhHlT/5zCdQoqnbBFRPS3SQb72+byehqmvBNFVxLfNNUfEXXeUfe
-        Ujel8HuJfmspOSYOXi85T9PVsduVEMDiK2tVVp9CMC3zkwbXhecIMwumcBkDnQgissNoEP
-        GZ+ouIXDEDWnz5AnCmi5gVN9QNePElYXM+474xQ1vcsFLPjkqsKZMv7+E780Ww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604310935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=My5bl5kX+DtJfjGcAm8wru8FkX6173R2moUSDiddh+E=;
-        b=ykIGbTM+BV3wEyT1wccLb8RgIyiRkFJ1K9NxQ/RX7r43SoU2B3q4hci7pKC2PFyOcJ7ASu
-        Fl4vmociHDwi0QAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
-Message-ID: <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
-References: <20201028141251.3608598-3-bigeasy@linutronix.de>
- <20201029131212.dsulzvsb6pahahbs@linutronix.de>
- <20201029140536.GA6376@infradead.org>
- <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
- <20201029145743.GA19379@infradead.org>
- <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
- <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
- <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
- <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
- <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
+        Mon, 2 Nov 2020 04:58:23 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA71C0617A6;
+        Mon,  2 Nov 2020 01:58:22 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id k14so1456679lfg.7;
+        Mon, 02 Nov 2020 01:58:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BvrmoJb7ZkWa+BOQwxev+65F8hk83DHzBw1V994tkYM=;
+        b=ofyUMHRiWvXa7BEXoEkJyfgCkMoTLJ8vCUGwusVqOWsKqZnMpT8WYiQpejSkLkvGAK
+         fXcvTnmKRtjt48RMw4cLHhpaeCjxMQucwVT6216pILAB6gHiLAME6ZWJvNH0tZ3xiEv7
+         7eUYkCCIjYrDnlq06JndGrbMG/W97W7C9khE4vmOOZp7s8CtKfW6aLqMaWFMYAlbnH1Z
+         fZbrSLpGHxxtlMc/Ca2dANr1TaU0j9rx4vsnDXwKFzP4MctNulH6Ko6kG7/xhceftuGu
+         udy7LAZcri0YUPLEhBxTkd7NlnQBfcDQS480HiMSnUu/yctakCIi+6Y/7AMNYsXRiMS3
+         gKkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BvrmoJb7ZkWa+BOQwxev+65F8hk83DHzBw1V994tkYM=;
+        b=KB4FFs2I4JGGzPpivDqrtfp645Nu4tuNcmIo2QZEOuQP3KbfvtFudPmg4Xix7FH56r
+         kF1zyo1T1I3c8xJLHmPrEbfJ+Vap8S7ki9lxNuHPL2RO5AMOn+L3TlyySO3cZ6z6JOtd
+         IYIwg918B9TWtBF76Tz5vVKBI0RGS5YtxlEnS0jleQVkwmMpajSZyC/z/vzD+I+lkIxo
+         OS7NukAhV1suWdMuCaz3Xt0p9POHgR/6m/HNktC7Z6Q6f0Yx/YaDfpbV8lXErSrr4/44
+         wAvU89QM6ZqMlj1J3EBMMtJNOel9h6IOZulwOKXtISSn39x1jCxGgvBX6Y71nCACJ3aC
+         A2Mg==
+X-Gm-Message-State: AOAM532vAX+/okl4QUxzYBQqzIZsiZBmvhlEfq9USlAwVkY05JZw1Tls
+        pfLyKycdsIIBlElXdMZ69Rtzudm8VSbUkvrZwpE=
+X-Google-Smtp-Source: ABdhPJxSTdSDTbirE5f8bLhpU1+zkfDsroP55+4C196jVsD9y5lgAJZsbZpQUbEpU8GcOMZIrmvlAJDrYiFHklp7U6s=
+X-Received: by 2002:ac2:58d2:: with SMTP id u18mr5201636lfo.496.1604311101225;
+ Mon, 02 Nov 2020 01:58:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
+References: <20201102094851.85301-1-mtwget@gmail.com> <20201102094851.85301-2-mtwget@gmail.com>
+ <CAHRgzyNFxkNgV7J9oAY7j5ur5mKnmO1645KxVrYyfDVJrKKqkw@mail.gmail.com>
+In-Reply-To: <CAHRgzyNFxkNgV7J9oAY7j5ur5mKnmO1645KxVrYyfDVJrKKqkw@mail.gmail.com>
+From:   Yu-Tung Chang <mtwget@gmail.com>
+Date:   Mon, 2 Nov 2020 17:58:08 +0800
+Message-ID: <CAHRgzyM9xieKcCqN0M+i6ZHht7NV9koFV8F-ipPy+tR5fSCqzw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ARM: dts: sun8i: add FriendlyArm ZeroPi support
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-31 09:00:49 [-0600], Jens Axboe wrote:
-> There really aren't any rules for this, and it's perfectly legit to
-> complete from process context. Maybe you're a kthread driven driver and
-> that's how you handle completions. The block completion path has always
-> been hard IRQ safe, but possible to call from anywhere.
+Please ignore this patch, The content of this patch is wrong.
 
-I'm not trying to put restrictions and forbidding completions from a
-kthread. I'm trying to avoid the pointless softirq dance for no added
-value. We could:
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 4f53de48e5038..c4693b3750878 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -644,9 +644,11 @@ bool blk_mq_complete_request_remote(struct request *rq)
- 	} else {
- 		if (rq->q->nr_hw_queues > 1)
- 			return false;
-+		preempt_disable();
- 		cpu_list = this_cpu_ptr(&blk_cpu_done);
- 		if (llist_add(&rq->ipi_list, cpu_list))
- 			raise_softirq(BLOCK_SOFTIRQ);
-+		preempt_enable();
- 	}
- 
- 	return true;
-
-to not break that assumption you just mentioned and provide 
-|static inline void blk_mq_complete_request_local(struct request *rq)
-|{
-|                 rq->q->mq_ops->complete(rq);
-|}
-
-so that completion issued from from process context (like those from
-usb-storage) don't end up waking `ksoftird' (running at SCHED_OTHER)
-completing the requests but rather performing it right away. The softirq
-dance makes no sense here.
-
-As mentioned earlier, the alternative _could_ be to
-	s/preempt_/local_bh_/
-
-in the above patch. This would ensure that any invocation outside of
-IRQ/Softirq context would invoke the softirq _directly_ at
-local_bh_enable() time rather than waking the daemon for that purpose.
-It would also avoid another completion function for the direct case
-which could be abused if used from outside the thread context.
-The last one is currently my favorite.
-
-Sebastian
+Yu-Tung Chang <mtwget@gmail.com> =E4=BA=8E2020=E5=B9=B411=E6=9C=882=E6=97=
+=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=885:57=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Please ignore this patch, The content of this patch is wrong.
+>
+> Yu-Tung Chang <mtwget@gmail.com> =E4=BA=8E2020=E5=B9=B411=E6=9C=882=E6=97=
+=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=885:49=E5=86=99=E9=81=93=EF=BC=9A
+>>
+>> The ZeroPi is another fun board developed
+>> by FriendlyELEC for makers,
+>> hobbyists and fans.
+>>
+>> ZeroPi key features
+>> - Allwinner H3, Quad-core Cortex-A7@1.2GHz
+>> - 256MB/512MB DDR3 RAM
+>> - microsd slot
+>> - 10/100/1000Mbps Ethernet
+>> - Debug Serial Port
+>> - DC 5V/2A power-supply
+>>
+>> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>> Link: https://lore.kernel.org/r/20201026073536.13617-2-mtwget@gmail.com
+>> ---
+>>  .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
+>>  arch/arm/boot/dts/Makefile                    |  1 +
+>>  arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 85 +++++++++++++++++++
+>>  3 files changed, 91 insertions(+)
+>>  create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Document=
+ation/devicetree/bindings/arm/sunxi.yaml
+>> index afa00268c7db..0f23133672a3 100644
+>> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+>> @@ -251,6 +251,11 @@ properties:
+>>            - const: friendlyarm,nanopi-neo-plus2
+>>            - const: allwinner,sun50i-h5
+>>
+>> +      - description: FriendlyARM ZeroPi
+>> +        items:
+>> +          - const: friendlyarm,zeropi
+>> +          - const: allwinner,sun8i-h3
+>> +
+>>        - description: Gemei G9 Tablet
+>>          items:
+>>            - const: gemei,g9
+>> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+>> index ce66ffd5a1bb..4f0adfead547 100644
+>> --- a/arch/arm/boot/dts/Makefile
+>> +++ b/arch/arm/boot/dts/Makefile
+>> @@ -1201,6 +1201,7 @@ dtb-$(CONFIG_MACH_SUN8I) +=3D \
+>>         sun8i-h3-orangepi-plus2e.dtb \
+>>         sun8i-h3-orangepi-zero-plus2.dtb \
+>>         sun8i-h3-rervision-dvk.dtb \
+>> +       sun8i-h3-zeropi.dtb \
+>>         sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
+>>         sun8i-r16-bananapi-m2m.dtb \
+>>         sun8i-r16-nintendo-nes-classic.dtb \
+>> diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/s=
+un8i-h3-zeropi.dts
+>> new file mode 100644
+>> index 000000000000..7d3e7323b661
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
+>> @@ -0,0 +1,85 @@
+>> +/*
+>> + * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
+>> + *
+>> + * This file is dual-licensed: you can use it either under the terms
+>> + * of the GPL or the X11 license, at your option. Note that this dual
+>> + * licensing only applies to this file, and not this project as a
+>> + * whole.
+>> + *
+>> + *  a) This file is free software; you can redistribute it and/or
+>> + *     modify it under the terms of the GNU General Public License as
+>> + *     published by the Free Software Foundation; either version 2 of t=
+he
+>> + *     License, or (at your option) any later version.
+>> + *
+>> + *     This file is distributed in the hope that it will be useful,
+>> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + *     GNU General Public License for more details.
+>> + *
+>> + * Or, alternatively,
+>> + *
+>> + *  b) Permission is hereby granted, free of charge, to any person
+>> + *     obtaining a copy of this software and associated documentation
+>> + *     files (the "Software"), to deal in the Software without
+>> + *     restriction, including without limitation the rights to use,
+>> + *     copy, modify, merge, publish, distribute, sublicense, and/or
+>> + *     sell copies of the Software, and to permit persons to whom the
+>> + *     Software is furnished to do so, subject to the following
+>> + *     conditions:
+>> + *
+>> + *     The above copyright notice and this permission notice shall be
+>> + *     included in all copies or substantial portions of the Software.
+>> + *
+>> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+>> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+>> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+>> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+>> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+>> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+>> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+>> + *     OTHER DEALINGS IN THE SOFTWARE.
+>> + */
+>> +
+>> +#include "sun8i-h3-nanopi.dtsi"
+>> +
+>> +/ {
+>> +       model =3D "FriendlyARM ZeroPi";
+>> +       compatible =3D "friendlyarm,zeropi", "allwinner,sun8i-h3";
+>> +
+>> +       aliases {
+>> +               ethernet0 =3D &emac;
+>> +       };
+>> +
+>> +       reg_gmac_3v3: gmac-3v3 {
+>> +               compatible =3D "regulator-fixed";
+>> +               regulator-name =3D "gmac-3v3";
+>> +               regulator-min-microvolt =3D <3300000>;
+>> +               regulator-max-microvolt =3D <3300000>;
+>> +               startup-delay-us =3D <100000>;
+>> +               enable-active-high;
+>> +               gpio =3D <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
+>> +       };
+>> +};
+>> +
+>> +&external_mdio {
+>> +       ext_rgmii_phy: ethernet-phy@7 {
+>> +               compatible =3D "ethernet-phy-ieee802.3-c22";
+>> +               reg =3D <7>;
+>> +       };
+>> +};
+>> +
+>> +&emac {
+>> +       pinctrl-names =3D "default";
+>> +       pinctrl-0 =3D <&emac_rgmii_pins>;
+>> +       phy-supply =3D <&reg_gmac_3v3>;
+>> +       phy-handle =3D <&ext_rgmii_phy>;
+>> +       phy-mode =3D "rgmii-id";
+>> +
+>> +       allwinner,leds-active-low;
+>> +       status =3D "okay";
+>> +};
+>> +
+>> +&usb_otg {
+>> +       status =3D "okay";
+>> +       dr_mode =3D "host";
+>> +};
+>> --
+>> 2.29.0
+>>
