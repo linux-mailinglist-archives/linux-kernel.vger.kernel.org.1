@@ -2,254 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD772A2FDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE652A2FE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727142AbgKBQb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:31:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
+        id S1726970AbgKBQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:34:42 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:48765 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgKBQb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:31:26 -0500
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726587AbgKBQel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:34:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604334880; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qoHSfxYPyQkbDeavIuA2orpDrUmLrd6gFSt6I1Q8VVk=;
+ b=ZvPb+8+vcY2TS5zad8aju0TS4p5jDawXudpz4R2OrfR4W42d4tjxNc5YT1F2iwhWRD7nZm9v
+ XBeASB8ON+d7SXypabQtA9hfnmJHkcWrDvuL7iliPboJ1vut3IDIcRy2PiCPPcFKL0etefpa
+ Jxk46vhveTmwqEhZdKwFvYrvmxs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fa035089f889442bb7ef326 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 16:34:16
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F0427C433F0; Mon,  2 Nov 2020 16:34:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDAAC21D91;
-        Mon,  2 Nov 2020 16:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604334685;
-        bh=B/zH3CxgreK1CUsBcMTS6ICwz9Q0CaGVu9EoZo/Lae0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T6Yi7DhUQz+aWcNIo0haZc2KgCny7JUT/D0wINqPDQeraHvkToMj2LkViAZzok4Zi
-         Wy6SCJ5X2hYxFi5LALegDxIowgP2Xbqj+f/p82z8j9/zhLOaVw/+rgON/5zQKEBO/4
-         kQ8uSsXRxAh3fDylHh98Ip7Z4LFdXr54MALTk5O4=
-Date:   Mon, 2 Nov 2020 08:31:23 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH] f2fs: compress: support chksum
-Message-ID: <20201102163123.GD529594@google.com>
-References: <20201102122333.76667-1-yuchao0@huawei.com>
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACBD0C433C6;
+        Mon,  2 Nov 2020 16:34:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102122333.76667-1-yuchao0@huawei.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Nov 2020 08:34:14 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     carl.yin@quectel.com
+Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        sfr@canb.auug.org.au, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, naveen.kumar@quectel.com
+Subject: Re: [PATCH v2] bus: mhi: core: Add support MHI EE FP for download
+ firmware
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20201102122756.23452-1-carl.yin@quectel.com>
+References: <20201102122756.23452-1-carl.yin@quectel.com>
+Message-ID: <9693bd0918956ec489fec9d2b36cb4d6@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/02, Chao Yu wrote:
-> This patch supports to store chksum value with compressed
-> data, and verify the integrality of compressed data while
-> reading the data.
+On 2020-11-02 04:27, carl.yin@quectel.com wrote:
+> From: "carl.yin" <carl.yin@quectel.com>
 > 
-> The feature can be enabled through specifying mount option
-> 'compress_chksum'.
+> MHI wwan modems support download firmware to nand or emmc
+> by firehose protocol, process as next:
+> 1. modem boot up and enter EE AMSS, create DIAG channels (4, 5) device
+> 2. user space tool send EDL command via DIAG channel,
+>    then modem enter EE EDL
+> 3. boot.c download 'flash programmer image' via BHI interface
+> 4. modem enter EE FP, and create EDL channels (34, 35) device
+> 5. user space tool download 'firmware image' to modem via EDL channels
+>    by firehose protocol
 > 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> Signed-off-by: carl.yin <carl.yin@quectel.com>
 > ---
->  Documentation/filesystems/f2fs.rst |  1 +
->  fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
->  fs/f2fs/f2fs.h                     | 13 ++++++++++++-
->  fs/f2fs/inode.c                    |  3 +++
->  fs/f2fs/super.c                    |  9 +++++++++
->  include/linux/f2fs_fs.h            |  2 +-
->  6 files changed, 46 insertions(+), 2 deletions(-)
+>  drivers/bus/mhi/core/init.c     |  2 ++
+>  drivers/bus/mhi/core/internal.h |  1 +
+>  drivers/bus/mhi/core/main.c     |  5 ++++-
+>  drivers/bus/mhi/core/pm.c       | 13 ++++++++++++-
+>  include/linux/mhi.h             |  4 +++-
+>  5 files changed, 22 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index b8ee761c9922..985ae7d35066 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
->  			 For other files, we can still enable compression via ioctl.
->  			 Note that, there is one reserved special extension '*', it
->  			 can be set to enable compression for all files.
-> +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
->  inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
->  			 files using the blk-crypto framework rather than
->  			 filesystem-layer encryption. This allows the use of
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 14262e0f1cd6..a4e0d2c745b6 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->  				f2fs_cops[fi->i_compress_algorithm];
->  	unsigned int max_len, new_nr_cpages;
->  	struct page **new_cpages;
-> +	u32 chksum = 0;
->  	int i, ret;
->  
->  	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-> @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->  
->  	cc->cbuf->clen = cpu_to_le32(cc->clen);
->  
-> +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-> +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-> +					cc->cbuf->cdata, cc->clen);
-> +	cc->cbuf->chksum = cpu_to_le32(chksum);
-> +
->  	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
->  		cc->cbuf->reserved[i] = cpu_to_le32(0);
->  
-> @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->  			(struct decompress_io_ctx *)page_private(page);
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->  	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->  	const struct f2fs_compress_ops *cops =
->  			f2fs_cops[fi->i_compress_algorithm];
->  	int ret;
-> @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->  
->  	ret = cops->decompress_pages(dic);
->  
-> +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
-> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
-> +
-> +		if (provided != calculated) {
-> +			printk_ratelimited(
-> +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-> +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-> +				provided, calculated);
-> +			ret = -EFSCORRUPTED;
-
-Do we need to change fsck.f2fs to recover this?
-
-> +		}
-> +	}
-> +
->  out_vunmap_cbuf:
->  	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
->  out_vunmap_rbuf:
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 99bcf4b44a9c..2ae254ab7b7d 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -147,7 +147,8 @@ struct f2fs_mount_info {
->  
->  	/* For compression */
->  	unsigned char compress_algorithm;	/* algorithm type */
-> -	unsigned compress_log_size;		/* cluster log size */
-> +	unsigned char compress_log_size;	/* cluster log size */
-> +	bool compress_chksum;			/* compressed data chksum */
->  	unsigned char compress_ext_cnt;		/* extension count */
->  	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index ac4aa5c..e34616b 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -26,6 +26,7 @@ const char * const mhi_ee_str[MHI_EE_MAX] = {
+>  	[MHI_EE_WFW] = "WFW",
+>  	[MHI_EE_PTHRU] = "PASS THRU",
+>  	[MHI_EE_EDL] = "EDL",
+> +	[MHI_EE_FP] = "FLASH PROGRAMMER",
+>  	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
+>  	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
 >  };
-> @@ -731,6 +732,7 @@ struct f2fs_inode_info {
->  	atomic_t i_compr_blocks;		/* # of compressed blocks */
->  	unsigned char i_compress_algorithm;	/* algorithm type */
->  	unsigned char i_log_cluster_size;	/* log of cluster size */
-> +	unsigned short i_compress_flag;		/* compress flag */
->  	unsigned int i_cluster_size;		/* cluster size */
+> @@ -35,6 +36,7 @@ const char * const
+> dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
+>  	[DEV_ST_TRANSITION_READY] = "READY",
+>  	[DEV_ST_TRANSITION_SBL] = "SBL",
+>  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
+> +	[DEV_ST_TRANSITION_FP] = "FLASH_PROGRAMMER",
+>  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
+>  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
 >  };
->  
-> @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
->  	COMPRESS_MAX,
->  };
->  
-> +enum compress_flag {
-> +	COMPRESS_CHKSUM,
-> +	COMPRESS_MAX_FLAG,
-> +};
-> +
->  #define COMPRESS_DATA_RESERVED_SIZE		5
->  struct compress_data {
->  	__le32 clen;			/* compressed data size */
-> +	__le32 chksum;			/* compressed data chksum */
->  	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
->  	u8 cdata[];			/* compressed data */
->  };
-> @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
->  			F2FS_OPTION(sbi).compress_algorithm;
->  	F2FS_I(inode)->i_log_cluster_size =
->  			F2FS_OPTION(sbi).compress_log_size;
-> +	F2FS_I(inode)->i_compress_flag =
-> +			F2FS_OPTION(sbi).compress_chksum ?
-> +				1 << COMPRESS_CHKSUM : 0;
->  	F2FS_I(inode)->i_cluster_size =
->  			1 << F2FS_I(inode)->i_log_cluster_size;
->  	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> index 657db2fb6739..de8f7fc89efa 100644
-> --- a/fs/f2fs/inode.c
-> +++ b/fs/f2fs/inode.c
-> @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
->  					le64_to_cpu(ri->i_compr_blocks));
->  			fi->i_compress_algorithm = ri->i_compress_algorithm;
->  			fi->i_log_cluster_size = ri->i_log_cluster_size;
-> +			fi->i_compress_flag = ri->i_compress_flag;
->  			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
->  			set_inode_flag(inode, FI_COMPRESSED_FILE);
->  		}
-> @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
->  					&F2FS_I(inode)->i_compr_blocks));
->  			ri->i_compress_algorithm =
->  				F2FS_I(inode)->i_compress_algorithm;
-> +			ri->i_compress_flag =
-> +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
->  			ri->i_log_cluster_size =
->  				F2FS_I(inode)->i_log_cluster_size;
->  		}
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 00eff2f51807..f8de4d83a5be 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -146,6 +146,7 @@ enum {
->  	Opt_compress_algorithm,
->  	Opt_compress_log_size,
->  	Opt_compress_extension,
-> +	Opt_compress_chksum,
->  	Opt_atgc,
->  	Opt_err,
->  };
-> @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
->  	{Opt_compress_algorithm, "compress_algorithm=%s"},
->  	{Opt_compress_log_size, "compress_log_size=%u"},
->  	{Opt_compress_extension, "compress_extension=%s"},
-> +	{Opt_compress_chksum, "compress_chksum"},
->  	{Opt_atgc, "atgc"},
->  	{Opt_err, NULL},
->  };
-> @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  			F2FS_OPTION(sbi).compress_ext_cnt++;
->  			kfree(name);
+> diff --git a/drivers/bus/mhi/core/internal.h 
+> b/drivers/bus/mhi/core/internal.h
+> index 4abf0cf..6ae897a 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -386,6 +386,7 @@ enum dev_st_transition {
+>  	DEV_ST_TRANSITION_READY,
+>  	DEV_ST_TRANSITION_SBL,
+>  	DEV_ST_TRANSITION_MISSION_MODE,
+> +	DEV_ST_TRANSITION_FP,
+>  	DEV_ST_TRANSITION_SYS_ERR,
+>  	DEV_ST_TRANSITION_DISABLE,
+>  	DEV_ST_TRANSITION_MAX,
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 3950792..a1e1561 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -422,7 +422,7 @@ irqreturn_t mhi_intvec_threaded_handler(int
+> irq_number, void *priv)
+>  		wake_up_all(&mhi_cntrl->state_event);
+> 
+>  		/* For fatal errors, we let controller decide next step */
+> -		if (MHI_IN_PBL(ee))
+> +		if (MHI_IN_PBL(mhi_cntrl->ee))
+Let's please have this as a separate patch with a fixes tag, as it fixes 
+a
+pre-existing bug. I am sure Mani would want this.
+>  			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>  		else
+>  			mhi_pm_sys_err_handler(mhi_cntrl);
+> @@ -782,6 +782,9 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller
+> *mhi_cntrl,
+>  			case MHI_EE_SBL:
+>  				st = DEV_ST_TRANSITION_SBL;
+>  				break;
+> +			case MHI_EE_FP:
+> +				st = DEV_ST_TRANSITION_FP;
+> +				break;
+When do you get this EE event on the control event ring? Does it come by 
+after you
+have detected EE as FP from mhi_sync_power_up() and move to ready and 
+then M0?
+>  			case MHI_EE_WFW:
+>  			case MHI_EE_AMSS:
+>  				st = DEV_ST_TRANSITION_MISSION_MODE;
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 3de7b16..2d68812 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -658,6 +658,12 @@ void mhi_pm_st_worker(struct work_struct *work)
+>  		case DEV_ST_TRANSITION_MISSION_MODE:
+>  			mhi_pm_mission_mode_transition(mhi_cntrl);
 >  			break;
-> +		case Opt_compress_chksum:
-> +			F2FS_OPTION(sbi).compress_chksum = true;
+> +		case DEV_ST_TRANSITION_FP:
+> +			write_lock_irq(&mhi_cntrl->pm_lock);
+> +			mhi_cntrl->ee = MHI_EE_FP;
+> +			write_unlock_irq(&mhi_cntrl->pm_lock);
+> +			mhi_create_devices(mhi_cntrl);
 > +			break;
->  #else
->  		case Opt_compress_algorithm:
->  		case Opt_compress_log_size:
->  		case Opt_compress_extension:
-> +		case Opt_compress_chksum:
->  			f2fs_info(sbi, "compression options not supported");
+>  		case DEV_ST_TRANSITION_READY:
+>  			mhi_ready_state_transition(mhi_cntrl);
 >  			break;
->  #endif
-> @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->  		seq_printf(seq, ",compress_extension=%s",
->  			F2FS_OPTION(sbi).extensions[i]);
->  	}
+> @@ -1077,10 +1083,15 @@ int mhi_sync_power_up(struct mhi_controller 
+> *mhi_cntrl)
+> 
+>  	wait_event_timeout(mhi_cntrl->state_event,
+>  			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
+> +			   mhi_cntrl->ee == MHI_EE_FP ||
+>  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+>  			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> 
+> -	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
+> +	if (mhi_cntrl->ee == MHI_EE_FP)
+> +		mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_READY);
+> +	else
+> +		ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
 > +
-> +	if (F2FS_OPTION(sbi).compress_chksum)
-> +		seq_puts(seq, ",compress_chksum");
->  }
->  
->  static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> index a5dbb57a687f..7dc2a06cf19a 100644
-> --- a/include/linux/f2fs_fs.h
-> +++ b/include/linux/f2fs_fs.h
-> @@ -273,7 +273,7 @@ struct f2fs_inode {
->  			__le64 i_compr_blocks;	/* # of compressed blocks */
->  			__u8 i_compress_algorithm;	/* compress algorithm */
->  			__u8 i_log_cluster_size;	/* log of cluster size */
-> -			__le16 i_padding;		/* padding */
-> +			__le16 i_compress_flag;		/* compress flag */
->  			__le32 i_extra_end[0];	/* for attribute size calculation */
->  		} __packed;
->  		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
-> -- 
-> 2.26.2
+>  	if (ret)
+>  		mhi_power_down(mhi_cntrl, false);
+> 
+We should come up with a better design for this later on.
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 6e1122c..4620af8 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -120,6 +120,7 @@ struct mhi_link_info {
+>   * @MHI_EE_WFW: WLAN firmware mode
+>   * @MHI_EE_PTHRU: Passthrough
+>   * @MHI_EE_EDL: Embedded downloader
+> + * @MHI_EE_FP, Flash Programmer Environment
+>   */
+>  enum mhi_ee_type {
+>  	MHI_EE_PBL,
+> @@ -129,7 +130,8 @@ enum mhi_ee_type {
+>  	MHI_EE_WFW,
+>  	MHI_EE_PTHRU,
+>  	MHI_EE_EDL,
+> -	MHI_EE_MAX_SUPPORTED = MHI_EE_EDL,
+> +	MHI_EE_FP,
+> +	MHI_EE_MAX_SUPPORTED = MHI_EE_FP,
+>  	MHI_EE_DISABLE_TRANSITION, /* local EE, not related to mhi spec */
+>  	MHI_EE_NOT_SUPPORTED,
+>  	MHI_EE_MAX,
+
+Thanks,
+Bhaumik
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
