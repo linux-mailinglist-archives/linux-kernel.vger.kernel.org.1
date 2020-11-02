@@ -2,272 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4C52A2DF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1479A2A2DF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgKBPSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:18:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgKBPSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:18:45 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726388AbgKBPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:19:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22840 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726357AbgKBPTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:19:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604330344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BvbrY2I55xkY2YSa9P0xoipZGviKjz7sESXGUBs+2p8=;
+        b=XJ9CstI75BfV9NpOwxC8iOhG/cVy2jgUmZ95ie4jilFzLLbKfB8ZWGd30/2enlS7paSbB6
+        2ZJi989KWtfumPXuDsTb6qnWHP4F3kQoZijHnkuA805k+2tdvdW+EwVyfrKe/XFy07FE7j
+        nbNC5FQy2wxFaNQ1pFV+pSWy/mncQIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-t3mUCsi4Pvy3oaSaZG1aqg-1; Mon, 02 Nov 2020 10:18:59 -0500
+X-MC-Unique: t3mUCsi4Pvy3oaSaZG1aqg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C549122226;
-        Mon,  2 Nov 2020 15:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604330323;
-        bh=BP7NXK/PeknKLWeyovBUOGGTlkdf+pO59OcJEpEzF3Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTxOlDIiQILczXFe3vUeE1LWhh4tMDAJPfsMsis8q/6V+hKCXiAy5IWy87AtMzQgK
-         Dv0zj38DAeoAdeT+vHPVnvuz7AP8hm6ElliB8xy73LgDuiMFeuopOYCfTJ/r4Q8oKb
-         Q/oat80trPnnSe/229/7PlCKbYG4VCtKZqTfN03E=
-Date:   Mon, 2 Nov 2020 17:18:29 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 4/4] arch, mm: make kernel_page_present() always
- available
-Message-ID: <20201102151829.GC4879@kernel.org>
-References: <20201101170815.9795-1-rppt@kernel.org>
- <20201101170815.9795-5-rppt@kernel.org>
- <08db307a-b093-d7aa-7364-045f328ab147@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08db307a-b093-d7aa-7364-045f328ab147@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9B0E59;
+        Mon,  2 Nov 2020 15:18:56 +0000 (UTC)
+Received: from ovpn-112-12.rdu2.redhat.com (ovpn-112-12.rdu2.redhat.com [10.10.112.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B4D495D98A;
+        Mon,  2 Nov 2020 15:18:53 +0000 (UTC)
+Message-ID: <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+From:   Qian Cai <cai@redhat.com>
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        don.brace@microsemi.com, kashyap.desai@broadcom.com,
+        ming.lei@redhat.com, bvanassche@acm.org, dgilbert@interlog.com,
+        paolo.valente@linaro.org, hare@suse.de, hch@lst.de
+Cc:     sumit.saxena@broadcom.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        esc.storagedev@microsemi.com, megaraidlinux.pdl@broadcom.com,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
+        Hannes Reinecke <hare@suse.com>
+Date:   Mon, 02 Nov 2020 10:18:51 -0500
+In-Reply-To: <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+         <1597850436-116171-18-git-send-email-john.garry@huawei.com>
+         <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+         <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:28:14AM +0100, David Hildenbrand wrote:
-> On 01.11.20 18:08, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > For architectures that enable ARCH_HAS_SET_MEMORY having the ability to
-> > verify that a page is mapped in the kernel direct map can be useful
-> > regardless of hibernation.
-> > 
-> > Add RISC-V implementation of kernel_page_present(), update its forward
-> > declarations and stubs to be a part of set_memory API and remove ugly
-> > ifdefery in inlcude/linux/mm.h around current declarations of
-> > kernel_page_present().
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   arch/arm64/include/asm/cacheflush.h |  1 +
-> >   arch/arm64/mm/pageattr.c            |  4 +---
-> >   arch/riscv/include/asm/set_memory.h |  1 +
-> >   arch/riscv/mm/pageattr.c            | 29 +++++++++++++++++++++++++++++
-> >   arch/x86/include/asm/set_memory.h   |  1 +
-> >   arch/x86/mm/pat/set_memory.c        |  4 +---
-> >   include/linux/mm.h                  |  7 -------
-> >   include/linux/set_memory.h          |  5 +++++
-> >   8 files changed, 39 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-> > index 9384fd8fc13c..45217f21f1fe 100644
-> > --- a/arch/arm64/include/asm/cacheflush.h
-> > +++ b/arch/arm64/include/asm/cacheflush.h
-> > @@ -140,6 +140,7 @@ int set_memory_valid(unsigned long addr, int numpages, int enable);
-> >   int set_direct_map_invalid_noflush(struct page *page);
-> >   int set_direct_map_default_noflush(struct page *page);
-> > +bool kernel_page_present(struct page *page);
-> >   #include <asm-generic/cacheflush.h>
-> > diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> > index 439325532be1..92eccaf595c8 100644
-> > --- a/arch/arm64/mm/pageattr.c
-> > +++ b/arch/arm64/mm/pageattr.c
-> > @@ -186,8 +186,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
-> >   	set_memory_valid((unsigned long)page_address(page), numpages, enable);
-> >   }
-> > +#endif /* CONFIG_DEBUG_PAGEALLOC */
-> > -#ifdef CONFIG_HIBERNATION
-> >   /*
-> >    * This function is used to determine if a linear map page has been marked as
-> >    * not-valid. Walk the page table and check the PTE_VALID bit. This is based
-> > @@ -234,5 +234,3 @@ bool kernel_page_present(struct page *page)
-> >   	ptep = pte_offset_kernel(pmdp, addr);
-> >   	return pte_valid(READ_ONCE(*ptep));
-> >   }
-> > -#endif /* CONFIG_HIBERNATION */
-> > -#endif /* CONFIG_DEBUG_PAGEALLOC */
-> > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> > index 4c5bae7ca01c..d690b08dff2a 100644
-> > --- a/arch/riscv/include/asm/set_memory.h
-> > +++ b/arch/riscv/include/asm/set_memory.h
-> > @@ -24,6 +24,7 @@ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
-> >   int set_direct_map_invalid_noflush(struct page *page);
-> >   int set_direct_map_default_noflush(struct page *page);
-> > +bool kernel_page_present(struct page *page);
-> >   #endif /* __ASSEMBLY__ */
-> > diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-> > index 321b09d2e2ea..87ba5a68bbb8 100644
-> > --- a/arch/riscv/mm/pageattr.c
-> > +++ b/arch/riscv/mm/pageattr.c
-> > @@ -198,3 +198,32 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
-> >   			     __pgprot(0), __pgprot(_PAGE_PRESENT));
-> >   }
-> >   #endif
-> > +
-> > +bool kernel_page_present(struct page *page)
-> > +{
-> > +	unsigned long addr = (unsigned long)page_address(page);
-> > +	pgd_t *pgd;
-> > +	pud_t *pud;
-> > +	p4d_t *p4d;
-> > +	pmd_t *pmd;
-> > +	pte_t *pte;
-> > +
-> > +	pgd = pgd_offset_k(addr);
-> > +	if (!pgd_present(*pgd))
-> > +		return false;
-> > +
-> > +	p4d = p4d_offset(pgd, addr);
-> > +	if (!p4d_present(*p4d))
-> > +		return false;
-> > +
-> > +	pud = pud_offset(p4d, addr);
-> > +	if (!pud_present(*pud))
-> > +		return false;
-> > +
-> > +	pmd = pmd_offset(pud, addr);
-> > +	if (!pmd_present(*pmd))
-> > +		return false;
-> > +
-> > +	pte = pte_offset_kernel(pmd, addr);
-> > +	return pte_present(*pte);
-> > +}
-> > diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
-> > index 5948218f35c5..4352f08bfbb5 100644
-> > --- a/arch/x86/include/asm/set_memory.h
-> > +++ b/arch/x86/include/asm/set_memory.h
-> > @@ -82,6 +82,7 @@ int set_pages_rw(struct page *page, int numpages);
-> >   int set_direct_map_invalid_noflush(struct page *page);
-> >   int set_direct_map_default_noflush(struct page *page);
-> > +bool kernel_page_present(struct page *page);
-> >   extern int kernel_set_to_readonly;
-> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> > index bc9be96b777f..16f878c26667 100644
-> > --- a/arch/x86/mm/pat/set_memory.c
-> > +++ b/arch/x86/mm/pat/set_memory.c
-> > @@ -2226,8 +2226,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
-> >   	arch_flush_lazy_mmu_mode();
-> >   }
-> > +#endif /* CONFIG_DEBUG_PAGEALLOC */
-> > -#ifdef CONFIG_HIBERNATION
-> >   bool kernel_page_present(struct page *page)
-> >   {
-> >   	unsigned int level;
-> > @@ -2239,8 +2239,6 @@ bool kernel_page_present(struct page *page)
-> >   	pte = lookup_address((unsigned long)page_address(page), &level);
-> >   	return (pte_val(*pte) & _PAGE_PRESENT);
-> >   }
-> > -#endif /* CONFIG_HIBERNATION */
-> > -#endif /* CONFIG_DEBUG_PAGEALLOC */
-> >   int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn, unsigned long address,
-> >   				   unsigned numpages, unsigned long page_flags)
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index ab0ef6bd351d..44b82f22e76a 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2937,16 +2937,9 @@ static inline void debug_pagealloc_map_pages(struct page *page,
-> >   	if (debug_pagealloc_enabled_static())
-> >   		__kernel_map_pages(page, numpages, enable);
-> >   }
-> > -
-> > -#ifdef CONFIG_HIBERNATION
-> > -extern bool kernel_page_present(struct page *page);
-> > -#endif	/* CONFIG_HIBERNATION */
-> >   #else	/* CONFIG_DEBUG_PAGEALLOC */
-> >   static inline void debug_pagealloc_map_pages(struct page *page,
-> >   					     int numpages, int enable) {}
-> > -#ifdef CONFIG_HIBERNATION
-> > -static inline bool kernel_page_present(struct page *page) { return true; }
-> > -#endif	/* CONFIG_HIBERNATION */
-> >   #endif	/* CONFIG_DEBUG_PAGEALLOC */
-> >   #ifdef __HAVE_ARCH_GATE_AREA
-> > diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-> > index 860e0f843c12..fe1aa4e54680 100644
-> > --- a/include/linux/set_memory.h
-> > +++ b/include/linux/set_memory.h
-> > @@ -23,6 +23,11 @@ static inline int set_direct_map_default_noflush(struct page *page)
-> >   {
-> >   	return 0;
-> >   }
-> > +
-> > +static inline bool kernel_page_present(struct page *page)
-> > +{
-> > +	return true;
-> > +}
-> >   #endif
-> >   #ifndef set_mce_nospec
-> > 
+On Mon, 2020-11-02 at 14:51 +0000, John Garry wrote:
+> On 02/11/2020 14:17, Qian Cai wrote:
+> > [  251.961152][  T330] INFO: task systemd-udevd:567 blocked for more than
+> > 122 seconds.
+> > [  251.968876][  T330]       Not tainted 5.10.0-rc1-next-20201102 #1
+> > [  251.975003][  T330] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> > disables this message.
+> > [  251.983546][  T330] task:systemd-udevd   state:D stack:27224 pid:  567
+> > ppid:   506 flags:0x00004324
+> > [  251.992620][  T330] Call Trace:
+> > [  251.995784][  T330]  __schedule+0x71d/0x1b60
+> > [  252.000067][  T330]  ? __sched_text_start+0x8/0x8
+> > [  252.004798][  T330]  schedule+0xbf/0x270
+> > [  252.008735][  T330]  schedule_timeout+0x3fc/0x590
+> > [  252.013464][  T330]  ? usleep_range+0x120/0x120
+> > [  252.018008][  T330]  ? wait_for_completion+0x156/0x250
+> > [  252.023176][  T330]  ? lock_downgrade+0x700/0x700
+> > [  252.027886][  T330]  ? rcu_read_unlock+0x40/0x40
+> > [  252.032530][  T330]  ? do_raw_spin_lock+0x121/0x290
+> > [  252.037412][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
+> > [  252.043268][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
+> > [  252.048331][  T330]  wait_for_completion+0x15e/0x250
+> > [  252.053323][  T330]  ? wait_for_completion_interruptible+0x320/0x320
+> > [  252.059687][  T330]  ? lockdep_hardirqs_on_prepare+0x27c/0x3d0
+> > [  252.065543][  T330]  ? _raw_spin_unlock_irq+0x1f/0x30
+> > [  252.070606][  T330]  __flush_work+0x42a/0x900
+> > [  252.074989][  T330]  ? queue_delayed_work_on+0x90/0x90
+> > [  252.080139][  T330]  ? __queue_work+0x463/0xf40
+> > [  252.084700][  T330]  ? init_pwq+0x320/0x320
+> > [  252.088891][  T330]  ? queue_work_on+0x5e/0x80
+> > [  252.093364][  T330]  ? trace_hardirqs_on+0x1c/0x150
+> > [  252.098255][  T330]  work_on_cpu+0xe7/0x130
+> > [  252.102461][  T330]  ? flush_delayed_work+0xc0/0xc0
+> > [  252.107342][  T330]  ? __mutex_unlock_slowpath+0xd4/0x670
+> > [  252.112764][  T330]  ? work_debug_hint+0x30/0x30
+> > [  252.117391][  T330]  ? pci_device_shutdown+0x80/0x80
+> > [  252.122378][  T330]  ? cpumask_next_and+0x57/0x80
+> > [  252.127094][  T330]  pci_device_probe+0x500/0x5c0
+> > [  252.131824][  T330]  ? pci_device_remove+0x1f0/0x1f0
 > 
-> It's somewhat weird to move this to set_memory.h - it's only one possible
-> user. I think include/linux/mm.h is a better fit. Ack to making it
-> independent of CONFIG_HIBERNATION.
+> Is CONFIG_DEBUG_TEST_DRIVER_REMOVE enabled? I figure it is, with this call.
+> 
+> Or please share the .config
 
-Semantically this is a part of direct map manipulation, that's primarily
-why I put it into set_memory.h
+No. https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
 
-> in include/linux/mm.h , I'd prefer:
 > 
-> #if defined(CONFIG_DEBUG_PAGEALLOC) || \
->     defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
+> Cheers,
+> John
+> 
+> > [  252.136805][  T330]  really_probe+0x207/0xad0
+> > [  252.141191][  T330]  ? device_driver_attach+0x120/0x120
+> > [  252.146428][  T330]  driver_probe_device+0x1f1/0x370
+> > [  252.151424][  T330]  device_driver_attach+0xe5/0x120
+> > [  252.156399][  T330]  __driver_attach+0xf0/0x260
+> > [  252.160953][  T330]  bus_for_each_dev+0x117/0x1a0
+> > [  252.165669][  T330]  ? subsys_dev_iter_exit+0x10/0x10
+> > [  252.170731][  T330]  bus_add_driver+0x399/0x560
+> > [  252.175289][  T330]  driver_register+0x189/0x310
+> > [  252.179919][  T330]  ? 0xffffffffc05c1000
+> > [  252.183960][  T330]  megasas_init+0x117/0x1000 [megaraid_sas]
+> > [  252.189713][  T330]  do_one_initcall+0xf6/0x510
+> > [  252.194267][  T330]  ? perf_trace_initcall_level+0x490/0x490
+> > [  252.199940][  T330]  ? kasan_unpoison_shadow+0x30/0x40
+> > [  252.205104][  T330]  ? __kasan_kmalloc.constprop.11+0xc1/0xd0
+> > [  252.210859][  T330]  ? do_init_module+0x49/0x6c0
+> > [  252.215500][  T330]  ? kmem_cache_alloc_trace+0x11f/0x1e0
+> > [  252.220925][  T330]  ? kasan_unpoison_shadow+0x30/0x40
+> > [  252.226068][  T330]  do_init_module+0x1ed/0x6c0
+> > [  252.230608][  T330]  load_module+0x4a59/0x5d20
+> > [  252.235081][  T330]  ? layout_and_allocate+0x2770/0x2770
+> > [  252.240404][  T330]  ? __vmalloc_node+0x8d/0x100
+> > [  252.245046][  T330]  ? kernel_read_file+0x485/0x5a0
+> > [  252.249934][  T330]  ? kernel_read_file+0x305/0x5a0
+> > [  252.254839][  T330]  ? __x64_sys_fsconfig+0x970/0x970
+> > [  252.259903][  T330]  ? __do_sys_finit_module+0xff/0x180
+> > [  252.265153][  T330]  __do_sys_finit_module+0xff/0x180
+> > [  252.270216][  T330]  ? __do_sys_init_module+0x1d0/0x1d0
+> > [  252.275465][  T330]  ? __fget_files+0x1c3/0x2e0
+> > [  252.280010][  T330]  do_syscall_64+0x33/0x40
+> > [  252.284304][  T330]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > [  252.290054][  T330] RIP: 0033:0x7fbb3e2fa78d
+> > [  252.294348][  T330] Code: Unable to access opcode bytes at RIP
+> > 0x7fbb3e2fa763.
+> > [  252.301584][  T330] RSP: 002b:00007ffe572e8d18 EFLAGS: 00000246 ORIG_RAX:
+> > 0000000000000139
+> > [  252.309855][  T330] RAX: ffffffffffffffda RBX: 000055c7795d90f0 RCX:
+> > 00007fbb3e2fa78d
+> > [  252.317703][  T330] RDX: 0000000000000000 RSI: 00007fbb3ee6c82d RDI:
+> > 0000000000000006
+> > [  252.325553][  T330] RBP: 00007fbb3ee6c82d R08: 0000000000000000 R09:
+> > 00007ffe572e8e40
+> > [  252.333402][  T330] R10: 0000000000000006 R11: 0000000000000246 R12:
+> > 0000000000000000
+> > [  252.341257][  T330] R13: 000055c7795930e0 R14: 0000000000020000 R15:
+> > 0000000000000000
+> > [  252.349117][  T330]
 
-The second reason was to avoid this ^
-and the third is -7 lines to include/linux/mm.h :)
-
-> bool kernel_page_present(struct page *page);
-> #else
-> static inline bool kernel_page_present(struct page *page)
-> {
-> 	return true;
-> }
-> #endif
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
