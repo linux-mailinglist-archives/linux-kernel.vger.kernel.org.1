@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F6A2A2F70
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889CF2A2F7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgKBQPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgKBQOz (ORCPT
+        id S1726942AbgKBQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:17:27 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:52182 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgKBQR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:14:55 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE74C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 08:14:55 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id v5so9948004wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 08:14:55 -0800 (PST)
+        Mon, 2 Nov 2020 11:17:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YP7gpeIdOxquq/TfUCec+7EbTBaII9gjVTUVcNqSjPU=;
-        b=AaGBSGvjhehUR423BN+bvavmMxSWC0jcslz8PXWQI1XmoPgaS4nFW1xD9lIqMKt6fJ
-         ig21d8KFcShPzUP/t8fEo7pGj0B6s2gUgHYjWwgJIZRyTtpn5h9wG0Qz6FBwkIsLw0bL
-         24hUoOXsYRm/C22dDpF7S6ZydHjBZpi11cTodG1Ywc2Ung4P2MtJm6ArmjSLh4qgyO5/
-         6+TomzWOaYB/y3a/cU5XSRDD3kOaeVuZHBLe4iIK6rqQz2JfBryqGoi4b1hylhPbAnVa
-         rd8uQMwnTQp9b643eLX3ctwUTkzYM5XSL1r6wcHYpGx4zaGq/mZZCS68XmJP+ybcuyqH
-         NEzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YP7gpeIdOxquq/TfUCec+7EbTBaII9gjVTUVcNqSjPU=;
-        b=Q6pbWZJIy+BKtmos2eO3aUCXytXIb04+qrUxQyq6u2oDLu1Zoi5qxFzuRwtIRUAk1U
-         Vb80epvX98M8FZs4/GfP/US6E0aHUCwcCLCyr4mHqunszkH8d9WXoJ3Q3vd3uqp6jsZZ
-         dne781LI/eJycmIlpA8ZzeYdVVvDwzYpv38bhjBS0xRUBG+m84LJpgT69CZSABJCvFfU
-         PN4mp24ddd+1mmWnOfVDqVvCXZaVjupuhZxcpDaT7IhHrEsTJVEp9jcKv6YqCSF9ovEo
-         9E/8WKX/iRAT/B8seuv57uBI850jvG+A8JFh4zpVgHkBPJ3iNAUTpzEXg9zj01hfEzfL
-         R27A==
-X-Gm-Message-State: AOAM5328QLL3C7cbpFWF50TwAlQxrX8TXI2haW1gRGOtvFluLHNf0ySa
-        fxx7u4tr6u2W+OpZALy4ah/x7b0ty1lD4RGT
-X-Google-Smtp-Source: ABdhPJw3RBVQO147VlnGF8efd93BaENdZO5NDLkR4YamM5z8tQtiVuJe8uc3wyzwHceF473tMBXz3g==
-X-Received: by 2002:a05:600c:209:: with SMTP id 9mr18317719wmi.89.1604333693619;
-        Mon, 02 Nov 2020 08:14:53 -0800 (PST)
-Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id x18sm24127878wrg.4.2020.11.02.08.14.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 08:14:52 -0800 (PST)
-From:   Dmitry Safonov <dima@arista.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hillf Danton <hdanton@sina.com>, netdev@vger.kernel.org
-Subject: [PATCH v2 3/3] xfrm/compat: Don't allocate memory with __GFP_ZERO
-Date:   Mon,  2 Nov 2020 16:14:47 +0000
-Message-Id: <20201102161447.1266001-4-dima@arista.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201102161447.1266001-1-dima@arista.com>
-References: <20201102161447.1266001-1-dima@arista.com>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1604333845; x=1635869845;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=5ebmZkZ6EssFRGEyPn1Qc4ealUOtSh6Bj6ocigTKgzA=;
+  b=R0UgwtL5Dva0sSmDYtQ1Xai5HY0lrg+1U70NAS8Q2f4bAVbfGi+GSgy0
+   OikazPFTly3a3stOeFvUMDyDKAxeRZWlW9NCUhsGLvKJznlTvgW/fBMoH
+   kC6x51zOgC8Ugwwk5K8gMcNRkunKe0KLy6PCi4jUgmwv7lSQl1QXTgC30
+   w=;
+X-IronPort-AV: E=Sophos;i="5.77,445,1596499200"; 
+   d="scan'208";a="89754479"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 02 Nov 2020 16:17:01 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 52CA9A1DFF;
+        Mon,  2 Nov 2020 16:16:59 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 2 Nov 2020 16:16:58 +0000
+Received: from Alexanders-MacBook-Air.local (10.43.160.22) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 2 Nov 2020 16:16:53 +0000
+Subject: Re: [PATCH v1] nitro_enclaves: Fixup type of the poll result assigned
+ value
+To:     Andra Paraschiv <andraprs@amazon.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "David Duncan" <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        "David Woodhouse" <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Karen Noel <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+References: <20201014090500.75678-1-andraprs@amazon.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <e4a34429-1b25-00d5-9bf1-045ca49acb8d@amazon.de>
+Date:   Mon, 2 Nov 2020 17:16:51 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201014090500.75678-1-andraprs@amazon.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.22]
+X-ClientProxiedBy: EX13D35UWC004.ant.amazon.com (10.43.162.180) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-32-bit to 64-bit messages translator zerofies needed paddings in the
-translation, the rest is the actual payload.
-Don't allocate zero pages as they are not needed.
 
-Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- net/xfrm/xfrm_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
-index 556e9f33b815..d8e8a11ca845 100644
---- a/net/xfrm/xfrm_compat.c
-+++ b/net/xfrm/xfrm_compat.c
-@@ -564,7 +564,7 @@ static struct nlmsghdr *xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
- 		return NULL;
- 
- 	len += NLMSG_HDRLEN;
--	h64 = kvmalloc(len, GFP_KERNEL | __GFP_ZERO);
-+	h64 = kvmalloc(len, GFP_KERNEL);
- 	if (!h64)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.28.0
+On 14.10.20 11:05, Andra Paraschiv wrote:
+> Update the assigned value of the poll result to be EPOLLHUP instead of
+> POLLHUP to match the __poll_t type.
+> =
+
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>   drivers/virt/nitro_enclaves/ne_misc_dev.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> =
+
+> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nit=
+ro_enclaves/ne_misc_dev.c
+> index f06622b48d69..9148566455e8 100644
+> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> @@ -1508,7 +1508,7 @@ static __poll_t ne_enclave_poll(struct file *file, =
+poll_table *wait)
+>   	if (!ne_enclave->has_event)
+>   		return mask;
+>   =
+
+> -	mask =3D POLLHUP;
+> +	mask =3D EPOLLHUP;
+
+That whole function looks a bit ... convoluted? How about this? I guess =
+
+you could trim it down even further, but this looks quite readable to me:
+
+diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c =
+
+b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+index f06622b48d69..5b7f45e2eb4c 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
++++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+@@ -1505,10 +1505,8 @@ static __poll_t ne_enclave_poll(struct file =
+
+*file, poll_table *wait)
+
+  	poll_wait(file, &ne_enclave->eventq, wait);
+
+-	if (!ne_enclave->has_event)
+-		return mask;
+-
+-	mask =3D POLLHUP;
++	if (ne_enclave->has_event)
++		mask |=3D POLLHUP;
+
+  	return mask;
+  }
+
+
+Alex
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
