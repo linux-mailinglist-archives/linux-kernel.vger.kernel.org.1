@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04532A2373
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26A52A2367
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 04:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgKBDRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 22:17:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727450AbgKBDRW (ORCPT
+        id S1727779AbgKBDOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 22:14:35 -0500
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:40956 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727450AbgKBDOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 22:17:22 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683D2C0617A6;
-        Sun,  1 Nov 2020 19:17:22 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id k9so7882046pgt.9;
-        Sun, 01 Nov 2020 19:17:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fwNRxDnv+UtvNXDA29/weyHf8Kk1GunaCJV8fEWqD00=;
-        b=moDwNx4LCqS6nBHsZeSVmXTK7hi5PDEiX/2Ee5/gjcBkkr8ffzRYKmAzS/r94rU8jv
-         wqlHqNRKB8TfixhOD9Y2hAFZUorR0jTtVSYmB7j9nwlr4fHz5skVdWqamOY6fImILhIi
-         1i2g9iAvjHe261r6LvUli9CB6uxQsQMWTvzsikIiF3CTG42fZFIMXfcOjRdSwKaR2sIH
-         aV0BfClvm24o8PIQsGPk4qhvOVsRByL8MWKTceTkyp2wTJ52YhNcZtXLXGaeESsyJJgI
-         NlN2BKveQDh9wpwFtgbRgtrNF8HCh9LT4ok2un/jDeR3Znj3dvCnwHWyuUR8d/fqy7lu
-         Dr/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fwNRxDnv+UtvNXDA29/weyHf8Kk1GunaCJV8fEWqD00=;
-        b=eZz9iPkR74DtUNB7PhjGZoHZi1Ta24Yn6aAKp/xS9OdSmH//pbbtfKqAKdZTqxxFw6
-         eQEofCAj7CQwr4x3CAOaGSbMnSwFZ9q5emvycph7ObhgOAOrIcl2Xu4gq168yzC74gxd
-         myUuxs4eaUyR2VKjbHjrteM3gjgOg1/0btR0OFlR4HMKe929YOVy+BR6FDN+tK/6umFz
-         l/O7ev5levOwnRJWm2OWvVCaOZIOesCNZsD3KxQFtTn4HK4ohaT25CiR7vKN51IQVysn
-         /+b/UBCemdvDkRMwA0GW34Yjer2MR7nob9ytUeL/fEMh4+KXE6L7HRz7JdaZJ5aP1L1F
-         8Fdw==
-X-Gm-Message-State: AOAM533uZBEWTeTNJONI61eCLvqE/fyhUYFYN9OpYo76caAKQLLctl6R
-        bNxJsEaOR1yuAznFd8IMLeWwrruIFRESxKB3RP8=
-X-Google-Smtp-Source: ABdhPJzu3S6EJ0BwebnAPDMGQJr3fjjOnF+/krfTEZHvdPjaYsImqQwJpQ6j3dDh4/g/frpjJgX90g==
-X-Received: by 2002:a62:dd56:0:b029:155:8165:c6c2 with SMTP id w83-20020a62dd560000b02901558165c6c2mr19488885pff.3.1604287041702;
-        Sun, 01 Nov 2020 19:17:21 -0800 (PST)
-Received: from localhost.localdomain ([49.207.221.93])
-        by smtp.gmail.com with ESMTPSA id o22sm10997076pgb.83.2020.11.01.19.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Nov 2020 19:17:20 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Subject: [PATCH] net: can: prevent potential access of uninitialized value in canfd_rcv()
-Date:   Mon,  2 Nov 2020 08:43:26 +0530
-Message-Id: <20201102031326.430048-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 1 Nov 2020 22:14:34 -0500
+Received: from ubuntu.localdomain (unknown [58.213.83.157])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 4A8E148293A;
+        Mon,  2 Nov 2020 11:14:30 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Xiaojie Yuan <xiaojie.yuan@amd.com>,
+        Changfeng <Changfeng.Zhu@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/amd: move DRM_ERROR log out of the mutex protect area
+Date:   Sun,  1 Nov 2020 19:14:17 -0800
+Message-Id: <20201102031423.4033-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZT0seQx4aGEJOTUhKVkpNS09JQ01DTEtNQk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nz46Pio6PD8vSiFRShgiD04Z
+        AxJPCR9VSlVKTUtPSUNNQ0xKSk5OVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlOQ1VJ
+        SkhVQ0hVSk5MWVdZCAFZQUlOQkw3Bg++
+X-HM-Tid: 0a7586f2f45893bakuws4a8e148293a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In canfd_rcv(), cfd->len is uninitialized when skb->len = 0, and this
-uninitialized cfd->len is accessed nonetheless by pr_warn_once().
+In function amdgpu_register_gpu_instance, there is no need to
+protect DRM_ERROR in mutex mgpu_info.mutex.
+This change is to make the code to run a bit fast.
 
-Fix this uninitialized variable access by checking cfd->len's validity
-condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's
-condition is checked, and appropriately modify the log messages that
-are generated as well.
-In case either of the required conditions fail, the skb is freed and
-NET_RX_DROP is returned, same as before.
-
-Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
-This patch was locally tested using the reproducer and .config file 
-generated by syzbot.
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- net/can/af_can.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index ea29a6d97ef5..1b9f2e50f065 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -694,16 +694,25 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+index efda38349a03..cc61b0a5b8d1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -104,8 +104,8 @@ void amdgpu_register_gpu_instance(struct amdgpu_device *adev)
+ 	mutex_lock(&mgpu_info.mutex);
  
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
--		     cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
-+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
-+			     dev->type, skb->len);
-+		goto free_skb;
-+	}
-+
-+	// This check is made separately since cfd->len would be uninitialized if skb->len = 0.
-+	else if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
- 			     dev->type, skb->len, cfd->len);
--		kfree_skb(skb);
--		return NET_RX_DROP;
-+		goto free_skb;
+ 	if (mgpu_info.num_gpu >= MAX_GPU_INSTANCE) {
+-		DRM_ERROR("Cannot register more gpu instance\n");
+ 		mutex_unlock(&mgpu_info.mutex);
++		DRM_ERROR("Cannot register more gpu instance\n");
+ 		return;
  	}
  
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
-+
-+free_skb:
-+	kfree_skb(skb);
-+	return NET_RX_DROP;
- }
- 
- /* af_can protocol functions */
 -- 
-2.25.1
+2.29.0
 
