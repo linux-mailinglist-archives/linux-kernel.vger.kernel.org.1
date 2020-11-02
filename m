@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6EB2A28FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAB32A297D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgKBLYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:24:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S1728617AbgKBL3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728589AbgKBLY0 (ORCPT
+        with ESMTP id S1728618AbgKBLY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:24:26 -0500
+        Mon, 2 Nov 2020 06:24:28 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3A3C061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:24:26 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id n18so14132330wrs.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:24:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB60C061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:24:27 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id b3so8229058wrx.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:24:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2b8n7EMzvBy3k4mEAO2az4D8TS4174dppxeZhXUMuLk=;
-        b=krJnLtc6N+2WBI9zVToa7VVhYxDgv43kZTu2i3mSv8ZTng2O4ydc8z9Sr/myiclZ53
-         siYeQfgUBEFUge7+bwqSsiJ16l+BB2MBYw9N3+dhVgAOq/q7Fwak+X1rfticLy8rDLRV
-         PBDb8oddR4Accl/4XmaO1d4uEiy4oidROTe0ikOwQxe3u4k6zub7hwpulDY62QaSHZdO
-         MijeI/X6VFwss1zybgeqbVY9PxHD4/+C0hPVPl0mwyUqyOcsOW1xhBysZCNm39jb9Qnx
-         qPH/KZ1rvk7ILqNyg/M3gVzvpi+nuMPXjT6ppTEnjv8geNO4od40Fw/Z4wqL2A3c7Ln/
-         0BXw==
+        bh=Ka6oG61s56uSi20zjZOTu4QIASes47AodXCRjQdroWM=;
+        b=hMv2NTjPlHuthCM9UUVLtzFXjBs0VVOim6KBb8hepefDkfx8HzOilWlHKbADVy53mR
+         HrEsOllfzBNwQjIS3Dh+EbIZ1PvdU59dmYvHGGxhd/2SqsjmHoprnfFu3yr57tWm7XoW
+         Ms+zcnJpt9oSSip1LfExS2m283N63Hv6W5fd/dJqNJGmVsOHadtbd1r2Ul+hTzSNj8S3
+         naUiQkmhngjJQOyopaca7rZWYr4PIwZ8Q+2r/jJADgklPXfkTmAQuTyTim4vgwsHKrvv
+         ucUC4UQNMG2Lt5mLhIBQTpR+hpL69TtgFledAviFxkpcqXS78yROoHlrCNWJkGoYyREw
+         bytg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2b8n7EMzvBy3k4mEAO2az4D8TS4174dppxeZhXUMuLk=;
-        b=Gt5EiHIYrToo0NqucAWW4uA/YnqaAcA7WNKtMZXeus2bUaL2xyJJuQat/Y3Vw7g6LK
-         N8szr81IYCcfzJ4JjTBqkYBCeocuxDAXyWU2PBnmIBVxPVnORYXexcF4KW3j/xaSCqD7
-         0XG3MGQfDkIrClAd1aPOBS9en10NekTmsKKc2vHyWtFIDpwLQ1UWxAtWhXXWLfwSdn2n
-         udXrCIK9ZwjHDzIl6aUPJCXjSHPxUPb/Zw3XYUOcr85+kod3rb5NlZ0fboMUhbyc0gjS
-         WS3VNI3mqyQJu7AEzjMN8J433/GGfA1tO49D6B5GCC3Qqs1/HZtMEkW/6b4ALLjh8cpq
-         zrUA==
-X-Gm-Message-State: AOAM530h0tL1NlKW0xPG0PM1zTszk+dl2+6YGbBkqxs/yMHxFpk/C9pk
-        0v2BwYQt3av2M4WLfYs4DdA/bQ==
-X-Google-Smtp-Source: ABdhPJxdJ5ukETt1lUKOYKlpB7LAtUQfWZ5zkazKTiN1pjYEiL7xs962dlK8ZtSzPM1TeAFLDLlc9g==
-X-Received: by 2002:a5d:44c8:: with SMTP id z8mr9705045wrr.405.1604316265225;
-        Mon, 02 Nov 2020 03:24:25 -0800 (PST)
+        bh=Ka6oG61s56uSi20zjZOTu4QIASes47AodXCRjQdroWM=;
+        b=PC7PSCKbqwWgWBvaPc6fikEQt0Hcamy4oV2wTeDRaxBfRI9HYPmuwqi2j6DdvwFPpG
+         Wpf51bvli0nnE0jlMOMOdIJItzFMHNofJ4LENhattvnYRbPZw89phaPsIimDFMez5M8V
+         D7ciFBzGJeQ9ScQUR8LH57j9KOxJEcR/4wnS3yViMFPI0/FzzUj0WZ2O2JbsAS09Oxeo
+         8v4aHQQsIcyKAkfve2sCavOxiEoQjTIp3fnQRMSTo2vCgtGvUDZ226m9dmSjfbUeUie3
+         HUDxam3e1X8hg8h+0BLScw0Gdxrz37uki1GG7E8vivcqtVXShzVEAOhBLlpegBaPvG2o
+         gNsQ==
+X-Gm-Message-State: AOAM532ZNYLCSM+82/2oUXFYf0e3Rf0Desy44Mbx0HJJDpGuNFpaqhMC
+        MCyzHkwpjgTEa3u6qMqH0Pk6wA==
+X-Google-Smtp-Source: ABdhPJxeqB5NmAXe81Eexs63FfVCwNj4sGmOhyU4D4wEPt10+eqOdNq7ow/T47NsthmDxpFZzShvSQ==
+X-Received: by 2002:adf:e8d0:: with SMTP id k16mr19555994wrn.362.1604316266442;
+        Mon, 02 Nov 2020 03:24:26 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.24
+        by smtp.gmail.com with ESMTPSA id m14sm21867354wro.43.2020.11.02.03.24.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:24:24 -0800 (PST)
+        Mon, 02 Nov 2020 03:24:25 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
@@ -58,16 +58,21 @@ Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Wright Feng <wright.feng@cypress.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         linux-wireless@vger.kernel.org,
         brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org
-Subject: [PATCH 06/41] brcmfmac: bcmsdh: Fix description for function parameter 'pktlist'
-Date:   Mon,  2 Nov 2020 11:23:35 +0000
-Message-Id: <20201102112410.1049272-7-lee.jones@linaro.org>
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 07/41] brcmfmac: pcie: Provide description for missing function parameter 'devinfo'
+Date:   Mon,  2 Nov 2020 11:23:36 +0000
+Message-Id: <20201102112410.1049272-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102112410.1049272-1-lee.jones@linaro.org>
 References: <20201102112410.1049272-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -75,8 +80,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:380: warning: Function parameter or member 'pktlist' not described in 'brcmf_sdiod_sglist_rw'
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c:380: warning: Excess function parameter 'pkt' description in 'brcmf_sdiod_sglist_rw'
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c:766: warning: Function parameter or member 'devinfo' not described in 'brcmf_pcie_bus_console_read'
 
 Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
 Cc: Franky Lin <franky.lin@broadcom.com>
@@ -86,28 +90,32 @@ Cc: Wright Feng <wright.feng@cypress.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: linux-wireless@vger.kernel.org
 Cc: brcm80211-dev-list.pdl@broadcom.com
 Cc: brcm80211-dev-list@cypress.com
 Cc: netdev@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-index f9ebb98b0e3c7..ce8c102df7b3e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-@@ -367,7 +367,7 @@ static int mmc_submit_one(struct mmc_data *md, struct mmc_request *mr,
-  * @func: SDIO function
-  * @write: direction flag
-  * @addr: dongle memory address as source/destination
-- * @pkt: skb pointer
-+ * @pktlist: skb buffer head pointer
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 39381cbde89e6..1d3cc1c7c9c50 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -759,6 +759,7 @@ static void brcmf_pcie_bus_console_init(struct brcmf_pciedev_info *devinfo)
+ /**
+  * brcmf_pcie_bus_console_read - reads firmware messages
   *
-  * This function takes the respbonsibility as the interface function to MMC
-  * stack for block data access. It assumes that the skb passed down by the
++ * @devinfo: pointer to the device data structure
+  * @error: specifies if error has occurred (prints messages unconditionally)
+  */
+ static void brcmf_pcie_bus_console_read(struct brcmf_pciedev_info *devinfo,
 -- 
 2.25.1
 
