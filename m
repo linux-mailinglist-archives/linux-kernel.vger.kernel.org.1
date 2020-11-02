@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BF42A2B01
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDE82A2ADD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgKBMvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:51:12 -0500
-Received: from relay.shared-server.net ([211.13.204.66]:47096 "EHLO
-        relay.shared-server.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgKBMvM (ORCPT
+        id S1728803AbgKBMlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:41:31 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43462 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728631AbgKBMla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:51:12 -0500
-X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 07:51:11 EST
-Received: from mx31-red.in.shared-server.net (mx31-red.in.shared-server.net [192.168.7.151])
-        by relay02.in.shared-server.net (Postfix) with ESMTP id F018A1E37B8;
-        Mon,  2 Nov 2020 21:40:59 +0900 (JST)
-Received: from v02-red.in.shared-server.net (v02-red.in.shared-server.net [192.168.0.38])
-        by mx31-red.in.shared-server.net (Postfix) with ESMTP id BD0349FE7A;
-        Mon,  2 Nov 2020 21:40:58 +0900 (JST)
-Received: from m32-red.in.shared-server.net (m32-red.in.shared-server.net [192.168.7.122])
-        by v02-red.in.shared-server.net (Postfix) with ESMTP id A5FCCA00183;
-        Mon,  2 Nov 2020 21:40:58 +0900 (JST)
-Received: from roundcube.red.shared-server.net (rcube11-red.in.shared-server.net [192.168.3.25])
-        by m32-red.in.shared-server.net (Postfix) with ESMTPA id 4A9EF11F898;
-        Mon,  2 Nov 2020 21:40:58 +0900 (JST)
+        Mon, 2 Nov 2020 07:41:30 -0500
+Received: by mail-wr1-f65.google.com with SMTP id g12so14392560wrp.10;
+        Mon, 02 Nov 2020 04:41:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vE+PH3YLHOhOeLKgAfBwuoHNLUQzsqJV1bKYObjVQTA=;
+        b=QS6Neq/l0P62NHvyviWNsUdPCpguqOJXlopZjqOd1Rw2HTA0Kv91o6ytLA+SwG8kMv
+         229tkQyEzju38QW1HVqIgNFB0a9XeIFSL8x7QUpabUWArVVkVP32EX8j3kLZjA3zE+pj
+         gs0Uhh3O/EpykcSRrPx2eBM3OtOOxPsFkJdzMoowlEmYFHAT1WphsPme66JyZlDXQhCi
+         LqRvLrGaKz+uoHGz6zmyGUz2oLc8DwJqni5FTffXzjomvohAqqXodhOlgec7QroLB+BB
+         wnYpZ3VpE6fiuU/1pdxgKB80AJPSoDH+2Z8NDo1Gh/PRkaNTgQDjD6bHn6+k9zKe+eEv
+         0k/A==
+X-Gm-Message-State: AOAM532GAZf3VCbmfLhxNtJCjIRPZSsZbwTvdkORdXNGMyuJ+VnzNjHM
+        9TsyyV9FSJuJqcMaSbTK8aQ=
+X-Google-Smtp-Source: ABdhPJxO96MjaHNz8VC1k9cRxHvlW6BeV6r7uvMv+QRAZP+NenJAbJ9TbyqjTJjr4zWYDBgKznzRcA==
+X-Received: by 2002:adf:dc4b:: with SMTP id m11mr6564318wrj.328.1604320888114;
+        Mon, 02 Nov 2020 04:41:28 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b8sm1396420wmj.9.2020.11.02.04.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 04:41:26 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:41:25 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     vigneshr@ti.com, linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Kukjin Kim <kgene@kernel.org>, Ben Dooks <ben@simtec.co.uk>,
+        linux-mtd@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 17/23] mtd: nand: raw: s3c2410: Add documentation for 2
+ missing struct members
+Message-ID: <20201102124125.GA437900@kozik-lap>
+References: <20201102115406.1074327-1-lee.jones@linaro.org>
+ <20201102115406.1074327-18-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Nov 2020 12:40:58 +0000
-From:   "Mr. Michael Williams " <ikomatsu@kidourashipyard.com>
-To:     undisclosed-recipients:;
-Subject: My Good Friend,
-Reply-To: mr.michaelwilliams05@gmail.com
-Mail-Reply-To: mr.michaelwilliams05@gmail.com
-Message-ID: <af65239faaf20ab9829155c690472901@kidourashipyard.com>
-X-Sender: ikomatsu@kidourashipyard.com
-User-Agent: Roundcube Webmail/1.3.7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102115406.1074327-18-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 11:54:00AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'controller' not described in 's3c2410_nand_info'
+>  drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'freq_transition' not described in 's3c2410_nand_info'
+
+It took me some time to spot why the "mtds" change is there, so maybe
+add to the commit msg:
+"Correct also typo controoler -> controller."
+
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
 
 
--- 
-Dear Friend,
-
-My name is Mr. Michael Williams, I am a newly promoted Branch Manager of 
-a Bank here in Ghana, West Africa, I got your information during my 
-Search through the Internet.
-
-It may interest you to hear that I am a man of PEACE and don't want 
-problems, I only hope we can assist each other. If you don't want this 
-business offer kindly forget it, as I will not contact you again.
-
-I have packaged a financial transaction that will benefit both of us, as 
-the Branch Manager of the Bank, it is my duty to send in a Financial 
-Report to my head office in the capital city Accra at the end of each 
-year.
-
-In the course of the last year 2019 end of the year report, I discovered 
-that my branch in which I am the Manager made an excess profit of 
-[US$12.5 Million dollars] which my head office are not aware of and will 
-never be aware of. I have since placed this fund in a SUNDRY ACCOUNT.
-
-As an officer of the bank, I cannot be directly linked to this money, so 
-this informed my contacting you for us to work together so that you can 
-assist me and receive this fund into your bank account in your country 
-for us to SHARE.
-
-I am offering you 40% of the total fund, while you keep 60% for me in 
-your bank account till I join you in your country for the 
-sharing/investment of my own share of the funds or better still we can 
-go into a joint partnership venture, I will appreciate it very much.
-
-As soon as I receive your response I will give you more details on how 
-we can achieve it successfully.
-
-Sincerely,
-Mr. Michael Williams
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Ben Dooks <ben@simtec.co.uk>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/s3c2410.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+> index cb2d1b4e278cb..f0a4535c812aa 100644
+> --- a/drivers/mtd/nand/raw/s3c2410.c
+> +++ b/drivers/mtd/nand/raw/s3c2410.c
+> @@ -133,7 +133,8 @@ enum s3c_nand_clk_state {
+>  
+>  /**
+>   * struct s3c2410_nand_info - NAND controller state.
+> - * @mtds: An array of MTD instances on this controoler.
+> + * @controller: Base controller structure.
+> + * @mtds: An array of MTD instances on this controller.
