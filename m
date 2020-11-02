@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6372A2C83
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FC62A2C7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 15:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgKBOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 09:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKBOQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:16:01 -0500
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E32A2415A;
-        Mon,  2 Nov 2020 14:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604326560;
-        bh=BteA5gzi7Uc4vRznHTY1jzjlxtohwfi7tjYpM1Pa+kg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S+Y92WQb7KI1O+cmweJ/DKgowsz6auuN2X+fmPan9lDeUPfatkX9v9tEx3b+IZnqL
-         IrH6z3QtUyIiGuRPR+rDsmJqz1sHHNC+byLWpIwalVHOeGHXVi7M3S7AQusuO/0az+
-         Ib1llJ/RXnc0zV4v4tVINltTdrTfy2VHj3C5AdRg=
-Received: by mail-ot1-f51.google.com with SMTP id j14so2488929ots.1;
-        Mon, 02 Nov 2020 06:16:00 -0800 (PST)
-X-Gm-Message-State: AOAM530MBNK5UfYBjTnB5fLMCMHBQRf6ejgGQMFDYR9vUQTvcyT85V6q
-        dkPfQi9O6yx3F4BJSXffb5JAXNRUCneHGlCATg==
-X-Google-Smtp-Source: ABdhPJxML32jJZ3qQ1A9Es6W1bxqsPN29fgL87NHAnZ1Aq73CytCsBQV2B0zZKDeQKXafYAhwxjHZhVjwXlWjG169gE=
-X-Received: by 2002:a9d:6e0c:: with SMTP id e12mr1325014otr.129.1604326559463;
- Mon, 02 Nov 2020 06:15:59 -0800 (PST)
+        id S1726196AbgKBOSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 09:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgKBOQh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:16:37 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377BDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 06:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UD/OkCMd1FoU3EgKfSru1bYvN7JBNcEWgNchKvRXMSM=; b=W+zuVylnGl4SAsNM85FlVkuMLf
+        iBAwv+Ow46wK0I0qTRTpgV4fXAxHAJlvx8bR6cX2taNKpNPlT+9kOLWDmQEy+L/wyDSAXc8wF38gF
+        u0HyEM9cwy/o8uDy09QdzPHgRS2BAInsivfWoryyGEHYg+tKYRuzcxJyVwdeWwbqLfDYgidYg+OoL
+        v1xQHlMtgujMNSrk7N9f/EfKFX05/rXu97E8PAovxV63g3SfA4lwN9dDVQqdEMmhb8OFtWAcj/FOB
+        UOtY+uY5OX6YH82efGC5rnB5949UAyH0kWoJfKQL4mmwFuWUvcv1RabS6GnsowFQGxZ4IFOk5goU7
+        DFoRgHDw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZadJ-00083a-2u; Mon, 02 Nov 2020 14:16:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DEAFE3011E6;
+        Mon,  2 Nov 2020 15:16:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 929D72BEF6301; Mon,  2 Nov 2020 15:16:25 +0100 (CET)
+Date:   Mon, 2 Nov 2020 15:16:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH v2 0/4] perf: Fix perf_event_attr::exclusive rotation
+Message-ID: <20201102141625.GX2594@hirez.programming.kicks-ass.net>
+References: <20201029162719.519685265@infradead.org>
+ <20201031234418.GE3380099@krava>
+ <20201102035238.GI466880@tassilo.jf.intel.com>
 MIME-Version: 1.0
-References: <20201029053959.31361-1-vidyas@nvidia.com> <20201029053959.31361-3-vidyas@nvidia.com>
-In-Reply-To: <20201029053959.31361-3-vidyas@nvidia.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 2 Nov 2020 08:15:47 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+3Ek9SRbsTqEmjiZtszvi7Er=TNgOt8t=0OESva2=sTg@mail.gmail.com>
-Message-ID: <CAL_Jsq+3Ek9SRbsTqEmjiZtszvi7Er=TNgOt8t=0OESva2=sTg@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kthota@nvidia.com, Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        sagar.tv@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102035238.GI466880@tassilo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 12:40 AM Vidya Sagar <vidyas@nvidia.com> wrote:
->
-> DesignWare core has a TLP digest (TD) override bit in one of the control
-> registers of ATU. This bit also needs to be programmed for proper ECRC
-> functionality. This is currently identified as an issue with DesignWare
-> IP version 4.90a. This patch does the required programming in ATU upon
-> querying the system policy for ECRC.
->
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
-> ---
-> V3:
-> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
->
-> V2:
-> * Addressed Jingoo's review comment
-> * Removed saving 'td' bit information in 'dw_pcie' structure
->
->  drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
->  drivers/pci/controller/dwc/pcie-designware.h | 1 +
->  2 files changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index b5e438b70cd5..cbd651b219d2 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->                                  upper_32_bits(pci_addr));
->         val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +       if (pci->version == 0x490A)
-> +               val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->         val = upper_32_bits(size - 1) ?
->                 val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
-> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->                            lower_32_bits(pci_addr));
->         dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->                            upper_32_bits(pci_addr));
-> -       dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> -                          PCIE_ATU_FUNC_NUM(func_no));
-> +       val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +       if (pci->version == 0x490A)
+On Sun, Nov 01, 2020 at 07:52:38PM -0800, Andi Kleen wrote:
+> The main motivation is actually that the "multiple groups" algorithm
+> in perf doesn't work all that great: it has quite a few cases where it
+> starves groups or makes the wrong decisions. That is because it is very
+> difficult (likely NP complete) problem and the kernel takes a lot
+> of short cuts to avoid spending too much time on it.
 
-Is this even possible? Are the non-unroll ATU registers available post 4.80?
+The event scheduling should be starvation free, except in the presence
+of pinned events.
 
-Rob
+If you can show starvation without pinned events, it's a bug.
+
+It will also always do equal or better than exclusive mode wrt PMU
+utilization. Again, if it doesn't it's a bug.
+
+Please provide concrete examples for these two cases, or stop spreading
+FUD like this.
