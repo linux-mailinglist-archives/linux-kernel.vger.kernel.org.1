@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569822A3692
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3717D2A3695
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgKBWfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:35:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
+        id S1726513AbgKBWfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgKBWfB (ORCPT
+        with ESMTP id S1725829AbgKBWfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:35:01 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E4DC061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 14:35:00 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id k3so2318206otp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 14:35:00 -0800 (PST)
+        Mon, 2 Nov 2020 17:35:37 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01125C0617A6;
+        Mon,  2 Nov 2020 14:35:37 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id w13so7618026eju.13;
+        Mon, 02 Nov 2020 14:35:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=giKh0EftA82tuJhV/2S7wBVQ3F/DRKViWRoogNmdeAs=;
-        b=bMjC70YDFNzxoYlzw3H4miSI+md12fBuXXRV+rwrxZNgxWyRnMyTM+RWdzZ6Ttz749
-         qIIdxenAT6JyLXCwFjJitCGNE6NtAlVOcEEtfTUjNVkaVwsAoeI3RaqPS4D/rQ41mRK8
-         z3nwRyBpd8Ml+jwQDxOK/7nlBFt0Djs9ILL65ZgnvMynhhR27O398RD3vR5DnLjyu/Ie
-         0deUipDZvLwmfe+gEyooVVrypE5oA2lbHsfTFWrWkiEIJWAq+v5z3MAKaUgfd1hrZSN1
-         bHZcEhtLfdvM6dOu16hu7EtkxCguPo4OJbabmtS2AIJDZ6yMJDWAD2EOTlApdxVN4KJz
-         5jsw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J7nOY/CMBrCc1yEj5RA267szHi6fVAQcuYVsfxRG2l4=;
+        b=MyC2MLo3fY+8+mqhUMbKTmdekGYgyuUib/UPpK5ahWOjDMEMJZTv6Jf8qy2hweyWym
+         ZNGogdWY9PHc64A6YjzmB/p9Lgcg2x/Hp8zYISyAFDnuWG2oERhnL5b43raKXso3PzKA
+         QyJ+uELWNrK8RGqOXNbhWsHO+SYXDiPdDdfz0CLXqwXFtnT2MzuMxnocY8MPRsJVmM9/
+         qQus2vl1ujBWbFirBzOOkUg/JkLRN4f6enrOhU3L3pYzdtzjbqtbM62WpJAblPUVM/zR
+         59SYp0LJf9PCpgwfeoE4+o060lCjPUPvXCjjdFfKwA9C8CMoqaNNR/8Xg5vtatDzpdjy
+         EYcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=giKh0EftA82tuJhV/2S7wBVQ3F/DRKViWRoogNmdeAs=;
-        b=a0JXvRnAHL+TVTLZ2CSleAam44uSNLtpBhZga4DGYyJvTKSP9/eESwbQARmpLJqjGx
-         2PXcYk8jHt+FzE0VcxfG8YZQsSRB71ypb7+dooja0ctbAr0mrY4jCBoiNl8izwbWWd89
-         Z7dtRkrxmOELjpI8Eww4oEANvrmIghD5I6E4OlVaioZrL6emfulR9KtL79NbSrQBz3Pi
-         xpIkz8LOfpU/n6xXGuHb874xj8SeMBdBeVYabyG/kZHSr69ox00k8xK+PTPezDOiyrli
-         X9f1vjfQKR/NxRBNuNnxB84wS3GhELiXW5O4wpewRBsINboLu+rWm5qO+pjasrtFglvY
-         vDRA==
-X-Gm-Message-State: AOAM532gIsogSVbPEUB7A0pvQid5QVaB8EN3Wm3mmInqkjpBck5F5csb
-        7WI6FcI5bBmVhzZoddWgj91DxQ==
-X-Google-Smtp-Source: ABdhPJwkR59N/fd3voUgFTNORY4EDE77itPKKZtqgX4oFS6zefiiLytSDfijNYsgP9sr1OFQXdN3CA==
-X-Received: by 2002:a9d:5d15:: with SMTP id b21mr13973004oti.25.1604356499596;
-        Mon, 02 Nov 2020 14:34:59 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b16sm3929519oti.4.2020.11.02.14.34.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J7nOY/CMBrCc1yEj5RA267szHi6fVAQcuYVsfxRG2l4=;
+        b=bSekBdOio6IR+gufp8XllM5i4qLtHqDUAdE6/G59XEzafRWx3jNlVz40Z39fIpJOZ2
+         yNn6n3WNeV/474MUs/+9Z796yZ3zModhBfrk8H7lWNe/FP/5QAqMBubMxcrU5u6wd+4C
+         jVX1tIASmA18e89oX5ltKVEsWJK4qNkUcgaMDEOP7aSRZ0GoenSFQTJIzkRnz941TQNe
+         aKiICLE8JOHadgggl2gB2EFXG1jJziXm5CjnCynr/dvc5eNWiV1Ws3eYkZb2vuVoV6wz
+         2LB6QdSgItr6LWv7Nwyu+b25gjPbptmVZvFEt3CgD1Q1CFPwx0AJNMhx9WSebJk3zqnN
+         wmdQ==
+X-Gm-Message-State: AOAM530alJTAy555PJpQZT0MTJS43EO4RnCeantOuCBmsFALCOET54a+
+        zZ4hATxykoiSCw8RgGM4RXVRZuEIEnV5jw==
+X-Google-Smtp-Source: ABdhPJzf4mBvdfYdod1Rw2hhb5Xvo8/yAKwUJZbnBZdgLyZvf1m34Ub7JEwQD9YeiTwePAGsMc2CuQ==
+X-Received: by 2002:a17:906:840e:: with SMTP id n14mr5266686ejx.147.1604356535728;
+        Mon, 02 Nov 2020 14:35:35 -0800 (PST)
+Received: from necip-pc.vpn.ucf.edu ([85.153.224.24])
+        by smtp.gmail.com with ESMTPSA id la9sm1550707ejb.121.2020.11.02.14.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 14:34:58 -0800 (PST)
-Date:   Mon, 2 Nov 2020 16:34:57 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] nvmem: qfprom: Avoid untouchable regions
-Message-ID: <20201102223457.GA65067@builder.lan>
-References: <20201029002827.1729915-1-evgreen@chromium.org>
- <0a7d86ee-96b0-eff8-e315-ff65086661ee@linaro.org>
+        Mon, 02 Nov 2020 14:35:35 -0800 (PST)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     jic23@kernel.org
+Cc:     pn@denx.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] iio: light: fix kconfig dependency bug for VCNL4035
+Date:   Tue,  3 Nov 2020 01:35:24 +0300
+Message-Id: <20201102223523.572461-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a7d86ee-96b0-eff8-e315-ff65086661ee@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02 Nov 09:58 CST 2020, Srinivas Kandagatla wrote:
+When VCNL4035 is enabled and IIO_BUFFER is disabled, it results in the
+following Kbuild warning:
 
-> 
-> 
-> On 29/10/2020 00:28, Evan Green wrote:
-> > Certain fuses are protected by the XPU such that the AP cannot
-> > access them. Attempting to do so causes an SError. Introduce an
-> > SoC-specific compatible string, and introduce support into the
-> > nvmem core to avoid accessing specified regions. Then use those
-> > new elements in the qfprom driver to avoid SErrors when usermode
-> > accesses certain registers.
-> > 
-> > Changes in v3:
-> >   - Fixed example (Doug and rob-bot)
-> >   - Use min()/max() macros instead of defining my own (Doug)
-> >   - Comment changes to indicate sorting (Doug)
-> >   - Add function to validate keepouts are proper (Doug)
-> > 
-> > Changes in v2:
-> >   - Add other soc compatible strings (Doug)
-> >   - Fix compatible string definition (Doug)
-> >   - Introduced keepout regions into the core (Srini)
-> >   - Use new core support in qfprom (Srini)
-> > 
-> > Evan Green (4):
-> >    dt-bindings: nvmem: Add soc qfprom compatible strings
-> >    arm64: dts: qcom: sc7180: Add soc-specific qfprom compat string
-> >    nvmem: core: Add support for keepout regions
-> >    nvmem: qfprom: Don't touch certain fuses
-> 
-> Except dts patch, I have applied all the patches, dts patch should go via
-> arm-soc tree!
-> 
+WARNING: unmet direct dependencies detected for IIO_TRIGGERED_BUFFER
+  Depends on [n]: IIO [=y] && IIO_BUFFER [=n]
+  Selected by [y]:
+  - VCNL4035 [=y] && IIO [=y] && I2C [=y]
 
-And I've picked the dts patch.
+The reason is that VCNL4035 selects IIO_TRIGGERED_BUFFER without depending
+on or selecting IIO_BUFFER while IIO_TRIGGERED_BUFFER depends on
+IIO_BUFFER. This can also fail building the kernel.
 
-Thank you,
-Bjorn
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
 
-> 
-> --srini
-> 
-> > 
-> >   .../bindings/nvmem/qcom,qfprom.yaml           |  17 +-
-> >   arch/arm64/boot/dts/qcom/sc7180.dtsi          |   2 +-
-> >   drivers/nvmem/core.c                          | 153 +++++++++++++++++-
-> >   drivers/nvmem/qfprom.c                        |  30 ++++
-> >   include/linux/nvmem-provider.h                |  17 ++
-> >   5 files changed, 211 insertions(+), 8 deletions(-)
-> > 
+Fixes: 55707294c4eb ("iio: light: Add support for vishay vcnl4035")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209883
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/iio/light/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
+index cade6dc0305b..33ad4dd0b5c7 100644
+--- a/drivers/iio/light/Kconfig
++++ b/drivers/iio/light/Kconfig
+@@ -544,6 +544,7 @@ config VCNL4000
+ 
+ config VCNL4035
+ 	tristate "VCNL4035 combined ALS and proximity sensor"
++	select IIO_BUFFER
+ 	select IIO_TRIGGERED_BUFFER
+ 	select REGMAP_I2C
+ 	depends on I2C
+-- 
+2.25.1
+
