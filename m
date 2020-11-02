@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBF42A320E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A183B2A3244
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgKBRuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:50:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41870 "EHLO
+        id S1726076AbgKBRv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:51:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23314 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725768AbgKBRuF (ORCPT
+        by vger.kernel.org with ESMTP id S1725848AbgKBRv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:50:05 -0500
+        Mon, 2 Nov 2020 12:51:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604339404;
+        s=mimecast20190719; t=1604339486;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wDJ/RiCI+DkL83hKz9HhYrdiFyHAl2S8mdkiC/aSEWw=;
-        b=bTMqqgK7U9POP77ZQUmn+39YDFtFy15vUyV1pS+5xYiljClNMxKAqPrYaVTAwD6sOy87Qf
-        6AFmaa5PO40hF8vLI87bS1CkPTMYSqLer6tQYp3NHws8XgWrYW2CDkvOj5tCODlT28R0ax
-        5ke8eA6XCsAhh+JguOs/doRW+U/p0es=
+        bh=lp/prYQuMgVXccCGCiV61cLz4v5q5/mm6tHCPraHIqM=;
+        b=EKQezKoEaQPVX0E/k1X4C/PLH+ukdpxJSN79mCzwzIu+B7Qv7oLCnGtx9+Sip+GlK1bsQJ
+        CAf2b8g9yEqtQduC91gEuPv8Nzmr3RHL6XE2kbyRYhxXK+84na4K4NZJcF9DdLXj5yAeEV
+        oA7Qf/09Hr525GSyHeWOYiePRs9Ql0w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-Fl7CTRwjNMC-cprDtkPD8w-1; Mon, 02 Nov 2020 12:50:01 -0500
-X-MC-Unique: Fl7CTRwjNMC-cprDtkPD8w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-593-JugxVAtvMxar3jfSZTXWbg-1; Mon, 02 Nov 2020 12:51:22 -0500
+X-MC-Unique: JugxVAtvMxar3jfSZTXWbg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 831F980B70A;
-        Mon,  2 Nov 2020 17:49:59 +0000 (UTC)
-Received: from krava (unknown [10.40.192.162])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 489EA75126;
-        Mon,  2 Nov 2020 17:49:57 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 18:49:56 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1873F879512;
+        Mon,  2 Nov 2020 17:51:18 +0000 (UTC)
+Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA9C15B4A9;
+        Mon,  2 Nov 2020 17:51:10 +0000 (UTC)
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf tools: Add missing swap for cgroup events
-Message-ID: <20201102174956.GA3597846@krava>
-References: <20201102140228.303657-1-namhyung@kernel.org>
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
+ <20201102174308.GF4879@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d4cb2c87-4744-3929-cedd-2be78625a741@redhat.com>
+Date:   Mon, 2 Nov 2020 18:51:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102140228.303657-1-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201102174308.GF4879@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:02:28PM +0900, Namhyung Kim wrote:
-> It was missed to add a swap function for PERF_RECORD_CGROUP.
+>> Assume you have a system with quite some ZONE_MOVABLE memory (esp. in
+>> virtualized environments), eating up a significant amount of !ZONE_MOVABLE
+>> memory dynamically at runtime can lead to non-obvious issues. It looks like
+>> you have plenty of free memory, but the kernel might still OOM when trying
+>> to do kernel allocations e.g., for pagetables. With CMA we at least know
+>> what we're dealing with - it behaves like ZONE_MOVABLE except for the owner
+>> that can place unmovable pages there. We can use it to compute statically
+>> the amount of ZONE_MOVABLE memory we can have in the system without doing
+>> harm to the system.
 > 
-> Fixes: ba78c1c5461c ("perf tools: Basic support for CGROUP event")
+> Why would you say that secretmem allocates from !ZONE_MOVABLE?
+> If we put boot time reservations aside, the memory allocation for
+> secretmem follows the same rules as the memory allocations for any file
+> descriptor. That means we allocate memory with GFP_HIGHUSER_MOVABLE.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Oh, okay - I missed that! I had the impression that pages are unmovable 
+and allocating from ZONE_MOVABLE would be a violation of that?
 
-thanks,
-jirka
+> After the allocation the memory indeed becomes unmovable but it's not
+> like we are eating memory from other zones here.
 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/session.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+... and here you have your problem. That's a no-no. We only allow it in 
+very special cases where it can't be avoided - e.g., vfio having to pin 
+guest memory when passing through memory to VMs.
+
+Hotplug memory, online it to ZONE_MOVABLE. Allocate secretmem. Try to 
+unplug the memory again -> endless loop in offline_pages().
+
+Or have a CMA area that gets used with GFP_HIGHUSER_MOVABLE. Allocate 
+secretmem. The owner of the area tries to allocate memory - always 
+fails. Purpose of CMA destroyed.
+
 > 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 7a5f03764702..c44c8e8c09c6 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -710,6 +710,18 @@ static void perf_event__namespaces_swap(union perf_event *event,
->  		swap_sample_id_all(event, &event->namespaces.link_info[i]);
->  }
->  
-> +static void perf_event__cgroup_swap(union perf_event *event, bool sample_id_all)
-> +{
-> +	event->cgroup.id = bswap_64(event->cgroup.id);
-> +
-> +	if (sample_id_all) {
-> +		void *data = &event->cgroup.path;
-> +
-> +		data += PERF_ALIGN(strlen(data) + 1, sizeof(u64));
-> +		swap_sample_id_all(event, data);
-> +	}
-> +}
-> +
->  static u8 revbyte(u8 b)
->  {
->  	int rev = (b >> 4) | ((b & 0xf) << 4);
-> @@ -952,6 +964,7 @@ static perf_event__swap_op perf_event__swap_ops[] = {
->  	[PERF_RECORD_SWITCH]		  = perf_event__switch_swap,
->  	[PERF_RECORD_SWITCH_CPU_WIDE]	  = perf_event__switch_swap,
->  	[PERF_RECORD_NAMESPACES]	  = perf_event__namespaces_swap,
-> +	[PERF_RECORD_CGROUP]		  = perf_event__cgroup_swap,
->  	[PERF_RECORD_TEXT_POKE]		  = perf_event__text_poke_swap,
->  	[PERF_RECORD_HEADER_ATTR]	  = perf_event__hdr_attr_swap,
->  	[PERF_RECORD_HEADER_EVENT_TYPE]	  = perf_event__event_type_swap,
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
+>> Ideally, we would want to support page migration/compaction and allow for
+>> allocation from ZONE_MOVABLE as well. Would involve temporarily mapping,
+>> copying, unmapping. Sounds feasible, but not sure which roadblocks we would
+>> find on the way.
 > 
+> We can support migration/compaction with temporary mapping. The first
+> roadblock I've hit there was that migration allocates 4K destination
+> page and if we use it in secret map we are back to scrambling the direct
+> map into 4K pieces. It still sounds feasible but not as trivial :)
+
+That sounds like the proper way for me to do it then.
+
+> 
+> But again, there is nothing in the current form of secretmem that
+> prevents allocation from ZONE_MOVABLE.
+
+Oh, there is something: That the pages are not movable.
+
+-- 
+Thanks,
+
+David / dhildenb
 
