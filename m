@@ -2,213 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58852A2A76
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD36E2A2A79
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgKBMOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:14:14 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5036 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728423AbgKBMON (ORCPT
+        id S1728591AbgKBMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgKBMQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:14:13 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2C1e1Q116735;
-        Mon, 2 Nov 2020 07:13:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=rJZq2qAlGGU6LQSZi4sVFIMHSz4uQffedOq+S4xFT1E=;
- b=E9pCxcc/CkyFEQtVpsvqNwfpWnJ+4PHNGaqh2UZBirY9IKjecVs9k/1p2U9bWdRwN3NE
- pT9yaywy/DoihiB7PMdqgJCAGdVoAHmrEmGjEBSycbBHN0arGN2YnFhChreZaVupEBYo
- nNqgxSY9DOKKQkpHMnUw+0dY2ROriQrpUArlbUXWEfP+fiedOT2kxfhlnfeXwPx3SLQY
- j/PHNwgOxeDMA9n9GMrcR4kdclAJbYskigHktA9NnaT17UBknBeQ0fFFY8Fv3go0z0nO
- T8c3zkImKClNW6LNdFxufNzp8zjMQq7W/n2uvNlwOB6xm3rJJIRQcLngP9VDV7ZQ1v9P 8g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34hn6g4mp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Nov 2020 07:13:37 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A2C1rH2117971;
-        Mon, 2 Nov 2020 07:13:37 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34hn6g4mn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Nov 2020 07:13:36 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A2CCLN8018604;
-        Mon, 2 Nov 2020 12:13:34 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 34h01ua24c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Nov 2020 12:13:34 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A2CDWJq656116
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Nov 2020 12:13:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30ECD42052;
-        Mon,  2 Nov 2020 12:13:32 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 300FA42041;
-        Mon,  2 Nov 2020 12:13:29 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.45.94])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Nov 2020 12:13:29 +0000 (GMT)
-Message-ID: <f6045fd9844f3b14c20bf86e60aa3a81253230cd.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 3/3] arm64/ima: add ima_arch support
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Chester Lin <clin@suse.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, X86 ML <x86@kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Date:   Mon, 02 Nov 2020 07:13:28 -0500
-In-Reply-To: <20201102072005.GB31148@linux-8mug>
-References: <20201030060840.1810-1-clin@suse.com>
-         <20201030060840.1810-4-clin@suse.com>
-         <CAMj1kXFhZEHP37_tkzzHHhkk-Ej+eRcCinMv-tOdp7vvb1d1mQ@mail.gmail.com>
-         <20201102072005.GB31148@linux-8mug>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-02_07:2020-11-02,2020-11-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- phishscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011020093
+        Mon, 2 Nov 2020 07:16:02 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C846C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:16:02 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h62so4454666wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wFKKn264CsG6CZ1Z/QMBHa9F5OycYTnk8m3p/pKwkTQ=;
+        b=Sn7PfX7qYKMlJzXjW8ZqbgPGdDRsXDTA9ctaGKC2ALOV7HZdILzRkSIwDPd+9ozQ7Q
+         +vNfHMDRIpdZlVEhaPYp3oMbD6lEesUsPmr9vTqS0/c7fhs1hSwoyHi/4OcAL5L/gdKs
+         cJFB6GCgyDYc7i9dpdLDkZJJMOh6V9H1GH32ylbiBLO/RdDN9JO1674egNd6FI0SxuaG
+         FSnrndvq8/1A3/zzaYVowQN0psWHP73xL0kXDIEx04G3PumyYxwJijfHEe45OdHjnUUD
+         4OXDUzRGftHbX/lAjOtHIUwu35Y3hYTfRmkrTNudNiPY78IUyShgeIlsn1pNqzByXD7A
+         c1Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wFKKn264CsG6CZ1Z/QMBHa9F5OycYTnk8m3p/pKwkTQ=;
+        b=Ay7WygMGGnqj+Saaol/67ZU9ENv+FtrA/p8SC7iXMaeqWoX1+/MVfEu8KLEM/oQl8L
+         GJiaqLWiY/7wZYTAjYx+KBSyJt5+kLz20BIbNLth9vOKaz/mYefu6dy/iGIf8RvWtEYS
+         F/RLO9UB727C9kkXWmlSIjo5xtopKxbKROGJ4vr51vj16B1e69ZEDfIGG1ls8gDCgcAI
+         N4qC6GH3mHc7ltOlVOzk7hwMR9wgvM2HvHRfsErhIZxGHEMuDjAnRIfTUQXtsYmTn3nt
+         pvCFfdpdGVkyTsvpDxEaXGDXymmJOZOgj2ysSigMVuHzSMoKs8Vogq1GmipYQAd63iAQ
+         gXAQ==
+X-Gm-Message-State: AOAM531zfFoqhbRJ+p321rgyY+MX2zWnlDB6S/wjsZWps/YRIHkWDjIN
+        a0Nan5Ksi2MvQFtPA3HbI94=
+X-Google-Smtp-Source: ABdhPJynmcgXsjWy1DpF7+nNBH0FZRei1KDJOQ7i4Ede1eLeOi9eJ76wHSYC6e5OYdpdAaw6fRYpCQ==
+X-Received: by 2002:a1c:f314:: with SMTP id q20mr17516792wmq.104.1604319360886;
+        Mon, 02 Nov 2020 04:16:00 -0800 (PST)
+Received: from crucifix.local ([129.0.76.60])
+        by smtp.gmail.com with ESMTPSA id s188sm4990470wmf.45.2020.11.02.04.15.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 04:16:00 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:15:56 +0100
+From:   Tabot Kevin <tabot.kevin@gmail.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replaced hard coded function names in debug messages
+ with __func__ macro.
+Message-ID: <20201102121556.GA37670@crucifix.local>
+References: <20201031164059.GA5534@tabot>
+ <20201102093324.dz5es32yhmga34hs@holly.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201102093324.dz5es32yhmga34hs@holly.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 15:20 +0800, Chester Lin wrote:
-> On Fri, Oct 30, 2020 at 12:53:25PM +0100, Ard Biesheuvel wrote:
-> > On Fri, 30 Oct 2020 at 07:09, Chester Lin <clin@suse.com> wrote:
-> > >
-> > > Add arm64 IMA arch support. The code and arch policy is mainly inherited
-> > > from x86.
-> > >
-> > > Signed-off-by: Chester Lin <clin@suse.com>
-> > > ---
-> > >  arch/arm64/Kconfig           |  1 +
-> > >  arch/arm64/kernel/Makefile   |  2 ++
-> > >  arch/arm64/kernel/ima_arch.c | 43 ++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 46 insertions(+)
-> > >  create mode 100644 arch/arm64/kernel/ima_arch.c
-> > >
-> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > index a42e8d13cc88..496a4a26afc6 100644
-> > > --- a/arch/arm64/Kconfig
-> > > +++ b/arch/arm64/Kconfig
-> > > @@ -201,6 +201,7 @@ config ARM64
-> > >         select SWIOTLB
-> > >         select SYSCTL_EXCEPTION_TRACE
-> > >         select THREAD_INFO_IN_TASK
-> > > +       imply IMA_SECURE_AND_OR_TRUSTED_BOOT if EFI
-> > >         help
-> > >           ARM 64-bit (AArch64) Linux support.
-> > >
-> > > diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> > > index bbaf0bc4ad60..0f6cbb50668c 100644
-> > > --- a/arch/arm64/kernel/Makefile
-> > > +++ b/arch/arm64/kernel/Makefile
-> > > @@ -69,3 +69,5 @@ extra-y                                       += $(head-y) vmlinux.lds
-> > >  ifeq ($(CONFIG_DEBUG_EFI),y)
-> > >  AFLAGS_head.o += -DVMLINUX_PATH="\"$(realpath $(objtree)/vmlinux)\""
-> > >  endif
-> > > +
-> > > +obj-$(CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT)   += ima_arch.o
-> > > diff --git a/arch/arm64/kernel/ima_arch.c b/arch/arm64/kernel/ima_arch.c
-> > > new file mode 100644
-> > > index 000000000000..564236d77adc
-> > > --- /dev/null
-> > > +++ b/arch/arm64/kernel/ima_arch.c
-> > > @@ -0,0 +1,43 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright (C) 2018 IBM Corporation
-> > > + */
-> > > +#include <linux/efi.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/ima.h>
-> > > +
-> > > +bool arch_ima_get_secureboot(void)
-> > > +{
-> > > +       static bool sb_enabled;
-> > > +       static bool initialized;
-> > > +
-> > > +       if (!initialized & efi_enabled(EFI_BOOT)) {
-> > > +               sb_enabled = ima_get_efi_secureboot();
-> > > +               initialized = true;
-> > > +       }
-> > > +
-> > > +       return sb_enabled;
-> > > +}
-> > > +
-> > > +/* secure and trusted boot arch rules */
-> > > +static const char * const sb_arch_rules[] = {
-> > > +#if !IS_ENABLED(CONFIG_KEXEC_SIG)
-> > > +       "appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig",
-> > > +#endif /* CONFIG_KEXEC_SIG */
-> > > +       "measure func=KEXEC_KERNEL_CHECK",
-> > > +#if !IS_ENABLED(CONFIG_MODULE_SIG)
-> > > +       "appraise func=MODULE_CHECK appraise_type=imasig",
-> > > +#endif
-> > > +       "measure func=MODULE_CHECK",
-> > > +       NULL
-> > > +};
-> > > +
-> > > +const char * const *arch_get_ima_policy(void)
-> > > +{
-> > > +       if (IS_ENABLED(CONFIG_IMA_ARCH_POLICY) && arch_ima_get_secureboot()) {
-> > > +               if (IS_ENABLED(CONFIG_MODULE_SIG))
-> > > +                       set_module_sig_enforced();
-> > > +               return sb_arch_rules;
-> > > +       }
-> > > +       return NULL;
-> > > +}
-> > > --
-> > > 2.28.0
-> > >
+
+Greetings Daniel,
+Thank you very much for the response. So, should I just revert back to the original 
+all the changes in places where I replace hard coded functions names with  __func__?
+
+Kind regards,
+
+Tabot Kevin.
+
+On Mon, Nov 02, 2020 at 09:33:24AM +0000, Daniel Thompson wrote:
+> On Sat, Oct 31, 2020 at 05:41:03PM +0100, Tabot Kevin wrote:
+> > This patch fixes the following:
+> > - Uses __func__ macro to print function names.
+> > - Got rid of unnecessary braces around single line if statements.
+> > - End of block comments on a seperate line.
+> > - A spelling mistake of the word "on".
 > > 
-> > Can we move all this stuff into security/integrity/ima/ima_efi.c instead?
-> >
-> Actually I hesitated to move all this stuff into ima_efi.c when coding v3
-> because I haven't figured out a clear picture to achieve it. Since each
-> architecture could still have different details to trigger secure boot detection
-> and define their arch-specific rules [e.g. Having boot_params in x86_64 creates
-> more conditions that need to be determined before calling get_sb_mode()], moving
-> all this stuff seems to decrease the flexibility. Besides, it might also affect
-> the consistency of ima_arch as well, for example, ppc and s390 still use these
-> function prototypes defined in ima.h. Since these functions are already referred
-> by non-EFI architectures, why don't we still reuse these prototypes? For example,
-> we could remain a smaller arch_ima_get_secureboot() and the arch-specific rules
-> but move the major part of arch_get_ima_policy() into ima_efi.c. For example,
-> we could implement an efi_ima_policy() for arch_get_ima_policy() to call so that
-> the arch_get_ima_policy() doesn't have to know some details such as checking
-> conditions or calling set_module_sig_enforced().
+> > Signed-off-by: Tabot Kevin <tabot.kevin@gmail.com>
+> > ---
+> >  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 25 +++++++++++-----------
+> >  1 file changed, 13 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > index c907305..1396a33 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > @@ -146,7 +146,7 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
+> >  	struct ov2680_device *dev = to_ov2680_sensor(sd);
+> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> >  
+> > -	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_x\n");
+> > +	dev_dbg(&client->dev,  "++++%s\n", __func__);
 > 
-> Please feel free to let me know if any suggestions.
-
-Yes, that is the point and the reason for defining ima_efi.c and
-conditionally including it only for EFI systems.  The existing ppc and
-s390 code should remain unaffected by this change.
-
-thanks,
-
-Mimi
-
+> It might be better just to remove this sort of message.
+> 
+> They are not "wrong wrong" but are they actually useful one a
+> driver's basic functions work? Even where they are useful
+> dynamic techniques (ftrace, tracepoints, etc) arguably provide a
+> better way to support "did my function actually run" debug
+> approaches anyway.
+> 
+> 
+> Daniel.
+> 
+> 
+> >  	*val = ov2680_res[dev->fmt_idx].bin_factor_x;
+> >  
+> >  	return 0;
+> > @@ -158,7 +158,7 @@ static int ov2680_g_bin_factor_y(struct v4l2_subdev *sd, s32 *val)
+> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> >  
+> >  	*val = ov2680_res[dev->fmt_idx].bin_factor_y;
+> > -	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_y\n");
+> > +	dev_dbg(&client->dev,  "++++%s\n", __func__);
+> >  	return 0;
+> >  }
+> >  
+> > @@ -173,7 +173,7 @@ static int ov2680_get_intg_factor(struct i2c_client *client,
+> >  	u16 reg_val;
+> >  	int ret;
+> >  
+> > -	dev_dbg(&client->dev,  "++++ov2680_get_intg_factor\n");
+> > +	dev_dbg(&client->dev,  "++++%s\n", __func__);
+> >  	if (!info)
+> >  		return -EINVAL;
+> >  
+> > @@ -251,8 +251,8 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+> >  	int ret, exp_val;
+> >  
+> >  	dev_dbg(&client->dev,
+> > -		"+++++++__ov2680_set_exposure coarse_itg %d, gain %d, digitgain %d++\n",
+> > -		coarse_itg, gain, digitgain);
+> > +		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
+> > +		__func__, coarse_itg, gain, digitgain);
+> >  
+> >  	vts = ov2680_res[dev->fmt_idx].lines_per_frame;
+> >  
+> > @@ -461,11 +461,11 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
+> >  	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
+> >  	if (ret)
+> >  		return ret;
+> > -	if (value) {
+> > +	if (value)
+> >  		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
+> > -	} else {
+> > +	else
+> >  		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
+> > -	}
+> > +
+> >  	ret = ov2680_write_reg(client, 1,
+> >  			       OV2680_FLIP_REG, val);
+> >  	if (ret)
+> > @@ -731,7 +731,8 @@ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
+> >  	 * existing integrations often wire two (reset/power_down)
+> >  	 * because that is the way other sensors work.  There is no
+> >  	 * way to tell how it is wired internally, so existing
+> > -	 * firmwares expose both and we drive them symmetrically. */
+> > +	 * firmwares expose both and we drive them symmetrically.
+> > +	 */
+> >  	if (flag) {
+> >  		ret = dev->platform_data->gpio0_ctrl(sd, 1);
+> >  		usleep_range(10000, 15000);
+> > @@ -1060,9 +1061,9 @@ static int ov2680_s_stream(struct v4l2_subdev *sd, int enable)
+> >  
+> >  	mutex_lock(&dev->input_lock);
+> >  	if (enable)
+> > -		dev_dbg(&client->dev, "ov2680_s_stream one\n");
+> > +		dev_dbg(&client->dev, "%s on\n", __func__);
+> >  	else
+> > -		dev_dbg(&client->dev, "ov2680_s_stream off\n");
+> > +		dev_dbg(&client->dev, "%s off\n", __func__);
+> >  
+> >  	ret = ov2680_write_reg(client, 1, OV2680_SW_STREAM,
+> >  			       enable ? OV2680_START_STREAMING :
+> > @@ -1226,7 +1227,7 @@ static int ov2680_remove(struct i2c_client *client)
+> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> >  	struct ov2680_device *dev = to_ov2680_sensor(sd);
+> >  
+> > -	dev_dbg(&client->dev, "ov2680_remove...\n");
+> > +	dev_dbg(&client->dev, "%s...\n", __func__);
+> >  
+> >  	dev->platform_data->csi_cfg(sd, 0);
+> >  
+> > -- 
+> > 2.7.4
+> > 
