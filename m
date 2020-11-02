@@ -2,126 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1952A301F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A69C2A3016
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 17:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgKBQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 11:42:32 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46626 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727314AbgKBQmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:42:31 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A2GgGSo023795;
-        Mon, 2 Nov 2020 10:42:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604335336;
-        bh=x+tyR6fP9WKVbjUiVjfKW+ZwHBtSovlLDSYOMaR4IEg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=azl9puHdhASIGZkeOm73EbM5Tgm3iurp0KS7wGgLNgBUyQpNXS0mjX9O6U1asiqKC
-         /GgABxzuPpV/BVKNq5ezEvranj07KeoJSg+hA43srAcGFyRlH2OJVHZDo9Xe9pYs69
-         EByddWvafnIlf4aOADQl9+c/a0Hez5qKfZxpEE8k=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A2GgGrB017089
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Nov 2020 10:42:16 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 10:41:39 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 10:41:39 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A2Gfc4h073505;
-        Mon, 2 Nov 2020 10:41:38 -0600
-Date:   Mon, 2 Nov 2020 10:41:37 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tero Kristo <t-kristo@ti.com>, Roger Quadros <rogerq@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 8/8] arm64: dts: ti: k3-j721e-main: Fix PCIe maximum
- outbound regions
-Message-ID: <20201102164137.ntl3v6gu274ek2r2@gauze>
-References: <20201102101154.13598-1-kishon@ti.com>
- <20201102101154.13598-9-kishon@ti.com>
+        id S1727276AbgKBQlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 11:41:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59286 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727139AbgKBQlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:41:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604335310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZZ1+8t7uf1F7l3ZBHb45iCoO7eWd2o1ycVfihIUusH8=;
+        b=Ujz9LMjaN8SJhVxn50rnawrrA86tblFVcms0tvPZ6z30qdXkdWdaV8CVc/AUzHzdbFv1V2
+        IhoFIoAHPiRb7IWyVB1j/sUcCmK6cyUWjPXJIQKp023Mx82tNgLktFrqUxCnDxWjn5Juhp
+        fYdZ2HuY/J5qgBTErdjQxOEKWWeOSL4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13AC8AC65;
+        Mon,  2 Nov 2020 16:41:50 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 17:41:47 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2] ftrace: Add recording of functions that caused
+ recursion
+Message-ID: <20201102164147.GJ20201@alley>
+References: <20201030213142.096102821@goodmis.org>
+ <20201030214014.801706340@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102101154.13598-9-kishon@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201030214014.801706340@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:41-20201102, Kishon Vijay Abraham I wrote:
-> PCIe controller in J721E supports a maximum of 32 outbound regions.
-> commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree
-> nodes") incorrectly added maximum number of outbound regions to 16. Fix
-> it here.
+On Fri 2020-10-30 17:31:53, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index e2a96b2c423c..61b533130ed1 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -652,7 +652,7 @@
->  		power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 239 1>;
->  		clock-names = "fck";
-> -		cdns,max-outbound-regions = <16>;
-> +		cdns,max-outbound-regions = <32>;
->  		max-functions = /bits/ 8 <6>;
->  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
->  		dma-coherent;
-> @@ -701,7 +701,7 @@
->  		power-domains = <&k3_pds 240 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 240 1>;
->  		clock-names = "fck";
-> -		cdns,max-outbound-regions = <16>;
-> +		cdns,max-outbound-regions = <32>;
->  		max-functions = /bits/ 8 <6>;
->  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
->  		dma-coherent;
-> @@ -750,7 +750,7 @@
->  		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 241 1>;
->  		clock-names = "fck";
-> -		cdns,max-outbound-regions = <16>;
-> +		cdns,max-outbound-regions = <32>;
->  		max-functions = /bits/ 8 <6>;
->  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
->  		dma-coherent;
-> @@ -799,7 +799,7 @@
->  		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 242 1>;
->  		clock-names = "fck";
-> -		cdns,max-outbound-regions = <16>;
-> +		cdns,max-outbound-regions = <32>;
->  		max-functions = /bits/ 8 <6>;
->  		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
->  		dma-coherent;
-> -- 
-> 2.17.1
+> This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
+> "recursed_functions" all the functions that caused recursion while a
+> callback to the function tracer was running.
 > 
 
-Does this need to be part of this series? If NOT, please pull this  out
-and repost so that it can be independently picked up since there is no
-dependency on the bindings or any part of this series?
+> --- /dev/null
+> +++ b/kernel/trace/trace_recursion_record.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/seq_file.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/module.h>
+> +#include <linux/ftrace.h>
+> +#include <linux/fs.h>
+> +
+> +#include "trace_output.h"
+> +
+> +struct recursed_functions {
+> +	unsigned long		ip;
+> +	unsigned long		parent_ip;
+> +};
+> +
+> +static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
+
+The code tries to be lockless safe as much as possible. It would make
+sense to allign the array.
 
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> +static atomic_t nr_records;
+> +
+> +/*
+> + * Cache the last found function. Yes, updates to this is racey, but
+> + * so is memory cache ;-)
+> + */
+> +static unsigned long cached_function;
+> +
+> +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
+> +{
+> +	int index;
+> +	int i = 0;
+> +	unsigned long old;
+> +
+> + again:
+> +	/* First check the last one recorded */
+> +	if (ip == cached_function)
+> +		return;
+> +
+> +	index = atomic_read(&nr_records);
+> +	/* nr_records is -1 when clearing records */
+> +	smp_mb__after_atomic();
+> +	if (index < 0)
+> +		return;
+> +
+> +	/* See below */
+> +	if (i > index)
+> +		index = i;
+
+This looks like a complicated way to do index++ via "i" variable.
+I guess that it was needed only in some older variant of the code.
+See below.
+
+> +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
+> +		return;
+> +
+> +	for (i = index - 1; i >= 0; i--) {
+> +		if (recursed_functions[i].ip == ip) {
+> +			cached_function = ip;
+> +			return;
+> +		}
+> +	}
+> +
+> +	cached_function = ip;
+> +
+> +	/*
+> +	 * We only want to add a function if it hasn't been added before.
+> +	 * Add to the current location before incrementing the count.
+> +	 * If it fails to add, then increment the index (save in i)
+> +	 * and try again.
+> +	 */
+> +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
+> +	if (old != 0) {
+> +		/* Did something else already added this for us? */
+> +		if (old == ip)
+> +			return;
+> +		/* Try the next location (use i for the next index) */
+> +		i = index + 1;
+
+What about
+
+		index++;
+
+We basically want to run the code again with index + 1 limit.
+
+Maybe, it even does not make sense to check the array again
+and we should just try to store the value into the next slot.
+
+> +		goto again;
+> +	}
+> +
+> +	recursed_functions[index].parent_ip = parent_ip;
+
+WRITE_ONCE() ?
+
+> +
+> +	/*
+> +	 * It's still possible that we could race with the clearing
+> +	 *    CPU0                                    CPU1
+> +	 *    ----                                    ----
+> +	 *                                       ip = func
+> +	 *  nr_records = -1;
+> +	 *  recursed_functions[0] = 0;
+> +	 *                                       i = -1
+> +	 *                                       if (i < 0)
+> +	 *  nr_records = 0;
+> +	 *  (new recursion detected)
+> +	 *      recursed_functions[0] = func
+> +	 *                                            cmpxchg(recursed_functions[0],
+> +	 *                                                    func, 0)
+> +	 *
+> +	 * But the worse that could happen is that we get a zero in
+> +	 * the recursed_functions array, and it's likely that "func" will
+> +	 * be recorded again.
+> +	 */
+> +	i = atomic_read(&nr_records);
+> +	smp_mb__after_atomic();
+> +	if (i < 0)
+> +		cmpxchg(&recursed_functions[index].ip, ip, 0);
+> +	else if (i <= index)
+> +		atomic_cmpxchg(&nr_records, i, index + 1);
+
+This looks weird. It would shift nr_records past the record added
+in this call. It might skip many slots that were zeroed when clearing.
+Also we do not know if our entry was not zeroed as well.
+
+I would suggest to do it some other way (not even compile tested):
+
+void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
+{
+	int index, old_index;
+	int i = 0;
+	unsigned long old_ip;
+
+ again:
+	/* First check the last one recorded. */
+	if (ip == READ_ONCE(cached_function))
+		return;
+
+	index = atomic_read(&nr_records);
+	/* nr_records is -1 when clearing records. */
+	smp_mb__after_atomic();
+	if (index < 0)
+		return;
+
+	/* Already cached? */
+	for (i = index - 1; i >= 0; i--) {
+		if (recursed_functions[i].ip == ip) {
+			WRITE_ONCE(cached_function, ip);
+			return;
+		}
+	}
+
+	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
+		return;
+
+	/*
+	 * Try to reserve the slot. It might be already taken
+	 * or the entire cache cleared.
+	 */
+	old_index = atomic_cmpxchg(&nr_records, index, index + 1);
+	if (old_index != index)
+		goto again;
+
+	/*
+	 * Be careful. The entire cache might have been cleared and reused in
+	 * the meantime. Replace only empty slot.
+	 */
+	old_ip = cmpxchg(&recursed_functions[index].ip, 0, ip);
+	if (old_ip != 0)
+		goto again;
+
+	old_ip = cmpxchg(&recursed_functions[index].parent_ip, 0, parrent_ip);
+	if (old_ip != 0)
+		goto again;
+
+	/*
+	 * No ip is better than non-consistent one. The race with
+	 * clearing should be rare and not worth a perfect solution.
+	 */
+	if (READ_ONCE(recursed_functions[index].ip) != ip) {
+		cmpxchg(&recursed_functions[index].ip, ip, 0UL)
+		goto again;
+	}
+}
+
+The last check probably is not needed. Inconsistent entries
+should be prevented by the way how this func is called:
+
+		static atomic_t paranoid_test;				\
+		if (!atomic_read(&paranoid_test)) {			\
+			atomic_inc(&paranoid_test);			\
+			ftrace_record_recursion(ip, pip);		\
+			atomic_dec(&paranoid_test);			\
+		}							\
+
+
+
+
+The rest of the patchset looks fine. I do not feel comfortable to give
+it Reviewed-by because I did not review it in depth.
+
+I spent more time with the above lockless code. I took it is a
+training. I need to improve this skill to feel more comfortable with
+the lockless printk ring buffer ;-)
+
+Best Regards,
+Petr
