@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31472A325B
+	by mail.lfdr.de (Postfix) with ESMTP id 34C602A325A
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgKBRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S1726518AbgKBRyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgKBRyM (ORCPT
+        with ESMTP id S1726493AbgKBRyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:54:12 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E54C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:54:12 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id u19so15826223ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:54:11 -0800 (PST)
+        Mon, 2 Nov 2020 12:54:15 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7048BC061A48
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:54:13 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id z2so13681394ilh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:54:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TY8f/hJb7UErE9l1O52/R43lnZDyIHDAaaf9Om5UBk0=;
-        b=odoQ12IQQQ86bEKXbuj2rNLJXk/yR8omYiCjtdscZKttTWH47NAApFjVvrBknz8fIa
-         SsFStRd7Z1ulg4BRGqoYtOUnx8KM27tt3NtoGcpfgu1EKrloowlef8auU1sQF/eSdGTr
-         GvRJd4F9xuCYkBu6g5AUvgsGuUPXRTYxuBKSC3y7B2WPeCO3Am6/1SQlUMX5mYvFOxL8
-         quFGtYeDts06wUsw+XJfQ7N/gBQM9RDYzPv+TDvoG81GKadIIULLqCScJjE1H98Fhp9G
-         DJ/E1L+67n3QpsmrZCh3ttIpBthkGysSSCP9U8Y6uWjQtvfqqZw1wRF6xgJYTsPkUhxu
-         PF/Q==
+        bh=inRx9H1T7vReO20GsdvOW3B0eTMy5lZmarlEkrdYr50=;
+        b=fAfOp4nVEo3xVkTHEHOTWtOkAf0X5/1dOn765Jd2TuaVzfII00F6yDoN0tu+pZkRxe
+         r5Wy7Bf4FCT3M5RW1Ay5JgLo3GPB0UQh6freZ6piHsjM6VzhUZZEAPwv4Y4V79KUJeJm
+         gBXtgy8a7aZCIv2BclHSVA1WLlL1HN9Xf+9SUK1LkG86jOWuOyuyIU3WRh6NkEtImH6F
+         80YZq0CgvHgQN2A/ly3KSJckHtgB0QYO7gqG4B8wRUnnu7PahnyiBwAihvuNSgyKyGsW
+         HWsX7b9Z/Wkrii6Kdgh01tP7OGz7VFYsZvvNMXE9ArUUMYz9c2cbXVP05hRd4l58bU7n
+         yKOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TY8f/hJb7UErE9l1O52/R43lnZDyIHDAaaf9Om5UBk0=;
-        b=S7aCuDZG8ItYB3GlJX8MdOOfQvvm0AkyU3TEV+BW/M0W3V1ydJVR3F17c+tc3ZSzcu
-         wqTiuwV9bLY7uDs8A9I8aqDqllCT0NMhJw7HuuJZSnLCOo6sHfbn9e7ekuo6s6F5u4om
-         6p5Bi1jPr8ciBbEWEJkXIqHn4jq69TXbqBmjmey+jbiqGE7APbfdCv2xrxrJ6umrzB3I
-         /ic0nq+ri4sIdZ4KS+uUeNUn1FeZX3tWqKCx2BX3e6MAnGRB2JWw/VeiJM2/CH6M8o36
-         GoToV3w0WhqJBKCDVLM8bOAd+u2hC2//E7moP1XHOL5wHuXXApP9OdauZpu9TQG5bES2
-         cosA==
-X-Gm-Message-State: AOAM531yMr/Cd8VG5ILXyaQoUPCboKN0D/MK7vLI+Frf7t/7OysEVCC0
-        AOP4s1U6BzbnUHK7dQBZDBzjig==
-X-Google-Smtp-Source: ABdhPJy1FuCPH779RMcdRimZdawwLdFGf4366Hm9dd0i36HcZfm6/3n/xeUg3b2LMNZXi5PfV3btVw==
-X-Received: by 2002:a05:6602:2407:: with SMTP id s7mr11099495ioa.79.1604339651325;
-        Mon, 02 Nov 2020 09:54:11 -0800 (PST)
+        bh=inRx9H1T7vReO20GsdvOW3B0eTMy5lZmarlEkrdYr50=;
+        b=iO/r7m/xvRdEGFWoNeemaBAceD/yk5BFatSwHn0oz85YidP8k0WaSp3QGEhQ8xz9OM
+         MVANYhHkChlz1h64D1NTzQ+bh8tbUeE6NNXBkb35QsZr4SylFfwDO4wdcUM9AihY7+Y2
+         oOxZFYx0n7yG7491Qt8NiI5nRx5NAdEy915u1Lv7ek70J0arHvf7VZJ9iX81a7NlOo+8
+         V4xK8Z5m1Nv5SqYXRvpTQRZ/0YHf8nTHcRZNW5IIJ7qkQRc/0BJcq7Rf1L8huYuZL6n7
+         wolGLsn6V7muLVyC1b3KWWvzzvCzWZTIblL7/dQsS0jbxB1aIiTEznBT3ABt71fjYGO1
+         eYtg==
+X-Gm-Message-State: AOAM531SvMJzBHKFrbLZfbJnbQ/U0kMfPZb+bw9KvQrX/EJd/Q79zilL
+        zae68GD2scX7ZdoNWJjYVMoJhg==
+X-Google-Smtp-Source: ABdhPJxlqfjyCvupZu5ca/shuvsQHFM+go4CmXV+ncz93VpGJnnYv0ACfGdjy5ufzNZejH8mQDZ/4g==
+X-Received: by 2002:a92:d9ca:: with SMTP id n10mr7772408ilq.21.1604339652805;
+        Mon, 02 Nov 2020 09:54:12 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id r4sm11089591ilj.43.2020.11.02.09.54.09
+        by smtp.gmail.com with ESMTPSA id r4sm11089591ilj.43.2020.11.02.09.54.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 09:54:10 -0800 (PST)
+        Mon, 02 Nov 2020 09:54:12 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/6] net: ipa: use version in gsi_channel_program()
-Date:   Mon,  2 Nov 2020 11:53:59 -0600
-Message-Id: <20201102175400.6282-6-elder@linaro.org>
+Subject: [PATCH net-next 6/6] net: ipa: eliminate legacy arguments
+Date:   Mon,  2 Nov 2020 11:54:00 -0600
+Message-Id: <20201102175400.6282-7-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201102175400.6282-1-elder@linaro.org>
 References: <20201102175400.6282-1-elder@linaro.org>
@@ -65,137 +65,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the IPA version in gsi_channel_program() to determine whether
-we should enable the GSI doorbell engine when requested.  This way,
-callers only say whether or not it should be enabled if needed,
-regardless of hardware version.
+We enable a channel doorbell engine only for IPA v3.5.1, and that is
+now handled directly by gsi_channel_program().
 
-Rename the "legacy" argument to gsi_channel_reset(), and have
-it indicate whether the doorbell engine should be enabled when
-reprogramming following the reset.
+When initially setting up a channel, we want that doorbell engine
+enabled, and we can request that independent of the IPA version.
 
-Change all callers of gsi_channel_reset() to indicate whether to
-enable the doorbell engine after reset, independent of hardware
-version.
-
-Rework a little logic in ipa_endpoint_reset() to get rid of the
-"legacy" variable previously passed to gsi_channel_reset().
+Doing that makes the "legacy" argument to gsi_channel_setup_one()
+unnecessary.  And with that gone we can get rid of the "legacy"
+argument to gsi_channel_setup(), and gsi_setup() as well.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c          | 10 +++++-----
- drivers/net/ipa/gsi.h          |  8 ++++----
- drivers/net/ipa/ipa_endpoint.c | 16 ++++++----------
- 3 files changed, 15 insertions(+), 19 deletions(-)
+ drivers/net/ipa/gsi.c      | 13 ++++++-------
+ drivers/net/ipa/gsi.h      |  3 +--
+ drivers/net/ipa/ipa_main.c |  3 +--
+ 3 files changed, 8 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 729ef712a10fd..f22b5d2efaf9d 100644
+index f22b5d2efaf9d..12a2001ee1e9c 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -743,8 +743,8 @@ static void gsi_channel_program(struct gsi_channel *channel, bool doorbell)
- 
- 	/* Max prefetch is 1 segment (do not set MAX_PREFETCH_FMASK) */
- 
--	/* Enable the doorbell engine if requested */
--	if (doorbell)
-+	/* We enable the doorbell engine for IPA v3.5.1 */
-+	if (gsi->version == IPA_VERSION_3_5_1 && doorbell)
- 		val |= USE_DB_ENG_FMASK;
- 
- 	/* Starting with IPA v4.0 the command channel uses the escape buffer */
-@@ -831,8 +831,8 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
- 	return ret;
+@@ -1454,8 +1454,7 @@ static void gsi_evt_ring_teardown(struct gsi *gsi)
  }
  
--/* Reset and reconfigure a channel (possibly leaving doorbell disabled) */
--void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool legacy)
-+/* Reset and reconfigure a channel, (possibly) enabling the doorbell engine */
-+void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool doorbell)
+ /* Setup function for a single channel */
+-static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id,
+-				 bool legacy)
++static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
  {
  	struct gsi_channel *channel = &gsi->channel[channel_id];
- 
-@@ -843,7 +843,7 @@ void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool legacy)
- 	if (gsi->version == IPA_VERSION_3_5_1 && !channel->toward_ipa)
- 		gsi_channel_reset_command(channel);
+ 	u32 evt_ring_id = channel->evt_ring_id;
+@@ -1474,7 +1473,7 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id,
+ 	if (ret)
+ 		goto err_evt_ring_de_alloc;
  
 -	gsi_channel_program(channel, legacy);
-+	gsi_channel_program(channel, doorbell);
- 	gsi_channel_trans_cancel_pending(channel);
++	gsi_channel_program(channel, true);
  
- 	mutex_unlock(&gsi->mutex);
+ 	if (channel->toward_ipa)
+ 		netif_tx_napi_add(&gsi->dummy_dev, &channel->napi,
+@@ -1551,7 +1550,7 @@ static void gsi_modem_channel_halt(struct gsi *gsi, u32 channel_id)
+ }
+ 
+ /* Setup function for channels */
+-static int gsi_channel_setup(struct gsi *gsi, bool legacy)
++static int gsi_channel_setup(struct gsi *gsi)
+ {
+ 	u32 channel_id = 0;
+ 	u32 mask;
+@@ -1563,7 +1562,7 @@ static int gsi_channel_setup(struct gsi *gsi, bool legacy)
+ 	mutex_lock(&gsi->mutex);
+ 
+ 	do {
+-		ret = gsi_channel_setup_one(gsi, channel_id, legacy);
++		ret = gsi_channel_setup_one(gsi, channel_id);
+ 		if (ret)
+ 			goto err_unwind;
+ 	} while (++channel_id < gsi->channel_count);
+@@ -1649,7 +1648,7 @@ static void gsi_channel_teardown(struct gsi *gsi)
+ }
+ 
+ /* Setup function for GSI.  GSI firmware must be loaded and initialized */
+-int gsi_setup(struct gsi *gsi, bool legacy)
++int gsi_setup(struct gsi *gsi)
+ {
+ 	struct device *dev = gsi->dev;
+ 	u32 val;
+@@ -1693,7 +1692,7 @@ int gsi_setup(struct gsi *gsi, bool legacy)
+ 	/* Writing 1 indicates IRQ interrupts; 0 would be MSI */
+ 	iowrite32(1, gsi->virt + GSI_CNTXT_INTSET_OFFSET);
+ 
+-	return gsi_channel_setup(gsi, legacy);
++	return gsi_channel_setup(gsi);
+ }
+ 
+ /* Inverse of gsi_setup() */
 diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-index cf117b52496c1..36f876fb8f5ae 100644
+index 36f876fb8f5ae..59ace83d404c4 100644
 --- a/drivers/net/ipa/gsi.h
 +++ b/drivers/net/ipa/gsi.h
-@@ -221,15 +221,15 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id);
-  * gsi_channel_reset() - Reset an allocated GSI channel
-  * @gsi:	GSI pointer
-  * @channel_id:	Channel to be reset
-- * @legacy:	Legacy behavior
-+ * @doorbell:	Whether to (possibly) enable the doorbell engine
+@@ -166,14 +166,13 @@ struct gsi {
+ /**
+  * gsi_setup() - Set up the GSI subsystem
+  * @gsi:	Address of GSI structure embedded in an IPA structure
+- * @legacy:	Set up for legacy hardware
   *
-- * Reset a channel and reconfigure it.  The @legacy flag indicates
-- * that some steps should be done differently for legacy hardware.
-+ * Reset a channel and reconfigure it.  The @doorbell flag indicates
-+ * that the doorbell engine should be enabled if needed.
+  * Return:	0 if successful, or a negative error code
   *
-  * GSI hardware relinquishes ownership of all pending receive buffer
-  * transactions and they will complete with their cancelled flag set.
+  * Performs initialization that must wait until the GSI hardware is
+  * ready (including firmware loaded).
   */
--void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool legacy);
-+void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool doorbell);
+-int gsi_setup(struct gsi *gsi, bool legacy);
++int gsi_setup(struct gsi *gsi);
  
- int gsi_channel_suspend(struct gsi *gsi, u32 channel_id, bool stop);
- int gsi_channel_resume(struct gsi *gsi, u32 channel_id, bool start);
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 6f79028910e3c..548121b1531b7 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1217,7 +1217,6 @@ static int ipa_endpoint_reset_rx_aggr(struct ipa_endpoint *endpoint)
- 	struct gsi *gsi = &ipa->gsi;
- 	bool suspended = false;
- 	dma_addr_t addr;
--	bool legacy;
- 	u32 retries;
- 	u32 len = 1;
- 	void *virt;
-@@ -1279,8 +1278,7 @@ static int ipa_endpoint_reset_rx_aggr(struct ipa_endpoint *endpoint)
- 	 * complete the channel reset sequence.  Finish by suspending the
- 	 * channel again (if necessary).
- 	 */
--	legacy = ipa->version == IPA_VERSION_3_5_1;
--	gsi_channel_reset(gsi, endpoint->channel_id, legacy);
-+	gsi_channel_reset(gsi, endpoint->channel_id, true);
+ /**
+  * gsi_teardown() - Tear down GSI subsystem
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 0d3d1a5cf07c1..a580cab794b1c 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -111,8 +111,7 @@ int ipa_setup(struct ipa *ipa)
+ 	struct device *dev = &ipa->pdev->dev;
+ 	int ret;
  
- 	msleep(1);
- 
-@@ -1303,21 +1301,19 @@ static void ipa_endpoint_reset(struct ipa_endpoint *endpoint)
- 	u32 channel_id = endpoint->channel_id;
- 	struct ipa *ipa = endpoint->ipa;
- 	bool special;
--	bool legacy;
- 	int ret = 0;
- 
- 	/* On IPA v3.5.1, if an RX endpoint is reset while aggregation
- 	 * is active, we need to handle things specially to recover.
- 	 * All other cases just need to reset the underlying GSI channel.
--	 *
--	 * IPA v3.5.1 enables the doorbell engine.  Newer versions do not.
- 	 */
--	legacy = ipa->version == IPA_VERSION_3_5_1;
--	special = !endpoint->toward_ipa && endpoint->data->aggregation;
--	if (legacy && special && ipa_endpoint_aggr_active(endpoint))
-+	special = ipa->version == IPA_VERSION_3_5_1 &&
-+			!endpoint->toward_ipa &&
-+			endpoint->data->aggregation;
-+	if (special && ipa_endpoint_aggr_active(endpoint))
- 		ret = ipa_endpoint_reset_rx_aggr(endpoint);
- 	else
--		gsi_channel_reset(&ipa->gsi, channel_id, legacy);
-+		gsi_channel_reset(&ipa->gsi, channel_id, true);
- 
+-	/* Setup for IPA v3.5.1 has some slight differences */
+-	ret = gsi_setup(&ipa->gsi, ipa->version == IPA_VERSION_3_5_1);
++	ret = gsi_setup(&ipa->gsi);
  	if (ret)
- 		dev_err(&ipa->pdev->dev,
+ 		return ret;
+ 
 -- 
 2.20.1
 
