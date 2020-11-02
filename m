@@ -2,129 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0842A2BDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1D22A2BE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgKBNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:44:23 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:36801 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725797AbgKBNoX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:44:23 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 9A9B3D30;
-        Mon,  2 Nov 2020 08:44:21 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 08:44:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=fE52HILFIEUYX8gSPdSyC8jCaH6
-        8aUucFwybO+du16k=; b=T9FfJT1d/rWjadkKk9V8jydL0dEEJ6WD319p8ZST6R6
-        SW8jwwxwff/uua1ZzcIBZuxrVpbrmVUPzVQ9wAmZrx8lxec1yGeo12mSAVupHXZ6
-        T8NbWuADmwMVprT15cTAvKBR6REBuTz6hEkyzapOYs+YDxA5EmIduE+YqQCSRVen
-        ylJ19SPuJNMwrhuLLEnlV1CZXZGQbJmQ2HypKaRcUd7pbza541iSPV+lKtOO8lpX
-        dSUnIgqooyIx0CyrvtYfcuIFwrw8usPOAsK2dyiE4sj0hKNzC7ta8cFK4lRxYOg0
-        vTAkb0NeuAd52lPnHojoKbhzUZqyfB8WXspnwlW2vFg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=fE52HI
-        LFIEUYX8gSPdSyC8jCaH68aUucFwybO+du16k=; b=ozO57LCJBj25oXnBaWDr5n
-        P2JTOi8K8wLlr81WWAVnIeAsdHfGu+cUIeptcB2vzdkx9gKFK2sSYqGbUdqJ5mqv
-        kxUrnHQbEhXopqwZhXSBWsUa2QG1e0eUx33cgZ69m+8JICT2onUBeJB66zDv0HsH
-        mFuOjCCN8CKwLgZy08ElpycMMmw79CbajOm6EWcloS80o/tJpZzS0HEpPDG9Zrls
-        zDChY75vxKDuGjBWne6P9zyyqqUPfGOgZverbpyustbzzSQK1axVTZmYKt6XzHCv
-        0/6qsnexVE525hIixY0PIiH7WI8DYVZtb75AyEBjpgkzD8yhIQwdJ9XKWKx7DZJw
-        ==
-X-ME-Sender: <xms:NA2gX85uaTdBbSP72m9QH16HMaVKRsOfg3COOMHsAJOoGYJD4xtrLw>
-    <xme:NA2gX95dT2MnmVBIZ44vvBC3r_tiDzcJPhHK4Xi7cIpOrE5miEEoOBPuQ2bSOquql
-    cSE4yQ2a1Nw9SL_m60>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:NA2gX7fDKJvh3X25qFBt5igG9TmtaUs_E0lL0hsiRGFUFkMXlOssxQ>
-    <xmx:NA2gXxIryROmEGBsI7TYwg6e5-3v6qVWyfLQ7DCcQRz59ltOg2pGaw>
-    <xmx:NA2gXwJHNbaCCB0hzjNp-ImuC428o3dM-UHFP_0lsFaTIlVrOpPeNA>
-    <xmx:NQ2gX6hPB5JYkIrnD8EO2mfhxGoE5DFHcFLbNaa5Du7jMz97YjMw7A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3F2A6328005D;
-        Mon,  2 Nov 2020 08:44:20 -0500 (EST)
-Date:   Mon, 2 Nov 2020 14:44:18 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <contact@paulk.fr>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matteo Scordino <matteo.scordino@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: Re: [PATCH 6/9] ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
-Message-ID: <20201102134418.vn7i3e4gpwomxcnj@gilmour.lan>
-References: <20201031182137.1879521-1-contact@paulk.fr>
- <20201031182137.1879521-7-contact@paulk.fr>
- <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
- <20201102102522.GB11809@aptenodytes>
+        id S1725983AbgKBNpw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Nov 2020 08:45:52 -0500
+Received: from verein.lst.de ([213.95.11.211]:33241 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgKBNpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:45:51 -0500
+Received: by verein.lst.de (Postfix, from userid 107)
+        id 834FC68BEB; Mon,  2 Nov 2020 14:45:49 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
+        autolearn=disabled version=3.3.1
+Received: from blackhole (p5b0d807e.dip0.t-ipconnect.de [91.13.128.126])
+        by verein.lst.de (Postfix) with ESMTPSA id 2CD1767357;
+        Mon,  2 Nov 2020 14:44:44 +0100 (CET)
+Date:   Mon, 2 Nov 2020 14:44:35 +0100
+From:   Torsten Duwe <duwe@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Stephan =?UTF-8?B?TcO8bGxlcg==?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
+Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
+Message-ID: <20201102154435.71cab8c0@blackhole>
+In-Reply-To: <20201028180728.GA2831268@kroah.com>
+References: <20200921075857.4424-1-nstange@suse.de>
+        <2961243.vtBmWVcJkq@tauon.chronox.de>
+        <20201016172619.GA18410@lst.de>
+        <3073852.aeNJFYEL58@positron.chronox.de>
+        <20201028185117.74300988@blackhole.lan>
+        <20201028180728.GA2831268@kroah.com>
+Organization: LST e.V.
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zradx5x6omb6x434"
-Content-Disposition: inline
-In-Reply-To: <20201102102522.GB11809@aptenodytes>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 28 Oct 2020 19:07:28 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
---zradx5x6omb6x434
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Oct 28, 2020 at 06:51:17PM +0100, Torsten Duwe wrote:
+> > On Mon, 19 Oct 2020 21:28:50 +0200
+> > Stephan Müller <smueller@chronox.de> wrote:
+> > [...]
+> > > * Sole use of crypto for data processing:
+> > [...]
+> > >  - The LRNG uses only properly defined and implemented
+> > > cryptographic algorithms unlike the use of the SHA-1
+> > > transformation in the existing /dev/random implementation.
+> > > 
+> > >  - Hash operations use NUMA-node-local hash instances to benefit
+> > > large parallel systems.
+> > > 
+> > >  - LRNG uses limited number of data post-processing steps
+> > [...]
+> > > * Performance
+> > > 
+> > >  - Faster by up to 75% in the critical code path of the interrupt
+> > > handler depending on data collection size configurable at kernel
+> > > compile time - the default is about equal in performance with
+> > > existing /dev/random as outlined in [2] section 4.2.
+> > 
+> > [...]
+> > >  - ChaCha20 DRNG is significantly faster as implemented in the
+> > > existing /dev/random as demonstrated with [2] table 2.
+> > > 
+> > >  - Faster entropy collection during boot time to reach fully
+> > > seeded level, including on virtual systems or systems with SSDs as
+> > > outlined in [2] section 4.1.
+> > > 
+> > > * Testing
+> > [...]
+> > 
+> > So we now have 2 proposals for a state-of-the-art RNG, and over a
+> > month without a single comment on-topic from any `get_maintainer.pl`
+> > 
+> > I don't want to emphasise the certification aspects so much. The
+> > interrelation is rather that those certifications require certain
+> > code features, features which are reasonable per se. But the
+> > current code is lagging way behind.
+> > 
+> > I see the focus namely on performance, scalability, testability and
+> > virtualisation. And it certainly is an advantage to use the code
+> > already present under crypto, with its optimisations, and not rely
+> > on some home brew.
+> > 
+> > Can we please have a discussion about how to proceed?
+> > Ted, Greg, Arnd: which approach would you prefer?
+> 
+> Greg and Arnd are not the random driver maintainers, as is now
+> correctly shown in the 5.10-rc1 MAINTAINERS file, so I doubt we (well
+> at least I) have any say here, sorry.
 
-On Mon, Nov 02, 2020 at 11:25:22AM +0100, Paul Kocialkowski wrote:
-> Hi,
->=20
-> On Mon 02 Nov 20, 11:12, Maxime Ripard wrote:
-> > On Sat, Oct 31, 2020 at 07:21:34PM +0100, Paul Kocialkowski wrote:
-> > > The V3s/V3 has a NMI interrupt controller, mainly used for the AXP209.
-> > > Its address follows the sytsem controller block, which was previously
-> > > incorrectly described as spanning over 0x1000 address bytes.
-> >=20
-> > Is it after, or right in the middle of it?
->=20
-> That's up for interpretation actually:
-> - The V3 datasheet mentions that System Control is 0x01C00000 --- 0x01C00=
-FFF;
-> - In practice, sunxi_sram.c uses a regmap with max_reg set to 0x30 for the
->   V3s/H3 so this gives us some room.
->=20
-> Looking at other SoCs with the same setup (take sun8i-r40 for instance),
-> system-control is limited to 0x30 and the NMI controller follows it.
-> In the case of R40, the SRAM controlled is also said to be 4K-long in the
-> Allwinner docs.
->=20
-> So all in all, this leads me to believe that the system-controller instan=
-ce
-> stops well before 0x1c000d0 on the V3s as well. Otherwise, we should also
-> make the R40 consistent.
+No problem. get_maintainer (for the proposals) works on paths, not on
+topics and I didn't want to leave anybody out.
 
-That's a bit unfortunate, but yeah, I guess we want to remain consistent he=
-re.
+Ted, if you don't have the time any more to take care of /dev/random,
+it's not a shame to hand over maintainership, especially given your
+long history of Linux contributions.
 
-Maxime
+Please do seriously consider to hand it over to someone new. This would
+be a good opportunity.
 
---zradx5x6omb6x434
-Content-Type: application/pgp-signature; name="signature.asc"
+	Torsten
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6ANMgAKCRDj7w1vZxhR
-xeLVAQCfo9QP+iBi8lib7fzKbLt/6ce/jsOJTm1DL/3gqqV0TAD9HGLPZ0b5HPUl
-9Xr7omeEc75bFxlNsDP66SFuUiLCSAM=
-=hsn7
------END PGP SIGNATURE-----
-
---zradx5x6omb6x434--
