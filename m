@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E492A35FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187F2A360B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgKBVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:32:05 -0500
-Received: from ozlabs.org ([203.11.71.1]:56825 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgKBVcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:32:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQ5hy3w1yz9sRK;
-        Tue,  3 Nov 2020 08:32:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604352722;
-        bh=gtoqJfn9FIdEkbzAxub4iuBVUObrpUd1AOjxOPH8/eQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hTg5hh2YBpaLKYuKxTSrEZbnOqdhJMX/xxA6i1ZQDuZW1xOVqesrSS6YbpfZaDZlG
-         sL5Vvut9K62+FtgZ1d98Ed8Sj23csS35C9UxpUp55H8Ze9qMu9aVemnzBJzQudCnFf
-         mJSA/6cUPnY3XmqptC8p/JJAEtuRxIn203FKuZf9mJWsMX7Z/vqPRzbuSg8H+qPTy8
-         P5HKikqWtOCF6BHH/nGzcXhrV1Rr0kBUCEmVsXw/+4TKi7k/FzGUiUFn0A6LuHiXEs
-         BlarPUGLtHCO4OhgQaE40oBG6t2WdcjIRNbfbYiLBnVxhDrYQOygw6euK1WdEmywjh
-         Kz1WFDBb07gEw==
-Date:   Tue, 3 Nov 2020 08:32:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the printk tree
-Message-ID: <20201103083201.4c653eed@canb.auug.org.au>
+        id S1726612AbgKBVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:34:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgKBVee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:34:34 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C0CC0617A6;
+        Mon,  2 Nov 2020 13:34:33 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id cw8so7325739ejb.8;
+        Mon, 02 Nov 2020 13:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NbufLgqiyIIbCZK3mBvFwqqjvux2J/0hEM6rbWN5xzk=;
+        b=TJFiOQMtl8XoozaF4vgsO/YTQhAiAIqRV25Z/KYPOTgdIbLz3AgGPVdtZWnYiC6uTC
+         qW3BWtPbMeZVhOHiukak0XOpNJtlZceHBTe/7fvPxQe+oMxvLAo07uygi8UqvTgOHhan
+         bYlJZyIGMmfaTQK2VOrDVsFGYSO4xnnStMIax70+aWuPORRYzdQx+igLIHWDQUvMR2c5
+         FGdqi/tqOq6BznfqE+m76t1MxHxwDvVycgvu6JpKPsrjRn/JytOu+0nveyTPx+787OqP
+         0agbnoQt6F7d4M1PGht5ReiZ8adn3SAEWtL48hn6Fvp+9V/27zpHbYUeHcztxkYzuiJW
+         8Glw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NbufLgqiyIIbCZK3mBvFwqqjvux2J/0hEM6rbWN5xzk=;
+        b=t40V9qih0qQ3l6lLvOU1COwNJ0CCgzjmn1CBd7kWVxc5zI3Lrmr4shUCMfpmg7/mDt
+         HpMbgEqEDz1+s5C5YCRUI8IU9PJT0jz8MCWEkQdarsWn5osMibTHolcUNdF0CSb3ZPbr
+         u/SHrWXH1BFAlqUlzCnwZNX5d+ot1NeYUisV73O+bVbfJAkMPXAlfoYvVsSa2OsJ5V6B
+         /y2nxHcM6x/3O49MrXBoZaehWXrKrQ4gpxygOuqjM/gfbNZ4pNhozMiAdsYmiF3fKXZh
+         qEdN7RGFShgwsHYDozKHQ1uz+5fcVk06QkcdkDqJMBPpN0G5FudHLK+UDKcobV9Cz1Oi
+         goTQ==
+X-Gm-Message-State: AOAM530ezPlZqejVJEmCQwROA/dgKWplkIhLqoBS8XQ3vjGVrLP0eTZq
+        nRKZIDTGCWdsOF9F3bS37+vZxAikZ9Jksw==
+X-Google-Smtp-Source: ABdhPJyxBXeO5UZXcYcQlsT9kE/rY+XRUZL/IQvV6PJTy6Iz0jey5Ktjxya9vz0/8Jrme6uh1TAwiA==
+X-Received: by 2002:a17:906:adcd:: with SMTP id lb13mr7223544ejb.362.1604352871990;
+        Mon, 02 Nov 2020 13:34:31 -0800 (PST)
+Received: from necip-pc.vpn.ucf.edu ([85.153.224.24])
+        by smtp.gmail.com with ESMTPSA id nu20sm9913087ejb.109.2020.11.02.13.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 13:34:31 -0800 (PST)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     zajec5@gmail.com
+Cc:     hauke@hauke-m.de, ralf@linux-mips.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
+Date:   Tue,  3 Nov 2020 00:34:01 +0300
+Message-Id: <20201102213400.356591-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hc1z_9m0psR.L5Og6lAVvqh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hc1z_9m0psR.L5Og6lAVvqh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
+in the following Kbuild warning:
 
-Hi all,
+WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
+  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
+  Selected by [y]:
+  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
 
-In commit
+The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
+depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
+depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
 
-  8a8424bf2439 ("init/Kconfig: Fix CPU number in LOG_CPU_MAX_BUF_SHIFT desc=
-ription")
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
 
-Fixes tag
+Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ arch/mips/bcm47xx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-  Fixes: 23b2899f7f ("printk: allow increasing the ring buffer depending on=
- the number of CPUs")
+diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
+index 6889f74e06f5..490bb6da74b7 100644
+--- a/arch/mips/bcm47xx/Kconfig
++++ b/arch/mips/bcm47xx/Kconfig
+@@ -27,6 +27,7 @@ config BCM47XX_BCMA
+ 	select BCMA
+ 	select BCMA_HOST_SOC
+ 	select BCMA_DRIVER_MIPS
++	select BCMA_DRIVER_PCI if PCI
+ 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
+ 	select BCMA_DRIVER_GPIO
+ 	default y
+-- 
+2.25.1
 
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hc1z_9m0psR.L5Og6lAVvqh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+getEACgkQAVBC80lX
-0Gz7RggAmFZG42PuTH117ZayMoNwr5k3+6pYp62xvpbHE9BdOaCxfNHoy0jWVEl3
-Hqhin3oYjtjBPVjEWCZLpohx5N20WfLGP04AUiKWenQd6RFKIOEWpclWLTyfuvhC
-6L5uolfumHR7Z8OZmek/YvLVQQmqhW47JZCVHypmEsdl41dvnOypBnytSoTuPoQv
-1iaQ9zygEjf7kvCZYF8UqChL/G1CMNjKizm55/s2U1dlalC04usRbg5myoIiPSDM
-isfQOat79XPN4ktv79gWvJCrpjRLfiTcss8vBHMXNdPetJ1781xxcARetsWyQSop
-sI6gBkYS7Ux+VUCDc/l+Brekg5MRDw==
-=w0Kh
------END PGP SIGNATURE-----
-
---Sig_/hc1z_9m0psR.L5Og6lAVvqh--
