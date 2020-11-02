@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE802A24CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DFD2A24D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 07:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgKBG2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 01:28:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgKBG2B (ORCPT
+        id S1727899AbgKBGiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 01:38:22 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7028 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727743AbgKBGiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 01:28:01 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0E6C0617A6;
-        Sun,  1 Nov 2020 22:28:01 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id w25so13230539edx.2;
-        Sun, 01 Nov 2020 22:28:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ykkvRrLGzz7yMDDHouHR6O5hFBvln1COnvhZIJyck9Y=;
-        b=PwmzWFKWGJJqk742eS4zmrsFiJPHCWdFEB21QLrd+Oz3IRHTPnzZyvy4PgYxoKHt4y
-         9rE47Ya4+lUZKT8bmKLhlMygQq67IEs3yBvtfgATOxgiN7mDYpE7hNWLiGJgRUTsR3DM
-         GWd0TnruemK3FgnMhNBjjkJ6tGENwhNmnrUhilf7CgD7WodryA6itasUaGHXkbL1I4sb
-         7W4gIaP5e9U/asQ4ntjQj+Sg64523ON2Pa26p400Om6gMUYxF+4Jv7833t4J8WzH4HIX
-         NtDnJhxQs25epoKu9VL07xZeufHrCWuBT8o1oYkwC8VlmhuqjddyUKUa7Q62Ja5i7tRy
-         qPmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ykkvRrLGzz7yMDDHouHR6O5hFBvln1COnvhZIJyck9Y=;
-        b=hD/xmlmdgZqNA2wSMdHLvKX1jIRo5J2XnoaagrkmaQ2Zkr59GsfIQuekhwwqCJphds
-         l20Fzc41YxQa2Dj7JCn0GjiklBrcFRjTMA4e7LSuqfGrKdg4Z/zQ3cIFq1QZJzfOsrvP
-         TzOqXCnYPeZMhWzfw5WF6KpNZLELmsg8PStiq5SAGiqKYPmr6hpZotPGEAeKHScmifc0
-         7KrwrRPpS16T//AHEPyXNmpefE6bD4TGupNX6IC5aChTmbCvuastmVkvXQTZ+ND0g2Ca
-         2dJTSv1T2KhhlkoVHUo0C7InmkJi2dkgpXTgcffnm1PApOeVnqDaeuDFRYh5fuxSTERs
-         h3aw==
-X-Gm-Message-State: AOAM5336STEBv3NTzx+VidwEeJCRQHl6gVfc+v8w/tmIEjwumLrzDFGA
-        utm6fbghbCAAJEEsgu6aEJFzDFt3nO8BdfCI+js=
-X-Google-Smtp-Source: ABdhPJyZBFlhUTtPi+C1pzaZxAVFw8V/x/K4iPT1u5TVfVsHBF/ZDnDBwr0WfymVVKxgiTbipmFz0xnnvPhfPVdtoZo=
-X-Received: by 2002:aa7:cb92:: with SMTP id r18mr15629682edt.13.1604298479700;
- Sun, 01 Nov 2020 22:27:59 -0800 (PST)
+        Mon, 2 Nov 2020 01:38:22 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPjsm0dsYzhfSg;
+        Mon,  2 Nov 2020 14:38:20 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 2 Nov 2020
+ 14:38:12 +0800
+From:   Xu Qiang <xuqiang36@huawei.com>
+To:     <sfr@canb.auug.org.au>, <akpm@linux-foundation.org>,
+        <koct9i@gmail.com>, <xuqiang36@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <rui.xiang@huawei.com>
+Subject: [PATCH -next] kernel/watchdog_hld.c: Complete the flush of the hard deadlock log messages to the serial port
+Date:   Mon, 2 Nov 2020 06:38:03 +0000
+Message-ID: <20201102063803.17438-1-xuqiang36@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20201030223443.165783-1-sean.v.kelley@intel.com>
-In-Reply-To: <20201030223443.165783-1-sean.v.kelley@intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Mon, 2 Nov 2020 14:27:48 +0800
-Message-ID: <CAKF3qh3H6daTZtWLj=RjEFoaWazVCvQ=svGO2wGm84K7cnwv_g@mail.gmail.com>
-Subject: Re: [PATCH] AER: aer_root_reset() non-native handling
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, Ashok Raj <ashok.raj@intel.com>,
-        tony.luck@intel.com,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
-        qiuxu.zhuo@intel.com, linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 6:36 AM Sean V Kelley <sean.v.kelley@intel.com> wrote:
->
-> If an OS has not been granted AER control via _OSC, then
-> the OS should not make changes to PCI_ERR_ROOT_COMMAND and
-> PCI_ERR_ROOT_STATUS related registers. Per section 4.5.1 of
-> the System Firmware Intermediary (SFI) _OSC and DPC Updates
-> ECN [1], this bit also covers these aspects of the PCI
-> Express Advanced Error Reporting. Further, the handling of
-> clear/enable of PCI_ERROR_ROOT_COMMAND when wrapped around
-> PCI_ERR_ROOT_STATUS should have no effect and be removed.
-> Based on the above and earlier discussion [2], make the
-> following changes:
->
-> Add a check for the native case (i.e., AER control via _OSC)
-> Re-order and remove some of the handling:
-> - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
-> - do reset
-> - clear PCI_ERR_ROOT_STATUS
-> - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
->
-> to this:
->
-> - clear PCI_ERR_ROOT_STATUS
-> - do reset
->
-> The current "clear, reset, enable" order suggests that the reset
-> might cause errors that we should ignore. But I am unable to find a
-> reference and the clearing of PCI_ERR_ROOT_STATUS does not require them.
->
-> [1] System Firmware Intermediary (SFI) _OSC and DPC Updates ECN, Feb 24,
->     2020, affecting PCI Firmware Specification, Rev. 3.2
->     https://members.pcisig.com/wg/PCI-SIG/document/14076
-> [2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
->
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> ---
->  drivers/pci/pcie/aer.c | 21 ++++++---------------
->  1 file changed, 6 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 65dff5f3457a..bbfb07842d89 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1361,23 +1361,14 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->         u32 reg32;
->         int rc;
->
-> -
-> -       /* Disable Root's interrupt in response to error messages */
-> -       pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> -       reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> -       pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-There may be some reasons to disable interrupt first and then do resetting,
-clear status and re-enable interrupt.
-Perhaps to avoid error noise,  what would happen if the resetting
-causes errors itself ?
+when hardlockup_all_cpu_backtrace is on, and there are
+a large number of cores in the system, it takes
+a long time to output the hard deadlock logs of all cores
+to the serial port. When the console_flush_on_panic function
+in panic is executed, console_locked is still held.
+As a result, garbled characters are displayed in the serial port log.
 
-Thanks,
-Ethan
+To solve this problem, wait for a maximum of 10s for the serial port
+to be released before entering the panic mode.
 
-> +       if (pcie_aer_is_native(dev)) {
-> +               /* Clear Root Error Status */
-> +               pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> +               pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> +       }
->
->         rc = pci_bus_error_reset(dev);
-> -       pci_info(dev, "Root Port link has been reset\n");
-> -
-> -       /* Clear Root Error Status */
-> -       pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> -       pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> -
-> -       /* Enable Root Port's interrupt in response to error messages */
-> -       pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> -       reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-> -       pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> +       pci_info(dev, "Root Port link has been reset (%d)\n", rc);
->
->         return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
->  }
-> --
-> 2.29.2
->
+Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
+---
+ kernel/watchdog_hld.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+index a546bc54f6ff..d3410b9fd3c3 100644
+--- a/kernel/watchdog_hld.c
++++ b/kernel/watchdog_hld.c
+@@ -13,8 +13,10 @@
+ #define pr_fmt(fmt) "NMI watchdog: " fmt
+ 
+ #include <linux/nmi.h>
++#include <linux/delay.h>
+ #include <linux/atomic.h>
+ #include <linux/module.h>
++#include <linux/console.h>
+ #include <linux/sched/debug.h>
+ 
+ #include <asm/irq_regs.h>
+@@ -129,6 +131,7 @@ static void watchdog_overflow_callback(struct perf_event *event,
+ 	 * then this is a good indication the cpu is stuck
+ 	 */
+ 	if (is_hardlockup()) {
++		int i;
+ 		int this_cpu = smp_processor_id();
+ 
+ 		/* only print hardlockups once */
+@@ -151,9 +154,15 @@ static void watchdog_overflow_callback(struct perf_event *event,
+ 		if (sysctl_hardlockup_all_cpu_backtrace &&
+ 				!test_and_set_bit(0, &hardlockup_allcpu_dumped))
+ 			trigger_allbutself_cpu_backtrace();
+-
+-		if (hardlockup_panic)
++		if (hardlockup_panic) {
++			/* Wait for all CPUs to complete wake_up_klogd_work_func */
++			for (i = 0; i < 10 * 1000; i++) {
++				if (console_trylock())
++					break;
++				mdelay(1);
++			}
+ 			nmi_panic(regs, "Hard LOCKUP");
++		}
+ 		atomic_inc(&hardlockup_detected);
+ 
+ 		__this_cpu_write(hard_watchdog_warn, true);
+-- 
+2.25.0
+
