@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129942A3296
+	by mail.lfdr.de (Postfix) with ESMTP id 94E332A3297
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgKBSLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:11:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
+        id S1725846AbgKBSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbgKBSLv (ORCPT
+        with ESMTP id S1726171AbgKBSLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:11:51 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1613FC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:11:51 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id b3so11836425pfo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:11:51 -0800 (PST)
+        Mon, 2 Nov 2020 13:11:52 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FFDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:11:52 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id t14so11493233pgg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:11:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Wmiepruc3iCJr4t5GLBvdMshT7V+umkWxaVmydO1lC4=;
-        b=fVmd9hMhFPFDmgKxG8aw6065UP1hSU/+jbR6rqxTwx/DSXw79TIDaPRljmz6icQrm1
-         uBRIf71eV6DvEk8ouKaza4Ltfyj22EVXwwWA2zQjQlUyW4XzOjYRXhGZGjJ6ftKq4IVW
-         bXWL44Dc7D4VkY/mAwUA2eutPQ29fy5+u89qw=
+        bh=65bWdgXbJUHSY9klg8B4g7EQCn2RPfl2U/2hJDHKOAE=;
+        b=U5rpbbu/Wrv4XZAFMnegfITISy/o8wRmSAZfJOKn2097owuIhcuSadcJxcjRhHssNw
+         uWobnKuds82uuRwIxhpeoRAIUz/L2h8mFs0pBKxMQMw3/H0kbLH/uzvxxw0BdJvQxvgt
+         ubiXu+AQ4Ylqn8AHKEJgXa96iJHyoSqCZU0rk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wmiepruc3iCJr4t5GLBvdMshT7V+umkWxaVmydO1lC4=;
-        b=T3xmCjKBjxRE8ZSacxD4YIW50zFk1htwyVwW9r2RWMpxm3vGYuau26csA6M3FL0hxP
-         R7o8APF74mTIyeMWVuSVLNtH4WM+vmS+uUHMCqDYJ0zKzIosWe9s55d+qXC/1ii4fixX
-         60HpMZuqJWmvRoeW6cGRxdvY8MklePf9NHV7waLp66CSTGGcCj/qUqXX99B0kqX0Uyup
-         7liQY+wOVPjrbyolySAVOuisl4E7Y0md4IY9ovz9+TlUHhEcNs2sh5i4SrH9JlEIPPYn
-         AYcNurBtYpJFkrVKlQb30kfANGCL9X1MTvl2GLBdzk7pfrmnFf++b/NivYTlN7n3VYWh
-         ZoQA==
-X-Gm-Message-State: AOAM530NgVSzLmqJKeMtAxXtV36TUo1w+/u9uWZ3U9lhKcad4shPzEyS
-        /lldHILzHaFfxklYbLafpQcd+A==
-X-Google-Smtp-Source: ABdhPJwO3c4Yqrm1FRtcJ/zbXYcRSTGx9Oc3tVdBrijhZfe5jOUT/yxF5wd9HV8D0noQX6iFg1QgHw==
-X-Received: by 2002:a63:a1d:: with SMTP id 29mr14072488pgk.162.1604340710699;
-        Mon, 02 Nov 2020 10:11:50 -0800 (PST)
+        bh=65bWdgXbJUHSY9klg8B4g7EQCn2RPfl2U/2hJDHKOAE=;
+        b=EuBq0JH/YPvjw1RU2V3Y2gg76bYu6gD51sp7gZUOphdCw6xmz6Awej3sbLgveB5u49
+         L8pRyDg8liu+nMRbkMaioYFYy/gYC+43IIqVtCV3cn3F/WI8ALC8EzJC+YM/k+pz74zm
+         sKeL35+vtHWG+lNUEhdoF9ZicpwBbdiAiXAJVpoXg/H1A77SY3JB5TnSelkWKBdijlPM
+         elUGQlzWbNNyMFX4iITeK19KrgGBWRJwa0sfG5lgE+dfa72QnHaw+0hpT50fQq+hh4dm
+         RDlI3b67ZOuOPwrb1KiP/TbBipJnLRBCnR3Y0OT1Zx4M6iGncUcVJN+NdBDBHhjHM0OL
+         9iuQ==
+X-Gm-Message-State: AOAM533xQEM6NdTrNvDcBcGbPtQZnjyH9bbCW7tTQwGGBdWKfEzHY1Rp
+        1YBhsJxBZY4szNdavIpyVqhalQ==
+X-Google-Smtp-Source: ABdhPJyiqLw//JRe3xdwfiASEB6IO86bTA3ip32CFqcGAv0wzGc0q3Li+IksqOKphIfp6NeiyysU1w==
+X-Received: by 2002:a62:d44b:0:b029:162:67f0:3c56 with SMTP id u11-20020a62d44b0000b029016267f03c56mr22037823pfl.55.1604340711929;
+        Mon, 02 Nov 2020 10:11:51 -0800 (PST)
 Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id b17sm13175640pgb.94.2020.11.02.10.11.49
+        by smtp.gmail.com with ESMTPSA id b17sm13175640pgb.94.2020.11.02.10.11.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:11:50 -0800 (PST)
+        Mon, 02 Nov 2020 10:11:51 -0800 (PST)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Jonas Karlman <jonas@kwiboo.se>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Sean Paul <seanpaul@chromium.org>
-Subject: [PATCH v3 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-Date:   Mon,  2 Nov 2020 10:11:43 -0800
-Message-Id: <20201102181144.3469197-4-swboyd@chromium.org>
+Subject: [PATCH v3 4/4] drm/bridge: ti-sn65dsi86: Update reply on aux failures
+Date:   Mon,  2 Nov 2020 10:11:44 -0800
+Message-Id: <20201102181144.3469197-5-swboyd@chromium.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201102181144.3469197-1-swboyd@chromium.org>
 References: <20201102181144.3469197-1-swboyd@chromium.org>
@@ -67,72 +67,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the DDC connection to read the EDID from the eDP panel instead of
-relying on the panel to tell us the modes.
+We should be setting the drm_dp_aux_msg::reply field if a NACK or a
+SHORT reply happens. Update the error bit handling logic in
+ti_sn_aux_transfer() to handle these cases and notify upper layers that
+such errors have happened. This helps the retry logic understand that a
+timeout has happened, or to shorten the read length if the panel isn't
+able to handle the longest read possible.
+
+Note: I don't have any hardware that exhibits these code paths so this
+is written based on reading the datasheet for this bridge and inspecting
+the code and how this is called.
+
+Changes in v2:
+ - Move WRITE_STATUS_UPDATE check from case to assignment
+
+Changes in v2:
+ - Handle WRITE_STATUS_UPDATE properly
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
 Cc: Jonas Karlman <jonas@kwiboo.se>
 Cc: Jernej Skrabec <jernej.skrabec@siol.net>
 Cc: Sean Paul <seanpaul@chromium.org>
 Acked-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 35 +++++++++++++++++++++++----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 8276fa50138f..6b6e98ca2881 100644
+index 6b6e98ca2881..3a758c706b70 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -119,6 +119,7 @@
-  * @debugfs:      Used for managing our debugfs.
-  * @host_node:    Remote DSI node.
-  * @dsi:          Our MIPI DSI source.
-+ * @edid:         Detected EDID of eDP panel.
-  * @refclk:       Our reference clock.
-  * @panel:        Our panel.
-  * @enable_gpio:  The GPIO we toggle to enable the bridge.
-@@ -144,6 +145,7 @@ struct ti_sn_bridge {
- 	struct drm_bridge		bridge;
- 	struct drm_connector		connector;
- 	struct dentry			*debugfs;
-+	struct edid			*edid;
- 	struct device_node		*host_node;
- 	struct mipi_dsi_device		*dsi;
- 	struct clk			*refclk;
-@@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
- static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+@@ -861,7 +861,7 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+ 				  struct drm_dp_aux_msg *msg)
  {
- 	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
-+	struct edid *edid = pdata->edid;
-+	int num, ret;
-+
-+	if (!edid) {
-+		pm_runtime_get_sync(pdata->dev);
-+		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-+		pm_runtime_put(pdata->dev);
-+	}
-+
-+	if (edid && drm_edid_is_valid(edid)) {
-+		ret = drm_connector_update_edid_property(connector, edid);
-+		if (!ret) {
-+			num = drm_add_edid_modes(connector, edid);
-+			if (num)
-+				return num;
-+		}
-+	}
- 
- 	return drm_panel_get_modes(pdata->panel, connector);
- }
-@@ -1245,6 +1264,7 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
- 	if (!pdata)
+ 	struct ti_sn_bridge *pdata = aux_to_ti_sn_bridge(aux);
+-	u32 request = msg->request & ~DP_AUX_I2C_MOT;
++	u32 request = msg->request & ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
+ 	u32 request_val = AUX_CMD_REQ(msg->request);
+ 	u8 *buf = msg->buffer;
+ 	unsigned int len = msg->size;
+@@ -878,6 +878,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+ 	case DP_AUX_NATIVE_READ:
+ 	case DP_AUX_I2C_READ:
+ 		regmap_write(pdata->regmap, SN_AUX_CMD_REG, request_val);
++		/* Assume it's good */
++		msg->reply = 0;
+ 		break;
+ 	default:
  		return -EINVAL;
+@@ -909,10 +911,33 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+ 	ret = regmap_read(pdata->regmap, SN_AUX_CMD_STATUS_REG, &val);
+ 	if (ret)
+ 		return ret;
+-	else if ((val & AUX_IRQ_STATUS_NAT_I2C_FAIL)
+-		 || (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT)
+-		 || (val & AUX_IRQ_STATUS_AUX_SHORT))
+-		return -ENXIO;
++
++	if (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT) {
++		/*
++		 * The hardware tried the message seven times per the DP spec
++		 * but it hit a timeout. We ignore defers here because they're
++		 * handled in hardware.
++		 */
++		return -ETIMEDOUT;
++	}
++
++	if (val & AUX_IRQ_STATUS_AUX_SHORT) {
++		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
++		if (ret)
++			return ret;
++	} else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
++		switch (request) {
++		case DP_AUX_I2C_WRITE:
++		case DP_AUX_I2C_READ:
++			msg->reply |= DP_AUX_I2C_REPLY_NACK;
++			break;
++		case DP_AUX_NATIVE_READ:
++		case DP_AUX_NATIVE_WRITE:
++			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
++			break;
++		}
++		return 0;
++	}
  
-+	kfree(pdata->edid);
- 	ti_sn_debugfs_remove(pdata);
- 
- 	of_node_put(pdata->host_node);
+ 	if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE ||
+ 	    len == 0)
 -- 
 Sent by a computer, using git, on the internet
 
