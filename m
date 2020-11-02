@@ -2,156 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F422A26AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5C02A26B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgKBJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:09:32 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39236 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727806AbgKBJJc (ORCPT
+        id S1728292AbgKBJLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:11:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728004AbgKBJLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:09:32 -0500
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kZVqD-0003Dv-8C
-        for linux-kernel@vger.kernel.org; Mon, 02 Nov 2020 09:09:29 +0000
-Received: by mail-wr1-f71.google.com with SMTP id t17so6187682wrm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 01:09:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hQMKBcXp2eZ9AT0PGM2yxAWX5qPqVtcgTKTo8TS7k6U=;
-        b=KlYTMt7fkDwAIGHU6kNO+Zffdv/BPscVdE04FFaWaYs19Hq6B5Y3A5x8klntG6zNFS
-         llbZ/cL4Y7lWLAbaxzdWDLL/Myu9s85uAzN0HB87nam0hhmo6OGqiZ08jzPR0QpKAoL9
-         Jb7TIgnvZsQTwQ8Th371W4YdPbK6zAJpMMiUfnTdWCLesNCYJoBEBqY5IC1QwZ5BwThs
-         MS1k64otWlU8Ovelns9/D2t14aI5pHmYEiA2cNUYnTNWUrnfLsLOvytGo052zKWHnmhn
-         G0WHlAjgRSfv8XO8SFnZDGD7KzLkA/1P3fCTp9uXzN75Xp3sdoajBObmUFCjTwLhBHPA
-         6R5g==
-X-Gm-Message-State: AOAM533nnIEmfzB2l7UV3yX4d3LcnSngUEU188G6GqaHz9aI0skM+tXe
-        EKgOuS7am5po8rhDcnv6L421yF0EZg3D2wF98WcPE2czq1FDW4FwvujT4tA6aMDpEp1oBiRnzQx
-        BvUY+A5KTskt4fyUhqpFixPh7JDgHLraHeTn4NNaRcQ==
-X-Received: by 2002:a1c:8095:: with SMTP id b143mr16992830wmd.147.1604308168909;
-        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw+xtOFQaw7ajhnbyWjEXQUwCztboqe2+/S9rajf5CJ8nYEbk1Er6Lz9P8P16bcQ3RR+6RMnA==
-X-Received: by 2002:a1c:8095:: with SMTP id b143mr16992806wmd.147.1604308168618;
-        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
-Received: from localhost (host-79-33-123-6.retail.telecomitalia.it. [79.33.123.6])
-        by smtp.gmail.com with ESMTPSA id r10sm5171413wmg.16.2020.11.02.01.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 01:09:28 -0800 (PST)
-Date:   Mon, 2 Nov 2020 10:09:27 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Mon, 2 Nov 2020 04:11:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604308290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wsx9rV62BpQWr7OrGkSf+6thseF+6yM3BDN31bmg5MQ=;
+        b=TvonQJwkqVfxbePBPyLAhhMGFOHNK0//eDZUnuQKJ8KOQXRzG8xTZ+pEBJxVbtAxN5GtPB
+        OjZI3UocJHbPnxJ/PPbeMuGYGOksHFF76aFnsqiFeUhXu9xEW0d6/xRDo8LHPsvt/Pwymb
+        bMK222WaKSH0l4eJSWUTWM1gaEz10ZA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-ghMbzMWdOp2vAAAUSLZQlg-1; Mon, 02 Nov 2020 04:11:26 -0500
+X-MC-Unique: ghMbzMWdOp2vAAAUSLZQlg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 744641009E28;
+        Mon,  2 Nov 2020 09:11:21 +0000 (UTC)
+Received: from [10.36.113.163] (ovpn-113-163.ams2.redhat.com [10.36.113.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 02AF25D9D2;
+        Mon,  2 Nov 2020 09:11:12 +0000 (UTC)
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: lockdep: possible irq lock inversion dependency detected
- (trig->leddev_list_lock)
-Message-ID: <20201102090927.GC9930@xps-13-7390>
-References: <20201101092614.GB3989@xps-13-7390>
- <20201031101740.GA1875@boqun-laptop.fareast.corp.microsoft.com>
- <20201102073328.GA9930@xps-13-7390>
- <20201102085658.GA5506@amd>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20200924132904.1391-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
+Date:   Mon, 2 Nov 2020 10:11:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102085658.GA5506@amd>
+In-Reply-To: <20200924132904.1391-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 09:56:58AM +0100, Pavel Machek wrote:
-> Hi!
+On 24.09.20 15:28, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> > > > I'm getting the following lockdep splat (see below).
-> > > > 
-> > > > Apparently this warning starts to be reported after applying:
-> > > > 
-> > > >  e918188611f0 ("locking: More accurate annotations for read_lock()")
-> > > > 
-> > > > It looks like a false positive to me, but it made me think a bit and
-> > > > IIUC there can be still a potential deadlock, even if the deadlock
-> > > > scenario is a bit different than what lockdep is showing.
-> > > > 
-> > > > In the assumption that read-locks are recursive only in_interrupt()
-> > > > context (as stated in e918188611f0), the following scenario can still
-> > > > happen:
-> > > > 
-> > > >  CPU0                                     CPU1
-> > > >  ----                                     ----
-> > > >  read_lock(&trig->leddev_list_lock);
-> > > >                                           write_lock(&trig->leddev_list_lock);
-> > > >  <soft-irq>
-> > > >  kbd_bh()
-> > > >    -> read_lock(&trig->leddev_list_lock);
-> > > > 
-> > > >  *** DEADLOCK ***
-> > > > 
-> > > > The write-lock is waiting on CPU1 and the second read_lock() on CPU0
-> > > > would be blocked by the write-lock *waiter* on CPU1 => deadlock.
-> > > > 
-> > > 
-> > > No, this is not a deadlock, as a write-lock waiter only blocks
-> > > *non-recursive* readers, so since the read_lock() in kbd_bh() is called
-> > > in soft-irq (which in_interrupt() returns true), so it's a recursive
-> > > reader and won't get blocked by the write-lock waiter.
-> > 
-> > That's right, I was missing that in_interrupt() returns true also from
-> > soft-irq context.
-> > 
-> > > > In that case we could prevent this deadlock condition using a workqueue
-> > > > to call kbd_propagate_led_state() instead of calling it directly from
-> > > > kbd_bh() (even if lockdep would still report the false positive).
-> > > > 
-> > > 
-> > > The deadlock senario reported by the following splat is:
-> > > 
-> > > 	
-> > > 	CPU 0:				CPU 1:					CPU 2:
-> > > 	-----				-----					-----
-> > > 	led_trigger_event():
-> > > 	  read_lock(&trig->leddev_list_lock);
-> > > 					<work queue processing>
-> > > 	  				ata_hsm_qs_complete():
-> > > 					  spin_lock_irqsave(&host->lock);
-> > > 					  					write_lock(&trig->leddev_list_lock);
-> > > 					  ata_port_freeze():
-> > > 					    ata_do_link_abort():
-> > > 					      ata_qc_complete():
-> > > 					        ledtrig_disk_activity():
-> > > 						  led_trigger_blink_oneshot():
-> > > 						    read_lock(&trig->leddev_list_lock);
-> > > 						    // ^ not in in_interrupt() context, so could get blocked by CPU 2
-> > > 	<interrupt>
-> > > 	  ata_bmdma_interrupt():
-> > > 	    spin_lock_irqsave(&host->lock);
-> > > 	  
-> > > , where CPU 0 is blocked by CPU 1 because of the spin_lock_irqsave() in
-> > > ata_bmdma_interrupt() and CPU 1 is blocked by CPU 2 because of the
-> > > read_lock() in led_trigger_blink_oneshot() and CPU 2 is blocked by CPU 0
-> > > because of an arbitrary writer on &trig->leddev_list_lock.
-> > > 
-> > > So I don't think it's false positive, but I might miss something
-> > > obvious, because I don't know what the code here actually does ;-)
-> > 
-> > With the CPU2 part it all makes sense now and lockdep was right. :)
-> > 
-> > At this point I think we could just schedule a separate work to do the
-> > led trigger and avoid calling it with host->lock held and that should
-> > prevent the deadlock. I'll send a patch to do that.
+> Hi,
 > 
-> Let's... not do that, unless we have no choice.
-> 
-> Would it help if leddev_list_lock used _irqsave() locking?
+> This is an implementation of "secret" mappings backed by a file descriptor.
+> I've dropped the boot time reservation patch for now as it is not strictly
+> required for the basic usage and can be easily added later either with or
+> without CMA.
 
-Using read_lock_irqsave/irqrestore() in led_trigger_event() would be
-enough to prevent the deadlock. If it's an acceptable solution I can
-send a patch (already tested it and lockdep doesn't complain :)).
+Hi Mike,
 
+I'd like to stress again that I'd prefer *any* secretmem allocations 
+going via CMA as long as these pages are unmovable. The user can 
+allocate a non-significant amount of unmovable allocations only fenced 
+by the mlock limit, which behave very different to mlocked pages - they 
+are not movable for page compaction/migration.
+
+Assume you have a system with quite some ZONE_MOVABLE memory (esp. in 
+virtualized environments), eating up a significant amount of 
+!ZONE_MOVABLE memory dynamically at runtime can lead to non-obvious 
+issues. It looks like you have plenty of free memory, but the kernel 
+might still OOM when trying to do kernel allocations e.g., for 
+pagetables. With CMA we at least know what we're dealing with - it 
+behaves like ZONE_MOVABLE except for the owner that can place unmovable 
+pages there. We can use it to compute statically the amount of 
+ZONE_MOVABLE memory we can have in the system without doing harm to the 
+system.
+
+Ideally, we would want to support page migration/compaction and allow 
+for allocation from ZONE_MOVABLE as well. Would involve temporarily 
+mapping, copying, unmapping. Sounds feasible, but not sure which 
+roadblocks we would find on the way.
+
+[...]
+
+> 
+> The file descriptor backing secret memory mappings is created using a
+> dedicated memfd_secret system call The desired protection mode for the
+> memory is configured using flags parameter of the system call. The mmap()
+> of the file descriptor created with memfd_secret() will create a "secret"
+> memory mapping. The pages in that mapping will be marked as not present in
+> the direct map and will have desired protection bits set in the user page
+> table. For instance, current implementation allows uncached mappings.
+> 
+> Although normally Linux userspace mappings are protected from other users,
+> such secret mappings are useful for environments where a hostile tenant is
+> trying to trick the kernel into giving them access to other tenants
+> mappings.
+> 
+> Additionally, the secret mappings may be used as a mean to protect guest
+> memory in a virtual machine host.
+> 
+> For demonstration of secret memory usage we've created a userspace library
+> [1] that does two things: the first is act as a preloader for openssl to
+> redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+> keys get automatically protected this way and the other thing it does is
+> expose the API to the user who needs it. We anticipate that a lot of the
+> use cases would be like the openssl one: many toolkits that deal with
+> secret keys already have special handling for the memory to try to give
+> them greater protection, so this would simply be pluggable into the
+> toolkits without any need for user application modification.
+> 
+> I've hesitated whether to continue to use new flags to memfd_create() or to
+> add a new system call and I've decided to use a new system call after I've
+> started to look into man pages update. There would have been two completely
+> independent descriptions and I think it would have been very confusing.
+
+This was also raised on lwn.net by "dullfire" [1]. I do wonder if it 
+would be the right place as well.
+
+[1] https://lwn.net/Articles/835342/#Comments
+
+> 
+> Hiding secret memory mappings behind an anonymous file allows (ab)use of
+> the page cache for tracking pages allocated for the "secret" mappings as
+> well as using address_space_operations for e.g. page migration callbacks.
+> 
+> The anonymous file may be also used implicitly, like hugetlb files, to
+> implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+> ABIs in the future.
+> 
+> As the fragmentation of the direct map was one of the major concerns raised
+> during the previous postings, I've added an amortizing cache of PMD-size
+> pages to each file descriptor that is used as an allocation pool for the
+> secret memory areas.
+
+-- 
 Thanks,
--Andrea
+
+David / dhildenb
+
