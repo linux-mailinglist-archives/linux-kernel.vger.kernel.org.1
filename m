@@ -2,207 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3612A3477
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429292A3486
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgKBTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S1726634AbgKBTpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:45:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgKBTn6 (ORCPT
+        with ESMTP id S1725791AbgKBTpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:43:58 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E585C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 11:43:58 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id s9so15965157wro.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 11:43:58 -0800 (PST)
+        Mon, 2 Nov 2020 14:45:18 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD38C0617A6;
+        Mon,  2 Nov 2020 11:45:18 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id x7so16012253wrl.3;
+        Mon, 02 Nov 2020 11:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f6IxraRxxdSog0pizitTRE7WWJiT5BOAX8ryhNU1NRQ=;
-        b=VE4XXdGU8dJOhXS0df4gzIUa6WS+ia5T1R9HtsqvcLzEc19f5G22wX8cdUuvh1t4Aj
-         oA2mShqlCi+ap0GIx3OV/gvMk9mBtgowaTKUAdvgl+ZMmoTHfq0iX94q9Yot+fmtgJiY
-         ADzzadXm3vv7CfN5+jO6Fc2iuegatwOKEZwuWf1EEtzFl3EqYMCAk0bcMdQ8GHiIk3l6
-         pmnFqEfUKSdzKInQ+Jz/SvlRum4GjYGTzEX9Ck/ndx54ymdapK308qrxEFA5j8feWz1z
-         weE/unWrmE8WvBWellDKcXYg/sysFXHGwOImAAd+Zit4qrbDRMdmD6uowwr4pmxlu/O4
-         /P2Q==
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=laqvXkYmnuGd0xSBrvapYqlT+lDWdfEk/TVZWHBUFak=;
+        b=Xcu4Fuh7ucz0IyN2Q9r9gVmHTHMRgAt6J3EL40r2hOn8GHpIYVL4F9QyxLZjQjaHKD
+         Q23alGe3vdzXDX/NYsmYEGuz0HSN0mD5zpT6OG2cZmZB/2A8rlOp/u5dnPC8jb0L/Zlb
+         jQpmd4aLHJM5p1sDQ6+hoS4A8xICctQtmdgp3wMstwZA7wqQvL3nJgQG//zv5ctFG/1U
+         75/w69lxjXWSyHtPfNNmL5zudSct3ItMfx6+b01qJhKjAKBWl5o4oqgQQAdl8dDCMltf
+         5jHGvTX1xOK8prO/vWr0PsbKEhppDUxNe4DCHwv97Zsyy3tDVIy5yycC1Ep5TCbdOPu2
+         mytw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f6IxraRxxdSog0pizitTRE7WWJiT5BOAX8ryhNU1NRQ=;
-        b=aj4fXPIefE4NADhuljSGDEmc504cjkvBx10obU3StzzKj99sHryUpkzxv0rwabQqFG
-         ca3mZkngMOrBnnT/njISO7CeEzhdUchTXAVyFPyekG5KjWw5s3lhl9+7opP3WqzU9N4b
-         aPGpOvlggYMsRQAngmd+gCJwvY09ZZpeH42cmjgFIYAz6MZDzDowxIVHMzU2MLXXVwbI
-         yLrUM/homJ2C774ZCGsLJCOD2VlztkaZ0V+cXnI85VHMcDB0WZor2EaPiha9wEzjgyn/
-         cPu6vcqhNeqHrT0wTjTvMLI3wWjF2Uup8PgCwwMEfYHPkoN1rz+eCOQJt3sSfu+Qu6N4
-         mTIg==
-X-Gm-Message-State: AOAM533FJVvnaIBdGysO9ikiIdgNbJdw1u9I38jJ4otrnFUKMp/AG3wG
-        I7kCIRzHmC/0FpFWjTq7S8jEcshWNGD/xUftI44=
-X-Google-Smtp-Source: ABdhPJw78jtdtZ6xpKIYXTw9wOhl0vAPW7uN5ackYLXnSo41LINFhWGQviyc5uG6uHsW7YR8EsHqWn6a1bPM83bcQc0=
-X-Received: by 2002:adf:f246:: with SMTP id b6mr21844385wrp.111.1604346236857;
- Mon, 02 Nov 2020 11:43:56 -0800 (PST)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=laqvXkYmnuGd0xSBrvapYqlT+lDWdfEk/TVZWHBUFak=;
+        b=GR8MIus9DdMdgyuJ0HszrysFz1bPGr7Ti/4sF9C6Bgr7zuohtwQxeuly4s52shr1tq
+         DCtSB697ozadC4kAMcvaYeshAo+Ssy+pGkrwXszBlV1x5t0EzVh0+l2+iFtfOSsEicVr
+         z5vKyHRiJfGHGeNiduZ0BV1ZixFI+4zYY/Sa9Hm6Ogs8I39r1LitjuLgt6RRM+d7whwx
+         5sm+nw9v0pja9OWjTkJWRp+NfHVfeCS0Q8+8XhRZCVP10LsX/6uRZQ9TJSG1QiXQpWdp
+         NvCDQG7/pfVjBw9+cn2OFNh63r/dugB87xONTszjFyIdJs8JrKsIOoiNyXNekOBD/q51
+         mOSQ==
+X-Gm-Message-State: AOAM5325Xgne3M7V5owPyljzVZQa3/rxCM40bqP2WKlDAbCScFqPqPMm
+        4/ycN/aWl8sqnNEfL0ybWr4=
+X-Google-Smtp-Source: ABdhPJz8m94F40PYPDleJPuNVjP3xxDbSlJfSVCYuiHmiaTZX/Dk9in69mChxicVhbXQrTId1ocsGg==
+X-Received: by 2002:a5d:4f07:: with SMTP id c7mr23106131wru.296.1604346317099;
+        Mon, 02 Nov 2020 11:45:17 -0800 (PST)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id l11sm21642720wro.89.2020.11.02.11.45.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 11:45:15 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Sargun Dhillon <sargun@sargun.me>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
+ <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com>
+ <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
+ <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com>
+ <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <964c2191-db78-ff4d-5664-1d80dc382df4@gmail.com>
+Date:   Mon, 2 Nov 2020 20:45:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201102184147.GA42288@localhost>
-In-Reply-To: <20201102184147.GA42288@localhost>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 2 Nov 2020 14:43:45 -0500
-Message-ID: <CADnq5_OnA3T_p4pTEOpoqQ=NZyso2VFoDiOHu=+h7dKOeKHq-A@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: do not initialise global variables to 0 or NULL
-To:     Deepak R Varma <mh12gx2825@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 1:42 PM Deepak R Varma <mh12gx2825@gmail.com> wrote:
->
-> Initializing global variable to 0 or NULL is not necessary and should
-> be avoided. Issue reported by checkpatch script as:
-> ERROR: do not initialise globals to 0 (or NULL).
+Hello Sargun,
 
-I agree that this is technically correct, but a lot of people don't
-seem to know that so we get a lot of comments about this code for the
-variables that are not explicitly set.  Seems less confusing to
-initialize them even if it not necessary.  I don't have a particularly
-strong opinion on it however.
+Thanks for your reply!
 
-Alex
+On 11/2/20 9:07 AM, Sargun Dhillon wrote:
+> On Sat, Oct 31, 2020 at 9:27 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>>
+>> Hello Sargun,
+>>
+>> Thanks for your reply.
+>>
+>> On 10/30/20 9:27 PM, Sargun Dhillon wrote:
+>>> On Thu, Oct 29, 2020 at 09:37:21PM +0100, Michael Kerrisk (man-pages)
+>>> wrote:
+>>
+>> [...]
+>>
+>>>>> I think I commented in another thread somewhere that the
+>>>>> supervisor is not notified if the syscall is preempted. Therefore
+>>>>> if it is performing a preemptible, long-running syscall, you need
+>>>>> to poll SECCOMP_IOCTL_NOTIF_ID_VALID in the background, otherwise
+>>>>> you can end up in a bad situation -- like leaking resources, or
+>>>>> holding on to file descriptors after the program under
+>>>>> supervision has intended to release them.
+>>>>
+>>>> It's been a long day, and I'm not sure I reallu understand this.
+>>>> Could you outline the scnario in more detail?
+>>>>
+>>> S: Sets up filter + interception for accept T: socket(AF_INET,
+>>> SOCK_STREAM, 0) = 7 T: bind(7, {127.0.0.1, 4444}, ..) T: listen(7,
+>>> 10) T: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
+>>
+>> Presumably, the preceding line should have been:
+>>
+>> S: pidfd_getfd(T, 7) = 7 # For the sake of discussion.
+>> (s/T:/S:/)
+>>
+>> right?
+> 
+> Right.
+>>
+>>
+>>> T: accept(7, ...) S: Intercepts accept S: Does accept in background
+>>> T: Receives signal, and accept(...) responds in EINTR T: close(7) S:
+>>> Still running accept(7, ....), holding port 4444, so if now T
+>>> retries to bind to port 4444, things fail.
+>>
+>> Okay -- I understand. Presumably the solution here is not to
+>> block in accept(), but rather to use poll() to monitor both the
+>> notification FD and the listening socket FD?
+>>
+> You need to have some kind of mechanism to periodically check
+> if the notification is still alive, and preempt the accept. It doesn't
+> matter how exactly you "background" the accept (threads, or
+> O_NONBLOCK + epoll).
+> 
+> The thing is you need to make sure that when the process
+> cancels a syscall, you need to release the resources you
+> may have acquired on its behalf or bad things can happen.
+> 
 
->
-> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 46 ++++++++++++-------------
->  drivers/gpu/drm/amd/amdgpu/atom.c       |  4 +--
->  2 files changed, 25 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index 8ab6126ff70c..6de94c46bc91 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -94,16 +94,16 @@
->  #define KMS_DRIVER_MINOR       40
->  #define KMS_DRIVER_PATCHLEVEL  0
->
-> -int amdgpu_vram_limit = 0;
-> -int amdgpu_vis_vram_limit = 0;
-> +int amdgpu_vram_limit;
-> +int amdgpu_vis_vram_limit;
->  int amdgpu_gart_size = -1; /* auto */
->  int amdgpu_gtt_size = -1; /* auto */
->  int amdgpu_moverate = -1; /* auto */
-> -int amdgpu_benchmarking = 0;
-> -int amdgpu_testing = 0;
-> +int amdgpu_benchmarking;
-> +int amdgpu_testing;
->  int amdgpu_audio = -1;
-> -int amdgpu_disp_priority = 0;
-> -int amdgpu_hw_i2c = 0;
-> +int amdgpu_disp_priority;
-> +int amdgpu_hw_i2c;
->  int amdgpu_pcie_gen2 = -1;
->  int amdgpu_msi = -1;
->  char amdgpu_lockup_timeout[AMDGPU_MAX_TIMEOUT_PARAM_LENGTH];
-> @@ -113,43 +113,43 @@ int amdgpu_aspm = -1;
->  int amdgpu_runtime_pm = -1;
->  uint amdgpu_ip_block_mask = 0xffffffff;
->  int amdgpu_bapm = -1;
-> -int amdgpu_deep_color = 0;
-> +int amdgpu_deep_color;
->  int amdgpu_vm_size = -1;
->  int amdgpu_vm_fragment_size = -1;
->  int amdgpu_vm_block_size = -1;
-> -int amdgpu_vm_fault_stop = 0;
-> -int amdgpu_vm_debug = 0;
-> +int amdgpu_vm_fault_stop;
-> +int amdgpu_vm_debug;
->  int amdgpu_vm_update_mode = -1;
-> -int amdgpu_exp_hw_support = 0;
-> +int amdgpu_exp_hw_support;
->  int amdgpu_dc = -1;
->  int amdgpu_sched_jobs = 32;
->  int amdgpu_sched_hw_submission = 2;
-> -uint amdgpu_pcie_gen_cap = 0;
-> -uint amdgpu_pcie_lane_cap = 0;
-> +uint amdgpu_pcie_gen_cap;
-> +uint amdgpu_pcie_lane_cap;
->  uint amdgpu_cg_mask = 0xffffffff;
->  uint amdgpu_pg_mask = 0xffffffff;
->  uint amdgpu_sdma_phase_quantum = 32;
-> -char *amdgpu_disable_cu = NULL;
-> -char *amdgpu_virtual_display = NULL;
-> +char *amdgpu_disable_cu;
-> +char *amdgpu_virtual_display;
->  /* OverDrive(bit 14) disabled by default*/
->  uint amdgpu_pp_feature_mask = 0xffffbfff;
-> -uint amdgpu_force_long_training = 0;
-> -int amdgpu_job_hang_limit = 0;
-> +uint amdgpu_force_long_training;
-> +int amdgpu_job_hang_limit;
->  int amdgpu_lbpw = -1;
->  int amdgpu_compute_multipipe = -1;
->  int amdgpu_gpu_recovery = -1; /* auto */
-> -int amdgpu_emu_mode = 0;
-> -uint amdgpu_smu_memory_pool_size = 0;
-> +int amdgpu_emu_mode;
-> +uint amdgpu_smu_memory_pool_size;
->  /* FBC (bit 0) disabled by default*/
-> -uint amdgpu_dc_feature_mask = 0;
-> -uint amdgpu_dc_debug_mask = 0;
-> +uint amdgpu_dc_feature_mask;
-> +uint amdgpu_dc_debug_mask;
->  int amdgpu_async_gfx_ring = 1;
-> -int amdgpu_mcbp = 0;
-> +int amdgpu_mcbp;
->  int amdgpu_discovery = -1;
-> -int amdgpu_mes = 0;
-> +int amdgpu_mes;
->  int amdgpu_noretry = -1;
->  int amdgpu_force_asic_type = -1;
-> -int amdgpu_tmz = 0;
-> +int amdgpu_tmz;
->  int amdgpu_reset_method = -1; /* auto */
->  int amdgpu_num_kcq = -1;
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
-> index 696e97ab77eb..46c00ee580b1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/atom.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/atom.c
-> @@ -66,7 +66,7 @@ typedef struct {
->         bool abort;
->  } atom_exec_context;
->
-> -int amdgpu_atom_debug = 0;
-> +int amdgpu_atom_debug;
->  static int amdgpu_atom_execute_table_locked(struct atom_context *ctx, int index, uint32_t * params);
->  int amdgpu_atom_execute_table(struct atom_context *ctx, int index, uint32_t * params);
->
-> @@ -88,7 +88,7 @@ static int atom_dst_to_src[8][4] = {
->  };
->  static int atom_def_dst[8] = { 0, 0, 1, 2, 0, 1, 2, 3 };
->
-> -static int debug_depth = 0;
-> +static int debug_depth;
->  #ifdef ATOM_DEBUG
->  static void debug_print_spaces(int n)
->  {
-> --
-> 2.25.1
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Got it. I added the following text:
+
+   Caveats regarding blocking system calls
+       Suppose that the target performs a blocking system call (e.g.,
+       accept(2)) that the supervisor should handle.  The supervisor
+       might then in turn execute the same blocking system call.
+
+       In this scenario, it is important to note that if the target's
+       system call is now interrupted by a signal, the supervisor is not
+       informed of this.  If the supervisor does not take suitable steps
+       to actively discover that the target's system call has been
+       canceled, various difficulties can occur.  Taking the example of
+       accept(2), the supervisor might remain blocked in its accept(2)
+       holding a port number that the target (which, after the
+       interruption by the signal handler, perhaps closed  its listening
+       socket) might expect to be able to reuse in a bind(2) call.
+
+       Therefore, when the supervisor wishes to emulate a blocking system
+       call, it must do so in such a way that it gets informed if the
+       target's system call is interrupted by a signal handler.  For
+       example, if the supervisor itself executes the same blocking
+       system call, then it could employ a separate thread that uses the
+       SECCOMP_IOCTL_NOTIF_ID_VALID operation to check if the target is
+       still blocked in its system call.  Alternatively, in the accept(2)
+       example, the supervisor might use poll(2) to monitor both the
+       notification file descriptor (so as as to discover when the
+       target's accept(2) call has been interrupted) and the listening
+       file descriptor (so as to know when a connection is available).
+
+       If the target's system call is interrupted, the supervisor must
+       take care to release resources (e.g., file descriptors) that it
+       acquired on behalf of the target.
+
+Does that seem okay?
+
+>>>>> ENOENT The cookie number is not valid. This can happen if a
+>>>>> response has already been sent, or if the syscall was
+>>>>> interrupted
+>>>>>
+>>>>> EBADF If the file descriptor specified in srcfd is invalid, or if
+>>>>> the fd is out of range of the destination program.
+>>>>
+>>>> The piece "or if the fd is out of range of the destination program"
+>>>> is not clear to me. Can you say some more please.
+>>>>
+>>>
+>>> IIRC the maximum fd range is specific in proc by some sysctl named
+>>> nr_open. It's also evaluated against RLIMITs, and nr_max.
+>>>
+>>> If nr-open (maximum fds open per process, iiirc) is 1000, even if 10
+>>> FDs are open, it wont work if newfd is 1001.
+>>
+>> Actually, the relevant limit seems to be just the RLIMIT_NOFILE
+>> resource limit at least in my reading of fs/file.c::replace_fd().
+>> So I made the text
+>>
+>>               EBADF  Allocating the file descriptor in the target would
+>>                      cause the target's RLIMIT_NOFILE limit to be
+>>                      exceeded (see getrlimit(2)).
+>>
+>>
+> 
+> If you're above RLIMIT_NOFILE, you get EBADF.
+> 
+> When we do __receive_fd with a specific fd (newfd specified):
+> https://elixir.bootlin.com/linux/latest/source/fs/file.c#L1086
+> 
+> it calls replace_fd, which calls expand_files. expand_files
+> can fail with EMFILE.
+> 
+>>>>> EINVAL If flags or new_flags were unrecognized, or if newfd is
+>>>>> non-zero, and SECCOMP_ADDFD_FLAG_SETFD has not been set.
+>>>>>
+>>>>> EMFILE Too many files are open by the destination process.
+>>
+>> I'm not sure that the error can really occur. That's the error
+>> that in most other places occurs when RLIMIT_NOFILE is exceeded.
+>> But I may have missed something. More precisely, when do you think
+>> EMFILE can occur?
+>>
+> It can happen if the user specifies a newfd which is too large.
+
+Got it. Thanks! I made the error text:
+
+        EMFILE The file descriptor number specified in newfd  exceeds  the
+              limit specified in /proc/sys/fs/nr_open.
+
+Thanks,
+
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
