@@ -2,171 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA262A25C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953262A25CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgKBICN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:02:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727806AbgKBICN (ORCPT
+        id S1727983AbgKBIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBIFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:02:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604304131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MAcCSziPSZLxQtchkW5FgE96MjPeBrhusgB4MKSuagU=;
-        b=BG0XVRjAcjyNqqhJrynu4XPin+P1c3fOJ8Kvf3jdJmwfSLAx1xO93JmB3pOw9zAmE9b2g7
-        kn8cSXUUjSaSex0qiS6UZ83Gt7vjSkAtvG47bA4jruyZI5joKaLw2PERECmfSVx+Z2L1gt
-        nohbRsUc+jZHhudf6Tu2ra5IoPVUwHY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-VvGprGT4MWWzijxkfL_I7Q-1; Mon, 02 Nov 2020 03:02:07 -0500
-X-MC-Unique: VvGprGT4MWWzijxkfL_I7Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 571158015B1;
-        Mon,  2 Nov 2020 08:02:06 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 793EA5B4D1;
-        Mon,  2 Nov 2020 08:02:03 +0000 (UTC)
-Subject: Re: [PATCH 2/3] md: align superblock writes to physical blocks
-To:     Christopher Unkel <cunkel@drivescale.com>,
-        linux-raid@vger.kernel.org, Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20201029201358.29181-1-cunkel@drivescale.com>
- <20201029201358.29181-3-cunkel@drivescale.com>
-From:   Xiao Ni <xni@redhat.com>
-Message-ID: <070b938f-472e-83b5-96ab-376a6e5fa6ec@redhat.com>
-Date:   Mon, 2 Nov 2020 16:02:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Mon, 2 Nov 2020 03:05:12 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655D3C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 00:05:11 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 133so10394899pfx.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 00:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcdv4aKrlxLT+L8OMCxLupfQoFPx0rrIAPSpJAAsrOA=;
+        b=eVwiEveNUcb/KZSTY2IfTZycLYQPTXOci4ywat0pjd/QQMWqBwh7yAMXmJCFS3Utb8
+         W+vIZl999fSnpjptA90W3kvVtLSoGn/ZFrLCT+lIIwLmaOKRYBDWHEEIP5tXdtoTd34t
+         zTIbfRJidtX57/Pge5wsjZ00+JaFBAetbqLT+ksCBYVhtIEAP/Z+GSl/FbbacTLr6TGt
+         ckvchRmg9mGvDQwAaqXj+znHuctQQgMq5ijn7SADORzQC21fpK5FanYJxIy5kDQCE3NM
+         Hn6cp9Ho2+kKA1x4pr8T3yXGKuaNtj4j+rehG2sKkUxFl9gpSIdpSJ4cCa3znoL0xacI
+         +TFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcdv4aKrlxLT+L8OMCxLupfQoFPx0rrIAPSpJAAsrOA=;
+        b=eGLxu9hkuwH2ixyQsWjpwNqWWDIZCogmfsrn3gI5LXDjqKUCVZc4G7Pvsjr0qBsOdx
+         8/xpfAoUiBXLvy5rdqaFbFioJc/ZHUGRttwCahpi7X+ZfnaqZQJG3yt/vfs6yxYtCMfj
+         M6pVjsL9HA0Av1NYIZtXDg/LdQgGZ9Gz1f8R/Gt1/hbrKsoNB42am5YUFLacVtiDEGV0
+         M2WV+ofhcT97NjI33LthBB26k6ZoUcG+/3nfBZtadfG/dCd/X8LLzj2TwVHtFfbkReko
+         WhLtsjwKOCV0Gn2KAc3y0AHASLvE+zECPeOMI10rbY37gHmJa+OQeDLlokq8awPhSNoA
+         qiPQ==
+X-Gm-Message-State: AOAM5335w06FaLlRQ+Cgxg29swLFYxT3Hvq6z56yubiWpAWIeCkHM1Nw
+        z/RQjBzwNkM0dvPZtSyZ5znCnuIh4gQ=
+X-Google-Smtp-Source: ABdhPJwdMAUMs6F8ZuP3W5ZcoeQIi27+FU6GEAq549igBZNDHm/Xg0QSf0tXNfhEbuSM0Bl/he6JkQ==
+X-Received: by 2002:aa7:9607:0:b029:155:2b85:93f5 with SMTP id q7-20020aa796070000b02901552b8593f5mr20768001pfg.36.1604304310585;
+        Mon, 02 Nov 2020 00:05:10 -0800 (PST)
+Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
+        by smtp.gmail.com with ESMTPSA id p17sm11811164pgn.28.2020.11.02.00.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:05:09 -0800 (PST)
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        konrad.wilk@oracle.com, Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: [PATCH] x86/iommu: fix a typo in printk
+Date:   Mon,  2 Nov 2020 16:04:37 +0800
+Message-Id: <20201102080437.929-1-zhenzhong.duan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201029201358.29181-3-cunkel@drivescale.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In check_iommu_entries(), p->detect depends on q->detect, so q->detect
+should be called before p->detect.
 
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+---
+ arch/x86/kernel/pci-iommu_table.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 10/30/2020 04:13 AM, Christopher Unkel wrote:
-> Writes of the md superblock are aligned to the logical blocks of the
-> containing device, but no attempt is made to align them to physical
-> block boundaries.  This means that on a "512e" device (4k physical, 512
-> logical) every superblock update hits the 512-byte emulation and the
-> possible associated performance penalty.
->
-> Respect the physical block alignment when possible, that is, when the
-> write padded out to the physical block doesn't run into the data or
-> bitmap.
->
-> Signed-off-by: Christopher Unkel <cunkel@drivescale.com>
-> ---
-> This series replaces the first patch of the previous series
-> (https://lkml.org/lkml/2020/10/22/1058), with the following changes:
->
-> 1. Creates a helper function super_1_sb_length_ok().
-> 2. Fixes operator placement style violation.
-> 3. Covers case in super_1_sync().
-> 4. Refactors duplicate logic.
-> 5. Covers a case in existing code where aligned superblock could
->     run into bitmap.
->
->   drivers/md/md.c | 45 +++++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 41 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index d6a55ca1d52e..802a9a256fe5 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -1646,15 +1646,52 @@ static __le32 calc_sb_1_csum(struct mdp_superblock_1 *sb)
->   	return cpu_to_le32(csum);
->   }
->   
-> +static int
-> +super_1_sb_length_ok(struct md_rdev *rdev, int minor_version, int sb_len)
-> +{
-> +	int sectors = sb_len / 512;
-> +	struct mdp_superblock_1 *sb;
-> +
-> +	/* superblock is stored in memory as a single page */
-> +	if (sb_len > PAGE_SIZE)
-> +		return 0;
-> +
-> +	/* check if sb runs into data */
-> +	if (minor_version) {
-> +		if (rdev->sb_start + sectors > rdev->data_offset
-> +		    || rdev->sb_start + sectors > rdev->new_data_offset)
-> +			return 0;
-> +	} else if (sb_len > 4096)
-> +		return 0;
-> +
-> +	/* check if sb runs into bitmap */
-> +	sb = page_address(rdev->sb_page);
-> +	if (le32_to_cpu(sb->feature_map) & MD_FEATURE_BITMAP_OFFSET) {
-> +		__s32 bitmap_offset = (__s32)le32_to_cpu(sb->bitmap_offset);
-> +		if (bitmap_offset > 0 && sectors > bitmap_offset)
-> +			return 0;
-> +	}
-> +
-> +	return 1;
-> +}
-> +
-For super1.0 it doesn't need to consider this. Because the data and 
-bitmap is before superblock.
-For super1.1 and 1.2 it only needs to check whether it runs into bitmap. 
-The data is behind the
-bitmap.
-
-Regards
-Xiao
->   /*
->    * set rdev->sb_size to that required for number of devices in array
->    * with appropriate padding to underlying sectors
->    */
->   static void
-> -super_1_set_rdev_sb_size(struct md_rdev *rdev, int max_dev)
-> +super_1_set_rdev_sb_size(struct md_rdev *rdev, int max_dev, int minor_version)
->   {
->   	int sb_size = max_dev * 2 + 256;
-> -	rdev->sb_size = round_up(sb_size, bdev_logical_block_size(rdev->bdev));
-> +	int pb_aligned_size = round_up(sb_size,
-> +				       bdev_physical_block_size(rdev->bdev));
-> +
-> +	/* generate physical-block aligned writes if legal */
-> +	if (super_1_sb_length_ok(rdev, minor_version, pb_aligned_size))
-> +		rdev->sb_size = pb_aligned_size;
-> +	else
-> +		rdev->sb_size = round_up(sb_size,
-> +					 bdev_logical_block_size(rdev->bdev));
->   }
->   
->   static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_version)
-> @@ -1730,7 +1767,7 @@ static int super_1_load(struct md_rdev *rdev, struct md_rdev *refdev, int minor_
->   		rdev->new_data_offset += (s32)le32_to_cpu(sb->new_offset);
->   	atomic_set(&rdev->corrected_errors, le32_to_cpu(sb->cnt_corrected_read));
->   
-> -	super_1_set_rdev_sb_size(rdev, le32_to_cpu(sb->max_dev));
-> +	super_1_set_rdev_sb_size(rdev, le32_to_cpu(sb->max_dev), minor_version);
->   
->   	if (minor_version
->   	    && rdev->data_offset < sb_start + (rdev->sb_size/512))
-> @@ -2140,7 +2177,7 @@ static void super_1_sync(struct mddev *mddev, struct md_rdev *rdev)
->   
->   	if (max_dev > le32_to_cpu(sb->max_dev)) {
->   		sb->max_dev = cpu_to_le32(max_dev);
-> -		super_1_set_rdev_sb_size(rdev, max_dev);
-> +		super_1_set_rdev_sb_size(rdev, max_dev, mddev->minor_version);
->   	} else
->   		max_dev = le32_to_cpu(sb->max_dev);
->   
+diff --git a/arch/x86/kernel/pci-iommu_table.c b/arch/x86/kernel/pci-iommu_table.c
+index 2e9006c1e240..c69b55436f7d 100644
+--- a/arch/x86/kernel/pci-iommu_table.c
++++ b/arch/x86/kernel/pci-iommu_table.c
+@@ -68,7 +68,7 @@ void __init check_iommu_entries(struct iommu_table_entry *start,
+ 		q = find_dependents_of(p, finish, p);
+ 		if (q && q > p) {
+ 			printk(KERN_ERR "EXECUTION ORDER INVALID! %pS should be called before %pS!\n",
+-			       p->detect, q->detect);
++			       q->detect, p->detect);
+ 		}
+ 	}
+ }
+-- 
+2.25.1
 
