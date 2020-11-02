@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2552A3657
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC532A365B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 23:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgKBWPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 17:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgKBWPV (ORCPT
+        id S1725952AbgKBWSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 17:18:14 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33414 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgKBWSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:15:21 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60025C0617A6;
-        Mon,  2 Nov 2020 14:15:21 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id dg9so15900768edb.12;
-        Mon, 02 Nov 2020 14:15:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kk3ItFStobR6qYn/+Fed0grJYKNgkJNk/LGwH647MWU=;
-        b=ekI3oJj8TlDuQrpXVPsXWO/7Nek1ScwVQ6a56vYaZXCkLQVl654jOAt74H83wdqzxp
-         JIx7JkUJ1CmrRFNRlb93Sj5S9OKtYZoXFL+imfAZFIBj2oDNjGkQ79rBMSpNNTrwc7A9
-         itjAyBp79ZdTHqAwOegjHCnlZK61+L/OnTxO1PcyNqXn0ocazNKo3+NMN/fPpuYjpDCC
-         TYalrlxmyeAptBq0VZkVLDgNZVYbQIRbP0V9Hzv5wQixr4f4KzUs2Dy9hAIicOuOSM9Z
-         MxCwS7JzOMZsg+t80JMRgYplJoA2n1U8AzZDceSGF5+XdkatlDrraSZ0EEoWkS2N/srE
-         oJ9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kk3ItFStobR6qYn/+Fed0grJYKNgkJNk/LGwH647MWU=;
-        b=npqpLPyakq+czGVA93jssaQhaR/tnWXIOYPvnZaGTk1LVgMgcHOnokSIbujEHG3bki
-         bNxnukewlwswd7I2WEVa0o2eGdKY+qlsqq3ppWG6514svrxOLT+ZALGH/DpfrVuqFyp4
-         6FDaVwA1NudXR1Ymc6q5EpxxXjuJqHdn0kc3U04Fvr/okb07CBwWJTXLLaT3KPugHHIE
-         ZS6S6Pnwibse5siEFe3kmfFlzHf9Eh4uJYo4IWWA10rU5ZLX7K/FNi0elBxOUvMik97u
-         W/dIZkyK1iV5k8ucATs0sCV9m6ymWzif/oaYkMBWhndbu2q/vJDxtoptqCvWoMHBSWJC
-         ckFw==
-X-Gm-Message-State: AOAM531E/pM0PTx1Daey5BCIkCDhNA0/C29YFMf3OQa9p12UzcMmSgwm
-        kwd6Ce6RkXOfk5cUz7VkRW8mvTR4tdpKrw==
-X-Google-Smtp-Source: ABdhPJzNqSqiP6aq3fEwKeONwiVw6PKCWld2I9xNpKM2ICyJzpWT8UbEPHZdns7l+8n/hjxTpdbc6w==
-X-Received: by 2002:a05:6402:759:: with SMTP id p25mr6263293edy.22.1604355319937;
-        Mon, 02 Nov 2020 14:15:19 -0800 (PST)
-Received: from necip-pc.vpn.ucf.edu ([85.153.224.24])
-        by smtp.gmail.com with ESMTPSA id j1sm9886812ejd.47.2020.11.02.14.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 14:15:19 -0800 (PST)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     dmitry.torokhov@gmail.com
-Cc:     Jonathan.Cameron@huawei.com, eugen.hristev@microchip.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] Input: touchscreen: fix kconfig dependency bug for TOUCHSCREEN_ADC
-Date:   Tue,  3 Nov 2020 01:15:05 +0300
-Message-Id: <20201102221504.541279-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Nov 2020 17:18:14 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604355492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xly7vSYeoMILwUk4ixZP3866bXaRUpNDJSG+wlkAlI4=;
+        b=upMMtjCRIY89jZxoAMxdlNQ8hF396TY4CzHCkaAW2YJLGseQcXaMCYgQnlf9Y9dabEEvTa
+        HaaXeP/uIGaehfLlzQQXUepZBi7g0G59/azJClsTIVrPN0re6XxPtgT1D88Eor2aQUHTcu
+        xGFlYCA25mmOMLdCnNkYODrWF5MeyGP8VVrhzb61CeiC8R4GhaUjqxKyOf2ihTaWVBQXXh
+        47gZiQJJjg6mt7lMRdpy/CdzNgyPDchdmx1IGh83e71eOSHF7d0eoimsUrUINCuxFeCWIr
+        1mTb1rI5ynIUcUb0q9fcYaZ2dTk6V563FC1Bm/kaYWfKMUNFWYnePdEgv0liCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604355492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xly7vSYeoMILwUk4ixZP3866bXaRUpNDJSG+wlkAlI4=;
+        b=ffZZj7RAS4e4aSGVv1b2vhc8FpsNZ5T2k3MsoDK0BW4lJjfebln1MNZswIQeqtQjQnEmfg
+        KIV78M90DBA+msBw==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
+In-Reply-To: <87h7q791j8.fsf@nanos.tec.linutronix.de>
+References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de> <df5565a2f1e821041c7c531ad52a3344@kernel.org> <87h7q791j8.fsf@nanos.tec.linutronix.de>
+Date:   Mon, 02 Nov 2020 23:18:11 +0100
+Message-ID: <877dr38kt8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When TOUCHSCREEN_ADC is enabled and IIO_BUFFER is disabled, it results
-in the following Kbuild warning:
+On Mon, Nov 02 2020 at 17:16, Thomas Gleixner wrote:
+> On Mon, Nov 02 2020 at 11:30, Marc Zyngier wrote:
+>> --- a/drivers/pci/probe.c
+>> +++ b/drivers/pci/probe.c
+>> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus 
+>> *bus)
+>>   		d = pci_host_bridge_msi_domain(b);
+>>
+>>   	dev_set_msi_domain(&bus->dev, d);
+>> +	if (!d)
+>> +		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+>
+> Hrm, that might break legacy setups (no irqdomain support). I'd rather
+> prefer to explicitly tell the pci core at host registration time.
 
-WARNING: unmet direct dependencies detected for IIO_BUFFER_CB
-  Depends on [n]: IIO [=y] && IIO_BUFFER [=n]
-  Selected by [y]:
-  - TOUCHSCREEN_ADC [=y] && !UML && INPUT [=y] && INPUT_TOUCHSCREEN [=y] && IIO [=y]
+s/might break/ breaks /     Just validated :)
 
-The reason is that TOUCHSCREEN_ADC selects IIO_BUFFER_CB without depending
-on or selecting IIO_BUFFER while IIO_BUFFER_CB depends on IIO_BUFFER. This
-can also fail building the kernel.
+So we really need some other solution and removing the warning is not an
+option. If MSI is enabled then we want to get a warning when a PCI
+device has no MSI domain associated. Explicitly expressing the PCIE
+brigde misfeature of not supporting MSI is way better than silently
+returning an error code which is swallowed anyway.
 
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
+Whatever the preferred way is via flags at host probe time or flagging
+it post probe I don't care much as long as it is consistent.
 
-Fixes: aa132ffb6b0a ("input: touchscreen: resistive-adc-touch: add generic resistive ADC touchscreen")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209881
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/input/touchscreen/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index f012fe746df0..cc18f54ea887 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -96,6 +96,7 @@ config TOUCHSCREEN_AD7879_SPI
- config TOUCHSCREEN_ADC
- 	tristate "Generic ADC based resistive touchscreen"
- 	depends on IIO
-+	select IIO_BUFFER
- 	select IIO_BUFFER_CB
- 	help
- 	  Say Y here if you want to use the generic ADC
--- 
-2.25.1
+        tglx
+
 
