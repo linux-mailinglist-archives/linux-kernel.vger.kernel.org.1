@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0332A2E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27022A2E3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgKBPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
+        id S1726533AbgKBPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgKBPVA (ORCPT
+        with ESMTP id S1726419AbgKBPWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:21:00 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33ADC061A49
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:20:58 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h22so9886670wmb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:20:58 -0800 (PST)
+        Mon, 2 Nov 2020 10:22:32 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF963C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 07:22:31 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id t5so832776qtp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 07:22:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T2w+mckzOvrR699h8x/Xo77oVyHlYkQYkZ/tcGlQNKA=;
-        b=s1X5Rn6M3uEqYAtmP0kMjZBhh9+T3p5FrLN+EMPkAgjibT+uR/uD2Ngl5VYCdQB9ij
-         cQ6fxK8h+9iDfacQPynKZ5VyW7F6bKG7h/Mn2H7upcsowgEdGzkDXW0ZeoKAxWlZFX5x
-         pqI6X7Y1SxJBUvvLsIqozUVcIl4kjDlk/82AQ/NKJkAUAZxchqqk6ZD/i9gwMOE04t7b
-         WEkSas1VOVRvcMuWMty1ScX6mRMpJB2pYQQLO7hPytPI/lP2lQ51TXcmMAV2jxgLlrYn
-         9vORg+bb2oQsagTOeapcQPmylm4ykQl2cpkCX5KomC0i7s4Qx+hD5CK4/4R0xv0vDrV1
-         0OBw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PZfLygvPchTUSgGMmFZPk8zJRPc7y3a0+u5vclYWa+g=;
+        b=bAkYwaocuGeef7r/WOYoDUSYpYjQDgRDpirAbBQA4pgs0hzQ0GiYmrYxa29dxnVHRF
+         WxZ+s5OiKNjfk7VuV+xQNYKlAGD4juHOKsM0ZetbZkYA9t1Tbh1k2izLHb7ERccLcgHm
+         GCCABAf8ThtuwtqKtEcG6HvFonuEEIP0GHWjilwMZYs78mM8ItctpBi0UBxTd5qcNaAs
+         QdZ7tgIjuj20hncEA5VgCavYzeW6I9e9gAOIUgoiUtVovsIhhie+0DjaKZnVF0kJxI0J
+         Jf02bfDygNUlJuqZ865wjaIfGmJK7DpfTtDj0KZDfr56i5YflC13w1YJT5czGz7ws46t
+         JTtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T2w+mckzOvrR699h8x/Xo77oVyHlYkQYkZ/tcGlQNKA=;
-        b=TRosL72EJcju1E/wwuhYJ51nphAcTl47Cyvvk8h44rwiEcaVi/p54AAZ5XicB8vB4C
-         Vcs/Y9BtcXsLyjkHHQpsLJawf5tpU1A0XM/2rEznxj8JEEvgP3x6CNAjmhlxaYV8mqeT
-         MHgquf+Njxq98TevCIl+Y1T18ilxNFiS+ZaqQcqCgPn21S5yF2sAhwqSK91w8qvz6XRC
-         j18CHOkyyKiWCXaERppJ8Avb0QRNlJMbPmNN4D2S5LShHyEaVivMP2LK09x20dZNBLkB
-         fFcp7L0nSyvKKWMN4hjmKNcCTrwRT0z3MHRI14jYJ4jEqmM0uh1iEsHMJWhK629zmyk0
-         JPZQ==
-X-Gm-Message-State: AOAM530TjNJUNyXhuBpIMJW4mXqnhYH1VU6ByXKtczL4m64cQkdqMXi6
-        rKpiNErqi5YZYdPN0GJeCD/w7w==
-X-Google-Smtp-Source: ABdhPJyD2xFNQ0mA6fkAF0MmLHKBRwPoEVnTSJcs4kw8eo3aVlf+gVmqgA5IOaVwyXiBRsxgcVYV4w==
-X-Received: by 2002:a1c:68c1:: with SMTP id d184mr17928489wmc.74.1604330457481;
-        Mon, 02 Nov 2020 07:20:57 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id b18sm15138014wmj.41.2020.11.02.07.20.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PZfLygvPchTUSgGMmFZPk8zJRPc7y3a0+u5vclYWa+g=;
+        b=o7We8Ebd4Eval8BAatw7JOMdIEpaVywB9ha9x0KuEQFEk/wHV7/Ug+7+8VVaGwkyih
+         w4XgsXw+GBpuX1q1+ueq9Ord+rLpcyDMtCmy3B9fFZuEkHl56rOrt2Vd5nSaa6d+QDDP
+         wVa/aqEp7uxVlEWpp5njZXbf77Rji41d5KMJrBOYV0F8T5bxcq1gfnmx1xCBZYDeeatS
+         UHfrFsG1MqATPXoZArqIGGFZU/43Cz+Y9e5XAj2K2a6dro/LIo7v9L9o/81EtFjjkdQU
+         xs7o+0Vos5UGUl0i2kUvUTwMjNFldtIT07Agw27wXMiGFbOwjZNIs/6IJptCd4r1NPdX
+         wdgg==
+X-Gm-Message-State: AOAM533z2Gb3SaRIIJ5YClp8naik/AqsKSVSzGt1L4IpaGvL31XUzCUp
+        CcFGvqHJ+LG3wcEIYIbJomTiPQ==
+X-Google-Smtp-Source: ABdhPJxSwd5B22hT5eiV6LBd9rt7/VanBXU8KpL4jRhTH+94Q2JIMRQvuMsiEz1tN3erRApM/xKQzA==
+X-Received: by 2002:aed:2941:: with SMTP id s59mr14633752qtd.387.1604330550876;
+        Mon, 02 Nov 2020 07:22:30 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id p2sm3861044qkk.34.2020.11.02.07.22.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 07:20:56 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 8/8] dma-buf: use krealloc_array()
-Date:   Mon,  2 Nov 2020 16:20:37 +0100
-Message-Id: <20201102152037.963-9-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201102152037.963-1-brgl@bgdev.pl>
-References: <20201102152037.963-1-brgl@bgdev.pl>
+        Mon, 02 Nov 2020 07:22:30 -0800 (PST)
+Date:   Mon, 2 Nov 2020 10:20:45 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Subject: Re: [PATCH v20 17/20] mm/swap.c: serialize memcg changes in
+ pagevec_lru_move_fn
+Message-ID: <20201102152045.GJ724984@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-18-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603968305-8026-18-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, Oct 29, 2020 at 06:45:02PM +0800, Alex Shi wrote:
+> Hugh Dickins' found a memcg change bug on original version:
+> If we want to change the pgdat->lru_lock to memcg's lruvec lock, we have
+> to serialize mem_cgroup_move_account during pagevec_lru_move_fn. The
+> possible bad scenario would like:
+> 
+> 	cpu 0					cpu 1
+> lruvec = mem_cgroup_page_lruvec()
+> 					if (!isolate_lru_page())
+> 						mem_cgroup_move_account
+> 
+> spin_lock_irqsave(&lruvec->lru_lock <== wrong lock.
+> 
+> So we need TestClearPageLRU to block isolate_lru_page(), that serializes
+> the memcg change. and then removing the PageLRU check in move_fn callee
+> as the consequence.
+> 
+> __pagevec_lru_add_fn() is different from the others, because the pages
+> it deals with are, by definition, not yet on the lru.  TestClearPageLRU
+> is not needed and would not work, so __pagevec_lru_add() goes its own
+> way.
+> 
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
-Use the helper that checks for overflows internally instead of manually
-calculating the size of the new array.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Christian König <christian.koenig@amd.com>
----
- drivers/dma-buf/sync_file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-index 5a5a1da01a00..2925ea03eef0 100644
---- a/drivers/dma-buf/sync_file.c
-+++ b/drivers/dma-buf/sync_file.c
-@@ -270,8 +270,8 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
- 		fences[i++] = dma_fence_get(a_fences[0]);
- 
- 	if (num_fences > i) {
--		nfences = krealloc(fences, i * sizeof(*fences),
--				  GFP_KERNEL);
-+		nfences = krealloc_array(fences, i,
-+					 sizeof(*fences), GFP_KERNEL);
- 		if (!nfences)
- 			goto err;
- 
--- 
-2.29.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
