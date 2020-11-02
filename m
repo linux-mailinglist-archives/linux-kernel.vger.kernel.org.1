@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C839C2A34FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A259F2A34E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727163AbgKBUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S1726088AbgKBUEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgKBUMk (ORCPT
+        with ESMTP id S1725806AbgKBUEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:12:40 -0500
-X-Greylist: delayed 595 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Nov 2020 12:12:40 PST
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E5AC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:12:40 -0800 (PST)
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E34CA3E7B1;
-        Mon,  2 Nov 2020 21:02:41 +0100 (CET)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     robdclark@gmail.com
-Cc:     konrad.dybcio@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: a5xx: Make preemption reset case reentrant
-Date:   Mon,  2 Nov 2020 21:02:25 +0100
-Message-Id: <20201102200227.8876-1-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 2 Nov 2020 15:04:51 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E187C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:04:50 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id b1so18993596lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:04:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
+        b=IenDEOwcE7acdWlt3upinLTTJLqi4UdRIK+PzIcZHwuf5PctnsoAcu0L8yOZf6HI57
+         vlaLdkuBhc5qdDVb0YDoMMcI+rHBUzP1McRaXIovcqGA3X5wyw0sq1O9rJjQTyvAFkj4
+         861P7yLhcvBsg8AEdFaV57Edi1EdHZvsLJOIhT0vSnbaUEmhGJo+AL4jNz0rqo8af+d7
+         cYAj0ZM/aUC4Y3Lce948K0l4awqBXzXiDZrI1AgyGl4zivZne7XLXGpiLRjzEdn9aDzo
+         98Kq0yEKIoz8niqnACP7ZZTeuT7fEmNkLrHA5ATKyJZvfX9PycBSL5wJNWljhEo8JtAX
+         fcFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
+        b=lu6y3WRKf5w6JDCjsaQi2uCjpqAFWiiwDWvkBav9ulS8LjXk8O+qeT0yUxaCeUD/kc
+         TE76HDdofO1ipf+VsqULuDAKMIJRjdlX+aukUDCXo1nAWd9f4v9DDR2ZpZRjhjyBiN6X
+         79HlBurz5lKDeyv8Fkftf3PjGsWLkk1hSE2dUw1m4tudwHFDhZyMUgaKYMUH7XUbw4HB
+         NNhQEpUmLrTWo7eRVXmJLivBZb26JesyYFt3L9VjDGAZ6wrsXpbVh37W0Cts/oN5JKUU
+         ZKC/qf3hg3XOf0TTm17YFABx3iolf0zFx/Mn1BSgkruhEzReZ06y4AibN6AdFyTqmEvR
+         ECkw==
+X-Gm-Message-State: AOAM530b2jNUNW9KkPwzdNj/YJl+MN04usW96ctC/N/iBuab53lQlqcS
+        EohaHtoLYEGgQyMcTIWG0nk34FkzURIjE7Mszw211A==
+X-Google-Smtp-Source: ABdhPJxFX44DEsMSrcm7kaqxDUVJ2f5DqziIyHEn1UgPjdye5o9apeArOqF6mOkc2usLmVXmtr2vu76cCQnMUTiCBGM=
+X-Received: by 2002:a19:c357:: with SMTP id t84mr5844550lff.34.1604347488712;
+ Mon, 02 Nov 2020 12:04:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
+ <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com> <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
+ <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com> <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
+ <964c2191-db78-ff4d-5664-1d80dc382df4@gmail.com> <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
+In-Reply-To: <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 2 Nov 2020 21:04:22 +0100
+Message-ID: <CAG48ez2vPUCiZX-swrE2oWx8j-6QCzCRiFGnCPFoGMN+oBFGQw@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nr_rings is reset to 1, but when this function is called for a second
-(and third!) time nr_rings > 1 is false, thus the else case is entered
-to set up a buffer for the RPTR shadow and consequently written to
-RB_RPTR_ADDR, hanging platforms without WHERE_AM_I firmware support.
+On Mon, Nov 2, 2020 at 8:50 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> On Mon, Nov 2, 2020 at 11:45 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+> >    Caveats regarding blocking system calls
+> >        Suppose that the target performs a blocking system call (e.g.,
+> >        accept(2)) that the supervisor should handle.  The supervisor
+> >        might then in turn execute the same blocking system call.
+> >
+> >        In this scenario, it is important to note that if the target's
+> >        system call is now interrupted by a signal, the supervisor is not
+> >        informed of this.  If the supervisor does not take suitable steps
+> >        to actively discover that the target's system call has been
+> >        canceled, various difficulties can occur.  Taking the example of
+> >        accept(2), the supervisor might remain blocked in its accept(2)
+> >        holding a port number that the target (which, after the
+> >        interruption by the signal handler, perhaps closed  its listening
+> >        socket) might expect to be able to reuse in a bind(2) call.
+> >
+> >        Therefore, when the supervisor wishes to emulate a blocking system
+> >        call, it must do so in such a way that it gets informed if the
+> >        target's system call is interrupted by a signal handler.  For
+> >        example, if the supervisor itself executes the same blocking
+> >        system call, then it could employ a separate thread that uses the
+> >        SECCOMP_IOCTL_NOTIF_ID_VALID operation to check if the target is
+> >        still blocked in its system call.  Alternatively, in the accept(2)
+> >        example, the supervisor might use poll(2) to monitor both the
+> >        notification file descriptor (so as as to discover when the
+> >        target's accept(2) call has been interrupted) and the listening
+> >        file descriptor (so as to know when a connection is available).
+> >
+> >        If the target's system call is interrupted, the supervisor must
+> >        take care to release resources (e.g., file descriptors) that it
+> >        acquired on behalf of the target.
+> >
+> > Does that seem okay?
+> >
+> This is far clearer than my explanation. The one thing is that *just*
+> poll is not good enough, you would poll, with some timeout, and when
+> that timeout is hit, check if all the current notifications are valid,
+> as poll isn't woken up when an in progress notification goes off
+> AFAIK.
 
-Restructure the condition in such a way that shadow buffer setup only
-ever happens when has_whereami is true; otherwise preemption is only
-finalized when the number of ring buffers has not been reset to 1 yet.
+Arguably that's so terrible that it qualifies for being in the BUGS
+section of the manpage.
 
-Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index d6804a802355..9a202a7da131 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -755,12 +755,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
- 		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
- 
--	/* Disable preemption if WHERE_AM_I isn't available */
--	if (!a5xx_gpu->has_whereami && gpu->nr_rings > 1) {
--		a5xx_preempt_fini(gpu);
--		gpu->nr_rings = 1;
--	} else {
--		/* Create a privileged buffer for the RPTR shadow */
-+	/* Create a privileged buffer for the RPTR shadow */
-+	if (a5xx_gpu->has_whereami) {
- 		if (!a5xx_gpu->shadow_bo) {
- 			a5xx_gpu->shadow = msm_gem_kernel_new(gpu->dev,
- 				sizeof(u32) * gpu->nr_rings,
-@@ -774,6 +770,10 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 
- 		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
- 			REG_A5XX_CP_RB_RPTR_ADDR_HI, shadowptr(a5xx_gpu, gpu->rb[0]));
-+	} else if (gpu->nr_rings > 1) {
-+		/* Disable preemption if WHERE_AM_I isn't available */
-+		a5xx_preempt_fini(gpu);
-+		gpu->nr_rings = 1;
- 	}
- 
- 	a5xx_preempt_hw_init(gpu);
--- 
-2.29.2
-
+If you want this to be fixed properly, I recommend that someone
+implements my proposal from
+<https://lore.kernel.org/lkml/CAG48ez1O2H5HDikPO-_o-toXTheU8GnZot9woGDsNRNJqSWesA@mail.gmail.com/>,
+unless you can come up with something better.
