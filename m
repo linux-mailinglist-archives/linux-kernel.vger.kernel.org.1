@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16A92A2A62
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B652A2A66
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 13:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgKBMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 07:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
+        id S1728742AbgKBMH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 07:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728520AbgKBMHq (ORCPT
+        with ESMTP id S1728724AbgKBMH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 07:07:46 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69FEC061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:07:45 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id i16so8883659wrv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:07:45 -0800 (PST)
+        Mon, 2 Nov 2020 07:07:56 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BF4C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 04:07:56 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id g12so10611453pgm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 04:07:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eUVjcwISJQW+1frTu7OCHLFQysscXZZHpmz3yRtdTVQ=;
-        b=KQB2gHngwPyyOsVQ4B0OZ7GVfj2NciKQIQYRch/wSmsQyepnRwXg3UoY/vWSVDWRl7
-         HMsqOO6uRGJ+/Hdj/4432079AlYXWDvyYdtnJuitArUvTrhXvhJhBN7W0ko/CqqHnRTU
-         7Lum8CjxRR4/GzwScT82n9/YJ+Dc+PA0FJbSdF3jld3nFMbjfwaQ03aTYFmJ0SsDEWPK
-         vMqvtNKA+xkh1r9S2KtjptoluPlWr3yc/zoDuEgyuAOLaxZBcyI5FTzY9sJUUu3W8Nlp
-         fwYHrpUVqg8VmL6x7CjoDrsGiOO3u6g+1efqF1JtYoX9MxqVhzOs4yDTeQSrMOCyrhg/
-         ct8w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aFM6/afG6N6GkffE6RVsA6XQhyhMXSUQ6Tq0CrN9TdE=;
+        b=OER6ydD30mEycoQTkeJ2IEiFZdYdh0NneHHHSB7KDLQJaaFrFNIHAk7YS3b99bIBqf
+         CY5P3j+LjyDibyo6PH6yMuXRpQ7mGTtlXVUKW7EjBLFMhrrAU0dIKL732N7CSpkrDwSg
+         JyBBMOnObcDhu+y53bZi+INnV6NUX6CI2ZIJc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eUVjcwISJQW+1frTu7OCHLFQysscXZZHpmz3yRtdTVQ=;
-        b=UFqDZ0RtgV3Nsgs9HHaYJQxZ8FQa2wjPZG683Dtw0i3T5vRK1jKCxSJv38ZOeru/XX
-         Row+7LE5ZO8ETbMMMeEouWBtS7Y9dB7JXjfbcBOAZr1HK8TePtV1LhQekW/CFvQSkDLa
-         2Xj59hCZDs9AvVEhzUrr2WJhRL7wmCrWuJf+NZoCD9FFyErG9rEBj3m1NPWk7rkDLRZA
-         +/W3rsdDr1V6NE/HwDzGIoyFJOL5tECYY8XxFKUB4fa+S399b1WqTwzVIJVdJH0aLSBv
-         oMbaevk0T4CGGg5kRflYFLADx+sGhfrXgK/oKSUJbjtktQUuphDKoi+wERrWBoD3qouo
-         9Vmg==
-X-Gm-Message-State: AOAM532p/1U+mINl5RYROHeG+yfaoJnlz0Y4xbUIOr90g5dkSOMpQvla
-        f0sL/Zps86nVdeUccaZYQUuGWg==
-X-Google-Smtp-Source: ABdhPJwTajJQeiR3nsV4qOBNRFjFrC/62yAM6XnOpVBwlopbqb4d2cBKvCaXnO14VeHiD+KqGJHhWw==
-X-Received: by 2002:adf:a195:: with SMTP id u21mr12924380wru.132.1604318864419;
-        Mon, 02 Nov 2020 04:07:44 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id a12sm6937840wrr.31.2020.11.02.04.07.43
+        bh=aFM6/afG6N6GkffE6RVsA6XQhyhMXSUQ6Tq0CrN9TdE=;
+        b=OWqgMmUe9j65I/+OO9+nYYDxcVfO6HnYu02JpeHK5Fm1506UWVs1/y0qwJI5Ntep6D
+         bsjK0VwE32HP2OOJKMnsbsWTHIOQ5v9vEHcpXowdMDlcbzm6hUOZDAHnYH3HrAuAZM3s
+         hxw0UJBUHRiZOno//0SiCPLl7u96OF4zqoJgjTgyOqK7zYr8qYK9MyrQlq9i3W3YnDUo
+         aXqR5fPimu0kTclMNpGz6wa3o21sgJVFkJnBWCXjv+czlomBqJYOA90xT4L0tVzhO8pV
+         VI2DWBLTsfYXVxPy2v/fxNkgq8749pmuI7KHei7dXJDGn6BcatXfcFMvomAQlIGCUrz/
+         U2oA==
+X-Gm-Message-State: AOAM5309OqPw0SVruJXIkZ+oLKSpkwiUryb7voH9yS0Y7k44AsmFAC/s
+        57EfNn7TfpvfTx8X8U31v1uX8Q==
+X-Google-Smtp-Source: ABdhPJwK6F4gpRDNplhBJ76hPT238QfpHnacXB+pi3j8WSLJHBoyl01NGnhMR9ZQeZeIkxPlSSGM+g==
+X-Received: by 2002:a17:90b:30d2:: with SMTP id hi18mr5754162pjb.186.1604318875646;
+        Mon, 02 Nov 2020 04:07:55 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
+        by smtp.gmail.com with ESMTPSA id h26sm11675226pfq.139.2020.11.02.04.07.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 04:07:43 -0800 (PST)
-Subject: Re: [PATCH 15/17] arm64: dts: sdm845: Add interconnect properties for
- Venus
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org
-References: <20201102113529.16152-1-stanimir.varbanov@linaro.org>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <04afbbe2-0e31-1ca1-8215-504e64186969@linaro.org>
-Date:   Mon, 2 Nov 2020 14:07:44 +0200
+        Mon, 02 Nov 2020 04:07:54 -0800 (PST)
+From:   Claire Chang <tientzu@chromium.org>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        andriy.shevchenko@linux.intel.com
+Cc:     eddie.huang@mediatek.com, hsinyi@chromium.org,
+        Sergey.Semin@baikalelectronics.ru, changqi.hu@mediatek.com,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Claire Chang <tientzu@chromium.org>
+Subject: [PATCH] serial: 8250_mtk: Fix uart_get_baud_rate warning
+Date:   Mon,  2 Nov 2020 20:07:49 +0800
+Message-Id: <20201102120749.374458-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-In-Reply-To: <20201102113529.16152-1-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+Mediatek 8250 port supports speed higher than uartclk / 16. If the baud
+rates in both the new and the old termios setting are higher than
+uartclk / 16, the WARN_ON in uart_get_baud_rate() will be triggered.
+Passing NULL as the old termios so uart_get_baud_rate() will use
+uartclk / 16 - 1 as the new baud rate which will be replaced by the
+original baud rate later by tty_termios_encode_baud_rate() in
+mtk8250_set_termios().
 
-On 11/2/20 13:35, Stanimir Varbanov wrote:
-> Populate Venus DT node with interconnect properties.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Fixes: 551e553f0d4a ("serial: 8250_mtk: Fix high-speed baud rates clamping")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+---
+ drivers/tty/serial/8250/8250_mtk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
+diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+index 41f4120abdf2..fa876e2c13e5 100644
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -317,7 +317,7 @@ mtk8250_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	 */
+ 	baud = tty_termios_baud_rate(termios);
+ 
+-	serial8250_do_set_termios(port, termios, old);
++	serial8250_do_set_termios(port, termios, NULL);
+ 
+ 	tty_termios_encode_baud_rate(termios, baud, baud);
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
-Thanks!
-Georgi
-
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 40e8c11f23ab..aca7e9c954e0 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -3661,6 +3661,9 @@
->  			iommus = <&apps_smmu 0x10a0 0x8>,
->  				 <&apps_smmu 0x10b0 0x0>;
->  			memory-region = <&venus_mem>;
-> +			interconnects = <&mmss_noc MASTER_VIDEO_P0 0 &mem_noc SLAVE_EBI1 0>,
-> +					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>;
-> +			interconnect-names = "video-mem", "cpu-cfg";
->  
->  			video-core0 {
->  				compatible = "venus-decoder";
-> 
