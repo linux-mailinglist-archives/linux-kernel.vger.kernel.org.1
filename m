@@ -2,121 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401C12A22DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EE62A22E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 03:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgKBCBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Nov 2020 21:01:23 -0500
-Received: from mail-eopbgr40068.outbound.protection.outlook.com ([40.107.4.68]:52380
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727409AbgKBCBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:01:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I179Mt8D3ClxN2EsfRFMgQ2w1gjcd3Siyp6u4Uuvikzik5PZbMSXF+oYOl1eA95k/tP4zZjXtCOWrBRUhpOZCQURspfEymIVLCd/7WWH6+Mya8VrNIJBLeK/25bJMIeV/S1oXAmEGV+3+EbWHNWHhNQ8e8oLzpHM5qWE6vuJ2fvdbNyfF4Xo2DYWHCsovlciAXMEmJpSzvE4snKbWfBQywvLOX6f8J3JfnO1qa7QfFgqWjL5WBRW8WNhTxG7yTDhNRHPjyhJUd95LxQWBYzzFUKiGQhmEgm6DiXljap65eCa42zNp6JG4cXd6pNEAKnBBUF4/q0xw65oto85uehSZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Enl4G4oAjM5vmHmgGqgj4rCCy6ZcdFBBIcZYgNnKerU=;
- b=ZWayv5EbBjKfRp0fTUgpkAVw3ROnG3LE8GHa0TVohRAstyn2lGmtCFtsgYDI2WIwE6CKV0w1hsBfYYgECRfJbYws+WVFNRzaj6aABEcPkXqgb2G1IHekmoPzRZsfOEUZLylPN2qMXy1zDb4WLY7havQ8n2u4hN/gbfEMThsXpmSyqdK9OHTSfNpG65IY7gIN2ig/zwm0IrGsjALhqWBiLNlG4YOwnRaT+3SAyDxbrL9CdnoaB+q0hwYTSlRyFnM1LPCUrg6htu0reFwrELNryvD5QxN7FJDZaVKJBYR3CUj8i6WwnOIsWALLik3e3VoHslP0z3Ecc+UI5Ptz5syx1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Enl4G4oAjM5vmHmgGqgj4rCCy6ZcdFBBIcZYgNnKerU=;
- b=ZAnqRp1W02Kio0qcZgo7LRNSe6o6Qd9sATYS89IEO/0/LjSypSty1mRWw90EbUy/08OTt9k5iJnXDlKcOyZCuqb3R6Ibqrc7B24MF7LdNxJ30pynbXM5rcVHx5swfO7ZR8PLAAx4OGIm2sLnuFjwahI5hSPniXHpKuuhH5XM5Is=
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com (2603:10a6:803:129::26)
- by VE1PR04MB6432.eurprd04.prod.outlook.com (2603:10a6:803:122::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Mon, 2 Nov
- 2020 02:01:19 +0000
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35]) by VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 02:01:19 +0000
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     "olteanv@gmail.com" <olteanv@gmail.com>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Thread-Topic: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Thread-Index: AQHWrdB51nJYwHeGTEukPNQ8v2xIXamwHjEAgAP949A=
-Date:   Mon, 2 Nov 2020 02:01:19 +0000
-Message-ID: <VE1PR04MB6768AD4A197FB94209D63C0991100@VE1PR04MB6768.eurprd04.prod.outlook.com>
-References: <20201029084035.19604-1-qiang.zhao@nxp.com>
- <20201030130224.GA8802@sirena.org.uk>
-In-Reply-To: <20201030130224.GA8802@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b0b010a2-7246-4387-0745-08d87ed330ee
-x-ms-traffictypediagnostic: VE1PR04MB6432:
-x-microsoft-antispam-prvs: <VE1PR04MB6432B6164E3EDA0B9FFD363991100@VE1PR04MB6432.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ugMuRWo+dA5Zw5VQ4HhMvka5UTPPj4HDvqRf6NRelCCVA2UTa6m4NlJ9/B2xDilRHsN15hWQJRhTtPzq2yWUDeLfoQhCywAcoycujS9++LRjKRllQ2ya/tazXn+Y/Tr3+ktbtRijhWLfHnsY7Pa6FeNEwUmU+LZh8wBeoBpHKuA7YPKkcVEn9/QtV5aqSQJVeXlNjmp2A856dVQY4N0peXWNfFEMrcERZrY8xB3q5YDoYeU+iKhXU200zD/7mCcR0JRfWHjoI9poCeKxBbyFnpvBp44Iw8vUvAhkr3XNwXYu/yq0BZJNubC44ijgILoW
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6768.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(6916009)(26005)(186003)(8676002)(478600001)(5660300002)(8936002)(52536014)(6506007)(53546011)(55016002)(9686003)(83380400001)(76116006)(2906002)(66446008)(64756008)(7696005)(66556008)(4326008)(66476007)(54906003)(44832011)(66946007)(316002)(86362001)(33656002)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1gSlOQ2htyyIWomA371IdCJ/NKJWr2kFSQM9FxAshTkuKS/HxYFwPcMbbrtlyNY7ZCUhdzXZA4xzQflYSTZDhGrLJvbD5fPua0eYhYuyr+2aI2+xwIP6D5852Fl17PvSCsXVfhknLTih7lfc+lmH4afef7AqzJ7E7wtxA9AkywgcvUIi0xC3GxEF+Z+stheJ2ngggpLRFgaKwHtslZAiPN825Rl9TVctAyVrCjpg0XRsCDzmuLrWZMpgJJM4tEzrH6fsvpIs3uAJ6skUBOEpQCOY+QSzWoy1lLRCcNQF5Olt5Ppm8a4G0Hq1po1c4ZJv0TO5/kTZJrWErTJ5fCnOnY5NDYvo6FJCVdT5GwtWjFNZTYmaQ0MUXwijBjE84Ptoa1K29RkK37SUAbN7TCiff0ibWjM9Z16j4tJRP75ll+M/vCfDei39anzxDPeA3vVFnKUrfY3uy/sUr2JY77yorsgdI/JwyKbOeV70XIzg0T8Uvaego9/TxqWqwYOGO4T3OIXSraw1yszVhD5Mzx62fc4WXiGYlngGTOA0GQu9WVv6dX1pz2EjnJi6zBJwgCFROEzar+I+uZWT5AUpfiOXyCPkS/+vHTtNe4q+z/pMeX0on9/dRcp0MMOanf51oXBE7/1FpK4/Y+robNYEWwtBbw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1727650AbgKBCHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Nov 2020 21:07:52 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7392 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727620AbgKBCHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Nov 2020 21:07:52 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CPbsY57sBz71Cx;
+        Mon,  2 Nov 2020 10:07:45 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 2 Nov 2020
+ 10:07:42 +0800
+Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
+ ioctl
+To:     Daeho Jeong <daeho43@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
+References: <20201030041035.394565-1-daeho43@gmail.com>
+ <20201030041035.394565-2-daeho43@gmail.com>
+ <25d164b5-278a-1065-e9ab-4da3232b3b97@huawei.com>
+ <CACOAw_wMBeMjQaXCyueX4m4+Xun-k-7kg2QYqe9svMAdVoE3Pg@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <158671ed-9f77-ebbc-d269-db39a047589c@huawei.com>
+Date:   Mon, 2 Nov 2020 10:07:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6768.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0b010a2-7246-4387-0745-08d87ed330ee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 02:01:19.5890
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: REJlzsUpQrXzI/dGLIruIEuwlOIXWfzHJObchdR747+uBaOYob8AyXAaiqHE0JdQKXdFwl0xFGeepBLElf5zrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6432
+In-Reply-To: <CACOAw_wMBeMjQaXCyueX4m4+Xun-k-7kg2QYqe9svMAdVoE3Pg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCBPY3QgMzAsIDIwMjAgYXQgMjE6MDJQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPiB3cm90ZToNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBN
-YXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMjDE6jEw1MIzMMjVIDIx
-OjAyDQo+IFRvOiBRaWFuZyBaaGFvIDxxaWFuZy56aGFvQG54cC5jb20+DQo+IENjOiBvbHRlYW52
-QGdtYWlsLmNvbTsgbGludXgtc3BpQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBzcGk6IGZzbC1kc3BpOiBmaXgg
-TlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlDQo+IA0KPiBPbiBUaHUsIE9jdCAyOSwgMjAyMCBhdCAw
-NDo0MDozNVBNICswODAwLCBRaWFuZyBaaGFvIHdyb3RlOg0KPiANCj4gPiBbICAgNjQuNTg3NDMx
-XSBVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQNCj4g
-PiB2aXJ0dWFsIGFkZHJlc3MgMDAwMDAwMDAwMDAwMDAyMA0KPiA+IFsuLl0NCj4gPiBbICAgNjQu
-NzU2MDgwXSBDYWxsIHRyYWNlOg0KPiA+IFsgICA2NC43NTg1MjZdICBkc3BpX3N1c3BlbmQrMHgz
-MC8weDc4DQo+ID4gWyAgIDY0Ljc2MjAxMl0gIHBsYXRmb3JtX3BtX3N1c3BlbmQrMHgyOC8weDcw
-DQo+ID4gWyAgIDY0Ljc2NjEwN10gIGRwbV9ydW5fY2FsbGJhY2suaXNyYS4xOSsweDI0LzB4NzAN
-Cj4gPiBbICAgNjQuNzcwNjM1XSAgX19kZXZpY2Vfc3VzcGVuZCsweGY0LzB4MmYwDQo+ID4gWyAg
-IDY0Ljc3NDU1M10gIGRwbV9zdXNwZW5kKzB4ZWMvMHgxZTANCj4gPiBbICAgNjQuNzc4MDM2XSAg
-ZHBtX3N1c3BlbmRfc3RhcnQrMHg4MC8weGEwDQo+ID4gWyAgIDY0Ljc4MTk1N10gIHN1c3BlbmRf
-ZGV2aWNlc19hbmRfZW50ZXIrMHgxMTgvMHg0ZjANCj4gPiBbICAgNjQuNzg2NzQzXSAgcG1fc3Vz
-cGVuZCsweDFlMC8weDI2MA0KPiA+IFsgICA2NC43OTAyMjddICBzdGF0ZV9zdG9yZSsweDhjLzB4
-MTE4DQo+ID4gWyAgIDY0Ljc5MzcxMl0gIGtvYmpfYXR0cl9zdG9yZSsweDE4LzB4MzANCj4gPiBb
-ICAgNjQuNzk3NDU5XSAgc3lzZnNfa2Zfd3JpdGUrMHg0MC8weDU4DQo+ID4gWyAgIDY0LjgwMTEx
-OF0gIGtlcm5mc19mb3Bfd3JpdGUrMHgxNDgvMHgyNDANCj4gPiBbICAgNjQuODA1MTI2XSAgdmZz
-X3dyaXRlKzB4YzAvMHgyMzANCj4gPiBbICAgNjQuODA4NDM2XSAga3N5c193cml0ZSsweDZjLzB4
-MTAwDQo+ID4gWyAgIDY0LjgxMTgzM10gIF9fYXJtNjRfc3lzX3dyaXRlKzB4MWMvMHgyOA0KPiA+
-IFsgICA2NC44MTU3NTNdICBlbDBfc3ZjX2NvbW1vbi5jb25zdHByb3AuMysweDY4LzB4MTcwDQo+
-ID4gWyAgIDY0LjgyMDU0MV0gIGRvX2VsMF9zdmMrMHgyNC8weDkwDQo+ID4gWyAgIDY0LjgyMzg1
-M10gIGVsMF9zeW5jX2hhbmRsZXIrMHgxMTgvMHgxNjgNCj4gPiBbICAgNjQuODI3ODU4XSAgZWww
-X3N5bmMrMHgxNTgvMHgxODANCj4gDQo+IFBsZWFzZSB0aGluayBoYXJkIGJlZm9yZSBpbmNsdWRp
-bmcgY29tcGxldGUgYmFja3RyYWNlcyBpbiB1cHN0cmVhbSByZXBvcnRzLA0KPiB0aGV5IGFyZSB2
-ZXJ5IGxhcmdlIGFuZCBjb250YWluIGFsbW9zdCBubyB1c2VmdWwgaW5mb3JtYXRpb24gcmVsYXRp
-dmUgdG8gdGhlaXINCj4gc2l6ZSBzbyBvZnRlbiBvYnNjdXJlIHRoZSByZWxldmFudCBjb250ZW50
-IGluIHlvdXIgbWVzc2FnZS4gSWYgcGFydCBvZiB0aGUNCj4gYmFja3RyYWNlIGlzIHVzZWZ1bGx5
-IGlsbHVzdHJhdGl2ZSAoaXQgb2Z0ZW4gaXMgZm9yIHNlYXJjaCBlbmdpbmVzIGlmIG5vdGhpbmcg
-ZWxzZSkNCj4gdGhlbiBpdCdzIHVzdWFsbHkgYmV0dGVyIHRvIHB1bGwgb3V0IHRoZSByZWxldmFu
-dCBzZWN0aW9ucy4NCg0KT2ssIHdpbGwgbW9kaWZpZWQgaW4gbmV4dCB2ZXJzaW9uLg0KDQpCZXN0
-IFJlZ2FyZHMsDQpRaWFuZyBaaGFvDQo=
+On 2020/11/2 7:42, Daeho Jeong wrote:
+> Oh, even if those are patchset, then I have to send just changed ones?
+
+There is no strict constraint condition, and I'm okay with both ways, however,
+I prefer the way just sending changed one because IMO it can help to save
+review time on those unchanged patches. :P
+
+Thanks,
+
+> Got it.
+> 
+> 2020년 10월 30일 (금) 오후 3:13, Chao Yu <yuchao0@huawei.com>님이 작성:
+>>
+>> Daeho,
+>>
+>> If there is no change, we are used to not resend the patch with updated
+>> version.
+>>
+>> Thanks,
+>>
+>> On 2020/10/30 12:10, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
+>>> compression option of a file.
+>>>
+>>> struct f2fs_comp_option {
+>>>       u8 algorithm;         => compression algorithm
+>>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>>>       u8 log_cluster_size;  => log scale cluster size
+>>>                             => 2 ~ 8
+>>> };
+>>>
+>>> struct f2fs_comp_option option;
+>>>
+>>> option.algorithm = 1;
+>>> option.log_cluster_size = 7;
+>>>
+>>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> ---
+>>>
+>>> v6: changed the function name of checking compression algorithm validity.
+>>> v5: allowed to set algorithm which is not currently enabled by kernel.
+>>> v4: changed commit message.
+>>> v3: changed the error number more specific.
+>>>       folded in fix for build breakage reported by kernel test robot
+>>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
+>>> v2: added ioctl description.
+>>> ---
+>>>    fs/f2fs/compress.c |  5 +++++
+>>>    fs/f2fs/f2fs.h     |  7 ++++++
+>>>    fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+>>>    3 files changed, 66 insertions(+)
+>>>
+>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>> index 7895186cc765..b0144670d320 100644
+>>> --- a/fs/f2fs/compress.c
+>>> +++ b/fs/f2fs/compress.c
+>>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>        return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+>>>    }
+>>>
+>>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>> +{
+>>> +     return f2fs_cops[algorithm] != NULL;
+>>> +}
+>>> +
+>>>    static mempool_t *compress_page_pool;
+>>>    static int num_compress_pages = 512;
+>>>    module_param(num_compress_pages, uint, 0444);
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index a33c90cf979b..70a8a2196888 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+>>>                                                struct f2fs_sectrim_range)
+>>>    #define F2FS_IOC_GET_COMPRESS_OPTION        _IOR(F2FS_IOCTL_MAGIC, 21,      \
+>>>                                                struct f2fs_comp_option)
+>>> +#define F2FS_IOC_SET_COMPRESS_OPTION _IOW(F2FS_IOCTL_MAGIC, 22,      \
+>>> +                                             struct f2fs_comp_option)
+>>>
+>>>    /*
+>>>     * should be same as XFS_IOC_GOINGDOWN.
+>>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+>>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+>>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+>>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
+>>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+>>>    int f2fs_init_compress_mempool(void);
+>>>    void f2fs_destroy_compress_mempool(void);
+>>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
+>>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>        /* not support compression */
+>>>        return false;
+>>>    }
+>>> +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>> +{
+>>> +     return false;
+>>> +}
+>>>    static inline struct page *f2fs_compress_control_page(struct page *page)
+>>>    {
+>>>        WARN_ON_ONCE(1);
+>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>> index bd52df84219d..be56702e4939 100644
+>>> --- a/fs/f2fs/file.c
+>>> +++ b/fs/f2fs/file.c
+>>> @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+>>>        return 0;
+>>>    }
+>>>
+>>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>> +{
+>>> +     struct inode *inode = file_inode(filp);
+>>> +     struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>> +     struct f2fs_comp_option option;
+>>> +     int ret = 0;
+>>> +
+>>> +     if (!f2fs_sb_has_compression(sbi))
+>>> +             return -EOPNOTSUPP;
+>>> +
+>>> +     if (!(filp->f_mode & FMODE_WRITE))
+>>> +             return -EBADF;
+>>> +
+>>> +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
+>>> +                             sizeof(option)))
+>>> +             return -EFAULT;
+>>> +
+>>> +     if (!f2fs_compressed_file(inode) ||
+>>> +                     option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+>>> +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
+>>> +                     option.algorithm >= COMPRESS_MAX)
+>>> +             return -EINVAL;
+>>> +
+>>> +     file_start_write(filp);
+>>> +     inode_lock(inode);
+>>> +
+>>> +     if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+>>> +             ret = -EBUSY;
+>>> +             goto out;
+>>> +     }
+>>> +
+>>> +     if (inode->i_size != 0) {
+>>> +             ret = -EFBIG;
+>>> +             goto out;
+>>> +     }
+>>> +
+>>> +     F2FS_I(inode)->i_compress_algorithm = option.algorithm;
+>>> +     F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
+>>> +     F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+>>> +     f2fs_mark_inode_dirty_sync(inode, true);
+>>> +
+>>> +     if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+>>> +             f2fs_warn(sbi, "compression algorithm is successfully set, "
+>>> +                     "but current kernel doesn't support this algorithm.");
+>>> +out:
+>>> +     inode_unlock(inode);
+>>> +     file_end_write(filp);
+>>> +
+>>> +     return ret;
+>>> +}
+>>> +
+>>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>    {
+>>>        if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+>>> @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>                return f2fs_sec_trim_file(filp, arg);
+>>>        case F2FS_IOC_GET_COMPRESS_OPTION:
+>>>                return f2fs_ioc_get_compress_option(filp, arg);
+>>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
+>>> +             return f2fs_ioc_set_compress_option(filp, arg);
+>>>        default:
+>>>                return -ENOTTY;
+>>>        }
+>>> @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>>>        case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+>>>        case F2FS_IOC_SEC_TRIM_FILE:
+>>>        case F2FS_IOC_GET_COMPRESS_OPTION:
+>>> +     case F2FS_IOC_SET_COMPRESS_OPTION:
+>>>                break;
+>>>        default:
+>>>                return -ENOIOCTLCMD;
+>>>
+> .
+> 
