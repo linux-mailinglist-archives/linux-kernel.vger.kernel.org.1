@@ -2,104 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478792A2823
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B837E2A2826
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgKBKXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:23:14 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:45173 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728005AbgKBKXN (ORCPT
+        id S1728439AbgKBKXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:23:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728005AbgKBKXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:23:13 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 81B70F58;
-        Mon,  2 Nov 2020 05:23:12 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:23:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=YuURcf+7tOjKrSfDQk94W3WVSnj
-        EFGfT9fSMDlBxuys=; b=Cv8DsezNjjH7PfKp4JRLJuJDWoykiAPejFTekHs1BOw
-        nPbYJjCvI4tfn/PrY8pNO6Btr5JyVjWf2aFf/9bUuDsgufsYyAqoJXs0WJjpyQUJ
-        QO55A91sz83WviL4U9ElRM1R5DM5/Hj8TloN8BB7/FF8VTD7DkfvbBZbIWEjGGoi
-        uHbXCSZcJUPeRhRF/XtDZu59fjgBbt2twP8UC8DdfZjCaEPXtc+GSYO9y/o1zIBI
-        ZLTFPyOVZQprPjKTuVs34c8sd2ICHlBtxi5t1K7FeYmBTwymt1lBp0M1jkW4nwgn
-        BRQ+m1kUbQNOWq4ONzGbSPYkzRRtvF0jvPZlFxSv3wA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YuURcf
-        +7tOjKrSfDQk94W3WVSnjEFGfT9fSMDlBxuys=; b=aIe7no/wQ+tJOnbYtU0fdk
-        mCaiGjSEe3eH3geNz4nUdhB7ajHyIbMncda3LQjyICJYyFEnSqLb54QWg4u85Uwk
-        lctRavxCP/zzjxpVh/7GwLqHdX1Uw3ZxCc3eGzH7ugJrihCY0VyikiUyCNVGDBmz
-        3/FvphlxJWE+tNnj4jxtPkR9tKSoI4mHdZwPhMuokQVmj8sauTDtoB+paIrz+g5V
-        BNQ7G7ZZ5lQTodU88Pup/tg/CSjHrZruXZOa0EBkwYw+mBBOgCMvAepVoacY3+3l
-        q6Ihi/EKxqqFZg7ax9heI3GAJi5hgdBBJ/s1MTST2Cpooe2sPQOP5bXFOVg1x5ug
-        ==
-X-ME-Sender: <xms:D96fXzI7axdnbj6n5bHSitDJ9Dw_x0tDSr-aGzVy6lc-2PKBFBuoWg>
-    <xme:D96fX3I85YWlSh2l1Mn7Hs-FDZUnpX5dhDBoDqHrcPH1p_XGqQ-7AXYMCQ99HgPZN
-    8MQ6ojgohzGdapdgPc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:D96fX7uAYYN9MyJeu723HFPxdDXljxSR65Nab_gh8zACYTsDX5QLKA>
-    <xmx:D96fX8Y9c6Ue_9eHP4tPaBjtzFh2RdH3LT4H3aRkgJD6mQzmmQhjzQ>
-    <xmx:D96fX6b1XN6FhGdHQwY57aMek0TJ0QnXHvXBn03hZR_P57K1hIxSNA>
-    <xmx:EN6fXxUDLEe3HtG6fAQF7TGFAzNsADYt--sh4FaeY9ugEY51wmrnug>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 94D84306468A;
-        Mon,  2 Nov 2020 05:23:11 -0500 (EST)
-Date:   Mon, 2 Nov 2020 11:23:09 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2] arm64: dts: allwinner: h6: PineH64 model B: Add wifi
-Message-ID: <20201102102309.xbrqfszpq3i62vor@gilmour.lan>
-References: <20201030172530.1096394-1-jernej.skrabec@siol.net>
+        Mon, 2 Nov 2020 05:23:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604312622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wp9LWIdQQeaVWYBrapN4RJch0BVmepD/23UqIg4kz2Q=;
+        b=Kl2vfjVFoXvTlsK3Xx57pHqVNA6um6BJYdoh4KA2sT+dErzxpzaRbFZWGhIT0ZARaDrxEx
+        /pClIzpTvmI9yJd2KqrAX2GrTy/fwdgI5K02mXPg/NVCpvdNK2A7wAqeOjDcf/YEufF9jC
+        T/RazfGcdsxUEW8C9sBouJRs1P5WjnQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-6iKsuRHHNG2LvB_wUHNf2Q-1; Mon, 02 Nov 2020 05:23:40 -0500
+X-MC-Unique: 6iKsuRHHNG2LvB_wUHNf2Q-1
+Received: by mail-wr1-f70.google.com with SMTP id b6so6202658wrn.17
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:23:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wp9LWIdQQeaVWYBrapN4RJch0BVmepD/23UqIg4kz2Q=;
+        b=PKhViLS3V3EIyyxomYPnQCm5wOVwOepeWXeNyvi/O3IEIBo53RKX0zsuh1sz+wM6PF
+         blFEfv2s4tW/qxNIXoQQtug1w1gO+Mo8U0JLxYP75hZnYnOSddHJlpRYCBQbL4I9BJXB
+         H5/d63fmg6Sfst8ZcuLgKgBQL2XlbtnztROh1KUK7ZQmCdac8bZG4UDFn1DQDhzpaFc9
+         uV4dU4IvhFQ+itAXlKgVeIZZojobYbAi5tKSSwf9t9PylkqU6ZMxCKSeXyx+Z6BxGarJ
+         QGfBcqljkY0ehXFc0diJ2p2huc3/IrLU2xSmwmGmWwA42Fm4khVdOKK2yIQKQ49CBHlx
+         UsGw==
+X-Gm-Message-State: AOAM533sxvsfzA3Nycdukq1WiWpeE662lft4eLAp/D8/RML1SK38zrN4
+        3ueE03tOwidb+yQ1NiTtFnT4A+MCRaGX1CiLYV7gPvHPvb1DdVXpqjdG7+rirNGJ49i8y0scxug
+        BRusvGrKsa8wpOdeI06inrNm7
+X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr12460072wrx.185.1604312618487;
+        Mon, 02 Nov 2020 02:23:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJznFGNmmLYGwZJwr0mGaJjbUUa+GHkURX7Blm6FFeB1v9AnrgQ4pPjIhkgBVh1ilzBqxxD+OQ==
+X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr12460054wrx.185.1604312618293;
+        Mon, 02 Nov 2020 02:23:38 -0800 (PST)
+Received: from redhat.com (bzq-79-182-97-190.red.bezeqint.net. [79.182.97.190])
+        by smtp.gmail.com with ESMTPSA id z15sm20847366wrq.24.2020.11.02.02.23.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 02:23:37 -0800 (PST)
+Date:   Mon, 2 Nov 2020 05:23:28 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christoph Hellwig <hch@infradead.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20201102052254-mutt-send-email-mst@kernel.org>
+References: <20201102124327.2f82b2a7@canb.auug.org.au>
+ <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fj3fhevzjxjy2rgx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030172530.1096394-1-jernej.skrabec@siol.net>
+In-Reply-To: <CAKMK7uHopZfa1vJ2++OQC8z=GKdDcJ=9=sKWJAcSfguec2UgyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 10:28:34AM +0100, Daniel Vetter wrote:
+> On Mon, Nov 2, 2020 at 2:43 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the drm-misc tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >
+> > In file included from drivers/gpu/drm/nouveau/nouveau_ttm.c:26:
+> > include/linux/swiotlb.h: In function 'swiotlb_max_mapping_size':
+> > include/linux/swiotlb.h:99:9: error: 'SIZE_MAX' undeclared (first use in this function)
+> >    99 |  return SIZE_MAX;
+> >       |         ^~~~~~~~
+> > include/linux/swiotlb.h:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; did you forget to '#include <stdint.h>'?
+> >     6 | #include <linux/init.h>
+> >   +++ |+#include <stdint.h>
+> >     7 | #include <linux/types.h>
+> > include/linux/swiotlb.h:99:9: note: each undeclared identifier is reported only once for each function it appears in
+> >    99 |  return SIZE_MAX;
+> >       |         ^~~~~~~~
+> >
+> > Caused by commit
+> >
+> >   abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
+> >
+> > but only exposed by commit
+> >
+> >   4dbafbd30aef ("drm/nouveu: fix swiotlb include")
+> >
+> > I applied the following fix for today:
+> >
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Mon, 2 Nov 2020 12:34:57 +1100
+> > Subject: [PATCH] swiotlb: using SIZE_MAX needs limits.h included
+> >
+> > Fixes: abe420bfae52 ("swiotlb: Introduce swiotlb_max_mapping_size()")
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> 
+> I think simplest if this lands through dma-api tree into current -rc
+> kernels. Or should we just put this into drm-misc-next since that's
+> where the problem shows up? Christoph, any preference from dma-api
+> side?
+> -Daniel
 
---fj3fhevzjxjy2rgx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 30, 2020 at 06:25:30PM +0100, Jernej Skrabec wrote:
-> PineH64 model B contains RTL8723CS wifi+bt combo module.
->=20
-> Since bluetooth support is not yet squared away, only wifi is enabled
-> for now.
->=20
-> Acked-by: Chen-Yu Tsai <wens@csie.org>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Or I can merge it since I merged the original patch causing the
+issue ...
 
-Applied, thanks!
-Maxime
+> > ---
+> >  include/linux/swiotlb.h | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > index 513913ff7486..ed9de7855d3b 100644
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -5,6 +5,9 @@
+> >  #include <linux/dma-direction.h>
+> >  #include <linux/init.h>
+> >  #include <linux/types.h>
+> > +#ifndef CONFIG_SWIOTLB
+> > +#include <linux/limits.h>
+> > +#endif
+> >
+> >  struct device;
+> >  struct page;
+> > --
+> > 2.28.0
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
+> 
+> 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
---fj3fhevzjxjy2rgx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/eDQAKCRDj7w1vZxhR
-xRfPAQDGyuAJQmmdszu3SSMVCP3kyuqLOJeYvRUexBCpSAJkJgEA9Smgfe7GGqAR
-59ntEcW7DK+VeWO9tvAnxxbaONdQsAQ=
-=zusj
------END PGP SIGNATURE-----
-
---fj3fhevzjxjy2rgx--
