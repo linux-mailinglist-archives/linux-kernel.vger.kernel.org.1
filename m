@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198EB2A2603
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B1C2A260B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 09:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgKBIVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 03:21:30 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:58298 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727818AbgKBIVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 03:21:30 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 4646F204FD;
-        Mon,  2 Nov 2020 09:21:28 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xf-tTB2zwMVo; Mon,  2 Nov 2020 09:21:24 +0100 (CET)
-Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id B6ADA2026E;
-        Mon,  2 Nov 2020 09:21:24 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 2 Nov 2020 09:21:24 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 2 Nov 2020
- 09:21:24 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id A365531844C7; Mon,  2 Nov 2020 09:21:23 +0100 (CET)
-Date:   Mon, 2 Nov 2020 09:21:23 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Dmitry Safonov <dima@arista.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hillf Danton <hdanton@sina.com>, <netdev@vger.kernel.org>,
-        <syzbot+a7e701c8385bd8543074@syzkaller.appspotmail.com>,
-        <syzbot+c43831072e7df506a646@syzkaller.appspotmail.com>
-Subject: Re: [PATCH 0/3] xfrm/compat: syzbot-found fixes
-Message-ID: <20201102082123.GC8805@gauss3.secunet.de>
-References: <20201030022600.724932-1-dima@arista.com>
+        id S1728067AbgKBIYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 03:24:08 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44597 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBIYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 03:24:08 -0500
+Received: by mail-wr1-f67.google.com with SMTP id b3so7553266wrx.11;
+        Mon, 02 Nov 2020 00:24:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xTb/nfp4nQ+7c+frBD27iwhczhBtI0z5xWSXbiHenyU=;
+        b=TKTiop3q8n8XK8N1kTrq2djaomYk/DQhtbaslFH2lwxoKcZ+2j+k5fjI4wj1r9pURO
+         KeKCG8ambN4/PuRmwKyxzfyY7fiM/0vlc82ayPGRMXyxSQa07KZ4P3grKgDLpVA+OQP6
+         hL4W2STIhgOxZoxWdq4LCprgiBbOE6T9hp09OGAV0uAPbgPjcqZ08TFF3V5W5WBdKEoH
+         IvdXxBUmKBOp9dhlWdAFt0bq83LhfFBHW/T9bwZrBJLDjQ7+3+jtCXFyji8smsusLsXC
+         p8Iv/Fvm2kh/Tk2G3qNA9cYhHOAfBural+tOrJ0XjQFwpFDJLLMwd2RPhMTmGbBvzwo3
+         epAQ==
+X-Gm-Message-State: AOAM533SY536ImTL49aOZJUYIs1SpN2dzSuLI+vDUAx5Wd2nK1ymPv5h
+        BeJbXdgDbUndYKi+Mqf2aIU=
+X-Google-Smtp-Source: ABdhPJx5BhKxovb46yfkZcV9GmrQtBUrd1Dojv/dfXSdtwdX89VkqH5dNCEEqdmvjxIquZIaa4HVyg==
+X-Received: by 2002:adf:f10e:: with SMTP id r14mr17857532wro.337.1604305446067;
+        Mon, 02 Nov 2020 00:24:06 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v19sm13861971wmj.31.2020.11.02.00.24.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 00:24:04 -0800 (PST)
+Date:   Mon, 2 Nov 2020 09:24:03 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: imx8mq-evk: Add spdif sound card
+ support
+Message-ID: <20201102082403.GA6152@kozik-lap>
+References: <1604283077-27012-1-git-send-email-shengjiu.wang@nxp.com>
+ <1604283077-27012-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201030022600.724932-1-dima@arista.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <1604283077-27012-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 02:25:57AM +0000, Dmitry Safonov wrote:
-> WARN_ON() for XFRMA_UNSPEC translation which likely no-one except
-> syzkaller uses; properly zerofy tail-padding for 64-bit attribute;
-> don't use __GFP_ZERO as the memory is initialized during translation.
+On Mon, Nov 02, 2020 at 10:11:17AM +0800, Shengjiu Wang wrote:
+> There are two spdif IP on imx8mq, spdif1 is for normal
+> spdif device, spdif2 is for HDMI ARC interface.
 > 
-> Cc: Steffen Klassert <steffen.klassert@secunet.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Hillf Danton <hdanton@sina.com>
-> Cc: netdev@vger.kernel.org
+> Enable these spdif sound card in this patch.
 > 
-> Thanks,
->          Dmitry
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+> changes in v2:
+> - remove undocument compatible string.
 > 
-> Dmitry Safonov (3):
->   xfrm/compat: Translate by copying XFRMA_UNSPEC attribute
->   xfrm/compat: memset(0) 64-bit padding at right place
->   xfrm/compat: Don't allocate memory with __GFP_ZERO
+>  arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 38 ++++++++++++++++
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi    | 48 ++++++++++++++++++++
+>  2 files changed, 86 insertions(+)
+> 
 
-Can you please add 'Fixes' tags to all the patches.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Thanks!
+Best regards,
+Krzysztof
