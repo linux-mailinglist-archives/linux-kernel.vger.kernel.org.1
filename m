@@ -2,127 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A882A3509
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 571382A3517
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 21:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgKBUVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 15:21:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgKBUVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:21:50 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4183DC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 12:21:50 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id c5so10138995qtw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 12:21:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
-        b=bBEKVnMgjoWujuv68Y0rl6eDm5sl+RLsRxWldpJosx8V8ORC5f5WNURvzRPF1NBv6v
-         Hw8SkPEFiVazRpc8HtbAFv6rySvi+dOgYcijpf6DGivgxo6rHAxTkqYtg7KMW/nWj0FK
-         jNVL3+jbG7w71qugmLw3Xz4ncKPZ2iWxLBTPPCt8BD1uQREeERQz3EX3KuToBY6VIz+L
-         zWgI8CrMO0KLAeTkRYk8aUfxLK5LxOxKT8l/+pOHEe6cjDYpW8aCCLwlS41l8QROI6B/
-         mwQYZlJ8/jHFIKB9IuKFrZteCWMQ5raxOMQKUfKXvcqF/2zfCoNEJ2DCqrzBN7oVKQ3f
-         3fMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
-        b=bVqoN4KP4pdOeu976ChzuxSzJdT4XzoeZ4r3cJtjHxpQxZHBhrCoLuJqVQnJDPnTCX
-         fnpPof7GCWkUudXimlpb/sVUPl7QrvC3wwZnvWqaKKonCpBtdPDN6WdJBYMAjIKjfp9h
-         DRtsqQNfayfnvXOOgancuNYbPn9PyVoXogILB5SN6IOI4fL4RB2oTXI7McbwHznIxxcc
-         3UhfFYI/f6S44VT29UkPKK8RMKLH6732xk8JCkViieSBf7cd20PO6yiU6Hak8voueHF+
-         bWxM8r9Boupuew1o6usgbFkLvlOa0WPU3wAksWcrbtcrmdJSBhXZRYAyWwiaRLp+mWy1
-         95fw==
-X-Gm-Message-State: AOAM530ag7GMwwjd1M6IPEyaH3vZgTU11ZeebTohcu6Wiairv7LFM9sl
-        Adl2NOE16btWbMOHoqhN9GzPCA==
-X-Google-Smtp-Source: ABdhPJwJQ2pszo1xApCrT+kXkRvTKT2LgFbWrFGxrHm118eNGOEBxjD4Dibd0ztWDPiArgTklCLYGg==
-X-Received: by 2002:ac8:76d9:: with SMTP id q25mr16151275qtr.125.1604348509453;
-        Mon, 02 Nov 2020 12:21:49 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:2f6e])
-        by smtp.gmail.com with ESMTPSA id 6sm8812740qks.51.2020.11.02.12.21.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 12:21:48 -0800 (PST)
-Date:   Mon, 2 Nov 2020 15:20:03 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
-Message-ID: <20201102202003.GA740958@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
- <20201102144110.GB724984@cmpxchg.org>
- <20201102144927.GN27442@casper.infradead.org>
+        id S1726470AbgKBU1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 15:27:36 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:40807 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgKBU1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 15:27:36 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CQ4GX0ZWfz6r;
+        Mon,  2 Nov 2020 21:27:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1604348854; bh=WK11YnyQEwN2KcQnNU2MIZhQIDNo2+h26QG/omCesAk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MtprQsP4+xMhD1EN+MeixU5nEa4DUFL3FjfiVo8Whu81aisNIHBvQ2Hsv6jHi7AQL
+         9NNJKvaLSUk2eySBa+rkhK+L9aCoUXKctp6XirYjBbfIz95zRxByOYq+nWuTJPZfhr
+         PsHqcSModOggZCV4NNq0zWyiLZJLmgKf2rGPl3YQnBoeWzkrsLzTTcYvMNcH9QQM3R
+         QLiDS4QbSl3BDxaCjufOk+JdS5V3BWho9hv3kkdXiuj3i/Df7spTS8/X7plhQ7iqtk
+         Wlp7ZQlIJe1BMFb2NLMNe8uVG+b0OpWxMJ6+8cFEUQ8BVLLZqCTqPVBmELxZ/cO+NH
+         jWIMlvzEgokcg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Mon, 2 Nov 2020 21:27:27 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>, lgirdwood@gmail.com,
+        mripard@kernel.org, linux-kernel@vger.kernel.org, wens@csie.org,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [BUG] Error applying setting, reverse things back on lot of
+ devices
+Message-ID: <20201102202727.GA20042@qmqm.qmqm.pl>
+References: <20201021183149.GA8436@Red>
+ <20201023134201.GA533@Red>
+ <20201023203943.GA21435@Red>
+ <20201024115307.GA2745@qmqm.qmqm.pl>
+ <8a580d12-fa4a-6cd8-4d82-3e3b784e348b@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <20201102144927.GN27442@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a580d12-fa4a-6cd8-4d82-3e3b784e348b@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
-> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
-> > On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
-> > > From: Hugh Dickins <hughd@google.com>
-> > > 
-> > > It is necessary for page_idle_get_page() to recheck PageLRU() after
-> > > get_page_unless_zero(), but holding lru_lock around that serves no
-> > > useful purpose, and adds to lru_lock contention: delete it.
-> > > 
-> > > See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
-> > > discussion that led to lru_lock there; but __page_set_anon_rmap() now
-> > > uses WRITE_ONCE(),
-> > 
-> > That doesn't seem to be the case in Linus's or Andrew's tree. Am I
-> > missing a dependent patch series?
-> > 
-> > > and I see no other risk in page_idle_clear_pte_refs() using
-> > > rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
-> > > not entirely prevented by page_count() check in ksm.c's
-> > > write_protect_page(): that risk being shared with page_referenced()
-> > > and not helped by lru_lock).
-> > 
-> > Isn't it possible, as per Minchan's description, for page->mapping to
-> > point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
-> > thinking it's looking at a struct address_space?
+On Mon, Nov 02, 2020 at 01:48:54PM +0100, Ahmad Fatoum wrote:
+> Hello Micha³,
 > 
-> I don't think it can point to an anon_vma without the ANON bit set.
-> Minchan's concern in that email was that it might still be NULL.
+> CC += linux-stm32
+> 
+> On 10/24/20 1:53 PM, Micha³ Miros³aw wrote:
+> > On Fri, Oct 23, 2020 at 10:39:43PM +0200, Corentin Labbe wrote:
+> >> On Fri, Oct 23, 2020 at 03:42:01PM +0200, Corentin Labbe wrote:
+> >>> On Wed, Oct 21, 2020 at 08:31:49PM +0200, Corentin Labbe wrote:
+> >>> I have just saw thoses 3 lines which are probably the real problem.
+> >>> I have started a new bisect with this error, but it is hitting the same "crash range" the first one.
+> >>>
+> >>
+> >> I have bisected the problem to commit aea6cb99703e17019e025aa71643b4d3e0a24413 ("regulator: resolve supply after creating regulator")
+> >> Reverting this fix my problem.
+> 
+> The change broke boot on all the STM32MP1 boards, because the STPMIC driver
+> has a vref_ddr regulator, which does not have a dedicated supply, but without
+> a vref_ddr-supply property the system now no longer boots.
+[...]
 
-Hm, no, the thread is a lengthy discussion about whether the store
-could be split such that page->mapping is actually pointing to
-something invalid (anon_vma without the PageAnon bit).
+Can you catch debug logs for the bootup in question? I'm not sure what's
+the failure mode in your case. I guess this is not a bypassed regulator?
 
-From his email:
+Best Regards,
+Micha³ Miros³aw
 
-        CPU 0                                                                           CPU 1
-
-do_anonymous_page
-  __page_set_anon_rmap
-  /* out of order happened so SetPageLRU is done ahead */
-  SetPageLRU(page)
-  /* Compilr changed store operation like below */
-  page->mapping = (struct address_space *) anon_vma;
-  /* Big stall happens */
-                                                                /* idletacking judged it as LRU page so pass the page
-                                                                   in page_reference */
-                                                                page_refernced
-                                                                        page_rmapping return true because
-                                                                        page->mapping has some vaule but not complete
-                                                                        so it calls rmap_walk_file.
-                                                                        it's okay to pass non-completed anon page in rmap_walk_file?
