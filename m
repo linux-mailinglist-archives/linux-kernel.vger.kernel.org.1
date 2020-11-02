@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE552A2E5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F222A2E61
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 16:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgKBPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 10:32:47 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36171 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgKBPcr (ORCPT
+        id S1726592AbgKBPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 10:33:18 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:28825 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgKBPdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:32:47 -0500
-Received: by mail-oi1-f196.google.com with SMTP id d9so9048180oib.3;
-        Mon, 02 Nov 2020 07:32:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZIIR6Y93kJtDVN6OdQxyGkcBJEBLbqKHPY5lopcjGcM=;
-        b=rX5++5boP73N1SgdWdrXJahDyCynmLajF5A9AtoR7w4uzW1nE0m4/l4Tee51b79XTa
-         RS2DeyZBGHddOcxDNmZBZyp7YXqdaet6M9BNcZTALAvvqJdvEeTYakLpWXeX7PsZRYO7
-         QLkvwFiNNrKT9coHyOjZhxGVLLJWmDZN0sjp3GuL96H5B4SsrZsFgK8jDUewWrFMle+y
-         zymnTlTQaBRJJ7/lFbiNbtqXNR4VCjUiPd/k1ASR1j1PqyoUi/5Iu38Y1Y2qpHShX/DM
-         q++tuRXRMFpDsKa0kmu9aju1KEl24//lNCSDxCt36jqXuxjvjrYZfk4Y8nJCicnlVyiZ
-         NPRw==
-X-Gm-Message-State: AOAM531865tKqrs4R5CW6GRJSbZIz/vc+sjQ+6N+oIBrDUX6bpf67v7J
-        CUwlhrJfe5Pp00YzDeX60g==
-X-Google-Smtp-Source: ABdhPJxVmphuk8mJdLlRvmuSLnh7cCLFj0cJ3+mKBBPbdUSY81JXWlUDkb/A41ExxACV+GqRPkRrwQ==
-X-Received: by 2002:aca:b854:: with SMTP id i81mr10737409oif.6.1604331165909;
-        Mon, 02 Nov 2020 07:32:45 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u22sm3414989oor.13.2020.11.02.07.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 07:32:45 -0800 (PST)
-Received: (nullmailer pid 3929592 invoked by uid 1000);
-        Mon, 02 Nov 2020 15:32:44 -0000
-Date:   Mon, 2 Nov 2020 09:32:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: nvmem: Add soc qfprom compatible
- strings
-Message-ID: <20201102153244.GA3929537@bogus>
-References: <20201029002827.1729915-1-evgreen@chromium.org>
- <20201028172737.v3.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid>
+        Mon, 2 Nov 2020 10:33:17 -0500
+Date:   Mon, 02 Nov 2020 15:33:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1604331195;
+        bh=TXoUXaAzWtbC4Rwq/jtQmzg/TrPNEkhD8i8SzWELcbk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=TmpBUow0drhYdo+re8jGWy2j0wBXODFYJ4loGuPs62JLCaaEqNUwBAjlPt2wTLQw5
+         Qy0VjXiv9EZBdgyaZ0/3NFF9eHLI1+rcfSOiK7gbHEVSck1yMOHDqPOkKOV8sgPUNC
+         DNBVCP2x9gwsPvYk6tNETEVDiOodUlO4030HQHlM=
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: Re: [PATCH v2 5/5] docs: automarkup.py: Allow automatic cross-reference inside C namespace
+Message-ID: <C6SV6B4N81VS.2IDXIL452NF5N@ArchWay>
+In-Reply-To: <20201014131900.1137cdc8@lwn.net>
+References: <20201013231218.2750109-1-nfraprado@protonmail.com> <20201013231218.2750109-6-nfraprado@protonmail.com> <20201014115644.7bda9918@coco.lan> <20201014131900.1137cdc8@lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028172737.v3.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 17:28:24 -0700, Evan Green wrote:
-> Add SoC-specific compatible strings so that data can be attached
-> to it in the driver.
-> 
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> ---
-> 
-> Changes in v3:
->  - Fixed example (Doug and rob-bot)
-> 
-> Changes in v2:
->  - Add other soc compatible strings (Doug)
->  - Fix compatible string definition (Doug)
-> 
->  .../devicetree/bindings/nvmem/qcom,qfprom.yaml  | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
+On Wed Oct 14, 2020 at 4:19 PM -03, Jonathan Corbet wrote:
+>
+> On Wed, 14 Oct 2020 11:56:44 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+>
+> > > To make the first step possible, disable the parallel_read_safe optio=
+n
+> > > in Sphinx, since the dictionary that maps the files to the C namespac=
+es
+> > > can't be concurrently updated. This unfortunately increases the build
+> > > time of the documentation.
+> >
+> > Disabling parallel_read_safe will make performance very poor.
+> > Doesn't the C domain store the current namespace somewhere?
+> > If so, then, instead of using the source-read phase, something
+> > else could be used instead.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The issue is that C domain parsing happens at an earlier phase in the Sphin=
+x
+process, and the current stack containing the C namespace is long gone when=
+ we
+get to do the automatic cross-referencing at the doctree-resolved phase.
+
+Not only that, but the namespace isn't assigned to the file it's in, and
+vice-versa, because Sphinx's interest is in assigning a C directive it is
+currently reading to the current namespace, so there isn't any point in sav=
+ing
+which namespaces appeared at a given file. That is exactly what we want, bu=
+t
+Sphinx doesn't have that information.
+
+For instance, printing all symbols from app.env.domaindata['c']['root_symbo=
+l']
+shows every single C namespace, but the docname field in each of them is No=
+ne.
+
+That's why the way to go is to assign the namespaces to the files at the
+source-read phase on our own.
+
+> That seems like the best solution if it exists, yes. Otherwise a simple
+> lock could be used around c_namespace to serialize access there, right?
+
+Actually I was wrong when I said that the issue was that "they can't be
+concurrently updated". When parallel_read_safe is enabled, Sphinx spawns
+multiple processes rather than multiple threads, to get true concurrency by
+sidestepping python's GIL. So the same c_namespace variable isn't even
+accessible across the multiple processes.
+
+Reading multiprocessing's documentation [1] it seems that memory could be s=
+hared
+between the processes using Value or Array, but both would need to be passe=
+d to
+the processes by the one who spawned them, that is, it would need to be don=
+e
+from Sphinx's side.
+
+So, at the moment I'm not really seeing a way to have this information be s=
+hared
+concurrently by the python processes but I will keep searching.
+
+Thanks,
+N=C3=ADcolas
+
+[1] https://docs.python.org/3/library/multiprocessing.html#sharing-state-be=
+tween-processes
+
