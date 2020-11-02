@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868DE2A271C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8782A2723
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 10:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgKBJge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 04:36:34 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7572 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbgKBJge (ORCPT
+        id S1728364AbgKBJhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 04:37:22 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7007 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728317AbgKBJhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 04:36:34 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CPnqH2VNvzLrVT;
-        Mon,  2 Nov 2020 17:36:27 +0800 (CST)
-Received: from [10.174.176.180] (10.174.176.180) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 2 Nov 2020 17:36:25 +0800
-Subject: Re: [PATCH] drm/bridge: tpd12s015: Fix irq registering in
- tpd12s015_probe
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20201031031648.42368-1-yuehaibing@huawei.com>
- <20201031071936.GA1044557@ravnborg.org>
- <57bfde5b-aee1-c15f-896a-63033e86d9a2@ti.com>
-CC:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@siol.net>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <sebastian.reichel@collabora.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <3d7fc2b4-8f8c-2ad3-34a5-7c48a6832df0@huawei.com>
-Date:   Mon, 2 Nov 2020 17:36:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        Mon, 2 Nov 2020 04:37:20 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CPnrG0cfZzhf8M;
+        Mon,  2 Nov 2020 17:37:18 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 2 Nov 2020 17:37:07 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>,
+        kitestramuort <kitestramuort@autistici.org>
+Subject: [PATCH] f2fs: fix to seek incorrect data offset in inline data file
+Date:   Mon, 2 Nov 2020 17:36:58 +0800
+Message-ID: <20201102093658.37206-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <57bfde5b-aee1-c15f-896a-63033e86d9a2@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.180]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/2 14:57, Tomi Valkeinen wrote:
-> On 31/10/2020 09:19, Sam Ravnborg wrote:
->> Hi YueHaibing
->>
->> Thanks for the fix. Appreciated but please update as per comments below.
->>
->> On Sat, Oct 31, 2020 at 11:16:48AM +0800, YueHaibing wrote:
->>> gpiod_to_irq() return negative value in case of error,
->>> the existing code handle negative error codes wrongly.
->>>
->>> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
->>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->>> ---
->>>  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
->>> index 514cbf0eac75..a18d5197c16c 100644
->>> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
->>> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
->>> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
->>>  
->>>  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
->>>  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
->>> -	if (tpd->hpd_irq) {
->>> +	if (tpd->hpd_irq > 0) {
->>>  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
->>>  						tpd12s015_hpd_isr,
->>>  						IRQF_TRIGGER_RISING |
->>
->> The current implmentation will skip devm_request_threaded_irq() in case
->> or error - but continue with the rest of the function. So the
->> driver fails to return an error code.
-> 
-> That is intended. If the HPD gpio supports IRQs (gpiod_to_irq returns a valid number), we use the
-> IRQ. If it doesn't (gpiod_to_irq returns an error), it gets polled via detect(). Both are ok.
-> 
-> I don't know if the gpiod_to_irq never returning 0 is something we should rely on. The docs say
-> gpiod_to_irq returns the irq number or an error, so I think checking for >= 0 matches the docs better.
-> 
+As kitestramuort reported:
 
-gpiod_to_irq() now never returns 0, see:
-https://elixir.bootlin.com/linux/v5.10-rc2/source/drivers/gpio/gpiolib.c#L3183
+F2FS-fs (nvme0n1p4): access invalid blkaddr:1598541474
+[   25.725898] ------------[ cut here ]------------
+[   25.725903] WARNING: CPU: 6 PID: 2018 at f2fs_is_valid_blkaddr+0x23a/0x250
+[   25.725923] Call Trace:
+[   25.725927]  ? f2fs_llseek+0x204/0x620
+[   25.725929]  ? ovl_copy_up_data+0x14f/0x200
+[   25.725931]  ? ovl_copy_up_inode+0x174/0x1e0
+[   25.725933]  ? ovl_copy_up_one+0xa22/0xdf0
+[   25.725936]  ? ovl_copy_up_flags+0xa6/0xf0
+[   25.725938]  ? ovl_aio_cleanup_handler+0xd0/0xd0
+[   25.725939]  ? ovl_maybe_copy_up+0x86/0xa0
+[   25.725941]  ? ovl_open+0x22/0x80
+[   25.725943]  ? do_dentry_open+0x136/0x350
+[   25.725945]  ? path_openat+0xb7e/0xf40
+[   25.725947]  ? __check_sticky+0x40/0x40
+[   25.725948]  ? do_filp_open+0x70/0x100
+[   25.725950]  ? __check_sticky+0x40/0x40
+[   25.725951]  ? __check_sticky+0x40/0x40
+[   25.725953]  ? __x64_sys_openat+0x1db/0x2c0
+[   25.725955]  ? do_syscall_64+0x2d/0x40
+[   25.725957]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Also commit 4c37ce8608a8 ("gpio: make gpiod_to_irq() return negative for NO_IRQ") says:
+llseek() reports invalid block address access, the root cause is if
+file has inline data, f2fs_seek_block() will access inline data regard
+as block address index in inode block, which should be wrong, fix it.
 
-commit 4c37ce8608a8c6521726d4cd1d4f54424e8d095f
-Author: Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon May 2 13:13:10 2016 +0200
+Reported-by: kitestramuort <kitestramuort@autistici.org>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/file.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-    gpio: make gpiod_to_irq() return negative for NO_IRQ
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index d898f1e2764b..89c451f09344 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -413,9 +413,14 @@ static loff_t f2fs_seek_block(struct file *file, loff_t offset, int whence)
+ 		goto fail;
+ 
+ 	/* handle inline data case */
+-	if (f2fs_has_inline_data(inode) && whence == SEEK_HOLE) {
+-		data_ofs = isize;
+-		goto found;
++	if (f2fs_has_inline_data(inode)) {
++		if (whence == SEEK_HOLE) {
++			data_ofs = isize;
++			goto found;
++		} else if (whence == SEEK_DATA) {
++			data_ofs = offset;
++			goto found;
++		}
+ 	}
+ 
+ 	pgofs = (pgoff_t)(offset >> PAGE_SHIFT);
+-- 
+2.26.2
 
-    If a translation returns zero, that means NO_IRQ, so we
-    should return an error since the function is documented to
-    return a negative code on error.
-
-So checking for >0 is enough, my patch is correct.
-
->  Tomi
-> 
