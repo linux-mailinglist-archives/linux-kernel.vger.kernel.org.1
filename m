@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97282A298D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51972A298B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 12:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728738AbgKBLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 06:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgKBLai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728721AbgKBLaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 06:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728516AbgKBLai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Nov 2020 06:30:38 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBCC061A04
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 03:30:38 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 205so1394852wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 03:30:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=i8P+1ihFPTbcqcdmnuv8HM9WxJxCIqZJiXX7QB+7i7w=;
-        b=m5bLNXPJlIXPe6vWNe3sFFSqDvuKpn8KQElblDrEAUjPPJ2eqIzNOrD3K/kopR8Ase
-         RSAPoUZhcDDx3dQFrjjHC1QIKuuD6JSsE7It14yxKziSIBvaSZXu33sWRJ7uDViuTbvl
-         9kL2L2H4wJNIMI/GCwrvWmmHkxvHRxlISY03JRMcZALik0l9m0WgQj/dslfRvAR1yxC+
-         eAwXE3y4fJ/pPTlC7Ag+jgR1TRLjYFw4KpXIH93q62PTyU6cogjAnQzL15l4NPVyZ8iA
-         nG47OUy2+XRjE47dt1+j+COQE96+FTrP+xnGYV6RMYjFEvlaVqGW2ZVkKtbaHZPn3xJz
-         gzzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=i8P+1ihFPTbcqcdmnuv8HM9WxJxCIqZJiXX7QB+7i7w=;
-        b=d/X6s6AW5ODSxEEtYFCAPL+oRz20v0XZdpQI6njjZJSP9xWva0trwgTu0m43fN7zNB
-         gDLojvl+xAg1ZR0HbPm5JARI64SRjJDWT/cmj04+ruTCJRrwF72erCa2QoC4qy0tEfpb
-         XR4iJEbrM7jn/vn0hP9wvpRKBsS0vXvzKVf7MRsxLf/muRBGSXVzlKyuxErcz2ySNOvx
-         lVH6II7gtHu0T7pPRvYVBd6NTtGorjGuv/FMVLH+s+BAEO5TnVd8dM9sLJinajaLt+7+
-         43HzUnRZcX3kIXwE6PKOXFq42J39s2af4wNRov0tuGv82TCaBp9qi5fe+E1vpl8B5wWW
-         ivgA==
-X-Gm-Message-State: AOAM531c8wXAOkS8ROi7GnJL+0T8MJZQ5rTA8Zl+9Hsl1qdOcQR14iRx
-        oe4HpbxrxQR9DGsjhR9YkKZJ5g==
-X-Google-Smtp-Source: ABdhPJyukRK6/lVQPZEtTsbbFN0/7S8cO1TDZDy93qCXars0Ldc0ODXaZPWGpf44BJ2D8ZiOzJUMJg==
-X-Received: by 2002:a7b:ce85:: with SMTP id q5mr16890502wmj.35.1604316637217;
-        Mon, 02 Nov 2020 03:30:37 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id b136sm14536930wmb.21.2020.11.02.03.30.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 03:30:36 -0800 (PST)
-Date:   Mon, 2 Nov 2020 11:30:34 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 1/1] Fonts: font_acorn_8x8: Replace discarded const
- qualifier
-Message-ID: <20201102113034.GL4127@dell>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <CAKMK7uFN31B0WNoY5P0hizLCVxVkaFkcYjhgYVo1c2W+1d7jxA@mail.gmail.com>
- <20201102110916.GK4127@dell>
- <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BBD722275;
+        Mon,  2 Nov 2020 11:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604316637;
+        bh=X8JnEcClp9UY0EBJJar83EIQZ/sedukphcjMgxzniwA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s3eYWJ4N05JGw5+J/sKBXzA4jKOxGBTv3QKtEmtbFH+eQG0ZYZbnrRoFbkrLQEo8k
+         J3xp60f0jrLcPmTns9Q7lBXGpZyNGjzoDZ2w5KPGfjBDrJfgR1mS0IsennEMBptZEA
+         uf6FJ8R0fyKiLzl+69lS77KXzFVvcPJpF4lw5sQc=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kZY2k-006drC-O9; Mon, 02 Nov 2020 11:30:35 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uFhpt5J8TcN4MRMeERE9DtNar+pBAmE6QRvD0zkGR5iNQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Nov 2020 11:30:34 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
+In-Reply-To: <87pn4w90hm.fsf@nanos.tec.linutronix.de>
+References: <20201031140330.83768-1-linux@fw-web.de>
+ <878sbm9icl.fsf@nanos.tec.linutronix.de>
+ <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
+ <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
+ <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
+ <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <df5565a2f1e821041c7c531ad52a3344@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, frank-w@public-files.de, ryder.lee@mediatek.com, linux-mediatek@lists.infradead.org, linux@fw-web.de, linux-kernel@vger.kernel.org, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, bhelgaas@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Daniel Vetter wrote:
-
-> On Mon, Nov 2, 2020 at 12:09 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Mon, 02 Nov 2020, Daniel Vetter wrote:
-> >
-> > > On Fri, Oct 30, 2020 at 7:18 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > >
-> > > > Commit 09e5b3fd5672 ("Fonts: Support FONT_EXTRA_WORDS macros for
-> > > > built-in fonts") introduced the following error when building
-> > > > rpc_defconfig (only this build appears to be affected):
-> > > >
-> > > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> > > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> > > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
-> > > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
-> > > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
-> > > >
-> > > > The .data section is discarded at link time.  Reinstating
-> > > > acorndata_8x8 as const ensures it is still available after linking.
-> > > >
-> > > > Cc: <stable@vger.kernel.org>
-> > > > Cc: Russell King <linux@armlinux.org.uk>
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > >
-> > > Shouldn't we add the const to all of them, for consistency?
-> >
-> > The thought did cross my mind.  However, I do not see any further
-> > issues which need addressing.  Nor do I have any visibility into what
-> > issues may be caused by doing so.  The only thing I know for sure is
-> > that this patch fixes the compile error pertained to in the commit
-> > message, and I'd like for this fix to be as atomic as possible, as
-> > it's designed to be routed through the Stable/LTS trees.
+On 2020-11-01 22:27, Thomas Gleixner wrote:
+> On Sun, Nov 01 2020 at 21:47, Marc Zyngier wrote:
+>> On Sun, 01 Nov 2020 18:27:13 +0000,
+>> Frank Wunderlich <frank-w@public-files.de> wrote:
+>> Thinking of it a bit more, I think this is the wrong solution.
+>> 
+>> PCI MSIs are optional, and not a requirement. I can trivially spin a
+>> VM with PCI devices and yet no MSI capability (yes, it is more
+>> difficult with real HW), and this results in a bunch of warning, none
+>> of which are actually indicative of anything being wrong.
 > 
-> The trouble is that if we only make one of them const, then it'll take
-> so much longer to hit any issues due to code not handling this
-> correctly. Being consistent with all fonts sounds like the best
-> approach.
+> Well. No.
 > 
-> And the original patch that lost the const for the additional data
-> also went through cc: stable for all fonts together. So that shouldn't
-> be the hold-up.
+> The problem is that the device enumerates MSI capability, but the host
+> bridge is not proving support for MSI.
+> 
+> The host bridge fails to mark the bus with PCI_BUS_FLAGS_NO_MSI. That's
+> the reason why this runs into this issue.
 
-My plan was to keep the fix as simple as possible.
+Right, that's the piece I was missing, thanks for that.
 
-This is only an issue due to the odd handling of the compressed Arm
-image which exclusively references 'acorndata_8x8' and discards it's
-.data section.
+However, that doesn't really address the issue when the host bridge and
+the MSI widget are two separate entities, oblivious of each other (which
+is a pretty common thing on the ARM side).
 
-I am happy to go with the majority on this though.
+In this configuration, you can't really decide whether you have a MSI
+domain in the host bridge driver (the association is done in the code
+PCI code, after you have registered it with the core code), and by the
+time you get a pointer to the bus, the endpoints have already been 
+probed.
 
-Does anyone else have an opinion?
+The following patch makes it work for me (GICv3 guest without an ITS)by
+checking for the presence of an MSI domain at the point where we 
+actually
+perform this association, and before starting to scan for endpoints.
+
+I *think* this should work for the MTK thingy, but someone needs to
+go and check.
+
+Thanks,
+
+         M.
+
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 4289030b0fff..bb363eb103a2 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus 
+*bus)
+  		d = pci_host_bridge_msi_domain(b);
+
+  	dev_set_msi_domain(&bus->dev, d);
++	if (!d)
++		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+  }
+
+  static int pci_register_host_bridge(struct pci_host_bridge *bridge)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jazz is not dead. It just smells funny...
