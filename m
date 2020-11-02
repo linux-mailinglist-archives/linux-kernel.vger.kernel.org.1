@@ -2,153 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170722A31D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1982A31E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgKBRnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:43:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgKBRnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:43:23 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F163621D91;
-        Mon,  2 Nov 2020 17:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604339002;
-        bh=4lTOK6nJwjmoOAObnnRBOTKd0fl9eQpxyGZlvj7NIPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WaQHhcNIPlO/3Y1BDKIiRptwVm/gNfTOsggLuTFWgEEfzGk4JpghqGJiTK1uJXPww
-         xcrmfo2wowW6SunTYD97zxQcWOPYPEwCUuK+Opbf1HTskJ6CenmFJitmkrFyumA+RF
-         614VdGzOVlHHOfs2z6uhOZXESicNeUeTW56l5apA=
-Date:   Mon, 2 Nov 2020 19:43:08 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20201102174308.GF4879@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
+        id S1725882AbgKBRpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:45:51 -0500
+Received: from mail-bn8nam11on2129.outbound.protection.outlook.com ([40.107.236.129]:54560
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725768AbgKBRpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:45:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CYcY4qcMK0Khy7eeNACoaeqzLcz95iiodFx/rKyI9ZIrI2mYEaeXfBGOWo+QEDfJAWynUuDUoxjtG1zmZFjjSWRs2/zYDluPqSX0WnvRHUG3u6/MBtZn7ZtYTkjVTJu8aU0CRGihHiAdygQiFHUWbP6jE0FZkVVo6btWHgFZyJ5GbsihFMykcGEegRrOK9RCwvCHjpmZujeDrFt4XakMEeOWZd1Y8yLQu2l2UopJ9iOEvU3gXxsyJMAsxltgsuDemYAtGJLLmvu53aSlVuiK8tHmzDx1N1j23A9kcIMWvWb8UOydGcu3aZLHDhXWOaSM0NqHUZ51ZStMKwd5THXs7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lqPRKiTGyFwJdgQaxjb64MtyvmzURAP1GMsPEYDXUz0=;
+ b=fx6WzuWxk64EKHpAJO0PprTeoCm6SVkXmD5/rTZcQYuRU7SdhT3Kv3s/iIaKcT73soi0zsig0Tyn/VKM6W/XZqjSZUOx52h1bsreBWqQ/0RmCNIejG1NClcIDFxuSK7fi9NIjgjJG68FFXoIf2OAXjsd/YRKhkCtooQdlyEYRqFDej3D2VVFpVt6lT4zF8YNoBxAGlisrYB+aT8fbP+zhxRearTk++X3FePwxn17tRGOTKE/sGhnFiv3PDmgvnuPnxndtQTsTQv7aKN1144ie9HDf0ika2u/IS1g3iBpKMY12J0+hHlcU1f0cAipgM9xaWwCg025AjoGJQSBgjJOBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lqPRKiTGyFwJdgQaxjb64MtyvmzURAP1GMsPEYDXUz0=;
+ b=G/c7iDPi8R60PGd3IEP2XW7kIIbwyAbrokBK7bR/0YYF8MjnDKuZCBu+B2hf5v+nrgz7+/aeOrpnTEneHbdn5iRTHqSjJPs4GBefBJ+3pnsqTKfF5hCCDbQj8CDJW4idkK63XxOjmecRrExI72y1DZcQ0N4h52PMGQr5yqXFOyw=
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
+ by BL0PR13MB4449.namprd13.prod.outlook.com (2603:10b6:208:1cb::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10; Mon, 2 Nov
+ 2020 17:45:48 +0000
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210]) by MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210%9]) with mapi id 15.20.3541.010; Mon, 2 Nov 2020
+ 17:45:48 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "solomonchenclever@gmail.com" <solomonchenclever@gmail.com>
+CC:     "chenwenle@huawei.com" <chenwenle@huawei.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "solachenclever@hotmail.com" <solachenclever@hotmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nixiaoming@huawei.com" <nixiaoming@huawei.com>,
+        "solachenclever@gmail.com" <solachenclever@gmail.com>
+Subject: Re: [PATCH 2/2] NFS: Limit the number of retries
+Thread-Topic: [PATCH 2/2] NFS: Limit the number of retries
+Thread-Index: AQHWsTSzGjVbwL1P20Koha6ceevLkqm1HZMA
+Date:   Mon, 2 Nov 2020 17:45:48 +0000
+Message-ID: <8db50c039cb8b8325bb428c60ff005b899654fb4.camel@hammerspace.com>
+References: <20201102162438.14034-1-chenwenle@huawei.com>
+         <20201102162438.14034-3-chenwenle@huawei.com>
+In-Reply-To: <20201102162438.14034-3-chenwenle@huawei.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: netapp.com; dkim=none (message not signed)
+ header.d=none;netapp.com; dmarc=none action=none header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f3bf4fd2-2732-4dbf-9806-08d87f57220e
+x-ms-traffictypediagnostic: BL0PR13MB4449:
+x-microsoft-antispam-prvs: <BL0PR13MB444907CFAFA468A598556344B8100@BL0PR13MB4449.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WhP5ZOTQAi0wznTk2UzduF2TkZVstO/B0nhKf6YralzaA1PvalqqsLlNGZvk6rq3gy9bhDoLMjgdYIL70PAFCzs17i63hoH/DGqytcsQrW73aqRtP7ed7iWiFI6703VRKFr9niUredFFgAVtg9WmhKUubWSCQkYJEf60k32Ql1mRvhZ7SG5tC272mx1mLORhbbjR2W0TwXi3cxqIV7JPNLFDqswGrfeh73+DR+WtskB8lHCvqAKN5wb42Jv43m93C7p7O2Qr7iCa1G76vyUsSexZaIqro+fM4MO8XecRaQiJGClDnk4Mp8ivcYZ3d/S26NxOmwTtwN/JziIdRnZg4Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(366004)(376002)(346002)(396003)(186003)(6486002)(36756003)(71200400001)(66446008)(64756008)(66556008)(2906002)(66476007)(6512007)(66946007)(5660300002)(2616005)(8936002)(316002)(86362001)(26005)(478600001)(6506007)(54906003)(83380400001)(110136005)(76116006)(8676002)(4326008)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: An3ruF1k48lUbS/1UzmRhEW9XZiKLRxjHYNNk8k+mP6fizPCDaRoRakl1W/UlR+lWPFug9glWwoXyEUJjzabcCioyo2HpO7skFWwVhv16i9FW7sHp/VIAVo8WiMdcZZF/T4JaV1n07aKHdMKgCmwIdvnB4Fmcm2Zi+cgBCdQOcvy/bCnzYl+bftw1ynHTZsA7sSxPKBEE35EmWN7HQeXQrMJ/aFakqxpkVifInKoOBy88c94X8iua7S+euiiXg5/pB6HU2zmtcEe40Km42yuZioC+4jtQjvWcf9M04Onb+NHqYydumEmucsfKg0LAAkpsu3dNCqg8i1Wx2AzQwX35mAYyh7WgR9fLM6vkgDh9h47jWxEXK3ik/4aF60/aqSlpzY1aa64MoZFXrRNdNL9Q+mqXXPPj6cVUl/OQTyo6hS+X+APTIEuivDHgKwAYMZG1DQ8vbbawO83IrXMxWUMSbsObcSO1JIDyC+ciY1+ErJoEqxfuCOdab1K4JNAR5Eb28XZJt69H+mlN4+zI8pekU010PHRbr33spA1tS3G+Lev7C71JsczQxlM69WcUs/FmUe6ordCa4PV6Z9rVCTLC0oBPNW4SDCedPa8M0CoQx6GEVz4uQ0mlzNzlNR02pSX51AKkWwQCjhi3jqCjfmUtQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0BBB8973C3DE484881131189EFFF4159@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3bf4fd2-2732-4dbf-9806-08d87f57220e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 17:45:48.1675
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2YBXZm0VYkTqWxhBgCgWukW3u8iYJk9nojch3+UPxEXvQdH0uZFfFwns+MRoo2KOVBsWB1Cu6n1BHk2WQWuHJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR13MB4449
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:11:12AM +0100, David Hildenbrand wrote:
-> On 24.09.20 15:28, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Hi,
-> > 
-> > This is an implementation of "secret" mappings backed by a file descriptor.
-> > I've dropped the boot time reservation patch for now as it is not strictly
-> > required for the basic usage and can be easily added later either with or
-> > without CMA.
-> 
-> Hi Mike,
-> 
-> I'd like to stress again that I'd prefer *any* secretmem allocations going
-> via CMA as long as these pages are unmovable. The user can allocate a
-> non-significant amount of unmovable allocations only fenced by the mlock
-> limit, which behave very different to mlocked pages - they are not movable
-> for page compaction/migration.
-> 
-> Assume you have a system with quite some ZONE_MOVABLE memory (esp. in
-> virtualized environments), eating up a significant amount of !ZONE_MOVABLE
-> memory dynamically at runtime can lead to non-obvious issues. It looks like
-> you have plenty of free memory, but the kernel might still OOM when trying
-> to do kernel allocations e.g., for pagetables. With CMA we at least know
-> what we're dealing with - it behaves like ZONE_MOVABLE except for the owner
-> that can place unmovable pages there. We can use it to compute statically
-> the amount of ZONE_MOVABLE memory we can have in the system without doing
-> harm to the system.
-
-Why would you say that secretmem allocates from !ZONE_MOVABLE?
-If we put boot time reservations aside, the memory allocation for
-secretmem follows the same rules as the memory allocations for any file
-descriptor. That means we allocate memory with GFP_HIGHUSER_MOVABLE.
-After the allocation the memory indeed becomes unmovable but it's not
-like we are eating memory from other zones here.
-
-Maybe I'm missing something, but it seems to me that using CMA for any
-secretmem allocation would needlessly complicate things.
-
-> Ideally, we would want to support page migration/compaction and allow for
-> allocation from ZONE_MOVABLE as well. Would involve temporarily mapping,
-> copying, unmapping. Sounds feasible, but not sure which roadblocks we would
-> find on the way.
-
-We can support migration/compaction with temporary mapping. The first
-roadblock I've hit there was that migration allocates 4K destination
-page and if we use it in secret map we are back to scrambling the direct
-map into 4K pieces. It still sounds feasible but not as trivial :)
-
-But again, there is nothing in the current form of secretmem that
-prevents allocation from ZONE_MOVABLE.
-
-> [...]
-> 
-> > I've hesitated whether to continue to use new flags to memfd_create() or to
-> > add a new system call and I've decided to use a new system call after I've
-> > started to look into man pages update. There would have been two completely
-> > independent descriptions and I think it would have been very confusing.
-> 
-> This was also raised on lwn.net by "dullfire" [1]. I do wonder if it would
-> be the right place as well.
-
-I lean towards a dedicated syscall because, as I said, to me it would
-seem less confusing.
-
-> [1] https://lwn.net/Articles/835342/#Comments
-> 
-> > 
-> > Hiding secret memory mappings behind an anonymous file allows (ab)use of
-> > the page cache for tracking pages allocated for the "secret" mappings as
-> > well as using address_space_operations for e.g. page migration callbacks.
-> > 
-> > The anonymous file may be also used implicitly, like hugetlb files, to
-> > implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
-> > ABIs in the future.
-> > 
-> > As the fragmentation of the direct map was one of the major concerns raised
-> > during the previous postings, I've added an amortizing cache of PMD-size
-> > pages to each file descriptor that is used as an allocation pool for the
-> > secret memory areas.
-
--- 
-Sincerely yours,
-Mike.
-
+T24gVHVlLCAyMDIwLTExLTAzIGF0IDAwOjI0ICswODAwLCBXZW5sZSBDaGVuIHdyb3RlOg0KPiDC
+oCBXZSBjYW4ndCB3YWl0IGZvcmV2ZXIsIGV2ZW4gaWYgdGhlIHN0YXRlDQo+IGlzIGFsd2F5cyBk
+ZWxheWVkLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogV2VubGUgQ2hlbiA8Y2hlbndlbmxlQGh1YXdl
+aS5jb20+DQo+IC0tLQ0KPiDCoGZzL25mcy9uZnM0cHJvYy5jIHwgNCArKystDQo+IMKgMSBmaWxl
+IGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdp
+dCBhL2ZzL25mcy9uZnM0cHJvYy5jIGIvZnMvbmZzL25mczRwcm9jLmMNCj4gaW5kZXggZjZiNWRj
+NzkyYjMzLi5iYjIzMTZiZjEzZjYgMTAwNjQ0DQo+IC0tLSBhL2ZzL25mcy9uZnM0cHJvYy5jDQo+
+ICsrKyBiL2ZzL25mcy9uZnM0cHJvYy5jDQo+IEBAIC03MzkwLDE1ICs3MzkwLDE3IEBAIGludCBu
+ZnM0X2xvY2tfZGVsZWdhdGlvbl9yZWNhbGwoc3RydWN0DQo+IGZpbGVfbG9jayAqZmwsIHN0cnVj
+dCBuZnM0X3N0YXRlICpzdGF0ZSwNCj4gwqB7DQo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgbmZz
+X3NlcnZlciAqc2VydmVyID0gTkZTX1NFUlZFUihzdGF0ZS0+aW5vZGUpOw0KPiDCoMKgwqDCoMKg
+wqDCoMKgaW50IGVycjsNCj4gK8KgwqDCoMKgwqDCoMKgaW50IHJldHJ5ID0gMzsNCj4gwqANCj4g
+wqDCoMKgwqDCoMKgwqDCoGVyciA9IG5mczRfc2V0X2xvY2tfc3RhdGUoc3RhdGUsIGZsKTsNCj4g
+wqDCoMKgwqDCoMKgwqDCoGlmIChlcnIgIT0gMCkNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqByZXR1cm4gZXJyOw0KPiDCoMKgwqDCoMKgwqDCoMKgZG8gew0KPiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVyciA9IF9uZnM0X2RvX3NldGxrKHN0YXRlLCBGX1NFVExL
+LCBmbCwNCj4gTkZTX0xPQ0tfTkVXKTsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGlmIChlcnIgIT0gLU5GUzRFUlJfREVMQVkpDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBpZiAoZXJyICE9IC1ORlM0RVJSX0RFTEFZIHx8IHJldHJ5ID09IDApDQo+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOw0KPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNzbGVlcCgxKTsNCj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoC0tcmV0cnk7DQo+IMKgwqDCoMKgwqDCoMKgwqB9IHdoaWxlICgxKTsNCj4g
+wqDCoMKgwqDCoMKgwqDCoHJldHVybiBuZnM0X2hhbmRsZV9kZWxlZ2F0aW9uX3JlY2FsbF9lcnJv
+cihzZXJ2ZXIsIHN0YXRlLA0KPiBzdGF0ZWlkLCBmbCwgZXJyKTsNCj4gwqB9DQoNClRoaXMgcGF0
+Y2ggd2lsbCBqdXN0IGNhdXNlIHRoZSBsb2NrcyB0byBiZSBzaWxlbnRseSBsb3N0LCBubz8NCg0K
+LS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVy
+c3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
