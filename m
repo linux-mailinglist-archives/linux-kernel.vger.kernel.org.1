@@ -2,222 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0C22A371C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3572A371F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgKBXYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 18:24:20 -0500
-Received: from mga05.intel.com ([192.55.52.43]:20424 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgKBXYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 18:24:18 -0500
-IronPort-SDR: aN4eiiiFU52bCelJxpydTNOnTJ6xr7lKsBOpOuvoVIb738rHBs12Mx5KeEwh5rHgAvQLJ3nDUb
- MH7F1TcgE+vA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="253677440"
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="253677440"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 15:24:17 -0800
-IronPort-SDR: pgpIVZr8lyMlNwZIOfNcZs4zgSS46Cx9smlJDiBgb+C0lmscg+qilwYf+qKpMYURB2vpSd6Bg5
- NAb/H1KjX3Nw==
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="336322207"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 15:24:14 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 9705120A2D; Tue,  3 Nov 2020 01:24:11 +0200 (EET)
-Date:   Tue, 3 Nov 2020 01:24:11 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1727115AbgKBXYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 18:24:38 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:53069 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725864AbgKBXYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:24:37 -0500
+Received: from [192.168.0.2] (ip5f5af1d0.dynamic.kabel-deutschland.de [95.90.241.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8142520646217;
+        Tue,  3 Nov 2020 00:24:34 +0100 (CET)
+Subject: Re: [PATCH 1/2] ethernet: igb: Support PHY BCM5461S
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com,
-        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
-Subject: Re: [PATCH 1/3] dt-bindings: media: i2c: Add OV8865 bindings
- documentation
-Message-ID: <20201102232411.GD26150@paasikivi.fi.intel.com>
-References: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
- <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
+        John W Linville <linville@tuxdriver.com>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+ <20201102231307.13021-2-pmenzel@molgen.mpg.de>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <78fb620a-a55b-3078-65c3-9f2f45899661@molgen.mpg.de>
+Date:   Tue, 3 Nov 2020 00:24:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201102231307.13021-2-pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Dear Linux folks,
 
-On Fri, Oct 23, 2020 at 07:54:04PM +0200, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the OV8865
-> image sensor.
+
+Am 03.11.20 um 00:13 schrieb Paul Menzel:
+> From: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
 > 
-> Co-developed-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
-> Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> The BCM5461S PHY is used in switches.
+> 
+> The patch is taken from Open Network Linux, and it was added there as
+> patch
+> 
+>      packages/base/any/kernels/3.16+deb8/patches/driver-support-intel-igb-bcm5461X-phy.patch
+> 
+> in ONL commit f32316c63c (Support the BCM54616 and BCM5461S.) [1]. Part
+> of this commit was already upstreamed in Linux commit eeb0149660 (igb:
+> support BCM54616 PHY) in 2017.
+> 
+> I applied the forward-ported
+> 
+>      packages/base/any/kernels/5.4-lts/patches/0002-driver-support-intel-igb-bcm5461S-phy.patch
+> 
+> added in ONL commit 5ace6bcdb3 (Add 5.4 LTS kernel build.) [2].
+> 
+> [1]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/f32316c63ce3a64de125b7429115c6d45e942bd1
+> [2]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/5ace6bcdb37cb8065dcd1d4404b3dcb6424f6331
+> 
+> Cc: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
+> Cc: John W Linville <linville@tuxdriver.com>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 > ---
->  .../bindings/media/i2c/ovti,ov8865.yaml       | 124 ++++++++++++++++++
->  1 file changed, 124 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+>   drivers/net/ethernet/intel/igb/e1000_82575.c  | 23 +++++-
+>   .../net/ethernet/intel/igb/e1000_defines.h    |  1 +
+>   drivers/net/ethernet/intel/igb/e1000_hw.h     |  1 +
+>   drivers/net/ethernet/intel/igb/e1000_phy.c    | 77 +++++++++++++++++++
+>   drivers/net/ethernet/intel/igb/e1000_phy.h    |  2 +
+>   drivers/net/ethernet/intel/igb/igb_main.c     |  8 ++
+>   6 files changed, 111 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> new file mode 100644
-> index 000000000000..807f1a94afae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-> @@ -0,0 +1,124 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov8865.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: OmniVision OV8865 Image Sensor Device Tree Bindings
-> +
-> +maintainers:
-> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: ovti,ov8865
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: EXTCLK Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: extclk
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_82575.c b/drivers/net/ethernet/intel/igb/e1000_82575.c
+> index 50863fd87d53..83c14ae689b1 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_82575.c
+> +++ b/drivers/net/ethernet/intel/igb/e1000_82575.c
+> @@ -308,6 +308,12 @@ static s32 igb_init_phy_params_82575(struct e1000_hw *hw)
+>   		phy->ops.set_d3_lplu_state = igb_set_d3_lplu_state_82580;
+>   		phy->ops.force_speed_duplex = igb_phy_force_speed_duplex_m88;
+>   		break;
+> +	case BCM5461S_PHY_ID:
+> +		phy->type		= e1000_phy_bcm5461s;
 
-Is this needed with a single clock?
+Do not align the = with the one on the line below.
 
-And... shouldn't this also come with assigned-clock-rates etc., to set the
-clock frequency?
+> +		phy->ops.check_polarity	= NULL;
+> +		phy->ops.get_cable_length = NULL;
+> +		phy->ops.force_speed_duplex = igb_phy_force_speed_duplex_82580;
+> +		break;
+>   	case BCM54616_E_PHY_ID:
+>   		phy->type = e1000_phy_bcm54616;
+>   		break;
+> @@ -866,6 +872,16 @@ static s32 igb_get_phy_id_82575(struct e1000_hw *hw)
+>   			goto out;
+>   		}
+>   		ret_val = igb_get_phy_id(hw);
+> +		if (ret_val && hw->mac.type == e1000_i354) {
+> +			/* we do a special check for bcm5461s phy by setting
+> +			 * the phy->addr to 5 and doing the phy check again. This
+> +			 * call will succeed and retrieve a valid phy id if we have
+> +			 * the bcm5461s phy
+> +			 */
+> +			phy->addr = 5;
+> +			phy->type = e1000_phy_bcm5461s;
+> +			ret_val = igb_get_phy_id(hw);
+> +		}
+>   		goto out;
+>   	}
+>   
+> @@ -1253,6 +1269,9 @@ static s32 igb_get_cfg_done_82575(struct e1000_hw *hw)
+>   	    (hw->phy.type == e1000_phy_igp_3))
+>   		igb_phy_init_script_igp3(hw);
+>   
+> +	if (hw->phy.type == e1000_phy_bcm5461s)
+> +		igb_phy_init_script_5461s(hw);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1582,6 +1601,7 @@ static s32 igb_setup_copper_link_82575(struct e1000_hw *hw)
+>   	case e1000_i350:
+>   	case e1000_i210:
+>   	case e1000_i211:
+> +	case e1000_i354:
 
-> +
-> +  dvdd-supply:
-> +    description: Digital Domain Power Supply
-> +
-> +  avdd-supply:
-> +    description: Analog Domain Power Supply (internal AVDD is used if missing)
-> +
-> +  dovdd-supply:
-> +    description: I/O Domain Power Supply
-> +
-> +  powerdown-gpios:
-> +    maxItems: 1
-> +    description: Power Down Pin GPIO Control (active low)
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: Reset Pin GPIO Control (active low)
-> +
-> +  port:
-> +    type: object
-> +    description: Input port, connect to a MIPI CSI-2 receiver
-> +
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +
-> +        properties:
-> +          remote-endpoint: true
-> +
-> +          bus-type:
-> +            const: 4
-> +
-> +          clock-lanes:
-> +            maxItems: 1
+Any idea, why e1000_i350 is at the top?
 
-I believe you can drop clock-lanes and bus-type; these are both constants.
+>   		phpm_reg = rd32(E1000_82580_PHY_POWER_MGMT);
+>   		phpm_reg &= ~E1000_82580_PM_GO_LINKD;
+>   		wr32(E1000_82580_PHY_POWER_MGMT, phpm_reg);
+> @@ -1627,7 +1647,8 @@ static s32 igb_setup_copper_link_82575(struct e1000_hw *hw)
+>   		ret_val = igb_copper_link_setup_82580(hw);
+>   		break;
+>   	case e1000_phy_bcm54616:
+> -		ret_val = 0;
+> +		break;
+> +	case e1000_phy_bcm5461s:
+>   		break;
 
-I presume the device does not support lane remapping?
+John, any idea, why you did not upstream the `ret_val = 0` line?
 
-Could you also add link-frequencies, to list which frequencies are known to
-be good?
+>   	default:
+>   		ret_val = -E1000_ERR_PHY;
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_defines.h b/drivers/net/ethernet/intel/igb/e1000_defines.h
+> index d2e2c50ce257..0561ef6cb29c 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_defines.h
+> +++ b/drivers/net/ethernet/intel/igb/e1000_defines.h
+> @@ -886,6 +886,7 @@
+>   #define M88E1543_E_PHY_ID    0x01410EA0
+>   #define M88E1512_E_PHY_ID    0x01410DD0
+>   #define BCM54616_E_PHY_ID    0x03625D10
+> +#define BCM5461S_PHY_ID      0x002060C0
 
-Same comments on the other OV sensor bindings.
+Should this be `BCM5461S_E_PHY_ID` for consistency? I have no idea, what 
+`_E` means?
 
+>   
+>   /* M88E1000 Specific Registers */
+>   #define M88E1000_PHY_SPEC_CTRL     0x10  /* PHY Specific Control Register */
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_hw.h b/drivers/net/ethernet/intel/igb/e1000_hw.h
+> index 5d87957b2627..a660675d6218 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_hw.h
+> +++ b/drivers/net/ethernet/intel/igb/e1000_hw.h
+> @@ -110,6 +110,7 @@ enum e1000_phy_type {
+>   	e1000_phy_82580,
+>   	e1000_phy_i210,
+>   	e1000_phy_bcm54616,
+> +	e1000_phy_bcm5461s,
+>   };
+>   
+>   enum e1000_bus_type {
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_phy.c b/drivers/net/ethernet/intel/igb/e1000_phy.c
+> index 8c8eb82e6272..4e0b4ba09a00 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_phy.c
+> +++ b/drivers/net/ethernet/intel/igb/e1000_phy.c
+> @@ -126,6 +126,13 @@ s32 igb_read_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 *data)
+>   	 * Control register.  The MAC will take care of interfacing with the
+>   	 * PHY to retrieve the desired data.
+>   	 */
+> +	if (phy->type == e1000_phy_bcm5461s) {
+> +		mdic = rd32(E1000_MDICNFG);
+> +		mdic &= ~E1000_MDICNFG_PHY_MASK;
+> +		mdic |= (phy->addr << E1000_MDICNFG_PHY_SHIFT);
+> +		wr32(E1000_MDICNFG, mdic);
+> +	}
 > +
-> +          data-lanes:
-> +            minItems: 1
-> +            maxItems: 4
+>   	mdic = ((offset << E1000_MDIC_REG_SHIFT) |
+>   		(phy->addr << E1000_MDIC_PHY_SHIFT) |
+>   		(E1000_MDIC_OP_READ));
+> @@ -182,6 +189,13 @@ s32 igb_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+>   	 * Control register.  The MAC will take care of interfacing with the
+>   	 * PHY to retrieve the desired data.
+>   	 */
+> +	if (phy->type == e1000_phy_bcm5461s) {
+> +		mdic = rd32(E1000_MDICNFG);
+> +		mdic &= ~E1000_MDICNFG_PHY_MASK;
+> +		mdic |= (phy->addr << E1000_MDICNFG_PHY_SHIFT);
+> +		wr32(E1000_MDICNFG, mdic);
+> +	}
 > +
-> +        required:
-> +          - bus-type
-> +          - data-lanes
-> +          - remote-endpoint
+>   	mdic = (((u32)data) |
+>   		(offset << E1000_MDIC_REG_SHIFT) |
+>   		(phy->addr << E1000_MDIC_PHY_SHIFT) |
+> @@ -2628,3 +2642,66 @@ static s32 igb_set_master_slave_mode(struct e1000_hw *hw)
+>   
+>   	return hw->phy.ops.write_reg(hw, PHY_1000T_CTRL, phy_data);
+>   }
 > +
-> +        additionalProperties: false
+> +/**
+> + *  igb_phy_init_script_5461s - Inits the BCM5461S PHY
+> + *  @hw: pointer to the HW structure
+> + *
+> + *  Initializes a Broadcom Gigabit PHY.
+> + **/
+> +s32 igb_phy_init_script_5461s(struct e1000_hw *hw)
+> +{
+> +	u16 mii_reg_led = 0;
 > +
-> +    required:
-> +      - endpoint
+> +	/* 1. Speed LED (Set the Link LED mode), Shadow 00010, 0x1C.bit2=1 */
+> +	hw->phy.ops.write_reg(hw, 0x1C, 0x0800);
+> +	hw->phy.ops.read_reg(hw, 0x1C, &mii_reg_led);
+> +	mii_reg_led |= 0x0004;
+> +	hw->phy.ops.write_reg(hw, 0x1C, mii_reg_led | 0x8000);
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dvdd-supply
-> +  - dovdd-supply
-> +  - port
+> +	/* 2. Active LED (Set the Link LED mode), Shadow 01001, 0x1C.bit4=1, 0x10.bit5=0 */
+> +	hw->phy.ops.write_reg(hw, 0x1C, 0x2400);
+> +	hw->phy.ops.read_reg(hw, 0x1C, &mii_reg_led);
+> +	mii_reg_led |= 0x0010;
+> +	hw->phy.ops.write_reg(hw, 0x1C, mii_reg_led | 0x8000);
+> +	hw->phy.ops.read_reg(hw, 0x10, &mii_reg_led);
+> +	mii_reg_led &= 0xffdf;
+> +	hw->phy.ops.write_reg(hw, 0x10, mii_reg_led);
 > +
-> +additionalProperties: false
+> +	return 0;
+> +}
 > +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
-> +    #include <dt-bindings/gpio/gpio.h>
+> +/**
+> + *  igb_get_phy_info_5461s - Retrieve 5461s PHY information
+> + *  @hw: pointer to the HW structure
+> + *
+> + *  Read PHY status to determine if link is up.  If link is up, then
+> + *  set/determine 10base-T extended distance and polarity correction.  Read
+> + *  PHY port status to determine MDI/MDIx and speed.  Based on the speed,
+> + *  determine on the cable length, local and remote receiver.
+> + **/
+> +s32 igb_get_phy_info_5461s(struct e1000_hw *hw)
+> +{
+> +	struct e1000_phy_info *phy = &hw->phy;
+> +	s32 ret_val;
+> +	bool link;
 > +
-> +    i2c2 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
+> +	ret_val = igb_phy_has_link(hw, 1, 0, &link);
+> +	if (ret_val)
+> +		goto out;
 > +
-> +        ov8865: camera@36 {
-> +            compatible = "ovti,ov8865";
-> +            reg = <0x36>;
+> +	if (!link) {
+> +		ret_val = -E1000_ERR_CONFIG;
+> +		goto out;
+> +	}
 > +
-> +            pinctrl-names = "default";
-> +            pinctrl-0 = <&csi_mclk_pin>;
+> +	phy->polarity_correction = true;
 > +
-> +            clocks = <&ccu CLK_CSI_MCLK>;
-> +            clock-names = "extclk";
+> +	phy->is_mdix = true;
+> +	phy->cable_length = E1000_CABLE_LENGTH_UNDEFINED;
+> +	phy->local_rx = e1000_1000t_rx_status_ok;
+> +	phy->remote_rx = e1000_1000t_rx_status_ok;
 > +
-> +            avdd-supply = <&reg_ov8865_avdd>;
-> +            dovdd-supply = <&reg_ov8865_dovdd>;
-> +            dvdd-supply = <&reg_ov8865_dvdd>;
-> +
-> +            powerdown-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
-> +            reset-gpios = <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
-> +
-> +            port {
-> +                ov8865_out_mipi_csi2: endpoint {
-> +                    bus-type = <4>; /* MIPI CSI-2 D-PHY */
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2 3 4>;
-> +
-> +                    remote-endpoint = <&mipi_csi2_in_ov8865>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
+> +out:
+> +	return ret_val;
+> +}
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_phy.h b/drivers/net/ethernet/intel/igb/e1000_phy.h
+> index 5894e4b1d0a8..aa888efc05f2 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_phy.h
+> +++ b/drivers/net/ethernet/intel/igb/e1000_phy.h
+> @@ -41,6 +41,8 @@ s32  igb_phy_has_link(struct e1000_hw *hw, u32 iterations,
+>   void igb_power_up_phy_copper(struct e1000_hw *hw);
+>   void igb_power_down_phy_copper(struct e1000_hw *hw);
+>   s32  igb_phy_init_script_igp3(struct e1000_hw *hw);
+> +s32  igb_phy_init_script_5461s(struct e1000_hw *hw);
+> +s32  igb_get_phy_info_5461s(struct e1000_hw *hw);
+>   s32  igb_initialize_M88E1512_phy(struct e1000_hw *hw);
+>   s32  igb_initialize_M88E1543_phy(struct e1000_hw *hw);
+>   s32  igb_read_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 *data);
+> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> index 5fc2c381da55..275fac4cbf63 100644
+> --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> @@ -8923,11 +8923,19 @@ static int igb_mii_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
+>   		data->phy_id = adapter->hw.phy.addr;
+>   		break;
+>   	case SIOCGMIIREG:
+> +		adapter->hw.phy.addr = data->phy_id;
 
--- 
-Regards,
+How is this related? No idea, why this is added. Jeffrey, do you remember?
 
-Sakari Ailus
+>   		if (igb_read_phy_reg(&adapter->hw, data->reg_num & 0x1F,
+>   				     &data->val_out))
+>   			return -EIO;
+>   		break;
+>   	case SIOCSMIIREG:
+> +		if (!capable(CAP_NET_ADMIN))
+> +			return -EPERM;
+> +		adapter->hw.phy.addr = data->phy_id;
+> +		if (igb_write_phy_reg(&adapter->hw, data->reg_num & 0x1F,
+> +				      data->val_in))
+> +			return -EIO;
+> +		break;
+
+This looks also like an unrelated improvement. Maybe the igb folks could 
+comment, if this is useful. Jeffrey, do you remember, what this is 
+needed for?
+
+>   	default:
+>   		return -EOPNOTSUPP;
+>   	}
+> 
+
+
+Kind regards,
+
+Paul
