@@ -2,96 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4462A326C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B642A3270
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 19:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgKBSAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 13:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        id S1726020AbgKBSAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 13:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgKBSAW (ORCPT
+        with ESMTP id S1725968AbgKBSAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:00:22 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C388C0617A6;
-        Mon,  2 Nov 2020 10:00:20 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kZe7i-00HNsA-H4; Mon, 02 Nov 2020 19:00:06 +0100
-Message-ID: <47b04bd1da38a2356546284eb3576156899965de.camel@sipsolutions.net>
-Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc
- warning
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kalle Valo <kvalo@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>
-Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 02 Nov 2020 18:59:49 +0100
-In-Reply-To: <87tuu7ohbo.fsf@codeaurora.org> (sfid-20201102_172730_808878_841241B0)
-References: <20201026213040.3889546-1-arnd@kernel.org>
-         <20201026213040.3889546-8-arnd@kernel.org> <87tuu7ohbo.fsf@codeaurora.org>
-         (sfid-20201102_172730_808878_841241B0)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Mon, 2 Nov 2020 13:00:40 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E70C061A04
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 10:00:40 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id z3so5401316pfz.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 10:00:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JCS8+Foym0V3+0lDcQEbg6YNaDy+BKQJweT9xWhLD6U=;
+        b=WRYlpH7a96POABS9s0MQrALwydcOMlPt3dJUSkIW1s+A3yFw6H1Aic3HU+Sy7qFQpc
+         vmL9BB6rwGKUex2Xw/uwpzkeoBDP80Qc7R25CGCks0ZNYA9zEZpudFs6SajrK/+CUz/E
+         xGcjt3lg2iTT/50AHF0h90Wow3/dAvEVQtEKOxesCYYZtNYvfaexobSiUTsQRRcR+Z8v
+         XChiuVDzYKdGt51m/Qson+1W8tU/PKrHb9feBpiHA9a2mAJSpbiFOe5JeT4dUSO90q6v
+         //LGaw2txuHywdVHc4+xfOzHlHJifppn4x3UEYjNnM30SEdWA8XuX0LRo5bCcR1sFmVz
+         Bmrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JCS8+Foym0V3+0lDcQEbg6YNaDy+BKQJweT9xWhLD6U=;
+        b=Wf/5Y1CSTVMgvT6VRJMcwqxCJ/THsyeNRJtORR8yZVMkY18R5iyBJwWqIXYGGFUmox
+         kEWGKdqiH4v3kMmkXCagcIg/7RuoBpd+gFj8JndEPzKViTbC+GJCSYsliKU1BcnQ1caD
+         ZCHm/wqPlokuGCdtFTJ2ZZHc7bb9J/p26O4IBjOwQLAytWG47/n4djNmVO1O0L9qlpVY
+         vMexrV1iaNM5XqY80KSVXB8kX84GeTOlGTcFRfsJJqtRa80DokOoVjmwbA2h2Jncl0oU
+         s6fo0jk9PoG9Hh37PpZnHRGHBnd30mIAYOPeIXozkl+5I1ZZKZYGWfhW6MrHu3b6bj2D
+         TGWQ==
+X-Gm-Message-State: AOAM531vv6HYRRWzewrVRTJwYVlYZdO1Mbtxoir0+Z7dwGUgZ8URnEHg
+        2ZF28wfhm/snkhAxApF824bElpwUZEYx3PAToLu2ug==
+X-Google-Smtp-Source: ABdhPJywSgxMdnM1FRrYcgCzQSM1DiB2wRZWCaPsou6QXTFAY8X8jeHj6iUML+/rYs26RFWYkhsL131C0UNB3hwW6iw=
+X-Received: by 2002:a17:90a:de94:: with SMTP id n20mr6747196pjv.217.1604340039685;
+ Mon, 02 Nov 2020 10:00:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+References: <20201012222050.999431-1-dlatypov@google.com>
+In-Reply-To: <20201012222050.999431-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 2 Nov 2020 10:00:28 -0800
+Message-ID: <CAFd5g45kdj8mTqStN6hreJEaa47z3+2ZXQDnzZ=Nz6vA50x=Gg@mail.gmail.com>
+Subject: Re: [RFC v2 00/12] kunit: introduce class mocking support.
+To:     Daniel Latypov <dlatypov@google.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        David Gow <davidgow@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 18:26 +0200, Kalle Valo wrote:
-> Arnd Bergmann <arnd@kernel.org> writes:
-> 
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > gcc-10 shows a false-positive warning with CONFIG_KASAN:
-> > 
-> > drivers/net/wireless/ath/ath9k/dynack.c: In function 'ath_dynack_sample_tx_ts':
-> > include/linux/etherdevice.h:290:14: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
-> >   290 |  *(u32 *)dst = *(const u32 *)src;
-> >       |  ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-> > 
-> > Until gcc is fixed, work around this by using memcpy() in place
-> > of ether_addr_copy(). Hopefully gcc-11 will not have this problem.
-> > 
-> > Link: https://godbolt.org/z/sab1MK
-> > Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  drivers/net/wireless/ath/ath9k/dynack.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/net/wireless/ath/ath9k/dynack.c b/drivers/net/wireless/ath/ath9k/dynack.c
-> > index fbeb4a739d32..e4eb96b26ca4 100644
-> > --- a/drivers/net/wireless/ath/ath9k/dynack.c
-> > +++ b/drivers/net/wireless/ath/ath9k/dynack.c
-> > @@ -247,8 +247,14 @@ void ath_dynack_sample_tx_ts(struct ath_hw *ah, struct sk_buff *skb,
-> >  	ridx = ts->ts_rateindex;
-> >  
-> >  	da->st_rbf.ts[da->st_rbf.t_rb].tstamp = ts->ts_tstamp;
-> > +#if defined(CONFIG_KASAN) && (CONFIG_GCC_VERSION >= 100000) && (CONFIG_GCC_VERSION < 110000)
-> > +	/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490 */
-> > +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1, ETH_ALEN);
-> > +	memcpy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2, ETH_ALEN);
-> > +#else
-> >  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_dest, hdr->addr1);
-> >  	ether_addr_copy(da->st_rbf.addr[da->st_rbf.t_rb].h_src, hdr->addr2);
-> > +#endif
-> 
-> Isn't there a better way to handle this? I really would not want
-> checking for GCC versions become a common approach in drivers.
-> 
-> I even think that using memcpy() always is better than the ugly ifdef.
++Joel Stanley +Daniel Vetter
 
-If you put memcpy() always somebody will surely go and clean it up to
-use ether_addr_copy() soon ...
+If I remember correctly, both of you said you were interested in
+mocking on KUnit. This RFC only has some of the mocking features that
+I mentioned previously, but I would still like to get your thoughts.
 
-That said, if there's a gcc issue with ether_addr_copy() then how come
-it's specific to this place?
-
-johannes
-
+On Mon, Oct 12, 2020 at 3:21 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> # Background
+> KUnit currently lacks any first-class support for mocking.
+> For an overview and discussion on the pros and cons, see
+> https://martinfowler.com/articles/mocksArentStubs.html
+>
+> This patch set introduces the basic machinery needed for mocking:
+> setting and validating expectations, setting default actions, etc.
+>
+> Using that basic infrastructure, we add macros for "class mocking", as
+> it's probably the easiest type of mocking to start with.
+>
+> ## Class mocking
+>
+> By "class mocking", we're referring mocking out function pointers stored
+> in structs like:
+>   struct sender {
+>         int (*send)(struct sender *sender, int data);
+>   };
+> or in ops structs
+>   struct sender {
+>         struct send_ops *ops; // contains `send`
+>   };
+>
+> After the necessary DEFINE_* macros, we can then write code like
+>   struct MOCK(sender) mock_sender = CONSTRUCT_MOCK(sender, test);
+>
+>   /* Fake an error for a specific input. */
+>   handle = KUNIT_EXPECT_CALL(send(<omitted>, kunit_int_eq(42)));
+>   handle->action = kunit_int_return(test, -EINVAL);
+>
+>   /* Pass the mocked object to some code under test. */
+>   KUNIT_EXPECT_EQ(test, -EINVAL, send_message(...));
+>
+> I.e. the goal is to make it easier to test
+> 1) with less dependencies (we don't need to setup a real `sender`)
+> 2) unusual/error conditions more easily.
+>
+> In the future, we hope to build upon this to support mocking in more
+> contexts, e.g. standalone funcs, etc.
+>
+> # TODOs
+>
+> ## Naming
+> This introduces a number of new macros for dealing with mocks,
+> e.g:
+>   DEFINE_STRUCT_CLASS_MOCK(METHOD(foo), CLASS(example),
+>                            RETURNS(int),
+>                            PARAMS(struct example *, int));
+>   ...
+>   KUNIT_EXPECT_CALL(foo(mock_get_ctrl(mock_example), ...);
+> For consistency, we could prefix everything with KUNIT, e.g.
+> `KUNIT_DEFINE_STRUCT_CLASS_MOCK` and `kunit_mock_get_ctrl`, but it feels
+> like the names might be long enough that they would hinder readability.
+>
+> ## Usage
+> For now the only use of class mocking is in kunit-example-test.c
+> As part of changing this from an RFC to a real patch set, we're hoping
+> to include at least one example.
+>
+> Pointers to bits of code where this would be useful that aren't too
+> hairy would be appreciated.
+> E.g. could easily add a test for tools/perf/ui/progress.h, e.g. that
+> ui_progress__init() calls ui_progress_ops.init(), but that likely isn't
+> useful to anyone.
+>
+> ---
+> v2:
+> * Pass `struct kunit *` to mock init's to allow allocating ops structs.
+> * Update kunit-example-test.cc to do so as a more realistic example.
+> v1: https://lore.kernel.org/linux-kselftest/20200918183114.2571146-1-dlatypov@google.com/
+> ---
+>
+> Brendan Higgins (9):
+>   kunit: test: add kunit_stream a std::stream like logger
+>   kunit: test: add concept of post conditions
+>   checkpatch: add support for struct MOCK(foo) syntax
+>   kunit: mock: add parameter list manipulation macros
+>   kunit: mock: add internal mock infrastructure
+>   kunit: mock: add basic matchers and actions
+>   kunit: mock: add class mocking support
+>   kunit: mock: add struct param matcher
+>   kunit: mock: implement nice, strict and naggy mock distinctions
+>
+> Daniel Latypov (2):
+>   Revert "kunit: move string-stream.h to lib/kunit"
+>   kunit: expose kunit_set_failure() for use by mocking
+>
+> Marcelo Schmitt (1):
+>   kunit: mock: add macro machinery to pick correct format args
+>
+>  include/kunit/assert.h                 |   3 +-
+>  include/kunit/kunit-stream.h           |  94 +++
+>  include/kunit/mock.h                   | 902 +++++++++++++++++++++++++
+>  include/kunit/params.h                 | 305 +++++++++
+>  {lib => include}/kunit/string-stream.h |   2 +
+>  include/kunit/test.h                   |   9 +
+>  lib/kunit/Makefile                     |   9 +-
+>  lib/kunit/assert.c                     |   2 -
+>  lib/kunit/common-mocks.c               | 409 +++++++++++
+>  lib/kunit/kunit-example-test.c         |  98 +++
+>  lib/kunit/kunit-stream.c               | 110 +++
+>  lib/kunit/mock-macro-test.c            | 241 +++++++
+>  lib/kunit/mock-test.c                  | 531 +++++++++++++++
+>  lib/kunit/mock.c                       | 370 ++++++++++
+>  lib/kunit/string-stream-test.c         |   3 +-
+>  lib/kunit/string-stream.c              |   5 +-
+>  lib/kunit/test.c                       |  15 +-
+>  scripts/checkpatch.pl                  |   4 +
+>  18 files changed, 3099 insertions(+), 13 deletions(-)
+>  create mode 100644 include/kunit/kunit-stream.h
+>  create mode 100644 include/kunit/mock.h
+>  create mode 100644 include/kunit/params.h
+>  rename {lib => include}/kunit/string-stream.h (95%)
+>  create mode 100644 lib/kunit/common-mocks.c
+>  create mode 100644 lib/kunit/kunit-stream.c
+>  create mode 100644 lib/kunit/mock-macro-test.c
+>  create mode 100644 lib/kunit/mock-test.c
+>  create mode 100644 lib/kunit/mock.c
+>
+>
+> base-commit: 10b82d5176488acee2820e5a2cf0f2ec5c3488b6
+> --
+> 2.28.0.1011.ga647a8990f-goog
+>
