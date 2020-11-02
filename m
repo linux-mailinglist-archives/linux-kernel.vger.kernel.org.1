@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56F62A2C27
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9192A2C31
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgKBNzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKBNyz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:54:55 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E27DC061A48
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:54:55 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h22so9602985wmb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:54:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HSJ3s4kk78CsixfcMhylaTOQInqHbcM0PNqhAJpk4PE=;
-        b=vGSl9SXiVHPlEeKwXPuJ+kqLGdcCNTo32UXEgPV6SG/4765tTSjI2XccTyhH463SR9
-         X8WdheAFoGwThNeBZ/iHvH5rD8CKfQZbkTllsKe5hmGcTsSKZ1yqK57hdfh97SRSfc2S
-         xTxOI7YThT0jVW3jA6wkBMGHVOI8vDSDeb0hajPli/tuYw6YzIJPiJfaqpCoyeWdYneJ
-         /UFXt5emdxCPw06+vrb2w+8vcWCDBRx6K1PV2u6VXX+8PSHF99vME9IXJFAWQTlvzr6a
-         /SA1CC+mqWKfImAXziaKUIgIBbhQu0ACrv27R8d/dPBohYxxHFWfmOSIJFs5toRcfga9
-         KXbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HSJ3s4kk78CsixfcMhylaTOQInqHbcM0PNqhAJpk4PE=;
-        b=F08jZVQ0arHWoyamQHU2WjSY3AW8YhgrUTmL7INU+P5ECDrgRFwTmhi+ku0FDb1GMH
-         zxiH0inNSHnVP8xkupshycDO6UMvqksqLtnFxe20qU8O0bERbmguLOXPLjHLP2S7/WYp
-         yK/LIhorz7HxzwzDMuUdKh24fli53J88mW9nuqrai+mqYfriseCkXByRau43MXTLAThq
-         Tzms3SqpukKI1k5ER6sionAIDzld4KUcYG9P90hycWp86s/vBQMhcPGxaWjgLZL/Xk81
-         ayL2MahTuhPXDIjfOJpy14MgGKMVyJn5Tw3warakUGmjR0oEWdS+jxmC8yM/w8jtWCxe
-         30dw==
-X-Gm-Message-State: AOAM531IBQ5rctOf0aw7+aQ/0zleDtUr0odctOwd3SO10hOBbHC7VMql
-        80458JNs7AjC4n0ya5YPGFWoFA==
-X-Google-Smtp-Source: ABdhPJx8/+oUahdkx2/ilxjGC/UEmOEiYmXb73w90eteOw4p5SnvEC4gSXTCGgVhR0HS7Cxwj0r2WA==
-X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr3686427wmc.172.1604325293729;
-        Mon, 02 Nov 2020 05:54:53 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id r18sm24511552wrj.50.2020.11.02.05.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 05:54:53 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:54:49 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, daniel.lezcano@linaro.org,
-        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-Message-ID: <20201102135449.GE2221764@google.com>
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
+        id S1725913AbgKBN5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:57:01 -0500
+Received: from mail-eopbgr60071.outbound.protection.outlook.com ([40.107.6.71]:20613
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725849AbgKBN47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:56:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hIJ+tlo+N6DH2qAfzid5c9PRYUJPpKzxP5NCm4/3IDyzawTvJNFz2LDM6rM3xF1/slSSNYtr2h1mY62+rcoyNDPFFsM4DWHJ1h6xieRUNF2qj0KsjvQ6n3nqCIgvML4GOJTVU/0PuW8x6IBjJ4uy/G9MpTioabmS5ABSQMoYuGYCKRy475ozqgddRxkuRXqJpuhVjx9+Jp5WVAGSITbh80qrVRTVtMzkABkXb0A0rlCmfElq83orylbJi3xXYRfSuJq8fJGaemvmkR545fdP63zuWxKTQslglHFFAbM81oPbWWv2yS2IUJjjzLV52WSW9FJQ31FL5FUq5PYHGhSUNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kmTCVgWonsUFajPXi/IS7Ow9WBBAs0KzsXpMjP4Usmw=;
+ b=hprqMIxhXKFeodrrulJeyLd/qQSByoQqb8CTLH8LLtl7Urt9AZYGPt9KLAeG9E4ehyG7r7mPzPOh8fxvfZV+4Ihxypbj6xoR27cstipEP+TtCai1PtRnzuCO0xxrKAcBadd4l416KgdI/VEajjPVDHWj45fBy0DR54YkTp1cxbRN1XVuKJTocQgyRipAbugmXhHvgh8DyV8sCT4hCNnS4tH17ILtdZGBfysys9slZWJAsqcbjTJaCk6kPvuYQl4+LDQVQdYbaIw799gUrcyU9ceIFlxPRaIkgJa/WtMfJ8h0uhnfgvyFA8kZUnWmktTig/Rx5IVQP2vDkdVAq8o+TA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kmTCVgWonsUFajPXi/IS7Ow9WBBAs0KzsXpMjP4Usmw=;
+ b=XGqRuuOORbf6cA6dW3XLTnk6Tetr+HMJUF+djdrFWnHakh2eXCySfOBf3dcBS4v1Zrbk9S70Imq6hxfEyv/+3YIgZff78HHYIYUK667/vIjrQxDZfuTWpYUFjP5nmolW9UoRDs16OfmTjsUoVwHyayjUdacotrT8HdRlGlGNZnw=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB5134.eurprd04.prod.outlook.com (2603:10a6:803:5f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
+ 2020 13:56:55 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 13:56:55 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Pujin Shi <shipujin.t@gmail.com>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: ethernet: mscc: fix missing brace warning for old
+ compilers
+Thread-Topic: [PATCH] net: ethernet: mscc: fix missing brace warning for old
+ compilers
+Thread-Index: AQHWsR3tdRvpxbUwu0avLaQhXZnXo6m03c4A
+Date:   Mon, 2 Nov 2020 13:56:55 +0000
+Message-ID: <20201102135654.gs2fa7q2y3i3sc5k@skbuf>
+References: <20201102134136.2565-1-shipujin.t@gmail.com>
+In-Reply-To: <20201102134136.2565-1-shipujin.t@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.177]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: de83583e-e492-4150-8339-08d87f37287d
+x-ms-traffictypediagnostic: VI1PR04MB5134:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB5134FF6570809C9F37CA3067E0100@VI1PR04MB5134.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JphvdDkq0mNOU0ZUN73eqqX3bvdgbi7h/63Ah6X8SeupddEMDHVDCTCYTcaA5oKtCrRzqmzBMqNJb29bgPDVVtJ/KAKelJyK6pML78qczpt/Nzv1V4XwVhC3hiHHS6/f/Q63MYc1vaK+xwYluqYI6hpFPSwioE5VBZIl7OUDFu1hhnqBW5fuO8V2xGS9bL5mPyZ00iHRJ6ohnc1ndEjx5RpG8mDEyhfIXFYB+DGyuoKKLS1/52bd7pnJwg1TOBIkyYiDhHElVAZ2OkDjfAWKb41TwD6a3p1vYwIifreh4EKWWMvmPscEv2Tq+VxHUEhuFZT83LTIFgQef5p7m84ZCA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(39860400002)(376002)(346002)(396003)(136003)(366004)(44832011)(71200400001)(33716001)(6486002)(316002)(8936002)(186003)(83380400001)(86362001)(8676002)(6506007)(1076003)(66946007)(5660300002)(26005)(66476007)(4326008)(54906003)(9686003)(6512007)(6916009)(76116006)(91956017)(2906002)(66446008)(64756008)(66556008)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: jYmEZnntxU+HkAa6XI2+JCcFPY++Q+++NlEfC20mJKR5EXBFcdkcuiy3LEZi0MDT8N71NkKjgJU3FrZ2u2/EUN48Ijyr9UQER2QBQDoC2mvMjORyokt0oE8XalFEcibFGTwm0brGp+WCHYBXS1moPpECHjvE9wakkEqNn28Pm8GUPY43q4nGxPBAezsfLktXumm79mLnpLt4659NOEpCYBQaR30byl5+px1b/7eJdqjS/Bq2UEDQ4RD5sfv13GbUqrwOp5bXGRJocYzc8lecX1vxq6eCwvE+LwtTrale5fTC/+YUhf8p1uR+SMMNkTv9A7nmzpklIHhMunhYaw8vxXKtM5S1NpxsKXW3nOztyRuXZrcmzqF79lqy4GllCLcBW8YxdiyRyRyRawWOeWzysaiDLn1JPGvXpzs9UROBX9KXonwwZi7nzTY/SHBFgt10/D03boRIBgZFqJeoAQoGQDJkNUG/q4QsjXd9iVfFeWZt/Uc7qVcXuRq6In9WxFaJpSK9CCdmv9H4L8EZZJK/lPItP+OXNgD+22ebpt0EdRP6chiIa5+NABpBJN+ehFGRiv5vHZTA9hNQFHermBy/0A6Tu0mm0EO1gAeyg4G5sETX9NPwHfgas/znEfvk2p8JJVO1aosFEFTqp3m7tyW52w==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8044285B2D066D48AD6D2C367E0A8550@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de83583e-e492-4150-8339-08d87f37287d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 13:56:55.1348
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: s6xURzdMFavawxoN5ZQrcknQ3v4sP7/5nG/KH1k/6W2bHkkPXfMZB8XMBRrsclO7uoM4UViSSU1PSRtCFYHqLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 02 Nov 2020 at 08:54:38 (+0000), Lukasz Luba wrote:
-> Gentle ping to Quentin and Daniel for sharing opinion on this patch set.
-> If you are OK, then I could use this as a base for next work.
+On Mon, Nov 02, 2020 at 09:41:36PM +0800, Pujin Shi wrote:
+> For older versions of gcc, the array =3D {0}; will cause warnings:
+>=20
+> drivers/net/ethernet/mscc/ocelot_vcap.c: In function 'is1_entry_set':
+> drivers/net/ethernet/mscc/ocelot_vcap.c:755:11: warning: missing braces a=
+round initializer [-Wmissing-braces]
+>     struct ocelot_vcap_u16 etype =3D {0};
+>            ^
+> drivers/net/ethernet/mscc/ocelot_vcap.c:755:11: warning: (near initializa=
+tion for 'etype.value') [-Wmissing-braces]
+>=20
+> 1 warnings generated
+>=20
+> Fixes: 75944fda1dfe ("net: mscc: ocelot: offload ingress skbedit and vlan=
+ actions to VCAP IS1")
+> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+> ---
+>  drivers/net/ethernet/mscc/ocelot_vcap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/mscc/ocelot_vcap.c b/drivers/net/ethern=
+et/mscc/ocelot_vcap.c
+> index d8c778ee6f1b..b96eab4583e7 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_vcap.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_vcap.c
+> @@ -752,7 +752,7 @@ static void is1_entry_set(struct ocelot *ocelot, int =
+ix,
+>  					     dport);
+>  		} else {
+>  			/* IPv4 "other" frame */
+> -			struct ocelot_vcap_u16 etype =3D {0};
+> +			struct ocelot_vcap_u16 etype =3D {};
+> =20
+>  			/* Overloaded field */
+>  			etype.value[0] =3D proto.value[0];
+> --=20
+> 2.18.1
+>=20
 
-One or two small nits, but overall this LGTM. Thanks Lukasz.
-
-> As you probably know I am working also on 'sustainable power' estimation
-> which could be used when there is no DT value but it comes from FW.
-> That would meet requirement from Doug, when the DT cannot be used,
-> but we have sustainable levels from FW [1].
-
-Cool, and also, I'd be happy to hear from Doug if passing the sustained
-power via sysfs is good enough for his use-case in the meantime?
-
-Thanks,
-Quentin
+Sorry, I don't understand what the problem is, or why your patch fixes
+it. What version of gcc are you testing with?=
