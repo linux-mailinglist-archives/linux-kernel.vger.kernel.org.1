@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26F12A2BC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0842A2BDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 14:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgKBNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 08:43:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKBNna (ORCPT
+        id S1725975AbgKBNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 08:44:23 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:36801 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725797AbgKBNoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 08:43:30 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0566C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 05:43:28 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c9so7899350wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 05:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mfKBeD4fiXTCoEtzR3WkNNJyJEURTLKGrVDQO6IkliM=;
-        b=cVkQJTnCjfBar8bMUhCyQlY6NBjef7UxGui8W+iKgFzgtMfWzOKQPVzwUgSwmzU0th
-         P9Fk9hSPwRk3llvxISfb4gdJ1oLahMM1fmJ7zNVDMNx2hFWSOKyIV77SJnCdibWP6suU
-         JFerKCnRMv1SPia1lvVdFKHdFAbdXBe6Nt2o8w3Vvvdze7WlRSatKlm2uY1hbQ7BXT3P
-         5n4ZUHFTjFoA+l+/4AHonvxZjbP7xgBiMRErE2K/lPInLr6NVqyVJ38ehkyOVbbN/9we
-         v8F/mNfoXaPnLwGVCFxjOX+yO+x75jqKUzcJ8I0wM79PZDup5JBSReJcWPZXfOle1/75
-         83Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mfKBeD4fiXTCoEtzR3WkNNJyJEURTLKGrVDQO6IkliM=;
-        b=erbIfS9+uCIf2bpzkltdVYjZn+BUTYzG2ilQeRmTTHVvj1HJ3/K354cEeRT1clI2y2
-         +DSic0+7sPW9SYb8+pqp4TDQf8i9Ag3xxbYtiuTFwibalaU5XvnguqXBjFgBn2lG37nJ
-         x4ks2gyQwbtrE/+IoCs+LdLm8XPhjrBOuozicp14Tbc83+IacmfcptElW3aUQqMlqbYa
-         yVPf4otcyyTz8eB82esbIEXTO6KqdXxRJ7y3TvfS9ltuxvP+Q401O7oqWa8maxziTgET
-         2MMS234qgOJuRK41mmBs3Vpdata61w3TgMkclOc6zFzZiNt30n2D8mS2B0Lkt/F/uPcY
-         Drzg==
-X-Gm-Message-State: AOAM533wLTK/zPiKVamvB2Z7W5uvMibIccKDi3hooehj0Yur1ijX+JRd
-        UroogLFZuKuEUv/hLJO8wc5RfQ==
-X-Google-Smtp-Source: ABdhPJz0K6pXqtJ2PhgnwSFED6vdeFbe2TdR5EYo4AZ7bBruyE3BYiACCQ8EYnThnBVbjiO57E5gnw==
-X-Received: by 2002:a1c:4b04:: with SMTP id y4mr5834274wma.93.1604324607307;
-        Mon, 02 Nov 2020 05:43:27 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id k84sm9970495wmf.42.2020.11.02.05.43.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 05:43:26 -0800 (PST)
-Date:   Mon, 2 Nov 2020 13:43:23 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-Subject: Re: [PATCH v3 1/4] PM / EM: Add a flag indicating units of power
- values in Energy Model
-Message-ID: <20201102134323.GA2221764@google.com>
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <20201019140601.3047-2-lukasz.luba@arm.com>
+        Mon, 2 Nov 2020 08:44:23 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 9A9B3D30;
+        Mon,  2 Nov 2020 08:44:21 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 08:44:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=fE52HILFIEUYX8gSPdSyC8jCaH6
+        8aUucFwybO+du16k=; b=T9FfJT1d/rWjadkKk9V8jydL0dEEJ6WD319p8ZST6R6
+        SW8jwwxwff/uua1ZzcIBZuxrVpbrmVUPzVQ9wAmZrx8lxec1yGeo12mSAVupHXZ6
+        T8NbWuADmwMVprT15cTAvKBR6REBuTz6hEkyzapOYs+YDxA5EmIduE+YqQCSRVen
+        ylJ19SPuJNMwrhuLLEnlV1CZXZGQbJmQ2HypKaRcUd7pbza541iSPV+lKtOO8lpX
+        dSUnIgqooyIx0CyrvtYfcuIFwrw8usPOAsK2dyiE4sj0hKNzC7ta8cFK4lRxYOg0
+        vTAkb0NeuAd52lPnHojoKbhzUZqyfB8WXspnwlW2vFg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=fE52HI
+        LFIEUYX8gSPdSyC8jCaH68aUucFwybO+du16k=; b=ozO57LCJBj25oXnBaWDr5n
+        P2JTOi8K8wLlr81WWAVnIeAsdHfGu+cUIeptcB2vzdkx9gKFK2sSYqGbUdqJ5mqv
+        kxUrnHQbEhXopqwZhXSBWsUa2QG1e0eUx33cgZ69m+8JICT2onUBeJB66zDv0HsH
+        mFuOjCCN8CKwLgZy08ElpycMMmw79CbajOm6EWcloS80o/tJpZzS0HEpPDG9Zrls
+        zDChY75vxKDuGjBWne6P9zyyqqUPfGOgZverbpyustbzzSQK1axVTZmYKt6XzHCv
+        0/6qsnexVE525hIixY0PIiH7WI8DYVZtb75AyEBjpgkzD8yhIQwdJ9XKWKx7DZJw
+        ==
+X-ME-Sender: <xms:NA2gX85uaTdBbSP72m9QH16HMaVKRsOfg3COOMHsAJOoGYJD4xtrLw>
+    <xme:NA2gX95dT2MnmVBIZ44vvBC3r_tiDzcJPhHK4Xi7cIpOrE5miEEoOBPuQ2bSOquql
+    cSE4yQ2a1Nw9SL_m60>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:NA2gX7fDKJvh3X25qFBt5igG9TmtaUs_E0lL0hsiRGFUFkMXlOssxQ>
+    <xmx:NA2gXxIryROmEGBsI7TYwg6e5-3v6qVWyfLQ7DCcQRz59ltOg2pGaw>
+    <xmx:NA2gXwJHNbaCCB0hzjNp-ImuC428o3dM-UHFP_0lsFaTIlVrOpPeNA>
+    <xmx:NQ2gX6hPB5JYkIrnD8EO2mfhxGoE5DFHcFLbNaa5Du7jMz97YjMw7A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3F2A6328005D;
+        Mon,  2 Nov 2020 08:44:20 -0500 (EST)
+Date:   Mon, 2 Nov 2020 14:44:18 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <contact@paulk.fr>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH 6/9] ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
+Message-ID: <20201102134418.vn7i3e4gpwomxcnj@gilmour.lan>
+References: <20201031182137.1879521-1-contact@paulk.fr>
+ <20201031182137.1879521-7-contact@paulk.fr>
+ <20201102101211.wtkmgfm2rcm5gdyp@gilmour.lan>
+ <20201102102522.GB11809@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zradx5x6omb6x434"
 Content-Disposition: inline
-In-Reply-To: <20201019140601.3047-2-lukasz.luba@arm.com>
+In-Reply-To: <20201102102522.GB11809@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 Oct 2020 at 15:05:58 (+0100), Lukasz Luba wrote:
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index b67a51c574b9..2c31d79bb922 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -29,6 +29,8 @@ struct em_perf_state {
->   * em_perf_domain - Performance domain
->   * @table:		List of performance states, in ascending order
->   * @nr_perf_states:	Number of performance states
-> + * @milliwatts:		Flag indicating the power values are in milli-Watts
-> + *			or some other scale.
->   * @cpus:		Cpumask covering the CPUs of the domain. It's here
->   *			for performance reasons to avoid potential cache
->   *			misses during energy calculations in the scheduler
-> @@ -43,6 +45,7 @@ struct em_perf_state {
->  struct em_perf_domain {
->  	struct em_perf_state *table;
->  	int nr_perf_states;
-> +	bool milliwatts;
->  	unsigned long cpus[];
->  };
 
-Make that an int please, sizeof(bool) is impdef.
+--zradx5x6omb6x434
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With that:
+On Mon, Nov 02, 2020 at 11:25:22AM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Mon 02 Nov 20, 11:12, Maxime Ripard wrote:
+> > On Sat, Oct 31, 2020 at 07:21:34PM +0100, Paul Kocialkowski wrote:
+> > > The V3s/V3 has a NMI interrupt controller, mainly used for the AXP209.
+> > > Its address follows the sytsem controller block, which was previously
+> > > incorrectly described as spanning over 0x1000 address bytes.
+> >=20
+> > Is it after, or right in the middle of it?
+>=20
+> That's up for interpretation actually:
+> - The V3 datasheet mentions that System Control is 0x01C00000 --- 0x01C00=
+FFF;
+> - In practice, sunxi_sram.c uses a regmap with max_reg set to 0x30 for the
+>   V3s/H3 so this gives us some room.
+>=20
+> Looking at other SoCs with the same setup (take sun8i-r40 for instance),
+> system-control is limited to 0x30 and the NMI controller follows it.
+> In the case of R40, the SRAM controlled is also said to be 4K-long in the
+> Allwinner docs.
+>=20
+> So all in all, this leads me to believe that the system-controller instan=
+ce
+> stops well before 0x1c000d0 on the V3s as well. Otherwise, we should also
+> make the R40 consistent.
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+That's a bit unfortunate, but yeah, I guess we want to remain consistent he=
+re.
+
+Maxime
+
+--zradx5x6omb6x434
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6ANMgAKCRDj7w1vZxhR
+xeLVAQCfo9QP+iBi8lib7fzKbLt/6ce/jsOJTm1DL/3gqqV0TAD9HGLPZ0b5HPUl
+9Xr7omeEc75bFxlNsDP66SFuUiLCSAM=
+=hsn7
+-----END PGP SIGNATURE-----
+
+--zradx5x6omb6x434--
