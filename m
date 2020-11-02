@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516082A2402
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29302A2407
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 06:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727555AbgKBFQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 00:16:39 -0500
-Received: from mga07.intel.com ([134.134.136.100]:14459 "EHLO mga07.intel.com"
+        id S1727489AbgKBFT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 00:19:29 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:64203 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgKBFQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:16:39 -0500
-IronPort-SDR: E2xUTfWLURgs0WFgIBtbx0xzpfskzEq35PzyYxS51TQTv482ZkkYOSAyzAOC2CgivyIl0yx93Q
- S+EzJyRNJlIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="233006840"
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="233006840"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2020 21:16:37 -0800
-IronPort-SDR: XzWicV8W5OHWA6y4Ul1MAjvWe7qtSvwBANqirOSCjY1AS7L35rxKNxiyekaPN91/clwKg7GLco
- Vt1xo2rzQC+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,444,1596524400"; 
-   d="scan'208";a="357220454"
-Received: from lkp-server02.sh.intel.com (HELO 5575c2e0dde6) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Nov 2020 21:16:35 -0800
-Received: from kbuild by 5575c2e0dde6 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZSCo-00008I-Uj; Mon, 02 Nov 2020 05:16:34 +0000
-Date:   Mon, 2 Nov 2020 13:15:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Divya Bharathi <divya.bharathi@dell.com>
-Cc:     kbuild-all@lists.01.org, Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH linux-platform-drivers-x86] platform/x86: po_is_pass_set
- can be static
-Message-ID: <20201102051536.GA97836@d07872ef61d7>
-References: <202011021321.WZVoG5Tr-lkp@intel.com>
+        id S1725985AbgKBFT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 00:19:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604294368; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gglt99q78xy/igDy1zLL7gXHfXLy4ocv/EgOgW7lIEA=; b=R74IPCj/noZGY7RBCVAQnhSG7GLEaZojnTqB3po0g1TCYS/W1GULH/IN2CZ+hjnabqQSv+yT
+ BOsVxRPdC4VpziF8CxAa7mKXw3LYe4d/ChPDJN7RmygZFLDlXy8vQbohA9geOUuiDTU/u2xX
+ 0++WXw5lOwO4+m0aMwuq1fURrcE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f9f96d91df7f5f83c9022ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 05:19:21
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27F65C433C8; Mon,  2 Nov 2020 05:19:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.43.11] (unknown [223.182.216.231])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9FC19C433C6;
+        Mon,  2 Nov 2020 05:19:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9FC19C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kathirav@codeaurora.org
+Subject: Re: [PATCH v4] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
+ appropriate
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Robert Marko <robert.marko@sartura.hr>, agross@kernel.org,
+        bjorn.andersson@linaro.org, wim@linux-watchdog.org,
+        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Luka Perkov <luka.perkov@sartura.hr>
+References: <20201031121115.542752-1-robert.marko@sartura.hr>
+ <a71307f5-22b4-0d38-2880-96084bb07275@roeck-us.net>
+ <23aea80f-265b-8a23-e8ea-f46639dd4129@codeaurora.org>
+ <5b7def39-8c23-d30f-e2d3-bc38beee8919@roeck-us.net>
+From:   Kathiravan T <kathirav@codeaurora.org>
+Message-ID: <dedebcc4-1c1f-bd56-07a6-ff7f44c06ed1@codeaurora.org>
+Date:   Mon, 2 Nov 2020 10:49:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202011021321.WZVoG5Tr-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5b7def39-8c23-d30f-e2d3-bc38beee8919@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- passobj-attributes.c |   14 +++++++-------
- sysman.c             |    2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+On 11/2/2020 10:33 AM, Guenter Roeck wrote:
+> On 11/1/20 7:58 PM, Kathiravan T wrote:
+>> On 10/31/2020 7:38 PM, Guenter Roeck wrote:
+>>> On 10/31/20 5:11 AM, Robert Marko wrote:
+>>>> If the watchdog hardware is enabled/running during boot, e.g.
+>>>> due to a boot loader configuring it, we must tell the
+>>>> watchdog framework about this fact so that it can ping the
+>>>> watchdog until userspace opens the device and takes over
+>>>> control.
+>>>>
+>>>> Do so using the WDOG_HW_RUNNING flag that exists for exactly
+>>>> that use-case.
+>>>>
+>>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>> Thanks for addressing the comments and now the patch looks good to me. One more suggestion, can we make the initcall level of the driver to subsys_initcall_sync so that the driver gets registered immediately after the watchdog_core is registered and watchdog_core starts pinging the WDT?
+>>
+> That would mean to replace module_platform_driver(), which would be a whole
+> different discussion, is not widely needed, and would potentially interfere
+> with the subsys_initcall_sync() in the watchdog core. This will require
+> specific evidence that a problem is seen in the field, and that it is truly
+> needed. Plus, it would have to be a different patch (which you could submit
+> yourself, with evidence). Let's stick with one logical change per patch,
+> please.
+>
+> Guenter
+Yeah, of course I don't want to squash the initcall level change with 
+this one. Just made a suggestion to consider it. Anyway I will try to 
+collect some data and post the patch by own on that suggestion. Thanks 
+Guenter.
 
-diff --git a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-index e6199fb748a95a..81562b178c9cdd 100644
---- a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-@@ -35,7 +35,7 @@ static ssize_t is_enabled_show(struct kobject *kobj, struct kobj_attribute *attr
- 	return ret;
- }
- 
--struct kobj_attribute po_is_pass_set =
-+static struct kobj_attribute po_is_pass_set =
- 		__ATTR_RO(is_enabled);
- 
- static ssize_t current_password_store(struct kobject *kobj,
-@@ -67,7 +67,7 @@ static ssize_t current_password_store(struct kobject *kobj,
- 	return count;
- }
- 
--struct kobj_attribute po_current_password =
-+static struct kobj_attribute po_current_password =
- 		__ATTR_WO(current_password);
- 
- static ssize_t new_password_store(struct kobject *kobj,
-@@ -96,15 +96,15 @@ static ssize_t new_password_store(struct kobject *kobj,
- 	return ret ? ret : count;
- }
- 
--struct kobj_attribute po_new_password =
-+static struct kobj_attribute po_new_password =
- 		__ATTR_WO(new_password);
- 
- attribute_n_property_show(min_password_length, po);
--struct kobj_attribute po_min_pass_length =
-+static struct kobj_attribute po_min_pass_length =
- 		__ATTR_RO(min_password_length);
- 
- attribute_n_property_show(max_password_length, po);
--struct kobj_attribute po_max_pass_length =
-+static struct kobj_attribute po_max_pass_length =
- 		__ATTR_RO(max_password_length);
- 
- static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
-@@ -113,7 +113,7 @@ static ssize_t mechanism_show(struct kobject *kobj, struct kobj_attribute *attr,
- 	return sprintf(buf, "password\n");
- }
- 
--struct kobj_attribute po_mechanism =
-+static struct kobj_attribute po_mechanism =
- 	__ATTR_RO(mechanism);
- 
- static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
-@@ -126,7 +126,7 @@ static ssize_t role_show(struct kobject *kobj, struct kobj_attribute *attr,
- 	return -EIO;
- }
- 
--struct kobj_attribute po_role =
-+static struct kobj_attribute po_role =
- 	__ATTR_RO(role);
- 
- static struct attribute *po_attrs[] = {
-diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-index 3842575a6c189f..c6862c3e9b491a 100644
---- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-@@ -255,7 +255,7 @@ static ssize_t wmi_sysman_attr_store(struct kobject *kobj, struct attribute *att
- 	return ret;
- }
- 
--const struct sysfs_ops wmi_sysman_kobj_sysfs_ops = {
-+static const struct sysfs_ops wmi_sysman_kobj_sysfs_ops = {
- 	.show	= wmi_sysman_attr_show,
- 	.store	= wmi_sysman_attr_store,
- };
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
