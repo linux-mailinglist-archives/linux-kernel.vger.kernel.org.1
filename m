@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6976F2A27BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D2F2A27BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 11:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgKBKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 05:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728183AbgKBKIe (ORCPT
+        id S1728413AbgKBKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 05:08:36 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:39537 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728387AbgKBKIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 05:08:34 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0FEC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 02:08:34 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id k9so8672261pgt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 02:08:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/oNsh0ZZANxB+0DY/V3HzKuZqq+yTNfopsDbZ8CmqMY=;
-        b=NNXYQiVnBj7e6N99x/I7VSQ9R0te6wFkmJ4X6uswDTHA4n2nJUhaDn2+sy7Swaz4ie
-         Y8swEXn99HFOV4AUecW9zDU+6iP0MC6F3eoICr26QBNzfm3vMYDUxvt4llKrmK0x5OKo
-         YwRL1FFWbN/XdSgz/U6HafHOKdyRHU5u1T3Orcw4fTo1oMKoe2lNd2e7SWX7CV8hXid6
-         Wz2HjYwO3skk1QFrC1uSZcSIW6HQ/h6rQ+cXyEo2XdZVaBXGIZfuGzw+8uC6JO9GdZ5U
-         po0iOsiykEcAYCkBVKCabvKe2EUd+vi0uM9FHCN/KrUt7gJGyRfBukxcDP5AXM0ycwT7
-         r0+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/oNsh0ZZANxB+0DY/V3HzKuZqq+yTNfopsDbZ8CmqMY=;
-        b=MNWzk+Us+UPlD6EghW9XEDuvRLCpZki8ouKMxMvV9VquK1KW+afsQHNJ9uewgkh5J2
-         RViz3fVBriem6CYEPbexduucO3tIhQNFTar83PwqtIgjAikPqcvxAt0qw1OCS4nmt/GP
-         NA7VKsXPzyGHnDSDSb89uh7WdwUb/CukKA1TUYdG8tHHjr4EDn0KiaODQelhYufnipjZ
-         RY0nE3dexblF1NfPY/b92GbtLTXHysArtL32S06JCzytDl0w27Z9JPsUSLUtMOZVEHT+
-         hvRxILCI2AHOlmSvwyAr99I3UMnNYuzpObH6tqjGrbA7ognN7nb6AQ5MN8SFlvQAB3tX
-         4sZg==
-X-Gm-Message-State: AOAM530aF8pjIzuFHyKK95Ryptp3SkcxBmk0fSkILTVVo3r/PFsq1OKD
-        HdKeuxv9HNrzPup8Cy4JYxAiWA==
-X-Google-Smtp-Source: ABdhPJwpIEd4gQSbrsYHd8Mcy98MlIFLJwlPm1d8Be2RKs85mIe28v/7DCY+263yA3WlkcmZNYlSfA==
-X-Received: by 2002:a17:90a:b383:: with SMTP id e3mr16489578pjr.61.1604311714137;
-        Mon, 02 Nov 2020 02:08:34 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.141.182.112])
-        by smtp.gmail.com with ESMTPSA id j20sm1332862pgk.59.2020.11.02.02.08.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 02 Nov 2020 02:08:33 -0800 (PST)
-Date:   Mon, 2 Nov 2020 18:08:23 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ian Rogers <irogers@google.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] perf c2c: Support AUX trace
-Message-ID: <20201102100823.GB6633@leoy-ThinkPad-X240s>
-References: <20201028063813.8562-1-leo.yan@linaro.org>
- <20201028063813.8562-7-leo.yan@linaro.org>
- <20201031202103.GA3380099@krava>
+        Mon, 2 Nov 2020 05:08:35 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 52F1EE2F;
+        Mon,  2 Nov 2020 05:08:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 02 Nov 2020 05:08:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=wINfzHaxXzQ8jIBMOSyRz1H4FRf
+        sD1RrGLsMG0I/ZHM=; b=UAjNO9ekdsfb+BRuqnR5xIwoDXazKycj5SebG61I0hK
+        1rGoV5Pn5TXPJV+CsGX9+lM6Ijq6WXfqKELSEGkPudjEvPDJ21DmT084spQ+yvNX
+        5iwfyd0XdpF3ecuxEsrzntdXaAUDwVTkjo7NYvMJbeynGFyOe9Ov0YAZWA0Q8PUG
+        47nCdMlxJOhgHzpuehERI4jcAPHwzU6i0GC4lMHQoFQZwlXZTJ3ieTPwtF7V5GYj
+        i4odb3R0YBuszgbWHlAqMhzf98MsbWisRQsBvtVmHDgLnRHnv2u6zAEWKc5N9u3Y
+        SCj3VdCkEGlVo8VvNLVNgMQcXGr4Fh5ncbMunl7eRbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wINfzH
+        axXzQ8jIBMOSyRz1H4FRfsD1RrGLsMG0I/ZHM=; b=CsvVXc63wfFKV0LpzvMOoQ
+        uJbqgYietrdaUHTJXfzV9vSdQXCBSiRYiLbAJbXfV+vQoZfBtqtamoDjP2NZfQAO
+        2vYXy7jtfKH2DHW7tSwa7ghY9uwLZi99WlcLttVAUpMvWAYF960mOTfEYL7fb/U+
+        xOk9UnpGaVqY200mUQRrVjKPDotXZADyDn5J2/3B3/3nBxDrNsBcSRluGZk7CVml
+        BHwtNj6LozPSzpD5cg0zPJMa4iiMzKtYrW1yZcuATt6HZwNIPFVg3pMb8r3KM+Yq
+        pfbVm01bNTQa8Sk1Vay9Q0w24jtFatQPpkBQw2raED3+LMf7KYoU43ssf5kp/jwg
+        ==
+X-ME-Sender: <xms:odqfX7L164JG0lWHx_J4FxUNLvmQUUjtIvhNLKGB-jj0-kgGt7Ct1w>
+    <xme:odqfX_KkQ-E6-KYywA-QP0aZB4K5nc9dcf0qaNBKlABd3nw6sypj_6nBXTa2eSXVR
+    7L2zZ3L0sEhDPMsAN0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtuddguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfeenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:odqfXzv_dpJy166jt1NWdXkx_56BabPGQaoV7XiX1n_gHZn4re28tg>
+    <xmx:odqfX0YaQf9Rl7ZvdoUFtLuaoT0Dmdbdx0yF0PgsnKGuXeIiieRO6g>
+    <xmx:odqfXybYHlUQAYA_ZRYUKLTlWX_aTB8kDRMqkYqkFktGPPA462_Wzg>
+    <xmx:odqfX5xYtsmHyp6J_nxe9_Afxf0Sr0Ae4XX4_5pVpqiLcdUvCqTFjg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 04E233064683;
+        Mon,  2 Nov 2020 05:08:32 -0500 (EST)
+Date:   Mon, 2 Nov 2020 11:08:31 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <contact@paulk.fr>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH 3/9] ARM: dts: sun8i-v3s: Add I2C1 PB pins description
+Message-ID: <20201102100831.fhuhsn6qzw7aasvg@gilmour.lan>
+References: <20201031182137.1879521-1-contact@paulk.fr>
+ <20201031182137.1879521-4-contact@paulk.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7hhntwrmplkufuao"
 Content-Disposition: inline
-In-Reply-To: <20201031202103.GA3380099@krava>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201031182137.1879521-4-contact@paulk.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
 
-On Sat, Oct 31, 2020 at 09:21:03PM +0100, Jiri Olsa wrote:
-> On Wed, Oct 28, 2020 at 02:38:10PM +0800, Leo Yan wrote:
-> > This patches adds the AUX callbacks in session structure, so support
-> > AUX trace for "perf c2c" tool.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  tools/perf/builtin-c2c.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> > index 4d1a08e38233..24f4af997aab 100644
-> > --- a/tools/perf/builtin-c2c.c
-> > +++ b/tools/perf/builtin-c2c.c
-> > @@ -369,6 +369,10 @@ static struct perf_c2c c2c = {
-> >  		.exit		= perf_event__process_exit,
-> >  		.fork		= perf_event__process_fork,
-> >  		.lost		= perf_event__process_lost,
-> > +		.attr		= perf_event__process_attr,
-> > +		.auxtrace_info  = perf_event__process_auxtrace_info,
-> > +		.auxtrace       = perf_event__process_auxtrace,
-> > +		.auxtrace_error = perf_event__process_auxtrace_error,
-> 
-> so this will process aux data, but don't you have to
-> say which events you want to synthesize?
-> 
-> like in script/report via --itrace option?
+--7hhntwrmplkufuao
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Indeed, we need to assign "session->itrace_synth_opts", otherwise, the
-tool cannot output synthesized samples.
+On Sat, Oct 31, 2020 at 07:21:31PM +0100, Paul Kocialkowski wrote:
+> I2C1 can be exposed through PB pins in addition to PE pins on the V3s.
+> Add the device-tree description for these pins.
+>=20
+> Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
 
-I tried to keep this patch set as small as possible, for easier
-reviewing.
+Applied, thanks!
+Maxime
 
-Comparing to the previous patch set, I moved out the patch "perf
-auxtrace: Add option '-M' for memory events" [1] from this patch set,
-at the end my purpose is to introduce the itrace option '-M' to
-synthesize memory event; and "perf c2c" tool can use memory event
-for output result.  Thus "perf c2c" needs to add itrace_synth_opts:
+--7hhntwrmplkufuao
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  struct itrace_synth_opts itrace_synth_opts = {
-          .set = true,
-          .mem = true,            /* Memory samples */
-          .default_no_sample = true,
-  };
+-----BEGIN PGP SIGNATURE-----
 
-> aybe arm differs from x86 in this, and it's happening
-> in the background.. I have no idea ;-)
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5/anwAKCRDj7w1vZxhR
+xeUAAP4+u6ICdSeg6HYUBbn33XoSweHePZtGOxExwLsrWdBxwAD/Yw3eTc0hqt/Y
+XnNEK3sxQ0Lm/OCv8HUBZLSxyHfjnwk=
+=pQxA
+-----END PGP SIGNATURE-----
 
-There should have no any difference between archs for 'itrace'
-behaviour.
-
-Since I moved the patch "perf auxtrace: Add option '-M' for memory
-events" out from this patch set, thus I also left out the code for
-adding itrace_synth_opts.  This introduced confusion for reviewing the
-change (sorry!), I will add back the patch "perf auxtrace: Add option
-'-M' for memory events" and add itrace_synth_opts for perf mem/c2c in
-next patch set.
-
-Thanks,
-Leo
-
-[1] https://lore.kernel.org/patchwork/patch/1298072/
+--7hhntwrmplkufuao--
