@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3874E2A360E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A862A3601
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 22:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgKBVgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 16:36:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41714 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgKBVgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:36:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3ED69AD09;
-        Mon,  2 Nov 2020 21:36:40 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     johan@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] usb/mos7720: process deferred urbs in a workqueue
-Date:   Mon,  2 Nov 2020 13:14:50 -0800
-Message-Id: <20201102211450.5722-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1726513AbgKBVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 16:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgKBVcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 16:32:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA640C0617A6;
+        Mon,  2 Nov 2020 13:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=h3oMtEYvKdbDjFLUL7+0fGhfLoWgk1F2RuoMLSxSJj8=; b=n8iCUXfNz9t/awYKgJl8XKY1Rz
+        C7+agVs/l/NJuZGTOxEu1flJFNZNFrNLGn4mvMorpeT3er/qmhizLO7OqfArlm5YqCSank7agxRlc
+        94/ACmeDTQDRWWiHhmambyYagPqx092ouWGPSz+8NpjAah+uw1byjU1f3o4H7jN5PkyeXmC11fOws
+        P1AkoObQeRtwN3hI0pJSc1pqZ5pvizvIHBvzLj/5tJxGKJopPIzh+ZbsTJGOpcVUZI8SqSOymwy/9
+        Px3zu//bTfgHWDHBttj21iE666RW38k5khcMrc1lHZzx/Fbi53oiglAHCua4mECXxr5XuzJ+qzj0s
+        JSb4tABg==;
+Received: from [2601:1c0:6280:3f0::60d5]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZhQs-0004oc-6V; Mon, 02 Nov 2020 21:32:06 +0000
+Subject: Re: [PATCH] clk: imx: scu: Fix compile error with module build of
+ clk-scu.o
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <208469.1604318525@turing-police>
+ <6e5a8fdb-0a02-5eae-ca1f-37df8a454e34@infradead.org>
+ <238534.1604350899@turing-police>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0b61c4f4-b389-c853-6e09-ee603455e583@infradead.org>
+Date:   Mon, 2 Nov 2020 13:31:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <238534.1604350899@turing-police>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tasklets have long been deprecated as being too heavy on the
-system by running in irq context - and this is not a performance
-critical path. If a higher priority process wants to run, it
-must wait for the tasklet to finish before doing so. In addition,
-mutex_trylock() is not supposed to be used in irq context because
-it can confuse priority boosting in PREEMPT_RT, although in this
-case the lock is held and released in the same context.
+On 11/2/20 1:01 PM, Valdis Klētnieks wrote:
+> On Mon, 02 Nov 2020 09:15:20 -0800, Randy Dunlap said:
+> 
+>> also
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> However, this driver does not directly use <linux/module.h>.
+> 
+> Just my luck - I looked at 3 or 4 other things that include of_platform.h
+> and they all *did* include module.h.
+> 
+>> platform_device.h #includes <linux/device.h>, which is where the
+>> problem lies:
+>>
+>> <linux/device.h> uses macros that are provided by <linux/module.h>
+>> so <linux/device.h> should #include <linux/module.h>.
+>>
+>> and that fixes this commit:
+>>
+>> commit 4c002c978b7f2f2306d53de051c054504af920a9
+>> Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Date:   Mon Dec 9 20:33:03 2019 +0100
+>>
+>>     device.h: move 'struct driver' stuff out to device/driver.h
+> 
+> OK.. who's going to do that? Me, or Randy, or Greg?
 
-This conversion from tasklet to workqueue allows to avoid
-playing games with the disconnect mutex, having to re-reschedule
-in the callback, now just take the mutex normally. There is
-also no need anymore for atomic allocations.
+You could go ahead... I began on it yesterday but didn't finish
+testing, although I did see the same build error that the 0day
+bot reported, so I don't know what it's going to take to fix that.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
-Compile tested only.
 
- drivers/usb/serial/mos7720.c | 38 ++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
-index 5eed1078fac8..6982800e61d4 100644
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -101,7 +101,7 @@ struct mos7715_parport {
- 	spinlock_t              listlock;      /* protects list access */
- 	bool                    msg_pending;   /* usb sync call pending */
- 	struct completion       syncmsg_compl; /* usb sync call completed */
--	struct tasklet_struct   urb_tasklet;   /* for sending deferred urbs */
-+	struct work_struct      urb_wq;        /* for sending deferred urbs */
- 	struct usb_serial       *serial;       /* back to containing struct */
- 	__u8	                shadowECR;     /* parallel port regs... */
- 	__u8	                shadowDCR;
-@@ -278,32 +278,28 @@ static void destroy_urbtracker(struct kref *kref)
- }
- 
- /*
-- * This runs as a tasklet when sending an urb in a non-blocking parallel
-- * port callback had to be deferred because the disconnect mutex could not be
-- * obtained at the time.
-+ * This runs as a workqueue (process context) when sending a urb from a
-+ * non-blocking parallel port callback which had to be deferred because
-+ * the disconnect mutex could not be obtained at the time.
-  */
--static void send_deferred_urbs(struct tasklet_struct *t)
-+static void send_deferred_urbs(struct work_struct *work)
- {
- 	int ret_val;
- 	unsigned long flags;
--	struct mos7715_parport *mos_parport = from_tasklet(mos_parport, t,
--							   urb_tasklet);
-+	struct mos7715_parport *mos_parport;
- 	struct urbtracker *urbtrack, *tmp;
- 	struct list_head *cursor, *next;
- 	struct device *dev;
- 
-+	mos_parport = container_of(work, struct mos7715_parport, urb_wq);
-+
- 	/* if release function ran, game over */
- 	if (unlikely(mos_parport->serial == NULL))
- 		return;
- 
- 	dev = &mos_parport->serial->dev->dev;
- 
--	/* try again to get the mutex */
--	if (!mutex_trylock(&mos_parport->serial->disc_mutex)) {
--		dev_dbg(dev, "%s: rescheduling tasklet\n", __func__);
--		tasklet_schedule(&mos_parport->urb_tasklet);
--		return;
--	}
-+	mutex_lock(&mos_parport->serial->disc_mutex);
- 
- 	/* if device disconnected, game over */
- 	if (unlikely(mos_parport->serial->disconnected)) {
-@@ -324,7 +320,7 @@ static void send_deferred_urbs(struct tasklet_struct *t)
- 		list_move_tail(cursor, &mos_parport->active_urbs);
- 	list_for_each_entry_safe(urbtrack, tmp, &mos_parport->active_urbs,
- 			    urblist_entry) {
--		ret_val = usb_submit_urb(urbtrack->urb, GFP_ATOMIC);
-+		ret_val = usb_submit_urb(urbtrack->urb, GFP_KERNEL);
- 		dev_dbg(dev, "%s: urb submitted\n", __func__);
- 		if (ret_val) {
- 			dev_err(dev, "usb_submit_urb() failed: %d\n", ret_val);
-@@ -394,15 +390,15 @@ static int write_parport_reg_nonblock(struct mos7715_parport *mos_parport,
- 
- 	/*
- 	 * get the disconnect mutex, or add tracker to the deferred_urbs list
--	 * and schedule a tasklet to try again later
-+	 * and schedule a workqueue to process it later
- 	 */
- 	if (!mutex_trylock(&serial->disc_mutex)) {
- 		spin_lock_irqsave(&mos_parport->listlock, flags);
- 		list_add_tail(&urbtrack->urblist_entry,
- 			      &mos_parport->deferred_urbs);
- 		spin_unlock_irqrestore(&mos_parport->listlock, flags);
--		tasklet_schedule(&mos_parport->urb_tasklet);
--		dev_dbg(&usbdev->dev, "tasklet scheduled\n");
-+		schedule_work(&mos_parport->urb_wq);
-+		dev_dbg(&usbdev->dev, "workqueue scheduled\n");
- 		return 0;
- 	}
- 
-@@ -717,7 +713,7 @@ static int mos7715_parport_init(struct usb_serial *serial)
- 	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
- 	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
- 	mos_parport->serial = serial;
--	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
-+	INIT_WORK(&mos_parport->urb_wq, send_deferred_urbs);
- 	init_completion(&mos_parport->syncmsg_compl);
- 
- 	/* cycle parallel port reset bit */
-@@ -1886,10 +1882,10 @@ static void mos7720_release(struct usb_serial *serial)
- 		usb_set_serial_data(serial, NULL);
- 		mos_parport->serial = NULL;
- 
--		/* if tasklet currently scheduled, wait for it to complete */
--		tasklet_kill(&mos_parport->urb_tasklet);
-+		/* if work is currently scheduled, wait for it to complete */
-+		cancel_work_sync(&mos_parport->urb_wq);
- 
--		/* unlink any urbs sent by the tasklet  */
-+		/* unlink any urbs sent by the workqueue */
- 		spin_lock_irqsave(&mos_parport->listlock, flags);
- 		list_for_each_entry(urbtrack,
- 				    &mos_parport->active_urbs,
 -- 
-2.26.2
+~Randy
 
