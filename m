@@ -2,76 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D44E2A3140
+	by mail.lfdr.de (Postfix) with ESMTP id E48572A3141
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 18:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgKBRSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 12:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgKBRSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:18:21 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE5E821D91;
-        Mon,  2 Nov 2020 17:18:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604337501;
-        bh=DK5hG7Hl+usrKzyzofkycl7KuXmXYmJFS7OX+Znve1U=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Epznq/QLQV+OUXgaAnagCRngDd7sAginMJhmFLejpPgmsHdhDOBZew7NH4j8xiD5n
-         wUSjDU4NLAjOlpa3pNUJ5LRN+w6XgX0j1OL+kb8lblgDkYdBrLp6RAeykJH+Z/5dK+
-         zOmy1ZpD03Ka5Xc6Br8vzl+M88V0sSzHNV2/2kE4=
-Date:   Mon, 02 Nov 2020 17:18:13 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, f.fainelli@gmail.com, sbranden@broadcom.com,
-        rjui@broadcom.com, sw0312.kim@samsung.com,
-        ranjani.sridharan@linux.intel.com,
-        kuninori.morimoto.gx@renesas.com, perex@perex.cz,
-        "trix@redhat.com" <trix@redhat.com>, lgirdwood@gmail.com,
-        nsaenzjulienne@suse.de
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com
-In-Reply-To: <20201101160037.2295512-1-trix@redhat.com>
-References: <20201101160037.2295512-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: bcm2835-i2s: remove unneeded semicolon
-Message-Id: <160433748157.18840.3548192910799118546.b4-ty@kernel.org>
+        id S1727837AbgKBRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 12:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727704AbgKBRS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:18:27 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DAFC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 09:18:27 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t14so11370099pgg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 09:18:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ongijzBbU5JhggY7XsRs9RUVgnhkALPDdAHYW5noMnU=;
+        b=JjkLFkvmOwH3zDu+TtrRvT9/DODaBkhXxFr9Ngla+xzBEAzxw0ASE3vDj5LEA/KrQo
+         bNU0Sw0e/+652u5nIAervazqr5MO+wygx2UY9Fbb1QBbxnPRafQvUPPfRm6pZMG71VqO
+         IvNHbk89ZlNe9LoCr9lsNi8lacxTTLPZyd91Dr0euY0QwYJfUw0eyBkRZ2XPjdo6pgma
+         cRV4c3jlUNi4gWm5o6DXG0WM5VuC55BBz8zjZBTVRAVehfU2x+FgsgyXcVE4PFwW2+fO
+         SHH/8wjBVW6F2gh1HCWgISSUgdgKjLlyYly6nHXWo4tjgtWxkOeg4kjjck5JFH4RYHRl
+         nDHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ongijzBbU5JhggY7XsRs9RUVgnhkALPDdAHYW5noMnU=;
+        b=EgsQvapp88TVNV65dx0dCVshfCJ9CO3j8xlfecswYSsiI10AxY36C0S5xpZQ3s6yPo
+         HSqivvZhXIwOSuErSymCKoPSQRE+fd0lloMq5KiernC6ZqBYsyt8dJpTOfK41FukEGUQ
+         Owkxd5Z1HFz4OTUVnmCN1t/jrCf9v0MgHv3cyo3YX/UfQ8jtDodI0mn/ZcQSm/689GXK
+         ft+sf3HGGT0BbnhEw1mj1VLVuv/dp2FIfme3CWlglihHOsBUr4Ke0TFJyFDR54nFGMeX
+         0cCMKvi25NLpMhYNDbmS2NEjA63pJDYjGaD6yJ0gH/q49oXlUcWm0rsGh5ivOd149bkg
+         Kb/g==
+X-Gm-Message-State: AOAM533mGHdd++GXOjn0/ZPzrT57drNKz+LigrCB6IAfvDAPe3RPGa6h
+        i7/IItPD3WqCuxL4Xb9g9Ls=
+X-Google-Smtp-Source: ABdhPJyzPukp9r0F2P829WuznckwaVdiOgSt22gGhCcWY9DhcmgwB3d1g7RXRJesRJ8qX/PIQI9A4w==
+X-Received: by 2002:aa7:8281:0:b029:164:cc0f:2b3a with SMTP id s1-20020aa782810000b0290164cc0f2b3amr20031757pfm.30.1604337507299;
+        Mon, 02 Nov 2020 09:18:27 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id w6sm13164699pgr.71.2020.11.02.09.18.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 09:18:26 -0800 (PST)
+Date:   Mon, 2 Nov 2020 22:48:21 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, gregkh@linuxfoundation.org,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com, melissa.srw@gmail.com, daniel.vetter@ffwll.ch
+Subject: [PATCH 3/6] drm/amdgpu/vcn: improve code indentation and alignment
+Message-ID: <0307c0682da36a5c0c091faf5f352f109df86955.1604336791.git.mh12gx2825@gmail.com>
+References: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d644879c4cac32a7cbdbbeebc97c98efd421e17f.1604336791.git.mh12gx2825@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Nov 2020 08:00:37 -0800, trix@redhat.com wrote:
-> A semicolon is not needed after a switch statement.
+General code indentation and alignment changes such as replace spaces
+by tabs or align function arguments as per the coding style
+guidelines. Issue reported by checkpatch script.
 
-Applied to
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c |  2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c |  2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 10 +++++-----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+index e5d29dee0c88..136270e4af7b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+@@ -45,7 +45,7 @@
+ #define mmUVD_SCRATCH9_INTERNAL_OFFSET				0xc01d
+ 
+ #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x1e1
+-#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x5a6
++#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x5a6
+ #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x5a7
+ #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x1e2
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+index 0f1d3ef8baa7..4094718ae27a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+@@ -45,7 +45,7 @@
+ 
+ #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x431
+ #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x3b4
+-#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x3b5
++#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x3b5
+ #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x25c
+ 
+ #define VCN25_MAX_HW_INSTANCES_ARCTURUS			2
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+index e074f7ed388c..13e511d77bb1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -44,10 +44,10 @@
+ 
+ #define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x431
+ #define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x3b4
+-#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x3b5
++#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET		0x3b5
+ #define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x25c
+ 
+-#define VCN_INSTANCES_SIENNA_CICHLID	 				2
++#define VCN_INSTANCES_SIENNA_CICHLID				2
+ 
+ static int amdgpu_ih_clientid_vcns[] = {
+ 	SOC15_IH_CLIENTID_VCN,
+@@ -55,8 +55,8 @@ static int amdgpu_ih_clientid_vcns[] = {
+ };
+ 
+ static int amdgpu_ucode_id_vcns[] = {
+-       AMDGPU_UCODE_ID_VCN,
+-       AMDGPU_UCODE_ID_VCN1
++		AMDGPU_UCODE_ID_VCN,
++		AMDGPU_UCODE_ID_VCN1
+ };
+ 
+ static int vcn_v3_0_start_sriov(struct amdgpu_device *adev);
+@@ -1371,7 +1371,7 @@ static int vcn_v3_0_start_sriov(struct amdgpu_device *adev)
+ 	}
+ 
+ 	/* Update init table header in memory */
+-        size = sizeof(struct mmsch_v3_0_init_header);
++	size = sizeof(struct mmsch_v3_0_init_header);
+ 	table_loc = (uint32_t *)table->cpu_addr;
+ 	memcpy((void *)table_loc, &header, size);
+ 
+-- 
+2.25.1
 
-Thanks!
-
-[1/1] ASoC: bcm2835-i2s: remove unneeded semicolon
-      commit: 46713ed258695e2de00ab2738160f89220c0a976
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
