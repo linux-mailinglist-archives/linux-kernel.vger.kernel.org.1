@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CA02A34AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9712A34B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 20:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgKBT6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 14:58:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S1727154AbgKBT6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 14:58:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726360AbgKBT6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 14:58:07 -0500
+        id S1727093AbgKBT6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 14:58:09 -0500
 Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38F11208B6;
-        Mon,  2 Nov 2020 19:58:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D26422268;
+        Mon,  2 Nov 2020 19:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604347087;
-        bh=tw9J3svwWbXq+FJVS2k/2mfpBb+43r+MuLNJjGNiPbU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BNqHu7Av/nrYfBNdywykbvsk53Gw3JEQDazxZObt0yXqRYbgKpfiMMrh/tr7wFaeD
-         a3uCy0vceQfOmDzbIk6Q0WWQbyj6T+nl/S438GpkjBBWOZva2DT8cp0f11NCKNiDyl
-         2ekT1h0Sg43WSoH20WrU1a8ze3LAvPekEsUkwHdw=
+        s=default; t=1604347088;
+        bh=ejE9iILqVYTShF72EFQ6/LSqxfheCsrQNtzmn9GbvXM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YToVwpXDU+K++OZA0B0sPbp8TERyKc+2KQjbvx+ssfc7X+G5cSfa/qJZdBBXVrSzD
+         TTTbXwGZ9m3KSYFj+pGNzS+mdVBpgpn9mKPOWn2mEiEpIcPEkcNIAv8Ih3gTWtIVRO
+         6lo0HtewBq02ihBC0gWi65pThKeokWYktIB1cgH8=
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     SW_Drivers@habana.ai
-Subject: [PATCH] habanalabs: don't init vm module if no MMU
-Date:   Mon,  2 Nov 2020 21:57:57 +0200
-Message-Id: <20201102195802.10608-1-ogabbay@kernel.org>
+Subject: [PATCH] habanalabs: minimize prints when everything is fine
+Date:   Mon,  2 Nov 2020 21:57:58 +0200
+Message-Id: <20201102195802.10608-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201102195802.10608-1-ogabbay@kernel.org>
+References: <20201102195802.10608-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case we are running without MMU enabled (debug mode), no need to
-initialize the VM module in the driver.
+No need to print when the driver starts to initialize the H/W. Drivers
+should be silent when everything is OK.
 
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/memory.c | 33 +++++++++++--------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 2 --
+ drivers/misc/habanalabs/goya/goya.c   | 2 --
+ 2 files changed, 4 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 84227819e4d1..75dd18771868 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -1685,27 +1685,19 @@ int hl_vm_ctx_init(struct hl_ctx *ctx)
- 	 *   In case of DRAM mapping, the returned address is the physical
- 	 *   address of the memory related to the given handle.
- 	 */
--	if (ctx->hdev->mmu_enable) {
--		dram_range_start = prop->dmmu.start_addr;
--		dram_range_end = prop->dmmu.end_addr;
--		host_range_start = prop->pmmu.start_addr;
--		host_range_end = prop->pmmu.end_addr;
--		host_huge_range_start = prop->pmmu_huge.start_addr;
--		host_huge_range_end = prop->pmmu_huge.end_addr;
--	} else {
--		dram_range_start = prop->dram_user_base_address;
--		dram_range_end = prop->dram_end_address;
--		host_range_start = prop->dram_user_base_address;
--		host_range_end = prop->dram_end_address;
--		host_huge_range_start = prop->dram_user_base_address;
--		host_huge_range_end = prop->dram_end_address;
--	}
-+	if (!ctx->hdev->mmu_enable)
-+		return 0;
-+
-+	dram_range_start = prop->dmmu.start_addr;
-+	dram_range_end = prop->dmmu.end_addr;
-+	host_range_start = prop->pmmu.start_addr;
-+	host_range_end = prop->pmmu.end_addr;
-+	host_huge_range_start = prop->pmmu_huge.start_addr;
-+	host_huge_range_end = prop->pmmu_huge.end_addr;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 2910f427c716..9d9d22c4452c 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -2947,8 +2947,6 @@ static int gaudi_hw_init(struct hl_device *hdev)
+ {
+ 	int rc;
  
- 	return vm_ctx_init_with_ranges(ctx, host_range_start, host_range_end,
--					host_huge_range_start,
--					host_huge_range_end,
--					dram_range_start,
--					dram_range_end);
-+				host_huge_range_start, host_huge_range_end,
-+				dram_range_start, dram_range_end);
- }
+-	dev_info(hdev->dev, "Starting initialization of H/W\n");
+-
+ 	gaudi_pre_hw_init(hdev);
  
- /*
-@@ -1737,6 +1729,9 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx)
- 	struct hlist_node *tmp_node;
- 	int i;
+ 	gaudi_init_pci_dma_qmans(hdev);
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 5db52064ed9e..f41fe748f1ca 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -2505,8 +2505,6 @@ static int goya_hw_init(struct hl_device *hdev)
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+ 	int rc;
  
-+	if (!ctx->hdev->mmu_enable)
-+		return;
-+
- 	hl_debugfs_remove_ctx_mem_hash(hdev, ctx);
+-	dev_info(hdev->dev, "Starting initialization of H/W\n");
+-
+ 	/* Perform read from the device to make sure device is up */
+ 	RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
  
- 	/*
 -- 
 2.17.1
 
