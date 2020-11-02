@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B932A2571
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F4E2A2573
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Nov 2020 08:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgKBHlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 02:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727802AbgKBHlw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 02:41:52 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE330C0617A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Nov 2020 23:41:50 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id 32so11791634otm.3
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:41:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kj3U6hFnTQIkwWsatUBxJ+UhrIPY0z25L1oLVmranbg=;
-        b=LetsDsvfKHNkVfZ3AhwrmT7FFjpwbIEiRHTnmKhRuw2Sgm4P41xg7xB42Kc4ArV+5v
-         QY9TxC1j79dAlliUOulxuwyteQJsugki+38KmqpCFjXPViXwp+hUTjJXNLnX3nirUd7d
-         3IKLk6OLqlHTEkiss7qkgA0y9EJfitThloVQI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kj3U6hFnTQIkwWsatUBxJ+UhrIPY0z25L1oLVmranbg=;
-        b=hbZDDOj3CxrDupG5TzqMHeuB9mQECyKjLv3M8pTWhaAHObekIKzLgyeiFH3TgnL5TA
-         2/6TkCOkJ4+vPX7hk/0J8PJwkuM6BZvS0BFA1U8DZN0V3oFk2bWGD4XeTipNBtvDYL+4
-         MDwPq8LBGUQG6gAmqABez8joqkCmKNvUxTSOibnAlxQkryTw6vgHdL3vhl+5HWgj0/UG
-         sL2OQZO7n8TVSHHt4QKuBWmnpYQSgqGEbOJyOFDO1ItttstYeYgIokmlRiNqVLMht1dS
-         F9pk7PIrhf9ZzxrTbh4STUk1AU40hLx/me1voPQOQGV3qFkDlBSNvleOtdhAtoxOEOmm
-         0q5w==
-X-Gm-Message-State: AOAM533Doe20na38mB8RIM39J5MGSmb+r+XjnIvFbFMUE8O8J3RnZmjV
-        JQWWi53NGHWJDO69W0vpfSERfUOd8Iy7rA==
-X-Google-Smtp-Source: ABdhPJwecUd8pmbR5EcWm+a5EIQ9nZW5hFo/HU3Yv2JMLYLxO7E4j1ucmXzSaphYldqWgTxHa7Lsdg==
-X-Received: by 2002:a9d:2389:: with SMTP id t9mr10366695otb.329.1604302909996;
-        Sun, 01 Nov 2020 23:41:49 -0800 (PST)
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com. [209.85.161.45])
-        by smtp.gmail.com with ESMTPSA id v11sm3498070otj.73.2020.11.01.23.41.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Nov 2020 23:41:49 -0800 (PST)
-Received: by mail-oo1-f45.google.com with SMTP id p73so3139415oop.7
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Nov 2020 23:41:49 -0800 (PST)
-X-Received: by 2002:a4a:c4c7:: with SMTP id g7mr10844459ooq.50.1604302908566;
- Sun, 01 Nov 2020 23:41:48 -0800 (PST)
+        id S1728054AbgKBHnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 02:43:07 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:12166 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727689AbgKBHnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 02:43:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604302986; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=JcW6i+Qb4VgBJvdLIWaHbAHYP0+oYiGUqaNaSh4Fg0Q=; b=TvkVRd1M0xwJnUa1lqFkZJJzmoCQ3yJCvDSFV+5yKT1AkLMkY8JsUZ3jruf9P/WewLgyIfNR
+ UDIc1bYTacvbj+gDb7uXy3sj0O3SF6aFa2beyGCuJ3x2kvYA/oEGMfcxrmBFkCfrjGwC8a1Q
+ 5WZrMe9xR+ApRPE18D/tOcNOZIw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f9fb88803535904a02428dd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Nov 2020 07:43:04
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31978C43391; Mon,  2 Nov 2020 07:43:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 194D5C433C6;
+        Mon,  2 Nov 2020 07:42:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 194D5C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org, ath10k@lists.infradead.org
+Subject: Re: [PATCH v5 2/2] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module
+References: <20201031003845.41137-1-john.stultz@linaro.org>
+        <20201031003845.41137-2-john.stultz@linaro.org>
+Date:   Mon, 02 Nov 2020 09:42:55 +0200
+In-Reply-To: <20201031003845.41137-2-john.stultz@linaro.org> (John Stultz's
+        message of "Sat, 31 Oct 2020 00:38:45 +0000")
+Message-ID: <87imaouruo.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <202011020817.nhpgLbGq-lkp@intel.com>
-In-Reply-To: <202011020817.nhpgLbGq-lkp@intel.com>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Mon, 2 Nov 2020 16:41:36 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MXTUJ31jpif5ucZs6rPDhuCZrqUOjVpzZAHqy-Hg71ByA@mail.gmail.com>
-Message-ID: <CAPBb6MXTUJ31jpif5ucZs6rPDhuCZrqUOjVpzZAHqy-Hg71ByA@mail.gmail.com>
-Subject: Re: drivers/remoteproc/mtk_scp.c:645:34: warning: unused variable 'mtk_scp_of_match'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 9:09 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Alexandre,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
-> commit: cbd2dca74926c0e4610c40923cc786b732c9e8ef remoteproc: scp: add COMPILE_TEST dependency
-> date:   5 weeks ago
-> config: x86_64-randconfig-a005-20201102 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 235dfcf70abca65dba5d80f1a42d1485bab8980c)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cbd2dca74926c0e4610c40923cc786b732c9e8ef
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout cbd2dca74926c0e4610c40923cc786b732c9e8ef
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/remoteproc/mtk_scp.c:645:34: warning: unused variable 'mtk_scp_of_match' [-Wunused-const-variable]
->    static const struct of_device_id mtk_scp_of_match[] = {
->                                     ^
->    1 warning generated.
->
-> vim +/mtk_scp_of_match +645 drivers/remoteproc/mtk_scp.c
++ ath10k list
 
-This happens when COMPILE_TEST is set but not OF_CONFIG. Sent a fix
-for this: https://lkml.org/lkml/2020/11/2/102
+John Stultz <john.stultz@linaro.org> writes:
+
+> Allow the qcom_scm driver to be loadable as a permenent module.
+>
+> This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
+> ensure that drivers that call into the qcom_scm driver are
+> also built as modules. While not ideal in some cases its the
+> only safe way I can find to avoid build errors without having
+> those drivers select QCOM_SCM and have to force it on (as
+> QCOM_SCM=n can be valid for those drivers).
+>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: Maulik Shah <mkshah@codeaurora.org>
+> Cc: Lina Iyer <ilina@codeaurora.org>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-gpio@vger.kernel.org
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+> v3:
+> * Fix __arm_smccc_smc build issue reported by
+>   kernel test robot <lkp@intel.com>
+> v4:
+> * Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
+>   config that requires it.
+> v5:
+> * Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
+> ---
+>  drivers/firmware/Kconfig                | 4 ++--
+>  drivers/firmware/Makefile               | 3 ++-
+>  drivers/firmware/qcom_scm.c             | 4 ++++
+>  drivers/iommu/Kconfig                   | 2 ++
+>  drivers/net/wireless/ath/ath10k/Kconfig | 1 +
+>  5 files changed, 11 insertions(+), 3 deletions(-)
+
+For ath10k part:
+
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
