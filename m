@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912D52A4D92
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2673D2A4D9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgKCRyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        id S1728784AbgKCR5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727857AbgKCRyY (ORCPT
+        with ESMTP id S1725892AbgKCR5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:54:24 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F410BC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:54:23 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id i21so14839777qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:54:23 -0800 (PST)
+        Tue, 3 Nov 2020 12:57:08 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E47FC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:57:08 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id d125so3893535vkh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:57:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gQIdH+KYMzHor18vx9OZ/2FWWOokJq94zc6XYSXneW0=;
-        b=DpKEK4aB/HIU11tArZycrVOChpZNTGD38KrzZpwB5kFti7K3eOMs9D9aPUFn3Uj44c
-         qrLBR2lDtk/ORa1oOhdnrMbCizV2xKCvjfgEQu7Afd125n+/ABz0aMIoL90AZajKPQO/
-         i3fK5Ob1fcokwezA1t0bDBBh0510gobzD0bag=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cmd/vHU2XpWN9RrkikP/uwzcHGztQHriQenbhifoFws=;
+        b=W0iZ2ViLtWiGtTh4tYyeDJSlRjuWrEiPeo9pyaiaeroAkDmBc1BIpf8HUF6uOc3PEv
+         L80UWx65jnFxKYYMS2SWdtr5iLvO3OjvhUduWd0TrBSB93wqKTMdoZBBIoBmcoTurlUa
+         uyLfEY5nW5an1PxqHpGCXvwavubfMieQmbi19LkWDEwqY9B39nMXnUxASOljucw3uQH4
+         VUdDQGs4YMuI/aI2731nXHL7al3f4uWSCy2/uy+j5yxVMnkDw/sJSmOR6SINVeOjQTWN
+         5wQKJy6ogYLCsidNhzl2MTBYahMH+niyTiYdeerSnzuOvXOEcI9bICh6HvlEI9hIpY3R
+         pErA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gQIdH+KYMzHor18vx9OZ/2FWWOokJq94zc6XYSXneW0=;
-        b=nHNfrayOKElkTaU4pnZniW+s4FczRE8iDFtGUtc4vn67BMYCjAFAR3BbBvUV9PyoI9
-         LarEQ+sM496LO+s5c8oqoPvM/KzVpigpQoO/kH+acSc4zS5VFXTBaTt02i9OXexsnoYc
-         7D1/0s19Cihxi16vItS7jYG4uYwoOP96ilhUKNcUyPVA4NYz6uzeMMUjAsGp/12K8/j9
-         FJPS3stX3oBtZ7CkBdZqJUnz+5X7LgWkQSoJj4tHbNpDtPE+4kVUZTutYOjw46jKBOuS
-         /SdoPRUtEgmxOG3aMMl4CqRWv2Tm/KGD+x3ojqxpOECAp+jaqbaX9+9W3LVDVm9vaO5U
-         Vm9g==
-X-Gm-Message-State: AOAM530prgKLpIDOXqiFf3OO+lx0fFoNIT4w1wKL62og7aXIKmJqf2Jf
-        mFP8XI7wzw9A3f4r+9KvCQR6Ig==
-X-Google-Smtp-Source: ABdhPJxtfTigGbXqptLlX2dIbWdfb56HQCOG0dST1YxH8ZsXbcXyH2ofqKjbXP2DpAFgXD7H502fhQ==
-X-Received: by 2002:a37:315:: with SMTP id 21mr21262307qkd.330.1604426063190;
-        Tue, 03 Nov 2020 09:54:23 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id v206sm4234881qkb.114.2020.11.03.09.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 09:54:22 -0800 (PST)
-Date:   Tue, 3 Nov 2020 12:54:22 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201103175422.GB1310511@google.com>
-References: <20201029165019.14218-1-urezki@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cmd/vHU2XpWN9RrkikP/uwzcHGztQHriQenbhifoFws=;
+        b=nMuEbmvzT1FVPn6uo7b/k3UCCVZBo7e4PjaUVL50d5BiweG8Vpn6aDpcLx2egaUUBR
+         WHL/kgoG/RXQH1/aIlDbbAI2vtv2KNGa7+dMSpQrQ1qlx2Cytyqc3by27Yk7vnaVuHh3
+         2kO3o+dX291U78PWAkdni1u60qJ84Wn2LqtkBHuV35fo+khPwXP/vNs0R03NduSCxF6u
+         /UupXpFB5NYjOilRw2laPiKqt+Ng0rFfVI4cB2xW2nh+Yo9L4pRwiIi7A/tVNEQ8Tglh
+         xKtW5S2rbAPVKt4XI1wQilKdv8IsQDFrVUWUOK0LXdcYvNXux9pNJNPVqkwBIwGEoIlx
+         zuQA==
+X-Gm-Message-State: AOAM531nESSMgrzHDaU3WeY3CWSJtlR9qFAgtlLMD3iHOyB4l6fFIWyE
+        kHpLNl7PhF71EUxvJaedc4K10tODOx0=
+X-Google-Smtp-Source: ABdhPJzcU9Bi4xq+LAmfqZEujvopElG4dTVi+c8OS7zSueMNWL1iAQhUdj0hYL1IrgspPCPSw+GOcg==
+X-Received: by 2002:a1f:5682:: with SMTP id k124mr1885265vkb.24.1604426226829;
+        Tue, 03 Nov 2020 09:57:06 -0800 (PST)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id v26sm1057691vsq.20.2020.11.03.09.57.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 09:57:03 -0800 (PST)
+Received: by mail-vs1-f48.google.com with SMTP id z123so5231965vsb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:57:02 -0800 (PST)
+X-Received: by 2002:a67:c981:: with SMTP id y1mr17877861vsk.14.1604426222523;
+ Tue, 03 Nov 2020 09:57:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029165019.14218-1-urezki@gmail.com>
+References: <BYAPR18MB2679A2F3A2CE18CFA2427EEDC5110@BYAPR18MB2679.namprd18.prod.outlook.com>
+In-Reply-To: <BYAPR18MB2679A2F3A2CE18CFA2427EEDC5110@BYAPR18MB2679.namprd18.prod.outlook.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 3 Nov 2020 12:56:25 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScwuWvbdZgAyVSzGnqsF=EzOMYwj4RbwjxCFoAQKG19OQ@mail.gmail.com>
+Message-ID: <CA+FuTScwuWvbdZgAyVSzGnqsF=EzOMYwj4RbwjxCFoAQKG19OQ@mail.gmail.com>
+Subject: Re: [net-next PATCH 2/3] octeontx2-af: Add devlink health reporters
+ for NPA
+To:     George Cherian <gcherian@marvell.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> The current memmory-allocation interface presents to following
-> difficulties that this patch is designed to overcome
-[...]
-> ---
->  kernel/rcu/tree.c | 109 ++++++++++++++++++++++++++++------------------
->  1 file changed, 66 insertions(+), 43 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 06895ef85d69..f2da2a1cc716 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -177,7 +177,7 @@ module_param(rcu_unlock_delay, int, 0444);
->   * per-CPU. Object size is equal to one page. This value
->   * can be changed at boot time.
->   */
-> -static int rcu_min_cached_objs = 2;
-> +static int rcu_min_cached_objs = 5;
->  module_param(rcu_min_cached_objs, int, 0444);
->  
->  /* Retrieve RCU kthreads priority for rcutorture */
-> @@ -3084,6 +3084,9 @@ struct kfree_rcu_cpu_work {
->   *	In order to save some per-cpu space the list is singular.
->   *	Even though it is lockless an access has to be protected by the
->   *	per-cpu lock.
-> + * @page_cache_work: A work to refill the cache when it is empty
-> + * @work_in_progress: Indicates that page_cache_work is running
-> + * @hrtimer: A hrtimer for scheduling a page_cache_work
->   * @nr_bkv_objs: number of allocated objects at @bkvcache.
->   *
->   * This is a per-CPU structure.  The reason that it is not included in
-> @@ -3100,6 +3103,11 @@ struct kfree_rcu_cpu {
->  	bool monitor_todo;
->  	bool initialized;
->  	int count;
-> +
-> +	struct work_struct page_cache_work;
-> +	atomic_t work_in_progress;
+On Tue, Nov 3, 2020 at 12:43 PM George Cherian <gcherian@marvell.com> wrote:
+>
+> Hi Willem,
+>
+>
+> > -----Original Message-----
+> > From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> > Sent: Tuesday, November 3, 2020 7:21 PM
+> > To: George Cherian <gcherian@marvell.com>
+> > Cc: Network Development <netdev@vger.kernel.org>; linux-kernel <linux-
+> > kernel@vger.kernel.org>; Jakub Kicinski <kuba@kernel.org>; David Miller
+> > <davem@davemloft.net>; Sunil Kovvuri Goutham
+> > <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
+> > Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org
+> > Subject: [EXT] Re: [net-next PATCH 2/3] octeontx2-af: Add devlink health
+> > reporters for NPA
+> >
+> > External Email
+> >
+> > ----------------------------------------------------------------------
+> > > > >  static int rvu_devlink_info_get(struct devlink *devlink, struct
+> > > > devlink_info_req *req,
+> > > > >                                 struct netlink_ext_ack *extack)  { @@
+> > > > > -53,7 +483,8 @@ int rvu_register_dl(struct rvu *rvu)
+> > > > >         rvu_dl->dl = dl;
+> > > > >         rvu_dl->rvu = rvu;
+> > > > >         rvu->rvu_dl = rvu_dl;
+> > > > > -       return 0;
+> > > > > +
+> > > > > +       return rvu_health_reporters_create(rvu);
+> > > >
+> > > > when would this be called with rvu->rvu_dl == NULL?
+> > >
+> > > During initialization.
+> >
+> > This is the only caller, and it is only reached if rvu_dl is non-zero.
+>
+> Did you mean to ask, where is it de-initialized?
+> If so, it should be done in rvu_unregister_dl() after freeing rvu_dl.
 
-Does it need to be atomic? run_page_cache_work() is only called under a lock.
-You can use xchg() there. And when you do the atomic_set, you can use
-WRITE_ONCE as it is a data-race.
-
-> @@ -4449,24 +4482,14 @@ static void __init kfree_rcu_batch_init(void)
->  
->  	for_each_possible_cpu(cpu) {
->  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> -		struct kvfree_rcu_bulk_data *bnode;
->  
->  		for (i = 0; i < KFREE_N_BATCHES; i++) {
->  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
->  			krcp->krw_arr[i].krcp = krcp;
->  		}
->  
-> -		for (i = 0; i < rcu_min_cached_objs; i++) {
-> -			bnode = (struct kvfree_rcu_bulk_data *)
-> -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> -
-> -			if (bnode)
-> -				put_cached_bnode(krcp, bnode);
-> -			else
-> -				pr_err("Failed to preallocate for %d CPU!\n", cpu);
-> -		}
-> -
->  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> +		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
->  		krcp->initialized = true;
-
-During initialization, is it not better to still pre-allocate? That way you
-don't have to wait to get into a situation where you need to initially
-allocate.
-
-AFAICS after the above line deletions, the bulk pages are initially empty.
-
-thanks,
-
- - Joel
-
-
->  	}
->  	if (register_shrinker(&kfree_rcu_shrinker))
-> -- 
-> 2.20.1
-> 
+No, I meant that rvu_health_reporters_create does not need an
+!rvu->rvu_dl precondition test, as the only callers calls with with a
+non-zero rvu_dl.
