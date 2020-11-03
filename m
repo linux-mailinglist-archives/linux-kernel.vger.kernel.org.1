@@ -2,181 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECC52A48E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4314C2A490C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgKCPEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbgKCPDP (ORCPT
+        id S1728103AbgKCPL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:11:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728065AbgKCPK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:03:15 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200F9C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:03:15 -0800 (PST)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0CC8D1F456FD;
-        Tue,  3 Nov 2020 15:03:13 +0000 (GMT)
-Date:   Tue, 3 Nov 2020 16:03:09 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Shivamurthy Shastri <sshivamurthy@micron.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: spinand: micron: add support for MT29F2G01AAAED
-Message-ID: <20201103160309.772f3538@collabora.com>
-In-Reply-To: <20201103145901.29372-1-nthirumalesha7@gmail.com>
-References: <20201103145901.29372-1-nthirumalesha7@gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 3 Nov 2020 10:10:26 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3F2TF7143012;
+        Tue, 3 Nov 2020 10:10:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=if4mpDunq58A+Ex+FveQIETr6THaLh3pzBLk1Trj8lo=;
+ b=I3QPN5FeZKzjyYql0Ad/J3GYudbIbkVjPZyDW7+DQ7xzmwHraeY8tPmIllYTiD6EINzp
+ 2RBbLMrsJQNfe6JB8ap6STSQriScnUwj1wKwa8EcJuPj2DbALQuxLcvZl0pWBqsdWDbv
+ Q1E6sLvs2R5CzpCvsEu3JccKABqTtEVEQGWk0cMAmgHbA2kdbVZEMR+dgLKteToH4Sqh
+ pnY3ZaJm10D89r7sTBM2x1SI5SnUJxdhKDeH4ttfOfnAc5cwSIrsfVoSR1957gUnaSDi
+ iuF12nB0XfFVXDiNRGUoHa/Uo8D1dIXfwtaHXGWL5/5eeliKPIq60DsrO49NsusFtGDY yQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34k86cumpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 10:10:12 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A3F2nQ2002400;
+        Tue, 3 Nov 2020 10:09:35 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34k86cuka4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 10:09:35 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A3Elf1x017678;
+        Tue, 3 Nov 2020 15:03:17 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 34h01qsqqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 15:03:17 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A3F3FKL64553466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Nov 2020 15:03:15 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CBE7AE053;
+        Tue,  3 Nov 2020 15:03:15 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7D48AE045;
+        Tue,  3 Nov 2020 15:03:14 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  3 Nov 2020 15:03:14 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        oleg@redhat.com, tglx@linutronix.de,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
+References: <yt9do8ke4seh.fsf@linux.ibm.com>
+        <75a238c7-fc37-21dd-bd89-d4c87a206eaa@kernel.dk>
+Date:   Tue, 03 Nov 2020 16:03:09 +0100
+In-Reply-To: <75a238c7-fc37-21dd-bd89-d4c87a206eaa@kernel.dk> (Jens Axboe's
+        message of "Tue, 3 Nov 2020 07:09:06 -0700")
+Message-ID: <yt9dk0v21o0i.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  3 Nov 2020 22:59:01 +0800
-Thirumalesha Narasimhappa <nthirumalesha7@gmail.com> wrote:
+Hi Jens,
 
-> The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
-> ECC
-> 
-> Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
-> ---
-> 
-> v5: As per the review comments, the changes were reverted to the v2,
-> except the MT29F2G01AAAED device related (including the review comments)
+Jens Axboe <axboe@kernel.dk> writes:
 
-I don't think that's what Miquel suggested, especially not for the
-{write,update,write}_cache_variants helpers.
-
-> 
-> v4: Split patch into two parts,
->     1. Generalise the oob structure name & function names as show in v3
->     2. Add support for MT29F2G01AAAED device
->        a. Add oob section check in micron_ooblayout_free function
->        b. Rename mt29f2g01aaaed_* to generic name micron_4_*
-> 
-> v3: As per the review comments,
->      1. Renamed read_cache_variants as quadio_read_cache_variants,
-> write_cache_variants as
->       x4_write_cache_variants/x1_write_cache_variants,
-> update_cache_variants as
->       x4_update_cache_variants/x1_update_cache_variants,
-> read_cache_variants as x4_read_cache_variants
->      2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
-> mt29f2g01aaaed_ooblayout as
->       micron_interleaved_ooblayout
->      3. Generalized page size based oob section check in
-> mt29f2g01aaaed_ooblayout_ecc function
->       and separate case check for two bytes BBM reserved in
-> mt29f2g01aaaed_ooblayout_free function
->      4. Removed mt29f2g01aaaed_ecc_get_status function &
-> MICRON_STATUS_ECC_1TO4_BITFLIPS
-> 
-> v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
-> errors
-> 
-> v1: Add support for Micron SPI Nand device MT29F2G01AAAED
-> 
->  drivers/mtd/nand/spi/micron.c | 64 +++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-> index 5d370cfcdaaa..0b1e48d5c9d4 100644
-> --- a/drivers/mtd/nand/spi/micron.c
-> +++ b/drivers/mtd/nand/spi/micron.c
-> @@ -44,6 +44,19 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
->  		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+> On 11/3/20 4:00 AM, Sven Schnelle wrote:
+>> Hi Jens,
+>> 
+>> Heiko Carstens <hca () linux ! ibm ! com> writes:
+>> 
+>>> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
+>>>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
+>>>>
+>>>> Cc: linux-s390@vger.kernel.org
+>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>> ---
+>>>>
+>>>> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+>>>> for details:
+>>>>
+>>>> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+>>>>
+>>>> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+>>>> as that will enable a set of cleanups once all of them support it. I'm
+>>>> happy carrying this patch if need be, or it can be funelled through the
+>>>> arch tree. Let me know.
+>>>>
+>>>>  arch/s390/include/asm/thread_info.h | 2 ++
+>>>>  arch/s390/kernel/entry.S            | 7 ++++++-
+>>>>  2 files changed, 8 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
+>>>> index 13a04fcf7762..0045341ade48 100644
+>>>> --- a/arch/s390/include/asm/thread_info.h
+>>>> +++ b/arch/s390/include/asm/thread_info.h
+>>>> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
+>>>>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
+>>>>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
+>>>>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
+>>>> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
+>>>>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
+>>>>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
+>>>>  
+>>>> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
+>>>>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
+>>>>  
+>>>>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
+>>>> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
+>>>>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
+>>>>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
+>>>>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
+>>>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+>>>> index 86235919c2d1..a30d891e8045 100644
+>>>> --- a/arch/s390/kernel/entry.S
+>>>> +++ b/arch/s390/kernel/entry.S
+>>>> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
+>>>>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
+>>>>  
+>>>>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
+>>>> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
+>>>> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
+>>>> +		   _TIF_NOTIFY_SIGNAL)
+>>>>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
+>>>>  		   _TIF_SYSCALL_TRACEPOINT)
+>>>>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
+>>>> @@ -463,6 +464,8 @@ ENTRY(system_call)
+>>>>  #endif
+>>>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+>>>>  	jo	.Lsysc_syscall_restart
+>>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>>>> +	jo	.Lsysc_sigpending
+>>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>>>>  	jo	.Lsysc_sigpending
+>>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>>>> @@ -857,6 +860,8 @@ ENTRY(io_int_handler)
+>>>>  #endif
+>>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>>>>  	jo	.Lio_sigpending
+>>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>>>> +	jo	.Lio_sigpending
+>>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>>>>  	jo	.Lio_notify_resume
+>>>>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
+>>>
+>>> (full quote so you can make sense of the patch below).
+>>>
+>>> Please merge the patch below into this one. With that:
+>>>
+>>> Acked-by: Heiko Carstens <hca@linux.ibm.com>
+>>>
+>>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+>>> index a30d891e8045..31f16d903ef3 100644
+>>> --- a/arch/s390/kernel/entry.S
+>>> +++ b/arch/s390/kernel/entry.S
+>>> @@ -464,9 +464,7 @@ ENTRY(system_call)
+>>>  #endif
+>>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+>>>  	jo	.Lsysc_syscall_restart
+>>> -	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>>> -	jo	.Lsysc_sigpending
+>>> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>>> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
+>>>  	jo	.Lsysc_sigpending
+>> 
+>> We need to also change the jo to jnz - in combination with tm, jo means
+>> 'jump if all tested bits are set' while jnz means 'jump if at least one
+>> bit is set'
+>
+> Ah thanks, good catch. And you also caught the braino in signal.c, here's
+> the end result:
+>
+>
+> commit 0eb7d372d5319970bd15f2dbc18264ea576214d4
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Fri Oct 9 15:34:12 2020 -0600
+>
+>     s390: add support for TIF_NOTIFY_SIGNAL
+>     
+>     Wire up TIF_NOTIFY_SIGNAL handling for s390.
+>     
+>     Cc: linux-s390@vger.kernel.org
+>     Acked-by: Heiko Carstens <hca@linux.ibm.com>
+>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>
+> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
+> index 13a04fcf7762..0045341ade48 100644
+> --- a/arch/s390/include/asm/thread_info.h
+> +++ b/arch/s390/include/asm/thread_info.h
+> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
+>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
+>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
+>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
+> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
+>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
+>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
 >  
-> +/* Micron  MT29F2G01AAAED Device */
-> +static SPINAND_OP_VARIANTS(micron_4_read_cache_variants,
-> +			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> +			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-> +			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-> +			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(micron_4_write_cache_variants,
-> +			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(micron_4_update_cache_variants,
-> +			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> +
->  static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
->  				  struct mtd_oob_region *region)
->  {
-> @@ -74,6 +87,47 @@ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
->  	.free = micron_8_ooblayout_free,
->  };
+> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
+>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
 >  
-> +static int micron_4_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +				  struct mtd_oob_region *region)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +
-> +	if (section >= spinand->base.memorg.pagesize /
-> +			mtd->ecc_step_size)
-> +		return -ERANGE;
-> +
-> +	region->offset = (section * 16) + 8;
-> +	region->length = 8;
-> +
-> +	return 0;
-> +}
-> +
-> +static int micron_4_ooblayout_free(struct mtd_info *mtd, int section,
-> +				   struct mtd_oob_region *region)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +
-> +	if (section >= spinand->base.memorg.pagesize /
-> +			mtd->ecc_step_size)
-> +		return -ERANGE;
-> +
-> +	if (section) {
-> +		region->offset = 16 * section;
-> +		region->length = 8;
-> +	} else {
-> +		/* section 0 has two bytes reserved for the BBM */
-> +		region->offset = 2;
-> +		region->length = 6;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct mtd_ooblayout_ops micron_4_ooblayout = {
-> +	.ecc = micron_4_ooblayout_ecc,
-> +	.free = micron_4_ooblayout_free,
-> +};
-> +
->  static int micron_select_target(struct spinand_device *spinand,
->  				unsigned int target)
->  {
-> @@ -217,6 +271,16 @@ static const struct spinand_info micron_spinand_table[] = {
->  		     SPINAND_ECCINFO(&micron_8_ooblayout,
->  				     micron_8_ecc_get_status),
->  		     SPINAND_SELECT_TARGET(micron_select_target)),
-> +	/* M69A 2Gb 3.3V */
-> +	SPINAND_INFO("MT29F2G01AAAED",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
-> +		     NAND_MEMORG(1, 2048, 64, 64, 2048, 80, 2, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&micron_4_read_cache_variants,
-> +					      &micron_4_write_cache_variants,
-> +					      &micron_4_update_cache_variants),
-> +		     0,
-> +		     SPINAND_ECCINFO(&micron_4_ooblayout, NULL)),
->  };
+>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
+> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
+>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
+>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
+> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+> index 86235919c2d1..19a89f292290 100644
+> --- a/arch/s390/kernel/entry.S
+> +++ b/arch/s390/kernel/entry.S
+> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
+>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
 >  
->  static int micron_spinand_init(struct spinand_device *spinand)
+>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
+> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
+> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
+> +		   _TIF_NOTIFY_SIGNAL)
+>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
+>  		   _TIF_SYSCALL_TRACEPOINT)
+>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
+> @@ -463,8 +464,8 @@ ENTRY(system_call)
+>  #endif
+>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+>  	jo	.Lsysc_syscall_restart
+> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+> -	jo	.Lsysc_sigpending
+> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
+> +	jnz	.Lsysc_sigpending
+>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>  	jo	.Lsysc_notify_resume
+>  	TSTMSK	__LC_CPU_FLAGS,(_CIF_ASCE_PRIMARY|_CIF_ASCE_SECONDARY)
+> @@ -855,8 +856,8 @@ ENTRY(io_int_handler)
+>  	TSTMSK	__TI_flags(%r12),_TIF_PATCH_PENDING
+>  	jo	.Lio_patch_pending
+>  #endif
+> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+> -	jo	.Lio_sigpending
+> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
+> +	jnz	.Lio_sigpending
+>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>  	jo	.Lio_notify_resume
+>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
+> diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+> index 9e900a8977bd..b27b6c1f058d 100644
+> --- a/arch/s390/kernel/signal.c
+> +++ b/arch/s390/kernel/signal.c
+> @@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
+>  	current->thread.system_call =
+>  		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
+>  
+> -	if (get_signal(&ksig)) {
+> +	if (test_thread_flag(TIF_SIGPENDING) && get_signal(&ksig)) {
+>  		/* Whee!  Actually deliver the signal.  */
+>  		if (current->thread.system_call) {
+>  			regs->int_code = current->thread.system_call;
 
+Looks good, feel free to add my Acked-by.
+
+Thanks
+Sven
