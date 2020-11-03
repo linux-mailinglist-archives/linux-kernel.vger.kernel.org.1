@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407D2A40DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D9C2A40D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgKCJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:55:46 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:62001 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727470AbgKCJzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:55:45 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CQQC11G6dz9vBL6;
-        Tue,  3 Nov 2020 10:55:41 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id gMUBwbi-TI51; Tue,  3 Nov 2020 10:55:41 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CQQC109jtz9vBL4;
-        Tue,  3 Nov 2020 10:55:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 273D38B77E;
-        Tue,  3 Nov 2020 10:55:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BFsGvPi7rmNr; Tue,  3 Nov 2020 10:55:42 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 79F678B7BD;
-        Tue,  3 Nov 2020 10:55:41 +0100 (CET)
-Subject: Re: [RESEND PATCH] kernel/watchdog: Fix watchdog_allowed_mask not
- used warning
-To:     Santosh Sivaraj <santosh@fossix.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     pmladek@suse.com, bala24@linux.ibm.com,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20201103093235.655665-1-santosh@fossix.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <214be993-96ec-82b0-b841-c80f7e7faefb@csgroup.eu>
-Date:   Tue, 3 Nov 2020 10:55:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728048AbgKCJz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:55:27 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:39322 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgKCJzY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:55:24 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A39tD5n9015391, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A39tD5n9015391
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 3 Nov 2020 17:55:14 +0800
+Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Tue, 3 Nov 2020
+ 17:55:13 +0800
+From:   <rui_feng@realsil.com.cn>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Subject: [PATCH 7/8] misc: rtsx: Add hardware auto power off for RTS5261
+Date:   Tue, 3 Nov 2020 17:55:12 +0800
+Message-ID: <1604397312-2991-1-git-send-email-rui_feng@realsil.com.cn>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201103093235.655665-1-santosh@fossix.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.29.40.150]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rui Feng <rui_feng@realsil.com.cn>
 
+This patch enable hardware auto power off when card is removed.
 
-Le 03/11/2020 à 10:32, Santosh Sivaraj a écrit :
-> Define watchdog_allowed_mask only when SOFTLOCKUP_DETECTOR is enabled.
-> 
-> Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+---
+ drivers/misc/cardreader/rts5261.c | 9 +++++++++
+ include/linux/rtsx_pci.h          | 3 +++
+ 2 files changed, 12 insertions(+)
 
-I think maybe you should add a Fixes: tag (Towards https://github.com/linuxppc/linux/commit/7feeb9cd ?)
+diff --git a/drivers/misc/cardreader/rts5261.c b/drivers/misc/cardreader/rts5261.c
+index 0ef6b3e04a8d..2ada973a0f33 100644
+--- a/drivers/misc/cardreader/rts5261.c
++++ b/drivers/misc/cardreader/rts5261.c
+@@ -176,6 +176,8 @@ static int rts5261_card_power_on(struct rtsx_pcr *pcr, int card)
+ 	if (option->ocp_en)
+ 		rtsx_pci_enable_ocp(pcr);
+ 
++	rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
++		CFG_SD_POW_AUTO_PD, CFG_SD_POW_AUTO_PD);
+ 
+ 	rtsx_pci_write_register(pcr, RTS5261_LDO1_CFG1,
+ 			RTS5261_LDO1_TUNE_MASK, RTS5261_LDO1_33);
+@@ -303,6 +305,8 @@ static int rts5261_card_power_off(struct rtsx_pcr *pcr, int card)
+ 	err = rtsx_pci_write_register(pcr, RTS5261_LDO1233318_POW_CTL,
+ 				RTS5261_LDO_POWERON_MASK, 0);
+ 
++	rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
++		CFG_SD_POW_AUTO_PD, 0);
+ 	if (pcr->option.ocp_en)
+ 		rtsx_pci_disable_ocp(pcr);
+ 
+@@ -475,6 +479,7 @@ static void rts5261_init_from_cfg(struct rtsx_pcr *pcr)
+ static int rts5261_extra_init_hw(struct rtsx_pcr *pcr)
+ {
+ 	struct rtsx_cr_option *option = &pcr->option;
++	u32 val;
+ 
+ 	rtsx_pci_write_register(pcr, RTS5261_AUTOLOAD_CFG1,
+ 			CD_RESUME_EN_MASK, CD_RESUME_EN_MASK);
+@@ -489,6 +494,10 @@ static int rts5261_extra_init_hw(struct rtsx_pcr *pcr)
+ 			AUX_CLK_ACTIVE_SEL_MASK, MAC_CKSW_DONE);
+ 	rtsx_pci_write_register(pcr, L1SUB_CONFIG3, 0xFF, 0);
+ 
++	if (is_version_higher_than(pcr, PID_5261, IC_VER_B)) {
++		val = rtsx_pci_readl(pcr, RTSX_DUM_REG);
++		rtsx_pci_writel(pcr, RTSX_DUM_REG, val | 0x1);
++	}
+ 	rtsx_pci_write_register(pcr, RTS5261_AUTOLOAD_CFG4,
+ 			RTS5261_AUX_CLK_16M_EN, 0);
+ 
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index db249e8707f3..fcaadc7c9df1 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -82,6 +82,7 @@
+ #define   MS_OC_INT_EN			(1 << 23)
+ #define   SD_OC_INT_EN			(1 << 22)
+ 
++#define RTSX_DUM_REG			0x1C
+ 
+ /*
+  * macros for easy use
+@@ -1272,6 +1273,8 @@ struct rtsx_pcr {
+ #define PCI_PID(pcr)			((pcr)->pci->device)
+ #define is_version(pcr, pid, ver)				\
+ 	(CHK_PCI_PID(pcr, pid) && (pcr)->ic_version == (ver))
++#define is_version_higher_than(pcr, pid, ver)			\
++	(CHK_PCI_PID(pcr, pid) && (pcr)->ic_version > (ver))
+ #define pcr_dbg(pcr, fmt, arg...)				\
+ 	dev_dbg(&(pcr)->pci->dev, fmt, ##arg)
+ 
+-- 
+2.17.1
 
-And copy Thomas (tglx)
-
-Christophe
-
-> ---
-> 
-> Original patch is here:
-> https://lore.kernel.org/lkml/20190807014417.9418-1-santosh@fossix.org/
-> 
-> A similar patch was also sent by Balamuruhan and reviewed by Petr.
-> https://lkml.org/lkml/2020/8/20/1030
-> 
->   kernel/watchdog.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 5abb5b22ad13..71109065bd8e 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -44,8 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
->   int __read_mostly watchdog_thresh = 10;
->   static int __read_mostly nmi_watchdog_available;
->   
-> -static struct cpumask watchdog_allowed_mask __read_mostly;
-> -
->   struct cpumask watchdog_cpumask __read_mostly;
->   unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
->   
-> @@ -162,6 +160,8 @@ static void lockup_detector_update_enable(void)
->   int __read_mostly sysctl_softlockup_all_cpu_backtrace;
->   #endif
->   
-> +static struct cpumask watchdog_allowed_mask __read_mostly;
-> +
->   /* Global variables, exported for sysctl */
->   unsigned int __read_mostly softlockup_panic =
->   			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
-> 
