@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587F92A534C
+	by mail.lfdr.de (Postfix) with ESMTP id CFA292A534D
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733113AbgKCU7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
+        id S1733146AbgKCU7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733137AbgKCU7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:39 -0500
+        id S1732560AbgKCU7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3C882053B;
-        Tue,  3 Nov 2020 20:59:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25FA1223BF;
+        Tue,  3 Nov 2020 20:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437179;
-        bh=++ju2fKRxiCQv1EbNy1d6SkepNYAyD/77pNvAKt6BFU=;
+        s=default; t=1604437183;
+        bh=NGI8kfOtgD+B03FqUS/r+/N6XslvOicZxXgEFEfwXSM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NIxh2zFnvGh5WSdVZFYGqPmYjZ9uXT/JWhf9VqLVYkiGkdMvTYEffun2zqcnJnYRa
-         62ovWtVAIKoGlneDZ86cpz7hLkcsBaVQ33FgkG/8YcOPETWpk6J9+0TmuzBI1kEm75
-         LapoGMwtZwobGkVdTB1F+UySrsbOW0t95Z0kVfXU=
+        b=zs+P9SBI329CDIAbUKZB5+gh72w1J4ISn/HntqfHfh4j6/U7PS+MEO9ZErgs2zlua
+         7pIh18AndS3ghDfVmg4gI5hWgb9ixQGHO4f9d2DRZn7QirZ0MVIOhnDkajJWM0ROV4
+         RbtTscoXMNWY6jQzNASIWMkUEl6BylZsf9n87ftU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        stable@vger.kernel.org, Jay Cornwall <jay.cornwall@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 180/214] drm/amd/display: Increase timeout for DP Disable
-Date:   Tue,  3 Nov 2020 21:37:08 +0100
-Message-Id: <20201103203307.580064817@linuxfoundation.org>
+Subject: [PATCH 5.4 182/214] drm/amdkfd: Use same SQ prefetch setting as amdgpu
+Date:   Tue,  3 Nov 2020 21:37:10 +0100
+Message-Id: <20201103203307.760826744@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -44,44 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Chalmers <Wesley.Chalmers@amd.com>
+From: Jay Cornwall <jay.cornwall@amd.com>
 
-commit 37b7cb10f07c1174522faafc1d51c6591b1501d4 upstream.
+commit d56b1980d7efe9ef08469e856fc0703d0cef65e4 upstream.
 
-[WHY]
-When disabling DP video, the current REG_WAIT timeout
-of 50ms is too low for certain cases with very high
-VSYNC intervals.
+0 causes instruction fetch stall at cache line boundary under some
+conditions on Navi10. A non-zero prefetch is the preferred default
+in any case.
 
-[HOW]
-Increase the timeout to 102ms, so that
-refresh rates as low as 10Hz can be handled properly.
+Fixes soft hang in Luxmark.
 
-Signed-off-by: Wesley Chalmers <Wesley.Chalmers@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Jay Cornwall <jay.cornwall@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: <stable@vger.kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c
-@@ -898,10 +898,10 @@ void enc1_stream_encoder_dp_blank(
- 	 */
- 	REG_UPDATE(DP_VID_STREAM_CNTL, DP_VID_STREAM_DIS_DEFER, 2);
- 	/* Larger delay to wait until VBLANK - use max retry of
--	 * 10us*5000=50ms. This covers 41.7ms of minimum 24 Hz mode +
-+	 * 10us*10200=102ms. This covers 100.0ms of minimum 10 Hz mode +
- 	 * a little more because we may not trust delay accuracy.
- 	 */
--	max_retries = DP_BLANK_MAX_RETRY * 250;
-+	max_retries = DP_BLANK_MAX_RETRY * 501;
- 
- 	/* disable DP stream */
- 	REG_UPDATE(DP_VID_STREAM_CNTL, DP_VID_STREAM_ENABLE, 0);
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c
+@@ -58,8 +58,9 @@ static int update_qpd_v10(struct device_
+ 	/* check if sh_mem_config register already configured */
+ 	if (qpd->sh_mem_config == 0) {
+ 		qpd->sh_mem_config =
+-				SH_MEM_ALIGNMENT_MODE_UNALIGNED <<
+-					SH_MEM_CONFIG__ALIGNMENT_MODE__SHIFT;
++			(SH_MEM_ALIGNMENT_MODE_UNALIGNED <<
++				SH_MEM_CONFIG__ALIGNMENT_MODE__SHIFT) |
++			(3 << SH_MEM_CONFIG__INITIAL_INST_PREFETCH__SHIFT);
+ #if 0
+ 		/* TODO:
+ 		 *    This shouldn't be an issue with Navi10.  Verify.
 
 
