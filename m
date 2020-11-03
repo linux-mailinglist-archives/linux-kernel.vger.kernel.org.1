@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F342A56AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6932A543C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732716AbgKCVaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:30:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32812 "EHLO mail.kernel.org"
+        id S2388477AbgKCVJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732964AbgKCU6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:24 -0500
+        id S2388415AbgKCVJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C16FE223C6;
-        Tue,  3 Nov 2020 20:58:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5797206B5;
+        Tue,  3 Nov 2020 21:09:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437102;
-        bh=/Ks8KETB+CKrRYrGo2T+5rqEmySgJfur65rlwYhBuKo=;
+        s=default; t=1604437749;
+        bh=UIqfSzJMo6WnLq5ulTz553bqwG4I9sZ5qerzitUXoIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9E4hQ39tqeGl6+ASEaax1zQ6aSPpmHYJC4zDUegocLhOIAJJcxplBK20ne4axIRa
-         +FMYoZfhr4UDf0cZgwHLPn9XCBugaKxF2wlqjzeN1WtCQjDqTUVHCTs8tFHVR/DIgv
-         6B97OiGW7+Y3RiHLtZTxgdg8qxoiVX94fWNM8CZA=
+        b=m0z+PQLAYK4tp8/28474g9zloF8pjlRHFaQuRVM5MEB60djIPmmJJ8TVU3XP08Cj8
+         eYL5CnC+ydOTPvrYDIeQhw3jlKAaIdAjod24p0GcB62C1tE3ooyyu29gcSw5laoF5h
+         XVXRV2vnV5KD/yhwkrwHHPO465hIXThEcLTtWMjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 5.4 146/214] vt: keyboard, extend func_buf_lock to readers
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 017/125] powerpc/powernv/smp: Fix spurious DBG() warning
 Date:   Tue,  3 Nov 2020 21:36:34 +0100
-Message-Id: <20201103203304.496720491@linuxfoundation.org>
+Message-Id: <20201103203159.239202679@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-commit 82e61c3909db51d91b9d3e2071557b6435018b80 upstream.
+[ Upstream commit f6bac19cf65c5be21d14a0c9684c8f560f2096dd ]
 
-Both read-side users of func_table/func_buf need locking. Without that,
-one can easily confuse the code by repeatedly setting altering strings
-like:
-while (1)
-	for (a = 0; a < 2; a++) {
-		struct kbsentry kbs = {};
-		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
-		ioctl(fd, KDSKBSENT, &kbs);
-	}
+When building with W=1 we get the following warning:
 
-When that program runs, one can get unexpected output by holding F1
-(note the unxpected period on the last line):
-.
-88888
-.8888
+ arch/powerpc/platforms/powernv/smp.c: In function ‘pnv_smp_cpu_kill_self’:
+ arch/powerpc/platforms/powernv/smp.c:276:16: error: suggest braces around
+ 	empty body in an ‘if’ statement [-Werror=empty-body]
+   276 |      cpu, srr1);
+       |                ^
+ cc1: all warnings being treated as errors
 
-So protect all accesses to 'func_table' (and func_buf) by preexisting
-'func_buf_lock'.
+The full context is this block:
 
-It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
-On the other hand, KDGKBSENT needs a local (atomic) copy of the string
-because copy_to_user can sleep. Use already allocated, but unused
-'kbs->kb_string' for that purpose.
+ if (srr1 && !generic_check_cpu_restart(cpu))
+ 	DBG("CPU%d Unexpected exit while offline srr1=%lx!\n",
+ 			cpu, srr1);
 
-Note that the program above needs at least CAP_SYS_TTY_CONFIG.
+When building with DEBUG undefined DBG() expands to nothing and GCC emits
+the warning due to the lack of braces around an empty statement.
 
-This depends on the previous patch and on the func_buf_lock lock added
-in commit 46ca3f735f34 (tty/vt: fix write/write race in ioctl(KDSKBSENT)
-handler) in 5.2.
-
-Likely fixes CVE-2020-25656.
-
-Cc: <stable@vger.kernel.org>
-Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20201019085517.10176-2-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200804005410.146094-2-oohall@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/keyboard.c |   17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/powerpc/platforms/powernv/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -742,8 +742,13 @@ static void k_fn(struct vc_data *vc, uns
- 		return;
+diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
+index c17f81e433f7d..11d8fde770c38 100644
+--- a/arch/powerpc/platforms/powernv/smp.c
++++ b/arch/powerpc/platforms/powernv/smp.c
+@@ -44,7 +44,7 @@
+ #include <asm/udbg.h>
+ #define DBG(fmt...) udbg_printf(fmt)
+ #else
+-#define DBG(fmt...)
++#define DBG(fmt...) do { } while (0)
+ #endif
  
- 	if ((unsigned)value < ARRAY_SIZE(func_table)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&func_buf_lock, flags);
- 		if (func_table[value])
- 			puts_queue(vc, func_table[value]);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
-+
- 	} else
- 		pr_err("k_fn called with value=%d\n", value);
- }
-@@ -1990,7 +1995,7 @@ out:
- #undef s
- #undef v
- 
--/* FIXME: This one needs untangling and locking */
-+/* FIXME: This one needs untangling */
- int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- {
- 	struct kbsentry *kbs;
-@@ -2022,10 +2027,14 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
- 	switch (cmd) {
- 	case KDGKBSENT: {
- 		/* size should have been a struct member */
--		unsigned char *from = func_table[i] ? : "";
-+		ssize_t len = sizeof(user_kdgkb->kb_string);
-+
-+		spin_lock_irqsave(&func_buf_lock, flags);
-+		len = strlcpy(kbs->kb_string, func_table[i] ? : "", len);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
- 
--		ret = copy_to_user(user_kdgkb->kb_string, from,
--				strlen(from) + 1) ? -EFAULT : 0;
-+		ret = copy_to_user(user_kdgkb->kb_string, kbs->kb_string,
-+				len + 1) ? -EFAULT : 0;
- 
- 		goto reterr;
- 	}
+ static void pnv_smp_setup_cpu(int cpu)
+-- 
+2.27.0
+
 
 
