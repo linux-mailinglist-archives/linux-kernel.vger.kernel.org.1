@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580332A59C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1982A59C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbgKCWKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47438 "EHLO mail.kernel.org"
+        id S1730920AbgKCWKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:10:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729801AbgKCUhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:45 -0500
+        id S1729834AbgKCUhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:37:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CAB322226;
-        Tue,  3 Nov 2020 20:37:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0800D22277;
+        Tue,  3 Nov 2020 20:37:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435865;
-        bh=cQb3Pv87nj8scQjQtvOwQ7/f+UXsuPot90d2+6RPeL0=;
+        s=default; t=1604435874;
+        bh=BkW3RaTsgcy2bokJC/5ugcgK+ra6Cfb9jO+gBVXEaKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zr2KXm/mgvaEdHugu2O7hjvXqgj1AxC3gro3poLWlzjx25PJAPdr4vaHdUBU7wV0V
-         Z3U9lXY9RAf5OXwA0LthV38GkajPg8FNu8yDQsd/e3JZH3u4scKZKQg49nt5QL04Jk
-         mF7h3ONPKLOn6qImOF27MjrE06+9v5pLznApzUEs=
+        b=Zo1RGV226bx3YMUZMu3xH+QOMApZaO5rGqM5P0gG/aqNqvtvEh5S1lzhWbHaLD6C8
+         EOleXmmKR/DHGIXdYKdGOntoikEUvQBBoOJXYOXufNe9XTqlidh3CStw/k6yRgXZM8
+         syewAfdWlgI7N1m0Cd8463CkzqMCINk9Xb8GVxxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 5.9 003/391] xen/events: fix race in evtchn_fifo_unmask()
-Date:   Tue,  3 Nov 2020 21:30:54 +0100
-Message-Id: <20201103203348.363946922@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
+        Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 5.9 007/391] xen/scsiback: use lateeoi irq binding
+Date:   Tue,  3 Nov 2020 21:30:58 +0100
+Message-Id: <20201103203348.577850562@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,64 +45,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Juergen Gross <jgross@suse.com>
 
-commit f01337197419b7e8a492e83089552b77d3b5fb90 upstream.
+commit 86991b6e7ea6c613b7692f65106076943449b6b7 upstream.
 
-Unmasking a fifo event channel can result in unmasking it twice, once
-directly in the kernel and once via a hypercall in case the event was
-pending.
+In order to reduce the chance for the system becoming unresponsive due
+to event storms triggered by a misbehaving scsifront use the lateeoi
+irq binding for scsiback and unmask the event channel only just before
+leaving the event handling function.
 
-Fix that by doing the local unmask only if the event is not pending.
+In case of a ring protocol error don't issue an EOI in order to avoid
+the possibility to use that for producing an event storm. This at once
+will result in no further call of scsiback_irq_fn(), so the ring_error
+struct member can be dropped and scsiback_do_cmd_fn() can signal the
+protocol error via a negative return value.
 
 This is part of XSA-332.
 
 Cc: stable@vger.kernel.org
+Reported-by: Julien Grall <julien@xen.org>
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/events/events_fifo.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/xen/xen-scsiback.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/drivers/xen/events/events_fifo.c
-+++ b/drivers/xen/events/events_fifo.c
-@@ -227,19 +227,25 @@ static bool evtchn_fifo_is_masked(evtchn
- 	return sync_test_bit(EVTCHN_FIFO_BIT(MASKED, word), BM(word));
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -91,7 +91,6 @@ struct vscsibk_info {
+ 	unsigned int irq;
+ 
+ 	struct vscsiif_back_ring ring;
+-	int ring_error;
+ 
+ 	spinlock_t ring_lock;
+ 	atomic_t nr_unreplied_reqs;
+@@ -722,7 +721,8 @@ static struct vscsibk_pend *prepare_pend
+ 	return pending_req;
  }
- /*
-- * Clear MASKED, spinning if BUSY is set.
-+ * Clear MASKED if not PENDING, spinning if BUSY is set.
-+ * Return true if mask was cleared.
-  */
--static void clear_masked(volatile event_word_t *word)
-+static bool clear_masked_cond(volatile event_word_t *word)
+ 
+-static int scsiback_do_cmd_fn(struct vscsibk_info *info)
++static int scsiback_do_cmd_fn(struct vscsibk_info *info,
++			      unsigned int *eoi_flags)
  {
- 	event_word_t new, old, w;
+ 	struct vscsiif_back_ring *ring = &info->ring;
+ 	struct vscsiif_request ring_req;
+@@ -739,11 +739,12 @@ static int scsiback_do_cmd_fn(struct vsc
+ 		rc = ring->rsp_prod_pvt;
+ 		pr_warn("Dom%d provided bogus ring requests (%#x - %#x = %u). Halting ring processing\n",
+ 			   info->domid, rp, rc, rp - rc);
+-		info->ring_error = 1;
+-		return 0;
++		return -EINVAL;
+ 	}
  
- 	w = *word;
+ 	while ((rc != rp)) {
++		*eoi_flags &= ~XEN_EOI_FLAG_SPURIOUS;
++
+ 		if (RING_REQUEST_CONS_OVERFLOW(ring, rc))
+ 			break;
  
- 	do {
-+		if (w & (1 << EVTCHN_FIFO_PENDING))
-+			return false;
+@@ -802,13 +803,16 @@ static int scsiback_do_cmd_fn(struct vsc
+ static irqreturn_t scsiback_irq_fn(int irq, void *dev_id)
+ {
+ 	struct vscsibk_info *info = dev_id;
++	int rc;
++	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
+ 
+-	if (info->ring_error)
+-		return IRQ_HANDLED;
+-
+-	while (scsiback_do_cmd_fn(info))
++	while ((rc = scsiback_do_cmd_fn(info, &eoi_flags)) > 0)
+ 		cond_resched();
+ 
++	/* In case of a ring error we keep the event channel masked. */
++	if (!rc)
++		xen_irq_lateeoi(irq, eoi_flags);
 +
- 		old = w & ~(1 << EVTCHN_FIFO_BUSY);
- 		new = old & ~(1 << EVTCHN_FIFO_MASKED);
- 		w = sync_cmpxchg(word, old, new);
- 	} while (w != old);
-+
-+	return true;
+ 	return IRQ_HANDLED;
  }
  
- static void evtchn_fifo_unmask(evtchn_port_t port)
-@@ -248,8 +254,7 @@ static void evtchn_fifo_unmask(evtchn_po
+@@ -829,7 +833,7 @@ static int scsiback_init_sring(struct vs
+ 	sring = (struct vscsiif_sring *)area;
+ 	BACK_RING_INIT(&info->ring, sring, PAGE_SIZE);
  
- 	BUG_ON(!irqs_disabled());
+-	err = bind_interdomain_evtchn_to_irq(info->domid, evtchn);
++	err = bind_interdomain_evtchn_to_irq_lateeoi(info->domid, evtchn);
+ 	if (err < 0)
+ 		goto unmap_page;
  
--	clear_masked(word);
--	if (evtchn_fifo_is_pending(port)) {
-+	if (!clear_masked_cond(word)) {
- 		struct evtchn_unmask unmask = { .port = port };
- 		(void)HYPERVISOR_event_channel_op(EVTCHNOP_unmask, &unmask);
- 	}
+@@ -1253,7 +1257,6 @@ static int scsiback_probe(struct xenbus_
+ 
+ 	info->domid = dev->otherend_id;
+ 	spin_lock_init(&info->ring_lock);
+-	info->ring_error = 0;
+ 	atomic_set(&info->nr_unreplied_reqs, 0);
+ 	init_waitqueue_head(&info->waiting_to_free);
+ 	info->dev = dev;
 
 
