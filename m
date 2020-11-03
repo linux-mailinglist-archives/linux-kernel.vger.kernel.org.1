@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6BA2A5365
+	by mail.lfdr.de (Postfix) with ESMTP id E98752A5366
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733271AbgKCVAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        id S1733278AbgKCVAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733254AbgKCVAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:39 -0500
+        id S1733267AbgKCVAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83D9C223AC;
-        Tue,  3 Nov 2020 21:00:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEC0722226;
+        Tue,  3 Nov 2020 21:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437239;
-        bh=GsDGekbOxDFlHRtiW08cyRUdLzeVEzMuX+z7MK/O+5I=;
+        s=default; t=1604437241;
+        bh=su3cQwyHx3kCHKDVHurH/fOB9rM7M9B3DeAEDRy13to=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rhzGGMozxWm/LU6jLGe5drSKX3HFTpf+mB+DQi1ZLzSR0/c0bURp/eD15bf09N7c8
-         2njVSmT6otKymwkucJOBrxSuT3P9ExBsUaZCNQ326f3GvW4wrgulNBAxJU2VEXIzq5
-         X+fXMVhPT6a5rfrQB7JkAg0Kk3N+ipFsq8kMdUA0=
+        b=fg1DdtX8BdBwGRz40htaavR+WEaaKlcRoK7w0VyuwyJ3pTtG5ZCQat0XOQPSK7ii9
+         LljRltDrdq9Mr/ZjjAcAt/oWMw/Rzv+BUGxGtzBLf+wqjqYwjMCdTVHZ4uIYNuqg0S
+         cAO6gOeJZC3FoIhpuZ/EtmrzuOAPmHvd/nOtKOBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.4 206/214] ARM: s3c24xx: fix missing system reset
-Date:   Tue,  3 Nov 2020 21:37:34 +0100
-Message-Id: <20201103203309.923033612@linuxfoundation.org>
+        stable@vger.kernel.org, Ferry Toth <fntoth@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 207/214] device property: Keep secondary firmware node secondary by type
+Date:   Tue,  3 Nov 2020 21:37:35 +0100
+Message-Id: <20201103203310.018855101@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -41,36 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit f6d7cde84f6c5551586c8b9b68d70f8e6dc9a000 upstream.
+commit d5dcce0c414fcbfe4c2037b66ac69ea5f9b3f75c upstream.
 
-Commit f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
-removed usage of the watchdog reset platform code in favor of the
-Samsung SoC watchdog driver.  However the latter was not selected thus
-S3C24xx platforms lost reset abilities.
+Behind primary and secondary we understand the type of the nodes
+which might define their ordering. However, if primary node gone,
+we can't maintain the ordering by definition of the linked list.
+Thus, by ordering secondary node becomes first in the list.
+But in this case the meaning of it is still secondary (or auxiliary).
+The type of the node is maintained by the secondary pointer in it:
 
-Cc: <stable@vger.kernel.org>
-Fixes: f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+	secondary pointer		Meaning
+	NULL or valid			primary node
+	ERR_PTR(-ENODEV)		secondary node
+
+So, if by some reason we do the following sequence of calls
+
+	set_primary_fwnode(dev, NULL);
+	set_primary_fwnode(dev, primary);
+
+we should preserve secondary node.
+
+This concept is supported by the description of set_primary_fwnode()
+along with implementation of set_secondary_fwnode(). Hence, fix
+the commit c15e1bdda436 to follow this as well.
+
+Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
+Cc: Ferry Toth <fntoth@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Tested-by: Ferry Toth <fntoth@gmail.com>
+Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/Kconfig |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/base/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -507,8 +507,10 @@ config ARCH_S3C24XX
- 	select HAVE_S3C2410_WATCHDOG if WATCHDOG
- 	select HAVE_S3C_RTC if RTC_CLASS
- 	select NEED_MACH_IO_H
-+	select S3C2410_WATCHDOG
- 	select SAMSUNG_ATAGS
- 	select USE_OF
-+	select WATCHDOG
- 	help
- 	  Samsung S3C2410, S3C2412, S3C2413, S3C2416, S3C2440, S3C2442, S3C2443
- 	  and S3C2450 SoCs based systems, such as the Simtec Electronics BAST
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3414,7 +3414,7 @@ void set_primary_fwnode(struct device *d
+ 	} else {
+ 		if (fwnode_is_primary(fn)) {
+ 			dev->fwnode = fn->secondary;
+-			fn->secondary = NULL;
++			fn->secondary = ERR_PTR(-ENODEV);
+ 		} else {
+ 			dev->fwnode = NULL;
+ 		}
 
 
