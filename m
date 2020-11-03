@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EED52A49F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB532A49F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbgKCPdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        id S1728541AbgKCPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgKCPdu (ORCPT
+        with ESMTP id S1726388AbgKCPeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:33:50 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEACC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:33:49 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id u21so8281485iol.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:33:49 -0800 (PST)
+        Tue, 3 Nov 2020 10:34:06 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA47C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:34:06 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i26so13946141pgl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vOkFShIvcUzC6IIWe+nbZVspE2Bn0Jpu0DWyaTr22tE=;
-        b=iVpnDUGADTtM5z9B1Q4fm0j2KOKhtLqzlicMhnj6QMjWubr0WU6JCZKmwrUuLHkL+L
-         ms6mmflECGT5Sh2YFs5yRkunpFjFnlD2q2/dVjPa+O871RG3vL9vcdq+6LIV95O5emvQ
-         l0Sp7tRysizsxqLa3vWHxhkewEeIoLiJO1k9Q=
+        bh=HjUJI0OrjkWbAH3DienhZxTmqOna3ueAap2yYKG4ygM=;
+        b=iP5XPK46EpWfmFeOfqdSZXFt9WYlJwjIRfQh65p0d3dVRcIyM9s2ElGMNxskEY7gGI
+         C6zcH4JLnwQD9+c2B7DXyZ3KBi1IogrhWe3J61hRkd83t0spqehvY9PhEOlCpfdL98Kx
+         DFvscLUxSS9yFHh6Mc/7cJeICEkM4VkZvJQ7i6LOieQz0UZxKS0MEup2NUbmD7Fcq36X
+         v2FYom/i18e6HNWRLfsjcJiS3ONoPtx+xHvtoPI0LBpa/ngE83ylRJvxnbAN+/jJYKYc
+         htV+HyLmcdvtfE4pV6IHGbkebT/L4/sJt+8xqAZnc/FSK0zfQaT0rzUR45Jdfhndgq4h
+         6x2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vOkFShIvcUzC6IIWe+nbZVspE2Bn0Jpu0DWyaTr22tE=;
-        b=p7k0yQ2YteEIaEFY9kKZDDeIu4XJha72rHtFYTFT7CIYFVzfF+C3DzSDBR25ZCD8Oo
-         7vgydIdEa6ELWVn45zsnHj3jspNNrxGVikXqhV1MyVKvATVsrJGG1QvA2eM9S7sSFlxv
-         98vmOECRrwAqD/QlJ0uukf9CHJwSHB1gPi53gASjQ1BxFA9olsFYG+hegQhxvnXTOShd
-         NbFiZwKusv6kFkOJ34rGTUBl+pVgfdW8h4vwdKWXam4wxQAYzzukO4XJXK6U/mCFGS0Q
-         gV6/MO2Kk0W/nIUG6AB3laRc73nW7xAJ8Xzy9/BpkjgBdz90+wCr41sHqCIDgvzAMXAR
-         oNcA==
-X-Gm-Message-State: AOAM532strAGVSpKwBLCSjkcHpIzOUwIH+3qAkxBk6C03RFlKnLW74a0
-        tUMCuKJdBmo7Z6WgbHVIwgFn19Bfp/AxCPI3M/+y
-X-Google-Smtp-Source: ABdhPJzRmQhr0W08TEvz9zLHYNIwDDs0PqgRXP+6iIcUUlWfmG1vtmHHCo/h4UxS6vvXcVw7inl5opNTgawpWgnoH6I=
-X-Received: by 2002:a5d:9842:: with SMTP id p2mr14701308ios.113.1604417629220;
- Tue, 03 Nov 2020 07:33:49 -0800 (PST)
+        bh=HjUJI0OrjkWbAH3DienhZxTmqOna3ueAap2yYKG4ygM=;
+        b=QHCAILUKgQG5tpuM94ECD5ey8+/LUYYteoZVC40WcgPbLjOTfyYsbv6uP2coePDmOl
+         J3AvTTHrjU4Jp0rBPIK3gjqULoDWN47fTP9WmGTn8/bl0JJXQGbkghk6w4+xb2znJd3o
+         VM3jO8vyMHigvBmlI4aVUtT5O6sHWMNQhtKdjhABWMAXNRQBU7P7LyJE7GUs2hXg8rwa
+         O7imQ6h8GeYAcIUtFCQhHxTJJgQ548qizvDNkYXjZxXx1v0nC175qr2j0dfkp08x6poZ
+         9F44Mxf9lJI3cPZ94qY66FySpZFN7m3KSIhv61DoCqXr1PaGvQXWtl7oCBb6u4vEr+IR
+         qQjQ==
+X-Gm-Message-State: AOAM531/CLRFIKnGinQ7mwSlIBkpOnZa0QF4fWqmaVRJXrpC1A6r0nFH
+        1afWCHyPT5ep2YozPc1vJlx0EtmYyQQVFVG8spgOPQ==
+X-Google-Smtp-Source: ABdhPJzj1KMRjCYm5PpARPnsanIfGJWoAOGU0mlig6qsZqXkvEODTi7bt8BldV8NNJqam4jCoEgpdUuz85GdWMmx7/c=
+X-Received: by 2002:a17:90a:eb02:: with SMTP id j2mr356174pjz.136.1604417645395;
+ Tue, 03 Nov 2020 07:34:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
- <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
- <CANXhq0q_fOg7vsniVMtNd8VezW1yymf55FYRc61WMkXMOtZpgA@mail.gmail.com>
- <CAJF2gTR-_=_vDLsST9BVxRFC0OTR4_TYV-2=nH_Gux_zWDOk3Q@mail.gmail.com>
- <CAOnJCU+d5YQzKW2qs0NURJt1_5zrM6YXrkP4FzB_=zgbb-5DuA@mail.gmail.com>
- <CAJF2gTT9gZZftoUD4eMT0Th=oYOpsdYbrFdr=5kO2-N+ki51NA@mail.gmail.com>
- <CAOnJCULO7TuRhBcx6KUVr6t_jqouN-0rao9QXC1RgrU5ehutkw@mail.gmail.com>
- <20201030202818.72070cbd@oasis.local.home> <CAJF2gTSaSzvo2G7prqqtEOueGhERcrcM7VDjK=WeqtePhhZ+dg@mail.gmail.com>
-In-Reply-To: <CAJF2gTSaSzvo2G7prqqtEOueGhERcrcM7VDjK=WeqtePhhZ+dg@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 3 Nov 2020 07:33:37 -0800
-Message-ID: <CAOnJCU+kMJCrwJ5MD2pYRoub1TpVGgpfX=6nNG2uFB6PNJLEiA@mail.gmail.com>
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Zong Li <zong.li@sifive.com>,
-        Paul McKenney <paulmck@kernel.org>, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+References: <cover.1603372719.git.andreyknvl@google.com> <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Y6jbXh28U=9oK_1ihMhePRhZ6WP9vBwr8nVm_aU3BmNQ@mail.gmail.com> <CAAeHK+wqdtPkrhbxPanu79iCJxdYczKQ6k7+8u-hnC5JONEgNQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+wqdtPkrhbxPanu79iCJxdYczKQ6k7+8u-hnC5JONEgNQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 3 Nov 2020 16:33:54 +0100
+Message-ID: <CAAeHK+xBZ_Rkew==1pj1YzU9XGdMJx5_uMP6n=BnnqdAH7LARw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 12:42 AM Guo Ren <guoren@kernel.org> wrote:
+On Thu, Oct 29, 2020 at 9:14 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> On Sat, Oct 31, 2020 at 8:28 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> On Wed, Oct 28, 2020 at 11:56 AM Dmitry Vyukov <dvyukov@google.com> wrote:
 > >
-> > On Fri, 30 Oct 2020 14:47:56 -0700
-> > Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > > > Look at arm64, they __kprobes flag and I guess it would also prevent
-> > > > ftrace call site.
-> > > >
+> > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 > > >
-> > > Are you sure about that ? __kprobes puts the code in .kprobes.text section
-> > > which is under whitelist sections in recordmcount.pl & recordmcount.c.
+> > > Tag-based KASAN modes are fully initialized with kasan_init_tags(),
+> > > while the generic mode only requireds kasan_init(). Move the
+> > > initialization message for tag-based modes into kasan_init_tags().
+> > >
+> > > Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
 > >
-> > Correct, ftrace can trace functions marked with __kprobes. That said,
-> I guess wrong, thx for correct me.
+> > Why doesn't it need it? What's the difference with tag modes?
 >
-> > the instruction you are looking at here, is in a file that is
-> > blacklisted from recordmcount.
+> I need to reword the patch descriptions: it's not the mode that
+> doesn't need it, it's the generic.c file, as it doesn't use any pr_*()
+> functions.
+>
 > >
-> >   CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
+> > > tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
 > >
-> > All ftrace flags are removed from the compiling of insn.c, and every
-> > function in that file will not be traced.
-> Yes, arm64 prevents the whole file from ftrace. My patch just use
-> notrace flag setting on some functions.
+> > With generic KASAN I currently see:
+> >
+> > [    0.571473][    T0] kasan: KernelAddressSanitizer initialized
+> >
+> > So KBUILD_MODNAME somehow works. Is there some difference between files?
 >
-> @Atish How do think:
-> CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
-> CFLAGS_REMOVE_sbi.o = $(CC_FLAGS_FTRACE)
+> That code is printed from arch/xxx/mm/kasan_init*.c, which has its own
+> pr_fmt defined.
 >
-
-Looks good to me. What should be done for copy_to_kernel_nofault ?
-That is also in the calling path.
-
-> --
-> Best Regards
->  Guo Ren
+> >
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
+> > > ---
+> > >  arch/arm64/mm/kasan_init.c | 3 +++
+> > >  mm/kasan/generic.c         | 2 --
+> > >  mm/kasan/hw_tags.c         | 4 ++++
+> > >  mm/kasan/sw_tags.c         | 4 +++-
+> > >  4 files changed, 10 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> > > index b6b9d55bb72e..8f17fa834b62 100644
+> > > --- a/arch/arm64/mm/kasan_init.c
+> > > +++ b/arch/arm64/mm/kasan_init.c
+> > > @@ -290,5 +290,8 @@ void __init kasan_init(void)
+> > >  {
+> > >         kasan_init_shadow();
+> > >         kasan_init_depth();
+> > > +#if defined(CONFIG_KASAN_GENERIC)
+> > > +       /* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
+> >
+> > A bit cleaner way may be to introduce kasan_init_early() and
+> > kasan_init_late(). Late() will do tag init and always print the
+> > message.
 >
-> ML: https://lore.kernel.org/linux-csky/
+> It appears we'll also need kasan_init_even_later() for some
+> MTE-related stuff. I'll try to figure out some sane naming scheme here
+> and include it into the next version.
 
-
-
--- 
-Regards,
-Atish
+Actually, it looks like some arches already have
+kasan_init_early/late() along with kasan_init(). I'd say we better
+keep those for generic KASAN mode, and kasan_init_tags() for tag-based
+modes.
