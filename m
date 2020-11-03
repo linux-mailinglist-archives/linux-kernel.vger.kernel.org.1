@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7E52A536C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BA52A547F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733303AbgKCVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36914 "EHLO mail.kernel.org"
+        id S2388931AbgKCVLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:11:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733294AbgKCVAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:50 -0500
+        id S2388921AbgKCVLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:11:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5912223C6;
-        Tue,  3 Nov 2020 21:00:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F001206B5;
+        Tue,  3 Nov 2020 21:11:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437250;
-        bh=R2uupPPjUrCiVXqiZGMwEogBjkihGfr35fgrFP4hGsY=;
+        s=default; t=1604437908;
+        bh=tU6kxRf9+dN2AXSlCXXAwS2f6fw8WgQYfe3ryKtNfxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+A6b0+rqKNb5ZCNSynuG4ikm8Y75aAWyvTKGMBj1m5FB9w0+xg963FZA4/nTDCPt
-         uaxZgg86oOEUUdryI6IcrU0QAcCovTyA8FaI36W9vIwnPzbWcSI2lzfwZUeEjh6V/v
-         dAkXftjMVDCKKsnAt8ZOdiEzIA5Rn2yTHqo5WoMU=
+        b=dn/h6lHC5AtQxruXsUQWcWuGAv1huzRjsT8P6uPgZUK0vCrv4Y0ygjD9hST3qo2Rx
+         2VbjnDFuXrrmm6LgFx97/Rn7KUOex2DvpJs+97C4MEKsomp2AP0zV8ShvTLqaSJVQ/
+         XdtOmatY+lx+LNl5zcFZcBabD7DtkASrHjJfbCJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 211/214] staging: comedi: cb_pcidas: Allow 2-channel commands for AO subdevice
-Date:   Tue,  3 Nov 2020 21:37:39 +0100
-Message-Id: <20201103203310.362981470@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Fritsch <sf@sfritsch.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 4.14 083/125] drm/i915: Force VTd workarounds when running as a guest OS
+Date:   Tue,  3 Nov 2020 21:37:40 +0100
+Message-Id: <20201103203208.930684220@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 647a6002cb41d358d9ac5de101a8a6dc74748a59 upstream.
+commit 8195400f7ea95399f721ad21f4d663a62c65036f upstream.
 
-The "cb_pcidas" driver supports asynchronous commands on the analog
-output (AO) subdevice for those boards that have an AO FIFO.  The code
-(in `cb_pcidas_ao_check_chanlist()` and `cb_pcidas_ao_cmd()`) to
-validate and set up the command supports output to a single channel or
-to two channels simultaneously (the boards have two AO channels).
-However, the code in `cb_pcidas_auto_attach()` that initializes the
-subdevices neglects to initialize the AO subdevice's `len_chanlist`
-member, leaving it set to 0, but the Comedi core will "correct" it to 1
-if the driver neglected to set it.  This limits commands to use a single
-channel (either channel 0 or 1), but the limit should be two channels.
-Set the AO subdevice's `len_chanlist` member to be the same value as the
-`n_chan` member, which will be 2.
+If i915.ko is being used as a passthrough device, it does not know if
+the host is using intel_iommu. Mixing the iommu and gfx causes a few
+issues (such as scanout overfetch) which we need to workaround inside
+the driver, so if we detect we are running under a hypervisor, also
+assume the device access is being virtualised.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20201021122142.81628-1-abbotti@mev.co.uk
+Reported-by: Stefan Fritsch <sf@sfritsch.de>
+Suggested-by: Stefan Fritsch <sf@sfritsch.de>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Stefan Fritsch <sf@sfritsch.de>
+Cc: stable@vger.kernel.org
+Tested-by: Stefan Fritsch <sf@sfritsch.de>
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201019101523.4145-1-chris@chris-wilson.co.uk
+(cherry picked from commit f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/cb_pcidas.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/i915/i915_drv.h |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/cb_pcidas.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas.c
-@@ -1342,6 +1342,7 @@ static int cb_pcidas_auto_attach(struct
- 		if (dev->irq && board->has_ao_fifo) {
- 			dev->write_subdev = s;
- 			s->subdev_flags	|= SDF_CMD_WRITE;
-+			s->len_chanlist	= s->n_chan;
- 			s->do_cmdtest	= cb_pcidas_ao_cmdtest;
- 			s->do_cmd	= cb_pcidas_ao_cmd;
- 			s->cancel	= cb_pcidas_ao_cancel;
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -33,6 +33,8 @@
+ #include <uapi/drm/i915_drm.h>
+ #include <uapi/drm/drm_fourcc.h>
+ 
++#include <asm/hypervisor.h>
++
+ #include <linux/io-mapping.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c-algo-bit.h>
+@@ -3141,7 +3143,9 @@ static inline bool intel_vtd_active(void
+ 	if (intel_iommu_gfx_mapped)
+ 		return true;
+ #endif
+-	return false;
++
++	/* Running as a guest, we assume the host is enforcing VT'd */
++	return !hypervisor_is_type(X86_HYPER_NATIVE);
+ }
+ 
+ static inline bool intel_scanout_needs_vtd_wa(struct drm_i915_private *dev_priv)
 
 
