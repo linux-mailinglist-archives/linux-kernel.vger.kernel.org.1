@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63D42A3B24
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBD12A3B26
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgKCDtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:49:13 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:42568 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbgKCDtN (ORCPT
+        id S1726042AbgKCDx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgKCDx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:49:13 -0500
-Received: from mail-pl1-f200.google.com ([209.85.214.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1kZnJn-0002Sw-0h
-        for linux-kernel@vger.kernel.org; Tue, 03 Nov 2020 03:49:11 +0000
-Received: by mail-pl1-f200.google.com with SMTP id n10so9868685plk.14
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 19:49:10 -0800 (PST)
+        Mon, 2 Nov 2020 22:53:57 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA553C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 19:53:55 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id m8so11430923ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 19:53:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hOJLDVXUo2LYw/7eDqVKdvCpcOI5OkMeU4TObpOzbdA=;
+        b=nGryO6t7u5LQu5kU9mZ+mS82QJqavaetK3PvEK1jSllCww9cFAOlqgl+ZXOVfolt+6
+         Lbel5ZOBIcwr8mB+tOJCTbIvaA0KOFW9hkOfux8hU/Az3HFaHnYrM6wCOc9u4VzQcTnJ
+         s7znfJLu3pDWLASwp5KbsfcymSdKDPRwV4/FAM+EKMKdXD2aD5sHEBfZ21UdFW+64tkH
+         U6BbzwHdiSshZTRujcM5oF/zpgVjpB2s8FcnsbXCWHAtUh9FJSQozDussSKwrwmC6xpf
+         fp6HpolycvO274DYNn8eIzMeftx0Y1hadLn/9eNPo3o9WvDMSAleygzKeFew3uoBgLZi
+         gnHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RliCu92b3IQig0c2jWKF3VuVRgf8DqyL8AZCCs07qII=;
-        b=Xm0reo7AGvfYjJnavMFvn6y9zmK/uNijkeyJ8gOvLfVdHDAjvsSiEX2UCZrOFTcGVV
-         qnUqkJFn/qMPJ+Dm60u9VgHsa4ppwG3WUB0tIUVl/SV1V/1oQGoekCGel42y27pkilFz
-         C3PEadez14V4pHOXZIsgC2zbzDftRqLsx8SRWgnMo+9y5sR/sxyG6w1Ir1IlphjOAFqL
-         zKOAB+Lcc9ZQ9OxOL1PSt14yMEuwidvlFesafttZP/dMfLLfjMnEGFK/g6OGEf/kUGkd
-         pIxmf86njRfzSxWz69PTi0k3/ySQ9gsigZV7Oqi5lsydm65OhTGX9AGOSAZVENzPBAr6
-         8WVA==
-X-Gm-Message-State: AOAM531GFI2QqMB8b+Hl7W5MTxzg1d1C5YHq7D6eSja264GkpRt+DgRo
-        KDUMtdECp87POoSZIudMe+VGTAtczX6BqGQ7/FXIHQQJ9ygHqfKIm7WEf67HFNdcNRx1HycFCo7
-        nMpIBWbN7ZPXrbqnrLtnlsE/V1CwsSw19QkyhUrLLIA==
-X-Received: by 2002:a17:90a:9dcb:: with SMTP id x11mr1573628pjv.132.1604375349510;
-        Mon, 02 Nov 2020 19:49:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxxMUJNCcKeQ5cbFEtLT37uvAni0nkfgOfDYBkeExp0+DP5RBRtEs3L8WFEYJXQpLDtt7bPZA==
-X-Received: by 2002:a17:90a:9dcb:: with SMTP id x11mr1573609pjv.132.1604375349231;
-        Mon, 02 Nov 2020 19:49:09 -0800 (PST)
-Received: from canonical.com (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id jy19sm1072088pjb.9.2020.11.02.19.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 19:49:08 -0800 (PST)
-From:   Koba Ko <koba.ko@canonical.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "drm/dp_mst: Retrieve extended DPCD caps for topology manager"
-Date:   Tue,  3 Nov 2020 11:49:07 +0800
-Message-Id: <20201103034907.72129-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hOJLDVXUo2LYw/7eDqVKdvCpcOI5OkMeU4TObpOzbdA=;
+        b=lHiprgLipKeM38p7/A/pouHlfHPUVQKQsP2C39AohAE6w8V6MObAQQJ+H20EFKDYSx
+         59lQvQAVQ1R5qZMbz06lSlV+gZzEXsQ9bReEBCwR9bwFAbGskXJlh80r+Li57OklnHGk
+         /8fF2bhubnfE/5cXefM0BLlYRBlalIM7g+RNDI8j46U0b4fflaPngvVw9k/Ndus0KG0M
+         zEx5Xya28bs3rxx87vtS2PFzIQ2kWhEQ9t2ksZpg+toX577Ym0j1bUmotbk2pnytbb0G
+         cPEfo4GZa6R84CVC6cUyftg4XS0uyLwblI1gmQr5nCnASHEdsSY+RbXQ0yR42g23B5za
+         NItA==
+X-Gm-Message-State: AOAM533lPx/yrCDyuDezIiPHmuxaFw+js0lwwN05pU7/kwkYLHhBagzn
+        qVIvmgo5wgl8GFILxLcUt+wDjivdc6R+NLM9DfJYuVXDgRtd0Q==
+X-Google-Smtp-Source: ABdhPJytzGrAlZ+geOqqf0gsRtPO+IpgQeE7cjS654fjb4jYrz8aC9GaN67i2t8B+Lxs4h4awY4MB3zEJ1GdtR7omzI=
+X-Received: by 2002:a05:651c:1126:: with SMTP id e6mr6168296ljo.47.1604375634057;
+ Mon, 02 Nov 2020 19:53:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201016225713.1971256-1-jannh@google.com> <20201016225713.1971256-3-jannh@google.com>
+ <20201020191540.GM6219@nvidia.com>
+In-Reply-To: <20201020191540.GM6219@nvidia.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 3 Nov 2020 04:53:27 +0100
+Message-ID: <CAG48ez0XS+0sLLsVg_=hJo6MB1MgSCWvCL03EQ3Ja08d_us+ew@mail.gmail.com>
+Subject: Re: [PATCH resend v3 2/2] exec: Broadly lock nascent mm until setup_arg_pages()
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, John Hubbard <jhubbard@nvidia.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit ad44c03208e46b83e4ae3269e32c9e524aa71cf8.
+On Tue, Oct 20, 2020 at 9:15 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> On Sat, Oct 17, 2020 at 12:57:13AM +0200, Jann Horn wrote:
+> > @@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
+> >       me->mm->task_size = TASK_SIZE;
+> >       mutex_unlock(&me->signal->exec_update_mutex);
+> >       mutex_unlock(&me->signal->cred_guard_mutex);
+> > +
+> > +     if (!IS_ENABLED(CONFIG_MMU)) {
+> > +             /*
+> > +              * On MMU, setup_arg_pages() wants to access bprm->vma after
+> > +              * this point, so we can't drop the mmap lock yet.
+> > +              * On !MMU, we have neither setup_arg_pages() nor bprm->vma,
+> > +              * so we should drop the lock here.
+> > +              */
+> > +             mmap_write_unlock(bprm->mm);
+> > +             mmput(bprm->mm);
+> > +             bprm->mm = NULL;
+> > +     }
+>
+> The only thing I dislike about this is how tricky the lock lifetime
+> is, it all looks correct, but expecting the setup_arg_pages() or
+> setup_new_exec() to unlock (depending!) is quite tricky.
+>
+> It feels like it would be clearer to have an explicit function to do
+> this, like 'release_brp_mm()' indicating that current->mm is now the
+> only way to get the mm and it must be locked.
 
-Currently DRM driver assume the source device caps is higher than the MST device
-caps. With this commit, this statement would be broken.
+That was a good suggestion; I tried to amend my patch as suggested,
+and while trying to do that, noticed that under CONFIG_MMU,
+binfmt_flat first does setup_new_exec(), then vm_mmap(), and then
+later on setup_arg_pages()...
 
-e.g. the source device only support DP1.2 and the mst device support DP1.4.
-
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
----
- drivers/gpu/drm/drm_dp_mst_topology.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 153b6065ba29..e87542533640 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3686,10 +3686,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		WARN_ON(mgr->mst_primary);
- 
- 		/* get dpcd info */
--		ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
--		if (ret < 0) {
--			drm_dbg_kms(mgr->dev, "%s: failed to read DPCD, ret %d\n",
--				    mgr->aux->name, ret);
-+		ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd, DP_RECEIVER_CAP_SIZE);
-+		if (ret != DP_RECEIVER_CAP_SIZE) {
-+			DRM_DEBUG_KMS("failed to read DPCD\n");
- 			goto out_unlock;
- 		}
- 
--- 
-2.17.1
-
+So your suggestion indeed helped make it clear that my patch was
+wrong. Guess I'll have to go figure out how to rearrange the pieces in
+binfmt_flat to make this work...
