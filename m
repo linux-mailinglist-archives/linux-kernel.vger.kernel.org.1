@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0E72A54C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F512A54F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389379AbgKCVO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:14:26 -0500
-Received: from sauhun.de ([88.99.104.3]:40538 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389131AbgKCVNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:13:16 -0500
-Received: from localhost (p5486c89f.dip0.t-ipconnect.de [84.134.200.159])
-        by pokefinder.org (Postfix) with ESMTPSA id 4BCBD2C0561;
-        Tue,  3 Nov 2020 22:13:13 +0100 (CET)
-Date:   Tue, 3 Nov 2020 22:13:12 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     qii.wang@mediatek.com
-Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-Subject: Re: [PATCH] i2c: mediatek: move dma reset before i2c reset
-Message-ID: <20201103211312.GG1583@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>, qii.wang@mediatek.com,
-        matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-References: <1604059081-28197-1-git-send-email-qii.wang@mediatek.com>
+        id S2389140AbgKCVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388939AbgKCVPq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:15:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4713EC0613D1;
+        Tue,  3 Nov 2020 13:15:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2X3HWGtDj6jlwOT1IXppfSWqMfcMufTcQQ331/qkGHg=; b=l3BDfU3xmA76C+Sb3uNQqcqBkm
+        FBLKthRSdsmvCo1MxCjwB7Z0Hw4P5e+J1a7/sLF+QLu0NDg658nwRVRjlZtbS5qkdTO5wV0lSjnGS
+        9S2OyopuZladNzjreUI4SoV7s1ujZkkJxv55dfedwubyYdelDVieRej+I0JLhw9dsHIRA6lCDdK4Q
+        zdTSoYDVFUhgJNsFJrLvPOc1RQWIXeTHILtjBMaHRgQNqP2oF1RAKrhgsUInxg2B8O2/7e27g+tZ9
+        LMCz5QB2t3iNt1E44wL57MEqWyY7oGKrd3WZnXN+KSLHbLgZp919CEGz4g+RuXpvDVVZTML/r6FIR
+        9J4dhvDA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ka3eX-0000C4-V4; Tue, 03 Nov 2020 21:15:42 +0000
+Date:   Tue, 3 Nov 2020 21:15:41 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        davem@davemloft.net, kuba@kernel.org, aruna.ramakrishna@oracle.com,
+        bert.barbe@oracle.com, rama.nichanamatlu@oracle.com,
+        venkat.x.venkatsubra@oracle.com, manjunath.b.patil@oracle.com,
+        joe.jin@oracle.com, srinivas.eeda@oracle.com
+Subject: Re: [PATCH 1/1] mm: avoid re-using pfmemalloc page in
+ page_frag_alloc()
+Message-ID: <20201103211541.GH27442@casper.infradead.org>
+References: <20201103193239.1807-1-dongli.zhang@oracle.com>
+ <20201103203500.GG27442@casper.infradead.org>
+ <7141038d-af06-70b2-9f50-bf9fdf252e22@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4ndw/alBWmZEhfcZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604059081-28197-1-git-send-email-qii.wang@mediatek.com>
+In-Reply-To: <7141038d-af06-70b2-9f50-bf9fdf252e22@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 03, 2020 at 12:57:33PM -0800, Dongli Zhang wrote:
+> On 11/3/20 12:35 PM, Matthew Wilcox wrote:
+> > On Tue, Nov 03, 2020 at 11:32:39AM -0800, Dongli Zhang wrote:
+> >> However, once kernel is not under memory pressure any longer (suppose large
+> >> amount of memory pages are just reclaimed), the page_frag_alloc() may still
+> >> re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
+> >> result, the skb->pfmemalloc is always true unless page_frag_cache->va is
+> >> re-allocated, even the kernel is not under memory pressure any longer.
+> >> +	/*
+> >> +	 * Try to avoid re-using pfmemalloc page because kernel may already
+> >> +	 * run out of the memory pressure situation at any time.
+> >> +	 */
+> >> +	if (unlikely(nc->va && nc->pfmemalloc)) {
+> >> +		page = virt_to_page(nc->va);
+> >> +		__page_frag_cache_drain(page, nc->pagecnt_bias);
+> >> +		nc->va = NULL;
+> >> +	}
+> > 
+> > I think this is the wrong way to solve this problem.  Instead, we should
+> > use up this page, but refuse to recycle it.  How about something like this (not even compile tested):
+> 
+> Thank you very much for the feedback. Yes, the option is to use the same page
+> until it is used up (offset < 0). Instead of recycling it, the kernel free it
+> and allocate new one.
+> 
+> This depends on whether we will tolerate the packet drop until this page is used up.
+> 
+> For virtio-net, the payload (skb->data) is of size 128-byte. The padding and
+> alignment will finally make it as 512-byte.
+> 
+> Therefore, for virtio-net, we will have at most 4096/512-1=7 packets dropped
+> before the page is used up.
 
---4ndw/alBWmZEhfcZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My thinking is that if the kernel is under memory pressure then freeing
+the page and allocating a new one is likely to put even more strain
+on the memory allocator, so we want to do this "soon", rather than at
+each allocation.
 
-On Fri, Oct 30, 2020 at 07:58:01PM +0800, qii.wang@mediatek.com wrote:
-> From: Qii Wang <qii.wang@mediatek.com>
->=20
-> The i2c driver default do dma reset after i2c reset, but sometimes
-> i2c reset will trigger dma tx2rx, then apdma write data to dram
-> which has been i2c_put_dma_safe_msg_buf(kfree). Move dma reset
-> before i2c reset in mtk_i2c_init_hw to fix it.
->=20
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Thanks for providing the numbers.  Do you think that dropping (up to)
+7 packets is acceptable?
 
-Applied to for-current, thanks!
+We could also do something like ...
 
+        if (unlikely(nc->pfmemalloc)) {
+                page = alloc_page(GFP_NOWAIT | __GFP_NOWARN);
+                if (page)
+                        nc->pfmemalloc = 0;
+                put_page(page);
+        }
 
---4ndw/alBWmZEhfcZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+hx+gACgkQFA3kzBSg
-KbYX6Q//ZGVdd7tkdj2nWfdk4zLv7XxhsnNc0yRj5kGzxUJKvKNkQhYfnhhxFMX7
-HPEU0NIyBcT0NniiLqHhqAvAe91PNdUt2rlaD8zoWJkm22nBHH06IO1XBLglK6Ok
-9mQWJ/h4E9SZVA7pPoOKQE8XDdD4Th767jmIDQ16xvo/YyAWu0yxwMep5ausuIHr
-RT2MmJisrXYHXXMDCVBkgBrD2UWR8XjNVrjap0aMfvdEb5N35BxsEB4BO3472XKI
-Ex00+kTjc+mFbwOtMTxtjVnOqW9fqqYu7indYah0mqDX5W8XUK/Ztuqi1qnQ7FBE
-4X3DXxmZYGBgMBYfU4oQYQJDbCu/+X7hljgmvZ+uobhnEMIBIcRZ1qgNIGG3/my5
-9Xdzvc6fKdfZefYc2cUFoJ7EpLgY+KJP/oKEhYQ43y0ORN0ZWdO2eMH2GUOJdhhd
-9YH1lPPnZQcvCkt14U5FYyDCT2ZnbgTcZFo9TgLctlNqdm2o7xTYokbwmbooBx1m
-scA3peUJ+OyjQJrIX/b1+I1uYdh2v1Z/WRnIEIt2fdf+cBJGUEOC6VAP5v5FRO2M
-Is7BlkZnyuLXMyIz3wHYng/ivGqE2SPrO/JYk3rR2O8w+8dn/2HWOsZsyydyKa/l
-GPuN3WQru6TiDeD7lYTjRqRjl9jGzkSETQFO9jtdiTy3Wu+4uBk=
-=YC2K
------END PGP SIGNATURE-----
-
---4ndw/alBWmZEhfcZ--
+to test if the memory allocator has free pages at the moment.  Not sure
+whether that's a good idea or not -- hopefully you have a test environment
+set up where you can reproduce this condition on demand and determine
+which of these three approaches is best!
