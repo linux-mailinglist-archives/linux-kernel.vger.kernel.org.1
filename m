@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E9A2A5297
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA882A5102
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731376AbgKCUvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46164 "EHLO mail.kernel.org"
+        id S1729567AbgKCUhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:37:01 -0500
+Received: from mga18.intel.com ([134.134.136.126]:55780 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731921AbgKCUvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDC702242A;
-        Tue,  3 Nov 2020 20:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436676;
-        bh=emCc2Ab1uGtl61bDgS4ItTc28bWn/ttDicuuYkl6pAk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N4KrGo/O+StOsgIJVKtWw3LfXow5alV7gtkrxPE2sPgdmQ3wkdDQm3SSmfhNEC0VE
-         mhYrZI9akyRwYoSlc7AHqof71fYr+E/Pm0CB2VWoUjQx1jwLuYDm2tuhTAozz+hxoO
-         A8bLoCOWVR+V6x+sJqG+g/VC8meE18ydR6WEMGWw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Hans van der Laan <j.h.vanderlaan@student.utwente.nl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <0x7f454c46@gmail.com>
-Subject: [PATCH 5.9 355/391] futex: Adjust absolute futex timeouts with per time namespace offset
-Date:   Tue,  3 Nov 2020 21:36:46 +0100
-Message-Id: <20201103203411.090203232@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729502AbgKCUg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:36:59 -0500
+IronPort-SDR: bmVLRXqmEcn5igGpkQ1FL937QnwVEwI5zprSXMAK1MTv5RqrhgtjPY5bxojte0Y9A+0bEe0uMS
+ spILSwbUrfiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156898590"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="156898590"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:36:58 -0800
+IronPort-SDR: 8W/pMaqCngLbMEg5q0pWuMWJn6ULD6UnHvVEUojd1NlMvJiiFG/90mzx86cW3t/kebuG132HDD
+ ieLAp4hxDPfg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="352454745"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 03 Nov 2020 12:36:56 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D74DA12A; Tue,  3 Nov 2020 22:36:55 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH v5 0/7] resource: introduce union(), intersection() API
+Date:   Tue,  3 Nov 2020 22:36:48 +0200
+Message-Id: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrei Vagin <avagin@gmail.com>
+Some users may want to use resource library to manage their own resources,
+besides existing users that open code union() and intersection()
+implementations.
 
-commit c2f7d08cccf4af2ce6992feaabb9e68e4ae0bff3 upstream.
+Provide a generic API for wider use.
 
-For all commands except FUTEX_WAIT, the timeout is interpreted as an
-absolute value. This absolute value is inside the task's time namespace and
-has to be converted to the host's time.
+Changelog v5:
+- added test cases (Greg)
 
-Fixes: 5a590f35add9 ("posix-clocks: Wire up clock_gettime() with timens offsets")
-Reported-by: Hans van der Laan <j.h.vanderlaan@student.utwente.nl>
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015160020.293748-1-avagin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Changelog v4:
+- added Rb tag (Rafael)
+- Cc'ed to LKML and Greg (Rafael)
 
----
- kernel/futex.c |    5 +++++
- 1 file changed, 5 insertions(+)
+Changelog v3:
+- rebased on top of v5.10-rc1
+- dropped upstreamed dependencies
+- added Rb tag to the last patch (Mika)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -39,6 +39,7 @@
- #include <linux/freezer.h>
- #include <linux/memblock.h>
- #include <linux/fault-inject.h>
-+#include <linux/time_namespace.h>
- 
- #include <asm/futex.h>
- 
-@@ -3799,6 +3800,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
- 		t = timespec64_to_ktime(ts);
- 		if (cmd == FUTEX_WAIT)
- 			t = ktime_add_safe(ktime_get(), t);
-+		else if (!(op & FUTEX_CLOCK_REALTIME))
-+			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
- 	/*
-@@ -3991,6 +3994,8 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
- 		t = timespec64_to_ktime(ts);
- 		if (cmd == FUTEX_WAIT)
- 			t = ktime_add_safe(ktime_get(), t);
-+		else if (!(op & FUTEX_CLOCK_REALTIME))
-+			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
- 	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
 
+Andy Shevchenko (7):
+  resource: Simplify region_intersects() by reducing conditionals
+  resource: Group resource_overlaps() with other inline helpers
+  resource: Introduce resource_union() for overlapping resources
+  resource: Introduce resource_intersection() for overlapping resources
+  resource: Add test cases for new resource API
+  PCI/ACPI: Replace open coded variant of resource_union()
+  ACPI: watchdog: Replace open coded variant of resource_union()
+
+ drivers/acpi/acpi_watchdog.c |   6 +-
+ drivers/acpi/pci_root.c      |   4 +-
+ include/linux/ioport.h       |  34 ++++++--
+ kernel/Makefile              |   1 +
+ kernel/resource.c            |  10 +--
+ kernel/resource_kunit.c      | 150 +++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug            |  11 +++
+ 7 files changed, 196 insertions(+), 20 deletions(-)
+ create mode 100644 kernel/resource_kunit.c
+
+-- 
+2.28.0
 
