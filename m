@@ -2,162 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006BA2A498C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7DB2A4997
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgKCP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
+        id S1727988AbgKCP24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727553AbgKCPZh (ORCPT
+        with ESMTP id S1728168AbgKCP1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:25:37 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42320C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:25:37 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id d125so3775777vkh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:25:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qLjEoPE1qTScSokPULmNB4sQvaJ/rGjdmpXC27ItG30=;
-        b=Qrcs1D7BqopfjKyXLOMzzVa4eS+9u5GkGdbGwgags0VGkVfZgE8JOzgjzQikJkmKJI
-         Z/+ZonmjqIkK2xEDE7+TP4uiHKTKrrTO2Nh3zBSjC+jNRIsVD9oHeofBbYISiaZmpXcM
-         fDv6q4IadbNmw8LYY4cxsbpgbR3b1iV3eyTEwSflBWiiVM1lNBFvy2MqvOik5bGmm3Le
-         n8avcynw4YGjPa14Hpt3Iu3gh+v8Vibu61GPDxOhO234DdvS690vIkznWsAOfAhz9nUI
-         V7QFDxezt5WBtxfkaGrNo/AAnQdUAEE15qkc+jLmY91fV8NkgwhpKujv/J1yRuuwXO2v
-         1+/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qLjEoPE1qTScSokPULmNB4sQvaJ/rGjdmpXC27ItG30=;
-        b=FNOiScmP8t5soH6VQ0CvlYUx1V2EVd5r1/e1IoI+yHrHbJ+It0u5VeVvqN1yr7i8Z0
-         aVxfM4gjXDdTr9p9Hrxd7kGCE9pfgHJBLUX5zYJQrzfCXuzzeqwl16Du/JZmQAx7G205
-         tqo1AcNP2UOufvem/PfXOOvpH8XCSm2ttznG0NBvc/3udMitj4MvFTbaPOX5uxa4RTn5
-         1dJCn9Z7LoW7aHIDUIuVx+i7+dyLvmoauxcG4TsR7YT66xzfdTIvHOLFpobYNK/Menvh
-         /iiQT2VSvx5tXxyxK7jDFNOBSQJ/Q4JyVv6p5M05q/aG5ZnIZ85RLezXlw+5bOXuBCfJ
-         +qgQ==
-X-Gm-Message-State: AOAM533Nrbehq1xU0/kqHkLnzmMUyvIu6w4k4SlMOFq6xv0f9Zmq/gnx
-        P48ZBL7YZNaY7uMpEA/B6Rt3pJeNFlGUddFHtPz5Jw==
-X-Google-Smtp-Source: ABdhPJyTp0PHlyAFKFUtsUjjMj+WT1CwwmG3q286e1X59j2WSjlWxw11u3BFrJMk9fcKtdvlqkM/f+2OwetwebVMaHg=
-X-Received: by 2002:ac5:c1ca:: with SMTP id g10mr16837348vkk.6.1604417136460;
- Tue, 03 Nov 2020 07:25:36 -0800 (PST)
-MIME-Version: 1.0
-References: <1603883984-24333-1-git-send-email-vbadigan@codeaurora.org>
-In-Reply-To: <1603883984-24333-1-git-send-email-vbadigan@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 3 Nov 2020 16:25:00 +0100
-Message-ID: <CAPDyKFq0zikjeps36=Mq-Y9MuyiOHZyGVELV+Eh56evu8b8D2A@mail.gmail.com>
-Subject: Re: [PATCH] mmc: block: Prevent new req entering queue while freeing
- up the queue
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Peng Hao <richard.peng@oppo.com>
+        Tue, 3 Nov 2020 10:27:40 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5A0C0613D1;
+        Tue,  3 Nov 2020 07:27:39 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 197851F457D7
+Message-ID: <69377a01339c0e598ef51f62f9f785917b719b8d.camel@collabora.com>
+Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Kever Yang <kever.yang@rock-chips.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 03 Nov 2020 12:27:29 -0300
+In-Reply-To: <4943efb9-29c2-6848-9783-514276085f2b@kwiboo.se>
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+         <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+         <abc0321a81a3ada8eb66d227b56249024e549021.camel@collabora.com>
+         <4943efb9-29c2-6848-9783-514276085f2b@kwiboo.se>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 at 12:20, Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
-> The commit bbdc74dc19e0 ("mmc: block: Prevent new req entering queue
-> after its cleanup") has introduced this change but it got moved after
-> del_gendisk() with commit 57678e5a3d51 ("mmc: block: Delete gendisk
-> before cleaning up the request queue").
+On Thu, 2020-10-29 at 16:21 +0000, Jonas Karlman wrote:
+> On 2020-10-29 13:38, Ezequiel Garcia wrote:
+> > On Mon, 2020-10-12 at 23:39 +0000, Jonas Karlman wrote:
+> > > Hi,
+> > > 
+> > > On 2020-10-12 22:59, Adrian Ratiu wrote:
+> > > > Dear all,
+> > > > 
+> > > > This series introduces a regmap infrastructure for the Hantro driver
+> > > > which is used to compensate for different HW-revision register layouts.
+> > > > To justify it h264 decoding capability is added for newer VC8000 chips.
+> > > > 
+> > > > This is a gradual conversion to the new infra - a complete conversion
+> > > > would have been very big and I do not have all the HW yet to test (I'm
+> > > > expecting a RK3399 shipment next week though ;). I think converting the
+> > > > h264 decoder provides a nice blueprint for how the other codecs can be
+> > > > converted and enabled for different HW revisions.
+> > > > 
+> > > > The end goal of this is to make the driver more generic and eliminate
+> > > > entirely custom boilerplate like `struct hantro_reg` or headers with
+> > > > core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
+> > > > on the well-tested albeit more verbose regmap subsytem.
+> > > > 
+> > > > To give just two examples of bugs which are easily discovered by using
+> > > > more verbose regmap fields (very easy to compare with the datasheets)
+> > > > instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
+> > > > off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
+> > > > 
+> > > > Anyway, this series also extends the MMIO regmap API to allow relaxed
+> > > > writes for the theoretical reason that avoiding unnecessary membarriers
+> > > > leads to less CPU usage and small improvements to battery life. However,
+> > > > in practice I could not measure differences between relaxed/non-relaxed
+> > > > IO, so I'm on the fence whether to keep or remove the relaxed calls.
+> > > > 
+> > > > What I could masure is the performance impact of adding more sub-reg
+> > > > field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
+> > > > is acceptable considering the total time to decode a frame takes three
+> > > > orders of magnitude longer, i.e. miliseconds ranges, depending on the
+> > > > frame size and bitstream params, so it is an acceptable trade-off to
+> > > > have a more generic driver.
+> > > 
+> > > In the RK3399 variant all fields use completely different positions so
+> > > in order to make the driver fully generic all around 145 sub-reg fields
+> > > used for h264 needs to be converted, see [1] for a quick generation of
+> > > field mappings used for h264 decoding.
+> > > 
+> > 
+> > Currently, we've only decided to support H.264 decoding via he RKVDEC
+> > core on RK3399.
+> > 
+> > What your thoughts here Jonas, have you tested H.264 on RK3399 with
+> > the G1 core? If it works, what benefits do we get from enabling both
+> > cores?
+> 
+> The G1 core was working back in Dec/Jan/Feb and was used for H.264 decoding in
+> LibreELEC nightly images until the rkvdec h264 driver was submitted/merged.
+> 
+> For RK3399 and other SoCs that both contain RKVDEC and VDPU2 IP it may not be
+> much of a benefit. Possible for decoding multiple videos in parallel,
+> it is unclear to me if both IP can be used at the same time.
+> 
+> There are however SoCs that only have VDPU2 IP (px30/rk3326 and rk1808)
+> that could benefit from adding support for the VDPU2 IP, see [1].
+> 
+> Should I submit the rk3399 variant in similar style as the rk3399 mpeg2 decoder?
+> Or should I try and adopt it to be based on this series and use regmap?
+> 
 
-This isn't the first time we have spotted errors in this path. Seems
-like a difficult path to get correct. :-)
+I'm inclined to take a patch that is as uninvasive as possible first.
+If it's easy enough to submit something that adds just the minimum for
+VDPU2, then please go for it.
 
->
-> It is blocking reboot with below Call stack().
->
-> INFO: task reboot:3086 blocked for more than 122 seconds.
->      __schedule
->      schedule
->      schedule_timeout
->      io_schedule_timeout
->      do_wait_for_common
->      wait_for_completion_io
->      submit_bio_wait
->      blkdev_issue_flush
->      ext4_sync_fs
->      __sync_filesystem
->      sync_filesystem
->      fsync_bdev
->      invalidate_partition
->      del_gendisk
->      mmc_blk_remove_req
->      mmc_blk_remove
->      mmc_bus_remove
->      device_release_driver_internal
->      device_release_driver
->      bus_remove_device
->      device_del
->      mmc_remove_card
->      mmc_remove
->      mmc_stop_host
->      mmc_remove_host
->      sdhci_remove_host
->      sdhci_msm_remove
+We can do the cleaning later.
 
-Why do you call sdhci_msm_remove() from the shutdown callback? What
-specific operations do you need to run in the shutdown path for sdhci
-msm?
+As a stretch, if you could add px30 (which seems to be an alias for
+rk3326, in terms of codec support), that would be nice as well.
+(I have ordered an odroid with rk3326 but shipment is taking ages). 
 
-The important part should be to do a graceful shutdown of the card
-(and the block device) - is there anything else?
+Thanks,
+Ezequiel
 
-Or you are just using the shutdown callback as a simple way to trigger
-this problem? Could unbinding the driver trigger the same issue?
+> [1] https://github.com/HermanChen/mpp/blob/develop/osal/mpp_platform.cpp#L80-L82
+> 
+> Best regards,
+> Jonas
+> 
+> > Thanks!
+> > Ezequiel
+> > 
+> > > Any indication on how the performance will be impacted with 145 fields
+> > > compared to around 20 fields used in this series?
+> > > 
+> > > Another issue with RK3399 variant is that some fields use different
+> > > position depending on the codec used, e.g. two dec_ref_frames in [2].
+> > > Should we use codec specific field maps? or any other suggestion on
+> > > how we can handle such case?
+> > > 
+> > > [1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
+> > > [2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
+> > > [3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
+> > > 
+> > > Best regards,
+> > > Jonas
+> > > 
+> > > > This has been tested on next-20201009 with imx8mq for G1 and an SoC with
+> > > > VC8000 which has not yet been added (hopefuly support lands soon).
+> > > > 
+> > > > Kind regards,
+> > > > Adrian
+> > > > 
+> > > > Adrian Ratiu (18):
+> > > >   media: hantro: document all int reg bits up to vc8000
+> > > >   media: hantro: make consistent use of decimal register notation
+> > > >   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
+> > > >   media: hantro: add reset controller support
+> > > >   media: hantro: prepare clocks before variant inits are run
+> > > >   media: hantro: imx8mq: simplify ctrlblk reset logic
+> > > >   regmap: mmio: add config option to allow relaxed MMIO accesses
+> > > >   media: hantro: add initial MMIO regmap infrastructure
+> > > >   media: hantro: default regmap to relaxed MMIO
+> > > >   media: hantro: convert G1 h264 decoder to regmap fields
+> > > >   media: hantro: convert G1 postproc to regmap
+> > > >   media: hantro: add VC8000D h264 decoding
+> > > >   media: hantro: add VC8000D postproc support
+> > > >   media: hantro: make PP enablement logic a bit smarter
+> > > >   media: hantro: add user-selectable, platform-selectable H264 High10
+> > > >   media: hantro: rename h264_dec as it's not G1 specific anymore
+> > > >   media: hantro: add dump registers debug option before decode start
+> > > >   media: hantro: document encoder reg fields
+> > > > 
+> > > >  drivers/base/regmap/regmap-mmio.c             |   34 +-
+> > > >  drivers/staging/media/hantro/Makefile         |    3 +-
+> > > >  drivers/staging/media/hantro/hantro.h         |   79 +-
+> > > >  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
+> > > >  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
+> > > >  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
+> > > >  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
+> > > >  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
+> > > >  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
+> > > >  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
+> > > >  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
+> > > >  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
+> > > >  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
+> > > >  include/linux/regmap.h                        |    5 +
+> > > >  14 files changed, 1795 insertions(+), 256 deletions(-)
+> > > >  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
+> > > >  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
+> > > >  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
+> > > > 
 
->      sdhci_msm_shutdown
->      platform_drv_shutdown
->      device_shutdown
->      kernel_restart_prepare
->      kernel_restart
->
-> So bringing this change back.
->
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> ---
->
-> I'm observing this issue 100% of the time with shutdown callback added to sdhci-msm driver.
-> I'm trying on 5.4 kernel with ChromeOS.
->
-> Please let me know if this can be fixed in a better way.
 
-I don't know yet, but I will have a closer look. Let's also see if
-Adrian has some thoughts.
-
-Kind regards
-Uffe
-
-> ---
->
->  drivers/mmc/core/block.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8d3df0be0355..76dbb2b8a13b 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2627,6 +2627,7 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
->                  * from being accepted.
->                  */
->                 card = md->queue.card;
-> +               blk_set_queue_dying(md->queue.queue);
->                 if (md->disk->flags & GENHD_FL_UP) {
->                         device_remove_file(disk_to_dev(md->disk), &md->force_ro);
->                         if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
->
