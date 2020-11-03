@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0D92A51D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F7E2A51E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgKCUog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59914 "EHLO mail.kernel.org"
+        id S1730962AbgKCUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:44:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730110AbgKCUoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:32 -0500
+        id S1730951AbgKCUow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:44:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E25022404;
-        Tue,  3 Nov 2020 20:44:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97821223BF;
+        Tue,  3 Nov 2020 20:44:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436271;
-        bh=b0m26p2jGEbOL+dGxZIDvIWXBhU7AOYu0hoK+2XPRNY=;
+        s=default; t=1604436292;
+        bh=bnFbbM/iTF0EpzIJJWqApOMmpoKGyKiVkoOqqqvnD94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=soMtOoWmMUzko/9HYNGRMa4O8+5Oy5zbAKL6TvAh0Kr3An1eGI+AbBsfGcca6QRQL
-         5Wl//W9QIjQ7N1UxS2Y3ByAOO9PZ4PgOcu2HQBXMjyx1PB57VVZOoQRvkryPtyQaYX
-         JkIGPPWppgTkhNvUEHyF+kkZoxnftTpQepx25aUo=
+        b=sXE28Z8wkSHezEAz9ACLkvaZ06zdk3rP9tuFcdD7ylSQRlk5fy+SScje6LP/EQzBy
+         wdme7yW08xkrOUEW7c2ySaOq2xn2up8sx5mW8pIuCRzTRchoVAWb9xcsB/DOQVCP9f
+         Y62a/Z6Aul69Yf3wiaSBqx0D2DmksyZSqJfrWRq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 176/391] bindings: soc: ti: soc: ringacc: remove ti,dma-ring-reset-quirk
-Date:   Tue,  3 Nov 2020 21:33:47 +0100
-Message-Id: <20201103203358.749128756@linuxfoundation.org>
+        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 179/391] nbd: make the config put is called before the notifying the waiter
+Date:   Tue,  3 Nov 2020 21:33:50 +0100
+Message-Id: <20201103203358.951326537@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,44 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Xiubo Li <xiubli@redhat.com>
 
-[ Upstream commit aee123f48f387ea62002cddb46c7cb04c96628df ]
+[ Upstream commit 87aac3a80af5cbad93e63250e8a1e19095ba0d30 ]
 
-Remove "ti,dma-ring-reset-quirk" DT property as proper w/a handling is
-implemented now in Ringacc driver using SoC info.
+There has one race case for ceph's rbd-nbd tool. When do mapping
+it may fail with EBUSY from ioctl(nbd, NBD_DO_IT), but actually
+the nbd device has already unmaped.
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+It dues to if just after the wake_up(), the recv_work() is scheduled
+out and defers calling the nbd_config_put(), though the map process
+has exited the "nbd->recv_task" is not cleared.
+
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-index ae33fc957141f..c3c595e235a86 100644
---- a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-+++ b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
-@@ -62,11 +62,6 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: TI-SCI device id of the ring accelerator
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index edf8b632e3d27..f46e26c9d9b3c 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -801,9 +801,9 @@ static void recv_work(struct work_struct *work)
+ 		if (likely(!blk_should_fake_timeout(rq->q)))
+ 			blk_mq_complete_request(rq);
+ 	}
++	nbd_config_put(nbd);
+ 	atomic_dec(&config->recv_threads);
+ 	wake_up(&config->recv_wq);
+-	nbd_config_put(nbd);
+ 	kfree(args);
+ }
  
--  ti,dma-ring-reset-quirk:
--    $ref: /schemas/types.yaml#definitions/flag
--    description: |
--      enable ringacc/udma ring state interoperability issue software w/a
--
- required:
-   - compatible
-   - reg
-@@ -94,7 +89,6 @@ examples:
-             reg-names = "rt", "fifos", "proxy_gcfg", "proxy_target";
-             ti,num-rings = <818>;
-             ti,sci-rm-range-gp-rings = <0x2>; /* GP ring range */
--            ti,dma-ring-reset-quirk;
-             ti,sci = <&dmsc>;
-             ti,sci-dev-id = <187>;
-             msi-parent = <&inta_main_udmass>;
 -- 
 2.27.0
 
