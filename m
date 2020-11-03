@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3E92A5227
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1A72A52EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730074AbgKCUrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:47:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37226 "EHLO mail.kernel.org"
+        id S1732613AbgKCUym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:54:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731311AbgKCUrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:10 -0500
+        id S1732607AbgKCUyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:54:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F50222404;
-        Tue,  3 Nov 2020 20:47:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30FED223BD;
+        Tue,  3 Nov 2020 20:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436429;
-        bh=jMSLiAeRZeWfdURL9LcIghdEGSVXeE5QdK1FCqRwVJs=;
+        s=default; t=1604436878;
+        bh=i4mcC871zzXRsMqggy/TFaiFdiZTNjAxE6SskqKRmAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=glwKfYZ1qBwoovCWFB5VLX5rvp/PR0EDu6EBYzE2wG2/hAIT/O3YWrOADXAkURqbV
-         Mw7sT1UxAcOXThSljMxkX40Lm+H1z8Grx330xEOUZ9F/bbZY97nD7mnIqKfc0joA+c
-         rwX/Br2zYSAufOGtYVaMCyupO6hJshz4eCIlDah0=
+        b=cLiCRjE+UG2t9R2yBQRgnLNcW1lQb0/cMNXvCIP1c8ISMaqGMbvWhpSFH6B+4oyGG
+         WdrpACgfkVzl2SZn890Qr7Wf2b86FbJ7c5eK1QdQPnwHiD7wncCZQ+PBsMCaciagEW
+         OF9FamJGwUClzy21IErN3IvCygaYJkN97MLeCeQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.9 246/391] usb: dwc3: gadget: END_TRANSFER before CLEAR_STALL command
-Date:   Tue,  3 Nov 2020 21:34:57 +0100
-Message-Id: <20201103203403.608540625@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 050/214] kgdb: Make "kgdbcon" work properly with "kgdb_earlycon"
+Date:   Tue,  3 Nov 2020 21:34:58 +0100
+Message-Id: <20201103203254.845003182@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,145 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-commit d97c78a1908e59a1fdbcbece87cd0440b5d7a1f2 upstream.
+[ Upstream commit b18b099e04f450cdc77bec72acefcde7042bd1f3 ]
 
-According the programming guide (for all DWC3 IPs), when the driver
-handles ClearFeature(halt) request, it should issue CLEAR_STALL command
-_after_ the END_TRANSFER command completes. The END_TRANSFER command may
-take some time to complete. So, delay the ClearFeature(halt) request
-control status stage and wait for END_TRANSFER command completion
-interrupt. Only after END_TRANSFER command completes that the driver
-may issue CLEAR_STALL command.
+On my system the kernel processes the "kgdb_earlycon" parameter before
+the "kgdbcon" parameter.  When we setup "kgdb_earlycon" we'll end up
+in kgdb_register_callbacks() and "kgdb_use_con" won't have been set
+yet so we'll never get around to starting "kgdbcon".  Let's remedy
+this by detecting that the IO module was already registered when
+setting "kgdb_use_con" and registering the console then.
 
-Cc: stable@vger.kernel.org
-Fixes: cb11ea56f37a ("usb: dwc3: gadget: Properly handle ClearFeature(halt)")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As part of this, to avoid pre-declaring things, move the handling of
+the "kgdbcon" further down in the file.
 
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20200630151422.1.I4aa062751ff5e281f5116655c976dff545c09a46@changeid
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/core.h   |    1 +
- drivers/usb/dwc3/ep0.c    |   16 ++++++++++++++++
- drivers/usb/dwc3/gadget.c |   40 ++++++++++++++++++++++++++++++++--------
- drivers/usb/dwc3/gadget.h |    1 +
- 4 files changed, 50 insertions(+), 8 deletions(-)
+ kernel/debug/debug_core.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -710,6 +710,7 @@ struct dwc3_ep {
- #define DWC3_EP_IGNORE_NEXT_NOSTREAM	BIT(8)
- #define DWC3_EP_FORCE_RESTART_STREAM	BIT(9)
- #define DWC3_EP_FIRST_STREAM_PRIMED	BIT(10)
-+#define DWC3_EP_PENDING_CLEAR_STALL	BIT(11)
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 2222f3225e53d..097ab02989f92 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -96,14 +96,6 @@ int dbg_switch_cpu;
+ /* Use kdb or gdbserver mode */
+ int dbg_kdb_mode = 1;
  
- 	/* This last one is specific to EP0 */
- #define DWC3_EP0_DIR_IN		BIT(31)
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -524,6 +524,11 @@ static int dwc3_ep0_handle_endpoint(stru
- 		ret = __dwc3_gadget_ep_set_halt(dep, set, true);
- 		if (ret)
- 			return -EINVAL;
-+
-+		/* ClearFeature(Halt) may need delayed status */
-+		if (!set && (dep->flags & DWC3_EP_END_TRANSFER_PENDING))
-+			return USB_GADGET_DELAYED_STATUS;
-+
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -1049,6 +1054,17 @@ static void dwc3_ep0_do_control_status(s
- 	__dwc3_ep0_do_control_status(dwc, dep);
- }
+-static int __init opt_kgdb_con(char *str)
+-{
+-	kgdb_use_con = 1;
+-	return 0;
+-}
+-
+-early_param("kgdbcon", opt_kgdb_con);
+-
+ module_param(kgdb_use_con, int, 0644);
+ module_param(kgdbreboot, int, 0644);
  
-+void dwc3_ep0_send_delayed_status(struct dwc3 *dwc)
+@@ -876,6 +868,20 @@ static struct console kgdbcons = {
+ 	.index		= -1,
+ };
+ 
++static int __init opt_kgdb_con(char *str)
 +{
-+	unsigned int direction = !dwc->ep0_expect_in;
++	kgdb_use_con = 1;
 +
-+	if (dwc->ep0state != EP0_STATUS_PHASE)
-+		return;
++	if (kgdb_io_module_registered && !kgdb_con_registered) {
++		register_console(&kgdbcons);
++		kgdb_con_registered = 1;
++	}
 +
-+	dwc->delayed_status = false;
-+	__dwc3_ep0_do_control_status(dwc, dwc->eps[direction]);
++	return 0;
 +}
 +
- static void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep)
++early_param("kgdbcon", opt_kgdb_con);
++
+ #ifdef CONFIG_MAGIC_SYSRQ
+ static void sysrq_handle_dbg(int key)
  {
- 	struct dwc3_gadget_ep_cmd_params params;
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1827,6 +1827,18 @@ int __dwc3_gadget_ep_set_halt(struct dwc
- 			return 0;
- 		}
- 
-+		dwc3_stop_active_transfer(dep, true, true);
-+
-+		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
-+			dwc3_gadget_move_cancelled_request(req);
-+
-+		if (dep->flags & DWC3_EP_END_TRANSFER_PENDING) {
-+			dep->flags |= DWC3_EP_PENDING_CLEAR_STALL;
-+			return 0;
-+		}
-+
-+		dwc3_gadget_ep_cleanup_cancelled_requests(dep);
-+
- 		ret = dwc3_send_clear_stall_ep_cmd(dep);
- 		if (ret) {
- 			dev_err(dwc->dev, "failed to clear STALL on %s\n",
-@@ -1836,14 +1848,6 @@ int __dwc3_gadget_ep_set_halt(struct dwc
- 
- 		dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
- 
--		dwc3_stop_active_transfer(dep, true, true);
--
--		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
--			dwc3_gadget_move_cancelled_request(req);
--
--		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING))
--			dwc3_gadget_ep_cleanup_cancelled_requests(dep);
--
- 		if ((dep->flags & DWC3_EP_DELAY_START) &&
- 		    !usb_endpoint_xfer_isoc(dep->endpoint.desc))
- 			__dwc3_gadget_kick_transfer(dep);
-@@ -3003,6 +3007,26 @@ static void dwc3_endpoint_interrupt(stru
- 			dep->flags &= ~DWC3_EP_END_TRANSFER_PENDING;
- 			dep->flags &= ~DWC3_EP_TRANSFER_STARTED;
- 			dwc3_gadget_ep_cleanup_cancelled_requests(dep);
-+
-+			if (dep->flags & DWC3_EP_PENDING_CLEAR_STALL) {
-+				struct dwc3 *dwc = dep->dwc;
-+
-+				dep->flags &= ~DWC3_EP_PENDING_CLEAR_STALL;
-+				if (dwc3_send_clear_stall_ep_cmd(dep)) {
-+					struct usb_ep *ep0 = &dwc->eps[0]->endpoint;
-+
-+					dev_err(dwc->dev, "failed to clear STALL on %s\n",
-+						dep->name);
-+					if (dwc->delayed_status)
-+						__dwc3_gadget_ep0_set_halt(ep0, 1);
-+					return;
-+				}
-+
-+				dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
-+				if (dwc->delayed_status)
-+					dwc3_ep0_send_delayed_status(dwc);
-+			}
-+
- 			if ((dep->flags & DWC3_EP_DELAY_START) &&
- 			    !usb_endpoint_xfer_isoc(dep->endpoint.desc))
- 				__dwc3_gadget_kick_transfer(dep);
---- a/drivers/usb/dwc3/gadget.h
-+++ b/drivers/usb/dwc3/gadget.h
-@@ -113,6 +113,7 @@ int dwc3_gadget_ep0_set_halt(struct usb_
- int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
- 		gfp_t gfp_flags);
- int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol);
-+void dwc3_ep0_send_delayed_status(struct dwc3 *dwc);
- 
- /**
-  * dwc3_gadget_ep_get_transfer_index - Gets transfer index from HW
+-- 
+2.27.0
+
 
 
