@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8642A4416
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1297B2A4487
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgKCLUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:20:31 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7041 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728437AbgKCLUa (ORCPT
+        id S1728791AbgKCLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:48:33 -0500
+Received: from m9785.mail.qiye.163.com ([220.181.97.85]:15740 "EHLO
+        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727665AbgKCLsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:20:30 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQS4p3lZ5zhbPq;
-        Tue,  3 Nov 2020 19:20:26 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 19:20:22 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] clk: imx: gate2: Remove unused variable ret
-Date:   Tue, 3 Nov 2020 19:32:14 +0800
-Message-ID: <1604403134-32814-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 3 Nov 2020 06:48:32 -0500
+X-Greylist: delayed 16796 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Nov 2020 06:48:29 EST
+Received: from localhost (unknown [117.48.120.186])
+        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 40A445C1BB5;
+        Tue,  3 Nov 2020 13:44:35 +0800 (CST)
+From:   WANG Chao <chao.wang@ucloud.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH] kbuild: add extra-y to targets-for-modules
+Date:   Tue,  3 Nov 2020 13:44:25 +0800
+Message-Id: <20201103054425.59251-1-chao.wang@ucloud.cn>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZGh9LGEtMQ0sfGkkYVkpNS09IQ0lJTE5ISU9VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hOSFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORA6Fhw*Fz4BHUM*CkMUPFYL
+        DTkaCg9VSlVKTUtPSENJSUxOT0xJVTMWGhIXVRgTGhRVDBoVHDsOGBcUDh9VGBVFWVdZEgtZQVlK
+        SkxVT0NVSklLVUpDTVlXWQgBWUFKTU1LNwY+
+X-HM-Tid: 0a758ca2b6c62087kuqy40a445c1bb5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes below warning reported by coccicheck:
+extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
+("kbuild: do not create built-in objects for external module builds").
 
-./clk-gate2.c:57:5-8: Unneeded variable: "ret". Return "0" on line 68
+This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
+and 'make M=...' to build livepatch patch module.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Add extra-y to targets-for-modules so that such kind of build works
+properly.
+
+Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
 ---
- drivers/clk/imx/clk-gate2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ scripts/Makefile.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
-index 480a184..f16c401 100644
---- a/drivers/clk/imx/clk-gate2.c
-+++ b/drivers/clk/imx/clk-gate2.c
-@@ -54,7 +54,6 @@ static int clk_gate2_enable(struct clk_hw *hw)
- {
- 	struct clk_gate2 *gate = to_clk_gate2(hw);
- 	unsigned long flags;
--	int ret = 0;
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index ae647379b579..0113a042d643 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -86,7 +86,7 @@ ifdef need-builtin
+ targets-for-builtin += $(obj)/built-in.a
+ endif
  
- 	spin_lock_irqsave(gate->lock, flags);
+-targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
++targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
  
-@@ -65,7 +64,7 @@ static int clk_gate2_enable(struct clk_hw *hw)
- out:
- 	spin_unlock_irqrestore(gate->lock, flags);
- 
--	return ret;
-+	return 0;
- }
- 
- static void clk_gate2_disable(struct clk_hw *hw)
+ ifdef need-modorder
+ targets-for-modules += $(obj)/modules.order
 -- 
-2.6.2
+2.29.1
 
