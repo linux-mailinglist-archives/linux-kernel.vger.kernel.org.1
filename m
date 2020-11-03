@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61122A56F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3252A5859
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733281AbgKCVcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:32:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59340 "EHLO mail.kernel.org"
+        id S1731430AbgKCUsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731983AbgKCU5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:57:11 -0500
+        id S1730939AbgKCUsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2CFD2053B;
-        Tue,  3 Nov 2020 20:57:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A657822404;
+        Tue,  3 Nov 2020 20:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437030;
-        bh=PmdW/+qcZXypZVQiv45hkOjQQPFTZ8d4DsJnPktQLg0=;
+        s=default; t=1604436494;
+        bh=6vVmg3mlLxR8JHlkwdguL7E9lQ8xkByZgivSNyoBnTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j1aDb4480fjlRGrbgaHZBuQlRPzSEWHrRVJ7VeGJGTs1L5eU2RKiJUBdtEyXRLgzd
-         GMFwSGEls54BTUq96sNZ7WUmPLzx1UHgH80w3l8SaoU3R9rp2MuzZe3oHa3+bcsWYn
-         m//hW7g+enj3tLxd7Rvc/Qmy+B58YsL48b6tN5Io=
+        b=dQZ3GZLFJPS7f+itK5hcTLK2KkELJHpOOhIhbzFd1BLIU+2AZl14k1PM0xFf8pdu3
+         suWV39Rx6m2EuC5+F2YZb8NUf1jfyO9gTyCG/IIWM7CWv1LOpYe2Fb3xjUVQWUf8J4
+         nE7J18kO+6OuyVnBrsOSY85qjt1hNVZ3x5zVIKGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        George Cherian <george.cherian@marvell.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 078/214] asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap() implementation
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>, Stable@vger.kernel.org
+Subject: [PATCH 5.9 275/391] iio:adc:ti-adc0832 Fix alignment issue with timestamp
 Date:   Tue,  3 Nov 2020 21:35:26 +0100
-Message-Id: <20201103203257.687397436@linuxfoundation.org>
+Message-Id: <20201103203405.588821771@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,113 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit f5810e5c329238b8553ebd98b914bdbefd8e6737 ]
+commit 39e91f3be4cba51c1560bcda3a343ed1f64dc916 upstream.
 
-For arches that do not select CONFIG_GENERIC_IOMAP, the current
-pci_iounmap() function does nothing causing obvious memory leaks
-for mapped regions that are backed by MMIO physical space.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
 
-In order to detect if a mapped pointer is IO vs MMIO, a check must made
-available to the pci_iounmap() function so that it can actually detect
-whether the pointer has to be unmapped.
+We fix this issues by moving to a suitable structure in the iio_priv()
+data with alignment explicitly requested.  This data is allocated
+with kzalloc so no data can leak apart from previous readings.
+Note that previously no data could leak 'including' previous readings
+but I don't think it is an issue to potentially leak them like
+this now does.
 
-In configurations where CONFIG_HAS_IOPORT_MAP && !CONFIG_GENERIC_IOMAP,
-a mapped port is detected using an ioport_map() stub defined in
-asm-generic/io.h.
+In this case the postioning of the timestamp is depends on what
+other channels are enabled. As such we cannot use a structure to
+make the alignment explicit as it would be missleading by suggesting
+only one possible location for the timestamp.
 
-Use the same logic to implement a stub (ie __pci_ioport_unmap()) that
-detects if the passed in pointer in pci_iounmap() is IO vs MMIO to
-iounmap conditionally and call it in pci_iounmap() fixing the issue.
+Fixes: 815bbc87462a ("iio: ti-adc0832: add triggered buffer support")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200722155103.979802-25-jic23@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Leave __pci_ioport_unmap() as a NOP for all other config options.
-
-Tested-by: George Cherian <george.cherian@marvell.com>
-Link: https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-Link: https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-Link: https://lore.kernel.org/r/a9daf8d8444d0ebd00bc6d64e336ec49dbb50784.1600254147.git.lorenzo.pieralisi@arm.com
-Reported-by: George Cherian <george.cherian@marvell.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: George Cherian <george.cherian@marvell.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/asm-generic/io.h | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ drivers/iio/adc/ti-adc0832.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index d02806513670c..5e6c4f375e0c3 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -887,18 +887,6 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
- #include <linux/vmalloc.h>
- #define __io_virt(x) ((void __force *)(x))
+--- a/drivers/iio/adc/ti-adc0832.c
++++ b/drivers/iio/adc/ti-adc0832.c
+@@ -29,6 +29,12 @@ struct adc0832 {
+ 	struct regulator *reg;
+ 	struct mutex lock;
+ 	u8 mux_bits;
++	/*
++	 * Max size needed: 16x 1 byte ADC data + 8 bytes timestamp
++	 * May be shorter if not all channels are enabled subject
++	 * to the timestamp remaining 8 byte aligned.
++	 */
++	u8 data[24] __aligned(8);
  
--#ifndef CONFIG_GENERIC_IOMAP
--struct pci_dev;
--extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
--
--#ifndef pci_iounmap
--#define pci_iounmap pci_iounmap
--static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
--{
--}
--#endif
--#endif /* CONFIG_GENERIC_IOMAP */
--
- /*
-  * Change virtual addresses to physical addresses and vv.
-  * These are pretty trivial
-@@ -1013,6 +1001,16 @@ static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- 	port &= IO_SPACE_LIMIT;
- 	return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
- }
-+#define __pci_ioport_unmap __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p)
-+{
-+	uintptr_t start = (uintptr_t) PCI_IOBASE;
-+	uintptr_t addr = (uintptr_t) p;
-+
-+	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-+		return;
-+	iounmap(p);
-+}
- #endif
+ 	u8 tx_buf[2] ____cacheline_aligned;
+ 	u8 rx_buf[2];
+@@ -200,7 +206,6 @@ static irqreturn_t adc0832_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct adc0832 *adc = iio_priv(indio_dev);
+-	u8 data[24] = { }; /* 16x 1 byte ADC data + 8 bytes timestamp */
+ 	int scan_index;
+ 	int i = 0;
  
- #ifndef ioport_unmap
-@@ -1027,6 +1025,23 @@ extern void ioport_unmap(void __iomem *p);
- #endif /* CONFIG_GENERIC_IOMAP */
- #endif /* CONFIG_HAS_IOPORT_MAP */
+@@ -218,10 +223,10 @@ static irqreturn_t adc0832_trigger_handl
+ 			goto out;
+ 		}
  
-+#ifndef CONFIG_GENERIC_IOMAP
-+struct pci_dev;
-+extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
-+
-+#ifndef __pci_ioport_unmap
-+static inline void __pci_ioport_unmap(void __iomem *p) {}
-+#endif
-+
-+#ifndef pci_iounmap
-+#define pci_iounmap pci_iounmap
-+static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-+{
-+	__pci_ioport_unmap(p);
-+}
-+#endif
-+#endif /* CONFIG_GENERIC_IOMAP */
-+
- /*
-  * Convert a virtual cached pointer to an uncached pointer
-  */
--- 
-2.27.0
-
+-		data[i] = ret;
++		adc->data[i] = ret;
+ 		i++;
+ 	}
+-	iio_push_to_buffers_with_timestamp(indio_dev, data,
++	iio_push_to_buffers_with_timestamp(indio_dev, adc->data,
+ 					   iio_get_time_ns(indio_dev));
+ out:
+ 	mutex_unlock(&adc->lock);
 
 
