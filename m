@@ -2,74 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAD72A43A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E34F2A43B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgKCLAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        id S1728087AbgKCLIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728256AbgKCLAf (ORCPT
+        with ESMTP id S1727709AbgKCLIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:00:35 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93068C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 03:00:33 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id j62so11301832qtd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 03:00:33 -0800 (PST)
+        Tue, 3 Nov 2020 06:08:18 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B81C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 03:08:18 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id 141so21597864lfn.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 03:08:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BWqqHMHlQTzE6Buta1HcUYpsrNV7BinRDVOZdYCTaio=;
-        b=S0AXh3XYEpSbkpQarjgFVa1yTgMexWZjam3+A1Myt1VB7CbbmqJgsbUbs5EofdT64l
-         MCIlW0X9x8fvO4U4DaN3bsmoV6DFelyqU2EU97sznsZv4xWODLm3yWfj4mX2qu1jgtzc
-         ON/25ow4RwxmDLk2M1xDMLujsx98ci1/Hgxzt6TytHhO0d3/tIErpI5mvpH/gmg/qhDR
-         fs49Au3OHl5mW8g6KEMZl1ou14CT9FQuc5h3qyUmtXf2tpASWgZuCY81jrPsJPPcakE/
-         crPfqEx7MieyEtHQ960f7uzru6IRU302DGfZVC6BYqoNeAfMZYng46fzhyWQgcEfsDDz
-         jA5A==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0sEXlBoxnDPWC0PSImx6b45EW/XdSxvl0dskuufPCkM=;
+        b=DDGsed/rnR9bezm8l99j+eaiR9Ng8+VD49bJiK1NAcb13ryZua3eiHNJkEUJYM7q4q
+         zCCEua4OxygsHhj1XVYFclEnvfs8dtk8HZUq1aa2fKeCC1ivOtLxqOefmDgSGp9oFlOr
+         hAWnMoFYPcy6/inHtPYp6y+Ll+sbonCF0KjG6nyml+YxQJr6IbSjcrdNbOQkutO8NxkL
+         FEkF/0STPopqzOAi1pVyuF642sMpo4gqoXWfJTZgyjNsKfE0QyHjFu93yXEkV6QK5fCs
+         LXCWy6h56hyXQaKhqHUvZP6L632PtDIPp/Z07qwJ3b4T1YdUnIRaKCRJ/6v0LV3pGdBe
+         QkXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=BWqqHMHlQTzE6Buta1HcUYpsrNV7BinRDVOZdYCTaio=;
-        b=gXNFXqImi7ozTLYRbZaKSWfdlUFLQEoY7mfgE4xHjnLepHj6Ev3KZ2gZIpvi8vyyvM
-         k99QNEOLPS21csDal2NgWubyBKmmD+2rHG/NS0vGa/cFRadpY2yWHjH8Lv5lLjUdoUT9
-         3X3VQGgmUtvxUV8HAUATxXmRLWTHdFiue/qatlQxHHdE8VJ7Bj6erSdQnsrUPtH5b14g
-         aUwd3Hl607fIpNpcTAMdNsLpd3pkVe9bKtmj6zKbujn9Rg4hdGZxPvUIBR+O653FnG9K
-         EknF43WkA8Gs5zyOibJEtGxstrew0t4tm+LflJukJoUSyBW/Uvol1eOwO7Xr019zOXM8
-         LVug==
-X-Gm-Message-State: AOAM5319Tny8ZE0NwGA+hw0UplQtoZBsQjTgkoKmOMHQmgFHOVvLH4vw
-        YyyY3bSRM43rlJfzGb9/O26uZKz2TENSF+P5Z+o=
-X-Google-Smtp-Source: ABdhPJzYWDD2eggXNPpiGFEkmMnHQKloDGKuNKB8UHMgBf0r2FF7eczL9Q9qe3IjakSfb/a/FBpdU6bkU46tVydZkO8=
-X-Received: by 2002:aed:237c:: with SMTP id i57mr18357779qtc.324.1604401232849;
- Tue, 03 Nov 2020 03:00:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0sEXlBoxnDPWC0PSImx6b45EW/XdSxvl0dskuufPCkM=;
+        b=HPoxe2DgKucJT7MDGdEFeQ9wE2ByiidnP/McAZDTED5sEtu5aOEg1AgggRZWPanJ84
+         24i+lw97CEjbRyV12+i40u/65mwzTECJXJcewShM1pM0Vn4/Y0zciIgcq/hOdhdVs11D
+         SmuhyS8g+SFAE6tZwEYDi0Otyg96SB0AlkM1wd5LcXk3UT3fQaooTnOB1KYFH+9qD7u1
+         FumSta+/9680knTE1Pw36hWWNCqRc1UNx0aCqETIKuPmg+6rig8VWVTlku6ToGIgrxUj
+         86WasSFXJ1qJE1xnA4mzu1rhJuWAc5LGhefkRl2VWB8r0ci1PiS7AI+Ao2uTsXEI3Gqr
+         3OOw==
+X-Gm-Message-State: AOAM531S07BJX/DvReVWwJ/ADOFj5dgaZ0QFzpWS6XZy3ucvTRScVyJs
+        rkiOh8+beYyhwjT3Lo/ybTbR2Q==
+X-Google-Smtp-Source: ABdhPJzAyrukqGQuCxp2/NOEVoOC9ZkivmVdXf94z98OJ3dGsVtTaaSEH+8Z/YJLbxgkwYbzErDtUQ==
+X-Received: by 2002:a19:c187:: with SMTP id r129mr8047701lff.533.1604401696649;
+        Tue, 03 Nov 2020 03:08:16 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id w9sm4094835ljh.95.2020.11.03.03.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 03:08:15 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id B845910231C; Tue,  3 Nov 2020 14:08:16 +0300 (+03)
+Date:   Tue, 3 Nov 2020 14:08:16 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v3 2/4] PM: hibernate: make direct map manipulations more
+ explicit
+Message-ID: <20201103110816.t6a3ebtgcm7mfogy@box>
+References: <20201101170815.9795-1-rppt@kernel.org>
+ <20201101170815.9795-3-rppt@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a0c:f246:0:0:0:0:0 with HTTP; Tue, 3 Nov 2020 03:00:32 -0800 (PST)
-Reply-To: ahmedoma01@gmail.com
-From:   Barrister Ahmed Oma <johnsonokocha1@gmail.com>
-Date:   Tue, 3 Nov 2020 03:00:32 -0800
-Message-ID: <CAFcsigrYOTXfvp010KpY0Ajfp3LexYa7k5BurWH64EuZw6uhRA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201101170815.9795-3-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lieber Freund,
+On Sun, Nov 01, 2020 at 07:08:13PM +0200, Mike Rapoport wrote:
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 46b1804c1ddf..054c8cce4236 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
+>  static inline void hibernate_restore_unprotect_page(void *page_address) {}
+>  #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+>  
+> +static inline void hibernate_map_page(struct page *page, int enable)
+> +{
+> +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
+> +		unsigned long addr = (unsigned long)page_address(page);
+> +		int ret;
+> +
+> +		/*
+> +		 * This should not fail because remapping a page here means
+> +		 * that we only update protection bits in an existing PTE.
+> +		 * It is still worth to have WARN_ON() here if something
+> +		 * changes and this will no longer be the case.
+> +		 */
+> +		if (enable)
+> +			ret = set_direct_map_default_noflush(page);
+> +		else
+> +			ret = set_direct_map_invalid_noflush(page);
+> +
+> +		if (WARN_ON(ret))
 
-  Ich bin von Beruf Rechtsanwalt hier in meinem Land Togo in
-Westafrika, einer meiner Mandanten aus Ihrem Land, der hier in der
-Republik Togo mit einer Shell-Entwicklungsfirma zusammengearbeitet
-hat. Mein Klient, seine Frau und ihre einzige Tochter waren hier in
-meinem Land in einen Autounfall verwickelt. Ich habe mich
-entschlossen, Sie zu kontaktieren, damit die 10,5 Millionen Dollar,
-die er hier bei einer Bank zur=C3=BCckgelassen hat, sofort auf Ihr
-Bankkonto =C3=BCberwiesen werden.
+_ONCE?
+> +			return;
+> +
+> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +	} else {
+> +		debug_pagealloc_map_pages(page, 1, enable);
+> +	}
+> +}
+> +
+>  static int swsusp_page_is_free(struct page *);
+>  static void swsusp_set_page_forbidden(struct page *);
+>  static void swsusp_unset_page_forbidden(struct page *);
 
-  Freundliche Gr=C3=BC=C3=9Fe.
-
-  Rechtsanwalt Ahmed Oma
-ahmedoma01@gmail.com
+-- 
+ Kirill A. Shutemov
