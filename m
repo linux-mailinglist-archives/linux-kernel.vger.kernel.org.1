@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670E72A3B03
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACF2A3B08
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgKCDY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:24:27 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2489 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCDY1 (ORCPT
+        id S1727186AbgKCD3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:29:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6737 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgKCD3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:24:27 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CQFWM3XtlzQn3q;
-        Tue,  3 Nov 2020 11:24:15 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 3 Nov 2020 11:24:16 +0800
-Subject: Re: Using fixed LPI number for some Device ID
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        <linux-kernel@vger.kernel.org>
-References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
- <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
- <87eelfksm1.fsf@nanos.tec.linutronix.de>
- <7205d3e0-a03a-a06c-f3f4-9a28e58931e0@huawei.com>
- <87d00yemz4.wl-maz@kernel.org>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <b26b16f3-777e-3f0d-8eac-5739764b387b@huawei.com>
-Date:   Tue, 3 Nov 2020 11:24:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        Mon, 2 Nov 2020 22:29:18 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQFd43f75zkdnT;
+        Tue,  3 Nov 2020 11:29:12 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 11:29:07 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
+CC:     <vpai@akamai.com>, <Joakim.Tjernlund@infinera.com>,
+        <xiyou.wangcong@gmail.com>, <johunt@akamai.com>,
+        <jhs@mojatatu.com>, <jiri@resnulli.us>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <john.fastabend@gmail.com>, <eric.dumazet@gmail.com>,
+        <dsahern@gmail.com>
+Subject: [PATCH stable] net: sch_generic: fix the missing new qdisc assignment bug
+Date:   Tue, 3 Nov 2020 11:25:38 +0800
+Message-ID: <1604373938-211588-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <87d00yemz4.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/31 17:58, Marc Zyngier wrote:
-> On Sat, 31 Oct 2020 03:10:24 +0000,
-> Dongjiu Geng <gengdongjiu@huawei.com> wrote:
-> 
-> [...]
-> 
->>   Sorry for the noise, Because Marc rarely uses the ARM email address,
->>   so I replace to use Marc's kernel.org address instead of ARM email address.
-> Rarely is quite the understatement. I left ARM over a year ago, so the
-> likelihood of me answering at this address in vanishingly small.
+commit 2fb541c862c9 ("net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc")
 
- Thanks for the clarification.
+When the above upstream commit is backported to stable kernel,
+one assignment is missing, which causes two problems reported
+by Joakim and Vishwanath, see [1] and [2].
 
-> 
-> Maybe in a parallel universe? ;-)
-> 
-> 	M.
-> 
-> -- Without deviation from the norm, progress is not possible. .
+So add the assignment back to fix it.
+
+1. https://www.spinics.net/lists/netdev/msg693916.html
+2. https://www.spinics.net/lists/netdev/msg695131.html
+
+Fixes: 749cc0b0c7f3 ("net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ net/sched/sch_generic.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 0e275e1..6e6147a 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -1127,10 +1127,13 @@ static void dev_deactivate_queue(struct net_device *dev,
+ 				 void *_qdisc_default)
+ {
+ 	struct Qdisc *qdisc = rtnl_dereference(dev_queue->qdisc);
++	struct Qdisc *qdisc_default = _qdisc_default;
+ 
+ 	if (qdisc) {
+ 		if (!(qdisc->flags & TCQ_F_BUILTIN))
+ 			set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
++
++		rcu_assign_pointer(dev_queue->qdisc, qdisc_default);
+ 	}
+ }
+ 
+-- 
+2.7.4
+
