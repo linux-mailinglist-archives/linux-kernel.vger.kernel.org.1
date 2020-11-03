@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D312A5633
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CD32A566A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388297AbgKCV0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:26:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730211AbgKCVZz (ORCPT
+        id S2387990AbgKCV1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:27:49 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25596 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733263AbgKCV1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:25:55 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB81C0613D1;
-        Tue,  3 Nov 2020 13:25:55 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id c80so8404780oib.2;
-        Tue, 03 Nov 2020 13:25:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=81wt1tPj/BxcBwwRoWyE7MypzcQnmXMztKbxFRVr+VQ=;
-        b=a36fZagFMGMorZ2liHyAVrUhLCz3yT/mmm3AFEg0P64dpbdkl05IisByWa12Ql6GlJ
-         dp/q3yPH5Vf3nX0CE47TCYyYGHDWEllV+sGuGg936kppzpQC5a89v9jJq3aiu8kzUCfZ
-         OKxK5yStKPm3yCaSY8EjAIbyKWOOcssUTPgxehW9k+LXcu960ZHzG6gB7g665R/WaedT
-         7myTGox5B1bDH19XHzZuqLE6MgwUpvc/p/p85qnOiiQwMLyuDAbSKSV84cym97k3M/V7
-         piz8HjqtUjwkY7+25N/Blq2lJTv9DxKzlN/XxSt0g+w2JEHtY83natwK6cM9VcFXdWR2
-         9bZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=81wt1tPj/BxcBwwRoWyE7MypzcQnmXMztKbxFRVr+VQ=;
-        b=qRJXB4l1d6lZE6/ch0MSFd9onxOU09xOo25Hl7DGy3bp5c6WNo28Z847fWD6srKiZK
-         cQRaCprbC86oF/M+3UE5AM0w/vCy4tZD2yySMhORvuyT67VI08eXoRF14RcQLibRccpr
-         6pRW7YwD35FrbE+7NtbkJwhLrEh/CPvhun6I7idAU7DIhrC91jA+JOpKOdTrqbkpo4sy
-         l4IUQnfYqTUnNbdsj11cbvx2NqHWZEU1rcEPA8vALr3zc/HMgizcNToMCfJsthXZCsxB
-         gVkfPe/a10ayi4cMHWJRrncfRUCA6I1oC1WmJzBCflYB166aNIwrbAOsFXWyz8hZjD4d
-         D31A==
-X-Gm-Message-State: AOAM530HMwhL/6YQQ5e3TXS6EX1yYVxa+6pKx6IVv/BfBKZ3Dmp4lpjT
-        EzMxXaefSfHvPKUtnoYsArBP3wE8EovEO/TUBlo=
-X-Google-Smtp-Source: ABdhPJzGDR5hv+OWS/pJ7ALtJgwBHWDgNKRbbXGjEEuYMpoT17sOWpkGAkNdfhs6dSDZUqLVugZjiJzoAEQMYmKBEd4=
-X-Received: by 2002:aca:c70b:: with SMTP id x11mr763770oif.58.1604438754543;
- Tue, 03 Nov 2020 13:25:54 -0800 (PST)
+        Tue, 3 Nov 2020 16:27:40 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A3LFQvQ030454
+        for <linux-kernel@vger.kernel.org>; Tue, 3 Nov 2020 13:27:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=yCke0IQHgrkifTuQ0Dl6dNGewQHXJuLVGHnNeFGrg0s=;
+ b=L4luCOIZI/FjNwF2ydDRfM7kwgCPJdUkLkJ7LANF4ZuEmz2NN0SK3i7eqz/l2aJwRjc/
+ AcSgT3UijlqJ+3phDhM21l3876FSPZYo8wIrDb4aC/1AivRrCs5t8lKeScEELRIT0eZP
+ j+3tqC3HaNHkqzRKB/A6HNAVXticwfj+QvE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 34k9k3ahrx-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:27:38 -0800
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 3 Nov 2020 13:27:37 -0800
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 5A5F8202668E; Tue,  3 Nov 2020 13:27:27 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     <linux-mm@kvack.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH rfc 0/3] mm: memcg: deprecate cgroup v1 non-hierarchical mode
+Date:   Tue, 3 Nov 2020 13:27:22 -0800
+Message-ID: <20201103212725.3716088-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20201001230403.2445035-1-danielwinkler@google.com>
- <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com>
- <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
- <CAP2xMbs4sUyap_-YAFA6=52Qj+_uxGww7LwmbWACVC0j0LvbLQ@mail.gmail.com>
- <CABBYNZ+0LW0sOPPe+QHWLn7XXdAjqKB3Prm21SyUQLeQqW=StA@mail.gmail.com> <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com>
-In-Reply-To: <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 3 Nov 2020 13:25:43 -0800
-Message-ID: <CABBYNZL835FLHq3y_1_k0vyQEW2_teoqvkt=pPDjqENegTU4FQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
-To:     Daniel Winkler <danielwinkler@google.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_14:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ mlxlogscore=565 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ adultscore=0 malwarescore=0 clxscore=1015 suspectscore=1 spamscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030142
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+The non-hierarchical cgroup v1 mode is a legacy of early days
+of the memory controller and doesn't bring any value today.
+However, it complicates the code and creates many edge cases
+all over the memory controller code.
 
-On Tue, Nov 3, 2020 at 9:42 AM Daniel Winkler <danielwinkler@google.com> wrote:
->
-> Hello Luiz,
->
-> Thank you for the information. It is good to know that this tool is
-> actively used and that there is a way to skip existing flaky tests.
-> Just for clarification, is this a requirement to land the kernel
-> changes, i.e. should I prioritize adding these tests immediately to
-> move the process forward? Or can we land the changes based on the
-> testing I have already done and I'll work on these tests in parallel?
-
-We used to require updates to mgmt-tester but it seems some of recent
-command did not have a test yet, but if we intend to have the CI to
-tests the kernel changes properly I think we should start to requiring
-it some basic testing, obviously it will be hard to cover everything
-that is affected by a new command but the basic formatting, etc, we
-should be able to test, also tester supports the concept of 'not run'
-which we can probably use for experimental commands.
-
-> Thanks,
-> Daniel
->
-> On Thu, Oct 29, 2020 at 5:04 PM Luiz Augusto von Dentz
-> <luiz.dentz@gmail.com> wrote:
-> >
-> > Hi Daniel,
-> >
-> > On Thu, Oct 29, 2020 at 3:25 PM Daniel Winkler <danielwinkler@google.com> wrote:
-> > >
-> > > Hi Luiz,
-> > >
-> > > Thank you for the feedback regarding mgmt-tester. I intended to use
-> > > the tool, but found that it had a very high rate of test failure even
-> > > before I started adding new tests. If you have a strong preference for
-> > > its use, I can look into it again but it may take some time. These
-> > > changes were tested with manual and automated functional testing on
-> > > our end.
-> > >
-> > > Please let me know your thoughts.
-> >
-> > Total: 406, Passed: 358 (88.2%), Failed: 43, Not Run: 5
-> >
-> > Looks like there are some 43 tests failing, we will need to fix these
-> > but it should prevent us to add new ones as well, you can use -p to
-> > filter what tests to run if you want to avoid these for now.
+It's a good time to deprecate it completely. This patchset removes
+the internal logic, adjusts the user interface and updates
+the documentation. The alt patch removes some bits of the cgroup
+core code, which become obsolete.
 
 
+Roman Gushchin (3):
+  mm: memcg: deprecate the non-hierarchical mode
+  docs: cgroup-v1: reflect the deprecation of the non-hierarchical mode
+  cgroup: remove obsoleted broken_hierarchy and warned_broken_hierarchy
 
--- 
-Luiz Augusto von Dentz
+ .../admin-guide/cgroup-v1/memcg_test.rst      |  8 +-
+ .../admin-guide/cgroup-v1/memory.rst          | 40 +++------
+ include/linux/cgroup-defs.h                   | 15 ----
+ include/linux/memcontrol.h                    |  7 --
+ kernel/cgroup/cgroup.c                        | 12 ---
+ mm/memcontrol.c                               | 90 +++----------------
+ 6 files changed, 29 insertions(+), 143 deletions(-)
+
+--=20
+2.26.2
+
