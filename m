@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED4F2A4159
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF432A4158
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgKCKMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:12:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727470AbgKCKML (ORCPT
+        id S1728108AbgKCKMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728072AbgKCKMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:12:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604398329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OyipNVQSi+6EWMMakyEP0aw5V3oxIqNV8RP/zduqoUw=;
-        b=GNa/9Cygvl4mUZcGn7V7OtWZ6w8d4PuD4m+FHGDrOVFBMKqurcOe9YTmT0AQ+yZNSJjHk3
-        Vra/tNN+2dbcnohmTsjObAJiPL40+W45ireLES3gNXRyBu5KSfPCWAdaigxIEP5m5hQSWO
-        lmbviLNsQlNizkBtTFZ/0RqbcYir2mY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-LbFmUSJyMSGOd-g7tICDgg-1; Tue, 03 Nov 2020 05:12:05 -0500
-X-MC-Unique: LbFmUSJyMSGOd-g7tICDgg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B23E186840C;
-        Tue,  3 Nov 2020 10:12:00 +0000 (UTC)
-Received: from [10.36.115.7] (ovpn-115-7.ams2.redhat.com [10.36.115.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 771815D9CC;
-        Tue,  3 Nov 2020 10:11:52 +0000 (UTC)
-Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20200924132904.1391-1-rppt@kernel.org>
- <9c38ac3b-c677-6a87-ce82-ec53b69eaf71@redhat.com>
- <20201102174308.GF4879@kernel.org>
- <d4cb2c87-4744-3929-cedd-2be78625a741@redhat.com>
- <20201103095247.GH4879@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5709dadf-81c6-5b40-93d4-fbef94d5aad8@redhat.com>
-Date:   Tue, 3 Nov 2020 11:11:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 3 Nov 2020 05:12:15 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4CAC061A48
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:12:14 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id k1so15593863ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 02:12:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b9Ktpm35fisVuHEhjhohgaqyboE8BmrrMoCITk9vnK8=;
+        b=0kZJ8Rb9+0/H3MVDUevyCTWAc1pKYDKmZzYacQKCMmC/UQ66qmBgifq30qeC2iVztI
+         ATPY1knKGSXDzJ6+Nm3tm3Ffn81WkUy/sBCmPfD94FibScrq8/Ui+9TUYldHJ7pcnk1t
+         gx+nhhl2zwwSRNNGE6X3g+mK8ICIfWN15TzWFBAm2Ac+Fnp/Nc7mvMvQxol3TgeHLuHe
+         fB2HlcDfVoQUKXEDUTDlyUi1MwQ1IJbHWYhRPhxFdctoJ/ps1THqNVawMwUkgd/uHgQv
+         AYOBJizY9XV1L84dWspkXE7W+jTkhJPV/Ws9WaUAfWMNJujPYu+ExPkpZXByTNBy8wKU
+         VaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b9Ktpm35fisVuHEhjhohgaqyboE8BmrrMoCITk9vnK8=;
+        b=TWaLpdZvYie7FfflqT0U476MdHfZrcHmlEBPLL59IGXI5siV4ha1Sl9SUCjse7W3tv
+         hLOtAmYPhudESWW/PsSfqhXjlJvk3eijnaQh1w+IOlPTYjvu4Q4y2l2P1bhyKJu0v5eT
+         9rbt/qCwASHhult+tPr4Gf7lkMejizB8RASPkSBazNiqGdQaR3nvgCt53um1/Qx+x3fi
+         RWUkIvO+Vj9Y1c5FnZGFMGGbRPtHUk4LPLedR3hIKej0tXhyFqfWglBKddCmSuZClhw3
+         S14ld4j1miNFD85fZqfta0zKcDh5KXvaiKM17FyIzedAI8X3jHFXoZCrjYZ51kBkELRo
+         NqJw==
+X-Gm-Message-State: AOAM530gDA8YPVFzw8ZTsrF/vdwW0lDihxyZB2Qv3vw/ucW+aYY+74ku
+        BvDL5lx7+wStVydVl1vbvqhGWS720B9Ikr9LyMCWMw==
+X-Google-Smtp-Source: ABdhPJxXaKRnidyqbx6iUG254lVJzvxaSAJ3Y8t7tBOtYCNJcNKDXTe4r/tIo6bcU8qIdoqImm6tntmYdwdU1LT5yRY=
+X-Received: by 2002:a05:6e02:926:: with SMTP id o6mr14285653ilt.287.1604398333472;
+ Tue, 03 Nov 2020 02:12:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201103095247.GH4879@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201102152037.963-1-brgl@bgdev.pl> <21d80265fccfcb5d76851c84d1c2d88e0421ab85.camel@perches.com>
+In-Reply-To: <21d80265fccfcb5d76851c84d1c2d88e0421ab85.camel@perches.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 3 Nov 2020 11:12:02 +0100
+Message-ID: <CAMRc=Me4-4Cmoq3UdpYEEhERP6fvt97bEJsZYhrcFSQf+a_voA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] slab: provide and use krealloc_array()
+To:     Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-edac@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>, linux-mm@kvack.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.11.20 10:52, Mike Rapoport wrote:
-> On Mon, Nov 02, 2020 at 06:51:09PM +0100, David Hildenbrand wrote:
->>>> Assume you have a system with quite some ZONE_MOVABLE memory (esp. in
->>>> virtualized environments), eating up a significant amount of !ZONE_MOVABLE
->>>> memory dynamically at runtime can lead to non-obvious issues. It looks like
->>>> you have plenty of free memory, but the kernel might still OOM when trying
->>>> to do kernel allocations e.g., for pagetables. With CMA we at least know
->>>> what we're dealing with - it behaves like ZONE_MOVABLE except for the owner
->>>> that can place unmovable pages there. We can use it to compute statically
->>>> the amount of ZONE_MOVABLE memory we can have in the system without doing
->>>> harm to the system.
->>>
->>> Why would you say that secretmem allocates from !ZONE_MOVABLE?
->>> If we put boot time reservations aside, the memory allocation for
->>> secretmem follows the same rules as the memory allocations for any file
->>> descriptor. That means we allocate memory with GFP_HIGHUSER_MOVABLE.
->>
->> Oh, okay - I missed that! I had the impression that pages are unmovable and
->> allocating from ZONE_MOVABLE would be a violation of that?
->>
->>> After the allocation the memory indeed becomes unmovable but it's not
->>> like we are eating memory from other zones here.
->>
->> ... and here you have your problem. That's a no-no. We only allow it in very
->> special cases where it can't be avoided - e.g., vfio having to pin guest
->> memory when passing through memory to VMs.
->>
->> Hotplug memory, online it to ZONE_MOVABLE. Allocate secretmem. Try to unplug
->> the memory again -> endless loop in offline_pages().
->>
->> Or have a CMA area that gets used with GFP_HIGHUSER_MOVABLE. Allocate
->> secretmem. The owner of the area tries to allocate memory - always fails.
->> Purpose of CMA destroyed.
->>
->>>
->>>> Ideally, we would want to support page migration/compaction and allow for
->>>> allocation from ZONE_MOVABLE as well. Would involve temporarily mapping,
->>>> copying, unmapping. Sounds feasible, but not sure which roadblocks we would
->>>> find on the way.
->>>
->>> We can support migration/compaction with temporary mapping. The first
->>> roadblock I've hit there was that migration allocates 4K destination
->>> page and if we use it in secret map we are back to scrambling the direct
->>> map into 4K pieces. It still sounds feasible but not as trivial :)
->>
->> That sounds like the proper way for me to do it then.
->   
-> Although migration of secretmem pages sounds feasible now, there maybe
-> other issues I didn't see because I'm not very familiar with
-> migration/compaction code.
+On Tue, Nov 3, 2020 at 5:14 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-11-02 at 16:20 +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Andy brought to my attention the fact that users allocating an array of
+> > equally sized elements should check if the size multiplication doesn't
+> > overflow. This is why we have helpers like kmalloc_array().
+> >
+> > However we don't have krealloc_array() equivalent and there are many
+> > users who do their own multiplication when calling krealloc() for arrays.
+> >
+> > This series provides krealloc_array() and uses it in a couple places.
+>
+> My concern about this is a possible assumption that __GFP_ZERO will
+> work, and as far as I know, it will not.
+>
 
-Migration of PMDs might also be feasible -  and it would be even 
-cleaner. But I agree that that might require more work and starting with 
-something simpler (!movable) is the right way to move forward.
+Yeah so I had this concern for devm_krealloc() and even sent a patch
+that extended it to honor __GFP_ZERO before I noticed that regular
+krealloc() silently ignores __GFP_ZERO. I'm not sure if this is on
+purpose. Maybe we should either make krealloc() honor __GFP_ZERO or
+explicitly state in its documentation that it ignores it?
 
--- 
-Thanks,
+This concern isn't really related to this patch as such - it's more of
+a general krealloc() inconsistency.
 
-David / dhildenb
-
+Bartosz
