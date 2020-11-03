@@ -2,247 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B192A48DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB75C2A48D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgKCPCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:02:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54590 "EHLO mail.kernel.org"
+        id S1728153AbgKCPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:02:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728107AbgKCPAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:00:55 -0500
+        id S1727906AbgKCPA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 10:00:56 -0500
 Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 943B321534;
-        Tue,  3 Nov 2020 15:00:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29E89223BF;
+        Tue,  3 Nov 2020 15:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604415654;
-        bh=TEL/YbabPRQncJRuvMmw90xCOwuk+tAGEVoROWRsXaw=;
+        s=default; t=1604415656;
+        bh=sCYd+MasIxW818AJrDTnfUu/KGyZ5UfToQ5UC/b/9vo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VPDR7lRXvEZlqYaxZtVkzibXy7EneyQsTAIPJwOwNuN7NtOiww0NY4ODV/QSTwje7
-         JzycUdI2W9s4yskR7bb0nW1I/poFvHb9tDZySoHvp2kwxDoclgBgtdanuSXy3XPRRA
-         zBnuYQG5X9jiwcfilq7Ob+jDMX4zt3isMeqGSy+A=
+        b=w8LcFfRGfEtt4RyjektnlkHCC7fB8nYZHxTpQEmT6spWG6RsQzOegd2RFhICeOFHW
+         hJa8ouQYNtmkV57nuioChL8GxlhiLYdgvLSl3wG61Uk7UXYElsQPq1sy54MrYegc4C
+         sIH3+a2WtoY7+DSYlFZ9i3BA2tNM06xr9aXAB6jw=
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Tal Cohen <talcohen@habana.ai>
-Subject: [PATCH] habanalabs: use enum for CB allocation options
-Date:   Tue,  3 Nov 2020 17:00:44 +0200
-Message-Id: <20201103150046.19074-2-ogabbay@kernel.org>
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 2/3] habanalabs/gaudi: Set DMA5 QMAN internal
+Date:   Tue,  3 Nov 2020 17:00:45 +0200
+Message-Id: <20201103150046.19074-3-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201103150046.19074-1-ogabbay@kernel.org>
 References: <20201103150046.19074-1-ogabbay@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tal Cohen <talcohen@habana.ai>
+From: Ofir Bitton <obitton@habana.ai>
 
-In the future there will be situations where queues can accept either
-kernel allocated CBs or user allocated CBs, depending on different
-states.
+DMA5 QMAN is designated to be used for reduction process, hence it will
+be no longer configured as external queue.
 
-Therefore, instead of using a boolean variable of kernel/user allocated
-CB, we need to use a bitmask to indicate that, which will allow to
-combine the two options.
-
-Add a flag to the uapi so the user will be able to indicate whether
-the CB was allocated by kernel or by user. Of course the driver
-validates that.
-
-Signed-off-by: Tal Cohen <talcohen@habana.ai>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- .../habanalabs/common/command_submission.c    | 31 +++++++++++++++++--
- drivers/misc/habanalabs/common/habanalabs.h   | 19 ++++++++++--
- drivers/misc/habanalabs/gaudi/gaudi.c         | 13 +++++---
- drivers/misc/habanalabs/goya/goya.c           |  6 ++--
- include/uapi/misc/habanalabs.h                | 16 ++++++++++
- 5 files changed, 73 insertions(+), 12 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c  | 31 +++++++++++---------------
+ drivers/misc/habanalabs/gaudi/gaudiP.h |  8 +++----
+ include/uapi/misc/habanalabs.h         | 12 +++++-----
+ 3 files changed, 23 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 1f8b53d42e3a..ea480b14703f 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -568,9 +568,36 @@ static int validate_queue_index(struct hl_device *hdev,
- 		return -EINVAL;
- 	}
- 
--	*queue_type = hw_queue_prop->type;
--	*is_kernel_allocated_cb = !!hw_queue_prop->requires_kernel_cb;
-+	/* When hw queue type isn't QUEUE_TYPE_HW,
-+	 * USER_ALLOC_CB flag shall be referred as "don't care".
-+	 */
-+	if (hw_queue_prop->type == QUEUE_TYPE_HW) {
-+		if (chunk->cs_chunk_flags & HL_CS_CHUNK_FLAGS_USER_ALLOC_CB) {
-+			if (!(hw_queue_prop->cb_alloc_flags & CB_ALLOC_USER)) {
-+				dev_err(hdev->dev,
-+					"Queue index %d doesn't support user CB\n",
-+					chunk->queue_index);
-+				return -EINVAL;
-+			}
- 
-+			*is_kernel_allocated_cb = false;
-+		} else {
-+			if (!(hw_queue_prop->cb_alloc_flags &
-+					CB_ALLOC_KERNEL)) {
-+				dev_err(hdev->dev,
-+					"Queue index %d doesn't support kernel CB\n",
-+					chunk->queue_index);
-+				return -EINVAL;
-+			}
-+
-+			*is_kernel_allocated_cb = true;
-+		}
-+	} else {
-+		*is_kernel_allocated_cb = !!(hw_queue_prop->cb_alloc_flags
-+						& CB_ALLOC_KERNEL);
-+	}
-+
-+	*queue_type = hw_queue_prop->type;
- 	return 0;
- }
- 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 968431c7ce20..5983850d3f8f 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -206,6 +206,17 @@ struct hl_outbound_pci_region {
- 	u64	size;
- };
- 
-+/*
-+ * enum queue_cb_alloc_flags - Indicates queue support for CBs that
-+ * allocated by Kernel or by User
-+ * @CB_ALLOC_KERNEL: support only CBs that allocated by Kernel
-+ * @CB_ALLOC_USER: support only CBs that allocated by User
-+ */
-+enum queue_cb_alloc_flags {
-+	CB_ALLOC_KERNEL = 0x1,
-+	CB_ALLOC_USER   = 0x2
-+};
-+
- /*
-  * struct hl_hw_sob - H/W SOB info.
-  * @hdev: habanalabs device structure.
-@@ -223,16 +234,18 @@ struct hl_hw_sob {
- /**
-  * struct hw_queue_properties - queue information.
-  * @type: queue type.
-+ * @queue_cb_alloc_flags: bitmap which indicates if the hw queue supports CB
-+ *                        that allocated by the Kernel driver and therefore,
-+ *                        a CB handle can be provided for jobs on this queue.
-+ *                        Otherwise, a CB address must be provided.
-  * @driver_only: true if only the driver is allowed to send a job to this queue,
-  *               false otherwise.
-- * @requires_kernel_cb: true if a CB handle must be provided for jobs on this
-- *                      queue, false otherwise (a CB address must be provided).
-  * @supports_sync_stream: True if queue supports sync stream
-  */
- struct hw_queue_properties {
- 	enum hl_queue_type	type;
-+	enum queue_cb_alloc_flags cb_alloc_flags;
- 	u8			driver_only;
--	u8			requires_kernel_cb;
- 	u8			supports_sync_stream;
- };
- 
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 065c2377c1fa..559e22a5696c 100644
+index 91916040faac..2ba15d3470dd 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -381,23 +381,28 @@ static int gaudi_get_fixed_properties(struct hl_device *hdev)
- 		if (gaudi_queue_type[i] == QUEUE_TYPE_EXT) {
- 			prop->hw_queues_props[i].type = QUEUE_TYPE_EXT;
- 			prop->hw_queues_props[i].driver_only = 0;
--			prop->hw_queues_props[i].requires_kernel_cb = 1;
- 			prop->hw_queues_props[i].supports_sync_stream = 1;
-+			prop->hw_queues_props[i].cb_alloc_flags =
-+				CB_ALLOC_KERNEL;
- 			num_sync_stream_queues++;
- 		} else if (gaudi_queue_type[i] == QUEUE_TYPE_CPU) {
- 			prop->hw_queues_props[i].type = QUEUE_TYPE_CPU;
- 			prop->hw_queues_props[i].driver_only = 1;
--			prop->hw_queues_props[i].requires_kernel_cb = 0;
- 			prop->hw_queues_props[i].supports_sync_stream = 0;
-+			prop->hw_queues_props[i].cb_alloc_flags =
-+				CB_ALLOC_KERNEL;
- 		} else if (gaudi_queue_type[i] == QUEUE_TYPE_INT) {
- 			prop->hw_queues_props[i].type = QUEUE_TYPE_INT;
- 			prop->hw_queues_props[i].driver_only = 0;
--			prop->hw_queues_props[i].requires_kernel_cb = 0;
-+			prop->hw_queues_props[i].supports_sync_stream = 0;
-+			prop->hw_queues_props[i].cb_alloc_flags =
-+				CB_ALLOC_USER;
- 		} else if (gaudi_queue_type[i] == QUEUE_TYPE_NA) {
- 			prop->hw_queues_props[i].type = QUEUE_TYPE_NA;
- 			prop->hw_queues_props[i].driver_only = 0;
--			prop->hw_queues_props[i].requires_kernel_cb = 0;
- 			prop->hw_queues_props[i].supports_sync_stream = 0;
-+			prop->hw_queues_props[i].cb_alloc_flags =
-+				CB_ALLOC_USER;
- 		}
- 	}
- 
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index e8bf0b79cd67..7012fcdab837 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -373,20 +373,20 @@ int goya_get_fixed_properties(struct hl_device *hdev)
- 	for (i = 0 ; i < NUMBER_OF_EXT_HW_QUEUES ; i++) {
- 		prop->hw_queues_props[i].type = QUEUE_TYPE_EXT;
- 		prop->hw_queues_props[i].driver_only = 0;
--		prop->hw_queues_props[i].requires_kernel_cb = 1;
-+		prop->hw_queues_props[i].cb_alloc_flags = CB_ALLOC_KERNEL;
- 	}
- 
- 	for (; i < NUMBER_OF_EXT_HW_QUEUES + NUMBER_OF_CPU_HW_QUEUES ; i++) {
- 		prop->hw_queues_props[i].type = QUEUE_TYPE_CPU;
- 		prop->hw_queues_props[i].driver_only = 1;
--		prop->hw_queues_props[i].requires_kernel_cb = 0;
-+		prop->hw_queues_props[i].cb_alloc_flags = CB_ALLOC_KERNEL;
- 	}
- 
- 	for (; i < NUMBER_OF_EXT_HW_QUEUES + NUMBER_OF_CPU_HW_QUEUES +
- 			NUMBER_OF_INT_HW_QUEUES; i++) {
- 		prop->hw_queues_props[i].type = QUEUE_TYPE_INT;
- 		prop->hw_queues_props[i].driver_only = 0;
--		prop->hw_queues_props[i].requires_kernel_cb = 0;
-+		prop->hw_queues_props[i].cb_alloc_flags = CB_ALLOC_USER;
- 	}
- 
- 	prop->completion_queues_count = NUMBER_OF_CMPLT_QUEUES;
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index 9705b8adb60c..5753157e71b3 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -490,6 +490,22 @@ union hl_cb_args {
- 	struct hl_cb_out out;
+@@ -38,7 +38,7 @@
+  *
+  * MMU is always enabled.
+  *
+- * QMAN DMA channels 0,1,5 (PCI DMAN):
++ * QMAN DMA channels 0,1 (PCI DMAN):
+  *     - DMA is not secured.
+  *     - PQ and CQ are secured.
+  *     - CP is secured: The driver needs to parse CB but WREG should be allowed
+@@ -55,7 +55,7 @@
+  *       idle)
+  *     - MMU page tables area clear (happens on init)
+  *
+- * QMAN DMA 2-4,6,7, TPC, MME, NIC:
++ * QMAN DMA 2-7, TPC, MME, NIC:
+  * PQ is secured and is located on the Host (HBM CON TPC3 bug)
+  * CQ, CP and the engine are not secured
+  *
+@@ -113,12 +113,12 @@ static const char gaudi_irq_name[GAUDI_MSI_ENTRIES][GAUDI_MAX_STRING_LEN] = {
+ static const u8 gaudi_dma_assignment[GAUDI_DMA_MAX] = {
+ 	[GAUDI_PCI_DMA_1] = GAUDI_ENGINE_ID_DMA_0,
+ 	[GAUDI_PCI_DMA_2] = GAUDI_ENGINE_ID_DMA_1,
+-	[GAUDI_PCI_DMA_3] = GAUDI_ENGINE_ID_DMA_5,
+ 	[GAUDI_HBM_DMA_1] = GAUDI_ENGINE_ID_DMA_2,
+ 	[GAUDI_HBM_DMA_2] = GAUDI_ENGINE_ID_DMA_3,
+ 	[GAUDI_HBM_DMA_3] = GAUDI_ENGINE_ID_DMA_4,
+-	[GAUDI_HBM_DMA_4] = GAUDI_ENGINE_ID_DMA_6,
+-	[GAUDI_HBM_DMA_5] = GAUDI_ENGINE_ID_DMA_7
++	[GAUDI_HBM_DMA_4] = GAUDI_ENGINE_ID_DMA_5,
++	[GAUDI_HBM_DMA_5] = GAUDI_ENGINE_ID_DMA_6,
++	[GAUDI_HBM_DMA_6] = GAUDI_ENGINE_ID_DMA_7
  };
  
-+/* HL_CS_CHUNK_FLAGS_ values
-+ *
-+ * HL_CS_CHUNK_FLAGS_USER_ALLOC_CB:
-+ *      Indicates if the CB was allocated and mapped by userspace.
-+ *      User allocated CB is a command buffer allocated by the user, via malloc
-+ *      (or similar). After allocating the CB, the user invokes “memory ioctl”
-+ *      to map the user memory into a device virtual address. The user provides
-+ *      this address via the cb_handle field. The interface provides the
-+ *      ability to create a large CBs, Which aren’t limited to
-+ *      “HL_MAX_CB_SIZE”. Therefore, it increases the PCI-DMA queues
-+ *      throughput. This CB allocation method also reduces the use of Linux
-+ *      DMA-able memory pool. Which are limited and used by other Linux
-+ *      sub-systems.
-+ */
-+#define HL_CS_CHUNK_FLAGS_USER_ALLOC_CB 0x1
-+
+ static const u8 gaudi_cq_assignment[NUMBER_OF_CMPLT_QUEUES] = {
+@@ -130,10 +130,6 @@ static const u8 gaudi_cq_assignment[NUMBER_OF_CMPLT_QUEUES] = {
+ 	[5] = GAUDI_QUEUE_ID_DMA_1_1,
+ 	[6] = GAUDI_QUEUE_ID_DMA_1_2,
+ 	[7] = GAUDI_QUEUE_ID_DMA_1_3,
+-	[8] = GAUDI_QUEUE_ID_DMA_5_0,
+-	[9] = GAUDI_QUEUE_ID_DMA_5_1,
+-	[10] = GAUDI_QUEUE_ID_DMA_5_2,
+-	[11] = GAUDI_QUEUE_ID_DMA_5_3
+ };
+ 
+ static const u16 gaudi_packet_sizes[MAX_PACKET_ID] = {
+@@ -249,10 +245,10 @@ static enum hl_queue_type gaudi_queue_type[GAUDI_QUEUE_ID_SIZE] = {
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_4_1 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_4_2 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_4_3 */
+-	QUEUE_TYPE_EXT, /* GAUDI_QUEUE_ID_DMA_5_0 */
+-	QUEUE_TYPE_EXT, /* GAUDI_QUEUE_ID_DMA_5_1 */
+-	QUEUE_TYPE_EXT, /* GAUDI_QUEUE_ID_DMA_5_2 */
+-	QUEUE_TYPE_EXT, /* GAUDI_QUEUE_ID_DMA_5_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_5_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_5_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_5_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_5_3 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_6_0 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_6_1 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_DMA_6_2 */
+@@ -979,8 +975,7 @@ static int gaudi_alloc_internal_qmans_pq_mem(struct hl_device *hdev)
+ 		q = &gaudi->internal_qmans[i];
+ 
+ 		switch (i) {
+-		case GAUDI_QUEUE_ID_DMA_2_0 ... GAUDI_QUEUE_ID_DMA_4_3:
+-		case GAUDI_QUEUE_ID_DMA_6_0 ... GAUDI_QUEUE_ID_DMA_7_3:
++		case GAUDI_QUEUE_ID_DMA_2_0 ... GAUDI_QUEUE_ID_DMA_7_3:
+ 			q->pq_size = HBM_DMA_QMAN_SIZE_IN_BYTES;
+ 			break;
+ 		case GAUDI_QUEUE_ID_MME_0_0 ... GAUDI_QUEUE_ID_MME_1_3:
+@@ -3433,21 +3428,21 @@ static void gaudi_ring_doorbell(struct hl_device *hdev, u32 hw_queue_id, u32 pi)
+ 		break;
+ 
+ 	case GAUDI_QUEUE_ID_DMA_5_0...GAUDI_QUEUE_ID_DMA_5_3:
+-		dma_id = gaudi_dma_assignment[GAUDI_PCI_DMA_3];
++		dma_id = gaudi_dma_assignment[GAUDI_HBM_DMA_4];
+ 		dma_qm_offset = dma_id * DMA_QMAN_OFFSET;
+ 		q_off = dma_qm_offset + ((hw_queue_id - 1) & 0x3) * 4;
+ 		db_reg_offset = mmDMA0_QM_PQ_PI_0 + q_off;
+ 		break;
+ 
+ 	case GAUDI_QUEUE_ID_DMA_6_0...GAUDI_QUEUE_ID_DMA_6_3:
+-		dma_id = gaudi_dma_assignment[GAUDI_HBM_DMA_4];
++		dma_id = gaudi_dma_assignment[GAUDI_HBM_DMA_5];
+ 		dma_qm_offset = dma_id * DMA_QMAN_OFFSET;
+ 		q_off = dma_qm_offset + ((hw_queue_id - 1) & 0x3) * 4;
+ 		db_reg_offset = mmDMA0_QM_PQ_PI_0 + q_off;
+ 		break;
+ 
+ 	case GAUDI_QUEUE_ID_DMA_7_0...GAUDI_QUEUE_ID_DMA_7_3:
+-		dma_id = gaudi_dma_assignment[GAUDI_HBM_DMA_5];
++		dma_id = gaudi_dma_assignment[GAUDI_HBM_DMA_6];
+ 		dma_qm_offset = dma_id * DMA_QMAN_OFFSET;
+ 		q_off = dma_qm_offset + ((hw_queue_id - 1) & 0x3) * 4;
+ 		db_reg_offset = mmDMA0_QM_PQ_PI_0 + q_off;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index 5b99c94ebe36..73171d8b40d8 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -15,7 +15,7 @@
+ #include "../include/gaudi/gaudi.h"
+ #include "../include/gaudi/gaudi_async_events.h"
+ 
+-#define NUMBER_OF_EXT_HW_QUEUES		12
++#define NUMBER_OF_EXT_HW_QUEUES		8
+ #define NUMBER_OF_CMPLT_QUEUES		NUMBER_OF_EXT_HW_QUEUES
+ #define NUMBER_OF_CPU_HW_QUEUES		1
+ #define NUMBER_OF_INT_HW_QUEUES		100
+@@ -62,8 +62,8 @@
+ #error "GAUDI_MAX_PENDING_CS must be power of 2 and greater than 1"
+ #endif
+ 
+-#define PCI_DMA_NUMBER_OF_CHNLS		3
+-#define HBM_DMA_NUMBER_OF_CHNLS		5
++#define PCI_DMA_NUMBER_OF_CHNLS		2
++#define HBM_DMA_NUMBER_OF_CHNLS		6
+ #define DMA_NUMBER_OF_CHNLS		(PCI_DMA_NUMBER_OF_CHNLS + \
+ 						HBM_DMA_NUMBER_OF_CHNLS)
+ 
+@@ -205,12 +205,12 @@
+ enum gaudi_dma_channels {
+ 	GAUDI_PCI_DMA_1,
+ 	GAUDI_PCI_DMA_2,
+-	GAUDI_PCI_DMA_3,
+ 	GAUDI_HBM_DMA_1,
+ 	GAUDI_HBM_DMA_2,
+ 	GAUDI_HBM_DMA_3,
+ 	GAUDI_HBM_DMA_4,
+ 	GAUDI_HBM_DMA_5,
++	GAUDI_HBM_DMA_6,
+ 	GAUDI_DMA_MAX
+ };
+ 
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index 2b244d0bdc26..4661a74f0425 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -18,8 +18,8 @@
+ #define GOYA_KMD_SRAM_RESERVED_SIZE_FROM_START		0x8000	/* 32KB */
+ #define GAUDI_DRIVER_SRAM_RESERVED_SIZE_FROM_START	0x80	/* 128 bytes */
+ 
+-#define GAUDI_FIRST_AVAILABLE_W_S_SYNC_OBJECT		48
+-#define GAUDI_FIRST_AVAILABLE_W_S_MONITOR		24
++#define GAUDI_FIRST_AVAILABLE_W_S_SYNC_OBJECT		32
++#define GAUDI_FIRST_AVAILABLE_W_S_MONITOR		16
  /*
-  * This structure size must always be fixed to 64-bytes for backward
-  * compatibility
+  * Goya queue Numbering
+  *
+@@ -76,10 +76,10 @@ enum gaudi_queue_id {
+ 	GAUDI_QUEUE_ID_DMA_4_1 = 18,	/* internal */
+ 	GAUDI_QUEUE_ID_DMA_4_2 = 19,	/* internal */
+ 	GAUDI_QUEUE_ID_DMA_4_3 = 20,	/* internal */
+-	GAUDI_QUEUE_ID_DMA_5_0 = 21,	/* external */
+-	GAUDI_QUEUE_ID_DMA_5_1 = 22,	/* external */
+-	GAUDI_QUEUE_ID_DMA_5_2 = 23,	/* external */
+-	GAUDI_QUEUE_ID_DMA_5_3 = 24,	/* external */
++	GAUDI_QUEUE_ID_DMA_5_0 = 21,	/* internal */
++	GAUDI_QUEUE_ID_DMA_5_1 = 22,	/* internal */
++	GAUDI_QUEUE_ID_DMA_5_2 = 23,	/* internal */
++	GAUDI_QUEUE_ID_DMA_5_3 = 24,	/* internal */
+ 	GAUDI_QUEUE_ID_DMA_6_0 = 25,	/* internal */
+ 	GAUDI_QUEUE_ID_DMA_6_1 = 26,	/* internal */
+ 	GAUDI_QUEUE_ID_DMA_6_2 = 27,	/* internal */
 -- 
 2.17.1
 
