@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8658F2A5306
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEB62A5219
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbgKCUzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:55:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56312 "EHLO mail.kernel.org"
+        id S1730519AbgKCUqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:46:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732356AbgKCUzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:55:36 -0500
+        id S1731242AbgKCUql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:46:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A24722226;
-        Tue,  3 Nov 2020 20:55:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D3EA20719;
+        Tue,  3 Nov 2020 20:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436936;
-        bh=Nf5fYs/RzYOmfwtH/Nb7YpKEX9Euk0tNiAOKPexxcdU=;
+        s=default; t=1604436400;
+        bh=RAbfcBtPU2Wnssdb5lZqLaTg32sXNODhB8EASG+jGBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPglBkPyw9EjtuJSwNDftmmPCzHOrqs5F7UWYRw9nZaGexRirkimdAvqWQ7tF3aeo
-         OvOomL6pom2ntv5TYR5vLpQACKrRfDgPm+ju5jeXbAX39wzkDGKh4SSwIRzI4x8Ol2
-         hFOUuY6DreBX3nOouSwqp+vDCYAqdrvlOcuEKHuE=
+        b=0/KlCny0Iu8M9SoQl+R6iovItDm70gBRKlcJB2jBzI2IZB+fkmEWJClSbky90krdt
+         4d25RybxrZf2XpoW0Ps14l+EL7r4+SxQpMZwYsLY4kExJOEn6eHOTQlao9TPocbgDc
+         JzrzFVjPe8DAb3eEPLgbzS9raVNWF3wDRhrblYnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sathishkumar Muruganandam <murugana@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/214] ath10k: fix VHT NSS calculation when STBC is enabled
-Date:   Tue,  3 Nov 2020 21:34:45 +0100
-Message-Id: <20201103203253.560516807@linuxfoundation.org>
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.9 235/391] btrfs: fix use-after-free on readahead extent after failure to create it
+Date:   Tue,  3 Nov 2020 21:34:46 +0100
+Message-Id: <20201103203402.852626920@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +45,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 99f41b8e43b8b4b31262adb8ac3e69088fff1289 ]
+commit 83bc1560e02e25c6439341352024ebe8488f4fbd upstream.
 
-When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
-calculation for SU case.
+If we fail to find suitable zones for a new readahead extent, we end up
+leaving a stale pointer in the global readahead extents radix tree
+(fs_info->reada_tree), which can trigger the following trace later on:
 
-Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
-in radiotap header on monitor mode capture.
+  [13367.696354] BUG: kernel NULL pointer dereference, address: 00000000000000b0
+  [13367.696802] #PF: supervisor read access in kernel mode
+  [13367.697249] #PF: error_code(0x0000) - not-present page
+  [13367.697721] PGD 0 P4D 0
+  [13367.698171] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+  [13367.698632] CPU: 6 PID: 851214 Comm: btrfs Tainted: G        W         5.9.0-rc6-btrfs-next-69 #1
+  [13367.699100] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+  [13367.700069] RIP: 0010:__lock_acquire+0x20a/0x3970
+  [13367.700562] Code: ff 1f 0f b7 c0 48 0f (...)
+  [13367.701609] RSP: 0018:ffffb14448f57790 EFLAGS: 00010046
+  [13367.702140] RAX: 0000000000000000 RBX: 29b935140c15e8cf RCX: 0000000000000000
+  [13367.702698] RDX: 0000000000000002 RSI: ffffffffb3d66bd0 RDI: 0000000000000046
+  [13367.703240] RBP: ffff8a52ba8ac040 R08: 00000c2866ad9288 R09: 0000000000000001
+  [13367.703783] R10: 0000000000000001 R11: 00000000b66d9b53 R12: ffff8a52ba8ac9b0
+  [13367.704330] R13: 0000000000000000 R14: ffff8a532b6333e8 R15: 0000000000000000
+  [13367.704880] FS:  00007fe1df6b5700(0000) GS:ffff8a5376600000(0000) knlGS:0000000000000000
+  [13367.705438] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [13367.705995] CR2: 00000000000000b0 CR3: 000000022cca8004 CR4: 00000000003706e0
+  [13367.706565] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [13367.707127] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [13367.707686] Call Trace:
+  [13367.708246]  ? ___slab_alloc+0x395/0x740
+  [13367.708820]  ? reada_add_block+0xae/0xee0 [btrfs]
+  [13367.709383]  lock_acquire+0xb1/0x480
+  [13367.709955]  ? reada_add_block+0xe0/0xee0 [btrfs]
+  [13367.710537]  ? reada_add_block+0xae/0xee0 [btrfs]
+  [13367.711097]  ? rcu_read_lock_sched_held+0x5d/0x90
+  [13367.711659]  ? kmem_cache_alloc_trace+0x8d2/0x990
+  [13367.712221]  ? lock_acquired+0x33b/0x470
+  [13367.712784]  _raw_spin_lock+0x34/0x80
+  [13367.713356]  ? reada_add_block+0xe0/0xee0 [btrfs]
+  [13367.713966]  reada_add_block+0xe0/0xee0 [btrfs]
+  [13367.714529]  ? btrfs_root_node+0x15/0x1f0 [btrfs]
+  [13367.715077]  btrfs_reada_add+0x117/0x170 [btrfs]
+  [13367.715620]  scrub_stripe+0x21e/0x10d0 [btrfs]
+  [13367.716141]  ? kvm_sched_clock_read+0x5/0x10
+  [13367.716657]  ? __lock_acquire+0x41e/0x3970
+  [13367.717184]  ? scrub_chunk+0x60/0x140 [btrfs]
+  [13367.717697]  ? find_held_lock+0x32/0x90
+  [13367.718254]  ? scrub_chunk+0x60/0x140 [btrfs]
+  [13367.718773]  ? lock_acquired+0x33b/0x470
+  [13367.719278]  ? scrub_chunk+0xcd/0x140 [btrfs]
+  [13367.719786]  scrub_chunk+0xcd/0x140 [btrfs]
+  [13367.720291]  scrub_enumerate_chunks+0x270/0x5c0 [btrfs]
+  [13367.720787]  ? finish_wait+0x90/0x90
+  [13367.721281]  btrfs_scrub_dev+0x1ee/0x620 [btrfs]
+  [13367.721762]  ? rcu_read_lock_any_held+0x8e/0xb0
+  [13367.722235]  ? preempt_count_add+0x49/0xa0
+  [13367.722710]  ? __sb_start_write+0x19b/0x290
+  [13367.723192]  btrfs_ioctl+0x7f5/0x36f0 [btrfs]
+  [13367.723660]  ? __fget_files+0x101/0x1d0
+  [13367.724118]  ? find_held_lock+0x32/0x90
+  [13367.724559]  ? __fget_files+0x101/0x1d0
+  [13367.724982]  ? __x64_sys_ioctl+0x83/0xb0
+  [13367.725399]  __x64_sys_ioctl+0x83/0xb0
+  [13367.725802]  do_syscall_64+0x33/0x80
+  [13367.726188]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  [13367.726574] RIP: 0033:0x7fe1df7add87
+  [13367.726948] Code: 00 00 00 48 8b 05 09 91 (...)
+  [13367.727763] RSP: 002b:00007fe1df6b4d48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+  [13367.728179] RAX: ffffffffffffffda RBX: 000055ce1fb596a0 RCX: 00007fe1df7add87
+  [13367.728604] RDX: 000055ce1fb596a0 RSI: 00000000c400941b RDI: 0000000000000003
+  [13367.729021] RBP: 0000000000000000 R08: 00007fe1df6b5700 R09: 0000000000000000
+  [13367.729431] R10: 00007fe1df6b5700 R11: 0000000000000246 R12: 00007ffd922b07de
+  [13367.729842] R13: 00007ffd922b07df R14: 00007fe1df6b4e40 R15: 0000000000802000
+  [13367.730275] Modules linked in: btrfs blake2b_generic xor (...)
+  [13367.732638] CR2: 00000000000000b0
+  [13367.733166] ---[ end trace d298b6805556acd9 ]---
 
-Tested-on: QCA9984 10.4-3.10-00047
+What happens is the following:
 
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1597392971-3897-1-git-send-email-murugana@codeaurora.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+1) At reada_find_extent() we don't find any existing readahead extent for
+   the metadata extent starting at logical address X;
+
+2) So we proceed to create a new one. We then call btrfs_map_block() to get
+   information about which stripes contain extent X;
+
+3) After that we iterate over the stripes and create only one zone for the
+   readahead extent - only one because reada_find_zone() returned NULL for
+   all iterations except for one, either because a memory allocation failed
+   or it couldn't find the block group of the extent (it may have just been
+   deleted);
+
+4) We then add the new readahead extent to the readahead extents radix
+   tree at fs_info->reada_tree;
+
+5) Then we iterate over each zone of the new readahead extent, and find
+   that the device used for that zone no longer exists, because it was
+   removed or it was the source device of a device replace operation.
+   Since this left 'have_zone' set to 0, after finishing the loop we jump
+   to the 'error' label, call kfree() on the new readahead extent and
+   return without removing it from the radix tree at fs_info->reada_tree;
+
+6) Any future call to reada_find_extent() for the logical address X will
+   find the stale pointer in the readahead extents radix tree, increment
+   its reference counter, which can trigger the use-after-free right
+   away or return it to the caller reada_add_block() that results in the
+   use-after-free of the example trace above.
+
+So fix this by making sure we delete the readahead extent from the radix
+tree if we fail to setup zones for it (when 'have_zone = 0').
+
+Fixes: 319450211842ba ("btrfs: reada: bypass adding extent when all zone failed")
+CC: stable@vger.kernel.org # 4.9+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/btrfs/reada.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 8ca0a808a644d..04095f91d3014 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -949,6 +949,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 	u8 preamble = 0;
- 	u8 group_id;
- 	u32 info1, info2, info3;
-+	u32 stbc, nsts_su;
+--- a/fs/btrfs/reada.c
++++ b/fs/btrfs/reada.c
+@@ -445,6 +445,8 @@ static struct reada_extent *reada_find_e
+ 		}
+ 		have_zone = 1;
+ 	}
++	if (!have_zone)
++		radix_tree_delete(&fs_info->reada_tree, index);
+ 	spin_unlock(&fs_info->reada_lock);
+ 	up_read(&fs_info->dev_replace.rwsem);
  
- 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
- 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -993,11 +994,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		 */
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
-+		stbc = (info2 >> 3) & 1;
- 		group_id = (info2 >> 4) & 0x3F;
- 
- 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
- 			mcs = (info3 >> 4) & 0x0F;
--			nss = ((info2 >> 10) & 0x07) + 1;
-+			nsts_su = ((info2 >> 10) & 0x07);
-+			if (stbc)
-+				nss = (nsts_su >> 2) + 1;
-+			else
-+				nss = (nsts_su + 1);
- 		} else {
- 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
- 			 * so it's impossible to decode MCS. Also since
--- 
-2.27.0
-
 
 
