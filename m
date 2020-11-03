@@ -2,116 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FA82A3AC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DBE2A3AAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgKCDAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:00:48 -0500
-Received: from mga02.intel.com ([134.134.136.20]:39656 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbgKCDAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:00:48 -0500
-IronPort-SDR: y7R/KXT2igjnGNkSxDJWX4zEF83iDIy3+EBmbUVP8ugLq3soYYZtPObhGVeLncP9xGc7dFvEwj
- uboS9t82qaSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="155977602"
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="155977602"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 19:00:47 -0800
-IronPort-SDR: dGkHC1Tjp9yGTblC2nJZ7Rz2ncLYiT2V3ZvAFrhpWpVYVWS4BDwN2Mr2oC9zGTmjydprL6rDBl
- eR+uf1q7BSPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="426170571"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Nov 2020 19:00:44 -0800
-Cc:     baolu.lu@linux.intel.com, Ashok Raj <ashok.raj@intel.com>,
-        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
- api
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
- <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
- <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
- <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
- <3f5694f3-62f9-cc2b-1c2b-f9e99a4788c1@linux.intel.com>
- <1ce5b94a-38b3-548e-3b1a-a68390b93953@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <82dab98e-0761-8946-c31c-92f19a0615b4@linux.intel.com>
-Date:   Tue, 3 Nov 2020 10:53:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727408AbgKCCyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:54:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgKCCyW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:54:22 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3C2C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 18:54:22 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id a64so10156440qkc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 18:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v4tYR4zVFE27wjWJx5mUbwrxvuP8uO6s0qs8bS7gdug=;
+        b=ELW25Rwt4ROd+BEn29Q55Jl/v74VGbe0DbVyy3Y+1bYEQm2gAS+yl82Pt2wJY9eLI/
+         eN56pkGIfTiNSZh1sJgvZ5ICabcBcsGIhKsNlw6Cv1O4ON0HwYzekqP5j1lRVUWpiFS7
+         AetFmq7SkEIfE/JHTSWHYZkRWRJUMwFwEtWBo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v4tYR4zVFE27wjWJx5mUbwrxvuP8uO6s0qs8bS7gdug=;
+        b=Ol+C+BQbdKLUoYgEHtwwOh7WRYlf/ftHdnGJpfOcm07kbti6K9I0hh3OSFUt8i0N6v
+         YUCIfRc/3lRY0sKrkr04OKKRH2Tz8N2Eh85I/RkllgP429ImKB2120CN5XBWT7LSs/ae
+         R/dyNzjovmK1SO85SKzCBXpZnNCmP1iA5yYbgD4U9TgA/U8umDo6qyt4B97E2tz5BezG
+         qDdPgFf/nhOYtjVK2bUOL9NqCSfauyT7ErExdnKlEdjxCIWidOufGkJge2hVO1vmWYJk
+         3gjc1Y9tDVrWx3A8g283oZLyxXcZJ9uCj4hYrP/+oSRga5F8+Pm8aPiO0X6Gq9nsh270
+         1IEg==
+X-Gm-Message-State: AOAM533i0xYyWD/e3BgE2KznOxok1ficsSSlMU/08O1T89WYPX13gPZK
+        RbT+bUbu3KbiP55DCRZix0q6EQ==
+X-Google-Smtp-Source: ABdhPJxBxq70XgHfvIXuzTnKk4YWXm4ujjlvmoHjuXtaqcVWKCibBvDu+DV24FU1TkTYgpvdvsfMpg==
+X-Received: by 2002:a37:98c:: with SMTP id 134mr4556825qkj.339.1604372061627;
+        Mon, 02 Nov 2020 18:54:21 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id g78sm3266687qke.88.2020.11.02.18.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 18:54:20 -0800 (PST)
+Date:   Mon, 2 Nov 2020 21:54:20 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH v8 -tip 19/26] sched: Add a second-level tag for nested
+ CGroup usecase
+Message-ID: <20201103025420.GA692757@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-20-joel@joelfernandes.org>
+ <CABk29NsgPcpOpDzixKtdkK85H1xq2XHXHUm6B96nS-4zKzpRwg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1ce5b94a-38b3-548e-3b1a-a68390b93953@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29NsgPcpOpDzixKtdkK85H1xq2XHXHUm6B96nS-4zKzpRwg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 7:52 PM, Tvrtko Ursulin wrote:
+On Fri, Oct 30, 2020 at 05:42:12PM -0700, Josh Don wrote:
+> On Mon, Oct 19, 2020 at 6:45 PM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > +static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
+> > +{
+> > +       unsigned long color = 0;
+> > +
+> > +       if (!tg)
+> > +               return 0;
+> > +
+> > +       for (; tg; tg = tg->parent) {
+> > +               if (tg->core_tag_color) {
+> > +                       WARN_ON_ONCE(color);
+> > +                       color = tg->core_tag_color;
+> > +               }
+> > +
+> > +               if (tg->core_tagged) {
+> > +                       unsigned long cookie = ((unsigned long)tg << 8) | color;
+> > +                       cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
+> > +                       return cookie;
+> > +               }
+> > +       }
+> > +
+> > +       return 0;
+> > +}
 > 
-> On 02/11/2020 02:00, Lu Baolu wrote:
->> Hi Tvrtko,
->> On 10/12/20 4:44 PM, Tvrtko Ursulin wrote:
->>>
->>> On 29/09/2020 01:11, Lu Baolu wrote:
->>>> Hi Tvrtko,
->>>>
->>>> On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
->>>>>
->>>>> On 27/09/2020 07:34, Lu Baolu wrote:
->>>>>> Hi,
->>>>>>
->>>>>> The previous post of this series could be found here.
->>>>>>
->>>>>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
->>>>>>
->>>>>>
->>>>>> This version introduce a new patch [4/7] to fix an issue reported 
->>>>>> here.
->>>>>>
->>>>>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
->>>>>>
->>>>>>
->>>>>> There aren't any other changes.
->>>>>>
->>>>>> Please help to test and review.
->>>>>>
->>>>>> Best regards,
->>>>>> baolu
->>>>>>
->>>>>> Lu Baolu (3):
->>>>>>    iommu: Add quirk for Intel graphic devices in map_sg
->>>>>
->>>>> Since I do have patches to fix i915 to handle this, do we want to 
->>>>> co-ordinate the two and avoid having to add this quirk and then 
->>>>> later remove it? Or you want to go the staged approach?
->>>>
->>>> I have no preference. It depends on which patch goes first. Let the
->>>> maintainers help here.
->>>
->>> FYI we have merged the required i915 patches to out tree last week or 
->>> so. I *think* this means they will go into 5.11. So the i915 specific 
->>> workaround patch will not be needed in Intel IOMMU.
->>
->> Do you mind telling me what's the status of this fix patch? I tried this
->> series on v5.10-rc1 with the graphic quirk patch dropped. I am still
->> seeing dma faults from graphic device.
+> I'm a bit wary of how core_task_cookie and core_group_cookie are
+> truncated to the lower half of their bits and combined into the
+> overall core_cookie.  Now that core_group_cookie is further losing 8
+> bits to color, that leaves (in the case of 32 bit unsigned long) only
+> 8 bits to uniquely identify the group contribution to the cookie.
 > 
-> Hmm back then I thought i915 fixes for this would land in 5.11 so I will 
-> stick with that. :) (See my quoted text a paragraph above yours.)
+> Also, I agree that 256 colors is likely adequate, but it would be nice
+> to avoid this restriction.
+> 
+> I'd like to propose the following alternative, which involves creating
+> a new struct to represent the core cookie:
+> 
+> struct core_cookie {
+>   unsigned long task_cookie;
+>   unsigned long group_cookie;
+>   unsigned long color;
+>   /* can be further extended with arbitrary fields */
+> 
+>   struct rb_node node;
+>   refcount_t;
+> };
+> 
+> struct rb_root core_cookies; /* (sorted), all active core_cookies */
+> seqlock_t core_cookies_lock; /* protects against removal/addition to
+> core_cookies */
+> 
+> struct task_struct {
+>   ...
+>   unsigned long core_cookie; /* (struct core_cookie *) */
+> }
+> 
+> A given task stores the address of a core_cookie struct in its
+> core_cookie field.  When we reconfigure a task's
+> color/task_cookie/group_cookie, we can first look for an existing
+> core_cookie that matches those settings, or create a new one.
 
-What size are those fixes? I am considering pushing this series for
-v5.11. Is it possible to get some acks for those patches and let them
-go to Linus through iommu tree?
+Josh,
 
-Best regards,
-baolu
+This sounds good to me.
+
+Just to mention one thing, for stuff like the following, you'll have to write
+functions that can do greater-than, less-than operations, etc.
+
+static inline bool __sched_core_less(struct task_struct *a, struct task_struct *b)
+{
+	if (a->core_cookie < b->core_cookie)
+		return true;
+
+	if (a->core_cookie > b->core_cookie)
+		return false;
+
+And pretty much everywhere you do null-checks on core_cookie, or access
+core_cookie for any other reasons.
+
+Also there's kselftests that need trivial modifications to pass with the new
+changes you propose.
+
+Looking forward to the patch to do the improvement and thanks.
+
+thanks,
+
+ - Joel
+
+
+> > More information about attacks:
+> > For MDS, it is possible for syscalls, IRQ and softirq handlers to leak
+> > data to either host or guest attackers. For L1TF, it is possible to leak
+> > to guest attackers. There is no possible mitigation involving flushing
+> > of buffers to avoid this since the execution of attacker and victims
+> > happen concurrently on 2 or more HTs.
+> > 
+> > Cc: Julien Desfossez <jdesfossez@digitalocean.com>
+> > Cc: Tim Chen <tim.c.chen@linux.intel.com>
+> > Cc: Aaron Lu <aaron.lwe@gmail.com>
+> > Cc: Aubrey Li <aubrey.li@linux.intel.com>
+> > Cc: Tim Chen <tim.c.chen@intel.com>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Co-developed-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> > Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> > Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >   .../admin-guide/kernel-parameters.txt         |   7 +
+> >   include/linux/entry-common.h                  |   2 +-
+> >   include/linux/sched.h                         |  12 +
+> >   kernel/entry/common.c                         |  25 +-
+> >   kernel/sched/core.c                           | 229 ++++++++++++++++++
+> >   kernel/sched/sched.h                          |   3 +
+> >   6 files changed, 275 insertions(+), 3 deletions(-)
+> >
+The issue is with code like this:
+
