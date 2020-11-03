@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254D42A446C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B482A446E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgKCLmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:42:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgKCLmn (ORCPT
+        id S1728596AbgKCLoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:44:11 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:57214 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgKCLoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:42:43 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF64C0613D1;
-        Tue,  3 Nov 2020 03:42:42 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so6189466pgg.12;
-        Tue, 03 Nov 2020 03:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ctG4ytBtgwuFkE0xSNIg1PiQTdhbQPLDtymlP6cXirU=;
-        b=bAHpNPFNWl9Wj7GB/VRtFSRPl4eRypZTjM7SOaiw0jMGq62v1DGXUW8yu8m5vyjZay
-         oXNXA6STbqYuydwNTig+BJ1svw+5HQINepuokgVFIuC079IQg0erOMIDzMuT+9lL6S9t
-         cmrPpuWfp5mDEkjluD8bnaXvjjwLP3fsnfru9WiSXlmmmnegSiebJokceDNl6wtTtmoh
-         wQD5fsutvBrYRSXoGKjdxdIynm36Pm5Yjlj6OfwDuLmcLBgxKf3L3IwrQIWkbozyOuYl
-         mxPJB2CKP1nmYJAWlPF+1UxwdIxHjfgeBlCAwe9O57EuFfvi/dA7ypHW20eTk+q19pR2
-         GEoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ctG4ytBtgwuFkE0xSNIg1PiQTdhbQPLDtymlP6cXirU=;
-        b=R9374z3QPUJrngT10J6Nz88yOgNXuxHXmfXSltGT01BzYF1FDGm38DwazcmnEp9P2y
-         WSHgytWJqR1cUtRde/bCsmR0Ty49bKNU1qK0DCi2f2E15VcTlGRElOF+ENdztXbXzHOt
-         bAZH2PQAVjxQKgD+vd2qvUBEHSM8SjT25mLfF7bZsIaEB2RN0fmiui2mch8mCZ3rZn4s
-         zCS6dd9HLjUpqEDkAcAUr4OdrKpqZ1+3g+gtd+GcPD0z4GG1iiViX2UrBqEvr8Nji1GA
-         5ZD6D8HiAxvvDRvYTFUrI2hTp6edl9xdSmX2onyQmlFpOR0MAxyYjM5jPeTjzihCpm1p
-         uG2Q==
-X-Gm-Message-State: AOAM532uKyUwy8phSUs/dqYC4VZjxRi3NMSjaOjboK5pHy2IWnV0RiYl
-        jOc9j5i419bsmk4jaNTFJJcbt5TlPPW+
-X-Google-Smtp-Source: ABdhPJw98FvZviRs8QErmmAdiHmneWI4QXb4XUTdEeZVlkMVeZyMJ+JtFLNi64c2n/lbdlNIuczWyQ==
-X-Received: by 2002:a05:6a00:1392:b029:18b:3735:8911 with SMTP id t18-20020a056a001392b029018b37358911mr2047620pfg.9.1604403762472;
-        Tue, 03 Nov 2020 03:42:42 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id 30sm16076853pgl.45.2020.11.03.03.42.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 03:42:41 -0800 (PST)
-Date:   Tue, 3 Nov 2020 06:42:35 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
-Message-ID: <20201103114235.GA2045431@PWN>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <20201102183242.2031659-1-yepeilin.cs@gmail.com>
- <20201103085324.GL4488@dell>
- <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
- <20201103091538.GA2663113@kroah.com>
- <20201103095239.GW401619@phenom.ffwll.local>
- <20201103105523.GO4488@dell>
+        Tue, 3 Nov 2020 06:44:11 -0500
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E7A7820C1713
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 03:44:09 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7A7820C1713
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604403850;
+        bh=37ChBpsbVjcfTyXaezJtJ5UnNPk/LUKQFX519mQ46jg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S40pzj4z7zAJcfObKQ+IE+eQQT1WJUJ0gaMHMEn/KQqw7cKKjeScUsbfiDmrAwXW2
+         iHCsER+v1h73oenAfK5vHkHveBlXQzpaKq0lgDZlGKZYH/gquui1UdheilV8XWM3S2
+         6LPuLTwHrEx7nw6cwx4OmLqeX8Tt/D5EWQS3fdk0=
+Received: by mail-qk1-f176.google.com with SMTP id s14so14255307qkg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 03:44:09 -0800 (PST)
+X-Gm-Message-State: AOAM531bOvIwukVWSJ/jOQQbBv8kXNwT95JtD/bIUql5YCicKvC/AoB3
+        82I8NKPIH8P6M8EZGhq+grrlvsGCwy9UPneDepg=
+X-Google-Smtp-Source: ABdhPJx3hhs5D0RVItSKDm3AIiXH8xRxlpQW2R7DDDG51LAtMFtFDouyJAZ8UhCKEQ8uvQ6GQDWH0ffkRxOIut/9BJA=
+X-Received: by 2002:a37:508:: with SMTP id 8mr18956658qkf.207.1604403848891;
+ Tue, 03 Nov 2020 03:44:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103105523.GO4488@dell>
+References: <20201027133545.58625-1-mcroce@linux.microsoft.com>
+ <20201027133545.58625-3-mcroce@linux.microsoft.com> <20201030143049.GE1602@alley>
+ <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com> <20201102110107.GG20201@alley>
+In-Reply-To: <20201102110107.GG20201@alley>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Tue, 3 Nov 2020 12:43:32 +0100
+X-Gmail-Original-Message-ID: <CAFnufp3tOKOB=xqe8Ln46n2wBFMDC4XoZpu51xk5B=Acp=L-JA@mail.gmail.com>
+Message-ID: <CAFnufp3tOKOB=xqe8Ln46n2wBFMDC4XoZpu51xk5B=Acp=L-JA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] reboot: fix parsing of reboot cpu number
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:55:23AM +0000, Lee Jones wrote:
-> Would you be kind enough to let us know when this lands in Mainline
-> please?  We'll need to back-port it to start fixing up our Stable
-> kernels ASAP.
+On Mon, Nov 2, 2020 at 12:01 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Sun 2020-11-01 02:57:40, Matteo Croce wrote:
+> > On Fri, Oct 30, 2020 at 3:30 PM Petr Mladek <pmladek@suse.com> wrote:
+> > >
+> > > On Tue 2020-10-27 14:35:45, Matteo Croce wrote:
+> > > > From: Matteo Croce <mcroce@microsoft.com>
+> > > >
+> > > > The kernel cmdline reboot= argument allows to specify the CPU used
+> > > > for rebooting, with the syntax `s####` among the other flags, e.g.
+> > > >
+> > > >   reboot=soft,s4
+> > > >   reboot=warm,s31,force
+> > > >
+> > > > In the early days the parsing was done with simple_strtoul(), later
+> > > > deprecated in favor of the safer kstrtoint() which handles overflow.
+> > > >
+> > > > But kstrtoint() returns -EINVAL if there are non-digit characters
+> > > > in a string, so if this flag is not the last given, it's silently
+> > > > ignored as well as the subsequent ones.
+> > > >
+> > > > To fix it, revert the usage of simple_strtoul(), which is no longer
+> > > > deprecated, and restore the old behaviour.
+> > > >
+> > > > While at it, merge two identical code blocks into one.
+> > >
+> > > > --- a/kernel/reboot.c
+> > > > +++ b/kernel/reboot.c
+> > > > @@ -552,25 +552,19 @@ static int __init reboot_setup(char *str)
+> > > >
+> > > >               case 's':
+> > > >               {
+> > > > -                     int rc;
+> > > > -
+> > > > -                     if (isdigit(*(str+1))) {
+> > > > -                             rc = kstrtoint(str+1, 0, &reboot_cpu);
+> > > > -                             if (rc)
+> > > > -                                     return rc;
+> > > > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > > > -                                     reboot_cpu = 0;
+> > > > -                                     return -ERANGE;
+> > > > -                             }
+> > > > -                     } else if (str[1] == 'm' && str[2] == 'p' &&
+> > > > -                                isdigit(*(str+3))) {
+> > > > -                             rc = kstrtoint(str+3, 0, &reboot_cpu);
+> > > > -                             if (rc)
+> > > > -                                     return rc;
+> > > > -                             if (reboot_cpu >= num_possible_cpus()) {
+> > > > -                                     reboot_cpu = 0;
+> > >
+> > >                                                      ^^^^^^
+> > >
+> > > > +                     int cpu;
+> > > > +
+> > > > +                     /*
+> > > > +                      * reboot_cpu is s[mp]#### with #### being the processor
+> > > > +                      * to be used for rebooting. Skip 's' or 'smp' prefix.
+> > > > +                      */
+> > > > +                     str += str[1] == 'm' && str[2] == 'p' ? 3 : 1;
+> > > > +
+> > > > +                     if (isdigit(str[0])) {
+> > > > +                             cpu = simple_strtoul(str, NULL, 0);
+> > > > +                             if (cpu >= num_possible_cpus())
+> > > >                                       return -ERANGE;
+> > > > -                             }
+> > > > +                             reboot_cpu = cpu;
+> > >
+> > > The original value stays when the new one is out of range. It is
+> > > small functional change that should get mentioned in the commit
+> > > message or better fixed separately.
+>
+> Ah, I see. From some reason, I assumed that it was defined as
+> module_param() or core_param(). Then it would be possible to modify
+> it later via /sys.
+>
+> I am sorry for the noise.
+>
 
-Sure, I will keep track of it, and update here when it happens. Thank
-you, and sorry again for the trouble,
+Never mind :)
 
-Peilin Ye
+So, is this an ack? Or I need to prepare a v3 with the revert as first patch?
 
+Regards,
+-- 
+per aspera ad upstream
