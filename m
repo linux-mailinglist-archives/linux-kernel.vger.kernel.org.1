@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B332A5520
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AFC2A5464
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389189AbgKCVRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:17:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51664 "EHLO mail.kernel.org"
+        id S2388773AbgKCVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388748AbgKCVKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:10:37 -0500
+        id S2388761AbgKCVKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:10:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B03E206B5;
-        Tue,  3 Nov 2020 21:10:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1A7A20757;
+        Tue,  3 Nov 2020 21:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437837;
-        bh=vw2uco8VbAYvvg1ZPp5VtM0nQ/bOfZ0pJKl6LrYeppc=;
+        s=default; t=1604437839;
+        bh=kJg2pbNYJB9uaCgwYadsCDtHCnc7EKLI5vYamGKUI0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DrjNICxJEYV3wNeizAGyN8oWrFQ6n7m0JWG30yrKwv2l7m3sUD/gcKjkZ9Inu80Zw
-         fAIwXNqIttccX0xxaCq7LWbQ2I4fzVyBv5PYDa/lAq2++7XSpzFo+Acq9V9jcRCySm
-         YsNbsL6AwlMJM9OgpCOBxJ/qIgVzQRriv0fIdDGg=
+        b=Pk2xDcgODanpsmLFtR9c7CSUHcz3oZxDR/zrTyikGzY7Z87WtKNAggnJKn+lFtZcj
+         zqTcNumEaEq1YClHeMf8QY5TnQ/dmfJaFc7x26vbofIoGnkGd5JwZ8polyngBV3C8D
+         z1E4lkQqLF3UyVuYQCXM0IF+spX8+5pNuIaZsYTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+af90d47a37376844e731@syzkaller.appspotmail.com,
-        Andrew Price <anprice@redhat.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 052/125] gfs2: add validation checks for size of superblock
-Date:   Tue,  3 Nov 2020 21:37:09 +0100
-Message-Id: <20201103203204.533629797@linuxfoundation.org>
+Subject: [PATCH 4.14 053/125] arm64: dts: renesas: ulcb: add full-pwr-cycle-in-suspend into eMMC nodes
+Date:   Tue,  3 Nov 2020 21:37:10 +0100
+Message-Id: <20201103203204.672149100@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
 References: <20201103203156.372184213@linuxfoundation.org>
@@ -46,60 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit 0ddc5154b24c96f20e94d653b0a814438de6032b ]
+[ Upstream commit 992d7a8b88c83c05664b649fc54501ce58e19132 ]
 
-In gfs2_check_sb(), no validation checks are performed with regards to
-the size of the superblock.
-syzkaller detected a slab-out-of-bounds bug that was primarily caused
-because the block size for a superblock was set to zero.
-A valid size for a superblock is a power of 2 between 512 and PAGE_SIZE.
-Performing validation checks and ensuring that the size of the superblock
-is valid fixes this bug.
+Add full-pwr-cycle-in-suspend property to do a graceful shutdown of
+the eMMC device in system suspend.
 
-Reported-by: syzbot+af90d47a37376844e731@syzkaller.appspotmail.com
-Tested-by: syzbot+af90d47a37376844e731@syzkaller.appspotmail.com
-Suggested-by: Andrew Price <anprice@redhat.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-[Minor code reordering.]
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1594989201-24228-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/ops_fstype.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/renesas/ulcb.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 2de67588ac2d8..0b5c37ceb3ed3 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -161,15 +161,19 @@ static int gfs2_check_sb(struct gfs2_sbd *sdp, int silent)
- 		return -EINVAL;
- 	}
+diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+index e95d99265af9d..38f846530fcde 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+@@ -397,6 +397,7 @@
+ 	bus-width = <8>;
+ 	mmc-hs200-1_8v;
+ 	non-removable;
++	full-pwr-cycle-in-suspend;
+ 	status = "okay";
+ };
  
--	/*  If format numbers match exactly, we're done.  */
--
--	if (sb->sb_fs_format == GFS2_FORMAT_FS &&
--	    sb->sb_multihost_format == GFS2_FORMAT_MULTI)
--		return 0;
-+	if (sb->sb_fs_format != GFS2_FORMAT_FS ||
-+	    sb->sb_multihost_format != GFS2_FORMAT_MULTI) {
-+		fs_warn(sdp, "Unknown on-disk format, unable to mount\n");
-+		return -EINVAL;
-+	}
- 
--	fs_warn(sdp, "Unknown on-disk format, unable to mount\n");
-+	if (sb->sb_bsize < 512 || sb->sb_bsize > PAGE_SIZE ||
-+	    (sb->sb_bsize & (sb->sb_bsize - 1))) {
-+		pr_warn("Invalid superblock size\n");
-+		return -EINVAL;
-+	}
- 
--	return -EINVAL;
-+	return 0;
- }
- 
- static void end_bio_io_page(struct bio *bio)
 -- 
 2.27.0
 
