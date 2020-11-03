@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF2D2A58B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AC82A58B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730453AbgKCUpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:45:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
+        id S1730721AbgKCVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:54:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730983AbgKCUpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:15 -0500
+        id S1731005AbgKCUpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2888E223C6;
-        Tue,  3 Nov 2020 20:45:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC210223EA;
+        Tue,  3 Nov 2020 20:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436314;
-        bh=625CS+VVUcH2j+DlX50bWniL4e5cbojM1+nNSZ7KK1o=;
+        s=default; t=1604436321;
+        bh=BmqyisN5iqWG1N9OBi53gnLUjMpOY9jPYlWSdD3j2i8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/dx2aNoftl6ya+qlDeCIyLR43k0A8yFTZl4d7xDasYQ2sDjZhXRQAVk2kTIIMbfh
-         t5jeMOrIQFbhifhx/xhX6rsng207oH3Cz0WRAYySczKAzOfeN0SVyrp8WqFbLPw2/r
-         t6RH4BxESd/P+85iNaYpdwdhv63o8sCs5nDmQilI=
+        b=0rbhPXFF9J+vp6wga4dN75eqRKWawiLBX8SStRWK++V88FaWFonj9xpcGZ81e1IwP
+         ZmaKbWlb73/4qSKtPuSfNSdIc2qYvsIteChnfNjySdXxrpWwBe6Yea/w7N7fDyttVA
+         YaVKDkp1OR34lvl3qxGT49pxOiJxljimnaEvrNiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.9 197/391] spi: sprd: Release DMA channel also on probe deferral
-Date:   Tue,  3 Nov 2020 21:34:08 +0100
-Message-Id: <20201103203400.186562027@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
+Subject: [PATCH 5.9 199/391] leds: bcm6328, bcm6358: use devres LED registering function
+Date:   Tue,  3 Nov 2020 21:34:10 +0100
+Message-Id: <20201103203400.322764402@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,40 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Marek Behún <marek.behun@nic.cz>
 
-commit 687a2e76186dcfa42f22c14b655c3fb159839e79 upstream.
+commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
 
-If dma_request_chan() for TX channel fails with EPROBE_DEFER, the RX
-channel would not be released and on next re-probe it would be requested
-second time.
+These two drivers do not provide remove method and use devres for
+allocation of other resources, yet they use led_classdev_register
+instead of the devres variant, devm_led_classdev_register.
 
-Fixes: 386119bc7be9 ("spi: sprd: spi: sprd: Add DMA mode support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
-Link: https://lore.kernel.org/r/20200901152713.18629-1-krzk@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fix this.
+
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Álvaro Fernández Rojas <noltari@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Jaedon Shin <jaedon.shin@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-sprd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/leds-bcm6328.c |    2 +-
+ drivers/leds/leds-bcm6358.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/spi-sprd.c
-+++ b/drivers/spi/spi-sprd.c
-@@ -563,11 +563,11 @@ static int sprd_spi_dma_request(struct s
+--- a/drivers/leds/leds-bcm6328.c
++++ b/drivers/leds/leds-bcm6328.c
+@@ -383,7 +383,7 @@ static int bcm6328_led(struct device *de
+ 	led->cdev.brightness_set = bcm6328_led_set;
+ 	led->cdev.blink_set = bcm6328_blink_set;
  
- 	ss->dma.dma_chan[SPRD_SPI_TX]  = dma_request_chan(ss->dev, "tx_chn");
- 	if (IS_ERR_OR_NULL(ss->dma.dma_chan[SPRD_SPI_TX])) {
-+		dma_release_channel(ss->dma.dma_chan[SPRD_SPI_RX]);
- 		if (PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]) == -EPROBE_DEFER)
- 			return PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]);
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
  
- 		dev_err(ss->dev, "request TX DMA channel failed!\n");
--		dma_release_channel(ss->dma.dma_chan[SPRD_SPI_RX]);
- 		return PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]);
- 	}
+--- a/drivers/leds/leds-bcm6358.c
++++ b/drivers/leds/leds-bcm6358.c
+@@ -137,7 +137,7 @@ static int bcm6358_led(struct device *de
+ 
+ 	led->cdev.brightness_set = bcm6358_led_set;
+ 
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
  
 
 
