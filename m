@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9212A4F31
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732292A4F34
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgKCSol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:44:41 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:45352 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729337AbgKCSoj (ORCPT
+        id S1729460AbgKCSou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:44:50 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:45327 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729435AbgKCSor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:44:39 -0500
+        Tue, 3 Nov 2020 13:44:47 -0500
 Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103184428euoutp01e8c56ff30194de7356f3277726b921ed~EE7ykUjLA1326313263euoutp016
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103184428euoutp02758255ba3d6992dd90e8a5866181953e~EE7yqxTEd2225922259euoutp02Z
         for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 18:44:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103184428euoutp01e8c56ff30194de7356f3277726b921ed~EE7ykUjLA1326313263euoutp016
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103184428euoutp02758255ba3d6992dd90e8a5866181953e~EE7yqxTEd2225922259euoutp02Z
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
         s=mail20170921; t=1604429068;
-        bh=RSkEIzrtJiw3sP1zG4MRVGuJkbWdz5Cm5l24dOAb+O4=;
+        bh=AFQ1Xoh1P+fOWo/ZlEP5tE9qx1pmGB/HHsjLNt6xvks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ac4pkTkbaLIj6pF3uMivxfCW/VXgMXzz4BqID9tjs0ATed1sKjJ4924X4Gp4+1KBl
-         VlhskXuVd+/p1km0Q41556aSjZgR5E1nek6JVQuExxRNz4dq/jnq2zfNCqL1HP/z7o
-         YdEls5Zq5SBuF6tNvyqxFLuYX6OI1IPBwNcU695k=
+        b=tq1qGanV6xHpCFkVqzYaiSjMY4xoUzSXWAM0Bfcd0RlwESGPdWwjAlvaw69f5pviT
+         2Kt4EHo+BBTSgSZOBSSzMvPaKIL74I6TFEXHE/uRmzL1+PObOjExWGO6bLNBiqyJ2Q
+         dewIsWEgvfaQ2BMedrwnwsJ4cS4lIDwzxW+yNJzc=
 Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
         eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201103184418eucas1p12a8ebdc9be66dfd9ce3c43cc35ba60a1~EE7pnrlmg1968219682eucas1p1V;
-        Tue,  3 Nov 2020 18:44:18 +0000 (GMT)
+        20201103184419eucas1p1247ee6b3d3ba757cc81e4c4cf3b40695~EE7qW71971969619696eucas1p1n;
+        Tue,  3 Nov 2020 18:44:19 +0000 (GMT)
 Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 78.13.06456.205A1AF5; Tue,  3
-        Nov 2020 18:44:18 +0000 (GMT)
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 39.13.06456.305A1AF5; Tue,  3
+        Nov 2020 18:44:19 +0000 (GMT)
 Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
         eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca~EE7pS8WGd2525425254eucas1p2P;
+        20201103184418eucas1p221bebfee92d2753b11a158b765d77cc6~EE7pkeH3R2525825258eucas1p2I;
         Tue,  3 Nov 2020 18:44:18 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
         eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201103184418eusmtrp16babefe9478985cdd2a685d7c59a7b02~EE7pSUl740548305483eusmtrp1d;
+        20201103184418eusmtrp179107d4703bfa61cd996e93a272dffbf~EE7pj3_WG0237602376eusmtrp1i;
         Tue,  3 Nov 2020 18:44:18 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-bd-5fa1a50289d5
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 71.84.06017.205A1AF5; Tue,  3
+X-AuditID: cbfec7f2-7efff70000001938-be-5fa1a503394c
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 0F.BB.06314.205A1AF5; Tue,  3
         Nov 2020 18:44:18 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
         (KnoxPortal) with ESMTPA id
-        20201103184417eusmtip2126c21d60dc8dc59b0600145b26f3218~EE7pEgbiS2597425974eusmtip2W;
-        Tue,  3 Nov 2020 18:44:17 +0000 (GMT)
+        20201103184418eusmtip1c866bb200424d28e3e9c1cf5a77270ac~EE7pZHf6-2263022630eusmtip1y;
+        Tue,  3 Nov 2020 18:44:18 +0000 (GMT)
 From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -56,78 +56,102 @@ Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?=
         <b.zolnierkie@samsung.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v2 2/6] ARM: dts: exynos: Add an alias for the Ethernet
- interface on Odroid XU3
-Date:   Tue,  3 Nov 2020 19:44:08 +0100
-Message-Id: <20201103184412.18874-3-l.stelmach@samsung.com>
+Subject: [PATCH v2 3/6] ARM: dts: exynos: Add Ethernet interface description
+ for Odroid XU3 Lite
+Date:   Tue,  3 Nov 2020 19:44:09 +0100
+Message-Id: <20201103184412.18874-4-l.stelmach@samsung.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201103184412.18874-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
 Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7pMSxfGGxz4I2uxccZ6Vov5R86x
-        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrvF2iN32S1a9x5hd+D22Dnr
-        LrvHplWdbB6bl9R79G1ZxejxeZNcAGsUl01Kak5mWWqRvl0CV0br7/SCc6wVe2dvYG9gvMPS
-        xcjBISFgIvHiu3IXIxeHkMAKRokTDe+YIZwvjBKtJ08wQTifGSVWPp/P2sXICdbR0nOBFSKx
-        nFHi4o5lUM5zRolNu6exg1SxCThK9C89AZYQEZjOJLF0z3ywwcwC+xgldt6bwgxSJSyQKNF/
-        YysbiM0ioCpxd8J8RhCbV8Ba4vqkL8wQ++Ql2pdvB6vhFLCR2Pa6G6pGUOLkzCcsIDa/gJbE
-        mqbrYDYzUH3z1tlgyyQEzrFLvHxyG2qQi0THouNsELawxKvjW9ghbBmJ05N7oMFRLzF5khlE
-        bw+jxLY5P1ggaqwl7pz7xQZSwyygKbF+lz5EuaPEloMlECafxI23ghAX8ElM2jadGSLMK9HR
-        JgQxQ0ViXf8eqHlSEr2vVjBOYFSaheSXWUjun4WwagEj8ypG8dTS4tz01GLDvNRyveLE3OLS
-        vHS95PzcTYzAdHT63/FPOxi/Xko6xCjAwajEw+uQuiBeiDWxrLgy9xCjBAezkgiv09nTcUK8
-        KYmVValF+fFFpTmpxYcYpTlYlMR5jRe9jBUSSE8sSc1OTS1ILYLJMnFwSjUw5huUNx6Obils
-        Mt52e7G3hm7g3X9nqoyzMjV1X73rfGnVorl4fdXN55sFH/ItuCwmYnHsDcfTufP8LzGIJC78
-        osBrfrmp94lTAIvjjZsHK3KWOpnmCczbtLolcJbLvZJzEx7yzf3Rk7ffY3Xj9lmMkQ8l/p35
-        YbfgyIyw5eJvBLwunTUwcLxbq8RSnJFoqMVcVJwIAAKuKgFDAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsVy+t/xe7pMSxfGG3w9wmaxccZ6Vov5R86x
-        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrvF2iN32S1a9x5hd+D22Dnr
-        LrvHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
-        rJWRqZK+nU1Kak5mWWqRvl2CXkbr7/SCc6wVe2dvYG9gvMPSxcjJISFgItHSc4G1i5GLQ0hg
-        KaPEr+MnmLsYOYASUhIr56ZD1AhL/LnWxQZiCwk8ZZT4McUSxGYTcJToX3oCrFdEYD6TxKnZ
-        HWAOs8A+Ron9Rxezg1QJC8RLXP6+FMxmEVCVuDthPiOIzStgLXF90hdmiA3yEu3Lt4Nt4BSw
-        kdj2upsRYpu1xJ/Jq1kh6gUlTs58wgJyHLOAusT6eUIgYX4BLYk1TdfBnmEGGtO8dTbzBEah
-        WUg6ZiF0zEJStYCReRWjSGppcW56brGRXnFibnFpXrpecn7uJkZg9G079nPLDsaud8GHGAU4
-        GJV4eB1SF8QLsSaWFVfmHmKU4GBWEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjKdCbE5mlRJPz
-        gYkhryTe0NTQ3MLS0NzY3NjMQkmct0PgYIyQQHpiSWp2ampBahFMHxMHp1QDY2mS5dkzEdcU
-        cg/phKjzWfl0P1Vete6eXpV0Yo6z3z+PTXWd2/VqlplIBlg0dHutttTn5Hp07US7s494UNGf
-        7twLuwt+Lgidd7o/UqVpY8nDXSwHbfbwuity9jw/P+/gvbMP5cr/v+Da+eXq5n1PPlcWqm1N
-        lH64PrF95ovF731WrLbqnLpivRJLcUaioRZzUXEiAM7hie7UAgAA
-X-CMS-MailID: 20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7djPc7rMSxfGG3zsELHYOGM9q8X8I+dY
+        Lfofv2a2OH9+A7vFzUMrGC02Pb7GanF51xw2ixnn9zFZrNt4i91i7ZG77Bate4+wO3B77Jx1
+        l91j06pONo/NS+o9+rasYvT4vEkugDWKyyYlNSezLLVI3y6BK+PbjB6mgvecFbN23mJtYPzN
+        3sXIySEhYCLxcB6IzcUhJLCCUWJz3xc2COcLo8T+7avBqoQEPjNKHNgZDtPR3XQbqmM5o8S+
+        48eZIJznjBJXXr9kAaliE3CU6F96ghUkISIwnUli6Z75zCAOs8A+Romd96Ywg1QJCyRJfD4w
+        C8jm4GARUJWYfyIbJMwrYC3Rc7SRFWKdvET78u1sIDangI3EttfdjBA1ghInZz4BW8YvoCWx
+        puk6mM0MVN+8dTbYLgmBS+wSO78uZYYY5CKxYM5FqK+FJV4d3wJly0icntzDAnKDhEC9xORJ
+        ZhC9PYwS2+b8YIGosZa4c+4XG0gNs4CmxPpd+hBhR4m7v+axQ7TySdx4KwhxAp/EpG3TmSHC
+        vBIdbUIQ1SoS6/r3QA2Ukuh9tYJxAqPSLCTPzELywCyEXQsYmVcxiqeWFuempxYb5qWW6xUn
+        5haX5qXrJefnbmIEJqTT/45/2sH49VLSIUYBDkYlHl6H1AXxQqyJZcWVuYcYJTiYlUR4nc6e
+        jhPiTUmsrEotyo8vKs1JLT7EKM3BoiTOa7zoZayQQHpiSWp2ampBahFMlomDU6qBsSZ/wX4T
+        WfV3X1+z3hGK3HI3Pnf3RYPmF3diLx75m8m4Zsl6Dr3KlwW5lwRLVgqZvNMI3+quFbpYPT5x
+        +UYXdwsLyyPSprsjj1bNFLq4WSU25lj2iwXzePYalN64oCwZtnzdH+Urnk2evhcb7goEPjl0
+        ynT152uSk5657hLK8LVoucVrn7klU4mlOCPRUIu5qDgRAIaY175EAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsVy+t/xu7pMSxfGG3TekbbYOGM9q8X8I+dY
+        Lfofv2a2OH9+A7vFzUMrGC02Pb7GanF51xw2ixnn9zFZrNt4i91i7ZG77Bate4+wO3B77Jx1
+        l91j06pONo/NS+o9+rasYvT4vEkugDVKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/IxFLP0Ng8
+        1srIVEnfziYlNSezLLVI3y5BL+PbjB6mgvecFbN23mJtYPzN3sXIySEhYCLR3XQbyObiEBJY
+        yihxtn0+UxcjB1BCSmLl3HSIGmGJP9e62CBqnjJKnGn/yAqSYBNwlOhfeoIVJCEiMJ9J4tTs
+        DjCHWWAfo8T+o4vBVggLJEicWvmZEWQqi4CqxPwT2SBhXgFriZ6jjawQG+Ql2pdvZwOxOQVs
+        JLa97mYEsYWAav5MXs0KUS8ocXLmExaQMcwC6hLr5wmBhPkFtCTWNF1nAbGZgcY0b53NPIFR
+        aBaSjlkIHbOQVC1gZF7FKJJaWpybnltsqFecmFtcmpeul5yfu4kRGH/bjv3cvIPx0sbgQ4wC
+        HIxKPLwOqQvihVgTy4orcw8xSnAwK4nwOp09HSfEm5JYWZValB9fVJqTWnyI0RToy4nMUqLJ
+        +cDUkFcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgTHq+27WV/PY
+        /Y8rCscrpuil1S5YoVayQHZp0ruGaUIym1fIxT/bME8tLNIv3HT/zP9TRW+XndY2+mv8N/Sa
+        4sn4dzqK2wQnLhOOrf4qsWXfxyOMgbHxWyraLr3etXTiohctd79Hv79Ut35l6ieWh7XV36zm
+        3nET2Gt9p0xku/y1li33zXZvPl+uxFKckWioxVxUnAgA8ZvU6tUCAAA=
+X-CMS-MailID: 20201103184418eucas1p221bebfee92d2753b11a158b765d77cc6
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca
+X-RootMTR: 20201103184418eucas1p221bebfee92d2753b11a158b765d77cc6
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca
+X-CMS-RootMailID: 20201103184418eucas1p221bebfee92d2753b11a158b765d77cc6
 References: <20201103184412.18874-1-l.stelmach@samsung.com>
-        <CGME20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca@eucas1p2.samsung.com>
+        <CGME20201103184418eucas1p221bebfee92d2753b11a158b765d77cc6@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+Add Ethernet interface description for Odroid XU3 Lite.
 
 Add an alias to enable bootloaders to find the Ethernet
 interface and assign a MAC address.
 
 Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 ---
- arch/arm/boot/dts/exynos5422-odroidxu3.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../boot/dts/exynos5422-odroidxu3-lite.dts    | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-index 0fa8bea781ff..2a4153484664 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-@@ -15,6 +15,10 @@
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts b/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
+index 98feecad5489..62c5928aa994 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
+@@ -16,6 +16,10 @@
  / {
- 	model = "Hardkernel Odroid XU3";
- 	compatible = "hardkernel,odroid-xu3", "samsung,exynos5800", "samsung,exynos5";
+ 	model = "Hardkernel Odroid XU3 Lite";
+ 	compatible = "hardkernel,odroid-xu3-lite", "samsung,exynos5800", "samsung,exynos5";
 +
 +	aliases {
 +		ethernet = &ethernet;
 +	};
  };
  
- &i2c_0 {
+ &arm_a7_pmu {
+@@ -103,3 +107,21 @@ &pwm {
+ &usbdrd_dwc3_1 {
+ 	dr_mode = "peripheral";
+ };
++
++&usbhost2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	hub@1 {
++		compatible = "usb0424,9514";
++		reg = <1>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethernet: usbether@1 {
++			compatible = "usb0424,ec00";
++			reg = <1>;
++			local-mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
++		};
++	};
++};
 -- 
 2.26.2
 
