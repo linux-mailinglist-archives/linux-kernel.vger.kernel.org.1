@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C542A4569
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 757342A456D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729011AbgKCMoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:44:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:48238 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728993AbgKCMoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:44:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EA3A106F;
-        Tue,  3 Nov 2020 04:44:36 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.57.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46A003F718;
-        Tue,  3 Nov 2020 04:44:33 -0800 (PST)
-Date:   Tue, 3 Nov 2020 12:44:31 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] arm64: cpufeatures: Add capability for LDAPR
- instruction
-Message-ID: <20201103124431.GB40454@C02TD0UTHF1T.local>
-References: <20201103121721.5166-1-will@kernel.org>
- <20201103121721.5166-3-will@kernel.org>
+        id S1728818AbgKCMpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:45:44 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38844 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbgKCMpn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:45:43 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3CjU30093058;
+        Tue, 3 Nov 2020 06:45:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604407530;
+        bh=MX6c8hjcZDZUesVswKmxwJG1AWhIKQOHy2Qu8D7QvJg=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=uaS1XINNYyC0R4S5tpUfC7m9Pf6LJJLEsRUVV7cPrn6drpafw+CLXOlLf7ryjg8kn
+         M3DvKSAJDnwg4ribErcNQryKtbC9SDj0BOGZxba6m+sk5th1B1myRSRxpdYpmeB3SZ
+         Yhd4UU/012yXsBaY12YsmVU+V/ISTmk1swng2P1k=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3CjU4b059231
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 06:45:30 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 06:45:30 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 06:45:30 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3CjTv0038496;
+        Tue, 3 Nov 2020 06:45:30 -0600
+Date:   Tue, 3 Nov 2020 18:15:29 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Richard Weinberger <richard.weinberger@gmail.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] mtd: Make sure UBIFS does not do multi-pass page
+ programming on flashes that don't support it
+Message-ID: <20201103124527.x6mp6slck44aotzn@ti.com>
+References: <20201012180404.6476-1-p.yadav@ti.com>
+ <20201027111804.e27pyvf62eksngmp@ti.com>
+ <CAFLxGvxc=EqBStzLz3ApwYDomKMe=WeK22ohfPQs1WrMCsaVQg@mail.gmail.com>
+ <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201103121721.5166-3-will@kernel.org>
+In-Reply-To: <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:17:19PM +0000, Will Deacon wrote:
-> Armv8.3 introduced the LDAPR instruction, which provides weaker memory
-> ordering semantics than LDARi (RCpc vs RCsc). Generally, we provide an
-> RCsc implementation when implementing the Linux memory model, but LDAPR
-> can be used as a useful alternative to dependency ordering, particularly
-> when the compiler is capable of breaking the dependencies.
+On 03/11/20 05:05PM, Vignesh Raghavendra wrote:
 > 
-> Since LDAPR is not available on all CPUs, add a cpufeature to detect it at
-> runtime and allow the instruction to be used with alternative code
-> patching.
 > 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
+> On 11/1/20 3:14 AM, Richard Weinberger wrote:
+> > On Tue, Oct 27, 2020 at 12:24 PM Pratyush Yadav <p.yadav@ti.com> wrote:
+> >>> [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
+> >>
+> >> Ping. Any comments on the series?
+> > 
+> > From the UBIFS point of view I'd like to avoid as many device specific
+> > settings as possible.
+> > We check already for NOR flash, checking for NOR *and* SPI_NOR_NO_MULTI_PASS_PP
+> > feels a bit clumsy.
+> > 
+> > Tudor, what do you think about SPI_NOR_NO_MULTI_PASS_PP?
+> > This kind of NOR seems to be a little NAND'ish. Maybe we can hide this detail
+> > in the mtd framework?
+> > 
+> 
+> Agree with Richard. I don't see need for SPI_NOR_NO_MULTI_PASS_PP. From
+> MTD point of view setting mtd->writesize to be equal to pagesize should
+> be enough. Its upto clients of MTD devices to ensure there is no multi
+> pass programming within a "writesize" block.
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+That is what I initially thought too but then I realized that multi-pass 
+programming is completely different from page-size programming. Instead 
+of writing 4 bytes twice, you can zero out the entire page in one single 
+operation. You would be compliant with the write size requirement but 
+you still do multi-pass programming because you did not erase the page 
+before this operation.
 
-Mark.
+It is also not completely correct to say the Cypress S28 flash has a 
+write size of 256. You _can_ write one byte if you want. You just can't 
+write to that page again without erasing it first. For example, if a 
+file system only wants to write 128 bytes on a page, it can do so 
+without having to write the whole page. It just needs to make sure it 
+doesn't write to it again without erasing first.
 
-> ---
->  arch/arm64/Kconfig               |  3 +++
->  arch/arm64/include/asm/cpucaps.h |  3 ++-
->  arch/arm64/kernel/cpufeature.c   | 10 ++++++++++
->  3 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1d466addb078..356c50b0447f 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1388,6 +1388,9 @@ config ARM64_PAN
->  	 The feature is detected at runtime, and will remain as a 'nop'
->  	 instruction if the cpu does not implement the feature.
->  
-> +config AS_HAS_LDAPR
-> +	def_bool $(as-instr,.arch_extension rcpc)
-> +
->  config ARM64_LSE_ATOMICS
->  	bool
->  	default ARM64_USE_LSE_ATOMICS
-> diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
-> index e7d98997c09c..64ea0bb9f420 100644
-> --- a/arch/arm64/include/asm/cpucaps.h
-> +++ b/arch/arm64/include/asm/cpucaps.h
-> @@ -66,7 +66,8 @@
->  #define ARM64_HAS_TLB_RANGE			56
->  #define ARM64_MTE				57
->  #define ARM64_WORKAROUND_1508412		58
-> +#define ARM64_HAS_LDAPR				59
->  
-> -#define ARM64_NCAPS				59
-> +#define ARM64_NCAPS				60
->  
->  #endif /* __ASM_CPUCAPS_H */
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index dcc165b3fc04..b7b6804cb931 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -2136,6 +2136,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		.cpu_enable = cpu_enable_mte,
->  	},
->  #endif /* CONFIG_ARM64_MTE */
-> +	{
-> +		.desc = "RCpc load-acquire (LDAPR)",
-> +		.capability = ARM64_HAS_LDAPR,
-> +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> +		.sys_reg = SYS_ID_AA64ISAR1_EL1,
-> +		.sign = FTR_UNSIGNED,
-> +		.field_pos = ID_AA64ISAR1_LRCPC_SHIFT,
-> +		.matches = has_cpuid_feature,
-> +		.min_field_value = 1,
-> +	},
->  	{},
->  };
->  
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-> 
+nor_erase_prepare() was written to handle quirks of some specific 
+devices. Not every device starts filling zeroes from the end of a page. 
+So we have device-specific code in UBIFS already. You will obviously 
+need device-specific settings to have control over that code.
+
+One might argue that we should move nor_erase_prepare() out of UBIFS. 
+But requiring a flash to start erasing from the start of the page is a 
+UBIFS-specific requirement. Other users of a flash might not care about 
+it at all.
+
+And so we have ourselves a bit of a conundrum. Adding 
+SPI_NOR_NO_MULTI_PASS_PP is IMHO the least disruptive answer. If the 
+file system wants to do multi-pass page programming on NOR flashes, how 
+else do we tell it not to do it for this specific flash?
+
+> If this is not clear in the current documentation of struct mtd, then
+> that can be updated.
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
