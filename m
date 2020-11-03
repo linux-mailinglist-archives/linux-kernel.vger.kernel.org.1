@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2572A53FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79D52A53FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388200AbgKCVGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
+        id S2388211AbgKCVGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:06:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733232AbgKCVGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:37 -0500
+        id S2388199AbgKCVGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:06:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06980206CB;
-        Tue,  3 Nov 2020 21:06:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B985420658;
+        Tue,  3 Nov 2020 21:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437596;
-        bh=/Ks8KETB+CKrRYrGo2T+5rqEmySgJfur65rlwYhBuKo=;
+        s=default; t=1604437601;
+        bh=gtGJRTeE1GYtV8jUwiVQZ1nLMsjyOwDDWUZtwMSjvA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e+CtMD5PPzONh4bXbEtZGYNpKl9vEtnZot8v/72C9rJC32zW6/n7ElnA0t3fmAMP+
-         T5wLeJVjzYAU2eoSKmjHGvLpS+ZZEiwjhbTJmDU6Kx/vDZLC1F0EAR/K9Xh6VIBVqT
-         CBbPmEW+fd8i3GXSDnEOp3Wav8s7lZ2zjIqC2k+U=
+        b=FMoA6m/8TWVxnqVQnd2nTIwy1UEtbBA1GhHmf3fbRQZkTP2o7AH+/PHBQTNVCA7hP
+         fJNsx6UazW07JQSzxlvYa8GQ0+NwNhwoFHU7g8bUh5Fct7IQwtephvUx/dlGXEDhPH
+         8mcYaxZQHyExuMdXszxDeYwn1RJjQTxYpwqdPV7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 4.19 145/191] vt: keyboard, extend func_buf_lock to readers
-Date:   Tue,  3 Nov 2020 21:37:17 +0100
-Message-Id: <20201103203246.361801167@linuxfoundation.org>
+        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
+        Ping Cheng <ping.cheng@wacom.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.19 146/191] HID: wacom: Avoid entering wacom_wac_pen_report for pad / battery
+Date:   Tue,  3 Nov 2020 21:37:18 +0100
+Message-Id: <20201103203246.442871831@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -42,94 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Jason Gerecke <jason.gerecke@wacom.com>
 
-commit 82e61c3909db51d91b9d3e2071557b6435018b80 upstream.
+commit d9216d753b2b1406b801243b12aaf00a5ce5b861 upstream.
 
-Both read-side users of func_table/func_buf need locking. Without that,
-one can easily confuse the code by repeatedly setting altering strings
-like:
-while (1)
-	for (a = 0; a < 2; a++) {
-		struct kbsentry kbs = {};
-		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
-		ioctl(fd, KDSKBSENT, &kbs);
-	}
+It has recently been reported that the "heartbeat" report from devices
+like the 2nd-gen Intuos Pro (PTH-460, PTH-660, PTH-860) or the 2nd-gen
+Bluetooth-enabled Intuos tablets (CTL-4100WL, CTL-6100WL) can cause the
+driver to send a spurious BTN_TOUCH=0 once per second in the middle of
+drawing. This can result in broken lines while drawing on Chrome OS.
 
-When that program runs, one can get unexpected output by holding F1
-(note the unxpected period on the last line):
-.
-88888
-.8888
+The source of the issue has been traced back to a change which modified
+the driver to only call `wacom_wac_pad_report()` once per report instead
+of once per collection. As part of this change, pad-handling code was
+removed from `wacom_wac_collection()` under the assumption that the
+`WACOM_PEN_FIELD` and `WACOM_TOUCH_FIELD` checks would not be satisfied
+when a pad or battery collection was being processed.
 
-So protect all accesses to 'func_table' (and func_buf) by preexisting
-'func_buf_lock'.
+To be clear, the macros `WACOM_PAD_FIELD` and `WACOM_PEN_FIELD` do not
+currently check exclusive conditions. In fact, most "pad" fields will
+also appear to be "pen" fields simply due to their presence inside of
+a Digitizer application collection. Because of this, the removal of
+the check from `wacom_wac_collection()` just causes pad / battery
+collections to instead trigger a call to `wacom_wac_pen_report()`
+instead. The pen report function in turn resets the tip switch state
+just prior to exiting, resulting in the observed BTN_TOUCH=0 symptom.
 
-It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
-On the other hand, KDGKBSENT needs a local (atomic) copy of the string
-because copy_to_user can sleep. Use already allocated, but unused
-'kbs->kb_string' for that purpose.
+To correct this, we restore a version of the `WACOM_PAD_FIELD` check
+in `wacom_wac_collection()` and return early. This effectively prevents
+pad / battery collections from being reported until the very end of the
+report as originally intended.
 
-Note that the program above needs at least CAP_SYS_TTY_CONFIG.
-
-This depends on the previous patch and on the func_buf_lock lock added
-in commit 46ca3f735f34 (tty/vt: fix write/write race in ioctl(KDSKBSENT)
-handler) in 5.2.
-
-Likely fixes CVE-2020-25656.
-
-Cc: <stable@vger.kernel.org>
-Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20201019085517.10176-2-jslaby@suse.cz
+Fixes: d4b8efeb46d9 ("HID: wacom: generic: Correct pad syncing")
+Cc: stable@vger.kernel.org # v4.17+
+Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
+Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
+Tested-by: Ping Cheng <ping.cheng@wacom.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/keyboard.c |   17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/hid/wacom_wac.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -742,8 +742,13 @@ static void k_fn(struct vc_data *vc, uns
- 		return;
+--- a/drivers/hid/wacom_wac.c
++++ b/drivers/hid/wacom_wac.c
+@@ -2729,7 +2729,9 @@ static int wacom_wac_collection(struct h
+ 	if (report->type != HID_INPUT_REPORT)
+ 		return -1;
  
- 	if ((unsigned)value < ARRAY_SIZE(func_table)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&func_buf_lock, flags);
- 		if (func_table[value])
- 			puts_queue(vc, func_table[value]);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
-+
- 	} else
- 		pr_err("k_fn called with value=%d\n", value);
- }
-@@ -1990,7 +1995,7 @@ out:
- #undef s
- #undef v
- 
--/* FIXME: This one needs untangling and locking */
-+/* FIXME: This one needs untangling */
- int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- {
- 	struct kbsentry *kbs;
-@@ -2022,10 +2027,14 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
- 	switch (cmd) {
- 	case KDGKBSENT: {
- 		/* size should have been a struct member */
--		unsigned char *from = func_table[i] ? : "";
-+		ssize_t len = sizeof(user_kdgkb->kb_string);
-+
-+		spin_lock_irqsave(&func_buf_lock, flags);
-+		len = strlcpy(kbs->kb_string, func_table[i] ? : "", len);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
- 
--		ret = copy_to_user(user_kdgkb->kb_string, from,
--				strlen(from) + 1) ? -EFAULT : 0;
-+		ret = copy_to_user(user_kdgkb->kb_string, kbs->kb_string,
-+				len + 1) ? -EFAULT : 0;
- 
- 		goto reterr;
- 	}
+-	if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
++	if (WACOM_PAD_FIELD(field))
++		return 0;
++	else if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
+ 		wacom_wac_pen_report(hdev, report);
+ 	else if (WACOM_FINGER_FIELD(field) && wacom->wacom_wac.touch_input)
+ 		wacom_wac_finger_report(hdev, report);
 
 
