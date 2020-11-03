@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B282A3B2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1902A3B2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgKCD4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:56:19 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41818 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgKCD4S (ORCPT
+        id S1727401AbgKCD4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:56:24 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:39528 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbgKCD4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:56:18 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A33u9XT034020;
-        Mon, 2 Nov 2020 21:56:09 -0600
+        Mon, 2 Nov 2020 22:56:22 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A33uIaI023695;
+        Mon, 2 Nov 2020 21:56:18 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604375769;
-        bh=ejqVodygEsgAslfKzhoklm22eEg4+DvOyLToSf8bIJ0=;
+        s=ti-com-17Q1; t=1604375778;
+        bh=SwK1bQtA3dhsn47NOkiZACrcQx2a12YjrBGCfk/t97I=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=H3QpbcrgVREMN93VvKn/wuU5XDuttCNrAzxR032qL3DBACQiMzCYU+xzDpsf5tvQ5
-         tnARdFHzzw2n1ary31FXd3AakTJyAmvpQhHExQj+HeZgcJ8FOP9RAIyWc22IsbjVob
-         nTigYBVCK89pJJR1EpOwidEmzBy5yJFkRdfZzyt8=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A33u9Uf090537
+        b=q8aWQtyO7qE4oZPKLSj0JZf2CIPSWt8mnkyO1pEx2WLb2k1+zXdDustd6lJaYPHAt
+         P3xMdXXg/m45yGQeFqOHG4avwg0xzYs2MDXAflv8OQttkKYz1wLRFUAZnUC36Pgkz9
+         mySQXikeSzHxXFoul4qPkzcGUwlygxxiupR+Zvg8=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A33uIL5112155
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Nov 2020 21:56:09 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 2 Nov 2020 21:56:18 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 21:56:04 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 21:56:07 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 21:56:04 -0600
+ Frontend Transport; Mon, 2 Nov 2020 21:56:07 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A33tuqM101157;
-        Mon, 2 Nov 2020 21:56:01 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A33tuqN101157;
+        Mon, 2 Nov 2020 21:56:04 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -46,9 +46,9 @@ CC:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
         Milind Parab <mparab@cadence.com>,
         Yuti Suresh Amonkar <yamonkar@cadence.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH 1/9] dt-bindings: phy: cadence-sierra: Add bindings for the PLLs within SERDES
-Date:   Tue, 3 Nov 2020 09:25:48 +0530
-Message-ID: <20201103035556.21260-2-kishon@ti.com>
+Subject: [PATCH 2/9] phy: ti: j721e-wiz: Get PHY properties only for "phy" subnode
+Date:   Tue, 3 Nov 2020 09:25:49 +0530
+Message-ID: <20201103035556.21260-3-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201103035556.21260-1-kishon@ti.com>
 References: <20201103035556.21260-1-kishon@ti.com>
@@ -59,134 +59,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding for the PLLs within SERDES.
+"serdes" node (child node of WIZ) can have sub-nodes for representing links
+or it can have sub-nodes for representing the various clocks within the
+serdes. Instead of trying to read "reg" from every child node used for
+assigning "lane_phy_type", read only if the child node's name is "phy".
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- .../bindings/phy/phy-cadence-sierra.yaml      | 89 ++++++++++++++++++-
- 1 file changed, 86 insertions(+), 3 deletions(-)
+ drivers/phy/ti/phy-j721e-wiz.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml
-index d210843863df..f574b8ed358c 100644
---- a/Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml
-+++ b/Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml
-@@ -49,12 +49,14 @@ properties:
-     const: serdes
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index c9cfafe89cbf..d57d29382ce4 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -787,6 +787,9 @@ static int wiz_get_lane_phy_types(struct device *dev, struct wiz *wiz)
+ 		u32 reg, num_lanes = 1, phy_type = PHY_NONE;
+ 		int ret, i;
  
-   clocks:
--    maxItems: 2
-+    maxItems: 4
- 
-   clock-names:
-     items:
-       - const: cmn_refclk_dig_div
-       - const: cmn_refclk1_dig_div
-+      - const: pll_cmnlc
-+      - const: pll_cmnlc1
- 
-   cdns,autoconf:
-     type: boolean
-@@ -107,6 +109,58 @@ patternProperties:
- 
-     additionalProperties: false
- 
-+  "^refrcv1?$":
-+    type: object
-+    description: |
-+      Reference receivers that enables routing external clocks to the alternate
-+      PLLCMNLC.
-+    properties:
-+      clocks:
-+        maxItems: 1
-+        description: Phandle to clock nodes representing the input to the
-+          reference receiver.
++		if (!(of_node_name_eq(subnode, "phy")))
++			continue;
 +
-+      clock-names:
-+        items:
-+          - const: pll_refclk
-+
-+      "#clock-cells":
-+        const: 0
-+
-+    required:
-+      - clocks
-+      - "#clock-cells"
-+
-+  "^pll_cmnlc1?$":
-+    type: object
-+    description: |
-+      SERDES node should have subnodes for each of the PLLs present in
-+      the SERDES.
-+    properties:
-+      clocks:
-+        maxItems: 2
-+        description: Phandle to clock nodes representing the two inputs to PLL.
-+
-+      clock-names:
-+        items:
-+          - const: pll_refclk
-+          - const: refrcv
-+
-+      "#clock-cells":
-+        const: 0
-+
-+      assigned-clocks:
-+        maxItems: 1
-+
-+      assigned-clock-parents:
-+        maxItems: 1
-+
-+    required:
-+      - clocks
-+      - "#clock-cells"
-+      - assigned-clocks
-+      - assigned-clock-parents
-+
- required:
-   - compatible
-   - "#address-cells"
-@@ -130,10 +184,39 @@ examples:
-             reg = <0x0 0xfd240000 0x0 0x40000>;
-             resets = <&phyrst 0>, <&phyrst 1>;
-             reset-names = "sierra_reset", "sierra_apb";
--            clocks = <&cmn_refclk_dig_div>, <&cmn_refclk1_dig_div>;
--            clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div";
-+            clocks = <&cmn_refclk_dig_div>, <&cmn_refclk1_dig_div>, <&serdes_pll_cmnlc>, <&serdes_pll_cmnlc1>;
-+            clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div", "pll_cmnlc", "pll_cmnlc1";
-             #address-cells = <1>;
-             #size-cells = <0>;
-+
-+            serdes_refrcv: refrcv {
-+                    clocks = <&pll0_refclk>;
-+                    clock-names = "pll_refclk";
-+                    #clock-cells = <0>;
-+            };
-+
-+            serdes_refrcv1: refrcv1 {
-+                    clocks = <&pll1_refclk>;
-+                    clock-names = "pll_refclk";
-+                    #clock-cells = <0>;
-+            };
-+
-+            serdes_pll_cmnlc: pll_cmnlc {
-+                    clocks = <&pll0_refclk>, <&serdes_refrcv1>;
-+                    clock-names = "pll_refclk", "refrcv";
-+                    #clock-cells = <0>;
-+                    assigned-clocks = <&serdes_pll_cmnlc>;
-+                    assigned-clock-parents = <&pll0_refclk>;
-+            };
-+
-+            serdes_pll_cmnlc1: pll_cmnlc1 {
-+                    clocks = <&pll1_refclk>, <&serdes_refrcv>;
-+                    clock-names = "pll_refclk", "refrcv";
-+                    #clock-cells = <0>;
-+                    assigned-clocks = <&serdes_pll_cmnlc1>;
-+                    assigned-clock-parents = <&pll1_refclk>;
-+            };
-+
-             pcie0_phy0: phy@0 {
-                 reg = <0>;
-                 resets = <&phyrst 2>;
+ 		ret = of_property_read_u32(subnode, "reg", &reg);
+ 		if (ret) {
+ 			dev_err(dev,
 -- 
 2.17.1
 
