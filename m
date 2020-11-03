@@ -2,82 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CD22A59C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97622A59D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731729AbgKCWKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:10:12 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45012 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729764AbgKCWKJ (ORCPT
+        id S1729793AbgKCWNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728567AbgKCWNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:10:09 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604441407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8fYu6MuaJ0Ok/Y49A6p/r2wWyaAYSztubvJXZfAJjx8=;
-        b=kSOrZCkd+5bm3VUzBCKp+nXf6Jm7gHJqEst/8Y8Y7kCKavfTO6EsO6Fbfu5IWFm7Yh0rOh
-        ViOh1ai4o5f0PzkGC6gnQU0hccQS3A0dsAu6zIpTriXCVe8LYJKI0b83pLLX4BemllgEQ6
-        +IQR9J0bMajTKl5Wq0d2SPBn9SWwC3qrE+PB++4G0G8IfyOx9BoLgfM6EkEutRo8WTxhwq
-        MlO0X8D6Jsn2qbEWzgvUE1Zb1jqzlTRrYhfELhwbbtuWglFP6/4tTy4CG7I7hp5vG+2T3N
-        IPrsCMkaOm0iBHMsLlRmPUmfvf6Gy5W+vaq7iru3s8Ka7+yMQ3SgEgROjA8WHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604441407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8fYu6MuaJ0Ok/Y49A6p/r2wWyaAYSztubvJXZfAJjx8=;
-        b=0XFyqK39HcF4/ENuNbZFJU0QS3/l+9z7UfPcGscjnLvY1kuRMumepPSyYBcqHw+YIi3h5E
-        hih5bXfXsCTgC8Cw==
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Elliot Berman <eberman@codeaurora.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-In-Reply-To: <20201030174531.ywwkcntq4ge33lrh@bogus>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org> <87v9f04n8r.fsf@nanos.tec.linutronix.de> <a6d7f84679240fcf580520230a88c058@codeaurora.org> <20201026171224.GV2611@hirez.programming.kicks-ass.net> <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org> <20201028145516.23lm66mora5b3wqr@e107158-lin> <20201028151558.odxwolnwbes2gihi@bogus> <cb175d84-7a89-344d-0dd8-76bf4ece9e3b@codeaurora.org> <20201030174531.ywwkcntq4ge33lrh@bogus>
-Date:   Tue, 03 Nov 2020 23:10:06 +0100
-Message-ID: <871rha148x.fsf@nanos.tec.linutronix.de>
+        Tue, 3 Nov 2020 17:13:15 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749B8C061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:13:15 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id z24so14816764pgk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zwwyyZlsxtPwtkYdyrHXKpl0bLG1w1dXTG/u61TKkGA=;
+        b=F/BOrbHN3ThwMUapjDBheSHLcKAGpUy6Fi0cQZ3GILWIaHyiysO/ujlkbPJcgcbjh0
+         w6E+DHNJAHoizgUEehefyU1cf6wrED2iZyv+iY8CIaeCaIhRwQidQe3xkaaPP+KI22hb
+         u8BIUatkMIHsDa4wAq1pyRIKBSD+s2JOsZ4OPT33horuipKp+MR/aX7ZS9SqAZwkQiVI
+         i0j5z5zhMaezpCSA7Uf+3lB6K16LNpOglV9wAGyvXII29N96oPEAX2IRWkbCYC8ZYt2z
+         /wIf39FAFL+Ihzou81o1Iof1oH/2ytzjixHpsImGN7qELA0A/ZhGHKhm8+tW7i3yryhP
+         4beg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zwwyyZlsxtPwtkYdyrHXKpl0bLG1w1dXTG/u61TKkGA=;
+        b=kyF6LsUhUvOxFHe1Nt1MmDWLd6j4KDv3kt5gX5OR/MSiFuAIGYqhJ6cDc11lP7WLTn
+         xFd/vVCn8S/EkMl8JofM7i1eAgix6lxZwX9w31eQJmdBUkhwhisx321rrmpgQLpJHKiK
+         qfG2wgGZaxn9ou4pkCMALEIPxAaot2lLQVsdC0WFkQBPNTTn4+fMBEFoDfQ7nlCtFbM6
+         WkAEsjdoa2GQhUA1bzDsA3V/3nf0JfZQ/uhuZ5ihD31EZjoY70fA7GwNluZWYArWc/9D
+         82UDfHbn1shaIdpS/xTFu+jhbqF01WOFHqkWLIC/IHRbGCVn43f4RipiStr9uxaefiKW
+         1cig==
+X-Gm-Message-State: AOAM532DV85nZu4Zqwquik00J+f7HZk+Jqv/sxRG0CfGgWt58vvDzwPn
+        hE6z7cB9fHwSVNarE5ysdXXmRlosIWZfLlrc2wM2Fw==
+X-Google-Smtp-Source: ABdhPJxnsbrAtfA4NXmc2uzVJWXX0ZuiUkYkGDZKYbsbkTdK+xx71ztyA4HJy/MaKg0CErmSrOQqnK7oK84dOU4CrO4=
+X-Received: by 2002:aa7:9a04:0:b029:163:fe2a:9e04 with SMTP id
+ w4-20020aa79a040000b0290163fe2a9e04mr28701717pfj.30.1604441594716; Tue, 03
+ Nov 2020 14:13:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201022012106.1875129-1-ndesaulniers@google.com> <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+In-Reply-To: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 3 Nov 2020 14:13:03 -0800
+Message-ID: <CAKwvOdm3G1MPR38JckB9Dgg--=M90qimOcum2a18vvp+Gh9S2A@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org, Jakub Jelinek <jakub@redhat.com>,
+        Alistair Delva <adelva@google.com>,
+        Nick Clifton <nickc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30 2020 at 17:45, Sudeep Holla wrote:
-> On Thu, Oct 29, 2020 at 02:37:06PM -0700, Elliot Berman wrote:
->> In the case where commercial device is using feature for thermal, device
->> should boot multiple small cores. Booting only one core means we would not
->> be able to use all possible cores to maximum extent possible in this thermal
->> case.
+On Sun, Nov 1, 2020 at 6:21 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> I understood that point. But you haven't responded on my logical vs physical
-> number argument. I am clearly NACKing this patch as is for just usage of
-> logical CPU IDs in the command line while your intention is to control
-> the physical CPUs. So once again, NACK for that reason.
+> On Thu, Oct 22, 2020 at 10:21 AM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> > new file mode 100755
+> > index 000000000000..82c0eea45845
+> > --- /dev/null
+> > +++ b/scripts/test_dwarf5_support.sh
+> > @@ -0,0 +1,4 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +set -eu
+> > +echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+>
+>
+>
+> Please tell me how this script detects the dwarf-5 capability.
 
-Correct. And no, we are not going to add a command line option to select
-physical CPU ids.
+Ah, sorry, I should have put more context.  Specifically, I wrote this
+patch initially back in May, but testing combinations of:
+- GCC + GNU as
+- Clang + GNU as
+- Clang + LLVM_IAS
+I hit a few snags in GNU as.  I reported the issues, and they were
+quickly fixed.  The fixes shipped in binutils 2.35 (or 2.35.1 as Jakub
+notes).
+https://sourceware.org/bugzilla/show_bug.cgi?id=25611
+https://sourceware.org/bugzilla/show_bug.cgi?id=25612
+https://sourceware.org/bugzilla/show_bug.cgi?id=25614 <-- .file 0
+https://sourceware.org/bugzilla/show_bug.cgi?id=25917
 
-There are two ways to solve that:
+This script is doing feature detection of `.file 0` directives (which
+is new in DWARF5) in the assembler and actively emitted by Clang.  I'm
+happy to add whatever other unit tests might be interesting for
+detecting correct support for various features, if we find them to be
+required, which I'd say `.file 0` certainly is.
 
-  1) The firmware can tell the kernel whether a CPU should be brought up
-     or not, e.g. by failing the bootup request.
+Probably could test GCC + LLVM_IAS, too.
 
-  2) The kernel has a way to figure out the current thermal and/or power
-     budget early in the boot process and sorts out which and how many
-     CPUs fit into that limit.
+Hence we need to test compiler and assembler support; either may be lacking.
 
+> This script fails for GCC 10.
+
+What is your version of binutils? Less than 2.35 I suspect?  If so,
+then that's expected and the script is working as intended.
+
+Thanks for your feedback, I'll try to get a v2 out this week
+incorporating feedback from you, Fangrui, and Jakub.
+
+>
+>
+> masahiro@grover:~/workspace/linux-kbuild$
+> ./scripts/test_dwarf5_support.sh  clang
+> masahiro@grover:~/workspace/linux-kbuild$ echo $?
+> 0
+> masahiro@grover:~/workspace/linux-kbuild$
+> ./scripts/test_dwarf5_support.sh gcc-10
+> {standard input}: Assembler messages:
+> {standard input}:1: Error: file number less than one
+> masahiro@grover:~/workspace/linux-kbuild$ echo $?
+> 1
+>
+>
+>
+>
+> The manual says the fileno should be "a positive integer".
+>
+>
+>   .file fileno filename
+>
+>   When emitting dwarf2 line number information .file assigns filenames
+> to the .debug_line file name table.
+>   The fileno operand should be a unique positive integer to use as the
+> index of the entry in the table.
+>   The filename operand is a C string literal.
+>
+>   The detail of filename indices is exposed to the user because the
+> filename table is shared with the
+>   .debug_info section of the dwarf2 debugging information, and thus
+> the user must know the exact indices
+>   that table entries will have.
+>
+>
+>
+> So, I modified the script as follows:
+>
+>
+> masahiro@grover:~/workspace/linux-kbuild$ git diff
+> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> index 82c0eea45845..8d7213e8e51f 100755
+> --- a/scripts/test_dwarf5_support.sh
+> +++ b/scripts/test_dwarf5_support.sh
+> @@ -1,4 +1,4 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0
+>  set -eu
+> -echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+> +echo ".file 1 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+>
+>
+>
+>
+> masahiro@grover:~/workspace/linux-kbuild$ ./scripts/test_dwarf5_support.sh  gcc
+> masahiro@grover:~/workspace/linux-kbuild$ echo $?
+> 0
+>
+>
+>
+> But, GCC 4.9 also passes this check.
+>
+> masahiro@grover:~/workspace/linux-kbuild$
+> ~/tools/aarch64-linaro-4.9/bin/aarch64-linux-gnu-gcc --version
+> aarch64-linux-gnu-gcc (Linaro GCC 4.9-2016.02) 4.9.4 20151028 (prerelease)
+> Copyright (C) 2015 Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions.  There is NO
+> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>
+> masahiro@grover:~/workspace/linux-kbuild$
+> ./scripts/test_dwarf5_support.sh
+> ~/tools/aarch64-linaro-4.9/bin/aarch64-linux-gnu-gcc
+> masahiro@grover:~/workspace/linux-kbuild$ echo $?
+> 0
+
+-- 
 Thanks,
-
-        tglx
-
+~Nick Desaulniers
