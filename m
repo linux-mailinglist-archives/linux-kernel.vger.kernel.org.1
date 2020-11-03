@@ -2,165 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BAB2A58A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9192D2A58D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732168AbgKCVxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:53:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:57550 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730816AbgKCVxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:53:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B11A1474;
-        Tue,  3 Nov 2020 13:53:33 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AE043F718;
-        Tue,  3 Nov 2020 13:53:31 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] iommu/iova: Flush CPU rcache for when a depot
- fills
-To:     John Garry <john.garry@huawei.com>,
-        "joro@8bytes.org" <joro@8bytes.org>
-Cc:     "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-References: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
- <1603733501-211004-4-git-send-email-john.garry@huawei.com>
- <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
- <d36fc7ec-cefa-0805-8036-3aea1c44fba2@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d7611b01-ea16-bbaa-fcd1-d11dc872ce5d@arm.com>
-Date:   Tue, 3 Nov 2020 21:53:31 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729968AbgKCV67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:58:59 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37989 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729828AbgKCV5h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:57:37 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-115-YO2xIxE2MmCfRz5cXdSJ4A-1; Tue, 03 Nov 2020 21:57:32 +0000
+X-MC-Unique: YO2xIxE2MmCfRz5cXdSJ4A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 3 Nov 2020 21:57:32 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 3 Nov 2020 21:57:32 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tong Zhang' <ztong0001@gmail.com>
+CC:     Anders Larsen <al@alarsen.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] qnx4: qnx4_block_map error handling
+Thread-Topic: [PATCH v3] qnx4: qnx4_block_map error handling
+Thread-Index: AQHWsW4xl10PEzYX6kyh1cQHa4gGXqm2Oy4QgAAzHACAAIaM4A==
+Date:   Tue, 3 Nov 2020 21:57:32 +0000
+Message-ID: <2e1ec234135349c58993097b84ea10b2@AcuMS.aculab.com>
+References: <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
+ <20201102231420.1833852-1-ztong0001@gmail.com>
+ <7d978bf40c5845e8b89a740250ba958a@AcuMS.aculab.com>
+ <CAA5qM4C+UGB_SXW5OeWKPtNkXyVCfwwB_ct9wps0Lj6VhvTawg@mail.gmail.com>
+In-Reply-To: <CAA5qM4C+UGB_SXW5OeWKPtNkXyVCfwwB_ct9wps0Lj6VhvTawg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <d36fc7ec-cefa-0805-8036-3aea1c44fba2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-03 17:56, John Garry wrote:
->>> To summarize, the issue is that as time goes by, the CPU rcache and 
->>> depot
->>> rcache continue to grow. As such, IOVA RB tree access time also 
->>> continues
->>> to grow.
->>
-> 
-> Hi Robin,
-> 
->> I'm struggling to see how this is not simply indicative of a leak
->> originating elsewhere. 
-> 
-> It sounds like one, but I don't think it is.
-> 
->> For the number of magazines to continually grow,
->> it means IOVAs *of a particular size* are being freed faster than they
->> are being allocated, while the only place that ongoing allocations
->> should be coming from is those same magazines!
-> 
-> But that is not the nature of how the IOVA caching works. The cache size 
-> is not defined by how DMA mappings we may have at a given moment in time 
-> or maximum which we did have at a point earlier. It just grows to a 
-> limit to where all CPU and global depot rcaches fill.
-> 
-> Here's an artificial example of how the rcache can grow, but I hope can 
-> help illustrate:
-> - consider a process which wants many DMA mapping active at a given 
-> point in time
-> - if we tie to cpu0, cpu0 rcache will grow to 128 * 2
-> - then tie to cpu1, cpu1 rcache will grow to 128 * 2, so total CPU 
-> rcache = 2 * 128 * 2. CPU rcache for cpu0 is not flushed - there is no 
-> maintenance for this.
-> - then tie to cpu2, cpu2 rcache will grow to 128 * 2, so total CPU 
-> rcache = 3 * 128 * 2
-> - then cpu3, cpu4, and so on.
-> - We can do this for all CPUs in the system, so total CPU rcache grows 
-> from zero -> #CPUs * 128 * 2. Yet no DMA mapping leaks.
+RnJvbTogVG9uZyBaaGFuZw0KPiBTZW50OiAwMyBOb3ZlbWJlciAyMDIwIDEzOjUzDQouLi4NCj4g
+PiBBbHNvICdibGtudW0nIGlzIG9ubHkgJ3Vuc2lnbmVkIGxvbmcnIHNvIH4wdWxsIGlzIHdyb25n
+Lg0KPiA+IEl0IGNhbiBiZSB3b3J0aCBpbmplY3RpbmcgYW4gZXJyb3IgYW5kIGNoZWNraW5nIHRo
+ZSBlcnJvcg0KPiA+IHByb3BhZ2F0aW9uIHdvcmtzLg0KPiA+DQo+ID4gV2hhdCBpcyB0aGUgYWN0
+dWFsIG1heGltdW0gZmlsZSBzaXplPw0KDQo+IFRoZSBtYXhpbXVtIGZpbGUgc2l6ZSBpcyAyR0It
+MSwgYnV0IGZyb20gbXkgdW5kZXJzdGFuZGluZw0KPiBxbng0X2Jsb2NrX21hcCgpIHJldHVybnMg
+YSBwaHlzaWNhbCBibG9jayBudW1iZXIuDQo+IFRoZSBtYXggZGlzayBzaXplIHN1cHBvcnRlZCBp
+cyAyKio2NCBieXRlcywgaG93ZXZlcg0KPiBpdCBpcyBsaW1pdGVkIHRvIHVuc2lnbmVkIGxvbmcg
+KDIqKjMyKQ0KPiAtLSBzbyBJIGFtIGFjdHVhbGx5IHZlcnkgaGVzaXRhbnQgdG8gZW5jb2RlIGFu
+IGVycm9yIGNvZGUgaW4gdGhlIHJldHVybiB2YWx1ZQ0KPiB3aXRob3V0IGNoYW5naW5nIHRoZSBm
+dW5jdGlvbiByZXR1cm4gdHlwZSwgd2hpY2ggd2lsbCBpbnRyb2R1Y2UgbW9yZQ0KPiBjaGFuZ2Vz
+IEkgZG9uJ3QgbGlrZS4NCj4gVGhlIG9yaWdpbmFsIC1FSU8gaW4gcW54NF9ibG9ja19tYXAoKSBp
+cyBhbHNvIGRvZGd5IGJ0dy4NCg0KWW91J3ZlIHB1dCB5b3VyIGhhbmQgaW50byBhIGJhZyBvZiB3
+b3Jtcy4uLg0KDQpMb29rcyBsaWtlIGEgbG9hZCBvZiB0aGUgJ2xvbmcnIG5lZWQgdG8gYmUgNjRi
+aXQuDQoNCkknbSBhY3R1YWxseSBzdXJwcmlzZWQgaG93IG9mdGVuICdsb25nJyBhcHBlYXJzIGlu
+IHRoZQ0KbGludXgga2VybmVsLg0KSSBkb24ndCBiZWxpZXZlIHRoZXJlIHdhcyBldmVyIGEgMTZi
+aXQgdmVyc2lvbiAoZWcgMjg2KQ0Kd2hlcmUgJ2xvbmcnIHdhcyAzMmJpdC4NCg0KCURhdmlkDQoN
+Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
+LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
+YWxlcykNCg==
 
-I get that. That's the initial warm-up phase I alluded to below. In an 
-even simpler example, allocating on CPU A and freeing on CPU B will 
-indeed move IOVAs from the tree into magazines without reuse, but only 
-up to a point. Eventually, CPU B's cache fills up and pushes a magazine 
-into the depot, and at *that* point things reach a steady state, since 
-the next allocation on CPU A will then pull that magazine from the depot 
-and proceed to allocate from there. If allocs and frees stay perfectly 
-balanced, the working set is then 3 magazines. Yes, the depot can fill 
-up if the number of IOVAs that CPU B frees at once before CPU A 
-reallocates them is comparable to the total depot capacity, but it can't 
-reasonably *stay* full unless CPU A stops allocating altogether.
-
-> Something similar can happen in normal use, where the scheduler 
-> relocates processes all over the CPUs in the system as time goes by, 
-> which causes the total rcache size to continue to grow. And in addition 
-> to this, the global depot continues to grow very slowly as well. But 
-> when it does fill (the global depot, that is), and we start to free 
-> magazines to make space – as is current policy - that's very slow and 
-> causes the performance drop.
-
-Sure, but how does it then consistently *remain* in that state? And 
-*why* does the depot slowly and steadily grow in the first place if 
-alloc and free are ultimately balanced? I can get the depot swinging 
-between full and empty if it's simply too small to bounce magazines 
-between a large number of "CPU A"s and "CPU B"s, but again, that's 
-surely going to show as repeated performance swings between bad at each 
-end and good in the middle, not a steady degradation.
-
->> Now indeed that could happen over the short term if IOVAs are allocated
->> and freed again in giant batches larger than the total global cache
->> capacity, but that would show a cyclic behaviour - when activity starts,
->> everything is first allocated straight from the tree, then when it ends
->> the caches would get overwhelmed by the large burst of freeing and start
->> having to release things back to the tree, but eventually that would
->> stop once everything *is* freed, then when activity begins again the
->> next round of allocating would inherently clear out all the caches
->> before going anywhere near the tree. 
-> 
-> But there is no clearing. A CPU will keep the IOVA cached indefinitely, 
-> even when there is no active DMA mapping present at all.
-
-Sure, the percpu caches can buffer IOVAs for an indefinite amount of 
-time depending on how many CPUs are active, but the depot usage is still 
-absolutely representative of the total working set for whichever CPUs 
-*are* active. In this whole discussion I'm basically just considering 
-the percpu caches as pipeline stages for serialising IOVAs into and out 
-of magazines. It's the motion of magazines that's the interesting part.
-
-If the depot keeps continually filling up, *some* CPUs are freeing 
-enough IOVAs to push out full magazines, and those IOVAs have to come 
-from somewhere, so *some* CPUs are allocating, and those CPUs can't 
-allocate forever without taking magazines back out of the depot (that's 
-the "clearing out" I meant). Something about a steady degradation that 
-never shows any sign of recovery (even periodically) just doesn't seem 
-to add up.
-
-Anyway, by now I think it would be most interesting to get rid of this 
-bottleneck completely rather than dance around bodging it, and see what 
-happens if we simply let the depot grow to fit the maximum working set, 
-so I did this:
-
-https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/iova
-
-Only compile-tested, so probably full of trivial bugs, but I'm curious 
-to see if the slight extra overhead to depot management is noticeable in 
-normal cases.
-
-Robin.
-
->> To me the "steady decline"
->> behaviour suggests that someone somewhere is making DMA unmap calls with
->> a smaller size than they were mapped with (you tend to notice it quicker
->> the other way round due to all the device errors and random memory
->> corruption) - in many cases that would appear to work out fine from the
->> driver's point of view, but would provoke exactly this behaviour in the
->> IOVA allocator.
->>
-> 
-> Thanks,
-> John
