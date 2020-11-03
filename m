@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A5C2A5288
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0872A50F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731011AbgKCUuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:50:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        id S1729438AbgKCUgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:36:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731851AbgKCUum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:50:42 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727688AbgKCUgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:36:32 -0500
+Received: from localhost (p5486c89f.dip0.t-ipconnect.de [84.134.200.159])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F7C622404;
-        Tue,  3 Nov 2020 20:50:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA52521556;
+        Tue,  3 Nov 2020 20:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436642;
-        bh=74KF8pX5Ws56tLv45is/0QJDtB5rGm0h+2J+LFmRumM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AS0kW0iaTbAYSt5ecvAMHbbhN6Ip4XzGGuKUWx2WXD1rG71pOFsvc8pLLjVZj0afH
-         XThHHLf7W/66XLcOZvbEDcbwbtoxDmAwu5D5SdbRAGeHe5Kg5r2e5KlkNINt6ktUpV
-         Hxph9oIuNk8pDNoP20qvBLMIqKh8z+KWg7zWb9pw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 5.9 338/391] cpufreq: intel_pstate: Avoid missing HWP max updates in passive mode
-Date:   Tue,  3 Nov 2020 21:36:29 +0100
-Message-Id: <20201103203409.939835927@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1604435792;
+        bh=Z2x8JtW7Jt659gqXkTckJoKqTGCGca7XWCshbN9LalU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f1agjOoRFfQYunkxE+6Zmd+jg7qf23289C3JbK1rnumqNpWseEp/RpejcbhbMm8ga
+         572Ifxp2+z1PteOtOI5Ov7XdhGLXvjG6EsG0w1+c42p1a3TCaF2119BWm+rhLj6PPQ
+         29FMl18V27l0NleVWLfu6Dveu7u6VR+ERH2s1RTE=
+Date:   Tue, 3 Nov 2020 21:36:29 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: aT91: remove legacy DMA left overs
+Message-ID: <20201103203629.GB1583@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
+Content-Disposition: inline
+In-Reply-To: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit e0be38ed4ab413ddd492118cf146369b86ee0ab5 upstream.
+--O5XBE6gyVG5Rl6Rj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If the cpufreq policy max limit is changed when intel_pstate operates
-in the passive mode with HWP enabled and the "powersave" governor is
-used on top of it, the HWP max limit is not updated as appropriate.
+On Wed, Sep 30, 2020 at 04:56:54PM +0200, Alexandre Belloni wrote:
+> Commit dc6df6e90de9 ("i2c: at91: remove legacy DMA support") removed legcy
+> DMA support from the driver. Remove the last use of the definitions from
+> linux/platform_data/dma-atmel.h and stop including this header.
+>=20
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Namely, in the "powersave" governor case, the target P-state
-is always equal to the policy min limit, so if the latter does
-not change, intel_cpufreq_adjust_hwp() is not invoked to update
-the HWP Request MSR due to the "target_pstate != old_pstate" check
-in intel_cpufreq_update_pstate(), so the HWP max limit is not
-updated as a result.
-
-Also, if the CPUFREQ_NEED_UPDATE_LIMITS flag is not set for the
-driver and the target frequency does not change along with the
-policy max limit, the "target_freq == policy->cur" check in
-__cpufreq_driver_target() prevents the driver's ->target() callback
-from being invoked at all, so the HWP max limit is not updated.
-
-To prevent that occurring, set the CPUFREQ_NEED_UPDATE_LIMITS flag
-in the intel_cpufreq driver structure if HWP is enabled and modify
-intel_cpufreq_update_pstate() to do the "target_pstate != old_pstate"
-check only in the non-HWP case and let intel_cpufreq_adjust_hwp()
-always run in the HWP case (it will update HWP Request only if the
-cached value of the register is different from the new one including
-the limits, so if neither the target P-state value nor the max limit
-changes, the register write will still be avoided).
-
-Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode with HWP enabled")
-Reported-by: Zhang Rui <rui.zhang@intel.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+: 1c534352f47f cpufreq: Introduce CPUFREQ_NEED_UPDATE_LIMITS ...
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/cpufreq/intel_pstate.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2550,14 +2550,12 @@ static int intel_cpufreq_update_pstate(s
- 	int old_pstate = cpu->pstate.current_pstate;
- 
- 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
--	if (target_pstate != old_pstate) {
-+	if (hwp_active) {
-+		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
-+		cpu->pstate.current_pstate = target_pstate;
-+	} else if (target_pstate != old_pstate) {
-+		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
- 		cpu->pstate.current_pstate = target_pstate;
--		if (hwp_active)
--			intel_cpufreq_adjust_hwp(cpu, target_pstate,
--						 fast_switch);
--		else
--			intel_cpufreq_adjust_perf_ctl(cpu, target_pstate,
--						      fast_switch);
- 	}
- 
- 	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
-@@ -3014,6 +3012,7 @@ static int __init intel_pstate_init(void
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
- 			intel_cpufreq.attr = hwp_cpufreq_attrs;
-+			intel_cpufreq.flags |= CPUFREQ_NEED_UPDATE_LIMITS;
- 			if (!default_driver)
- 				default_driver = &intel_pstate;
- 
+Fixed the typo in the commit message and applied to for-next, thanks!
 
 
+--O5XBE6gyVG5Rl6Rj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+hv00ACgkQFA3kzBSg
+KbbxNhAAptbL/WGIALpRuck5F7tHm5Jhm2Ip+AE2vgOOer5/BGU9yIEJ0ii0W50T
+jrPq/Roxv5HJBMB3ZbQ7BYApPYzRlfsQn1YhqMH8MELAFQb9cpQGlZwIn00i5cGV
+RJ5TUueJ/skficks+ZyMuXJ1ZA1KZjbdeDFsrE3iHDui5H7H38pErxgZDSMflitY
+sKEFAGJJyFl4YYbl6UgAJXY1namXn3eiyV0CMwg8NRlEzAGdcua0Z7bgxNU1H9N7
+2Du9QvRjtd8bBhHVTg8Ryvj+MDyZIjQkN47SR2P6A1bbpSfs8F7PGXiHTBEbsNrl
+bkM+Z30qqxeJMglqlOS0P+Hy7uPSb17OhEOACmgsPPLszis3tpNv86B9PYMpDxYN
+DA00us++qDtjeFV0wdBkSjhxwJekm8ap1ZySsucJ6/MWm1miRtou4VWQY/4qkExg
+ZZ1SJ8eqFiQtJD7QTeAcXyBAypSIrSSQaAO5n53BQJll3R4caKdCg2l2sl2pZ2rj
+QDnMonsXtsCth5ZaNE5Nb2lWABOUsIHNsi90/fZjO4ZgAfBv+VH9nFfVjmv2qV1i
+JeIVk0gWJEFeOWJWac8nzBQcOJKS9e7/ZYIsexPMEazmbTWlL9pM7nRVZiktm7CE
+/FxNBnCIjwksol9BUBOZ8OnYs8m9S+wPPC6YpkRaJSN5ZUmsQLk=
+=sZgt
+-----END PGP SIGNATURE-----
+
+--O5XBE6gyVG5Rl6Rj--
