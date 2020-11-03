@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765CC2A59BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EC12A5930
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730692AbgKCWJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:09:56 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52517 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729886AbgKCUiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:38:11 -0500
-Received: by mail-wm1-f67.google.com with SMTP id c18so545080wme.2;
-        Tue, 03 Nov 2020 12:38:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s8q+3f361Qn+Zk0StgkDu+b9A9+awh+DJqyxzKTC3JY=;
-        b=pn6PYw3UFrn0GlCQ5kqIh0OhUTUzUWB69yTcQjKn6r88HDnJ0EYkAtyMDtMcWgeGXO
-         b99Dyupf1mXzDkqSoinS+iDBPwVkR7fS2biLJDLGKv0ldbz9dsFn3kOUk6oAm34x1kp7
-         KIUufGk+cj8DKKO0QnbD4OAZhPiYPxiAXqsoYrC4FvXJ6Cv7nix54Ldu+UEeAC5c5gGf
-         UfiBHet1eHNV+YUyAMQNiTLOenXOEgDb+7l1OqGSHMd29y5SFAZIn6wYjJxixkCWbIiJ
-         BIM1bYXxXnwqIACbpI4gTo0pxpEFhyQY3YKenFP3KsPdksHQ2ImHxfjeaXBeK04997v+
-         J38A==
-X-Gm-Message-State: AOAM532J80SNyUudPmrENlAarMQaYj6I4BpabD9LxOAVkdWJiiKd1u12
-        F5K7P78j9ECzviDMK4A07cr9K4i1KW0=
-X-Google-Smtp-Source: ABdhPJyMEX5UOKo7cQ48A++FW9cv9b6mSl8seA9YOqX4V2JJkFsbBV7UDuOSri1wP6FCg4sRdxO0vg==
-X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr993227wmt.26.1604435889599;
-        Tue, 03 Nov 2020 12:38:09 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id v19sm3918675wmj.31.2020.11.03.12.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 12:38:08 -0800 (PST)
-Date:   Tue, 3 Nov 2020 21:38:07 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ben Dooks <ben@simtec.co.uk>, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 14/25] soc: samsung: s3c-pm-check: Fix incorrectly named
- variable 'val'
-Message-ID: <20201103203807.GA10800@kozik-lap>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-15-lee.jones@linaro.org>
+        id S1730965AbgKCWFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:05:33 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:13018 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730549AbgKCWF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:05:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604441127; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=4BBm67fUFoo0KkqTgZeFbV6Hq2N7kpn5Ax07w3zlOJs=; b=eC4VOCkbG4zJE3VPgL64A1iqjCasQ2Z/5Q4hrfmJlW9VBVTC4NhdOj3ANWx1j56pyt94uOk/
+ /b+UmDfqYMWyT7KVgfsAhW0ESp+m1xHJTdxXCEPBpkW+M7nR+JRkESCGbfeKeOSM+28bGONN
+ jbyV7baRM/uwIrZvnm3Rj17DFm8=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fa1d4250ce128468bf6dc23 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 22:05:25
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 173F7C4339C; Tue,  3 Nov 2020 22:05:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDF12C433C6;
+        Tue,  3 Nov 2020 22:05:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BDF12C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v2] bus: mhi: core: Fix null pointer access when parsing
+ MHI configuration
+To:     carl.yin@quectel.com, manivannan.sadhasivam@linaro.org,
+        sfr@canb.auug.org.au
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        naveen.kumar@quectel.com
+References: <20201102122710.23406-1-carl.yin@quectel.com>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <e3f642a6-66de-163a-3006-79c76d6bf572@codeaurora.org>
+Date:   Tue, 3 Nov 2020 14:05:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201103152838.1290217-15-lee.jones@linaro.org>
+In-Reply-To: <20201102122710.23406-1-carl.yin@quectel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 03:28:27PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+
+
+On 11/2/20 4:27 AM, carl.yin@quectel.com wrote:
+> From: "carl.yin" <carl.yin@quectel.com>
 > 
->  drivers/soc/samsung/s3c-pm-check.c:162: warning: Function parameter or member 'val' not described in 's3c_pm_runcheck'
->  drivers/soc/samsung/s3c-pm-check.c:162: warning: Excess function parameter 'vak' description in 's3c_pm_runcheck'
+> Functions parse_ev_cfg() and parse_ch_cfg() access mhi_cntrl->mhi_dev
+> before it is set in function mhi_register_controller(),
+> use cntrl_dev instead of mhi_dev.
 > 
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Ben Dooks <ben@simtec.co.uk>
-> Cc: linux-samsung-soc@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/soc/samsung/s3c-pm-check.c | 2 +-
+> Fixes: 0cbf260820fa ("bus: mhi: core: Add support for registering MHI controllers")
+> Signed-off-by: carl.yin <carl.yin@quectel.com>
+> Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Thanks, applied.
-
-Best regards,
-Krzysztof
-
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
