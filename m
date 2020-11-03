@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868A72A55F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BA22A5695
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730715AbgKCVDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:03:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41614 "EHLO mail.kernel.org"
+        id S1732402AbgKCU6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733274AbgKCVDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:03:51 -0500
+        id S1732371AbgKCU6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1673422226;
-        Tue,  3 Nov 2020 21:03:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97EC8223C7;
+        Tue,  3 Nov 2020 20:58:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437430;
-        bh=DpHkQOwzxUaz1MEXJtLnP9egLMImF6ntRtFcCZN60YU=;
+        s=default; t=1604437125;
+        bh=FytFa8TWDqxC9E6EocZFRBk3FNc7lYI4RPDDGt0dgjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ehjuYBmrsXKbCTp8vH8CDBaEkkh0LQOBFMunferxQRvhPbtWBefUu9jmsOEMocHBv
-         mlVE4GwBeWkk6QfMtLGcByNmmGmw5B+n41joTFCxykwX1wlSH7pGQAAHjNsLKJNRL4
-         Dh9nmDxv48avK4++gVK+RULX9BTVQU3aTQHiagg4=
+        b=VwSFnLQjvjA0rl2q438RAWWPu8LaY2JOQRsF0eM5IexfJ2ZRaroupK63+xrSOWigd
+         X2hO/e3kpodWGP7kombhcRbuIDM6LnGNxXc6ZdTQ3NvnvuOO+zRmOzf7R4k45RDY8E
+         Xg2ykmUbjSA83okEOPZdh9hib6UHiaN3iiKorlng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/191] media: imx274: fix frame interval handling
-Date:   Tue,  3 Nov 2020 21:36:05 +0100
-Message-Id: <20201103203241.209557099@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>
+Subject: [PATCH 5.4 118/214] w1: mxc_w1: Fix timeout resolution problem leading to bus error
+Date:   Tue,  3 Nov 2020 21:36:06 +0100
+Message-Id: <20201103203301.944030141@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil@xs4all.nl>
+From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-[ Upstream commit 49b20d981d723fae5a93843c617af2b2c23611ec ]
+commit c9723750a699c3bd465493ac2be8992b72ccb105 upstream.
 
-1) the numerator and/or denominator might be 0, in that case
-   fall back to the default frame interval. This is per the spec
-   and this caused a v4l2-compliance failure.
+On my platform (i.MX53) bus access sometimes fails with
+	w1_search: max_slave_count 64 reached, will continue next search.
 
-2) the updated frame interval wasn't returned in the s_frame_interval
-   subdev op.
+The reason is the use of jiffies to implement a 200us timeout in
+mxc_w1_ds2_touch_bit().
+On some platforms the jiffies timer resolution is insufficient for this.
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix by replacing jiffies by ktime_get().
+
+For consistency apply the same change to the other use of jiffies in
+mxc_w1_ds2_reset_bus().
+
+Fixes: f80b2581a706 ("w1: mxc_w1: Optimize mxc_w1_ds2_touch_bit()")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Link: https://lore.kernel.org/r/1601455030-6607-1-git-send-email-martin.fuzzey@flowbird.group
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/i2c/imx274.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/w1/masters/mxc_w1.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-index 8cc3bdb7f608c..0fe8b869245b8 100644
---- a/drivers/media/i2c/imx274.c
-+++ b/drivers/media/i2c/imx274.c
-@@ -1239,6 +1239,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
- 	ret = imx274_set_frame_interval(imx274, fi->interval);
+--- a/drivers/w1/masters/mxc_w1.c
++++ b/drivers/w1/masters/mxc_w1.c
+@@ -7,7 +7,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
+-#include <linux/jiffies.h>
++#include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+@@ -40,12 +40,12 @@ struct mxc_w1_device {
+ static u8 mxc_w1_ds2_reset_bus(void *data)
+ {
+ 	struct mxc_w1_device *dev = data;
+-	unsigned long timeout;
++	ktime_t timeout;
  
- 	if (!ret) {
-+		fi->interval = imx274->frame_interval;
-+
- 		/*
- 		 * exposure time range is decided by frame interval
- 		 * need to update it after frame interval changes
-@@ -1760,9 +1762,9 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
- 		__func__, frame_interval.numerator,
- 		frame_interval.denominator);
+ 	writeb(MXC_W1_CONTROL_RPP, dev->regs + MXC_W1_CONTROL);
  
--	if (frame_interval.numerator == 0) {
--		err = -EINVAL;
--		goto fail;
-+	if (frame_interval.numerator == 0 || frame_interval.denominator == 0) {
-+		frame_interval.denominator = IMX274_DEF_FRAME_RATE;
-+		frame_interval.numerator = 1;
- 	}
+ 	/* Wait for reset sequence 511+512us, use 1500us for sure */
+-	timeout = jiffies + usecs_to_jiffies(1500);
++	timeout = ktime_add_us(ktime_get(), 1500);
  
- 	req_frame_rate = (u32)(frame_interval.denominator
--- 
-2.27.0
-
+ 	udelay(511 + 512);
+ 
+@@ -55,7 +55,7 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
+ 		/* PST bit is valid after the RPP bit is self-cleared */
+ 		if (!(ctrl & MXC_W1_CONTROL_RPP))
+ 			return !(ctrl & MXC_W1_CONTROL_PST);
+-	} while (time_is_after_jiffies(timeout));
++	} while (ktime_before(ktime_get(), timeout));
+ 
+ 	return 1;
+ }
+@@ -68,12 +68,12 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
+ static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
+ {
+ 	struct mxc_w1_device *dev = data;
+-	unsigned long timeout;
++	ktime_t timeout;
+ 
+ 	writeb(MXC_W1_CONTROL_WR(bit), dev->regs + MXC_W1_CONTROL);
+ 
+ 	/* Wait for read/write bit (60us, Max 120us), use 200us for sure */
+-	timeout = jiffies + usecs_to_jiffies(200);
++	timeout = ktime_add_us(ktime_get(), 200);
+ 
+ 	udelay(60);
+ 
+@@ -83,7 +83,7 @@ static u8 mxc_w1_ds2_touch_bit(void *dat
+ 		/* RDST bit is valid after the WR1/RD bit is self-cleared */
+ 		if (!(ctrl & MXC_W1_CONTROL_WR(bit)))
+ 			return !!(ctrl & MXC_W1_CONTROL_RDST);
+-	} while (time_is_after_jiffies(timeout));
++	} while (ktime_before(ktime_get(), timeout));
+ 
+ 	return 0;
+ }
 
 
