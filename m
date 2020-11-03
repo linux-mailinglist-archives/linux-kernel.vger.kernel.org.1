@@ -2,264 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680192A4760
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9312A4768
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgKCOKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729502AbgKCOJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:09:09 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5662BC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:09:08 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id j12so3932145iow.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 06:09:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l4FOhOeqEnVDoJ5bRT/ISdT4bxQ89fRTQwVSHjkBPV4=;
-        b=wCYdVovMWgk50XhjaI6MZEIe+2qazFELy2KweoNTlevdXGalqq+TNcRGcqrJ3jlbCR
-         9FlLQTcVyeigRJKthVgaTYg61ILCpXVmFsmb9Bd87N4wUhED2MRCzh9TlIt5v3MWSLtg
-         19Uxm6paNYF3LL38Ltlc/pL387aIUtRGJPt320OkS7aiqLjDPB02HaGZMiu9HHW07d1N
-         HbroL7AjMb3V9olgRYf+B4Op9ZZPWQH7s6TsgsDJ9D9Lu9yrOct6EFEamd/SoOV9jlNH
-         YokGScBs6FeqPbhPRQDnPYByaKjczh/aS5zRU142Jkh+1gS7i+ageCLLotjPAv091Fvi
-         SQtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l4FOhOeqEnVDoJ5bRT/ISdT4bxQ89fRTQwVSHjkBPV4=;
-        b=oJBRFTB+PwR9snPn6OQXr730pKWNzMD6iBYZvAwHTquyT8/XMYOhSmUKDjgwFCWb06
-         c0tHXq24nlEeFzAOqtBPDxUzSAJe879pfbk1l3caNGzafL4N8PAXVlnUBVweD6h2eICA
-         lbFtGvG8qDG01FxCAuV6ga4j2YjdspNlw/nID/WLYykH6O3QaC8fOsoallbF/hOAkS7v
-         JnohtPi5NsHxtqjpL/snT+grKoq+oavPxc8/TI3cwPTKzbO/04c1QNbB7f7DSB5NZNUk
-         bhvzPIwJvFRNOkImzeZKtWLe+JbV9KD8GwUcH1nC7PHDjFu67DXhHYUBGIUT0k23chYr
-         Q5xg==
-X-Gm-Message-State: AOAM533jApCcwYfpJilw0XI93ORIM4dCSUzNtfWX2klQAfd4/0p+RX2D
-        Oe4zyn+pksWOUMX489upvf5fpg==
-X-Google-Smtp-Source: ABdhPJy+Ec2OoR+gvf+GTh9vliPMPS2o/zLXQZlL9vFyi0qFZvf0Iv9DJF3eWtdyWzPQ/PpQXmpmCA==
-X-Received: by 2002:a6b:bbc6:: with SMTP id l189mr14375899iof.145.1604412547589;
-        Tue, 03 Nov 2020 06:09:07 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id t2sm11484264iob.5.2020.11.03.06.09.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 06:09:07 -0800 (PST)
-Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        oleg@redhat.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <yt9do8ke4seh.fsf@linux.ibm.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <75a238c7-fc37-21dd-bd89-d4c87a206eaa@kernel.dk>
-Date:   Tue, 3 Nov 2020 07:09:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729564AbgKCOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:10:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53118 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729420AbgKCOKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:10:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604412645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ba9qeE3P97TbQ2yvwB2ubaFiLUcB36w6IpkZF8tbKnk=;
+        b=IN3VErPdp1WBPWe8s7Z/Hom6zeEPN00JGakf0pmbE0tHXmmxXEWD5++Vr61N/M6YEB54w7
+        TkpVK9DRs5pQGU2sXeGrOyjWu6VljkU4rvLr/rLgtbNpT6gEfg2GSAQckNPRAvbykm4vni
+        bo/mIe9ANXQW2mhX2JkXe/I7Xbftp1o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C3BEFABF4;
+        Tue,  3 Nov 2020 14:10:44 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 15:10:43 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2.2] ftrace: Add recording of functions that
+ caused recursion
+Message-ID: <20201103141043.GO20201@alley>
+References: <20201030213142.096102821@goodmis.org>
+ <20201030214014.801706340@goodmis.org>
+ <20201102164147.GJ20201@alley>
+ <20201102123721.4fcce2cb@gandalf.local.home>
+ <20201102124606.72bd89c5@gandalf.local.home>
+ <20201102142254.7e148f8a@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <yt9do8ke4seh.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102142254.7e148f8a@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 4:00 AM, Sven Schnelle wrote:
-> Hi Jens,
+On Mon 2020-11-02 14:23:14, Steven Rostedt wrote:
+> From c532ff6b048dd4a12943b05c7b8ce30666c587c8 Mon Sep 17 00:00:00 2001
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> Date: Thu, 29 Oct 2020 15:27:06 -0400
+> Subject: [PATCH] ftrace: Add recording of functions that caused recursion
 > 
-> Heiko Carstens <hca () linux ! ibm ! com> writes:
+> This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
+> "recursed_functions" all the functions that caused recursion while a
+> callback to the function tracer was running.
 > 
->> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
->>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
->>>
->>> Cc: linux-s390@vger.kernel.org
->>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>> ---
->>>
->>> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
->>> for details:
->>>
->>> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
->>>
->>> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
->>> as that will enable a set of cleanups once all of them support it. I'm
->>> happy carrying this patch if need be, or it can be funelled through the
->>> arch tree. Let me know.
->>>
->>>  arch/s390/include/asm/thread_info.h | 2 ++
->>>  arch/s390/kernel/entry.S            | 7 ++++++-
->>>  2 files changed, 8 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
->>> index 13a04fcf7762..0045341ade48 100644
->>> --- a/arch/s390/include/asm/thread_info.h
->>> +++ b/arch/s390/include/asm/thread_info.h
->>> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
->>>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
->>>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
->>>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
->>> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
->>>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
->>>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
->>>  
->>> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
->>>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
->>>  
->>>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
->>> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
->>>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
->>>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
->>>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
->>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
->>> index 86235919c2d1..a30d891e8045 100644
->>> --- a/arch/s390/kernel/entry.S
->>> +++ b/arch/s390/kernel/entry.S
->>> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
->>>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
->>>  
->>>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
->>> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
->>> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
->>> +		   _TIF_NOTIFY_SIGNAL)
->>>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
->>>  		   _TIF_SYSCALL_TRACEPOINT)
->>>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
->>> @@ -463,6 +464,8 @@ ENTRY(system_call)
->>>  #endif
->>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
->>>  	jo	.Lsysc_syscall_restart
->>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->>> +	jo	.Lsysc_sigpending
->>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->>>  	jo	.Lsysc_sigpending
->>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>> @@ -857,6 +860,8 @@ ENTRY(io_int_handler)
->>>  #endif
->>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->>>  	jo	.Lio_sigpending
->>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->>> +	jo	.Lio_sigpending
->>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>>  	jo	.Lio_notify_resume
->>>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
->>
->> (full quote so you can make sense of the patch below).
->>
->> Please merge the patch below into this one. With that:
->>
->> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->>
->> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
->> index a30d891e8045..31f16d903ef3 100644
->> --- a/arch/s390/kernel/entry.S
->> +++ b/arch/s390/kernel/entry.S
->> @@ -464,9 +464,7 @@ ENTRY(system_call)
->>  #endif
->>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
->>  	jo	.Lsysc_syscall_restart
->> -	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->> -	jo	.Lsysc_sigpending
->> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
->>  	jo	.Lsysc_sigpending
-> 
-> We need to also change the jo to jnz - in combination with tm, jo means
-> 'jump if all tested bits are set' while jnz means 'jump if at least one
-> bit is set'
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index ac3d73484cb2..1cba5fe8777a 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -142,7 +142,28 @@ static __always_inline int trace_get_context_bit(void)
+>  			pc & HARDIRQ_MASK ? TRACE_CTX_IRQ : TRACE_CTX_SOFTIRQ;
+>  }
+>  
+> -static __always_inline int trace_test_and_set_recursion(int start, int max)
+> +#ifdef CONFIG_FTRACE_RECORD_RECURSION
+> +extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
+> +/*
+> +* The paranoid_test check can cause dropped reports (unlikely), but
+> +* if the recursion is common, it will likely still be recorded later.
+> +* But the paranoid_test is needed to make sure we don't crash.
+> +*/
+> +# define do_ftrace_record_recursion(ip, pip)				\
+> +	do {								\
+> +		static atomic_t paranoid_test;				\
+> +		if (!atomic_read(&paranoid_test)) {			\
+> +			atomic_inc(&paranoid_test);			\
+> +			ftrace_record_recursion(ip, pip);		\
+> +			atomic_dec(&paranoid_test);			\
 
-Ah thanks, good catch. And you also caught the braino in signal.c, here's
-the end result:
+BTW: What is actually the purpose of paranoid_test, please?
+
+It prevents nested ftrace_record_recursion() calls on the same CPU
+(recursion, nesting from IRQ, NMI context).
+
+Parallel calls from different CPUs are still possible:
+
+CPU0					CPU1
+if (!atomic_read(&paranoid_test))	if (!atomic_read(&paranoid_test))
+   // passes				  // passes
+   atomic_inc(&paranoid_test);            atomic_inc(&paranoid_test);
 
 
-commit 0eb7d372d5319970bd15f2dbc18264ea576214d4
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Fri Oct 9 15:34:12 2020 -0600
+I do not see how a nested call could cause crash while a parallel
+one would be OK.
 
-    s390: add support for TIF_NOTIFY_SIGNAL
-    
-    Wire up TIF_NOTIFY_SIGNAL handling for s390.
-    
-    Cc: linux-s390@vger.kernel.org
-    Acked-by: Heiko Carstens <hca@linux.ibm.com>
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
-index 13a04fcf7762..0045341ade48 100644
---- a/arch/s390/include/asm/thread_info.h
-+++ b/arch/s390/include/asm/thread_info.h
-@@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
- #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
- #define TIF_PATCH_PENDING	5	/* pending live patching update */
- #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
-+#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
- #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
- #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
- 
-@@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
- #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
- 
- #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
-+#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
- #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
- #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
- #define _TIF_UPROBE		BIT(TIF_UPROBE)
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 86235919c2d1..19a89f292290 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
- STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
- 
- _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
--		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
-+		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
-+		   _TIF_NOTIFY_SIGNAL)
- _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
- 		   _TIF_SYSCALL_TRACEPOINT)
- _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
-@@ -463,8 +464,8 @@ ENTRY(system_call)
- #endif
- 	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
- 	jo	.Lsysc_syscall_restart
--	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
--	jo	.Lsysc_sigpending
-+	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
-+	jnz	.Lsysc_sigpending
- 	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
- 	jo	.Lsysc_notify_resume
- 	TSTMSK	__LC_CPU_FLAGS,(_CIF_ASCE_PRIMARY|_CIF_ASCE_SECONDARY)
-@@ -855,8 +856,8 @@ ENTRY(io_int_handler)
- 	TSTMSK	__TI_flags(%r12),_TIF_PATCH_PENDING
- 	jo	.Lio_patch_pending
- #endif
--	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
--	jo	.Lio_sigpending
-+	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
-+	jnz	.Lio_sigpending
- 	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
- 	jo	.Lio_notify_resume
- 	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
-diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
-index 9e900a8977bd..b27b6c1f058d 100644
---- a/arch/s390/kernel/signal.c
-+++ b/arch/s390/kernel/signal.c
-@@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
- 	current->thread.system_call =
- 		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
- 
--	if (get_signal(&ksig)) {
-+	if (test_thread_flag(TIF_SIGPENDING) && get_signal(&ksig)) {
- 		/* Whee!  Actually deliver the signal.  */
- 		if (current->thread.system_call) {
- 			regs->int_code = current->thread.system_call;
+> --- /dev/null
+> +++ b/kernel/trace/trace_recursion_record.c
+> @@ -0,0 +1,236 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/seq_file.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/module.h>
+> +#include <linux/ftrace.h>
+> +#include <linux/fs.h>
+> +
+> +#include "trace_output.h"
+> +
+> +struct recursed_functions {
+> +	unsigned long		ip;
+> +	unsigned long		parent_ip;
+> +};
+> +
+> +static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
+> +static atomic_t nr_records;
+> +
+> +/*
+> + * Cache the last found function. Yes, updates to this is racey, but
+> + * so is memory cache ;-)
+> + */
+> +static unsigned long cached_function;
+> +
+> +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
+> +{
+> +	int index = 0;
+> +	int i;
+> +	unsigned long old;
+> +
+> + again:
+> +	/* First check the last one recorded */
+> +	if (ip == cached_function)
+> +		return;
+> +
+> +	i = atomic_read(&nr_records);
+> +	/* nr_records is -1 when clearing records */
+> +	smp_mb__after_atomic();
+> +	if (i < 0)
+> +		return;
+> +
+> +	/*
+> +	 * If there's two writers and this writer comes in second,
+> +	 * the cmpxchg() below to update the ip will fail. Then this
+> +	 * writer will try again. It is possible that index will now
+> +	 * be greater than nr_records. This is because the writer
+> +	 * that succeeded has not updated the nr_records yet.
+> +	 * This writer could keep trying again until the other writer
+> +	 * updates nr_records. But if the other writer takes an
+> +	 * interrupt, and that interrupt locks up that CPU, we do
+> +	 * not want this CPU to lock up due to the recursion protection,
+> +	 * and have a bug report showing this CPU as the cause of
+> +	 * locking up the computer. To not lose this record, this
+> +	 * writer will simply use the next position to update the
+> +	 * recursed_functions, and it will update the nr_records
+> +	 * accordingly.
+> +	 */
+> +	if (index < i)
+> +		index = i;
+> +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
+> +		return;
+> +
+> +	for (i = index - 1; i >= 0; i--) {
+> +		if (recursed_functions[i].ip == ip) {
+> +			cached_function = ip;
+> +			return;
+> +		}
+> +	}
+> +
+> +	cached_function = ip;
+> +
+> +	/*
+> +	 * We only want to add a function if it hasn't been added before.
+> +	 * Add to the current location before incrementing the count.
+> +	 * If it fails to add, then increment the index (save in i)
+> +	 * and try again.
+> +	 */
+> +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
+> +	if (old != 0) {
+> +		/* Did something else already added this for us? */
+> +		if (old == ip)
+> +			return;
+> +		/* Try the next location (use i for the next index) */
+> +		index++;
+> +		goto again;
+> +	}
+> +
+> +	recursed_functions[index].parent_ip = parent_ip;
+> +
+> +	/*
+> +	 * It's still possible that we could race with the clearing
+> +	 *    CPU0                                    CPU1
+> +	 *    ----                                    ----
+> +	 *                                       ip = func
+> +	 *  nr_records = -1;
+> +	 *  recursed_functions[0] = 0;
+> +	 *                                       i = -1
+> +	 *                                       if (i < 0)
+> +	 *  nr_records = 0;
+> +	 *  (new recursion detected)
+> +	 *      recursed_functions[0] = func
+> +	 *                                            cmpxchg(recursed_functions[0],
+> +	 *                                                    func, 0)
+> +	 *
+> +	 * But the worse that could happen is that we get a zero in
+> +	 * the recursed_functions array, and it's likely that "func" will
+> +	 * be recorded again.
+> +	 */
+> +	i = atomic_read(&nr_records);
+> +	smp_mb__after_atomic();
+> +	if (i < 0)
+> +		cmpxchg(&recursed_functions[index].ip, ip, 0);
+> +	else if (i <= index)
+> +		atomic_cmpxchg(&nr_records, i, index + 1);
 
--- 
-Jens Axboe
+Are you aware of the following race, please?
 
+CPU0					CPU1
+
+ftrace_record_recursion()
+
+   i = atomic_read(&nr_records);
+   // i = 20   (for example)
+   if (i < index)
+     index = i;
+     // index = 20;
+
+					recursed_function_open()
+					atomic_set(&nr_records, -1);
+					memset(recursed_functions, 0, );
+					atomic_set(&nr_records, 0);
+
+   // successfully store ip at index == 20
+   cmpxchg(&recursed_functions[index].ip, 0, ip);
+   recursed_functions[index].parent_ip = parent_ip;
+
+   // check race with clearing
+   i = atomic_read(&nr_records);
+   // i == 0
+   if (i < 0)
+      // no
+   else
+	atomic_cmpxchg(&nr_records, i, index + 1);
+
+RESULT:
+
+   + nr_records == 21
+   + and slots 0..19 are zeroed
+
+
+I played with the code and ended with head entangled by chicken & egg
+like problems.
+
+I believe that a solution might be a combined atomic variable from
+nr_records + cleanup_count.
+
+ftrace_record_recursion() would be allowed to increase nr_records
+only when cleanup_count is still the same. cleanup_count would
+be incremented together with clearing nr_records.
+
+
+Well, I am not sure if it is worth the effort. The race is rather
+theoretical. In the worst case, the cache might contain many
+zero values.
+
+Anyway, it is yet another experience for me that lockless algorithms
+are more tricky that one would expect.
+
+Best Regards,
+Petr
