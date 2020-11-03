@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E492A5821
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1482A57BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732323AbgKCVtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:49:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44916 "EHLO mail.kernel.org"
+        id S1731559AbgKCUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731819AbgKCUuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:50:40 -0500
+        id S1732124AbgKCUwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54F1722404;
-        Tue,  3 Nov 2020 20:50:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90EBE2236F;
+        Tue,  3 Nov 2020 20:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436639;
-        bh=P/28zFVrF1olkuFhfzeyQX2oR6hrSTizoEGKCQ8FTTY=;
+        s=default; t=1604436759;
+        bh=nTTUUWFVIs73i31KKK7JjYTqSPk9AZ8yr1SBM1k8BBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=krFQLH6hovQ31sDybDUma7kfgow8IZbJeI6XeembbK4tH9OsvpvRytfG2VP2Twi+i
-         u0xjsTRk0qHNX9SPTMgvKvJI+AXSOLhOpTZLGdAIV6TmsHe/AikbTi5NsXrHgZPLDd
-         Q/VMSf5Dq6tavWNSuue/NfoeZ0yVmFpHiNfNdKMQ=
+        b=saBaVItlwz4WWhtXLEMtCypaGKmvIm7mwprxWCUFKkntRpc1tfNz1LIDaijyvki9j
+         XkXN328tenJQvSvhvab1BNHhbTM6noZM1HCqhCA8zroz9Z0D2IPK9oV1k2HypAW8x9
+         IA+pd/Cl3+Fs/AOERc97At5IEWKA7ED3yaQwmksQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 5.9 337/391] cpufreq: Introduce CPUFREQ_NEED_UPDATE_LIMITS driver flag
-Date:   Tue,  3 Nov 2020 21:36:28 +0100
-Message-Id: <20201103203409.871460397@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Yuxuan Shui <yshuiv7@gmail.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.9 342/391] ext4: implement swap_activate aops using iomap
+Date:   Tue,  3 Nov 2020 21:36:33 +0100
+Message-Id: <20201103203410.213396435@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,76 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ritesh Harjani <riteshh@linux.ibm.com>
 
-commit 1c534352f47fd83eb08075ac2474f707e74bf7f7 upstream.
+commit 0e6895ba00b7be45f3ab0d2107dda3ef1245f5b4 upstream.
 
-Generally, a cpufreq driver may need to update some internal upper
-and lower frequency boundaries on policy max and min changes,
-respectively, but currently this does not work if the target
-frequency does not change along with the policy limit.
+After moving ext4's bmap to iomap interface, swapon functionality
+on files created using fallocate (which creates unwritten extents) are
+failing. This is since iomap_bmap interface returns 0 for unwritten
+extents and thus generic_swapfile_activate considers this as holes
+and hence bail out with below kernel msg :-
 
-Namely, if the target frequency does not change along with the
-policy min or max, the "target_freq == policy->cur" check in
-__cpufreq_driver_target() prevents driver callbacks from being
-invoked and they do not even have a chance to update the
-corresponding internal boundary.
+[340.915835] swapon: swapfile has holes
 
-This particularly affects the "powersave" and "performance"
-governors that always set the target frequency to one of the
-policy limits and it never changes when the other limit is updated.
+To fix this we need to implement ->swap_activate aops in ext4
+which will use ext4_iomap_report_ops. Since we only need to return
+the list of extents so ext4_iomap_report_ops should be enough.
 
-To allow cpufreq the drivers needing to update internal frequency
-boundaries on policy limits changes to avoid this issue, introduce
-a new driver flag, CPUFREQ_NEED_UPDATE_LIMITS, that (when set) will
-neutralize the check mentioned above.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: stable@kernel.org
+Reported-by: Yuxuan Shui <yshuiv7@gmail.com>
+Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Link: https://lore.kernel.org/r/20200904091653.1014334-1-riteshh@linux.ibm.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/cpufreq.c |    3 ++-
- include/linux/cpufreq.h   |   10 +++++++++-
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -2166,7 +2166,8 @@ int __cpufreq_driver_target(struct cpufr
- 	 * exactly same freq is called again and so we can save on few function
- 	 * calls.
- 	 */
--	if (target_freq == policy->cur)
-+	if (target_freq == policy->cur &&
-+	    !(cpufreq_driver->flags & CPUFREQ_NEED_UPDATE_LIMITS))
- 		return 0;
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3601,6 +3601,13 @@ static int ext4_set_page_dirty(struct pa
+ 	return __set_page_dirty_buffers(page);
+ }
  
- 	/* Save last value to restore later on errors */
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -293,7 +293,7 @@ __ATTR(_name, 0644, show_##_name, store_
- 
- struct cpufreq_driver {
- 	char		name[CPUFREQ_NAME_LEN];
--	u8		flags;
-+	u16		flags;
- 	void		*driver_data;
- 
- 	/* needed by all drivers */
-@@ -417,6 +417,14 @@ struct cpufreq_driver {
-  */
- #define CPUFREQ_IS_COOLING_DEV			BIT(7)
- 
-+/*
-+ * Set by drivers that need to update internale upper and lower boundaries along
-+ * with the target frequency and so the core and governors should also invoke
-+ * the diver if the target frequency does not change, but the policy min or max
-+ * may have changed.
-+ */
-+#define CPUFREQ_NEED_UPDATE_LIMITS		BIT(8)
++static int ext4_iomap_swap_activate(struct swap_info_struct *sis,
++				    struct file *file, sector_t *span)
++{
++	return iomap_swapfile_activate(sis, file, span,
++				       &ext4_iomap_report_ops);
++}
 +
- int cpufreq_register_driver(struct cpufreq_driver *driver_data);
- int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
+ static const struct address_space_operations ext4_aops = {
+ 	.readpage		= ext4_readpage,
+ 	.readahead		= ext4_readahead,
+@@ -3616,6 +3623,7 @@ static const struct address_space_operat
+ 	.migratepage		= buffer_migrate_page,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
++	.swap_activate		= ext4_iomap_swap_activate,
+ };
  
+ static const struct address_space_operations ext4_journalled_aops = {
+@@ -3632,6 +3640,7 @@ static const struct address_space_operat
+ 	.direct_IO		= noop_direct_IO,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
++	.swap_activate		= ext4_iomap_swap_activate,
+ };
+ 
+ static const struct address_space_operations ext4_da_aops = {
+@@ -3649,6 +3658,7 @@ static const struct address_space_operat
+ 	.migratepage		= buffer_migrate_page,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
++	.swap_activate		= ext4_iomap_swap_activate,
+ };
+ 
+ static const struct address_space_operations ext4_dax_aops = {
+@@ -3657,6 +3667,7 @@ static const struct address_space_operat
+ 	.set_page_dirty		= noop_set_page_dirty,
+ 	.bmap			= ext4_bmap,
+ 	.invalidatepage		= noop_invalidatepage,
++	.swap_activate		= ext4_iomap_swap_activate,
+ };
+ 
+ void ext4_set_aops(struct inode *inode)
 
 
