@@ -2,65 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF152A3F07
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289342A3F09
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgKCIhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgKCIhH (ORCPT
+        id S1727626AbgKCIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:37:13 -0500
+Received: from jax4mhob23.registeredsite.com ([64.69.218.111]:43322 "EHLO
+        jax4mhob23.registeredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727468AbgKCIhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:37:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E8CC0613D1;
-        Tue,  3 Nov 2020 00:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p51eC8N7fCjbs3UOKmLERJ0rOtLko+yV5VDqRGWwjR4=; b=jSKhXR7Pj/ofKeYkogHVU0L3z8
-        a+OY+4EFS+iwjY7MBw2RpzYUycpw8KkORE1OknTKWjxflQqHVMo74MWIZOUxpHtllpFGr1Pne/g17
-        +PunXEUy0Hd60o5phBFSl3MpPC6YSnvFYCX5oy+qUAQ9YXKLj5DWZvP8AIHobdEjm/LFnSh2uzHVE
-        ps66eSA3CWWAbp1LDf8hoTL55Lkk3p8CKhVfGosVzUXeZjs4UGdstQAHYUd3g5WFGQAoAAADeiRJN
-        cSLH7GLhWnAKKCSjDuTiA8IuDMYNknGPo7XF2ftPFqFBzHyTFr8WcwH+HOnUUwr418rfbjPUswyt3
-        oNnVluvg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZroN-0002gS-Vs; Tue, 03 Nov 2020 08:37:04 +0000
-Date:   Tue, 3 Nov 2020 08:37:03 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kexec@lists.infradead.org
-Subject: Re: [PATCH v2 4/4] compat: remove some compat entry points
-Message-ID: <20201103083703.GD9092@infradead.org>
-References: <20201102123151.2860165-1-arnd@kernel.org>
- <20201102123151.2860165-5-arnd@kernel.org>
+        Tue, 3 Nov 2020 03:37:12 -0500
+Received: from mailpod.hostingplatform.com ([10.30.71.204])
+        by jax4mhob23.registeredsite.com (8.14.4/8.14.4) with ESMTP id 0A38b9x6004236
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Tue, 3 Nov 2020 03:37:09 -0500
+Received: (qmail 20239 invoked by uid 0); 3 Nov 2020 08:37:09 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 3 Nov 2020 08:37:09 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sre@kernel.org, robh+dt@kernel.org,
+        Mike Looijmans <mike.looijmans@topic.nl>
+Subject: [PATCH v4] dt-bindings: power/supply: Add ltc4162-l-charger
+Date:   Tue,  3 Nov 2020 09:37:06 +0100
+Message-Id: <20201103083706.29380-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102123151.2860165-5-arnd@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 01:31:51PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> These are all handled correctly when calling the native
-> system call entry point, so remove the special cases.
+Add support for the LTC4162-L Li-Ion battery charger. The driver allows
+reading back telemetry and to set some charging options like the input
+current limit.
 
-Ok, this is where you do it.  I think this belongs into the main
-patches.
+This adds the devicetree bindings.
+
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+---
+v2: Use microohms, add lltc,cell-count
+v3: Fix example dts to match description
+v4: Update "required" list to include micro-ohms
+
+ .../bindings/power/supply/ltc4162-l.yaml      | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
+
+diff --git a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
+new file mode 100644
+index 000000000000..1f88c9e013f4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright (C) 2020 Topic Embedded Products
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/ltc4162-l.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Linear Technology (Analog Devices) LTC4162-L Charger
++
++maintainers:
++  - Mike Looijmans <mike.looijmans@topic.nl>
++
++description: |
++  The LTC ® 4162-L is an advanced monolithic synchronous step-down switching
++  battery charger and PowerPath (TM) manager that seamlessly manages power
++  distribution between input sources such as wall adapters, backplanes, solar
++  panels, etc., and a rechargeable Lithium-Ion/Polymer battery.
++
++  Specifications about the charger can be found at:
++    https://www.analog.com/en/products/ltc4162-s.html
++
++properties:
++  compatible:
++    enum:
++      - lltc,ltc4162-l
++
++  reg:
++    maxItems: 1
++    description: I2C address of the charger.
++
++  lltc,rsnsb-micro-ohms:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Battery sense resistor in microohm.
++    minimum: 1000
++
++  lltc,rsnsi-micro-ohms:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Input current sense resistor in microohm.
++    minimum: 1000
++
++  lltc,cell-count:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Number of battery cells. If not provided, will be obtained from the chip
++      once the external power is applied. Omit this when the number of cells
++      is somewhat dynamic. Without it, several measurements will return 0 until
++      the charger is connected to an external supply.
++
++required:
++  - compatible
++  - reg
++  - lltc,rsnsb-micro-ohms
++  - lltc,rsnsi-micro-ohms
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      charger: battery-charger@68 {
++              compatible = "lltc,ltc4162-l";
++              reg = <0x68>;
++              lltc,rsnsb-micro-ohms = <10000>;
++              lltc,rsnsi-micro-ohms = <16000>;
++              lltc,cell-count = <2>;
++      };
++    };
+-- 
+2.17.1
+
