@@ -2,178 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3D22A4AC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952B72A4ACC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgKCQHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:07:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1727986AbgKCQJc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 11:09:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgKCQHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:07:51 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727743AbgKCQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:09:32 -0500
+Received: from rorschach.local.home (unknown [172.58.235.9])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 852B920773;
-        Tue,  3 Nov 2020 16:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604419670;
-        bh=0C3Om95v4rkiVPQy1gKQdTuxFaRCNJMzTxnpPVwYvNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jeufbIs6Do9Xlt93/4Oy0lYISit5zvCR+D6O2O2yK5AfuMY09BvsVQARycPHlN6IE
-         +l1s6BOvazyFgnAO3ki4rD7/43g+IuFxowO9eJH7uBQl009UZ55jTDoTXclib9iTnM
-         aP2bIB4eTZtxm/MGS9HFML5+O8+r31Fbo8vRrmRI=
-Date:   Tue, 3 Nov 2020 17:08:42 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Split intel-spi reading from
- writing
-Message-ID: <20201103160842.GA4153227@kroah.com>
-References: <20201028214359.384918-1-daniel.gutson@eclypsium.com>
- <20201029054110.GA3039992@kroah.com>
- <CAFmMkTHBXjNc0DeL0bOZfdJkZjPAHnRU1THHdk0tZcBr1yykTQ@mail.gmail.com>
- <20201029191505.GC986195@kroah.com>
- <CAFmMkTHniN8FA7KkknDyRU0E0JWP15dC-xMRqJb-rg8oEgCyYg@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B33E22264;
+        Tue,  3 Nov 2020 16:09:26 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 11:09:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
+        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
+Message-ID: <20201103110913.2d7b4cea@rorschach.local.home>
+In-Reply-To: <20201103143938.704c7974e93c854511580c38@kernel.org>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+        <159870615628.1229682.6087311596892125907.stgit@devnote2>
+        <20201030213831.04e81962@oasis.local.home>
+        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
+        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
+        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
+        <20201102092726.57cb643f@gandalf.local.home>
+        <20201103143938.704c7974e93c854511580c38@kernel.org>
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTHniN8FA7KkknDyRU0E0JWP15dC-xMRqJb-rg8oEgCyYg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:18:01PM -0300, Daniel Gutson wrote:
-> On Thu, Oct 29, 2020 at 4:14 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 12:39:08PM -0300, Daniel Gutson wrote:
-> > > On Thu, Oct 29, 2020 at 2:40 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Wed, Oct 28, 2020 at 06:43:59PM -0300, Daniel Gutson wrote:
-> > > > > This patch separates the writing part of the intel-spi drivers
-> > > > > so the 'dangerous' part can be set/unset independently.
-> > > > > This way, the kernel can be configured to include the reading
-> > > > > parts of the driver which can be used without
-> > > > > the dangerous write operations that can turn the system
-> > > > > unbootable.
-> > > > >
-> > > > > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> > > > > ---
-> > > > >  drivers/mtd/spi-nor/controllers/Kconfig     | 39 ++++++++++++---------
-> > > > >  drivers/mtd/spi-nor/controllers/intel-spi.c | 12 +++++--
-> > > > >  2 files changed, 33 insertions(+), 18 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > index 5c0e0ec2e6d1..491c755fea49 100644
-> > > > > --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > @@ -31,34 +31,41 @@ config SPI_INTEL_SPI
-> > > > >       tristate
-> > > > >
-> > > > >  config SPI_INTEL_SPI_PCI
-> > > > > -     tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > > > > +     tristate "Intel PCH/PCU SPI flash PCI driver"
-> > > > >       depends on X86 && PCI
-> > > > >       select SPI_INTEL_SPI
-> > > > >       help
-> > > > > -       This enables PCI support for the Intel PCH/PCU SPI controller in
-> > > > > -       master mode. This controller is present in modern Intel hardware
-> > > > > -       and is used to hold BIOS and other persistent settings. Using
-> > > > > -       this driver it is possible to upgrade BIOS directly from Linux.
-> > > > > -
-> > > > > -       Say N here unless you know what you are doing. Overwriting the
-> > > > > -       SPI flash may render the system unbootable.
-> > > > > +       This enables read only PCI support for the Intel PCH/PCU SPI
-> > > > > +       controller in master mode. This controller is present in modern
-> > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > > > > +       Using this driver it is possible to read the SPI chip directly
-> > > > > +       from Linux.
-> > > > >
-> > > > >         To compile this driver as a module, choose M here: the module
-> > > > >         will be called intel-spi-pci.
-> > > > >
-> > > > >  config SPI_INTEL_SPI_PLATFORM
-> > > > > -     tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-> > > > > +     tristate "Intel PCH/PCU SPI flash platform driver"
-> > > > >       depends on X86
-> > > > >       select SPI_INTEL_SPI
-> > > > >       help
-> > > > > -       This enables platform support for the Intel PCH/PCU SPI
-> > > > > +       This enables read only platform support for the Intel PCH/PCU SPI
-> > > > >         controller in master mode. This controller is present in modern
-> > > > > -       Intel hardware and is used to hold BIOS and other persistent
-> > > > > -       settings. Using this driver it is possible to upgrade BIOS
-> > > > > -       directly from Linux.
-> > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > > > > +       Using this driver it is possible to read the SPI chip directly
-> > > > > +       from Linux.
-> > > > > +
-> > > > > +       To compile this driver as a module, choose M here: the module
-> > > > > +       will be called intel-spi-pci.
-> > > > > +
-> > > > > +config SPI_INTEL_SPI_WRITE
-> > > > > +     bool "Intel PCH/PCU SPI flash drivers write operations (DANGEROUS)"
-> > > > > +     depends on SPI_INTEL_SPI_PCI || SPI_INTEL_SPI_PLATFORM
-> > > > > +     help
-> > > > > +       This enables full read/write support for the Intel PCH/PCU SPI
-> > > > > +       controller.
-> > > > > +       Using this option it may be possible to upgrade BIOS directly
-> > > > > +       from Linux.
-> > > > >
-> > > > >         Say N here unless you know what you are doing. Overwriting the
-> > > > >         SPI flash may render the system unbootable.
-> > > > > -
-> > > > > -       To compile this driver as a module, choose M here: the module
-> > > > > -       will be called intel-spi-platform.
-> > > > > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > index b54a56a68100..8d8053395c3d 100644
-> > > > > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > @@ -266,6 +266,7 @@ static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > +#ifdef CONFIG_SPI_INTEL_SPI_WRITE
-> > > >
-> > > > <snip>
-> > > >
-> > > > Please do not add #ifdef to .c files, that's not the proper kernel
-> > > > coding style at all, and just makes maintaining this file much much
-> > > > harder over time.
-> > > >
-> > > > Split things out into two different files if you really need to do this.
-> > >
-> > > What about the static functions that I'll need to turn non-static and
-> > > in a header file?
-> > > I mean, the functions that the functions in the new file will have to call.
-> > > Should I do that, turn static functions into non-static and declared
-> > > in a header file?
-> >
-> > No idea, but again, no #ifdefs in .c files like this, that is not the
-> > proper kernel coding style as it is not maintainable for the lifespan
-> > that we have to maintain code.
+On Tue, 3 Nov 2020 14:39:38 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Ah, OK. This looks good to me.
 > 
-> Is it acceptable to leave static functions unused and let the optimizer
-> remove them as DCE?
+> BTW, in_nmi() in pre_handler_kretprobe() always be true because
+> now int3 is treated as an NMI. So you can always pass 1 there.
 
-You will get build warnings if you do that, right?
+What about the below patch then?
 
-You have thousands of examples of how to do this correct, it shouldn't
-be that tough :)
+> 
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-thanks,
+Thanks!
 
-greg k-h
+From 29ac1a5c9068df06f3196173d4325c8076759551 Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Date: Mon, 2 Nov 2020 09:17:49 -0500
+Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
+
+Since the kprobe handlers have protection that prohibits other handlers from
+executing in other contexts (like if an NMI comes in while processing a
+kprobe, and executes the same kprobe, it will get fail with a "busy"
+return). Lockdep is unaware of this protection. Use lockdep's nesting api to
+differentiate between locks taken in INT3 context and other context to
+suppress the false warnings.
+
+Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/kprobes.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 8a12a25fa40d..30889ea5514f 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1249,7 +1249,12 @@ __acquires(hlist_lock)
+ 
+ 	*head = &kretprobe_inst_table[hash];
+ 	hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, 1);
+ }
+ NOKPROBE_SYMBOL(kretprobe_hash_lock);
+ 
+@@ -1258,7 +1263,12 @@ static void kretprobe_table_lock(unsigned long hash,
+ __acquires(hlist_lock)
+ {
+ 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
+-	raw_spin_lock_irqsave(hlist_lock, *flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(hlist_lock, *flags, 1);
+ }
+ NOKPROBE_SYMBOL(kretprobe_table_lock);
+ 
+@@ -2028,7 +2038,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 
+ 	/* TODO: consider to only swap the RA after the last pre_handler fired */
+ 	hash = hash_ptr(current, KPROBE_HASH_BITS);
+-	raw_spin_lock_irqsave(&rp->lock, flags);
++	/*
++	 * Nested is a workaround that will soon not be needed.
++	 * There's other protections that make sure the same lock
++	 * is not taken on the same CPU that lockdep is unaware of.
++	 */
++	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
+ 	if (!hlist_empty(&rp->free_instances)) {
+ 		ri = hlist_entry(rp->free_instances.first,
+ 				struct kretprobe_instance, hlist);
+@@ -2039,7 +2054,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 		ri->task = current;
+ 
+ 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+-			raw_spin_lock_irqsave(&rp->lock, flags);
++			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
+ 			hlist_add_head(&ri->hlist, &rp->free_instances);
+ 			raw_spin_unlock_irqrestore(&rp->lock, flags);
+ 			return 0;
+-- 
+2.25.4
+
