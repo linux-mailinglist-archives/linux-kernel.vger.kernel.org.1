@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00842A556E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD6E2A55B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389146AbgKCVRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:17:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50150 "EHLO mail.kernel.org"
+        id S2388069AbgKCVFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:05:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388570AbgKCVJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:50 -0500
+        id S2387889AbgKCVFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79F5A205ED;
-        Tue,  3 Nov 2020 21:09:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98DA3205ED;
+        Tue,  3 Nov 2020 21:05:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437790;
-        bh=EqpoSY+0nIOrkRInuI/MEOI+lSxb6GgoPW5b9GgvjLI=;
+        s=default; t=1604437540;
+        bh=6yNpOKm4tr/TBozL8nohTeanZGCz0M3PhgGIBz13FYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fri9AwkwLcl1kJtIzKg2ktmw4VCjoBHhStZAPrhSdJJ2ECy8/uOan5nl63RhxGKsC
-         3pnvZ5ExT1xRpDMxsHkuqGDpMukPsHkQAkgQ0jiP5VewRk7FgvExT2gj2Nr9LeP8vs
-         arcMBivusvRA6UgCHFqqLtbikj0ih8pkcn521U7U=
+        b=abcqKEZUbzRTLHAEixdWfltR/Aei4+aQRou0mqV0TQz30FORc5FwIBJYQnNYBD+bb
+         am6SxWh85BDkTZjcQLdTKxKLAMT98ejjWd8QHKa3WfUqHEeFUIgEoW0Xw6i9xLUjSm
+         KLY9eZJdPbaLG9L85ndS1ZLCWXndPl6nUB4zm2FI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 034/125] drm/bridge/synopsys: dsi: add support for non-continuous HS clock
+        stable@vger.kernel.org, Ashish Sangwan <ashishsangwan2@gmail.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>
+Subject: [PATCH 4.19 119/191] NFS: fix nfs_path in case of a rename retry
 Date:   Tue,  3 Nov 2020 21:36:51 +0100
-Message-Id: <20201103203201.982946815@linuxfoundation.org>
+Message-Id: <20201103203244.480461936@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: Ashish Sangwan <ashishsangwan2@gmail.com>
 
-[ Upstream commit c6d94e37bdbb6dfe7e581e937a915ab58399b8a5 ]
+commit 247db73560bc3e5aef6db50c443c3c0db115bc93 upstream.
 
-Current code enables the HS clock when video mode is started or to
-send out a HS command, and disables the HS clock to send out a LP
-command. This is not what DSI spec specify.
+We are generating incorrect path in case of rename retry because
+we are restarting from wrong dentry. We should restart from the
+dentry which was received in the call to nfs_path.
 
-Enable HS clock either in command and in video mode.
-Set automatic HS clock management for panels and devices that
-support non-continuous HS clock.
+CC: stable@vger.kernel.org
+Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Tested-by: Philippe Cornu <philippe.cornu@st.com>
-Reviewed-by: Philippe Cornu <philippe.cornu@st.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200701194234.18123-1-yannick.fertre@st.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/nfs/namespace.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 63c7a01b7053e..d95b0703d0255 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -311,7 +311,6 @@ static void dw_mipi_message_config(struct dw_mipi_dsi *dsi,
- 	if (lpm)
- 		val |= CMD_MODE_ALL_LP;
- 
--	dsi_write(dsi, DSI_LPCLK_CTRL, lpm ? 0 : PHY_TXREQUESTCLKHS);
- 	dsi_write(dsi, DSI_CMD_MODE_CFG, val);
- }
- 
-@@ -468,16 +467,22 @@ static void dw_mipi_dsi_video_mode_config(struct dw_mipi_dsi *dsi)
- static void dw_mipi_dsi_set_mode(struct dw_mipi_dsi *dsi,
- 				 unsigned long mode_flags)
+--- a/fs/nfs/namespace.c
++++ b/fs/nfs/namespace.c
+@@ -30,9 +30,9 @@ int nfs_mountpoint_expiry_timeout = 500
+ /*
+  * nfs_path - reconstruct the path given an arbitrary dentry
+  * @base - used to return pointer to the end of devname part of path
+- * @dentry - pointer to dentry
++ * @dentry_in - pointer to dentry
+  * @buffer - result buffer
+- * @buflen - length of buffer
++ * @buflen_in - length of buffer
+  * @flags - options (see below)
+  *
+  * Helper function for constructing the server pathname
+@@ -47,15 +47,19 @@ int nfs_mountpoint_expiry_timeout = 500
+  *		       the original device (export) name
+  *		       (if unset, the original name is returned verbatim)
+  */
+-char *nfs_path(char **p, struct dentry *dentry, char *buffer, ssize_t buflen,
+-	       unsigned flags)
++char *nfs_path(char **p, struct dentry *dentry_in, char *buffer,
++	       ssize_t buflen_in, unsigned flags)
  {
-+	u32 val;
-+
- 	dsi_write(dsi, DSI_PWR_UP, RESET);
+ 	char *end;
+ 	int namelen;
+ 	unsigned seq;
+ 	const char *base;
++	struct dentry *dentry;
++	ssize_t buflen;
  
- 	if (mode_flags & MIPI_DSI_MODE_VIDEO) {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_VIDEO_MODE);
- 		dw_mipi_dsi_video_mode_config(dsi);
--		dsi_write(dsi, DSI_LPCLK_CTRL, PHY_TXREQUESTCLKHS);
- 	} else {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_CMD_MODE);
- 	}
- 
-+	val = PHY_TXREQUESTCLKHS;
-+	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
-+		val |= AUTO_CLKLANE_CTRL;
-+	dsi_write(dsi, DSI_LPCLK_CTRL, val);
-+
- 	dsi_write(dsi, DSI_PWR_UP, POWERUP);
- }
- 
--- 
-2.27.0
-
+ rename_retry:
++	buflen = buflen_in;
++	dentry = dentry_in;
+ 	end = buffer+buflen;
+ 	*--end = '\0';
+ 	buflen--;
 
 
