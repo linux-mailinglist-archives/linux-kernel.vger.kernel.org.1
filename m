@@ -2,357 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AEC2A46D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFF12A46CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729433AbgKCNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728180AbgKCNrX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:47:23 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05A9C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 05:47:23 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so14618366qki.6
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 05:47:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mDVc/Cp02Wi+ckhocWoIH2Hr0Dgbjtp/LWy0Mi63L3E=;
-        b=IPVCeJf8vutgRX97RGX0CnOoGg4UB06rcHqEtxWxYTpRi1NUiqpyxwN/AkFlzn0Mr+
-         /KUZBydcBbNP4zeNUKD5iGL3l14Y5/Z2ki1koDEqEmAosQLeQXAwXcu8yn9S+HT/uXoK
-         qAwHtiL11SQrWZ9qilYfNvC5LytpLwxLN6c2M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mDVc/Cp02Wi+ckhocWoIH2Hr0Dgbjtp/LWy0Mi63L3E=;
-        b=LgJ8KQQ/G0Jea62hK7VvXlSkLWeM8DyNq6SktLofGkOKfeVUoYnSJt0QAg++ZQE/gg
-         ZzTQIpTZ8XaA+A8VrYbzkWxaoyNA7xsMQWpDKVDxBxtHrrarjZnKslASexAOolUFuWNJ
-         3IdprwP9aHbrrGvE4I0mtoouDpVp2fDVzwdxFPqbq5+AbnNd8+xf2FwNGE6lJGa9G53v
-         YDf/Uewmh/BFA4P7Fb0vJh8MxMy2icQ66r8MIzfPqfE5fQV9tGulojDo5S7KBMtxkYnq
-         iETLuN8H9joa7HZ6FrNexRa0XcVmnKOIQ97jdhmzI2tvjN0yJX2ChXBClGXYxpnE6PoL
-         FBiQ==
-X-Gm-Message-State: AOAM533CjI9GrTj9k/VXHchgv+YedwlfFVu3AugYJpuHODPCvGGGCIlL
-        2J6Bu64VWIdYXMYLLv2C0m/8iQ==
-X-Google-Smtp-Source: ABdhPJyiG8bLKD1wmvkFfJqB/xUgp6CJ+thS8AwlZBRpn6XmMBW9yImCGt+8+H3GxRe2DRETKI7Kcg==
-X-Received: by 2002:a37:814:: with SMTP id 20mr13401305qki.304.1604411242730;
-        Tue, 03 Nov 2020 05:47:22 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id h125sm10255799qkc.36.2020.11.03.05.47.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 05:47:21 -0800 (PST)
-Date:   Tue, 3 Nov 2020 08:47:21 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v8 3/6] rcu/trace: Add tracing for how segcb list changes
-Message-ID: <20201103134721.GA796570@google.com>
-References: <20201021190813.3005054-1-joel@joelfernandes.org>
- <20201021190813.3005054-4-joel@joelfernandes.org>
- <20201026115913.GE104441@lothringen>
+        id S1729428AbgKCNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:48:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:49210 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727883AbgKCNsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:48:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F321106F;
+        Tue,  3 Nov 2020 05:48:11 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7022A3F718;
+        Tue,  3 Nov 2020 05:48:10 -0800 (PST)
+Date:   Tue, 3 Nov 2020 13:48:08 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
+        kernel test robot <lkp@intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201103134808.27xi27xodj6dvlt2@e107158-lin.cambridge.arm.com>
+References: <20201103023756.1012088-1-hsiang023167@gmail.com>
+ <20201103134644.rafsqisz7fxopo5n@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201026115913.GE104441@lothringen>
+In-Reply-To: <20201103134644.rafsqisz7fxopo5n@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 12:59:13PM +0100, Frederic Weisbecker wrote:
-> On Wed, Oct 21, 2020 at 03:08:10PM -0400, Joel Fernandes (Google) wrote:
-> > Track how the segcb list changes before/after acceleration, during
-> > queuing and during dequeuing.
+Oops, +Juri for real this time.
+
+On 11/03/20 13:46, Qais Yousef wrote:
+> Hi Yun
+> 
+> +Juri (A question for you below)
+> 
+> On 11/03/20 10:37, Yun Hsiang wrote:
+> > If the user wants to stop controlling uclamp and let the task inherit
+> > the value from the group, we need a method to reset.
 > > 
-> > This has proved useful to discover an optimization to avoid unwanted GP
-> > requests when there are no callbacks accelerated. The overhead is minimal as
-> > each segment's length is now stored in the respective segment.
+> > Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+> > sched_setattr syscall.
 > > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > The policy is
+> > _CLAMP_RESET                           => reset both min and max
+> > _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> > _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> > _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> > 
+> > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
 > > ---
-> >  include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
-> >  kernel/rcu/rcu_segcblist.c | 31 +++++++++++++++++++++++++++++++
-> >  kernel/rcu/rcu_segcblist.h |  5 +++++
-> >  kernel/rcu/tree.c          |  9 +++++++++
-> >  4 files changed, 70 insertions(+)
+> >  include/uapi/linux/sched.h |  7 +++--
+> >  kernel/sched/core.c        | 59 ++++++++++++++++++++++++++++----------
+> >  2 files changed, 49 insertions(+), 17 deletions(-)
 > > 
-> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> > index 155b5cb43cfd..9f2237d9b0c8 100644
-> > --- a/include/trace/events/rcu.h
-> > +++ b/include/trace/events/rcu.h
-> > @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
-> >  		  __entry->qlen)
-> >  );
-> >  
-> > +TRACE_EVENT_RCU(rcu_segcb,
+> > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> > index 3bac0a8ceab2..6c823ddb1a1e 100644
+> > --- a/include/uapi/linux/sched.h
+> > +++ b/include/uapi/linux/sched.h
+> > @@ -132,17 +132,20 @@ struct clone_args {
+> >  #define SCHED_FLAG_KEEP_PARAMS		0x10
+> >  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+> >  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+> > +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
 > 
-> You might extend the segcblist tracing in the future to trace queue/dequeue/merge whatever...
-> Which would give trace_rcu_segcb_queue, trace_rcu_segcb_dequeue, etc...
+> The new flag needs documentation about how it should be used. It has a none
+> obvious policy that we can't expect users to just get it.
 > 
-> So I suggest you rename this one to something like rcu_segcb_stats for precision.
-
-Ok, I changed it to that and also changed the internal wrapper to
-__rcu_segcb_stats. Full patch below.
-
-> > +
-> > +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-> > +
-> > +		TP_ARGS(ctx, cb_count, gp_seq),
-> > +
-> > +		TP_STRUCT__entry(
-> > +			__field(const char *, ctx)
-> > +			__array(int, cb_count, RCU_CBLIST_NSEGS)
-> > +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
-> > +		),
-> > +
-> > +		TP_fast_assign(
-> > +			__entry->ctx = ctx;
-> > +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
-> > +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
-> > +		),
-> > +
-> > +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-> > +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-> > +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-> > +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-> > +
-> > +);
-> > +
-> >  /*
-> >   * Tracepoint for the registration of a single RCU callback of the special
-> >   * kvfree() form.  The first argument is the RCU type, the second argument
-> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > index 357c19bbcb00..b0aaa51e0ee6 100644
-> > --- a/kernel/rcu/rcu_segcblist.c
-> > +++ b/kernel/rcu/rcu_segcblist.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/types.h>
 > >  
-> >  #include "rcu_segcblist.h"
-> > +#include "rcu.h"
+> >  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+> >  				 SCHED_FLAG_KEEP_PARAMS)
 > >  
-> >  /* Initialize simple callback list. */
-> >  void rcu_cblist_init(struct rcu_cblist *rclp)
-> > @@ -328,6 +329,36 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
-> >  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+> >  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
+> > -				 SCHED_FLAG_UTIL_CLAMP_MAX)
+> > +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
+> > +				 SCHED_FLAG_UTIL_CLAMP_RESET)
+> 
+> Either do this..
+> 
+> >  
+> >  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
+> >  			 SCHED_FLAG_RECLAIM		| \
+> >  			 SCHED_FLAG_DL_OVERRUN		| \
+> >  			 SCHED_FLAG_KEEP_ALL		| \
+> > -			 SCHED_FLAG_UTIL_CLAMP)
+> > +			 SCHED_FLAG_UTIL_CLAMP		| \
+> > +			 SCHED_FLAG_UTIL_CLAMP_RESET)
+> 
+> Or this.
+> 
+> I checked glibc and it seems they don't use the sched.h from linux and more
+> surprisingly they don't seem to have a wrapper for sched_setattr(). bionic libc
+> from Android does take sched.h from linux, but didn't find any user. So we
+> might be okay with modifying these here.
+> 
+> I still would like us to document better what we expect from these defines.
+> Are they for internal kernel use or really for user space? If the former we
+> should take them out of here. If the latter, then adding the RESET is dangerous
+> as it'll cause an observable change in behavior; that is if an application was
+> using SCHED_FLAG_ALL or SCHED_FLAG_UTIL_CLAMP to update the UTIL_MIN/MAX of
+> a task, existing binaries will find out now that instead of modifying the value
+> they're actually resetting them.
+> 
+> Juri, it seems you originally introduced SCHED_FLAG_ALL. I assume this was some
+> sort of shorthand for user space, not the kernel?
+> 
+> If the latter, I think we should move SCHED_FLAG_ALL and SCHED_FLAG_UTIL_CLAMP
+> to core.c and hope no one is already relying on them.
+> 
+> >  
+> >  #endif /* _UAPI_LINUX_SCHED_H */
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 8160ab5263f8..6ae463b64834 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1004,7 +1004,7 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+> >  	return uclamp_idle_value(rq, clamp_id, clamp_value);
 > >  }
 > >  
-> > +/*
-> > + * Return how many CBs each segment along with their gp_seq values.
-> > + *
-> > + * This function is O(N) where N is the number of segments. Only used from
-> > + * tracing code which is usually disabled in production.
-> > + */
-> > +#ifdef CONFIG_RCU_TRACE
-> > +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> > +			 int cbcount[RCU_CBLIST_NSEGS],
-> > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-> > +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-> > +		gpseq[i] = rsclp->gp_seq[i];
-> > +	}
-> > +}
+> > -static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+> > +static inline void __uclamp_update_util_min_rt_default(struct task_struct *p)
 > 
-> So that is called all the time even if the trace event isn't enabled. The
-> goal of trace events are also to avoid the overhead of tracing when its off.
-
-The overhead is only if RCU_TRACE is enabled but I added the following to
-keep that low. Is it Ok now? Full patch below.
-
-> This should be moved inside the trace event definition. We can even avoid the
-> loop altogether.
-
-No you cannot move it into the definition. If you see the trace event
-definition, it is not aware of the rcu segcblist struct internals. So we've
-to retrieve the lengths and provide them to it. segcblist is internal to
-kernel/rcu/.
-
-I'll add your Reviewed-by tag to this patch but let me know if you object to
-that. thanks!
-
- - Joel
-
----8<-----------------------
-
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH] rcu/trace: Add tracing for how segcb list changes
-
-Track how the segcb list changes before/after acceleration, during
-queuing and during dequeuing.
-
-This has proved useful to discover an optimization to avoid unwanted GP
-requests when there are no callbacks accelerated. The overhead is minimal as
-each segment's length is now stored in the respective segment.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
- kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
- kernel/rcu/rcu_segcblist.h |  5 +++++
- kernel/rcu/tree.c          |  9 +++++++++
- 4 files changed, 73 insertions(+)
-
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 155b5cb43cfd..5f8f2ee1a936 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
- 		  __entry->qlen)
- );
- 
-+TRACE_EVENT_RCU(rcu_segcb_stats,
-+
-+		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-+
-+		TP_ARGS(ctx, cb_count, gp_seq),
-+
-+		TP_STRUCT__entry(
-+			__field(const char *, ctx)
-+			__array(int, cb_count, RCU_CBLIST_NSEGS)
-+			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
-+		),
-+
-+		TP_fast_assign(
-+			__entry->ctx = ctx;
-+			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
-+			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
-+		),
-+
-+		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-+			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-+			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-+			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-+
-+);
-+
- /*
-  * Tracepoint for the registration of a single RCU callback of the special
-  * kvfree() form.  The first argument is the RCU type, the second argument
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 357c19bbcb00..2a03949d0b82 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -14,6 +14,7 @@
- #include <linux/types.h>
- 
- #include "rcu_segcblist.h"
-+#include "rcu.h"
- 
- /* Initialize simple callback list. */
- void rcu_cblist_init(struct rcu_cblist *rclp)
-@@ -328,6 +329,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
- 	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
- }
- 
-+/*
-+ * Return how many CBs each segment along with their gp_seq values.
-+ *
-+ * This function is O(N) where N is the number of segments. Only used from
-+ * tracing code which is usually disabled in production.
-+ */
-+#ifdef CONFIG_RCU_TRACE
-+static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-+			 int cbcount[RCU_CBLIST_NSEGS],
-+			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-+{
-+	int i;
-+
-+	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-+		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-+		gpseq[i] = rsclp->gp_seq[i];
-+	}
-+}
-+
-+void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
-+{
-+	int cbs[RCU_CBLIST_NSEGS];
-+	unsigned long gps[RCU_CBLIST_NSEGS];
-+
-+	if (!trace_rcu_segcb_stats_enabled())
-+		return;
-+
-+	rcu_segcblist_countseq(rsclp, cbs, gps);
-+
-+	trace_rcu_segcb_stats(context, cbs, gps);
-+}
-+#endif
-+
- /*
-  * Extract only those callbacks still pending (not yet ready to be
-  * invoked) from the specified rcu_segcblist structure and place them in
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index cd35c9faaf51..7750734fa116 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
- bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
- void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 			 struct rcu_segcblist *src_rsclp);
-+#ifdef CONFIG_RCU_TRACE
-+void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context);
-+#else
-+#define __trace_rcu_segcb_stats(...)
-+#endif
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 24c00020ab83..f6c6653b3ec2 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
- 		return false;
- 
-+	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
-+
- 	/*
- 	 * Callbacks are often registered with incomplete grace-period
- 	 * information.  Something about the fact that getting exact
-@@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	else
- 		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
- 
-+	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
-+
- 	return ret;
- }
- 
-@@ -2466,11 +2470,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
- 	if (offloaded)
- 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
-+
-+	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
- 	/* Invoke callbacks. */
- 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
- 	rhp = rcu_cblist_dequeue(&rcl);
-+
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		rcu_callback_t f;
- 
-@@ -2983,6 +2990,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		trace_rcu_callback(rcu_state.name, head,
- 				   rcu_segcblist_n_cbs(&rdp->cblist));
- 
-+	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
-+
- 	/* Go handle any RCU core processing required. */
- 	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
- 		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
--- 
-2.29.1.341.ge80a0c044ae-goog
-
+> Seems unrelated change. Worth a mention in the commit message at least.
+> 
+> >  {
+> >  	unsigned int default_util_min;
+> >  	struct uclamp_se *uc_se;
+> > @@ -1413,8 +1413,14 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> >  static int uclamp_validate(struct task_struct *p,
+> >  			   const struct sched_attr *attr)
+> >  {
+> > -	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
+> > -	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
+> > +	unsigned int lower_bound, upper_bound;
+> > +
+> > +	/* Do not check uclamp attributes values in reset case. */
+> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
+> > +		return 0;
+> > +
+> > +	lower_bound = p->uclamp_req[UCLAMP_MIN].value;
+> > +	upper_bound = p->uclamp_req[UCLAMP_MAX].value;
+> >  
+> >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
+> >  		lower_bound = attr->sched_util_min;
+> > @@ -1438,20 +1444,43 @@ static int uclamp_validate(struct task_struct *p,
+> >  	return 0;
+> >  }
+> >  
+> > +static int uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
+> 
+> Add the policy part of the commit message as a documentation to this function
+> please.
+> 
+> ie:
+> 
+> 	/*
+> 	 * The policy is
+> 	 * _CLAMP_RESET                           => reset both min and max
+> 	 * _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> 	 * _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> 	 * _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> 	 */
+> 
+> > +{
+> > +	/* No _UCLAMP_RESET flag set: do not reset */
+> > +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
+> > +		return false;
+> > +
+> > +	/* Only _UCLAMP_RESET flag set: reset both clamps */
+> > +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
+> > +		return true;
+> > +
+> > +	/* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
+> > +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
+> > +		return true;
+> > +
+> > +	/* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
+> > +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
+> > +		return true;
+> > +
+> > +	return false;
+> > +}
+> > +
+> >  static void __setscheduler_uclamp(struct task_struct *p,
+> >  				  const struct sched_attr *attr)
+> >  {
+> >  	enum uclamp_id clamp_id;
+> >  
+> >  	/*
+> > -	 * On scheduling class change, reset to default clamps for tasks
+> > -	 * without a task-specific value.
+> > +	 * Reset to default clamps on forced _UCLAMP_RESET (always) and
+> > +	 * for tasks without a task-specific value (on scheduling class change).
+> >  	 */
+> >  	for_each_clamp_id(clamp_id) {
+> > +		unsigned int clamp_value;
+> >  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+> >  
+> >  		/* Keep using defined clamps across class changes */
+> > -		if (uc_se->user_defined)
+> > +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
+> > +				uc_se->user_defined)
+> >  			continue;
+> >  
+> >  		/*
+> > @@ -1459,24 +1488,24 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> >  		 * at runtime.
+> >  		 */
+> >  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> > -			__uclamp_update_util_min_rt_default(p);
+> > +			clamp_value = sysctl_sched_uclamp_util_min_rt_default;
+> >  		else
+> > -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+> > +			clamp_value = uclamp_none(clamp_id);
+> >  
+> > +		uclamp_se_set(uc_se, clamp_value, false);
+> 
+> This is another unrelated change. Add a comment in the commit message at least
+> please.
+> 
+> >  	}
+> >  
+> > -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> > +	if (likely(!(attr->sched_flags && SCHED_FLAG_UTIL_CLAMP)) ||
+> > +		attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
+> >  		return;
+> >  
+> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
+> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+> > -			      attr->sched_util_min, true);
+> > -	}
+> > +				attr->sched_util_min, true);
+> >  
+> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
+> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+> > -			      attr->sched_util_max, true);
+> > -	}
+> > +				attr->sched_util_max, true);
+> 
+> These two hunks seem unrelated too. Multi line statement should still have
+> braces AFAIK. Why change it?
+> 
+> Generally personally I am not fond of mixing 'cleanup' and modifications.
+> Especially when they are unrelated. They come across as churn to me but
+> I won't insist on removing/splitting them but at least document them in the
+> commit message with good reasons please.
+> 
+> Thanks
+> 
+> --
+> Qais Yousef
+> 
+> >  }
+> >  
+> >  static void uclamp_fork(struct task_struct *p)
+> > -- 
+> > 2.25.1
+> > 
