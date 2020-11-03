@@ -2,144 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B39F2A47AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D495E2A47D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgKCOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:14:50 -0500
-Received: from mga02.intel.com ([134.134.136.20]:29139 "EHLO mga02.intel.com"
+        id S1729646AbgKCOQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:16:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729345AbgKCOOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:14:24 -0500
-IronPort-SDR: 1JRLATAODLYWrr6JdX6NEHvlfzd4KTYKNNrb88ty6+L0g8KqcSRe40/P2ArT6VoZ7MEUXiN6Lj
- csOvbrpjkvgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156045785"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="156045785"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 06:14:24 -0800
-IronPort-SDR: MWk003GDfdTz884kOADsSp0AjGgt8Xs5/xFrA24iyafcih5SJK3AhNqwVFkUq6q0BKRMqBh9pT
- j7aHJG8enxSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="527170246"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.94])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Nov 2020 06:14:21 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH V4 2/2] scsi: ufs: Allow an error return value from ->device_reset()
-Date:   Tue,  3 Nov 2020 16:14:03 +0200
-Message-Id: <20201103141403.2142-3-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201103141403.2142-1-adrian.hunter@intel.com>
-References: <20201103141403.2142-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S1729361AbgKCOQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:16:15 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22A3E22226;
+        Tue,  3 Nov 2020 14:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604412974;
+        bh=7IqFJ+UztWeXNlIZGdKuf7irZOSOPbrDzUyMAVJDILM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SOUvKc2TZZ1d+zHWsbEkIfy8V5eXDfUPpDzeUdombuTBIt+oRfk6wvUqM1lCSI8UH
+         ZoXUJ8zEckJGXkwlKL6veag6F4fkrvO2b0HJu0CtWDYNk9KJFsgNuso2dF0ITsgY8O
+         u3jHFBvKh/RppEz/K2PtGZwMjmNqqAPy/LGnIsCc=
+Received: by mail-oi1-f174.google.com with SMTP id u127so18478443oib.6;
+        Tue, 03 Nov 2020 06:16:14 -0800 (PST)
+X-Gm-Message-State: AOAM533OZhK5tf601h2fN7mdDKb8Ox61R/eCqEZ0igNgaQQOdvl4L6Dh
+        iYfoLsiLJG6vcy/Pytv/VpPIacymQOf50WKLUQ==
+X-Google-Smtp-Source: ABdhPJxS0mlMei/AtlKGjFlC2aF4EVUQX0HhsFADKFdSz6oJV3TwDxUeXilu5Nh0RaOEc/Kkw23qYyJNRc1Aj2cMO7w=
+X-Received: by 2002:aca:5dc2:: with SMTP id r185mr2068154oib.106.1604412973447;
+ Tue, 03 Nov 2020 06:16:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20201103073338.144465-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201103073338.144465-1-miaoqinglang@huawei.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 3 Nov 2020 08:16:01 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLy5B+4NVX1DXS9yjgEssLSn2d2Qg8n+YQ9E1G_05=i0A@mail.gmail.com>
+Message-ID: <CAL_JsqLy5B+4NVX1DXS9yjgEssLSn2d2Qg8n+YQ9E1G_05=i0A@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: v3: fix missing clk_disable_unprepare() on error
+ in v3_pci_probe
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is simpler for drivers to provide a ->device_reset() callback
-irrespective of whether the GPIO, or firmware interface necessary to do the
-reset, is discovered during probe.
+On Tue, Nov 3, 2020 at 1:28 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>
+> Fix the missing clk_disable_unprepare() before return
+> from v3_pci_probe() in the error handling case.
+>
+> Moving the clock enable later to avoid some fixes.
+>
+> Fixes: 6e0832fa432e (" PCI: Collect all native drivers under drivers/pci/controller/")
 
-Change ->device_reset() to return an error code.  Drivers that provide
-the callback, but do not do the reset operation should return -EOPNOTSUPP.
+I don't think this commit caused the problem.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/ufs-mediatek.c |  4 +++-
- drivers/scsi/ufs/ufs-qcom.c     |  6 ++++--
- drivers/scsi/ufs/ufshcd.h       | 11 +++++++----
- 3 files changed, 14 insertions(+), 7 deletions(-)
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/pci/controller/pci-v3-semi.c | 40 ++++++++++++++++------------
+>  1 file changed, 23 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
+> index 154a53986..90520555b 100644
+> --- a/drivers/pci/controller/pci-v3-semi.c
+> +++ b/drivers/pci/controller/pci-v3-semi.c
+> @@ -725,18 +725,6 @@ static int v3_pci_probe(struct platform_device *pdev)
+>         host->sysdata = v3;
+>         v3->dev = dev;
+>
+> -       /* Get and enable host clock */
+> -       clk = devm_clk_get(dev, NULL);
+> -       if (IS_ERR(clk)) {
+> -               dev_err(dev, "clock not found\n");
+> -               return PTR_ERR(clk);
+> -       }
+> -       ret = clk_prepare_enable(clk);
+> -       if (ret) {
+> -               dev_err(dev, "unable to enable clock\n");
+> -               return ret;
+> -       }
+> -
+>         regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         v3->base = devm_ioremap_resource(dev, regs);
+>         if (IS_ERR(v3->base))
+> @@ -761,17 +749,31 @@ static int v3_pci_probe(struct platform_device *pdev)
+>         if (IS_ERR(v3->config_base))
+>                 return PTR_ERR(v3->config_base);
+>
+> +       /* Get and enable host clock */
+> +       clk = devm_clk_get(dev, NULL);
+> +       if (IS_ERR(clk)) {
+> +               dev_err(dev, "clock not found\n");
+> +               return PTR_ERR(clk);
+> +       }
+> +       ret = clk_prepare_enable(clk);
+> +       if (ret) {
+> +               dev_err(dev, "unable to enable clock\n");
+> +               return ret;
+> +       }
+> +
+>         /* Get and request error IRQ resource */
+>         irq = platform_get_irq(pdev, 0);
+> -       if (irq < 0)
+> +       if (irq < 0) {
+> +               clk_disable_unprepare(clk);
+>                 return irq;
+> -
+> +       }
+>         ret = devm_request_irq(dev, irq, v3_irq, 0,
+>                         "PCIv3 error", v3);
+>         if (ret < 0) {
+>                 dev_err(dev,
+>                         "unable to request PCIv3 error IRQ %d (%d)\n",
+>                         irq, ret);
+> +               clk_disable_unprepare(clk);
+>                 return ret;
+>         }
+>
+> @@ -814,13 +816,15 @@ static int v3_pci_probe(struct platform_device *pdev)
+>                 ret = v3_pci_setup_resource(v3, host, win);
+>                 if (ret) {
+>                         dev_err(dev, "error setting up resources\n");
+> +                       clk_disable_unprepare(clk);
+>                         return ret;
+>                 }
+>         }
+>         ret = v3_pci_parse_map_dma_ranges(v3, np);
+> -       if (ret)
+> +       if (ret) {
+> +               clk_disable_unprepare(clk);
+>                 return ret;
+> -
+> +       }
+>         /*
+>          * Disable PCI to host IO cycles, enable I/O buffers @3.3V,
+>          * set AD_LOW0 to 1 if one of the LB_MAP registers choose
+> @@ -862,8 +866,10 @@ static int v3_pci_probe(struct platform_device *pdev)
+>         /* Special Integrator initialization */
+>         if (of_device_is_compatible(np, "arm,integrator-ap-pci")) {
+>                 ret = v3_integrator_init(v3);
+> -               if (ret)
+> +               if (ret) {
+> +                       clk_disable_unprepare(clk);
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index 8df73bc2f8cb..914a827a93ee 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -743,7 +743,7 @@ static int ufs_mtk_link_startup_notify(struct ufs_hba *hba,
- 	return ret;
- }
- 
--static void ufs_mtk_device_reset(struct ufs_hba *hba)
-+static int ufs_mtk_device_reset(struct ufs_hba *hba)
- {
- 	struct arm_smccc_res res;
- 
-@@ -764,6 +764,8 @@ static void ufs_mtk_device_reset(struct ufs_hba *hba)
- 	usleep_range(10000, 15000);
- 
- 	dev_info(hba->dev, "device reset done\n");
-+
-+	return 0;
- }
- 
- static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 9a19c6d15d3b..357c3b49321d 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1422,13 +1422,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
-  *
-  * Toggles the (optional) reset line to reset the attached device.
-  */
--static void ufs_qcom_device_reset(struct ufs_hba *hba)
-+static int ufs_qcom_device_reset(struct ufs_hba *hba)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 
- 	/* reset gpio is optional */
- 	if (!host->device_reset)
--		return;
-+		return -EOPNOTSUPP;
- 
- 	/*
- 	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
-@@ -1439,6 +1439,8 @@ static void ufs_qcom_device_reset(struct ufs_hba *hba)
- 
- 	gpiod_set_value_cansleep(host->device_reset, 0);
- 	usleep_range(10, 15);
-+
-+	return 0;
- }
- 
- #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 213be0667b59..5191d87f6263 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
- 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
- 	void	(*dbg_register_dump)(struct ufs_hba *hba);
- 	int	(*phy_initialization)(struct ufs_hba *);
--	void	(*device_reset)(struct ufs_hba *hba);
-+	int	(*device_reset)(struct ufs_hba *hba);
- 	void	(*config_scaling_param)(struct ufs_hba *hba,
- 					struct devfreq_dev_profile *profile,
- 					void *data);
-@@ -1207,9 +1207,12 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
- static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
- {
- 	if (hba->vops && hba->vops->device_reset) {
--		hba->vops->device_reset(hba);
--		ufshcd_set_ufs_dev_active(hba);
--		ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, 0);
-+		int err = hba->vops->device_reset(hba);
-+
-+		if (!err)
-+			ufshcd_set_ufs_dev_active(hba);
-+		if (err != -EOPNOTSUPP)
-+			ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, err);
- 	}
- }
- 
--- 
-2.17.1
+You should make all these a goto and just have one clk_disable_unprepare() call.
 
+You are still missing error handling after pci_host_probe().
+
+>                         return ret;
+> +               }
+>         }
+>
+>         /* Post-init: enable PCI memory and invalidate (master already on) */
+> --
+> 2.23.0
+>
