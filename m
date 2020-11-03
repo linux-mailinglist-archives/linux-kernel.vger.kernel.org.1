@@ -2,139 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8172A3DE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9805D2A3DAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgKCHnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:43:02 -0500
-Received: from mail-mw2nam12on2077.outbound.protection.outlook.com ([40.107.244.77]:42048
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725968AbgKCHnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:43:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EVLAC76hk2KWkUbICSz7bdmPZTR4iIB9x/pWDGdBgnqXch20zKnO3eGOc0IdihpzSA4SRgwRXH3HwtfTDnwDmEF/yiH87r/vvhb8Xy/sqYAoLyF8lVbaTe5Ea6VGSVE/iXWKjFu8NqnGF491hhWkuvwIkeiMhPDsV4HAdGthf/Ppn/XuiY1ZT6C01gAPH40ld2ajkoNGuqnoS7IkHxxNBC1ubYaMyIYwRmUB439/y8sfeZeJLcgRPKyRVqAhiGkyaKLt/i7kuEjPZ72UgvN/Jy6rL/a1g3BG0JW14UoTa37W60oF16M1ksaDK3i6PkfCynGISRC17Q8qDZsJojRxow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f12sEpSidlUg9HzeJdfroP+MUHI8acc2j6Ia86fkc90=;
- b=A8DGK/LSI2zuyNm22mO0Ho0e9v74tWJNmeW+eAqetdoOziisOBULF2Vw9J3KKT9A/RlffVDo07JIWanx0DPix4cz4L+0VQOSjCauy6S78Gt4nYxqXkB3Um1SNUaHANKJ8Mxh0fnSHwb7Xy9rT068DABMbWUjUo8wxOrtV2d3o+fXaiP6Sktw6AEznjnoWxKVZXJ4ovmPXgsU3pDcwG5PoEX+QBKBWFd4mB0GrliRI5iqBR8V9aFugbGC4MAB9FvvsobSOcSVrnAuYnbztC9TV8jfvuDn4GD1ygBnRKCc8f2Jo5sGbi2SdPt6z9a5hL5EC9T7nsgqKcJly0E4AijAeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f12sEpSidlUg9HzeJdfroP+MUHI8acc2j6Ia86fkc90=;
- b=Iry40tOx01xt/18D4QahO2qGQCfJrvxFC4SRzKQ+0Sx9Vl58okmwgdQJmpBuF5Es+Jz4f0qTz9uel6/W0xY4Nt7O02Lu7y/2liMTlxeDxAoMSvM+0sA5w7HvrIh+Enh+hUuXUXtSRQmlJb5k04DlnK+ZCV1h8tLGuMcx+sTyirg=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4304.namprd12.prod.outlook.com (2603:10b6:208:1d0::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
- 2020 07:42:59 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
- 07:42:59 +0000
-Subject: Re: [PATCH] drm/amdgpu: do not initialise global variables to 0 or
- NULL
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Melissa Wen <melissa.srw@gmail.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <20201102184147.GA42288@localhost>
- <CADnq5_OnA3T_p4pTEOpoqQ=NZyso2VFoDiOHu=+h7dKOeKHq-A@mail.gmail.com>
- <c916ae88-5933-ab06-ad32-d87f00cac21f@gmail.com>
- <20201103065324.GD75930@kroah.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <c6292ea5-4559-f8e5-d10a-9acb884b2ce8@amd.com>
-Date:   Mon, 2 Nov 2020 21:48:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201103065324.GD75930@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR04CA0017.eurprd04.prod.outlook.com
- (2603:10a6:208:122::30) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1727836AbgKCHag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:30:36 -0500
+Received: from mga07.intel.com ([134.134.136.100]:5708 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727567AbgKCHag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:30:36 -0500
+IronPort-SDR: /Vx/QcPzQ9HkYQFFb+Kv9WW/4mvgTo+e5ZJB/bQNEzgURVFnHPkP1NSsc8+6mPcttwoeM0tssH
+ k8RjduOZPLKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="233181154"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="233181154"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 23:30:35 -0800
+IronPort-SDR: h/FtrOOECq+pTizlN6lj3tL7OXKigGQPCX5W99nt+ImmSSlnx3C4J5a8gZYbXHdNusW8A+Z+RO
+ k3pcLd3VFrrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="353113715"
+Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2020 23:30:28 -0800
+Received: from kbuild by e61783667810 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kZqlv-00004l-CZ; Tue, 03 Nov 2020 07:30:27 +0000
+Date:   Tue, 03 Nov 2020 15:29:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 4a2d2ed9bae16c14602e7aebba3f0c90f73fe786
+Message-ID: <5fa106f6.30voxgWxZfWwAAkw%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR04CA0017.eurprd04.prod.outlook.com (2603:10a6:208:122::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 3 Nov 2020 07:42:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2339e187-b06f-46ab-6b6e-08d87fcc1617
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4304:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4304D956036BDC5FDF03C85F83110@MN2PR12MB4304.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LKL83+fGm6NmWfDU+QvnmIxMYWkMPDeToW7QNU277ebBigbWVbHBBTeAjbQYvCfOZLlh52pqM6cQ1cWSW3b0jkvE0fNKk8GBbpTyVFj9lpCUq7QlWRk7Y9UajhYY/qRaK+TxTjoEgWglZhsYmrWC8F5bRieKUmsnpKytBdSSpL/OtQuYOIiEwJNoQbCOCFsvQN6rfP2KAXKAAuSHZOZqxm2ZzMDA5mIlW+YSoICH1mYUSNP1Gb46xpyMDLyAD+3ul0qfZ/nQDsmxq6M9hDxLU0/omxoymuEvLOQ+lrGjEHlZuouNselIIMNyLeszDRbGtXO1hul3wB+X2IsctZpZI2aZR1Jg6ug18yk2d6z5qXdwNT/qmUfsw8rtCTZe0FMr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(396003)(136003)(8676002)(316002)(66476007)(52116002)(66946007)(66556008)(2906002)(31686004)(66574015)(53546011)(8936002)(5660300002)(4326008)(6486002)(6666004)(186003)(6916009)(16526019)(86362001)(36756003)(2616005)(478600001)(7416002)(31696002)(54906003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: IMhctfzGYN9rPliP7utQqZFymlJjlbu9PLP2JB9a1qm62ycwBL9TV3A3ODOwgxXcBcUcAhxQaducoy6qWIWEvWB9Ud38j/DqAwEEqODcNZc5t8fTV4q581yaNgc2OCQowenfLyZKfw/iFAIFhGBacO7eYps/HM1sOpgU5UFk687H/i3o0+Gr0QvJTYAjUydVrloec5B2QvgxZ6H9k7TCxBvZZH/57EMLvuqJvkxld738W5PGdMFCkAaZIpWDMdwFJ6dNEirz+rs03NkRyNoKPiJWHOjxgvoMfvdhFYSxdflFxfcgZDsoNGYtW/QCjM0WRrXMUg3taljxLlikPyug820rmsx56CYjuvD9Q510DJX3xPBPsWgHPpBDbg7EZGtRblc8sYI97d9cCCRa50Lz/6gOQMT/fDr+Jx1l/n5ffp/kJlzPQR6XJpeyaNYvsXkCZVp1dGPyEh+gorVpB1GheMtf5sgJGeQSjYlh5nhc/waobl5ajrz5Gz6Eq9Ye4GH2TN+ZOZJfrSPoehSD7V1FmrEycxedPXcqe2MIB/oqS+kPFHX4XwmqATeCFflAESfWzI/SC1gEME9vaOOmSRCSI0dgKAy+JiZ5SfihsQpK7nwSXj0aihQb0aUYgP1upjhBxpiYcEcrtLPUdJ35/claW1C05kclUE3ji+gpVZhMMFHzP11tQkCg87nnuaWe54wwQGWzINg6go9+7iotKgFgDQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2339e187-b06f-46ab-6b6e-08d87fcc1617
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 07:42:59.5143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: olgH7Bv7J9Nt+86NZYtbvLDg7FBaCJnVAIUwdzoZbmiDzwV5r7Tk1PaEUt1B5fC9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4304
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 03.11.20 um 07:53 schrieb Greg KH:
-> On Mon, Nov 02, 2020 at 09:06:21PM +0100, Christian König wrote:
->> Am 02.11.20 um 20:43 schrieb Alex Deucher:
->>> On Mon, Nov 2, 2020 at 1:42 PM Deepak R Varma <mh12gx2825@gmail.com> wrote:
->>>> Initializing global variable to 0 or NULL is not necessary and should
->>>> be avoided. Issue reported by checkpatch script as:
->>>> ERROR: do not initialise globals to 0 (or NULL).
->>> I agree that this is technically correct, but a lot of people don't
->>> seem to know that so we get a lot of comments about this code for the
->>> variables that are not explicitly set.  Seems less confusing to
->>> initialize them even if it not necessary.  I don't have a particularly
->>> strong opinion on it however.
->> Agree with Alex.
->>
->> Especially for the module parameters we should have a explicit init value
->> for documentation purposes, even when it is 0.
-> Why is this one tiny driver somehow special compared to the entire rest
-> of the kernel?  (hint, it isn't...)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
+branch HEAD: 4a2d2ed9bae16c14602e7aebba3f0c90f73fe786  x86/mtrr: Fix a kernel-doc markup
 
-And it certainly shouldn't :)
+elapsed time: 721m
 
-> Please follow the normal coding style rules, there's no reason to ignore
-> them unless you like to constantly reject patches like this that get
-> sent to you.
+configs tested: 144
+configs skipped: 3
 
-Yeah, that's a rather good point.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Not a particular strong opinion on this either, but when something 
-global is set to 0 people usually do this to emphases that it is 
-important that it is zero.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+arm                      tct_hammer_defconfig
+arm                            xcep_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                      maltasmvp_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                 mpc8272_ads_defconfig
+um                           x86_64_defconfig
+arm64                            alldefconfig
+sh                        sh7763rdp_defconfig
+xtensa                              defconfig
+nds32                               defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                     powernv_defconfig
+arm                         mv78xx0_defconfig
+alpha                            allyesconfig
+sh                           se7750_defconfig
+arm                         at91_dt_defconfig
+arm                              zx_defconfig
+sh                           se7343_defconfig
+sh                            hp6xx_defconfig
+powerpc                      makalu_defconfig
+m68k                        mvme16x_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        shmobile_defconfig
+m68k                        m5407c3_defconfig
+mips                        qi_lb60_defconfig
+arm                            u300_defconfig
+powerpc                          allmodconfig
+arm                         axm55xx_defconfig
+parisc                           alldefconfig
+powerpc                    socrates_defconfig
+powerpc                 mpc834x_mds_defconfig
+h8300                               defconfig
+sh                          sdk7780_defconfig
+powerpc                       eiger_defconfig
+m68k                          multi_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                      obs600_defconfig
+sh                   sh7770_generic_defconfig
+csky                                defconfig
+nios2                            alldefconfig
+c6x                        evmc6472_defconfig
+sh                            migor_defconfig
+powerpc64                           defconfig
+arm                       imx_v6_v7_defconfig
+um                             i386_defconfig
+mips                           ip32_defconfig
+powerpc                 mpc832x_rdb_defconfig
+m68k                          amiga_defconfig
+arc                        nsim_700_defconfig
+mips                   sb1250_swarm_defconfig
+mips                malta_kvm_guest_defconfig
+mips                        jmr3927_defconfig
+powerpc                   currituck_defconfig
+arm                         socfpga_defconfig
+sh                   sh7724_generic_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                               j2_defconfig
+sh                          rsk7201_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                    gamecube_defconfig
+arm                          pxa3xx_defconfig
+mips                      fuloong2e_defconfig
+arm                       cns3420vb_defconfig
+arm                  colibri_pxa270_defconfig
+m68k                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201102
+i386                 randconfig-a006-20201102
+i386                 randconfig-a005-20201102
+i386                 randconfig-a001-20201102
+i386                 randconfig-a002-20201102
+i386                 randconfig-a003-20201102
+i386                 randconfig-a004-20201103
+i386                 randconfig-a006-20201103
+i386                 randconfig-a005-20201103
+i386                 randconfig-a001-20201103
+i386                 randconfig-a002-20201103
+i386                 randconfig-a003-20201103
+x86_64               randconfig-a012-20201102
+x86_64               randconfig-a015-20201102
+x86_64               randconfig-a011-20201102
+x86_64               randconfig-a013-20201102
+x86_64               randconfig-a014-20201102
+x86_64               randconfig-a016-20201102
+i386                 randconfig-a013-20201102
+i386                 randconfig-a015-20201102
+i386                 randconfig-a014-20201102
+i386                 randconfig-a016-20201102
+i386                 randconfig-a011-20201102
+i386                 randconfig-a012-20201102
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Regards,
-Christian.
+clang tested configs:
+x86_64               randconfig-a004-20201102
+x86_64               randconfig-a005-20201102
+x86_64               randconfig-a003-20201102
+x86_64               randconfig-a002-20201102
+x86_64               randconfig-a006-20201102
+x86_64               randconfig-a001-20201102
 
->
-> thnaks,
->
-> greg k-h
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
