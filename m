@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD94C2A462A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACF02A4625
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729221AbgKCNX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:23:28 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7042 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgKCNX1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:23:27 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQVpg09mjzhgJV;
-        Tue,  3 Nov 2020 21:23:23 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 21:23:13 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
-        <mike.leach@linaro.org>
-CC:     <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
-Subject: [PATCH] coresight: Remove unnecessary THIS_MODULE of funnel and replicator driver
-Date:   Tue, 3 Nov 2020 21:21:48 +0800
-Message-ID: <1604409708-12400-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1729203AbgKCNWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:22:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56308 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729078AbgKCNWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:22:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604409742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VeA9Qsqxu1/i14CMSGPPmW3KXKC7b+HEm7qKKl5XDvg=;
+        b=Pxo79IfAbvAKkRNNFMbGkHgZWU7zirElkyhd/EpedIl5/ACqkBp91t0MQK0Gwnhw0iiO/G
+        zK20Exyj3tPnz68nn91WwrEvThhmjjygMxsW7/Mzw82amVnPx/GxV7zJaHowJCDqpugz9m
+        IbwhDG6IGCbT463rGcyFKbt3U2zSqXQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DF85DAB0E;
+        Tue,  3 Nov 2020 13:22:21 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 14:22:21 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Message-ID: <20201103132221.GI21990@dhcp22.suse.cz>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+ <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+ <20201020181822.GA397401@cmpxchg.org>
+ <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As THIS_MODULE has been set in platform_driver_register(), so remove it
-from static funnel driver and static replicator driver to avoid set it
-twice.
+Hi,
+I am sorry but I was quite busy at the time this has been discussed.
+Now that I got to this thread finally I am wondering whether this
+resp. other root cgroup exceptions have any follow up.
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- drivers/hwtracing/coresight/coresight-funnel.c     | 2 +-
- drivers/hwtracing/coresight/coresight-replicator.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I have seen the issue is fixed in Linus tree by 8de15e920dc8 ("mm:
+memcg: link page counters to root if use_hierarchy is false"). Thanks
+for taking care of that! I do agree that this approach is the most
+reasonable immediate fix.
 
-diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-index af40814..39be46b 100644
---- a/drivers/hwtracing/coresight/coresight-funnel.c
-+++ b/drivers/hwtracing/coresight/coresight-funnel.c
-@@ -356,7 +356,7 @@ static struct platform_driver static_funnel_driver = {
- 	.remove          = static_funnel_remove,
- 	.driver         = {
- 		.name   = "coresight-static-funnel",
--		.owner	= THIS_MODULE,
-+		/* THIS_MODULE is taken care of by platform_driver_register() */
- 		.of_match_table = static_funnel_match,
- 		.acpi_match_table = ACPI_PTR(static_funnel_ids),
- 		.pm	= &funnel_dev_pm_ops,
-diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-index 62afdde..6772f23 100644
---- a/drivers/hwtracing/coresight/coresight-replicator.c
-+++ b/drivers/hwtracing/coresight/coresight-replicator.c
-@@ -374,7 +374,7 @@ static struct platform_driver static_replicator_driver = {
- 	.remove         = static_replicator_remove,
- 	.driver         = {
- 		.name   = "coresight-static-replicator",
--		.owner	= THIS_MODULE,
-+		/* THIS_MODULE is taken care of by platform_driver_register() */
- 		.of_match_table = of_match_ptr(static_replicator_match),
- 		.acpi_match_table = ACPI_PTR(static_replicator_acpi_ids),
- 		.pm	= &replicator_dev_pm_ops,
---
-2.8.1
+Btw. we have been carrying a warning about non hierarchical hierarchies
+for years in our distribution kernels and haven't heard of any actual
+bug reports (except for LTP driven ones). So we might be really close to
+simply drop this functionality completely. This would simplify the code
+and prevent from future surprises.
 
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
