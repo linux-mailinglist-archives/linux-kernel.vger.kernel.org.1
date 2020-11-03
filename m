@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1454E2A384C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A12A2A39D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgKCBS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 20:18:29 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6692 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgKCBS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 20:18:27 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQBk66jMZz15NlQ;
-        Tue,  3 Nov 2020 09:18:22 +0800 (CST)
-Received: from [127.0.0.1] (10.65.95.32) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 3 Nov 2020
- 09:18:15 +0800
-Subject: Re: [PATCH] coresight: funnel: Remove unnecessary .owner of static
- funnel driver
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-References: <1604139150-18659-1-git-send-email-liuqi115@huawei.com>
- <20201102172330.GB2749502@xps15>
-CC:     <suzuki.poulose@arm.com>, <Al.Grant@arm.com>,
-        <mike.leach@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
-From:   Qi Liu <liuqi115@huawei.com>
-Message-ID: <813ceaa8-9bad-6e10-45f8-a56656519f63@huawei.com>
-Date:   Tue, 3 Nov 2020 09:18:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1727911AbgKCB2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 20:28:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727371AbgKCBSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 20:18:55 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 454EA223AB;
+        Tue,  3 Nov 2020 01:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604366334;
+        bh=8LngFopYzFeGa/jZrFWBu9RFqdYmR0lINC0f9D8B8wk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1q9ZFlOFJi4wBi5eW8ukiilI+S7twI1WUptnoXQ5zDrx3dMTMvuemnu3KrrCOwTHo
+         cOHNJiepDlBYVDyrv89N5s/uPtUQu37cO17Dl9dsXWsf5OgninJRo38tQ1L4wk8GeV
+         z6gw0IftR21tc0gfXLbqyfXACHjEECpHr7C9WN5w=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 10/35] of: Fix reserved-memory overlap detection
+Date:   Mon,  2 Nov 2020 20:18:15 -0500
+Message-Id: <20201103011840.182814-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201103011840.182814-1-sashal@kernel.org>
+References: <20201103011840.182814-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201102172330.GB2749502@xps15>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.95.32]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
+[ Upstream commit ca05f33316559a04867295dd49f85aeedbfd6bfd ]
 
-On 2020/11/3 1:23, Mathieu Poirier wrote:
-> Hi Liu,
->
-> On Sat, Oct 31, 2020 at 06:12:30PM +0800, Qi Liu wrote:
->> As driver.owner has been set in platform_driver_register(), it is
->> unnecessary to set it in static funnel driver, so remove it from
->> struct static_funnel_driver.
->>
->> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->> ---
->>  drivers/hwtracing/coresight/coresight-funnel.c | 1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
->> index af40814..07bc203 100644
->> --- a/drivers/hwtracing/coresight/coresight-funnel.c
->> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
->> @@ -356,7 +356,6 @@ static struct platform_driver static_funnel_driver = {
->>  	.remove          = static_funnel_remove,
->>  	.driver         = {
->>  		.name   = "coresight-static-funnel",
->> -		.owner	= THIS_MODULE,
-> I received two identical patches (with a different title) from you.  Since there
-> was no explanation I will discard the first one and work with this one.
->
-> You are correct, platform_driver_register() does take care of THIS_MODULE.
-> Please send another revision where you will do three things:
->
-> 1) CC the coresight mailing list, as instructed by get_maintainer.pl
-> 1) Also fix the replicator driver.
-> 2) Add a comment that clearly mentions THIS_MODULE doesn't need to be set:
->
->                 .name   = "coresight-static-funnel",
->                 /* THIS_MODULE is taken care of by platform_driver_register() */
->                 .of_match_table = static_funnel_match,
->                 .acpi_match_table = ACPI_PTR(static_funnel_ids),
->                 .pm	= &funnel_dev_pm_ops,
->
-> Thanks,
-> Mathieu
-Thanks for your review , I'll send a new patch latter.
+The reserved-memory overlap detection code fails to detect overlaps if
+either of the regions starts at address 0x0.  The code explicitly checks
+for and ignores such regions, apparently in order to ignore dynamically
+allocated regions which have an address of 0x0 at this point.  These
+dynamically allocated regions also have a size of 0x0 at this point, so
+fix this by removing the check and sorting the dynamically allocated
+regions ahead of any static regions at address 0x0.
 
-Liu
->> --
->> 2.8.1
->>
-> .
->
+For example, there are two overlaps in this case but they are not
+currently reported:
 
+	foo@0 {
+	        reg = <0x0 0x2000>;
+	};
+
+	bar@0 {
+	        reg = <0x0 0x1000>;
+	};
+
+	baz@1000 {
+	        reg = <0x1000 0x1000>;
+	};
+
+	quux {
+	        size = <0x1000>;
+	};
+
+but they are after this patch:
+
+ OF: reserved mem: OVERLAP DETECTED!
+ bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
+ OF: reserved mem: OVERLAP DETECTED!
+ foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Link: https://lore.kernel.org/r/ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/of/of_reserved_mem.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 46b9371c8a332..6530b8b9160f1 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -200,6 +200,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
+ 	if (ra->base > rb->base)
+ 		return 1;
+ 
++	/*
++	 * Put the dynamic allocations (address == 0, size == 0) before static
++	 * allocations at address 0x0 so that overlap detection works
++	 * correctly.
++	 */
++	if (ra->size < rb->size)
++		return -1;
++	if (ra->size > rb->size)
++		return 1;
++
+ 	return 0;
+ }
+ 
+@@ -217,8 +227,7 @@ static void __init __rmem_check_for_overlap(void)
+ 
+ 		this = &reserved_mem[i];
+ 		next = &reserved_mem[i + 1];
+-		if (!(this->base && next->base))
+-			continue;
++
+ 		if (this->base + this->size > next->base) {
+ 			phys_addr_t this_end, next_end;
+ 
+-- 
+2.27.0
 
