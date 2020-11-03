@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791662A5117
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6EE2A511B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgKCUh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:37:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47574 "EHLO mail.kernel.org"
+        id S1729872AbgKCUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:38:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729764AbgKCUhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:53 -0500
+        id S1729854AbgKCUiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:38:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A51E4223AC;
-        Tue,  3 Nov 2020 20:37:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D1C422277;
+        Tue,  3 Nov 2020 20:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435872;
-        bh=fnHMnUIOc2zcfkKRP7JyMMmvBDD0hIiz1kMgZ79/6W4=;
+        s=default; t=1604435879;
+        bh=9rAlsZzFgLFTFXkm/5yGO/oklm8kx78dNoBl1qoPoaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zDWO1Qppuf9BDX3r7cnkpJk693OceI3wD/RNRLyhQcOHusnomlgFFIJEw7yzuc6m5
-         dTdQePArJMQs5JOy7NUbBRpZ8nhPP2/krStTLogYIrbHjRnyr0u1rsRLR3ym2MqlGN
-         yoFyNtP504B4OmzO5dcnwKjwus4NSsGXDAkAYLGo=
+        b=j9I/o+yd8J3kDVM7XkzQXXlbG9rDVdAgK7jQy7+arRvi+jL1T/yiQrSwEhx/AWfpB
+         ZMXh+ieOBNpuqdUVullauz865Plc0BH2+nEhK7hxKl3HMfWe1ngcWoM9niR2clZ2Qg
+         haxCC3nHor2Qz8PpQ3BBJf7ZC1VJQmunPDx/1Ux0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Julien Grall <julien@xen.org>,
         Juergen Gross <jgross@suse.com>,
         Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
-Subject: [PATCH 5.9 006/391] xen/netback: use lateeoi irq binding
-Date:   Tue,  3 Nov 2020 21:30:57 +0100
-Message-Id: <20201103203348.524269459@linuxfoundation.org>
+Subject: [PATCH 5.9 009/391] xen/pciback: use lateeoi irq binding
+Date:   Tue,  3 Nov 2020 21:31:00 +0100
+Message-Id: <20201103203348.685761854@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,18 +45,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Juergen Gross <jgross@suse.com>
 
-commit 23025393dbeb3b8b3b60ebfa724cdae384992e27 upstream.
+commit c2711441bc961b37bba0615dd7135857d189035f upstream.
 
 In order to reduce the chance for the system becoming unresponsive due
-to event storms triggered by a misbehaving netfront use the lateeoi
-irq binding for netback and unmask the event channel only just before
-going to sleep waiting for new events.
+to event storms triggered by a misbehaving pcifront use the lateeoi irq
+binding for pciback and unmask the event channel only just before
+leaving the event handling function.
 
-Make sure not to issue an EOI when none is pending by introducing an
-eoi_pending element to struct xenvif_queue.
+Restructure the handling to support that scheme. Basically an event can
+come in for two reasons: either a normal request for a pciback action,
+which is handled in a worker, or in case the guest has finished an AER
+request which was requested by pciback.
 
-When no request has been consumed set the spurious flag when sending
-the EOI for an interrupt.
+When an AER request is issued to the guest and a normal pciback action
+is currently active issue an EOI early in order to be able to receive
+another event when the AER request has been finished by the guest.
+
+Let the worker processing the normal requests run until no further
+request is pending, instead of starting a new worker ion that case.
+Issue the EOI only just before leaving the worker.
+
+This scheme allows to drop calling the generic function
+xen_pcibk_test_and_schedule_op() after processing of any request as
+the handling of both request types is now separated more cleanly.
 
 This is part of XSA-332.
 
@@ -68,231 +79,187 @@ Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/xen-netback/common.h    |   15 ++++++++
- drivers/net/xen-netback/interface.c |   61 ++++++++++++++++++++++++++++++------
- drivers/net/xen-netback/netback.c   |   11 +++++-
- drivers/net/xen-netback/rx.c        |   13 +++++--
- 4 files changed, 86 insertions(+), 14 deletions(-)
+ drivers/xen/xen-pciback/pci_stub.c    |   13 ++++-----
+ drivers/xen/xen-pciback/pciback.h     |   12 +++++++-
+ drivers/xen/xen-pciback/pciback_ops.c |   48 ++++++++++++++++++++++++++--------
+ drivers/xen/xen-pciback/xenbus.c      |    2 -
+ 4 files changed, 56 insertions(+), 19 deletions(-)
 
---- a/drivers/net/xen-netback/common.h
-+++ b/drivers/net/xen-netback/common.h
-@@ -140,6 +140,20 @@ struct xenvif_queue { /* Per-queue data
- 	char name[QUEUE_NAME_SIZE]; /* DEVNAME-qN */
- 	struct xenvif *vif; /* Parent VIF */
+--- a/drivers/xen/xen-pciback/pci_stub.c
++++ b/drivers/xen/xen-pciback/pci_stub.c
+@@ -734,10 +734,17 @@ static pci_ers_result_t common_process(s
+ 	wmb();
+ 	notify_remote_via_irq(pdev->evtchn_irq);
  
-+	/*
-+	 * TX/RX common EOI handling.
-+	 * When feature-split-event-channels = 0, interrupt handler sets
-+	 * NETBK_COMMON_EOI, otherwise NETBK_RX_EOI and NETBK_TX_EOI are set
-+	 * by the RX and TX interrupt handlers.
-+	 * RX and TX handler threads will issue an EOI when either
-+	 * NETBK_COMMON_EOI or their specific bits (NETBK_RX_EOI or
-+	 * NETBK_TX_EOI) are set and they will reset those bits.
-+	 */
-+	atomic_t eoi_pending;
-+#define NETBK_RX_EOI		0x01
-+#define NETBK_TX_EOI		0x02
-+#define NETBK_COMMON_EOI	0x04
++	/* Enable IRQ to signal "request done". */
++	xen_pcibk_lateeoi(pdev, 0);
 +
- 	/* Use NAPI for guest TX */
- 	struct napi_struct napi;
- 	/* When feature-split-event-channels = 0, tx_irq = rx_irq. */
-@@ -378,6 +392,7 @@ int xenvif_dealloc_kthread(void *data);
+ 	ret = wait_event_timeout(xen_pcibk_aer_wait_queue,
+ 				 !(test_bit(_XEN_PCIB_active, (unsigned long *)
+ 				 &sh_info->flags)), 300*HZ);
  
- irqreturn_t xenvif_ctrl_irq_fn(int irq, void *data);
++	/* Enable IRQ for pcifront request if not already active. */
++	if (!test_bit(_PDEVF_op_active, &pdev->flags))
++		xen_pcibk_lateeoi(pdev, 0);
++
+ 	if (!ret) {
+ 		if (test_bit(_XEN_PCIB_active,
+ 			(unsigned long *)&sh_info->flags)) {
+@@ -751,12 +758,6 @@ static pci_ers_result_t common_process(s
+ 	}
+ 	clear_bit(_PCIB_op_pending, (unsigned long *)&pdev->flags);
  
-+bool xenvif_have_rx_work(struct xenvif_queue *queue, bool test_kthread);
- void xenvif_rx_action(struct xenvif_queue *queue);
- void xenvif_rx_queue_tail(struct xenvif_queue *queue, struct sk_buff *skb);
- 
---- a/drivers/net/xen-netback/interface.c
-+++ b/drivers/net/xen-netback/interface.c
-@@ -77,12 +77,28 @@ int xenvif_schedulable(struct xenvif *vi
- 		!vif->disabled;
+-	if (test_bit(_XEN_PCIF_active,
+-		(unsigned long *)&sh_info->flags)) {
+-		dev_dbg(&psdev->dev->dev, "schedule pci_conf service\n");
+-		xen_pcibk_test_and_schedule_op(psdev->pdev);
+-	}
+-
+ 	res = (pci_ers_result_t)aer_op->err;
+ 	return res;
  }
+--- a/drivers/xen/xen-pciback/pciback.h
++++ b/drivers/xen/xen-pciback/pciback.h
+@@ -14,6 +14,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/workqueue.h>
+ #include <linux/atomic.h>
++#include <xen/events.h>
+ #include <xen/interface/io/pciif.h>
  
-+static bool xenvif_handle_tx_interrupt(struct xenvif_queue *queue)
+ #define DRV_NAME	"xen-pciback"
+@@ -27,6 +28,8 @@ struct pci_dev_entry {
+ #define PDEVF_op_active		(1<<(_PDEVF_op_active))
+ #define _PCIB_op_pending	(1)
+ #define PCIB_op_pending		(1<<(_PCIB_op_pending))
++#define _EOI_pending		(2)
++#define EOI_pending		(1<<(_EOI_pending))
+ 
+ struct xen_pcibk_device {
+ 	void *pci_dev_data;
+@@ -183,10 +186,15 @@ static inline void xen_pcibk_release_dev
+ irqreturn_t xen_pcibk_handle_event(int irq, void *dev_id);
+ void xen_pcibk_do_op(struct work_struct *data);
+ 
++static inline void xen_pcibk_lateeoi(struct xen_pcibk_device *pdev,
++				     unsigned int eoi_flag)
 +{
-+	bool rc;
-+
-+	rc = RING_HAS_UNCONSUMED_REQUESTS(&queue->tx);
-+	if (rc)
-+		napi_schedule(&queue->napi);
-+	return rc;
++	if (test_and_clear_bit(_EOI_pending, &pdev->flags))
++		xen_irq_lateeoi(pdev->evtchn_irq, eoi_flag);
 +}
 +
- static irqreturn_t xenvif_tx_interrupt(int irq, void *dev_id)
- {
- 	struct xenvif_queue *queue = dev_id;
-+	int old;
+ int xen_pcibk_xenbus_register(void);
+ void xen_pcibk_xenbus_unregister(void);
+-
+-void xen_pcibk_test_and_schedule_op(struct xen_pcibk_device *pdev);
+ #endif
  
--	if (RING_HAS_UNCONSUMED_REQUESTS(&queue->tx))
--		napi_schedule(&queue->napi);
-+	old = atomic_fetch_or(NETBK_TX_EOI, &queue->eoi_pending);
-+	WARN(old & NETBK_TX_EOI, "Interrupt while EOI pending\n");
+ /* Handles shared IRQs that can to device domain and control domain. */
+--- a/drivers/xen/xen-pciback/pciback_ops.c
++++ b/drivers/xen/xen-pciback/pciback_ops.c
+@@ -276,26 +276,41 @@ int xen_pcibk_disable_msix(struct xen_pc
+ 	return 0;
+ }
+ #endif
 +
-+	if (!xenvif_handle_tx_interrupt(queue)) {
-+		atomic_andnot(NETBK_TX_EOI, &queue->eoi_pending);
-+		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -116,19 +132,46 @@ static int xenvif_poll(struct napi_struc
- 	return work_done;
- }
- 
-+static bool xenvif_handle_rx_interrupt(struct xenvif_queue *queue)
++static inline bool xen_pcibk_test_op_pending(struct xen_pcibk_device *pdev)
 +{
-+	bool rc;
-+
-+	rc = xenvif_have_rx_work(queue, false);
-+	if (rc)
-+		xenvif_kick_thread(queue);
-+	return rc;
++	return test_bit(_XEN_PCIF_active,
++			(unsigned long *)&pdev->sh_info->flags) &&
++	       !test_and_set_bit(_PDEVF_op_active, &pdev->flags);
 +}
 +
- static irqreturn_t xenvif_rx_interrupt(int irq, void *dev_id)
+ /*
+ * Now the same evtchn is used for both pcifront conf_read_write request
+ * as well as pcie aer front end ack. We use a new work_queue to schedule
+ * xen_pcibk conf_read_write service for avoiding confict with aer_core
+ * do_recovery job which also use the system default work_queue
+ */
+-void xen_pcibk_test_and_schedule_op(struct xen_pcibk_device *pdev)
++static void xen_pcibk_test_and_schedule_op(struct xen_pcibk_device *pdev)
  {
- 	struct xenvif_queue *queue = dev_id;
-+	int old;
- 
--	xenvif_kick_thread(queue);
-+	old = atomic_fetch_or(NETBK_RX_EOI, &queue->eoi_pending);
-+	WARN(old & NETBK_RX_EOI, "Interrupt while EOI pending\n");
++	bool eoi = true;
 +
-+	if (!xenvif_handle_rx_interrupt(queue)) {
-+		atomic_andnot(NETBK_RX_EOI, &queue->eoi_pending);
-+		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
-+	}
- 
- 	return IRQ_HANDLED;
+ 	/* Check that frontend is requesting an operation and that we are not
+ 	 * already processing a request */
+-	if (test_bit(_XEN_PCIF_active, (unsigned long *)&pdev->sh_info->flags)
+-	    && !test_and_set_bit(_PDEVF_op_active, &pdev->flags)) {
++	if (xen_pcibk_test_op_pending(pdev)) {
+ 		schedule_work(&pdev->op_work);
++		eoi = false;
+ 	}
+ 	/*_XEN_PCIB_active should have been cleared by pcifront. And also make
+ 	sure xen_pcibk is waiting for ack by checking _PCIB_op_pending*/
+ 	if (!test_bit(_XEN_PCIB_active, (unsigned long *)&pdev->sh_info->flags)
+ 	    && test_bit(_PCIB_op_pending, &pdev->flags)) {
+ 		wake_up(&xen_pcibk_aer_wait_queue);
++		eoi = false;
+ 	}
++
++	/* EOI if there was nothing to do. */
++	if (eoi)
++		xen_pcibk_lateeoi(pdev, XEN_EOI_FLAG_SPURIOUS);
  }
  
- irqreturn_t xenvif_interrupt(int irq, void *dev_id)
+ /* Performing the configuration space reads/writes must not be done in atomic
+@@ -303,10 +318,8 @@ void xen_pcibk_test_and_schedule_op(stru
+  * use of semaphores). This function is intended to be called from a work
+  * queue in process context taking a struct xen_pcibk_device as a parameter */
+ 
+-void xen_pcibk_do_op(struct work_struct *data)
++static void xen_pcibk_do_one_op(struct xen_pcibk_device *pdev)
  {
--	xenvif_tx_interrupt(irq, dev_id);
--	xenvif_rx_interrupt(irq, dev_id);
-+	struct xenvif_queue *queue = dev_id;
-+	int old;
+-	struct xen_pcibk_device *pdev =
+-		container_of(data, struct xen_pcibk_device, op_work);
+ 	struct pci_dev *dev;
+ 	struct xen_pcibk_dev_data *dev_data = NULL;
+ 	struct xen_pci_op *op = &pdev->op;
+@@ -379,16 +392,31 @@ void xen_pcibk_do_op(struct work_struct
+ 	smp_mb__before_atomic(); /* /after/ clearing PCIF_active */
+ 	clear_bit(_PDEVF_op_active, &pdev->flags);
+ 	smp_mb__after_atomic(); /* /before/ final check for work */
++}
+ 
+-	/* Check to see if the driver domain tried to start another request in
+-	 * between clearing _XEN_PCIF_active and clearing _PDEVF_op_active.
+-	*/
+-	xen_pcibk_test_and_schedule_op(pdev);
++void xen_pcibk_do_op(struct work_struct *data)
++{
++	struct xen_pcibk_device *pdev =
++		container_of(data, struct xen_pcibk_device, op_work);
 +
-+	old = atomic_fetch_or(NETBK_COMMON_EOI, &queue->eoi_pending);
-+	WARN(old, "Interrupt while EOI pending\n");
++	do {
++		xen_pcibk_do_one_op(pdev);
++	} while (xen_pcibk_test_op_pending(pdev));
 +
-+	/* Use bitwise or as we need to call both functions. */
-+	if ((!xenvif_handle_tx_interrupt(queue) |
-+	     !xenvif_handle_rx_interrupt(queue))) {
-+		atomic_andnot(NETBK_COMMON_EOI, &queue->eoi_pending);
-+		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -605,7 +648,7 @@ int xenvif_connect_ctrl(struct xenvif *v
- 	if (req_prod - rsp_prod > RING_SIZE(&vif->ctrl))
- 		goto err_unmap;
- 
--	err = bind_interdomain_evtchn_to_irq(vif->domid, evtchn);
-+	err = bind_interdomain_evtchn_to_irq_lateeoi(vif->domid, evtchn);
- 	if (err < 0)
- 		goto err_unmap;
- 
-@@ -709,7 +752,7 @@ int xenvif_connect_data(struct xenvif_qu
- 
- 	if (tx_evtchn == rx_evtchn) {
- 		/* feature-split-event-channels == 0 */
--		err = bind_interdomain_evtchn_to_irqhandler(
-+		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
- 			queue->vif->domid, tx_evtchn, xenvif_interrupt, 0,
- 			queue->name, queue);
- 		if (err < 0)
-@@ -720,7 +763,7 @@ int xenvif_connect_data(struct xenvif_qu
- 		/* feature-split-event-channels == 1 */
- 		snprintf(queue->tx_irq_name, sizeof(queue->tx_irq_name),
- 			 "%s-tx", queue->name);
--		err = bind_interdomain_evtchn_to_irqhandler(
-+		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
- 			queue->vif->domid, tx_evtchn, xenvif_tx_interrupt, 0,
- 			queue->tx_irq_name, queue);
- 		if (err < 0)
-@@ -730,7 +773,7 @@ int xenvif_connect_data(struct xenvif_qu
- 
- 		snprintf(queue->rx_irq_name, sizeof(queue->rx_irq_name),
- 			 "%s-rx", queue->name);
--		err = bind_interdomain_evtchn_to_irqhandler(
-+		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
- 			queue->vif->domid, rx_evtchn, xenvif_rx_interrupt, 0,
- 			queue->rx_irq_name, queue);
- 		if (err < 0)
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -169,6 +169,10 @@ void xenvif_napi_schedule_or_enable_even
- 
- 	if (more_to_do)
- 		napi_schedule(&queue->napi);
-+	else if (atomic_fetch_andnot(NETBK_TX_EOI | NETBK_COMMON_EOI,
-+				     &queue->eoi_pending) &
-+		 (NETBK_TX_EOI | NETBK_COMMON_EOI))
-+		xen_irq_lateeoi(queue->tx_irq, 0);
++	xen_pcibk_lateeoi(pdev, 0);
  }
  
- static void tx_add_credit(struct xenvif_queue *queue)
-@@ -1643,9 +1647,14 @@ static bool xenvif_ctrl_work_todo(struct
- irqreturn_t xenvif_ctrl_irq_fn(int irq, void *data)
+ irqreturn_t xen_pcibk_handle_event(int irq, void *dev_id)
  {
- 	struct xenvif *vif = data;
-+	unsigned int eoi_flag = XEN_EOI_FLAG_SPURIOUS;
- 
--	while (xenvif_ctrl_work_todo(vif))
-+	while (xenvif_ctrl_work_todo(vif)) {
- 		xenvif_ctrl_action(vif);
-+		eoi_flag = 0;
-+	}
+ 	struct xen_pcibk_device *pdev = dev_id;
++	bool eoi;
 +
-+	xen_irq_lateeoi(irq, eoi_flag);
- 
- 	return IRQ_HANDLED;
- }
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -503,13 +503,13 @@ static bool xenvif_rx_queue_ready(struct
- 	return queue->stalled && prod - cons >= 1;
- }
- 
--static bool xenvif_have_rx_work(struct xenvif_queue *queue)
-+bool xenvif_have_rx_work(struct xenvif_queue *queue, bool test_kthread)
- {
- 	return xenvif_rx_ring_slots_available(queue) ||
- 		(queue->vif->stall_timeout &&
- 		 (xenvif_rx_queue_stalled(queue) ||
- 		  xenvif_rx_queue_ready(queue))) ||
--		kthread_should_stop() ||
-+		(test_kthread && kthread_should_stop()) ||
- 		queue->vif->disabled;
- }
- 
-@@ -540,15 +540,20 @@ static void xenvif_wait_for_rx_work(stru
- {
- 	DEFINE_WAIT(wait);
- 
--	if (xenvif_have_rx_work(queue))
-+	if (xenvif_have_rx_work(queue, true))
- 		return;
- 
- 	for (;;) {
- 		long ret;
- 
- 		prepare_to_wait(&queue->wq, &wait, TASK_INTERRUPTIBLE);
--		if (xenvif_have_rx_work(queue))
-+		if (xenvif_have_rx_work(queue, true))
- 			break;
-+		if (atomic_fetch_andnot(NETBK_RX_EOI | NETBK_COMMON_EOI,
-+					&queue->eoi_pending) &
-+		    (NETBK_RX_EOI | NETBK_COMMON_EOI))
-+			xen_irq_lateeoi(queue->rx_irq, 0);
++	/* IRQs might come in before pdev->evtchn_irq is written. */
++	if (unlikely(pdev->evtchn_irq != irq))
++		pdev->evtchn_irq = irq;
 +
- 		ret = schedule_timeout(xenvif_rx_queue_timeout(queue));
- 		if (!ret)
- 			break;
++	eoi = test_and_set_bit(_EOI_pending, &pdev->flags);
++	WARN(eoi, "IRQ while EOI pending\n");
+ 
+ 	xen_pcibk_test_and_schedule_op(pdev);
+ 
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -123,7 +123,7 @@ static int xen_pcibk_do_attach(struct xe
+ 
+ 	pdev->sh_info = vaddr;
+ 
+-	err = bind_interdomain_evtchn_to_irqhandler(
++	err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
+ 		pdev->xdev->otherend_id, remote_evtchn, xen_pcibk_handle_event,
+ 		0, DRV_NAME, pdev);
+ 	if (err < 0) {
 
 
