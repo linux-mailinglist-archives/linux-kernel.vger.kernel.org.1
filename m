@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E61E2A52A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BF52A5345
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbgKCUvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47526 "EHLO mail.kernel.org"
+        id S1733108AbgKCU70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgKCUvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:51 -0500
+        id S1733101AbgKCU7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 256352071E;
-        Tue,  3 Nov 2020 20:51:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54F6422226;
+        Tue,  3 Nov 2020 20:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436710;
-        bh=TLQXn4pmUjcvNk1YPYPQecF335j53y2AyGsM+J010d8=;
+        s=default; t=1604437160;
+        bh=Yv/f268HFJkN+1vSeyywKjbrMmMCXFppzKgHQgZDufA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YpL74lDM8Pqe7b8WQFUvRDqSeLQ8lFjCaFy/05rq2Er5IcJxb28Opi8TwzEkmVL3I
-         6rPMoVLz+bXXh9Vo+lm+kFWMvnlKbtynTxGWC/FYVTF97t+/AWizkPyR5QOqE92w93
-         e6WwtDfsTLHYsTD7ghcJxJuWtXIF4Z13TzuhSk0g=
+        b=BF/BKOh59UJcyNXIwT9z/2+fCmmN/Tq12322XWYp+QllnPGfMgdI1eDNc6PNshc1a
+         75vdZiSsQEFEg8rMonzMFtcvAZeIav3OPNA2mbvtwOPsv+hcwO/TGewf8qSD3PZP0I
+         JD4migetOmba3J/nZl7ABq4L6JkcCy/urFPnIaSg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.9 369/391] ARM: config: aspeed: Fix selection of media drivers
-Date:   Tue,  3 Nov 2020 21:37:00 +0100
-Message-Id: <20201103203412.047213504@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 5.4 173/214] perf python scripting: Fix printable strings in python3 scripts
+Date:   Tue,  3 Nov 2020 21:37:01 +0100
+Message-Id: <20201103203306.949707119@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +48,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Jiri Olsa <jolsa@kernel.org>
 
-commit 98c3f0a1b3ef83f6be6b212c970bee795e1a0467 upstream.
+commit 6fcd5ddc3b1467b3586972ef785d0d926ae4cdf4 upstream.
 
-In the 5.7 merge window the media kconfig was restructued. For most
-platforms these changes set CONFIG_MEDIA_SUPPORT_FILTER=y which keeps
-unwanted drivers disabled.
+Hagen reported broken strings in python3 tracepoint scripts:
 
-The exception is if a config sets EMBEDDED or EXPERT (see b0cd4fb27665).
-In that case the filter is set to =n, causing a bunch of DVB tuner drivers
-(MEDIA_TUNER_*) to be accidentally enabled. This was noticed as it blew
-out the build time for the Aspeed defconfigs.
+  make PYTHON=python3
+  perf record -e sched:sched_switch -a -- sleep 5
+  perf script --gen-script py
+  perf script -s ./perf-script.py
 
-Enabling the filter means the Aspeed config also needs to set
-CONFIG_MEDIA_PLATFORM_SUPPORT=y in order to have the CONFIG_VIDEO_ASPEED
-driver enabled.
+  [..]
+  sched__sched_switch      7 563231.759525792        0 swapper   prev_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), prev_pid=0, prev_prio=120, prev_state=, next_comm=bytearray(b'mutex-thread-co\x00'),
 
-Fixes: 06b93644f4d1 ("media: Kconfig: add an option to filter in/out platform drivers")
-Fixes: b0cd4fb27665 ("media: Kconfig: on !EMBEDDED && !EXPERT, enable driver filtering")
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+The problem is in the is_printable_array function that does not take the
+zero byte into account and claim such string as not printable, so the
+code will create byte array instead of string.
+
+Committer testing:
+
+After this fix:
+
+sched__sched_switch 3 484522.497072626  1158680 kworker/3:0-eve  prev_comm=kworker/3:0, prev_pid=1158680, prev_prio=120, prev_state=I, next_comm=swapper/3, next_pid=0, next_prio=120
+Sample: {addr=0, cpu=3, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1158680, tid=1158680, time=484522497072626, transaction=0, values=[(0, 0)], weight=0}
+
+sched__sched_switch 4 484522.497085610  1225814 perf             prev_comm=perf, prev_pid=1225814, prev_prio=120, prev_state=, next_comm=migration/4, next_pid=30, next_prio=0
+Sample: {addr=0, cpu=4, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1225814, tid=1225814, time=484522497085610, transaction=0, values=[(0, 0)], weight=0}
+
+Fixes: 249de6e07458 ("perf script python: Fix string vs byte array resolving")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Tested-by: Hagen Paul Pfeifer <hagen@jauu.net>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-CC: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: http://lore.kernel.org/lkml/20200928201135.3633850-1-jolsa@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/configs/aspeed_g4_defconfig |    3 ++-
- arch/arm/configs/aspeed_g5_defconfig |    3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ tools/perf/util/print_binary.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/configs/aspeed_g4_defconfig
-+++ b/arch/arm/configs/aspeed_g4_defconfig
-@@ -160,7 +160,8 @@ CONFIG_SENSORS_TMP421=y
- CONFIG_SENSORS_W83773G=y
- CONFIG_WATCHDOG_SYSFS=y
- CONFIG_MEDIA_SUPPORT=y
--CONFIG_MEDIA_CAMERA_SUPPORT=y
-+CONFIG_MEDIA_SUPPORT_FILTER=y
-+CONFIG_MEDIA_PLATFORM_SUPPORT=y
- CONFIG_V4L_PLATFORM_DRIVERS=y
- CONFIG_VIDEO_ASPEED=y
- CONFIG_DRM=y
---- a/arch/arm/configs/aspeed_g5_defconfig
-+++ b/arch/arm/configs/aspeed_g5_defconfig
-@@ -175,7 +175,8 @@ CONFIG_SENSORS_TMP421=y
- CONFIG_SENSORS_W83773G=y
- CONFIG_WATCHDOG_SYSFS=y
- CONFIG_MEDIA_SUPPORT=y
--CONFIG_MEDIA_CAMERA_SUPPORT=y
-+CONFIG_MEDIA_SUPPORT_FILTER=y
-+CONFIG_MEDIA_PLATFORM_SUPPORT=y
- CONFIG_V4L_PLATFORM_DRIVERS=y
- CONFIG_VIDEO_ASPEED=y
- CONFIG_DRM=y
+--- a/tools/perf/util/print_binary.c
++++ b/tools/perf/util/print_binary.c
+@@ -50,7 +50,7 @@ int is_printable_array(char *p, unsigned
+ 
+ 	len--;
+ 
+-	for (i = 0; i < len; i++) {
++	for (i = 0; i < len && p[i]; i++) {
+ 		if (!isprint(p[i]) && !isspace(p[i]))
+ 			return 0;
+ 	}
 
 
