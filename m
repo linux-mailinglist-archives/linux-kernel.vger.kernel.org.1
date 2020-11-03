@@ -2,125 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85962A4B87
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391CD2A4B8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgKCQaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:30:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53470 "EHLO mail.kernel.org"
+        id S1726312AbgKCQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:30:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728082AbgKCQaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:30:18 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726018AbgKCQaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:30:52 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FB1C206DF;
-        Tue,  3 Nov 2020 16:30:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6493206DF;
+        Tue,  3 Nov 2020 16:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604421016;
-        bh=jYHfX66WW2BdNqS2XWf0ysCG2+5llIa7XFBTFdDX/eI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aIT9WT+BvHALjjzBR+JANCva7x0iax3JsHcWBCEfbBEXiFyByvncM0vQDEjoMsNzh
-         qIUHx4c/P1fmtrQLv9EIQHUB/NNPUa0sJ3XCbfY5Co0b/q6PUKAT7BitPwWCXDu5+c
-         05kTyD2Qgu6hQisAN/yBj1hMLhxnioRXXIEvqYek=
-Date:   Tue, 3 Nov 2020 18:30:02 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Hagen Paul Pfeifer <hagen@jauu.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20201103163002.GK4879@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20201101110935.GA4105325@laniakea>
- <20201102154028.GD4879@kernel.org>
- <1547601988.128687.1604411534845@office.mailbox.org>
+        s=default; t=1604421051;
+        bh=dhY+aUcvUDnN3GOi7rmB6auRLoyv4aZXRn9dLCqmgEA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yt4jWbWzqlEY2R57hS3hfeYtDyOOfnCziXVs6pcJPBQIPh+Pu6t/qF6HiCY5NfNGI
+         Ykp8dYVQTd23SRWHrIVyf/Dq/w8SgXs71oqeHLQ6teu9q1fN/dxiPJMf3EDM4RJagi
+         uCa9Si6/FWe6WiZdwg6TDuEIew1gzziJbdQ5A2yo=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] mmc: meson-gx: drop of_match_ptr from of_device_id table
+Date:   Tue,  3 Nov 2020 17:30:46 +0100
+Message-Id: <20201103163046.14336-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1547601988.128687.1604411534845@office.mailbox.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 02:52:14PM +0100, Hagen Paul Pfeifer wrote:
-> > On 11/02/2020 4:40 PM Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > > Isn't memfd_secret currently *unnecessarily* designed to be a "one task
-> > > feature"? memfd_secret fulfills exactly two (generic) features:
-> > > 
-> > > - address space isolation from kernel (aka SECRET_EXCLUSIVE, not in kernel's
-> > >   direct map) - hide from kernel, great
-> > > - disabling processor's memory caches against speculative-execution vulnerabilities
-> > >   (spectre and friends, aka SECRET_UNCACHED), also great
-> > > 
-> > > But, what about the following use-case: implementing a hardened IPC mechanism
-> > > where even the kernel is not aware of any data and optionally via SECRET_UNCACHED
-> > > even the hardware caches are bypassed! With the patches we are so close to
-> > > achieving this.
-> > > 
-> > > How? Shared, SECRET_EXCLUSIVE and SECRET_UNCACHED mmaped pages for IPC
-> > > involved tasks required to know this mapping (and memfd_secret fd). After IPC
-> > > is done, tasks can copy sensitive data from IPC pages into memfd_secret()
-> > > pages, un-sensitive data can be used/copied everywhere.
-> > 
-> > As long as the task share the file descriptor, they can share the
-> > secretmem pages, pretty much like normal memfd.
-> 
-> Including process_vm_readv() and process_vm_writev()? Let's take a hypothetical
-> "dbus-daemon-secure" service that receives data from process A and wants to
-> copy/distribute it to data areas of N other processes. Much like dbus but without
-> SOCK_DGRAM rather direct copy into secretmem/mmap pages (ring-buffer). Should be
-> possible, right?
+The driver can match only via the DT table so the table should be always
+used and the of_match_ptr does not have any sense (this also allows ACPI
+matching via PRP0001, even though it is not relevant here).  This fixes
+compile warning (!CONFIG_OF && !CONFIG_MODULES):
 
-I'm not sure I follow you here.
-For process_vm_readv() and process_vm_writev() secremem will be only
-accessible on the local part, but not on the remote.
-So copying data to secretmem pages using process_vm_writev wouldn't
-work.
+    drivers/mmc/host/meson-gx-mmc.c:1252:34: warning:
+        ‘meson_mmc_of_match’ defined but not used [-Wunused-const-variable=]
 
-> > > One missing piece is still the secure zeroization of the page(s) if the
-> > > mapping is closed by last process to guarantee a secure cleanup. This can
-> > > probably done as an general mmap feature, not coupled to memfd_secret() and
-> > > can be done independently ("reverse" MAP_UNINITIALIZED feature).
-> > 
-> > There are "init_on_alloc" and "init_on_free" kernel parameters that
-> > enable zeroing of the pages on alloc and on free globally.
-> > Anyway, I'll add zeroing of the freed memory to secretmem.
-> 
-> Great, this allows page-specific (thus runtime-performance-optimized) zeroing
-> of secured pages. init_on_free lowers the performance to much and is not precice
-> enough.
-> 
-> Hagen
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mmc/host/meson-gx-mmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+index 4ec41579940a..13f6a2c0ed04 100644
+--- a/drivers/mmc/host/meson-gx-mmc.c
++++ b/drivers/mmc/host/meson-gx-mmc.c
+@@ -1265,7 +1265,7 @@ static struct platform_driver meson_mmc_driver = {
+ 	.driver		= {
+ 		.name = DRIVER_NAME,
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+-		.of_match_table = of_match_ptr(meson_mmc_of_match),
++		.of_match_table = meson_mmc_of_match,
+ 	},
+ };
+ 
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
