@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D52A5802
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69992A57EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732877AbgKCVrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:47:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46482 "EHLO mail.kernel.org"
+        id S1731978AbgKCUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731952AbgKCUvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:23 -0500
+        id S1731971AbgKCUv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B04912236F;
-        Tue,  3 Nov 2020 20:51:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7953620719;
+        Tue,  3 Nov 2020 20:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436683;
-        bh=S+UFl7fqQwDKvCUJ1NqoAB2Dht1IekaE/sy4E/yC8LE=;
+        s=default; t=1604436688;
+        bh=wVLLopMnkUunpVigXiTm5cdhAoAq2FHLPwHRt6HrWNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlMfxoIzl5YTtFXaTE+ZfMUvXT9D6ZBq/R8mnwTIZKX6jj9j60Q2IZM93b07MUX32
-         bTY7RL424BQPrcENNcGnrjvEhWtql3THjVqHBZkTFeKdndZyQijf+8ibK/kXaHU4CR
-         i3vko1gKRLVZRLlYS4DEHZIBK884mDQ3F8S1I/n4=
+        b=a+dS2TxD/ow9madbE4zZeDbvhishV/a/WWnuOOFCfErOJUIy9tgaPyzpt32p8tXYq
+         JKNjfiTF6tOYDRlivc63NcxC5vW1hB30lklzUaltOCgY5dxbawFbEsL8MBhss5qqVU
+         hgPbe/JNVcsggccO6mkPBwOa/7OkjQb8vcB2lw1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kenneth Feng <kenneth.feng@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
+        stable@vger.kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.9 358/391] drm/amd/pm: fix pp_dpm_fclk
-Date:   Tue,  3 Nov 2020 21:36:49 +0100
-Message-Id: <20201103203411.291772362@linuxfoundation.org>
+Subject: [PATCH 5.9 360/391] drm/amd/psp: Fix sysfs: cannot create duplicate filename
+Date:   Tue,  3 Nov 2020 21:36:51 +0100
+Message-Id: <20201103203411.429637272@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,34 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kenneth Feng <kenneth.feng@amd.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-commit 392d256fa26d943fb0a019fea4be80382780d3b1 upstream.
+commit f1bcddffe46b349a82445a8d9efd5f5fcb72557f upstream.
 
-fclk value is missing in pp_dpm_fclk. add this to correctly show the current value.
+psp sysfs not cleaned up on driver unload for sienna_cichlid
 
-Signed-off-by: Kenneth Feng <kenneth.feng@amd.com>
-Reviewed-by: Likun Gao <Likun.Gao@amd.com>
+Fixes: ce87c98db428e7 ("drm/amdgpu: Include sienna_cichlid in USBC PD FW support.")
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org # 5.9.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 
 ---
- drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
-+++ b/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
-@@ -447,6 +447,9 @@ static int sienna_cichlid_get_smu_metric
- 	case METRICS_CURR_DCEFCLK:
- 		*value = metrics->CurrClock[PPCLK_DCEFCLK];
- 		break;
-+	case METRICS_CURR_FCLK:
-+		*value = metrics->CurrClock[PPCLK_FCLK];
-+		break;
- 	case METRICS_AVERAGE_GFXCLK:
- 		if (metrics->AverageGfxActivity <= SMU_11_0_7_GFX_BUSY_THRESHOLD)
- 			*value = metrics->AverageGfxclkFrequencyPostDs;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+@@ -206,7 +206,8 @@ static int psp_sw_fini(void *handle)
+ 		adev->psp.ta_fw = NULL;
+ 	}
+ 
+-	if (adev->asic_type == CHIP_NAVI10)
++	if (adev->asic_type == CHIP_NAVI10 ||
++	    adev->asic_type == CHIP_SIENNA_CICHLID)
+ 		psp_sysfs_fini(adev);
+ 
+ 	return 0;
 
 
