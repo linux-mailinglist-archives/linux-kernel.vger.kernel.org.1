@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2B72A5346
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67FD2A52A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733111AbgKCU72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
+        id S1732019AbgKCUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733106AbgKCU70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:26 -0500
+        id S1732001AbgKCUvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC11C2053B;
-        Tue,  3 Nov 2020 20:59:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE2B22053B;
+        Tue,  3 Nov 2020 20:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437165;
-        bh=1C8r9xI3AEIUJPKi37mcrxU88njAYtT2vNbfJ4mxwQU=;
+        s=default; t=1604436715;
+        bh=yz/goL74E4plRp54mVig5w01i9OahPqXGQ6ede8iErM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7gl+jBceYtJHe/awry4mwZxX2HOncYXLae5Iv/yJNvsPC9SkI8FkrTuYAMrgBfPa
-         gDkB0un4P094wvYdNX22M47Y/vSJaQSbplcmMHlOnX0Ah/HA+Yx2u8s2XP38q8Cbk3
-         v8jLUWTnjpo++M6DdJSjM/Ao3qzaL9dOrd0OeNjs=
+        b=iSmv2tn/e6K1r5zpNEnj8BlfHZpDegEPtjuuP5AKSOfMjCflmF3aYzdR0bn22vK1u
+         cFnhW6SJVKhnvEsl8b8WXimGm722HRbH1wO7Q1GRRNw0y3yIk9GsbGZhugEihLykPp
+         PHrDibjoVWLKXpUiu4g3V+Omb+WABI4NQZwAgNNs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.4 174/214] ARC: perf: redo the pct irq missing in device-tree handling
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 5.9 371/391] ARM: s3c24xx: fix missing system reset
 Date:   Tue,  3 Nov 2020 21:37:02 +0100
-Message-Id: <20201103203307.034472889@linuxfoundation.org>
+Message-Id: <20201103203412.180804515@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,106 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 8c42a5c02bec6c7eccf08957be3c6c8fccf9790b upstream.
+commit f6d7cde84f6c5551586c8b9b68d70f8e6dc9a000 upstream.
 
-commit feb92d7d3813456c11dce21 "(ARC: perf: don't bail setup if pct irq
-missing in device-tree)" introduced a silly brown-paper bag bug:
-The assignment and comparison in an if statement were not bracketed
-correctly leaving the order of evaluation undefined.
-
-|
-| if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
-|                           ^^^                         ^^^^
-
-And given such a chance, the compiler will bite you hard, fully entitled
-to generating this piece of beauty:
-
-|
-| # if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
-|
-| bl.d @platform_get_irq  <-- irq returned in r0
-|
-| setge r2, r0, 0   	<-- r2 is bool 1 or 0 if irq >= 0 true/false
-| brlt.d r0, 0, @.L114
-|
-| st_s	r2,[sp]    	<-- irq saved is bool 1 or 0, not actual return val
-| st	1,[r3,160]   	# arc_pmu.18_29->irq <-- drops bool and assumes 1
-|
-| # return __request_percpu_irq(irq, handler, 0,
-|
-| bl.d @__request_percpu_irq;
-| mov_s	r0,1	   <-- drops even bool and assumes 1 which fails
-
-With the snafu fixed, everything is as expected.
-
-| bl.d @platform_get_irq	<-- returns irq in r0
-|
-| mov_s	r2,r0
-| brlt.d r2, 0, @.L112
-|
-| st_s	r0,[sp]			<-- irq isaved is actual return value above
-| st	r0,[r13,160]	#arc_pmu.18_27->irq
-|
-| bl.d @__request_percpu_irq	<-- r0 unchanged so actual irq returned
-| add r4,r4,r12	#, tmp363, __ptr
+Commit f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+removed usage of the watchdog reset platform code in favor of the
+Samsung SoC watchdog driver.  However the latter was not selected thus
+S3C24xx platforms lost reset abilities.
 
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Fixes: f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arc/kernel/perf_event.c |   29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ arch/arm/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arc/kernel/perf_event.c
-+++ b/arch/arc/kernel/perf_event.c
-@@ -562,7 +562,7 @@ static int arc_pmu_device_probe(struct p
- {
- 	struct arc_reg_pct_build pct_bcr;
- 	struct arc_reg_cc_build cc_bcr;
--	int i, has_interrupts, irq;
-+	int i, has_interrupts, irq = -1;
- 	int counter_size;	/* in bits */
- 
- 	union cc_name {
-@@ -637,18 +637,27 @@ static int arc_pmu_device_probe(struct p
- 		.attr_groups	= arc_pmu->attr_groups,
- 	};
- 
--	if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
-+	if (has_interrupts) {
-+		irq = platform_get_irq(pdev, 0);
-+		if (irq >= 0) {
-+			int ret;
-+
-+			arc_pmu->irq = irq;
-+
-+			/* intc map function ensures irq_set_percpu_devid() called */
-+			ret = request_percpu_irq(irq, arc_pmu_intr, "ARC perf counters",
-+						 this_cpu_ptr(&arc_pmu_cpu));
-+
-+			if (!ret)
-+				on_each_cpu(arc_cpu_pmu_irq_init, &irq, 1);
-+			else
-+				irq = -1;
-+		}
- 
--		arc_pmu->irq = irq;
--
--		/* intc map function ensures irq_set_percpu_devid() called */
--		request_percpu_irq(irq, arc_pmu_intr, "ARC perf counters",
--				   this_cpu_ptr(&arc_pmu_cpu));
-+	}
- 
--		on_each_cpu(arc_cpu_pmu_irq_init, &irq, 1);
--	} else {
-+	if (irq == -1)
- 		arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
--	}
- 
- 	/*
- 	 * perf parser doesn't really like '-' symbol in events name, so let's
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -506,8 +506,10 @@ config ARCH_S3C24XX
+ 	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+ 	select HAVE_S3C_RTC if RTC_CLASS
+ 	select NEED_MACH_IO_H
++	select S3C2410_WATCHDOG
+ 	select SAMSUNG_ATAGS
+ 	select USE_OF
++	select WATCHDOG
+ 	help
+ 	  Samsung S3C2410, S3C2412, S3C2413, S3C2416, S3C2440, S3C2442, S3C2443
+ 	  and S3C2450 SoCs based systems, such as the Simtec Electronics BAST
 
 
