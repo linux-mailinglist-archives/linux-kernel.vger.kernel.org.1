@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AFD2A544A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036422A5637
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388564AbgKCVJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:09:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49922 "EHLO mail.kernel.org"
+        id S1733239AbgKCVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387859AbgKCVJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:44 -0500
+        id S1733185AbgKCVAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C2E207BC;
-        Tue,  3 Nov 2020 21:09:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F4BF223BF;
+        Tue,  3 Nov 2020 21:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437783;
-        bh=AUY8FVxePWJ41loX4HLUm4glxBurX+WbfUABdnbgmA8=;
+        s=default; t=1604437220;
+        bh=xqG+fTUmgaQ/vKT6h4IaipzHW2KvYVEABwaPKeUy88M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yPpQq6B5aCRKiY72v1J99TWMZ8UZKzhHqvjp6KSo5yrBxPOfx6hKysJ295JLuMtqf
-         5fLsii86PO2It3VDDN5bYC31ox5Gs0/2Y0U2ZINEpB9+62mm5hnpjnCNQ42xT5bJ09
-         OZziZt1QgDoQpZruUe3ZdEA/iPyNF4ThEDlMdWv0=
+        b=hXGKisvcWlTAF9b7/IgOfzVNpmBgw0olWV5jom+2tixCDest0GsFaMlefFeP6P6d0
+         lY6faO/Qljp6rpY04Ho3ASfgGNXu6hd0RiasN5LaVmvqRJY6Iujlq0ZdWDadmzJcia
+         jkUTLZGZEoNj9FeHMNXPQ3Ewq7QFXfM97kEKgWEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 031/125] usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 160/214] powerpc/memhotplug: Make lmb size 64bit
 Date:   Tue,  3 Nov 2020 21:36:48 +0100
-Message-Id: <20201103203201.232412657@linuxfoundation.org>
+Message-Id: <20201103203305.777246317@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Badhri Jagan Sridharan <badhri@google.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit 6bbe2a90a0bb4af8dd99c3565e907fe9b5e7fd88 ]
+commit 301d2ea6572386245c5d2d2dc85c3b5a737b85ac upstream.
 
-The patch addresses the compliance test failures while running
-TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 of the "Deterministic PD
-Compliance MOI" test plan published in https://www.usb.org/usbc.
-For a product to be Type-C compliant, it's expected that these tests
-are run on usb.org certified Type-C compliance tester as mentioned in
-https://www.usb.org/usbc.
+Similar to commit 89c140bbaeee ("pseries: Fix 64 bit logical memory block panic")
+make sure different variables tracking lmb_size are updated to be 64 bit.
 
-The purpose of the tests TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 is to
-verify the PR_SWAP response of the device. While doing so, the test
-asserts that Source Capabilities message is NOT received from the test
-device within tSwapSourceStart min (20 ms) from the time the last bit
-of GoodCRC corresponding to the RS_RDY message sent by the UUT was
-sent. If it does then the test fails.
+This was found by code audit.
 
-This is in line with the requirements from the USB Power Delivery
-Specification Revision 3.0, Version 1.2:
-"6.6.8.1 SwapSourceStartTimer
-The SwapSourceStartTimer Shall be used by the new Source, after a
-Power Role Swap or Fast Role Swap, to ensure that it does not send
-Source_Capabilities Message before the new Sink is ready to receive
-the
-Source_Capabilities Message. The new Source Shall Not send the
-Source_Capabilities Message earlier than tSwapSourceStart after the
-last bit of the EOP of GoodCRC Message sent in response to the PS_RDY
-Message sent by the new Source indicating that its power supply is
-ready."
-
-The patch makes sure that TCPM does not send the Source_Capabilities
-Message within tSwapSourceStart(20ms) by transitioning into
-SRC_STARTUP only after  tSwapSourceStart(20ms).
-
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20200817183828.1895015-1-badhri@google.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201007114836.282468-3-aneesh.kumar@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/staging/typec/pd.h   | 1 +
- drivers/staging/typec/tcpm.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/hotplug-memory.c |   43 ++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/staging/typec/pd.h b/drivers/staging/typec/pd.h
-index 30b32ad72acd7..a18ab898fa668 100644
---- a/drivers/staging/typec/pd.h
-+++ b/drivers/staging/typec/pd.h
-@@ -280,6 +280,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
- #define PD_T_ERROR_RECOVERY	100	/* minimum 25 is insufficient */
- #define PD_T_SRCSWAPSTDBY      625     /* Maximum of 650ms */
- #define PD_T_NEWSRC            250     /* Maximum of 275ms */
-+#define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
+--- a/arch/powerpc/platforms/pseries/hotplug-memory.c
++++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+@@ -279,7 +279,7 @@ static int dlpar_offline_lmb(struct drme
+ 	return dlpar_change_lmb_state(lmb, false);
+ }
  
- #define PD_T_DRP_TRY		100	/* 75 - 150 ms */
- #define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
-diff --git a/drivers/staging/typec/tcpm.c b/drivers/staging/typec/tcpm.c
-index f237e31926f4c..686037a498c19 100644
---- a/drivers/staging/typec/tcpm.c
-+++ b/drivers/staging/typec/tcpm.c
-@@ -2741,7 +2741,7 @@ static void run_state_machine(struct tcpm_port *port)
- 		 */
- 		tcpm_set_pwr_role(port, TYPEC_SOURCE);
- 		tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
--		tcpm_set_state(port, SRC_STARTUP, 0);
-+		tcpm_set_state(port, SRC_STARTUP, PD_T_SWAP_SRC_START);
- 		break;
+-static int pseries_remove_memblock(unsigned long base, unsigned int memblock_size)
++static int pseries_remove_memblock(unsigned long base, unsigned long memblock_size)
+ {
+ 	unsigned long block_sz, start_pfn;
+ 	int sections_per_block;
+@@ -310,10 +310,11 @@ out:
  
- 	case VCONN_SWAP_ACCEPT:
--- 
-2.27.0
-
+ static int pseries_remove_mem_node(struct device_node *np)
+ {
+-	const __be32 *regs;
++	const __be32 *prop;
+ 	unsigned long base;
+-	unsigned int lmb_size;
++	unsigned long lmb_size;
+ 	int ret = -EINVAL;
++	int addr_cells, size_cells;
+ 
+ 	/*
+ 	 * Check to see if we are actually removing memory
+@@ -324,12 +325,19 @@ static int pseries_remove_mem_node(struc
+ 	/*
+ 	 * Find the base address and size of the memblock
+ 	 */
+-	regs = of_get_property(np, "reg", NULL);
+-	if (!regs)
++	prop = of_get_property(np, "reg", NULL);
++	if (!prop)
+ 		return ret;
+ 
+-	base = be64_to_cpu(*(unsigned long *)regs);
+-	lmb_size = be32_to_cpu(regs[3]);
++	addr_cells = of_n_addr_cells(np);
++	size_cells = of_n_size_cells(np);
++
++	/*
++	 * "reg" property represents (addr,size) tuple.
++	 */
++	base = of_read_number(prop, addr_cells);
++	prop += addr_cells;
++	lmb_size = of_read_number(prop, size_cells);
+ 
+ 	pseries_remove_memblock(base, lmb_size);
+ 	return 0;
+@@ -620,7 +628,7 @@ static int dlpar_memory_remove_by_ic(u32
+ 
+ #else
+ static inline int pseries_remove_memblock(unsigned long base,
+-					  unsigned int memblock_size)
++					  unsigned long memblock_size)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -953,10 +961,11 @@ int dlpar_memory(struct pseries_hp_error
+ 
+ static int pseries_add_mem_node(struct device_node *np)
+ {
+-	const __be32 *regs;
++	const __be32 *prop;
+ 	unsigned long base;
+-	unsigned int lmb_size;
++	unsigned long lmb_size;
+ 	int ret = -EINVAL;
++	int addr_cells, size_cells;
+ 
+ 	/*
+ 	 * Check to see if we are actually adding memory
+@@ -967,12 +976,18 @@ static int pseries_add_mem_node(struct d
+ 	/*
+ 	 * Find the base and size of the memblock
+ 	 */
+-	regs = of_get_property(np, "reg", NULL);
+-	if (!regs)
++	prop = of_get_property(np, "reg", NULL);
++	if (!prop)
+ 		return ret;
+ 
+-	base = be64_to_cpu(*(unsigned long *)regs);
+-	lmb_size = be32_to_cpu(regs[3]);
++	addr_cells = of_n_addr_cells(np);
++	size_cells = of_n_size_cells(np);
++	/*
++	 * "reg" property represents (addr,size) tuple.
++	 */
++	base = of_read_number(prop, addr_cells);
++	prop += addr_cells;
++	lmb_size = of_read_number(prop, size_cells);
+ 
+ 	/*
+ 	 * Update memory region to represent the memory add
 
 
