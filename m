@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363732A52BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A9E2A5358
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732164AbgKCUwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:52:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49928 "EHLO mail.kernel.org"
+        id S1733195AbgKCVAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732154AbgKCUws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:48 -0500
+        id S1730777AbgKCVAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCD172053B;
-        Tue,  3 Nov 2020 20:52:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A675A2053B;
+        Tue,  3 Nov 2020 21:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436768;
-        bh=pB7QqlUSUS5TIZ5kW+2Hqyu1ZFew0jKtSe+hCUuj3/Q=;
+        s=default; t=1604437207;
+        bh=HbhROBeTj8JFEwQCHgGwraoxKsYOS6u/wa/SLDO1MS0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a724eUf3KrJ9h7LnBawF4Oo1vuXIx6rEmrKLLrA20kbkbZfAdUohTakLXnx30tHui
-         AhS3CuFVBdJ35OffDH7hBColgPfxD4CgBCtDPHF7sEIGSnlLtkbsqIs2oHppxEDUrI
-         sh2dgOG1a0K0LYeG66LMx7F6ZLBNKKalfO3kImbA=
+        b=KLReTbXRQc+kpWqEYjbHhuOh5khkR+KqyUII9pcckuDWAH3FYZKDpJD68D/UKB1+y
+         4Yg1574b501yprZtfn5PbqvjWJr8EH4c78vxIpP9Xso5yiEPZG+6Qihy3RaZQ5GSyZ
+         76/kYvzVX7cR3UTyIGbkcoG0u4gv2CfGGoY6xDKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH 5.9 387/391] vhost_vdpa: Return -EFAULT if copy_from_user() fails
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 190/214] ring-buffer: Return 0 on success from ring_buffer_resize()
 Date:   Tue,  3 Nov 2020 21:37:18 +0100
-Message-Id: <20201103203413.277357607@linuxfoundation.org>
+Message-Id: <20201103203308.481437673@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 7922460e33c81f41e0d2421417228b32e6fdbe94 upstream.
+commit 0a1754b2a97efa644aa6e84d1db5b17c42251483 upstream.
 
-The copy_to/from_user() functions return the number of bytes which we
-weren't able to copy but the ioctl should return -EFAULT if they fail.
+We don't need to check the new buffer size, and the return value
+had confused resize_buffer_duplicate_size().
+...
+	ret = ring_buffer_resize(trace_buf->buffer,
+		per_cpu_ptr(size_buf->data,cpu_id)->entries, cpu_id);
+	if (ret == 0)
+		per_cpu_ptr(trace_buf->data, cpu_id)->entries =
+			per_cpu_ptr(size_buf->data, cpu_id)->entries;
+...
 
-Fixes: a127c5bbb6a8 ("vhost-vdpa: fix backend feature ioctls")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20201023120853.GI282278@mwanda
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lkml.kernel.org/r/20201019142242.11560-1-hqjagain@gmail.com
+
 Cc: stable@vger.kernel.org
-Acked-by: Jason Wang <jasowang@redhat.com>
+Fixes: d60da506cbeb3 ("tracing: Add a resize function to make one buffer equivalent to another buffer")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/vhost/vdpa.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/trace/ring_buffer.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -428,12 +428,11 @@ static long vhost_vdpa_unlocked_ioctl(st
- 	void __user *argp = (void __user *)arg;
- 	u64 __user *featurep = argp;
- 	u64 features;
--	long r;
-+	long r = 0;
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -1717,18 +1717,18 @@ int ring_buffer_resize(struct ring_buffe
+ {
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+ 	unsigned long nr_pages;
+-	int cpu, err = 0;
++	int cpu, err;
  
- 	if (cmd == VHOST_SET_BACKEND_FEATURES) {
--		r = copy_from_user(&features, featurep, sizeof(features));
--		if (r)
--			return r;
-+		if (copy_from_user(&features, featurep, sizeof(features)))
-+			return -EFAULT;
- 		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
- 			return -EOPNOTSUPP;
- 		vhost_set_backend_features(&v->vdev, features);
-@@ -476,7 +475,8 @@ static long vhost_vdpa_unlocked_ioctl(st
- 		break;
- 	case VHOST_GET_BACKEND_FEATURES:
- 		features = VHOST_VDPA_BACKEND_FEATURES;
--		r = copy_to_user(featurep, &features, sizeof(features));
-+		if (copy_to_user(featurep, &features, sizeof(features)))
-+			r = -EFAULT;
- 		break;
- 	default:
- 		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+ 	/*
+ 	 * Always succeed at resizing a non-existent buffer:
+ 	 */
+ 	if (!buffer)
+-		return size;
++		return 0;
+ 
+ 	/* Make sure the requested buffer exists */
+ 	if (cpu_id != RING_BUFFER_ALL_CPUS &&
+ 	    !cpumask_test_cpu(cpu_id, buffer->cpumask))
+-		return size;
++		return 0;
+ 
+ 	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
+ 
+@@ -1868,7 +1868,7 @@ int ring_buffer_resize(struct ring_buffe
+ 	}
+ 
+ 	mutex_unlock(&buffer->mutex);
+-	return size;
++	return 0;
+ 
+  out_err:
+ 	for_each_buffer_cpu(buffer, cpu) {
 
 
