@@ -2,89 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C5F2A412A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E562A4143
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgKCKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:06:01 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:59057 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgKCKGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:06:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604397960; x=1635933960;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CpIQVbUPn7Qa9HKtqlGnFT7rJ7XYZdsaF2CbmGkma88=;
-  b=bA/42TkTuiXLlPAEjJJQ4iD9rPooEfvwK/lrJkcm3jpJYbxfFcLTCvij
-   uUQmlpRIdfzcgPzoR3jasTix5XfQ22db2g22tLxuMlWXqt2oJYt7yydhh
-   PdIUJNPLgFli5piVh2F5lqNP670fmKWWbtie0NEF3qfDsbWFEkMoCYqZz
-   e+NPz9wUaZ8hK0cisBjoqs+MyZ2yO62+a8lNuY0B28FhBVwa3raaexlt+
-   /mw22flg6EwFMBUEqaqCrIDElI66MEl6xsh0VbK9UfbH6bIQDPCOD9cjN
-   s7cFWUs27tTRQ6dxbQ+X3RNOkUkdGpasCPC3YSqhU8pYzQxTMvf14f6O1
-   A==;
-IronPort-SDR: vBlDUkTh34wc9Her5awDtIWlmIwQafxmUGuBMbNkIBXVq8t7Y9uVUulw53W0wcGPdJQM5ezvOt
- UmOCaFVxuOS18gbczcel9/SYdu0uqIxzxkIfmtKqTep6dJEuZooQI08M9ppkybrzgiaoUKzCLd
- yDg2SzWGergQwN5mtSI9yOCaqZvUD0afiiFvwJkANprOCuiiZqKOTeQ6NZ0TLNEuzlKszJS4mN
- G9n5jlZq7RUBBWMmaHPKVTuETCkF3sc8aNQGcUsDsUFOCKDMn/ZESA22LwanzcTtljjIfogmUJ
- apA=
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="32192205"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Nov 2020 03:06:00 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 3 Nov 2020 03:06:00 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 3 Nov 2020 03:05:57 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH] ASoC: atmel-i2s: do not warn if muxclk is missing
-Date:   Tue, 3 Nov 2020 12:05:54 +0200
-Message-ID: <20201103100554.1307190-1-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727512AbgKCKKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:10:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51508 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726312AbgKCKKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:10:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8379B25A;
+        Tue,  3 Nov 2020 10:10:28 +0000 (UTC)
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Tian Tao <tiantao6@hisilicon.com>
+Cc:     maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+ <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <f89640fb-6994-76dc-7862-a3b26b67dc24@suse.de>
+Date:   Tue, 3 Nov 2020 11:10:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="FU7mnlwETgRbLovU3AewaduaroZzVhXkj"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Besides the fact that muxclk is optional, muxclk can be set using
-assigned-clocks, removing the need to set it in driver. The warning is
-thus unneeded, so we can transform it in a debug print, eventually to just
-reflect that muxclk was not set by the driver.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FU7mnlwETgRbLovU3AewaduaroZzVhXkj
+Content-Type: multipart/mixed; boundary="BGgRSz0oZsNvwplsQK6OORixiTXp9FXPm";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Maxime Ripard <maxime@cerno.tech>, Tian Tao <tiantao6@hisilicon.com>
+Cc: maarten.lankhorst@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <f89640fb-6994-76dc-7862-a3b26b67dc24@suse.de>
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+ <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
+In-Reply-To: <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/atmel/atmel-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--BGgRSz0oZsNvwplsQK6OORixiTXp9FXPm
+Content-Type: multipart/mixed;
+ boundary="------------BD605D75E2053D3D8E1B4445"
+Content-Language: en-US
 
-diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
-index bbe2b638abb5..232300dda548 100644
---- a/sound/soc/atmel/atmel-i2s.c
-+++ b/sound/soc/atmel/atmel-i2s.c
-@@ -563,8 +563,8 @@ static int atmel_i2s_sama5d2_mck_init(struct atmel_i2s_dev *dev,
- 		err = PTR_ERR(muxclk);
- 		if (err == -EPROBE_DEFER)
- 			return -EPROBE_DEFER;
--		dev_warn(dev->dev,
--			 "failed to get the I2S clock control: %d\n", err);
-+		dev_dbg(dev->dev,
-+			"failed to get the I2S clock control: %d\n", err);
- 		return 0;
- 	}
- 
--- 
-2.25.1
+This is a multi-part message in MIME format.
+--------------BD605D75E2053D3D8E1B4445
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
+Hi
+
+Am 03.11.20 um 10:52 schrieb Maxime Ripard:
+> On Tue, Nov 03, 2020 at 10:10:41AM +0800, Tian Tao wrote:
+>> Add new api devm_drm_irq_install() to register interrupts,
+>> no need to call drm_irq_uninstall() when the drm module is removed.
+>>
+>> v2:
+>> fixed the wrong parameter.
+>>
+>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>> ---
+>>  drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
+>>  include/drm/drm_drv.h     |  3 ++-
+>>  2 files changed, 25 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+>> index cd162d4..0fe5243 100644
+>> --- a/drivers/gpu/drm/drm_drv.c
+>> +++ b/drivers/gpu/drm/drm_drv.c
+>> @@ -39,6 +39,7 @@
+>>  #include <drm/drm_color_mgmt.h>
+>>  #include <drm/drm_drv.h>
+>>  #include <drm/drm_file.h>
+>> +#include <drm/drm_irq.h>
+>>  #include <drm/drm_managed.h>
+>>  #include <drm/drm_mode_object.h>
+>>  #include <drm/drm_print.h>
+>> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *paren=
+t,
+>>  	return ret;
+>>  }
+>> =20
+>> +static void devm_drm_dev_irq_uninstall(void *data)
+>> +{
+>> +	drm_irq_uninstall(data);
+>> +}
+>> +
+>> +int devm_drm_irq_install(struct device *parent,
+>> +			 struct drm_device *dev, int irq)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret =3D drm_irq_install(dev, irq);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret =3D devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
+>> +	if (ret)
+>> +		devm_drm_dev_irq_uninstall(dev);
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL(devm_drm_irq_install);
+>> +
+>=20
+> Shouldn't we tie the IRQ to the drm device (so with drmm_add_action)
+> instead of tying it to the underlying device?
+
+If the HW device goes away, there won't be any more interrupts. So it's
+similar to devm_ functions for I/O memory. Why would you use the drmm_
+interface?
+
+Best regards
+Thomas
+
+>=20
+> Maxime
+>>
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=FCrnberg, Germany
+(HRB 36809, AG N=FCrnberg)
+Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
+
+--------------BD605D75E2053D3D8E1B4445
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x680DC11D530B7A23.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0x680DC11D530B7A23.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
+H47
+fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
+bqP
+5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
+z9E
+ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
+nEm
+imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
+W1t
+ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
+BYC
+AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
+Onf
+G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
+GJm
+DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
++1Q
+DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
+p8n
+91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
+zF1
+CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
+gUC
+WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
+IiL
++he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
+42f
+CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
+Urj
+EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
+45N
+GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
+Tpy
+Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
+u5r
+A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
+/N8
+GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
+j0g
+voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
+bZM
+RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
+zWw
+iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
+Xy9
+RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
+c0n
+VGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+wsCOBBMBCAA4AhsDBQsJC=
+AcC
+BhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl78SF4ACgkQaA3BH=
+VML
+eiOpGAgAih6C1OnWms/N8eBMC4Q93y/nyywe5vCL22Dr1rwgn6Iw2jOGziJSi7zhY4sEk2NKJ=
+5cd
+lFrx8mP//b+xO4AGffwBD0Vwpf38Hj2Gt0KjpzRYccqqU+tJPO5c0pjI52ZIV3+kOEFvYGfkN=
+PHE
+flE+b81T8L2dSXCLtj4WAGUM1rmHn3bCYl+/RwkB+8XnoL5AvrmMcU4Uhb3FJpM4DHExccYkd=
+eSL
+ojBppOCztBCUpBx3le+8QPVvAvJDuur4wRmjk3sjKClAwzeqoYyUKcN3JDdb3mt3QcJal9rSh=
+VEI
+7B25IvfmEbs42oGm8GPzPkaNJu3gcska+l5PSTfurNETGsJdBBARAgAdFiEEJ+jjpp87z/+5L=
+Y5q
+LnehMBH108IFAls6HVcACgkQLnehMBH108LTkACgjLQdDYMENi6BDjY/gd/LF9lMi8oAnR+o0=
+FwE
+Vb1K1tEMQ/1x+k1U6/xgwsBzBBABCAAdFiEEHl2YIZkIo5VO2MxYqlA7ya4PR6cFAls58bMAC=
+gkQ
+qlA7ya4PR6cvTAgAzY1N5QMKh8ECRtYcZNmilyV59uHTEY9hAR+203JqWnSGfUKtU7s6xfl5O=
+NGq
+DI5rULk4Cw2CEIzg9Sat+/lxn36w2f1tEznS5Vb0gVGWrzDAFjj7tB6MnmCzsNb/S1kgxnqJM=
+Yor
+RYQ7uB3Yr2Fdp08FJxN0ipd5YfzaZ6KoSWcRAv4r1R4ZQGuS77URAg7HDOIrBMOVO+HIn7GYQ=
+qPS
+5ZFw5yXbvEtL1c5Y8Zdw1AG2VmEXx78TWQVG3kI8/lQF1QI3yrJ1Rp2x5eK9I0OJihv13IlIW=
+3sb
+QGrj9pxF63kA20ZFaynzFglBGiyxExYvTD0/xKIhzYhj8mtCunPb2cLAcwQQAQgAHRYhBLsjb=
+bex
+nu/GyEcdaKfzfBmMOTGBBQJbOjLAAAoJEKfzfBmMOTGBBoMIALIW4EtBY28tPwZMOpN/+ARPO=
+a2g
+Qzpivw7iNtiDTnGIXMCoxly1CybfMdqTHYmuKbEO9AlFAlDOnkgInsn8E65IvgUTVI95Ah+Ob=
+iPI
+FkYc/9a+AexPl7f5kI9489k77eKtqtMpWFpo/vROmRroSw4JnM7ovwPq1QOSHExfTKbLunzD1=
+i3V
+4PShSZ6bGsp1LW6Wk0lRMHDuAk3xsyjBWfJwSbrCe3E6OsLG7BuQqEUt2fR6NxdDRSR9tQUp9=
+Tri
+AYG5LndmUzxeU6FAQjD8Wt1ezOFH5ODcCDXfRyYmE6uCGA4EvO8l9R3o68NPlUjPRAZsCbxJa=
+UAg
+iazX1nyQGwvOwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHU=
+E9e
+osYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+q=
+bU6
+3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWWG=
+KdD
+egUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lvhFXod=
+NFM
+AgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsAEQEAAcLAf=
+AQY
+AQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkDwmcAAAoJEGgNwR1TC3ojp=
+fcI
+AInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2h9ifw9Nf2TjCZ6AMvC3thAN0r=
+FDj
+55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxUn+LSiRrOdywn6erjxRi9EYTVLCHcD=
+hBE
+jKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uIaMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU=
+2y3
+ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBWHE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/t=
+sZv
+yEX6zN8CtirPdPWu/VXNRYAl/lat7lSI3H26qrE=3D
+=3DmxFq
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------BD605D75E2053D3D8E1B4445--
+
+--BGgRSz0oZsNvwplsQK6OORixiTXp9FXPm--
+
+--FU7mnlwETgRbLovU3AewaduaroZzVhXkj
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl+hLJMFAwAAAAAACgkQaA3BHVMLeiMk
+0gf/XkKbWdEstEYgDM9PSqlcsoDDnuH6pQ61c+TwaLN1sioLGqF/m0eCXxtWxfdGuIfEhnEY27dU
+NdxErnmr+5XiwshCBCFojIhaIaSp9RHDyBxjn+cPIXO4pdZ1QWuNzDGHjFPCcrlXsi7JW6l39x8P
+FDZOQwq1P/BjCKK+DjZHST58OLPX125Rm0dW5lJq7gGqsaq2VexmV5SIiCf0hixhDlpew6jYSeVY
+Urv/JOPzigDh+EKvJp+y5C4VC3xaHpiEREmp2c9rwHJ6R3+4tgGJTrKhMi+YPz7n8VkeDaTbdogS
+Z5qJ7RytqNPUq0V6X3BD64R+2YNpLNQxrEVkJdZ6JQ==
+=a4Um
+-----END PGP SIGNATURE-----
+
+--FU7mnlwETgRbLovU3AewaduaroZzVhXkj--
