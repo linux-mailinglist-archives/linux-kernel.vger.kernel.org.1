@@ -2,140 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2442A58EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765CC2A59BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730902AbgKCUoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730332AbgKCUof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:35 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86D85223C6;
-        Tue,  3 Nov 2020 20:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436274;
-        bh=JsmQ9OVNjhucQFocIRIjIuGwMkMozGNDogSy5i9vlw4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1hhzAOQo31aWHCM34g9UkPlG4b2DACMULJhHH+TvaTyAYEX6o8f3pDARsNL2f77F
-         wMg6gm3mZr3mEyp7MhZA6YINmNG8wAmw5ETRcSBEsrUHVT+K7ucFglYImbY4o9gYzL
-         8DFOtpGz7liNVB9vODnpXY1INgRhE/DG7ZlZQIz0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 177/391] firmware: arm_scmi: Move scmi bus init and exit calls into the driver
-Date:   Tue,  3 Nov 2020 21:33:48 +0100
-Message-Id: <20201103203358.816605180@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730692AbgKCWJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:09:56 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52517 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729886AbgKCUiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:38:11 -0500
+Received: by mail-wm1-f67.google.com with SMTP id c18so545080wme.2;
+        Tue, 03 Nov 2020 12:38:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s8q+3f361Qn+Zk0StgkDu+b9A9+awh+DJqyxzKTC3JY=;
+        b=pn6PYw3UFrn0GlCQ5kqIh0OhUTUzUWB69yTcQjKn6r88HDnJ0EYkAtyMDtMcWgeGXO
+         b99Dyupf1mXzDkqSoinS+iDBPwVkR7fS2biLJDLGKv0ldbz9dsFn3kOUk6oAm34x1kp7
+         KIUufGk+cj8DKKO0QnbD4OAZhPiYPxiAXqsoYrC4FvXJ6Cv7nix54Ldu+UEeAC5c5gGf
+         UfiBHet1eHNV+YUyAMQNiTLOenXOEgDb+7l1OqGSHMd29y5SFAZIn6wYjJxixkCWbIiJ
+         BIM1bYXxXnwqIACbpI4gTo0pxpEFhyQY3YKenFP3KsPdksHQ2ImHxfjeaXBeK04997v+
+         J38A==
+X-Gm-Message-State: AOAM532J80SNyUudPmrENlAarMQaYj6I4BpabD9LxOAVkdWJiiKd1u12
+        F5K7P78j9ECzviDMK4A07cr9K4i1KW0=
+X-Google-Smtp-Source: ABdhPJyMEX5UOKo7cQ48A++FW9cv9b6mSl8seA9YOqX4V2JJkFsbBV7UDuOSri1wP6FCg4sRdxO0vg==
+X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr993227wmt.26.1604435889599;
+        Tue, 03 Nov 2020 12:38:09 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v19sm3918675wmj.31.2020.11.03.12.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 12:38:08 -0800 (PST)
+Date:   Tue, 3 Nov 2020 21:38:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ben Dooks <ben@simtec.co.uk>, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 14/25] soc: samsung: s3c-pm-check: Fix incorrectly named
+ variable 'val'
+Message-ID: <20201103203807.GA10800@kozik-lap>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-15-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201103152838.1290217-15-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+On Tue, Nov 03, 2020 at 03:28:27PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/soc/samsung/s3c-pm-check.c:162: warning: Function parameter or member 'val' not described in 's3c_pm_runcheck'
+>  drivers/soc/samsung/s3c-pm-check.c:162: warning: Excess function parameter 'vak' description in 's3c_pm_runcheck'
+> 
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Ben Dooks <ben@simtec.co.uk>
+> Cc: linux-samsung-soc@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/soc/samsung/s3c-pm-check.c | 2 +-
 
-[ Upstream commit 5a2f0a0bdf201e2183904b6217f9c74774c961a8 ]
+Thanks, applied.
 
-In preparation to enable building scmi as a single module, let us move
-the scmi bus {de-,}initialisation call into the driver.
-
-The main reason for this is to keep it simple instead of maintaining
-it as separate modules and dealing with all possible initcall races
-and deferred probe handling. We can move it as separate modules if
-needed in future.
-
-Link: https://lore.kernel.org/r/20200907195046.56615-3-sudeep.holla@arm.com
-Tested-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/firmware/arm_scmi/bus.c    |  6 ++----
- drivers/firmware/arm_scmi/common.h |  3 +++
- drivers/firmware/arm_scmi/driver.c | 16 +++++++++++++++-
- 3 files changed, 20 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
-index db55c43a2cbda..1377ec76a45db 100644
---- a/drivers/firmware/arm_scmi/bus.c
-+++ b/drivers/firmware/arm_scmi/bus.c
-@@ -230,7 +230,7 @@ static void scmi_devices_unregister(void)
- 	bus_for_each_dev(&scmi_bus_type, NULL, NULL, __scmi_devices_unregister);
- }
- 
--static int __init scmi_bus_init(void)
-+int __init scmi_bus_init(void)
- {
- 	int retval;
- 
-@@ -240,12 +240,10 @@ static int __init scmi_bus_init(void)
- 
- 	return retval;
- }
--subsys_initcall(scmi_bus_init);
- 
--static void __exit scmi_bus_exit(void)
-+void __exit scmi_bus_exit(void)
- {
- 	scmi_devices_unregister();
- 	bus_unregister(&scmi_bus_type);
- 	ida_destroy(&scmi_bus_id);
- }
--module_exit(scmi_bus_exit);
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 6db59a7ac8531..124080955c4a0 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -158,6 +158,9 @@ void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
- 
- int scmi_base_protocol_init(struct scmi_handle *h);
- 
-+int __init scmi_bus_init(void);
-+void __exit scmi_bus_exit(void);
-+
- /* SCMI Transport */
- /**
-  * struct scmi_chan_info - Structure representing a SCMI channel information
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 28a3e4902ea4e..5c2f4fab40994 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -936,7 +936,21 @@ static struct platform_driver scmi_driver = {
- 	.remove = scmi_remove,
- };
- 
--module_platform_driver(scmi_driver);
-+static int __init scmi_driver_init(void)
-+{
-+	scmi_bus_init();
-+
-+	return platform_driver_register(&scmi_driver);
-+}
-+module_init(scmi_driver_init);
-+
-+static void __exit scmi_driver_exit(void)
-+{
-+	scmi_bus_exit();
-+
-+	platform_driver_unregister(&scmi_driver);
-+}
-+module_exit(scmi_driver_exit);
- 
- MODULE_ALIAS("platform: arm-scmi");
- MODULE_AUTHOR("Sudeep Holla <sudeep.holla@arm.com>");
--- 
-2.27.0
-
-
+Best regards,
+Krzysztof
 
