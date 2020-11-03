@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B24B2A55DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE69B2A543E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388607AbgKCVWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:22:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43376 "EHLO mail.kernel.org"
+        id S2388496AbgKCVJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733309AbgKCVFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:03 -0500
+        id S2388445AbgKCVJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EBDF20658;
-        Tue,  3 Nov 2020 21:05:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 596F921534;
+        Tue,  3 Nov 2020 21:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437502;
-        bh=bKFOTbjVA6NiWP2keuxj4jlXt49FXZ0JSbyAGRstkRc=;
+        s=default; t=1604437753;
+        bh=dAckfZUvuQTzjuGDQr/NoLlGwNVuu2+sA3yLjksJmoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VIbtFGADG/b0cQovBMlBUW8AkCT2nLRuSnRa79XPtD6gKfddWbqDM6oqYmGpTIbFG
-         sHTeAl5taXYQmID8dkiCaAXrq6H2puyzQpuXtAxtR42W719g4D9w/2kEAs0+dbwH9o
-         aa9IekPqPa2eM79CYKS3E2Ro55rtTNrOzjxu/aJI=
+        b=nAAAUrLA/A5Zsvl6vIzjBFsI6KI7KjFDnexoRgPrFXUlLEM+xh5dkuWVGADoa9X0O
+         A0nw+oDvjEMubU9WfrMWQQxujSMflm7KXXviSTMkxcUCQcgyj9zZ8oyDJ+tEboXzjs
+         0dVaNbfwDfY01KhRPEkbXPyJcyN8L4Bgsxm1AOlI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 087/191] xfs: dont free rt blocks when were doing a REMAP bunmapi call
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.14 002/125] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
 Date:   Tue,  3 Nov 2020 21:36:19 +0100
-Message-Id: <20201103203242.198873703@linuxfoundation.org>
+Message-Id: <20201103203156.720946484@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 8df0fa39bdd86ca81a8d706a6ed9d33cc65ca625 ]
+commit 3b92fa7485eba16b05166fddf38ab42f2ff6ab95 upstream.
 
-When callers pass XFS_BMAPI_REMAP into xfs_bunmapi, they want the extent
-to be unmapped from the given file fork without the extent being freed.
-We do this for non-rt files, but we forgot to do this for realtime
-files.  So far this isn't a big deal since nobody makes a bunmapi call
-to a rt file with the REMAP flag set, but don't leave a logic bomb.
+With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
+CONFIG_RELOCATABLE=n, we observe the following failure when trying to
+link the kernel image with LD=ld.lld:
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+error: section: .exit.data is not contiguous with other relro sections
+
+ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
+was previously fixed, but only for CONFIG_RELOCATABLE=y.
+
+Fixes: 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker script and options")
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201016175339.2429280-1-ndesaulniers@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/libxfs/xfs_bmap.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ arch/arm64/Makefile |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-index f35e1801f1c90..fc9950a505e62 100644
---- a/fs/xfs/libxfs/xfs_bmap.c
-+++ b/fs/xfs/libxfs/xfs_bmap.c
-@@ -4920,20 +4920,25 @@ xfs_bmap_del_extent_real(
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -10,7 +10,7 @@
+ #
+ # Copyright (C) 1995-2001 by Russell King
  
- 	flags = XFS_ILOG_CORE;
- 	if (whichfork == XFS_DATA_FORK && XFS_IS_REALTIME_INODE(ip)) {
--		xfs_fsblock_t	bno;
- 		xfs_filblks_t	len;
- 		xfs_extlen_t	mod;
+-LDFLAGS_vmlinux	:=--no-undefined -X
++LDFLAGS_vmlinux	:=--no-undefined -X -z norelro
+ CPPFLAGS_vmlinux.lds = -DTEXT_OFFSET=$(TEXT_OFFSET)
+ GZFLAGS		:=-9
  
--		bno = div_u64_rem(del->br_startblock, mp->m_sb.sb_rextsize,
--				  &mod);
--		ASSERT(mod == 0);
- 		len = div_u64_rem(del->br_blockcount, mp->m_sb.sb_rextsize,
- 				  &mod);
- 		ASSERT(mod == 0);
+@@ -18,7 +18,7 @@ ifeq ($(CONFIG_RELOCATABLE), y)
+ # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
+ # for relative relocs, since this leads to better Image compression
+ # with the relocation offsets always being zero.
+-LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext -z norelro \
++LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
+ 			$(call ld-option, --no-apply-dynamic-relocs)
+ endif
  
--		error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
--		if (error)
--			goto done;
-+		if (!(bflags & XFS_BMAPI_REMAP)) {
-+			xfs_fsblock_t	bno;
-+
-+			bno = div_u64_rem(del->br_startblock,
-+					mp->m_sb.sb_rextsize, &mod);
-+			ASSERT(mod == 0);
-+
-+			error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
-+			if (error)
-+				goto done;
-+		}
-+
- 		do_fx = 0;
- 		nblks = len * mp->m_sb.sb_rextsize;
- 		qfield = XFS_TRANS_DQ_RTBCOUNT;
--- 
-2.27.0
-
 
 
