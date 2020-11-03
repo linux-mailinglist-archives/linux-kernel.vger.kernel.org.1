@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176402A5862
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531D22A5760
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgKCUsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
+        id S1732338AbgKCUzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:55:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731657AbgKCUsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:52 -0500
+        id S1732016AbgKCUzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:55:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CAE722404;
-        Tue,  3 Nov 2020 20:48:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C27B2053B;
+        Tue,  3 Nov 2020 20:55:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436530;
-        bh=sOS9JyeR6Rscudf+1ciDITmx5jn9OXADeMeDFYN+gRo=;
+        s=default; t=1604436917;
+        bh=WYiJwE9DBiw6w8jvK/vQddDO1Ft7twNhSM2ANKM0Zfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7CLieNTUnnPNmC+IRq70wEAlBV/e/RJxAZeK7/0t6+N2iTZK5MriUB8RdfTwxkW4
-         wBYx/xNDIQwSNT6iswhL+28cnC5zbsY0VTpZtO44y9nih3D1c9Fax7ksr3ZpafjA6f
-         996/L9gcdqYfFE+MF+xFOavzZd9l/FsOV9hDKf/A=
+        b=ZHAJtmxDE3yMtsaXwNd/QO2BCfL+JpdUIWuDenO0GeaPEhpoZdrqLHow9hEHse6yN
+         Ykfu3S9QgH9/szVcaHpV6sSIJigv8E3rHJgoji2QP96YbGtkO5Ys80PnkEHyRzqwzX
+         oUMvUuS4xGZ0DbMRtFFAtDTx/n5DOn1VZVjOJits=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 263/391] powerpc: Fix random segfault when freeing hugetlb range
+        stable@vger.kernel.org, Wright Feng <wright.feng@cypress.com>,
+        Chi-hsien Lin <chi-hsien.lin@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 066/214] brcmfmac: Fix warning message after dongle setup failed
 Date:   Tue,  3 Nov 2020 21:35:14 +0100
-Message-Id: <20201103203404.769868838@linuxfoundation.org>
+Message-Id: <20201103203256.576438167@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,83 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Wright Feng <wright.feng@cypress.com>
 
-commit 542db12a9c42d1ce70c45091765e02f74c129f43 upstream.
+[ Upstream commit 6aa5a83a7ed8036c1388a811eb8bdfa77b21f19c ]
 
-The following random segfault is observed from time to time with
-map_hugetlb selftest:
+Brcmfmac showed warning message in fweh.c when checking the size of event
+queue which is not initialized. Therefore, we only cancel the worker and
+reset event handler only when it is initialized.
 
-root@localhost:~# ./map_hugetlb 1 19
-524288 kB hugepages
-Mapping 1 Mbytes
-Segmentation fault
+[  145.505899] brcmfmac 0000:02:00.0: brcmf_pcie_setup: Dongle setup
+[  145.929970] ------------[ cut here ]------------
+[  145.929994] WARNING: CPU: 0 PID: 288 at drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c:312
+brcmf_fweh_detach+0xbc/0xd0 [brcmfmac]
+...
+[  145.930029] Call Trace:
+[  145.930036]  brcmf_detach+0x77/0x100 [brcmfmac]
+[  145.930043]  brcmf_pcie_remove+0x79/0x130 [brcmfmac]
+[  145.930046]  pci_device_remove+0x39/0xc0
+[  145.930048]  device_release_driver_internal+0x141/0x200
+[  145.930049]  device_release_driver+0x12/0x20
+[  145.930054]  brcmf_pcie_setup+0x101/0x3c0 [brcmfmac]
+[  145.930060]  brcmf_fw_request_done+0x11d/0x1f0 [brcmfmac]
+[  145.930062]  ? lock_timer_base+0x7d/0xa0
+[  145.930063]  ? internal_add_timer+0x1f/0xa0
+[  145.930064]  ? add_timer+0x11a/0x1d0
+[  145.930066]  ? __kmalloc_track_caller+0x18c/0x230
+[  145.930068]  ? kstrdup_const+0x23/0x30
+[  145.930069]  ? add_dr+0x46/0x80
+[  145.930070]  ? devres_add+0x3f/0x50
+[  145.930072]  ? usermodehelper_read_unlock+0x15/0x20
+[  145.930073]  ? _request_firmware+0x288/0xa20
+[  145.930075]  request_firmware_work_func+0x36/0x60
+[  145.930077]  process_one_work+0x144/0x360
+[  145.930078]  worker_thread+0x4d/0x3c0
+[  145.930079]  kthread+0x112/0x150
+[  145.930080]  ? rescuer_thread+0x340/0x340
+[  145.930081]  ? kthread_park+0x60/0x60
+[  145.930083]  ret_from_fork+0x25/0x30
 
-[   31.219972] map_hugetlb[365]: segfault (11) at 117 nip 77974f8c lr 779a6834 code 1 in ld-2.23.so[77966000+21000]
-[   31.220192] map_hugetlb[365]: code: 9421ffc0 480318d1 93410028 90010044 9361002c 93810030 93a10034 93c10038
-[   31.220307] map_hugetlb[365]: code: 93e1003c 93210024 8123007c 81430038 <80e90004> 814a0004 7f443a14 813a0004
-[   31.221911] BUG: Bad rss-counter state mm:(ptrval) type:MM_FILEPAGES val:33
-[   31.229362] BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:5
-
-This fault is due to hugetlb_free_pgd_range() freeing page tables
-that are also used by regular pages.
-
-As explain in the comment at the beginning of
-hugetlb_free_pgd_range(), the verification done in free_pgd_range()
-on floor and ceiling is not done here, which means
-hugetlb_free_pte_range() can free outside the expected range.
-
-As the verification cannot be done in hugetlb_free_pgd_range(), it
-must be done in hugetlb_free_pte_range().
-
-Fixes: b250c8c08c79 ("powerpc/8xx: Manage 512k huge pages as standard pages.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/f0cb2a5477cd87d1eaadb128042e20aeb2bc2859.1598860677.git.christophe.leroy@csgroup.eu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Wright Feng <wright.feng@cypress.com>
+Signed-off-by: Chi-hsien Lin <chi-hsien.lin@cypress.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200928054922.44580-3-wright.feng@cypress.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/hugetlbpage.c |   18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ .../net/wireless/broadcom/brcm80211/brcmfmac/fweh.c    | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -330,10 +330,24 @@ static void free_hugepd_range(struct mmu
- 				 get_hugepd_cache_index(pdshift - shift));
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
+index 79c8a858b6d6f..a30fcfbf2ee7c 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
+@@ -304,10 +304,12 @@ void brcmf_fweh_detach(struct brcmf_pub *drvr)
+ {
+ 	struct brcmf_fweh_info *fweh = &drvr->fweh;
+ 
+-	/* cancel the worker */
+-	cancel_work_sync(&fweh->event_work);
+-	WARN_ON(!list_empty(&fweh->event_q));
+-	memset(fweh->evt_handler, 0, sizeof(fweh->evt_handler));
++	/* cancel the worker if initialized */
++	if (fweh->event_work.func) {
++		cancel_work_sync(&fweh->event_work);
++		WARN_ON(!list_empty(&fweh->event_q));
++		memset(fweh->evt_handler, 0, sizeof(fweh->evt_handler));
++	}
  }
  
--static void hugetlb_free_pte_range(struct mmu_gather *tlb, pmd_t *pmd, unsigned long addr)
-+static void hugetlb_free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
-+				   unsigned long addr, unsigned long end,
-+				   unsigned long floor, unsigned long ceiling)
- {
-+	unsigned long start = addr;
- 	pgtable_t token = pmd_pgtable(*pmd);
- 
-+	start &= PMD_MASK;
-+	if (start < floor)
-+		return;
-+	if (ceiling) {
-+		ceiling &= PMD_MASK;
-+		if (!ceiling)
-+			return;
-+	}
-+	if (end - 1 > ceiling - 1)
-+		return;
-+
- 	pmd_clear(pmd);
- 	pte_free_tlb(tlb, token, addr);
- 	mm_dec_nr_ptes(tlb->mm);
-@@ -363,7 +377,7 @@ static void hugetlb_free_pmd_range(struc
- 			 */
- 			WARN_ON(!IS_ENABLED(CONFIG_PPC_8xx));
- 
--			hugetlb_free_pte_range(tlb, pmd, addr);
-+			hugetlb_free_pte_range(tlb, pmd, addr, end, floor, ceiling);
- 
- 			continue;
- 		}
+ /**
+-- 
+2.27.0
+
 
 
