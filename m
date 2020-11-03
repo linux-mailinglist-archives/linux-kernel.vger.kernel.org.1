@@ -2,83 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB5A2A39FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ECD2A3A04
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgKCBpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 20:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgKCBpI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 20:45:08 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDD5C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 17:45:08 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id n63so5133622qte.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 17:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version:date
-         :message-id;
-        bh=cjxoNYxbu1+SaqzoPnce/Hs00JITYfxQWTJFm6SDY4M=;
-        b=BCTlhAur6u1VziO20eWewM72Cq99of9KTcxc+w2vZ0WNhghROr6RgNmHg+bPeyfjVq
-         pKzPI8wSjYmyK1uhNnfQmGkrThVhveQat+Ol8Hm1oWwu/2JJWw2JbbgWZycUMjDpZkPa
-         litzC4Wx9viykurVhIazVRf/sJXFLJkBfBYP3ws5KMXjzPxpMXnDdPFH7tdm0SnAxTBy
-         y6YGezR6s7odPABA7MAdIfkKvQYoSYSEZ4qL01qB5WUNIlCqCc0vxNtyPVQHyrPhGOWO
-         zf7FzkY2LzCk0NX//DLRcj9k9W32HfmlowLemoQhispnI4jEr3gqHG5m5HZsXd72SEkO
-         rciA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:date:message-id;
-        bh=cjxoNYxbu1+SaqzoPnce/Hs00JITYfxQWTJFm6SDY4M=;
-        b=pH33sReC+8bQkoiXynDNoLVBWGiN+hrzxe/VlNcMS9b3kypOk+XW+tD1PV+poZPh0Q
-         vMF1DH+u+P1BXd2EXOjKpfDj1hzz7wct2IA8qFPkDb7Ih0tQtSdmOJxzPj71fd7sIinb
-         4wBQ0LH8MA1zsJvB9/15YrLiyN7ioog6y8UfvFp5SE2wjuKNyb17N3dxjttLXqKrV1Y3
-         1nf8oK1Y9YiDvi9JTEvvI/TOMcQil127BYnuVZRIV7+Oy8XqDak7KHStyNxcIXlZp15k
-         nZYkHPI+fuk05e43/4A5lWVRO1gHnwcU/ZgraIyRMTu6PjNyrPTP1RUY6Ebw+Vaw/Ft+
-         jROQ==
-X-Gm-Message-State: AOAM533+lXQCGKwn/mMTG1K+0NJce6412rmDMY7XDhJhd81aAwtyM5AM
-        oMInDsPv9vMmXMbeHW9f5dYuPw==
-X-Google-Smtp-Source: ABdhPJwCA1LA4NwvrUfJpr0a/T2v5OrQWQPArlZUx5JCWifS0MgN7sP370U7d1i6+cV/NQedAx0jwA==
-X-Received: by 2002:ac8:7b98:: with SMTP id p24mr16682435qtu.31.1604367907411;
-        Mon, 02 Nov 2020 17:45:07 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id d18sm7587566qka.41.2020.11.02.17.45.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 17:45:05 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Shawn Guo <shawnguo@kernel.org>
-cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] clk: imx: scu: Fix compile error with module build of clk-scu.o
-In-reply-to: <20201102235218.GY31601@dragon>
-References: <208469.1604318525@turing-police> <6e5a8fdb-0a02-5eae-ca1f-37df8a454e34@infradead.org> <238534.1604350899@turing-police> <0b61c4f4-b389-c853-6e09-ee603455e583@infradead.org>
- <20201102235218.GY31601@dragon>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Mon, 02 Nov 2020 20:45:04 -0500
-Message-ID: <253486.1604367904@turing-police>
+        id S1726581AbgKCBqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 20:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbgKCBqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 20:46:47 -0500
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1471F2225E;
+        Tue,  3 Nov 2020 01:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604368006;
+        bh=lFAmU5IXg1kHYasHCHzUpOggTZlRW+fdNCnl96GoreI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bgHBPpOSrIR8Way5hq4iemLrDf0Z69MedsvnQgedXMg2vtcw+iAox1yZUTrQLWTvU
+         MYN++J3X3Ab6gb9NQL0dL4W4VRysUtEaSrfgzNakmR9SKUK1uIZ/fO20JpQfTLtrXM
+         d9rrlnuHz+Lwv5F03R+K1VZ0aVi1YPMmpgbqj3BU=
+Received: by mail-oi1-f172.google.com with SMTP id u127so16782481oib.6;
+        Mon, 02 Nov 2020 17:46:46 -0800 (PST)
+X-Gm-Message-State: AOAM5332xzfECIkBemzElGnd2wjOG3kvP3jt/87o6lHOOGsks8AmfPeX
+        Mv+mudC0PD/Aq7NC4syhUHLhQBMacFcMmTWjmw==
+X-Google-Smtp-Source: ABdhPJyuuhfG4BUIglFfou4JvfnMmDJB6Z+jQKN1DEpS4OaBSIxmQ6MaDzJKE/RYnCgc7Trr7qW0EybPcH9huZVoC74=
+X-Received: by 2002:a54:4588:: with SMTP id z8mr622587oib.147.1604368005136;
+ Mon, 02 Nov 2020 17:46:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20201102161210.v3.1.Ibb28033c81d87fcc13a6ba28c6ea7ac154d65f93@changeid>
+ <20201102161210.v3.2.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+In-Reply-To: <20201102161210.v3.2.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 2 Nov 2020 19:46:34 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLxGugWg7Xwr-NQa1h+a_=apQsfFCU0KF-97xt1ZB8jMg@mail.gmail.com>
+Message-ID: <CAL_JsqLxGugWg7Xwr-NQa1h+a_=apQsfFCU0KF-97xt1ZB8jMg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] HID: i2c-hid: Allow subclasses of i2c-hid for
+ power sequencing
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Input <linux-input@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kai Heng Feng <kai.heng.feng@canonical.com>,
+        andrea@borgia.bo.it, Aaron Ma <aaron.ma@canonical.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>, Pavel Balan <admin@kryma.net>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Nov 2020 07:52:19 +0800, Shawn Guo said:
-
-> It's a driver problem which is being addressed by Dong's patch[1].
+On Mon, Nov 2, 2020 at 6:13 PM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> Shawn
+> This exports some things from i2c-hid so that we can have a driver
+> that's effectively a subclass of it and that can do its own power
+> sequencing.
 >
-> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201030153733.30160-1-aisheng.dong@nxp.com/
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+> Changes in v3:
+> - Rework to use subclassing.
+>
+> Changes in v2:
+> - Use a separate compatible string for this new touchscreen.
+> - Get timings based on the compatible string.
+>
+>  drivers/hid/i2c-hid/i2c-hid-core.c    | 78 +++++++++++++++++----------
+>  include/linux/input/i2c-hid-core.h    | 19 +++++++
+>  include/linux/platform_data/i2c-hid.h |  9 ++++
+>  3 files changed, 79 insertions(+), 27 deletions(-)
+>  create mode 100644 include/linux/input/i2c-hid-core.h
+>
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 786e3e9af1c9..910e9089fcf8 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/input.h>
+> +#include <linux/input/i2c-hid-core.h>
+>  #include <linux/irq.h>
+>  #include <linux/delay.h>
+>  #include <linux/slab.h>
+> @@ -1007,8 +1008,33 @@ static void i2c_hid_fwnode_probe(struct i2c_client *client,
+>                 pdata->post_power_delay_ms = val;
+>  }
+>
+> -static int i2c_hid_probe(struct i2c_client *client,
+> -                        const struct i2c_device_id *dev_id)
+> +static int i2c_hid_power_up_device(struct i2c_hid_platform_data *pdata)
+> +{
+> +       struct i2c_hid *ihid = container_of(pdata, struct i2c_hid, pdata);
+> +       struct hid_device *hid = ihid->hid;
+> +       int ret;
+> +
+> +       ret = regulator_bulk_enable(ARRAY_SIZE(pdata->supplies),
+> +                                   pdata->supplies);
+> +       if (ret) {
+> +               if (hid)
+> +                       hid_warn(hid, "Failed to enable supplies: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       if (pdata->post_power_delay_ms)
+> +               msleep(pdata->post_power_delay_ms);
+> +
+> +       return 0;
+> +}
+> +
+> +static void i2c_hid_power_down_device(struct i2c_hid_platform_data *pdata)
+> +{
+> +       regulator_bulk_disable(ARRAY_SIZE(pdata->supplies), pdata->supplies);
+> +}
+> +
+> +int i2c_hid_probe(struct i2c_client *client,
+> +                 const struct i2c_device_id *dev_id)
+>  {
+>         int ret;
+>         struct i2c_hid *ihid;
+> @@ -1035,6 +1061,9 @@ static int i2c_hid_probe(struct i2c_client *client,
+>         if (!ihid)
+>                 return -ENOMEM;
+>
+> +       if (platform_data)
+> +               ihid->pdata = *platform_data;
+> +
+>         if (client->dev.of_node) {
+>                 ret = i2c_hid_of_probe(client, &ihid->pdata);
+>                 if (ret)
+> @@ -1043,13 +1072,16 @@ static int i2c_hid_probe(struct i2c_client *client,
+>                 ret = i2c_hid_acpi_pdata(client, &ihid->pdata);
+>                 if (ret)
+>                         return ret;
+> -       } else {
+> -               ihid->pdata = *platform_data;
+>         }
+>
+>         /* Parse platform agnostic common properties from ACPI / device tree */
+>         i2c_hid_fwnode_probe(client, &ihid->pdata);
+>
+> +       if (!ihid->pdata.power_up_device)
+> +               ihid->pdata.power_up_device = i2c_hid_power_up_device;
+> +       if (!ihid->pdata.power_down_device)
+> +               ihid->pdata.power_down_device = i2c_hid_power_down_device;
+> +
+>         ihid->pdata.supplies[0].supply = "vdd";
+>         ihid->pdata.supplies[1].supply = "vddl";
+>
+> @@ -1059,14 +1091,10 @@ static int i2c_hid_probe(struct i2c_client *client,
+>         if (ret)
+>                 return ret;
+>
+> -       ret = regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
+> -                                   ihid->pdata.supplies);
+> -       if (ret < 0)
+> +       ret = ihid->pdata.power_up_device(&ihid->pdata);
+> +       if (ret)
 
-OK, We'll fix it that way then.
+This is an odd driver structure IMO. I guess platform data is already
+there, but that's not what we'd use for any new driver.
+
+Why not export i2c_hid_probe, i2c_hid_remove, etc. and then just call
+them from the goodix driver and possibly make it handle all DT
+platforms?
+
+Who else needs regulators besides DT platforms? I thought with ACPI
+it's all wonderfully abstracted away?
+
+Rob
