@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8C82A58BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9D52A58A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgKCVyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:54:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33348 "EHLO mail.kernel.org"
+        id S1732042AbgKCVx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:53:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730997AbgKCUpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:17 -0500
+        id S1731152AbgKCUqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:46:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64730223C6;
-        Tue,  3 Nov 2020 20:45:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1FDE223EA;
+        Tue,  3 Nov 2020 20:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436316;
-        bh=ntqQHSCvw4gPTX8zPXR8IMcXwra6zzoLk7qKbdD1KS4=;
+        s=default; t=1604436371;
+        bh=rbLD5qhuR3s16Kk5KifQ4op4H/krzoXrgx3FxIbsuL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A0OiKJhkv0nEMxKZ1O5CeEabRkscO96MU1J+HrTNReUrraLtm0EJFp7dqcoe6u/10
-         T4IGkPr0X/CXWL2itOx0ZenEuW3dhGSPGVFH35ybmlq8aXdAgwAaLywxweSyzt3M+0
-         w+P7Kb2FX8Avj7TZ6H8Z2LjroPIE7Ue/wKiKMSbw=
+        b=TmSwvriDK7XUrCcCtNTvsz9aJHxCLJ5qeGv/P2x695gHe0qHNyfrqxf+U9BwhkB5X
+         WfSbWcjG8iKkqvZ4onF/6tXiFTfpbMZNh8NG8EbjSwxhjdzlAMUrU6RtoNHHrYyaxu
+         KnD0USC+6mpgPqcCz7htTTSSyxCLAOx87y1fUQ+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 180/391] sgl_alloc_order: fix memory leak
-Date:   Tue,  3 Nov 2020 21:33:51 +0100
-Message-Id: <20201103203359.018184395@linuxfoundation.org>
+        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.9 183/391] irqchip/loongson-htvec: Fix initial interrupt clearing
+Date:   Tue,  3 Nov 2020 21:33:54 +0100
+Message-Id: <20201103203359.233194998@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,42 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Gilbert <dgilbert@interlog.com>
+From: Huacai Chen <chenhc@lemote.com>
 
-[ Upstream commit b2a182a40278bc5849730e66bca01a762188ed86 ]
+commit 1d1e5630de78f7253ac24b92cee6427c3ff04d56 upstream.
 
-sgl_alloc_order() can fail when 'length' is large on a memory
-constrained system. When order > 0 it will potentially be
-making several multi-page allocations with the later ones more
-likely to fail than the earlier one. So it is important that
-sgl_alloc_order() frees up any pages it has obtained before
-returning NULL. In the case when order > 0 it calls the wrong
-free page function and leaks. In testing the leak was
-sufficient to bring down my 8 GiB laptop with OOM.
+In htvec_reset() only the first group of initial interrupts is cleared.
+This sometimes causes spurious interrupts, so let's clear all groups.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While at it, fix the nearby comment that to match the reality of what
+the driver does.
+
+Fixes: 818e915fbac518e8c78e1877 ("irqchip: Add Loongson HyperTransport Vector support")
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/1599819978-13999-2-git-send-email-chenhc@lemote.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- lib/scatterlist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-loongson-htvec.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 5d63a8857f361..c448642e0f786 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -514,7 +514,7 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
- 		elem_len = min_t(u64, length, PAGE_SIZE << order);
- 		page = alloc_pages(gfp, order);
- 		if (!page) {
--			sgl_free(sgl);
-+			sgl_free_order(sgl, order);
- 			return NULL;
- 		}
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -151,7 +151,7 @@ static void htvec_reset(struct htvec *pr
+ 	/* Clear IRQ cause registers, mask all interrupts */
+ 	for (idx = 0; idx < priv->num_parents; idx++) {
+ 		writel_relaxed(0x0, priv->base + HTVEC_EN_OFF + 4 * idx);
+-		writel_relaxed(0xFFFFFFFF, priv->base);
++		writel_relaxed(0xFFFFFFFF, priv->base + 4 * idx);
+ 	}
+ }
  
--- 
-2.27.0
-
+@@ -172,7 +172,7 @@ static int htvec_of_init(struct device_n
+ 		goto free_priv;
+ 	}
+ 
+-	/* Interrupt may come from any of the 4 interrupt line */
++	/* Interrupt may come from any of the 8 interrupt lines */
+ 	for (i = 0; i < HTVEC_MAX_PARENT_IRQ; i++) {
+ 		parent_irq[i] = irq_of_parse_and_map(node, i);
+ 		if (parent_irq[i] <= 0)
 
 
