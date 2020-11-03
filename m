@@ -2,70 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459952A3A36
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985062A3A40
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgKCCG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:06:29 -0500
-Received: from mga18.intel.com ([134.134.136.126]:25958 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbgKCCG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:06:29 -0500
-IronPort-SDR: 02ZU4rN9rSdTTOih4AkVeqdTXNuto7lVtRiaYSMV8Mjr89Ngj90o53cKyI281plzRFbGBI3LTu
- z1rcEQw8ZyZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156763943"
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="156763943"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:28 -0800
-IronPort-SDR: Kq6lU2fZpcgBUsl0B+DBw7X9k9ezyBKi1z58dYSXci+awnhXrCJemdiKjNZSiihHrdJFghI1C0
- eWMHQSf6vLBQ==
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="353032672"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:26 -0800
-Date:   Mon, 2 Nov 2020 18:06:24 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
-        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201103020623.GJ21563@linux.intel.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
- <20200922014836.GA26507@linux.intel.com>
- <20200922211404.GA4141897@google.com>
- <20200924192116.GC9649@linux.intel.com>
- <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
- <20200925222220.GA977797@google.com>
- <20201002204810.GA3179405@google.com>
+        id S1727160AbgKCCKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:10:10 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7404 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbgKCCKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:10:10 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CQCsp16FYz72SN;
+        Tue,  3 Nov 2020 10:10:06 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 10:10:05 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm: Add the new api to install irq
+Date:   Tue, 3 Nov 2020 10:10:41 +0800
+Message-ID: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002204810.GA3179405@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:
-> On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:
-> > I agree with you that the abstract name is better than the concrete
-> > name, I also feel that we must provide HW extensions. Here is one
-> > approach:
-> > 
-> > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
-> > suggestions)
-> > 
-> > Control files: slots.{max, current, events}
+Add new api devm_drm_irq_install() to register interrupts,
+no need to call drm_irq_uninstall() when the drm module is removed.
 
-I don't particularly like the "slots" name, mostly because it could be confused
-with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
-love those names either, but "encryption" and "IDs" are the two obvious
-commonalities betwee TDX's encryption key IDs and SEV's encryption address
-space IDs.
+v2:
+fixed the wrong parameter.
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
+ include/drm/drm_drv.h     |  3 ++-
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+index cd162d4..0fe5243 100644
+--- a/drivers/gpu/drm/drm_drv.c
++++ b/drivers/gpu/drm/drm_drv.c
+@@ -39,6 +39,7 @@
+ #include <drm/drm_color_mgmt.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_file.h>
++#include <drm/drm_irq.h>
+ #include <drm/drm_managed.h>
+ #include <drm/drm_mode_object.h>
+ #include <drm/drm_print.h>
+@@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *parent,
+ 	return ret;
+ }
+ 
++static void devm_drm_dev_irq_uninstall(void *data)
++{
++	drm_irq_uninstall(data);
++}
++
++int devm_drm_irq_install(struct device *parent,
++			 struct drm_device *dev, int irq)
++{
++	int ret;
++
++	ret = drm_irq_install(dev, irq);
++	if (ret)
++		return ret;
++
++	ret = devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
++	if (ret)
++		devm_drm_dev_irq_uninstall(dev);
++
++	return ret;
++}
++EXPORT_SYMBOL(devm_drm_irq_install);
++
+ void *__devm_drm_dev_alloc(struct device *parent, struct drm_driver *driver,
+ 			   size_t size, size_t offset)
+ {
+diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+index 0230762..fec1776 100644
+--- a/include/drm/drm_drv.h
++++ b/include/drm/drm_drv.h
+@@ -513,7 +513,8 @@ struct drm_driver {
+ 
+ void *__devm_drm_dev_alloc(struct device *parent, struct drm_driver *driver,
+ 			   size_t size, size_t offset);
+-
++int devm_drm_irq_install(struct device *parent, struct drm_device *dev,
++			 int irq);
+ /**
+  * devm_drm_dev_alloc - Resource managed allocation of a &drm_device instance
+  * @parent: Parent device object
+-- 
+2.7.4
+
