@@ -2,93 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92312A3A4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 459952A3A36
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgKCCPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:15:23 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:41376 "EHLO inva021.nxp.com"
+        id S1727385AbgKCCG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:06:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:25958 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgKCCPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:15:23 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3FE49200293;
-        Tue,  3 Nov 2020 03:15:21 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E70EB200145;
-        Tue,  3 Nov 2020 03:15:18 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A75FF402BC;
-        Tue,  3 Nov 2020 03:15:15 +0100 (CET)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     olteanv@gmail.com, broonie@kernel.org
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [Patch v2] spi: fsl-dspi: fix wrong pointer in suspend/resume
-Date:   Tue,  3 Nov 2020 10:05:46 +0800
-Message-Id: <20201103020546.1822-1-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726143AbgKCCG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:06:29 -0500
+IronPort-SDR: 02ZU4rN9rSdTTOih4AkVeqdTXNuto7lVtRiaYSMV8Mjr89Ngj90o53cKyI281plzRFbGBI3LTu
+ z1rcEQw8ZyZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156763943"
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="156763943"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:28 -0800
+IronPort-SDR: Kq6lU2fZpcgBUsl0B+DBw7X9k9ezyBKi1z58dYSXci+awnhXrCJemdiKjNZSiihHrdJFghI1C0
+ eWMHQSf6vLBQ==
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="353032672"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:26 -0800
+Date:   Mon, 2 Nov 2020 18:06:24 -0800
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
+        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20201103020623.GJ21563@linux.intel.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922014836.GA26507@linux.intel.com>
+ <20200922211404.GA4141897@google.com>
+ <20200924192116.GC9649@linux.intel.com>
+ <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+ <20200925222220.GA977797@google.com>
+ <20201002204810.GA3179405@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002204810.GA3179405@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Qiang <qiang.zhao@nxp.com>
+On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:
+> On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:
+> > I agree with you that the abstract name is better than the concrete
+> > name, I also feel that we must provide HW extensions. Here is one
+> > approach:
+> > 
+> > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
+> > suggestions)
+> > 
+> > Control files: slots.{max, current, events}
 
-Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in
-remove path"), this driver causes a "NULL pointer dereference"
-in dspi_suspend/resume.
-This is because since this commit, the drivers private data point to
-"dspi" instead of "ctlr", the codes in suspend and resume func were
-not modified correspondly.
-
-Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
----
-Changes for v2:
-	- modify commit msg
-
- drivers/spi/spi-fsl-dspi.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 3967afa..1a08c1d 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1080,12 +1080,11 @@ MODULE_DEVICE_TABLE(of, fsl_dspi_dt_ids);
- #ifdef CONFIG_PM_SLEEP
- static int dspi_suspend(struct device *dev)
- {
--	struct spi_controller *ctlr = dev_get_drvdata(dev);
--	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
-+	struct fsl_dspi *dspi = dev_get_drvdata(dev);
- 
- 	if (dspi->irq)
- 		disable_irq(dspi->irq);
--	spi_controller_suspend(ctlr);
-+	spi_controller_suspend(dspi->ctlr);
- 	clk_disable_unprepare(dspi->clk);
- 
- 	pinctrl_pm_select_sleep_state(dev);
-@@ -1095,8 +1094,7 @@ static int dspi_suspend(struct device *dev)
- 
- static int dspi_resume(struct device *dev)
- {
--	struct spi_controller *ctlr = dev_get_drvdata(dev);
--	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
-+	struct fsl_dspi *dspi = dev_get_drvdata(dev);
- 	int ret;
- 
- 	pinctrl_pm_select_default_state(dev);
-@@ -1104,7 +1102,7 @@ static int dspi_resume(struct device *dev)
- 	ret = clk_prepare_enable(dspi->clk);
- 	if (ret)
- 		return ret;
--	spi_controller_resume(ctlr);
-+	spi_controller_resume(dspi->ctlr);
- 	if (dspi->irq)
- 		enable_irq(dspi->irq);
- 
--- 
-2.7.4
-
+I don't particularly like the "slots" name, mostly because it could be confused
+with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
+love those names either, but "encryption" and "IDs" are the two obvious
+commonalities betwee TDX's encryption key IDs and SEV's encryption address
+space IDs.
