@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3533E2A55D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C112A5574
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732569AbgKCVW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:22:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44008 "EHLO mail.kernel.org"
+        id S2389031AbgKCVSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:18:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733070AbgKCVF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:29 -0500
+        id S2388270AbgKCVJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1510920658;
-        Tue,  3 Nov 2020 21:05:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ACB7206B5;
+        Tue,  3 Nov 2020 21:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437528;
-        bh=pJWyievTSLGQwL+AD1woiGSadxvuzSbbpbcwj3unWVQ=;
+        s=default; t=1604437758;
+        bh=F+MgyJy3M9UZmGV3BHb6dggJrNM6JemLtPXVNdjfttk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x+0GhBEfwaDKhm+pU3CMPPCXfY4EXrCRvEMOqx4I0HMqN2rIs17/uSrRDJeqeaVUt
-         NvUI7W1IDZ9Vh4e8djNOxVnQJHdoffAoeoXi54PE9mhvcp7oZTFoowu/dbfE+pFaNJ
-         RyDgT0ddtz1xU+ovQM6SnfCey+sJZk5uzA4DaMR0=
+        b=zMqbMt5u4zAsfN7KXW6K1mChXK3sNcQTONegFOo+wNcfskCfhKpggDXSGrQDkpT5k
+         pwdl10mnArZmBreNzlR08pNB4iX1MoNU3pILvhc0Qhz1cl/kH/pl6rV+o8tDTKm7r4
+         YOq93A3xBHjEiXeQ0gQTkmPkO/U4AnFqrEAvcaaE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 088/191] ACPI: Add out of bounds and numa_off protections to pxm_to_node()
-Date:   Tue,  3 Nov 2020 21:36:20 +0100
-Message-Id: <20201103203242.263300277@linuxfoundation.org>
+        Masahiro Fujiwara <fujiwara.masahiro@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 004/125] gtp: fix an use-before-init in gtp_newlink()
+Date:   Tue,  3 Nov 2020 21:36:21 +0100
+Message-Id: <20201103203157.043802698@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,42 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
 
-[ Upstream commit 8a3decac087aa897df5af04358c2089e52e70ac4 ]
+[ Upstream commit 51467431200b91682b89d31317e35dcbca1469ce ]
 
-The function should check the validity of the pxm value before using
-it to index the pxm_to_node_map[] array.
+*_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
+sends GTP packets while creating new GTP device.
 
-Whilst hardening this code may be good in general, the main intent
-here is to enable following patches that use this function to replace
-acpi_map_pxm_to_node() for non SRAT usecases which should return
-NO_NUMA_NODE for PXM entries not matching with those in SRAT.
+RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
+<SNIP>
+Call Trace:
+ <IRQ>
+ gtp_encap_recv+0xc2/0x2e0 [gtp]
+ ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
+ udp_queue_rcv_one_skb+0x1fe/0x530
+ udp_queue_rcv_skb+0x40/0x1b0
+ udp_unicast_rcv_skb.isra.0+0x78/0x90
+ __udp4_lib_rcv+0x5af/0xc70
+ udp_rcv+0x1a/0x20
+ ip_protocol_deliver_rcu+0xc5/0x1b0
+ ip_local_deliver_finish+0x48/0x50
+ ip_local_deliver+0xe5/0xf0
+ ? ip_protocol_deliver_rcu+0x1b0/0x1b0
 
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+gtp_encap_enable() should be called after gtp_hastable_new() otherwise
+*_pdp_find() will access the uninitialized hash table.
+
+Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
+Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+Link: https://lore.kernel.org/r/20201027114846.3924-1-fujiwara.masahiro@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/numa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/gtp.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/acpi/numa.c b/drivers/acpi/numa.c
-index 0da58f0bf7e59..a28ff3cfbc296 100644
---- a/drivers/acpi/numa.c
-+++ b/drivers/acpi/numa.c
-@@ -46,7 +46,7 @@ int acpi_numa __initdata;
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -667,10 +667,6 @@ static int gtp_newlink(struct net *src_n
  
- int pxm_to_node(int pxm)
- {
--	if (pxm < 0)
-+	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS || numa_off)
- 		return NUMA_NO_NODE;
- 	return pxm_to_node_map[pxm];
+ 	gtp = netdev_priv(dev);
+ 
+-	err = gtp_encap_enable(gtp, data);
+-	if (err < 0)
+-		return err;
+-
+ 	if (!data[IFLA_GTP_PDP_HASHSIZE]) {
+ 		hashsize = 1024;
+ 	} else {
+@@ -681,12 +677,16 @@ static int gtp_newlink(struct net *src_n
+ 
+ 	err = gtp_hashtable_new(gtp, hashsize);
+ 	if (err < 0)
+-		goto out_encap;
++		return err;
++
++	err = gtp_encap_enable(gtp, data);
++	if (err < 0)
++		goto out_hashtable;
+ 
+ 	err = register_netdevice(dev);
+ 	if (err < 0) {
+ 		netdev_dbg(dev, "failed to register new netdev %d\n", err);
+-		goto out_hashtable;
++		goto out_encap;
+ 	}
+ 
+ 	gn = net_generic(dev_net(dev), gtp_net_id);
+@@ -697,11 +697,11 @@ static int gtp_newlink(struct net *src_n
+ 
+ 	return 0;
+ 
++out_encap:
++	gtp_encap_disable(gtp);
+ out_hashtable:
+ 	kfree(gtp->addr_hash);
+ 	kfree(gtp->tid_hash);
+-out_encap:
+-	gtp_encap_disable(gtp);
+ 	return err;
  }
--- 
-2.27.0
-
+ 
 
 
