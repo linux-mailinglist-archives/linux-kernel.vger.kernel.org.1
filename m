@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5642A4C00
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE442A4C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgKCQxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:53:12 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40310 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgKCQxL (ORCPT
+        id S1728636AbgKCQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgKCQxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:53:11 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Gr4oZ061462;
-        Tue, 3 Nov 2020 10:53:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604422384;
-        bh=0Tkp6HLRVCB/7ivjFJeStRM6yrcVsh9/LqVVSNK0ysQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Anuz5tKbBGuCx0poQrMYXF/O5541STenRpOVtBf9We3N7ok2idb0GrDCk/Mxsox29
-         McVsSzhmdTxAUg7ONgpcec2G+4FFLg30BDwBWUtwepx3vU5hg+ZusFLMGS9z8Tj8Qg
-         4Z7NnvX8E2K2zUIuE/lg2VxytxpmMUxSrlEedoJw=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3Gr4Iu015522
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 10:53:04 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 10:53:03 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 10:53:04 -0600
-Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Gr3ej016284;
-        Tue, 3 Nov 2020 10:53:03 -0600
-Subject: Re: [PATCH net-next v3 2/4] dt-bindings: net: Add Rx/Tx output
- configuration for 10base T1L
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <robh@kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-3-dmurphy@ti.com> <20201030195655.GD1042051@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <a50fe8f3-2ca1-8969-08ac-013704a5a617@ti.com>
-Date:   Tue, 3 Nov 2020 10:52:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 3 Nov 2020 11:53:36 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73E7C0613D1;
+        Tue,  3 Nov 2020 08:53:36 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id s14so15243095qkg.11;
+        Tue, 03 Nov 2020 08:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2rOoP2fWtBXqSw4r+2p1MaKzqZjSJnhx6ffXaf9QlVk=;
+        b=idUuY1I/7/Dsp/4V6KdBy9e68cpsernin93UYfooKQagDBRrwQ0KaQ+9GJTmtvv/mG
+         ulgBnE42Wr+iSUmVIuUzN3/ysFAaXO8xltucoFfH1diTuBWjpKtk+P0pbKrZZ0qdbqQj
+         RyLjefqx/uzE+yRAHEH096sLCNoi8g71eiqO4/07JhRWriWTrDUmsovBz04G+Vq9cSF5
+         S6GScFHctzEQlaSnrCG6G/5+xB5VB5LcnVOJbpY+2KSuCr0wTxjF1msZC0afrkApwS3+
+         +uAvoyOBf9Sp8n5AUmsEtgaS8HXlkVuHxeQClMIEjVVr4atNPefQCReKjZ+iCpmsDFKX
+         rLxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2rOoP2fWtBXqSw4r+2p1MaKzqZjSJnhx6ffXaf9QlVk=;
+        b=bQ2mKVoN7MkgjcYRDQTdEngWGvm3z7WzmQTv/42mdad5GjEJCcvOWU1Wv6ZYYyX99o
+         fZDm0OeeELtMcAQRFb057DqxlAPDCfiOijl7dvEJYTezdtAswGW9PRUcWeu0SsplJnpD
+         7rkLqCm7yVXyxu047f19ujuwYDtGgHFkZ13rC+nYEziBRKXRhu24IdGz57ZL2ntZhHky
+         4KrvFvNmxpvIkGUJMxDCAfHTCBoBQEC3DPUMwpglOT56ZLa3SucKhLhPoB1ttgNUyLMu
+         cxH/o5DmKiHyz8PdTTuVk+EsNtKbF0sQJrT8nQDVYF0aQwslStBPp+WIeegQAX7pmY9h
+         7oyA==
+X-Gm-Message-State: AOAM533qko3JhutFSsnoA8OutVS8Tqh+2zu8hMt/xOQrzuhP6dheMTIE
+        +Klfm/iy0sNUS5nud37UCRXubOgdR01rIMDmR2c=
+X-Google-Smtp-Source: ABdhPJwHZQ/SuWWjX2a7/T2uWhTDgyqi0D7QJ327tEhGpJR6MJSjoTNFKlerViL4vMV6iTYKSx3eZqV9iBL7TFnY5UY=
+X-Received: by 2002:a37:664a:: with SMTP id a71mr15022946qkc.370.1604422415844;
+ Tue, 03 Nov 2020 08:53:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201030195655.GD1042051@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CAKWwwMhUPk3hAs6oPKHxvV7jVgHh4WP3bvZGYOkPaSF9fRRh9Q@mail.gmail.com>
+In-Reply-To: <CAKWwwMhUPk3hAs6oPKHxvV7jVgHh4WP3bvZGYOkPaSF9fRRh9Q@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 3 Nov 2020 08:53:24 -0800
+Message-ID: <CAF6AEGt_tNO2uPZk_rA=q-haUSgvcvbHE53gyrOjpdVOqr1J0g@mail.gmail.com>
+Subject: Re: [PATCH] drivers: drm: fix msm_drv.h warning
+To:     dev god <g0d3ph@gmail.com>
+Cc:     trivial@kernel.org, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Should be fixed by:
 
-On 10/30/20 2:56 PM, Andrew Lunn wrote:
-> On Fri, Oct 30, 2020 at 12:29:48PM -0500, Dan Murphy wrote:
->> Per the 802.3cg spec the 10base T1L can operate at 2 different
->> differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
->> drive that output is dependent on the PHY's on board power supply.
-> Hi Dan
->
-> So this property is about the board being able to support the needed
-> voltages? The PHY is not forced into 2.4v p2p, it just says the PHY
-> can operate at 2.4v and the board will not melt, blow a fuse, etc?
->
-> I actually think it is normal to specify the reverse. List the maximum
-> that device can do because of board restrictions. e.g.
->
-> - maximum-power-milliwatt : Maximum module power consumption
->    Specifies the maximum power consumption allowable by a module in the
->    slot, in milli-Watts.  Presently, modules can be up to 1W, 1.5W or 2W.
->
-> - max-link-speed:
->     If present this property specifies PCI gen for link capability.  Host
->     drivers could add this as a strategy to avoid unnecessary operation for
->     unsupported link speed, for instance, trying to do training for
->     unsupported link speed, etc.  Must be '4' for gen4, '3' for gen3, '2'
->     for gen2, and '1' for gen1. Any other values are invalid.
->
->   - max-microvolt : The maximum voltage value supplied to the haptic motor.
->                  [The unit of the voltage is a micro]
->
-> So i think this property should be
->
->     max-tx-rx-p2p = <1000>;
+https://patchwork.freedesktop.org/patch/397039/?series=83038&rev=1
 
-When I was re-writing the code I couldn't come up with a better property 
-name but I like this one.
-
-I will implement it.
-
-Do you have any issue with the property being in the ethernet-phy.yaml?
-
-Dan
-
-
+On Mon, Nov 2, 2020 at 7:44 PM dev god <g0d3ph@gmail.com> wrote:
+>
+> Hi
+>
+> fix implicit declaration of function error.
+>
+> >> drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1229:7: error: implicit declaration of function 'msm_dp_display_pre_disable' [-Werror,-Wimplicit-function-declaration]
+>                    if (msm_dp_display_pre_disable(priv->dp, drm_enc))
+>                        ^
+>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c:1229:7: note: did you mean 'msm_dp_display_disable'?
+>    drivers/gpu/drm/msm/msm_drv.h:420:19: note: 'msm_dp_display_disable' declared here
+>    static inline int msm_dp_display_disable(struct msm_dp *dp,
+>                      ^
+>    1 error generated.
+>
+> Signed-off-by: Gah0 <g0d3ph@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index f7f5c258b553..52d9a82fb64f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -14,7 +14,7 @@
+>  #include <drm/drm_file.h>
+>  #include <drm/drm_probe_helper.h>
+>
+> -#include "msm_drv.h"
+> +#include "../../msm_drv.h"
+>  #include "dpu_kms.h"
+>  #include "dpu_hwio.h"
+>  #include "dpu_hw_catalog.h"
+> --
+> 2.25.1
