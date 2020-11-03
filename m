@@ -2,185 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7002A5050
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F722A5051
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgKCTox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:44:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgKCTow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:44:52 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBB1C20732;
-        Tue,  3 Nov 2020 19:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604432691;
-        bh=WBXc+BZ/I4NcYIdxatU1WXrfBr+J+iL8AtTPOpHziUo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tWmDL0DDx3qceKw13Xy/WKnpfO82V76YUrVxLjAryQTeRMulbCDky1Q7gZO2rB1Xu
-         I7F/XaST4oGnM7Mt2Nf08jmvZpgKd7y65KMrHXrVGxYLQUaimPap0riweO+F4MOwje
-         beCmKEDbV63oAtgP0BXCYEe+KeVffQSpefL5OqNw=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        "Justin M . Forbes" <jforbes@fedoraproject.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stanislav Ivanichkin <sivanichkin@yandex-team.ru>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools changes for v5.11
-Date:   Tue,  3 Nov 2020 16:44:41 -0300
-Message-Id: <20201103194441.197821-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1729702AbgKCTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:46:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726660AbgKCTqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:46:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604432778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hXGHvDYwh9NMkyXNB/mXiydEr8BiB4sd5uCcFnHHQZg=;
+        b=chwpTUtqHwO02E0vi3/Q7iXNI88a/J1qSQNV/ZpXJ8DOipuh0xSFZjIo4qlN9FlCW1PLof
+        P9mmx6hwaluMP2xkOYijiBlxSyka+bF+ZDW60DaeVcnBWPyeOCMlbg1ZjdPcII361h0IW2
+        EyJRna6Q14KM5jGfCYZJuhUGVamgCQ8=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-5g9qYqxiPCivhHTXlBBjuQ-1; Tue, 03 Nov 2020 14:46:16 -0500
+X-MC-Unique: 5g9qYqxiPCivhHTXlBBjuQ-1
+Received: by mail-qk1-f200.google.com with SMTP id u16so11476856qkm.22
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 11:46:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hXGHvDYwh9NMkyXNB/mXiydEr8BiB4sd5uCcFnHHQZg=;
+        b=n2VHDJnk7g497flgUQ2UzygpC9pFTCzBcBEyKADhflSH/epHmtf2Y5F5WP5wgHWfI7
+         CZZzGLyZz8ef6PDAS7ELAPm6TOlAtk9y0XNUWXKFxn6ZxHjGNKcAJ1rgnrYSStTPB3c5
+         Epg4xxwD4+n24/AXM/5SmA2pyxRbLRZCl5FTEdJb6yfwdQ2SyB20UJKIf0TpwbDn8yu9
+         tew0L3IOmSixPaUx7VLRQe5q8G6j96bFRunX3eMk5PBqcy4MuLnpJIzGOWIcVso1pXc3
+         pMWK5pBzD/0omSfdzPA2OLGVhpSVSE2xfALTn4Gz3b5oHJfRzSUzF/osNxf/p+Xhg9PR
+         3fZA==
+X-Gm-Message-State: AOAM530DJCoCow5P+ZermX6N5mEcxwsXvpbpzMTZc0ZnVjWsTwMHTfs+
+        8ONgvNEt6EQfB+tzksiRlEjl04r6lNiP3BbYB0WhAK5Szeo7vLkT1OyoBGMO+jYaEs3ygi+RjVx
+        J8GXWJyRG4IDy9woFV2AmLTEW
+X-Received: by 2002:ae9:f402:: with SMTP id y2mr20621906qkl.459.1604432776434;
+        Tue, 03 Nov 2020 11:46:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyHrx/4K1ur2emSikIwCSW6QoSh0HGIlNgos3cwaHoIzJ12L9uFjx7qLeKQUNbiJ0RTQKVuVA==
+X-Received: by 2002:ae9:f402:: with SMTP id y2mr20621874qkl.459.1604432776110;
+        Tue, 03 Nov 2020 11:46:16 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
+        by smtp.gmail.com with ESMTPSA id i70sm11572985qke.11.2020.11.03.11.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 11:46:15 -0800 (PST)
+Date:   Tue, 3 Nov 2020 14:46:13 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>, mst@redhat.com,
+        netdev@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
+Message-ID: <20201103194613.GK20600@xz-x1>
+References: <20201029174351.134173-1-sgarzare@redhat.com>
+ <751cc074-ae68-72c8-71de-a42458058761@redhat.com>
+ <20201030105422.ju2aj2bmwsckdufh@steredhat>
+ <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
+ <20201102171104.eiovmkj23fle5ioj@steredhat>
+ <8648a2e3-1052-3b5b-11ce-87628ac8dd33@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <8648a2e3-1052-3b5b-11ce-87628ac8dd33@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Nov 03, 2020 at 05:04:23PM +0800, Jason Wang wrote:
+> 
+> On 2020/11/3 上午1:11, Stefano Garzarella wrote:
+> > On Fri, Oct 30, 2020 at 07:44:43PM +0800, Jason Wang wrote:
+> > > 
+> > > On 2020/10/30 下午6:54, Stefano Garzarella wrote:
+> > > > On Fri, Oct 30, 2020 at 06:02:18PM +0800, Jason Wang wrote:
+> > > > > 
+> > > > > On 2020/10/30 上午1:43, Stefano Garzarella wrote:
+> > > > > > This patch enables the IOTLB API support for vhost-vsock devices,
+> > > > > > allowing the userspace to emulate an IOMMU for the guest.
+> > > > > > 
+> > > > > > These changes were made following vhost-net, in details this patch:
+> > > > > > - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
+> > > > > >   device if the feature is acked
+> > > > > > - implements VHOST_GET_BACKEND_FEATURES and
+> > > > > >   VHOST_SET_BACKEND_FEATURES ioctls
+> > > > > > - calls vq_meta_prefetch() before vq processing to prefetch vq
+> > > > > >   metadata address in IOTLB
+> > > > > > - provides .read_iter, .write_iter, and .poll callbacks for the
+> > > > > >   chardev; they are used by the userspace to exchange IOTLB messages
+> > > > > > 
+> > > > > > This patch was tested with QEMU and a patch applied [1] to fix a
+> > > > > > simple issue:
+> > > > > >     $ qemu -M q35,accel=kvm,kernel-irqchip=split \
+> > > > > >            -drive file=fedora.qcow2,format=qcow2,if=virtio \
+> > > > > >            -device intel-iommu,intremap=on \
+> > > > > >            -device vhost-vsock-pci,guest-cid=3,iommu_platform=on
+> > > > > 
+> > > > > 
+> > > > > Patch looks good, but a question:
+> > > > > 
+> > > > > It looks to me you don't enable ATS which means vhost won't
+> > > > > get any invalidation request or did I miss anything?
+> > > > > 
+> > > > 
+> > > > You're right, I didn't see invalidation requests, only miss and
+> > > > updates.
+> > > > Now I have tried to enable 'ats' and 'device-iotlb' but I still
+> > > > don't see any invalidation.
+> > > > 
+> > > > How can I test it? (Sorry but I don't have much experience yet
+> > > > with vIOMMU)
+> > > 
+> > > 
+> > > I guess it's because the batched unmap. Maybe you can try to use
+> > > "intel_iommu=strict" in guest kernel command line to see if it
+> > > works.
+> > > 
+> > > Btw, make sure the qemu contains the patch [1]. Otherwise ATS won't
+> > > be enabled for recent Linux Kernel in the guest.
+> > 
+> > The problem was my kernel, it was built with a tiny configuration.
+> > Using fedora stock kernel I can see the 'invalidate' requests, but I
+> > also had the following issues.
+> > 
+> > Do they make you ring any bells?
+> > 
+> > $ ./qemu -m 4G -smp 4 -M q35,accel=kvm,kernel-irqchip=split \
+> >     -drive file=fedora.qcow2,format=qcow2,if=virtio \
+> >     -device intel-iommu,intremap=on,device-iotlb=on \
+> >     -device vhost-vsock-pci,guest-cid=6,iommu_platform=on,ats=on,id=v1
+> > 
+> >     qemu-system-x86_64: vtd_iova_to_slpte: detected IOVA overflow    
+> > (iova=0x1d40000030c0)
+> 
+> 
+> It's a hint that IOVA exceeds the AW. It might be worth to check whether the
+> missed IOVA reported from IOTLB is legal.
 
-	Please consider pulling, only fixes and a sync of the headers so
-that the perf build is silent, please let me know if I made any other
-mistake,
+Yeah.  By default the QEMU vIOMMU should only support 39bits width for guest
+iova address space.  To extend it, we can use:
 
-Best regards,
+  -device intel-iommu,aw-bits=48
 
-- Arnaldo
+So we'll enable 4-level iommu pgtable.
 
-The following changes since commit b7cbaf59f62f8ab8f157698f9e31642bff525bd0:
+Here the iova is obvious longer than this, so it'll be interesting to know why
+that iova is allocated in the guest driver since the driver should know somehow
+that this iova is beyond what's supported (guest iommu driver should be able to
+probe viommu capability on this width information too).
 
-  Merge branch 'akpm' (patches from Andrew) (2020-11-02 14:47:37 -0800)
+-- 
+Peter Xu
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.10-2020-11-03
-
-for you to fetch changes up to 5d020cbd86204e51da05628623a6f9729d4b04c8:
-
-  tools feature: Fixup fast path feature detection (2020-11-03 09:24:20 -0300)
-
-----------------------------------------------------------------
-perf tools updates for v5.10: 2nd batch.
-
-- Fix visibility attribute in python module init code with newer gcc.
-
-- Fix DRAM_BW_Use 0 issue for CLX/SKX in intel JSON vendor event files.
-
-- Fix the build on new fedora by removing LTO compiler options when
-  building perl support.
-
-- Remove broken __no_tail_call attribute.
-
-- Fix segfault when trying to trace events by cgroup.
-
-- Fix crash with non-jited BPF progs.
-
-- Increase buffer size in TUI browser, fixing format truncation.
-
-- Fix printing of build-id for objects lacking one.
-
-- Fix byte swapping for ino_generation field in MMAP2 perf.data records.
-
-- Fix byte swapping for CGROUP perf.data records, for cross arch
-  analysis of perf.data files.
-
-- Fix the fast path of feature detection.
-
-- Update kernel header copies.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Test results in the signed tag at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-for-v5.10-2020-11-03
-
-----------------------------------------------------------------
-Arnaldo Carvalho de Melo (14):
-      perf tools: Update copy of libbpf's hashmap.c
-      tools headers UAPI: Update process_madvise affected files
-      perf scripting python: Avoid declaring function pointers with a visibility attribute
-      tools headers UAPI: Sync prctl.h with the kernel sources
-      tools headers UAPI: Sync drm/i915_drm.h with the kernel sources
-      tools headers UAPI: Update fscrypt.h copy
-      tools x86 headers: Update cpufeatures.h headers copies
-      tools x86 headers: Update required-features.h header from the kernel
-      tools arch x86: Sync the msr-index.h copy with the kernel sources
-      tools UAPI: Update copy of linux/mman.h from the kernel sources
-      tools kvm headers: Update KVM headers from the kernel sources
-      tools headers UAPI: Update tools's copy of linux/perf_event.h
-      tools include UAPI: Update linux/mount.h copy
-      tools feature: Fixup fast path feature detection
-
-Jin Yao (1):
-      perf vendor events: Fix DRAM_BW_Use 0 issue for CLX/SKX
-
-Jiri Olsa (2):
-      perf tools: Initialize output buffer in build_id__sprintf
-      perf tools: Add missing swap for ino_generation
-
-Justin M. Forbes (1):
-      perf tools: Remove LTO compiler options when building perl support
-
-Namhyung Kim (1):
-      perf tools: Add missing swap for cgroup events
-
-Peter Zijlstra (1):
-      perf tools: Remove broken __no_tail_call attribute
-
-Song Liu (1):
-      perf hists browser: Increase size of 'buf' in perf_evsel__hists_browse()
-
-Stanislav Ivanichkin (1):
-      perf trace: Fix segfault when trying to trace events by cgroup
-
-Tommi Rantala (1):
-      perf tools: Fix crash with non-jited bpf progs
-
- tools/arch/arm64/include/uapi/asm/kvm.h            | 25 +++++++++
- tools/arch/s390/include/uapi/asm/sie.h             |  2 +-
- tools/arch/x86/include/asm/cpufeatures.h           |  6 ++-
- tools/arch/x86/include/asm/disabled-features.h     |  9 +++-
- tools/arch/x86/include/asm/msr-index.h             | 10 ++++
- tools/arch/x86/include/asm/required-features.h     |  2 +-
- tools/arch/x86/include/uapi/asm/kvm.h              | 20 ++++++++
- tools/arch/x86/include/uapi/asm/svm.h              | 13 +++++
- tools/build/feature/test-all.c                     |  1 -
- tools/include/linux/compiler-gcc.h                 | 12 -----
- tools/include/linux/compiler.h                     |  3 --
- tools/include/uapi/asm-generic/unistd.h            |  4 +-
- tools/include/uapi/drm/i915_drm.h                  | 59 ++++++++++++++++++++--
- tools/include/uapi/linux/fscrypt.h                 |  6 +--
- tools/include/uapi/linux/kvm.h                     | 19 +++++++
- tools/include/uapi/linux/mman.h                    |  1 +
- tools/include/uapi/linux/mount.h                   |  1 +
- tools/include/uapi/linux/perf_event.h              |  2 +-
- tools/include/uapi/linux/prctl.h                   |  9 ++++
- tools/include/uapi/linux/vhost.h                   |  4 ++
- tools/perf/Makefile.config                         |  1 +
- tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  | 11 ++--
- tools/perf/builtin-trace.c                         | 15 +++---
- .../arch/x86/cascadelakex/clx-metrics.json         |  2 +-
- .../pmu-events/arch/x86/skylakex/skx-metrics.json  |  2 +-
- tools/perf/tests/dwarf-unwind.c                    | 10 ++--
- tools/perf/ui/browsers/hists.c                     |  2 +-
- tools/perf/util/build-id.c                         |  2 +
- tools/perf/util/hashmap.c                          |  3 ++
- tools/perf/util/hashmap.h                          | 12 +++++
- tools/perf/util/machine.c                          | 11 +++-
- .../util/scripting-engines/trace-event-python.c    |  7 +--
- tools/perf/util/session.c                          | 14 +++++
- tools/perf/util/symbol.c                           |  7 +++
- tools/perf/util/symbol.h                           |  2 +
- 35 files changed, 257 insertions(+), 52 deletions(-)
