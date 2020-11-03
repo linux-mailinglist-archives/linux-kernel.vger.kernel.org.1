@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA062A3EFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97742A3F02
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgKCIdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:33:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgKCIdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:33:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D58E822264;
-        Tue,  3 Nov 2020 08:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604392395;
-        bh=deF+fK72tiaXqpNY2MrAivUNgrfVThGfY/QMTaLUbEs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HaWItFiUHwtH0HLRS9x1z0XhNFDfclO7tBgO0EHEWynBVvbbevgYENVL5pCqWxjGq
-         5Pfpbz5j1m4pZkyc6hj8hzYsF6iVQ5oh5CvXeiapVLK+dNNQDcQZOmLLezIeMP0nnt
-         zqgIsdpld3QRkXA2fxuC1KT6TK50KFOGvcyYk4CI=
-Date:   Tue, 3 Nov 2020 09:34:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Sudeep Dutt <sudeep.dutt@intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: remove mic/index from misc-devices/index.rst
-Message-ID: <20201103083408.GA2511903@kroah.com>
+        id S1726460AbgKCIfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:35:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgKCIfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:35:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D650BC0613D1;
+        Tue,  3 Nov 2020 00:35:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0eIRPF1ESaGV3yiCnvAzM4yO3j7M3IOuEBg1csgujt4=; b=Tz2Yhfv/344RsiHOb8HxBaMlNl
+        kOGsEjdZrvtCXbgMQADGPmx0nxNPRYeoy4Af7kIo7mjroBpSnS2pSzJN6HkEPsnqv/8g4KNYT2mKm
+        95mueY13d8rpGlNe2N3Y+PMCKph9HPUURR2fucclpVnpOplkRaQN59D8jgP+BNBCpxHWyc8Ik3c8p
+        9qHYy+5faBzAfQQ0hH4h9Qm5+QM6RxRVFyCwy/9B/tKJBm1w3CJwJATXu3R7mDfvR1JQfc7hWZ3r4
+        bUYXorE4S/8icfzDu/qr4bWaqngGLOtTPlKxKYYLiX2cNkcXU0T87L53pcPvHz6vbXzu2aBU20MYE
+        YMzVgWMQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZrmv-0002av-88; Tue, 03 Nov 2020 08:35:33 +0000
+Date:   Tue, 3 Nov 2020 08:35:33 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kexec@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] kexec: simplify compat_sys_kexec_load
+Message-ID: <20201103083533.GB9092@infradead.org>
+References: <20201102123151.2860165-1-arnd@kernel.org>
+ <20201102123151.2860165-2-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201102123151.2860165-2-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the recent removal of the misc/mic/ directory, the documentation
-build now warns because we forgot about this index file.
+> +	for (i=0; i < nr_segments; i++) {
 
-Fix that up so that there are no more warnings here.
+Missing spaces around the "=".
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Sudeep Dutt <sudeep.dutt@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> +SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+> +		struct kexec_segment __user *, segments, unsigned long, flags)
+> +{
+> +	return kernel_kexec_load(entry, nr_segments, segments, flags);
+> +}
+> +
+>  #ifdef CONFIG_COMPAT
+>  COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
+>  		       compat_ulong_t, nr_segments,
+>  		       struct compat_kexec_segment __user *, segments,
+>  		       compat_ulong_t, flags)
+>  {
+> +	return kernel_kexec_load(entry, nr_segments,
+> +				 (struct kexec_segment __user *)segments,
+> +				 flags);
+>  }
 
----
-
-I'll just take this in my tree as I have a bunch of other documentation
-fixups to get to Linus soon, if no one objects, as the breakage came
-from my tree in the first place.
-
-
-diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index 46072ce3d7ef..64420b3314fe 100644
---- a/Documentation/misc-devices/index.rst
-+++ b/Documentation/misc-devices/index.rst
-@@ -24,7 +24,6 @@ fit into other categories.
-    isl29003
-    lis3lv02d
-    max6875
--   mic/index
-    pci-endpoint-test
-    spear-pcie-gadget
-    uacce
+I don't think we need sys_compat_kexec_load at all now, all the syscall
+tables can simply switch to sys_kexec_load for the compat case as well
+now.
