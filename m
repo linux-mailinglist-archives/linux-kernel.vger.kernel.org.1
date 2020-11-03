@@ -2,197 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95FC2A5535
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD382A541D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388192AbgKCVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:38 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:33277 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388169AbgKCVGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:33 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103210620euoutp027f0613901dfb7109b0f422e4a88689b0~EG3qRygB30258502585euoutp02p;
-        Tue,  3 Nov 2020 21:06:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103210620euoutp027f0613901dfb7109b0f422e4a88689b0~EG3qRygB30258502585euoutp02p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604437580;
-        bh=1oVe+Mzyk4MxJ1ipUcz2F9R5YNk5nRkBDJIrpIbCamY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=QggSR4jAh0Ch3rHjS/C2jefwaBu1BvHkNd2+q5EGnGEOX3/c8jDfBzeqNt/5fetpv
-         t0o3DC2T4cfNYdeqqhurFRC7AQLmlEg155lQvFVE3i1xcTQnMX43Tb9hf0Um82wyiz
-         U9d52sc5ymq1fl2CnjEiMiNUXQWNbbUk0YI3e20o=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201103210615eucas1p27309115b25dca3b8522fe12dcd619323~EG3lWFtN50788807888eucas1p2O;
-        Tue,  3 Nov 2020 21:06:15 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 23.E3.06318.746C1AF5; Tue,  3
-        Nov 2020 21:06:15 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103210614eucas1p17e1aaa335b9562351bb0a0ed582b2f38~EG3k9OenP1959119591eucas1p1R;
-        Tue,  3 Nov 2020 21:06:14 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201103210614eusmtrp29f299e0a82b5ce8514deba51666ae20c~EG3k8k5bH1931819318eusmtrp2M;
-        Tue,  3 Nov 2020 21:06:14 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-52-5fa1c6472b7f
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 25.97.06017.646C1AF5; Tue,  3
-        Nov 2020 21:06:14 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201103210614eusmtip1f7d4140dbb6bb2ecff46c90808b25c5d~EG3kwKB_c0573305733eusmtip17;
-        Tue,  3 Nov 2020 21:06:14 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Andreas K. Besslein" <besslein.andreas@gmail.com>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [BUG] ax88179_178a - broken hw checksumming after resume
-Date:   Tue, 03 Nov 2020 22:05:55 +0100
-Message-ID: <dleftjimamrw0c.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2388390AbgKCVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387894AbgKCVH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:07:56 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 164C5205ED;
+        Tue,  3 Nov 2020 21:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604437675;
+        bh=kNkkSf7GPZiZAoqJ4K7JDQg+4mkspW6utqW9bsMXaRU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DBZAyCEzm0RNhkKpX+AaNvGVOqS0tWxzITpV2mfMXesSYXmDA3qzmQzZtjy0RoAKs
+         VQMnfwlCsfbxQrO7ISxXza9qO5LEIQJ5AUVtAkJGs/MxcvS3VXYimKr5744Y5WlSES
+         qZY5aZFyJYD09m4QBV9cj1Ua/WwKyvophPASsMnU=
+Date:   Tue, 3 Nov 2020 15:07:53 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        amurray@thegoodpenguin.co.uk, robh@kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
+Message-ID: <20201103210753.GA264744@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTURzAO7t3d9fZjeu0+qNZMO1DRuuJ3bAiI+j2+BD5JYSyWRcV3ZRd
-        VxZhBuUrXTXDdIlTMR/T+WKO1GExyiVmS4W0Wkg+MM0eoJGPyFzHoG+/8z+//+twaELxVhpI
-        J2hTBZ1WnaSk5KS9a9697WhXecyOl0aKay5qlHLN1R6S63nyleQW6/IprsR9k+Q6XmzjXtsN
-        Um6gvYTiKqpuEVxX2TpucXJMesiXN2XkU7yt9q2EbzN9kPEtlhyK97xxUHzbw04JX9vfJ+MN
-        NgviZ1o2nvKJlu+/KCQlXBJ02w+el8f3G9JTxoLTPK4KWQYagFzkQwO7BwpbR6lcJKcVbA0C
-        t6t35TCLwDayJPVaCnYGwXzpyX8Zr+YrCSxVI6huvyfD0gQCgyMgF9E0xarAaj3jdQLYGwS8
-        m26ivA7BctDaWvfX92cjYdxy/y+T7GbIKXhPeplh94Kn3oi8vJbdB7ZPwzIc94Pu4jES19FA
-        sXsaeRsAOykDe7aHwtMdgdHbWQRmf5hy2WSYN8BSm1niHQ7Y61BgDMe5eQjsJXMkdiLA82qB
-        wk4kDP8OwrgGhr744bZrwGh/QOAwA9mZCpwYCg13HCtFAiF/qgZh5qG2yEzh1zkLho9fJXfR
-        JtN/y5j+W8a0XJVgt0Bj+3Yc3gpV5Z8JzAegoeEbWYakFrRe0IuaOEHcrRUuq0S1RtRr41QX
-        kjUtaPmT9fx2/XiMOn/FOhFLI+Vq5qm9PEYhVV8Sr2icKHS50khT3WsUSGqTtYIygDnc23NO
-        wVxUX7kq6JJjdPokQXSiIJpUrmd2V0yeVbBx6lQhURBSBN2/WwntE5iBUHe2cyYt/CoinkUV
-        ZlqXBvta9i2qIm5FSyoLROs6s6P7+EJq1OCR4tLqLEOY9tlwyOne2ZG5+lnLNXP6IBl17G7H
-        UFbjN2aPLTH9567gaeZR1kCTMX7Cd1IvH3cG3agcdOnM+uJVeR9e+MfS107uCDnhtuTUPHeE
-        fh+l5ybalaQYr94ZRuhE9R/MSkexbAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7puxxbGGyz4oGmxccZ6VouNy++w
-        WJze/47F4vfqXjaLOedbWCx2n9C1uLCtj9Xi8q45bBaLlrUyWxxbIGbx++UTVgduj1kNvWwe
-        W1beZPLYOesuu8emVZ1sHneu7WHz2Dl7H5PHyksX2T36tqxi9Pi8SS6AM0rPpii/tCRVISO/
-        uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEv41JfXcET2Yo7xxexNzBe
-        luhi5OSQEDCROPdzCXMXIxeHkMBSRonGGV/Yuhg5gBJSEivnpkPUCEv8udbFBlHzlFFizp6l
-        rCA1bAJ6EmvXRoDERQS+M0ncm/uXBaSBWcBCYuvW1ewgtrCAo8TTVVPAbBYBVYnOybfBangF
-        zCXurJnECGKLClhKbHlxnx0iLihxcuYTqDnZEl9XP2eewMg3C0lqFpLULKAzmAU0Jdbv0ocI
-        a0ssW/iaGcK2lVi37j3LAkbWVYwiqaXFuem5xUZ6xYm5xaV56XrJ+bmbGIExt+3Yzy07GLve
-        BR9iFOBgVOLhPbBtYbwQa2JZcWXuIUYVoDGPNqy+wCjFkpefl6okwut09nScEG9KYmVValF+
-        fFFpTmrxIUZToN8mMkuJJucD00ReSbyhqaG5haWhubG5sZmFkjhvh8DBGCGB9MSS1OzU1ILU
-        Ipg+Jg5OqQbGmPWJghee2i8+t3aLj/ocW9GKmbZ620xtHHNEbsUeO2rKx952LaDvo1DowrX6
-        kzf6ts9jFRP8MmHd+nenZT/rfe1wP5Ow7cDTj9/PJtfOcfWq3hr/e9KExXYcitM0Pvjuutjc
-        35felinMIBpozB1dfTzk1AP3VarJ0XOllFKS+z9dPBcQJ+WlxFKckWioxVxUnAgABErRcdsC
-        AAA=
-X-CMS-MailID: 20201103210614eucas1p17e1aaa335b9562351bb0a0ed582b2f38
-X-Msg-Generator: CA
-X-RootMTR: 20201103210614eucas1p17e1aaa335b9562351bb0a0ed582b2f38
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201103210614eucas1p17e1aaa335b9562351bb0a0ed582b2f38
-References: <CGME20201103210614eucas1p17e1aaa335b9562351bb0a0ed582b2f38@eucas1p1.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad86fd8c-ea49-fa87-b491-348503d0bd52@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 03, 2020 at 08:57:01AM +0530, Vidya Sagar wrote:
+> On 11/3/2020 4:32 AM, Bjorn Helgaas wrote:
+> > On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
+> > > DesignWare core has a TLP digest (TD) override bit in one of the control
+> > > registers of ATU. This bit also needs to be programmed for proper ECRC
+> > > functionality. This is currently identified as an issue with DesignWare
+> > > IP version 4.90a. This patch does the required programming in ATU upon
+> > > querying the system policy for ECRC.
+> > 
+> > I guess this is a hardware defect, right?
+> Yes. This is common across all DWC implementations (version 4.90 precisely)
+> 
+> > How much of a problem would it be if we instead added a "no_ecrc"
+> > quirk for this hardware so we never enabled ECRC?
+> Well, on Tegra for some of the high fidelity use cases, ECRC is required to
+> be turned on and if it can be done safely with these patches, why shouldn't
+> we not enable ECRC at all?
+> 
+> > IIUC, the current Linux support of ECRC is a single choice at
+> > boot-time: by default ECRC is not enabled, but if you boot with
+> > "pci=ecrc=on", we turn on ECRC for every device.
+> > 
+> > That seems like the minimal support, but I think the spec allows ECRC
+> > to be enabled selectively, on individual devices.  I can imagine a
+> > sysfs knob that would allow us to enable/disable ECRC per-device at
+> > run-time.
+> > 
+> > If we had such a sysfs knob, it would be pretty ugly and maybe
+> > impractical to work around this hardware issue.  So I'm a little bit
+> > hesitant to add functionality that might have to be removed in the
+> > future.
+>
+> Agree with this. But since it is a boot-time choice at this point, I think
+> we can still go ahead with this approach to have a working ECRC mechanism
+> right? I don't see any sysfs knob for AER controlling at this point.
 
-Hi,
+I don't want to do anything that will prevent us from adding
+per-device ECRC control in the future.
 
-I've got a generic AX88179 based USB ethernet interface and I am
-experiencing a following problem.
+My concern is that if we add a run-time sysfs knob in the future, the
+user experience on this hardware will be poor because there's no
+convenient path to twiddle the PCIE_ATU_TD bit when the generic code
+changes the AER Control bit.
 
-+ After resuming from suspend
-+ hw tx-checksuming doesn't work
-+ for UDP packets.
+What is the failure mode in these scenarios:
 
-I've got an RPi4 on the other end of the cable. To test the connection
-I=C2=A0use the following commands
+  - User boots with defaults, ECRC is disabled.
+  - User enables ECRC via sysfs.
+  - What happens here?  ECRC is enabled via AER Control but not via
+    DWC TD bit.  I assume ECRC doesn't work.  Does it cause PCIe
+    errors (malformed TLP, etc)?
 
-tcptraceroute -n rpi4
-traceroute -In rpi4   # ICMP probes
-traceroute -n rpi4    # UDP probes
+Or this one:
 
-The former two (TCP, ICMP) work fine, the latter does not until I turn
-of tx-checksumming with ethtool(8). I need to turn off both
-tx-checksum-ipv4 and tx-checksum-ipv6. Only then ethtool(8) reports
-tx-checksumming beeing turned off and UDP probing starts working.
+  - User boots with "pci=ecrc=on", ECRC is enabled.
+  - ECRC works fine.
+  - User disables ECRC via sysfs.
+  - What happens here?  ECRC is disabled via AER Control, but DWC TD
+    bit thinks it's still enabled.
 
-The other way to fix the problem is to bring the interface down and up
-again with ip(8). Then hw checksumming may be turned on and works
-fine.
+If you enabled ECRC unconditionally on DWC and the sysfs knob had no
+effect, I'd be OK with that.  I'm more worried about what happens when
+the AER bit and the DWC TD bit are set so they don't match.  What is
+the failure mode there?
 
-Do tell, if there are any other details I can share to help fixing this
-problem.
-
-Linux darkstar 4.19.0-11-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64=
- GNU/Linux
-
-GNU Make                4.2.1
-Binutils                2.31.1
-Util-linux              2.33.1
-Mount                   2.33.1
-Dynamic linker (ldd)    2.28
-Procps                  3.3.15
-Kbd                     2.0.4
-Console-tools           2.0.4
-Sh-utils                8.30
-Udev                    241
-Modules Loaded          ac aesni_intel aes_x86_64 af_alg ahci algif_hash
-algif_skcipher ansi_cprng arc4 autofs4 ax88179_178a battery binfmt_misc
-bluetooth bnep bonding btbcm btintel btrtl btusb button ccm cfg80211
-cmac coretemp cqhci crc16 crc32c_generic crc32c_intel crc32_pclmul
-crct10dif_pclmul cryptd crypto_simd ctr dcdbas dell_laptop dell_rbtn
-dell_smbios dell_smm_hwmon dell_smo8800 dell_wmi dell_wmi_descriptor
-dm_crypt dm_mod drbg drm drm_kms_helper e1000e ecb ecdh_generic
-efi_pstore efivarfs efivars ehci_hcd ehci_pci evdev ext4 fat fscrypto
-ftdi_sio fuse ghash_clmulni_intel glue_helper gspca_main gspca_zc3xx hid
-hid_generic i2c_algo_bit i2c_i801 i915 intel_cstate intel_powerclamp
-intel_rapl intel_rapl_perf intel_uncore ip_tables ipt_MASQUERADE
-irqbypass iTCO_vendor_support iTCO_wdt iwldvm iwlwifi jbd2 joydev kvm
-kvm_intel libahci libata libcrc32c lp lpc_ich mac80211 mbcache media mei
-mei_me mei_wdt mfd_core mii mmc_core nf_conntrack nf_defrag_ipv4
-nf_defrag_ipv6 nf_nat nf_nat_ipv4 nfnetlink nf_tables nft_chain_nat_ipv4
-nft_compat nft_counter nls_ascii nls_cp437 parport parport_pc pcbc
-pcc_cpufreq ppdev psmouse rfcomm rfkill rng_core scsi_mod sdhci
-sdhci_pci sd_mod serio_raw sg snd snd_hda_codec snd_hda_codec_generic
-snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_core snd_hda_intel
-snd_hwdep snd_pcm snd_rawmidi snd_seq_device snd_timer snd_usb_audio
-snd_usbmidi_lib soundcore sparse_keymap sunrpc thermal tpm tpm_tis
-tpm_tis_core uas usb_common usbcore usbhid usbnet usbserial usb_storage
-uvcvideo vfat video videobuf2_common videobuf2_memops videobuf2_v4l2
-videobuf2_vmalloc videodev wmi wmi_bmof x86_pkg_temp_thermal xhci_hcd
-xhci_pci x_tables xt_conntrack xt_state
-
-Kind regards,
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+hxjMACgkQsK4enJil
-gBC3hgf+OHNIEkXUdeOpU5R/pKTOBBrg+1VJtJYKph5nWWdInHv26pmp0fWMhpX/
-gi/YVwgi9wA0v+kI+fpW3VlYwIMXLu/KT/u/cUtK+EvnV6lj8u82Lfm02k7Bsy2a
-kS7x7YxwIxONwJO+5+sOrFOvBnySejfxafVoDlArHz6ojAx3FST1EEJH1POgKccR
-c0wcqYbYoQrDGAWpsMXcel+xZwqlid7Rbti6thkeXbzaciHtwxF3lRqlZQ7PdxMU
-tDvLs8v1CIuHsu5rKhrNZoQHtk1ac9eTcUtRsNsXrAI1g5Vw8TxFaz+nTXBoz1wk
-ESHuurphREgQIVuaw3FzmuX5qJg/GQ==
-=U09c
------END PGP SIGNATURE-----
---=-=-=--
+> > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
+> > > ---
+> > > V3:
+> > > * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
+> > > 
+> > > V2:
+> > > * Addressed Jingoo's review comment
+> > > * Removed saving 'td' bit information in 'dw_pcie' structure
+> > > 
+> > >   drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
+> > >   drivers/pci/controller/dwc/pcie-designware.h | 1 +
+> > >   2 files changed, 7 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> > > index b5e438b70cd5..cbd651b219d2 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> > > @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+> > >        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+> > >                                 upper_32_bits(pci_addr));
+> > >        val = type | PCIE_ATU_FUNC_NUM(func_no);
+> > > +     if (pci->version == 0x490A)
+> > > +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+> > >        val = upper_32_bits(size - 1) ?
+> > >                val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+> > >        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+> > > @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+> > >                           lower_32_bits(pci_addr));
+> > >        dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+> > >                           upper_32_bits(pci_addr));
+> > > -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+> > > -                        PCIE_ATU_FUNC_NUM(func_no));
+> > > +     val = type | PCIE_ATU_FUNC_NUM(func_no);
+> > > +     if (pci->version == 0x490A)
+> > > +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
+> > > +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+> > >        dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+> > > 
+> > >        /*
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > > index e7f441441db2..b01ef407fd52 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> > > @@ -89,6 +89,7 @@
+> > >   #define PCIE_ATU_TYPE_IO             0x2
+> > >   #define PCIE_ATU_TYPE_CFG0           0x4
+> > >   #define PCIE_ATU_TYPE_CFG1           0x5
+> > > +#define PCIE_ATU_TD_SHIFT            8
+> > >   #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+> > >   #define PCIE_ATU_CR2                 0x908
+> > >   #define PCIE_ATU_ENABLE                      BIT(31)
+> > > --
+> > > 2.17.1
+> > > 
