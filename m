@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DA02A5327
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5677C2A5331
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732664AbgKCU6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:58:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
+        id S1732999AbgKCU6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731846AbgKCU6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:11 -0500
+        id S1731757AbgKCU6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A3BA223AC;
-        Tue,  3 Nov 2020 20:58:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CC53223AC;
+        Tue,  3 Nov 2020 20:58:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437090;
-        bh=m8Yc0AMDiC0orHwfyeGZ+Kph9cEuyK8UTRSjXVz/zPo=;
+        s=default; t=1604437116;
+        bh=Or27/3b6cRIcdARZiqOBJNlM//9C/2yDExnkL/5Hcgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9q+Jo+XIt/qsegn2nTG6C1lQbM+tLZHt9hsCWkMg1tjdQvdjwC9HTKoPGSeGqXo6
-         NHb0xSNXg2UJgKqQS6Nx3Yl4qIfPg/g3bfueJKtjZgl/6nUH0Zz4hdOsxrdBaw85cS
-         x9pf2MVqD3WnJ4GTd7AMtk8LgcY+8AXNzGocVl7o=
+        b=Zt+ujbMgUramFXieDjZGvHxcITYWX/iEEXtlzA2JXTjLKOBWSKaoxsFA2M/MIWiLP
+         gPCGdj/IUdbtMd2wAvC7kAZ0eRgQYrbqo2WBCdPpmJ+795uHng9HWPF2fCCARAz4c2
+         +slj5uJm20j0gDoHf3k3bljssZl4UNAb4CBPH6fI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raymond Tan <raymond.tan@intel.com>,
+        stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@linux.intel.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 115/214] ACPI: EC: PM: Flush EC work unconditionally after wakeup
-Date:   Tue,  3 Nov 2020 21:36:03 +0100
-Message-Id: <20201103203301.657099491@linuxfoundation.org>
+Subject: [PATCH 5.4 116/214] ACPI: EC: PM: Drop ec_no_wakeup check from acpi_ec_dispatch_gpe()
+Date:   Tue,  3 Nov 2020 21:36:04 +0100
+Message-Id: <20201103203301.754728418@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -44,44 +45,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 5e92442bb4121562231e6daf8a2d1306cb5f8805 upstream.
+commit e0e9ce390d7bc6a705653d4a8aa4ea92c9a65e53 upstream.
 
-Commit 607b9df63057 ("ACPI: EC: PM: Avoid flushing EC work when EC
-GPE is inactive") has been reported to cause some power button wakeup
-events to be missed on some systems, so modify acpi_ec_dispatch_gpe()
-to call acpi_ec_flush_work() unconditionally to effectively reverse
-the changes made by that commit.
+It turns out that in some cases there are EC events to flush in
+acpi_ec_dispatch_gpe() even though the ec_no_wakeup kernel parameter
+is set and the EC GPE is disabled while sleeping, so drop the
+ec_no_wakeup check that prevents those events from being processed
+from acpi_ec_dispatch_gpe().
 
-Also note that the problem which prompted commit 607b9df63057 is not
-reproducible any more on the affected machine.
-
-Fixes: 607b9df63057 ("ACPI: EC: PM: Avoid flushing EC work when EC GPE is inactive")
-Reported-by: Raymond Tan <raymond.tan@intel.com>
+Reported-by: Todd Brandt <todd.e.brandt@linux.intel.com>
 Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/ec.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/acpi/ec.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
 --- a/drivers/acpi/ec.c
 +++ b/drivers/acpi/ec.c
-@@ -1976,12 +1976,11 @@ bool acpi_ec_dispatch_gpe(void)
+@@ -1968,9 +1968,6 @@ bool acpi_ec_dispatch_gpe(void)
+ 	if (acpi_any_gpe_status_set(first_ec->gpe))
+ 		return true;
+ 
+-	if (ec_no_wakeup)
+-		return false;
+-
+ 	/*
+ 	 * Dispatch the EC GPE in-band, but do not report wakeup in any case
  	 * to allow the caller to process events properly after that.
- 	 */
- 	ret = acpi_dispatch_gpe(NULL, first_ec->gpe);
--	if (ret == ACPI_INTERRUPT_HANDLED) {
-+	if (ret == ACPI_INTERRUPT_HANDLED)
- 		pm_pr_dbg("EC GPE dispatched\n");
- 
--		/* Flush the event and query workqueues. */
--		acpi_ec_flush_work();
--	}
-+	/* Flush the event and query workqueues. */
-+	acpi_ec_flush_work();
- 
- 	return false;
- }
 
 
