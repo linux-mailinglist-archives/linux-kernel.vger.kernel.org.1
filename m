@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEFA2A4739
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733C02A4748
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbgKCOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:04:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729440AbgKCOEF (ORCPT
+        id S1729488AbgKCOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729361AbgKCOIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:04:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604412243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IsejNI8EYSmowoiAvOvFY33zKF4jozyNUSQ9LBHEIew=;
-        b=G+BmjeiHfQkXjo4My/zO9tdhf0PVaW6LzA6xieVKsT5aLa3SQ+ShQaVSrO9xBSVu7t3APa
-        uBxUBvfLqOmYlO6YTGOT195Iev6lE3DfIyJx5UZxqf+SxQ+wHN+ULxm3QVPctVECVC2ubb
-        ePwmjgOqrpCbmh3SGWKBKM2gK7J2ZpQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-cvTYnFueNbGheckDPJMuxw-1; Tue, 03 Nov 2020 09:03:58 -0500
-X-MC-Unique: cvTYnFueNbGheckDPJMuxw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A2E3107465A;
-        Tue,  3 Nov 2020 14:03:56 +0000 (UTC)
-Received: from localhost (ovpn-12-165.pek2.redhat.com [10.72.12.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5383F5C230;
-        Tue,  3 Nov 2020 14:03:55 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 22:03:52 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201103140352.GB3177@MiWiFi-R3L-srv>
-References: <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201013131735.GL25604@MiWiFi-R3L-srv>
- <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201020151814.GU25604@MiWiFi-R3L-srv>
- <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201022040440.GX25604@MiWiFi-R3L-srv>
- <DM6PR05MB5292D8B85FA9DDE263F6147AA41D0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <DM6PR05MB5292DF14DF1C82FFE001AC24A4100@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201102143035.GA3177@MiWiFi-R3L-srv>
- <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
+        Tue, 3 Nov 2020 09:08:13 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B88C0613D1;
+        Tue,  3 Nov 2020 06:08:12 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id v19so14241198lji.5;
+        Tue, 03 Nov 2020 06:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=0w+rja1f0+G0RfOXnBBK3uQA6RuMQSPbDSi88HYNgNM=;
+        b=R+YTXLaJT5LRB3SDG2U3aax6E3yLKCcwuhgc0epoTouJXakmiduZUDKre0YfVNipLB
+         Mwo2Jud2dYkQ/ZvFyfwGQOa6VTksioP5O29eQUPcXYMfyTLG+qSt324jyOPAf6hojUgh
+         d9aT6C3bEvljUsUbYxF23i/Ti2xq+/SX0kgdra6S6LqjDmXzTp6pWEWrI21oEP6ycB/N
+         uhcmT2bbDWO37G7PDyxVu3/4Cm8DoiYal6vtkHGLqM+dfZudapXDtZGkcApEENYCRTTY
+         a50ZzOaTiyjnGvI73R8A0Nar0VXQWXec+3G5X/gxeP9SsU7Zl7Fy4GAR5ADMg3Kjex8f
+         m2jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=0w+rja1f0+G0RfOXnBBK3uQA6RuMQSPbDSi88HYNgNM=;
+        b=csC10LQkqtU5JDn0p9rNsqcOC6buIuvHZ6jDJXGshVYKAWXU16ziznTz7zGN+5UiZl
+         fooB5EcBDRFy8ZVe/ze6xewIoWliSneGiTwooyJySqy44/QnX4X5YEjW+fvDcDgkTKij
+         3egKOzR/rro6TbJvf/C3YxntQk/PVt6V+/AkGVDhBOnM5+clo01QC2tFc43O6eHrpuWX
+         yqKTt8lAqgxfBrz5toF0BTaSBkV4CjYZkPZi+TbzsTCPqtmWklLFWrVbfsysfcmvHqKa
+         iS4eV1S69DESAVruMHLzGGsTWsdkn3wVHVmfCY5QTN12fzv9xWFVUO7Wk9c4LmQWQu9O
+         Oljw==
+X-Gm-Message-State: AOAM530dQL8fZm7lLjA3bkPBDHHk8hfPMfWbxt4rzpgcUK0ZzKj2tRgv
+        8GuKfKbm7JY+ODcnFbl7GjIycKd4wGy/RKDaGEKpOMBSer0=
+X-Google-Smtp-Source: ABdhPJwl8ry5bPgxL7i4vb9WG0Em25+04gn0ilBPCIMhAiAHYx2hDHAioJBclKwKX5YWNigaffZFyk2LI5y4hopgEH8=
+X-Received: by 2002:a2e:7815:: with SMTP id t21mr8217735ljc.217.1604412491411;
+ Tue, 03 Nov 2020 06:08:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201030125149.8227-1-s.nawrocki@samsung.com> <CGME20201030125303eucas1p14a9de4111ffafc1870527abdea0994c9@eucas1p1.samsung.com>
+ <20201030125149.8227-4-s.nawrocki@samsung.com> <522dd3d8-7c76-92c6-ab1e-7e04797b3e9f@samsung.com>
+ <20bc744b-bbb1-8803-3844-97d59f708f43@samsung.com>
+In-Reply-To: <20bc744b-bbb1-8803-3844-97d59f708f43@samsung.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Tue, 3 Nov 2020 23:07:34 +0900
+Message-ID: <CAGTfZH1wsdoFki1nUJ73DFvgOMDhTTXfx-Bmt=kUHxfpKDJ3rQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/6] PM / devfreq: exynos-bus: Add registration of
+ interconnect child device
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/20 at 12:34pm, Rahul Gopakumar wrote:
-> >> So, you mean with the draft patch applied, the initial performance
-> regression goes away, just many page corruption errors with call trace
-> are seen, right?
-> 
-> Yes, that's right.
-> 
-> >> And the performance regression is about 2sec delay in
-> your system?
-> 
-> The delay due to this new page corruption issue is about
-> 3 secs.
-> 
-> Here is the summary
-> 
-> * Initial problem - 2 secs
-> * Draft patch - Fixes initial problem (recovers 2 secs) but
-> brings in new page corruption issue (3 secs)
-> 
-> >> Could you tell how you setup vmware VM so that I can ask our QA for
-> help to create a vmware VM for me to test?
-> 
-> * Use vSphere ESXi 6.7 or 7.0 GA.
-> * Create VM using vSphere Web Client and specify 1TB VM Memory.
-> * Install RHEL 8.1, that's the guest used in this test.
+Hi Sylwester,
 
-OK, I see. The draft patch fix the original issue, seems some boundary
-of memory region is not handled correctly. Thanks for confirmation.
+On Tue, Nov 3, 2020 at 9:32 PM Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+>
+> Hi Chanwoo,
+>
+> On 03.11.2020 11:45, Chanwoo Choi wrote:
+> > On 10/30/20 9:51 PM, Sylwester Nawrocki wrote:
+> >> This patch adds registration of a child platform device for the exynos
+> >> interconnect driver. It is assumed that the interconnect provider will
+> >> only be needed when #interconnect-cells property is present in the bus
+> >> DT node, hence the child device will be created only when such a property
+> >> is present.
+> >>
+> >> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>
+> >>  drivers/devfreq/exynos-bus.c | 17 +++++++++++++++++
+>
+> > We don't need to  add 'select INTERCONNECT_EXYNOS' in Kconfig?
+>
+> I think by doing so we could run into some dependency issues.
+>
+> > Do you want to remain it as optional according to user?
+> Yes, I would prefer to keep it selectable through defconfig.
+> Currently it's only needed by one 32-bit ARM board.
 
-The memory layout is important in this case. Not sure if making a VM gesut
-as you suggested can also create a system with below memory layout.
+OK.
 
-[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
-[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xbfffffff]
-[    0.008843] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x55ffffffff]
-[    0.008844] ACPI: SRAT: Node 1 PXM 1 [mem 0x5600000000-0xaaffffffff]
-[    0.008844] ACPI: SRAT: Node 2 PXM 2 [mem 0xab00000000-0xfcffffffff]
-[    0.008845] ACPI: SRAT: Node 2 PXM 2 [mem 0x10000000000-0x1033fffffff]
-
-
-> 
-> With draft patch, you should be able to reproduce the issue.
-> Let me know if you need more details.
-
+-- 
+Best Regards,
+Chanwoo Choi
