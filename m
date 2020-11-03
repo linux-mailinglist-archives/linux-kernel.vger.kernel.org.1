@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D292A49BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEEA2A49BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgKCP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
+        id S1728596AbgKCP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728325AbgKCP3Z (ORCPT
+        with ESMTP id S1728474AbgKCP31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:29:25 -0500
+        Tue, 3 Nov 2020 10:29:27 -0500
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70354C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:29:24 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id n18so18996912wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:29:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B010C061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:29:27 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id g12so18979792wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=09rWMfnYlRyV4fsHRd/rYRk+bGuNPAWsDGRa94IF8Wk=;
-        b=S+09FZvFo+rK/fy0qh1+2+2ezmDUOTqA9WfstkdC8TVG+rdrmhYY9rJMIcDCXpsL/G
-         bDLmAQnwpYAZMoRXcQ4N01Gy8ojxHPkG9neRk9sfn5pJnQnQ0JxkbXBQzWB9DdEPCN+a
-         p8gHudq7skun6bpt+D9RMmdq1zkxYIpkgGR/kFlwnhfEOlIoA3PQenpl5h7k3TKUgrV4
-         Db/dO+666vsL2jh7ymUlDQueZ2LXqrvE0K179aq+tOiRm2DCu94BbtxbzWQkDya4shKM
-         zNT0iY8O0m4KwVaPFPn5xE+71dTtKMVQhFSTecmquvcggiC1kfwA0aBc9mnQCZYtvk9B
-         +z9Q==
+        bh=FEacfaBdqZh0B7ZbNsNCq6KuBVk2JdD7zBiGgdEC+rM=;
+        b=s+kNyl12YcpOWADRKsYIAX85d2Y+TyOnhAabCNx+LxR22W+AmrrYRBaMgLkPWopo/5
+         7uP8bqlYAbV4+/XpIc3jPFk2zLocfTvOibSLY28XCdh4vX9CQ3A6S6obeCKSL128ZKde
+         IUfCB2jaaXW4Aw0zAEcjiHTstIBCsV3o6WOPZkY6EoEmmnzhFgBNWQA2+q9QyBE6LxPS
+         5hhAogHZCa3TySM2jWzne/oUbTXdd4XgG6rlImo+1uYOMZyx6W7BtMhxyKswW9JJ+eQ4
+         n8J6xXJbrLi7f2az/euKyuH98sfpTpOeZQu1MJN6Jnsl+S6nwJiTFzixM+pte/8qeWq0
+         Vr3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=09rWMfnYlRyV4fsHRd/rYRk+bGuNPAWsDGRa94IF8Wk=;
-        b=Hn8AWF6KW5KHIqsYbhDw4ohxB9WPWQim/29/bihZjoProl2I8IrcH5OS+tZB9UUog9
-         dXpbUXQX1Qw8eB+up1g2sGiO1EW1H4NTBbe2cb2wwRQIeoxn0AuKVEHAGTPaduWTsyYK
-         qWQfWdFnPh9IpkHaLcK+kK3OVw7p2h81eHMMlSdr1Cffn8jIem8fD+PeutwIJbAOizMy
-         dtkxbiAzXGzu5K4Txs1tl2dGpqtGZkRVRUmMvbwJn2tXiJRjyFISgUqikantJUSSDvX0
-         kmtxJQkl5J1xeLTIxntOAfScCcwgLPAcDhT+KmQpTfQHnatCxSba1JWPduVsSNuhJ2mX
-         sPHA==
-X-Gm-Message-State: AOAM530ieHLO576pLig9o9SSUN96BUwG9PbHbFDMUQGwLFhUZ0jp8IFe
-        GYS7w23BIilKCUhr2gupeb9wkg==
-X-Google-Smtp-Source: ABdhPJzIyWFyZ3KPxpe4y9AY0PXslJv88KbGM78JaEbhk9VnsCtW3zJgrDjS4ckZLYicz+h9XI7yfw==
-X-Received: by 2002:a5d:5106:: with SMTP id s6mr26077698wrt.51.1604417363188;
-        Tue, 03 Nov 2020 07:29:23 -0800 (PST)
+        bh=FEacfaBdqZh0B7ZbNsNCq6KuBVk2JdD7zBiGgdEC+rM=;
+        b=GO+377G4xPJO4N3M1CDNI0UP/FKvTQeFISFcHbKiRktedAIriZcNxtl+gQUnET4yhM
+         64GPccM8lJ+ZDd6eUJDgPuQLN2WebFEAa6mjWk6to3bIS8h4tYG0iWj/ww5HMcHgPh9l
+         DHJ3hnNvuMOYg2Vdd8lfuK+TL1VKHFvWlBDi5EqYd4pZP9wgy9ZdUF1tDDKitp6kZ+Gi
+         nhJC9eEdsxp2H0dpMUFnA1UJ9daj8C667PPKIDXS8AabUtHsmL2B6tprNu4pgZ2DdCAW
+         UU/4yOxB2PGi1Cj4f1mlCyzyHgH46dcSg2gxgcPzNgUNfFqwp97a0GXVWKdMdtfhPfzB
+         a8Jw==
+X-Gm-Message-State: AOAM533yEDj/Ha1SEKWuXE4rCnsDXOavtRgXOmghwomPfdn+n8Ma4pab
+        raIOoBxe28fodqaPaTc6M1yKrw==
+X-Google-Smtp-Source: ABdhPJwn2pLskNkvhAY/Gr51lofYiHg1wmA60U4MxqpI2ygU/qoTBAf+G3wkkETqQEnhrErhskA1Og==
+X-Received: by 2002:adf:8366:: with SMTP id 93mr26923191wrd.6.1604417366022;
+        Tue, 03 Nov 2020 07:29:26 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id j127sm3491779wma.31.2020.11.03.07.29.22
+        by smtp.gmail.com with ESMTPSA id j127sm3491779wma.31.2020.11.03.07.29.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 07:29:22 -0800 (PST)
+        Tue, 03 Nov 2020 07:29:25 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Dave Gerlach <d-gerlach@ti.com>
-Subject: [PATCH 10/25] soc: ti: wkup_m3_ipc: Document 'm3_ipc' parameter throughout
-Date:   Tue,  3 Nov 2020 15:28:23 +0000
-Message-Id: <20201103152838.1290217-11-lee.jones@linaro.org>
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH 12/25] soc: qcom: qcom-geni-se: Fix misnamed function parameter 'rx_rfr'
+Date:   Tue,  3 Nov 2020 15:28:25 +0000
+Message-Id: <20201103152838.1290217-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201103152838.1290217-1-lee.jones@linaro.org>
 References: <20201103152838.1290217-1-lee.jones@linaro.org>
@@ -67,75 +68,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/soc/ti/wkup_m3_ipc.c:227: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_set_mem_type'
- drivers/soc/ti/wkup_m3_ipc.c:236: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_set_resume_address'
- drivers/soc/ti/wkup_m3_ipc.c:248: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_request_pm_status'
- drivers/soc/ti/wkup_m3_ipc.c:268: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_prepare_low_power'
- drivers/soc/ti/wkup_m3_ipc.c:322: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_finish_low_power'
- drivers/soc/ti/wkup_m3_ipc.c:369: warning: Function parameter or member 'm3_ipc' not described in 'wkup_m3_set_rtc_only'
- drivers/soc/ti/wkup_m3_ipc.c:369: warning: Excess function parameter 'wkup_m3_wakeup' description in 'wkup_m3_set_rtc_only'
+ drivers/soc/qcom/qcom-geni-se.c:85: warning: Cannot understand  * @struct geni_wrapper - Data structure to represent the QUP Wrapper Core
+ drivers/soc/qcom/qcom-geni-se.c:246: warning: Function parameter or member 'rx_rfr' not described in 'geni_se_init'
+ drivers/soc/qcom/qcom-geni-se.c:246: warning: Excess function parameter 'rx_rfr_wm' description in 'geni_se_init'
 
-Cc: Santosh Shilimkar <ssantosh@kernel.org>
-Cc: Dave Gerlach <d-gerlach@ti.com>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/soc/ti/wkup_m3_ipc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/soc/qcom/qcom-geni-se.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/ti/wkup_m3_ipc.c b/drivers/soc/ti/wkup_m3_ipc.c
-index e9ece45d7a333..c3e2161df732b 100644
---- a/drivers/soc/ti/wkup_m3_ipc.c
-+++ b/drivers/soc/ti/wkup_m3_ipc.c
-@@ -218,6 +218,7 @@ static int wkup_m3_is_available(struct wkup_m3_ipc *m3_ipc)
- /* Public functions */
- /**
-  * wkup_m3_set_mem_type - Pass wkup_m3 which type of memory is in use
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
-  * @mem_type: memory type value read directly from emif
-  *
-  * wkup_m3 must know what memory type is in use to properly suspend
-@@ -230,6 +231,7 @@ static void wkup_m3_set_mem_type(struct wkup_m3_ipc *m3_ipc, int mem_type)
+diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+index 7649b2057b9a7..9da904d137dc3 100644
+--- a/drivers/soc/qcom/qcom-geni-se.c
++++ b/drivers/soc/qcom/qcom-geni-se.c
+@@ -82,10 +82,11 @@
+ #define NUM_AHB_CLKS 2
  
  /**
-  * wkup_m3_set_resume_address - Pass wkup_m3 resume address
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
-  * @addr: Physical address from which resume code should execute
+- * @struct geni_wrapper - Data structure to represent the QUP Wrapper Core
++ * struct geni_wrapper - Data structure to represent the QUP Wrapper Core
+  * @dev:		Device pointer of the QUP wrapper core
+  * @base:		Base address of this instance of QUP wrapper core
+  * @ahb_clks:		Handle to the primary & secondary AHB clocks
++ * @to_core:		Core ICC path
   */
- static void wkup_m3_set_resume_address(struct wkup_m3_ipc *m3_ipc, void *addr)
-@@ -239,6 +241,7 @@ static void wkup_m3_set_resume_address(struct wkup_m3_ipc *m3_ipc, void *addr)
- 
- /**
-  * wkup_m3_request_pm_status - Retrieve wkup_m3 status code after suspend
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
+ struct geni_wrapper {
+ 	struct device *dev;
+@@ -237,7 +238,7 @@ static void geni_se_irq_clear(struct geni_se *se)
+  * geni_se_init() - Initialize the GENI serial engine
+  * @se:		Pointer to the concerned serial engine.
+  * @rx_wm:	Receive watermark, in units of FIFO words.
+- * @rx_rfr_wm:	Ready-for-receive watermark, in units of FIFO words.
++ * @rx_rfr:	Ready-for-receive watermark, in units of FIFO words.
   *
-  * Returns code representing the status of a low power mode transition.
-  *	0 - Successful transition
-@@ -260,6 +263,7 @@ static int wkup_m3_request_pm_status(struct wkup_m3_ipc *m3_ipc)
- /**
-  * wkup_m3_prepare_low_power - Request preparation for transition to
-  *			       low power state
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
-  * @state: A kernel suspend state to enter, either MEM or STANDBY
-  *
-  * Returns 0 if preparation was successful, otherwise returns error code
-@@ -315,6 +319,7 @@ static int wkup_m3_prepare_low_power(struct wkup_m3_ipc *m3_ipc, int state)
- 
- /**
-  * wkup_m3_finish_low_power - Return m3 to reset state
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
-  *
-  * Returns 0 if reset was successful, otherwise returns error code
-  */
-@@ -362,8 +367,7 @@ static const char *wkup_m3_request_wake_src(struct wkup_m3_ipc *m3_ipc)
- 
- /**
-  * wkup_m3_set_rtc_only - Set the rtc_only flag
-- * @wkup_m3_wakeup: struct wkup_m3_wakeup_src * gets assigned the
-- *                  wakeup src value
-+ * @m3_ipc: Pointer to wkup_m3_ipc context
-  */
- static void wkup_m3_set_rtc_only(struct wkup_m3_ipc *m3_ipc)
- {
+  * This function is used to initialize the GENI serial engine, configure
+  * receive watermark and ready-for-receive watermarks.
 -- 
 2.25.1
 
