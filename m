@@ -2,123 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EB52A4FEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EAB2A4FF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbgKCTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:19:11 -0500
-Received: from mg.ssi.bg ([178.16.128.9]:45176 "EHLO mg.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729520AbgKCTTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:19:07 -0500
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id A599E2A4DC;
-        Tue,  3 Nov 2020 21:19:04 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
-        by mg.ssi.bg (Proxmox) with ESMTP id B2A012A5B6;
-        Tue,  3 Nov 2020 21:19:03 +0200 (EET)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id BF6403C09C1;
-        Tue,  3 Nov 2020 21:19:02 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 0A3JIv8w008680;
-        Tue, 3 Nov 2020 21:19:00 +0200
-Date:   Tue, 3 Nov 2020 21:18:57 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     =?UTF-8?Q?Cezar_S=C3=A1_Espinola?= <cezarsa@gmail.com>
-cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>
-Subject: Re: [PATCH RFC] ipvs: add genetlink cmd to dump all services and
- destinations
-In-Reply-To: <CA++F93jp=6mfVm9brGOMeBE0EKoJhg4EAuN04jeBnXKsC-rTag@mail.gmail.com>
-Message-ID: <5b911129-e3de-f198-625a-8998cd6cdf0@ssi.bg>
-References: <20201030202727.1053534-1-cezarsa@gmail.com> <9140ef65-f76d-4bf1-b211-e88c101a5461@ssi.bg> <CA++F93jp=6mfVm9brGOMeBE0EKoJhg4EAuN04jeBnXKsC-rTag@mail.gmail.com>
+        id S1729682AbgKCTT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729578AbgKCTTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:19:06 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E31C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 11:19:06 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c20so15111006pfr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 11:19:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zV/OnyQ0VTY12YwYrbYCgOsFCOBFm6BwEF5zbxZ+sIY=;
+        b=xn8Aj1v7NRcD8zwfMSJT6YHUTNhBGjXZtOENVOGNdygsyrMWusZNiy3cWp5rQPSRNk
+         pLf5jKIaEGt5988zNl82R5CViyek7x/MsexN4zXv8bOB0aGhhA75Tu6NE/O2Dgk1v52i
+         tdlCaZx6c++T+o5u8ThkyYdoyLd1roMDodyzf2gEWTzi969eHKZdmt2TG8AQHN8XRhHn
+         zVCTttPjL0NIu2oPZe9E2g7x754bvXDLM7zypDwM7iG6L5zgYgisBe/QgmVpoQWO1cIJ
+         HQhyNK50zGss1dlpAEvWVwXuA7OcW5+obqgvIuYFSn+tBvwrwr45y5bVMeu/5PmXIk7p
+         KPOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zV/OnyQ0VTY12YwYrbYCgOsFCOBFm6BwEF5zbxZ+sIY=;
+        b=AjAtYFkpy/1T4qGCeNZ7ZHidn/38lqm0dhwQ9uraKuOUtLYxvucyF6XeS4BPzJbtyr
+         SXq8B0zd620VOHZuOm2IqgUqBaXxdSmuR99g0Sc627IM+8EFBNtDGpY+hPL0FridQNzY
+         rmn5x72ejTRmJwOIT7nQLyYoiXG4p79OVsK8yK3LtevBKvGHvfcqlH9+0DUoT4VST00A
+         BMkSSabb2z1zBDvsEqwwBS2EHya6o72STvi2JqJFz0ymKHDZmHeVtu208JWzzBYFjk0x
+         1UaMhJmOk1No63zDdoUWGtVPASQt6RNv+tIjuwtEaAe0zEU6mqbP0rNHluCGaX8ivnyo
+         XtpA==
+X-Gm-Message-State: AOAM531fwGFXlscPuPNmNQEGx/wSq/aT86hywEFg3hMevEpCZaEIbXDv
+        67psaqN9igLk/0QNne//opWN+w==
+X-Google-Smtp-Source: ABdhPJwRNRrRATUtdL4+5hLrhIQWAudDuHUn938uynKE0OafXqk5sIatDFz+r9XSajXjppHizASbPQ==
+X-Received: by 2002:a17:90b:4c43:: with SMTP id np3mr715481pjb.28.1604431145598;
+        Tue, 03 Nov 2020 11:19:05 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21c1::164d? ([2620:10d:c090:400::5:c8a6])
+        by smtp.gmail.com with ESMTPSA id b7sm19042215pfr.171.2020.11.03.11.19.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 11:19:04 -0800 (PST)
+Subject: Re: KASAN: use-after-free Write in io_submit_sqes
+To:     syzbot <syzbot+625ce3bb7835b63f7f3d@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <000000000000627c8805b33766e9@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c72570f5-8f56-c3a2-d371-70f8215305cd@kernel.dk>
+Date:   Tue, 3 Nov 2020 12:19:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811672-1624316750-1604431142=:3799"
+In-Reply-To: <000000000000627c8805b33766e9@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463811672-1624316750-1604431142=:3799
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-
-	Hello,
-
-On Tue, 3 Nov 2020, Cezar Sá Espinola wrote:
-
-> >         And now what happens if all dests can not fit in a packet?
-> > We should start next packet with the same svc? And then
-> > user space should merge the dests when multiple packets
-> > start with same service?
+On 11/3/20 10:43 AM, syzbot wrote:
+> Hello,
 > 
-> My (maybe not so great) idea was to avoid repeating the svc on each
-> packet. It's possible for a packet to start with a destination and
-> user space must consider then as belonging to the last svc received on
-> the previous packet. The comparison "ctx->last_svc != svc" was
-> intended to ensure that a packet only starts with destinations if the
-> current service is the same as the svc we sent on the previous packet.
-
-	You can also consider the idea of having 3 coordinates
-for start svc: idx_svc_tab (0 or 1), idx_svc_row (0..IP_VS_SVC_TAB_SIZE-1)
-and idx_svc for index in row's chain. On new packet this will
-indicate the htable and its row and we have to skip svcs in
-this row to find our starting svc. I think, this will still fit in
-the netlink_callback's args area. If not, we can always kmalloc
-our context in args[0]. In single table, this should speedup
-the start svc lookup 128 times in average (we have 256 rows).
-In setup with 1024 svcs (average 4 in each of the 256 rows)
-we should skip these 0..3 entries instead of 512 in average.
-
-> >         last_svc is used out of __ip_vs_mutex region,
-> > so it is not safe. We can get a reference count but this
-> > is bad if user space blocks.
+> syzbot found the following issue on:
 > 
-> I thought it would be relatively safe to store a pointer to the last
-> svc since I would only use it for pointer comparison and never
-> dereferencing it. But in retrospect it does look unsafe and fragile
-> and could probably lead to errors especially if services are modified
-> during a dump causing the stored pointer to point to a different
-> service.
-
-	Yes, nobody is using such pointers. We should create
-packets that correctly identify svc for the dests. The drawback
-is that user space may need more work for merging. We can always
-create a sorted array of pointers to svcs, so that we can binary
-search with bsearch() the svc from every received packet. Then we
-will know if this is a new svc or an old one (with dests in
-multiple packets). Should we also check for dest duplicates in
-the svc? The question is how much safe we should play. In
-user space the max work we can do is to avoid duplicates
-and to put dests to their correct svc.
-
-> >         But even if we use just indexes it should be ok.
-> > If multiple agents are used in parallel it is not our
-> > problem. What can happen is that we can send duplicates
-> > or to skip entries (both svcs and dests). It is impossible
-> > to keep any kind of references to current entries or even
-> > keys to lookup them if another agent can remove them.
+> HEAD commit:    b49976d8 Add linux-next specific files for 20201102
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16a02732500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fe87d079ac78e2be
+> dashboard link: https://syzkaller.appspot.com/bug?extid=625ce3bb7835b63f7f3d
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12de9346500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1213fda8500000
 > 
-> Got it. I noticed this behavior while writing this patch and even
-> created a few crude validation scripts running parallel agents and
-> checking the diff in [1].
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+625ce3bb7835b63f7f3d@syzkaller.appspotmail.com
+> 
+> IPVS: ftp: loaded support on port[0] = 21
+> ==================================================================
+> BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+> BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+> BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+> BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+> BUG: KASAN: use-after-free in io_init_req fs/io_uring.c:6700 [inline]
+> BUG: KASAN: use-after-free in io_submit_sqes+0x15a9/0x25f0 fs/io_uring.c:6774
+> Write of size 4 at addr ffff888011e08e48 by task syz-executor165/8487
+> 
+> CPU: 1 PID: 8487 Comm: syz-executor165 Not tainted 5.10.0-rc1-next-20201102-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+>  __kasan_report mm/kasan/report.c:545 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+>  check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>  check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>  atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+>  __refcount_add include/linux/refcount.h:193 [inline]
+>  __refcount_inc include/linux/refcount.h:250 [inline]
+>  refcount_inc include/linux/refcount.h:267 [inline]
+>  io_init_req fs/io_uring.c:6700 [inline]
+>  io_submit_sqes+0x15a9/0x25f0 fs/io_uring.c:6774
+>  __do_sys_io_uring_enter+0xc8e/0x1b50 fs/io_uring.c:9159
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x440e19
+> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 0f fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007fff644ff178 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+> RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 0000000000440e19
+> RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000003
+> RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000022b4850
+> R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000000000
+> 
+> Allocated by task 8487:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track mm/kasan/common.c:56 [inline]
+>  __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+>  kmalloc include/linux/slab.h:552 [inline]
+>  io_register_personality fs/io_uring.c:9638 [inline]
+>  __io_uring_register fs/io_uring.c:9874 [inline]
+>  __do_sys_io_uring_register+0x10f0/0x40a0 fs/io_uring.c:9924
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Freed by task 8487:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+>  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+>  __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+>  slab_free_hook mm/slub.c:1544 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+>  slab_free mm/slub.c:3140 [inline]
+>  kfree+0xdb/0x360 mm/slub.c:4122
+>  io_identity_cow fs/io_uring.c:1380 [inline]
+>  io_prep_async_work+0x903/0xbc0 fs/io_uring.c:1492
+>  io_prep_async_link fs/io_uring.c:1505 [inline]
+>  io_req_defer fs/io_uring.c:5999 [inline]
+>  io_queue_sqe+0x212/0xed0 fs/io_uring.c:6448
+>  io_submit_sqe fs/io_uring.c:6542 [inline]
+>  io_submit_sqes+0x14f6/0x25f0 fs/io_uring.c:6784
+>  __do_sys_io_uring_enter+0xc8e/0x1b50 fs/io_uring.c:9159
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> The buggy address belongs to the object at ffff888011e08e00
+>  which belongs to the cache kmalloc-96 of size 96
+> The buggy address is located 72 bytes inside of
+>  96-byte region [ffff888011e08e00, ffff888011e08e60)
+> The buggy address belongs to the page:
+> page:00000000a7104751 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11e08
+> flags: 0xfff00000000200(slab)
+> raw: 00fff00000000200 ffffea00004f8540 0000001f00000002 ffff888010041780
+> raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff888011e08d00: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+>  ffff888011e08d80: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+>> ffff888011e08e00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>                                               ^
+>  ffff888011e08e80: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+>  ffff888011e08f00: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+> ==================================================================
 
-	Ok, make sure your tests cover cases with multiple
-dests, so that single service occupies multiple packets,
-I'm not sure if 100 dests fit in one packet or not.
+We need to drop the identity references separately, can't bundle them
+into two.
 
-Regards
 
---
-Julian Anastasov <ja@ssi.bg>
----1463811672-1624316750-1604431142=:3799--
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 1f555e3c44cd..09369bc0317e 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1287,9 +1287,12 @@ static bool io_identity_cow(struct io_kiocb *req)
+ 	/* add one for this request */
+ 	refcount_inc(&id->count);
+ 
+-	/* drop old identity, assign new one. one ref for req, one for tctx */
+-	if (req->work.identity != tctx->identity &&
+-	    refcount_sub_and_test(2, &req->work.identity->count))
++	/* drop tctx and req identity references, if needed */
++	if (tctx->identity != &tctx->__identity &&
++	    refcount_dec_and_test(&tctx->identity->count))
++		kfree(tctx->identity);
++	if (req->work.identity != &tctx->__identity &&
++	    refcount_dec_and_test(&req->work.identity->count))
+ 		kfree(req->work.identity);
+ 
+ 	req->work.identity = id;
+
+-- 
+Jens Axboe
 
