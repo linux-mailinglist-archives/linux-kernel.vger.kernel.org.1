@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82492A4E42
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BEB2A4E44
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbgKCSUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:20:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725892AbgKCSUO (ORCPT
+        id S1729268AbgKCSUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgKCSUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:20:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604427613;
+        Tue, 3 Nov 2020 13:20:31 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2FFC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:20:31 -0800 (PST)
+Received: from zn.tnic (p200300ec2f10e000b5af706e7587131c.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:e000:b5af:706e:7587:131c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A646D1EC03EA;
+        Tue,  3 Nov 2020 19:20:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604427629;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rB8I6G9qs+tpAlTkO14nybmm3TLGcS/K/5ez3RfylJc=;
-        b=Pw84qgcDxbEMNdvbQ1Dj4uvzkeAOOJkOHSy3qW6nuhpbWNu2+aQqT92+QsKSeCuqoiBITG
-        rCNtSw9mHkePyxmKNqjk6gp5l2kzXec38G8+TcAg/ox+Rn2Xh7e4YsmTalSjAul+vUSzjz
-        MctWn2BoX2qnTvRQYoFS/tN0MeAkjWA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-4z9JkQCvOt6XCXuszhUokQ-1; Tue, 03 Nov 2020 13:20:11 -0500
-X-MC-Unique: 4z9JkQCvOt6XCXuszhUokQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C2BD809DDB;
-        Tue,  3 Nov 2020 18:20:10 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2931F5B4D8;
-        Tue,  3 Nov 2020 18:20:10 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 11:20:09 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        laurentiu.tudor@nxp.com
-Subject: Re: [PATCH] vfio/fsl-mc: Make vfio_fsl_mc_irqs_allocate static
-Message-ID: <20201103112009.4d00dcb5@w520.home>
-In-Reply-To: <20201026165336.31125-1-diana.craciun@oss.nxp.com>
-References: <20201026165336.31125-1-diana.craciun@oss.nxp.com>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uvEkArjin3P6HQHGtpbwL5YorsdY6qVcP4gVK/bwu3o=;
+        b=DlwdMmWPFlBWAcv+V0IBO9GGcmrUOUMSF9pFzehsS41E1Iu3fd8jW77q6eu9KlUREMRwJy
+        818ow42QbJM7Q/KvFpspS3v2vrTxX0WMJz/5TV/dcXbZ21BHxg2ZqOqRgQTZKeEyh6bUGd
+        gsb1UPv6u0lPktuzSEpJrL8IBmG5KNs=
+Date:   Tue, 3 Nov 2020 19:20:18 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Mark Mossberg <mark.mossberg@gmail.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        hpa@zytor.com, jannh@google.com, kyin@redhat.com
+Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
+ error message
+Message-ID: <20201103182018.GE4111@zn.tnic>
+References: <20201002042915.403558-1-mark.mossberg@gmail.com>
+ <20201103125034.GA30391@redhat.com>
+ <20201103171537.GC4111@zn.tnic>
+ <20201103174744.GB23992@redhat.com>
+ <20201103175237.GD4111@zn.tnic>
+ <20201103181114.GC23992@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201103181114.GC23992@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 18:53:36 +0200
-Diana Craciun <diana.craciun@oss.nxp.com> wrote:
-
-> Fixed compiler warning:
-> drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c:16:5: warning: no previous
-> prototype for function 'vfio_fsl_mc_irqs_allocate' [-Wmissing-prototypes]
->        ^
-> drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c:16:1: note: declare 'static'
-> if the function is not intended to be used outside of this translation unit
-> int vfio_fsl_mc_irqs_allocate(struct vfio_fsl_mc_device *vdev)
+On Tue, Nov 03, 2020 at 07:11:15PM +0100, Oleg Nesterov wrote:
+> > I'm thinking copy_code() should not use copy_from_user_nmi() if former
+> > can be called in non-atomic context too.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I understand, but why do you think this makes sense?
 
-Applied to vfio for-linus branch for v5.10.  Thanks,
+Because the copy_from_user_nmi()'s name tells me that it is at least
+supposed to be called in atomic context. At least this is how I
+understand it. And in atomic context regs is supposed to belong to
+current, right?
 
-Alex
+So I kinda agree with what you're proposing but if copy_from_user_nmi()
+can be "tricked" into reading off from the weeds, then there should be
+a big fat warning above it at least so that users are warned to do the
+appropriate checks.
 
+Or there should be another wrapper around it which does the
+regs-belongs-to-current checks, etc and copy_code() should use that
+wrapper...
 
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> index c80dceb46f79..0d9f3002df7f 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> @@ -13,7 +13,7 @@
->  #include "linux/fsl/mc.h"
->  #include "vfio_fsl_mc_private.h"
->  
-> -int vfio_fsl_mc_irqs_allocate(struct vfio_fsl_mc_device *vdev)
-> +static int vfio_fsl_mc_irqs_allocate(struct vfio_fsl_mc_device *vdev)
->  {
->  	struct fsl_mc_device *mc_dev = vdev->mc_dev;
->  	struct vfio_fsl_mc_irq *mc_irq;
+AFAICT at least.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
