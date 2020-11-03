@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3802A4FDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4102A4FDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgKCTSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgKCTSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:18:23 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B08DC20786;
-        Tue,  3 Nov 2020 19:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604431102;
-        bh=W1KrRl2SR9qaJPw6LcrcuRypZW22z89eV1jif/bLgYc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c1ygTLkcxdrfGoa4b5sqjlSXmqs1/Fu5qT7NqHnaighwVxjQiSVaYw5k4cjwg6i49
-         ycxAFZ4CnGCr50uKv+qUtCFTxQzRt3R/E90AdhVblCa6+PKM2L63/ZTY5/ByuMcYB0
-         R+50+86MRprDPSlpou2MQYyyBXl9/uqGudkx24PA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 50250352265F; Tue,  3 Nov 2020 11:18:22 -0800 (PST)
-Date:   Tue, 3 Nov 2020 11:18:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        willy@infradead.org
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201103191822.GC3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103154723.GA1310511@google.com>
- <20201103163350.GA10665@pc636>
+        id S1729456AbgKCTSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:18:50 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6985 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729087AbgKCTSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:18:50 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa1ad1c0001>; Tue, 03 Nov 2020 11:18:52 -0800
+Received: from [10.2.49.167] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 19:18:49 +0000
+Subject: Re: [RFC PATCH resend 3/6] mm: Add refcount for preserving mm_struct
+ without pgd
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jann Horn <jannh@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>
+References: <20201016230915.1972840-1-jannh@google.com>
+ <20201016230915.1972840-4-jannh@google.com> <20201016232153.GD37159@ziepe.ca>
+ <CAG48ez1+VzW=Gz+2CKze_kmFYfb9J3PdrkJtxS21EyqGHZMGjw@mail.gmail.com>
+ <CAG48ez0ChA80cjg4-=1k8PfXV_4u_YVQay9g_RdrLjbAzch4Gw@mail.gmail.com>
+ <CAG48ez1ue84pXoQvdjqiXZSj5_3+2Wq7A9v9D_7=rzEFac2AFg@mail.gmail.com>
+ <20201103132127.GK36674@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <4f428d8e-b660-9e31-6968-b28f6d7088f5@nvidia.com>
+Date:   Tue, 3 Nov 2020 11:18:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103163350.GA10665@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201103132127.GK36674@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604431132; bh=+CPAgnnyqw7VL/JoIR0Kx+j9vZxF1jTOALVKJZvaioQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Z035LvsYyiQh+Qrrs6mbfgKqZHCU4WAXlib5do+P2G30AYSolgzcwkc19NpY61nAc
+         Y/ZmcmVUOabb4GLDzhrHM7bSHSIHdCFs6341uFVB5AMF/rzOj1t9S76lrSYV9M/NQe
+         22APW7CcQTQzEQ//2jwsYkfs49RuZZmGU5F02CKhaWp6fcgcNrLgjwZLMj+Bs0MIvR
+         p5cZOutussLxBCurITL0hshae9TYDEqmRj43Egpry0X5IWWDM4APrbBjHCKiTH7cJx
+         RRhfQYWsOsNzmJrnUan7JSjrgNjlr3r0+kDzmaMB86s3jLVmlEhnx3hm4Ll8cX+yxS
+         ISc4zlZswZGOQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:33:50PM +0100, Uladzislau Rezki wrote:
-> On Tue, Nov 03, 2020 at 10:47:23AM -0500, Joel Fernandes wrote:
-> > On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > The current memmory-allocation interface presents to following
-> > > difficulties that this patch is designed to overcome:
-> > > 
-> > > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-> > >    complain about violation("BUG: Invalid wait context") of the
-> > >    nesting rules. It does the raw_spinlock vs. spinlock nesting
-> > >    checks, i.e. it is not legal to acquire a spinlock_t while
-> > >    holding a raw_spinlock_t.
-> > > 
-> > >    Internally the kfree_rcu() uses raw_spinlock_t whereas the
-> > >    "page allocator" internally deals with spinlock_t to access
-> > >    to its zones. The code also can be broken from higher level
-> > >    of view:
-> > >    <snip>
-> > >        raw_spin_lock(&some_lock);
-> > >        kfree_rcu(some_pointer, some_field_offset);
-> > >    <snip>
-> > > 
-> > > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-> > >    is converted into sleepable variant. Invoking the page allocator from
-> > >    atomic contexts leads to "BUG: scheduling while atomic".
-> > > 
-> > > c) call_rcu() is invoked from raw atomic context and kfree_rcu()
-> > >    and kvfree_rcu() are expected to be called from atomic raw context
-> > >    as well.
-> > > 
-> > > Move out a page allocation from contexts which trigger kvfree_rcu()
-> > > function to the separate worker. When a k[v]free_rcu() per-cpu page
-> > > cache is empty a fallback mechanism is used and a special job is
-> > > scheduled to refill the per-cpu cache.
-> > 
-> > Looks good, still reviewing here. BTW just for my education, I was wondering
-> > about Thomas's email:
-> > https://lkml.org/lkml/2020/8/11/939
-> > 
-> > If slab allocations in pure raw-atomic context on RT is not allowed or
-> > recommended, should kfree_rcu() be allowed?
-> >
-> Thanks for reviewing, Joel :)
+On 11/3/20 5:21 AM, Jason Gunthorpe wrote:
+> On Tue, Nov 03, 2020 at 04:19:11AM +0100, Jann Horn wrote:
+>> On Tue, Nov 3, 2020 at 3:11 AM Jann Horn <jannh@google.com> wrote:
+>>> On Sat, Oct 17, 2020 at 2:30 AM Jann Horn <jannh@google.com> wrote:
+>>>> On Sat, Oct 17, 2020 at 1:21 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>>>> On Sat, Oct 17, 2020 at 01:09:12AM +0200, Jann Horn wrote:
+>>>>>> Currently, mm_struct has two refcounts:
+...
+> Either way can work, I liked the suggestion because it suggests an
+> good name for the ref: 'mmget_pgd' or somesuch
 > 
-> The decision was made that we need to support kfree_rcu() from "real atomic contexts",
-> to align with how it used to be before. We can go and just convert our local locks
-> to the spinlock_t variant but that was not Paul goal, it can be that some users need
-> kfree_rcu() for raw atomics.
+> What I don't like is how nonsensical the names here are becoming:
+> mmget/mmgrab/mm_ref
+> 
+> Gives no impression at the callsite what is right/wrong
+> 
+> Names like this:
+>   mmget_struct
+>   mmget_pgd
+>   mmget_tables
+> 
 
-People invoke call_rcu() from raw atomics, and so we should provide
-the same for kfree_rcu().  Yes, people could work around a raw-atomic
-prohibition, but such prohibitions incur constant costs over time in
-terms of development effort, increased bug rate, and increased complexity.
-Yes, this does increase all of those for RCU, but the relative increase
-is negligible, RCU being what it is.
+What?! I had just resigned myself to a bimonthly exercise, re-memorizing
+the mm_struct naming correlation between grab, drop, get, put, count,
+and users. And now you want to make it directly understandable? :)
 
-> > slab can have same issue right? If per-cpu cache is drained, it has to
-> > allocate page from buddy allocator and there's no GFP flag to tell it about
-> > context where alloc is happening from.
-> > 
-> Sounds like that. Apart of that, it might turn out soon that we or somebody
-> else will rise a question one more time about something GFP_RAW or GFP_NOLOCKS.
-> So who knows..
+> Make alot more sense to me..
+> 
+> I think this patch needs to do something about the naming..
+> 
 
-I would prefer that slab provide some way of dealing with raw atomic
-context, but the maintainers are thus far unconvinced.
+A third counter also seems like the tipping point, to me.
 
-> > Or are we saying that we want to support kfree on RT from raw atomic atomic
-> > context, even though kmalloc is not supported? I hate to bring up this
-> > elephant in the room, but since I am a part of the people maintaining this
-> > code, I believe I would rather set some rules than supporting unsupported
-> > usages. :-\ (Once I know what is supported and what isn't that is). If indeed
-> > raw atomic kfree_rcu() is a bogus use case because of -RT, then we ought to
-> > put a giant warning than supporting it :-(.
-> > 
-> We discussed it several times, the conclusion was that we need to support 
-> kfree_rcu() from raw contexts. At least that was a clear signal from Paul 
-> to me. I think, if we obtain the preemtable(), so it becomes versatile, we
-> can drop the patch that is in question later on in the future.
-
-Given a universally meaningful preemptible(), we could directly call
-the allocator in some cases.  It might (or might not) still make sense
-to defer the allocation when preemptible() indicated that a direct call
-to the allocator was unsafe.
-
-							Thanx, Paul
+thanks,
+-- 
+John Hubbard
+NVIDIA
