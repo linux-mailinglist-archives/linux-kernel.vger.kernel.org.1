@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FC72A448C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785092A448F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgKCLvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:51:14 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6695 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgKCLvN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:51:13 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQSmF0G0nz15QTk;
-        Tue,  3 Nov 2020 19:51:09 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 3 Nov 2020
- 19:51:05 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: support chksum
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201102122333.76667-1-yuchao0@huawei.com>
- <20201102163123.GD529594@google.com>
- <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
- <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
- <aa11afd31edb42979c03d2a27ed9e850@AcuMS.aculab.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <4d58b7c7-70b5-514d-fab2-27a0f16886e5@huawei.com>
-Date:   Tue, 3 Nov 2020 19:51:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728638AbgKCLvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:51:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727109AbgKCLvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:51:32 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C90BC216C4;
+        Tue,  3 Nov 2020 11:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604404290;
+        bh=Yly+YBQXz1BJFPkxLQ3+VIkwL3j8nlMITPnLrkow/5E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pd1bnQSks9juZc5GStHYlWWB9dC3yW8B/FXDUCh4ICB51qx6joekx5V+03CPVryB7
+         GjLbfkLStPJGYTBedQPKpSdlSPhiJ6NZ0XRbq1/U8laYmfVou6Yskb01upui1nCfAX
+         VVml7+da8Hejfv8BL3w3XV7QoB4Hns1qYo1AnV8o=
+Date:   Tue, 3 Nov 2020 12:52:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>, brendanhiggins@google.com,
+        skhan@linuxfoundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        alexandre.belloni@bootlin.com, rdunlap@infradead.org,
+        idryomov@gmail.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+Message-ID: <20201103115223.GA268796@kroah.com>
+References: <20201103111049.51916-1-98.arpi@gmail.com>
+ <20201103113353.GC4077@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <aa11afd31edb42979c03d2a27ed9e850@AcuMS.aculab.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103113353.GC4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/3 18:35, David Laight wrote:
-> From: Chao Yu
->> Sent: 03 November 2020 02:37
-> ...
->>>> Do we need to change fsck.f2fs to recover this?
->>
->> However, we don't know which one is correct, compressed data or chksum value?
->> if compressed data was corrupted, repairing chksum value doesn't help.
->>
->> Or how about adding chksum values for both raw data and compressed data.
+On Tue, Nov 03, 2020 at 01:33:53PM +0200, Andy Shevchenko wrote:
+> On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
+> > Convert test lib/test_printf.c to KUnit. More information about
+> > KUnit can be found at:
+> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> > KUnit provides a common framework for unit tests in the kernel.
+> > KUnit and kselftest are standardizing around KTAP, converting this
+> > test to KUnit makes this test output in KTAP which we are trying to
+> > make the standard test result format for the kernel. More about
+> > the KTAP format can be found at:
+> > https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
+> > I ran both the original and converted tests as is to produce the
+> > output for success of the test in the two cases. I also ran these
+> > tests with a small modification to show the difference in the output
+> > for failure of the test in both cases. The modification I made is:
+> > - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > 
+> > Original test success:
+> > [    0.540860] test_printf: loaded.
+> > [    0.540863] test_printf: random seed = 0x5c46c33837bc0619
+> > [    0.541022] test_printf: all 388 tests passed
+> > 
+> > Original test failure:
+> > [    0.537980] test_printf: loaded.
+> > [    0.537983] test_printf: random seed = 0x1bc1efd881954afb
+> > [    0.538029] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > [    0.538030] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > [    0.538124] test_printf: failed 2 out of 388 tests
+> > [    0.538125] test_printf: random seed used was 0x1bc1efd881954afb
+> > 
+> > Converted test success:
+> >     # Subtest: printf
+> >     1..25
+> >     ok 1 - test_basic
+> >     ok 2 - test_number
+> >     ok 3 - test_string
+> >     ok 4 - plain
+> >     ok 5 - null_pointer
+> >     ok 6 - error_pointer
+> >     ok 7 - invalid_pointer
+> >     ok 8 - symbol_ptr
+> >     ok 9 - kernel_ptr
+> >     ok 10 - struct_resource
+> >     ok 11 - addr
+> >     ok 12 - escaped_str
+> >     ok 13 - hex_string
+> >     ok 14 - mac
+> >     ok 15 - ip
+> >     ok 16 - uuid
+> >     ok 17 - dentry
+> >     ok 18 - struct_va_format
+> >     ok 19 - time_and_date
+> >     ok 20 - struct_clk
+> >     ok 21 - bitmap
+> >     ok 22 - netdev_features
+> >     ok 23 - flags
+> >     ok 24 - errptr
+> >     ok 25 - fwnode_pointer
+> > ok 1 - printf
+> > 
+> > Converted test failure:
+> >     # Subtest: printf
+> >     1..25
+> >     ok 1 - test_basic
+> >     ok 2 - test_number
+> >     ok 3 - test_string
+> >     ok 4 - plain
+> >     ok 5 - null_pointer
+> >     ok 6 - error_pointer
+> >     ok 7 - invalid_pointer
+> >     ok 8 - symbol_ptr
+> >     ok 9 - kernel_ptr
+> >     ok 10 - struct_resource
+> >     ok 11 - addr
+> >     ok 12 - escaped_str
+> >     ok 13 - hex_string
+> >     ok 14 - mac
+> >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:82
+> > vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:124
+> > kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> >     not ok 15 - ip
+> >     ok 16 - uuid
+> >     ok 17 - dentry
+> >     ok 18 - struct_va_format
+> >     ok 19 - time_and_date
+> >     ok 20 - struct_clk
+> >     ok 21 - bitmap
+> >     ok 22 - netdev_features
+> >     ok 23 - flags
+> >     ok 24 - errptr
+> >     ok 25 - fwnode_pointer
+> > not ok 1 - printf
 > 
-> What errors are you trying to detect?
+> Better, indeed.
+> 
+> But can be this improved to have a cumulative statistics, like showing only
+> number of total, succeeded, failed with details of the latter ones?
 
-Hi,
+Is that the proper test output format?  We have a standard...
 
-The original intention of adding this checksum feature is for code debug
-purpose when I develop compress framework in f2fs and add more compress
-algorithms into the framework, it helps to find obvious implementation
-bug, however this checksum feature was not fully designed, so that I didn't
-upstream it at that time.
+thanks,
 
-One other concern is to find any mismatch between original raw data and
-persisted data, no matter how it becomes to mismatched and then return
-error code to user if it detects the mismatch.
-
-And then fsck can repair mismatched chksum in the condition one persisted
-chksum matchs to calculated one, and one other doesn't.
-
-Thanks,
-
-> 
-> If there are errors in the data then 'fixing' the checksum is pointless.
-> (You've got garbage data - might as well not have the checksum).
-> 
-> If you are worried about the implementation of the compression
-> algorithm then a checksum of the raw data is needed.
-> 
-> If you want to try error correcting burst errors in the compressed
-> data then a crc of the compressed data can be used for error correction.
-> 
-> OTOH the most likely error is that the file meta-data and data sector
-> weren't both committed to disk when the system crashed.
-> In which case the checksum has done its job and the file is corrupt.
-> fsck should probably move the file to 'lost+found' for manual checking.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-> .
-> 
+greg k-h
