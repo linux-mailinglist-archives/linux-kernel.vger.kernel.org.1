@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9483D2A51F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4262A52E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgKCUpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:45:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
+        id S1732545AbgKCUyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:54:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731036AbgKCUpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:30 -0500
+        id S1732516AbgKCUyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:54:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D60AF223EA;
-        Tue,  3 Nov 2020 20:45:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D62A9223BD;
+        Tue,  3 Nov 2020 20:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436330;
-        bh=H8vg+CkTwI8Qs533J24DXE2p4lvFzJ5TfZejmDk0hRQ=;
+        s=default; t=1604436841;
+        bh=Fpkin+zymCeOF5c1IWGmzEMwUad6gqexZKadYoQi/pY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fVhRqhQzyRk4jtzwGkwQ/W2PSooxTS3PRLcD+ZqLDN01L6iyxETY2tHNahyT7mFn2
-         ATM5SQWRxw41HFGqkZuJZ7VBkaRxTEs9HoTz9e9LqmEEM0HZu2UAddo+/51EwhAYQI
-         hUH7M3lo1fcuF+7KQqd4Aj12DwejqwK7Iv/fQDt8=
+        b=nUMbEDzwqSNIEqIhJGQagAL1lZUKT9er6OXeh/l8UhrEQMDUwfAMBd48AfY0678NG
+         +7e+kfPF8VyuAQ7In8ECMX1SRYj2EcJneYueY8I4dNDVD9ZxARmw1K0GqFj8yz3z5m
+         17vFrvl9IvWb6ym8ACoCP4y7Y7GfvzhQKL8nsJvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.9 203/391] ACPI: configfs: Add missing config_item_put() to fix refcount leak
-Date:   Tue,  3 Nov 2020 21:34:14 +0100
-Message-Id: <20201103203400.591849167@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
+        Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 5.4 007/214] xen/scsiback: use lateeoi irq binding
+Date:   Tue,  3 Nov 2020 21:34:15 +0100
+Message-Id: <20201103203250.291176523@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,33 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hanjun Guo <guohanjun@huawei.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit 9a2e849fb6de471b82d19989a7944d3b7671793c upstream.
+commit 86991b6e7ea6c613b7692f65106076943449b6b7 upstream.
 
-config_item_put() should be called in the drop_item callback, to
-decrement refcount for the config item.
+In order to reduce the chance for the system becoming unresponsive due
+to event storms triggered by a misbehaving scsifront use the lateeoi
+irq binding for scsiback and unmask the event channel only just before
+leaving the event handling function.
 
-Fixes: 772bf1e2878ec ("ACPI: configfs: Unload SSDT on configfs entry removal")
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
-[ rjw: Subject edit ]
-Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+In case of a ring protocol error don't issue an EOI in order to avoid
+the possibility to use that for producing an event storm. This at once
+will result in no further call of scsiback_irq_fn(), so the ring_error
+struct member can be dropped and scsiback_do_cmd_fn() can signal the
+protocol error via a negative return value.
+
+This is part of XSA-332.
+
+Cc: stable@vger.kernel.org
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/acpi_configfs.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/xen/xen-scsiback.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/drivers/acpi/acpi_configfs.c
-+++ b/drivers/acpi/acpi_configfs.c
-@@ -228,6 +228,7 @@ static void acpi_table_drop_item(struct
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -91,7 +91,6 @@ struct vscsibk_info {
+ 	unsigned int irq;
  
- 	ACPI_INFO(("Host-directed Dynamic ACPI Table Unload"));
- 	acpi_unload_table(table->index);
-+	config_item_put(cfg);
+ 	struct vscsiif_back_ring ring;
+-	int ring_error;
+ 
+ 	spinlock_t ring_lock;
+ 	atomic_t nr_unreplied_reqs;
+@@ -722,7 +721,8 @@ static struct vscsibk_pend *prepare_pend
+ 	return pending_req;
  }
  
- static struct configfs_group_operations acpi_table_group_ops = {
+-static int scsiback_do_cmd_fn(struct vscsibk_info *info)
++static int scsiback_do_cmd_fn(struct vscsibk_info *info,
++			      unsigned int *eoi_flags)
+ {
+ 	struct vscsiif_back_ring *ring = &info->ring;
+ 	struct vscsiif_request ring_req;
+@@ -739,11 +739,12 @@ static int scsiback_do_cmd_fn(struct vsc
+ 		rc = ring->rsp_prod_pvt;
+ 		pr_warn("Dom%d provided bogus ring requests (%#x - %#x = %u). Halting ring processing\n",
+ 			   info->domid, rp, rc, rp - rc);
+-		info->ring_error = 1;
+-		return 0;
++		return -EINVAL;
+ 	}
+ 
+ 	while ((rc != rp)) {
++		*eoi_flags &= ~XEN_EOI_FLAG_SPURIOUS;
++
+ 		if (RING_REQUEST_CONS_OVERFLOW(ring, rc))
+ 			break;
+ 
+@@ -802,13 +803,16 @@ static int scsiback_do_cmd_fn(struct vsc
+ static irqreturn_t scsiback_irq_fn(int irq, void *dev_id)
+ {
+ 	struct vscsibk_info *info = dev_id;
++	int rc;
++	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
+ 
+-	if (info->ring_error)
+-		return IRQ_HANDLED;
+-
+-	while (scsiback_do_cmd_fn(info))
++	while ((rc = scsiback_do_cmd_fn(info, &eoi_flags)) > 0)
+ 		cond_resched();
+ 
++	/* In case of a ring error we keep the event channel masked. */
++	if (!rc)
++		xen_irq_lateeoi(irq, eoi_flags);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -829,7 +833,7 @@ static int scsiback_init_sring(struct vs
+ 	sring = (struct vscsiif_sring *)area;
+ 	BACK_RING_INIT(&info->ring, sring, PAGE_SIZE);
+ 
+-	err = bind_interdomain_evtchn_to_irq(info->domid, evtchn);
++	err = bind_interdomain_evtchn_to_irq_lateeoi(info->domid, evtchn);
+ 	if (err < 0)
+ 		goto unmap_page;
+ 
+@@ -1252,7 +1256,6 @@ static int scsiback_probe(struct xenbus_
+ 
+ 	info->domid = dev->otherend_id;
+ 	spin_lock_init(&info->ring_lock);
+-	info->ring_error = 0;
+ 	atomic_set(&info->nr_unreplied_reqs, 0);
+ 	init_waitqueue_head(&info->waiting_to_free);
+ 	info->dev = dev;
 
 
