@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B542A59EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC412A59EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730174AbgKCWSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
+        id S1730057AbgKCWSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729986AbgKCWR5 (ORCPT
+        with ESMTP id S1730242AbgKCWSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:17:57 -0500
+        Tue, 3 Nov 2020 17:18:01 -0500
 Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBACC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:17:55 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id d24so20740332ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:17:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03598C061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:18:01 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id v19so15845590lji.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:18:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YdCtwbqMAyOyGH0CTbWZbzS3jok6JKd1ti4BRTFY2CQ=;
-        b=Syi5K4QtbQmsVKQreoJMI67JfTtNeBwyJGgNHs5/l8LirTZcgUymPH9ZkuqsuVoHSi
-         njcQFA+9ndjY5DFHyaiesqLCeohkhCicpG1nFs6yGRNWFYI4nQ1M+/Rw/DKpaaN/6EHw
-         3IrihZljAgYQ8fefQ9BNL0kAqXdeNfodiarJ9DcqXAKdYjvirhsQCCYuX/6RG3WJ6BfI
-         DdB0unYf1/rAkex2nEfEiHVr4WvG6VG/GY6wuiaR0DN0xBHChJbby3VHhAvCHEOIhgtx
-         CeS8hL24PxrffNrhqJIWIu04krjnKPFLTcqqau7BBAJXLtHfU16GwFapDDmMlwFe/eYd
-         N2XQ==
+        bh=z0GfssSb9lxM+saQ7V+1ta/Gt8yaqMW9vqfv+WXLTwo=;
+        b=FeZn//b1sOnMrO86t7PxeEcDowXD4Ju86jS3F2Ovkk/9uHRoKyViEL8FoAGe1M6Dsc
+         24tIc4S+LsQx1PS2ucPg54frQ40elJZesPOG4kOonbBE0WF0P0m3JpGqm3g8z3hK1YjI
+         qT/pfOxKrxqo9F2RMyW1BXUdBXaedR4oQLBXmSeAA8UtMPxdMoGaY8uOb2ar5h6kPNc1
+         osM55zh33/mU4PHPqktEsnB0Tixgu/FqGh2MLGmhFh3pbpMLU4QhKYtapoUre6M+T3Ka
+         7147e1t/Jwu0QVFanpXFlTNpj+ZCQNIC6wt7G7UdezZJAZEj4v31ZuoTvI9gA8os5HX6
+         Wgxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YdCtwbqMAyOyGH0CTbWZbzS3jok6JKd1ti4BRTFY2CQ=;
-        b=MgaDI4DeM1zsVGIWcsZDgdFhQkZidH3/3aUjK6XEAQmxKQYLHSlM9bhrTS4K0h4pGo
-         Xak6/HQr/RWwf/n2jGMO0SMCA0xP8o64tP6vNNwKx55aOkhktw46o2RE/aXDS8Hxbb98
-         4Pf+bM8iya/nyO7LygJXPaEtgohcWOr7qOFnl2rZ39FgRNmGJQ396jcANQu0QYnHLO7O
-         xefh/vQerOGFnxdQe/g4L7pzMp8LI/Y4DtNDEJxGuE+kFUwsSZk82U41g2Uhor1nWiEX
-         UTXD3u+VUXCdgkUpwdj8nLD6wEPYWyZBE/ocUpEQ/J5zVNT0DXHYiWurFw88cRsKr76i
-         KjkQ==
-X-Gm-Message-State: AOAM533T4Ycj1nLZQjfvRXGPyr5+99SY8XAiYOewV4vr2QTayVv+JUAR
-        dw9DQvcnP0dF0AHuje7J+DWT3X0Oanbrq8GTWZ1Qdg==
-X-Google-Smtp-Source: ABdhPJwqqJGhaA3LrQ9gKploTm4XfKyPF3dSnpWL5/VLaLkfLNDvHlDSES6Yl3ycBU489bw5LRJA3NvGR8tWbXI9tYE=
-X-Received: by 2002:a2e:8816:: with SMTP id x22mr8822321ljh.377.1604441873724;
- Tue, 03 Nov 2020 14:17:53 -0800 (PST)
+        bh=z0GfssSb9lxM+saQ7V+1ta/Gt8yaqMW9vqfv+WXLTwo=;
+        b=RGEuLlspXdNLfaU1PWDcgurvO9XxdCvg/RM3QQKUba0eLKNsNoorebyC3/2lqUTpp5
+         BaMsgYdseQDuCgd5n4ZLcvc5J9R+pfHnSQqZgLuu3A+R/axpQUJkNhJCWyNq+/8vV6wK
+         oT1yo9cGuNwac+jUnBRU0o3x89Bk9L5WPe4S3nr2OhnL7UFNq8/ctP2nvCx6FUSEWuHy
+         FVwvY9TtZDetpPy6itXg2OOr0Q3RlPjmnBElWmSnzs/I0mzX7mMUD8dZg+KyaFbRFRAS
+         qcDrmKwidoYWV7SjXSA0wMq58RG/xcfjn6rE+Gmr8ya6ijrSy347iGPpp1uKzKYiaQFB
+         dZBA==
+X-Gm-Message-State: AOAM533DR4NqY8luIOiqIpgtrr7ZMY+uq5yfBTefL42JHwQh9rT05O8S
+        YIMHbwfKrJOV9YNLMAKm3bXbzeKkTXOtsABOui5TBg==
+X-Google-Smtp-Source: ABdhPJx1YLpbLOmJgqu3eQzQ+sA7YY36W5ObSZZ3HEKf4jnleqY9lVAuhTWuMxAk5yJC8NxBNIaDG96Wmw/e3PGz5t8=
+X-Received: by 2002:a2e:9c84:: with SMTP id x4mr9140798lji.326.1604441879292;
+ Tue, 03 Nov 2020 14:17:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201103175841.3495947-1-elver@google.com> <20201103175841.3495947-4-elver@google.com>
-In-Reply-To: <20201103175841.3495947-4-elver@google.com>
+References: <20201103175841.3495947-1-elver@google.com> <20201103175841.3495947-8-elver@google.com>
+In-Reply-To: <20201103175841.3495947-8-elver@google.com>
 From:   Jann Horn <jannh@google.com>
-Date:   Tue, 3 Nov 2020 23:17:26 +0100
-Message-ID: <CAG48ez34gt7_itkCHiz6z__oepD89=sYWu11=3aq8ASV8ph5pQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/9] arm64, kfence: enable KFENCE for ARM64
+Date:   Tue, 3 Nov 2020 23:17:32 +0100
+Message-ID: <CAG48ez0=_ZoUsZvh99UJo7GziiTqZUKYgqHzvd784a-Fs-kEcw@mail.gmail.com>
+Subject: Re: [PATCH v7 7/9] kfence, Documentation: add KFENCE documentation
 To:     Marco Elver <elver@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Alexander Potapenko <glider@google.com>,
@@ -93,16 +93,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Nov 3, 2020 at 6:59 PM Marco Elver <elver@google.com> wrote:
-> Add architecture specific implementation details for KFENCE and enable
-> KFENCE for the arm64 architecture. In particular, this implements the
-> required interface in <asm/kfence.h>.
->
-> KFENCE requires that attributes for pages from its memory pool can
-> individually be set. Therefore, force the entire linear map to be mapped
-> at page granularity. Doing so may result in extra memory allocated for
-> page tables in case rodata=full is not set; however, currently
-> CONFIG_RODATA_FULL_DEFAULT_ENABLED=y is the default, and the common case
-> is therefore not affected by this change.
+> Add KFENCE documentation in dev-tools/kfence.rst, and add to index.
 >
 > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 > Co-developed-by: Alexander Potapenko <glider@google.com>
