@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F9D2A3F32
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860EC2A3F38
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgKCIo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:44:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgKCIo5 (ORCPT
+        id S1727891AbgKCIpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:45:08 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45492 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727864AbgKCIpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:44:57 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42042C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:44:57 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id p22so11857490wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5/WOZHBmz3EBH3+eCAudlxs+DpqVNBs0AEAQtQF3C0g=;
-        b=D/tNDQgcgZFGx9ufo0kyX0caMAMLaJEDmZZar9aTdI+nTB9DiJS3uimqhClmlkv92N
-         PTN2NgpbaMKPWw/6zwTa4o6wsGYC/QudW8o05fr9c9y3HXkac7wJD+cThiHUxfFGrXIO
-         lUhf0X7R1ls37PqrduWqkrZSUYXq18N4k98mN4fSuvA1l9NqRyBlHyIX4w7jsaUPNOVi
-         gzgTPFzgW9XrKjyCg5rrx4StYlo9blEfSZJUyBQOCS1jNCUaRhhK0oqP9o/MmzZUToJ1
-         7v/Q5bkbJnDFrkGirDBHFrCtnRwV/tMNjQbYRD6NwJtOgvcw2Exk4tZ6mORjpINR9Os8
-         IJmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5/WOZHBmz3EBH3+eCAudlxs+DpqVNBs0AEAQtQF3C0g=;
-        b=cN4Hw9MY1k6u9MBX77wUB1CMtQufxJ1HcAcy4sa+H5yKg8UQWzhojX0NPWV+Bir667
-         C1dsKjZWmxEPHvtigbf1V16Ceztsc4fDPr4GakmCW7mPDQVnvtiFyzrydYkawf+46Dv2
-         DUdCASJEsLQS43wYTUKHc6vyPf8AESowVoXll+CvBPjrpM7GxvOGYc3PsN1UGYTN1Lwm
-         0gjIBHKBo0ZcXSXGUHcxyKPDisUXJ/IgbxNyiutDvPF3gyP/Kb7aWgMs+fF6FRrOAhna
-         9TSVJEJVzLxtPHyzmzvOIGn8MW02vV/kfKMwSPdcxnDucYiPdU/F/wgQH7P2iNZi+74i
-         REvw==
-X-Gm-Message-State: AOAM533lTmYHQuVJXbxfgIzBaQDgMelgsXfJ3yzRY+8YeI1EIDozwTcL
-        66bCW7PhEiA+5a5WfgxBdWEYRBsaU4LauXIy
-X-Google-Smtp-Source: ABdhPJz8fx8VQuhvfzqJtAKCb4y9SD7Xt0brjcuk8KmNJ2RedYCauy94oAfQvnsKQQSqF2yMZLA6tA==
-X-Received: by 2002:a7b:c4c3:: with SMTP id g3mr2313652wmk.65.1604393096021;
-        Tue, 03 Nov 2020 00:44:56 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id c17sm2084243wml.14.2020.11.03.00.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 00:44:55 -0800 (PST)
-Date:   Tue, 3 Nov 2020 08:44:53 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 41/41] realtek: rtw88: pci: Add prototypes for .probe,
- .remove and .shutdown
-Message-ID: <20201103084453.GJ4488@dell>
-References: <20201102112410.1049272-1-lee.jones@linaro.org>
- <20201102112410.1049272-42-lee.jones@linaro.org>
- <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
+        Tue, 3 Nov 2020 03:45:07 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AEACD1F45388;
+        Tue,  3 Nov 2020 08:45:05 +0000 (GMT)
+Date:   Tue, 3 Nov 2020 09:45:02 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/panfrost: Fix module unload
+Message-ID: <20201103094502.70de59c9@collabora.com>
+In-Reply-To: <20201030145833.29006-1-steven.price@arm.com>
+References: <20201030145833.29006-1-steven.price@arm.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Brian Norris wrote:
+On Fri, 30 Oct 2020 14:58:33 +0000
+Steven Price <steven.price@arm.com> wrote:
 
-> On Mon, Nov 2, 2020 at 3:25 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > --- a/drivers/net/wireless/realtek/rtw88/pci.h
-> > +++ b/drivers/net/wireless/realtek/rtw88/pci.h
-> > @@ -212,6 +212,10 @@ struct rtw_pci {
-> >         void __iomem *mmap;
-> >  };
-> >
-> > +int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
-> > +void rtw_pci_remove(struct pci_dev *pdev);
-> > +void rtw_pci_shutdown(struct pci_dev *pdev);
-> > +
-> >
+> When unloading the call to pm_runtime_put_sync_suspend() will attempt to
+> turn the GPU cores off, however panfrost_device_fini() will have turned
+> the clocks off. This leads to the hardware locking up.
 > 
-> These definitions are already in 4 other header files:
+> Instead don't call pm_runtime_put_sync_suspend() and instead simply mark
+> the device as suspended using pm_runtime_set_suspended(). And also
+> include this on the error path in panfrost_probe().
 > 
-> drivers/net/wireless/realtek/rtw88/rtw8723de.h
-> drivers/net/wireless/realtek/rtw88/rtw8821ce.h
-> drivers/net/wireless/realtek/rtw88/rtw8822be.h
-> drivers/net/wireless/realtek/rtw88/rtw8822ce.h
+> Fixes: aebe8c22a912 ("drm/panfrost: Fix possible suspend in panfrost_remove")
+> Signed-off-by: Steven Price <steven.price@arm.com>
+
+Queued to drm-misc-fixes.
+
+Thanks,
+
+Boris
+
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_drv.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> Seems like you should be moving them, not just adding yet another duplicate.
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index 23513869500c..0ac8ad18fdc6 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -627,6 +627,7 @@ static int panfrost_probe(struct platform_device *pdev)
+>  err_out1:
+>  	pm_runtime_disable(pfdev->dev);
+>  	panfrost_device_fini(pfdev);
+> +	pm_runtime_set_suspended(pfdev->dev);
+>  err_out0:
+>  	drm_dev_put(ddev);
+>  	return err;
+> @@ -641,9 +642,9 @@ static int panfrost_remove(struct platform_device *pdev)
+>  	panfrost_gem_shrinker_cleanup(ddev);
+>  
+>  	pm_runtime_get_sync(pfdev->dev);
+> -	panfrost_device_fini(pfdev);
+> -	pm_runtime_put_sync_suspend(pfdev->dev);
+>  	pm_runtime_disable(pfdev->dev);
+> +	panfrost_device_fini(pfdev);
+> +	pm_runtime_set_suspended(pfdev->dev);
+>  
+>  	drm_dev_put(ddev);
+>  	return 0;
 
-I followed the current convention.
-
-Happy to optimise if that's what is required.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
