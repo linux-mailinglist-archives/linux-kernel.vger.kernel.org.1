@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39662A51C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF062A51CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgKCUoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
+        id S1730841AbgKCUoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:44:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730799AbgKCUoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:02 -0500
+        id S1730837AbgKCUoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:44:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC45E223BF;
-        Tue,  3 Nov 2020 20:44:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43DF3223BF;
+        Tue,  3 Nov 2020 20:44:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436242;
-        bh=gAFYkvNUzzsta/eXFKilxTP3Oguaf2+DeWreuAr02rw=;
+        s=default; t=1604436246;
+        bh=B4ZDlszOFhr00X5WtgV5mwm0pYNkfHGEmO/CVJrHHmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OCJZi53lbjrlxVd7HSb7s04LJ6ijf8L+otPkF45FCTuGp8rExnAHV39BDMKNv6lbp
-         SBd61ObsAD4XFRP3QOqHQ3FwWk9VqhlXGrYk4BEqu3tKTsUZ9TtrleFH4GAt0yag5+
-         dpTgspZ1XPiVTVxBy9KRP8UisygTK84INHGAq8Wo=
+        b=QTn0gcSIay5QUE6DdCPoQBI0FXxDnqgIj1vaQxlc8IYkPX/h+jA/OQweYHQgNg6q4
+         4Zo9W1525Ekj16uSd6zJduE/2AIbR8jeE0e5PmS8JWwVB/jW4vLkRg806JHk/fsVw/
+         sblsm2xVztmid6rigDNxC1tx6cDYvD2lRnJ9V4+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 164/391] arm64: dts: renesas: ulcb: add full-pwr-cycle-in-suspend into eMMC nodes
-Date:   Tue,  3 Nov 2020 21:33:35 +0100
-Message-Id: <20201103203357.913970051@linuxfoundation.org>
+Subject: [PATCH 5.9 166/391] memory: emif: Remove bogus debugfs error handling
+Date:   Tue,  3 Nov 2020 21:33:37 +0100
+Message-Id: <20201103203358.048963032@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,33 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 992d7a8b88c83c05664b649fc54501ce58e19132 ]
+[ Upstream commit fd22781648080cc400772b3c68aa6b059d2d5420 ]
 
-Add full-pwr-cycle-in-suspend property to do a graceful shutdown of
-the eMMC device in system suspend.
+Callers are generally not supposed to check the return values from
+debugfs functions.  Debugfs functions never return NULL so this error
+handling will never trigger.  (Historically debugfs functions used to
+return a mix of NULL and error pointers but it was eventually deemed too
+complicated for something which wasn't intended to be used in normal
+situations).
 
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1594989201-24228-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Delete all the error handling.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+Link: https://lore.kernel.org/r/20200826113759.GF393664@mwanda
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/ulcb.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/memory/emif.c | 33 +++++----------------------------
+ 1 file changed, 5 insertions(+), 28 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
-index ff88af8e39d3f..a2e085db87c53 100644
---- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
-+++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
-@@ -469,6 +469,7 @@
- 	mmc-hs200-1_8v;
- 	mmc-hs400-1_8v;
- 	non-removable;
-+	full-pwr-cycle-in-suspend;
- 	status = "okay";
- };
+diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+index bb6a71d267988..5c4d8319c9cfb 100644
+--- a/drivers/memory/emif.c
++++ b/drivers/memory/emif.c
+@@ -163,35 +163,12 @@ static const struct file_operations emif_mr4_fops = {
  
+ static int __init_or_module emif_debugfs_init(struct emif_data *emif)
+ {
+-	struct dentry	*dentry;
+-	int		ret;
+-
+-	dentry = debugfs_create_dir(dev_name(emif->dev), NULL);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err0;
+-	}
+-	emif->debugfs_root = dentry;
+-
+-	dentry = debugfs_create_file("regcache_dump", S_IRUGO,
+-			emif->debugfs_root, emif, &emif_regdump_fops);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err1;
+-	}
+-
+-	dentry = debugfs_create_file("mr4", S_IRUGO,
+-			emif->debugfs_root, emif, &emif_mr4_fops);
+-	if (!dentry) {
+-		ret = -ENOMEM;
+-		goto err1;
+-	}
+-
++	emif->debugfs_root = debugfs_create_dir(dev_name(emif->dev), NULL);
++	debugfs_create_file("regcache_dump", S_IRUGO, emif->debugfs_root, emif,
++			    &emif_regdump_fops);
++	debugfs_create_file("mr4", S_IRUGO, emif->debugfs_root, emif,
++			    &emif_mr4_fops);
+ 	return 0;
+-err1:
+-	debugfs_remove_recursive(emif->debugfs_root);
+-err0:
+-	return ret;
+ }
+ 
+ static void __exit emif_debugfs_exit(struct emif_data *emif)
 -- 
 2.27.0
 
