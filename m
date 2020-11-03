@@ -2,88 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0D82A4F80
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611EF2A4F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgKCS7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S1729523AbgKCTAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCS7U (ORCPT
+        with ESMTP id S1727706AbgKCTAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:59:20 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE70C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:59:20 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id a7so23636819lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:59:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yyz56LcDgE7MQ3P04W5uenRAxGknrqGGYLnUXqlXhlc=;
-        b=OtsGcoUDGZrMZFYe0h9FmnR27BjPtYKNbzVr5SK58kdl/KCOM7OXW/ORkfWFkSG/a1
-         gKqaqdvofNdsCPg+TMabv/xetMpSCObEnkjatwOBfdRZUFD7qNHPEvWgpsHHgoWKV3vS
-         fHMcVijigA1xn50yT2L8FNPDm9EhxPXU4C8/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yyz56LcDgE7MQ3P04W5uenRAxGknrqGGYLnUXqlXhlc=;
-        b=TSUcNXiXLiONkTwh5CAZw1ruoKrnCggKm4sTiSQo6x1+WkKpJjMa7bzC9HZEl9xx8d
-         /ET4/In0jKaoLvOPPlI1P02q/gDsXVsswDFU/9EyxickQ3uj84UuS5lWvYclVy9Chx1E
-         EBhzKHsKQWt+tx9whjv/r5Y+VJCUMDOqlBeuD0vvO1G8ZEuyNHz8X8pLtmDZbbrApqH3
-         fIlfIlIhNLq0+A8C8apddFuYzar9SLOy3aONs7Emd529Un70rr5nMj/EaoF2/EBK6xkT
-         JQ9LtVOo6GIteLRpCT5SxTAPZPQ2ZR68xkB/ekC1KGaRfqayDH8R1RWsBtrUMLLUWjVl
-         bbaA==
-X-Gm-Message-State: AOAM530IYxCHHpVq1nI2xLLy888N9tTnYjGCsstJkGFeXZpQrmCx2opQ
-        h8mb3wYYzBlac2FjI/avzbWUCFO3EDedQlaVZEWONQ==
-X-Google-Smtp-Source: ABdhPJyU30GePaCOZy+p7IfzsvlaI4Kvz28/Isfz/jxGnRjVONlFEQHG7xFeMt5Pv3h+rq7v3ayxBh+WKQrOkBEwo/0=
-X-Received: by 2002:a19:c80a:: with SMTP id y10mr8993128lff.329.1604429959075;
- Tue, 03 Nov 2020 10:59:19 -0800 (PST)
+        Tue, 3 Nov 2020 14:00:23 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8B3C0613D1;
+        Tue,  3 Nov 2020 11:00:23 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604430021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p7vA0Pp8Yw32NcCmeGMglrNZNTsusNNmUR0JbokXn0s=;
+        b=Wh43mnWM8kdYti+K6Ejg70IQfa+GmZ8DCSo20FQE/hkLNmxVT4iphQnlk6m40FPrmWktQO
+        8ayXKz0ztE1cqx/iEhmcbhojQh9yCHEkFANOGr1w8fGEwrPOcrWAWxi/OenSb5evTEILWa
+        oclhRZDu2W0eltn+sc+1j25HCEzKjNSXz+4io/CbYUyMFuxTbNnNJEiCm1jMBn8PGej5s3
+        E3JpbZR0aFWpI6lV+SZv22HUNUyPWbXG8oMYz+BmJikgi+ivLhTWpXqqgXf53DcJR+Ltrn
+        dCfpJUdQQNPCTgPlSMPzbs0whzNCaCVS/fZbTm34UVovthqkFff3qyFpeY0sbA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604430021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p7vA0Pp8Yw32NcCmeGMglrNZNTsusNNmUR0JbokXn0s=;
+        b=STcwQ6RaI64DeextSGHfCvrA9zLqnmZlfhd6kn3GgHfcpWRfVbJIkhHpoM7lA8B8jXR4lp
+        QBLUYE/euA+zomCg==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-aio@kvack.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        nouveau@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>
+Subject: Re: [patch V3 22/37] highmem: High implementation details and document API
+In-Reply-To: <CAHk-=wg2D_yjgKYkXCybD3uf0dtwYh6HxZ9BQJfV5t+EBqLGQQ@mail.gmail.com>
+References: <20201103092712.714480842@linutronix.de> <20201103095858.827582066@linutronix.de> <CAHk-=wg2D_yjgKYkXCybD3uf0dtwYh6HxZ9BQJfV5t+EBqLGQQ@mail.gmail.com>
+Date:   Tue, 03 Nov 2020 20:00:20 +0100
+Message-ID: <87y2ji1d17.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201103153132.2717326-1-kpsingh@chromium.org>
- <20201103153132.2717326-8-kpsingh@chromium.org> <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Tue, 3 Nov 2020 19:59:08 +0100
-Message-ID: <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/8] bpf: Add tests for task_local_storage
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:47 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Nov 03 2020 at 09:48, Linus Torvalds wrote:
+> I have no complaints about the patch, but it strikes me that if people
+> want to actually have much better debug coverage, this is where it
+> should be (I like the "every other address" thing too, don't get me
+> wrong).
 >
-> On Tue, Nov 03, 2020 at 04:31:31PM +0100, KP Singh wrote:
-> > +
-> > +struct storage {
-> > +     void *inode;
-> > +     unsigned int value;
-> > +     /* Lock ensures that spin locked versions of local stoage operations
-> > +      * also work, most operations in this tests are still single threaded
-> > +      */
-> > +     struct bpf_spin_lock lock;
-> > +};
+> In particular, instead of these PageHighMem(page) tests, I think
+> something like this would be better:
 >
-> I think it's a good idea to test spin_lock in local_storage,
-> but it seems the test is not doing it fully.
-> It's only adding it to the storage, but the program is not accessing it.
+>    #ifdef CONFIG_DEBUG_HIGHMEM
+>      #define page_use_kmap(page) ((page),1)
+>    #else
+>      #define page_use_kmap(page) PageHighMem(page)
+>    #endif
+>
+> adn then replace those "if (!PageHighMem(page))" tests with "if
+> (!page_use_kmap())" instead.
+>
+> IOW, in debug mode, it would _always_ remap the page, whether it's
+> highmem or not. That would really stress the highmem code and find any
+> fragilities.
 
-I added it here just to check if the offset calculations (map->spin_lock_off)
-are correctly happening for these new maps.
+Yes, that makes a lot of sense. We just have to avoid that for the
+architectures with aliasing issues.
 
-As mentioned in the updates, I do intend to generalize
-tools/testing/selftests/bpf/map_tests/sk_storage_map.c which already has
- the threading logic to exercise bpf_spin_lock in storage maps.
+> Anyway, this is all sepatrate from the series, which still looks fine
+> to me. Just a reaction to seeing the patch, and Thomas' earlier
+> mention that the highmem debugging doesn't actually do much.
 
-Hope this is an okay plan?
+Right, forcing it for both kmap and kmap_local is straight forward. I'll
+cook a patch on top for that.
+
+Thanks,
+
+        tglx
+
+
