@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA052A555E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867A52A5491
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388439AbgKCVJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:09:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47556 "EHLO mail.kernel.org"
+        id S2389037AbgKCVMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:12:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388516AbgKCVIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:08:09 -0500
+        id S2389027AbgKCVMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:12:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A307205ED;
-        Tue,  3 Nov 2020 21:08:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97B4220757;
+        Tue,  3 Nov 2020 21:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437689;
-        bh=m4g9q+Mue7xJeKG2I/ft/AffLGKRBJrMhbhgOqcRyQI=;
+        s=default; t=1604437951;
+        bh=Y5Rvq9Bp3DHKSzI4FT/xjMrjT8Z2J0F1QfgRti9riGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TuiL4nDPTTu4XJkVBzRzuCpavrHVPaCwWfbsP9eRIkgk1hTI7+LGx5iWPW3Rzkguc
-         HbegLBaiQGVcfhZUf4i7bOKIDsDVr02RAiMptrSjBBTPJDhrfRkVewdefwlmkSzIcS
-         HUKNzwGwtVHfvsputkVeE7FLm7KCpS/CGLEwIJcU=
+        b=yqoaeGTWjmYWfiDNfD8HItSBhOkpEdbbDX7EDwIvaIiCf9ksbsL2tXDHyRFaseQqC
+         xJeAUrdXGyxxwHKVExShI02WNP4Zgc9j80GlsCP2GZAXU+M0kFCB2tL+Rb+RBvms63
+         I13ktGXrfL9HXSQ1wooolUOYePLbLbs+5mSi0TtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 4.19 184/191] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
-Date:   Tue,  3 Nov 2020 21:37:56 +0100
-Message-Id: <20201103203249.978323384@linuxfoundation.org>
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 100/125] ia64: fix build error with !COREDUMP
+Date:   Tue,  3 Nov 2020 21:37:57 +0100
+Message-Id: <20201103203211.482267113@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +48,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
+commit 7404840d87557c4092bf0272bce5e0354c774bf9 upstream.
 
-Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
-without CONFIG_MMU leads to build errors:
+Fix linkage error when CONFIG_BINFMT_ELF is selected but CONFIG_COREDUMP
+is not:
 
-  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
-  arch/arm/plat-samsung/pm-debug.c:57:2: error:
-    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_phdrs':
+    elfcore.c:(.text+0x172): undefined reference to `dump_emit'
+    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_data':
+    elfcore.c:(.text+0x2b2): undefined reference to `dump_emit'
 
-Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
+Fixes: 1fcccbac89f5 ("elf coredump: replace ELF_CORE_EXTRA_* macros by functions")
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
+Link: https://lkml.kernel.org/r/20200819064146.12529-1-krzk@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/plat-samsung/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/ia64/kernel/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -240,6 +240,7 @@ config SAMSUNG_PM_DEBUG
- 	bool "Samsung PM Suspend debug"
- 	depends on PM && DEBUG_KERNEL
- 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
-+	depends on DEBUG_LL && MMU
- 	help
- 	  Say Y here if you want verbose debugging from the PM Suspend and
- 	  Resume code. See <file:Documentation/arm/Samsung-S3C24XX/Suspend.txt>
+--- a/arch/ia64/kernel/Makefile
++++ b/arch/ia64/kernel/Makefile
+@@ -43,7 +43,7 @@ endif
+ obj-$(CONFIG_INTEL_IOMMU)	+= pci-dma.o
+ obj-$(CONFIG_SWIOTLB)		+= pci-swiotlb.o
+ 
+-obj-$(CONFIG_BINFMT_ELF)	+= elfcore.o
++obj-$(CONFIG_ELF_CORE)		+= elfcore.o
+ 
+ # fp_emulate() expects f2-f5,f16-f31 to contain the user-level state.
+ CFLAGS_traps.o  += -mfixed-range=f2-f5,f16-f31
 
 
