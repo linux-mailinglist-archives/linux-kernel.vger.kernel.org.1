@@ -2,195 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC92A4C68
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F562A4C6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgKCRNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:13:40 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:58420 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727323AbgKCRNj (ORCPT
+        id S1728667AbgKCROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:14:10 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34988 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726581AbgKCROJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:13:39 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103171327euoutp02d3922ca81977dce748f5c8cbc457db81~EDsU0INnd0968709687euoutp02d;
-        Tue,  3 Nov 2020 17:13:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103171327euoutp02d3922ca81977dce748f5c8cbc457db81~EDsU0INnd0968709687euoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604423607;
-        bh=4+R92XtKdFg0pbHY8n6lWZbiD2Yi0RLFMFQuW88KsPw=;
-        h=From:To:Cc:Subject:In-Reply-To:Date:References:From;
-        b=l5GF3+UAqmIF6KoyEi5l6XkJ1GBRLtBJIRYsCXIVQrdZft6rD4o1wZ7h7gLOLoFFC
-         SwldEEXQycmIT106lSk8Kx8QXYNSRRK0xJrUE1Iuzf0YRNA/n2R79+bTiqQ0cnorPO
-         6DO9aS0DjjBJclReXXH+Op5y2faUzBFEtEcyT9RQ=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201103171327eucas1p2e869ff30350112f45b98d062d2f58f0e~EDsUhYPQT1934319343eucas1p2x;
-        Tue,  3 Nov 2020 17:13:27 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id BB.5C.06456.6BF81AF5; Tue,  3
-        Nov 2020 17:13:26 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40~EDsUAZ9fm2801528015eucas1p2Q;
-        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201103171326eusmtrp2e614f4d1e9fe67d9b82df845fdeb7d47~EDsT-srQh1227412274eusmtrp2w;
-        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-e7-5fa18fb637f1
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 59.CE.06017.6BF81AF5; Tue,  3
-        Nov 2020 17:13:26 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201103171326eusmtip13e52bf20cf5be4a1a17a190283d29085~EDsT0GxUk3053630536eusmtip1F;
-        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 5/5] ARM: dts: exynos: Add Ethernet interface
- description for Odroid X/X2
-In-Reply-To: <20201103164423.GE14739@kozik-lap> (Krzysztof Kozlowski's
-        message of "Tue, 3 Nov 2020 17:44:23 +0100")
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Tue, 03 Nov 2020 18:12:51 +0100
-Message-ID: <dleftjsg9qs6ss.fsf%l.stelmach@samsung.com>
+        Tue, 3 Nov 2020 12:14:09 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3H2Cnk113142;
+        Tue, 3 Nov 2020 12:13:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=lRACQRLHLt6q2IrqORhaIKVO9hKLB13qlItsRN6SnwA=;
+ b=VYgLZZ40Pc8lZyr5ot7pllR5RnIwm4qvNRVPhkZo6kjeiLkFro0xr6CEstF10a57hEy+
+ YAeGiTwsC8vpde4IC1oRx0FAYjGGHwFQUF8m3v9GrNEVsmV9P4+fmmoj3qmYVOUTBRaQ
+ WYfVrR9hjKMzJkI+zkoTnCBFf84LY7mdhX0F2bDcfdGI1TmBZBl/rkA6K8P/icJL7+o8
+ ish7seD8XFbrxlxk6Wxl7W86EEWEPD0CQtVHCYSmvqYbr3Y3K/L9S92jXQr/eEQ8ized
+ a6s3ZYinWKGKvE/dEQln76UswfWYdK5rgmgx1be73FLzVd+YrTRb845gFCBYKQh4LYwO ww== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34jyytfcuy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 12:13:42 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A3H7JtX018711;
+        Tue, 3 Nov 2020 17:13:40 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 34hm6haqht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 17:13:40 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A3HDcHx56033540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Nov 2020 17:13:38 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1417952063;
+        Tue,  3 Nov 2020 17:13:38 +0000 (GMT)
+Received: from pomme.tlslab.ibm.com (unknown [9.145.79.178])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BFEEB52051;
+        Tue,  3 Nov 2020 17:13:37 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Subject: [PATCH] powerpc/vdso: Fix VDSO unmap check
+Date:   Tue,  3 Nov 2020 18:13:36 +0100
+Message-Id: <20201103171336.98883-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeT3nbMfh5HWtfFgRMuxDRVOxyymzq9goiOpDlGVr6mld3JQd
-        L2mQyy7UslYaZBJ5qay8zLmm6bqRaVIzV4kapgUqWJmWzi42urgdBb/93uf5/58bL01InJSM
-        PqBLYfU6daJcICJrn407F9WailWhHyoimOr8KoopbGylGFPfIME4nRYhY+3roJg2+1UBk+98
-        5MOYq7uETGVjj5A5+bBRuEakrC/oESqtZWcEyrs3spTnbWVI6bLO3ULFiFYmsIkH0lh9yKq9
-        ov15Z/sFyX1w2PFovgGNS43Ilwa8GK6PuCgjEtESfBuBramX5B9jCFqGLk1mXAjsQwNoytI0
-        bPGyBN9C0NuZwYsGEDRWjwiMiKYFWAGVlTs8GimeD51/fnoLEdhAgGnkgdc8A6ugosHgZV+c
-        CgMvjgk9PBMvB9vHD14m8TyocbspD4vxMii994PgOQCeX+knPUxgLVxxfkGeBoDfC8FgaJ6c
-        NAqud+T78DwDPjfbhDzPgX/1hT6eQQFnQV7uUt6bg6D26i+S10RAd+tvAa9ZC+72OB794e1Q
-        AN/WH3JrLxN8WAynT0l4YzCYTQ8mi8jg3Ofbk8MooX/YLuBPlY3gZlEbdQEFFUzbpmDaNgUT
-        ZYmJ01XZQ/jwQigtHiR4jgSz+StZhKgyFMimcloNy4Xp2HQFp9ZyqTqNIj5Ja0UTX8vxt3m0
-        Dn1/E9eAMI3kfuI1bJFKQqnTuAxtAwqeqNRrKX+FZKQuScfKpeJ1Lx17JOIEdUYmq09S6VMT
-        Wa4BzaZJeaA4vORTrARr1CnsIZZNZvVTWR/aV2ZA5mUOixtHdsuP/+zaOWvM+OXZnRpNyXbT
-        +OjB8PZwv8KM9BWy+0+po0s4k2/HO8umb5pq/9BXYReviQbFUdaDhpxQI6pzZe/c/T5h34kj
-        zifbXLuC4tdZups2Vka7Y2uyqwYc9sy8DQxWKGyj2163nEoZjS7Hm2O2SgO1+asfr5eT3H51
-        2AJCz6n/A75wMHxiAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7rb+hfGG2xZI22xccZ6Vov5R86x
-        WvQ/fs1scf78BnaLTY+vsVpc3jWHzWLG+X1MFus23mK3WHvkLrtF694j7A5cHjtn3WX32LSq
-        k81j85J6j74tqxg9Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXS
-        t7NJSc3JLEst0rdL0MuY3P2EreCxRMXpfZoNjD9Fuhg5OSQETCSOvtvA2MXIxSEksJRRomdS
-        K5DDAZSQklg5Nx2iRljiz7UuNoiap4wSSxp6wWrYBPQk1q6NAKkREdCUuP73OytIDbNAE7PE
-        45sz2EASwgKxEu3LvzKB2JwCpRLLPs8Gs4WAejd83c4OYosKWEpseXEfzGYRUJXY+vs3K4jN
-        K2AusWz7N2YIW1Di5MwnLCA2s0C2xNfVz5knMArMQpKahSQ1C+g8ZqCb1u/ShwhrSyxb+JoZ
-        wraVWLfuPcsCRtZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgTG37djPLTsYu94FH2IU4GBU
-        4uF1SF0QL8SaWFZcmXuIUQVozKMNqy8wSrHk5eelKonwOp09HSfEm5JYWZValB9fVJqTWnyI
-        0RTon4nMUqLJ+cA0kVcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1Oq
-        gfEUX/hhseY4kc1T3k8z2ltZcW6GPdM0sx1ujUXZIRkHXxtNiu/8cI9heeXfLr+qRttM2e41
-        /CV/66vnNr/+FPX0jqqxqHnEhSdLk9Zc/8TQ43fteFnk7kMV1h1RS/Mlrm65dNvEwXnusrOf
-        X+u2h+UeCqu2LD/I1Xn78acXCsubXGcatn7ullViKc5INNRiLipOBABo+zhJ2wIAAA==
-X-CMS-MailID: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
-X-Msg-Generator: CA
-X-RootMTR: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
-References: <20201103164423.GE14739@kozik-lap>
-        <CGME20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ impostorscore=0 clxscore=1011 suspectscore=1 priorityscore=1501
+ adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+The check introduced by the commit 83d3f0e90c6c ("powerpc/mm: tracking vDSO
+remap") is wrong and is missing some partial unmaps of the VDSO.
 
-It was <2020-11-03 wto 17:44>, when Krzysztof Kozlowski wrote:
-> On Tue, Nov 03, 2020 at 01:46:18PM +0100, =C5=81ukasz Stelmach wrote:
->> Add Ethernet interface description for Odroid X/X2.
->>=20
->> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
->> ---
->>  arch/arm/boot/dts/exynos4412-odroidx.dts | 28 ++++++++++++++++++++++++
->>  1 file changed, 28 insertions(+)
->>=20
->> diff --git a/arch/arm/boot/dts/exynos4412-odroidx.dts b/arch/arm/boot/dt=
-s/exynos4412-odroidx.dts
->> index 3ea2a0101e80..8f154f431f6c 100644
->> --- a/arch/arm/boot/dts/exynos4412-odroidx.dts
->> +++ b/arch/arm/boot/dts/exynos4412-odroidx.dts
->> @@ -15,6 +15,10 @@ / {
->>  	model =3D "Hardkernel ODROID-X board based on Exynos4412";
->>  	compatible =3D "hardkernel,odroid-x", "samsung,exynos4412", "samsung,e=
-xynos4";
->>=20=20
->> +	aliases {
->> +		ethernet =3D &ethernet;
->> +	};
->> +
->>  	memory@40000000 {
->>  		device_type =3D "memory";
->>  		reg =3D <0x40000000 0x3FF00000>;
->> @@ -72,8 +76,32 @@ &buck8_reg {
->>  };
->>=20=20
->>  &ehci {
->> +	#address-cells =3D <1>;
->> +	#size-cells =3D <0>;
->>  	phys =3D <&exynos_usbphy 2>;
->>  	phy-names =3D "hsic0";
->> +
->> +	hub@2 {
->> +		compatible =3D "usb0424,3503";
->> +		reg =3D <2>;
->> +		#address-cells =3D <1>;
->> +		#size-cells =3D <0>;
->> +
->> +		hub@1 {
->> +			compatible =3D "usb0424:9514";
->
-> Does not look like correct compatible.
+To be complete the check needs the base and end address of the
+VDSO. Currently only the base is available in the mm_context of a task, but
+the end address can easily be computed because the size of VDSO is
+constant. However, there are 2 sizes for 32 or 64 bits task and they are
+stored in static variables in arch/powerpc/kernel/vdso.c.
 
-As odd as it may seem (and considering my mistakes) this is correct.
+Exporting a new function called vdso_pages() to get the number of pages of
+the VDSO based on the static variables from arch/powerpc/kernel/vdso.c.
 
-=2D-8<---------------cut here---------------start------------->8---
-root@target:~# cat /proc/device-tree/compatible ; echo
-hardkernel,odroid-x2samsung,exynos4412samsung,exynos4
-root@target:~# lsusb -t
-/:  Bus 01.Port 1: Dev 1, Class=3Droot_hub, Driver=3Dexynos-ehci/3p, 480M
-    |__ Port 2: Dev 2, If 0, Class=3DHub, Driver=3Dhub/3p, 480M
-        |__ Port 1: Dev 3, If 0, Class=3DHub, Driver=3Dhub/5p, 480M
-            |__ Port 1: Dev 4, If 0, Class=3DVendor Specific Class, Driver=
-=3Dsmsc95xx, 480M
-root@target:~# lsusb
-Bus 001 Device 004: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 =
-Fast Ethernet Adapter
-Bus 001 Device 003: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
-Bus 001 Device 002: ID 0424:3503 Standard Microsystems Corp.=20
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-=2D-8<---------------cut here---------------end--------------->8---
+Fixes: 83d3f0e90c6c ("powerpc/mm: tracking vDSO remap")
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+---
+ arch/powerpc/include/asm/mmu_context.h | 18 ++++++++++++++++--
+ arch/powerpc/kernel/vdso.c             | 14 ++++++++++++++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
+index e02aa793420b..ced80897b7a1 100644
+--- a/arch/powerpc/include/asm/mmu_context.h
++++ b/arch/powerpc/include/asm/mmu_context.h
+@@ -259,11 +259,25 @@ static inline void enter_lazy_tlb(struct mm_struct *mm,
+ 
+ extern void arch_exit_mmap(struct mm_struct *mm);
+ 
++extern int vdso_pages(void);
+ static inline void arch_unmap(struct mm_struct *mm,
+ 			      unsigned long start, unsigned long end)
+ {
+-	if (start <= mm->context.vdso_base && mm->context.vdso_base < end)
+-		mm->context.vdso_base = 0;
++	unsigned long vdso_end;
++
++	if (mm->context.vdso_base) {
++		/*
++		 * case 1   >  |     VDSO    |  <
++		 * case 2   >  |           < |
++		 * case 3      |  >        < |
++		 * case 4      |  >          |  <
++		 */
++		vdso_end = mm->context.vdso_base;
++		vdso_end += vdso_pages() << PAGE_SHIFT;
++
++		if (start < vdso_end && mm->context.vdso_base < end)
++			mm->context.vdso_base = 0;
++	}
+ }
+ 
+ #ifdef CONFIG_PPC_MEM_KEYS
+diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
+index 8dad44262e75..9defa35a1eba 100644
+--- a/arch/powerpc/kernel/vdso.c
++++ b/arch/powerpc/kernel/vdso.c
+@@ -117,6 +117,20 @@ struct lib64_elfinfo
+ 	unsigned long	text;
+ };
+ 
++/*
++ * Return the number of pages of the VDSO for the current task.
++ */
++int vdso_pages(void)
++{
++	int vdso_pages = vdso32_pages;
++
++#ifdef CONFIG_PPC64
++	if (!is_32bit_task())
++		vdso_pages = vdso64_pages;
++#endif
++
++	return vdso_pages + 1; /* Add the data page */
++}
+ 
+ /*
+  * This is called from binfmt_elf, we create the special vma for the
+-- 
+2.29.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+hj5MACgkQsK4enJil
-gBAtWgf/VVpoZimv8UPfw0nTkbc3kZSq2lB8r5ucz9yMeT9FMTVxrVwuj1qmk7No
-VyOzVQmP3+zIAGjOLF5RsYOz0RNXNw2d5DVTLY0HVOeM53UfK3EhNL1v7DbZC/dV
-N6lG09htOMTFK87Y62idffwPx70ev5w+crR5bahDuui8RdxjgYTMflpxlCF7UKkG
-i3je+q+5S8FaV3oL8hHbgbqTxFPvlLY6m8IW1aa+W4opUK8p+xeKzhj4COFBlsmR
-F/+NUmH+80oOgODqGKeumiteLjgZ9Eu7SnD3ydNMkg/FWaCaWKuvMKrgu7E9sfss
-Wnrx7myESmsitc9iveZnE6xcrr30lg==
-=/8Mr
------END PGP SIGNATURE-----
---=-=-=--
