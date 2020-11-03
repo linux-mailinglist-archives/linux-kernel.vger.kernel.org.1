@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4613F2A5876
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EEF2A5782
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729621AbgKCVwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:52:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38234 "EHLO mail.kernel.org"
+        id S1732268AbgKCVnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:43:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729755AbgKCUrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:39 -0500
+        id S1732677AbgKCUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:55:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7703320719;
-        Tue,  3 Nov 2020 20:47:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDED7223C6;
+        Tue,  3 Nov 2020 20:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436458;
-        bh=jI3Cd8S5TC6bdEQGTUGZ9Z/qBcFj1Xd8718enX3wlc4=;
+        s=default; t=1604436908;
+        bh=eIZYUGgER0xy5USWci4+NdIIG5c/xEh1I9vNq5bjvA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOP3BhmlGyDk5n8Qiani8CLmgU3yg1ikb+0uj2q/X8ccQjNo+zNx4zZiWgXVoyA88
-         JgbGuGkWdoyzB6alklA6H2QXdjaEaxe/6JGQosEF/OSRYOoAVY06gsmaZ3bfyawCn/
-         /VM9c0HyfO/keOPwT9A+Rz6hEURddQt5la1D1oUg=
+        b=SB4O3HSUvowP29LB8GC/sRvDu0nezFoP2sIigATr32UPtCxdi3lmQO9uS7o0/yfXD
+         y2H6iwrB+WTF9aiOtInzVV2qkB6q1C2HA/TZ8E2lvSLkfOeopyqCbHaBptUVGmeFNS
+         1LIQIiWEzZLhIyqgagcBKpphWFSVXBrAl2j5noB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.9 258/391] x86/mce: Allow for copy_mc_fragile symbol checksum to be generated
-Date:   Tue,  3 Nov 2020 21:35:09 +0100
-Message-Id: <20201103203404.432681667@linuxfoundation.org>
+        stable@vger.kernel.org, Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
+        Gavin Shan <gshan@redhat.com>, Will Deacon <will@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 062/214] arm64/mm: return cpu_all_mask when node is NUMA_NO_NODE
+Date:   Tue,  3 Nov 2020 21:35:10 +0100
+Message-Id: <20201103203256.173576176@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
 
-commit b3149ffcdb31a8eb854cc442a389ae0b539bf28a upstream.
+[ Upstream commit a194c5f2d2b3a05428805146afcabe5140b5d378 ]
 
-Add asm/mce.h to asm/asm-prototypes.h so that that asm symbol's checksum
-can be generated in order to support CONFIG_MODVERSIONS with it and fix:
+The @node passed to cpumask_of_node() can be NUMA_NO_NODE, in that
+case it will trigger the following WARN_ON(node >= nr_node_ids) due to
+mismatched data types of @node and @nr_node_ids. Actually we should
+return cpu_all_mask just like most other architectures do if passed
+NUMA_NO_NODE.
 
-  WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version \
-	  generation failed, symbol will not be versioned.
+Also add a similar check to the inline cpumask_of_node() in numa.h.
 
-For reference see:
-
-  4efca4ed05cb ("kbuild: modversions for EXPORT_SYMBOL() for asm")
-  334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
-
-Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201007111447.GA23257@zn.tnic
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Link: https://lore.kernel.org/r/20200921023936.21846-1-liuzhengyuan@tj.kylinos.cn
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/asm-prototypes.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/asm/numa.h | 3 +++
+ arch/arm64/mm/numa.c          | 6 +++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -5,6 +5,7 @@
- #include <asm/string.h>
- #include <asm/page.h>
- #include <asm/checksum.h>
-+#include <asm/mce.h>
+diff --git a/arch/arm64/include/asm/numa.h b/arch/arm64/include/asm/numa.h
+index 626ad01e83bf0..dd870390d639f 100644
+--- a/arch/arm64/include/asm/numa.h
++++ b/arch/arm64/include/asm/numa.h
+@@ -25,6 +25,9 @@ const struct cpumask *cpumask_of_node(int node);
+ /* Returns a pointer to the cpumask of CPUs on Node 'node'. */
+ static inline const struct cpumask *cpumask_of_node(int node)
+ {
++	if (node == NUMA_NO_NODE)
++		return cpu_all_mask;
++
+ 	return node_to_cpumask_map[node];
+ }
+ #endif
+diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+index 4decf16597008..53ebb4babf3a7 100644
+--- a/arch/arm64/mm/numa.c
++++ b/arch/arm64/mm/numa.c
+@@ -46,7 +46,11 @@ EXPORT_SYMBOL(node_to_cpumask_map);
+  */
+ const struct cpumask *cpumask_of_node(int node)
+ {
+-	if (WARN_ON(node >= nr_node_ids))
++
++	if (node == NUMA_NO_NODE)
++		return cpu_all_mask;
++
++	if (WARN_ON(node < 0 || node >= nr_node_ids))
+ 		return cpu_none_mask;
  
- #include <asm-generic/asm-prototypes.h>
- 
+ 	if (WARN_ON(node_to_cpumask_map[node] == NULL))
+-- 
+2.27.0
+
 
 
