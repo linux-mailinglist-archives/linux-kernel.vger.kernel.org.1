@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841032A5361
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A46F2A5295
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732222AbgKCVAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
+        id S1731937AbgKCUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732942AbgKCVAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:30 -0500
+        id S1731921AbgKCUvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7735C223C7;
-        Tue,  3 Nov 2020 21:00:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D993622404;
+        Tue,  3 Nov 2020 20:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437229;
-        bh=BKfdIyt5z62L/599YN5431rgr0e3luTrifZW3PySgKU=;
+        s=default; t=1604436669;
+        bh=sXan1nAS0f593JpMG0xDuKoxr2+n90gQdTJYmpCswxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yWvk/YT/UOmM8E8H/Zr8I5S39X5III+DKH6w3inDEzlGvtiSzudxy2MWMFmnUh6cH
-         iixxJaWATuj2k3z3NKRyvcWoLJRovNIce1e7A9wSPfYG3U9tpa/a9fkL7rGD9UhYXW
-         db5TOQVFI3LlKqjcKBI86G6RIOfZkzf73qtyVM+U=
+        b=AjbMDmvQ1hdsMdOZ/FLU2VGTWIJ5TiP1WcbLv7Q7sFmb+iAFwQ6f4PBoEtNR8MVgL
+         0fkhgMpTLDn26neOnRG5wL4q8/l92CnAOV7fP+mB+5ljwFesLuD8spLRH6Qo26mok7
+         chO+4wui4stW/uShpFA4UbvBL+EcIB86hfTH8Ysk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.4 154/214] iio:gyro:itg3200: Fix timestamp alignment and prevent data leak.
-Date:   Tue,  3 Nov 2020 21:36:42 +0100
-Message-Id: <20201103203305.230721354@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.9 352/391] mmc: sdhci: Use Auto CMD Auto Select only when v4_mode is true
+Date:   Tue,  3 Nov 2020 21:36:43 +0100
+Message-Id: <20201103203410.889558968@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-commit 10ab7cfd5522f0041028556dac864a003e158556 upstream.
+commit b3e1ea16fb39fb6e1a1cf1dbdd6738531de3dc7d upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-This is fixed by using an explicit c structure. As there are no
-holes in the structure, there is no possiblity of data leakage
-in this case.
+sdhci-of-dwcmshc meets an eMMC read performance regression with below
+command after commit 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto
+Select support"):
 
-The explicit alignment of ts is not strictly necessary but potentially
-makes the code slightly less fragile.  It also removes the possibility
-of this being cut and paste into another driver where the alignment
-isn't already true.
+dd if=/dev/mmcblk0 of=/dev/null bs=8192 count=100000
 
-Fixes: 36e0371e7764 ("iio:itg3200: Use iio_push_to_buffers_with_timestamp()")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722155103.979802-6-jic23@kernel.org
+Before the commit, the above command gives 120MB/s
+After the commit, the above command gives 51.3 MB/s
+
+So it looks like sdhci-of-dwcmshc expects Version 4 Mode for Auto
+CMD Auto Select. Fix the performance degradation by ensuring v4_mode
+is true to use Auto CMD Auto Select.
+
+Fixes: 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto Select support")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201015174115.4cf2c19a@xhacker.debian
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/gyro/itg3200_buffer.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/mmc/host/sdhci.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/gyro/itg3200_buffer.c
-+++ b/drivers/iio/gyro/itg3200_buffer.c
-@@ -46,13 +46,20 @@ static irqreturn_t itg3200_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct itg3200 *st = iio_priv(indio_dev);
--	__be16 buf[ITG3200_SCAN_ELEMENTS + sizeof(s64)/sizeof(u16)];
-+	/*
-+	 * Ensure correct alignment and padding including for the
-+	 * timestamp that may be inserted.
-+	 */
-+	struct {
-+		__be16 buf[ITG3200_SCAN_ELEMENTS];
-+		s64 ts __aligned(8);
-+	} scan;
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -1384,9 +1384,11 @@ static inline void sdhci_auto_cmd_select
+ 	/*
+ 	 * In case of Version 4.10 or later, use of 'Auto CMD Auto
+ 	 * Select' is recommended rather than use of 'Auto CMD12
+-	 * Enable' or 'Auto CMD23 Enable'.
++	 * Enable' or 'Auto CMD23 Enable'. We require Version 4 Mode
++	 * here because some controllers (e.g sdhci-of-dwmshc) expect it.
+ 	 */
+-	if (host->version >= SDHCI_SPEC_410 && (use_cmd12 || use_cmd23)) {
++	if (host->version >= SDHCI_SPEC_410 && host->v4_mode &&
++	    (use_cmd12 || use_cmd23)) {
+ 		*mode |= SDHCI_TRNS_AUTO_SEL;
  
--	int ret = itg3200_read_all_channels(st->i2c, buf);
-+	int ret = itg3200_read_all_channels(st->i2c, scan.buf);
- 	if (ret < 0)
- 		goto error_ret;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan, pf->timestamp);
- 
- 	iio_trigger_notify_done(indio_dev->trig);
- 
+ 		ctrl2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
 
 
