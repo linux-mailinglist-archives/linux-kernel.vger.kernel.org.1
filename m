@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5459F2A599B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944122A5998
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgKCUkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
+        id S1730567AbgKCWIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:08:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730169AbgKCUkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:14 -0500
+        id S1730214AbgKCUk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 888932236F;
-        Tue,  3 Nov 2020 20:40:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB4FB22226;
+        Tue,  3 Nov 2020 20:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436013;
-        bh=YfCK3/s3YRC/xrO+Mqfu3S76C6okP1k+p6y0U08jYpo=;
+        s=default; t=1604436027;
+        bh=s2/6nycA/d/WGSPLt1nenKwV0QdlovlBa3kocPWOGKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v+mIiiDyXpc4w0leV3fBuaNVU8TEySKAb68V1CL7Ar5NxJn2tYSmjkoUaC8+MrXv1
-         Ci5xWwPgjATG0a0qn2ltGuGDxVHYBG6JQjrJR9tmlNbvMuV8IWJODwX08TmljJDOkd
-         FerETuA3GSlVlDMJ3CVQXrbPJKIhWv5m2BI+WQWQ=
+        b=priZexHsTS6mZJUeA5jF4uXKz6Z8RGblpNXYmRcUee7ItAAh0VQG3RQZo/Y53m4Uz
+         GKRroILorO+dv8XDJf0rOAr4ibi50j5YfrSevcgxlIVzPgXR8PfH/byUdwX/Rj60Ix
+         vw7zmM6N7GT8nbSxrmtCfAU1DZBqp7Mdgw/JT0yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <dchinner@redhat.com>,
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 066/391] xfs: log new intent items created as part of finishing recovered intent items
-Date:   Tue,  3 Nov 2020 21:31:57 +0100
-Message-Id: <20201103203351.758438818@linuxfoundation.org>
+Subject: [PATCH 5.9 072/391] x86/kaslr: Initialize mem_limit to the real maximum address
+Date:   Tue,  3 Nov 2020 21:32:03 +0100
+Message-Id: <20201103203352.078811559@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,131 +44,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit 93293bcbde93567efaf4e6bcd58cad270e1fcbf5 ]
+[ Upstream commit 451286940d95778e83fa7f97006316d995b4c4a8 ]
 
-During a code inspection, I found a serious bug in the log intent item
-recovery code when an intent item cannot complete all the work and
-decides to requeue itself to get that done.  When this happens, the
-item recovery creates a new incore deferred op representing the
-remaining work and attaches it to the transaction that it allocated.  At
-the end of _item_recover, it moves the entire chain of deferred ops to
-the dummy parent_tp that xlog_recover_process_intents passed to it, but
-fail to log a new intent item for the remaining work before committing
-the transaction for the single unit of work.
+On 64-bit, the kernel must be placed below MAXMEM (64TiB with 4-level
+paging or 4PiB with 5-level paging). This is currently not enforced by
+KASLR, which thus implicitly relies on physical memory being limited to
+less than 64TiB.
 
-xlog_finish_defer_ops logs those new intent items once recovery has
-finished dealing with the intent items that it recovered, but this isn't
-sufficient.  If the log is forced to disk after a recovered log item
-decides to requeue itself and the system goes down before we call
-xlog_finish_defer_ops, the second log recovery will never see the new
-intent item and therefore has no idea that there was more work to do.
-It will finish recovery leaving the filesystem in a corrupted state.
+On 32-bit, the limit is KERNEL_IMAGE_SIZE (512MiB). This is enforced by
+special checks in __process_mem_region().
 
-The same logic applies to /any/ deferred ops added during intent item
-recovery, not just the one handling the remaining work.
+Initialize mem_limit to the maximum (depending on architecture), instead
+of ULLONG_MAX, and make sure the command-line arguments can only
+decrease it. This makes the enforcement explicit on 64-bit, and
+eliminates the 32-bit specific checks to keep the kernel below 512M.
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Check upfront to make sure the minimum address is below the limit before
+doing any work.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20200727230801.3468620-5-nivedita@alum.mit.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_defer.c  | 26 ++++++++++++++++++++++++--
- fs/xfs/libxfs/xfs_defer.h  |  6 ++++++
- fs/xfs/xfs_bmap_item.c     |  2 +-
- fs/xfs/xfs_refcount_item.c |  2 +-
- 4 files changed, 32 insertions(+), 4 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 41 +++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_defer.c b/fs/xfs/libxfs/xfs_defer.c
-index d8f586256add7..29e9762f3b77c 100644
---- a/fs/xfs/libxfs/xfs_defer.c
-+++ b/fs/xfs/libxfs/xfs_defer.c
-@@ -186,8 +186,9 @@ xfs_defer_create_intent(
- {
- 	const struct xfs_defer_op_type	*ops = defer_op_types[dfp->dfp_type];
+diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
+index dde7cb3724df3..9bd966ef7d19e 100644
+--- a/arch/x86/boot/compressed/kaslr.c
++++ b/arch/x86/boot/compressed/kaslr.c
+@@ -87,8 +87,11 @@ static unsigned long get_boot_seed(void)
+ static bool memmap_too_large;
  
--	dfp->dfp_intent = ops->create_intent(tp, &dfp->dfp_work,
--			dfp->dfp_count, sort);
-+	if (!dfp->dfp_intent)
-+		dfp->dfp_intent = ops->create_intent(tp, &dfp->dfp_work,
-+						     dfp->dfp_count, sort);
+ 
+-/* Store memory limit specified by "mem=nn[KMG]" or "memmap=nn[KMG]" */
+-static unsigned long long mem_limit = ULLONG_MAX;
++/*
++ * Store memory limit: MAXMEM on 64-bit and KERNEL_IMAGE_SIZE on 32-bit.
++ * It may be reduced by "mem=nn[KMG]" or "memmap=nn[KMG]" command line options.
++ */
++static unsigned long long mem_limit;
+ 
+ /* Number of immovable memory regions */
+ static int num_immovable_mem;
+@@ -214,7 +217,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
+ 
+ 		if (start == 0) {
+ 			/* Store the specified memory limit if size > 0 */
+-			if (size > 0)
++			if (size > 0 && size < mem_limit)
+ 				mem_limit = size;
+ 
+ 			continue;
+@@ -302,7 +305,8 @@ static void handle_mem_options(void)
+ 			if (mem_size == 0)
+ 				goto out;
+ 
+-			mem_limit = mem_size;
++			if (mem_size < mem_limit)
++				mem_limit = mem_size;
+ 		} else if (!strcmp(param, "efi_fake_mem")) {
+ 			mem_avoid_memmap(PARSE_EFI, val);
+ 		}
+@@ -314,7 +318,9 @@ out:
  }
  
  /*
-@@ -390,6 +391,7 @@ xfs_defer_finish_one(
- 			list_add(li, &dfp->dfp_work);
- 			dfp->dfp_count++;
- 			dfp->dfp_done = NULL;
-+			dfp->dfp_intent = NULL;
- 			xfs_defer_create_intent(tp, dfp, false);
- 		}
- 
-@@ -552,3 +554,23 @@ xfs_defer_move(
- 
- 	xfs_defer_reset(stp);
- }
-+
-+/*
-+ * Prepare a chain of fresh deferred ops work items to be completed later.  Log
-+ * recovery requires the ability to put off until later the actual finishing
-+ * work so that it can process unfinished items recovered from the log in
-+ * correct order.
+- * In theory, KASLR can put the kernel anywhere in the range of [16M, 64T).
++ * In theory, KASLR can put the kernel anywhere in the range of [16M, MAXMEM)
++ * on 64-bit, and [16M, KERNEL_IMAGE_SIZE) on 32-bit.
 + *
-+ * Create and log intent items for all the work that we're capturing so that we
-+ * can be assured that the items will get replayed if the system goes down
-+ * before log recovery gets a chance to finish the work it put off.  Then we
-+ * move the chain from stp to dtp.
-+ */
-+void
-+xfs_defer_capture(
-+	struct xfs_trans	*dtp,
-+	struct xfs_trans	*stp)
-+{
-+	xfs_defer_create_intents(stp);
-+	xfs_defer_move(dtp, stp);
-+}
-diff --git a/fs/xfs/libxfs/xfs_defer.h b/fs/xfs/libxfs/xfs_defer.h
-index 6b2ca580f2b06..3164199162b61 100644
---- a/fs/xfs/libxfs/xfs_defer.h
-+++ b/fs/xfs/libxfs/xfs_defer.h
-@@ -63,4 +63,10 @@ extern const struct xfs_defer_op_type xfs_rmap_update_defer_type;
- extern const struct xfs_defer_op_type xfs_extent_free_defer_type;
- extern const struct xfs_defer_op_type xfs_agfl_free_defer_type;
+  * The mem_avoid array is used to store the ranges that need to be avoided
+  * when KASLR searches for an appropriate random address. We must avoid any
+  * regions that are unsafe to overlap with during decompression, and other
+@@ -614,10 +620,6 @@ static void __process_mem_region(struct mem_vector *entry,
+ 	unsigned long start_orig, end;
+ 	struct mem_vector cur_entry;
  
-+/*
-+ * Functions to capture a chain of deferred operations and continue them later.
-+ * This doesn't normally happen except log recovery.
-+ */
-+void xfs_defer_capture(struct xfs_trans *dtp, struct xfs_trans *stp);
+-	/* On 32-bit, ignore entries entirely above our maximum. */
+-	if (IS_ENABLED(CONFIG_X86_32) && entry->start >= KERNEL_IMAGE_SIZE)
+-		return;
+-
+ 	/* Ignore entries entirely below our minimum. */
+ 	if (entry->start + entry->size < minimum)
+ 		return;
+@@ -650,11 +652,6 @@ static void __process_mem_region(struct mem_vector *entry,
+ 		/* Reduce size by any delta from the original address. */
+ 		region.size -= region.start - start_orig;
+ 
+-		/* On 32-bit, reduce region size to fit within max size. */
+-		if (IS_ENABLED(CONFIG_X86_32) &&
+-		    region.start + region.size > KERNEL_IMAGE_SIZE)
+-			region.size = KERNEL_IMAGE_SIZE - region.start;
+-
+ 		/* Return if region can't contain decompressed kernel */
+ 		if (region.size < image_size)
+ 			return;
+@@ -839,15 +836,16 @@ static void process_e820_entries(unsigned long minimum,
+ static unsigned long find_random_phys_addr(unsigned long minimum,
+ 					   unsigned long image_size)
+ {
++	/* Bail out early if it's impossible to succeed. */
++	if (minimum + image_size > mem_limit)
++		return 0;
 +
- #endif /* __XFS_DEFER_H__ */
-diff --git a/fs/xfs/xfs_bmap_item.c b/fs/xfs/xfs_bmap_item.c
-index ec3691372e7c0..815a0563288f4 100644
---- a/fs/xfs/xfs_bmap_item.c
-+++ b/fs/xfs/xfs_bmap_item.c
-@@ -534,7 +534,7 @@ xfs_bui_item_recover(
- 		xfs_bmap_unmap_extent(tp, ip, &irec);
+ 	/* Check if we had too many memmaps. */
+ 	if (memmap_too_large) {
+ 		debug_putstr("Aborted memory entries scan (more than 4 memmap= args)!\n");
+ 		return 0;
  	}
  
--	xfs_defer_move(parent_tp, tp);
-+	xfs_defer_capture(parent_tp, tp);
- 	error = xfs_trans_commit(tp);
- 	xfs_iunlock(ip, XFS_ILOCK_EXCL);
- 	xfs_irele(ip);
-diff --git a/fs/xfs/xfs_refcount_item.c b/fs/xfs/xfs_refcount_item.c
-index ca93b64883774..492d80a0b4060 100644
---- a/fs/xfs/xfs_refcount_item.c
-+++ b/fs/xfs/xfs_refcount_item.c
-@@ -555,7 +555,7 @@ xfs_cui_item_recover(
- 	}
+-	/* Make sure minimum is aligned. */
+-	minimum = ALIGN(minimum, CONFIG_PHYSICAL_ALIGN);
+-
+ 	if (process_efi_entries(minimum, image_size))
+ 		return slots_fetch_random();
  
- 	xfs_refcount_finish_one_cleanup(tp, rcur, error);
--	xfs_defer_move(parent_tp, tp);
-+	xfs_defer_capture(parent_tp, tp);
- 	error = xfs_trans_commit(tp);
- 	return error;
+@@ -860,8 +858,6 @@ static unsigned long find_random_virt_addr(unsigned long minimum,
+ {
+ 	unsigned long slots, random_addr;
  
+-	/* Make sure minimum is aligned. */
+-	minimum = ALIGN(minimum, CONFIG_PHYSICAL_ALIGN);
+ 	/* Align image_size for easy slot calculations. */
+ 	image_size = ALIGN(image_size, CONFIG_PHYSICAL_ALIGN);
+ 
+@@ -908,6 +904,11 @@ void choose_random_location(unsigned long input,
+ 	/* Prepare to add new identity pagetables on demand. */
+ 	initialize_identity_maps();
+ 
++	if (IS_ENABLED(CONFIG_X86_32))
++		mem_limit = KERNEL_IMAGE_SIZE;
++	else
++		mem_limit = MAXMEM;
++
+ 	/* Record the various known unsafe memory ranges. */
+ 	mem_avoid_init(input, input_size, *output);
+ 
+@@ -917,6 +918,8 @@ void choose_random_location(unsigned long input,
+ 	 * location:
+ 	 */
+ 	min_addr = min(*output, 512UL << 20);
++	/* Make sure minimum is aligned. */
++	min_addr = ALIGN(min_addr, CONFIG_PHYSICAL_ALIGN);
+ 
+ 	/* Walk available memory entries to find a random address. */
+ 	random_addr = find_random_phys_addr(min_addr, output_size);
 -- 
 2.27.0
 
