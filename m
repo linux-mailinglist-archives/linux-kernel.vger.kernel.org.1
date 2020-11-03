@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8902A3C9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C082A3C9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbgKCGHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:07:50 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECE1C0617A6;
-        Mon,  2 Nov 2020 22:07:49 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id w13so8987270eju.13;
-        Mon, 02 Nov 2020 22:07:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wZzzP42oR1wFOjbR/obXzKPXtaESFvyqabAu+OtZP9c=;
-        b=ORxsZIWa28SAoCoDem+FxE1zCcXRCU998CQABTj9MmvAD58e8Cgp4vIzXDwLq5de9l
-         RXAnRYLQVMN0d5oazb7ocAE/O09/Jbyh/XTmc6vWh6NOVd/FltYTX4AxRCRsMzn57uod
-         7B2EQWbuJ96bf3m1DVAG//kKVrBnzGq0141czX3ZZ58IlU0CkOc9Fz06WILLHkfjJP+3
-         +WSy2fzWnT8ynnPOc55vw7rHl1NEnvY/5o8ZWaZKKvjEx0l08ID0Gb33ane01c9Bnhs+
-         iEguvoYIvjz+ft/GPM0SZbLLY/P9TRKZTNzR9z3mBzI6sSefEFtS/YVnMSNbwcktRSvK
-         FYKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wZzzP42oR1wFOjbR/obXzKPXtaESFvyqabAu+OtZP9c=;
-        b=heMXXU99i5SBlIqAcA2IUvKY9SdbFSbEG1ZXRJteihS4Hv5ciCukJjfrpRzcPMTxu8
-         kdBJValJ6src0FQT1tZjfKcPWIr1w3tv21+UJcnvyvG8GOPf3YflRpfEpdaMPh42qTZQ
-         PfiPzY8gFX5rTu99pTc9RBkk5AmmBUJXmOe+Te2gsdYz1pOcFsuvQwYMQzrSIgegJFTc
-         bo5snsIBkgxcWn9Gl6wPWk2HwDxshYn8ZqMWTOwG7mR3rKbRH0lq+wv5aIoDLXZ0PUyB
-         +23h7FMU4Z1aj2ZcSFYZ4JrTOumSFpN5KFpapklOWhalIf4o+5dbUT9VkS9LWQBXhahT
-         kUCw==
-X-Gm-Message-State: AOAM532igLcbJXHgL6LehoSsKbO1DdArJjqh8SEmLw2YkjRUQX+NDh0a
-        3URT2wIXCNSPBe8UEOCk2xE=
-X-Google-Smtp-Source: ABdhPJzOiWqr2Yv/cL1jcFKDWfQYoYaT/YVgEF+7QuQOl8M7DHQFeGynUF+PNxlme7kY2EB7BuXQ0g==
-X-Received: by 2002:a17:906:f296:: with SMTP id gu22mr13176896ejb.475.1604383668551;
-        Mon, 02 Nov 2020 22:07:48 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dfb:4300:898f:a1f0:a069:8253])
-        by smtp.gmail.com with ESMTPSA id f16sm4491478edw.15.2020.11.02.22.07.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 22:07:47 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: assign mediatek headers to Mediatek SoC support
-Date:   Tue,  3 Nov 2020 07:07:33 +0100
-Message-Id: <20201103060733.25729-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727712AbgKCGJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:09:05 -0500
+Received: from mga02.intel.com ([134.134.136.20]:52366 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgKCGJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:09:04 -0500
+IronPort-SDR: ggwdjie/9LDoMciHG+juR5HTGhOuf7bDPd2GmzyIonu+BBgVWJwz7Nxv5x/a/SQjaNQW4e7U6g
+ oPSuzuAmrKwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="155992441"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="155992441"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 22:09:03 -0800
+IronPort-SDR: ibJSAcIICb1zvAAFmRkFWQJgwkG/GIRz518Zx/VvRMV+DBH0LeWqzjlwyhD8CIKyOq6pLpo9hn
+ W7Uodn9f0c1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="353093840"
+Received: from shzintpr01.sh.intel.com (HELO [0.0.0.0]) ([10.239.4.80])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2020 22:09:00 -0800
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+ <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+From:   Tao Xu <tao3.xu@intel.com>
+Message-ID: <a5f500ee-51f8-54a7-d927-0e8eee644e26@intel.com>
+Date:   Tue, 3 Nov 2020 14:08:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./include/soc/mediatek/smi.h and ./include/linux/soc/mediatek/infracfg.h
-are currently not assigned to a specific section in MAINTAINERS.
 
-./include/soc/mediatek/smi.h is the header file for definitions in
-./drivers/memory/mtk-smi.c, which is assigned to the section ARM/Mediatek
-SoC support in MAINTAINERS.
 
-./include/linux/soc/mediatek/infracfg.h is the header file for definitions
-in ./drivers/soc/mediatek/mtk-infracfg.c, which is assigned to the section
-ARM/Mediatek SoC support in MAINTAINERS.
+On 11/3/20 12:43 AM, Andy Lutomirski wrote:
+> On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
+>>
+>> There are some cases that malicious virtual machines can cause CPU stuck
+>> (event windows don't open up), e.g., infinite loop in microcode when
+>> nested #AC (CVE-2015-5307). No event window obviously means no events,
+>> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
+>> hardware CPU can't be used by host or other VM.
+>>
+>> To resolve those cases, it can enable a notify VM exit if no
+>> event window occur in VMX non-root mode for a specified amount of
+>> time (notify window).
+>>
+>> Expose a module param for setting notify window, default setting it to
+>> the time as 1/10 of periodic tick, and user can set it to 0 to disable
+>> this feature.
+>>
+>> TODO:
+>> 1. The appropriate value of notify window.
+>> 2. Another patch to disable interception of #DB and #AC when notify
+>> VM-Exiting is enabled.
+> 
+> Whoa there.
+> 
+> A VM control that says "hey, CPU, if you messed up and livelocked for
+> a long time, please break out of the loop" is not a substitute for
+> fixing the livelocks.  So I don't think you get do disable
+> interception of #DB and #AC.  I also think you should print a loud
+> warning and have some intelligent handling when this new exit
+> triggers.
+> 
+>> +static int handle_notify(struct kvm_vcpu *vcpu)
+>> +{
+>> +       unsigned long exit_qualification = vmcs_readl(EXIT_QUALIFICATION);
+>> +
+>> +       /*
+>> +        * Notify VM exit happened while executing iret from NMI,
+>> +        * "blocked by NMI" bit has to be set before next VM entry.
+>> +        */
+>> +       if (exit_qualification & NOTIFY_VM_CONTEXT_VALID) {
+>> +               if (enable_vnmi &&
+>> +                   (exit_qualification & INTR_INFO_UNBLOCK_NMI))
+>> +                       vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
+>> +                                     GUEST_INTR_STATE_NMI);
+> 
+> This needs actual documentation in the SDM or at least ISE please.
+> 
+Notify VM-Exit is defined in ISE, chapter 9.2:
+https://software.intel.com/content/dam/develop/external/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
 
-Hence, assign those header files to ARM/Mediatek SoC support as well.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Matthias, please pick this minor non-urgent cleanup patch.
-
-This patch is part of an initial experiment to assign all files to
-specific sections in MAINTAINERS. At the moment, about 3200 files are
-currently not assigned to specific sections and maintainers.
-
-If you think these cleanup patch cause more churn than value, please let
-me know. Thanks.
-
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b4197e9da495..1703c7d2e146 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2066,6 +2066,8 @@ F:	arch/arm/boot/dts/mt8*
- F:	arch/arm/mach-mediatek/
- F:	arch/arm64/boot/dts/mediatek/
- F:	drivers/soc/mediatek/
-+F:	include/linux/soc/mediatek/infracfg.h
-+F:	include/soc/mediatek/smi.h
- N:	mtk
- N:	mt[678]
- K:	mediatek
--- 
-2.17.1
-
+I will add this information into commit message. Thank you for reminding me.
