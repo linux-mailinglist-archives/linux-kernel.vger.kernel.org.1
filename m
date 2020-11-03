@@ -2,130 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6CC2A54AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70382A538D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389292AbgKCVNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:13:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56528 "EHLO mail.kernel.org"
+        id S2387588AbgKCVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:02:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35726 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389265AbgKCVN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:13:29 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5014622226;
-        Tue,  3 Nov 2020 21:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604438008;
-        bh=BDLB54T1EWmlc3IeLKus4LZ2V9cyZMOIskMySVU+lDs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JeICqmar/Ed7TcLLX7gnY7Y5Xvk//29AOKwqL3nkm0b2+T6rq/EYXaC+Y9pWZC/oO
-         cgK5HPKThxDlxrTeP5Pz/1+c04w2mDEJ+uSB4vf/oi118cVoMKBIfNxPT7if7hflfU
-         8rFUiZywq5Y1X7DSRZUxb8xIlgrGwhZDlEQQhTPw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH 4.14 125/125] staging: octeon: Drop on uncorrectable alignment or FCS error
-Date:   Tue,  3 Nov 2020 21:38:22 +0100
-Message-Id: <20201103203215.514681563@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2387562AbgKCVCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:02:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B2C8ACD9;
+        Tue,  3 Nov 2020 21:02:05 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 12:40:14 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     johan@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] usb/mos7720: process deferred urbs in a workqueue
+Message-ID: <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
+References: <20201102211450.5722-1-dave@stgolabs.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201102211450.5722-1-dave@stgolabs.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Mon, 02 Nov 2020, Bueso wrote:
 
-commit 49d28ebdf1e30d806410eefc7de0a7a1ca5d747c upstream.
+>There is
+>also no need anymore for atomic allocations.
 
-Currently in case of alignment or FCS error if the packet cannot be
-corrected it's still not dropped. Report the error properly and drop the
-packet while making the code around a little bit more readable.
+Bleh this is a brain fart - obviously not true as usb_submit_urb() is
+called under mos_parport->listlock. I'll send a v2 unless you have
+any objections.
 
-Fixes: 80ff0fd3ab64 ("Staging: Add octeon-ethernet driver files.")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201016145630.41852-1-alexander.sverdlin@nokia.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/staging/octeon/ethernet-rx.c |   34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
-
---- a/drivers/staging/octeon/ethernet-rx.c
-+++ b/drivers/staging/octeon/ethernet-rx.c
-@@ -83,15 +83,17 @@ static inline int cvm_oct_check_rcv_erro
- 	else
- 		port = work->word1.cn38xx.ipprt;
- 
--	if ((work->word2.snoip.err_code == 10) && (work->word1.len <= 64)) {
-+	if ((work->word2.snoip.err_code == 10) && (work->word1.len <= 64))
- 		/*
- 		 * Ignore length errors on min size packets. Some
- 		 * equipment incorrectly pads packets to 64+4FCS
- 		 * instead of 60+4FCS.  Note these packets still get
- 		 * counted as frame errors.
- 		 */
--	} else if (work->word2.snoip.err_code == 5 ||
--		   work->word2.snoip.err_code == 7) {
-+		return 0;
-+
-+	if (work->word2.snoip.err_code == 5 ||
-+	    work->word2.snoip.err_code == 7) {
- 		/*
- 		 * We received a packet with either an alignment error
- 		 * or a FCS error. This may be signalling that we are
-@@ -122,7 +124,10 @@ static inline int cvm_oct_check_rcv_erro
- 				/* Port received 0xd5 preamble */
- 				work->packet_ptr.s.addr += i + 1;
- 				work->word1.len -= i + 5;
--			} else if ((*ptr & 0xf) == 0xd) {
-+				return 0;
-+			}
-+
-+			if ((*ptr & 0xf) == 0xd) {
- 				/* Port received 0xd preamble */
- 				work->packet_ptr.s.addr += i;
- 				work->word1.len -= i + 4;
-@@ -132,21 +137,20 @@ static inline int cvm_oct_check_rcv_erro
- 					    ((*(ptr + 1) & 0xf) << 4);
- 					ptr++;
- 				}
--			} else {
--				printk_ratelimited("Port %d unknown preamble, packet dropped\n",
--						   port);
--				cvm_oct_free_work(work);
--				return 1;
-+				return 0;
- 			}
-+
-+			printk_ratelimited("Port %d unknown preamble, packet dropped\n",
-+					   port);
-+			cvm_oct_free_work(work);
-+			return 1;
- 		}
--	} else {
--		printk_ratelimited("Port %d receive error code %d, packet dropped\n",
--				   port, work->word2.snoip.err_code);
--		cvm_oct_free_work(work);
--		return 1;
- 	}
- 
--	return 0;
-+	printk_ratelimited("Port %d receive error code %d, packet dropped\n",
-+			   port, work->word2.snoip.err_code);
-+	cvm_oct_free_work(work);
-+	return 1;
- }
- 
- static void copy_segments_to_skb(cvmx_wqe_t *work, struct sk_buff *skb)
-
-
+Thanks,
+Davidlohr
