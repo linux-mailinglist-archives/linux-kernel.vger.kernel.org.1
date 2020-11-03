@@ -2,42 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C802A4C4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FB02A4C54
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgKCRHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:07:33 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:32954 "EHLO vps0.lunn.ch"
+        id S1728241AbgKCRJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:09:22 -0500
+Received: from mga17.intel.com ([192.55.52.151]:51592 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728046AbgKCRHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:07:33 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kZzmI-0053nr-L0; Tue, 03 Nov 2020 18:07:26 +0100
-Date:   Tue, 3 Nov 2020 18:07:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        robh@kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/4] dt-bindings: net: Add Rx/Tx output
- configuration for 10base T1L
-Message-ID: <20201103170726.GM1042051@lunn.ch>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-3-dmurphy@ti.com>
- <20201030195655.GD1042051@lunn.ch>
- <a50fe8f3-2ca1-8969-08ac-013704a5a617@ti.com>
+        id S1726581AbgKCRJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:09:22 -0500
+IronPort-SDR: /NXuTpJz37Bcd4VwxsaGTHBuZqOzv0klhObPogXe7v5yp08T/tghQfmmlCt1Ph/wWALiIVLHcQ
+ tNfOHLTZlkKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="148944292"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="148944292"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 09:09:21 -0800
+IronPort-SDR: QBgN52aJ8NSjE3cDykUTFW06oTXj2QCrqtGrUeMars9+dcy1iM1xzCt+yU4CPiEH6TtyEzbSvt
+ FerZK7p9UYCw==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="363102781"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.209.1.131])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 09:09:19 -0800
+Message-ID: <f7562a2492aa83afa8a3a511428ed1959b8e8c72.camel@linux.intel.com>
+Subject: Re: [PATCH v3 3/4] powercap: Add AMD Fam17h RAPL support
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Victor Ding <victording@google.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>, linux-pm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        x86@kernel.org
+Date:   Tue, 03 Nov 2020 09:09:18 -0800
+In-Reply-To: <CANqTbdaB8Mv+ij2rdprC_=JUt49A_V12-T5TbyidNktah575rw@mail.gmail.com>
+References: <20201027072358.13725-1-victording@google.com>
+         <20201027072358.13725-4-victording@google.com>
+         <82f3070691438d3f651d2e5e5fb5499131cdbd15.camel@intel.com>
+         <CANqTbdaB8Mv+ij2rdprC_=JUt49A_V12-T5TbyidNktah575rw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a50fe8f3-2ca1-8969-08ac-013704a5a617@ti.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Do you have any issue with the property being in the ethernet-phy.yaml?
+On Tue, 2020-11-03 at 17:10 +1100, Victor Ding wrote:
+> On Mon, Nov 2, 2020 at 12:39 PM Zhang Rui <rui.zhang@intel.com>
+> wrote:
+> > On Tue, 2020-10-27 at 07:23 +0000, Victor Ding wrote:
+> > > This patch enables AMD Fam17h RAPL support for the power capping
+> > > framework. The support is as per AMD Fam17h Model31h (Zen2) and
+> > > model 00-ffh (Zen1) PPR.
+> > > 
+> > > Tested by comparing the results of following two sysfs entries
+> > > and
+> > > the
+> > > values directly read from corresponding MSRs via
+> > > /dev/cpu/[x]/msr:
+> > >   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
+> > >   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-
+> > > rapl:0:0/energy_uj
 
-It seems generic enough. Increasing the voltage increases the power
-requirements, and maybe not all boards are capable of that.
+Is this for just energy reporting? No capping of power?
 
-	Andrew
+Thanks,
+Srinivas
+
+
+> > > 
+> > > Signed-off-by: Victor Ding <victording@google.com>
+> > > Acked-by: Kim Phillips <kim.phillips@amd.com>
+> > > 
+> > > 
+> > > ---
+> > > 
+> > > Changes in v3:
+> > > By Victor Ding <victording@google.com>
+> > >  - Rebased to the latest code.
+> > >  - Created a new rapl_defaults for AMD CPUs.
+> > >  - Removed redundant setting to zeros.
+> > >  - Stopped using the fake power limit domain 1.
+> > > 
+> > > Changes in v2:
+> > > By Kim Phillips <kim.phillips@amd.com>:
+> > >  - Added Kim's Acked-by.
+> > >  - Added Daniel Lezcano to Cc.
+> > >  - (No code change).
+> > > 
+> > >  arch/x86/include/asm/msr-index.h     |  1 +
+> > >  drivers/powercap/intel_rapl_common.c |  6 ++++++
+> > >  drivers/powercap/intel_rapl_msr.c    | 20 +++++++++++++++++++-
+> > >  3 files changed, 26 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/msr-index.h
+> > > b/arch/x86/include/asm/msr-index.h
+> > > index 21917e134ad4..c36a083c8ec0 100644
+> > > --- a/arch/x86/include/asm/msr-index.h
+> > > +++ b/arch/x86/include/asm/msr-index.h
+> > > @@ -327,6 +327,7 @@
+> > >  #define MSR_PP1_POLICY                       0x00000642
+> > > 
+> > >  #define MSR_AMD_RAPL_POWER_UNIT              0xc0010299
+> > > +#define MSR_AMD_CORE_ENERGY_STATUS           0xc001029a
+> > >  #define MSR_AMD_PKG_ENERGY_STATUS    0xc001029b
+> > > 
+> > >  /* Config TDP MSRs */
+> > > diff --git a/drivers/powercap/intel_rapl_common.c
+> > > b/drivers/powercap/intel_rapl_common.c
+> > > index 0b2830efc574..bedd780bed12 100644
+> > > --- a/drivers/powercap/intel_rapl_common.c
+> > > +++ b/drivers/powercap/intel_rapl_common.c
+> > > @@ -1011,6 +1011,10 @@ static const struct rapl_defaults
+> > > rapl_defaults_cht = {
+> > >       .compute_time_window = rapl_compute_time_window_atom,
+> > >  };
+> > > 
+> > > +static const struct rapl_defaults rapl_defaults_amd = {
+> > > +     .check_unit = rapl_check_unit_core,
+> > > +};
+> > > +
+> > 
+> > why do we need power_unit and time_unit if we only want to expose
+> > the
+> > energy counter?
+> AMD's Power Unit MSR provides identical information as Intel's,
+> including
+> time units, power units, and energy status units. By reusing the
+> check unit
+> method, we could avoid code duplication as well as easing future
+> enhance-
+> ment when AMD starts to support power limits.
+> > Plus, in rapl_init_domains(), PL1 is enabled for every RAPL Domain
+> > blindly, I'm not sure how this is handled on the AMD CPUs.
+> > Is PL1 invalidated by rapl_detect_powerlimit()? or is it still
+> > registered as a valid constraint into powercap sysfs I/F?
+> AMD's CORE_ENERGY_STAT MSR is like Intel's PP0_ENERGY_STATUS;
+> therefore, PL1 also always exists on AMD. rapl_detect_powerlimit()
+> correctly
+> markes the domain as monitoring-only after finding power limit MSRs
+> do not
+> exist.
+> > Currently, the code makes the assumption that there is only on
+> > power
+> > limit if priv->limits[domain_id] not set, we probably need to
+> > change
+> > this if we want to support RAPL domains with no power limit.
+> The existing code already supports RAPL domains with no power limit:
+> PL1 is
+> enabled when there is zero or one power limit,
+> rapl_detect_powerlimit() will then
+> mark if PL1 is monitoring-only if power limit MSRs do not exist. Both
+> AMD's RAPL
+> domains are monitoring-only and are correctly marked and handled.
+> > thanks,
+> > rui
+> > >  static const struct x86_cpu_id rapl_ids[] __initconst = {
+> > >       X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE,         &rapl_defau
+> > > lt
+> > > s_core),
+> > >       X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE_X,       &rapl_defau
+> > > lts_core),
+> > > @@ -1061,6 +1065,8 @@ static const struct x86_cpu_id rapl_ids[]
+> > > __initconst = {
+> > > 
+> > >       X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,        &rapl_defau
+> > > lts_hsw_se
+> > > rver),
+> > >       X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,        &rapl_defau
+> > > lts_hsw_se
+> > > rver),
+> > > +
+> > > +     X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_amd),
+> > >       {}
+> > >  };
+> > >  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
+> > > diff --git a/drivers/powercap/intel_rapl_msr.c
+> > > b/drivers/powercap/intel_rapl_msr.c
+> > > index a819b3b89b2f..78213d4b5b16 100644
+> > > --- a/drivers/powercap/intel_rapl_msr.c
+> > > +++ b/drivers/powercap/intel_rapl_msr.c
+> > > @@ -49,6 +49,14 @@ static struct rapl_if_priv rapl_msr_priv_intel
+> > > = {
+> > >       .limits[RAPL_DOMAIN_PLATFORM] = 2,
+> > >  };
+> > > 
+> > > +static struct rapl_if_priv rapl_msr_priv_amd = {
+> > > +     .reg_unit = MSR_AMD_RAPL_POWER_UNIT,
+> > > +     .regs[RAPL_DOMAIN_PACKAGE] = {
+> > > +             0, MSR_AMD_PKG_ENERGY_STATUS, 0, 0, 0 },
+> > > +     .regs[RAPL_DOMAIN_PP0] = {
+> > > +             0, MSR_AMD_CORE_ENERGY_STATUS, 0, 0, 0 },
+> > > +};
+> > > +
+> > >  /* Handles CPU hotplug on multi-socket systems.
+> > >   * If a CPU goes online as the first CPU of the physical package
+> > >   * we add the RAPL package to the system. Similarly, when the
+> > > last
+> > > @@ -138,7 +146,17 @@ static int rapl_msr_probe(struct
+> > > platform_device
+> > > *pdev)
+> > >       const struct x86_cpu_id *id =
+> > > x86_match_cpu(pl4_support_ids);
+> > >       int ret;
+> > > 
+> > > -     rapl_msr_priv = &rapl_msr_priv_intel;
+> > > +     switch (boot_cpu_data.x86_vendor) {
+> > > +     case X86_VENDOR_INTEL:
+> > > +             rapl_msr_priv = &rapl_msr_priv_intel;
+> > > +             break;
+> > > +     case X86_VENDOR_AMD:
+> > > +             rapl_msr_priv = &rapl_msr_priv_amd;
+> > > +             break;
+> > > +     default:
+> > > +             pr_err("intel-rapl does not support CPU vendor
+> > > %d\n",
+> > > boot_cpu_data.x86_vendor);
+> > > +             return -ENODEV;
+> > > +     }
+> > >       rapl_msr_priv->read_raw = rapl_msr_read_raw;
+> > >       rapl_msr_priv->write_raw = rapl_msr_write_raw;
+> > > 
+> Best regards,
+> Victor Ding
+
