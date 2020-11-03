@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0719E2A3A24
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165C22A3A27
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgKCB6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 20:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725956AbgKCB6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 20:58:15 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6365820773;
-        Tue,  3 Nov 2020 01:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604368694;
-        bh=3dUvtcf/yUGAhnulRzfV4zS6legYSxZzHBiv+MKFnXI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nQBRYYsUOrdM8A7Il9o4aZpsQOkPGQePzU2EO3WrlfPqNL+3PrxmHwdQMmKMme5XZ
-         Ol5Cpu6p76gC/lTQEMKfU7bqApXmtga083jYEvKuyBvN5bsenieJbiEcZUm+wRKKjV
-         ypnT4x0TjaCqq3f1ScVhP2PZVc9oDT4i39prOIjc=
-Received: by mail-oi1-f179.google.com with SMTP id x1so16784849oic.13;
-        Mon, 02 Nov 2020 17:58:14 -0800 (PST)
-X-Gm-Message-State: AOAM533my6loe2vB+rFqUtVhhjZ/wGI0sITTaqGBURX+SPAMD/rXFm+A
-        a4/SRmk/eHKju1PRLvXMH5l51d0DCD13KYEwNA==
-X-Google-Smtp-Source: ABdhPJyOl9nr+2k/bCHlpb1t5ZvvKlPSp84A84IQmH6cjbklMr6ZsyGKHAHxSUvZgCbVJvlXgIKodyIFLw3oQipl9Rk=
-X-Received: by 2002:aca:5dc2:: with SMTP id r185mr653264oib.106.1604368693750;
- Mon, 02 Nov 2020 17:58:13 -0800 (PST)
+        id S1726810AbgKCCB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbgKCCB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:01:27 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCFCC0617A6;
+        Mon,  2 Nov 2020 18:01:26 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 13so11220409wmf.0;
+        Mon, 02 Nov 2020 18:01:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QF7fWW6LYmjF3q2ZDZw47fAtapYJiUxs//4vM9wE3p8=;
+        b=HudkQ9pyZiiSUk4r4pe3Sufiw6yBkZUJzUWcnB/9jv9VClMUrPuML9ZhkWvMxOQBsb
+         9XorXYzdjpg3OE/97k6kPttePIfsqyFu4haSBP2rBET5Cuyk/H8TFnF4eult51u/HUVt
+         cE8rW4vqTX8ZKeciJ2RudGKFRhfXyELGpXubaRDJdy+m1QXK2cBTF3dCRXX1+qNLBfuT
+         Qw3wrT3Tsb0WNOW2nKLK+Et9Z4qteQQhkcZFYVu5uQynM4bIhPRR4Veq86YPtqCIfXgk
+         IiK73lZNI5Ca4i/FCjtvcR2kNYewSGVLl0ADqyIP03gQQKLrH7+E5iJvL6cCUXx4WgFo
+         CYdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QF7fWW6LYmjF3q2ZDZw47fAtapYJiUxs//4vM9wE3p8=;
+        b=m9uSDBw0ZKSCm9TFSwKuoF6ESf1vcPpaxP0Tr4Pj1/iGwo76jDeElMGCy6wuvHoomu
+         TggUiRFpXvOrIrEDdNuHpNh3m9njtYk70sn/8vGP77HIem3/lznW1nwVYx67w40EFygL
+         iXgP9EPy8xvgareSxdModDWm7RT3VktInPBQJWDkdj/sPcY5p1pRW+AQmjfgoaW1lHJF
+         iExeEUDRUzHxC/evtZ5Iy+c7eNWDLKAjhCEOqjj019gLj4hDLQJ1iWgpOICZJ2KL5Wnc
+         K9F8Ged0orEdt3iLN4MK1c8Tk0QTw8Gmj+oj4kldc/tTzGJTCjSYQBszGAJhKzylRf9q
+         7dRg==
+X-Gm-Message-State: AOAM532PFQfHUw4got3Ntgl7uOWqIOPKd7XaMy9xx6O4eWS3eYlfT+0O
+        RQn1P0rfR5FVCeFDDLPR9csm+P62nyir0rpP0Zk=
+X-Google-Smtp-Source: ABdhPJwWiK4U8R/rj0RCA2Np4AGCEP5D0qYN+yUx6BBuf+jxaJUJ+SDdgDV8X7fMjTPWerQ2ukcdRtunUIHu1/tRx+4=
+X-Received: by 2002:a1c:7916:: with SMTP id l22mr867162wme.3.1604368885616;
+ Mon, 02 Nov 2020 18:01:25 -0800 (PST)
 MIME-Version: 1.0
-References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
- <1604286803-20698-2-git-send-email-u0084500@gmail.com> <20201102172117.GA4071346@bogus>
- <CADiBU39rS+_s+YdWxB6DKQYHF_+ddiE65u9KzeK-CCkHhZq_YQ@mail.gmail.com>
-In-Reply-To: <CADiBU39rS+_s+YdWxB6DKQYHF_+ddiE65u9KzeK-CCkHhZq_YQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 2 Nov 2020 19:58:02 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+_=OU6X2UynEoV24gycs+c3rQ7j6CJ4euMvnSd8bTufA@mail.gmail.com>
-Message-ID: <CAL_Jsq+_=OU6X2UynEoV24gycs+c3rQ7j6CJ4euMvnSd8bTufA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mfd: rt4505: Adds DT binding document for Richtek
- RT4831 MFD core
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     devicetree@vger.kernel.org, cy_huang <cy_huang@richtek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
+References: <20201030034654.15775-1-zhang.lyra@gmail.com> <20201030034654.15775-2-zhang.lyra@gmail.com>
+ <CADBw62oQj+K_-nyoZyMJSQ6VaqcNHbX9gbyLEzV9+Od1cVmC5A@mail.gmail.com> <20201102235824.GB223412@builder.lan>
+In-Reply-To: <20201102235824.GB223412@builder.lan>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 3 Nov 2020 10:00:49 +0800
+Message-ID: <CAAfSe-vFxpQnkV95ySZpkzqhFLN2gh0YHSYuVvQpej0U7F3dow@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] hwspinlock: sprd: fixed warning of unused variable 'sprd_hwspinlock_of_match'
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 7:14 PM ChiYuan Huang <u0084500@gmail.com> wrote:
+On Tue, 3 Nov 2020 at 07:58, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
 >
-> Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=883=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=881:21=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > On Mon, 02 Nov 2020 11:13:23 +0800, cy_huang wrote:
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
+> On Mon 02 Nov 17:34 CST 2020, Baolin Wang wrote:
+>
+> > On Friday, October 30, 2020, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > > >
-> > > Adds DT binding document for Richtek RT4831 MFD core.
+> > > The macro function of_match_ptr() is NULL if CONFIG_OF is not set, then
+> > > Clang compiler would complain the of_device_id variable is unused.
 > > >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > > But using of_match_ptr() is space saving, for this case, the unused
+> > structure
+> > > 'sprd_hwspinlock_of_match' would be not built into symbol table if
+> > CONFIG_OF
+> > > is not set, probably depends on the compiler though.
+> > >
+> > > So adding __maybe_unsed seems a good approach to fix this warning.
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Fixes: d8c8bbbb1aba ("hwspinlock: sprd: Add hardware spinlock driver")
+> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > > > ---
-> > >  .../devicetree/bindings/mfd/richtek,rt4831.yaml    | 89 ++++++++++++=
-++++++++++
-> > >  include/dt-bindings/leds/rt4831-backlight.h        | 23 ++++++
-> > >  2 files changed, 112 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/mfd/richtek,rt4=
-831.yaml
-> > >  create mode 100644 include/dt-bindings/leds/rt4831-backlight.h
+> >
+> > I'd like to remove this wrapper, and just depend on the CONFIG_OF. But I
+> > have no objection for this patch.  So
+> > Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+> >
+>
+> As noted on the first line of the probe function, this driver isn't
+> going to do anything when CONFIG_OF is disabled - and I don't think we
+> should worry too much about space savings during COMPILE_TEST.
+>
+> So I would prefer that we simply drop the of_match_ptr()
+
+Ok, that's what the v1 does.
+Bjorn, could you please pick up the 1st patch in v1 [1]?
+
+Thanks,
+Chunyan
+
+[1] https://lkml.org/lkml/2020/10/26/87
+
+
+>
+> But I believe that's what you're saying as well Baolin?
+>
+> Regards,
+> Bjorn
+>
+> >
+> > >  drivers/hwspinlock/sprd_hwspinlock.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/hwspinlock/sprd_hwspinlock.c
+> > b/drivers/hwspinlock/sprd_hwspinlock.c
+> > > index 36dc8038bbb4..4c63e2546064 100644
+> > > --- a/drivers/hwspinlock/sprd_hwspinlock.c
+> > > +++ b/drivers/hwspinlock/sprd_hwspinlock.c
+> > > @@ -138,7 +138,7 @@ static int sprd_hwspinlock_probe(struct
+> > platform_device *pdev)
+> > >                                          SPRD_HWLOCKS_NUM);
+> > >  }
+> > >
+> > > -static const struct of_device_id sprd_hwspinlock_of_match[] = {
+> > > +static const __maybe_unused struct of_device_id
+> > sprd_hwspinlock_of_match[] = {
+> > >         { .compatible = "sprd,hwspinlock-r3p0", },
+> > >         { /* sentinel */ }
+> > >  };
+> > > --
+> > > 2.20.1
+> > >
 > > >
 > >
-> >
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/loc=
-al/lib/python3.8/dist-packages/dtschema/schemas/regulator/richtek,rt4831-re=
-gulator.yaml'
-> > xargs: dt-doc-validate: exited with status 255; aborting
-> > make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentat=
-ion/devicetree/bindings/processed-schema-examples.json] Error 124
-> > make: *** [Makefile:1364: dt_binding_check] Error 2
-> >
-> >
-> > See https://patchwork.ozlabs.org/patch/1391911
-> >
-> > The base for the patch is generally the last rc1. Any dependencies
-> > should be noted.
-> >
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > date:
-> >
-> > pip3 install dtschema --upgrade
-> >
-> > Please check and re-submit.
-> >
-> Sorry, I have one question.
-> If the richtek,rt4831.yaml is depend upon the other yaml, do I need to
-> merge it all into one patch?
-> Currently, my submitting order is mfd, backlight, and regulator.
-> Each part divided into two patches (one for source code, another for
-> dt_binding_document)
-
-Doesn't have to be 1 patch, but should be one series with MFD coming
-last as it references the others. Example goes in the MFD binding. I
-need to see a complete picture for what the device is to effectively
-review the binding.
-
-Rob
+> > --
+> > Baolin Wang
