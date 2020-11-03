@@ -2,221 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363132A4AF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60032A4AF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgKCQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbgKCQPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:15:46 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC09C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:15:44 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id t20so7979338qvv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nmEKn5Zrmqx5dbhUPcLYxuV5y8DB52aplLnItU43Q1c=;
-        b=EK3H8Ewqk5l+B96a+MyscWTns6s6omz2s8Us8jygAnTG9bbwo2vqEuGsPI2vVM39t2
-         cv/ismoz3SMJydKNJ2YS+XJXeOAXs/WG2tkQgEP7nPRfoltXBI8EYApDuN01LbjZeCSu
-         FXJGbOhjcKmbfs6fdkcItuVCYZfbp5mBWgrSIjRmg4N/RrFqJK1u2GFgGI6tzCm1yPe5
-         UDtq2AjHkQ3bSrfmNPuRSGF2B0GcE1shCXDicfBsdd320iew0XMVreXfq7DjXigFDUm4
-         Eejnf29gbmITQcFe3U7ZEJr3mMwoUGsmmMe4fr8o0rB5a9ut6vTl+gqzaO7Ys3xWeMNi
-         cm0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nmEKn5Zrmqx5dbhUPcLYxuV5y8DB52aplLnItU43Q1c=;
-        b=DgHSW085iH9J0Qa1gYVcm6C4xRFOZPsNdkQQBAQPOFkcG/0aCFldKtlUaYKfHImxkk
-         E0lCNT6TZ42Hfk8P3KyYlETOFjwCqoi9GrnifSmUM3sgc0L1/ggi352KwwYIkZPYtkwF
-         xuyo5C5oKDHIj3dbQ6I8X/blANwByhQ4A6sAordJMWpLyhQwEhbfkuBOErkludo+muf9
-         7VugVusQ3tuI/sTIB8G9F29Gzyf6dCWIi2j3ezpj8yPYvQlDbH96a5vCOgfCrYU4TzVW
-         8RkbCWqzQmFv/ejgpp18ltMGubCs1dahpzjcrMZFwT45amzOepoyZ8pGIG8xxj5gXB8v
-         lAZw==
-X-Gm-Message-State: AOAM533mJ4FkIX9bkCL8HlHOkLzZ4kfKtCZ0OkGDQG9UazykTfsUIbrp
-        SMMxirbzQPPWiLaw1czByGuVJo7YmbJmRyMSNGenu2dc/FRApQ==
-X-Google-Smtp-Source: ABdhPJzTQmAlaetl/9qcOw1tsnWlmjm0Sv4ZiH3IBZaDhZp3fBshqUGyotgyg1cAVvNMfQBweQ2xPHlxc9hycXQf8qo=
-X-Received: by 2002:ad4:5808:: with SMTP id dd8mr27209389qvb.58.1604420143732;
- Tue, 03 Nov 2020 08:15:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20201028214359.384918-1-daniel.gutson@eclypsium.com>
- <20201029054110.GA3039992@kroah.com> <CAFmMkTHBXjNc0DeL0bOZfdJkZjPAHnRU1THHdk0tZcBr1yykTQ@mail.gmail.com>
- <20201029191505.GC986195@kroah.com> <CAFmMkTHniN8FA7KkknDyRU0E0JWP15dC-xMRqJb-rg8oEgCyYg@mail.gmail.com>
- <20201103160842.GA4153227@kroah.com>
-In-Reply-To: <20201103160842.GA4153227@kroah.com>
-From:   Daniel Gutson <daniel@eclypsium.com>
-Date:   Tue, 3 Nov 2020 13:15:32 -0300
-Message-ID: <CAFmMkTEdNkLdj0RRGuVrWvF=VkU4H=v=isufBEixmqNa4iVdrA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Split intel-spi reading from writing
+        id S1728164AbgKCQPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:15:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727385AbgKCQPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:15:38 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDFB8206CB;
+        Tue,  3 Nov 2020 16:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604420137;
+        bh=dDSnEZsWeRQuzp5A2JaHrJaoDH+U2yZat/4bMvsaZj4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gAG/XNiVvMMkHRgOWWHXMdJ1xNP4/zBqNHCedZoWa9/vTnORRwvFKm8UCbdYynj5G
+         01ECL3TJKshN2Zo7tr/7XBkkRdAC8J1SCHgg96ob22wgN0BgT1KILPet1GRAWt8xV9
+         3YVC0k6df05/yCHKanHyCtKWM4nMIWL1RyrcpLV0=
+Date:   Tue, 3 Nov 2020 08:15:35 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Hayes Wang <hayeswang@realtek.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
+ RTL8153
+Message-ID: <20201103081535.7e92a495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201103093241.GA79239@kroah.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+        <1394712342-15778-388-Taiwan-albertk@realtek.com>
+        <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
+        <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201103093241.GA79239@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:07 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Nov 03, 2020 at 12:18:01PM -0300, Daniel Gutson wrote:
-> > On Thu, Oct 29, 2020 at 4:14 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Thu, Oct 29, 2020 at 12:39:08PM -0300, Daniel Gutson wrote:
-> > > > On Thu, Oct 29, 2020 at 2:40 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Wed, Oct 28, 2020 at 06:43:59PM -0300, Daniel Gutson wrote:
-> > > > > > This patch separates the writing part of the intel-spi drivers
-> > > > > > so the 'dangerous' part can be set/unset independently.
-> > > > > > This way, the kernel can be configured to include the reading
-> > > > > > parts of the driver which can be used without
-> > > > > > the dangerous write operations that can turn the system
-> > > > > > unbootable.
-> > > > > >
-> > > > > > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> > > > > > ---
-> > > > > >  drivers/mtd/spi-nor/controllers/Kconfig     | 39 ++++++++++++---------
-> > > > > >  drivers/mtd/spi-nor/controllers/intel-spi.c | 12 +++++--
-> > > > > >  2 files changed, 33 insertions(+), 18 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > > index 5c0e0ec2e6d1..491c755fea49 100644
-> > > > > > --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> > > > > > @@ -31,34 +31,41 @@ config SPI_INTEL_SPI
-> > > > > >       tristate
-> > > > > >
-> > > > > >  config SPI_INTEL_SPI_PCI
-> > > > > > -     tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > > > > > +     tristate "Intel PCH/PCU SPI flash PCI driver"
-> > > > > >       depends on X86 && PCI
-> > > > > >       select SPI_INTEL_SPI
-> > > > > >       help
-> > > > > > -       This enables PCI support for the Intel PCH/PCU SPI controller in
-> > > > > > -       master mode. This controller is present in modern Intel hardware
-> > > > > > -       and is used to hold BIOS and other persistent settings. Using
-> > > > > > -       this driver it is possible to upgrade BIOS directly from Linux.
-> > > > > > -
-> > > > > > -       Say N here unless you know what you are doing. Overwriting the
-> > > > > > -       SPI flash may render the system unbootable.
-> > > > > > +       This enables read only PCI support for the Intel PCH/PCU SPI
-> > > > > > +       controller in master mode. This controller is present in modern
-> > > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > > > > > +       Using this driver it is possible to read the SPI chip directly
-> > > > > > +       from Linux.
-> > > > > >
-> > > > > >         To compile this driver as a module, choose M here: the module
-> > > > > >         will be called intel-spi-pci.
-> > > > > >
-> > > > > >  config SPI_INTEL_SPI_PLATFORM
-> > > > > > -     tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-> > > > > > +     tristate "Intel PCH/PCU SPI flash platform driver"
-> > > > > >       depends on X86
-> > > > > >       select SPI_INTEL_SPI
-> > > > > >       help
-> > > > > > -       This enables platform support for the Intel PCH/PCU SPI
-> > > > > > +       This enables read only platform support for the Intel PCH/PCU SPI
-> > > > > >         controller in master mode. This controller is present in modern
-> > > > > > -       Intel hardware and is used to hold BIOS and other persistent
-> > > > > > -       settings. Using this driver it is possible to upgrade BIOS
-> > > > > > -       directly from Linux.
-> > > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > > > > > +       Using this driver it is possible to read the SPI chip directly
-> > > > > > +       from Linux.
-> > > > > > +
-> > > > > > +       To compile this driver as a module, choose M here: the module
-> > > > > > +       will be called intel-spi-pci.
-> > > > > > +
-> > > > > > +config SPI_INTEL_SPI_WRITE
-> > > > > > +     bool "Intel PCH/PCU SPI flash drivers write operations (DANGEROUS)"
-> > > > > > +     depends on SPI_INTEL_SPI_PCI || SPI_INTEL_SPI_PLATFORM
-> > > > > > +     help
-> > > > > > +       This enables full read/write support for the Intel PCH/PCU SPI
-> > > > > > +       controller.
-> > > > > > +       Using this option it may be possible to upgrade BIOS directly
-> > > > > > +       from Linux.
-> > > > > >
-> > > > > >         Say N here unless you know what you are doing. Overwriting the
-> > > > > >         SPI flash may render the system unbootable.
-> > > > > > -
-> > > > > > -       To compile this driver as a module, choose M here: the module
-> > > > > > -       will be called intel-spi-platform.
-> > > > > > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > > index b54a56a68100..8d8053395c3d 100644
-> > > > > > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > > > > > @@ -266,6 +266,7 @@ static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
-> > > > > >       return 0;
-> > > > > >  }
-> > > > > >
-> > > > > > +#ifdef CONFIG_SPI_INTEL_SPI_WRITE
-> > > > >
-> > > > > <snip>
-> > > > >
-> > > > > Please do not add #ifdef to .c files, that's not the proper kernel
-> > > > > coding style at all, and just makes maintaining this file much much
-> > > > > harder over time.
-> > > > >
-> > > > > Split things out into two different files if you really need to do this.
-> > > >
-> > > > What about the static functions that I'll need to turn non-static and
-> > > > in a header file?
-> > > > I mean, the functions that the functions in the new file will have to call.
-> > > > Should I do that, turn static functions into non-static and declared
-> > > > in a header file?
-> > >
-> > > No idea, but again, no #ifdefs in .c files like this, that is not the
-> > > proper kernel coding style as it is not maintainable for the lifespan
-> > > that we have to maintain code.
-> >
-> > Is it acceptable to leave static functions unused and let the optimizer
-> > remove them as DCE?
->
-> You will get build warnings if you do that, right?
+On Tue, 3 Nov 2020 10:32:41 +0100 Greg Kroah-Hartman wrote:
+> On Mon, Nov 02, 2020 at 11:47:18AM -0800, Jakub Kicinski wrote:
+> > On Mon, 2 Nov 2020 07:20:15 +0000 Hayes Wang wrote:  
+> > > Jakub Kicinski <kuba@kernel.org>  
+> > > > Can you describe the use case in more detail?
+> > > > 
+> > > > AFAICT r8152 defines a match for the exact same device.
+> > > > Does it not mean that which driver is used will be somewhat random
+> > > > if both are built?    
+> > > 
+> > > I export rtl_get_version() from r8152. It would return none zero
+> > > value if r8152 could support this device. Both r8152 and r8153_ecm
+> > > would check the return value of rtl_get_version() in porbe().
+> > > Therefore, if rtl_get_version() return none zero value, the r8152
+> > > is used for the device with vendor mode. Otherwise, the r8153_ecm
+> > > is used for the device with ECM mode.  
+> > 
+> > Oh, I see, I missed that the rtl_get_version() checking is the inverse
+> > of r8152.
+> >   
+> > > > > +/* Define these values to match your device */
+> > > > > +#define VENDOR_ID_REALTEK		0x0bda
+> > > > > +#define VENDOR_ID_MICROSOFT		0x045e
+> > > > > +#define VENDOR_ID_SAMSUNG		0x04e8
+> > > > > +#define VENDOR_ID_LENOVO		0x17ef
+> > > > > +#define VENDOR_ID_LINKSYS		0x13b1
+> > > > > +#define VENDOR_ID_NVIDIA		0x0955
+> > > > > +#define VENDOR_ID_TPLINK		0x2357    
+> > > > 
+> > > > $ git grep 0x2357 | grep -i tplink
+> > > > drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
+> > > > drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
+> > > > drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
+> > > > 
+> > > > $ git grep 0x17ef | grep -i lenovo
+> > > > drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
+> > > > drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
+> > > > drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
+> > > > drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
+> > > > 
+> > > > Time to consolidate those vendor id defines perhaps?    
+> > > 
+> > > It seems that there is no such header file which I could include
+> > > or add the new vendor IDs.  
+> > 
+> > Please create one. (Adding Greg KH to the recipients, in case there is
+> > a reason that USB subsystem doesn't have a common vendor id header.)  
+> 
+> There is a reason, it's a nightmare to maintain and handle merges for,
+> just don't do it.
 
-I don't know why I didn't get any unused function warning, but OK. I'm using
-a decently recent gcc.
+Ah! Good that we asked :)
 
->
-> You have thousands of examples of how to do this correct, it shouldn't
-> be that tough :)
+> Read the comments at the top of the pci_ids.h file if you are curious
+> why we don't even do this for PCI device ids anymore for the past 10+
+> years.
+> 
+> So no, please do not create such a common file, it is not needed or a
+> good idea.
 
-The job is not that tough, you are to accept changes :)
+I wouldn't go that far, PCI subsystem just doesn't want everyone to add
+IDs to the shared file unless there is a reason.
 
+ *	Do not add new entries to this file unless the definitions
+ *	are shared between multiple drivers.
 
->
-> thanks,
->
-> greg k-h
-
-
-
--- 
-
-
-Daniel Gutson
-Engineering Director
-Eclypsium, Inc.
-
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
+Which seems quite reasonable. But it is most certainly your call :)
