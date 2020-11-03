@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EC12A5930
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863212A59BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730965AbgKCWFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:05:33 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:13018 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730549AbgKCWF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:05:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604441127; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=4BBm67fUFoo0KkqTgZeFbV6Hq2N7kpn5Ax07w3zlOJs=; b=eC4VOCkbG4zJE3VPgL64A1iqjCasQ2Z/5Q4hrfmJlW9VBVTC4NhdOj3ANWx1j56pyt94uOk/
- /b+UmDfqYMWyT7KVgfsAhW0ESp+m1xHJTdxXCEPBpkW+M7nR+JRkESCGbfeKeOSM+28bGONN
- jbyV7baRM/uwIrZvnm3Rj17DFm8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fa1d4250ce128468bf6dc23 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 22:05:25
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 173F7C4339C; Tue,  3 Nov 2020 22:05:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDF12C433C6;
-        Tue,  3 Nov 2020 22:05:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BDF12C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v2] bus: mhi: core: Fix null pointer access when parsing
- MHI configuration
-To:     carl.yin@quectel.com, manivannan.sadhasivam@linaro.org,
-        sfr@canb.auug.org.au
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naveen.kumar@quectel.com
-References: <20201102122710.23406-1-carl.yin@quectel.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <e3f642a6-66de-163a-3006-79c76d6bf572@codeaurora.org>
-Date:   Tue, 3 Nov 2020 14:05:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730507AbgKCWJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:09:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730418AbgKCWJs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:09:48 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82F9C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:09:47 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id o18so20225668edq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WO1e+L++wPESWfr9nzOE54SCt7afrEsmsB9fEuoYvbI=;
+        b=T+/A6+J62VDvQMKYPtVg2CtBW5xawhHVZqWOERIyixTczN4MfytqxhoJQJOcs2790L
+         sj4ZJgiKijp3n63RZQtMlQ3es9rYo1weSDlwxcJm5Ag+lH4tps5I28z8LxvfwKmYtzJJ
+         /7ODS6RyMh7GrhkYAYzKWrZUgtjo08ShY2d8lFIlqSiQY56zEC4lJ332rH1cpQ0Jikk9
+         7t5YiToX4pGXA3cBIa8hr/lWANYeeU9HgWErCB0IiUFAAt6bSVSfurD3RBJy3BliIelp
+         YL3WFMt/TsTNhYtMeHyiS4JaRXQkTDS7Em1++6Jk3gmVGF0kwFa501K00ou4nDd0zP9v
+         pO8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WO1e+L++wPESWfr9nzOE54SCt7afrEsmsB9fEuoYvbI=;
+        b=uOUdHUg1qYnn5nOFek+pXFmAG65OY/z5YEGLD3RaQgud9C5XrDipx8qUOmjcLd7atW
+         lD++jdJZEVFsX4iEJjoCVOtZ3Mzi928jIR0NeDQOFNPuQB2GFwtgxBFlwkkBn+kRQBws
+         eOl0aZc4XbWQigfBXWB++E3IaT95WeRcZSIDQVA00DPWAFoY92Azz7SFhy+QUY75Ay7g
+         stTdlRK0F3iW+HeRElIwyCLNdAVYO12xoIR2YC0yml2mNbr9g0WtilFiIQ+ZAj3yt19l
+         B0GLzLWvRIm0mzJAx7x0ZaeZZ7Jz3c4uoUshXdYHIrTqTBoDlwDDS28lSgANrbRaiDrv
+         D9yw==
+X-Gm-Message-State: AOAM530+ltsTKR1v+pdEzayEnBFnp5XoQrB8r5p2On5pps0tzHgbSxsX
+        lTINl+vvNVuWyOJqyGoZok0+qKrg3hezVzLY8zs7tg==
+X-Google-Smtp-Source: ABdhPJz1NDE7PM2O7672wRWt1a0mL/+PL68eDdfq2Oj69hckQbQldL+V0lbGY3zFDyAcHIRlbnAQxlg/ZySh5dCl9Ns=
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr24583081eds.354.1604441386651;
+ Tue, 03 Nov 2020 14:09:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201102122710.23406-1-carl.yin@quectel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201030100815.2269-12-daniel.vetter@ffwll.ch> <20201103212840.GA266427@bjorn-Precision-5520>
+In-Reply-To: <20201103212840.GA266427@bjorn-Precision-5520>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 3 Nov 2020 14:09:35 -0800
+Message-ID: <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
+Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 1:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
+> > There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
+> > files, and the old proc interface. Two check against
+> > iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
+> > this starts to matter, since we don't want random userspace having
+> > access to PCI BARs while a driver is loaded and using it.
+> >
+> > Fix this by adding the same iomem_is_exclusive() check we already have
+> > on the sysfs side in pci_mmap_resource().
+> >
+> > References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+>
+> This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
+> only used in a few places:
+>
+>   e1000_probe() calls pci_request_selected_regions_exclusive(),
+>   ne_pci_probe() calls pci_request_regions_exclusive(),
+>   vmbus_allocate_mmio() calls request_mem_region_exclusive()
+>
+> which raises the question of whether it's worth keeping
+> IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
+> completely.
 
-
-On 11/2/20 4:27 AM, carl.yin@quectel.com wrote:
-> From: "carl.yin" <carl.yin@quectel.com>
-> 
-> Functions parse_ev_cfg() and parse_ch_cfg() access mhi_cntrl->mhi_dev
-> before it is set in function mhi_register_controller(),
-> use cntrl_dev instead of mhi_dev.
-> 
-> Fixes: 0cbf260820fa ("bus: mhi: core: Add support for registering MHI controllers")
-> Signed-off-by: carl.yin <carl.yin@quectel.com>
-> Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Now that CONFIG_IO_STRICT_DEVMEM upgrades IORESOURCE_BUSY to
+IORESOURCE_EXCLUSIVE semantics the latter has lost its meaning so I'd
+be in favor of removing it as well.
