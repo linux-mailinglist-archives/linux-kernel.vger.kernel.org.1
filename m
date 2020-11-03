@@ -2,78 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED8E2A4B09
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D802A4B0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgKCQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:20:40 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:32782 "EHLO vps0.lunn.ch"
+        id S1728241AbgKCQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:21:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727323AbgKCQUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:20:40 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kZz2r-0053Ht-9O; Tue, 03 Nov 2020 17:20:29 +0100
-Date:   Tue, 3 Nov 2020 17:20:29 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, michal.simek@xilinx.com,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com,
-        Shravya Kumbham <shravya.kumbham@xilinx.com>
-Subject: Re: [PATCH net-next] net: emaclite: Add error handling for
- of_address_ and phy read functions
-Message-ID: <20201103162029.GK1042051@lunn.ch>
-References: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+        id S1727688AbgKCQVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:21:12 -0500
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE5B920773;
+        Tue,  3 Nov 2020 16:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604420471;
+        bh=yRqoDGXgXUirXmOvXn63PNWBqA6rsmPsQ6pfVXkY11c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vbGPmSlPlhDX/ccY9wU1E5V0ocZpCy24BgUtz5ZF2ojXD3kZVa2jbxgf+VlZ/Wpld
+         Ux05jVTU8InG6GJO4PYQw+O2JCK9sL44agK439KKqz2Sx+J8GJ/l556KBAV1ZsKQTp
+         GcQit0K7mVNbpRu0JL4y0ZhrmM37YOZHs29gQ7AQ=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH v4 0/4] arch, mm: improve robustness of direct map manipulation
+Date:   Tue,  3 Nov 2020 18:20:53 +0200
+Message-Id: <20201103162057.22916-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:01:05PM +0530, Radhey Shyam Pandey wrote:
-> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
-> 
-> Add ret variable, conditions to check the return value and it's error
-> path for of_address_to_resource() and phy_read() functions.
-> 
-> Addresses-Coverity: Event check_return value.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi Radhey
+Hi,
 
-This is well out of scope of a Coverity fix, but looking at the patch
-i noticed some bad things.
+During recent discussion about KVM protected memory, David raised a concern
+about usage of __kernel_map_pages() outside of DEBUG_PAGEALLOC scope [1].
 
-> @@ -923,7 +929,7 @@ static int xemaclite_open(struct net_device *dev)
->  	xemaclite_disable_interrupts(lp);
->  
->  	if (lp->phy_node) {
-> -		u32 bmcr;
-> +		int bmcr;
->  
->  		lp->phy_dev = of_phy_connect(lp->ndev, lp->phy_node,
->  					     xemaclite_adjust_link, 0,
-> @@ -945,6 +951,13 @@ static int xemaclite_open(struct net_device *dev)
->  
->  		/* Restart auto negotiation */
->  		bmcr = phy_read(lp->phy_dev, MII_BMCR);
-> +		if (bmcr < 0) {
-> +			dev_err(&lp->ndev->dev, "phy_read failed\n");
-> +			phy_disconnect(lp->phy_dev);
-> +			lp->phy_dev = NULL;
-> +
-> +			return bmcr;
-> +		}
->  		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
->  		phy_write(lp->phy_dev, MII_BMCR, bmcr);
+Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP it is
+possible that __kernel_map_pages() would fail, but since this function is
+void, the failure will go unnoticed.
 
-A MAC driver should not be touching the PHY. The call to
-phy_set_max_speed() should prevent the PHY from advertising 1G speeds,
-so there is no need to poke the advertise registers. And phy_start()
-will start auto-get if it is enabled.
+Moreover, there's lack of consistency of __kernel_map_pages() semantics
+across architectures as some guard this function with
+#ifdef DEBUG_PAGEALLOC, some refuse to update the direct map if page
+allocation debugging is disabled at run time and some allow modifying the
+direct map regardless of DEBUG_PAGEALLOC settings.
 
-It would be nice if this code got cleaned up.
+This set straightens this out by restoring dependency of
+__kernel_map_pages() on DEBUG_PAGEALLOC and updating the call sites
+accordingly. 
 
-   Andrew
+Since currently the only user of __kernel_map_pages() outside
+DEBUG_PAGEALLOC is hibernation, it is updated to make direct map accesses
+there more explicit.
+
+[1] https://lore.kernel.org/lkml/2759b4bf-e1e3-d006-7d86-78a40348269d@redhat.com
+
+v4 changes:
+* s/WARN_ON/pr_warn_once/ per David and Kirill
+* rebase on v5.10-rc2
+* add Acked/Reviewed tags
+
+v3 changes:
+* update arm64 changes to avoid regression, per Rick's comments
+* fix bisectability
+https://lore.kernel.org/lkml/20201101170815.9795-1-rppt@kernel.org
+
+v2 changes:
+* Rephrase patch 2 changelog to better describe the change intentions and
+implications
+* Move removal of kernel_map_pages() from patch 1 to patch 2, per David
+https://lore.kernel.org/lkml/20201029161902.19272-1-rppt@kernel.org
+
+v1:
+https://lore.kernel.org/lkml/20201025101555.3057-1-rppt@kernel.org
+
+Mike Rapoport (4):
+  mm: introduce debug_pagealloc_map_pages() helper
+  PM: hibernate: make direct map manipulations more explicit
+  arch, mm: restore dependency of __kernel_map_pages() of DEBUG_PAGEALLOC
+  arch, mm: make kernel_page_present() always available
+
+ arch/Kconfig                        |  3 +++
+ arch/arm64/Kconfig                  |  4 +---
+ arch/arm64/include/asm/cacheflush.h |  1 +
+ arch/arm64/mm/pageattr.c            |  6 +++--
+ arch/powerpc/Kconfig                |  5 +----
+ arch/riscv/Kconfig                  |  4 +---
+ arch/riscv/include/asm/pgtable.h    |  2 --
+ arch/riscv/include/asm/set_memory.h |  1 +
+ arch/riscv/mm/pageattr.c            | 31 +++++++++++++++++++++++++
+ arch/s390/Kconfig                   |  4 +---
+ arch/sparc/Kconfig                  |  4 +---
+ arch/x86/Kconfig                    |  4 +---
+ arch/x86/include/asm/set_memory.h   |  1 +
+ arch/x86/mm/pat/set_memory.c        |  4 ++--
+ include/linux/mm.h                  | 35 +++++++++++++----------------
+ include/linux/set_memory.h          |  5 +++++
+ kernel/power/snapshot.c             | 30 +++++++++++++++++++++++--
+ mm/memory_hotplug.c                 |  3 +--
+ mm/page_alloc.c                     |  6 ++---
+ mm/slab.c                           |  8 +++----
+ 20 files changed, 103 insertions(+), 58 deletions(-)
+
+-- 
+2.28.0
+
+*** BLURB HERE ***
+
+Mike Rapoport (4):
+  mm: introduce debug_pagealloc_map_pages() helper
+  PM: hibernate: make direct map manipulations more explicit
+  arch, mm: restore dependency of __kernel_map_pages() of
+    DEBUG_PAGEALLOC
+  arch, mm: make kernel_page_present() always available
+
+ arch/Kconfig                        |  3 +++
+ arch/arm64/Kconfig                  |  4 +---
+ arch/arm64/include/asm/cacheflush.h |  1 +
+ arch/arm64/mm/pageattr.c            |  6 +++--
+ arch/powerpc/Kconfig                |  5 +----
+ arch/riscv/Kconfig                  |  4 +---
+ arch/riscv/include/asm/pgtable.h    |  2 --
+ arch/riscv/include/asm/set_memory.h |  1 +
+ arch/riscv/mm/pageattr.c            | 31 +++++++++++++++++++++++++
+ arch/s390/Kconfig                   |  4 +---
+ arch/sparc/Kconfig                  |  4 +---
+ arch/x86/Kconfig                    |  4 +---
+ arch/x86/include/asm/set_memory.h   |  1 +
+ arch/x86/mm/pat/set_memory.c        |  4 ++--
+ include/linux/mm.h                  | 35 +++++++++++++----------------
+ include/linux/set_memory.h          |  5 +++++
+ kernel/power/snapshot.c             | 32 ++++++++++++++++++++++++--
+ mm/memory_hotplug.c                 |  3 +--
+ mm/page_alloc.c                     |  6 ++---
+ mm/slab.c                           |  8 +++----
+ 20 files changed, 105 insertions(+), 58 deletions(-)
+
+
+base-commit: 3cea11cd5e3b00d91caf0b4730194039b45c5891
+-- 
+2.28.0
+
