@@ -2,62 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E18E2A44A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF632A44AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgKCL7e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 06:59:34 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:59800 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgKCL7e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:59:34 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 9802C60B33ED;
-        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id oQdy23ef3ZQl; Tue,  3 Nov 2020 12:59:31 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 343706125F2E;
-        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id CAsv9HTMQe0m; Tue,  3 Nov 2020 12:59:31 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1515D60B33ED;
-        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
-Date:   Tue, 3 Nov 2020 12:59:31 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <782317824.260495.1604404771008.JavaMail.zimbra@nod.at>
-In-Reply-To: <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
-References: <20201012180404.6476-1-p.yadav@ti.com> <20201012180404.6476-3-p.yadav@ti.com> <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
-Subject: Re: [PATCH 2/3] UBI: Do not zero out EC and VID when multi-pass
- writes are not supported
+        id S1728808AbgKCMAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:00:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:47630 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727109AbgKCMAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:00:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5DA4106F;
+        Tue,  3 Nov 2020 04:00:40 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF3CC3F718;
+        Tue,  3 Nov 2020 04:00:38 -0800 (PST)
+Subject: Re: [PATCH v4 4/7] iommu: Add quirk for Intel graphic devices in
+ map_sg
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+ <20200927063437.13988-5-baolu.lu@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <281f22ed-8b36-fc20-4b08-27ef168f941d@arm.com>
+Date:   Tue, 3 Nov 2020 12:00:33 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Do not zero out EC and VID when multi-pass writes are not supported
-Thread-Index: IYY5CPrwbEGqjygzDycc3Mf8hJzERg==
+In-Reply-To: <20200927063437.13988-5-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Vignesh Raghavendra" <vigneshr@ti.com>
->
-> You may want to get rid of assertion for mtd->writesize != 1 in case of
-> MTD_NORFLASH.
+On 2020-09-27 07:34, Lu Baolu wrote:
+> Combining the sg segments exposes a bug in the Intel i915 driver which
+> causes visual artifacts and the screen to freeze. This is most likely
+> because of how the i915 handles the returned list. It probably doesn't
+> respect the returned value specifying the number of elements in the list
+> and instead depends on the previous behaviour of the Intel iommu driver
+> which would return the same number of elements in the output list as in
+> the input list.
+> 
+> Signed-off-by: Tom Murphy <murphyt7@tcd.ie>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>   drivers/iommu/dma-iommu.c | 27 +++++++++++++++++++++++++++
+>   1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 3526db774611..e7e4d758f51a 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -879,6 +879,33 @@ static int __finalise_sg(struct device *dev, struct scatterlist *sg, int nents,
+>   	unsigned int cur_len = 0, max_len = dma_get_max_seg_size(dev);
+>   	int i, count = 0;
+>   
+> +	/*
+> +	 * The Intel graphic driver is used to assume that the returned
+> +	 * sg list is not combound. This blocks the efforts of converting
+> +	 * Intel IOMMU driver to dma-iommu api's. Add this quirk to make the
+> +	 * device driver work and should be removed once it's fixed in i915
+> +	 * driver.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_DRM_I915) && dev_is_pci(dev) &&
+> +	    to_pci_dev(dev)->vendor == PCI_VENDOR_ID_INTEL &&
+> +	    (to_pci_dev(dev)->class >> 16) == PCI_BASE_CLASS_DISPLAY) {
+> +		for_each_sg(sg, s, nents, i) {
+> +			unsigned int s_iova_off = sg_dma_address(s);
+> +			unsigned int s_length = sg_dma_len(s);
+> +			unsigned int s_iova_len = s->length;
+> +
+> +			s->offset += s_iova_off;
+> +			s->length = s_length;
+> +			sg_dma_address(s) = dma_addr + s_iova_off;
+> +			sg_dma_len(s) = s_length;
+> +			dma_addr += s_iova_len;
+> +
+> +			pr_info_once("sg combining disabled due to i915 driver\n");
+> +		}
+> +
+> +		return nents;
+> +	}
 
-Agreed. I hope nothing else breaks if NOR has suddenly a writesize >= 1.
+BTW, a much less invasive workaround would be to simply override 
+seg_mask to 0. That's enough to make sure that no segment looks eligible 
+for merging.
 
-Thanks,
-//richard
+Robin.
+
+> +
+>   	for_each_sg(sg, s, nents, i) {
+>   		/* Restore this segment's original unaligned fields first */
+>   		unsigned int s_iova_off = sg_dma_address(s);
+> 
