@@ -2,64 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251CC2A59D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0986B2A59DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgKCWN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:13:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729828AbgKCWNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:13:25 -0500
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729731AbgKCWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:15:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729085AbgKCWP0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:15:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604441725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SXIMwG+24v0kPGbcpgSikfVX/4K8JgtSXH6lhtDLzEo=;
+        b=VpWUt+9pjvA88nFEUqeyCF9yjZrgWqazWcIk/CBjBTXKHG4rLjwCDs5v1c8D19aWSSAhn7
+        1QAB50G4z+SYI2VG5Os4BzGzwmdYrzp65AE3L9v81ydFTEkPzYYByFGJ8gcU2T605Epc6Z
+        7JQYKgShRrgnmUgAsKUPP+1NlXovYkE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-UmyNEj-5PHqDzrZS2RN4Wg-1; Tue, 03 Nov 2020 17:15:22 -0500
+X-MC-Unique: UmyNEj-5PHqDzrZS2RN4Wg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83A98223AC;
-        Tue,  3 Nov 2020 22:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604441604;
-        bh=eUvNsMeXHBvQ8YD5aWkOqSEQscgXOowINAXv8BxNRT0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uTOCGg3BYhaxTOoMt96rV74ccoltnQMsRTiy3tDjSFIInwBzZPkhOPkUDAVcR93Yu
-         fsNX+slT9cXGOfTezY7HZ3+O4cBy0hc3acCXJewaOEycZvTqwdDoAQe5oryuTFRQOV
-         k4Y/89a/BLDs5Vr9owyQMWdg3LYxZbYuC/Uc68Jo=
-Message-ID: <85854460cc713a1e521eec4a461ac2d2c0194c37.camel@kernel.org>
-Subject: Re: [PATCH net-next] net/mlx5e: Remove duplicated include
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>, leon@kernel.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 03 Nov 2020 14:13:23 -0800
-In-Reply-To: <20201031025019.21628-1-yuehaibing@huawei.com>
-References: <20201031025019.21628-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A11A7803F46;
+        Tue,  3 Nov 2020 22:15:19 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-119-236.rdu2.redhat.com [10.10.119.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E505960BF1;
+        Tue,  3 Nov 2020 22:15:14 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Ilia Mirkin <imirkin@alum.mit.edu>, stable@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/edid: Fix uninitialized variable in drm_cvt_modes()
+Date:   Tue,  3 Nov 2020 17:15:10 -0500
+Message-Id: <20201103221510.575827-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-31 at 10:50 +0800, YueHaibing wrote:
-> Remove duplicated include.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> index 599f5b5ebc97..58c177756dc4 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> @@ -52,7 +52,6 @@
->  #include "en/xsk/rx.h"
->  #include "en/health.h"
->  #include "en/params.h"
-> -#include "en/txrx.h"
+Noticed this when trying to compile with -Wall on a kernel fork. We potentially
+don't set width here, which causes the compiler to complain about width
+potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
 
-Applied to net-next-mlx5, 
-Thanks !
+Changes since v1:
+* Don't emit an error as this code isn't reachable, just mark it as such
+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+
+Cc: <stable@vger.kernel.org> # v5.9+
+Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/drm_edid.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index 631125b46e04..0643b98c6383 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector *connector,
+ 
+ 	for (i = 0; i < 4; i++) {
+ 		int width, height;
++		u8 cvt_aspect_ratio;
+ 
+ 		cvt = &(timing->data.other_data.data.cvt[i]);
+ 
+@@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
+ 			continue;
+ 
+ 		height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) + 1) * 2;
+-		switch (cvt->code[1] & 0x0c) {
++		cvt_aspect_ratio = cvt->code[1] & 0x0c;
++		switch (cvt_aspect_ratio) {
+ 		case 0x00:
+ 			width = height * 4 / 3;
+ 			break;
+@@ -3114,6 +3116,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
+ 		case 0x0c:
+ 			width = height * 15 / 9;
+ 			break;
++		default:
++			unreachable();
+ 		}
+ 
+ 		for (j = 1; j < 5; j++) {
+-- 
+2.28.0
 
