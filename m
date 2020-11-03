@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBA82A4E11
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CCB2A4E13
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgKCSOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:14:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37776 "EHLO mail.kernel.org"
+        id S1729203AbgKCSOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:14:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbgKCSOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:14:39 -0500
+        id S1725892AbgKCSOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:14:50 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 569A620757;
-        Tue,  3 Nov 2020 18:14:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E38A20757;
+        Tue,  3 Nov 2020 18:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604427278;
-        bh=oBr6/A8lCcfHcLffpfnmhk9cxSSf3L6F0Tt4SgemAnY=;
+        s=default; t=1604427289;
+        bh=ALXzQE2fcGXC/HZ3VGTSEZUD0TE16Sre/6edOvYV9CY=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=BFwtZSU19nnkFwZf+hTTx8yDwYdxRjYpPB7E8n5jhdCqN9Nc9kpMVLAdM91dXrkDM
-         V1BMNQO7WEDegw2WsGFPZc6Om3XaRll7L4wLYQ9bZvXbOANbILZgN7IIa2hTNxElD5
-         O6tcf7f94nxMge8pNBlrSbdcvjUpI3c27RYUTUTQ=
-Date:   Tue, 03 Nov 2020 18:14:29 +0000
+        b=rNG+8niD3W31+DSXl54KO3V0sGuMehX8Rn86Vtcox28BxFJugzqf9sEZDl8xj/0Rk
+         lqOtoY9LKHtsSWLozHW2sS/1n3MrE7fpVkRi5x+dKL9uXscDa6tZGYKgp3nWbriARc
+         uaEquhkiu6OG2xHPrsjeMi4p5Mb89MeM3hG5vlVs=
+Date:   Tue, 03 Nov 2020 18:14:40 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc:     ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, lgirdwood@gmail.com
-In-Reply-To: <20201103100554.1307190-1-codrin.ciubotariu@microchip.com>
-References: <20201103100554.1307190-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH] ASoC: atmel-i2s: do not warn if muxclk is missing
-Message-Id: <160442726962.14840.2168034632835702647.b4-ty@kernel.org>
+To:     perex@perex.cz, steven.eckhoff.opensource@gmail.com,
+        "trix@redhat.com" <trix@redhat.com>, lgirdwood@gmail.com,
+        tiwai@suse.com
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20201101171742.2304458-1-trix@redhat.com>
+References: <20201101171742.2304458-1-trix@redhat.com>
+Subject: Re: [PATCH] ASoC: TSCS454: remove unneeded semicolon
+Message-Id: <160442726961.14840.4470080067281230825.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,11 +40,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 12:05:54 +0200, Codrin Ciubotariu wrote:
-> Besides the fact that muxclk is optional, muxclk can be set using
-> assigned-clocks, removing the need to set it in driver. The warning is
-> thus unneeded, so we can transform it in a debug print, eventually to just
-> reflect that muxclk was not set by the driver.
+On Sun, 1 Nov 2020 09:17:42 -0800, trix@redhat.com wrote:
+> A semicolon is not needed after a switch statement.
 
 Applied to
 
@@ -53,8 +49,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: atmel-i2s: do not warn if muxclk is missing
-      commit: f4bf1f4d1385b7cb61a3fc811bb4912d49aa394a
+[1/1] ASoC: TSCS454: remove unneeded semicolon
+      commit: 99503469bdb54868fc9566480f1897c85dddd256
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
