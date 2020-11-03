@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848A32A544C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 334BA2A5670
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731407AbgKCVJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:09:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50014 "EHLO mail.kernel.org"
+        id S2388273AbgKCV2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:28:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388558AbgKCVJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:45 -0500
+        id S1730638AbgKCVA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF63020757;
-        Tue,  3 Nov 2020 21:09:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D740322226;
+        Tue,  3 Nov 2020 21:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437785;
-        bh=cMtk4krAtGN7ZLUUVkQD+BFrvOqFmn9gY1GdZt85VAs=;
+        s=default; t=1604437225;
+        bh=tyT+9KtALDmDCNBfaegf02PsUy4jq+TDq24kxtafaIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QFKYLFWd3GdTdOthZdOyHcCL24NhF435dNvCPr2Ji630682MyfZCSdtIyR2Gimsnw
-         q22Ag0/aMBvaj45gtaNPn+bKkEqAd1MdUzsqMT+UmlAme1rZlOBC+FhxZOfIvGHoZN
-         A0voRaGX5mXcdUuCXf3TNnT9pOgPLo+s/XGdWqzA=
+        b=h1TD2Apn5Eab0KzmsJeYsBmNqc8l7Fd8HCMwIKun3TtVcePVYjfys/FfMKPDsjXeA
+         N2k9kg20zpMmr8tfNN5dZEVC2wlD8eP9bFMOilWEMZlEij2E76POYy50fio3/A+eo8
+         ohBSmaya9m0Yz41OksP2E2LpkKByn3lP8LoYoIsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 032/125] media: tw5864: check status of tw5864_frameinterval_get
-Date:   Tue,  3 Nov 2020 21:36:49 +0100
-Message-Id: <20201103203201.394028999@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 162/214] powerpc/powermac: Fix low_sleep_handler with KUAP and KUEP
+Date:   Tue,  3 Nov 2020 21:36:50 +0100
+Message-Id: <20201103203305.958952009@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 780d815dcc9b34d93ae69385a8465c38d423ff0f ]
+commit 2c637d2df4ee4830e9d3eb2bd5412250522ce96e upstream.
 
-clang static analysis reports this problem
+low_sleep_handler() has an hardcoded restore of segment registers
+that doesn't take KUAP and KUEP into account.
 
-tw5864-video.c:773:32: warning: The left expression of the compound
-  assignment is an uninitialized value.
-  The computed value will also be garbage
-        fintv->stepwise.max.numerator *= std_max_fps;
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+Use head_32's load_segment_registers() routine instead.
 
-stepwise.max is set with frameinterval, which comes from
+Fixes: a68c31fc01ef ("powerpc/32s: Implement Kernel Userspace Access Protection")
+Fixes: 31ed2b13c48d ("powerpc/32s: Implement Kernel Userspace Execution Prevention.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/21b05f7298c1b18f73e6e5b4cd5005aafa24b6da.1599820109.git.christophe.leroy@csgroup.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-	ret = tw5864_frameinterval_get(input, &frameinterval);
-	fintv->stepwise.step = frameinterval;
-	fintv->stepwise.min = frameinterval;
-	fintv->stepwise.max = frameinterval;
-	fintv->stepwise.max.numerator *= std_max_fps;
-
-When tw5864_frameinterval_get() fails, frameinterval is not
-set. So check the status and fix another similar problem.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/tw5864/tw5864-video.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/powerpc/kernel/head_32.S           |    2 +-
+ arch/powerpc/platforms/powermac/sleep.S |    9 +--------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/pci/tw5864/tw5864-video.c b/drivers/media/pci/tw5864/tw5864-video.c
-index ee1230440b397..02258685800a7 100644
---- a/drivers/media/pci/tw5864/tw5864-video.c
-+++ b/drivers/media/pci/tw5864/tw5864-video.c
-@@ -776,6 +776,9 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
- 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
+--- a/arch/powerpc/kernel/head_32.S
++++ b/arch/powerpc/kernel/head_32.S
+@@ -843,7 +843,7 @@ BEGIN_MMU_FTR_SECTION
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	blr
  
- 	ret = tw5864_frameinterval_get(input, &frameinterval);
-+	if (ret)
-+		return ret;
-+
- 	fintv->stepwise.step = frameinterval;
- 	fintv->stepwise.min = frameinterval;
- 	fintv->stepwise.max = frameinterval;
-@@ -794,6 +797,9 @@ static int tw5864_g_parm(struct file *file, void *priv,
- 	cp->capability = V4L2_CAP_TIMEPERFRAME;
+-load_segment_registers:
++_GLOBAL(load_segment_registers)
+ 	li	r0, NUM_USER_SEGMENTS /* load up user segment register values */
+ 	mtctr	r0		/* for context 0 */
+ 	li	r3, 0		/* Kp = 0, Ks = 0, VSID = 0 */
+--- a/arch/powerpc/platforms/powermac/sleep.S
++++ b/arch/powerpc/platforms/powermac/sleep.S
+@@ -293,14 +293,7 @@ grackle_wake_up:
+ 	 * we do any r1 memory access as we are not sure they
+ 	 * are in a sane state above the first 256Mb region
+ 	 */
+-	li	r0,16		/* load up segment register values */
+-	mtctr	r0		/* for context 0 */
+-	lis	r3,0x2000	/* Ku = 1, VSID = 0 */
+-	li	r4,0
+-3:	mtsrin	r3,r4
+-	addi	r3,r3,0x111	/* increment VSID */
+-	addis	r4,r4,0x1000	/* address of next segment */
+-	bdnz	3b
++	bl	load_segment_registers
+ 	sync
+ 	isync
  
- 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
-+	if (ret)
-+		return ret;
-+
- 	cp->timeperframe.numerator *= input->frame_interval;
- 	cp->capturemode = 0;
- 	cp->readbuffers = 2;
--- 
-2.27.0
-
 
 
