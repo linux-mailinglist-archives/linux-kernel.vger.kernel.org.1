@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB542A3EE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827362A3EE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKCI2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:28:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:44118 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgKCI2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:28:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1454E139F;
-        Tue,  3 Nov 2020 00:28:44 -0800 (PST)
-Received: from [10.57.19.30] (unknown [10.57.19.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6B1A3F718;
-        Tue,  3 Nov 2020 00:28:38 -0800 (PST)
-Subject: Re: [PATCH v3 2/4] docs: Clarify abstract scale usage for power
- values in Energy Model
-To:     Quentin Perret <qperret@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <20201019140601.3047-3-lukasz.luba@arm.com>
- <20201102134536.GB2221764@google.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <a4985699-18ff-d35d-734e-ce4af1f2d653@arm.com>
-Date:   Tue, 3 Nov 2020 08:28:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727593AbgKCI2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:28:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7579 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgKCI2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:28:53 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQNGm0GWrzLt4H;
+        Tue,  3 Nov 2020 16:28:48 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 3 Nov 2020
+ 16:28:50 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change write_hint for hot/warm nodes
+To:     <daejun7.park@samsung.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "chao@kernel.org" <chao@kernel.org>
+CC:     yongmyung lee <ymhungry.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Mankyu PARK <manq.park@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Keoseong Park <keosung.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        "Jinyoung CHOI" <j-young.choi@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>
+References: <CGME20201103064039epcms2p30ecac0e7cefff0d50745f2e2e61ce38e@epcms2p3>
+ <20201103064039epcms2p30ecac0e7cefff0d50745f2e2e61ce38e@epcms2p3>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <609445f8-de3b-eb79-449c-020125799449@huawei.com>
+Date:   Tue, 3 Nov 2020 16:28:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201102134536.GB2221764@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201103064039epcms2p30ecac0e7cefff0d50745f2e2e61ce38e@epcms2p3>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/2/20 1:45 PM, Quentin Perret wrote:
-> On Monday 19 Oct 2020 at 15:05:59 (+0100), Lukasz Luba wrote:
->> diff --git a/Documentation/driver-api/thermal/power_allocator.rst b/Documentation/driver-api/thermal/power_allocator.rst
->> index 67b6a3297238..b7992ae84fef 100644
->> --- a/Documentation/driver-api/thermal/power_allocator.rst
->> +++ b/Documentation/driver-api/thermal/power_allocator.rst
->> @@ -71,7 +71,10 @@ to the speed-grade of the silicon.  `sustainable_power` is therefore
->>   simply an estimate, and may be tuned to affect the aggressiveness of
->>   the thermal ramp. For reference, the sustainable power of a 4" phone
->>   is typically 2000mW, while on a 10" tablet is around 4500mW (may vary
->> -depending on screen size).
->> +depending on screen size). It is possible to have the power value
->> +expressed in an abstract scale. This is the case when the Energy Model
->> +provides the power values in an abstract scale.
+On 2020/11/3 14:40, Daejun Park wrote:
+>>From 818a76a9aee5bf225565264274d211edb07bae7d Mon Sep 17 00:00:00 2001
+> From: Daejun Park <daejun7.park@samsung.com>
+> Date: Tue, 3 Nov 2020 15:30:26 +0900
 > 
-> Maybe remove one of the 2 sentences?
+> 
+> In the fs-based mode of F2FS, the mapping of hot/warm node to
+> WRITE_LIFE_NOT_SET should be changed to WRITE_LIFE_SHORT.
+> 
+> As a result of analyzing the write pattern of f2fs using real workload,
+> hot/warm nodes have high update ratio close to hot data.[*]
+> However, F2FS passes write hints for hot/warm nodes as WRITE_LIFE_NOT_SET.
+> 
+> Furthermore, WRITE_LIFE_NOT_SET is a default value of write hint when it is
+> not provided from the file system.
+> In storage, write_hint is used to distinguish streams (e.g. NVMe).
+> So, the hot/warm node of F2FS is not distinguished from other write_hints,
+> which can make the wrong stream seperation.
+> 
+> * Liang, Yu, et al. "An empirical study of F2FS on mobile devices." 2017
+> IEEE 23rd International Conference on Embedded and Real-Time Computing
+> Systems and Applications (RTCSA).
 
-I will remove the 2nd sentence.
+Could you please update Documentation/filesystems/f2fs.rst as well?
+
+Thanks,
 
 > 
-> Thanks,
-> Quentin
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> ---
+>   fs/f2fs/segment.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 1596502f7375..7b42bb10c6c3 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -3208,7 +3208,7 @@ enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
+>   				return WRITE_LIFE_EXTREME;
+>   		} else if (type == NODE) {
+>   			if (temp == WARM || temp == HOT)
+> -				return WRITE_LIFE_NOT_SET;
+> +				return WRITE_LIFE_SHORT;
+>   			else if (temp == COLD)
+>   				return WRITE_LIFE_NONE;
+>   		} else if (type == META) {
 > 
