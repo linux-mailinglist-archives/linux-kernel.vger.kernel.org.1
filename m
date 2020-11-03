@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1472A532B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0BE2A528C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732955AbgKCU60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:58:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60890 "EHLO mail.kernel.org"
+        id S1731880AbgKCUuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:50:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732116AbgKCU6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:17 -0500
+        id S1731861AbgKCUuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:50:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E509D2053B;
-        Tue,  3 Nov 2020 20:58:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9B5C20719;
+        Tue,  3 Nov 2020 20:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437095;
-        bh=JhqZYrzLoq7d1IA7dJCErI9pM2rLwGx0q5SNQ8neXAs=;
+        s=default; t=1604436651;
+        bh=vLpUuXDYQpnWLZoBKjvG/J6ILa7TA2aLVD0Lq/SKsGc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zV6Bgfqrclvqs79taYP41ddyEwhZBMhkCLZJNK8YiJ9gzIyViAio3IbHAZuaopXjZ
-         L0iABn7dB0LvfF//aKVB99Sa1ZiUYBZQpR7f4Cm6mqeUUIjwv57QUGITIgT1y/3NDM
-         CAuonkj44gAooIuIDmnciVShFDzeVL+ZLyA5bSQc=
+        b=QjUBWYskdq+GHrU0mD5FnGTGfvhN6vjLpuNpUgnqCL6on55ZMNzOibVeCWJL1M+pW
+         hQIP9F9CMI2tx36x78JvgcFkweL9uHJVVNKn/ZCPH8lGY2+fjJ9dol8Ud3n+MjxN5F
+         xIrL4imnrYDv0peYVi9g5Xy5C8wBaaHohgSqBVKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH 5.4 143/214] usb: host: fsl-mph-dr-of: check return of dma_set_mask()
-Date:   Tue,  3 Nov 2020 21:36:31 +0100
-Message-Id: <20201103203304.218947273@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.9 341/391] ext4: fix error handling code in add_new_gdb
+Date:   Tue,  3 Nov 2020 21:36:32 +0100
+Message-Id: <20201103203410.145751791@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ran Wang <ran.wang_1@nxp.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 3cd54a618834430a26a648d880dd83d740f2ae30 upstream.
+commit c9e87161cc621cbdcfc472fa0b2d81c63780c8f5 upstream.
 
-fsl_usb2_device_register() should stop init if dma_set_mask() return
-error.
+When ext4_journal_get_write_access() fails, we should
+terminate the execution flow and release n_group_desc,
+iloc.bh, dind and gdb_bh.
 
-Fixes: cae058610465 ("drivers/usb/host: fsl: Set DMA_MASK of usb platform device")
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-Link: https://lore.kernel.org/r/20201010060308.33693-1-ran.wang_1@nxp.com
-Cc: stable <stable@vger.kernel.org>
+Cc: stable@kernel.org
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Link: https://lore.kernel.org/r/20200829025403.3139-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/fsl-mph-dr-of.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/ext4/resize.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/fsl-mph-dr-of.c
-+++ b/drivers/usb/host/fsl-mph-dr-of.c
-@@ -94,10 +94,13 @@ static struct platform_device *fsl_usb2_
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -843,8 +843,10 @@ static int add_new_gdb(handle_t *handle,
  
- 	pdev->dev.coherent_dma_mask = ofdev->dev.coherent_dma_mask;
- 
--	if (!pdev->dev.dma_mask)
-+	if (!pdev->dev.dma_mask) {
- 		pdev->dev.dma_mask = &ofdev->dev.coherent_dma_mask;
--	else
--		dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-+	} else {
-+		retval = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-+		if (retval)
-+			goto error;
+ 	BUFFER_TRACE(dind, "get_write_access");
+ 	err = ext4_journal_get_write_access(handle, dind);
+-	if (unlikely(err))
++	if (unlikely(err)) {
+ 		ext4_std_error(sb, err);
++		goto errout;
 +	}
  
- 	retval = platform_device_add_data(pdev, pdata, sizeof(*pdata));
- 	if (retval)
+ 	/* ext4_reserve_inode_write() gets a reference on the iloc */
+ 	err = ext4_reserve_inode_write(handle, inode, &iloc);
 
 
