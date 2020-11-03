@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3832A3EC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EA22A3ECB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgKCITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:19:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7040 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgKCITV (ORCPT
+        id S1727479AbgKCIUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:20:16 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7449 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCIUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:19:21 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQN3n58KnzhXhX;
-        Tue,  3 Nov 2020 16:19:17 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 3 Nov 2020
- 16:19:09 +0800
-Subject: Re: [PATCH v2 0/5] Introduce a new helper marco
- DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
-        <andriy.shevchenko@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
-        <felipe.balbi@linux.intel.com>, <uma.shankar@intel.com>,
-        <anshuman.gupta@intel.com>, <animesh.manna@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1604046722-15531-1-git-send-email-luojiaxing@huawei.com>
- <20201030084448.GA1625087@kroah.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <d4852df0-d7e0-ee7e-352c-58eaf47c2c72@huawei.com>
-Date:   Tue, 3 Nov 2020 16:19:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Tue, 3 Nov 2020 03:20:15 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQN4s2bXGzhg9l;
+        Tue,  3 Nov 2020 16:20:13 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 16:20:07 +0800
+Subject: Re: [PATCH v2] iio: adc: rockchip_saradc: fix missing
+ clk_disable_unprepare() on error in rockchip_saradc_resume
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Heiko Stuebner <heiko@sntech.de>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201103074909.195465-1-miaoqinglang@huawei.com>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <6739f62b-c88e-6792-3237-49787c73c662@huawei.com>
+Date:   Tue, 3 Nov 2020 16:20:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201030084448.GA1625087@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
+In-Reply-To: <20201103074909.195465-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 2020/10/30 16:44, Greg KH wrote:
-> On Fri, Oct 30, 2020 at 04:31:57PM +0800, Luo Jiaxing wrote:
->> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
->> for read-only file, but we found many of drivers also want a helper marco for
->> read-write file too.
->>
->> So we try to add this macro to help decrease code duplication.
->>
->> Luo Jiaxing (5):
->>    seq_file: Introduce DEFINE_SHOW_STORE_ATTRIBUTE() helper macro
->>    scsi: hisi_sas: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
->>    scsi: qla2xxx: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
->>    usb: dwc3: debugfs: Introduce DEFINE_SHOW_STORE_ATTRIBUTE
->>    drm/i915/display: Introduce DEFINE_SHOW_STORE_ATTRIBUTE for debugfs
-> What changed from v1?
 
 
-Sorry, I should add a commit for the change.
+ÔÚ 2020/11/3 15:49, Qinglang Miao Ð´µÀ:
+> Fix the missing clk_disable_unprepare() of info->pclk
+> before return from rockchip_saradc_resume in the error
+> handling case when fails to prepare and enable info->clk.
+> 
+> Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>   drivers/iio/adc/rockchip_saradc.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+> index 1f3d7d639..5eb566274 100644
+> --- a/drivers/iio/adc/rockchip_saradc.c
+> +++ b/drivers/iio/adc/rockchip_saradc.c
+> @@ -461,9 +461,10 @@ static int rockchip_saradc_resume(struct device *dev)
+>   		return ret;
+>   
+>   	ret = clk_prepare_enable(info->clk);
+> -	if (ret)
+> +	if (ret) {
+> +		clk_disable_unprepare(info->pclk);
+>   		return ret;
+> -
+> +	}
+>   	return ret;
+>   }
+>   #endif
+> 
+Hi everyone,
 
+I made a careless mistake for adding v2 as subject-prefix, this patch is 
+the base version actually.
 
-In v1, Andy pointed out that the old name of DEFINE_STORE_ATTRIBUTE was 
-easily misunderstood as a write-only file rather than a read-write file.
+Sorry about that.
 
-Therefore, it is changed to DEFINE_SHOW_STORE_ATTRIBUTE according to his 
-suggestion.
-
-
-Thanks
-
-Jiaxing
-
-
->
-> thanks,
->
-> greg k-h
->
-> .
->
-
+Thanks.
