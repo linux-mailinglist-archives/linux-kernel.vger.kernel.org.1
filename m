@@ -2,1087 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B402A3D92
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12172A3D98
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgKCHXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:23:14 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:29596 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727903AbgKCHXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:23:13 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 0A37IeE4008356;
-        Tue, 3 Nov 2020 15:18:40 +0800 (GMT-8)
-        (envelope-from chin-ting_kuo@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Nov
- 2020 15:22:12 +0800
-From:   Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <clg@kaod.org>, <bbrezillon@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-spi@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v2 4/4] spi: aspeed: Add ASPEED FMC/SPI memory controller driver
-Date:   Tue, 3 Nov 2020 15:22:02 +0800
-Message-ID: <20201103072202.24705-5-chin-ting_kuo@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
-References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
+        id S1727527AbgKCHYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:24:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgKCHYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:24:31 -0500
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E28A222B9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604388270;
+        bh=4gHxD+7uD+KILg31KqY40G0HO+FIorGuchCTh0bvdw4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SHGOUY6neVKOGjxAF7ks6GKQQSVtt9XnCEMVWVIO0qJbSF/xFH5h0VGMQZ1fbVwTj
+         gAC+QZGS+WA+aKbOVfRo6mVR7pBBGTyQu251ZxCcKSOk48/miVCC/l7gYbhtjWIjxT
+         MHgzqAhXbKpz0V17su5glB0zJ8wZkO5xjihqOSxE=
+Received: by mail-oo1-f48.google.com with SMTP id o129so3966275ooo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 23:24:30 -0800 (PST)
+X-Gm-Message-State: AOAM530rR3j8wfhVKCtKxojw1F4wXwU1nL6RqN3Dhu5u8H++KHRZWqmn
+        xkLEjZY7BnsO+SEB/5wUvT1jMCsz9fE5g8bZJac=
+X-Google-Smtp-Source: ABdhPJwl3dN+W/2a4XuJe2PT23GVwwnK1kDyPzzXE93dVmCCBmg5miMGGGbnBbFSyvkkeGQosVmccmkU1cvXeyo9b4Y=
+X-Received: by 2002:a4a:9806:: with SMTP id y6mr14608231ooi.45.1604388269247;
+ Mon, 02 Nov 2020 23:24:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 0A37IeE4008356
+References: <202010211637.7CFD8435@keescook> <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook> <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com> <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk> <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+ <20201022162334.GQ1551@shell.armlinux.org.uk> <CAMj1kXF+2kJrUaDyA-Xw4rz2bsuEipX3P4JyPrY1bim76LQvoA@mail.gmail.com>
+ <20201022174826.GS1551@shell.armlinux.org.uk> <CAMj1kXHpPbwS8zjsr8S65EMj9XOwPxWiQ5WN_ok8ZAFZg9kSAg@mail.gmail.com>
+ <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com> <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
+In-Reply-To: <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 3 Nov 2020 08:24:17 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
+Message-ID: <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for ASPEED BMC FMC/SPI memory controller which
-supports spi-mem interface.
+On Thu, 29 Oct 2020 at 10:56, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 26 Oct 2020 at 09:58, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Thu, 22 Oct 2020 at 19:59, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Thu, 22 Oct 2020 at 19:48, Russell King - ARM Linux admin
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > On Thu, Oct 22, 2020 at 06:33:17PM +0200, Ard Biesheuvel wrote:
+> > > > > On Thu, 22 Oct 2020 at 18:23, Russell King - ARM Linux admin
+> > > > > <linux@armlinux.org.uk> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 22, 2020 at 06:20:40PM +0200, Ard Biesheuvel wrote:
+> > > > > > > On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
+> > > > > > > <linux@armlinux.org.uk> wrote:
+> > > > > > > >
+> > > > > > > > On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wr=
+ote:
+> > > > > > > > > On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gma=
+il.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > 22.10.2020 10:06, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=
+=B5=D1=82:
+> > > > > > > > > > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chr=
+omium.org> wrote:
+> > > > > > > > > > >>
+> > > > > > > > > > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osi=
+penko wrote:
+> > > > > > > > > > >>> 22.10.2020 02:40, Kees Cook =D0=BF=D0=B8=D1=88=D0=
+=B5=D1=82:
+> > > > > > > > > > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry O=
+sipenko wrote:
+> > > > > > > > > > >>>>> The vfp_kmode_exception() function now is unreach=
+able using relative
+> > > > > > > > > > >>>>> branching in THUMB2 kernel configuration, resulti=
+ng in a "relocation
+> > > > > > > > > > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol=
+ `vfp_kmode_exception'"
+> > > > > > > > > > >>>>> linker error. Let's use long jump in order to fix=
+ the issue.
+> > > > > > > > > > >>>>
+> > > > > > > > > > >>>> Eek. Is this with gcc or clang?
+> > > > > > > > > > >>>
+> > > > > > > > > > >>> GCC 9.3.0
+> > > > > > > > > > >>>
+> > > > > > > > > > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and =
+AutoFDO input sections")
+> > > > > > > > > > >>>>
+> > > > > > > > > > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: A=
+dd missing sections") ?
+> > > > > > > > > > >>>> That commit may have implicitly moved the location=
+ of .vfp11_veneer,
+> > > > > > > > > > >>>> though I thought I had chosen the correct position=
+.
+> > > > > > > > > > >>>
+> > > > > > > > > > >>> I re-checked that the fixes tag is correct.
+> > > > > > > > > > >>>
+> > > > > > > > > > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > > > > > > > > >>>>> ---
+> > > > > > > > > > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
+> > > > > > > > > > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > > > > > > >>>>>
+> > > > > > > > > > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/=
+vfphw.S
+> > > > > > > > > > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
+> > > > > > > > > > >>>>> --- a/arch/arm/vfp/vfphw.S
+> > > > > > > > > > >>>>> +++ b/arch/arm/vfp/vfphw.S
+> > > > > > > > > > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+> > > > > > > > > > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy=
+ restore nor FP exceptions
+> > > > > > > > > > >>>>>    and     r3, r3, #MODE_MASK      @ are supporte=
+d in kernel mode
+> > > > > > > > > > >>>>>    teq     r3, #USR_MODE
+> > > > > > > > > > >>>>> -  bne     vfp_kmode_exception     @ Returns thro=
+ugh lr
+> > > > > > > > > > >>>>> +  ldr     r1, =3Dvfp_kmode_exception
+> > > > > > > > > > >>>>> +  bxne    r1                      @ Returns thro=
+ugh lr
+> > > > > > > > > > >>>>>
+> > > > > > > > > > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP e=
+nabled?
+> > > > > > > > > > >>>>>    DBGSTR1 "fpexc %08x", r1
+> > > > > > > > > > >>>>
+> > > > > > > > > > >>>> This seems like a workaround though? I suspect the=
+ vfp11_veneer needs
+> > > > > > > > > > >>>> moving?
+> > > > > > > > > > >>>>
+> > > > > > > > > > >>>
+> > > > > > > > > > >>> I don't know where it needs to be moved. Please fee=
+l free to make a
+> > > > > > > > > > >>> patch if you have a better idea, I'll be glad to te=
+st it.
+> > > > > > > > > > >>
+> > > > > > > > > > >> I might have just been distracted by the common "vfp=
+" prefix. It's
+> > > > > > > > > > >> possible that the text section shuffling just ended =
+up being very large,
+> > > > > > > > > > >> so probably this patch is right then!
+> > > > > > > > > > >>
+> > > > > > > > > > >
+> > > > > > > > > > > I already sent a fix for this issue:
+> > > > > > > > > > >
+> > > > > > > > > > > https://www.armlinux.org.uk/developer/patches/viewpat=
+ch.php?id=3D9018/1
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > The offending commit contains stable tag, so I assume t=
+hat fixes tag is
+> > > > > > > > > > mandatory. Yours patch misses the fixes tag.
+> > > > > > > > >
+> > > > > > > > > Russell, mind adding that? Or would you like me to update=
+ the patch in
+> > > > > > > > > the patch system?
+> > > > > > > >
+> > > > > > > > Rather than adding the IT, I'm suggesting that we solve it =
+a different
+> > > > > > > > way - ensuring that the two bits of code are co-located. Th=
+ere's no
+> > > > > > > > reason for them to be separated, and the assembly code entr=
+y point is
+> > > > > > > > already called indirectly.
+> > > > > > > >
+> > > > > > > > The problem is the assembly ends up in the .text section wh=
+ich ends up
+> > > > > > > > at the start of the binary, but depending on the compiler, =
+functions
+> > > > > > > > in .c files end up in their own sections. It would be good =
+if, as
+> > > > > > > > Dmitry has shown that it is indeed possible, to have them c=
+o-located.
+> > > > > > >
+> > > > > > > Why is that better? I provided a minimal fix which has zero i=
+mpact on
+> > > > > > > ARM builds, and minimal impact on Thumb2 builds, given that i=
+t retains
+> > > > > > > the exact same semantics as before, but using a different opc=
+ode.
+> > > > > >
+> > > > > > I think you just described the reason there. Why should we forc=
+e
+> > > > > > everything to use a different opcode when a short jump _should_
+> > > > > > suffice?
+> > > > > >
+> > > > >
+> > > > > Why should a short jump suffice? The call is to vfp_kmode_excepti=
+on(),
+> > > > > which we only call in exceptional cases. Why would we want to kee=
+p
+> > > > > that in close proximity?
+> > > >
+> > > > You're thinking about it in terms of what happens when the branch i=
+s
+> > > > taken, rather than also considering that this code path is also
+> > > > traversed for _every_ single time that we enter the support code
+> > > > not just for kernel mode.
+> > > >
+> > >
+> > > True. If 2 bytes of additional opcode are the concern here, we can
+> > > change the current sequence
+> > >
+> > >    6:   f093 0f10       teq     r3, #16
+> > >    a:   f47f affe       bne.w   0 <vfp_kmode_exception>
+> > >
+> > > to
+> > >
+> > >    6:   2b10            cmp     r3, #16
+> > >    8:   bf18            it      ne
+> > >    a:   f7ff bffe       bne.w   0 <vfp_kmode_exception>
+> > >
+> > > which takes up the exact same space.
+> >
+> > BTW this code path looks slightly broken for Thumb-2 in any case: if a
+> > FP exception is taken in kernel mode on a Thumb2 kernel, we enter the
+> > emulation sequence via call_fpe, which will use the wrong set of
+> > value/mask pairs to match the opcode. The minimal fix is to move the
+> > call_fpe label to the right place, but I think it might be better to
+> > move the check for a FP exception in kernel mode to the handling of
+> > __und_svc.
+>
+> Do we have a resolution here? This is causing breakage in kernelci
+>
+> https://kernelci.org/build/id/5f9a834c5ed3c05dd538101b/
 
-There are three SPI memory controllers embedded in an ASPEED SoC.
-Each of them can connect to two or three SPI NOR flashes. The first
-SPI memory controller is also named as Firmware Memory Controller (FMC),
-which is similar to SPI memory controller. After device AC on, MCU ROM
-can fetch device boot code from FMC CS 0. Thus, there exists additional
-registers for boot process control in FMC.
+Still broken today
 
-ASPEED SPI memory controller supports single, dual and quad mode for
-SPI NOR flash. It also supports two types of command mode, user mode
-and command read/write mode. User mode is traditional pure SPI operations
-where all transmission is controlled by CPU. Contrarily, with command
-read/write mode, SPI controller can send command and address automatically
-when CPU read/write related remapped address.
+https://kernelci.org/build/id/5fa0c1a74bdb1ea4063fe7e4/
 
-Besides, different wafer processes of SPI NOR flash result in different
-signal response time. This phenomenon will be enlarged when SPI clock
-frequency increases. ASPEED SPI memory controller provides a mechanism
-for timing compensation in order to satisfy various SPI NOR flash parts
-and PCB layout.
+So the options are
 
-Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
----
- v2: Fix sparse warnings reported by kernel test robot <lkp@intel.com>.
+a) merge my patch that adds 2 bytes of opcode to the Thumb2 build
+b) merge Dmitry's patch that adds an unconditional literal load to all buil=
+ds
+c) remove kernel mode handling from vfp_support_entry() [my other patch]
+d) move sections around so that vfp_kmode_exception is guaranteed to
+be in range.
+e) do nothing
 
- drivers/spi/Kconfig      |  10 +
- drivers/spi/Makefile     |   1 +
- drivers/spi/spi-aspeed.c | 969 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 980 insertions(+)
- create mode 100644 drivers/spi/spi-aspeed.c
+Given the lack of reports about this issue, it is pretty clear that
+few people use the Thumb2 build (which I find odd, tbh, since it
+really is much smaller). However, that means that a) is a reasonable
+fix, since nobody will notice the potential performance hit either,
+and it can easily be backported to wherever the breakage was
+introduced. (Note that eff8728fe698, which created the problem is
+marked cc:stable itself).
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 5cff60de8e83..caadf8647183 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -70,6 +70,16 @@ config SPI_AR934X
- 	  This enables support for the SPI controller present on the
- 	  Qualcomm Atheros AR934X/QCA95XX SoCs.
- 
-+config SPI_ASPEED
-+	tristate "ASPEED FMC/SPI Memory Controller"
-+	depends on OF && HAS_IOMEM
-+	help
-+	  Enable driver for ASPEED FMC/SPI Memory Controller.
-+
-+	  This driver is not a generic pure SPI driver, which
-+	  is especially designed for spi-mem framework with
-+	  SPI NOR flash direct read and write features.
-+
- config SPI_ATH79
- 	tristate "Atheros AR71XX/AR724X/AR913X SPI controller driver"
- 	depends on ATH79 || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 6fea5821662e..9e62c650fca0 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_SPI_LOOPBACK_TEST)		+= spi-loopback-test.o
- obj-$(CONFIG_SPI_ALTERA)		+= spi-altera.o
- obj-$(CONFIG_SPI_AR934X)		+= spi-ar934x.o
- obj-$(CONFIG_SPI_ARMADA_3700)		+= spi-armada-3700.o
-+obj-$(CONFIG_SPI_ASPEED)		+= spi-aspeed.o
- obj-$(CONFIG_SPI_ATMEL)			+= spi-atmel.o
- obj-$(CONFIG_SPI_ATMEL_QUADSPI)		+= atmel-quadspi.o
- obj-$(CONFIG_SPI_AT91_USART)		+= spi-at91-usart.o
-diff --git a/drivers/spi/spi-aspeed.c b/drivers/spi/spi-aspeed.c
-new file mode 100644
-index 000000000000..f416f894a842
---- /dev/null
-+++ b/drivers/spi/spi-aspeed.c
-@@ -0,0 +1,969 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+/*
-+ * ASPEED FMC/SPI Memory Controller Driver
-+ *
-+ * Copyright (c) 2020, ASPEED Corporation.
-+ * Copyright (c) 2015-2016, IBM Corporation.
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/sizes.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+
-+/* ASPEED FMC/SPI memory control register related */
-+#define OFFSET_CE_TYPE_SETTING		0x00
-+#define OFFSET_CE_ADDR_MODE_CTRL	0x04
-+#define OFFSET_INTR_CTRL_STATUS		0x08
-+#define OFFSET_ADDR_DATA_MASK		0x0c
-+#define OFFSET_CE0_CTRL_REG		0x10
-+#define OFFSET_CE0_DECODE_RANGE_REG	0x30
-+#define OFFSET_DMA_CTRL			0x80
-+#define OFFSET_DMA_FLASH_ADDR_REG	0x84
-+#define OFFSET_DMA_RAM_ADDR_REG		0x88
-+#define OFFSET_DMA_LEN_REG		0x8c
-+#define OFFSET_DMA_CHECKSUM_RESULT	0x90
-+#define OFFSET_CE0_TIMING_COMPENSATION	0x94
-+
-+#define CTRL_IO_SINGLE_DATA	0
-+#define CTRL_IO_DUAL_DATA	BIT(29)
-+#define CTRL_IO_QUAD_DATA	BIT(30)
-+
-+#define CTRL_IO_MODE_USER	GENMASK(1, 0)
-+#define CTRL_IO_MODE_CMD_READ	BIT(0)
-+#define CTRL_IO_MODE_CMD_WRITE	BIT(1)
-+#define CTRL_STOP_ACTIVE	BIT(2)
-+
-+#define CALIBRATION_LEN		0x400
-+#define SPI_DAM_REQUEST		BIT(31)
-+#define SPI_DAM_GRANT		BIT(30)
-+#define SPI_DMA_CALIB_MODE	BIT(3)
-+#define SPI_DMA_CALC_CKSUM	BIT(2)
-+#define SPI_DMA_ENABLE		BIT(0)
-+#define SPI_DMA_STATUS		BIT(11)
-+
-+enum aspeed_spi_ctl_reg_value {
-+	ASPEED_SPI_BASE,
-+	ASPEED_SPI_READ,
-+	ASPEED_SPI_WRITE,
-+	ASPEED_SPI_MAX,
-+};
-+
-+#define ASPEED_SPI_MAX_CS 5
-+
-+struct aspeed_spi_controller;
-+struct aspeed_spi_chip;
-+
-+struct aspeed_spi_info {
-+	uint32_t cmd_io_ctrl_mask;
-+	uint32_t max_data_bus_width;
-+	uint32_t min_decode_sz;
-+	void (*set_4byte)(struct aspeed_spi_controller *ast_ctrl, uint32_t cs);
-+	int (*calibrate)(struct aspeed_spi_controller *ast_ctrl, uint32_t cs);
-+	void (*adjust_decode_sz)(uint32_t decode_sz_arr[], int len);
-+	uint32_t (*segment_start)(struct aspeed_spi_controller *ast_ctrl,
-+				  uint32_t reg);
-+	uint32_t (*segment_end)(struct aspeed_spi_controller *ast_ctrl,
-+				uint32_t reg);
-+	uint32_t (*segment_reg)(struct aspeed_spi_controller *ast_ctrl,
-+				uint32_t start, uint32_t end);
-+};
-+
-+struct aspeed_spi_chip {
-+	void __iomem *ahb_base;
-+	void __iomem *ahb_base_phy;
-+	uint32_t ahb_window_sz;
-+	uint32_t ctrl_val[ASPEED_SPI_MAX];
-+	uint32_t max_clk_freq;
-+};
-+
-+struct aspeed_spi_controller {
-+	struct device *dev;
-+	const struct aspeed_spi_info *info; /* controller info */
-+	void __iomem *regs; /* controller registers */
-+	void __iomem *ahb_base;
-+	uint32_t ahb_base_phy; /* physical addr of AHB window  */
-+	uint32_t ahb_window_sz; /* AHB window size */
-+	uint32_t num_cs;
-+	uint64_t ahb_clk;
-+	struct aspeed_spi_chip *chips; /* pointers to attached chips */
-+};
-+
-+static uint32_t
-+aspeed_2600_spi_segment_start(struct aspeed_spi_controller *ast_ctrl,
-+			      uint32_t reg)
-+{
-+	uint32_t start_offset = (reg << 16) & 0x0ff00000;
-+
-+	return ast_ctrl->ahb_base_phy + start_offset;
-+}
-+
-+static uint32_t
-+aspeed_2600_spi_segment_end(struct aspeed_spi_controller *ast_ctrl,
-+			    uint32_t reg)
-+{
-+	uint32_t end_offset = reg & 0x0ff00000;
-+
-+	/* no decode range, set to physical ahb base */
-+	if (end_offset == 0)
-+		return ast_ctrl->ahb_base_phy;
-+
-+	return ast_ctrl->ahb_base_phy + end_offset + 0x100000;
-+}
-+
-+static uint32_t
-+aspeed_2600_spi_segment_reg(struct aspeed_spi_controller *ast_ctrl,
-+			    uint32_t start, uint32_t end)
-+{
-+	/* no decode range, assign zero value */
-+	if (start == end)
-+		return 0;
-+
-+	return ((start & 0x0ff00000) >> 16) | ((end - 0x100000) & 0x0ff00000);
-+}
-+
-+static void aspeed_spi_chip_set_4byte(struct aspeed_spi_controller *ast_ctrl,
-+				      uint32_t cs)
-+{
-+	uint32_t reg_val;
-+
-+	reg_val = readl(ast_ctrl->regs + OFFSET_CE_ADDR_MODE_CTRL);
-+	reg_val |= 0x11 << cs;
-+	writel(reg_val, ast_ctrl->regs + OFFSET_CE_ADDR_MODE_CTRL);
-+}
-+
-+static uint32_t aspeed_spi_get_io_mode(uint32_t bus_width)
-+{
-+	switch (bus_width) {
-+	case 1:
-+		return CTRL_IO_SINGLE_DATA;
-+	case 2:
-+		return CTRL_IO_DUAL_DATA;
-+	case 4:
-+		return CTRL_IO_QUAD_DATA;
-+	default:
-+		return CTRL_IO_SINGLE_DATA;
-+	}
-+}
-+
-+/*
-+ * Check whether the data is not all 0 or 1 in order to
-+ * avoid calibriate umount spi-flash.
-+ */
-+static bool aspeed_spi_calibriation_enable(const uint8_t *buf, uint32_t sz)
-+{
-+	const uint32_t *buf_32 = (const uint32_t *)buf;
-+	uint32_t i;
-+	uint32_t valid_count = 0;
-+
-+	for (i = 0; i < (sz / 4); i++) {
-+		if (buf_32[i] != 0 && buf_32[i] != 0xffffffff)
-+			valid_count++;
-+		if (valid_count > 100)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static uint32_t
-+aspeed_2600_spi_dma_checksum(struct aspeed_spi_controller *ast_ctrl,
-+			     uint32_t cs, uint32_t div, uint32_t delay)
-+{
-+	uint32_t ctrl_val;
-+	uint32_t checksum;
-+
-+	writel(0xaeed0000, ast_ctrl->regs + OFFSET_DMA_CTRL);
-+	if (readl(ast_ctrl->regs + OFFSET_DMA_CTRL) & SPI_DAM_REQUEST) {
-+		while (!(readl(ast_ctrl->regs + OFFSET_DMA_CTRL) &
-+			 SPI_DAM_GRANT))
-+			;
-+	}
-+
-+	writel((uint32_t)ast_ctrl->chips[cs].ahb_base_phy,
-+	       ast_ctrl->regs + OFFSET_DMA_FLASH_ADDR_REG);
-+	writel(CALIBRATION_LEN, ast_ctrl->regs + OFFSET_DMA_LEN_REG);
-+
-+	ctrl_val = SPI_DMA_ENABLE | SPI_DMA_CALC_CKSUM | SPI_DMA_CALIB_MODE |
-+		   (delay << 8) | ((div & 0xf) << 16);
-+	writel(ctrl_val, ast_ctrl->regs + OFFSET_DMA_CTRL);
-+	while (!(readl(ast_ctrl->regs + OFFSET_INTR_CTRL_STATUS) &
-+		 SPI_DMA_STATUS))
-+		;
-+
-+	checksum = readl(ast_ctrl->regs + OFFSET_DMA_CHECKSUM_RESULT);
-+
-+	writel(0xdeea0000, ast_ctrl->regs + OFFSET_DMA_CTRL);
-+	writel(0x0, ast_ctrl->regs + OFFSET_DMA_CTRL);
-+
-+	return checksum;
-+}
-+
-+static int get_mid_point_of_longest_one(uint8_t *buf, uint32_t len)
-+{
-+	int i;
-+	int start = 0, mid_point = 0;
-+	int max_cnt = 0, cnt = 0;
-+
-+	for (i = 0; i < len; i++) {
-+		if (buf[i] == 1) {
-+			cnt++;
-+		} else {
-+			cnt = 0;
-+			start = i;
-+		}
-+
-+		if (max_cnt < cnt) {
-+			max_cnt = cnt;
-+			mid_point = start + (cnt / 2);
-+		}
-+	}
-+
-+	/*
-+	 * In order to get a stable SPI read timing,
-+	 * abandon the result if the length of longest
-+	 * consecutive good points is too short.
-+	 */
-+	if (max_cnt < 4)
-+		return -1;
-+
-+	return mid_point;
-+}
-+
-+/* Transfer maximum clock frequency to register setting */
-+static uint32_t
-+aspeed_2600_spi_clk_basic_setting(struct aspeed_spi_controller *ast_ctrl,
-+				  uint32_t *max_clk)
-+{
-+	struct device *dev = ast_ctrl->dev;
-+	uint32_t hclk_clk = ast_ctrl->ahb_clk;
-+	uint32_t hclk_div = 0x400; /* default value */
-+	uint32_t i, j = 0;
-+	bool found = false;
-+	/* HCLK/1 ..	HCLK/16 */
-+	uint32_t hclk_masks[] = { 15, 7, 14, 6, 13, 5, 12, 4,
-+				  11, 3, 10, 2, 9,  1, 8,  0 };
-+
-+	/* FMC/SPIR10[27:24] */
-+	for (j = 0; j < 0xf; i++) {
-+		/* FMC/SPIR10[11:8] */
-+		for (i = 0; i < ARRAY_SIZE(hclk_masks); i++) {
-+			if (i == 0 && j == 0)
-+				continue;
-+
-+			if (hclk_clk / (i + 1 + (j * 16)) <= *max_clk) {
-+				found = 1;
-+				*max_clk = hclk_clk / (i + 1 + (j * 16));
-+				break;
-+			}
-+		}
-+
-+		if (found) {
-+			hclk_div = ((j << 24) | hclk_masks[i] << 8);
-+			break;
-+		}
-+	}
-+
-+	dev_dbg(dev, "found: %s, hclk: %d, max_clk: %d\n", found ? "yes" : "no",
-+		hclk_clk, *max_clk);
-+	dev_dbg(dev, "base_clk: %d, h_div: %d (mask %x), speed: %d\n", j, i + 1,
-+		hclk_masks[i], hclk_clk / (i + 1 + j * 16));
-+
-+	return hclk_div;
-+}
-+
-+/*
-+ * If SPI frequency is too high, timing compensation is needed,
-+ * otherwise, SPI controller will sample unready data. For AST2600
-+ * SPI memory controller, only the first four frequency levels
-+ * (HCLK/2, HCLK/3,..., HCKL/5) may need timing compensation.
-+ * Here, for each frequency, we will get a sequence of reading
-+ * result (pass or fail) compared to golden data. Then, getting the
-+ * middle point of the maximum pass widow. Besides, if the flash's
-+ * content is too monotonous, the frequency recorded in the device
-+ * tree will be adopted.
-+ */
-+static int
-+aspeed_2600_spi_timing_calibration(struct aspeed_spi_controller *ast_ctrl,
-+				   uint32_t cs)
-+{
-+	int ret = 0;
-+	struct device *dev = ast_ctrl->dev;
-+	struct aspeed_spi_chip *chip = &ast_ctrl->chips[cs];
-+	uint32_t max_freq = chip->max_clk_freq;
-+	/* HCLK/2, ..., HCKL/5 */
-+	uint32_t hclk_masks[] = { 7, 14, 6, 13 };
-+	uint8_t *calib_res = NULL;
-+	uint8_t *check_buf = NULL;
-+	uint32_t reg_val;
-+	uint32_t checksum, gold_checksum;
-+	uint32_t i, hcycle, delay_ns, final_delay = 0;
-+	uint32_t hclk_div;
-+	bool pass;
-+	int calib_point;
-+
-+	reg_val =
-+		readl(ast_ctrl->regs + OFFSET_CE0_TIMING_COMPENSATION + cs * 4);
-+	if (reg_val != 0) {
-+		dev_dbg(dev, "has executed calibration.\n");
-+		goto no_calib;
-+	}
-+
-+	dev_dbg(dev, "calculate timing compensation :\n");
-+	/*
-+	 * use the related low frequency to get check calibration data
-+	 * and get golden data.
-+	 */
-+	reg_val = chip->ctrl_val[ASPEED_SPI_READ] & 0xf0fff0ff;
-+	writel(reg_val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+
-+	check_buf = kzalloc(CALIBRATION_LEN, GFP_KERNEL);
-+	if (!check_buf)
-+		return -ENOMEM;
-+
-+	memcpy_fromio(check_buf, chip->ahb_base, CALIBRATION_LEN);
-+	if (!aspeed_spi_calibriation_enable(check_buf, CALIBRATION_LEN)) {
-+		dev_info(dev, "flash data is monotonous, skip calibration.");
-+		goto no_calib;
-+	}
-+
-+	gold_checksum = aspeed_2600_spi_dma_checksum(ast_ctrl, cs, 0, 0);
-+
-+	/*
-+	 * allocate a space to record calibration result for
-+	 * different timing compensation with fixed
-+	 * HCLK division.
-+	 */
-+	calib_res = kzalloc(6 * 17, GFP_KERNEL);
-+	if (!calib_res) {
-+		ret = -ENOMEM;
-+		goto no_calib;
-+	}
-+
-+	/* From HCLK/2 to HCLK/5 */
-+	for (i = 0; i < ARRAY_SIZE(hclk_masks); i++) {
-+		if (max_freq < (uint32_t)ast_ctrl->ahb_clk / (i + 2)) {
-+			dev_dbg(dev, "skipping freq %d\n",
-+				(uint32_t)ast_ctrl->ahb_clk / (i + 2));
-+			continue;
-+		}
-+		max_freq = (uint32_t)ast_ctrl->ahb_clk / (i + 2);
-+
-+		checksum = aspeed_2600_spi_dma_checksum(ast_ctrl, cs,
-+							hclk_masks[i], 0);
-+		pass = (checksum == gold_checksum);
-+		dev_dbg(dev, "HCLK/%d, no timing compensation: %s\n", i + 2,
-+			pass ? "PASS" : "FAIL");
-+
-+		if (pass)
-+			break;
-+
-+		memset(calib_res, 0x0, 6 * 17);
-+
-+		for (hcycle = 0; hcycle <= 5; hcycle++) {
-+			/* increase DI delay by the step of 0.5ns */
-+			dev_dbg(dev, "Delay Enable : hcycle %x\n", hcycle);
-+			for (delay_ns = 0; delay_ns <= 0xf; delay_ns++) {
-+				checksum = aspeed_2600_spi_dma_checksum(
-+					ast_ctrl, cs, hclk_masks[i],
-+					BIT(3) | hcycle | (delay_ns << 4));
-+				pass = (checksum == gold_checksum);
-+				calib_res[hcycle * 17 + delay_ns] = pass;
-+				dev_dbg(dev,
-+					"HCLK/%d, %d HCLK cycle, %d delay_ns : %s\n",
-+					i + 2, hcycle, delay_ns,
-+					pass ? "PASS" : "FAIL");
-+			}
-+		}
-+
-+		calib_point = get_mid_point_of_longest_one(calib_res, 6 * 17);
-+		if (calib_point < 0) {
-+			dev_info(dev, "cannot get good calibration point.\n");
-+			continue;
-+		}
-+
-+		hcycle = calib_point / 17;
-+		delay_ns = calib_point % 17;
-+		dev_dbg(dev, "final hcycle: %d, delay_ns: %d\n", hcycle,
-+			delay_ns);
-+
-+		final_delay = (BIT(3) | hcycle | (delay_ns << 4)) << (i * 8);
-+		writel(final_delay, ast_ctrl->regs +
-+					    OFFSET_CE0_TIMING_COMPENSATION +
-+					    cs * 4);
-+		break;
-+	}
-+
-+no_calib:
-+
-+	hclk_div = aspeed_2600_spi_clk_basic_setting(ast_ctrl, &max_freq);
-+
-+	/* configure SPI clock frequency */
-+	reg_val = readl(ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+	reg_val = (reg_val & 0xf0fff0ff) | hclk_div;
-+	writel(reg_val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+
-+	/* add clock setting info for CE ctrl setting */
-+	for (i = 0; i < ASPEED_SPI_MAX; i++)
-+		chip->ctrl_val[i] = (chip->ctrl_val[i] & 0xf0fff0ff) | hclk_div;
-+
-+	dev_info(dev, "freq: %dMHz\n", max_freq / 1000000);
-+
-+	kfree(check_buf);
-+	kfree(calib_res);
-+
-+	return ret;
-+}
-+
-+/*
-+ * AST2600 SPI memory controllers support multiple chip selects.
-+ * The start address of a decode range should be multiple
-+ * of its related flash size. Namely, the total decoded size
-+ * from flash 0 to flash N should be multiple of flash (N + 1).
-+ */
-+static void aspeed_2600_adjust_decode_sz(uint32_t decode_sz_arr[], int len)
-+{
-+	int cs, j;
-+	uint32_t sz;
-+
-+	for (cs = len - 1; cs >= 0; cs--) {
-+		sz = 0;
-+		for (j = 0; j < cs; j++)
-+			sz += decode_sz_arr[j];
-+
-+		if (sz % decode_sz_arr[cs] != 0)
-+			decode_sz_arr[0] += (sz % decode_sz_arr[cs]);
-+	}
-+}
-+
-+static int
-+aspeed_spi_decode_range_config(struct aspeed_spi_controller *ast_ctrl,
-+			       uint32_t decode_sz_arr[])
-+{
-+	struct aspeed_spi_chip *chip = ast_ctrl->chips;
-+	uint32_t i;
-+	uint32_t cs;
-+	uint32_t decode_reg_val;
-+	uint32_t start_addr_phy, end_addr_phy, pre_end_addr_phy = 0;
-+	uint32_t total_decode_sz = 0;
-+
-+	/* decode range sanity */
-+	for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+		total_decode_sz += decode_sz_arr[cs];
-+		if (ast_ctrl->ahb_window_sz < total_decode_sz) {
-+			dev_err(ast_ctrl->dev, "insufficient decode size\n");
-+			for (i = 0; i <= cs; i++)
-+				dev_err(ast_ctrl->dev, "cs:%d %x\n", i,
-+					decode_sz_arr[i]);
-+			return -ENOSPC;
-+		}
-+	}
-+
-+	for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+		if (chip[cs].ahb_base)
-+			devm_iounmap(ast_ctrl->dev, chip[cs].ahb_base);
-+	}
-+
-+	/* configure each CE's decode range */
-+	for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+		if (cs == 0)
-+			start_addr_phy = ast_ctrl->ahb_base_phy;
-+		else
-+			start_addr_phy = pre_end_addr_phy;
-+
-+		chip[cs].ahb_base = devm_ioremap(ast_ctrl->dev, start_addr_phy,
-+						 decode_sz_arr[cs]);
-+		chip[cs].ahb_base_phy = (void __iomem *)start_addr_phy;
-+
-+		chip[cs].ahb_window_sz = decode_sz_arr[cs];
-+		end_addr_phy = start_addr_phy + decode_sz_arr[cs];
-+
-+		decode_reg_val = ast_ctrl->info->segment_reg(
-+			ast_ctrl, start_addr_phy, end_addr_phy);
-+
-+		writel(decode_reg_val,
-+		       ast_ctrl->regs + OFFSET_CE0_DECODE_RANGE_REG + cs * 4);
-+
-+		pre_end_addr_phy = end_addr_phy;
-+
-+		dev_dbg(ast_ctrl->dev, "cs: %d, decode_reg: 0x%x\n", cs,
-+			decode_reg_val);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct aspeed_spi_info ast2600_spi_info = {
-+	.max_data_bus_width = 4,
-+	.cmd_io_ctrl_mask = 0xf0ff40c3,
-+	/* for ast2600, the minimum decode size for each CE is 2MB */
-+	.min_decode_sz = 0x200000,
-+	.set_4byte = aspeed_spi_chip_set_4byte,
-+	.calibrate = aspeed_2600_spi_timing_calibration,
-+	.adjust_decode_sz = aspeed_2600_adjust_decode_sz,
-+	.segment_start = aspeed_2600_spi_segment_start,
-+	.segment_end = aspeed_2600_spi_segment_end,
-+	.segment_reg = aspeed_2600_spi_segment_reg,
-+};
-+
-+/*
-+ * If the slave device is SPI NOR flash, there are two types
-+ * of command mode for ASPEED SPI memory controller used to
-+ * transfer data. The first one is user mode and the other is
-+ * command read/write mode. With user mode, SPI NOR flash
-+ * command, address and data processes are all handled by CPU.
-+ * But, when address filter is enabled to protect some flash
-+ * regions from being written, user mode will be disabled.
-+ * Thus, here, we use command read/write mode to issue SPI
-+ * operations. After remapping flash space correctly, we can
-+ * easily read/write data to flash by reading or writing
-+ * related remapped address, then, SPI NOR flash command and
-+ * address will be transferred to flash by controller
-+ * automatically. Besides, ASPEED SPI memory controller can
-+ * also block address or data bytes by configure FMC0C/SPIR0C
-+ * address and data mask register in order to satisfy the
-+ * following SPI flash operation sequences: (command) only,
-+ * (command and address) only or (coommand and data) only.
-+ */
-+static int aspeed_spi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
-+{
-+	struct aspeed_spi_controller *ast_ctrl =
-+		spi_controller_get_devdata(mem->spi->master);
-+	struct device *dev = ast_ctrl->dev;
-+	uint32_t cs = mem->spi->chip_select;
-+	struct aspeed_spi_chip *chip = &ast_ctrl->chips[cs];
-+	uint32_t ctrl_val;
-+	uint32_t addr_mode_reg, addr_mode_reg_backup;
-+	uint32_t addr_data_mask = 0;
-+	void __iomem *op_addr;
-+	const void *data_buf;
-+	uint32_t data_byte = 0;
-+	uint32_t dummy_data = 0;
-+
-+	dev_dbg(dev, "cmd:%x(%d),addr:%llx(%d),dummy:%d(%d),data_len:%x(%d)\n",
-+		op->cmd.opcode, op->cmd.buswidth, op->addr.val,
-+		op->addr.buswidth, op->dummy.nbytes, op->dummy.buswidth,
-+		op->data.nbytes, op->data.buswidth);
-+
-+	addr_mode_reg = addr_mode_reg_backup =
-+		readl(ast_ctrl->regs + OFFSET_CE_ADDR_MODE_CTRL);
-+	addr_data_mask = readl(ast_ctrl->regs + OFFSET_ADDR_DATA_MASK);
-+
-+	ctrl_val = chip->ctrl_val[ASPEED_SPI_BASE];
-+	ctrl_val &= ~ast_ctrl->info->cmd_io_ctrl_mask;
-+
-+	/* configure opcode */
-+	ctrl_val |= op->cmd.opcode << 16;
-+
-+	/* configure operation address, address length and address mask */
-+	if (op->addr.nbytes != 0) {
-+		if (op->addr.nbytes == 3)
-+			addr_mode_reg &= ~(0x11 << cs);
-+		else
-+			addr_mode_reg |= (0x11 << cs);
-+
-+		addr_data_mask &= 0x0f;
-+		op_addr = chip->ahb_base + op->addr.val;
-+	} else {
-+		addr_data_mask |= 0xf0;
-+		op_addr = chip->ahb_base;
-+	}
-+
-+	if (op->dummy.nbytes != 0) {
-+		ctrl_val |= ((op->dummy.nbytes & 0x3) << 6 |
-+			     (op->dummy.nbytes & 0x4) << 14);
-+	}
-+
-+	/* configure data io mode and data mask */
-+	if (op->data.nbytes != 0) {
-+		addr_data_mask &= 0xF0;
-+		data_byte = op->data.nbytes;
-+		if (op->data.dir == SPI_MEM_DATA_OUT)
-+			data_buf = op->data.buf.out;
-+		else
-+			data_buf = op->data.buf.in;
-+
-+		if (op->data.buswidth)
-+			ctrl_val |= aspeed_spi_get_io_mode(op->data.buswidth);
-+
-+	} else {
-+		addr_data_mask |= 0x0f;
-+		data_byte = 1;
-+		data_buf = &dummy_data;
-+	}
-+
-+	/* configure command mode */
-+	if (op->data.dir == SPI_MEM_DATA_OUT)
-+		ctrl_val |= CTRL_IO_MODE_CMD_WRITE;
-+	else
-+		ctrl_val |= CTRL_IO_MODE_CMD_READ;
-+
-+	/* set controller registers */
-+	writel(ctrl_val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+	writel(addr_mode_reg, ast_ctrl->regs + OFFSET_CE_ADDR_MODE_CTRL);
-+	writel(addr_data_mask, ast_ctrl->regs + OFFSET_ADDR_DATA_MASK);
-+
-+	dev_dbg(dev, "ctrl: 0x%08x, addr_mode: 0x%x, mask: 0x%x, addr:0x%08x\n",
-+		ctrl_val, addr_mode_reg, addr_data_mask, (uint32_t)op_addr);
-+
-+	/* trigger spi transmission or reception sequence */
-+	if (op->data.dir == SPI_MEM_DATA_OUT)
-+		memcpy_toio(op_addr, data_buf, data_byte);
-+	else
-+		memcpy_fromio((void *)data_buf, op_addr, data_byte);
-+
-+	/* restore controller setting */
-+	writel(chip->ctrl_val[ASPEED_SPI_READ],
-+	       ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+	writel(addr_mode_reg_backup, ast_ctrl->regs + OFFSET_CE_ADDR_MODE_CTRL);
-+	writel(0x0, ast_ctrl->regs + OFFSET_ADDR_DATA_MASK);
-+
-+	return 0;
-+}
-+
-+static int aspeed_spi_dirmap_read(struct spi_mem_dirmap_desc *desc,
-+				  uint64_t offs, size_t len, void *buf)
-+{
-+	struct aspeed_spi_controller *ast_ctrl =
-+		spi_controller_get_devdata(desc->mem->spi->master);
-+	struct aspeed_spi_chip *chip =
-+		&ast_ctrl->chips[desc->mem->spi->chip_select];
-+	struct spi_mem_op op_tmpl = desc->info.op_tmpl;
-+
-+	if (chip->ahb_window_sz < offs + len) {
-+		dev_info(ast_ctrl->dev,
-+			 "read range exceeds flash remapping size\n");
-+		return 0;
-+	}
-+
-+	dev_dbg(ast_ctrl->dev, "read op:0x%x, addr:0x%llx, len:0x%x\n",
-+		op_tmpl.cmd.opcode, offs, len);
-+
-+	memcpy_fromio(buf, chip->ahb_base + offs, len);
-+
-+	return len;
-+}
-+
-+static int aspeed_spi_dirmap_write(struct spi_mem_dirmap_desc *desc,
-+				   uint64_t offs, size_t len, const void *buf)
-+{
-+	struct aspeed_spi_controller *ast_ctrl =
-+		spi_controller_get_devdata(desc->mem->spi->master);
-+	struct aspeed_spi_chip *chip =
-+		&ast_ctrl->chips[desc->mem->spi->chip_select];
-+	uint32_t reg_val;
-+	uint32_t target_cs = desc->mem->spi->chip_select;
-+	struct spi_mem_op op_tmpl = desc->info.op_tmpl;
-+
-+	if (chip->ahb_window_sz < offs + len) {
-+		dev_info(ast_ctrl->dev,
-+			 "write range exceeds flash remapping size\n");
-+		return 0;
-+	}
-+
-+	dev_dbg(ast_ctrl->dev, "write op:0x%x, addr:0x%llx, len:0x%x\n",
-+		op_tmpl.cmd.opcode, offs, len);
-+
-+	reg_val = ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_WRITE];
-+	writel(reg_val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + target_cs * 4);
-+
-+	memcpy_toio(chip->ahb_base + offs, buf, len);
-+
-+	reg_val = ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_READ];
-+	writel(reg_val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + target_cs * 4);
-+
-+	return len;
-+}
-+
-+static int aspeed_spi_dirmap_create(struct spi_mem_dirmap_desc *desc)
-+{
-+	int ret = 0;
-+	struct aspeed_spi_controller *ast_ctrl =
-+		spi_controller_get_devdata(desc->mem->spi->master);
-+	struct device *dev = ast_ctrl->dev;
-+	const struct aspeed_spi_info *info = ast_ctrl->info;
-+	struct spi_mem_op op_tmpl = desc->info.op_tmpl;
-+	uint32_t decode_sz_arr[5];
-+	uint32_t cs, target_cs = desc->mem->spi->chip_select;
-+	uint32_t reg_val;
-+
-+	if (desc->info.op_tmpl.data.dir == SPI_MEM_DATA_IN) {
-+		/* record original decode size */
-+		for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+			reg_val = readl(ast_ctrl->regs +
-+					OFFSET_CE0_DECODE_RANGE_REG + cs * 4);
-+			decode_sz_arr[cs] =
-+				info->segment_end(ast_ctrl, reg_val) -
-+				info->segment_start(ast_ctrl, reg_val);
-+		}
-+
-+		decode_sz_arr[target_cs] = desc->info.length;
-+
-+		if (info->adjust_decode_sz)
-+			info->adjust_decode_sz(decode_sz_arr, ast_ctrl->num_cs);
-+
-+		for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+			dev_dbg(dev, "cs: %d, sz: 0x%x\n", cs,
-+				decode_sz_arr[cs]);
-+		}
-+
-+		ret = aspeed_spi_decode_range_config(ast_ctrl, decode_sz_arr);
-+		if (ret)
-+			return ret;
-+
-+		reg_val = readl(ast_ctrl->regs + OFFSET_CE0_CTRL_REG +
-+				target_cs * 4) &
-+			  (~info->cmd_io_ctrl_mask);
-+		reg_val |= aspeed_spi_get_io_mode(op_tmpl.data.buswidth) |
-+			   op_tmpl.cmd.opcode << 16 |
-+			   ((op_tmpl.dummy.nbytes) & 0x3) << 6 |
-+			   ((op_tmpl.dummy.nbytes) & 0x4) << 14 |
-+			   CTRL_IO_MODE_CMD_READ;
-+
-+		writel(reg_val,
-+		       ast_ctrl->regs + OFFSET_CE0_CTRL_REG + target_cs * 4);
-+		ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_READ] = reg_val;
-+		ast_ctrl->chips[target_cs].max_clk_freq =
-+			desc->mem->spi->max_speed_hz;
-+
-+		ret = info->calibrate(ast_ctrl, target_cs);
-+
-+		dev_info(dev, "read bus width: %d [0x%08x]\n",
-+			 op_tmpl.data.buswidth,
-+			 ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_READ]);
-+
-+	} else if (desc->info.op_tmpl.data.dir == SPI_MEM_DATA_OUT) {
-+		reg_val = readl(ast_ctrl->regs + OFFSET_CE0_CTRL_REG +
-+				target_cs * 4) &
-+			  (~info->cmd_io_ctrl_mask);
-+		reg_val |= aspeed_spi_get_io_mode(op_tmpl.data.buswidth) |
-+			   op_tmpl.cmd.opcode << 16 | CTRL_IO_MODE_CMD_WRITE;
-+		ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_WRITE] = reg_val;
-+
-+		dev_info(dev, "write bus width: %d [0x%08x]\n",
-+			 op_tmpl.data.buswidth,
-+			 ast_ctrl->chips[target_cs].ctrl_val[ASPEED_SPI_WRITE]);
-+	}
-+
-+	return ret;
-+}
-+
-+static const char *aspeed_spi_get_name(struct spi_mem *mem)
-+{
-+	struct device *dev = &mem->spi->master->dev;
-+	const char *name;
-+
-+	name = devm_kasprintf(dev, GFP_KERNEL, "%s-%d", dev_name(dev),
-+			      mem->spi->chip_select);
-+
-+	if (!name) {
-+		dev_err(dev, "cannot get spi name\n");
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	return name;
-+}
-+
-+/*
-+ * Currently, only support 1-1-1, 1-1-2 or 1-1-4
-+ * SPI NOR flash operation format.
-+ */
-+static bool aspeed_spi_support_op(struct spi_mem *mem,
-+				  const struct spi_mem_op *op)
-+{
-+	struct aspeed_spi_controller *ast_ctrl =
-+		spi_controller_get_devdata(mem->spi->master);
-+
-+	if (op->cmd.buswidth > 1)
-+		return false;
-+
-+	if (op->addr.nbytes != 0) {
-+		if (op->addr.buswidth > 1 || op->addr.nbytes > 4)
-+			return false;
-+	}
-+
-+	if (op->dummy.nbytes != 0) {
-+		if (op->dummy.buswidth > 1 || op->dummy.nbytes > 7)
-+			return false;
-+	}
-+
-+	if (op->data.nbytes != 0 &&
-+	    ast_ctrl->info->max_data_bus_width < op->data.buswidth)
-+		return false;
-+
-+	if (!spi_mem_default_supports_op(mem, op))
-+		return false;
-+
-+	if (op->addr.nbytes == 4)
-+		ast_ctrl->info->set_4byte(ast_ctrl, mem->spi->chip_select);
-+
-+	return true;
-+}
-+
-+static const struct spi_controller_mem_ops aspeed_spi_mem_ops = {
-+	.exec_op = aspeed_spi_exec_op,
-+	.get_name = aspeed_spi_get_name,
-+	.supports_op = aspeed_spi_support_op,
-+	.dirmap_create = aspeed_spi_dirmap_create,
-+	.dirmap_read = aspeed_spi_dirmap_read,
-+	.dirmap_write = aspeed_spi_dirmap_write,
-+};
-+
-+/*
-+ * Initialize SPI controller for each chip select.
-+ * Here, only the minimum decode range is configured
-+ * in order to get device (SPI NOR flash) information
-+ * at the early stage.
-+ */
-+static int aspeed_spi_ctrl_init(struct aspeed_spi_controller *ast_ctrl)
-+{
-+	int ret;
-+	uint32_t cs;
-+	uint32_t val;
-+	uint32_t decode_sz_arr[ASPEED_SPI_MAX_CS];
-+
-+	/* enable write capability for all CEs */
-+	val = readl(ast_ctrl->regs + OFFSET_CE_TYPE_SETTING);
-+	writel(val | (GENMASK(ast_ctrl->num_cs, 0) << 16),
-+	       ast_ctrl->regs + OFFSET_CE_TYPE_SETTING);
-+
-+	/* initial each CE's controller register */
-+	for (cs = 0; cs < ast_ctrl->num_cs; cs++) {
-+		val = CTRL_STOP_ACTIVE | CTRL_IO_MODE_USER;
-+		writel(val, ast_ctrl->regs + OFFSET_CE0_CTRL_REG + cs * 4);
-+		ast_ctrl->chips[cs].ctrl_val[ASPEED_SPI_BASE] = val;
-+	}
-+
-+	for (cs = 0; cs < ast_ctrl->num_cs && cs < ASPEED_SPI_MAX_CS; cs++)
-+		decode_sz_arr[cs] = ast_ctrl->info->min_decode_sz;
-+
-+	ret = aspeed_spi_decode_range_config(ast_ctrl, decode_sz_arr);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id aspeed_spi_matches[] = {
-+	{ .compatible = "aspeed,ast2600-fmc", .data = &ast2600_spi_info },
-+	{ .compatible = "aspeed,ast2600-spi", .data = &ast2600_spi_info },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, aspeed_spi_matches);
-+
-+static int aspeed_spi_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct device *dev = &pdev->dev;
-+	struct spi_controller *spi_ctrl;
-+	struct aspeed_spi_controller *ast_ctrl;
-+	const struct of_device_id *match;
-+	struct clk *clk;
-+	struct resource *res;
-+
-+	spi_ctrl = spi_alloc_master(dev, sizeof(struct aspeed_spi_controller));
-+	if (!spi_ctrl)
-+		return -ENOMEM;
-+
-+	ast_ctrl = spi_controller_get_devdata(spi_ctrl);
-+
-+	match = of_match_device(aspeed_spi_matches, dev);
-+	if (!match || !match->data) {
-+		dev_err(dev, "no compatible OF match\n");
-+		return -ENODEV;
-+	}
-+
-+	ast_ctrl->info = match->data;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+					   "spi_ctrl_reg");
-+	ast_ctrl->regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(ast_ctrl->regs))
-+		return PTR_ERR(ast_ctrl->regs);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "spi_mmap");
-+	ast_ctrl->ahb_base_phy = res->start;
-+	ast_ctrl->ahb_window_sz = resource_size(res);
-+
-+	ast_ctrl->dev = dev;
-+
-+	clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+	ast_ctrl->ahb_clk = clk_get_rate(clk);
-+	devm_clk_put(&pdev->dev, clk);
-+
-+	if (of_property_read_u32(dev->of_node, "num-cs", &ast_ctrl->num_cs)) {
-+		dev_err(dev, "fail to get chip number.\n");
-+		goto end;
-+	}
-+
-+	if (ast_ctrl->num_cs > ASPEED_SPI_MAX_CS) {
-+		dev_err(dev, "chip number, %d, exceeds %d.\n", ast_ctrl->num_cs,
-+			ASPEED_SPI_MAX_CS);
-+		goto end;
-+	}
-+
-+	ast_ctrl->chips =
-+		devm_kzalloc(dev,
-+			     sizeof(struct aspeed_spi_chip) * ast_ctrl->num_cs,
-+			     GFP_KERNEL);
-+
-+	platform_set_drvdata(pdev, ast_ctrl);
-+
-+	spi_ctrl->mode_bits =
-+		SPI_RX_DUAL | SPI_RX_QUAD | SPI_TX_DUAL | SPI_TX_QUAD;
-+
-+	spi_ctrl->bus_num = -1;
-+	spi_ctrl->mem_ops = &aspeed_spi_mem_ops;
-+	spi_ctrl->dev.of_node = dev->of_node;
-+	spi_ctrl->num_chipselect = ast_ctrl->num_cs;
-+
-+	ret = aspeed_spi_ctrl_init(ast_ctrl);
-+	if (ret)
-+		goto end;
-+
-+	ret = devm_spi_register_master(dev, spi_ctrl);
-+
-+end:
-+	return ret;
-+}
-+
-+static int aspeed_spi_remove(struct platform_device *pdev)
-+{
-+	struct aspeed_spi_controller *ast_ctrl = platform_get_drvdata(pdev);
-+	uint32_t val;
-+
-+	/* disable write capability for all CEs */
-+	val = readl(ast_ctrl->regs + OFFSET_CE_TYPE_SETTING);
-+	writel(val & ~(GENMASK(ast_ctrl->num_cs, 0) << 16),
-+	       ast_ctrl->regs + OFFSET_CE_TYPE_SETTING);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver aspeed_spi_driver = {
-+	.driver = {
-+		.name = "ASPEED_FMC_SPI",
-+		.bus = &platform_bus_type,
-+		.of_match_table = aspeed_spi_matches,
-+	},
-+	.probe = aspeed_spi_probe,
-+	.remove = aspeed_spi_remove,
-+};
-+module_platform_driver(aspeed_spi_driver);
-+
-+MODULE_DESCRIPTION("ASPEED FMC/SPI Memory Controller Driver");
-+MODULE_AUTHOR("Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>");
-+MODULE_AUTHOR("Cedric Le Goater <clg@kaod.org>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
-
+Going forward, I can refine d) so that we can get rid of the kernel
+mode path entirely.
