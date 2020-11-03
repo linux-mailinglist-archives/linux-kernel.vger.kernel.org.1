@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00BD2A5352
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28482A5354
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733164AbgKCU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35208 "EHLO mail.kernel.org"
+        id S1732405AbgKCU76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732595AbgKCU7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:50 -0500
+        id S1730777AbgKCU7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3DE522226;
-        Tue,  3 Nov 2020 20:59:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26E52223AC;
+        Tue,  3 Nov 2020 20:59:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437190;
-        bh=NxqE1FSMd0WMwGTNxS+IXqBEYByHxythC4dwMbHPXrY=;
+        s=default; t=1604437192;
+        bh=3KSKvUm5ZkRkwxCc0W0Zk+dSy3snRkDj8hsCqDGc6w4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSM0gHGB0/TfuX62yizMpnQ18178SilpQxWB+Tj8h0SWaVkk3+a84Fvn8u/hShKQp
-         0LfcIQ8qDJIjprC0GkE8Yuux7R1uwliqEDrt4YBZI7rSJuD/9wssgnoTWN7Pg1ie81
-         FFScZx0tDzSf508aXY84EiaErgzJhn1M0WO/53RU=
+        b=a9IAY3gfPPmWiEPSTR6d7sl1bQwZaN32nr6yylaskgN62Tlp8/XkDMd09THP8j2Vg
+         MxfLAE8fVuEJUxQSZdJeWEHBWXs24IaS9LiEs/9hmrek17Js6tOz5JeYXT3YImZl4X
+         Sd9q7xGtCvsYfh/a5fHp7NlyZotaRPIiW1F01R2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Madhav Chauhan <madhav.chauhan@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 184/214] drm/amdgpu: increase the reserved VM size to 2MB
-Date:   Tue,  3 Nov 2020 21:37:12 +0100
-Message-Id: <20201103203307.950048751@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 185/214] drm/amd/display: Dont invoke kgdb_breakpoint() unconditionally
+Date:   Tue,  3 Nov 2020 21:37:13 +0100
+Message-Id: <20201103203308.043227567@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -45,36 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 55bb919be4e4973cd037a04f527ecc6686800437 upstream.
+commit 8b7dc1fe1a5c1093551f6cd7dfbb941bd9081c2e upstream.
 
-Ideally this should be a multiple of the VM block size.
-2MB should at least fit for Vega/Navi.
+ASSERT_CRITICAL() invokes kgdb_breakpoint() whenever either
+CONFIG_KGDB or CONFIG_HAVE_KGDB is set.  This, however, may lead to a
+kernel panic when no kdb stuff is attached, since the
+kgdb_breakpoint() call issues INT3.  It's nothing but a surprise for
+normal end-users.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Madhav Chauhan <madhav.chauhan@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+For avoiding the pitfall, make the kgdb_breakpoint() call only when
+CONFIG_DEBUG_KERNEL_DC is set.
+
+https://bugzilla.opensuse.org/show_bug.cgi?id=1177973
+Cc: <stable@vger.kernel.org>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/os_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
-@@ -105,8 +105,8 @@ struct amdgpu_bo_list_entry;
- #define AMDGPU_MMHUB_0				1
- #define AMDGPU_MMHUB_1				2
- 
--/* hardcode that limit for now */
--#define AMDGPU_VA_RESERVED_SIZE			(1ULL << 20)
-+/* Reserve 2MB at top/bottom of address space for kernel use */
-+#define AMDGPU_VA_RESERVED_SIZE			(2ULL << 20)
- 
- /* max vmids dedicated for process */
- #define AMDGPU_VM_MAX_RESERVED_VMID	1
+--- a/drivers/gpu/drm/amd/display/dc/os_types.h
++++ b/drivers/gpu/drm/amd/display/dc/os_types.h
+@@ -57,7 +57,7 @@
+  * general debug capabilities
+  *
+  */
+-#if defined(CONFIG_HAVE_KGDB) || defined(CONFIG_KGDB)
++#if defined(CONFIG_DEBUG_KERNEL_DC) && (defined(CONFIG_HAVE_KGDB) || defined(CONFIG_KGDB))
+ #define ASSERT_CRITICAL(expr) do {	\
+ 	if (WARN_ON(!(expr))) { \
+ 		kgdb_breakpoint(); \
 
 
