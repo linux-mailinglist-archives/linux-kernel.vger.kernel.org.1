@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502392A3BEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9DA2A3BC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgKCF3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 00:29:00 -0500
-Received: from mga12.intel.com ([192.55.52.136]:40366 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgKCF27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:28:59 -0500
-IronPort-SDR: icOpANO+CrjDdp1Mb+tKGQbFdft6tuY43dwSdDa+aKrvJADvNWUbOFduwRzUmdNggDWe0r9K2v
- n2XMbquxjflw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="148282611"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="148282611"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 21:28:59 -0800
-IronPort-SDR: RDhRvVovQrB2WmyVPN9C3DGOD+0DTYEeV85cbZ6D+ifryHL2iUZD9eku3p2W4KWpCtDjNG/NZs
- 4ml2Ftc5gAGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="426194676"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Nov 2020 21:28:56 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v6 5/5] vfio/type1: Use mdev bus iommu_ops for IOMMU
- callbacks
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-References: <20201030045809.957927-1-baolu.lu@linux.intel.com>
- <20201030045809.957927-6-baolu.lu@linux.intel.com>
- <MWHPR11MB1645DEBE7C0E7A61D22081DD8C150@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201030150625.2dc5fb9b@w520.home>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <5802fc4a-7dc0-eda7-4e7c-809bcec6bd90@linux.intel.com>
-Date:   Tue, 3 Nov 2020 13:22:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726312AbgKCFWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 00:22:39 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2424 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbgKCFWj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 00:22:39 -0500
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CQJ7q34twz51f3;
+        Tue,  3 Nov 2020 13:22:31 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 3 Nov 2020 13:22:32 +0800
+Subject: Re: Using fixed LPI number for some Device ID
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linux-kernel@vger.kernel.org>
+References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
+ <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
+ <87eeleen3m.wl-maz@kernel.org>
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+Message-ID: <8ff6a30a-b51f-f9f0-4a18-307948f3519b@huawei.com>
+Date:   Tue, 3 Nov 2020 13:22:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201030150625.2dc5fb9b@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87eeleen3m.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-On 10/31/20 5:06 AM, Alex Williamson wrote:
-> On Fri, 30 Oct 2020 06:16:28 +0000
-> "Tian, Kevin" <kevin.tian@intel.com> wrote:
+On 2020/10/31 17:55, Marc Zyngier wrote:
+> Dongjiu,
 > 
->>> From: Lu Baolu <baolu.lu@linux.intel.com>
->>> Sent: Friday, October 30, 2020 12:58 PM
->>>
->>> With the IOMMU driver registering iommu_ops for the mdev_bus, the
->>> IOMMU
->>> operations on an mdev could be done in the same way as any normal device
->>> (for example, PCI/PCIe). There's no need to distinguish an mdev from
->>> others for iommu operations. Remove the unnecessary code.
+> On Sat, 31 Oct 2020 02:19:19 +0000,
+> Dongjiu Geng <gengdongjiu@huawei.com> wrote:
 >>
->> This is really a nice cleanup as the output of this change! :)
+>> Hi Marc,
+>> Sorry to disturb you, Currently the LPI number is not fixed for the
+>> device. The LPI number is dynamically allocated start from 8092.
+>> For two OS which shares the ITS, One OS needs to configure the
+>> device interrupt required by another OS, and the other OS uses a
+>> fixed interrupt ID to respond the interrupt. Therefore, the LPI IRQ
+>> number of the device needed be fixed. I want to upstream this
+>> feature that allocate fixed LPI number for the device that is
+>> specified through the DTS. What is your meaning?  Thanks
 > 
-> It's easy to remove a bunch of code when the result is breaking
-> everyone else.  Please share with me how SR-IOV backed mdevs continue
-> to work on AMD platforms, or how they might work on ARM platforms, when
-> siov_iommu_ops (VT-d only) becomes the one and only provider of
-> iommu_ops on the mdev bus.  Hard NAK on this series.  Thanks,
+> I think you are starting from the wrong premises.
+> 
+> You can't "share" an ITS directly between two operating systems. The
+> ITS can only be controlled by a single operating system, because its
+> function goes way beyond allocating an LPI. How would you deal with
+> simple things such as masking an interrupt, which requires:
+> 
+> - Access to memory (configuration table)
+> - Access to the command queue (to insert an invalidation command)
+> - Access to MMIO registers (to kick the command queue into action)
+> 
+> all of which needs to be exclusive of concurrent modifications. How do
+> you propose this is implemented in a safe manner by two operating
+> systems which, by nature, distrust each other? Allocating LPIs is the
+> least of your problems, really.
+Yes， I agree with you it . But in my HW platform, using virtualization, the performance
+deteriorates greatly.  So I distributed the I/O devices to different operation systems. During the startup of one OS,
+interrupts are bound to different OS in one OS, which can be exclusive of concurrent modifications.
 
-I focused too much on a feature and forgot about university. I should
-apologize for this. Sorry about it!
+In fact it has some limitations as you said, such mask/enable/route Interrupts, If want to
+mask interrupts, need to mask interrupts on the source device.
 
-Back to the original intention of this series. The aux domain was
-allocated in vfio/mdev, but it's also needed by the vDCM component of a
-device driver for mediated callbacks. Currently vfio/mdev or iommu core
-has no support for this.
+If you think it is not a common feature, I will used it as a local customization function and not upstream.
 
-We had a proposal when we first did aux-domain support. But was not
-discussed since there was no consumer at that time.
-
-https://lore.kernel.org/linux-iommu/20181105073408.21815-7-baolu.lu@linux.intel.com/
-
-Does it look good to you? I can send patches of such solution for
-discussion if you think it's a right way.
-
-Extending the iommu core for subdevice passthrough support sounds an
-interesting topic, but it will take much time before we reach a
-consensus. It sounds a good topic for the next year's LPC/MC :-).
-
-Best regards,
-baolu
+> 
+> If you need two concurrent OSs taking interrupts, use virtualization.
+> That is its purpose. On your HW, you'll even get direct injection.
+> 
+> Thanks,
+> 
+> 	M.
+> 
