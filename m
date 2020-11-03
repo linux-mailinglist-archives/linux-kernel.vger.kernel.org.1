@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F4D2A55AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A332D2A56BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387842AbgKCVVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:21:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44920 "EHLO mail.kernel.org"
+        id S1732493AbgKCVao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:30:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388110AbgKCVGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:07 -0500
+        id S1731943AbgKCU57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:57:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6D6F20757;
-        Tue,  3 Nov 2020 21:06:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A17A92053B;
+        Tue,  3 Nov 2020 20:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437566;
-        bh=qYF6BAh2DEufx/w93fuY7ZrcXjDyzsulL6SOF3/BtoE=;
+        s=default; t=1604437079;
+        bh=9QN+udJZnhGzgroHE4DOWTJeymjfgpRTOmxGr0XsLYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YAKHYwMsvVVR96zoLOjNpoqF8AmbI9ZgjbByTqWpbdhfgKNu7GNB+SyqmGHjXMiSA
-         06wU352L7oz9fJ3WWabQLbo+pFiv9liIKxj6x3xnaSdJdCicvYEP2D8c27I0qbSka3
-         YZAD9m2WP6uy9AuRK6LwL2csuFxMAy//IJLRXQ8U=
+        b=dsf6iDrmvRl0wNPVSS6ixVl00cHbviaQJwNKS1ZKXrqadPPTsydxSzzzPVURGqs7B
+         TGwpMg/ty4JsUm2bXjBUcv25Rbb/2xCrbKPbM7xd3EO8Ixxy0kNaHu/lKgtV2p8sCO
+         VppnagfMyvz5PySz9qddxZlUccS4wpgmQtywOwXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 093/191] btrfs: fix replace of seed device
+        stable@vger.kernel.org, Li Jun <jun.li@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.4 137/214] usb: dwc3: core: add phy cleanup for probe error handling
 Date:   Tue,  3 Nov 2020 21:36:25 +0100
-Message-Id: <20201103203242.606198520@linuxfoundation.org>
+Message-Id: <20201103203303.682009582@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,115 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Li Jun <jun.li@nxp.com>
 
-[ Upstream commit c6a5d954950c5031444173ad2195efc163afcac9 ]
+commit 03c1fd622f72c7624c81b64fdba4a567ae5ee9cb upstream.
 
-If you replace a seed device in a sprouted fs, it appears to have
-successfully replaced the seed device, but if you look closely, it
-didn't.  Here is an example.
+Add the phy cleanup if dwc3 mode init fail, which is the missing part of
+de-init for dwc3 core init.
 
-  $ mkfs.btrfs /dev/sda
-  $ btrfstune -S1 /dev/sda
-  $ mount /dev/sda /btrfs
-  $ btrfs device add /dev/sdb /btrfs
-  $ umount /btrfs
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-  $ btrfs replace start -f /dev/sda /dev/sdc /btrfs
-  $ echo $?
-  0
+Fixes: c499ff71ff2a ("usb: dwc3: core: re-factor init and exit paths")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Li Jun <jun.li@nxp.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
-
-  $ btrfs fi show
-  Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-	  Total devices 2 FS bytes used 256.00KiB
-	  devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-	  devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
-
-  Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-	  Total devices 1 FS bytes used 128.00KiB
-	  devid    1 size 3.00GiB used 536.00MiB path /dev/sda
-
-So as per the replace start command and kernel log replace was successful.
-Now let's try to clean mount.
-
-  $ umount /btrfs
-  $ btrfs device scan --forget
-
-  $ mount -o device=/dev/sdc /dev/sdb /btrfs
-  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
-
-  [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-  [  636.180177] BTRFS error (device sdc): open_ctree failed
-
-That's because per dev items it is still looking for the original seed
-device.
-
- $ btrfs inspect-internal dump-tree -d /dev/sdb
-
-	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-		devid 1 total_bytes 3221225472 bytes_used 545259520
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 6 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-		devid 2 total_bytes 3221225472 bytes_used 939524096
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 0 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
-
-But the replaced target has the following uuid+fsid in its superblock
-which doesn't match with the expected uuid+fsid in its devitem.
-
-  $ btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-  generation	20
-  dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-  dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-  dev_item.devid	1
-
-So if you provide the original seed device the mount shall be
-successful.  Which so long happening in the test case btrfs/163.
-
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-
-Fix in this patch:
-If a seed is not sprouted then there is no replacement of it, because of
-its read-only filesystem with a read-only device. Similarly, in the case
-of a sprouted filesystem, the seed device is still read only. So, mark
-it as you can't replace a seed device, you can only add a new device and
-then delete the seed device. If replace is attempted then returns
--EINVAL.
-
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/dev-replace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc3/core.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 1b9c8ffb038ff..36c0490156ac5 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -190,7 +190,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	int ret = 0;
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1535,6 +1535,17 @@ static int dwc3_probe(struct platform_de
  
- 	*device_out = NULL;
--	if (fs_info->fs_devices->seeding) {
-+	if (srcdev->fs_devices->seeding) {
- 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
- 		return -EINVAL;
- 	}
--- 
-2.27.0
-
+ err5:
+ 	dwc3_event_buffers_cleanup(dwc);
++
++	usb_phy_shutdown(dwc->usb2_phy);
++	usb_phy_shutdown(dwc->usb3_phy);
++	phy_exit(dwc->usb2_generic_phy);
++	phy_exit(dwc->usb3_generic_phy);
++
++	usb_phy_set_suspend(dwc->usb2_phy, 1);
++	usb_phy_set_suspend(dwc->usb3_phy, 1);
++	phy_power_off(dwc->usb2_generic_phy);
++	phy_power_off(dwc->usb3_generic_phy);
++
+ 	dwc3_ulpi_exit(dwc);
+ 
+ err4:
 
 
