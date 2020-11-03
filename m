@@ -2,146 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6DD2A50E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32782A51A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgKCUdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:33:01 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44502 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgKCUdB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:33:01 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604435579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVcGz5CDVRdovfRvxcP/ga3ZgQwWWcWu3Qsc8ARs+ao=;
-        b=ROO1JE5OXeDbqvxdPGuziCgBNgOnWHUTS7KIIfahi9fpoHeMOF14yQOucSNW6ADAMNToM+
-        GpsE7PVsmeGz5xpDyArAT5O0YXwe6lb6gTV0QOrP1LngAucsdZbwEXAOEKcpP5BIEgZ1E3
-        jL4hixdCRI4hl5MT3GJIbc9xh/EcYYmGoMw0GqVAMwlzSWVxshVuse8XqSUih3LaS64BfJ
-        jhgBNUjZ3v4sIRi4FFdIJlyJumZtPTFOM7IXCx/dQrBvqfepi3N+ldhDXu+2hrEAEAH8Ee
-        IGIXKnN1b3uF1R/sDhqB0XV6yP5laCiTzu91T7JStqzGAAe7taRdLxYcT2H/kA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604435579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVcGz5CDVRdovfRvxcP/ga3ZgQwWWcWu3Qsc8ARs+ao=;
-        b=gRj8fYaR/h7W5n6W33KK2dB8XvkY0jQhkZT8ZrMGJUKVewgoyRkJ1Kx6bhYFbuPezB6+N0
-        cLBQ7CWBDgczIaDA==
-To:     Marc Zyngier <maz@kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 0/2] arm64: Allow the rescheduling IPI to bypass irq_enter/exit
-In-Reply-To: <20201101131430.257038-1-maz@kernel.org>
-References: <20201101131430.257038-1-maz@kernel.org>
-Date:   Tue, 03 Nov 2020 21:32:59 +0100
-Message-ID: <87ft5q18qs.fsf@nanos.tec.linutronix.de>
+        id S1730600AbgKCUmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:42:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730594AbgKCUmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:42:49 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1560E223AC;
+        Tue,  3 Nov 2020 20:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604436168;
+        bh=XgAZ/GcK4aq8ik1JlvQ9A2VtPmDNskl/QdJEF5E0Va4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vlNl+0imPva1NHn8XewmZhGQZrFO9+7IURMyOFJIeJU8Lyf2pJaB8ksTL1Lc6Cru7
+         Hb8FXRV1O/Ku1ykvUoWCUXkrpnJ9DuO3gNqc1L+4M03iK0lTz/uYoeWxUyvfMM+RMC
+         syQSkY2RIklDfHMjpYUJrdY4OvZyCNogrTRsfTIA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 131/391] ath11k: change to disable softirqs for ath11k_regd_update to solve deadlock
+Date:   Tue,  3 Nov 2020 21:33:02 +0100
+Message-Id: <20201103203355.666708533@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01 2020 at 13:14, Marc Zyngier wrote:
-> Vincent recently reported [1] that 5.10-rc1 showed a significant
-> regression when running "perf bench sched pipe" on arm64, and
-> pinpointed it to the recent move to handling IPIs as normal
-> interrupts.
->
-> The culprit is the use of irq_enter/irq_exit around the handling of
-> the rescheduling IPI, meaning that we enter the scheduler right after
-> the handling of the IPI instead of deferring it to the next preemption
-> event. This accounts for most of the overhead introduced.
+From: Wen Gong <wgong@codeaurora.org>
 
-irq_enter()/exit() does not end up in the scheduler. If it does then
-please show the call chain.
+[ Upstream commit df648808c6b9989555e247530d8ca0ad0094b361 ]
 
-Scheduling happens when the IPI returns just before returning into the
-low level code (or on ARM in the low level code) when NEED_RESCHED is
-set (which is usually the case when the IPI is sent) and:
+After base_lock which occupy by ath11k_regd_update, the softirq run for
+WMI_REG_CHAN_LIST_CC_EVENTID maybe arrived and it also need to accuire
+the spin lock, then deadlock happend, change to disable softirqis to solve it.
 
-  the IPI hit user space
+[  235.576990] ================================
+[  235.576991] WARNING: inconsistent lock state
+[  235.576993] 5.9.0-rc5-wt-ath+ #196 Not tainted
+[  235.576994] --------------------------------
+[  235.576995] inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+[  235.576997] kworker/u16:1/98 [HC0[0]:SC0[0]:HE1:SE1] takes:
+[  235.576998] ffff9655f75cad98 (&ab->base_lock){+.?.}-{2:2}, at: ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577009] {IN-SOFTIRQ-W} state was registered at:
+[  235.577013]   __lock_acquire+0x219/0x6e0
+[  235.577015]   lock_acquire+0xb6/0x270
+[  235.577018]   _raw_spin_lock+0x2c/0x70
+[  235.577023]   ath11k_reg_chan_list_event.isra.0+0x10d/0x1e0 [ath11k]
+[  235.577028]   ath11k_wmi_tlv_op_rx+0x3c3/0x560 [ath11k]
+[  235.577033]   ath11k_htc_rx_completion_handler+0x207/0x370 [ath11k]
+[  235.577039]   ath11k_ce_recv_process_cb+0x15e/0x1e0 [ath11k]
+[  235.577041]   ath11k_pci_ce_tasklet+0x10/0x30 [ath11k_pci]
+[  235.577043]   tasklet_action_common.constprop.0+0xd4/0xf0
+[  235.577045]   __do_softirq+0xc9/0x482
+[  235.577046]   asm_call_on_stack+0x12/0x20
+[  235.577048]   do_softirq_own_stack+0x49/0x60
+[  235.577049]   irq_exit_rcu+0x9a/0xd0
+[  235.577050]   common_interrupt+0xa1/0x190
+[  235.577052]   asm_common_interrupt+0x1e/0x40
+[  235.577053]   cpu_idle_poll.isra.0+0x2e/0x60
+[  235.577055]   do_idle+0x5f/0xe0
+[  235.577056]   cpu_startup_entry+0x14/0x20
+[  235.577058]   start_kernel+0x443/0x464
+[  235.577060]   secondary_startup_64+0xa4/0xb0
+[  235.577061] irq event stamp: 432035
+[  235.577063] hardirqs last  enabled at (432035): [<ffffffff968d12b4>] _raw_spin_unlock_irqrestore+0x34/0x40
+[  235.577064] hardirqs last disabled at (432034): [<ffffffff968d10d3>] _raw_spin_lock_irqsave+0x63/0x80
+[  235.577066] softirqs last  enabled at (431998): [<ffffffff967115c1>] inet6_fill_ifla6_attrs+0x3f1/0x430
+[  235.577067] softirqs last disabled at (431996): [<ffffffff9671159f>] inet6_fill_ifla6_attrs+0x3cf/0x430
+[  235.577068]
+[  235.577068] other info that might help us debug this:
+[  235.577069]  Possible unsafe locking scenario:
+[  235.577069]
+[  235.577070]        CPU0
+[  235.577070]        ----
+[  235.577071]   lock(&ab->base_lock);
+[  235.577072]   <Interrupt>
+[  235.577073]     lock(&ab->base_lock);
+[  235.577074]
+[  235.577074]  *** DEADLOCK ***
+[  235.577074]
+[  235.577075] 3 locks held by kworker/u16:1/98:
+[  235.577076]  #0: ffff9655f75b1d48 ((wq_completion)ath11k_qmi_driver_event){+.+.}-{0:0}, at: process_one_work+0x1d3/0x5d0
+[  235.577079]  #1: ffffa33cc02f3e70 ((work_completion)(&ab->qmi.event_work)){+.+.}-{0:0}, at: process_one_work+0x1d3/0x5d0
+[  235.577081]  #2: ffff9655f75cad50 (&ab->core_lock){+.+.}-{3:3}, at: ath11k_core_qmi_firmware_ready.part.0+0x4e/0x160 [ath11k]
+[  235.577087]
+[  235.577087] stack backtrace:
+[  235.577088] CPU: 3 PID: 98 Comm: kworker/u16:1 Not tainted 5.9.0-rc5-wt-ath+ #196
+[  235.577089] Hardware name: Intel(R) Client Systems NUC8i7HVK/NUC8i7HVB, BIOS HNKBLi70.86A.0049.2018.0801.1601 08/01/2018
+[  235.577095] Workqueue: ath11k_qmi_driver_event ath11k_qmi_driver_event_work [ath11k]
+[  235.577096] Call Trace:
+[  235.577100]  dump_stack+0x77/0xa0
+[  235.577102]  mark_lock_irq.cold+0x15/0x3c
+[  235.577104]  mark_lock+0x1d7/0x540
+[  235.577105]  mark_usage+0xc7/0x140
+[  235.577107]  __lock_acquire+0x219/0x6e0
+[  235.577108]  ? sched_clock_cpu+0xc/0xb0
+[  235.577110]  lock_acquire+0xb6/0x270
+[  235.577116]  ? ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577118]  ? atomic_notifier_chain_register+0x2d/0x40
+[  235.577120]  _raw_spin_lock+0x2c/0x70
+[  235.577125]  ? ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577130]  ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577136]  __ath11k_mac_register+0x3fb/0x480 [ath11k]
+[  235.577141]  ath11k_mac_register+0x119/0x180 [ath11k]
+[  235.577146]  ath11k_core_pdev_create+0x17/0xe0 [ath11k]
+[  235.577150]  ath11k_core_qmi_firmware_ready.part.0+0x65/0x160 [ath11k]
+[  235.577155]  ath11k_qmi_driver_event_work+0x1c5/0x230 [ath11k]
+[  235.577158]  process_one_work+0x265/0x5d0
+[  235.577160]  worker_thread+0x49/0x300
+[  235.577161]  ? process_one_work+0x5d0/0x5d0
+[  235.577163]  kthread+0x135/0x150
+[  235.577164]  ? kthread_create_worker_on_cpu+0x60/0x60
+[  235.577166]  ret_from_fork+0x22/0x30
 
-or
+Tested-on: QCA6390 hw2.0 PCI WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
 
-  the IPI hit in preemptible kernel context and CONFIG_PREEMPT[_RT] is
-  enabled.
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1601399736-3210-7-git-send-email-kvalo@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath11k/reg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Not doing so would be a bug. So I really don't understand your reasoning
-here.
+diff --git a/drivers/net/wireless/ath/ath11k/reg.c b/drivers/net/wireless/ath/ath11k/reg.c
+index 7c9dc91cc48a9..c79a7c7eb56ee 100644
+--- a/drivers/net/wireless/ath/ath11k/reg.c
++++ b/drivers/net/wireless/ath/ath11k/reg.c
+@@ -206,7 +206,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 	ab = ar->ab;
+ 	pdev_id = ar->pdev_idx;
+ 
+-	spin_lock(&ab->base_lock);
++	spin_lock_bh(&ab->base_lock);
+ 
+ 	if (init) {
+ 		/* Apply the regd received during init through
+@@ -227,7 +227,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 
+ 	if (!regd) {
+ 		ret = -EINVAL;
+-		spin_unlock(&ab->base_lock);
++		spin_unlock_bh(&ab->base_lock);
+ 		goto err;
+ 	}
+ 
+@@ -238,7 +238,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 	if (regd_copy)
+ 		ath11k_copy_regd(regd, regd_copy);
+ 
+-	spin_unlock(&ab->base_lock);
++	spin_unlock_bh(&ab->base_lock);
+ 
+ 	if (!regd_copy) {
+ 		ret = -ENOMEM;
+-- 
+2.27.0
 
-> On architectures that have architected IPIs at the CPU level (x86
-> being the obvious one), the absence of irq_enter/exit is natural.
 
-It's not really architected IPIs. We reserve the top 20ish vectors on
-each CPU for IPIs and other per processor interrupts, e.g. the per cpu
-timer.
-
-Now lets look at what x86 does:
-
-Interrupts and regular IPIs (function call ....) do
-
-    irqentry_enter()   <- handles rcu_irq_enter() or context tracking
-      ...
-      irq_enter_rcu()
-      ...
-      irq_exit_rcu()
-    irqentry_exit()     <- handles need_resched()
-
-The scheduler IPI does:
-
-    irqentry_enter()   <- handles rcu_irq_enter() or context tracking
-      ...
-      __irq_enter_raw()
-      ...
-      __irq_exit_raw()
-    irqentry_exit()     <- handles need_resched()
-
-So we don't invoke irq_enter_rcu() on enter and on exit we skip
-irq_exit_rcu(). That's fine because
-
-  - Calling the tick management is pointless because this is going to
-    schedule anyway or something consumed the need_resched already.
-
-  - The irqtime accounting is silly because it covers only the call and
-    returns. The time spent in the accounting is more than the time
-    we are accounting (empty call).
-
-So what your hack fails to invoke is rcu_irq_enter()/exit() in case that
-the IPI hits the idle task in an RCU off region. You also fail to tell
-lockdep. No cookies!
-
-> The bad news is that these patches are ugly as sin, and I really don't
-> like them.
-
-Yes, they are ugly and the extra conditional in the irq handling path is
-not pretty either.
-
-> I specially hate that they can give driver authors the idea that they
-> can make random interrupts "faster".
-
-Just split the guts of irq_modify_status() into __irq_modify_status()
-and call that from irq_modify_status().
-
-Reject IRQ_HIDDEN (which should have been IRQ_IPI really) and IRQ_NAKED
-(IRQ_RAW perhaps) in irq_modify_status().
-
-Do not export __irq_modify_status() so it can be only used from built-in
-code which takes it away from driver writers.
-
-We probably should add a few of the other IRQ_ bits to the reject mask
-for completness sake, but that's not urgent.
-
-Thanks,
-
-        tglx
 
