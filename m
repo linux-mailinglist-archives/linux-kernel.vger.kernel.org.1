@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7442D2A5780
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADC42A586E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgKCVm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:42:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55318 "EHLO mail.kernel.org"
+        id S1731316AbgKCVvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:51:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732227AbgKCUzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:55:11 -0500
+        id S1730676AbgKCUs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CE9C223BD;
-        Tue,  3 Nov 2020 20:55:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13B5822404;
+        Tue,  3 Nov 2020 20:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436910;
-        bh=Yccps9gYgPKpigz26JRSlXIy0z/IxumpcoIbGKZUwcg=;
+        s=default; t=1604436505;
+        bh=dqfSLO+/CBVVEPM5kB4ykciUWzIfWATuxS+Q0cNJzzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nLUJheRKFwMW6kv/OA4LdG9oEV3C0vpPSiR6FlqppYIjynfJDodYg5Dzltex8SD2Q
-         71Aaeufh+SpZEtTMN4SqEDp4iYqH16/oVwdnFMrOlCXioZ0i9+a5XpOOFEfiTLfn10
-         d5DsSZyz0fmfl62+zY14dx+8AcwOGYQRHojwuRso=
+        b=LmLI4Z6Ky8mNV15Qe8S9w+xLfTyeqyV7dZtn1XduT1AzLmPE3gobLeAd5s9REyIzb
+         D5WWkHveH2Buz+a40RPahePgTTeGYOrw6Ou5lxnjg5ZPkKH8Fw66lkirsvwLcGKp6g
+         HsqM+jqHaWR7bSlIXubgg2iww7Hi6EEZCWmEhRFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 063/214] can: flexcan: disable clocks during stop mode
-Date:   Tue,  3 Nov 2020 21:35:11 +0100
-Message-Id: <20201103203256.273290458@linuxfoundation.org>
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 5.9 262/391] Revert "vhost-vdpa: fix page pinning leakage in error path"
+Date:   Tue,  3 Nov 2020 21:35:13 +0100
+Message-Id: <20201103203404.702588488@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,85 +41,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 02f71c6605e1f8259c07f16178330db766189a74 ]
+commit 5e1a3149eec8675c2767cc465903f5e4829de5b0 upstream.
 
-Disable clocks while CAN core is in stop mode.
+This reverts commit 7ed9e3d97c32d969caded2dfb6e67c1a2cc5a0b1.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The patch creates a DoS risk since it can result in a high order memory
+allocation.
+
+Fixes: 7ed9e3d97c32d ("vhost-vdpa: fix page pinning leakage in error path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/vhost/vdpa.c |  117 ++++++++++++++++++++-------------------------------
+ 1 file changed, 47 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index aaa7ed1dc97ee..d59c6c87164f4 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1703,8 +1703,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 			err = flexcan_chip_disable(priv);
- 			if (err)
- 				return err;
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -595,19 +595,21 @@ static int vhost_vdpa_process_iotlb_upda
+ 	struct vhost_dev *dev = &v->vdev;
+ 	struct vhost_iotlb *iotlb = dev->iotlb;
+ 	struct page **page_list;
+-	struct vm_area_struct **vmas;
++	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+ 	unsigned int gup_flags = FOLL_LONGTERM;
+-	unsigned long map_pfn, last_pfn = 0;
+-	unsigned long npages, lock_limit;
+-	unsigned long i, nmap = 0;
++	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
++	unsigned long locked, lock_limit, pinned, i;
+ 	u64 iova = msg->iova;
+-	long pinned;
+ 	int ret = 0;
+ 
+ 	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+ 				    msg->iova + msg->size - 1))
+ 		return -EEXIST;
+ 
++	page_list = (struct page **) __get_free_page(GFP_KERNEL);
++	if (!page_list)
++		return -ENOMEM;
++
+ 	if (msg->perm & VHOST_ACCESS_WO)
+ 		gup_flags |= FOLL_WRITE;
+ 
+@@ -615,86 +617,61 @@ static int vhost_vdpa_process_iotlb_upda
+ 	if (!npages)
+ 		return -EINVAL;
+ 
+-	page_list = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+-	vmas = kvmalloc_array(npages, sizeof(struct vm_area_struct *),
+-			      GFP_KERNEL);
+-	if (!page_list || !vmas) {
+-		ret = -ENOMEM;
+-		goto free;
+-	}
 -
--			err = pm_runtime_force_suspend(device);
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1730,10 +1728,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 			if (err)
- 				return err;
- 		} else {
--			err = pm_runtime_force_resume(device);
--			if (err)
--				return err;
--
- 			err = flexcan_chip_enable(priv);
- 		}
+ 	mmap_read_lock(dev->mm);
+ 
++	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+ 	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+-		ret = -ENOMEM;
+-		goto unlock;
+-	}
+ 
+-	pinned = pin_user_pages(msg->uaddr & PAGE_MASK, npages, gup_flags,
+-				page_list, vmas);
+-	if (npages != pinned) {
+-		if (pinned < 0) {
+-			ret = pinned;
+-		} else {
+-			unpin_user_pages(page_list, pinned);
+-			ret = -ENOMEM;
+-		}
+-		goto unlock;
++	if (locked > lock_limit) {
++		ret = -ENOMEM;
++		goto out;
  	}
-@@ -1764,8 +1758,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, true);
-+	if (netif_running(dev)) {
-+		int err;
++	cur_base = msg->uaddr & PAGE_MASK;
+ 	iova &= PAGE_MASK;
+-	map_pfn = page_to_pfn(page_list[0]);
+ 
+-	/* One more iteration to avoid extra vdpa_map() call out of loop. */
+-	for (i = 0; i <= npages; i++) {
+-		unsigned long this_pfn;
+-		u64 csize;
+-
+-		/* The last chunk may have no valid PFN next to it */
+-		this_pfn = i < npages ? page_to_pfn(page_list[i]) : -1UL;
+-
+-		if (last_pfn && (this_pfn == -1UL ||
+-				 this_pfn != last_pfn + 1)) {
+-			/* Pin a contiguous chunk of memory */
+-			csize = last_pfn - map_pfn + 1;
+-			ret = vhost_vdpa_map(v, iova, csize << PAGE_SHIFT,
+-					     map_pfn << PAGE_SHIFT,
+-					     msg->perm);
+-			if (ret) {
+-				/*
+-				 * Unpin the rest chunks of memory on the
+-				 * flight with no corresponding vdpa_map()
+-				 * calls having been made yet. On the other
+-				 * hand, vdpa_unmap() in the failure path
+-				 * is in charge of accounting the number of
+-				 * pinned pages for its own.
+-				 * This asymmetrical pattern of accounting
+-				 * is for efficiency to pin all pages at
+-				 * once, while there is no other callsite
+-				 * of vdpa_map() than here above.
+-				 */
+-				unpin_user_pages(&page_list[nmap],
+-						 npages - nmap);
+-				goto out;
++	while (npages) {
++		pinned = min_t(unsigned long, npages, list_size);
++		ret = pin_user_pages(cur_base, pinned,
++				     gup_flags, page_list, NULL);
++		if (ret != pinned)
++			goto out;
 +
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, true);
++		if (!last_pfn)
++			map_pfn = page_to_pfn(page_list[0]);
 +
-+		err = pm_runtime_force_suspend(device);
-+		if (err)
-+			return err;
++		for (i = 0; i < ret; i++) {
++			unsigned long this_pfn = page_to_pfn(page_list[i]);
++			u64 csize;
++
++			if (last_pfn && (this_pfn != last_pfn + 1)) {
++				/* Pin a contiguous chunk of memory */
++				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
++				if (vhost_vdpa_map(v, iova, csize,
++						   map_pfn << PAGE_SHIFT,
++						   msg->perm))
++					goto out;
++				map_pfn = this_pfn;
++				iova += csize;
+ 			}
+-			atomic64_add(csize, &dev->mm->pinned_vm);
+-			nmap += csize;
+-			iova += csize << PAGE_SHIFT;
+-			map_pfn = this_pfn;
++
++			last_pfn = this_pfn;
+ 		}
+-		last_pfn = this_pfn;
++
++		cur_base += ret << PAGE_SHIFT;
++		npages -= ret;
+ 	}
+ 
+-	WARN_ON(nmap != npages);
++	/* Pin the rest chunk */
++	ret = vhost_vdpa_map(v, iova, (last_pfn - map_pfn + 1) << PAGE_SHIFT,
++			     map_pfn << PAGE_SHIFT, msg->perm);
+ out:
+-	if (ret)
++	if (ret) {
+ 		vhost_vdpa_unmap(v, msg->iova, msg->size);
+-unlock:
++		atomic64_sub(npages, &dev->mm->pinned_vm);
 +	}
- 
- 	return 0;
+ 	mmap_read_unlock(dev->mm);
+-free:
+-	kvfree(vmas);
+-	kvfree(page_list);
++	free_page((unsigned long)page_list);
+ 	return ret;
  }
-@@ -1775,8 +1777,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, false);
-+	if (netif_running(dev)) {
-+		int err;
-+
-+		err = pm_runtime_force_resume(device);
-+		if (err)
-+			return err;
-+
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, false);
-+	}
- 
- 	return 0;
- }
--- 
-2.27.0
-
 
 
