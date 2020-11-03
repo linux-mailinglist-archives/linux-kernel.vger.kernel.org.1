@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CA92A52BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841032A5361
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732126AbgKCUwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:52:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49458 "EHLO mail.kernel.org"
+        id S1732222AbgKCVAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732109AbgKCUwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:37 -0500
+        id S1732942AbgKCVAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 537E92053B;
-        Tue,  3 Nov 2020 20:52:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7735C223C7;
+        Tue,  3 Nov 2020 21:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436756;
-        bh=TQuy0xxKzG1kB4DX7dwlEHjNfxPdFAfGr6t5XhepVyo=;
+        s=default; t=1604437229;
+        bh=BKfdIyt5z62L/599YN5431rgr0e3luTrifZW3PySgKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PptA5sJGX7+coA+rNZqkPODNikKETx8aOuUV0J45iqrQhVSEn1lAC2m/rvURfRHzB
-         yRBHW2DJJtTRxwSL47YN4MFydc6wxah/NaKpAmf7Rz7lPipO+8ShbMOqsynkOTxFVb
-         BFX3Zl7vBRu/eyoIBIRc4X7j/b34NmqPlApzaHts=
+        b=yWvk/YT/UOmM8E8H/Zr8I5S39X5III+DKH6w3inDEzlGvtiSzudxy2MWMFmnUh6cH
+         iixxJaWATuj2k3z3NKRyvcWoLJRovNIce1e7A9wSPfYG3U9tpa/a9fkL7rGD9UhYXW
+         db5TOQVFI3LlKqjcKBI86G6RIOfZkzf73qtyVM+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.9 351/391] mmc: sdhci-of-esdhc: set timeout to max before tuning
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.4 154/214] iio:gyro:itg3200: Fix timestamp alignment and prevent data leak.
 Date:   Tue,  3 Nov 2020 21:36:42 +0100
-Message-Id: <20201103203410.822522977@linuxfoundation.org>
+Message-Id: <20201103203305.230721354@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 0add6e9b88d0632a25323aaf4987dbacb0e4ae64 upstream.
+commit 10ab7cfd5522f0041028556dac864a003e158556 upstream.
 
-On rare occations there is the following error:
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 16 byte array of smaller elements on the stack.
+This is fixed by using an explicit c structure. As there are no
+holes in the structure, there is no possiblity of data leakage
+in this case.
 
-  mmc0: Tuning timeout, falling back to fixed sampling clock
+The explicit alignment of ts is not strictly necessary but potentially
+makes the code slightly less fragile.  It also removes the possibility
+of this being cut and paste into another driver where the alignment
+isn't already true.
 
-There are SD cards which takes a significant longer time to reply to the
-first CMD19 command. The eSDHC takes the data timeout value into account
-during the tuning period. The SDHCI core doesn't explicitly set this
-timeout for the tuning procedure. Thus on the slow cards, there might be
-a spurious "Buffer Read Ready" interrupt, which in turn triggers a wrong
-sequence of events. In the end this will lead to an unsuccessful tuning
-procedure and to the above error.
-
-To workaround this, set the timeout to the maximum value (which is the
-best we can do) and the SDHCI core will take care of the proper timeout
-handling.
-
-Fixes: ba49cbd0936e ("mmc: sdhci-of-esdhc: add tuning support")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201022222337.19857-1-michael@walle.cc
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 36e0371e7764 ("iio:itg3200: Use iio_push_to_buffers_with_timestamp()")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200722155103.979802-6-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci-of-esdhc.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/iio/gyro/itg3200_buffer.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/mmc/host/sdhci-of-esdhc.c
-+++ b/drivers/mmc/host/sdhci-of-esdhc.c
-@@ -1069,6 +1069,17 @@ static int esdhc_execute_tuning(struct m
- 
- 	esdhc_tuning_block_enable(host, true);
- 
+--- a/drivers/iio/gyro/itg3200_buffer.c
++++ b/drivers/iio/gyro/itg3200_buffer.c
+@@ -46,13 +46,20 @@ static irqreturn_t itg3200_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct itg3200 *st = iio_priv(indio_dev);
+-	__be16 buf[ITG3200_SCAN_ELEMENTS + sizeof(s64)/sizeof(u16)];
 +	/*
-+	 * The eSDHC controller takes the data timeout value into account
-+	 * during tuning. If the SD card is too slow sending the response, the
-+	 * timer will expire and a "Buffer Read Ready" interrupt without data
-+	 * is triggered. This leads to tuning errors.
-+	 *
-+	 * Just set the timeout to the maximum value because the core will
-+	 * already take care of it in sdhci_send_tuning().
++	 * Ensure correct alignment and padding including for the
++	 * timestamp that may be inserted.
 +	 */
-+	sdhci_writeb(host, 0xe, SDHCI_TIMEOUT_CONTROL);
-+
- 	hs400_tuning = host->flags & SDHCI_HS400_TUNING;
++	struct {
++		__be16 buf[ITG3200_SCAN_ELEMENTS];
++		s64 ts __aligned(8);
++	} scan;
  
- 	do {
+-	int ret = itg3200_read_all_channels(st->i2c, buf);
++	int ret = itg3200_read_all_channels(st->i2c, scan.buf);
+ 	if (ret < 0)
+ 		goto error_ret;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf, pf->timestamp);
++	iio_push_to_buffers_with_timestamp(indio_dev, &scan, pf->timestamp);
+ 
+ 	iio_trigger_notify_done(indio_dev->trig);
+ 
 
 
