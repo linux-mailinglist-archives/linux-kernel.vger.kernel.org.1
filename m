@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14F52A58F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE6A2A58EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730856AbgKCUoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59084 "EHLO mail.kernel.org"
+        id S1730947AbgKCUou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:44:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730837AbgKCUoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:11 -0500
+        id S1729386AbgKCUop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:44:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C31D9223EA;
-        Tue,  3 Nov 2020 20:44:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8B3D223C6;
+        Tue,  3 Nov 2020 20:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436251;
-        bh=O18V/B1uPA6UmIdoBoEGVsjQvG52VQilORM5dHDeLiw=;
+        s=default; t=1604436285;
+        bh=MvZZbw/JJm9t8Z4ng52MFxBnZ0NBR/3mcBpffBBsvHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E943kb9UEB7xhkGM/iQAZkLqGCrBt84jwizVuYu672bNVpU7ezNYS4++H/ySPGOYI
-         69O42IwMPWUpT/d6VqnitzIy8VvDftJju6qvqFLW94yPjhKeaZWbt++5l3idkv7rCK
-         NfiTNGgBjHLtsdPPkDCjuKnCsTw+mluJdGB2arso=
+        b=rAODNXrZ9J2gC87FZ8ixJDRyTcQJOs2KMxS1A5Vn11ZV6XkH1KiHuwMidtGYr6kap
+         gjAGVtv852VV66pbYs2Nh65StJ5sLYH10uezpDj7qu+wId5QJDcbxt2KLRshoLux8Q
+         KmKZjykPv312YFZ2dGLb86cwrV3tvEXX8mFoHVnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Omar Sandoval <osandov@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Chris Lew <clew@codeaurora.org>,
+        Arun Kumar Neelakantam <aneela@codeaurora.org>,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 141/391] block: Consider only dispatched requests for inflight statistic
-Date:   Tue,  3 Nov 2020 21:33:12 +0100
-Message-Id: <20201103203356.346165802@linuxfoundation.org>
+Subject: [PATCH 5.9 146/391] rpmsg: glink: Use complete_all for open states
+Date:   Tue,  3 Nov 2020 21:33:17 +0100
+Message-Id: <20201103203356.683120647@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,51 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Chris Lew <clew@codeaurora.org>
 
-[ Upstream commit a926c7afffcc0f2e35e6acbccb16921bacf34617 ]
+[ Upstream commit 4fcdaf6e28d11e2f3820d54dd23cd12a47ddd44e ]
 
-According to Documentation/block/stat.rst, inflight should not include
-I/O requests that are in the queue but not yet dispatched to the device,
-but blk-mq identifies as inflight any request that has a tag allocated,
-which, for queues without elevator, happens at request allocation time
-and before it is queued in the ctx (default case in blk_mq_submit_bio).
+The open_req and open_ack completion variables are the state variables
+to represet a remote channel as open. Use complete_all so there are no
+races with waiters and using completion_done.
 
-In addition, current behavior is different for queues with elevator from
-queues without it, since for the former the driver tag is allocated at
-dispatch time.  A more precise approach would be to only consider
-requests with state MQ_RQ_IN_FLIGHT.
-
-This effectively reverts commit 6131837b1de6 ("blk-mq: count allocated
-but not started requests in iostats inflight") to consolidate blk-mq
-behavior with itself (elevator case) and with original documentation,
-but it differs from the behavior used by the legacy path.
-
-This version differs from v1 by using blk_mq_rq_state to access the
-state attribute.  Avoid using blk_mq_request_started, which was
-suggested, since we don't want to include MQ_RQ_COMPLETE.
-
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc: Omar Sandoval <osandov@fb.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Chris Lew <clew@codeaurora.org>
+Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
+Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+Link: https://lore.kernel.org/r/1593017121-7953-2-git-send-email-deesin@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rpmsg/qcom_glink_native.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 94a53d779c12b..ca2fdb58e7af5 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -105,7 +105,7 @@ static bool blk_mq_check_inflight(struct blk_mq_hw_ctx *hctx,
- {
- 	struct mq_inflight *mi = priv;
+diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+index f40312b16da06..b5570c83a28c6 100644
+--- a/drivers/rpmsg/qcom_glink_native.c
++++ b/drivers/rpmsg/qcom_glink_native.c
+@@ -970,7 +970,7 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
+ 		return -EINVAL;
+ 	}
  
--	if (rq->part == mi->part)
-+	if (rq->part == mi->part && blk_mq_rq_state(rq) == MQ_RQ_IN_FLIGHT)
- 		mi->inflight[rq_data_dir(rq)]++;
+-	complete(&channel->open_ack);
++	complete_all(&channel->open_ack);
  
- 	return true;
+ 	return 0;
+ }
+@@ -1178,7 +1178,7 @@ static int qcom_glink_announce_create(struct rpmsg_device *rpdev)
+ 	__be32 *val = defaults;
+ 	int size;
+ 
+-	if (glink->intentless)
++	if (glink->intentless || !completion_done(&channel->open_ack))
+ 		return 0;
+ 
+ 	prop = of_find_property(np, "qcom,intents", NULL);
+@@ -1413,7 +1413,7 @@ static int qcom_glink_rx_open(struct qcom_glink *glink, unsigned int rcid,
+ 	channel->rcid = ret;
+ 	spin_unlock_irqrestore(&glink->idr_lock, flags);
+ 
+-	complete(&channel->open_req);
++	complete_all(&channel->open_req);
+ 
+ 	if (create_device) {
+ 		rpdev = kzalloc(sizeof(*rpdev), GFP_KERNEL);
 -- 
 2.27.0
 
