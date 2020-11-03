@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE832A3806
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C213E2A380C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgKCAuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S1726773AbgKCAwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKCAuw (ORCPT
+        with ESMTP id S1725855AbgKCAwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:50:52 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22492C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:50:52 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id o3so12283985pgr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:50:52 -0800 (PST)
+        Mon, 2 Nov 2020 19:52:03 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F41CC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:52:03 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id a7so19887949lfk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:52:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=88pPz8pjG9ldMk/QPG8AG1B3fhppK1H+mRg4pHEfEDY=;
-        b=1k2NkodrGPaxaU9oyah8UzNCYDEjpiiMMa7MvUQjERWh2F0VYVGB5169Mw6v3TgA0c
-         JQsr9tlgrZ+t1wnwpeecRBbR5M3gd9hUJt106Eoia087zbWUQVbl/Bi1n9hVioYWZ0w7
-         fX/421EOWL6KBOkjpWZ9TJfM7L3gDVX7WzM7zM3jz4BRAE8IED8hP+lkj3RMMLDsgR8d
-         LGs6sLPP10nDUtqLPUtSUXrSaBi1Mil7wCY8aYrH1d5ZlspyAvMH9ZigKDXsKCVczlU8
-         CX3L99Lzpz5UyYdSDrk7kQCZ6am8s0Ut22KjziIozS7LncvwTn0XKY/SKjivU7WvZ5uo
-         7Dfg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TQ7vZjbo6jZFwN1qYAVZdyUDHRcRSscJAXv+iG5HiXM=;
+        b=gl8l5tT55fC8nLaYKD0ZSaBlsWjMWFVk4K3Xb0aHZhFGYrRFSleDasHkl2iGT2SmMK
+         CBTJCPm2tTifW3/Rznj2HdrFiTf/scdLrXmfaS+AtUJdyEa4nfXazx84qLhJi/aZ6XcW
+         A+tKbYt05Qzc6SoaolWsCR+Mx6Ood6YuyuOfog7pPq9Di9dXWTHs6Z4kIN1e7gE/47eJ
+         gO0AheXxDZATTDIxwsfTIo+44E11IrHxXH/OHjE+bhKYHDT9rAcpe0rWFagBXFpHcTUP
+         hOiMjDn/2u0EqBdxeQZEzxZtC3fVrXd/wFmYfN4MJJ7XkC7AsUjctG1EV/Tm8SQGz0op
+         jtxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=88pPz8pjG9ldMk/QPG8AG1B3fhppK1H+mRg4pHEfEDY=;
-        b=gbjESh2u1rAeQ6w3InYJeuQy6MwdYnGC6JfQzJgnYJ62F145N0MJhM4a0tmvj5DxXw
-         RkSuwOFdn/qOd9nwDNkeYd0/VYEUG25CUyFUWi4wxgzXIncXninbGtozu6b+agHrSqx/
-         z3LQBEeuwON26n3oHX/UF2WXETB1vG8PJ1WmVb89wPXsEbEdTAIfOuz4SDcaD1jS3hwn
-         x7tkKXF/PpwWypWZYvGEdH3PEUgOb4qS2ET33G9gzIrUqHM1jxjV/R+w7fXNW72cuM9a
-         DS9bQuTa3tTNubmqe9sb8AUQ3zMPtvgOvtVSa096tzf4GsPd9uFf3WN1BiHiHSJO+PFh
-         wu5Q==
-X-Gm-Message-State: AOAM5325nVEbtVeSR8+qmqiqyhnQ2Vv9hfMBcsBPc0pnESdF6DKTgtML
-        BituVkyHIqRD7O0y9x2ZrkR5q0eowGVQKpXa
-X-Google-Smtp-Source: ABdhPJxM/pu1RvNOaweW8wC2Ba4h+teEI9+8lduTdju3ypNFoMZ1Qu82nr06w8S5qyJ0yIfxRL6NpA==
-X-Received: by 2002:a63:3c1c:: with SMTP id j28mr7599809pga.167.1604364651496;
-        Mon, 02 Nov 2020 16:50:51 -0800 (PST)
-Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id 132sm2840358pfy.15.2020.11.02.16.50.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Nov 2020 16:50:50 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <7CCB9FA6-DE85-4E3F-B3F1-7144F01589D4@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_371D7085-4417-47D2-9B58-9CE8331344FA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] fs/aio.c: Cosmetic
-Date:   Mon, 2 Nov 2020 17:50:46 -0700
-In-Reply-To: <20201102215809.17312-1-colomar.6.4.3@gmail.com>
-Cc:     Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <20201102152439.315640-1-colomar.6.4.3@gmail.com>
- <20201102215809.17312-1-colomar.6.4.3@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TQ7vZjbo6jZFwN1qYAVZdyUDHRcRSscJAXv+iG5HiXM=;
+        b=PA+8vdbIoXLLpnUNas5kxyYQX3ewPQfpficuwKFordJ4I2niSTrhZHw9URGjg52oap
+         XRQGJhh6rW85TPaTHz+DCOdOjgFCBGbdyuBu3GvGpJiAWXWpAgU2W/MLR2RcJYxnRI+B
+         FAbFlRlxvn0Gs9R4le0UAxU57qkfPT4Ww87vEe3PkCKIcyQ7WUoMr986JVzGvYwQR3lt
+         PeHFQ0wg5W2v33FT43+msrW4aJM51vDBSPpRDug4XC7+Gz/14yEL2B/HLnO2wyPQzsDN
+         pFBcE207o8IkywLKGDzBkqJWrZKzh/0/5m5ylGqp/di7sULr5WnJhFiPkSzfmaeSETlI
+         CIRA==
+X-Gm-Message-State: AOAM530uwgPkB5PLzBoL0CLDs+AkeKnAfU80D7Q5RA9D1PFF7RnUjSmA
+        czhUHVkJgDnqiFCdVaj/YdJvvR7ovPyS2g4J
+X-Google-Smtp-Source: ABdhPJyn/feu0C2r41t7lbFI1xBKCNQqkD3hDG6ze8hPxgm6zV3Qh8S0rWqo7XMVTAh/mjxPCPS6VQ==
+X-Received: by 2002:a19:14f:: with SMTP id 76mr3875517lfb.550.1604364721468;
+        Mon, 02 Nov 2020 16:52:01 -0800 (PST)
+Received: from eriador.lan ([94.25.229.254])
+        by smtp.gmail.com with ESMTPSA id 22sm2957319lfe.113.2020.11.02.16.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 16:52:00 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: [PATCH] mailmap: fix entry for Dmitry Baryshkov/Eremin-Solenikov
+Date:   Tue,  3 Nov 2020 03:51:58 +0300
+Message-Id: <20201103005158.1181426-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
 
---Apple-Mail=_371D7085-4417-47D2-9B58-9CE8331344FA
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Change back surname to new (old) one. Dmitry Baryshkov -> Dmitry
+Eremin-Solenikov -> Dmitry Baryshkov. Map several odd entries to main
+identity.
 
-On Nov 2, 2020, at 2:58 PM, Alejandro Colomar <colomar.6.4.3@gmail.com> =
-wrote:
-> Changes:
-> - Consistently use 'unsigned int', instead of 'unsigned'.
-> - Add a blank line after variable declarations.
-> - Move variable declarations to the top of functions.
-> - Add a blank line at the top of functions if there are no =
-declarations.
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ .mailmap | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I'd agree that the other changes are following kernel coding style, but
-I've never heard of leaving a blank line at the start of functions =
-without
-any local variables.  I don't see anything in process/coding-style.rst =
-to
-support this change, nor are the majority of variable-less functions
-formatted this way, and it seems to just be a waste of vertical space.
+diff --git a/.mailmap b/.mailmap
+index a780211468e4..3bcfa33fc268 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -81,7 +81,10 @@ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@mips.com>
+ <dev.kurt@vandijck-laurijssen.be> <kurt.van.dijck@eia.be>
+-Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <[dbaryshkov@gmail.com]>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_baryshkov@mentor.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_eremin@mentor.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <dima@arista.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <d.safonov@partner.samsung.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <dsafonov@virtuozzo.com>
+-- 
+2.28.0
 
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_371D7085-4417-47D2-9B58-9CE8331344FA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl+gqWcACgkQcqXauRfM
-H+A9QA/7BMfqa7d4Rxvdvr8ROUPltUp3AL93VOvAfuFCPAZK9O356Qo3SdLHFBKP
-GFbyf1idAIL+e71wdJuRGwE3nD2q1OUl5c7K8ajjRNtuxO8FIahqjhfrSbnwsLwl
-a4QiO6uZRTA9q8ByeXvCQntnkHqSTFg1GZO8OCvVaT/nv6YP0DLu2AwIJaIdcjme
-5HSPh6BG8YlIOq13GbLb1JxQwbYUViszEW1pHQ4uDxMcXnZR4icUabandQ7Kat3m
-4mH4M3n3ti6Lh7Sf+enajsznZAXeVCaRCgk2OklyymNzl8jYduKNrOPBo4jK8yU2
-0knidVldo16pa0f7nGrhbYG3nUO+gYXVrF7nO2SwUj3k1AAU1sHvh1kR9sZ8r+eJ
-53qqFdSHkCKK+cWj5PtBMwC/ljEiDU3oMrM/X25giKKxLV2GdKe+hGy+MphghhZL
-3TYNHYdeUiVhIIzW9U+kZEWdK89hqSplC7B3xMF1ubzRJkcX6WD6o1iB8z0kERWr
-eUZMQeMpLOR/vFGdks3+Z0hgS9IqbtPtk9guJlFVGqkY5r023lT8w4kWmpDubuDa
-XzNkPu/j3TZ2oVmCgzzzi01ckZ9l/u9elOtzjFv16QOQLcjAatSbgg36ixNVbC50
-SiR+OMMNYmPSBfl4p0g2fg5e/aUOAvqNPcVWcp/6++t+nWf8AMM=
-=HCM2
------END PGP SIGNATURE-----
-
---Apple-Mail=_371D7085-4417-47D2-9B58-9CE8331344FA--
