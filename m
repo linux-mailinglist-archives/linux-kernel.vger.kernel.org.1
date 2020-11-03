@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA232A5857
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405E62A56F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgKCUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
+        id S2387467AbgKCVca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:32:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731648AbgKCUsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:12 -0500
+        id S1731977AbgKCU5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:57:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 598FD2242A;
-        Tue,  3 Nov 2020 20:48:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50D3522226;
+        Tue,  3 Nov 2020 20:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436491;
-        bh=GtkWJF9pzV0zi9XILsfhW7l8ZFg4k0EpSUF4Xj2UImA=;
+        s=default; t=1604437027;
+        bh=O6U5wOOCN4ndNI4ZX6LMq38cihhcCpjkZYVwm+JUdRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HfxCX8AhC6SIrckefnMuPAZ9r8hSMfFBe+nykIO3tnHF539iwDdCRviFBefo0Jocv
-         4OfQBM+Js8lueHbFl5/i74TkHLkHiL7881V0gtvTpXHphqSB01fBa5mBnpI+14EFMX
-         82fahfAFSVMliclKQYCvJlj+H88eHzMomNTRhGBM=
+        b=cZvk+GR2Fj/nwU4bcDfKjKMQB/MJttzacjkn0kB1pTUSh+ArOajH2/VZdEybiwa7X
+         WvGd1Q3lJKos3jYNJpYoJSCngI/2RbDhyahfm3HHzSMaPMl/Yifz6gBz1F/4Liwz/N
+         wI4pxwPGNeigK2iYKrO7eHNn74N3DybY2Jvlhizw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.9 274/391] iio: ad7292: Fix of_node refcounting
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 077/214] clk: ti: clockdomain: fix static checker warning
 Date:   Tue,  3 Nov 2020 21:35:25 +0100
-Message-Id: <20201103203405.522185815@linuxfoundation.org>
+Message-Id: <20201103203257.589717041@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sá <nuno.sa@analog.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-commit b8a533f3c24b3b8f1fdbefc5ada6a7d5733d63e6 upstream.
+[ Upstream commit b7a7943fe291b983b104bcbd2f16e8e896f56590 ]
 
-When returning or breaking early from a
-`for_each_available_child_of_node()` loop, we need to explicitly call
-`of_node_put()` on the child node to possibly release the node.
+Fix a memory leak induced by not calling clk_put after doing of_clk_get.
 
-Fixes: 506d2e317a0a0 ("iio: adc: Add driver support for AD7292")
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200925091045.302-2-nuno.sa@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lore.kernel.org/r/20200907082600.454-3-t-kristo@ti.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ad7292.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/ti/clockdomain.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iio/adc/ad7292.c
-+++ b/drivers/iio/adc/ad7292.c
-@@ -310,8 +310,10 @@ static int ad7292_probe(struct spi_devic
- 
- 	for_each_available_child_of_node(spi->dev.of_node, child) {
- 		diff_channels = of_property_read_bool(child, "diff-channels");
--		if (diff_channels)
-+		if (diff_channels) {
-+			of_node_put(child);
- 			break;
-+		}
+diff --git a/drivers/clk/ti/clockdomain.c b/drivers/clk/ti/clockdomain.c
+index 423a99b9f10c7..8d0dea188a284 100644
+--- a/drivers/clk/ti/clockdomain.c
++++ b/drivers/clk/ti/clockdomain.c
+@@ -146,10 +146,12 @@ static void __init of_ti_clockdomain_setup(struct device_node *node)
+ 		if (!omap2_clk_is_hw_omap(clk_hw)) {
+ 			pr_warn("can't setup clkdm for basic clk %s\n",
+ 				__clk_get_name(clk));
++			clk_put(clk);
+ 			continue;
+ 		}
+ 		to_clk_hw_omap(clk_hw)->clkdm_name = clkdm_name;
+ 		omap2_init_clk_clkdm(clk_hw);
++		clk_put(clk);
  	}
+ }
  
- 	if (diff_channels) {
+-- 
+2.27.0
+
 
 
