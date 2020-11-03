@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA572A3CBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C935C2A3CC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgKCGYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:24:32 -0500
-Received: from mga02.intel.com ([134.134.136.20]:53522 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgKCGYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:24:32 -0500
-IronPort-SDR: 1Dtmk1tdDVAsU3gXt1g5PBq0UtUO/BDorc2kugtHxJHKYKLQskwToHO+Myl3Dhpcf85hFSjRnG
- wQa0JfwziHXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="155993800"
+        id S1727486AbgKCGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:24:50 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:20045 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCGYu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:24:50 -0500
+IronPort-SDR: tm9WZLWZnji4s6uVJx5CRrXJDcOHRFhIr4cdBUbQsFcvY6G0ChSme/CtCOR0/C2lPOtMM7KIeD
+ n0LZsv61nVREaxyChqVJEC5LzPpBdjbX3bEbNy6QuAIPbtDQ+29qLYC+senLqhrUUNj/llK1pF
+ zLNb30L0+vT2GhT0mQuiFjUDpUBHg13iwo4kP9LTxbalHROZRfVZFm1A+fEXJVnqIZmdnLE9V2
+ TZPOXyUks/Qwo5fhUY9lfMR/CJDnbl8IrEiUWxPFuco4VyicR0xOFdjmdYA92FLFz+RvQna6Sf
+ CXQ=
 X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="155993800"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 22:24:28 -0800
-IronPort-SDR: /kmhGLNnzYaQ+04Ndb6V/0sv8KG0lxtDXF442YpiDYyGOG2j7kXZDb4r4LxT/J67mXqjqZ5ZDl
- JhcIs6IvIypQ==
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="470669617"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.118]) ([10.239.13.118])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 22:24:24 -0800
-Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
-To:     Tao Xu <tao3.xu@intel.com>, Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201102061445.191638-1-tao3.xu@intel.com>
- <CALMp9eTrsz4fq19HXGjfQF3GmsQ7oqGW9GXVnMYXtwnPmJcsOA@mail.gmail.com>
- <d4388899-665f-8012-c609-8162fa7015ae@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <24fd6383-2360-8a1a-3c4c-1a3ee1b1db1c@intel.com>
-Date:   Tue, 3 Nov 2020 14:24:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <d4388899-665f-8012-c609-8162fa7015ae@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="47412255"
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by labrats.qualcomm.com with ESMTP; 02 Nov 2020 22:24:49 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 02 Nov 2020 22:24:48 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 8229F217C9; Mon,  2 Nov 2020 22:24:48 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt caused by ufshcd_hold()
+Date:   Mon,  2 Nov 2020 22:24:39 -0800
+Message-Id: <1604384682-15837-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
+References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/2020 2:12 PM, Tao Xu wrote:
-> 
-> 
-> On 11/3/20 6:53 AM, Jim Mattson wrote:
->> On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
->>>
->>> There are some cases that malicious virtual machines can cause CPU stuck
->>> (event windows don't open up), e.g., infinite loop in microcode when
->>> nested #AC (CVE-2015-5307). No event window obviously means no events,
->>> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
->>> hardware CPU can't be used by host or other VM.
->>>
->>> To resolve those cases, it can enable a notify VM exit if no
->>> event window occur in VMX non-root mode for a specified amount of
->>> time (notify window).
->>>
->>> Expose a module param for setting notify window, default setting it to
->>> the time as 1/10 of periodic tick, and user can set it to 0 to disable
->>> this feature.
->>>
->>> TODO:
->>> 1. The appropriate value of notify window.
->>> 2. Another patch to disable interception of #DB and #AC when notify
->>> VM-Exiting is enabled.
->>>
->>> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Tao Xu <tao3.xu@intel.com>
->>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>
->> Do you have test cases?
->>
+The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
+decreased back in ufshcd_ungate_work() in a paired way. However, if
+specific ufshcd_hold/release sequences are met, it is possible that
+scsi_block_reqs_cnt is increased twice but only one ungate work is
+queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() and
+ufshcd_ungate_work() in a paired way, increase it only if queue_work()
+returns true.
 
-yes we have. The nested #AC (CVE-2015-5307) is a known test case, though 
-we need to tweak KVM to disable interception #AC for it.
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Not yet, because we are waiting real silicon to do some test. I should 
-> add RFC next time before I test it in hardware.
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 847f355..efa7d86 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1634,12 +1634,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
+ 		 */
+ 		/* fallthrough */
+ 	case CLKS_OFF:
+-		ufshcd_scsi_block_requests(hba);
+ 		hba->clk_gating.state = REQ_CLKS_ON;
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+-		queue_work(hba->clk_gating.clk_gating_workq,
+-			   &hba->clk_gating.ungate_work);
++		if (queue_work(hba->clk_gating.clk_gating_workq,
++			       &hba->clk_gating.ungate_work))
++			ufshcd_scsi_block_requests(hba);
+ 		/*
+ 		 * fall through to check if we should wait for this
+ 		 * work to be done or not.
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
