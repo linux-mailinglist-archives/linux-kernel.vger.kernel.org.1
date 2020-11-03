@@ -2,100 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC022A3D00
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B36F2A3CF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgKCGwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:52:05 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50086 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCGwF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:52:05 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A36n4n8096222;
-        Tue, 3 Nov 2020 00:49:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604386144;
-        bh=ZwcdfWCCREuC1REgf4+LiouU2icWMDn+kcyDmC5qgtQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=y6XGwP4n4KVXCDSKjzBh4qJU7/zKqa4vvt9xCi6WWhRn72Uo6uXL/4fZkxOFmfi3X
-         oqa4C1Ilcrb67HCh/it+s7U6DL7o45icbnYLX2Zvz3fCzyOn+ZIHeQQV2GY6gToQTm
-         /BX+ooj98RQzn/tX2KjJqP8eMYVghvTz+POEYeyQ=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A36n4nI118555
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 00:49:04 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 00:49:04 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 00:49:04 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A36n15X083859;
-        Tue, 3 Nov 2020 00:49:01 -0600
-Subject: Re: [PATCH v2] drm/bridge: tpd12s015: Fix irq registering in
- tpd12s015_probe
-To:     YueHaibing <yuehaibing@huawei.com>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <Laurent.pinchart@ideasonboard.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <sebastian.reichel@collabora.com>,
-        <sam@ravnborg.org>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20201031031648.42368-1-yuehaibing@huawei.com>
- <20201102143024.26216-1-yuehaibing@huawei.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <8b1ac1a4-44ef-e0bd-cc4f-4045b10fe1d3@ti.com>
-Date:   Tue, 3 Nov 2020 08:49:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727553AbgKCGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:50:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725982AbgKCGua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:50:30 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DB9822277;
+        Tue,  3 Nov 2020 06:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604386229;
+        bh=MAxrnbt5VIvXOwsvpicABX0MkmmlreTcaHNcZhiy7CA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EsTSPVC9j10ih+q2EMTVwZOtdEAKNetrRW9ikYC4jlFJLRmZmVAyccU2hmWR1dfRo
+         xKq0jVFsgjWZJtFD6+CK7uJCJr0rUzMJPiUqcRVXHxZXU73KRvLO+wozvcpayScpkP
+         ExKkmRj244rGFoo2ONBt0S+ylaBIu8qbUKYtgJCk=
+Date:   Tue, 3 Nov 2020 07:50:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     ira.weiny@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V2 05/10] x86/pks: Add PKS kernel API
+Message-ID: <20201103065024.GC75930@kroah.com>
+References: <20201102205320.1458656-1-ira.weiny@intel.com>
+ <20201102205320.1458656-6-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201102143024.26216-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102205320.1458656-6-ira.weiny@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2020 16:30, YueHaibing wrote:
-> gpiod_to_irq() return negative value in case of error,
-> the existing code doesn't handle negative error codes.
-> If the HPD gpio supports IRQs (gpiod_to_irq returns a
-> valid number), we use the IRQ. If it doesn't (gpiod_to_irq
-> returns an error), it gets polled via detect(). 
+On Mon, Nov 02, 2020 at 12:53:15PM -0800, ira.weiny@intel.com wrote:
+> From: Fenghua Yu <fenghua.yu@intel.com>
 > 
-> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
-> v2: Add checking for >= 0 and update commit message
-> ---
->  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> PKS allows kernel users to define domains of page mappings which have
+> additional protections beyond the paging protections.
 > 
-> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> index 514cbf0eac75..e0e015243a60 100644
-> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
-> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
+> Add an API to allocate, use, and free a protection key which identifies
+> such a domain.  Export 5 new symbols pks_key_alloc(), pks_mknoaccess(),
+> pks_mkread(), pks_mkrdwr(), and pks_key_free().  Add 2 new macros;
+> PAGE_KERNEL_PKEY(key) and _PAGE_PKEY(pkey).
+> 
+> Update the protection key documentation to cover pkeys on supervisor
+> pages.
+> 
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> 
+> ---
+> Changes from V1
+> 	Per Dave Hansen
+> 		Add flags to pks_key_alloc() to help future proof the
+> 		interface if/when the key space is exhausted.
+> 
+> Changes from RFC V3
+> 	Per Dave Hansen
+> 		Put WARN_ON_ONCE in pks_key_free()
+> 		s/pks_mknoaccess/pks_mk_noaccess/
+> 		s/pks_mkread/pks_mk_readonly/
+> 		s/pks_mkrdwr/pks_mk_readwrite/
+> 		Change return pks_key_alloc() to EOPNOTSUPP when not
+> 			supported or configured
+> 	Per Peter Zijlstra
+> 		Remove unneeded preempt disable/enable
+> ---
+>  Documentation/core-api/protection-keys.rst | 102 ++++++++++++++---
+>  arch/x86/include/asm/pgtable_types.h       |  12 ++
+>  arch/x86/include/asm/pkeys.h               |  11 ++
+>  arch/x86/include/asm/pkeys_common.h        |   4 +
+>  arch/x86/mm/pkeys.c                        | 126 +++++++++++++++++++++
+>  include/linux/pgtable.h                    |   4 +
+>  include/linux/pkeys.h                      |  24 ++++
+>  7 files changed, 265 insertions(+), 18 deletions(-)
+> 
+> diff --git a/Documentation/core-api/protection-keys.rst b/Documentation/core-api/protection-keys.rst
+> index ec575e72d0b2..c4e6c480562f 100644
+> --- a/Documentation/core-api/protection-keys.rst
+> +++ b/Documentation/core-api/protection-keys.rst
+> @@ -4,25 +4,33 @@
+>  Memory Protection Keys
+>  ======================
 >  
->  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
->  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
-> -	if (tpd->hpd_irq) {
-> +	if (tpd->hpd_irq >= 0) {
->  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
->  						tpd12s015_hpd_isr,
->  						IRQF_TRIGGER_RISING |
-> 
+> -Memory Protection Keys for Userspace (PKU aka PKEYs) is a feature
+> -which is found on Intel's Skylake (and later) "Scalable Processor"
+> -Server CPUs. It will be available in future non-server Intel parts
+> -and future AMD processors.
+> -
+> -For anyone wishing to test or use this feature, it is available in
+> -Amazon's EC2 C5 instances and is known to work there using an Ubuntu
+> -17.04 image.
+> -
+>  Memory Protection Keys provides a mechanism for enforcing page-based
+>  protections, but without requiring modification of the page tables
+> -when an application changes protection domains.  It works by
+> -dedicating 4 previously ignored bits in each page table entry to a
+> -"protection key", giving 16 possible keys.
+> +when an application changes protection domains.
+> +
+> +PKeys Userspace (PKU) is a feature which is found on Intel's Skylake "Scalable
+> +Processor" Server CPUs and later.  And It will be available in future
+> +non-server Intel parts and future AMD processors.
+> +
+> +Future Intel processors will support Protection Keys for Supervisor pages
+> +(PKS).
+> +
+> +For anyone wishing to test or use user space pkeys, it is available in Amazon's
+> +EC2 C5 instances and is known to work there using an Ubuntu 17.04 image.
+> +
+> +pkeys work by dedicating 4 previously Reserved bits in each page table entry to
+> +a "protection key", giving 16 possible keys.  User and Supervisor pages are
+> +treated separately.
+> +
+> +Protections for each page are controlled with per CPU registers for each type
+> +of page User and Supervisor.  Each of these 32 bit register stores two separate
+> +bits (Access Disable and Write Disable) for each key.
+>  
+> -There is also a new user-accessible register (PKRU) with two separate
+> -bits (Access Disable and Write Disable) for each key.  Being a CPU
+> -register, PKRU is inherently thread-local, potentially giving each
+> -thread a different set of protections from every other thread.
+> +For Userspace the register is user-accessible (rdpkru/wrpkru).  For
+> +Supervisor, the register (MSR_IA32_PKRS) is accessible only to the kernel.
+> +
+> +Being a CPU register, pkeys are inherently thread-local, potentially giving
+> +each thread an independent set of protections from every other thread.
+>  
+>  There are two new instructions (RDPKRU/WRPKRU) for reading and writing
+>  to the new register.  The feature is only available in 64-bit mode,
+> @@ -30,8 +38,11 @@ even though there is theoretically space in the PAE PTEs.  These
+>  permissions are enforced on data access only and have no effect on
+>  instruction fetches.
+>  
+> -Syscalls
+> -========
+> +For kernel space rdmsr/wrmsr are used to access the kernel MSRs.
+> +
+> +
+> +Syscalls for user space keys
+> +============================
+>  
+>  There are 3 system calls which directly interact with pkeys::
+>  
+> @@ -98,3 +109,58 @@ with a read()::
+>  The kernel will send a SIGSEGV in both cases, but si_code will be set
+>  to SEGV_PKERR when violating protection keys versus SEGV_ACCERR when
+>  the plain mprotect() permissions are violated.
+> +
+> +
+> +Kernel API for PKS support
+> +==========================
+> +
+> +The following interface is used to allocate, use, and free a pkey which defines
+> +a 'protection domain' within the kernel.  Setting a pkey value in a supervisor
+> +mapping adds that mapping to the protection domain.
+> +
+> +        int pks_key_alloc(const char * const pkey_user, int flags);
+> +        #define PAGE_KERNEL_PKEY(pkey)
+> +        #define _PAGE_KEY(pkey)
+> +        void pks_mk_noaccess(int pkey);
+> +        void pks_mk_readonly(int pkey);
+> +        void pks_mk_readwrite(int pkey);
+> +        void pks_key_free(int pkey);
+> +
+> +pks_key_alloc() allocates keys dynamically to allow better use of the limited
+> +key space.  'flags' alter the allocation based on the users need.  Currently
+> +they can request an exclusive key.
+> +
+> +Callers of pks_key_alloc() _must_ be prepared for it to fail and take
+> +appropriate action.  This is due mainly to the fact that PKS may not be
+> +available on all arch's.  Failure to check the return of pks_key_alloc() and
+> +using any of the rest of the API is undefined.
+> +
+> +Kernel users must set the PTE permissions in the page table entries for the
+> +mappings they want to protect.  This can be done with PAGE_KERNEL_PKEY() or
+> +_PAGE_KEY().
+> +
+> +The pks_mk*() family of calls allows kernel users the ability to change the
+> +protections for the domain identified by the pkey specified.  3 states are
+> +available pks_mk_noaccess(), pks_mk_readonly(), and pks_mk_readwrite() which
+> +set the access to none, read, and read/write respectively.
+> +
+> +Finally, pks_key_free() allows a user to return the key to the allocator for
+> +use by others.
+> +
+> +The interface maintains pks_mk_noaccess() (Access Disabled (AD=1)) for all keys
+> +not currently allocated.  Therefore, the user can depend on access being
+> +disabled when pks_key_alloc() returns a key and the user should remove mappings
+> +from the domain (remove the pkey from the PTE) prior to calling pks_key_free().
+> +
+> +It should be noted that the underlying WRMSR(MSR_IA32_PKRS) is not serializing
+> +but still maintains ordering properties similar to WRPKRU.  Thus it is safe to
+> +immediately use a mapping when the pks_mk*() functions returns.
+> +
+> +The current SDM section on PKRS needs updating but should be the same as that
+> +of WRPKRU.  So to quote from the WRPKRU text:
+> +
+> +	WRPKRU will never execute transiently. Memory accesses
+> +	affected by PKRU register will not execute (even transiently)
+> +	until all prior executions of WRPKRU have completed execution
+> +	and updated the PKRU register.
+> +
+> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+> index 816b31c68550..c9fdfbdcbbfb 100644
+> --- a/arch/x86/include/asm/pgtable_types.h
+> +++ b/arch/x86/include/asm/pgtable_types.h
+> @@ -73,6 +73,12 @@
+>  			 _PAGE_PKEY_BIT2 | \
+>  			 _PAGE_PKEY_BIT3)
+>  
+> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +#define _PAGE_PKEY(pkey)	(_AT(pteval_t, pkey) << _PAGE_BIT_PKEY_BIT0)
+> +#else
+> +#define _PAGE_PKEY(pkey)	(_AT(pteval_t, 0))
+> +#endif
+> +
+>  #if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
+>  #define _PAGE_KNL_ERRATUM_MASK (_PAGE_DIRTY | _PAGE_ACCESSED)
+>  #else
+> @@ -229,6 +235,12 @@ enum page_cache_mode {
+>  #define PAGE_KERNEL_IO		__pgprot_mask(__PAGE_KERNEL_IO)
+>  #define PAGE_KERNEL_IO_NOCACHE	__pgprot_mask(__PAGE_KERNEL_IO_NOCACHE)
+>  
+> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +#define PAGE_KERNEL_PKEY(pkey)	__pgprot_mask(__PAGE_KERNEL | _PAGE_PKEY(pkey))
+> +#else
+> +#define PAGE_KERNEL_PKEY(pkey) PAGE_KERNEL
+> +#endif
+> +
+>  #endif	/* __ASSEMBLY__ */
+>  
+>  /*         xwr */
+> diff --git a/arch/x86/include/asm/pkeys.h b/arch/x86/include/asm/pkeys.h
+> index 4526245b03e5..f84351b4ac7c 100644
+> --- a/arch/x86/include/asm/pkeys.h
+> +++ b/arch/x86/include/asm/pkeys.h
+> @@ -3,6 +3,7 @@
+>  #define _ASM_X86_PKEYS_H
+>  
+>  #include <asm/pkeys_common.h>
+> +#include <asm-generic/mman-common.h>
+>  
+>  #define ARCH_DEFAULT_PKEY	0
+>  
+> @@ -138,4 +139,14 @@ static inline int vma_pkey(struct vm_area_struct *vma)
+>  
+>  u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags);
+>  
+> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +int pks_key_alloc(const char *const pkey_user, int flags);
+> +void pks_key_free(int pkey);
+> +
+> +void pks_mk_noaccess(int pkey);
+> +void pks_mk_readonly(int pkey);
+> +void pks_mk_readwrite(int pkey);
+> +
+> +#endif /* CONFIG_ARCH_HAS_SUPERVISOR_PKEYS */
+> +
+>  #endif /*_ASM_X86_PKEYS_H */
+> diff --git a/arch/x86/include/asm/pkeys_common.h b/arch/x86/include/asm/pkeys_common.h
+> index 801a75615209..cd492c23b28c 100644
+> --- a/arch/x86/include/asm/pkeys_common.h
+> +++ b/arch/x86/include/asm/pkeys_common.h
+> @@ -26,6 +26,10 @@
+>  			 PKR_AD_KEY(10) | PKR_AD_KEY(11) | PKR_AD_KEY(12) | \
+>  			 PKR_AD_KEY(13) | PKR_AD_KEY(14) | PKR_AD_KEY(15))
+>  
+> +/*  PKS supports 16 keys. Key 0 is reserved for the kernel. */
+> +#define        PKS_KERN_DEFAULT_KEY    0
+> +#define        PKS_NUM_KEYS            16
+> +
+>  #ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+>  void write_pkrs(u32 new_pkrs);
+>  #else
+> diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
+> index 76a62419c446..0dc77409957a 100644
+> --- a/arch/x86/mm/pkeys.c
+> +++ b/arch/x86/mm/pkeys.c
+> @@ -3,6 +3,9 @@
+>   * Intel Memory Protection Keys management
+>   * Copyright (c) 2015, Intel Corporation.
+>   */
+> +#undef pr_fmt
+> +#define pr_fmt(fmt) "x86/pkeys: " fmt
+> +
+>  #include <linux/debugfs.h>		/* debugfs_create_u32()		*/
+>  #include <linux/mm_types.h>             /* mm_struct, vma, etc...       */
+>  #include <linux/pkeys.h>                /* PKEY_*                       */
+> @@ -231,6 +234,7 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
+>  
+>  	return pk_reg;
+>  }
+> +EXPORT_SYMBOL_GPL(update_pkey_val);
+>  
+>  DEFINE_PER_CPU(u32, pkrs_cache);
+>  
+> @@ -262,3 +266,125 @@ void write_pkrs(u32 new_pkrs)
+>  	}
+>  	put_cpu_ptr(pkrs);
+>  }
+> +EXPORT_SYMBOL_GPL(write_pkrs);
+> +
+> +/**
+> + * Do not call this directly, see pks_mk*() below.
+> + *
+> + * @pkey: Key for the domain to change
+> + * @protection: protection bits to be used
+> + *
+> + * Protection utilizes the same protection bits specified for User pkeys
+> + *     PKEY_DISABLE_ACCESS
+> + *     PKEY_DISABLE_WRITE
+> + *
+> + */
+> +static inline void pks_update_protection(int pkey, unsigned long protection)
+> +{
+> +	current->thread.saved_pkrs = update_pkey_val(current->thread.saved_pkrs,
+> +						     pkey, protection);
+> +	write_pkrs(current->thread.saved_pkrs);
+> +}
+> +
+> +/**
+> + * PKS access control functions
+> + *
+> + * Change the access of the domain specified by the pkey.  These are global
+> + * updates.  They only affects the current running thread.  It is undefined and
+> + * a bug for users to call this without having allocated a pkey and using it as
+> + * pkey here.
+> + *
+> + * pks_mk_noaccess()
+> + *     Disable all access to the domain
+> + * pks_mk_readonly()
+> + *     Make the domain Read only
+> + * pks_mk_readwrite()
+> + *     Make the domain Read/Write
+> + *
+> + * @pkey the pkey for which the access should change.
+> + *
+> + */
+> +void pks_mk_noaccess(int pkey)
+> +{
+> +	pks_update_protection(pkey, PKEY_DISABLE_ACCESS);
+> +}
+> +EXPORT_SYMBOL_GPL(pks_mk_noaccess);
+> +
+> +void pks_mk_readonly(int pkey)
+> +{
+> +	pks_update_protection(pkey, PKEY_DISABLE_WRITE);
+> +}
+> +EXPORT_SYMBOL_GPL(pks_mk_readonly);
+> +
+> +void pks_mk_readwrite(int pkey)
+> +{
+> +	pks_update_protection(pkey, 0);
+> +}
+> +EXPORT_SYMBOL_GPL(pks_mk_readwrite);
+> +
+> +static const char pks_key_user0[] = "kernel";
+> +
+> +/* Store names of allocated keys for debug.  Key 0 is reserved for the kernel.  */
+> +static const char *pks_key_users[PKS_NUM_KEYS] = {
+> +	pks_key_user0
+> +};
+> +
+> +/*
+> + * Each key is represented by a bit.  Bit 0 is set for key 0 and reserved for
+> + * its use.  We use ulong for the bit operations but only 16 bits are used.
+> + */
+> +static unsigned long pks_key_allocation_map = 1 << PKS_KERN_DEFAULT_KEY;
+> +
+> +/*
+> + * pks_key_alloc - Allocate a PKS key
+> + * @pkey_user: String stored for debugging of key exhaustion.  The caller is
+> + *             responsible to maintain this memory until pks_key_free().
+> + * @flags: Flags to modify behavior: see pks_alloc_flags
+> + *
+> + * Returns: pkey if success
+> + *          -EOPNOTSUPP if pks is not supported or not enabled
+> + *          -ENOSPC if no keys are available (even for sharing)
+> + */
+> +int pks_key_alloc(const char * const pkey_user, int flags)
+> +{
+> +	int nr;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
+> +		return -EOPNOTSUPP;
+> +
+> +	while (1) {
+> +		nr = find_first_zero_bit(&pks_key_allocation_map, PKS_NUM_KEYS);
+> +		if (nr >= PKS_NUM_KEYS) {
+> +			pr_info("Cannot allocate supervisor key for %s.\n",
+> +				pkey_user);
+> +			return -ENOSPC;
+> +		}
+> +		if (!test_and_set_bit_lock(nr, &pks_key_allocation_map))
+> +			break;
+> +	}
+> +
+> +	/* for debugging key exhaustion */
+> +	pks_key_users[nr] = pkey_user;
+> +
+> +	return nr;
+> +}
+> +EXPORT_SYMBOL_GPL(pks_key_alloc);
+> +
+> +/*
+> + * pks_key_free - Free a previously allocate PKS key
+> + * @pkey: Key to be free'ed
+> + */
+> +void pks_key_free(int pkey)
+> +{
+> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
+> +		return;
+> +
+> +	if (WARN_ON_ONCE(pkey >= PKS_NUM_KEYS || pkey <= PKS_KERN_DEFAULT_KEY))
+> +		return;
+> +
+> +	/* Restore to default of no access */
+> +	pks_mk_noaccess(pkey);
+> +	pks_key_users[pkey] = NULL;
+> +	__clear_bit(pkey, &pks_key_allocation_map);
+> +}
+> +EXPORT_SYMBOL_GPL(pks_key_free);
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 38c33eabea89..cd72d73e8e1c 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1402,6 +1402,10 @@ static inline bool arch_has_pfn_modify_check(void)
+>  # define PAGE_KERNEL_EXEC PAGE_KERNEL
+>  #endif
+>  
+> +#ifndef PAGE_KERNEL_PKEY
+> +#define PAGE_KERNEL_PKEY(pkey) PAGE_KERNEL
+> +#endif
+> +
+>  /*
+>   * Page Table Modification bits for pgtbl_mod_mask.
+>   *
+> diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+> index 2955ba976048..0959a4c0ca64 100644
+> --- a/include/linux/pkeys.h
+> +++ b/include/linux/pkeys.h
+> @@ -50,4 +50,28 @@ static inline void copy_init_pkru_to_fpregs(void)
+>  
+>  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
+>  
+> +#define PKS_FLAG_EXCLUSIVE 0x00
+> +
+> +#ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +static inline int pks_key_alloc(const char * const pkey_user, int flags)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +static inline void pks_key_free(int pkey)
+> +{
+> +}
+> +static inline void pks_mk_noaccess(int pkey)
+> +{
+> +	WARN_ON_ONCE(1);
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+So for panic-on-warn systems, this is ok to reboot the box?
 
- Tomi
+Are you sure, that feels odd...
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+greg k-h
+
