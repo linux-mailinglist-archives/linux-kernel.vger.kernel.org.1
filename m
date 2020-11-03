@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E890F2A4C39
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A742A4C45
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbgKCREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:04:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbgKCREg (ORCPT
+        id S1728387AbgKCRGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:06:15 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1629 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgKCRGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:04:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604423075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P6Nqd/GTymSo6mkhELu0bxwV3r/gwkmZPBYT64Awjzw=;
-        b=AtMg9SkLmD8daTfJvCVedE33/KZel2QOvzczQNhuwIkWe/oT0eMYNPjEm8Rm11D3Z/AaJq
-        zXLaOVoRGmw5y9vd7ec+2Q+HAfE+q/56eQK8qq+gVj0DJgun6WYIBT0aiCLZdcAqUtzkF4
-        lcPvvjkGLB1Xud2AjORC8nLWpRLypIw=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-IRH0COoaO0G5xTPdHbmLXQ-1; Tue, 03 Nov 2020 12:04:33 -0500
-X-MC-Unique: IRH0COoaO0G5xTPdHbmLXQ-1
-Received: by mail-pf1-f197.google.com with SMTP id z12so12554944pfa.22
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:04:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P6Nqd/GTymSo6mkhELu0bxwV3r/gwkmZPBYT64Awjzw=;
-        b=gH2ooGWtMYcvi/SSsY7yyL1aERRvEW1O79ZfjfFHVHdhNFJn6R+aSqOgls5BJ7Vbvy
-         G5NY0PQC8j2Yv7xICFHf/HPJNlpscyVQUEZztOuRn8NmH2yGoVzpNvOd+Dkz/sQTg6RM
-         0ktf8l1xA0jzcD2+IUG+dasjHQqFqEifiXDZugKhHnKo6wWt8qtSMEfFmiblWUfQU6eZ
-         Fcxaqmo15bbbvFFHCuOTr2li7o3wQEDXcVGsOeyBJAwljGTgVkSFFPzzKDSM2sqrBLTn
-         gteuJOSB3TEiCOO6LAPaMHhb9HKV0HQCGCd0hCsceTXQ4PxFcqfhWyMup7sMmRAbfqiD
-         8Ysw==
-X-Gm-Message-State: AOAM530Zop265rhHn2ozcIBRFowRC00xp8gKhh2mphkOcsaBpBr+ujBs
-        ioEb4kGigNnZ10xLhP/o8bIPxu8kyqdTKI+QFa6blz244DfMY9k6bWmbuEDxengVhpucDxN8h3Q
-        WU/r376zjtkwlRsqZtGnBoA/F
-X-Received: by 2002:a17:90a:7089:: with SMTP id g9mr160162pjk.4.1604423072874;
-        Tue, 03 Nov 2020 09:04:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzKrStQIiawQJXfEFp92+BAuOv0tSVW7WzCsy3loX2ZPEWNt9Fyvdp3RWqxou54wmyvUe6r9g==
-X-Received: by 2002:a17:90a:7089:: with SMTP id g9mr160141pjk.4.1604423072675;
-        Tue, 03 Nov 2020 09:04:32 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v24sm15775598pgi.91.2020.11.03.09.04.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 09:04:31 -0800 (PST)
-Date:   Wed, 4 Nov 2020 01:04:21 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>, linux-erofs@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>, nl6720 <nl6720@gmail.com>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] erofs: derive atime instead of leaving it empty
-Message-ID: <20201103170421.GB886627@xiangao.remote.csb>
-References: <20201031195102.21221-1-hsiangkao.ref@aol.com>
- <20201031195102.21221-1-hsiangkao@aol.com>
- <20201103025033.GA788000@xiangao.remote.csb>
- <275b73d7-9865-91c0-ecf2-bceed09a4dae@kernel.org>
+        Tue, 3 Nov 2020 12:06:15 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa18e060000>; Tue, 03 Nov 2020 09:06:14 -0800
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 17:06:13 +0000
+Subject: Re: [PATCH] drm/tegra: sor: Don't warn on probe deferral
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201103114426.546626-1-jonathanh@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <cc0e6f6e-2e06-81b3-38b8-fbdc5c772658@nvidia.com>
+Date:   Tue, 3 Nov 2020 17:06:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <275b73d7-9865-91c0-ecf2-bceed09a4dae@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201103114426.546626-1-jonathanh@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604423174; bh=wLq1VK2L7j+qzIJOsu91q3Us07fpe99UhftzABkPUJw=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=bzkNQpyjQa6zoWrV4LtF9I/xCCgR5HgfDSoaKMcSTx+viezL7EssCm7uAx4gsHtGw
+         6BO59p5M9FkbGxoE4K3MWb9TMiv1h3dS+YqX4c+04R+l7xUxlPSbLoZuKCIjC1s+Sh
+         k05cflTwL/pLCWRwWuDKXv9SzBdxo+cJYHMcoPl5kvFi0Rq/0Q/DPgu7XMSHYV0Wrb
+         Zx/wNP8oyB58cUBEjZnQG4CPoDPNVTxL1oUs79AK6Opy955M6utfl6JEur7Q49Yg0J
+         gIjZGozkIyfITji3Vnhp62NPQkSU08Ya95av0aI85LZY5h0IpEjCNp24L3gMLfRmFb
+         7Q7tMx9aIRD1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
 
-On Tue, Nov 03, 2020 at 11:58:42PM +0800, Chao Yu wrote:
-> Hi Xiang,
+On 03/11/2020 11:44, Jon Hunter wrote:
+> Deferred probe is an expected return value for tegra_output_probe().
+> Given that the driver deals with it properly, there's no need to output
+> a warning that may potentially confuse users.
 > 
-> On 2020-11-3 10:50, Gao Xiang wrote:
-> > Hi Chao,
-> > 
-> > On Sun, Nov 01, 2020 at 03:51:02AM +0800, Gao Xiang wrote:
-> > > From: Gao Xiang <hsiangkao@redhat.com>
-> > > 
-> > > EROFS has _only one_ ondisk timestamp (ctime is currently
-> > > documented and recorded, we might also record mtime instead
-> > > with a new compat feature if needed) for each extended inode
-> > > since EROFS isn't mainly for archival purposes so no need to
-> > > keep all timestamps on disk especially for Android scenarios
-> > > due to security concerns. Also, romfs/cramfs don't have their
-> > > own on-disk timestamp, and squashfs only records mtime instead.
-> > > 
-> > > Let's also derive access time from ondisk timestamp rather than
-> > > leaving it empty, and if mtime/atime for each file are really
-> > > needed for specific scenarios as well, we can also use xattrs
-> > > to record them then.
-> > > 
-> > > Reported-by: nl6720 <nl6720@gmail.com>
-> > > [ Gao Xiang: It'd be better to backport for user-friendly concern. ]
-> > > Fixes: 431339ba9042 ("staging: erofs: add inode operations")
-> > > Cc: stable <stable@vger.kernel.org> # 4.19+
-> > > Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-> > 
-> > May I ask for some extra free slots to review this patch plus
-> > [PATCH 1/4] of
-> > https://lore.kernel.org/r/20201022145724.27284-1-hsiangkao@aol.com
-> > 
-> > since it'd be also in linux-next for a while before sending out
-> > to Linus. And the debugging messages may also be an annoying
-> > thing for users.
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  drivers/gpu/drm/tegra/sor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Sorry for the delay review, will check the details tomorrow. :)
+> diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+> index e88a17c2937f..5a232055b8cc 100644
+> --- a/drivers/gpu/drm/tegra/sor.c
+> +++ b/drivers/gpu/drm/tegra/sor.c
+> @@ -3765,7 +3765,7 @@ static int tegra_sor_probe(struct platform_device *pdev)
+>  
+>  	err = tegra_output_probe(&sor->output);
+>  	if (err < 0) {
+> -		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
+> +		dev_err_probe(&pdev->dev, "failed to probe output: %d\n", err);
+>  		return err;
+>  	}
 
-No problem, thanks! If we'd like to submit a -fixes pull request,
-it'd be better not to be in the latter half of 5.10 rc... And
-considering that it'd be stayed in linux-next for almost a week,
-so yeah... (Only these 2 patches are considered for -fixes for now.)
+Sorry this is not right. I will fix this in V2.
 
-Thanks.
-Gao Xiang
+Jon
 
-> 
-> Thanks,
-> 
-> > 
-> > Thanks a lot!
-> > 
-> > Thanks,
-> > Gao Xiang
-> > 
-> 
-
+-- 
+nvpublic
