@@ -2,132 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306642A3F2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ED52A3F2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgKCInS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:43:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S1727810AbgKCIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727760AbgKCInP (ORCPT
+        with ESMTP id S1726058AbgKCIno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:43:15 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D71C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:43:14 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id f9so21097920lfq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:43:14 -0800 (PST)
+        Tue, 3 Nov 2020 03:43:44 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F631C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:43:42 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 205so4163398wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eZ78QKU5zhNl2xLl/0nTlqEQQ1NMs6MqfyMY7wLeUDg=;
-        b=IK3z930i181SzAuLUeu4fNiXRL9B2oCpHUE+mLelv6Deeb2aWtUNWITAQPlC7COqTU
-         rru+pvRFbDPrx7fFg78hyMCOPutzN/l8DxBapDnVghTXPuv8kxncHH9QOBOdRXT+bwYe
-         HV2nSk4j6GEQZ02zYnhugE6ip0PX3jNRaiR+w/l1l81IUgMSAPN5L9sfDRTIY/PFDBAz
-         LFQzApLe9jNEbT1DvysB/Y2M0aaKERH8y/396eecpO2e+cJDfC6ADyAXvhhz1NDx8oe6
-         EZtrqm+7LX/f8h+QmfkIL57NMtm+SDK87B6as2vN3V8DwTVj93YKoU7NyCejXM2UnMEZ
-         PG4w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4x5b3JzpvlcUe6sMCJAllWm7e4Nw8obUH53KK3bsNXQ=;
+        b=jcR1a7pYDZzsooTxcfYT2w8r5eDoTyG7e4eVu8VGcW6tSdyDwPGyCMIxntldKhEInm
+         6IjxxeyWTGH/nEgKHwCNa8nxqqMfJqcCdSS3zb3IR4cfhDEctIWmnDsxsNwNPYFawopF
+         ABrjqLGUAEVxowe9+F86xyNT3+i314dE4Bzhi866K+fIKvO/DQZwNqifsqRlJQXcNfKu
+         E/TJMpF9/K21vTzrWN/Y72c4TwU4UAtftLPdUspGOILBUQjBVSnQZeeebQwW+s8imuFz
+         PLA3zqMpbT181LBsYVjWD58SLdtQUngzGCy9s54xPE0A0P90UVotPRt+oSoUKj6H2WBq
+         0Euw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eZ78QKU5zhNl2xLl/0nTlqEQQ1NMs6MqfyMY7wLeUDg=;
-        b=m0uxFfPjv4xsDcIq9KRAXYhIV5SruTCUJ0LO1zXGcnfRxQrV8IkQqmJ+S0pfCMwBGZ
-         JgNG/6HOMXIFcuAWZTeFu4LHSiCwoMy4ReX/i+EKrwpViDoJHs1aDGq6hjKphgb0ag/L
-         NTG9QHXKavL8mg8leSD+kxZYENoK/Dc563U3HT6254teY9MuzOwwUbM39wat7Jur5cMu
-         xTBwtb9LI2uuEUJ8IWzfByVXvVBnUz4p/OUOUgwTsOT10PN+EJQjdnCWL5MyIFmuSHlx
-         tKWG7caXAir0NYOz833keizCT+cqO3nabxHpom8vW0RxfyJ11rcJiQK8RV8YTEScNFjk
-         imFw==
-X-Gm-Message-State: AOAM532FDYA5skQ2Pv2wg2W0bOlYZ2D8AxMoG+S9Ywzidh+cThNhMy4n
-        0yEjQgx92ptTOlG1lPrbs8I=
-X-Google-Smtp-Source: ABdhPJxVPBHcJHkpY5wYc7dGIS0n4eb4MNmsNeLW5ZUMr6l4nvXbdjRkWSN2lf87u15FA29qg6v/5A==
-X-Received: by 2002:a19:8d3:: with SMTP id 202mr6743681lfi.600.1604392992679;
-        Tue, 03 Nov 2020 00:43:12 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-17.dynamic.spd-mgts.ru. [109.252.192.17])
-        by smtp.googlemail.com with ESMTPSA id c133sm2473422lfd.92.2020.11.03.00.43.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 00:43:11 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <202010211637.7CFD8435@keescook>
- <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
- <202010212028.32E8A5EF9B@keescook>
- <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
- <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
- <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
- <20201022161118.GP1551@shell.armlinux.org.uk>
- <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
- <20201022162334.GQ1551@shell.armlinux.org.uk>
- <CAMj1kXF+2kJrUaDyA-Xw4rz2bsuEipX3P4JyPrY1bim76LQvoA@mail.gmail.com>
- <20201022174826.GS1551@shell.armlinux.org.uk>
- <CAMj1kXHpPbwS8zjsr8S65EMj9XOwPxWiQ5WN_ok8ZAFZg9kSAg@mail.gmail.com>
- <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com>
- <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
- <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f4b4f5ca-2c0c-c1f0-9329-a95967b99bd0@gmail.com>
-Date:   Tue, 3 Nov 2020 11:43:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4x5b3JzpvlcUe6sMCJAllWm7e4Nw8obUH53KK3bsNXQ=;
+        b=gmoW8HhKD36rBvkN/xfAIxstihrGSpjfExnDU8wCb9ekmcmbZoMAhoset6Z5a58Iuc
+         AFcJsnAB8arigVARk1ZlhZkq906crEGe3R6RVAH9OOrcxYPgNoZglR3eQmFR2UZw1aKk
+         d2JmHzDkUwgJmcUlO9I/PIFJsMOyChQrbyM9UC8NqmzwjW3SoIO2aKpYYNqrg79lT28E
+         khCpWi7FyOVWhTHr46Q0DdjBssiU6Ej+yREB0jQGf18RYQATolQz0KqooF5zItZ6UmuC
+         4JrhJEox4WNe4yQNyI7bm37kE87zYlLgF7xpKI9bq3nu9MM+ZPpEmH8shmQvZqDdMiFA
+         Rwsw==
+X-Gm-Message-State: AOAM530aBtUSfsWJsbl42rr60/UZlDhQJg58O+mQuuG5deX48X+y4n2W
+        JWUx3/A9T91gsRGNLY38XbVdZg==
+X-Google-Smtp-Source: ABdhPJy0Kp8A3oC5BQ3pC1rLkWiUJiXVEpp6RYgMd0SdiY1r/HBSkq66UYmo0XV8wKtnzhY+Z2ZZEg==
+X-Received: by 2002:a1c:9d02:: with SMTP id g2mr2398444wme.110.1604393021038;
+        Tue, 03 Nov 2020 00:43:41 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id k81sm2443125wma.2.2020.11.03.00.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 00:43:40 -0800 (PST)
+Date:   Tue, 3 Nov 2020 08:43:38 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     AceLan Kao <chia-lin.kao@canonical.com>
+Cc:     Shihlun Lin <shihlun.lin@advantech.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Campion Kang <campion.kang@advantech.com.tw>
+Subject: Re: [PATCH v3 5/6] mfd: ahc1ec0-hwmon: Add sub-device hwmon for
+ Advantech embedded controller
+Message-ID: <20201103084338.GI4488@dell>
+References: <20201029100613.25789-1-shihlun.lin@advantech.com.tw>
+ <20201029100613.25789-5-shihlun.lin@advantech.com.tw>
+ <20201029131419.GA4127@dell>
+ <CAFv23Q=EwE=S7U9-NzRfy8CxM+bFX32HHMfZXS1UsPd8dMqzYQ@mail.gmail.com>
+ <20201103084053.GH4488@dell>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103084053.GH4488@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.11.2020 10:24, Ard Biesheuvel пишет:
-> Still broken today
+On Tue, 03 Nov 2020, Lee Jones wrote:
+
+> On Tue, 03 Nov 2020, AceLan Kao wrote:
 > 
-> https://kernelci.org/build/id/5fa0c1a74bdb1ea4063fe7e4/
+> > Hi Lee,
+> > 
+> > One question for you.
+> > 
+> > Lee Jones <lee.jones@linaro.org> 於 2020年10月29日 週四 下午9:14寫道：
+> > >
+> > > On Thu, 29 Oct 2020, Shihlun Lin wrote:
+> > >
+> > > > This is one of sub-device driver for Advantech embedded controller
+> > > > AHC1EC0. This driver provides sysfs ABI for Advantech related
+> > > > applications to monitor the system status.
+> > > >
+> > > > Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > LKP reported that your driver needed upstreaming?
+> > >
+> > > I'm confused!
+> > >
+> > > > ---
+> > > >  drivers/mfd/Kconfig         |    8 +
+> > > >  drivers/mfd/Makefile        |    1 +
+> > > >  drivers/mfd/ahc1ec0-hwmon.c | 1514 +++++++++++++++++++++++++++++++++++
+> > >
+> > > This obviously belongs in drivers/hwmon.
+> > >
+> > > >  3 files changed, 1523 insertions(+)
+> > > >  create mode 100644 drivers/mfd/ahc1ec0-hwmon.c
+> > > >
+> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > index 965bcafbe5b2..52ca49b211fc 100644
+> > > > --- a/drivers/mfd/Kconfig
+> > > > +++ b/drivers/mfd/Kconfig
+> > > > @@ -2175,5 +2175,13 @@ config MFD_AHC1EC0
+> > > >         provides expose functions for sub-devices to read/write the value
+> > > >         to embedded controller.
+> > > >
+> > > > +config MFD_AHC1EC0_HWMON
+> > > > +     tristate "Advantech EC Hareware Monitor Function"
+> > > > +     depends on MFD_AHC1EC0
+> > > > +     help
+> > > > +       This is sub-device for Advantech embedded controller AHC1EC0. This
+> > > > +       driver provides the sysfs attribues for applications to monitor
+> > > > +       the system status.
+> > > > +
+> > > >  endmenu
+> > > >  endif
+> > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > > > index 80a9a2bdc3ba..eb645db817b5 100644
+> > > > --- a/drivers/mfd/Makefile
+> > > > +++ b/drivers/mfd/Makefile
+> > > > @@ -269,3 +269,4 @@ obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)  += simple-mfd-i2c.o
+> > > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
+> > > >
+> > > >  obj-$(CONFIG_MFD_AHC1EC0)    += ahc1ec0.o
+> > > > +obj-$(CONFIG_MFD_AHC1EC0_HWMON)      += ahc1ec0-hwmon.o
+> > > > diff --git a/drivers/mfd/ahc1ec0-hwmon.c b/drivers/mfd/ahc1ec0-hwmon.c
+> > > > new file mode 100644
+> > > > index 000000000000..3e493b040b4a
+> > > > --- /dev/null
+> > > > +++ b/drivers/mfd/ahc1ec0-hwmon.c
+> > > > @@ -0,0 +1,1514 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +/*****************************************************************************
+> > > > + * Copyright (c) 2018, Advantech Automation Corp.
+> > >
+> > > You can't just lift a whole driver from downstream code and send it to
+> > > the mailing list as-is.
+> > Could you elaborate more about which part should be fixed, and how it
+> > should look like?
 > 
-> So the options are
+> Frankly, no.
 > 
-> a) merge my patch that adds 2 bytes of opcode to the Thumb2 build
-> b) merge Dmitry's patch that adds an unconditional literal load to all builds
-> c) remove kernel mode handling from vfp_support_entry() [my other patch]
-> d) move sections around so that vfp_kmode_exception is guaranteed to
-> be in range.
-> e) do nothing
+> I would expect a contributor of a several thousand line patch-set to
+> at least read the documentation and adhere to it prior to anyone
+> conducting a full review.  Simply plucking a very old driver set from
+> a BSP kernel and dumping it on the upstream mailing list is not the
+> way to gain the right kind of attention.
 > 
-> Given the lack of reports about this issue, it is pretty clear that
-> few people use the Thumb2 build (which I find odd, tbh, since it
-> really is much smaller).
+> At the very least (this is not an exhaustive list);
+> 
+> - all of the copyrights need to be up-to-date
+> - the drivers need to be located in their correct subsystems
+> - any internal references/comment headers need to be removed
+> - licences should be compatible with upstreaming
+> - hacks removed
+> - builds without errors or warnings
+> - checkpatch.pl passed
+> - submission should tick all of the boxes in SubmittingPatches
+> - removal of changelogs/versions
+>   - this is the first version as far as the kernel is concerned
 
-I waited for about a month, hoping that somebody will fix this problem
-before bothering with bisection, which took quite some time and effort
-because intermediate commits were broken, and then with creating and
-sending a patch :)
+Also spell-check.  Literally the 2nd line:
 
-Thumb2 usually is untested by CI farms and in a case of personal use
-it's easier to wait for a fix. Hence no much reports, I suppose.
+ config MFD_AHC1EC0_HWMON
+      tristate "Advantech EC Hareware Monitor Function"
 
-> However, that means that a) is a reasonable
-> fix, since nobody will notice the potential performance hit either,
-> and it can easily be backported to wherever the breakage was
-> introduced. (Note that eff8728fe698, which created the problem is
-> marked cc:stable itself).
+I don't know what Hareware is, but is sounds fast! ;)
 
-The performance argument is questionable to me, to be honest. In
-practice the performance difference should be absolutely negligible for
-either of the proposed options, it should stay in a noise even if
-somebody thoroughly counting cycles, IMO.
+> > > > + * THIS IS AN UNPUBLISHED WORK CONTAINING CONFIDENTIAL AND PROPRIETARY
+> > > > + * INFORMATION WHICH IS THE PROPERTY OF ADVANTECH AUTOMATION CORP.
+> > > > + *
+> > > > + * ANY DISCLOSURE, USE, OR REPRODUCTION, WITHOUT WRITTEN AUTHORIZATION FROM
+> > > > + * ADVANTECH AUTOMATION CORP., IS STRICTLY PROHIBITED.
+> > > > + *****************************************************************************
+> > >
+> > > This warning is in contradiction to the licence you are proposing.
+> > >
+> 
 
-I'm still thinking that the best option will be to apply a).
-
-> Going forward, I can refine d) so that we can get rid of the kernel
-> mode path entirely.
-
-And then improve it using d).
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
