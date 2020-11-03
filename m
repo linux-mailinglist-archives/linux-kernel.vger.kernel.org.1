@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B592A5408
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F232A5499
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388259AbgKCVHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:07:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46146 "EHLO mail.kernel.org"
+        id S2389043AbgKCVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:12:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733298AbgKCVHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:07:01 -0500
+        id S2389082AbgKCVMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:12:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B91AE205ED;
-        Tue,  3 Nov 2020 21:06:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 958F421534;
+        Tue,  3 Nov 2020 21:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437620;
-        bh=6kclw7NjpySyc7uw7GBrdqMgAv3hQb9hE1Q/lAP1phI=;
+        s=default; t=1604437968;
+        bh=/T3SJ1buyA6YHXT6XGq5baauNt1qHSf3vwSNRPlvzJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VGtRf/VgvH/QOR4f1E0rfSGNYnfNPFM649ifRY7FZKirwXaxpE89bxDitGku+ngzz
-         jLIW3v7TW7bdOWLBdoR9aIeV8D5xjkQLKbvB4389m25hSwjBza2p+Boedh6yLXB5Ay
-         RlAAKVNt94MD+fHMEp3Kng4uEX9ft32zZ16sJwiA=
+        b=MDwbxkxqGr69h5NAt9GVmEb6kymrofBpM4m1QxTrgZaQM5hL3OOVhN5cNN8hilPMn
+         FarXa8q5uQB5RbGI6WcJQq3s6H4FAoacXasjJ7psJwR/rMHIBfWVimz5yPtL/FVuLa
+         zTO5TpIbbeXp0SDle26/BHcp/UC6RRNvseyuCc7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.19 154/191] s390/stp: add locking to sysfs functions
-Date:   Tue,  3 Nov 2020 21:37:26 +0100
-Message-Id: <20201103203247.019365665@linuxfoundation.org>
+        stable@vger.kernel.org, Wei Huang <wei.huang2@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.14 070/125] acpi-cpufreq: Honor _PSD table setting on new AMD CPUs
+Date:   Tue,  3 Nov 2020 21:37:27 +0100
+Message-Id: <20201103203207.027912350@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,236 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Wei Huang <wei.huang2@amd.com>
 
-commit b3bd02495cb339124f13135d51940cf48d83e5cb upstream.
+commit 5368512abe08a28525d9b24abbfc2a72493e8dba upstream.
 
-The sysfs function might race with stp_work_fn. To prevent that,
-add the required locking. Another issue is that the sysfs functions
-are checking the stp_online flag, but this flag just holds the user
-setting whether STP is enabled. Add a flag to clock_sync_flag whether
-stp_info holds valid data and use that instead.
+acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
+BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
+now accurately reports the P-state dependency of CPU cores. Hence this
+quirk needs to be fixed in order to support new CPUs' frequency control.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+[ rjw: Subject edit ]
+Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/time.c |  118 ++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 85 insertions(+), 33 deletions(-)
+ drivers/cpufreq/acpi-cpufreq.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/s390/kernel/time.c
-+++ b/arch/s390/kernel/time.c
-@@ -354,8 +354,9 @@ static DEFINE_PER_CPU(atomic_t, clock_sy
- static DEFINE_MUTEX(clock_sync_mutex);
- static unsigned long clock_sync_flags;
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -701,7 +701,8 @@ static int acpi_cpufreq_cpu_init(struct
+ 		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
+ 	}
  
--#define CLOCK_SYNC_HAS_STP	0
--#define CLOCK_SYNC_STP		1
-+#define CLOCK_SYNC_HAS_STP		0
-+#define CLOCK_SYNC_STP			1
-+#define CLOCK_SYNC_STPINFO_VALID	2
- 
- /*
-  * The get_clock function for the physical clock. It will get the current
-@@ -592,6 +593,22 @@ void stp_queue_work(void)
- 	queue_work(time_sync_wq, &stp_work);
- }
- 
-+static int __store_stpinfo(void)
-+{
-+	int rc = chsc_sstpi(stp_page, &stp_info, sizeof(struct stp_sstpi));
-+
-+	if (rc)
-+		clear_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
-+	else
-+		set_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
-+	return rc;
-+}
-+
-+static int stpinfo_valid(void)
-+{
-+	return stp_online && test_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
-+}
-+
- static int stp_sync_clock(void *data)
- {
- 	struct clock_sync_data *sync = data;
-@@ -613,8 +630,7 @@ static int stp_sync_clock(void *data)
- 			if (rc == 0) {
- 				sync->clock_delta = clock_delta;
- 				clock_sync_global(clock_delta);
--				rc = chsc_sstpi(stp_page, &stp_info,
--						sizeof(struct stp_sstpi));
-+				rc = __store_stpinfo();
- 				if (rc == 0 && stp_info.tmd != 2)
- 					rc = -EAGAIN;
- 			}
-@@ -659,7 +675,7 @@ static void stp_work_fn(struct work_stru
- 	if (rc)
- 		goto out_unlock;
- 
--	rc = chsc_sstpi(stp_page, &stp_info, sizeof(struct stp_sstpi));
-+	rc = __store_stpinfo();
- 	if (rc || stp_info.c == 0)
- 		goto out_unlock;
- 
-@@ -696,10 +712,14 @@ static ssize_t stp_ctn_id_show(struct de
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%016llx\n",
--		       *(unsigned long long *) stp_info.ctnid);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%016llx\n",
-+			      *(unsigned long long *) stp_info.ctnid);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(ctn_id, 0400, stp_ctn_id_show, NULL);
-@@ -708,9 +728,13 @@ static ssize_t stp_ctn_type_show(struct
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.ctn);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.ctn);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(ctn_type, 0400, stp_ctn_type_show, NULL);
-@@ -719,9 +743,13 @@ static ssize_t stp_dst_offset_show(struc
- 				   struct device_attribute *attr,
- 				   char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x2000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.dsto);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x2000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.dsto);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(dst_offset, 0400, stp_dst_offset_show, NULL);
-@@ -730,9 +758,13 @@ static ssize_t stp_leap_seconds_show(str
- 					struct device_attribute *attr,
- 					char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x8000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.leaps);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x8000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.leaps);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(leap_seconds, 0400, stp_leap_seconds_show, NULL);
-@@ -741,9 +773,13 @@ static ssize_t stp_stratum_show(struct d
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.stratum);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.stratum);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(stratum, 0400, stp_stratum_show, NULL);
-@@ -752,9 +788,13 @@ static ssize_t stp_time_offset_show(stru
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x0800))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int) stp_info.tto);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x0800))
-+		ret = sprintf(buf, "%i\n", (int) stp_info.tto);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(time_offset, 0400, stp_time_offset_show, NULL);
-@@ -763,9 +803,13 @@ static ssize_t stp_time_zone_offset_show
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x4000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.tzo);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x4000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.tzo);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(time_zone_offset, 0400,
-@@ -775,9 +819,13 @@ static ssize_t stp_timing_mode_show(stru
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.tmd);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.tmd);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(timing_mode, 0400, stp_timing_mode_show, NULL);
-@@ -786,9 +834,13 @@ static ssize_t stp_timing_state_show(str
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.tst);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.tst);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(timing_state, 0400, stp_timing_state_show, NULL);
+-	if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
++	if (check_amd_hwpstate_cpu(cpu) && boot_cpu_data.x86 < 0x19 &&
++	    !acpi_pstate_strict) {
+ 		cpumask_clear(policy->cpus);
+ 		cpumask_set_cpu(cpu, policy->cpus);
+ 		cpumask_copy(data->freqdomain_cpus,
 
 
