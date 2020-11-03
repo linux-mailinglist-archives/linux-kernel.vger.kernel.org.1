@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2402A44C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340202A44C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgKCMEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:04:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7133 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728941AbgKCMEh (ORCPT
+        id S1728976AbgKCMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:05:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728784AbgKCMFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:04:37 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQT3Y5tlyz15R0b;
-        Tue,  3 Nov 2020 20:04:25 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 20:04:24 +0800
-Subject: Re: [PATCH v2] iio: adc: rockchip_saradc: fix missing
- clk_disable_unprepare() on error in rockchip_saradc_resume
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Heiko Stuebner <heiko@sntech.de>
-CC:     <linux-iio@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201103074909.195465-1-miaoqinglang@huawei.com>
- <50da9bf1-7317-b24b-9a87-e9dfb4e4a694@arm.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <c86c7e85-31ec-725f-ed75-563c804868c7@huawei.com>
-Date:   Tue, 3 Nov 2020 20:04:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 3 Nov 2020 07:05:35 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AA1C0613D1;
+        Tue,  3 Nov 2020 04:05:35 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id a200so13990772pfa.10;
+        Tue, 03 Nov 2020 04:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CoUtQrJSQRYVKiicQfT9b8FMAZeeb+zxod1LbaNVVzE=;
+        b=WM+YtojMtExY2bSx1rZgI2jNzAxVBzt+gQy5d6FlFB2ZQ2+tYra7w3xUImdiB+4aCf
+         74xlNxvl1zafd+USLWhF854/j/ZmXaeNwS2v68wzLERsUozQD9eavP6APlj9hD/95GCf
+         e5WhrwGzr9L0hAv7c8dBT4ZJAZ1AZkXA0byYWy7vGhF6pkyEQBvC0gk7Zya6rn5Gitmx
+         0QouET8V/OMgrTYTGYgfO4eYvYyRBauKwGxZuULll1gOABkJJO547wTYFsrCF8wTZsl+
+         7T0XRiHLRwTWQbA9BYv4YkX+abx1uCKY4dleuVBYPVruBvQi1tKqVeKpHfCUPUfRPq0L
+         VEwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CoUtQrJSQRYVKiicQfT9b8FMAZeeb+zxod1LbaNVVzE=;
+        b=Hi67p+bKa0um10GaSYgG5EcnVgkZ+4e6tctuxMVNfGR59+whH+K+P5cP2f+zpbffgj
+         lU6aRz4HCFBiSU/0ib8ks3hEbsXV7xgL8pTMQ87ljNbwRe7BDDcidNtYJGWJGTJnKICX
+         q9p+sJpIayVjcNltNicpfxg81jrZfTvWtNiQqwdo4FJuyerjeKyj30dutjYbSw26t9vF
+         3M93rYr/IXtA6MxBjcDFTNtdv5HhBjVYU2jXQ67Ew69vw7zd8RY26ZX+3Bc1dh9CwMKy
+         FLr1gbcyZkrCNF0OciK6XDQxg7tFTdIYzF6Ek9hlnslG6tJGRAHBFkU42Rw2JeY3+VMe
+         QSxw==
+X-Gm-Message-State: AOAM530AOW4WsMtEMXAnw/JJ3uY+kxa+teOAOBqy3/r1YWbh+Ub5y5sn
+        o30yoWYHTY53uNMHmPNkrkemim+utMq2Mp4n/+k=
+X-Google-Smtp-Source: ABdhPJxUO60AuqbTEpZJUSjqUhnIPjXMPgP8GNKeKA0lClIJQEIZVlsw/a1hRyj6/h1KU1n4Q3C6NkqxI7vqhDJ0z/0=
+X-Received: by 2002:a05:6a00:850:b029:18a:a8ce:d346 with SMTP id
+ q16-20020a056a000850b029018aa8ced346mr16078623pfk.73.1604405134945; Tue, 03
+ Nov 2020 04:05:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <50da9bf1-7317-b24b-9a87-e9dfb4e4a694@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+References: <20201103111049.51916-1-98.arpi@gmail.com> <20201103113353.GC4077@smile.fi.intel.com>
+ <20201103115223.GA268796@kroah.com>
+In-Reply-To: <20201103115223.GA268796@kroah.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Nov 2020 14:06:23 +0200
+Message-ID: <CAHp75Vcw8Hyaks9ZbRfz7HhBzPM2cJxR4ypye5PwcZqY9rsYhA@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>, kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 1:54 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Tue, Nov 03, 2020 at 01:33:53PM +0200, Andy Shevchenko wrote:
+> > On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
 
+...
 
-在 2020/11/3 19:11, Robin Murphy 写道:
-> On 2020-11-03 07:49, Qinglang Miao wrote:
->> Fix the missing clk_disable_unprepare() of info->pclk
->> before return from rockchip_saradc_resume in the error
->> handling case when fails to prepare and enable info->clk.
->>
->> Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/iio/adc/rockchip_saradc.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iio/adc/rockchip_saradc.c 
->> b/drivers/iio/adc/rockchip_saradc.c
->> index 1f3d7d639..5eb566274 100644
->> --- a/drivers/iio/adc/rockchip_saradc.c
->> +++ b/drivers/iio/adc/rockchip_saradc.c
->> @@ -461,9 +461,10 @@ static int rockchip_saradc_resume(struct device 
->> *dev)
->>           return ret;
->>       ret = clk_prepare_enable(info->clk);
->> -    if (ret)
->> +    if (ret) {
->> +        clk_disable_unprepare(info->pclk);
->>           return ret;
-> 
-> No need to add braces, just replace this utterly pointless "early" 
-> return ;)
-> 
-> Robin.
-You are right Robin, thanks a lot! :D
+> > Better, indeed.
+> >
+> > But can be this improved to have a cumulative statistics, like showing only
+> > number of total, succeeded, failed with details of the latter ones?
+>
+> Is that the proper test output format?  We have a standard...
 
-I've sent a 'real' v2 patch based on your advice.
-> 
->> -
->> +    }
->>       return ret;
->>   }
->>   #endif
->>
-> .
+I dunno. I'm asking...
+We have few possibilities here: a) let it go like above, b) use the
+cumulative statistics, c) if there is no such available, implement and
+use it, d) ...
+
+-- 
+With Best Regards,
+Andy Shevchenko
