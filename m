@@ -2,258 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247EF2A46B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C302A46BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgKCNjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:39:16 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7454 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgKCNjQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:39:16 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQW8s0jb9zhfTq;
-        Tue,  3 Nov 2020 21:39:09 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 21:38:58 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH v6] lib: optimize cpumask_local_spread()
-Date:   Tue, 3 Nov 2020 21:39:27 +0800
-Message-ID: <1604410767-55947-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729299AbgKCNjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:39:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727986AbgKCNjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:39:44 -0500
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E20922404
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 13:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604410783;
+        bh=sfMqMzyu6k9ENRyV31konN+k8AwCJW9nINoMClEJ8HI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J8g2CPeQ/aDOaq4IXeNQCZc+Rol3ms5i2FX87fYUTXPAd0FVlswBcAIneEiP7il4/
+         Wv2wR5H6TGjAr+kTjph6hLlxQD4VcRTVeMEdZGQoBpxA9xYT0uPTgp6hYMZmGfZ+R4
+         T77zbKyPW1M7NSaAv3L2WhWKd3al7LbComqnaYOI=
+Received: by mail-ot1-f44.google.com with SMTP id j14so5739286ots.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 05:39:43 -0800 (PST)
+X-Gm-Message-State: AOAM531ZDrM7D+Rca3aKBdHhmQrmcQEedgOsOEAj7uA9An3MFSUEXTlo
+        Q9byNm/zbAO4c7epP0skaOpFkNLGuKvp9xEZUg==
+X-Google-Smtp-Source: ABdhPJxUCjwQZQL5G3MpL0TjyvFT/A+mnPfovePtHFKpYyctOppY6fvaTiRQyNO9hrRKRtYHyiwZ9lhATEW/9qiAdQ4=
+X-Received: by 2002:a9d:6e0c:: with SMTP id e12mr4740766otr.129.1604410782206;
+ Tue, 03 Nov 2020 05:39:42 -0800 (PST)
 MIME-Version: 1.0
+References: <20201101122223.255806-1-maz@kernel.org>
+In-Reply-To: <20201101122223.255806-1-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 3 Nov 2020 07:39:31 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLp9PRbumKTf0r8+LbFmR740dQPerrQDJF14XtpwxG0Rw@mail.gmail.com>
+Message-ID: <CAL_JsqLp9PRbumKTf0r8+LbFmR740dQPerrQDJF14XtpwxG0Rw@mail.gmail.com>
+Subject: Re: [GIT PULL] irqchip updates for 5.10, take #1
+To:     Marc Zyngier <maz@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuqi Jin <jinyuqi@huawei.com>
+On Sun, Nov 1, 2020 at 6:22 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Thomas,
+>
+> Here's a smallish set of fixes for 5.10. Some fixes after the
+> IPI-as-IRQ (I expect a couple more next week), two significant bug
+> fixes for the SiFive PLIC, and a TI update to handle their "unmapped
+> events". The rest is the usual set of cleanups and tidying up.
+>
+> Please pull,
+>
+>         M.
+>
+> The following changes since commit 63ea38a402213d8c9c16e58ee4901ff51bc8fe3c:
+>
+>   Merge branch 'irq/mstar' into irq/irqchip-next (2020-10-10 12:46:54 +0100)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.10-1
+>
+> for you to fetch changes up to d95bdca75b3fb41bf185efe164e05aed820081a5:
+>
+>   irqchip/ti-sci-inta: Add support for unmapped event handling (2020-11-01 12:00:50 +0000)
+>
+> ----------------------------------------------------------------
+> irqchip fixes for Linux 5.10, take #1
+>
+> - A couple of fixes after the IPI as IRQ patches (Kconfig, bcm2836)
+> - Two SiFive PLIC fixes (irq_set_affinity, hierarchy handling)
+> - "unmapped events" handling for the ti-sci-inta controller
+> - Tidying up for the irq-mst driver (static functions, Kconfig)
+> - Small cleanup in the Renesas irqpin driver
+> - STM32 exti can now handle LP timer events
+>
+> ----------------------------------------------------------------
+> Fabrice Gasnier (1):
+>       irqchip/stm32-exti: Add all LP timer exti direct events support
+>
+> Geert Uytterhoeven (2):
+>       irqchip/mst: MST_IRQ should depend on ARCH_MEDIATEK or ARCH_MSTARV7
+>       irqchip/renesas-intc-irqpin: Merge irlm_bit and needs_irlm
+>
+> Greentime Hu (2):
+>       irqchip/sifive-plic: Fix broken irq_set_affinity() callback
+>       irqchip/sifive-plic: Fix chip_data access within a hierarchy
+>
+> Marc Zyngier (4):
+>       genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+>       irqchip/mst: Make mst_intc_of_init static
+>       irqchip/mips: Drop selection of IRQ_DOMAIN_HIERARCHY
+>       irqchip/bcm2836: Fix missing __init annotation
+>
+> Peter Ujfalusi (2):
+>       dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling
 
-In multi-processor and NUMA system, I/O driver will find cpu cores that
-which shall be bound IRQ.  When cpu cores in the local numa have been
-used, it is better to find the node closest to the local numa node for
-performance, instead of choosing any online cpu immediately.
+This breaks dt_binding_check in linux-next:
 
-Currently, Intel DDIO affects only local sockets, so its performance
-improvement is due to the relative difference in performance between the
-local socket I/O and remote socket I/O.To ensure that Intel DDIO’s
-benefits are available to applications where they are most useful, the
-irq can be pinned to particular sockets using Intel DDIO.
-This arrangement is called socket affinityi. So this patch can help
-Intel DDIO work. The same I/O stash function for most processors
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py",
+line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py",
+line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 891, in
+_ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.parser.ParserError: while parsing a block mapping
+  in "<unicode string>", line 4, column 1
+did not find expected key
+  in "<unicode string>", line 37, column 2
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20:
+Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.example.dts]
+Error 1
+make[1]: *** Deleting file
+'Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.example.dts'
+./Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml:37:2:
+[error] syntax error: expected <block end>, but found '<scalar>'
+(syntax)
 
-On Huawei Kunpeng 920 server, there are 4 NUMA node(0 - 3) in the 2-cpu
-system(0 - 1). The topology of this server is followed:
-available: 4 nodes (0-3)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-node 0 size: 63379 MB
-node 0 free: 61899 MB
-node 1 cpus: 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-node 1 size: 64509 MB
-node 1 free: 63942 MB
-node 2 cpus: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
-node 2 size: 64509 MB
-node 2 free: 63056 MB
-node 3 cpus: 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-node 3 size: 63997 MB
-node 3 free: 63420 MB
-node distances:
-node   0   1   2   3
-  0:  10  16  32  33
-  1:  16  10  25  32
-  2:  32  25  10  16
-  3:  33  32  16  10
+Looks like it's the block diagram change which needs more indentation.
 
-We perform PS (parameter server) business test, the behavior of the
-service is that the client initiates a request through the network card,
-the server responds to the request after calculation.  When two PS
-processes run on node2 and node3 separately and the network card is
-located on 'node2' which is in cpu1, the performance of node2 (26W QPS)
-and node3 (22W QPS) is different.
-
-It is better that the NIC queues are bound to the cpu1 cores in turn, then
-XPS will also be properly initialized, while cpumask_local_spread only
-considers the local node.  When the number of NIC queues exceeds the
-number of cores in the local node, it returns to the online core directly.
-So when PS runs on node3 sending a calculated request, the performance is
-not as good as the node2.
-
-The IRQ from 369-392 will be bound from NUMA node0 to NUMA node3 with this
-patch, before the patch:
-
-Euler:/sys/bus/pci # cat /proc/irq/369/smp_affinity_list
-0
-Euler:/sys/bus/pci # cat /proc/irq/370/smp_affinity_list
-1
-...
-Euler:/sys/bus/pci # cat /proc/irq/391/smp_affinity_list
-22
-Euler:/sys/bus/pci # cat /proc/irq/392/smp_affinity_list
-23
-After the patch:
-Euler:/sys/bus/pci # cat /proc/irq/369/smp_affinity_list
-72
-Euler:/sys/bus/pci # cat /proc/irq/370/smp_affinity_list
-73
-...
-Euler:/sys/bus/pci # cat /proc/irq/391/smp_affinity_list
-94
-Euler:/sys/bus/pci # cat /proc/irq/392/smp_affinity_list
-95
-
-So the performance of the node3 is the same as node2 that is 26W QPS when
-the network card is still in 'node2' with the patch.
-
-It is considered that the NIC and other I/O devices shall initialize the
-interrupt binding, if the cores of the local node are used up, it is
-reasonable to return the node closest to it.  Let's optimize it and find
-the nearest node through NUMA distance for the non-local NUMA nodes.
-
-Cc: Rusty Russell <rusty@rustcorp.com.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Paul Burton <paul.burton@mips.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
-Hi Andrew,
-
-I rebased this patch later following this thread [1]
-
-ChangeLog from v5:
-    1. Rebase to 5.10-rc2
-
-ChangeLog from v4:
-    1. Rebase to 5.6-rc3 
-
-ChangeLog from v3:
-    1. Make spread_lock local to cpumask_local_spread();
-    2. Add more descriptions on the affinities change in log;
-
-ChangeLog from v2:
-    1. Change the variables as static and use spinlock to protect;
-    2. Give more explantation on test and performance;
-
-[1]https://lkml.org/lkml/2020/6/30/1300
-
- lib/cpumask.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 55 insertions(+), 11 deletions(-)
-
-diff --git a/lib/cpumask.c b/lib/cpumask.c
-index 85da6ab4fbb5..baecaf271770 100644
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -193,6 +193,38 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
- }
- #endif
- 
-+static void calc_node_distance(int *node_dist, int node)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_node_ids; i++)
-+		node_dist[i] = node_distance(node, i);
-+}
-+
-+static int find_nearest_node(int *node_dist, bool *used)
-+{
-+	int i, min_dist = node_dist[0], node_id = -1;
-+
-+	/* Choose the first unused node to compare */
-+	for (i = 0; i < nr_node_ids; i++) {
-+		if (used[i] == 0) {
-+			min_dist = node_dist[i];
-+			node_id = i;
-+			break;
-+		}
-+	}
-+
-+	/* Compare and return the nearest node */
-+	for (i = 0; i < nr_node_ids; i++) {
-+		if (node_dist[i] < min_dist && used[i] == 0) {
-+			min_dist = node_dist[i];
-+			node_id = i;
-+		}
-+	}
-+
-+	return node_id;
-+}
-+
- /**
-  * cpumask_local_spread - select the i'th cpu with local numa cpu's first
-  * @i: index number
-@@ -206,7 +238,11 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
-  */
- unsigned int cpumask_local_spread(unsigned int i, int node)
- {
--	int cpu, hk_flags;
-+	static DEFINE_SPINLOCK(spread_lock);
-+	static int node_dist[MAX_NUMNODES];
-+	static bool used[MAX_NUMNODES];
-+	unsigned long flags;
-+	int cpu, hk_flags, j, id;
- 	const struct cpumask *mask;
- 
- 	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
-@@ -220,20 +256,28 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
- 				return cpu;
- 		}
- 	} else {
--		/* NUMA first. */
--		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
--			if (i-- == 0)
--				return cpu;
--		}
-+		spin_lock_irqsave(&spread_lock, flags);
-+		memset(used, 0, nr_node_ids * sizeof(bool));
-+		calc_node_distance(node_dist, node);
-+		/* Local node first then the nearest node is used */
-+		for (j = 0; j < nr_node_ids; j++) {
-+			id = find_nearest_node(node_dist, used);
-+			if (id < 0)
-+				break;
- 
--		for_each_cpu(cpu, mask) {
--			/* Skip NUMA nodes, done above. */
--			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
--				continue;
-+			for_each_cpu_and(cpu, cpumask_of_node(id), mask)
-+				if (i-- == 0) {
-+					spin_unlock_irqrestore(&spread_lock,
-+							       flags);
-+					return cpu;
-+				}
-+			used[id] = 1;
-+		}
-+		spin_unlock_irqrestore(&spread_lock, flags);
- 
-+		for_each_cpu(cpu, mask)
- 			if (i-- == 0)
- 				return cpu;
--		}
- 	}
- 	BUG();
- }
--- 
-2.7.4
-
+Rob
