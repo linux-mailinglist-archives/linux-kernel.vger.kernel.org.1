@@ -2,248 +2,565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7E82A4901
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EA82A4902
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgKCPFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:05:55 -0500
-Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]:41445
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727986AbgKCPFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:05:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A9wYgp+L8m5kvL9WmXlglilDVYKdhLJxZF/3QRzui7Y=;
- b=MuHw3TlNUxdFtRfKBFDlIyVYIzbRNjmOy0qdG4oqEcRH4oDLOB8sHq0DvBvamKhMwAT0JlXBA9YXOFwViC8w0+HLa7DHkElXrG2t0VcUimj2UEQ4Lt/XO3/RtPbJNtR36kmFtVoT5EsGOBmntZ4DnJ1I6n8dN3VQj+lSIW1xJng=
-Received: from AM6PR04CA0037.eurprd04.prod.outlook.com (2603:10a6:20b:f0::14)
- by AM6PR08MB4721.eurprd08.prod.outlook.com (2603:10a6:20b:c7::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 3 Nov
- 2020 15:04:55 +0000
-Received: from AM5EUR03FT010.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:20b:f0:cafe::e1) by AM6PR04CA0037.outlook.office365.com
- (2603:10a6:20b:f0::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
- Transport; Tue, 3 Nov 2020 15:04:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM5EUR03FT010.mail.protection.outlook.com (10.152.16.134) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3520.15 via Frontend Transport; Tue, 3 Nov 2020 15:04:55 +0000
-Received: ("Tessian outbound d5e343850048:v64"); Tue, 03 Nov 2020 15:04:53 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 6132eefc32d8919c
-X-CR-MTA-TID: 64aa7808
-Received: from b35da5167037.3
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id EEC80A33-2B2F-4E34-9B39-6B8A03504C12.1;
-        Tue, 03 Nov 2020 15:04:16 +0000
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id b35da5167037.3
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Tue, 03 Nov 2020 15:04:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZH3n9KkTEvUqifvMrz7b+oLpaxo6Pe5YqfoVSv+vVrlxnL2fK0sDt8yLJrOapCBoJskAbxi1j+k+V/zn5ouD4otOqETuPUgq/6re9AndCTPmmgyEUC6sgtF+Ka9Vdg6148Ms56TbTFMgO2sbWRqHUs/QCxGHcFWHf1LyDiJGPOueoPkZxWyXUCEdUDdltmXGzaLW/vFPsTnLMK/AjSKjmo7fExCDOpPO/5/J5h590WarFOeBOIiFdAn2ybJEoMEM1hv0XI4dypFM9xNH0TTSbHdhGXcxNZcT9J40dOiDvCe4tDg0FtTq7xP6lscQdUEJH/ewF+uL2OwLQHVjP80Vpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A9wYgp+L8m5kvL9WmXlglilDVYKdhLJxZF/3QRzui7Y=;
- b=Ou7YRRvH494eVJBdu/nHPi6/m7e7BIvaXIjNuTEzWIZmR97sFxu+o16xw6OL05lHyXVho2hUb8sZaBiIH1PkFaW694Z2hH/J+cezVyndVWL32qDyw5IUvCqqcLM/Ph1op/cXY8IiPA1Ag7gEvHAAJteOq7DpjmutUmhjjvUCiWKOUhfZjP8ZDgQZTFNtx2fWvt5agR5aI58s6NUfHRvefjI3nx+qgly6F5OD2KDd33i4KkpqEfPsH9Jj4BMTRLjLEaXhmcTFWrR+4WkVtt4l9QTGIy/aDz2sKo+NauFoljiqGuaQ6yWquTD/5dfHk22WIgsa4OOpfk6GNLKsqvRPbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A9wYgp+L8m5kvL9WmXlglilDVYKdhLJxZF/3QRzui7Y=;
- b=MuHw3TlNUxdFtRfKBFDlIyVYIzbRNjmOy0qdG4oqEcRH4oDLOB8sHq0DvBvamKhMwAT0JlXBA9YXOFwViC8w0+HLa7DHkElXrG2t0VcUimj2UEQ4Lt/XO3/RtPbJNtR36kmFtVoT5EsGOBmntZ4DnJ1I6n8dN3VQj+lSIW1xJng=
-Authentication-Results-Original: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
-Received: from PR3PR08MB5564.eurprd08.prod.outlook.com (2603:10a6:102:87::18)
- by PA4PR08MB6095.eurprd08.prod.outlook.com (2603:10a6:102:ec::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 3 Nov
- 2020 15:04:14 +0000
-Received: from PR3PR08MB5564.eurprd08.prod.outlook.com
- ([fe80::2904:edcf:b299:f792]) by PR3PR08MB5564.eurprd08.prod.outlook.com
- ([fe80::2904:edcf:b299:f792%3]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
- 15:04:14 +0000
-Date:   Tue, 3 Nov 2020 15:04:12 +0000
-From:   Szabolcs Nagy <szabolcs.nagy@arm.com>
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/4] elf: Move note processing after l_phdr is updated
- [BZ #26831]
-Message-ID: <20201103150412.GA24704@arm.com>
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
- <87r1pabu9g.fsf@oldenburg2.str.redhat.com>
- <CAMe9rOpmiiBEZqLz-94_MEwgRky+EUsfd=X6Ue30H2c9R=dSKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMe9rOpmiiBEZqLz-94_MEwgRky+EUsfd=X6Ue30H2c9R=dSKQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [217.140.106.54]
-X-ClientProxiedBy: LO2P265CA0103.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:c::19) To PR3PR08MB5564.eurprd08.prod.outlook.com
- (2603:10a6:102:87::18)
+        id S1728340AbgKCPHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728299AbgKCPHu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 10:07:50 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34FBC061A47
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:07:49 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id k1so16373792ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7xNyKmWJoRtvhr3nBgnKdbKyr6U7m7nlOdcOfsuPpMQ=;
+        b=PqeGC7P1v40wbHUtY2aJiCcl8od54qwCRI9yOaV6g4T8e7ONb9o4MvVbCWDTZ83Xfm
+         RZmBJoDqNry26qSxbRSQFLAXSHWx7a/pW9KU9TESOz6+e8ODvxVJJvnMNglPAnMogzF5
+         TGoPngBC2yJ1Qnprs5DfbwBU9yjMuiJHwNUV0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7xNyKmWJoRtvhr3nBgnKdbKyr6U7m7nlOdcOfsuPpMQ=;
+        b=W1sLk0BLH18F0DKnYS0xkdS6VYJtDj93WEg5k3ugjZp2mETvid3AhLb2zx4RQRZDXg
+         gCMAx9zIk6A1k4uBj9FEf75m5dowFePAUGVzcvxmCliCRaTKJiND2QfDqvjpq6qRVrN4
+         fwx3NsF/8S8kWNlrL+hnzvld4N1qDMu9KulpR9i4YyPyPqZZf441WO0J+NL6Nlc0zuBV
+         f+f5pMRhXbpiW7/XVS6EXfM9BDoRzHCjQtwdYwa4IIGGbfgfj5OF49qvG5hVJhkg+TPq
+         Y+DWRGV6FEoqpcUiOkWOSgUK4TBNrs+l8+AnvyqxCRFV8KIilB8wDEtjtlpCf3xO3HuP
+         +1WQ==
+X-Gm-Message-State: AOAM532V8d2ipQUTTOxvxyaO5k8QR0enYWKTMaZR+BpoGtm1RG1nfTTT
+        GX2AkXRiIHKGSlGo9t0/QyKs9uGlJ6Ew2cQRBi9O
+X-Google-Smtp-Source: ABdhPJzBoXbifoV79nUrJqApfRTrWry4Q1R6vp+AudUsYkMDpTqPRTVLybsgfB9FapUJ/VJktoWYr1YF/Xgfjv7fPcQ=
+X-Received: by 2002:a05:6e02:111:: with SMTP id t17mr15775742ilm.79.1604416068801;
+ Tue, 03 Nov 2020 07:07:48 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from arm.com (217.140.106.54) by LO2P265CA0103.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 3 Nov 2020 15:04:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d16c2055-140c-40aa-c32d-08d88009d2df
-X-MS-TrafficTypeDiagnostic: PA4PR08MB6095:|AM6PR08MB4721:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR08MB472141745CE59167DF5D4A56ED110@AM6PR08MB4721.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: qlWbCorgoT6LSd807f7NozlhXqrSHxdp9DMXUIsVemtCZZ8BiD1mE0SkBKGJ7OFsYpu5wkQIHkxOaDX2B82MLQw196q+5oob+HBZSLnktrbKDcyRgcgUd0KIlvP2MXf63bmczzXeLJ8PRuERkQCyWowzAxHaRu0p2b0dRAdo/m2oD+GnJDdgviRILA3FvNWvzSmVX/IAxtZEZc2lNXH2n6LjHnWnsb8px37Mp0IB5qhn/hdWEqCwrx+A9X69m8mw/qS7MyvRdfSH9glOOtZm+f7R2absgBTAlgEULgZ2xn1qAmu3QeCj6PMGXMSrmDGSQWGB4bWRDTXFtFE+e3ORTaSM8pidCk0XbobXJ8ruUiC91MZLsczHIDTCZLuMEM17IMo0t8On7TiZlk24WPqUMA==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR08MB5564.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(396003)(346002)(136003)(366004)(966005)(26005)(1076003)(5660300002)(6916009)(478600001)(186003)(316002)(54906003)(53546011)(8676002)(52116002)(36756003)(7696005)(83380400001)(2616005)(86362001)(2906002)(8886007)(16526019)(44832011)(8936002)(956004)(4326008)(7416002)(66946007)(55016002)(33656002)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: yoQcH15wDaLzHWNuTnNDRlSwEWVSNNy+BOiy+tKDItE4Ptl7Ii+jquJq8zNgb0H8LXtQzANLis5KyMHQ9xstCa/0vFpAU3qYeDkwNoF8iahh6mHqEVSeuznNaU3bvzV6ZfwscEyP8kLDPa8uQniOn1teHL6bHaGWkC47AcccLe+Ddy7m+7U6/HT0rHOdFFrmBw9ahSoXstKO/SDZnKzVrjhON4fpKDnn8OrXQNDxaLXidiPVpm9xMzxHC8+ElXRcc9/RAhQ849zWTEmwMashvQvI33mvBXhxooovysPNELvP/mn+VpgY0K3AjtZhJLmbJvfZra/QMJg266edz5M8Zd+hBszZXQcAtDVwOxWeui53qyoX3zG2SW1P3F3XqCDVxxOsK6ScS/WA8c1BY9ff89p21U6RQ3GsAtt/GSD3oqcW2+pSGf5k6DZFeMzx76RtVM2LB12ORHJNJfFBP+l4L9W+FbaYprwOR9U9iqTD2CQLrdw9h3plWmcu23sWLC7XZdLFQfaq+ZnLSyFcpqBUgzLGfR9mTMmP2pH2TuiXj+kSbJGnDMEgG0EhyonKqJKcc78jyy7s/aILxNTw0rluWmnqyjYg6Ajo2lNTT9Xiiv9D9MzDkTKF/0B3v4fELBQoNIorIQkRjd+vZvrFJrLBCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB6095
-Original-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT010.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 0392ab01-5aa7-471d-a031-08d88009ba49
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hcld4YfsaPBQT3Dpp0Ew4ZcMPM6S4cS8lun1omCqCls7cAp8uAEuaZqrzXbKZnN9mOOd048fCGbElP7+BiLzH4DcqC5osmOXW5mh4DRl/UCIc2KMSYratHcslnuP7tYeFFZQKE0q4OIyo7gFdpqgNUhhv32WjhpYAL+o2TVdb9D4YzvfO4gwz1oYP2p0+MmfNj3TuvmULWXxmwvFii6Iy/4yXr8vjto1Qh8QNnITn/Diaa2DN0FlF9n8OQ1zo5Oh6p9vrv3dxconFxFiy8H9A75pCpUyG40fSwmtEwZMJop8lwxe6451BbEjtIKPAi4bnz6aYA+fGL4nhXvCxhaiPny3I4egM4uLt6zkhEMvPGVD4F/jO6NtZVYH2LzWXW+PbrZjOBf2WHfhi1uOgt+3WjjZds7u+BW8NHnOUVftqilq6bg1OpQs6ZY4whFuk/bN6ZVdiuiyJpjfBeCiO6wfFQ==
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(46966005)(83380400001)(36756003)(70586007)(8676002)(70206006)(1076003)(26005)(86362001)(4326008)(44832011)(186003)(54906003)(53546011)(2616005)(8936002)(956004)(478600001)(8886007)(5660300002)(16526019)(966005)(82310400003)(55016002)(33656002)(6862004)(450100002)(47076004)(7696005)(81166007)(336012)(356005)(2906002)(316002)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 15:04:55.2596
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d16c2055-140c-40aa-c32d-08d88009d2df
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT010.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4721
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
+ <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk> <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
+ <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk>
+In-Reply-To: <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 3 Nov 2020 07:07:36 -0800
+Message-ID: <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Cyril.Jean@microchip.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Padmarao Begari <padmarao.begari@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 11/03/2020 04:36, H.J. Lu wrote:
-> On Tue, Nov 3, 2020 at 2:38 AM Florian Weimer <fweimer@redhat.com> wrote:
-> > * Szabolcs Nagy:
+On Fri, Oct 30, 2020 at 2:20 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote=
+:
+>
+> On 30/10/2020 07:11, Atish Patra wrote:
+> > On Thu, Oct 29, 2020 at 3:24 AM Ben Dooks <ben.dooks@codethink.co.uk> w=
+rote:
+> >>
+> >> On 28/10/2020 23:27, Atish Patra wrote:
+> >>> Add initial DTS for Microchip ICICLE board having only
+> >>> essential devcies (clocks, sdhci, ethernet, serial, etc).
+> >>>
+> >>> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> >>> ---
+> >>>    arch/riscv/boot/dts/Makefile                  |   1 +
+> >>>    arch/riscv/boot/dts/microchip/Makefile        |   2 +
+> >>>    .../microchip/microchip-icicle-kit-a000.dts   | 313 ++++++++++++++=
+++++
+> >>>    3 files changed, 316 insertions(+)
+> >>>    create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+> >>>    create mode 100644 arch/riscv/boot/dts/microchip/microchip-icicle-=
+kit-a000.dts
+> >>>
+> >>> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makef=
+ile
+> >>> index ca1f8cbd78c0..3ea94ea0a18a 100644
+> >>> --- a/arch/riscv/boot/dts/Makefile
+> >>> +++ b/arch/riscv/boot/dts/Makefile
+> >>> @@ -1,5 +1,6 @@
+> >>>    # SPDX-License-Identifier: GPL-2.0
+> >>>    subdir-y +=3D sifive
+> >>>    subdir-y +=3D kendryte
+> >>> +subdir-y +=3D microchip
+> >>>
+> >>>    obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> >>> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot=
+/dts/microchip/Makefile
+> >>> new file mode 100644
+> >>> index 000000000000..55ad77521304
+> >>> --- /dev/null
+> >>> +++ b/arch/riscv/boot/dts/microchip/Makefile
+> >>> @@ -0,0 +1,2 @@
+> >>> +# SPDX-License-Identifier: GPL-2.0
+> >>> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) +=3D microchip-icicle-kit-a000=
+.dtb
+> >>> diff --git a/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.=
+dts b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> >>> new file mode 100644
+> >>> index 000000000000..5848920af55c
+> >>> --- /dev/null
+> >>> +++ b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> >>> @@ -0,0 +1,313 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0+
+> >>> +/* Copyright (c) 2020 Microchip Technology Inc */
+> >>> +
+> >>> +/dts-v1/;
+> >>> +
+> >>> +/* Clock frequency (in Hz) of the rtcclk */
+> >>> +#define RTCCLK_FREQ          1000000
+> >>> +
+> >>> +/ {
+> >>> +     #address-cells =3D <2>;
+> >>> +     #size-cells =3D <2>;
+> >>> +     model =3D "Microchip PolarFire-SoC";
+> >>> +     compatible =3D "microchip,polarfire-soc";
+> >>> +
+> >>> +     chosen {
+> >>> +             stdout-path =3D &serial0;
+> >>> +     };
+> >>> +
+> >>> +     cpus {
+> >>> +             #address-cells =3D <1>;
+> >>> +             #size-cells =3D <0>;
+> >>> +             timebase-frequency =3D <RTCCLK_FREQ>;
+> >>> +
+> >>> +             cpu@0 {
+> >>> +                     clock-frequency =3D <0>;
+> >>> +                     compatible =3D "sifive,rocket0", "riscv";
+> >>> +                     device_type =3D "cpu";
+> >>> +                     i-cache-block-size =3D <64>;
+> >>> +                     i-cache-sets =3D <128>;
+> >>> +                     i-cache-size =3D <16384>;
+> >>> +                     reg =3D <0>;
+> >>> +                     riscv,isa =3D "rv64imac";
+> >>> +                     status =3D "disabled";
+> >>> +
+> >>> +                     cpu0_intc: interrupt-controller {
+> >>> +                             #interrupt-cells =3D <1>;
+> >>> +                             compatible =3D "riscv,cpu-intc";
+> >>> +                             interrupt-controller;
+> >>> +                     };
+> >>> +             };
+> >>> +
+> >>> +             cpu@1 {
+> >>> +                     clock-frequency =3D <0>;
+> >>> +                     compatible =3D "sifive,rocket0", "riscv";
+> >>> +                     d-cache-block-size =3D <64>;
+> >>> +                     d-cache-sets =3D <64>;
+> >>> +                     d-cache-size =3D <32768>;
+> >>> +                     d-tlb-sets =3D <1>;
+> >>> +                     d-tlb-size =3D <32>;
+> >>> +                     device_type =3D "cpu";
+> >>> +                     i-cache-block-size =3D <64>;
+> >>> +                     i-cache-sets =3D <64>;
+> >>> +                     i-cache-size =3D <32768>;
+> >>> +                     i-tlb-sets =3D <1>;
+> >>> +                     i-tlb-size =3D <32>;
+> >>> +                     mmu-type =3D "riscv,sv39";
+> >>> +                     reg =3D <1>;
+> >>> +                     riscv,isa =3D "rv64imafdc";
+> >>> +                     tlb-split;
+> >>> +                     status =3D "okay";
+> >>> +
+> >>> +                     cpu1_intc: interrupt-controller {
+> >>> +                             #interrupt-cells =3D <1>;
+> >>> +                             compatible =3D "riscv,cpu-intc";
+> >>> +                             interrupt-controller;
+> >>> +                     };
+> >>> +             };
+> >>> +
+> >>> +             cpu@2 {
+> >>> +                     clock-frequency =3D <0>;
+> >>> +                     compatible =3D "sifive,rocket0", "riscv";
+> >>> +                     d-cache-block-size =3D <64>;
+> >>> +                     d-cache-sets =3D <64>;
+> >>> +                     d-cache-size =3D <32768>;
+> >>> +                     d-tlb-sets =3D <1>;
+> >>> +                     d-tlb-size =3D <32>;
+> >>> +                     device_type =3D "cpu";
+> >>> +                     i-cache-block-size =3D <64>;
+> >>> +                     i-cache-sets =3D <64>;
+> >>> +                     i-cache-size =3D <32768>;
+> >>> +                     i-tlb-sets =3D <1>;
+> >>> +                     i-tlb-size =3D <32>;
+> >>> +                     mmu-type =3D "riscv,sv39";
+> >>> +                     reg =3D <2>;
+> >>> +                     riscv,isa =3D "rv64imafdc";
+> >>> +                     tlb-split;
+> >>> +                     status =3D "okay";
+> >>> +
+> >>> +                     cpu2_intc: interrupt-controller {
+> >>> +                             #interrupt-cells =3D <1>;
+> >>> +                             compatible =3D "riscv,cpu-intc";
+> >>> +                             interrupt-controller;
+> >>> +                     };
+> >>> +             };
+> >>> +
+> >>> +             cpu@3 {
+> >>> +                     clock-frequency =3D <0>;
+> >>> +                     compatible =3D "sifive,rocket0", "riscv";
+> >>> +                     d-cache-block-size =3D <64>;
+> >>> +                     d-cache-sets =3D <64>;
+> >>> +                     d-cache-size =3D <32768>;
+> >>> +                     d-tlb-sets =3D <1>;
+> >>> +                     d-tlb-size =3D <32>;
+> >>> +                     device_type =3D "cpu";
+> >>> +                     i-cache-block-size =3D <64>;
+> >>> +                     i-cache-sets =3D <64>;
+> >>> +                     i-cache-size =3D <32768>;
+> >>> +                     i-tlb-sets =3D <1>;
+> >>> +                     i-tlb-size =3D <32>;
+> >>> +                     mmu-type =3D "riscv,sv39";
+> >>> +                     reg =3D <3>;
+> >>> +                     riscv,isa =3D "rv64imafdc";
+> >>> +                     tlb-split;
+> >>> +                     status =3D "okay";
+> >>> +
+> >>> +                     cpu3_intc: interrupt-controller {
+> >>> +                             #interrupt-cells =3D <1>;
+> >>> +                             compatible =3D "riscv,cpu-intc";
+> >>> +                             interrupt-controller;
+> >>> +                     };
+> >>> +             };
+> >>> +
+> >>> +             cpu@4 {
+> >>> +                     clock-frequency =3D <0>;
+> >>> +                     compatible =3D "sifive,rocket0", "riscv";
+> >>> +                     d-cache-block-size =3D <64>;
+> >>> +                     d-cache-sets =3D <64>;
+> >>> +                     d-cache-size =3D <32768>;
+> >>> +                     d-tlb-sets =3D <1>;
+> >>> +                     d-tlb-size =3D <32>;
+> >>> +                     device_type =3D "cpu";
+> >>> +                     i-cache-block-size =3D <64>;
+> >>> +                     i-cache-sets =3D <64>;
+> >>> +                     i-cache-size =3D <32768>;
+> >>> +                     i-tlb-sets =3D <1>;
+> >>> +                     i-tlb-size =3D <32>;
+> >>> +                     mmu-type =3D "riscv,sv39";
+> >>> +                     reg =3D <4>;
+> >>> +                     riscv,isa =3D "rv64imafdc";
+> >>> +                     tlb-split;
+> >>> +                     status =3D "okay";
+> >>> +                     cpu4_intc: interrupt-controller {
+> >>> +                             #interrupt-cells =3D <1>;
+> >>> +                             compatible =3D "riscv,cpu-intc";
+> >>> +                             interrupt-controller;
+> >>> +                     };
+> >>> +             };
+> >>> +     };
+> >>> +
+> >>> +     memory@80000000 {
+> >>> +             device_type =3D "memory";
+> >>> +             reg =3D <0x0 0x80000000 0x0 0x40000000>;
+> >>> +             clocks =3D <&clkcfg 26>;
+> >>> +     };
+> >>
+> >> U-boot doesn't seem to be updating this properly.
+> >>
+> >> The board should have 2GiB, confirmed by looking at the device's
+> >> chip markings. We only see 1GiB memory. The 0x80000000 bus window
+> >> is only capable of dealing with 1GiB memory. The higher 64-bit one
+> >> can have 16GiB mapped.
+> >>
+> >> Do we need a second node for the second GiB of memory?
+> >>
+> > We could just modify the reg size but to allow more memory. I tried
+> > that for Linux but it didn't boot.
+> > Probably, DDR init code in HSS only initialized 1GB of memory.
+>
+> Yes, it is only looking at the low window which is 1GiB max.
+> If it used the upper window it would get the 16GiB.
+>
+> I don't know how no-one noticed this issue before shipping a board
+> out with this. I have updated the firmware on my second board but
+> this only seems to currently fix a reboot issue with the eMMC.
+>
+
+We can't update the DT for Linux until there is a public release of
+the updated firmware
+with 2GB enabled.
+
+> >>> +
+> >>> +     soc {
+> >>> +             #address-cells =3D <2>;
+> >>> +             #size-cells =3D <2>;
+> >>> +             compatible =3D "simple-bus";
+> >>> +             ranges;
+> >>> +
+> >>> +             cache-controller@2010000 {
+> >>> +                     compatible =3D "sifive,fu540-c000-ccache", "cac=
+he";
+> >>> +                     cache-block-size =3D <64>;
+> >>> +                     cache-level =3D <2>;
+> >>> +                     cache-sets =3D <1024>;
+> >>> +                     cache-size =3D <2097152>;
+> >>> +                     cache-unified;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <1 2 3>;
+> >>> +                     reg =3D <0x0 0x2010000 0x0 0x1000>;
+> >>> +             };
+> >>> +
+> >>> +             clint@2000000 {
+> >>> +                     compatible =3D "riscv,clint0";
+> >>> +                     reg =3D <0x0 0x2000000 0x0 0xC000>;
+> >>> +                     interrupts-extended =3D <&cpu0_intc 3 &cpu0_int=
+c 7
+> >>> +                                             &cpu1_intc 3 &cpu1_intc=
+ 7
+> >>> +                                             &cpu2_intc 3 &cpu2_intc=
+ 7
+> >>> +                                             &cpu3_intc 3 &cpu3_intc=
+ 7
+> >>> +                                             &cpu4_intc 3 &cpu4_intc=
+ 7>;
+> >>> +             };
+> >>> +
+> >>> +             plic: interrupt-controller@c000000 {
+> >>> +                     #interrupt-cells =3D <1>;
+> >>> +                     compatible =3D "sifive,plic-1.0.0";
+> >>> +                     reg =3D <0x0 0xc000000 0x0 0x4000000>;
+> >>> +                     riscv,ndev =3D <53>;
+> >>> +                     interrupt-controller;
+> >>> +                     interrupts-extended =3D <&cpu0_intc 11
+> >>> +                                     &cpu1_intc 11 &cpu1_intc 9
+> >>> +                                     &cpu2_intc 11 &cpu2_intc 9
+> >>> +                                     &cpu3_intc 11 &cpu3_intc 9
+> >>> +                                     &cpu4_intc 11 &cpu4_intc 9>;
+> >>> +             };
+> >>> +
+> >>> +             dma@3000000 {
+> >>> +                     compatible =3D "sifive,fu540-c000-pdma";
+> >>> +                     reg =3D <0x0 0x3000000 0x0 0x8000>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <23 24 25 26 27 28 29 30>;
+> >>> +                     #dma-cells =3D <1>;
+> >>> +             };
+> >>> +
+> >>> +             refclk: refclk {
+> >>> +                     compatible =3D "fixed-clock";
+> >>> +                     #clock-cells =3D <0>;
+> >>> +                     clock-frequency =3D <600000000>;
+> >>> +                     clock-output-names =3D "msspllclk";
+> >>> +             };
+> >>> +
+> >>> +             clkcfg: clkcfg@20002000 {
+> >>> +                     compatible =3D "microchip,pfsoc-clkcfg";
+> >>> +                     reg =3D <0x0 0x20002000 0x0 0x1000>;
+> >>> +                     reg-names =3D "mss_sysreg";
+> >>> +                     clocks =3D <&refclk>;
+> >>> +                     #clock-cells =3D <1>;
+> >>> +                     clock-output-names =3D "cpuclk", "axiclk", "ahb=
+clk", "ENVMclk", "MAC0clk", "MAC1clk", "MMCclk", "TIMERclk", "MMUART0clk", =
+"MMUART1clk", "MMUART2clk", "MMUART3clk", "MMUART4clk", "SPI0clk", "SPI1clk=
+", "I2C0clk", "I2C1clk", "CAN0clk", "CAN1clk", "USBclk", "RESERVED", "RTCcl=
+k", "QSPIclk", "GPIO0clk", "GPIO1clk", "GPIO2clk", "DDRCclk", "FIC0clk", "F=
+IC1clk", "FIC2clk", "FIC3clk", "ATHENAclk", "CFMclk";
+> >>
+> >> Any chance of making this list multi-line, it is difficult to read as-=
+is.
+> >>
 > >
-> > > Program headers are processed in two pass: after the first pass
-> > > load segments are mmapped so in the second pass target specific
-> > > note processing logic can access the notes.
-> > >
-> > > The second pass is moved later so various link_map fields are
-> > > set up that may be useful for note processing such as l_phdr.
-> > > ---
-> > >  elf/dl-load.c | 30 +++++++++++++++---------------
-> > >  1 file changed, 15 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/elf/dl-load.c b/elf/dl-load.c
-> > > index ceaab7f18e..673cf960a0 100644
-> > > --- a/elf/dl-load.c
-> > > +++ b/elf/dl-load.c
-> > > @@ -1259,21 +1259,6 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
-> > >                                 maplength, has_holes, loader);
-> > >      if (__glibc_unlikely (errstring != NULL))
-> > >        goto call_lose;
-> > > -
-> > > -    /* Process program headers again after load segments are mapped in
-> > > -       case processing requires accessing those segments.  Scan program
-> > > -       headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
-> > > -       exits.  */
-> > > -    for (ph = &phdr[l->l_phnum]; ph != phdr; --ph)
-> > > -      switch (ph[-1].p_type)
-> > > -     {
-> > > -     case PT_NOTE:
-> > > -       _dl_process_pt_note (l, fd, &ph[-1]);
-> > > -       break;
-> > > -     case PT_GNU_PROPERTY:
-> > > -       _dl_process_pt_gnu_property (l, fd, &ph[-1]);
-> > > -       break;
-> > > -     }
-> > >    }
-> > >
-> > >    if (l->l_ld == 0)
-> > > @@ -1481,6 +1466,21 @@ cannot enable executable stack as shared object requires");
-> > >      /* Assign the next available module ID.  */
-> > >      l->l_tls_modid = _dl_next_tls_modid ();
-> > >
-> > > +  /* Process program headers again after load segments are mapped in
-> > > +     case processing requires accessing those segments.  Scan program
-> > > +     headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
-> > > +     exits.  */
-> > > +  for (ph = &l->l_phdr[l->l_phnum]; ph != l->l_phdr; --ph)
-> > > +    switch (ph[-1].p_type)
-> > > +      {
-> > > +      case PT_NOTE:
-> > > +     _dl_process_pt_note (l, fd, &ph[-1]);
-> > > +     break;
-> > > +      case PT_GNU_PROPERTY:
-> > > +     _dl_process_pt_gnu_property (l, fd, &ph[-1]);
-> > > +     break;
-> > > +      }
-> > > +
-> > >  #ifdef DL_AFTER_LOAD
-> > >    DL_AFTER_LOAD (l);
-> > >  #endif
+> > Yes. We can also get rid of a few names that are not used. I will fix i=
+t in v2.
 > >
-> > Is this still compatible with the CET requirements?
+> >>> +             };
+> >>> +
+> >>> +             serial0: serial@20000000 {
+> >>> +                     compatible =3D "ns16550a";
+> >>> +                     reg =3D <0x0 0x20000000 0x0 0x400>;
+> >>> +                     reg-io-width =3D <4>;
+> >>> +                     reg-shift =3D <2>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <90>;
+> >>> +                     current-speed =3D <115200>;
+> >>> +                     clocks =3D <&clkcfg 8>;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>> +
+> >>> +             serial1: serial@20100000 {
+> >>> +                     compatible =3D "ns16550a";
+> >>> +                     reg =3D <0x0 0x20100000 0x0 0x400>;
+> >>> +                     reg-io-width =3D <4>;
+> >>> +                     reg-shift =3D <2>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <91>;
+> >>> +                     current-speed =3D <115200>;
+> >>> +                     clocks =3D <&clkcfg 9>;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>> +
+> >>> +             serial2: serial@20102000 {
+> >>> +                     compatible =3D "ns16550a";
+> >>> +                     reg =3D <0x0 0x20102000 0x0 0x400>;
+> >>> +                     reg-io-width =3D <4>;
+> >>> +                     reg-shift =3D <2>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <92>;
+> >>> +                     current-speed =3D <115200>;
+> >>> +                     clocks =3D <&clkcfg 10>;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>> +
+> >>> +             serial3: serial@20104000 {
+> >>> +                     compatible =3D "ns16550a";
+> >>> +                     reg =3D <0x0 0x20104000 0x0 0x400>;
+> >>> +                     reg-io-width =3D <4>;
+> >>> +                     reg-shift =3D <2>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <93>;
+> >>> +                     current-speed =3D <115200>;
+> >>> +                     clocks =3D <&clkcfg 11>;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>> +
+> >>> +             sdcard: sdhc@20008000 {
+> >>> +                     compatible =3D "cdns,sd4hc";
+> >>> +                     reg =3D <0x0 0x20008000 0x0 0x1000>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <88>;
+> >>> +                     pinctrl-names =3D "default";
+> >>> +                     clocks =3D <&clkcfg 6>;
+> >>> +                     bus-width =3D <4>;
+> >>> +                     disable-wp;
+> >>> +                     no-1-8-v;
+> >>> +                     cap-mmc-highspeed;
+> >>> +                     cap-sd-highspeed;
+> >>> +                     card-detect-delay =3D <200>;
+> >>> +                     sd-uhs-sdr12;
+> >>> +                     sd-uhs-sdr25;
+> >>> +                     sd-uhs-sdr50;
+> >>> +                     sd-uhs-sdr104;
+> >>> +                     max-frequency =3D <200000000>;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>
+> >> Given eMMC is the default device, shouldn't that be default for the
+> >> device tree too? Even if not, having the emmc node here would be a
+> >> good thing as it is different to the SD node.
+> >>
 > >
-> > I hope it is because the CET magic happens in _dl_open_check, so after
-> > the the code in elf/dl-load.c has run.
+> > I tested this device tree with sdcard. That's why, I just picked the
+> > sdcard node.
+> > I am not sure if both eMMC & sdcard node can co-exist. The polar fire
+> > soc github repo
+> > seems to point that both of them have the same address and only 1 can b=
+e enabled
+> > at that time. That may not be true now as the github repo has not been
+> > updated in
+> > couple of months.
+> >
+> > @Cyril : Can we enable both eMMC & sdcard at the same time ?
+>
+> I would put /both/ in but only enable the one in use for the moment.
+> Our boards are booting of eMMC as supplied, so this isn't going to work
+> as well. The eMMC is 8bit wide, and thus is only delivering 11MB/sec
+> instead of 22MB/sec. This performance is still not great, but losing
+> half the data-rate is just not good.
+>
 
-i believe the note processing and later cet magic
-are not affected by this code move.
+I am not sure what should be enabled by default. Updating sdcard is much
+easier than eMMC card and we use that approach.
 
-but i did not test this with cet.
+@Cyril: Is there a way that we can enable both ?
 
-> 
-> _dl_process_pt_note and _dl_process_pt_gnu_property may call
-> _dl_signal_error.  Are we prepared to clean more things up when it
-> happens?  I am investigating:
+> >>> +
+> >>> +             emac1: ethernet@20112000 {
+> >>> +                     compatible =3D "cdns,macb";
+> >>> +                     reg =3D <0x0 0x20112000 0x0 0x2000>;
+> >>> +                     interrupt-parent =3D <&plic>;
+> >>> +                     interrupts =3D <70 71 72 73>;
+> >>> +                     mac-address =3D [56 34 12 00 FC 00];
+> >>> +                     phy-mode =3D "sgmii";
+> >>> +                     clocks =3D <&clkcfg 5>, <&clkcfg 2>;
+> >>> +                     clock-names =3D "pclk", "hclk";
+> >>> +                     #address-cells =3D <1>;
+> >>> +                     #size-cells =3D <0>;
+> >>> +                     phy1: ethernet-phy@9 {
+> >>> +                             reg =3D <9>;
+> >>> +                             ti,fifo-depth =3D <0x01>;
+> >>> +                     };
+> >>> +             };
+> >>
+> >> Aren't there two ethernet ports on the board?
+> >>
+> >
+> > Yes. I hadn't tested that out. I will test it and add the 2nd one as we=
+ll.
+> >
+> >> Also, at the moment u-boot is not filling the MAC address parameter
+> >> in so we've got at two boards on the network with the same MAC until
+> >> we override it in the device tree for the second.
+> >>
+> >
+> > Looking at latest U-Boot patches, it seems it updates the mac address
+> > from the serial number.
+>
+> Ok, the one supplied on the boards does not. And the boards /both/ have
+> the same MAC address!
+>
+Yeah. That one is hard coded. I think that will be fixed with U-Boot patche=
+s.
+We can just leave them all 0s in Linux DT.
 
-yeah, this is difficult to reason about.
+> >>> +
+> >>> +             uio_axi_lsram@2030000000 {
+> >>> +                     compatible =3D "generic-uio";
+> >>> +                     reg =3D <0x20 0x30000000 0 0x80000000 >;
+> >>> +                     status =3D "okay";
+> >>> +             };
+> >>> +     };
+> >>> +};
+> >>>
+> >>
+> >>
+> >> --
+> >> Ben Dooks                               http://www.codethink.co.uk/
+> >> Senior Engineer                         Codethink - Providing Genius
+> >>
+> >> https://www.codethink.co.uk/privacy.html
+> >>
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+>
+>
+> --
+> Ben Dooks                               http://www.codethink.co.uk/
+> Senior Engineer                         Codethink - Providing Genius
+>
+> https://www.codethink.co.uk/privacy.html
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-it seems to me that after _dl_map_object returns there
-may be _dl_map_object_deps which can fail in a way that
-all of dlopen has to be rolled back, so if i move things
-around in _dl_map_object that should not introduce new
-issues.
 
-but it is not clear to me how robust the dlopen code is
-against arbitrary failure in dl_open_worker.
 
-> 
-> https://sourceware.org/bugzilla/show_bug.cgi?id=26825
-> 
-> I don't think cleanup of _dl_process_pt_gnu_property failure is done
-> properly.
-> 
-> -- 
-> H.J.
-
--- 
+--=20
+Regards,
+Atish
