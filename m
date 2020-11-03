@@ -2,197 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5A82A3C2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71642A3C2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgKCFsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 00:48:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
+        id S1726754AbgKCFsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 00:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgKCFsk (ORCPT
+        with ESMTP id S1725934AbgKCFsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:48:40 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C83C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 21:48:40 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id j5so8044160plk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 21:48:40 -0800 (PST)
+        Tue, 3 Nov 2020 00:48:54 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3202C0617A6;
+        Mon,  2 Nov 2020 21:48:53 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id x16so17736290ljh.2;
+        Mon, 02 Nov 2020 21:48:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mR1QkDyPTyXg0sfV86lfe9Sb5xsrO/S7r01fQ+mnp6Q=;
-        b=T1/EcaPJZSf64kQx/eeiXOxrDxi5NedAfCmLUzI68doU3cKMYX0i/pynTGah3jEmWp
-         qtIayvkROX6ldtNFhSZAqyth4RKR1zCduetEhHg0HOJVXqA6MC3DPR5Tf/Rkvg3EDEI4
-         h/a4LCEbLVqHmkyetn4hhHOdUSn4hShI9ubdeGt8KjiduGFFYkR1SsoHXUdhnXvNPlo/
-         8HcxpoCH0SGvGPDq63VTou77H0WrWZ7MTl7GOSEAamqtnvpQq8zoMDAL9EW/wwMz/RTt
-         FYGEqRUMFtv/GGXrjIuaodgS4169EJN2wkg+yRXYdEg6k9n8e9CpJeB/ypaEyHSAa0yC
-         CPSQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5cV1z+zpVqvlvDDvUw4iLtU9MzVASb2b77WGA89sUck=;
+        b=oQa2ZufAqEQbYpPi1otUbadC7Sm50fr2p8oglDHUOw579LWeVNW1E6FaJEebv0FxiK
+         QRWJzLTeFsx0LiQkKctDS1uR3iVn3F9PgyFA2k8tqWn7flealeUwJitCOlMiB/uV04rq
+         nbLP5RKNH+yXBofdSFmgRrxm7GHCtXgmEL77mOJqxg2m6pbPUOuWM7qD8XyAf09dFR4i
+         ZxLwk0Sm31Poepo6GVWQBKBa95aYTJHUgKDum/EPCmYh6euTnQlyzmQ4QP00gK1JJ+ef
+         WlfZ6AP7VNjIcl4nEBu70wvJrdFsQgkeSvU8Mcp5LasgVlZcOal1ph+nANZYbGHF2F53
+         +Q7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mR1QkDyPTyXg0sfV86lfe9Sb5xsrO/S7r01fQ+mnp6Q=;
-        b=Ws01eImNc8dNZhcK922VP5k3lRoeezZohowcLaNG5VHcvsPgVRsXIybqodaYZXwkgk
-         7eZau+3yWydmiFTazfu7hj9pbHM4oc/GDfHcJ1KhVrInx64dyN3L9dFeOQtcURJfwjJZ
-         nG4M2HKDGb4GHbe/XW0bJg9BzSvfJUfG0kBoJcTn8wnYzGFNYmjQp49ndOgnIekSKxDz
-         NVmbkKRvBgki5aL2nA5gWgGXAmos6o1E/H4+JuT8OyLFRgXSAlAAjj06CM4pw8LLAZf7
-         dZUUlV2f9xRqdEAY9H1IDbDrCE9399NdcJUCj2xC4LKfvRJ78U+qFudalaxrmSQuNaj0
-         11JA==
-X-Gm-Message-State: AOAM531YO4S+Byqc6l6sC1F4Pj92ei4qVXwp9mCUxpCXURSeyDrjXJuW
-        JS63/UAtdSkYxXyeKNHC4g8uJEeA3ztKZi/X
-X-Google-Smtp-Source: ABdhPJwJ+t8XYHF2C4S4h0qHAV86mWJWEsbuLFK4FUIT6TKEv05JsmNehBIFFWQ49btQwLKp3NaErg==
-X-Received: by 2002:a17:902:7408:b029:d6:8208:bc7 with SMTP id g8-20020a1709027408b02900d682080bc7mr23942194pll.82.1604382519915;
-        Mon, 02 Nov 2020 21:48:39 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:605e:3f8e:a675:34b8:3ea1])
-        by smtp.gmail.com with ESMTPSA id s18sm14023643pgh.60.2020.11.02.21.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 21:48:39 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, yashsri421@gmail.com
-Subject: [PATCH v2] checkpatch: improve email parsing
-Date:   Tue,  3 Nov 2020 11:18:10 +0530
-Message-Id: <20201103054810.21978-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5cV1z+zpVqvlvDDvUw4iLtU9MzVASb2b77WGA89sUck=;
+        b=bnsU3qys9dze+gcfJf+On3lNrERxry2HVn4efRt9naR6i2g6PQynlZo2lJzsxS9Of0
+         x2ZWR+vIZdpTIc0ievXh037Gh6sizGqiWg0a6sdXtCT8Ea5gHM+c9cF+Dn/04J404uIi
+         1RtTAY4Dv3eafFAW7/u8v1d2trB6eGI1UW9qM0sHZZIEDbJKH0x3XXVVn/W72g9ddo7c
+         pQJOskkA5N77Wkrfo5GREohPfAEesZe90ry1jitcvhRHkMH5YHIQJJIfnwwjwZ2t2/3t
+         H5HOXM+GWU+mEzFrZ5N75CXf76l/u4uq3rnKj9TNBNyWm0d/jFcF7vBUdrH0PwHMe/NR
+         55DQ==
+X-Gm-Message-State: AOAM533TLQRflOI1KBi5h4feY04f51Px7lvSGfTQeV8Jn9TzA7StfEj3
+        Hgd6OXA2jM2ROjVGO9RtFnAKN7EE861YoOmgdcCv0HeSmoAEZw==
+X-Google-Smtp-Source: ABdhPJy8IkST5HF4Q8tSnmqulA7xB0H/YESCMdkFGxasny6Uj20VMfBn2ylDqajSFddTnwd4uCXswEOJ8Vz/eD0kkCE=
+X-Received: by 2002:a2e:6c16:: with SMTP id h22mr7732160ljc.154.1604382532327;
+ Mon, 02 Nov 2020 21:48:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
+ <1604286803-20698-2-git-send-email-u0084500@gmail.com> <20201102172117.GA4071346@bogus>
+ <CADiBU39rS+_s+YdWxB6DKQYHF_+ddiE65u9KzeK-CCkHhZq_YQ@mail.gmail.com> <CAL_Jsq+_=OU6X2UynEoV24gycs+c3rQ7j6CJ4euMvnSd8bTufA@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+_=OU6X2UynEoV24gycs+c3rQ7j6CJ4euMvnSd8bTufA@mail.gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 3 Nov 2020 13:48:40 +0800
+Message-ID: <CADiBU3_T8gRoU7S3rTyW259Gk7AArp_b1qcEhuXrK1QLz5ussw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mfd: rt4505: Adds DT binding document for Richtek
+ RT4831 MFD core
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, cy_huang <cy_huang@richtek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch doesn't report warnings for many common mistakes
-in emails. Some of which are trailing commas and incorrect
-use of email comments.
+Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=883=E6=97=A5 =
+=E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=889:58=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, Nov 2, 2020 at 7:14 PM ChiYuan Huang <u0084500@gmail.com> wrote:
+> >
+> > Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=883=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=881:21=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > On Mon, 02 Nov 2020 11:13:23 +0800, cy_huang wrote:
+> > > > From: ChiYuan Huang <cy_huang@richtek.com>
+> > > >
+> > > > Adds DT binding document for Richtek RT4831 MFD core.
+> > > >
+> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > > > ---
+> > > >  .../devicetree/bindings/mfd/richtek,rt4831.yaml    | 89 ++++++++++=
+++++++++++++
+> > > >  include/dt-bindings/leds/rt4831-backlight.h        | 23 ++++++
+> > > >  2 files changed, 112 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/richtek,r=
+t4831.yaml
+> > > >  create mode 100644 include/dt-bindings/leds/rt4831-backlight.h
+> > > >
+> > >
+> > >
+> > > My bot found errors running 'make dt_binding_check' on your patch:
+> > >
+> > > yamllint warnings/errors:
+> > >
+> > > dtschema/dtc warnings/errors:
+> > > Unknown file referenced: [Errno 2] No such file or directory: '/usr/l=
+ocal/lib/python3.8/dist-packages/dtschema/schemas/regulator/richtek,rt4831-=
+regulator.yaml'
+> > > xargs: dt-doc-validate: exited with status 255; aborting
+> > > make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Document=
+ation/devicetree/bindings/processed-schema-examples.json] Error 124
+> > > make: *** [Makefile:1364: dt_binding_check] Error 2
+> > >
+> > >
+> > > See https://patchwork.ozlabs.org/patch/1391911
+> > >
+> > > The base for the patch is generally the last rc1. Any dependencies
+> > > should be noted.
+> > >
+> > > If you already ran 'make dt_binding_check' and didn't see the above
+> > > error(s), then make sure 'yamllint' is installed and dt-schema is up =
+to
+> > > date:
+> > >
+> > > pip3 install dtschema --upgrade
+> > >
+> > > Please check and re-submit.
+> > >
+> > Sorry, I have one question.
+> > If the richtek,rt4831.yaml is depend upon the other yaml, do I need to
+> > merge it all into one patch?
+> > Currently, my submitting order is mfd, backlight, and regulator.
+> > Each part divided into two patches (one for source code, another for
+> > dt_binding_document)
+>
+> Doesn't have to be 1 patch, but should be one series with MFD coming
+> last as it references the others. Example goes in the MFD binding. I
+> need to see a complete picture for what the device is to effectively
+> review the binding.
+>
+Got it. Next, I'll add the regulator and backlight dt-binding into the
+series patch.
+And add the description into mfd core dt-binding like as below.
 
-At the same time several false positives are reported due to
-incorrect handling of mail comments. The most common of which
-is due to the pattern:
+This patch depends on
+    "backlight: rt4831: Adds DT binding document for Richtek RT4831
+backlight module".
+    "regulator: rt4831: Adds DT binding document for Richtek RT4831 DSV mod=
+ule".
 
-<stable@vger.kernel.org> # X.X
 
-Improve email parsing mechanism in checkpatch.
-
-What is added:
-
-- Support for multiple name/address comments.
-- Improved handling of quoted names.
-- Sanitize improperly formatted comments.
-- Sanitize trailing semicolon or dot after email.
-
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 44 +++++++++++++++++++++++++++++--------------
- 1 file changed, 30 insertions(+), 14 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..9a9049480077 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1152,6 +1152,7 @@ sub parse_email {
- 	my ($formatted_email) = @_;
- 
- 	my $name = "";
-+	my $quoted = "";
- 	my $name_comment = "";
- 	my $address = "";
- 	my $comment = "";
-@@ -1183,14 +1184,25 @@ sub parse_email {
- 		}
- 	}
- 
--	$comment = trim($comment);
--	$name = trim($name);
--	$name =~ s/^\"|\"$//g;
--	if ($name =~ s/(\s*\([^\)]+\))\s*//) {
--		$name_comment = trim($1);
-+	# Extract comments from names excluding quoted parts
-+	# "John A. (Kennedy)" - Do not extract
-+	if ($name =~ s/\"(.+)\"//) {
-+		$quoted = $1;
-+	}
-+	while ($name =~ s/\s*($balanced_parens)\s*/ /) {
-+		$name_comment .= trim($1);
-+	}
-+	$name =~ s/^[ \"]|[ \"]$//g;
-+	$name = trim("$quoted $name");
-+
-+	# Extract comments from address
-+	# <john(his mail)@doe.com>
-+	while ($address =~ s/\s*($balanced_parens)\s*//) {
-+		$comment .= trim($1);
- 	}
- 	$address = trim($address);
- 	$address =~ s/^\<|\>$//g;
-+	$comment = trim($comment);
- 
- 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
- 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
-@@ -1205,17 +1217,25 @@ sub format_email {
- 
- 	my $formatted_email;
- 
--	$name_comment = trim($name_comment);
--	$comment = trim($comment);
- 	$name = trim($name);
- 	$name =~ s/^\"|\"$//g;
- 	$address = trim($address);
-+	$address =~ s/(?:\.|\,)*$//; ##trailing commas or dots
- 
- 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
- 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
- 		$name = "\"$name\"";
- 	}
- 
-+	$name_comment = trim($name_comment);
-+	$name_comment =~ s/(.+)/ $1/;
-+
-+	# Sanitize comment
-+	$comment = trim($comment);
-+	if ($comment ne "" && $comment !~ s/^\s*((?:\#|\(|\/|\[).*)/ $1/) {
-+		$comment = "";
-+	}
-+
- 	if ("$name" eq "") {
- 		$formatted_email = "$address";
- 	} else {
-@@ -1233,15 +1253,11 @@ sub reformat_email {
- }
- 
- sub same_email_addresses {
--	my ($email1, $email2, $match_comment) = @_;
-+	my ($email1, $email2) = @_;
- 
- 	my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
- 	my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
- 
--	if ($match_comment != 1) {
--		return $email1_name eq $email2_name &&
--		       $email1_address eq $email2_address;
--	}
- 	return $email1_name eq $email2_name &&
- 	       $email1_address eq $email2_address &&
- 	       $name1_comment eq $name2_comment &&
-@@ -2704,7 +2720,7 @@ sub process {
- 			$signoff++;
- 			$in_commit_log = 0;
- 			if ($author ne ''  && $authorsignoff != 1) {
--				if (same_email_addresses($1, $author, 1)) {
-+				if (same_email_addresses($1, $author)) {
- 					$authorsignoff = 1;
- 				} else {
- 					my $ctx = $1;
-@@ -2800,7 +2816,7 @@ sub process {
- 				$dequoted =~ s/" </ </;
- 				# Don't force email to have quotes
- 				# Allow just an angle bracketed address
--				if (!same_email_addresses($email, $suggested_email, 0)) {
-+				if (!same_email_addresses($email, $suggested_email)) {
- 					WARN("BAD_SIGN_OFF",
- 					     "email address '$email' might be better as '$suggested_email'\n" . $herecurr);
- 				}
--- 
-2.27.0
-
+> Rob
