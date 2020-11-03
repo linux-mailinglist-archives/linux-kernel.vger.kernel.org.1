@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEA02A5459
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61AF2A56A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388700AbgKCVKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:10:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50836 "EHLO mail.kernel.org"
+        id S2387585AbgKCV3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388698AbgKCVKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:10:11 -0500
+        id S1733096AbgKCU7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91A12206B5;
-        Tue,  3 Nov 2020 21:10:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 118352053B;
+        Tue,  3 Nov 2020 20:59:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437811;
-        bh=tblddnFbqFUBxbtCK5MtWMWPGpm5okysiC6Y0lQNHf0=;
+        s=default; t=1604437158;
+        bh=XbiyG2+4XCbltU0Pwl003nOHv4xzDOODOFq4L/u/11g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C+84NKjvCgQhms1WDzHEaAkW51BgO8eFiFHiZ36ThltYbsj9hoQrecEve5hnqShqM
-         kc46lE8smmEPtTiCTM9pUlZgQ+RMjBNnaQ3kDxFCgCeZSbUDorHDpaAewgrW3y4+Qs
-         gqM34I2sWt6m/rGsTEBadqU+2tvshBP6M5OQrTSE=
+        b=D9G8ul4QVDKf0FouHksQ88Mh4O+wGU9/B7teNg/mgmM/uRHWnnIWZIG+6PVjgti6J
+         qMtgT8xSfesxhuDze2SKQVB8367eITmPLzRm0zmgmpIanKI+wGwEqb5SMei07gjsH6
+         YFR2Mxs/5NEj4SaXw9xt/HGEwvxP9GUMMmQd4f8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 042/125] drivers/net/wan/hdlc_fr: Correctly handle special skb->protocol values
-Date:   Tue,  3 Nov 2020 21:36:59 +0100
-Message-Id: <20201103203203.089207418@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.4 172/214] ubifs: mount_ubifs: Release authentication resource in error handling path
+Date:   Tue,  3 Nov 2020 21:37:00 +0100
+Message-Id: <20201103203306.858426937@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,187 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 8306266c1d51aac9aa7aa907fe99032a58c6382c ]
+commit e2a05cc7f8229e150243cdae40f2af9021d67a4a upstream.
 
-The fr_hard_header function is used to prepend the header to skbs before
-transmission. It is used in 3 situations:
-1) When a control packet is generated internally in this driver;
-2) When a user sends an skb on an Ethernet-emulating PVC device;
-3) When a user sends an skb on a normal PVC device.
+Release the authentication related resource in some error handling
+branches in mount_ubifs().
 
-These 3 situations need to be handled differently by fr_hard_header.
-Different headers should be prepended to the skb in different situations.
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>  # 4.20+
+Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Currently fr_hard_header distinguishes these 3 situations using
-skb->protocol. For situation 1 and 2, a special skb->protocol value
-will be assigned before calling fr_hard_header, so that it can recognize
-these 2 situations. All skb->protocol values other than these special ones
-are treated by fr_hard_header as situation 3.
-
-However, it is possible that in situation 3, the user sends an skb with
-one of the special skb->protocol values. In this case, fr_hard_header
-would incorrectly treat it as situation 1 or 2.
-
-This patch tries to solve this issue by using skb->dev instead of
-skb->protocol to distinguish between these 3 situations. For situation
-1, skb->dev would be NULL; for situation 2, skb->dev->type would be
-ARPHRD_ETHER; and for situation 3, skb->dev->type would be ARPHRD_DLCI.
-
-This way fr_hard_header would be able to distinguish these 3 situations
-correctly regardless what skb->protocol value the user tries to use in
-situation 3.
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_fr.c | 98 ++++++++++++++++++++-------------------
- 1 file changed, 51 insertions(+), 47 deletions(-)
+ fs/ubifs/super.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 5a8dbeaf1a427..d3b5532180585 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -275,63 +275,69 @@ static inline struct net_device **get_dev_p(struct pvc_device *pvc,
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1313,7 +1313,7 @@ static int mount_ubifs(struct ubifs_info
  
- static int fr_hard_header(struct sk_buff **skb_p, u16 dlci)
- {
--	u16 head_len;
- 	struct sk_buff *skb = *skb_p;
+ 	err = ubifs_read_superblock(c);
+ 	if (err)
+-		goto out_free;
++		goto out_auth;
  
--	switch (skb->protocol) {
--	case cpu_to_be16(NLPID_CCITT_ANSI_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CCITT_ANSI_LMI;
--		break;
--
--	case cpu_to_be16(NLPID_CISCO_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CISCO_LMI;
--		break;
--
--	case cpu_to_be16(ETH_P_IP):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IP;
--		break;
--
--	case cpu_to_be16(ETH_P_IPV6):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IPV6;
--		break;
--
--	case cpu_to_be16(ETH_P_802_3):
--		head_len = 10;
--		if (skb_headroom(skb) < head_len) {
--			struct sk_buff *skb2 = skb_realloc_headroom(skb,
--								    head_len);
-+	if (!skb->dev) { /* Control packets */
-+		switch (dlci) {
-+		case LMI_CCITT_ANSI_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CCITT_ANSI_LMI;
-+			break;
-+
-+		case LMI_CISCO_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CISCO_LMI;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_DLCI) {
-+		switch (skb->protocol) {
-+		case htons(ETH_P_IP):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IP;
-+			break;
-+
-+		case htons(ETH_P_IPV6):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IPV6;
-+			break;
-+
-+		default:
-+			skb_push(skb, 10);
-+			skb->data[3] = FR_PAD;
-+			skb->data[4] = NLPID_SNAP;
-+			/* OUI 00-00-00 indicates an Ethertype follows */
-+			skb->data[5] = 0x00;
-+			skb->data[6] = 0x00;
-+			skb->data[7] = 0x00;
-+			/* This should be an Ethertype: */
-+			*(__be16 *)(skb->data + 8) = skb->protocol;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_ETHER) {
-+		if (skb_headroom(skb) < 10) {
-+			struct sk_buff *skb2 = skb_realloc_headroom(skb, 10);
- 			if (!skb2)
- 				return -ENOBUFS;
- 			dev_kfree_skb(skb);
- 			skb = *skb_p = skb2;
- 		}
--		skb_push(skb, head_len);
-+		skb_push(skb, 10);
- 		skb->data[3] = FR_PAD;
- 		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
-+		/* OUI 00-80-C2 stands for the 802.1 organization */
-+		skb->data[5] = 0x00;
- 		skb->data[6] = 0x80;
- 		skb->data[7] = 0xC2;
-+		/* PID 00-07 stands for Ethernet frames without FCS */
- 		skb->data[8] = 0x00;
--		skb->data[9] = 0x07; /* bridged Ethernet frame w/out FCS */
--		break;
-+		skb->data[9] = 0x07;
+ 	c->probing = 0;
  
--	default:
--		head_len = 10;
--		skb_push(skb, head_len);
--		skb->data[3] = FR_PAD;
--		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
--		skb->data[6] = FR_PAD;
--		skb->data[7] = FR_PAD;
--		*(__be16*)(skb->data + 8) = skb->protocol;
-+	} else {
-+		return -EINVAL;
+@@ -1325,18 +1325,18 @@ static int mount_ubifs(struct ubifs_info
+ 		ubifs_err(c, "'compressor \"%s\" is not compiled in",
+ 			  ubifs_compr_name(c, c->default_compr));
+ 		err = -ENOTSUPP;
+-		goto out_free;
++		goto out_auth;
  	}
  
- 	dlci_to_q922(skb->data, dlci);
-@@ -427,8 +433,8 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
- 				skb_put(skb, pad);
- 				memset(skb->data + len, 0, pad);
- 			}
--			skb->protocol = cpu_to_be16(ETH_P_802_3);
- 		}
-+		skb->dev = dev;
- 		if (!fr_hard_header(&skb, pvc->dlci)) {
- 			dev->stats.tx_bytes += skb->len;
- 			dev->stats.tx_packets++;
-@@ -496,10 +502,8 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
- 	memset(skb->data, 0, len);
- 	skb_reserve(skb, 4);
- 	if (lmi == LMI_CISCO) {
--		skb->protocol = cpu_to_be16(NLPID_CISCO_LMI);
- 		fr_hard_header(&skb, LMI_CISCO_DLCI);
- 	} else {
--		skb->protocol = cpu_to_be16(NLPID_CCITT_ANSI_LMI);
- 		fr_hard_header(&skb, LMI_CCITT_ANSI_DLCI);
+ 	err = init_constants_sb(c);
+ 	if (err)
+-		goto out_free;
++		goto out_auth;
+ 
+ 	sz = ALIGN(c->max_idx_node_sz, c->min_io_size) * 2;
+ 	c->cbuf = kmalloc(sz, GFP_NOFS);
+ 	if (!c->cbuf) {
+ 		err = -ENOMEM;
+-		goto out_free;
++		goto out_auth;
  	}
- 	data = skb_tail_pointer(skb);
--- 
-2.27.0
-
+ 
+ 	err = alloc_wbufs(c);
+@@ -1611,6 +1611,8 @@ out_wbufs:
+ 	free_wbufs(c);
+ out_cbuf:
+ 	kfree(c->cbuf);
++out_auth:
++	ubifs_exit_authentication(c);
+ out_free:
+ 	kfree(c->write_reserve_buf);
+ 	kfree(c->bu.buf);
 
 
