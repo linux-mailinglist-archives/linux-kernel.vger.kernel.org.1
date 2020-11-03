@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEB32A52A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E912A5342
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732004AbgKCUvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47338 "EHLO mail.kernel.org"
+        id S1733094AbgKCU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730359AbgKCUvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:46 -0500
+        id S1732507AbgKCU7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1E7F2071E;
-        Tue,  3 Nov 2020 20:51:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB5A0223AC;
+        Tue,  3 Nov 2020 20:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436706;
-        bh=AjAGEaHUEH4XbgEYgxDY+0UFlNgEmUmF+rvHxo8JIhE=;
+        s=default; t=1604437156;
+        bh=tDP9tNKvXcz9W4/Ob2VP0SNZMWutwGjYqRUALACOOio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3bdVRvUmbe37UZXkrrPXQJ2y9BAXMlllzqxed5HtfeRL5LQr7yJagQtiBtIdoQo9
-         T+iXtQdOh/bwV41zGyxlUFUddUhMHtGqeogZz9OhV5LpB6ySzkbFN4SWScVjS/VcKC
-         iAlXb60BDYjKJjb0DlV/15kBp1ycrHP5ZiKVtg8Y=
+        b=EeTnclL+AEScoKuxRKJCdXSekaJ4uiJQaW2iVlAfOTKHdN+bTufOIo4001DbBzPwl
+         BHIJb2wOxO/NXWxV2OOobijkVHl83hc416YTlDb7PwpahdA16yFI0s9z3Ctmojb/AK
+         fQniQiyKaplv5FkVw5eq6rheg9Nd/B68J+Jq5KyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Jeremy Kerr <jk@ozlabs.org>
-Subject: [PATCH 5.9 367/391] ARM: aspeed: g5: Do not set sirq polarity
-Date:   Tue,  3 Nov 2020 21:36:58 +0100
-Message-Id: <20201103203411.911534862@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.4 171/214] ubifs: Dont parse authentication mount options in remount process
+Date:   Tue,  3 Nov 2020 21:36:59 +0100
+Message-Id: <20201103203306.775312263@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit c82bf6e133d30e0f9172a20807814fa28aef0f67 upstream.
+commit bb674a4d4de1032837fcbf860a63939e66f0b7ad upstream.
 
-A feature was added to the aspeed vuart driver to configure the vuart
-interrupt (sirq) polarity according to the LPC/eSPI strapping register.
+There is no need to dump authentication options while remounting,
+because authentication initialization can only be doing once in
+the first mount process. Dumping authentication mount options in
+remount process may cause memory leak if UBIFS has already been
+mounted with old authentication mount options.
 
-Systems that depend on a active low behaviour (sirq_polarity set to 0)
-such as OpenPower boxes also use LPC, so this relationship does not
-hold. Jeremy confirms that the s2600st which is strapped for eSPI also
-does not have this relationship.
-
-The property was added for a Tyan S7106 system which is not supported
-in the kernel tree. Should this or other systems wish to use this
-feature of the driver they should add it to the machine specific device
-tree.
-
-Fixes: c791fc76bc72 ("arm: dts: aspeed: Add vuart aspeed,sirq-polarity-sense...")
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Tested-by: Jeremy Kerr <jk@ozlabs.org>
-Reviewed-by: Jeremy Kerr <jk@ozlabs.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200812112400.2406734-1-joel@jms.id.au
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>  # 4.20+
+Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/aspeed-g5.dtsi |    1 -
- 1 file changed, 1 deletion(-)
+ fs/ubifs/super.c |   18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -425,7 +425,6 @@
- 				interrupts = <8>;
- 				clocks = <&syscon ASPEED_CLK_APB>;
- 				no-loopback-test;
--				aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
- 				status = "disabled";
- 			};
- 
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1092,14 +1092,20 @@ static int ubifs_parse_options(struct ub
+ 			break;
+ 		}
+ 		case Opt_auth_key:
+-			c->auth_key_name = kstrdup(args[0].from, GFP_KERNEL);
+-			if (!c->auth_key_name)
+-				return -ENOMEM;
++			if (!is_remount) {
++				c->auth_key_name = kstrdup(args[0].from,
++								GFP_KERNEL);
++				if (!c->auth_key_name)
++					return -ENOMEM;
++			}
+ 			break;
+ 		case Opt_auth_hash_name:
+-			c->auth_hash_name = kstrdup(args[0].from, GFP_KERNEL);
+-			if (!c->auth_hash_name)
+-				return -ENOMEM;
++			if (!is_remount) {
++				c->auth_hash_name = kstrdup(args[0].from,
++								GFP_KERNEL);
++				if (!c->auth_hash_name)
++					return -ENOMEM;
++			}
+ 			break;
+ 		case Opt_ignore:
+ 			break;
 
 
