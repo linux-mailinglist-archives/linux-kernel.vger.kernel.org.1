@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5452A3AFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB632A3B01
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgKCDXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:23:01 -0500
-Received: from smtprelay0087.hostedemail.com ([216.40.44.87]:50634 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725913AbgKCDXA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:23:00 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 96961100E7B43;
-        Tue,  3 Nov 2020 03:22:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:5007:6119:7514:7875:10004:10400:10848:11232:11658:11914:12297:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21611:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: glove14_5108839272b5
-X-Filterd-Recvd-Size: 2071
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  3 Nov 2020 03:22:58 +0000 (UTC)
-Message-ID: <35625559ea6fa7827e840905a4a03e624fdeb43f.camel@perches.com>
-Subject: Re: [PATCH v2] fs/aio.c: Cosmetic
-From:   Joe Perches <joe@perches.com>
-To:     Andreas Dilger <adilger@dilger.ca>,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>
-Cc:     Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 02 Nov 2020 19:22:57 -0800
-In-Reply-To: <7CCB9FA6-DE85-4E3F-B3F1-7144F01589D4@dilger.ca>
-References: <20201102152439.315640-1-colomar.6.4.3@gmail.com>
-         <20201102215809.17312-1-colomar.6.4.3@gmail.com>
-         <7CCB9FA6-DE85-4E3F-B3F1-7144F01589D4@dilger.ca>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1727087AbgKCDXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:23:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgKCDXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 22:23:30 -0500
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26346207BB;
+        Tue,  3 Nov 2020 03:23:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604373809;
+        bh=p9rQmVDxvvOszEjaGQDBK6m2fDZWjD12qwvk598JVQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=romb8T+KHa9yqXJuEAfFU3ZMyx5vMFDr8jG5yMmi3f1CJQh5/UdbHkmS8/wva9xGW
+         FXqFwCR7K3E77PkmywIWEGD2zzhLB6FWqwJ7g1+vQdYKegYya+CnEinjvmEMDdpubY
+         GFvyoxxslp+X639eSvUxjnlHalzaOr7kNDvcT9gQ=
+Date:   Mon, 2 Nov 2020 19:23:27 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Robin Hsu <robinhsu@google.com>,
+        linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH 1/1] f2fs-toos:fsck.f2fs Fix bad return value
+Message-ID: <20201103032327.GA3655802@google.com>
+References: <20201026094000.1500425-1-robinhsu@google.com>
+ <20201103025247.GA2875@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103025247.GA2875@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 17:50 -0700, Andreas Dilger wrote:
-> On Nov 2, 2020, at 2:58 PM, Alejandro Colomar <colomar.6.4.3@gmail.com> wrote:
-> > Changes:
-> > - Consistently use 'unsigned int', instead of 'unsigned'.
-> > - Add a blank line after variable declarations.
-> > - Move variable declarations to the top of functions.
-> > - Add a blank line at the top of functions if there are no declarations.
+On 11/02, Eric Biggers wrote:
+> On Mon, Oct 26, 2020 at 05:40:00PM +0800, Robin Hsu via Linux-f2fs-devel wrote:
+> > 'ret' should not have been used here: otherwise, it would be wrongly used
+> > as the error code and then be returned from main().
+> > 
+> > Signed-off-by: Robin Hsu <robinhsu@google.com>
+> > ---
+> >  fsck/fsck.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > index f97e9fb..66e4e3f 100644
+> > --- a/fsck/fsck.c
+> > +++ b/fsck/fsck.c
+> > @@ -3137,8 +3137,7 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+> >  		char ans[255] = {0};
+> >  
+> >  		printf("\nDo you want to restore lost files into ./lost_found/? [Y/N] ");
+> > -		ret = scanf("%s", ans);
+> > -		ASSERT(ret >= 0);
+> > +		ASSERT(scanf("%s", ans) >= 0);
+> >  		if (!strcasecmp(ans, "y")) {
+> >  			for (i = 0; i < fsck->nr_nat_entries; i++) {
+> >  				if (f2fs_test_bit(i, fsck->nat_area_bitmap))
 > 
-> I'd agree that the other changes are following kernel coding style, but
-> I've never heard of leaving a blank line at the start of functions without
-> any local variables.
+> This patch causes a compiler warning:
+> 
+> 	In file included from f2fs.h:33,
+> 			 from fsck.h:14,
+> 			 from fsck.c:11:
+> 	fsck.c: In function 'fsck_verify':
+> 	../include/f2fs_fs.h:197:11: warning: format '%s' expects a matching 'char *' argument [-Wformat=]
+> 	    printf("[ASSERT] (%s:%4d) " #exp"\n",  \
+> 		   ^~~~~~~~~~~~~~~~~~~~
+> 	fsck.c:3151:3: note: in expansion of macro 'ASSERT'
+> 	   ASSERT(scanf("%s", ans) >= 0);
+> 	   ^~~~~~
 
-I think that is odd as well.
+Urg. Fixed by this.
 
-> I don't see anything in process/coding-style.rst to
-> support this change, nor are the majority of variable-less functions
-> formatted this way, and it seems to just be a waste of vertical space.
+From c986140e3c5abb9eb7a08928a88acb8273f1bd52 Mon Sep 17 00:00:00 2001
+From: Robin Hsu <robinhsu@google.com>
+Date: Mon, 26 Oct 2020 17:40:00 +0800
+Subject: [PATCH] f2fs-toos: fsck.f2fs Fix bad return value
 
-checkpatch emits a --strict CHECK for those blank lines after
-open braces
+'ret' should not have been used here: otherwise, it would be wrongly used
+as the error code and then be returned from main().
 
+Signed-off-by: Robin Hsu <robinhsu@google.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fsck/fsck.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-CHECK: Blank lines aren't necessary after an open brace '{'
-#200: FILE: fs/aio.c:256:
- {
-+
-
-CHECK: Blank lines aren't necessary after an open brace '{'
-#246: FILE: fs/aio.c:370:
- {
-+
-
-etc...
-
+diff --git a/fsck/fsck.c b/fsck/fsck.c
+index 647523397f3e..e52672032d2c 100644
+--- a/fsck/fsck.c
++++ b/fsck/fsck.c
+@@ -3146,10 +3146,11 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+ #ifndef WITH_ANDROID
+ 	if (nr_unref_nid && !c.ro) {
+ 		char ans[255] = {0};
++		int res;
+ 
+ 		printf("\nDo you want to restore lost files into ./lost_found/? [Y/N] ");
+-		ret = scanf("%s", ans);
+-		ASSERT(ret >= 0);
++		res = scanf("%s", ans);
++		ASSERT(res >= 0);
+ 		if (!strcasecmp(ans, "y")) {
+ 			for (i = 0; i < fsck->nr_nat_entries; i++) {
+ 				if (f2fs_test_bit(i, fsck->nat_area_bitmap))
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
