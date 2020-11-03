@@ -2,89 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2F02A4A7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CBE2A4A88
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgKCP6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:58:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbgKCP6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:58:50 -0500
-Received: from [192.168.0.112] (unknown [117.89.214.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8133F20870;
-        Tue,  3 Nov 2020 15:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604419129;
-        bh=f29d1wETJnFFOtXCHry4rt0aAdsEHjADIZSHXNcZEw4=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=mDmilPl3uHLlORwpgRDaKaE+rOVUG8Oo71Cbiy9N42GlzeZ5WECj2DTNmmTZpsa0U
-         965hDAg7OT0Iz0S5+CQg473ryEPxeyaE7keYtQnncduHSjc3jhTIHHfr/IAAuo/WkT
-         JGdC5BfRgrFb59B5i8bMdFZP9cmCi/khNzphFIyo=
-Subject: Re: [PATCH] erofs: derive atime instead of leaving it empty
-To:     Gao Xiang <hsiangkao@redhat.com>, Chao Yu <yuchao0@huawei.com>
-References: <20201031195102.21221-1-hsiangkao.ref@aol.com>
- <20201031195102.21221-1-hsiangkao@aol.com>
- <20201103025033.GA788000@xiangao.remote.csb>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        nl6720 <nl6720@gmail.com>, stable <stable@vger.kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <275b73d7-9865-91c0-ecf2-bceed09a4dae@kernel.org>
-Date:   Tue, 3 Nov 2020 23:58:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1728162AbgKCQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:00:11 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33210 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727742AbgKCQAL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:00:11 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7BB5720B4905;
+        Tue,  3 Nov 2020 08:00:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7BB5720B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604419210;
+        bh=J8OE5ZE7jXON1484ORv8lZUJPUcUXaUAPElDol454sA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lHY1HLID8EYf4MCBxuPPFXO4ao4hhVlm+HdRYUmHw9suUnj+vjfJ2XH+LHtJpMD/U
+         caIs8H5q2nKxEtWZwQh/Yh42pwB5nf0NrC75Q/MkPtXo2bTGcSqkMyHY95AeRDsvv9
+         P+ZFbGY7JNm0okNTvEUzmJ6/vYN5QsCv8LVQyG5I=
+Date:   Tue, 3 Nov 2020 09:59:52 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] arm64: Implement CONFIG_CMDLINE_EXTEND
+Message-ID: <20201103155952.GA4335@sequoia>
+References: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103025033.GA788000@xiangao.remote.csb>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiang,
+On 2020-09-21 14:15:55, Tyler Hicks wrote:
+> Provide the CONFIG_CMDLINE_EXTEND config option for arm64 kernels. This
+> config option can be used to extend the kernel command line parameters,
+> specified by the bootloader, with additional command line parameters
+> specified in the kernel configuration.
 
-On 2020-11-3 10:50, Gao Xiang wrote:
-> Hi Chao,
->
-> On Sun, Nov 01, 2020 at 03:51:02AM +0800, Gao Xiang wrote:
->> From: Gao Xiang <hsiangkao@redhat.com>
->>
->> EROFS has _only one_ ondisk timestamp (ctime is currently
->> documented and recorded, we might also record mtime instead
->> with a new compat feature if needed) for each extended inode
->> since EROFS isn't mainly for archival purposes so no need to
->> keep all timestamps on disk especially for Android scenarios
->> due to security concerns. Also, romfs/cramfs don't have their
->> own on-disk timestamp, and squashfs only records mtime instead.
->>
->> Let's also derive access time from ondisk timestamp rather than
->> leaving it empty, and if mtime/atime for each file are really
->> needed for specific scenarios as well, we can also use xattrs
->> to record them then.
->>
->> Reported-by: nl6720 <nl6720@gmail.com>
->> [ Gao Xiang: It'd be better to backport for user-friendly concern. ]
->> Fixes: 431339ba9042 ("staging: erofs: add inode operations")
->> Cc: stable <stable@vger.kernel.org> # 4.19+
->> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
->
-> May I ask for some extra free slots to review this patch plus
-> [PATCH 1/4] of
-> https://lore.kernel.org/r/20201022145724.27284-1-hsiangkao@aol.com
->
-> since it'd be also in linux-next for a while before sending out
-> to Linus. And the debugging messages may also be an annoying
-> thing for users.
+Hi Catalin and Will - Friendly ping on this series now that we're
+on the other side of the 5.10 merge window. I hope it can be considered
+for 5.10+1. Let me know if I need to rebase/resubmit. Thanks!
 
-Sorry for the delay review, will check the details tomorrow. :)
-
-Thanks,
-
->
-> Thanks a lot!
->
-> Thanks,
-> Gao Xiang
->
+Tyler
