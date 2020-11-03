@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721FF2A5250
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C4D2A5319
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbgKCUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40788 "EHLO mail.kernel.org"
+        id S1732699AbgKCU4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:56:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731629AbgKCUsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:46 -0500
+        id S1732446AbgKCU4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F9E4223FD;
-        Tue,  3 Nov 2020 20:48:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 646DC2053B;
+        Tue,  3 Nov 2020 20:56:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436525;
-        bh=13wYM5hiUOT/GmIzWu4aVniKeTvXXf4/7Fi7zvDYtuM=;
+        s=default; t=1604436976;
+        bh=7mFk/CA0TIWoc/EhV77uWD+611/NhLjRBi2Jfe8I7qY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wg1gxKmLKU5HGemYt7tkNDb6wpPufRpmf0pMtglrWtM9D4ScQe4OLpoBDLWpuP7/w
-         P+dD7Sy4QXa1zamwTDuXLgMl62Cl7luQwKukmhJX1/xZ9X2J5lzQ6ta+PF8yAy10l9
-         HKHcFQWkt6Scqstu7kZqdxrrOVGvzmElzJfYPvdw=
+        b=BVzgPNjPAhtA4dVwceN5ZGd2Ja9AVtDP44OSLs/NSCiVJS596ssvKC9RcoGWZWZ1J
+         IRCXfUqNx8ONcWI4mrYFgCuMCf2Bd0tSoC3WWjXpQtUwGCPz4/eepfLTr3mBvf6pkZ
+         NGiaMaPYlJng/O71/J0O5QqzLqgUqB/zy7gFkiv0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 288/391] powerpc/memhotplug: Make lmb size 64bit
-Date:   Tue,  3 Nov 2020 21:35:39 +0100
-Message-Id: <20201103203406.481942387@linuxfoundation.org>
+        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 093/214] nbd: make the config put is called before the notifying the waiter
+Date:   Tue,  3 Nov 2020 21:35:41 +0100
+Message-Id: <20201103203259.174472239@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,119 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Xiubo Li <xiubli@redhat.com>
 
-commit 301d2ea6572386245c5d2d2dc85c3b5a737b85ac upstream.
+[ Upstream commit 87aac3a80af5cbad93e63250e8a1e19095ba0d30 ]
 
-Similar to commit 89c140bbaeee ("pseries: Fix 64 bit logical memory block panic")
-make sure different variables tracking lmb_size are updated to be 64 bit.
+There has one race case for ceph's rbd-nbd tool. When do mapping
+it may fail with EBUSY from ioctl(nbd, NBD_DO_IT), but actually
+the nbd device has already unmaped.
 
-This was found by code audit.
+It dues to if just after the wake_up(), the recv_work() is scheduled
+out and defers calling the nbd_config_put(), though the map process
+has exited the "nbd->recv_task" is not cleared.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201007114836.282468-3-aneesh.kumar@linux.ibm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/hotplug-memory.c |   43 ++++++++++++++++--------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -277,7 +277,7 @@ static int dlpar_offline_lmb(struct drme
- 	return dlpar_change_lmb_state(lmb, false);
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 7c577cabb9c3b..742f8160b6e28 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -787,9 +787,9 @@ static void recv_work(struct work_struct *work)
+ 
+ 		blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
+ 	}
++	nbd_config_put(nbd);
+ 	atomic_dec(&config->recv_threads);
+ 	wake_up(&config->recv_wq);
+-	nbd_config_put(nbd);
+ 	kfree(args);
  }
  
--static int pseries_remove_memblock(unsigned long base, unsigned int memblock_size)
-+static int pseries_remove_memblock(unsigned long base, unsigned long memblock_size)
- {
- 	unsigned long block_sz, start_pfn;
- 	int sections_per_block;
-@@ -308,10 +308,11 @@ out:
- 
- static int pseries_remove_mem_node(struct device_node *np)
- {
--	const __be32 *regs;
-+	const __be32 *prop;
- 	unsigned long base;
--	unsigned int lmb_size;
-+	unsigned long lmb_size;
- 	int ret = -EINVAL;
-+	int addr_cells, size_cells;
- 
- 	/*
- 	 * Check to see if we are actually removing memory
-@@ -322,12 +323,19 @@ static int pseries_remove_mem_node(struc
- 	/*
- 	 * Find the base address and size of the memblock
- 	 */
--	regs = of_get_property(np, "reg", NULL);
--	if (!regs)
-+	prop = of_get_property(np, "reg", NULL);
-+	if (!prop)
- 		return ret;
- 
--	base = be64_to_cpu(*(unsigned long *)regs);
--	lmb_size = be32_to_cpu(regs[3]);
-+	addr_cells = of_n_addr_cells(np);
-+	size_cells = of_n_size_cells(np);
-+
-+	/*
-+	 * "reg" property represents (addr,size) tuple.
-+	 */
-+	base = of_read_number(prop, addr_cells);
-+	prop += addr_cells;
-+	lmb_size = of_read_number(prop, size_cells);
- 
- 	pseries_remove_memblock(base, lmb_size);
- 	return 0;
-@@ -564,7 +572,7 @@ static int dlpar_memory_remove_by_ic(u32
- 
- #else
- static inline int pseries_remove_memblock(unsigned long base,
--					  unsigned int memblock_size)
-+					  unsigned long memblock_size)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -886,10 +894,11 @@ int dlpar_memory(struct pseries_hp_error
- 
- static int pseries_add_mem_node(struct device_node *np)
- {
--	const __be32 *regs;
-+	const __be32 *prop;
- 	unsigned long base;
--	unsigned int lmb_size;
-+	unsigned long lmb_size;
- 	int ret = -EINVAL;
-+	int addr_cells, size_cells;
- 
- 	/*
- 	 * Check to see if we are actually adding memory
-@@ -900,12 +909,18 @@ static int pseries_add_mem_node(struct d
- 	/*
- 	 * Find the base and size of the memblock
- 	 */
--	regs = of_get_property(np, "reg", NULL);
--	if (!regs)
-+	prop = of_get_property(np, "reg", NULL);
-+	if (!prop)
- 		return ret;
- 
--	base = be64_to_cpu(*(unsigned long *)regs);
--	lmb_size = be32_to_cpu(regs[3]);
-+	addr_cells = of_n_addr_cells(np);
-+	size_cells = of_n_size_cells(np);
-+	/*
-+	 * "reg" property represents (addr,size) tuple.
-+	 */
-+	base = of_read_number(prop, addr_cells);
-+	prop += addr_cells;
-+	lmb_size = of_read_number(prop, size_cells);
- 
- 	/*
- 	 * Update memory region to represent the memory add
+-- 
+2.27.0
+
 
 
