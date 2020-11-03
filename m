@@ -2,125 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FBF2A4AC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3D22A4AC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgKCQFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:05:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgKCQFy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:05:54 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9FBC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:05:52 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 205so5549932wma.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:05:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QqSD886pRn9GuG+FXqn7iraliGXgYSXWwNSlYmxVEk8=;
-        b=EX3Sqh4KFhtEvDyOjhwvl1dc8DCATfD/wkooWf+O3PeTwedgRPTke4qa5lJ+8h4H8Y
-         321y8uW44FqcUdkDG1VRyLAEOmLCL5dIdXHhrzyHT72AGf0L4PRk2/s+F1scOx3JApBc
-         815Zh2cL0NpaTlE9uqlliLeCJyfxU2xyj8lyRmN6v5eS2FC39eSe6DciEi78T3PQHTns
-         PdICGYEZibrBaz3q5cFpV+rORFAQXp8FI0Ge2d671RWjHr9+Jblr99yML82EbFcKEMkW
-         W+p1A3ppTNzjGR5KGLiOifhE5l9Xw4IUXLnxczZ2inEfeD9l/ybqfLCwtUXumyEI4TRc
-         ZQyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QqSD886pRn9GuG+FXqn7iraliGXgYSXWwNSlYmxVEk8=;
-        b=qvHVY0/IyGCmTv0yMyob9OSffC9FF12uuokAoKCi7Mj6rZtaWsa6UNcj6fjtkpD0cf
-         C8gviIV7F8paTMVvt8+2G1rHd8lTmt8iC0VWqQfl2GWPrgxQUY9bAJUyOUMBo31oWRLv
-         SsLFRiCMDPQ/Jt56bQ4v96RoHuI30iZOfCSAxnUSs8mdZw0z4SGN5OMXRmiAsyH4ukc7
-         NRSKnK0SIP6SKGyn1OxSS86EB8rJLXoymGMlE3ZePS6K/K/TlG1Y136CyXS/cjCIX2/6
-         PwmLpeFjtssa3nCm6xzu5tc6WQGoIbPBosKiRCJNifyulaIF2ixxsMM3r965ysXMy7mW
-         v2vg==
-X-Gm-Message-State: AOAM533QwVyvQ7d28je1kxokw7QIjnG2VtE3I2g0YuiFFQ5eG0cMREIh
-        BgIiloSeOksMvgMnLA+ECsV/sMqjkxqPvyJjD9KY9Q==
-X-Google-Smtp-Source: ABdhPJxg35lFIp8jrsUt8/dPqzopzEBTu+LGLIuqLYyiIIe6z13GXcI2pasNyd0BLcST9+VToOeOIl48TyhuQ0ARGKo=
-X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr485797wms.77.1604419551039;
- Tue, 03 Nov 2020 08:05:51 -0800 (PST)
+        id S1727742AbgKCQHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:07:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgKCQHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:07:51 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 852B920773;
+        Tue,  3 Nov 2020 16:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604419670;
+        bh=0C3Om95v4rkiVPQy1gKQdTuxFaRCNJMzTxnpPVwYvNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jeufbIs6Do9Xlt93/4Oy0lYISit5zvCR+D6O2O2yK5AfuMY09BvsVQARycPHlN6IE
+         +l1s6BOvazyFgnAO3ki4rD7/43g+IuFxowO9eJH7uBQl009UZ55jTDoTXclib9iTnM
+         aP2bIB4eTZtxm/MGS9HFML5+O8+r31Fbo8vRrmRI=
+Date:   Tue, 3 Nov 2020 17:08:42 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Split intel-spi reading from
+ writing
+Message-ID: <20201103160842.GA4153227@kroah.com>
+References: <20201028214359.384918-1-daniel.gutson@eclypsium.com>
+ <20201029054110.GA3039992@kroah.com>
+ <CAFmMkTHBXjNc0DeL0bOZfdJkZjPAHnRU1THHdk0tZcBr1yykTQ@mail.gmail.com>
+ <20201029191505.GC986195@kroah.com>
+ <CAFmMkTHniN8FA7KkknDyRU0E0JWP15dC-xMRqJb-rg8oEgCyYg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
- <20201018085031.GK11647@shao2-debian> <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
- <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com> <CAP-5=fWuUVkn35Ep7TQpFvdVJHi8MntAAbRAXVCU_1bYM2rPeQ@mail.gmail.com>
- <6d22bbdf-1a7c-1ba9-3c1a-88600178facf@linux.ibm.com> <CAP-5=fUU7Smr7ij8bQTd0Gn6RimXppjSFUBYkLRROb8vbvMJXA@mail.gmail.com>
- <935893a3-297d-c6ed-524b-e50e5d5a0d54@huawei.com>
-In-Reply-To: <935893a3-297d-c6ed-524b-e50e5d5a0d54@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 3 Nov 2020 08:05:38 -0800
-Message-ID: <CAP-5=fUz+r+jSAKecnTmAi2r6XT7+YmB=8f73sFTuVDptL5Owg@mail.gmail.com>
-Subject: Re: [perf metricgroup] fcc9c5243c: perf-sanity-tests.Parse_and_process_metrics.fail
-To:     John Garry <john.garry@huawei.com>
-Cc:     kajoljain <kjain@linux.ibm.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
-        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFmMkTHniN8FA7KkknDyRU0E0JWP15dC-xMRqJb-rg8oEgCyYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 6:43 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 20/10/2020 17:53, Ian Rogers wrote:
-> >>> Thanks for taking a look John. If you want help you can send the
-> >>> output of "perf test 67 -vvv" to me. It is possible Broadwell has
-> >>> similar glitches in the json to Skylake. I tested the original test on
-> >>> server parts as I can access them as cloud machines.
-> >>>
-> >>>> I will have a look, but I was hoping that Ian would have a proper fix
-> >>>> for this on top of ("perf metricgroup: Fix uncore metric expressions"),
-> >>>> which now looks to be merged.
-> >>> I still have these changes to look at in my inbox but I'm assuming
-> >>> they're good:-)  Sorry for not getting to them, but it's good they are
-> >>> merged.
-> >> Hi Ian,
-> >>     Checked in upstream kernel with your fix patch, in powerpc also test case 67 is passing.
-> >> But I am getting issue in test 10 for powerpc
-> >>
-> >> [command]# ./perf test 10
-> >> 10: PMU events                                                      :
-> >> 10.1: PMU event table sanity                                        : Ok
-> >> 10.2: PMU event map aliases                                         : Ok
-> >> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-> >> 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
-> >>
-> >> Was debugging it, issue is with commit e1c92a7fbbc5 perf tests: Add another metric parsing test.
-> >>
-> >> So, there we are passing different runtime parameter value in "expr__find_other and expr__parse"
-> >> in function `metric_parse_fake`. I believe we need to send same value.
-> >> I will send fix patch for the same.
->
-> Just wondering, was a patch ever submitted for this? Something still
-> broken? I can't see any recent relevant changes to tests/pmu-events.c
+On Tue, Nov 03, 2020 at 12:18:01PM -0300, Daniel Gutson wrote:
+> On Thu, Oct 29, 2020 at 4:14 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 12:39:08PM -0300, Daniel Gutson wrote:
+> > > On Thu, Oct 29, 2020 at 2:40 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Wed, Oct 28, 2020 at 06:43:59PM -0300, Daniel Gutson wrote:
+> > > > > This patch separates the writing part of the intel-spi drivers
+> > > > > so the 'dangerous' part can be set/unset independently.
+> > > > > This way, the kernel can be configured to include the reading
+> > > > > parts of the driver which can be used without
+> > > > > the dangerous write operations that can turn the system
+> > > > > unbootable.
+> > > > >
+> > > > > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> > > > > ---
+> > > > >  drivers/mtd/spi-nor/controllers/Kconfig     | 39 ++++++++++++---------
+> > > > >  drivers/mtd/spi-nor/controllers/intel-spi.c | 12 +++++--
+> > > > >  2 files changed, 33 insertions(+), 18 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+> > > > > index 5c0e0ec2e6d1..491c755fea49 100644
+> > > > > --- a/drivers/mtd/spi-nor/controllers/Kconfig
+> > > > > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
+> > > > > @@ -31,34 +31,41 @@ config SPI_INTEL_SPI
+> > > > >       tristate
+> > > > >
+> > > > >  config SPI_INTEL_SPI_PCI
+> > > > > -     tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
+> > > > > +     tristate "Intel PCH/PCU SPI flash PCI driver"
+> > > > >       depends on X86 && PCI
+> > > > >       select SPI_INTEL_SPI
+> > > > >       help
+> > > > > -       This enables PCI support for the Intel PCH/PCU SPI controller in
+> > > > > -       master mode. This controller is present in modern Intel hardware
+> > > > > -       and is used to hold BIOS and other persistent settings. Using
+> > > > > -       this driver it is possible to upgrade BIOS directly from Linux.
+> > > > > -
+> > > > > -       Say N here unless you know what you are doing. Overwriting the
+> > > > > -       SPI flash may render the system unbootable.
+> > > > > +       This enables read only PCI support for the Intel PCH/PCU SPI
+> > > > > +       controller in master mode. This controller is present in modern
+> > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
+> > > > > +       Using this driver it is possible to read the SPI chip directly
+> > > > > +       from Linux.
+> > > > >
+> > > > >         To compile this driver as a module, choose M here: the module
+> > > > >         will be called intel-spi-pci.
+> > > > >
+> > > > >  config SPI_INTEL_SPI_PLATFORM
+> > > > > -     tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
+> > > > > +     tristate "Intel PCH/PCU SPI flash platform driver"
+> > > > >       depends on X86
+> > > > >       select SPI_INTEL_SPI
+> > > > >       help
+> > > > > -       This enables platform support for the Intel PCH/PCU SPI
+> > > > > +       This enables read only platform support for the Intel PCH/PCU SPI
+> > > > >         controller in master mode. This controller is present in modern
+> > > > > -       Intel hardware and is used to hold BIOS and other persistent
+> > > > > -       settings. Using this driver it is possible to upgrade BIOS
+> > > > > -       directly from Linux.
+> > > > > +       Intel hardware and is used to hold BIOS and other persistent settings.
+> > > > > +       Using this driver it is possible to read the SPI chip directly
+> > > > > +       from Linux.
+> > > > > +
+> > > > > +       To compile this driver as a module, choose M here: the module
+> > > > > +       will be called intel-spi-pci.
+> > > > > +
+> > > > > +config SPI_INTEL_SPI_WRITE
+> > > > > +     bool "Intel PCH/PCU SPI flash drivers write operations (DANGEROUS)"
+> > > > > +     depends on SPI_INTEL_SPI_PCI || SPI_INTEL_SPI_PLATFORM
+> > > > > +     help
+> > > > > +       This enables full read/write support for the Intel PCH/PCU SPI
+> > > > > +       controller.
+> > > > > +       Using this option it may be possible to upgrade BIOS directly
+> > > > > +       from Linux.
+> > > > >
+> > > > >         Say N here unless you know what you are doing. Overwriting the
+> > > > >         SPI flash may render the system unbootable.
+> > > > > -
+> > > > > -       To compile this driver as a module, choose M here: the module
+> > > > > -       will be called intel-spi-platform.
+> > > > > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > > > > index b54a56a68100..8d8053395c3d 100644
+> > > > > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > > > > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > > > > @@ -266,6 +266,7 @@ static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
+> > > > >       return 0;
+> > > > >  }
+> > > > >
+> > > > > +#ifdef CONFIG_SPI_INTEL_SPI_WRITE
+> > > >
+> > > > <snip>
+> > > >
+> > > > Please do not add #ifdef to .c files, that's not the proper kernel
+> > > > coding style at all, and just makes maintaining this file much much
+> > > > harder over time.
+> > > >
+> > > > Split things out into two different files if you really need to do this.
+> > >
+> > > What about the static functions that I'll need to turn non-static and
+> > > in a header file?
+> > > I mean, the functions that the functions in the new file will have to call.
+> > > Should I do that, turn static functions into non-static and declared
+> > > in a header file?
+> >
+> > No idea, but again, no #ifdefs in .c files like this, that is not the
+> > proper kernel coding style as it is not maintainable for the lifespan
+> > that we have to maintain code.
+> 
+> Is it acceptable to leave static functions unused and let the optimizer
+> remove them as DCE?
 
-The test itself shouldn't have changed, but the json files parsed by
-jevents and turned into C code that the test exercises should have
-changed. Jin Yao has sent two patch sets fixing a metric issue on SKL
-(Skylake non-server) that should hopefully fix the issue there - I'll
-check the status on these. Are you testing on Skylake?
+You will get build warnings if you do that, right?
 
-Thanks,
-Ian
+You have thousands of examples of how to do this correct, it shouldn't
+be that tough :)
 
-> Thanks,
-> John
+thanks,
+
+greg k-h
