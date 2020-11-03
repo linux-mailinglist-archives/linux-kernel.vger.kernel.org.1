@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5483A2A578D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD0B2A587E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733021AbgKCVnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:43:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53502 "EHLO mail.kernel.org"
+        id S1731311AbgKCVwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:52:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731913AbgKCUy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:27 -0500
+        id S1731289AbgKCUrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 921F8223C7;
-        Tue,  3 Nov 2020 20:54:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEC45223FD;
+        Tue,  3 Nov 2020 20:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436867;
-        bh=lWaxjMV6jz9O4Lg2o8mIDYZ4MlB9Mz6+R/IFqZugWQY=;
+        s=default; t=1604436424;
+        bh=VCofrLf/v0s7+cQS4D+U9EzRIoWXQzUdsAfKvNqeZW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jyw/bdrE9FVkmxOw5WbKFyhmeBG2NDutYvfAqCFWt4yblnlPCL5VfRhoBdokC1+Pa
-         nTtl5za9JkVcd3LY80bFkmZAf9amU4lwZwtGBc50FxB2PQbw0qtEZpI+ZMiWjoISAR
-         uZ8tHvbih8jJUqnWjTEIQ+NC6TWQ9l6VGP8u6AYc=
+        b=DBhOmSlI76RCZyasctJWLmsnp0TS8PKtNPdDxfE9cCt31QR0A5EHDhLKR2UNYOoqj
+         IwpPo/nVr96EedIwETKy7uQSCrA6BRky7mqZDquS6X1EH5SFOWdEJ71OjGJe56uanU
+         dfNs5A7sjSlmHsEjFsk+aTKW9dWKK+SrpZ5HRKCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/214] drm/bridge/synopsys: dsi: add support for non-continuous HS clock
-Date:   Tue,  3 Nov 2020 21:34:54 +0100
-Message-Id: <20201103203254.424706984@linuxfoundation.org>
+        stable@vger.kernel.org, Li Jun <jun.li@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.9 244/391] usb: dwc3: core: dont trigger runtime pm when remove driver
+Date:   Tue,  3 Nov 2020 21:34:55 +0100
+Message-Id: <20201103203403.472722224@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +42,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: Li Jun <jun.li@nxp.com>
 
-[ Upstream commit c6d94e37bdbb6dfe7e581e937a915ab58399b8a5 ]
+commit 266d0493900ac5d6a21cdbe6b1624ed2da94d47a upstream.
 
-Current code enables the HS clock when video mode is started or to
-send out a HS command, and disables the HS clock to send out a LP
-command. This is not what DSI spec specify.
+No need to trigger runtime pm in driver removal, otherwise if user
+disable auto suspend via sys file, runtime suspend may be entered,
+which will call dwc3_core_exit() again and there will be clock disable
+not balance warning:
 
-Enable HS clock either in command and in video mode.
-Set automatic HS clock management for panels and devices that
-support non-continuous HS clock.
+[ 2026.820154] xhci-hcd xhci-hcd.0.auto: remove, state 4
+[ 2026.825268] usb usb2: USB disconnect, device number 1
+[ 2026.831017] xhci-hcd xhci-hcd.0.auto: USB bus 2 deregistered
+[ 2026.836806] xhci-hcd xhci-hcd.0.auto: remove, state 4
+[ 2026.842029] usb usb1: USB disconnect, device number 1
+[ 2026.848029] xhci-hcd xhci-hcd.0.auto: USB bus 1 deregistered
+[ 2026.865889] ------------[ cut here ]------------
+[ 2026.870506] usb2_ctrl_root_clk already disabled
+[ 2026.875082] WARNING: CPU: 0 PID: 731 at drivers/clk/clk.c:958
+clk_core_disable+0xa0/0xa8
+[ 2026.883170] Modules linked in: dwc3(-) phy_fsl_imx8mq_usb [last
+unloaded: dwc3]
+[ 2026.890488] CPU: 0 PID: 731 Comm: rmmod Not tainted
+5.8.0-rc7-00280-g9d08cca-dirty #245
+[ 2026.898489] Hardware name: NXP i.MX8MQ EVK (DT)
+[ 2026.903020] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+[ 2026.908594] pc : clk_core_disable+0xa0/0xa8
+[ 2026.912777] lr : clk_core_disable+0xa0/0xa8
+[ 2026.916958] sp : ffff8000121b39a0
+[ 2026.920271] x29: ffff8000121b39a0 x28: ffff0000b11f3700
+[ 2026.925583] x27: 0000000000000000 x26: ffff0000b539c700
+[ 2026.930895] x25: 000001d7e44e1232 x24: ffff0000b76fa800
+[ 2026.936208] x23: ffff0000b76fa6f8 x22: ffff800008d01040
+[ 2026.941520] x21: ffff0000b539ce00 x20: ffff0000b7105000
+[ 2026.946832] x19: ffff0000b7105000 x18: 0000000000000010
+[ 2026.952144] x17: 0000000000000001 x16: 0000000000000000
+[ 2026.957456] x15: ffff0000b11f3b70 x14: ffffffffffffffff
+[ 2026.962768] x13: ffff8000921b36f7 x12: ffff8000121b36ff
+[ 2026.968080] x11: ffff8000119e1000 x10: ffff800011bf26d0
+[ 2026.973392] x9 : 0000000000000000 x8 : ffff800011bf3000
+[ 2026.978704] x7 : ffff800010695d68 x6 : 0000000000000252
+[ 2026.984016] x5 : ffff0000bb9881f0 x4 : 0000000000000000
+[ 2026.989327] x3 : 0000000000000027 x2 : 0000000000000023
+[ 2026.994639] x1 : ac2fa471aa7cab00 x0 : 0000000000000000
+[ 2026.999951] Call trace:
+[ 2027.002401]  clk_core_disable+0xa0/0xa8
+[ 2027.006238]  clk_core_disable_lock+0x20/0x38
+[ 2027.010508]  clk_disable+0x1c/0x28
+[ 2027.013911]  clk_bulk_disable+0x34/0x50
+[ 2027.017758]  dwc3_core_exit+0xec/0x110 [dwc3]
+[ 2027.022122]  dwc3_suspend_common+0x84/0x188 [dwc3]
+[ 2027.026919]  dwc3_runtime_suspend+0x74/0x9c [dwc3]
+[ 2027.031712]  pm_generic_runtime_suspend+0x28/0x40
+[ 2027.036419]  genpd_runtime_suspend+0xa0/0x258
+[ 2027.040777]  __rpm_callback+0x88/0x140
+[ 2027.044526]  rpm_callback+0x20/0x80
+[ 2027.048015]  rpm_suspend+0xd0/0x418
+[ 2027.051503]  __pm_runtime_suspend+0x58/0xa0
+[ 2027.055693]  dwc3_runtime_idle+0x7c/0x90 [dwc3]
+[ 2027.060224]  __rpm_callback+0x88/0x140
+[ 2027.063973]  rpm_idle+0x78/0x150
+[ 2027.067201]  __pm_runtime_idle+0x58/0xa0
+[ 2027.071130]  dwc3_remove+0x64/0xc0 [dwc3]
+[ 2027.075140]  platform_drv_remove+0x28/0x48
+[ 2027.079239]  device_release_driver_internal+0xf4/0x1c0
+[ 2027.084377]  driver_detach+0x4c/0xd8
+[ 2027.087954]  bus_remove_driver+0x54/0xa8
+[ 2027.091877]  driver_unregister+0x2c/0x58
+[ 2027.095799]  platform_driver_unregister+0x10/0x18
+[ 2027.100509]  dwc3_driver_exit+0x14/0x1408 [dwc3]
+[ 2027.105129]  __arm64_sys_delete_module+0x178/0x218
+[ 2027.109922]  el0_svc_common.constprop.0+0x68/0x160
+[ 2027.114714]  do_el0_svc+0x20/0x80
+[ 2027.118031]  el0_sync_handler+0x88/0x190
+[ 2027.121953]  el0_sync+0x140/0x180
+[ 2027.125267] ---[ end trace 027f4f8189958f1f ]---
+[ 2027.129976] ------------[ cut here ]------------
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Tested-by: Philippe Cornu <philippe.cornu@st.com>
-Reviewed-by: Philippe Cornu <philippe.cornu@st.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200701194234.18123-1-yannick.fertre@st.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: fc8bb91bc83e ("usb: dwc3: implement runtime PM")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Li Jun <jun.li@nxp.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/usb/dwc3/core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 675442bfc1bd7..77384c49fb8dd 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -365,7 +365,6 @@ static void dw_mipi_message_config(struct dw_mipi_dsi *dsi,
- 	if (lpm)
- 		val |= CMD_MODE_ALL_LP;
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1610,9 +1610,9 @@ static int dwc3_remove(struct platform_d
+ 	dwc3_core_exit(dwc);
+ 	dwc3_ulpi_exit(dwc);
  
--	dsi_write(dsi, DSI_LPCLK_CTRL, lpm ? 0 : PHY_TXREQUESTCLKHS);
- 	dsi_write(dsi, DSI_CMD_MODE_CFG, val);
- }
+-	pm_runtime_put_sync(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
  
-@@ -541,16 +540,22 @@ static void dw_mipi_dsi_video_mode_config(struct dw_mipi_dsi *dsi)
- static void dw_mipi_dsi_set_mode(struct dw_mipi_dsi *dsi,
- 				 unsigned long mode_flags)
- {
-+	u32 val;
-+
- 	dsi_write(dsi, DSI_PWR_UP, RESET);
- 
- 	if (mode_flags & MIPI_DSI_MODE_VIDEO) {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_VIDEO_MODE);
- 		dw_mipi_dsi_video_mode_config(dsi);
--		dsi_write(dsi, DSI_LPCLK_CTRL, PHY_TXREQUESTCLKHS);
- 	} else {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_CMD_MODE);
- 	}
- 
-+	val = PHY_TXREQUESTCLKHS;
-+	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
-+		val |= AUTO_CLKLANE_CTRL;
-+	dsi_write(dsi, DSI_LPCLK_CTRL, val);
-+
- 	dsi_write(dsi, DSI_PWR_UP, POWERUP);
- }
- 
--- 
-2.27.0
-
+ 	dwc3_free_event_buffers(dwc);
+ 	dwc3_free_scratch_buffers(dwc);
 
 
