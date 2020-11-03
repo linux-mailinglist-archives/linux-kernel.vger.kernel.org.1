@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313562A3B35
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DDC2A3B3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgKCD4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:56:38 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41912 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727476AbgKCD4f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727487AbgKCD4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 2 Nov 2020 22:56:35 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A33uU2c034185;
-        Mon, 2 Nov 2020 21:56:30 -0600
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:39586 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727424AbgKCD4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 22:56:33 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A33uR5b023738;
+        Mon, 2 Nov 2020 21:56:27 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604375790;
-        bh=HStXkv9wFRR3rD6VCpH4H1fcX4qHUGOEUyg7wkRYohU=;
+        s=ti-com-17Q1; t=1604375787;
+        bh=Eyd66bu/B8nY3Xw74Q3lf9TGmxbpqwZIEnWaSeJlbKk=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=dkGR4DwoJwf2vhy19+tDW+hDcWCpsqRrPYHSeeJsbmV+WpeyFZjuiCedmKCPTMXgU
-         1jnV3kKmBJgtchGT2OqLnilECM7zMn3N9zJfP5itMm/DnQmxPqabLl32OeZkbGbyKm
-         mzUUvH8cXJuc2z6WjxPMEAUfcv8lAcAtT4QzZ/1E=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A33uTmb126643
+        b=tmG8jJwPgW0x0UpJdg/2giJSj1fhFT6Sb8+xW05+yZ2/sD0n5e7RjpR5zANvjTN4K
+         cbbWCKKmUOrbDHVvhTBcEToFAeTNCBnL6Hhq09xtEGW2F4gsxCaI6XoQ9jT7vtuzWd
+         OALLXvlhvDQVIVv1xmBSkJzvW+26U5p+PCwHM8XY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A33uRtb031691
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Nov 2020 21:56:30 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 2 Nov 2020 21:56:27 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 2 Nov
- 2020 21:56:23 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 21:56:27 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 2 Nov 2020 21:56:23 -0600
+ Frontend Transport; Mon, 2 Nov 2020 21:56:27 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A33tuqR101157;
-        Mon, 2 Nov 2020 21:56:20 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A33tuqS101157;
+        Mon, 2 Nov 2020 21:56:24 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -46,9 +46,9 @@ CC:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
         Milind Parab <mparab@cadence.com>,
         Yuti Suresh Amonkar <yamonkar@cadence.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH 6/9] phy: cadence: sierra: Don't configure if any plls are already locked
-Date:   Tue, 3 Nov 2020 09:25:53 +0530
-Message-ID: <20201103035556.21260-7-kishon@ti.com>
+Subject: [PATCH 7/9] phy: cadence: sierra: Model reference receiver as clocks (gate clocks)
+Date:   Tue, 3 Nov 2020 09:25:54 +0530
+Message-ID: <20201103035556.21260-8-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201103035556.21260-1-kishon@ti.com>
 References: <20201103035556.21260-1-kishon@ti.com>
@@ -59,201 +59,268 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+Sierra has two reference recievers REFRCV and REFRCV1. REFRCV is used to
+drive reference clock cmn_refclk_m/p to PLL_CMNLC1 and REFRCV1 is used to
+drive reference clock cmn_refclk1_m/p to PLL_CMNLC. Model these
+reference receivers as clocks in order for PLL_CMNLC and PLL_CMNLC1 to
+be able to seamlessly use any of the external reference clocks.
 
-Serdes lanes might be shared between multiple cores in some usecases
-and its not possible to lock PLLs for both the lanes independently
-by the two cores. This requires a bootloader to configure both the
-lanes at early boot time.
-
-To handle this case, skip all configuration if any of the plls are
-already locked. This is done by adding an already_configured flag
-and using it to gate every register access as well as any phy_ops.
-
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/phy/cadence/phy-cadence-sierra.c | 127 ++++++++++++++---------
- 1 file changed, 78 insertions(+), 49 deletions(-)
+ drivers/phy/cadence/phy-cadence-sierra.c | 177 +++++++++++++++++++++++
+ 1 file changed, 177 insertions(+)
 
 diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index e08548417bce..145e42837b7b 100644
+index 145e42837b7b..ab7a3e2795cd 100644
 --- a/drivers/phy/cadence/phy-cadence-sierra.c
 +++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -364,6 +364,10 @@ static const struct phy_ops ops = {
+@@ -7,6 +7,7 @@
+  *
+  */
+ #include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+@@ -31,6 +32,8 @@
+ #define SIERRA_CMN_PLLLC_BWCAL_MODE1_PREG		0x4F
+ #define SIERRA_CMN_PLLLC_BWCAL_MODE0_PREG		0x50
+ #define SIERRA_CMN_PLLLC_SS_TIME_STEPSIZE_MODE_PREG	0x62
++#define SIERRA_CMN_REFRCV_PREG				0x98
++#define SIERRA_CMN_REFRCV1_PREG				0xB8
+ 
+ #define SIERRA_LANE_CDB_OFFSET(ln, block_offset, reg_offset)	\
+ 				((0x4000 << (block_offset)) + \
+@@ -151,6 +154,35 @@ static const struct reg_field phy_pll_cfg_1 =
+ static const struct reg_field pllctrl_lock =
+ 				REG_FIELD(SIERRA_PLLCTRL_STATUS_PREG, 0, 0);
+ 
++enum cdns_sierra_cmn_refrcv {
++	CMN_REFRCV,
++	CMN_REFRCV1,
++};
++
++#define SIERRA_NUM_REFRCV	0x2
++
++static const struct reg_field cmn_refrcv_refclk_plllc1en_preg[] = {
++	[CMN_REFRCV]	= REG_FIELD(SIERRA_CMN_REFRCV_PREG, 8, 8),
++	[CMN_REFRCV1]	= REG_FIELD(SIERRA_CMN_REFRCV1_PREG, 8, 8),
++};
++
++static const struct reg_field cmn_refrcv_refclk_termen_preg[] = {
++	[CMN_REFRCV]	= REG_FIELD(SIERRA_CMN_REFRCV_PREG, 0, 0),
++	[CMN_REFRCV1]	= REG_FIELD(SIERRA_CMN_REFRCV1_PREG, 0, 0),
++};
++
++static char *refrcv_node_name[] = { "refrcv", "refrcv1" };
++
++struct cdns_sierra_refrcv {
++	struct clk_hw		hw;
++	struct regmap_field	*plllc1en_field;
++	struct regmap_field	*termen_field;
++	struct clk_init_data	clk_data;
++};
++
++#define to_cdns_sierra_refrcv(_hw)	\
++			container_of(_hw, struct cdns_sierra_refrcv, hw)
++
+ struct cdns_sierra_inst {
+ 	struct phy *phy;
+ 	u32 phy_type;
+@@ -197,6 +229,8 @@ struct cdns_sierra_phy {
+ 	struct regmap_field *macro_id_type;
+ 	struct regmap_field *phy_pll_cfg_1;
+ 	struct regmap_field *pllctrl_lock[SIERRA_MAX_LANES];
++	struct regmap_field *cmn_refrcv_refclk_plllc1en_preg[SIERRA_NUM_REFRCV];
++	struct regmap_field *cmn_refrcv_refclk_termen_preg[SIERRA_NUM_REFRCV];
+ 	struct clk *clk;
+ 	struct clk *cmn_refclk_dig_div;
+ 	struct clk *cmn_refclk1_dig_div;
+@@ -368,6 +402,93 @@ static const struct phy_ops noop_ops = {
  	.owner		= THIS_MODULE,
  };
  
-+static const struct phy_ops noop_ops = {
-+	.owner		= THIS_MODULE,
-+};
-+
- static int cdns_sierra_get_optional(struct cdns_sierra_inst *inst,
- 				    struct device_node *child)
- {
-@@ -477,6 +481,49 @@ static int cdns_regmap_init_blocks(struct cdns_sierra_phy *sp,
- 	return 0;
- }
- 
-+static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
-+				      struct device *dev)
++static int cdns_sierra_refrcv_enable(struct clk_hw *hw)
 +{
-+	struct clk *clk;
-+	int ret;
++	struct cdns_sierra_refrcv *refrcv = to_cdns_sierra_refrcv(hw);
++	struct regmap_field *plllc1en_field = refrcv->plllc1en_field;
++	struct regmap_field *termen_field = refrcv->termen_field;
 +
-+	sp->clk = devm_clk_get_optional(dev, "phy_clk");
-+	if (IS_ERR(sp->clk)) {
-+		dev_err(dev, "failed to get clock phy_clk\n");
-+		return PTR_ERR(sp->clk);
-+	}
-+
-+	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
-+	if (IS_ERR(sp->phy_rst)) {
-+		dev_err(dev, "failed to get reset\n");
-+		return PTR_ERR(sp->phy_rst);
-+	}
-+
-+	sp->apb_rst = devm_reset_control_get_optional(dev, "sierra_apb");
-+	if (IS_ERR(sp->apb_rst)) {
-+		dev_err(dev, "failed to get apb reset\n");
-+		return PTR_ERR(sp->apb_rst);
-+	}
-+
-+	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
-+	}
-+	sp->cmn_refclk_dig_div = clk;
-+
-+	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
-+	}
-+	sp->cmn_refclk1_dig_div = clk;
++	regmap_field_write(plllc1en_field, 1);
++	regmap_field_write(termen_field, 1);
 +
 +	return 0;
 +}
 +
- static int cdns_sierra_phy_probe(struct platform_device *pdev)
++static void cdns_sierra_refrcv_disable(struct clk_hw *hw)
++{
++	struct cdns_sierra_refrcv *refrcv = to_cdns_sierra_refrcv(hw);
++	struct regmap_field *plllc1en_field = refrcv->plllc1en_field;
++	struct regmap_field *termen_field = refrcv->termen_field;
++
++	regmap_field_write(plllc1en_field, 0);
++	regmap_field_write(termen_field, 0);
++}
++
++static int cdns_sierra_refrcv_is_enabled(struct clk_hw *hw)
++{
++	struct cdns_sierra_refrcv *refrcv = to_cdns_sierra_refrcv(hw);
++	struct regmap_field *plllc1en_field = refrcv->plllc1en_field;
++	int val;
++
++	regmap_field_read(plllc1en_field, &val);
++
++	return !!val;
++}
++
++static const struct clk_ops cdns_sierra_refrcv_ops = {
++	.enable = cdns_sierra_refrcv_enable,
++	.disable = cdns_sierra_refrcv_disable,
++	.is_enabled = cdns_sierra_refrcv_is_enabled,
++};
++
++static int cdns_sierra_refrcv_register(struct cdns_sierra_phy *sp,
++				       struct device_node *node,
++				       struct regmap_field *plllc1en_field,
++				       struct regmap_field *termen_field)
++{
++	struct cdns_sierra_refrcv *refrcv;
++	struct device *dev = sp->dev;
++	struct clk_init_data *init;
++	unsigned int num_parents;
++	const char *parent_name;
++	char clk_name[100];
++	struct clk *clk;
++	int ret;
++
++	refrcv = devm_kzalloc(dev, sizeof(*refrcv), GFP_KERNEL);
++	if (!refrcv)
++		return -ENOMEM;
++
++	num_parents = of_clk_get_parent_count(node);
++	parent_name = of_clk_get_parent_name(node, 0);
++
++	snprintf(clk_name, sizeof(clk_name), "%s_%s", dev_name(dev),
++		 node->name);
++
++	init = &refrcv->clk_data;
++
++	init->ops = &cdns_sierra_refrcv_ops;
++	init->flags = 0;
++	init->parent_names = parent_name ? &parent_name : NULL;
++	init->num_parents = num_parents ? 1 : 0;
++	init->name = clk_name;
++
++	refrcv->plllc1en_field = plllc1en_field;
++	refrcv->termen_field = termen_field;
++	refrcv->hw.init = init;
++
++	clk = devm_clk_register(dev, &refrcv->hw);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
++
++	ret = of_clk_add_provider(node, of_clk_src_simple_get, clk);
++	if (ret)
++		dev_err(dev, "Failed to add refrcv clock provider: %s\n",
++			clk_name);
++
++	return ret;
++}
++
+ static int cdns_sierra_get_optional(struct cdns_sierra_inst *inst,
+ 				    struct device_node *child)
  {
- 	struct cdns_sierra_phy *sp;
-@@ -486,10 +533,10 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	struct cdns_sierra_data *data;
- 	unsigned int id_value;
- 	struct resource *res;
--	int i, ret, node = 0;
-+	int i, val, ret, node = 0;
- 	void __iomem *base;
--	struct clk *clk;
- 	struct device_node *dn = dev->of_node, *child;
-+	bool already_configured = false;
+@@ -406,6 +527,7 @@ static int cdns_regfield_init(struct cdns_sierra_phy *sp)
+ {
+ 	struct device *dev = sp->dev;
+ 	struct regmap_field *field;
++	struct reg_field reg_field;
+ 	struct regmap *regmap;
+ 	int i;
  
- 	if (of_get_child_count(dn) == 0)
- 		return -ENODEV;
-@@ -524,54 +571,33 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	platform_set_drvdata(pdev, sp);
--
--	sp->clk = devm_clk_get_optional(dev, "phy_clk");
--	if (IS_ERR(sp->clk)) {
--		dev_err(dev, "failed to get clock phy_clk\n");
--		return PTR_ERR(sp->clk);
--	}
--
--	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
--	if (IS_ERR(sp->phy_rst)) {
--		dev_err(dev, "failed to get reset\n");
--		return PTR_ERR(sp->phy_rst);
--	}
--
--	sp->apb_rst = devm_reset_control_get_optional(dev, "sierra_apb");
--	if (IS_ERR(sp->apb_rst)) {
--		dev_err(dev, "failed to get apb reset\n");
--		return PTR_ERR(sp->apb_rst);
--	}
--
--	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
--	}
--	sp->cmn_refclk_dig_div = clk;
--
--	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
-+	for (i = 0; i < SIERRA_MAX_LANES; i++) {
-+		regmap_field_read(sp->pllctrl_lock[i], &val);
-+		if (val) {
-+			already_configured = true;
-+			break;
-+		}
+@@ -417,6 +539,24 @@ static int cdns_regfield_init(struct cdns_sierra_phy *sp)
  	}
--	sp->cmn_refclk1_dig_div = clk;
+ 	sp->macro_id_type = field;
  
--	ret = clk_prepare_enable(sp->clk);
--	if (ret)
--		return ret;
--
--	/* Enable APB */
--	reset_control_deassert(sp->apb_rst);
-+	platform_set_drvdata(pdev, sp);
++	for (i = 0; i < SIERRA_NUM_REFRCV; i++) {
++		reg_field = cmn_refrcv_refclk_plllc1en_preg[i];
++		field = devm_regmap_field_alloc(dev, regmap, reg_field);
++		if (IS_ERR(field)) {
++			dev_err(dev, "REFRCV%d_REFCLK_PLLLC1EN failed\n", i);
++			return PTR_ERR(field);
++		}
++		sp->cmn_refrcv_refclk_plllc1en_preg[i] = field;
++
++		reg_field = cmn_refrcv_refclk_termen_preg[i];
++		field = devm_regmap_field_alloc(dev, regmap, reg_field);
++		if (IS_ERR(field)) {
++			dev_err(dev, "REFRCV%d_REFCLK_TERMEN failed\n", i);
++			return PTR_ERR(field);
++		}
++		sp->cmn_refrcv_refclk_termen_preg[i] = field;
++	}
++
+ 	regmap = sp->regmap_phy_config_ctrl;
+ 	field = devm_regmap_field_alloc(dev, regmap, phy_pll_cfg_1);
+ 	if (IS_ERR(field)) {
+@@ -481,6 +621,38 @@ static int cdns_regmap_init_blocks(struct cdns_sierra_phy *sp,
+ 	return 0;
+ }
  
--	/* Check that PHY is present */
--	regmap_field_read(sp->macro_id_type, &id_value);
--	if  (sp->init_data->id_value != id_value) {
--		ret = -EINVAL;
--		goto clk_disable;
-+	if (!already_configured) {
-+		ret = cdns_sierra_phy_get_clocks(sp, dev);
++static int cdns_sierra_phy_register_refrcv(struct cdns_sierra_phy *sp,
++					   struct device_node *dn)
++{
++	struct regmap_field *plllc1en_field;
++	struct device_node *of_node = NULL;
++	struct regmap_field *termen_field;
++	struct device *dev = sp->dev;
++	int ret = 0, i;
++
++	for (i = 0; i < SIERRA_NUM_REFRCV; i++) {
++		of_node = of_get_child_by_name(dn, refrcv_node_name[i]);
++		if (!of_node)
++			return 0;
++
++		plllc1en_field = sp->cmn_refrcv_refclk_plllc1en_preg[i];
++		termen_field = sp->cmn_refrcv_refclk_termen_preg[i];
++
++		ret = cdns_sierra_refrcv_register(sp, of_node, plllc1en_field,
++						  termen_field);
++		if (ret) {
++			dev_err(dev, "Fail to register reference receiver %s\n",
++				refrcv_node_name[i]);
++			goto err;
++		}
++	}
++
++err:
++	of_node_put(of_node);
++
++	return ret;
++}
++
+ static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
+ 				      struct device *dev)
+ {
+@@ -582,6 +754,10 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, sp);
+ 
+ 	if (!already_configured) {
++		ret = cdns_sierra_phy_register_refrcv(sp, dn);
 +		if (ret)
 +			return ret;
 +
-+		ret = clk_prepare_enable(sp->clk);
-+		if (ret)
-+			return ret;
-+		/* Enable APB */
-+		reset_control_deassert(sp->apb_rst);
+ 		ret = cdns_sierra_phy_get_clocks(sp, dev);
+ 		if (ret)
+ 			return ret;
+@@ -589,6 +765,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 		ret = clk_prepare_enable(sp->clk);
+ 		if (ret)
+ 			return ret;
 +
-+		/* Check that PHY is present */
-+		regmap_field_read(sp->macro_id_type, &id_value);
-+		if  (sp->init_data->id_value != id_value) {
-+			ret = -EINVAL;
-+			goto clk_disable;
-+		}
- 	}
+ 		/* Enable APB */
+ 		reset_control_deassert(sp->apb_rst);
  
- 	sp->autoconf = of_property_read_bool(dn, "cdns,autoconf");
-@@ -603,7 +629,10 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 
- 		sp->num_lanes += sp->phys[node].num_lanes;
- 
--		gphy = devm_phy_create(dev, child, &ops);
-+		if (already_configured)
-+			gphy = devm_phy_create(dev, child, &noop_ops);
-+		else
-+			gphy = devm_phy_create(dev, child, &ops);
- 
- 		if (IS_ERR(gphy)) {
- 			ret = PTR_ERR(gphy);
-@@ -622,7 +651,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	}
- 
- 	/* If more than one subnode, configure the PHY as multilink */
--	if (!sp->autoconf && sp->nsubnodes > 1)
-+	if (!sp->autoconf && sp->nsubnodes > 1 && !already_configured)
- 		regmap_field_write(sp->phy_pll_cfg_1, 0x1);
- 
- 	pm_runtime_enable(dev);
 -- 
 2.17.1
 
