@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E522A495D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940F42A495C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgKCPUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:20:46 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:42836 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728386AbgKCPTU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:19:20 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.10])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1kZy5T-0003Yi-Uc; Tue, 03 Nov 2020 15:19:07 +0000
-Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Cyril.Jean@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Padmarao Begari <padmarao.begari@microchip.com>
-References: <20201028232759.1928479-1-atish.patra@wdc.com>
- <20201028232759.1928479-3-atish.patra@wdc.com>
- <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk>
- <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
- <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk>
- <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <fc07251a-5339-781b-f12a-abfda5d5d2a2@codethink.co.uk>
-Date:   Tue, 3 Nov 2020 15:19:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727754AbgKCPUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:20:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728342AbgKCPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 10:19:22 -0500
+Received: from localhost (unknown [176.167.46.253])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9796020735;
+        Tue,  3 Nov 2020 15:19:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604416762;
+        bh=MAxC15ZBCRgqAWQmINA1Xb3bGR5aaGk0zcw3qLyvCyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yOLsS+7fAQkJSXmbS7ZLD8H8h8Er4z2R/TxhVwnkLZI8Iy59MwEPDHTQC8CLjIMP/
+         leUnnKZa5EZDQM+TPYIJ+eBjSt3fppaEvWAQYnJp7kysjwkFG6ulsbBhcEU5dHL+5A
+         VW5E1kir+ssKEdfNAMpaSjfQBGw0DP73EGWMv80k=
+Date:   Tue, 3 Nov 2020 16:19:19 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 3/7] srcu: Fix invoke_rcu_callbacks() segcb length
+ adjustment
+Message-ID: <20201103151919.GC432431@lothringen>
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-4-joel@joelfernandes.org>
+ <20201103144714.GA432431@lothringen>
+ <20201103150738.GB1304393@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103150738.GB1304393@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2020 15:07, Atish Patra wrote:
->>> We could just modify the reg size but to allow more memory. I tried
->>> that for Linux but it didn't boot.
->>> Probably, DDR init code in HSS only initialized 1GB of memory.
->> Yes, it is only looking at the low window which is 1GiB max.
->> If it used the upper window it would get the 16GiB.
->>
->> I don't know how no-one noticed this issue before shipping a board
->> out with this. I have updated the firmware on my second board but
->> this only seems to currently fix a reboot issue with the eMMC.
->>
-> We can't update the DT for Linux until there is a public release of
-> the updated firmware
-> with 2GB enabled.
+On Tue, Nov 03, 2020 at 10:07:38AM -0500, Joel Fernandes wrote:
+> On Tue, Nov 03, 2020 at 03:47:14PM +0100, Frederic Weisbecker wrote:
+> > On Tue, Nov 03, 2020 at 09:25:59AM -0500, Joel Fernandes (Google) wrote:
+> > > With earlier patches, the negative counting of the unsegmented list
+> > > cannot be used to adjust the segmented one. To fix this, sample the
+> > > unsegmented length in advance, and use it after CB execution to adjust
+> > > the segmented list's length.
+> > > 
+> > > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > 
+> > This breaks bisection, you need to either fix up the previous patch
+> > by adding this diff inside or better yet: expand what you did
+> > in "rcu/tree: Make rcu_do_batch count how many callbacks were executed"
+> > to also handle srcu before introducing the segcb count.
+> 
+> Since doing the latter is a lot more tedious and I want to get reviewing
+> other's RCU patches today :) , I just squashed the suggestion into the
+> counters patch to fix bissection:
+> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=rcu/segcb-counts&id=595e3a65eeef109cb8fcbfcc114fd3ea2064b873
+> 
+> Hope that's Ok.
 
-Yeah, it is really annoying the boards turned up with a number of
-issues including the half memory.
+Works for me.
 
-I assume there will be a new release of HSS and U-boot which at
-worse can insert new memory nodes into the device tree.
-
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+Thanks!
