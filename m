@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5FC2A5878
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADEE2A577A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbgKCVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:52:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38000 "EHLO mail.kernel.org"
+        id S1732668AbgKCUzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:55:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731341AbgKCUrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:32 -0500
+        id S1732656AbgKCUzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:55:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 655642242E;
-        Tue,  3 Nov 2020 20:47:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D32B12053B;
+        Tue,  3 Nov 2020 20:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436451;
-        bh=cdwq7e+MxYCBy7Mn8XuxZ/5qELbyFyuJUbTwgl7F0Ks=;
+        s=default; t=1604436899;
+        bh=7d//73hLkWX6Y7BMPJl6dRTP90AU41C929ooEfPqXv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDO/7MQWmESH6RLvOlDzQwaEolle9sJcXjuAPRRtK0jPPjhQL+IQHRMdzmE9TNxMn
-         0Vns/gYChZYXkdJiWVGiwTzT6vldeHofGJhH609eEe9hWBFKN0zQlKAvhYNatBeug0
-         Ki46EIOTpdxyGLvqdBey7xxMf8sLD4CCqb1WrPfk=
+        b=AD2O3v48ryxh09UuRmOGEOMEZu7oAPDiZ/nJ40MFfw0msh0craCPJ66sSSU3KAMLc
+         W6ddcV0efRI1RuqM3zm1z9BdUW5MuCCq2iNouHZHN8rynxQVzIFA93wxPrC3ZgDVWe
+         GewusPReeavn+XXe5jq2X2JfwJA//2mrEHsfFOmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 5.9 255/391] vt: keyboard, extend func_buf_lock to readers
-Date:   Tue,  3 Nov 2020 21:35:06 +0100
-Message-Id: <20201103203404.228554758@linuxfoundation.org>
+        stable@vger.kernel.org, Linu Cherian <lcherian@marvell.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 059/214] coresight: Make sysfs functional on topologies with per core sink
+Date:   Tue,  3 Nov 2020 21:35:07 +0100
+Message-Id: <20201103203255.884218659@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +43,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Linu Cherian <lcherian@marvell.com>
 
-commit 82e61c3909db51d91b9d3e2071557b6435018b80 upstream.
+[ Upstream commit 6d578258b955fc8888e1bbd9a8fefe7b10065a84 ]
 
-Both read-side users of func_table/func_buf need locking. Without that,
-one can easily confuse the code by repeatedly setting altering strings
-like:
-while (1)
-	for (a = 0; a < 2; a++) {
-		struct kbsentry kbs = {};
-		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
-		ioctl(fd, KDSKBSENT, &kbs);
-	}
+Coresight driver assumes sink is common across all the ETMs,
+and tries to build a path between ETM and the first enabled
+sink found using bus based search. This breaks sysFS usage
+on implementations that has multiple per core sinks in
+enabled state.
 
-When that program runs, one can get unexpected output by holding F1
-(note the unxpected period on the last line):
-.
-88888
-.8888
+To fix this, coresight_get_enabled_sink API is updated to
+do a connection based search starting from the given source,
+instead of bus based search.
+With sink selection using sysfs depecrated for perf interface,
+provision for reset is removed as well in this API.
 
-So protect all accesses to 'func_table' (and func_buf) by preexisting
-'func_buf_lock'.
-
-It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
-On the other hand, KDGKBSENT needs a local (atomic) copy of the string
-because copy_to_user can sleep. Use already allocated, but unused
-'kbs->kb_string' for that purpose.
-
-Note that the program above needs at least CAP_SYS_TTY_CONFIG.
-
-This depends on the previous patch and on the func_buf_lock lock added
-in commit 46ca3f735f34 (tty/vt: fix write/write race in ioctl(KDSKBSENT)
-handler) in 5.2.
-
-Likely fixes CVE-2020-25656.
-
-Cc: <stable@vger.kernel.org>
-Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20201019085517.10176-2-jslaby@suse.cz
+Signed-off-by: Linu Cherian <lcherian@marvell.com>
+[Fixed indentation problem and removed obsolete comment]
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20200916191737.4001561-15-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/keyboard.c |   17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/hwtracing/coresight/coresight-priv.h |  3 +-
+ drivers/hwtracing/coresight/coresight.c      | 62 +++++++++-----------
+ 2 files changed, 29 insertions(+), 36 deletions(-)
 
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -743,8 +743,13 @@ static void k_fn(struct vc_data *vc, uns
- 		return;
- 
- 	if ((unsigned)value < ARRAY_SIZE(func_table)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&func_buf_lock, flags);
- 		if (func_table[value])
- 			puts_queue(vc, func_table[value]);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
-+
- 	} else
- 		pr_err("k_fn called with value=%d\n", value);
+diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+index 82e563cdc8794..dfd24b85a5775 100644
+--- a/drivers/hwtracing/coresight/coresight-priv.h
++++ b/drivers/hwtracing/coresight/coresight-priv.h
+@@ -147,7 +147,8 @@ static inline void coresight_write_reg_pair(void __iomem *addr, u64 val,
+ void coresight_disable_path(struct list_head *path);
+ int coresight_enable_path(struct list_head *path, u32 mode, void *sink_data);
+ struct coresight_device *coresight_get_sink(struct list_head *path);
+-struct coresight_device *coresight_get_enabled_sink(bool reset);
++struct coresight_device *
++coresight_get_enabled_sink(struct coresight_device *source);
+ struct coresight_device *coresight_get_sink_by_id(u32 id);
+ struct list_head *coresight_build_path(struct coresight_device *csdev,
+ 				       struct coresight_device *sink);
+diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
+index 0bbce0d291582..90ecd04a2f20b 100644
+--- a/drivers/hwtracing/coresight/coresight.c
++++ b/drivers/hwtracing/coresight/coresight.c
+@@ -481,50 +481,46 @@ struct coresight_device *coresight_get_sink(struct list_head *path)
+ 	return csdev;
  }
-@@ -1991,7 +1996,7 @@ out:
- #undef s
- #undef v
  
--/* FIXME: This one needs untangling and locking */
-+/* FIXME: This one needs untangling */
- int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+-static int coresight_enabled_sink(struct device *dev, const void *data)
++static struct coresight_device *
++coresight_find_enabled_sink(struct coresight_device *csdev)
  {
- 	struct kbsentry *kbs;
-@@ -2023,10 +2028,14 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
- 	switch (cmd) {
- 	case KDGKBSENT: {
- 		/* size should have been a struct member */
--		unsigned char *from = func_table[i] ? : "";
-+		ssize_t len = sizeof(user_kdgkb->kb_string);
+-	const bool *reset = data;
+-	struct coresight_device *csdev = to_coresight_device(dev);
++	int i;
++	struct coresight_device *sink;
+ 
+ 	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+ 	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
+-	     csdev->activated) {
+-		/*
+-		 * Now that we have a handle on the sink for this session,
+-		 * disable the sysFS "enable_sink" flag so that possible
+-		 * concurrent perf session that wish to use another sink don't
+-		 * trip on it.  Doing so has no ramification for the current
+-		 * session.
+-		 */
+-		if (*reset)
+-			csdev->activated = false;
++	     csdev->activated)
++		return csdev;
+ 
+-		return 1;
++	/*
++	 * Recursively explore each port found on this element.
++	 */
++	for (i = 0; i < csdev->pdata->nr_outport; i++) {
++		struct coresight_device *child_dev;
 +
-+		spin_lock_irqsave(&func_buf_lock, flags);
-+		len = strlcpy(kbs->kb_string, func_table[i] ? : "", len);
-+		spin_unlock_irqrestore(&func_buf_lock, flags);
- 
--		ret = copy_to_user(user_kdgkb->kb_string, from,
--				strlen(from) + 1) ? -EFAULT : 0;
-+		ret = copy_to_user(user_kdgkb->kb_string, kbs->kb_string,
-+				len + 1) ? -EFAULT : 0;
- 
- 		goto reterr;
++		child_dev = csdev->pdata->conns[i].child_dev;
++		if (child_dev)
++			sink = coresight_find_enabled_sink(child_dev);
++		if (sink)
++			return sink;
  	}
+ 
+-	return 0;
++	return NULL;
+ }
+ 
+ /**
+- * coresight_get_enabled_sink - returns the first enabled sink found on the bus
+- * @deactivate:	Whether the 'enable_sink' flag should be reset
++ * coresight_get_enabled_sink - returns the first enabled sink using
++ * connection based search starting from the source reference
+  *
+- * When operated from perf the deactivate parameter should be set to 'true'.
+- * That way the "enabled_sink" flag of the sink that was selected can be reset,
+- * allowing for other concurrent perf sessions to choose a different sink.
+- *
+- * When operated from sysFS users have full control and as such the deactivate
+- * parameter should be set to 'false', hence mandating users to explicitly
+- * clear the flag.
++ * @source: Coresight source device reference
+  */
+-struct coresight_device *coresight_get_enabled_sink(bool deactivate)
++struct coresight_device *
++coresight_get_enabled_sink(struct coresight_device *source)
+ {
+-	struct device *dev = NULL;
+-
+-	dev = bus_find_device(&coresight_bustype, NULL, &deactivate,
+-			      coresight_enabled_sink);
++	if (!source)
++		return NULL;
+ 
+-	return dev ? to_coresight_device(dev) : NULL;
++	return coresight_find_enabled_sink(source);
+ }
+ 
+ static int coresight_sink_by_id(struct device *dev, const void *data)
+@@ -764,11 +760,7 @@ int coresight_enable(struct coresight_device *csdev)
+ 		goto out;
+ 	}
+ 
+-	/*
+-	 * Search for a valid sink for this session but don't reset the
+-	 * "enable_sink" flag in sysFS.  Users get to do that explicitly.
+-	 */
+-	sink = coresight_get_enabled_sink(false);
++	sink = coresight_get_enabled_sink(csdev);
+ 	if (!sink) {
+ 		ret = -EINVAL;
+ 		goto out;
+-- 
+2.27.0
+
 
 
