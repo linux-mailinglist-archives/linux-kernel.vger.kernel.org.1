@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E7E2A3AFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5452A3AFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgKCDWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:22:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbgKCDWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:22:36 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 140A0207BB;
-        Tue,  3 Nov 2020 03:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604373756;
-        bh=7aFgfXQwxuCN6CihcO+o9uIp6HKkf3hnQvxiwlMdqW4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l1tSP/XlAhjfm/smjFoMIvolMvFvjAk4pBWrgGp1ydvgiHjZ1FDzuNEdnn6LMNEi2
-         h8t2VSiQnVH4cyzuToFx7aD/qS6m2p1jcgRvsjcGagUyHqfvibV5mAGjOagYMVzD+b
-         jFRhc4NpyP8skgEJAJfsqhKVZHra2D7/GAf4bbo8=
-Date:   Mon, 2 Nov 2020 19:22:34 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: move ioctl interface definitions to
- separated file
-Message-ID: <20201103032234.GB2875@sol.localdomain>
-References: <20201102062131.14205-1-yuchao0@huawei.com>
+        id S1726881AbgKCDXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:23:01 -0500
+Received: from smtprelay0087.hostedemail.com ([216.40.44.87]:50634 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725913AbgKCDXA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 22:23:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 96961100E7B43;
+        Tue,  3 Nov 2020 03:22:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:5007:6119:7514:7875:10004:10400:10848:11232:11658:11914:12297:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21611:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: glove14_5108839272b5
+X-Filterd-Recvd-Size: 2071
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  3 Nov 2020 03:22:58 +0000 (UTC)
+Message-ID: <35625559ea6fa7827e840905a4a03e624fdeb43f.camel@perches.com>
+Subject: Re: [PATCH v2] fs/aio.c: Cosmetic
+From:   Joe Perches <joe@perches.com>
+To:     Andreas Dilger <adilger@dilger.ca>,
+        Alejandro Colomar <colomar.6.4.3@gmail.com>
+Cc:     Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 02 Nov 2020 19:22:57 -0800
+In-Reply-To: <7CCB9FA6-DE85-4E3F-B3F1-7144F01589D4@dilger.ca>
+References: <20201102152439.315640-1-colomar.6.4.3@gmail.com>
+         <20201102215809.17312-1-colomar.6.4.3@gmail.com>
+         <7CCB9FA6-DE85-4E3F-B3F1-7144F01589D4@dilger.ca>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102062131.14205-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 02:21:31PM +0800, Chao Yu wrote:
-> +#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-> +						struct f2fs_move_range)
-[...]
-> +#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
-> +						struct f2fs_gc_range)
-[...]
-> +
-> +struct f2fs_gc_range {
-> +	__u32 sync;
-> +	__u64 start;
-> +	__u64 len;
-> +};
-[...]
-> +struct f2fs_move_range {
-> +	__u32 dst_fd;		/* destination fd */
-> +	__u64 pos_in;		/* start position in src_fd */
-> +	__u64 pos_out;		/* start position in dst_fd */
-> +	__u64 len;		/* size to move */
-> +};
+On Mon, 2020-11-02 at 17:50 -0700, Andreas Dilger wrote:
+> On Nov 2, 2020, at 2:58 PM, Alejandro Colomar <colomar.6.4.3@gmail.com> wrote:
+> > Changes:
+> > - Consistently use 'unsigned int', instead of 'unsigned'.
+> > - Add a blank line after variable declarations.
+> > - Move variable declarations to the top of functions.
+> > - Add a blank line at the top of functions if there are no declarations.
+> 
+> I'd agree that the other changes are following kernel coding style, but
+> I've never heard of leaving a blank line at the start of functions without
+> any local variables.
 
-These two structs are weird because there is implicit padding between the __u32
-field and the following __u64 field on some 32-bit architectures (e.g. x86_32)
-but not others (e.g. arm32).
+I think that is odd as well.
 
-But f2fs_compat_ioctl() doesn't handle these two ioctls specially, but rather
-just calls through to f2fs_ioctl().  That's wrong, and it means that
-F2FS_IOC_MOVE_RANGE and F2FS_IOC_GARBAGE_COLLECT_RANGE won't work when called
-from an x86_32 binary on an x86_64 kernel.
+> I don't see anything in process/coding-style.rst to
+> support this change, nor are the majority of variable-less functions
+> formatted this way, and it seems to just be a waste of vertical space.
 
-So something needs to be fixed.  I wonder if it's safe to just explicitly add
-the padding field after the fact.  If no one is actually using these two ioctls
-in a case where both userspace and the kernel lack the implicit padding (e.g.,
-x86_32 userspace with x86_32 kernel), it should be fine...
+checkpatch emits a --strict CHECK for those blank lines after
+open braces
 
-- Eric
+
+CHECK: Blank lines aren't necessary after an open brace '{'
+#200: FILE: fs/aio.c:256:
+ {
++
+
+CHECK: Blank lines aren't necessary after an open brace '{'
+#246: FILE: fs/aio.c:370:
+ {
++
+
+etc...
+
+
