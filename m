@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BA22A5695
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F342A55EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732402AbgKCU6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:58:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
+        id S2387902AbgKCVEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:04:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732371AbgKCU6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:46 -0500
+        id S2387903AbgKCVDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:03:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97EC8223C7;
-        Tue,  3 Nov 2020 20:58:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0630206B5;
+        Tue,  3 Nov 2020 21:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437125;
-        bh=FytFa8TWDqxC9E6EocZFRBk3FNc7lYI4RPDDGt0dgjQ=;
+        s=default; t=1604437435;
+        bh=MXGjkdP4xr4nOyOFnNoA6nDzkUpX2aqE63/WbExOqi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VwSFnLQjvjA0rl2q438RAWWPu8LaY2JOQRsF0eM5IexfJ2ZRaroupK63+xrSOWigd
-         X2hO/e3kpodWGP7kombhcRbuIDM6LnGNxXc6ZdTQ3NvnvuOO+zRmOzf7R4k45RDY8E
-         Xg2ykmUbjSA83okEOPZdh9hib6UHiaN3iiKorlng=
+        b=UPDucQqZ7qyVLt3HYyZaklQaJv4KKEe6JgLXvNLKg9kLJBoWpSxBvewChiQxEZ+Vg
+         yy3dyHlWKfHvIZH0kAtG0HoH6GF0zMmL9D6/iPjkmvV1JeeehzIIUpoTOHHxxJhnVJ
+         MKVPsmZfy6Jge6Mt7rUI1w9488val7v8s3QSranU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Subject: [PATCH 5.4 118/214] w1: mxc_w1: Fix timeout resolution problem leading to bus error
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 074/191] mmc: via-sdmmc: Fix data race bug
 Date:   Tue,  3 Nov 2020 21:36:06 +0100
-Message-Id: <20201103203301.944030141@linuxfoundation.org>
+Message-Id: <20201103203241.279879792@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-commit c9723750a699c3bd465493ac2be8992b72ccb105 upstream.
+[ Upstream commit 87d7ad089b318b4f319bf57f1daa64eb6d1d10ad ]
 
-On my platform (i.MX53) bus access sometimes fails with
-	w1_search: max_slave_count 64 reached, will continue next search.
+via_save_pcictrlreg() should be called with host->lock held
+as it writes to pm_pcictrl_reg, otherwise there can be a race
+condition between via_sd_suspend() and via_sdc_card_detect().
+The same pattern is used in the function via_reset_pcictrl()
+as well, where via_save_pcictrlreg() is called with host->lock
+held.
 
-The reason is the use of jiffies to implement a 200us timeout in
-mxc_w1_ds2_touch_bit().
-On some platforms the jiffies timer resolution is insufficient for this.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Fix by replacing jiffies by ktime_get().
-
-For consistency apply the same change to the other use of jiffies in
-mxc_w1_ds2_reset_bus().
-
-Fixes: f80b2581a706 ("w1: mxc_w1: Optimize mxc_w1_ds2_touch_bit()")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Link: https://lore.kernel.org/r/1601455030-6607-1-git-send-email-martin.fuzzey@flowbird.group
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lore.kernel.org/r/20200822061528.7035-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/w1/masters/mxc_w1.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mmc/host/via-sdmmc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/w1/masters/mxc_w1.c
-+++ b/drivers/w1/masters/mxc_w1.c
-@@ -7,7 +7,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/jiffies.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
-@@ -40,12 +40,12 @@ struct mxc_w1_device {
- static u8 mxc_w1_ds2_reset_bus(void *data)
+diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+index 246dc6255e696..9fdb92729c28b 100644
+--- a/drivers/mmc/host/via-sdmmc.c
++++ b/drivers/mmc/host/via-sdmmc.c
+@@ -1273,11 +1273,14 @@ static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
+ static int via_sd_suspend(struct pci_dev *pcidev, pm_message_t state)
  {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
+ 	struct via_crdr_mmc_host *host;
++	unsigned long flags;
  
- 	writeb(MXC_W1_CONTROL_RPP, dev->regs + MXC_W1_CONTROL);
+ 	host = pci_get_drvdata(pcidev);
  
- 	/* Wait for reset sequence 511+512us, use 1500us for sure */
--	timeout = jiffies + usecs_to_jiffies(1500);
-+	timeout = ktime_add_us(ktime_get(), 1500);
++	spin_lock_irqsave(&host->lock, flags);
+ 	via_save_pcictrlreg(host);
+ 	via_save_sdcreg(host);
++	spin_unlock_irqrestore(&host->lock, flags);
  
- 	udelay(511 + 512);
- 
-@@ -55,7 +55,7 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
- 		/* PST bit is valid after the RPP bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_RPP))
- 			return !(ctrl & MXC_W1_CONTROL_PST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 1;
- }
-@@ -68,12 +68,12 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
- static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
- {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
- 
- 	writeb(MXC_W1_CONTROL_WR(bit), dev->regs + MXC_W1_CONTROL);
- 
- 	/* Wait for read/write bit (60us, Max 120us), use 200us for sure */
--	timeout = jiffies + usecs_to_jiffies(200);
-+	timeout = ktime_add_us(ktime_get(), 200);
- 
- 	udelay(60);
- 
-@@ -83,7 +83,7 @@ static u8 mxc_w1_ds2_touch_bit(void *dat
- 		/* RDST bit is valid after the WR1/RD bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_WR(bit)))
- 			return !!(ctrl & MXC_W1_CONTROL_RDST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 0;
- }
+ 	pci_save_state(pcidev);
+ 	pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
+-- 
+2.27.0
+
 
 
