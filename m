@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5872A43C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7BA2A43C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgKCLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:11:13 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:33746 "EHLO smtp2.axis.com"
+        id S1728263AbgKCLLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:11:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:46794 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgKCLLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:11:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1649; q=dns/txt; s=axis-central1;
-  t=1604401873; x=1635937873;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=i5CSmu9+LpfEutwG2UOnvj25IvZpi4qmAuz9g3NC5Qc=;
-  b=QFgfz7uDqIPpnMqxFKPA6erjXBfr1uzssxifgvYtz8DNI2XKx6WoTdeW
-   MGVqyFBkAY/+D6iFstGAU2J0lIpfCgARwdz9Dghd3AZwbKwOWYVFEEeZ0
-   RTxFCkUwhKLHjEx/Fe3CspVKW9ijNL+JCWWZ2zvwLWVTyKEiD8G6KTJWj
-   QAZPFkD37IClSzrh5xZ0j0w7IMZ3x4m7m3D0iyRkOsE2U1Sdp+NGl3ngM
-   lgBPlqO5EiA9kyFcBXbDDSpaLY8NY4MRITwpkeooqI4JFLIlDASna8nHO
-   zHbyGr4p9n7CV+quHK5qnrhJa/11rBw7ALRDgi/EGrcTf5v6jtKB9cwhR
-   w==;
-IronPort-SDR: 1Zd6dDNif6MAndOHT4gj7Z10l+3bhqzM3EjvXKyX742M+LLPkrr5GQ14ax3hbHMxn+H1LA8MF3
- SeetxIMiFXCYQbHhhCJa1CX3fRewO8MD4mjsuO36MTlRM1Z2h/1aQZ/bm4mlN1H0J6b2rx+7Az
- mi4KnKHoAl9Zax199xMetASEabUFcBYLl7wqcFOcOJIDecm2QOr4qYNvHE1sqTqDTEiILQ8TGf
- Ct2Sr8zTLaCglNSZ3vpnccNhQlIcXuaX5fH9onGy9LuF769bZFu5T+CDPaqRXsni8kJ2AIJyHE
- epY=
-X-IronPort-AV: E=Sophos;i="5.77,447,1596492000"; 
-   d="scan'208";a="14167250"
-Date:   Tue, 3 Nov 2020 12:11:10 +0100
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Sasha Levin <sashal@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 4.4 3/5] of: Fix reserved-memory overlap detection
-Message-ID: <20201103111110.lvapcdf4nndunsie@axis.com>
-References: <20201103012119.184049-1-sashal@kernel.org>
- <20201103012119.184049-3-sashal@kernel.org>
+        id S1725988AbgKCLLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:11:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BA75101E;
+        Tue,  3 Nov 2020 03:11:37 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B3AE3F66E;
+        Tue,  3 Nov 2020 03:11:35 -0800 (PST)
+Subject: Re: [PATCH v2] iio: adc: rockchip_saradc: fix missing
+ clk_disable_unprepare() on error in rockchip_saradc_resume
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-iio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201103074909.195465-1-miaoqinglang@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <50da9bf1-7317-b24b-9a87-e9dfb4e4a694@arm.com>
+Date:   Tue, 3 Nov 2020 11:11:34 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201103012119.184049-3-sashal@kernel.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20201103074909.195465-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 02:21:16AM +0100, Sasha Levin wrote:
-> From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+On 2020-11-03 07:49, Qinglang Miao wrote:
+> Fix the missing clk_disable_unprepare() of info->pclk
+> before return from rockchip_saradc_resume in the error
+> handling case when fails to prepare and enable info->clk.
 > 
-> [ Upstream commit ca05f33316559a04867295dd49f85aeedbfd6bfd ]
+> Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>   drivers/iio/adc/rockchip_saradc.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> The reserved-memory overlap detection code fails to detect overlaps if
-> either of the regions starts at address 0x0.  The code explicitly checks
-> for and ignores such regions, apparently in order to ignore dynamically
-> allocated regions which have an address of 0x0 at this point.  These
-> dynamically allocated regions also have a size of 0x0 at this point, so
-> fix this by removing the check and sorting the dynamically allocated
-> regions ahead of any static regions at address 0x0.
-> 
-> For example, there are two overlaps in this case but they are not
-> currently reported:
-> 
-> 	foo@0 {
-> 	        reg = <0x0 0x2000>;
-> 	};
-> 
-> 	bar@0 {
-> 	        reg = <0x0 0x1000>;
-> 	};
-> 
-> 	baz@1000 {
-> 	        reg = <0x1000 0x1000>;
-> 	};
-> 
-> 	quux {
-> 	        size = <0x1000>;
-> 	};
-> 
-> but they are after this patch:
-> 
->  OF: reserved mem: OVERLAP DETECTED!
->  bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
->  OF: reserved mem: OVERLAP DETECTED!
->  foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
-> 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> Link: https://lore.kernel.org/r/ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+> index 1f3d7d639..5eb566274 100644
+> --- a/drivers/iio/adc/rockchip_saradc.c
+> +++ b/drivers/iio/adc/rockchip_saradc.c
+> @@ -461,9 +461,10 @@ static int rockchip_saradc_resume(struct device *dev)
+>   		return ret;
+>   
+>   	ret = clk_prepare_enable(info->clk);
+> -	if (ret)
+> +	if (ret) {
+> +		clk_disable_unprepare(info->pclk);
+>   		return ret;
 
-I'm not sure if this really needs to be backported.  It's only fixing
-what is essentially a minor debugging feature.
+No need to add braces, just replace this utterly pointless "early" return ;)
+
+Robin.
+
+> -
+> +	}
+>   	return ret;
+>   }
+>   #endif
+> 
