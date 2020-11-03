@@ -2,228 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2150F2A46B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEFA2A46A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgKCNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729249AbgKCNhg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:37:36 -0500
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41301C0613D1;
-        Tue,  3 Nov 2020 05:37:36 -0800 (PST)
-Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
-        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 44839634C24;
-        Tue,  3 Nov 2020 15:36:31 +0200 (EET)
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v4 1/1] lib/vsprintf: Add support for printing V4L2 and DRM fourccs
-Date:   Tue,  3 Nov 2020 15:34:00 +0200
-Message-Id: <20201103133400.24805-1-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S1729192AbgKCNfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:35:54 -0500
+Received: from 8bytes.org ([81.169.241.247]:39136 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727883AbgKCNfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:35:52 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 7FD9A433; Tue,  3 Nov 2020 14:35:51 +0100 (CET)
+Date:   Tue, 3 Nov 2020 14:35:50 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jon.Grimm@amd.com, brijesh.singh@amd.com
+Subject: Re: [PATCH] iommu/amd: Enforce 4k mapping for certain IOMMU data
+ structures
+Message-ID: <20201103133549.GI22888@8bytes.org>
+References: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-pixel formats denoted by fourccs. The fourcc encoding is the same for both
-so the same implementation can be used.
+Hi Suravee,
 
-Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
-Hi folks,
+On Wed, Oct 28, 2020 at 11:18:24PM +0000, Suravee Suthikulpanit wrote:
+> AMD IOMMU requires 4k-aligned pages for the event log, the PPR log,
+> and the completion wait write-back regions. However, when allocating
+> the pages, they could be part of large mapping (e.g. 2M) page.
+> This causes #PF due to the SNP RMP hardware enforces the check based
+> on the page level for these data structures.
+> 
+> So, fix by calling set_memory_4k() on the allocated pages.
+> 
+> Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion wait write-back semaphore")
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  drivers/iommu/amd/init.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index 82e4af8f09bb..75dc30226a7c 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -29,6 +29,7 @@
+>  #include <asm/iommu_table.h>
+>  #include <asm/io_apic.h>
+>  #include <asm/irq_remapping.h>
+> +#include <asm/set_memory.h>
+>  
+>  #include <linux/crash_dump.h>
+>  
+> @@ -672,11 +673,22 @@ static void __init free_command_buffer(struct amd_iommu *iommu)
+>  	free_pages((unsigned long)iommu->cmd_buf, get_order(CMD_BUFFER_SIZE));
+>  }
+>  
+> +static void *__init iommu_alloc_4k_pages(gfp_t gfp, size_t size)
+> +{
+> +	void *buf;
+> +	int order = get_order(size);
+> +
+> +	buf = (void *)__get_free_pages(gfp, order);
+> +	if (!buf)
+> +		return buf;
+> +	return set_memory_4k((unsigned long)buf, (1 << order)) ? NULL : buf;
+> +}
+> +
 
-I believe I've addressed comments from Rasmus, Joe and Andy --- variables
-that don't need to be negative have remained unsigned though. Thanks for
-the suggestions, I believe this is much cleaner than v3.
+Please make the 4k split only if SNP is actually enabled in the system.
 
-since v3:
+Regards,
 
-- Remove use of WARN_ON, assume the code is correct instead. A side effect
-  of this is the code is much easier to understand.
-
-- Check the modifier first before validating the buf pointer.
-
-- Use isascii() and isprint() functions to weed out non-printable
-  characters.
-
-- Use hex_byte_pack() for printing 8-bit hexadecimal numbers.
-
-- Remove macros, and instead use plain strings.
-
-- Use strcpy() to copy the endianness string, and then strlen() to add its
-  length.
-
-- Strip the MSB (endianness bit), then use the value as such.
-
-- Assign characters to the buffer and increment active pointer at the same
-  time.
-
-- Drop __ from variable names.
-
-- Add example to documentation.
-
- Documentation/core-api/printk-formats.rst | 16 +++++++
- lib/test_printf.c                         | 17 ++++++++
- lib/vsprintf.c                            | 52 +++++++++++++++++++++++
- 3 files changed, 85 insertions(+)
-
-diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-index 6d26c5c6ac48..080262d2e030 100644
---- a/Documentation/core-api/printk-formats.rst
-+++ b/Documentation/core-api/printk-formats.rst
-@@ -565,6 +565,22 @@ For printing netdev_features_t.
- 
- Passed by reference.
- 
-+V4L2 and DRM FourCC code (pixel format)
-+---------------------------------------
-+
-+::
-+
-+	%p4cc
-+
-+Print a FourCC code used by V4L2 or DRM, including format endianness and
-+its numerical value as hexadecimal.
-+
-+Passed by reference.
-+
-+Examples::
-+
-+	%p4cc	BG12 little-endian (0x32314742)
-+
- Thanks
- ======
- 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 7ac87f18a10f..7fb042542660 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -649,6 +649,22 @@ static void __init fwnode_pointer(void)
- 	software_node_unregister(&softnodes[0]);
- }
- 
-+static void __init fourcc_pointer(void)
-+{
-+	struct {
-+		u32 code;
-+		char *str;
-+	} const try[] = {
-+		{ 0x20104646, "FF(10) little-endian (0x20104646)", },
-+		{ 0xa0104646, "FF(10) big-endian (0xa0104646)", },
-+		{ 0x10111213, "(13)(12)(11)(10) little-endian (0x10111213)", },
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(try); i++)
-+		test(try[i].str, "%p4cc", &try[i].code);
-+}
-+
- static void __init
- errptr(void)
- {
-@@ -694,6 +710,7 @@ test_pointer(void)
- 	flags();
- 	errptr();
- 	fwnode_pointer();
-+	fourcc_pointer();
- }
- 
- static void __init selftest(void)
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 14c9a6af1b23..2be86b302c88 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1733,6 +1733,55 @@ char *netdev_bits(char *buf, char *end, const void *addr,
- 	return special_hex_number(buf, end, num, size);
- }
- 
-+static noinline_for_stack
-+char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-+		    struct printf_spec spec, const char *fmt)
-+{
-+	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
-+	char *p = output;
-+	unsigned int i;
-+	u32 val;
-+
-+	if (fmt[1] != 'c' || fmt[2] != 'c')
-+		return error_string(output, end, "(%p4?)", spec);
-+
-+	if (check_pointer(&buf, end, fourcc, spec))
-+		return buf;
-+
-+	val = *fourcc & ~BIT(31);
-+
-+	for (i = 0; i < sizeof(*fourcc); i++) {
-+		unsigned char c = val >> (i * 8);
-+
-+		/* Weed out spaces */
-+		if (c == ' ')
-+			continue;
-+
-+		/* Print non-control ASCII characters as-is */
-+		if (isascii(c) && isprint(c)) {
-+			*p++ = c;
-+			continue;
-+		}
-+
-+		*p++ = '(';
-+		p = hex_byte_pack(p, c);
-+		*p++ = ')';
-+	}
-+
-+	strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
-+	p += strlen(p);
-+
-+	*p++ = ' ';
-+	*p++ = '(';
-+	/* subtract parenthesis and the space from the size */
-+	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
-+			       sizeof(u32));
-+	*p++ = ')';
-+	*p = '\0';
-+
-+	return string(buf, end, output, spec);
-+}
-+
- static noinline_for_stack
- char *address_val(char *buf, char *end, const void *addr,
- 		  struct printf_spec spec, const char *fmt)
-@@ -2162,6 +2211,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
-  *       correctness of the format string and va_list arguments.
-  * - 'K' For a kernel pointer that should be hidden from unprivileged users
-  * - 'NF' For a netdev_features_t
-+ * - '4cc' V4L2 or DRM FourCC code, with endianness and raw numerical value.
-  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
-  *            a certain separator (' ' by default):
-  *              C colon
-@@ -2259,6 +2309,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
- 		return restricted_pointer(buf, end, ptr, spec);
- 	case 'N':
- 		return netdev_bits(buf, end, ptr, spec, fmt);
-+	case '4':
-+		return fourcc_string(buf, end, ptr, spec, fmt);
- 	case 'a':
- 		return address_val(buf, end, ptr, spec, fmt);
- 	case 'd':
--- 
-2.27.0
-
+	Joerg
