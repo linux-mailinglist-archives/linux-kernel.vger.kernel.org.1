@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18642A5349
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9E32A52AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733128AbgKCU7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34700 "EHLO mail.kernel.org"
+        id S1732041AbgKCUwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733113AbgKCU7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:30 -0500
+        id S1732033AbgKCUwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9485D223BF;
-        Tue,  3 Nov 2020 20:59:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15B8D2071E;
+        Tue,  3 Nov 2020 20:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437170;
-        bh=ebhFxyfQPpIfUkMOndtreeKy5cOZRimmFH/uWLJz1V8=;
+        s=default; t=1604436724;
+        bh=qel/IkwRvO6XCYXxbcDTBAZGsaf0ynC01QjhCLa9Pxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWCKR4onBwOhi/1H1Napy2IPSCFT7w7fJDtTUXMG6ZMvWkvjGv4hgEor/0N/wgDPc
-         vxFU3ewaFk5xvyUAhAGZfO3U5GwEFNERutz6fsifVGJuQOjVEXhxqanUoktcuZ4JHn
-         dWVu428L44fqLjRBQ60xJCRHuRq49PMCfJKBCrSM=
+        b=feT9GuMeXHBNWY1DGYwf9451evkE3OY5AVfceaf5ofJErxeShmKLcwUQ6BqT2TXwZ
+         4bmhZlMOKhalPsSKXSnl21Ko7CdPVcXTVV4olpV+bWyRLeZZynogoUWdA3hHB8rk1v
+         rF7meHGyn8nmx8bNCK38EBWBLAlIqEJDY2/njZcc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 176/214] ia64: fix build error with !COREDUMP
-Date:   Tue,  3 Nov 2020 21:37:04 +0100
-Message-Id: <20201103203307.223513174@linuxfoundation.org>
+        stable@vger.kernel.org, Kanchan Joshi <joshi.k@samsung.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.9 374/391] null_blk: synchronization fix for zoned device
+Date:   Tue,  3 Nov 2020 21:37:05 +0100
+Message-Id: <20201103203412.385651316@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Kanchan Joshi <joshi.k@samsung.com>
 
-commit 7404840d87557c4092bf0272bce5e0354c774bf9 upstream.
+commit 35bc10b2eafbb701064b94f283b77c54d3304842 upstream.
 
-Fix linkage error when CONFIG_BINFMT_ELF is selected but CONFIG_COREDUMP
-is not:
+Parallel write,read,zone-mgmt operations accessing/altering zone state
+and write-pointer may get into race. Avoid the situation by using a new
+spinlock for zoned device.
+Concurrent zone-appends (on a zone) returning same write-pointer issue
+is also avoided using this lock.
 
-    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_phdrs':
-    elfcore.c:(.text+0x172): undefined reference to `dump_emit'
-    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_data':
-    elfcore.c:(.text+0x2b2): undefined reference to `dump_emit'
-
-Fixes: 1fcccbac89f5 ("elf coredump: replace ELF_CORE_EXTRA_* macros by functions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200819064146.12529-1-krzk@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Fixes: e0489ed5daeb ("null_blk: Support REQ_OP_ZONE_APPEND")
+Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/ia64/kernel/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/null_blk.h       |    1 +
+ drivers/block/null_blk_zoned.c |   22 ++++++++++++++++++----
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
---- a/arch/ia64/kernel/Makefile
-+++ b/arch/ia64/kernel/Makefile
-@@ -41,7 +41,7 @@ obj-y				+= esi_stub.o	# must be in kern
- endif
- obj-$(CONFIG_INTEL_IOMMU)	+= pci-dma.o
+--- a/drivers/block/null_blk.h
++++ b/drivers/block/null_blk.h
+@@ -44,6 +44,7 @@ struct nullb_device {
+ 	unsigned int nr_zones;
+ 	struct blk_zone *zones;
+ 	sector_t zone_size_sects;
++	spinlock_t zone_lock;
  
--obj-$(CONFIG_BINFMT_ELF)	+= elfcore.o
-+obj-$(CONFIG_ELF_CORE)		+= elfcore.o
+ 	unsigned long size; /* device size in MB */
+ 	unsigned long completion_nsec; /* time in ns to complete a request */
+--- a/drivers/block/null_blk_zoned.c
++++ b/drivers/block/null_blk_zoned.c
+@@ -45,6 +45,7 @@ int null_init_zoned_dev(struct nullb_dev
+ 	if (!dev->zones)
+ 		return -ENOMEM;
  
- # fp_emulate() expects f2-f5,f16-f31 to contain the user-level state.
- CFLAGS_traps.o  += -mfixed-range=f2-f5,f16-f31
++	spin_lock_init(&dev->zone_lock);
+ 	if (dev->zone_nr_conv >= dev->nr_zones) {
+ 		dev->zone_nr_conv = dev->nr_zones - 1;
+ 		pr_info("changed the number of conventional zones to %u",
+@@ -131,8 +132,11 @@ int null_report_zones(struct gendisk *di
+ 		 * So use a local copy to avoid corruption of the device zone
+ 		 * array.
+ 		 */
++		spin_lock_irq(&dev->zone_lock);
+ 		memcpy(&zone, &dev->zones[first_zone + i],
+ 		       sizeof(struct blk_zone));
++		spin_unlock_irq(&dev->zone_lock);
++
+ 		error = cb(&zone, i, data);
+ 		if (error)
+ 			return error;
+@@ -277,18 +281,28 @@ static blk_status_t null_zone_mgmt(struc
+ blk_status_t null_process_zoned_cmd(struct nullb_cmd *cmd, enum req_opf op,
+ 				    sector_t sector, sector_t nr_sectors)
+ {
++	blk_status_t sts;
++	struct nullb_device *dev = cmd->nq->dev;
++
++	spin_lock_irq(&dev->zone_lock);
+ 	switch (op) {
+ 	case REQ_OP_WRITE:
+-		return null_zone_write(cmd, sector, nr_sectors, false);
++		sts = null_zone_write(cmd, sector, nr_sectors, false);
++		break;
+ 	case REQ_OP_ZONE_APPEND:
+-		return null_zone_write(cmd, sector, nr_sectors, true);
++		sts = null_zone_write(cmd, sector, nr_sectors, true);
++		break;
+ 	case REQ_OP_ZONE_RESET:
+ 	case REQ_OP_ZONE_RESET_ALL:
+ 	case REQ_OP_ZONE_OPEN:
+ 	case REQ_OP_ZONE_CLOSE:
+ 	case REQ_OP_ZONE_FINISH:
+-		return null_zone_mgmt(cmd, op, sector);
++		sts = null_zone_mgmt(cmd, op, sector);
++		break;
+ 	default:
+-		return null_process_cmd(cmd, op, sector, nr_sectors);
++		sts = null_process_cmd(cmd, op, sector, nr_sectors);
+ 	}
++	spin_unlock_irq(&dev->zone_lock);
++
++	return sts;
+ }
 
 
