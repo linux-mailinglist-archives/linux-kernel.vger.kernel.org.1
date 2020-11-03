@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3092E2A52DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5BF2A5247
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732505AbgKCUx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:53:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52216 "EHLO mail.kernel.org"
+        id S1731425AbgKCUsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731808AbgKCUxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:48 -0500
+        id S1731396AbgKCUrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47D89223BD;
-        Tue,  3 Nov 2020 20:53:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32B94223FD;
+        Tue,  3 Nov 2020 20:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436827;
-        bh=wlT1dmtp4FA+oTPKSyLUROriq+XTuEwsv9+XDs8pDWI=;
+        s=default; t=1604436470;
+        bh=C6Bg/4Gs84xljSSBG6MI+QzTO+c6yHet764bIreZiKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kb+7PKwXh5Z16fIXCYXOJLiCIzn6JJObDsg5fCBwmQZfsFt15lZmsF8lx412/Mh79
-         /5thmgrO3EMdvSV+6tYy6LJ9M4GmskzLKrKDVtFsOyJkSjz/0G4RYmCsOO6I4Zgggq
-         gIhSEQwZScPQFEsj0mjBN1oPKuqKc9nSWG5hhh/Q=
+        b=p/fptkMF+Km+AoGKwO1TiVYFrtej5YUH4QNnj8qBdDcOBmwkKz/e5FZ6mspYX2iOk
+         sqqGooEOiU07ckVrBrwHNEycohdAB5lTD9bZp9T+B9nUNuBqQRN5+FXyD4HwYO+RJK
+         clGYgo3N+SU9igwE92p1tKsfwRS9OxXDF1+aET4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 028/214] s390/startup: avoid save_area_sync overflow
-Date:   Tue,  3 Nov 2020 21:34:36 +0100
-Message-Id: <20201103203252.705307353@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.9 226/391] btrfs: reschedule if necessary when logging directory items
+Date:   Tue,  3 Nov 2020 21:34:37 +0100
+Message-Id: <20201103203402.206338221@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 2835c2ea95d50625108e47a459e1a47f6be836ce ]
+commit bb56f02f26fe23798edb1b2175707419b28c752a upstream.
 
-Currently we overflow save_area_sync and write over
-save_area_async. Although this is not a real problem make
-startup_pgm_check_handler consistent with late pgm check handler and
-store [%r0,%r7] directly into gpregs_save_area.
+Logging directories with many entries can take a significant amount of
+time, and in some cases monopolize a cpu/core for a long time if the
+logging task doesn't happen to block often enough.
 
-Reviewed-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Johannes and Lu Fengqi reported test case generic/041 triggering a soft
+lockup when the kernel has CONFIG_SOFTLOCKUP_DETECTOR=y. For this test
+case we log an inode with 3002 hard links, and because the test removed
+one hard link before fsyncing the file, the inode logging causes the
+parent directory do be logged as well, which has 6004 directory items to
+log (3002 BTRFS_DIR_ITEM_KEY items plus 3002 BTRFS_DIR_INDEX_KEY items),
+so it can take a significant amount of time and trigger the soft lockup.
+
+So just make tree-log.c:log_dir_items() reschedule when necessary,
+releasing the current search path before doing so and then resume from
+where it was before the reschedule.
+
+The stack trace produced when the soft lockup happens is the following:
+
+[10480.277653] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [xfs_io:28172]
+[10480.279418] Modules linked in: dm_thin_pool dm_persistent_data (...)
+[10480.284915] irq event stamp: 29646366
+[10480.285987] hardirqs last  enabled at (29646365): [<ffffffff85249b66>] __slab_alloc.constprop.0+0x56/0x60
+[10480.288482] hardirqs last disabled at (29646366): [<ffffffff8579b00d>] irqentry_enter+0x1d/0x50
+[10480.290856] softirqs last  enabled at (4612): [<ffffffff85a00323>] __do_softirq+0x323/0x56c
+[10480.293615] softirqs last disabled at (4483): [<ffffffff85800dbf>] asm_call_on_stack+0xf/0x20
+[10480.296428] CPU: 2 PID: 28172 Comm: xfs_io Not tainted 5.9.0-rc4-default+ #1248
+[10480.298948] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[10480.302455] RIP: 0010:__slab_alloc.constprop.0+0x19/0x60
+[10480.304151] Code: 86 e8 31 75 21 00 66 66 2e 0f 1f 84 00 00 00 (...)
+[10480.309558] RSP: 0018:ffffadbe09397a58 EFLAGS: 00000282
+[10480.311179] RAX: ffff8a495ab92840 RBX: 0000000000000282 RCX: 0000000000000006
+[10480.313242] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff85249b66
+[10480.315260] RBP: ffff8a497d04b740 R08: 0000000000000001 R09: 0000000000000001
+[10480.317229] R10: ffff8a497d044800 R11: ffff8a495ab93c40 R12: 0000000000000000
+[10480.319169] R13: 0000000000000000 R14: 0000000000000c40 R15: ffffffffc01daf70
+[10480.321104] FS:  00007fa1dc5c0e40(0000) GS:ffff8a497da00000(0000) knlGS:0000000000000000
+[10480.323559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[10480.325235] CR2: 00007fa1dc5befb8 CR3: 0000000004f8a006 CR4: 0000000000170ea0
+[10480.327259] Call Trace:
+[10480.328286]  ? overwrite_item+0x1f0/0x5a0 [btrfs]
+[10480.329784]  __kmalloc+0x831/0xa20
+[10480.331009]  ? btrfs_get_32+0xb0/0x1d0 [btrfs]
+[10480.332464]  overwrite_item+0x1f0/0x5a0 [btrfs]
+[10480.333948]  log_dir_items+0x2ee/0x570 [btrfs]
+[10480.335413]  log_directory_changes+0x82/0xd0 [btrfs]
+[10480.336926]  btrfs_log_inode+0xc9b/0xda0 [btrfs]
+[10480.338374]  ? init_once+0x20/0x20 [btrfs]
+[10480.339711]  btrfs_log_inode_parent+0x8d3/0xd10 [btrfs]
+[10480.341257]  ? dget_parent+0x97/0x2e0
+[10480.342480]  btrfs_log_dentry_safe+0x3a/0x50 [btrfs]
+[10480.343977]  btrfs_sync_file+0x24b/0x5e0 [btrfs]
+[10480.345381]  do_fsync+0x38/0x70
+[10480.346483]  __x64_sys_fsync+0x10/0x20
+[10480.347703]  do_syscall_64+0x2d/0x70
+[10480.348891]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[10480.350444] RIP: 0033:0x7fa1dc80970b
+[10480.351642] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 (...)
+[10480.356952] RSP: 002b:00007fffb3d081d0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+[10480.359458] RAX: ffffffffffffffda RBX: 0000562d93d45e40 RCX: 00007fa1dc80970b
+[10480.361426] RDX: 0000562d93d44ab0 RSI: 0000562d93d45e60 RDI: 0000000000000003
+[10480.363367] RBP: 0000000000000001 R08: 0000000000000000 R09: 00007fa1dc7b2a40
+[10480.365317] R10: 0000562d93d0e366 R11: 0000000000000293 R12: 0000000000000001
+[10480.367299] R13: 0000562d93d45290 R14: 0000562d93d45e40 R15: 0000562d93d45e60
+
+Link: https://lore.kernel.org/linux-btrfs/20180713090216.GC575@fnst.localdomain/
+Reported-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+CC: stable@vger.kernel.org # 4.4+
+Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/boot/head.S | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ fs/btrfs/tree-log.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/s390/boot/head.S b/arch/s390/boot/head.S
-index 4b86a8d3c1219..e6bf5f40bff34 100644
---- a/arch/s390/boot/head.S
-+++ b/arch/s390/boot/head.S
-@@ -360,22 +360,23 @@ ENTRY(startup_kdump)
- # the save area and does disabled wait with a faulty address.
- #
- ENTRY(startup_pgm_check_handler)
--	stmg	%r0,%r15,__LC_SAVE_AREA_SYNC
--	la	%r1,4095
--	stctg	%c0,%c15,__LC_CREGS_SAVE_AREA-4095(%r1)
--	mvc	__LC_GPREGS_SAVE_AREA-4095(128,%r1),__LC_SAVE_AREA_SYNC
--	mvc	__LC_PSW_SAVE_AREA-4095(16,%r1),__LC_PGM_OLD_PSW
-+	stmg	%r8,%r15,__LC_SAVE_AREA_SYNC
-+	la	%r8,4095
-+	stctg	%c0,%c15,__LC_CREGS_SAVE_AREA-4095(%r8)
-+	stmg	%r0,%r7,__LC_GPREGS_SAVE_AREA-4095(%r8)
-+	mvc	__LC_GPREGS_SAVE_AREA-4095+64(64,%r8),__LC_SAVE_AREA_SYNC
-+	mvc	__LC_PSW_SAVE_AREA-4095(16,%r8),__LC_PGM_OLD_PSW
- 	mvc	__LC_RETURN_PSW(16),__LC_PGM_OLD_PSW
- 	ni	__LC_RETURN_PSW,0xfc	# remove IO and EX bits
- 	ni	__LC_RETURN_PSW+1,0xfb	# remove MCHK bit
- 	oi	__LC_RETURN_PSW+1,0x2	# set wait state bit
--	larl	%r2,.Lold_psw_disabled_wait
--	stg	%r2,__LC_PGM_NEW_PSW+8
--	l	%r15,.Ldump_info_stack-.Lold_psw_disabled_wait(%r2)
-+	larl	%r9,.Lold_psw_disabled_wait
-+	stg	%r9,__LC_PGM_NEW_PSW+8
-+	l	%r15,.Ldump_info_stack-.Lold_psw_disabled_wait(%r9)
- 	brasl	%r14,print_pgm_check_info
- .Lold_psw_disabled_wait:
--	la	%r1,4095
--	lmg	%r0,%r15,__LC_GPREGS_SAVE_AREA-4095(%r1)
-+	la	%r8,4095
-+	lmg	%r0,%r15,__LC_GPREGS_SAVE_AREA-4095(%r8)
- 	lpswe	__LC_RETURN_PSW		# disabled wait
- .Ldump_info_stack:
- 	.long	0x5000 + PAGE_SIZE - STACK_FRAME_OVERHEAD
--- 
-2.27.0
-
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3615,6 +3615,7 @@ static noinline int log_dir_items(struct
+ 	 * search and this search we'll not find the key again and can just
+ 	 * bail.
+ 	 */
++search:
+ 	ret = btrfs_search_slot(NULL, root, &min_key, path, 0, 0);
+ 	if (ret != 0)
+ 		goto done;
+@@ -3634,6 +3635,13 @@ static noinline int log_dir_items(struct
+ 
+ 			if (min_key.objectid != ino || min_key.type != key_type)
+ 				goto done;
++
++			if (need_resched()) {
++				btrfs_release_path(path);
++				cond_resched();
++				goto search;
++			}
++
+ 			ret = overwrite_item(trans, log, dst_path, src, i,
+ 					     &min_key);
+ 			if (ret) {
 
 
