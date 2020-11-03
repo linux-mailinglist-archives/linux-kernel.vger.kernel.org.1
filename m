@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E7D2A55CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8732A5639
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388541AbgKCVWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:22:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44114 "EHLO mail.kernel.org"
+        id S1730245AbgKCVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387804AbgKCVFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:33 -0500
+        id S1733220AbgKCVAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F6D222226;
-        Tue,  3 Nov 2020 21:05:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9875E223AC;
+        Tue,  3 Nov 2020 21:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437533;
-        bh=iGi1A/HIjlPZYD+2SeqNGeJAXliQ5RfNBdSLrnNyclk=;
+        s=default; t=1604437223;
+        bh=1dwYbPMQBXAQKaz+SOdJ4IiZ66CnPun/MaRc7YvlahA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jahEy6rIl84167K+ARLhHGPnQrBloLj98/N7WePnDoVzB43zLCKZ/85ZMs0TtBUTq
-         HkC7UDPqrpA4YFzmmosM5E0TAyDg4T4J4JV0b6aYRw84vFZ3eCPYkWW/irxl9sUnfa
-         YhRatRS9gHtLIMwhF1FpmXKQTlIcidd+OdTQgpfc=
+        b=QrH/7qqD2i9iqvb9tTgCH5GknS5P64HreNlfryTDm9EYRR8U7AB8f5lpbUO6JJZuK
+         OwMref3IOzg0S1wkl3YAE7InxxWGM/NhNH/OVKavURGX35Fu9YRXfsT3UQInUkhyQT
+         Wm2gr6WaIIisfOgwSBaSSAVjL3oibW/uQtm1nQAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-        Jaedon Shin <jaedon.shin@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
-Subject: [PATCH 4.19 116/191] leds: bcm6328, bcm6358: use devres LED registering function
-Date:   Tue,  3 Nov 2020 21:36:48 +0100
-Message-Id: <20201103203244.236927317@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 161/214] powerpc/powernv/elog: Fix race while processing OPAL error log event.
+Date:   Tue,  3 Nov 2020 21:36:49 +0100
+Message-Id: <20201103203305.875676123@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +45,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <marek.behun@nic.cz>
+From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
 
-commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
+commit aea948bb80b478ddc2448f7359d574387521a52d upstream.
 
-These two drivers do not provide remove method and use devres for
-allocation of other resources, yet they use led_classdev_register
-instead of the devres variant, devm_led_classdev_register.
+Every error log reported by OPAL is exported to userspace through a
+sysfs interface and notified using kobject_uevent(). The userspace
+daemon (opal_errd) then reads the error log and acknowledges the error
+log is saved safely to disk. Once acknowledged the kernel removes the
+respective sysfs file entry causing respective resources to be
+released including kobject.
 
-Fix this.
+However it's possible the userspace daemon may already be scanning
+elog entries when a new sysfs elog entry is created by the kernel.
+User daemon may read this new entry and ack it even before kernel can
+notify userspace about it through kobject_uevent() call. If that
+happens then we have a potential race between
+elog_ack_store->kobject_put() and kobject_uevent which can lead to
+use-after-free of a kernfs object resulting in a kernel crash. eg:
 
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Cc: Álvaro Fernández Rojas <noltari@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>
-Cc: Jaedon Shin <jaedon.shin@gmail.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-Cc: stable@kernel.org
+  BUG: Unable to handle kernel data access on read at 0x6b6b6b6b6b6b6bfb
+  Faulting instruction address: 0xc0000000008ff2a0
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
+  CPU: 27 PID: 805 Comm: irq/29-opal-elo Not tainted 5.9.0-rc2-gcc-8.2.0-00214-g6f56a67bcbb5-dirty #363
+  ...
+  NIP kobject_uevent_env+0xa0/0x910
+  LR  elog_event+0x1f4/0x2d0
+  Call Trace:
+    0x5deadbeef0000122 (unreliable)
+    elog_event+0x1f4/0x2d0
+    irq_thread_fn+0x4c/0xc0
+    irq_thread+0x1c0/0x2b0
+    kthread+0x1c4/0x1d0
+    ret_from_kernel_thread+0x5c/0x6c
+
+This patch fixes this race by protecting the sysfs file
+creation/notification by holding a reference count on kobject until we
+safely send kobject_uevent().
+
+The function create_elog_obj() returns the elog object which if used
+by caller function will end up in use-after-free problem again.
+However, the return value of create_elog_obj() function isn't being
+used today and there is no need as well. Hence change it to return
+void to make this fix complete.
+
+Fixes: 774fea1a38c6 ("powerpc/powernv: Read OPAL error log and export it through sysfs")
+Cc: stable@vger.kernel.org # v3.15+
+Reported-by: Oliver O'Halloran <oohall@gmail.com>
+Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+[mpe: Rework the logic to use a single return, reword comments, add oops]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201006122051.190176-1-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/leds/leds-bcm6328.c |    2 +-
- drivers/leds/leds-bcm6358.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/powernv/opal-elog.c |   33 ++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
---- a/drivers/leds/leds-bcm6328.c
-+++ b/drivers/leds/leds-bcm6328.c
-@@ -336,7 +336,7 @@ static int bcm6328_led(struct device *de
- 	led->cdev.brightness_set = bcm6328_led_set;
- 	led->cdev.blink_set = bcm6328_blink_set;
+--- a/arch/powerpc/platforms/powernv/opal-elog.c
++++ b/arch/powerpc/platforms/powernv/opal-elog.c
+@@ -179,14 +179,14 @@ static ssize_t raw_attr_read(struct file
+ 	return count;
+ }
  
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
+-static struct elog_obj *create_elog_obj(uint64_t id, size_t size, uint64_t type)
++static void create_elog_obj(uint64_t id, size_t size, uint64_t type)
+ {
+ 	struct elog_obj *elog;
+ 	int rc;
  
---- a/drivers/leds/leds-bcm6358.c
-+++ b/drivers/leds/leds-bcm6358.c
-@@ -141,7 +141,7 @@ static int bcm6358_led(struct device *de
+ 	elog = kzalloc(sizeof(*elog), GFP_KERNEL);
+ 	if (!elog)
+-		return NULL;
++		return;
  
- 	led->cdev.brightness_set = bcm6358_led_set;
+ 	elog->kobj.kset = elog_kset;
  
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
+@@ -219,18 +219,37 @@ static struct elog_obj *create_elog_obj(
+ 	rc = kobject_add(&elog->kobj, NULL, "0x%llx", id);
+ 	if (rc) {
+ 		kobject_put(&elog->kobj);
+-		return NULL;
++		return;
+ 	}
  
++	/*
++	 * As soon as the sysfs file for this elog is created/activated there is
++	 * a chance the opal_errd daemon (or any userspace) might read and
++	 * acknowledge the elog before kobject_uevent() is called. If that
++	 * happens then there is a potential race between
++	 * elog_ack_store->kobject_put() and kobject_uevent() which leads to a
++	 * use-after-free of a kernfs object resulting in a kernel crash.
++	 *
++	 * To avoid that, we need to take a reference on behalf of the bin file,
++	 * so that our reference remains valid while we call kobject_uevent().
++	 * We then drop our reference before exiting the function, leaving the
++	 * bin file to drop the last reference (if it hasn't already).
++	 */
++
++	/* Take a reference for the bin file */
++	kobject_get(&elog->kobj);
+ 	rc = sysfs_create_bin_file(&elog->kobj, &elog->raw_attr);
+-	if (rc) {
++	if (rc == 0) {
++		kobject_uevent(&elog->kobj, KOBJ_ADD);
++	} else {
++		/* Drop the reference taken for the bin file */
+ 		kobject_put(&elog->kobj);
+-		return NULL;
+ 	}
+ 
+-	kobject_uevent(&elog->kobj, KOBJ_ADD);
++	/* Drop our reference */
++	kobject_put(&elog->kobj);
+ 
+-	return elog;
++	return;
+ }
+ 
+ static irqreturn_t elog_event(int irq, void *data)
 
 
