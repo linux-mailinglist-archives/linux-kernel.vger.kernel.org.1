@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60032A4AF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED8E2A4B09
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgKCQPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:15:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
+        id S1728144AbgKCQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:20:40 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:32782 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727385AbgKCQPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:15:38 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDFB8206CB;
-        Tue,  3 Nov 2020 16:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604420137;
-        bh=dDSnEZsWeRQuzp5A2JaHrJaoDH+U2yZat/4bMvsaZj4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gAG/XNiVvMMkHRgOWWHXMdJ1xNP4/zBqNHCedZoWa9/vTnORRwvFKm8UCbdYynj5G
-         01ECL3TJKshN2Zo7tr/7XBkkRdAC8J1SCHgg96ob22wgN0BgT1KILPet1GRAWt8xV9
-         3YVC0k6df05/yCHKanHyCtKWM4nMIWL1RyrcpLV0=
-Date:   Tue, 3 Nov 2020 08:15:35 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hayes Wang <hayeswang@realtek.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Oliver Neukum <oliver@neukum.org>
-Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
- RTL8153
-Message-ID: <20201103081535.7e92a495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201103093241.GA79239@kroah.com>
-References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
-        <1394712342-15778-388-Taiwan-albertk@realtek.com>
-        <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
-        <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201103093241.GA79239@kroah.com>
+        id S1727323AbgKCQUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:20:40 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kZz2r-0053Ht-9O; Tue, 03 Nov 2020 17:20:29 +0100
+Date:   Tue, 3 Nov 2020 17:20:29 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, michal.simek@xilinx.com,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, git@xilinx.com,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>
+Subject: Re: [PATCH net-next] net: emaclite: Add error handling for
+ of_address_ and phy read functions
+Message-ID: <20201103162029.GK1042051@lunn.ch>
+References: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 10:32:41 +0100 Greg Kroah-Hartman wrote:
-> On Mon, Nov 02, 2020 at 11:47:18AM -0800, Jakub Kicinski wrote:
-> > On Mon, 2 Nov 2020 07:20:15 +0000 Hayes Wang wrote:  
-> > > Jakub Kicinski <kuba@kernel.org>  
-> > > > Can you describe the use case in more detail?
-> > > > 
-> > > > AFAICT r8152 defines a match for the exact same device.
-> > > > Does it not mean that which driver is used will be somewhat random
-> > > > if both are built?    
-> > > 
-> > > I export rtl_get_version() from r8152. It would return none zero
-> > > value if r8152 could support this device. Both r8152 and r8153_ecm
-> > > would check the return value of rtl_get_version() in porbe().
-> > > Therefore, if rtl_get_version() return none zero value, the r8152
-> > > is used for the device with vendor mode. Otherwise, the r8153_ecm
-> > > is used for the device with ECM mode.  
-> > 
-> > Oh, I see, I missed that the rtl_get_version() checking is the inverse
-> > of r8152.
-> >   
-> > > > > +/* Define these values to match your device */
-> > > > > +#define VENDOR_ID_REALTEK		0x0bda
-> > > > > +#define VENDOR_ID_MICROSOFT		0x045e
-> > > > > +#define VENDOR_ID_SAMSUNG		0x04e8
-> > > > > +#define VENDOR_ID_LENOVO		0x17ef
-> > > > > +#define VENDOR_ID_LINKSYS		0x13b1
-> > > > > +#define VENDOR_ID_NVIDIA		0x0955
-> > > > > +#define VENDOR_ID_TPLINK		0x2357    
-> > > > 
-> > > > $ git grep 0x2357 | grep -i tplink
-> > > > drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
-> > > > drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
-> > > > drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
-> > > > 
-> > > > $ git grep 0x17ef | grep -i lenovo
-> > > > drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
-> > > > drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
-> > > > drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
-> > > > drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
-> > > > 
-> > > > Time to consolidate those vendor id defines perhaps?    
-> > > 
-> > > It seems that there is no such header file which I could include
-> > > or add the new vendor IDs.  
-> > 
-> > Please create one. (Adding Greg KH to the recipients, in case there is
-> > a reason that USB subsystem doesn't have a common vendor id header.)  
+On Tue, Nov 03, 2020 at 07:01:05PM +0530, Radhey Shyam Pandey wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 > 
-> There is a reason, it's a nightmare to maintain and handle merges for,
-> just don't do it.
-
-Ah! Good that we asked :)
-
-> Read the comments at the top of the pci_ids.h file if you are curious
-> why we don't even do this for PCI device ids anymore for the past 10+
-> years.
+> Add ret variable, conditions to check the return value and it's error
+> path for of_address_to_resource() and phy_read() functions.
 > 
-> So no, please do not create such a common file, it is not needed or a
-> good idea.
+> Addresses-Coverity: Event check_return value.
 
-I wouldn't go that far, PCI subsystem just doesn't want everyone to add
-IDs to the shared file unless there is a reason.
+Hi Radhey
 
- *	Do not add new entries to this file unless the definitions
- *	are shared between multiple drivers.
+This is well out of scope of a Coverity fix, but looking at the patch
+i noticed some bad things.
 
-Which seems quite reasonable. But it is most certainly your call :)
+> @@ -923,7 +929,7 @@ static int xemaclite_open(struct net_device *dev)
+>  	xemaclite_disable_interrupts(lp);
+>  
+>  	if (lp->phy_node) {
+> -		u32 bmcr;
+> +		int bmcr;
+>  
+>  		lp->phy_dev = of_phy_connect(lp->ndev, lp->phy_node,
+>  					     xemaclite_adjust_link, 0,
+> @@ -945,6 +951,13 @@ static int xemaclite_open(struct net_device *dev)
+>  
+>  		/* Restart auto negotiation */
+>  		bmcr = phy_read(lp->phy_dev, MII_BMCR);
+> +		if (bmcr < 0) {
+> +			dev_err(&lp->ndev->dev, "phy_read failed\n");
+> +			phy_disconnect(lp->phy_dev);
+> +			lp->phy_dev = NULL;
+> +
+> +			return bmcr;
+> +		}
+>  		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
+>  		phy_write(lp->phy_dev, MII_BMCR, bmcr);
+
+A MAC driver should not be touching the PHY. The call to
+phy_set_max_speed() should prevent the PHY from advertising 1G speeds,
+so there is no need to poke the advertise registers. And phy_start()
+will start auto-get if it is enabled.
+
+It would be nice if this code got cleaned up.
+
+   Andrew
