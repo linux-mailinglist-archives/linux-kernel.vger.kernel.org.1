@@ -2,165 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389882A4BDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1952A4BE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgKCQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:48:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:52118 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725997AbgKCQsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:48:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11D0A139F;
-        Tue,  3 Nov 2020 08:48:15 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0C173F718;
-        Tue,  3 Nov 2020 08:48:13 -0800 (PST)
-Subject: Re: [PATCH v2 3/4] iommu/iova: Flush CPU rcache for when a depot
- fills
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
-Cc:     xiyou.wangcong@gmail.com, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        chenxiang66@hisilicon.com, thunder.leizhen@huawei.com
-References: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
- <1603733501-211004-4-git-send-email-john.garry@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
-Date:   Tue, 3 Nov 2020 16:48:12 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728513AbgKCQto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:49:44 -0500
+Received: from smtprelay0079.hostedemail.com ([216.40.44.79]:58844 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725997AbgKCQto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:49:44 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E3FE4180A9113;
+        Tue,  3 Nov 2020 16:49:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2282:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:6120:6742:7901:7903:7904:8603:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14659:14721:21080:21627:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: card07_4c0643e272ba
+X-Filterd-Recvd-Size: 3077
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  3 Nov 2020 16:49:40 +0000 (UTC)
+Message-ID: <b389f6991ede1f8ae89a0dbaa8deab06aecc6146.camel@perches.com>
+Subject: Re: [PATCH v4 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+From:   Joe Perches <joe@perches.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Tue, 03 Nov 2020 08:49:36 -0800
+In-Reply-To: <20201103145616.GJ26150@paasikivi.fi.intel.com>
+References: <20201103133400.24805-1-sakari.ailus@linux.intel.com>
+         <20201103144747.GD4077@smile.fi.intel.com>
+         <20201103145616.GJ26150@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <1603733501-211004-4-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 17:31, John Garry wrote:
-> Leizhen reported some time ago that IOVA performance may degrade over time
-> [0], but unfortunately his solution to fix this problem was not given
-> attention.
-> 
-> To summarize, the issue is that as time goes by, the CPU rcache and depot
-> rcache continue to grow. As such, IOVA RB tree access time also continues
-> to grow.
+On Tue, 2020-11-03 at 16:56 +0200, Sakari Ailus wrote:
+> On Tue, Nov 03, 2020 at 04:47:47PM +0200, Andy Shevchenko wrote:
+> > On Tue, Nov 03, 2020 at 03:34:00PM +0200, Sakari Ailus wrote:
+> > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > > so the same implementation can be used.
+> > 
+> > ...
+> > 
+> > > +static noinline_for_stack
+> > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> > > +		    struct printf_spec spec, const char *fmt)
+> > > +{
+> > > +	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
+> > 
+> > I would add a comment that there is another possibility, i.e. big-endian, but
+> > it occupies less space.
 
-I'm struggling to see how this is not simply indicative of a leak 
-originating elsewhere. For the number of magazines to continually grow, 
-it means IOVAs *of a particular size* are being freed faster than they 
-are being allocated, while the only place that ongoing allocations 
-should be coming from is those same magazines!
+I think it's unnecessary as it's obvious and similarly done in other
+<foo>_string type functions.
 
-Now indeed that could happen over the short term if IOVAs are allocated 
-and freed again in giant batches larger than the total global cache 
-capacity, but that would show a cyclic behaviour - when activity starts, 
-everything is first allocated straight from the tree, then when it ends 
-the caches would get overwhelmed by the large burst of freeing and start 
-having to release things back to the tree, but eventually that would 
-stop once everything *is* freed, then when activity begins again the 
-next round of allocating would inherently clear out all the caches 
-before going anywhere near the tree. To me the "steady decline" 
-behaviour suggests that someone somewhere is making DMA unmap calls with 
-a smaller size than they were mapped with (you tend to notice it quicker 
-the other way round due to all the device errors and random memory 
-corruption) - in many cases that would appear to work out fine from the 
-driver's point of view, but would provoke exactly this behaviour in the 
-IOVA allocator.
+> > > +	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
+> > > +			       sizeof(u32));
+> > 
+> > I would go with one line here.
+> 
+> It's wrapped since the result would be over 80 otherwise.
 
-Robin.
+Perhaps simpler as
 
-> At a certain point, a depot may become full, and also some CPU rcaches may
-> also be full when inserting another IOVA is attempted. For this scenario,
-> currently the "loaded" CPU rcache is freed and a new one is created. This
-> freeing means that many IOVAs in the RB tree need to be freed, which
-> makes IO throughput performance fall off a cliff in some storage scenarios:
-> 
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
-> 
-> And continue in this fashion, without recovering. Note that in this
-> example it was required to wait 16 hours for this to occur. Also note that
-> IO throughput also becomes gradually becomes more unstable leading up to
-> this point.
-> 
-> As a solution to this issue, judge that the IOVA caches have grown too big
-> when cached magazines need to be free, and just flush all the CPUs rcaches
-> instead.
-> 
-> The depot rcaches, however, are not flushed, as they can be used to
-> immediately replenish active CPUs.
-> 
-> In future, some IOVA compaction could be implemented to solve the
-> instabilty issue, which I figure could be quite complex to implement.
-> 
-> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
-> 
-> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   drivers/iommu/iova.c | 16 ++++++----------
->   1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 1f3f0f8b12e0..386005055aca 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -901,7 +901,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   				 struct iova_rcache *rcache,
->   				 unsigned long iova_pfn)
->   {
-> -	struct iova_magazine *mag_to_free = NULL;
->   	struct iova_cpu_rcache *cpu_rcache;
->   	bool can_insert = false;
->   	unsigned long flags;
-> @@ -923,13 +922,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   				if (cpu_rcache->loaded)
->   					rcache->depot[rcache->depot_size++] =
->   							cpu_rcache->loaded;
-> -			} else {
-> -				mag_to_free = cpu_rcache->loaded;
-> +				can_insert = true;
-> +				cpu_rcache->loaded = new_mag;
->   			}
->   			spin_unlock(&rcache->lock);
-> -
-> -			cpu_rcache->loaded = new_mag;
-> -			can_insert = true;
-> +			if (!can_insert)
-> +				iova_magazine_free(new_mag);
->   		}
->   	}
->   
-> @@ -938,10 +936,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   
->   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
->   
-> -	if (mag_to_free) {
-> -		iova_magazine_free_pfns(mag_to_free, iovad);
-> -		iova_magazine_free(mag_to_free);
-> -	}
-> +	if (!can_insert)
-> +		free_all_cpu_cached_iovas(iovad);
->   
->   	return can_insert;
->   }
-> 
+	p = special_hex_number(p, p + 10, *fourcc, sizeof(u32));
+
+> > The (theoretical) problem is here that the case when buffer size is not enough
+> > to print a value will be like '(0xabc)' but should be rather '(0xabcd' like
+> > snprintf() does in general.
+
+Isn't the stack buffer known to be large enough?
+
+> > > +	*p++ = ')';
+> > > +	*p = '\0';
+> > > +
+> > > +	return string(buf, end, output, spec);
+
+Isn't the actual output buffer used here truncating output?
+
+If the general problem is someone using a limited length pointer
+output like %10p4cc, then all the output is getting truncated no?
+
+
