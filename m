@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25BE2A48BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA0A2A4838
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbgKCOUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:20:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729240AbgKCNpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:45:16 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C86AC0613D1;
-        Tue,  3 Nov 2020 05:45:16 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so14611729qki.6;
-        Tue, 03 Nov 2020 05:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+eMXBOnvKPM7N/Eu0cs4UA1I6FeurfdgB6uFLVTMPX8=;
-        b=WQlGQ9Jd6IJQey7nb9UMUDYsL+DEjmMTVkMHPOOrYSdV926tvA93ywvzKvPW9EdJzQ
-         xWYruju83XXsh1i6XxcvxRg6hDqU6tq8BaNfGIDHsg2pgJYtsAkvynEeGwGPRGe+ZPsx
-         biGcniO7POm0x08s1Iwq88HHNGiqadVQYcORh5b/WkN2ytRV8n2H7zXHbG9CyN36/TNs
-         CvFVpr4PvgANBbzTT2RtpSiuCEWpI/CT6RmO+Fk+zaNRO64hUzWUoNMlpPKDi4ZwlNos
-         6rRlllg7BYoJdX53s9pkkLBvkmTEqozVXkK0+PARPMrbpsjLaiSLI/uef0UWqLlg9En5
-         LfmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+eMXBOnvKPM7N/Eu0cs4UA1I6FeurfdgB6uFLVTMPX8=;
-        b=HaayDovTTYcLgBXGwRpwF834DWJCnWt26Nyrkv9jU0mFLzanG2jws27siHN0vFu1kL
-         VF7IUlyXKExnFbU23Seq5Ym8g3b5R5a0cqH7hTVCOiYhK8IM7h0nH/r+h6U6fhtGCUYF
-         TnhvbOEfI+CQR1R72okp0nMIiDiMOv0U1ljFYam0QfbnAEqWBX3Ib/Y2f7vmOFFejeCJ
-         sAG/NsGhV5QLm8ASVCFb6Onx6pOkFUQY/5pwzl76uXfx4ztyGxY+c06YEim8zJbZ00xH
-         B4aF6DWckYlYinuJK8g+pNVqTKusGApegVWZUgvMHgJaMFv4GG/V+sb0X679CPFof7Rp
-         Jfbw==
-X-Gm-Message-State: AOAM532hEiDGtxucYTQXXbbmODfRf6sBpMLd462RD8tJ91Hnls+OYOFH
-        96ykj+alVkdTvHkz+tJyCmE=
-X-Google-Smtp-Source: ABdhPJwPGCoGB0mzNqbRbE7eqaQrs2dVEZ+ysMN9iFWpphI5Jv582QKy4aIVAjZqImUIW48ZcJyckw==
-X-Received: by 2002:a37:6187:: with SMTP id v129mr8374191qkb.31.1604411115473;
-        Tue, 03 Nov 2020 05:45:15 -0800 (PST)
-Received: from zhuyifei1999-ThinkPad-T480.gw.illinois.edu ([2620:0:e00:400f::31])
-        by smtp.gmail.com with ESMTPSA id a206sm7356568qkb.64.2020.11.03.05.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 05:45:14 -0800 (PST)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux-foundation.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH seccomp 5/8] s390: Enable seccomp architecture tracking
-Date:   Tue,  3 Nov 2020 07:43:01 -0600
-Message-Id: <0fbe0c14d598e18effad3b648ab4808f9cd95eba.1604410035.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1604410035.git.yifeifz2@illinois.edu>
-References: <cover.1604410035.git.yifeifz2@illinois.edu>
+        id S1729716AbgKCOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:32:21 -0500
+Received: from lhrrgout.huawei.com ([185.176.76.210]:3032 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729286AbgKCObY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:31:24 -0500
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id BF3F4A1754057E9ACDF6;
+        Tue,  3 Nov 2020 14:31:23 +0000 (GMT)
+Received: from [10.47.5.37] (10.47.5.37) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 3 Nov 2020
+ 14:31:23 +0000
+Subject: Re: [PATCH v5 2/2] iommu/iova: Free global iova rcache on iova alloc
+ failure
+To:     Robin Murphy <robin.murphy@arm.com>, <vjitta@codeaurora.org>,
+        <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <vinmenon@codeaurora.org>, <kernel-team@android.com>
+References: <1601451864-5956-1-git-send-email-vjitta@codeaurora.org>
+ <1601451864-5956-2-git-send-email-vjitta@codeaurora.org>
+ <ff318311-77e8-b235-37dd-7b1b5f5d8ed9@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e1e5b24a-512b-7279-8341-7f4495718ece@huawei.com>
+Date:   Tue, 3 Nov 2020 14:31:20 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <ff318311-77e8-b235-37dd-7b1b5f5d8ed9@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.5.37]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+On 03/11/2020 12:35, Robin Murphy wrote:
+> On 2020-09-30 08:44, vjitta@codeaurora.org wrote:
+>> From: Vijayanand Jitta <vjitta@codeaurora.org>
+>>
+>> When ever an iova alloc request fails we free the iova
+>> ranges present in the percpu iova rcaches and then retry
+>> but the global iova rcache is not freed as a result we could
+>> still see iova alloc failure even after retry as global
+>> rcache is holding the iova's which can cause fragmentation.
+>> So, free the global iova rcache as well and then go for the
+>> retry.
+> 
 
-To enable seccomp constant action bitmaps, we need to have a static
-mapping to the audit architecture and system call table size. Add these
-for s390.
+If we do clear all the CPU rcaches, it would nice to have something 
+immediately available to replenish, i.e. use the global rcache, instead 
+of flushing it, if that is not required...
 
-Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
----
- arch/s390/include/asm/seccomp.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> This looks reasonable to me - it's mildly annoying that we end up with 
+> so many similar-looking functions,
 
-diff --git a/arch/s390/include/asm/seccomp.h b/arch/s390/include/asm/seccomp.h
-index 795bbe0d7ca6..71d46f0ba97b 100644
---- a/arch/s390/include/asm/seccomp.h
-+++ b/arch/s390/include/asm/seccomp.h
-@@ -16,4 +16,13 @@
- 
- #include <asm-generic/seccomp.h>
- 
-+#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_S390X
-+#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+#define SECCOMP_ARCH_NATIVE_NAME	"s390x"
-+#ifdef CONFIG_COMPAT
-+# define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_S390
-+# define SECCOMP_ARCH_COMPAT_NR		NR_syscalls
-+# define SECCOMP_ARCH_COMPAT_NAME	"s390"
-+#endif
-+
- #endif	/* _ASM_S390_SECCOMP_H */
--- 
-2.29.2
+Well I did add a function to clear all CPU rcaches here, if you would 
+like to check:
+
+https://lore.kernel.org/linux-iommu/1603733501-211004-2-git-send-email-john.garry@huawei.com/
+
+> but the necessary differences are 
+> right down in the middle of the loops so nothing can reasonably be 
+> factored out :(
+> 
+> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> 
+>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+>> ---
+>>   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
+>>   1 file changed, 23 insertions(+)
+>>
+>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+>> index c3a1a8e..faf9b13 100644
+>> --- a/drivers/iommu/iova.c
+>> +++ b/drivers/iommu/iova.c
+>> @@ -25,6 +25,7 @@ static void init_iova_rcaches(struct iova_domain 
+>> *iovad);
+>>   static void free_iova_rcaches(struct iova_domain *iovad);
+>>   static void fq_destroy_all_entries(struct iova_domain *iovad);
+>>   static void fq_flush_timeout(struct timer_list *t);
+>> +static void free_global_cached_iovas(struct iova_domain *iovad);
+
+a thought: It would be great if the file could be rearranged at some 
+point where we don't require so many forward declarations.
+
+>>   void
+>>   init_iova_domain(struct iova_domain *iovad, unsigned long granule,
+>> @@ -442,6 +443,7 @@ alloc_iova_fast(struct iova_domain *iovad, 
+>> unsigned long size,
+>>           flush_rcache = false;
+>>           for_each_online_cpu(cpu)
+>>               free_cpu_cached_iovas(cpu, iovad);
+>> +        free_global_cached_iovas(iovad);
+>>           goto retry;
+>>       }
+>> @@ -1057,5 +1059,26 @@ void free_cpu_cached_iovas(unsigned int cpu, 
+>> struct iova_domain *iovad)
+>>       }
+>>   }
+>> +/*
+>> + * free all the IOVA ranges of global cache
+>> + */
+>> +static void free_global_cached_iovas(struct iova_domain *iovad)
+>> +{
+>> +    struct iova_rcache *rcache;
+>> +    unsigned long flags;
+>> +    int i, j;
+>> +
+>> +    for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+>> +        rcache = &iovad->rcaches[i];
+>> +        spin_lock_irqsave(&rcache->lock, flags);
+>> +        for (j = 0; j < rcache->depot_size; ++j) {
+>> +            iova_magazine_free_pfns(rcache->depot[j], iovad);
+>> +            iova_magazine_free(rcache->depot[j]);
+>> +            rcache->depot[j] = NULL;
+
+I don't think that NULLify is strictly necessary
+
+>> +        }
+>> +        rcache->depot_size = 0;
+>> +        spin_unlock_irqrestore(&rcache->lock, flags);
+>> +    }
+>> +}
+>>   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
+>>   MODULE_LICENSE("GPL");
+>>
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> .
 
