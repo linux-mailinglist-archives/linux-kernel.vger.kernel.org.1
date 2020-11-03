@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6122A52A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061D82A5341
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731993AbgKCUvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47080 "EHLO mail.kernel.org"
+        id S1731501AbgKCU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731979AbgKCUvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:39 -0500
+        id S1733072AbgKCU7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFB1D20719;
-        Tue,  3 Nov 2020 20:51:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E202822226;
+        Tue,  3 Nov 2020 20:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436699;
-        bh=WO/ScDgnIcLpusW7IfzMoFEU6c2HkLknbh+ilnrtuzo=;
+        s=default; t=1604437149;
+        bh=jXUjiPtxynW4AdqW9KM6Th1BPteywzmQp9HJnobJPbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLoijzkt9AxhEWNhXObaPh//PL5qAdmVh3jtnGezPE//3e8GadSrkpscKjXFtd4W0
-         fGJKGX3yKjScnOg+8n/pif6qROPzFFJGXaIqE3H56UBwc37zRyVhzjc72vho5CJ1Um
-         O6kI0Foixoi/wKBzqLonoGK2ng7t+yQEgJ605zcw=
+        b=oLLqaWatPtt+XEbRZS2RwVU32lPOftzbHBHTvMyovafNrOBkr/bNd4EYvwN2x6H3G
+         41PeRiaz0yuffTYNkk36cWBIAe2HF7QkylwLhXWOn4AsWg5xD2cE6vD21p/zrCl4oE
+         v90/MdhX/Fk3Bqd2Mcrddo+i67cB2xZPTgNE8/xE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 364/391] cachefiles: Handle readpage error correctly
-Date:   Tue,  3 Nov 2020 21:36:55 +0100
-Message-Id: <20201103203411.707063589@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.4 168/214] ubifs: xattr: Fix some potential memory leaks while iterating entries
+Date:   Tue,  3 Nov 2020 21:36:56 +0100
+Message-Id: <20201103203306.515423776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +42,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 9480b4e75b7108ee68ecf5bc6b4bd68e8031c521 upstream.
+commit f2aae745b82c842221f4f233051f9ac641790959 upstream.
 
-If ->readpage returns an error, it has already unlocked the page.
+Fix some potential memory leaks in error handling branches while
+iterating xattr entries. For example, function ubifs_tnc_remove_ino()
+forgets to free pxent if it exists. Similar problems also exist in
+ubifs_purge_xattrs(), ubifs_add_orphan() and ubifs_jnl_write_inode().
 
-Fixes: 5e929b33c393 ("CacheFiles: Handle truncate unlocking the page we're reading")
-Cc: stable@vger.kernel.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cachefiles/rdwr.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ubifs/journal.c |    2 ++
+ fs/ubifs/orphan.c  |    2 ++
+ fs/ubifs/tnc.c     |    3 +++
+ fs/ubifs/xattr.c   |    2 ++
+ 4 files changed, 9 insertions(+)
 
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -121,7 +121,7 @@ static int cachefiles_read_reissue(struc
- 		_debug("reissue read");
- 		ret = bmapping->a_ops->readpage(NULL, backpage);
- 		if (ret < 0)
--			goto unlock_discard;
-+			goto discard;
- 	}
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -894,6 +894,7 @@ int ubifs_jnl_write_inode(struct ubifs_i
+ 				if (err == -ENOENT)
+ 					break;
  
- 	/* but the page may have been read before the monitor was installed, so
-@@ -138,6 +138,7 @@ static int cachefiles_read_reissue(struc
++				kfree(pxent);
+ 				goto out_release;
+ 			}
  
- unlock_discard:
- 	unlock_page(backpage);
-+discard:
- 	spin_lock_irq(&object->work_lock);
- 	list_del(&monitor->op_link);
- 	spin_unlock_irq(&object->work_lock);
+@@ -906,6 +907,7 @@ int ubifs_jnl_write_inode(struct ubifs_i
+ 				ubifs_err(c, "dead directory entry '%s', error %d",
+ 					  xent->name, err);
+ 				ubifs_ro_mode(c, err);
++				kfree(pxent);
+ 				kfree(xent);
+ 				goto out_release;
+ 			}
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -173,6 +173,7 @@ int ubifs_add_orphan(struct ubifs_info *
+ 			err = PTR_ERR(xent);
+ 			if (err == -ENOENT)
+ 				break;
++			kfree(pxent);
+ 			return err;
+ 		}
+ 
+@@ -182,6 +183,7 @@ int ubifs_add_orphan(struct ubifs_info *
+ 
+ 		xattr_orphan = orphan_add(c, xattr_inum, orphan);
+ 		if (IS_ERR(xattr_orphan)) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return PTR_ERR(xattr_orphan);
+ 		}
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -2885,6 +2885,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
+ 			err = PTR_ERR(xent);
+ 			if (err == -ENOENT)
+ 				break;
++			kfree(pxent);
+ 			return err;
+ 		}
+ 
+@@ -2898,6 +2899,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
+ 		fname_len(&nm) = le16_to_cpu(xent->nlen);
+ 		err = ubifs_tnc_remove_nm(c, &key1, &nm);
+ 		if (err) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return err;
+ 		}
+@@ -2906,6 +2908,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
+ 		highest_ino_key(c, &key2, xattr_inum);
+ 		err = ubifs_tnc_remove_range(c, &key1, &key2);
+ 		if (err) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return err;
+ 		}
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -522,6 +522,7 @@ int ubifs_purge_xattrs(struct inode *hos
+ 				  xent->name, err);
+ 			ubifs_ro_mode(c, err);
+ 			kfree(pxent);
++			kfree(xent);
+ 			return err;
+ 		}
+ 
+@@ -531,6 +532,7 @@ int ubifs_purge_xattrs(struct inode *hos
+ 		err = remove_xattr(c, host, xino, &nm);
+ 		if (err) {
+ 			kfree(pxent);
++			kfree(xent);
+ 			iput(xino);
+ 			ubifs_err(c, "cannot remove xattr, error %d", err);
+ 			return err;
 
 
