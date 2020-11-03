@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250F12A5114
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087882A515B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729813AbgKCUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:37:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        id S1730158AbgKCUkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729774AbgKCUhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:38 -0500
+        id S1730132AbgKCUkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85237223AC;
-        Tue,  3 Nov 2020 20:37:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9B842224E;
+        Tue,  3 Nov 2020 20:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435858;
-        bh=Yeo2ObJYdLAqNJhIxqaTnex1WyD01lb/Hz/OdoQBzSU=;
+        s=default; t=1604436008;
+        bh=QcMjzDod7yModzs0Cjm2McJaOvIUz808lnQ7EbXfL0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BTm5A0vuZpfnAJuJ6drI/TYgHgWj36bbECzlXdjCbCZzWKwhaFg0tinsDxGBeYwyK
-         YC651xRBZUfVbTFC2NjI+++gRg8HKmVffSd/m5gq0AbI1niu4/aVvwLeXL638EOuz/
-         O5QdeyC9n+LoElK4WJr5hbFqUsp35s4xPVRnvsAw=
+        b=LZzt6uD25dm/fZqWkk9mCYbg/GAaQQ1Ni9DYBrJ/Vg9S+OtCbmhXHXWTIJ0r85Fg8
+         ULyYgOqakiKUHdO9cs4vhJNqFlGmVi2qx4XOJ5nxC3soLvFAQVirEouOSsTBDNTukx
+         mKeKVjqV7Cp5Ls2iK5fdfSoNJ8Km8DtfiDG+7e4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wl@xen.org>
-Subject: [PATCH 5.9 013/391] xen/events: block rogue events for some time
-Date:   Tue,  3 Nov 2020 21:31:04 +0100
-Message-Id: <20201103203348.899541424@linuxfoundation.org>
+        stable@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 015/391] firmware: arm_scmi: Expand SMC/HVC message pool to more than one
+Date:   Tue,  3 Nov 2020 21:31:06 +0100
+Message-Id: <20201103203349.005811778@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,115 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Etienne Carriere <etienne.carriere@linaro.org>
 
-commit 5f7f77400ab5b357b5fdb7122c3442239672186c upstream.
+[ Upstream commit 7adb2c8aaaa6a387af7140e57004beba2c04a4c6 ]
 
-In order to avoid high dom0 load due to rogue guests sending events at
-high frequency, block those events in case there was no action needed
-in dom0 to handle the events.
+SMC/HVC can transmit only one message at the time as the shared memory
+needs to be protected and the calls are synchronous.
 
-This is done by adding a per-event counter, which set to zero in case
-an EOI without the XEN_EOI_FLAG_SPURIOUS is received from a backend
-driver, and incremented when this flag has been set. In case the
-counter is 2 or higher delay the EOI by 1 << (cnt - 2) jiffies, but
-not more than 1 second.
+However, in order to allow multiple threads to send SCMI messages
+simultaneously, we need a larger poll of memory.
 
-In order not to waste memory shorten the per-event refcnt to two bytes
-(it should normally never exceed a value of 2). Add an overflow check
-to evtchn_get() to make sure the 2 bytes really won't overflow.
+Let us just use value of 20 to keep it in sync mailbox transport
+implementation. Any other value must work perfectly.
 
-This is part of XSA-332.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Wei Liu <wl@xen.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20201008143722.21888-4-etienne.carriere@linaro.org
+Fixes: 1dc6558062da ("firmware: arm_scmi: Add smc/hvc transport")
+Cc: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+[sudeep.holla: reworded the commit message to indicate the practicality]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/events/events_base.c     |   27 ++++++++++++++++++++++-----
- drivers/xen/events/events_internal.h |    3 ++-
- 2 files changed, 24 insertions(+), 6 deletions(-)
+ drivers/firmware/arm_scmi/smc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -461,17 +461,34 @@ static void lateeoi_list_add(struct irq_
- 	spin_unlock_irqrestore(&eoi->eoi_list_lock, flags);
- }
- 
--static void xen_irq_lateeoi_locked(struct irq_info *info)
-+static void xen_irq_lateeoi_locked(struct irq_info *info, bool spurious)
- {
- 	evtchn_port_t evtchn;
- 	unsigned int cpu;
-+	unsigned int delay = 0;
- 
- 	evtchn = info->evtchn;
- 	if (!VALID_EVTCHN(evtchn) || !list_empty(&info->eoi_list))
- 		return;
- 
-+	if (spurious) {
-+		if ((1 << info->spurious_cnt) < (HZ << 2))
-+			info->spurious_cnt++;
-+		if (info->spurious_cnt > 1) {
-+			delay = 1 << (info->spurious_cnt - 2);
-+			if (delay > HZ)
-+				delay = HZ;
-+			if (!info->eoi_time)
-+				info->eoi_cpu = smp_processor_id();
-+			info->eoi_time = get_jiffies_64() + delay;
-+		}
-+	} else {
-+		info->spurious_cnt = 0;
-+	}
-+
- 	cpu = info->eoi_cpu;
--	if (info->eoi_time && info->irq_epoch == per_cpu(irq_epoch, cpu)) {
-+	if (info->eoi_time &&
-+	    (info->irq_epoch == per_cpu(irq_epoch, cpu) || delay)) {
- 		lateeoi_list_add(info);
- 		return;
- 	}
-@@ -508,7 +525,7 @@ static void xen_irq_lateeoi_worker(struc
- 
- 		info->eoi_time = 0;
- 
--		xen_irq_lateeoi_locked(info);
-+		xen_irq_lateeoi_locked(info, false);
- 	}
- 
- 	if (info)
-@@ -537,7 +554,7 @@ void xen_irq_lateeoi(unsigned int irq, u
- 	info = info_for_irq(irq);
- 
- 	if (info)
--		xen_irq_lateeoi_locked(info);
-+		xen_irq_lateeoi_locked(info, eoi_flags & XEN_EOI_FLAG_SPURIOUS);
- 
- 	read_unlock_irqrestore(&evtchn_rwlock, flags);
- }
-@@ -1441,7 +1458,7 @@ int evtchn_get(evtchn_port_t evtchn)
- 		goto done;
- 
- 	err = -EINVAL;
--	if (info->refcnt <= 0)
-+	if (info->refcnt <= 0 || info->refcnt == SHRT_MAX)
- 		goto done;
- 
- 	info->refcnt++;
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -31,7 +31,8 @@ enum xen_irq_type {
- struct irq_info {
- 	struct list_head list;
- 	struct list_head eoi_list;
--	int refcnt;
-+	short refcnt;
-+	short spurious_cnt;
- 	enum xen_irq_type type;	/* type */
- 	unsigned irq;
- 	evtchn_port_t evtchn;	/* event channel */
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index a1537d123e385..22f83af6853a1 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -149,6 +149,6 @@ static struct scmi_transport_ops scmi_smc_ops = {
+ const struct scmi_desc scmi_smc_desc = {
+ 	.ops = &scmi_smc_ops,
+ 	.max_rx_timeout_ms = 30,
+-	.max_msg = 1,
++	.max_msg = 20,
+ 	.max_msg_size = 128,
+ };
+-- 
+2.27.0
+
 
 
