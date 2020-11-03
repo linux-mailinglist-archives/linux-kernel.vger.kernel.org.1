@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B51A2A57AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1622A58A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732228AbgKCUxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:53:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50830 "EHLO mail.kernel.org"
+        id S1731105AbgKCVxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:53:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732323AbgKCUxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:11 -0500
+        id S1731100AbgKCUpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7280C2053B;
-        Tue,  3 Nov 2020 20:53:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77B712242A;
+        Tue,  3 Nov 2020 20:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436790;
-        bh=Cb+e6U3q9KzYBfw5unxS0h1hwPHH71B3eKeFTE58o5M=;
+        s=default; t=1604436352;
+        bh=NW0U1W3wX5zGcOkRlyJqFaknJN7F0OGeXHgri0MKvhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ol8C1+bU2Ezef+px8Vh6yiw+087hZ9MnGw+zfM8Y9RHnziGiVECgYHGK/aLXVEfP/
-         XUz9z24JMubRMDFGM72uEpOG81YVq3w8RlheCI10ozVYBcBrX9/0xXoNklQ1Yy7z4q
-         pZ4yDdi395BSzYuyLOOYcIQE+sLeoockM2HNjplY=
+        b=tympPCwbwrQi/QAvE+hgrdGqcHquVCQBqVPUxhhBZXb8dD3TkhrH6K59Klhat8nB+
+         EyPFK/qbEg1t116j1SbRlWTr33RHPRpI4TUyvGGjwTaCyKrlhyEHsiVkVoIKL8Oo/y
+         tGyt9K8sLdXUh9rX9+xYtZgR+T+rO5x2NZ0Q3JOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wl@xen.org>
-Subject: [PATCH 5.4 013/214] xen/events: block rogue events for some time
-Date:   Tue,  3 Nov 2020 21:34:21 +0100
-Message-Id: <20201103203250.968784082@linuxfoundation.org>
+        stable@vger.kernel.org, Wei Huang <wei.huang2@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.9 212/391] acpi-cpufreq: Honor _PSD table setting on new AMD CPUs
+Date:   Tue,  3 Nov 2020 21:34:23 +0100
+Message-Id: <20201103203401.237117146@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,115 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Wei Huang <wei.huang2@amd.com>
 
-commit 5f7f77400ab5b357b5fdb7122c3442239672186c upstream.
+commit 5368512abe08a28525d9b24abbfc2a72493e8dba upstream.
 
-In order to avoid high dom0 load due to rogue guests sending events at
-high frequency, block those events in case there was no action needed
-in dom0 to handle the events.
+acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
+BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
+now accurately reports the P-state dependency of CPU cores. Hence this
+quirk needs to be fixed in order to support new CPUs' frequency control.
 
-This is done by adding a per-event counter, which set to zero in case
-an EOI without the XEN_EOI_FLAG_SPURIOUS is received from a backend
-driver, and incremented when this flag has been set. In case the
-counter is 2 or higher delay the EOI by 1 << (cnt - 2) jiffies, but
-not more than 1 second.
-
-In order not to waste memory shorten the per-event refcnt to two bytes
-(it should normally never exceed a value of 2). Add an overflow check
-to evtchn_get() to make sure the 2 bytes really won't overflow.
-
-This is part of XSA-332.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Wei Liu <wl@xen.org>
+Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+[ rjw: Subject edit ]
+Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/events/events_base.c     |   27 ++++++++++++++++++++++-----
- drivers/xen/events/events_internal.h |    3 ++-
- 2 files changed, 24 insertions(+), 6 deletions(-)
+ drivers/cpufreq/acpi-cpufreq.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -460,17 +460,34 @@ static void lateeoi_list_add(struct irq_
- 	spin_unlock_irqrestore(&eoi->eoi_list_lock, flags);
- }
- 
--static void xen_irq_lateeoi_locked(struct irq_info *info)
-+static void xen_irq_lateeoi_locked(struct irq_info *info, bool spurious)
- {
- 	evtchn_port_t evtchn;
- 	unsigned int cpu;
-+	unsigned int delay = 0;
- 
- 	evtchn = info->evtchn;
- 	if (!VALID_EVTCHN(evtchn) || !list_empty(&info->eoi_list))
- 		return;
- 
-+	if (spurious) {
-+		if ((1 << info->spurious_cnt) < (HZ << 2))
-+			info->spurious_cnt++;
-+		if (info->spurious_cnt > 1) {
-+			delay = 1 << (info->spurious_cnt - 2);
-+			if (delay > HZ)
-+				delay = HZ;
-+			if (!info->eoi_time)
-+				info->eoi_cpu = smp_processor_id();
-+			info->eoi_time = get_jiffies_64() + delay;
-+		}
-+	} else {
-+		info->spurious_cnt = 0;
-+	}
-+
- 	cpu = info->eoi_cpu;
--	if (info->eoi_time && info->irq_epoch == per_cpu(irq_epoch, cpu)) {
-+	if (info->eoi_time &&
-+	    (info->irq_epoch == per_cpu(irq_epoch, cpu) || delay)) {
- 		lateeoi_list_add(info);
- 		return;
- 	}
-@@ -507,7 +524,7 @@ static void xen_irq_lateeoi_worker(struc
- 
- 		info->eoi_time = 0;
- 
--		xen_irq_lateeoi_locked(info);
-+		xen_irq_lateeoi_locked(info, false);
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -691,7 +691,8 @@ static int acpi_cpufreq_cpu_init(struct
+ 		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
  	}
  
- 	if (info)
-@@ -536,7 +553,7 @@ void xen_irq_lateeoi(unsigned int irq, u
- 	info = info_for_irq(irq);
- 
- 	if (info)
--		xen_irq_lateeoi_locked(info);
-+		xen_irq_lateeoi_locked(info, eoi_flags & XEN_EOI_FLAG_SPURIOUS);
- 
- 	read_unlock_irqrestore(&evtchn_rwlock, flags);
- }
-@@ -1439,7 +1456,7 @@ int evtchn_get(unsigned int evtchn)
- 		goto done;
- 
- 	err = -EINVAL;
--	if (info->refcnt <= 0)
-+	if (info->refcnt <= 0 || info->refcnt == SHRT_MAX)
- 		goto done;
- 
- 	info->refcnt++;
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -31,7 +31,8 @@ enum xen_irq_type {
- struct irq_info {
- 	struct list_head list;
- 	struct list_head eoi_list;
--	int refcnt;
-+	short refcnt;
-+	short spurious_cnt;
- 	enum xen_irq_type type;	/* type */
- 	unsigned irq;
- 	unsigned int evtchn;	/* event channel */
+-	if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
++	if (check_amd_hwpstate_cpu(cpu) && boot_cpu_data.x86 < 0x19 &&
++	    !acpi_pstate_strict) {
+ 		cpumask_clear(policy->cpus);
+ 		cpumask_set_cpu(cpu, policy->cpus);
+ 		cpumask_copy(data->freqdomain_cpus,
 
 
