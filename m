@@ -2,131 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D50D2A4DD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9062A4DE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgKCSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:07:30 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:25314 "EHLO pegase1.c-s.fr"
+        id S1729111AbgKCSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:10:13 -0500
+Received: from mga05.intel.com ([192.55.52.43]:49720 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729086AbgKCSHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:07:22 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CQd6G2Tchz9v1mk;
-        Tue,  3 Nov 2020 19:07:18 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id PFuqc42wByw9; Tue,  3 Nov 2020 19:07:18 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CQd6G1fc9z9v1Ym;
-        Tue,  3 Nov 2020 19:07:18 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 089CE8B7DC;
-        Tue,  3 Nov 2020 19:07:20 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id VjmHzeKHzBA9; Tue,  3 Nov 2020 19:07:19 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 98F3A8B7D9;
-        Tue,  3 Nov 2020 19:07:19 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 7EA6366860; Tue,  3 Nov 2020 18:07:19 +0000 (UTC)
-Message-Id: <44a5541c0355b9eedbac712eabe682118b3a508c.1604426550.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1604426550.git.christophe.leroy@csgroup.eu>
-References: <cover.1604426550.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v13 8/8] powerpc/vdso: Provide __kernel_clock_gettime64() on
- vdso32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        anton@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, linux-arch@vger.kernel.org
-Date:   Tue,  3 Nov 2020 18:07:19 +0000 (UTC)
+        id S1727706AbgKCSKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:10:12 -0500
+IronPort-SDR: xvMNNypQfzeMnCSKXXRKC/KZtU9I1TDUWhZ4i3gj3Ji2uKNQZJsuoXysYw68u/NloUNyxb4wx0
+ oPVyBeUGUYxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="253813450"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="253813450"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:10:11 -0800
+IronPort-SDR: EnuKWw9b8qb1LuDgOXw8oYS0Pp14A8Tpmqa/Wd4i9cXFcno0nH47ivzeVfNGqfG0OGkpp7gPtk
+ 7M3VQfXzf8Bg==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="357763196"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:10:11 -0800
+Date:   Tue, 3 Nov 2020 10:10:09 -0800
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
+        joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
+        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Erdem Aktas <erdemaktas@google.com>
+Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
+Message-ID: <20201103181007.GB28367@linux.intel.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922004024.3699923-2-vipinsh@google.com>
+ <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
+ <20200922012227.GA26483@linux.intel.com>
+ <c0ee04a93a8d679f5e9ee7eea6467b32bb7063d6.camel@HansenPartnership.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0ee04a93a8d679f5e9ee7eea6467b32bb7063d6.camel@HansenPartnership.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provides __kernel_clock_gettime64() on vdso32. This is the
-64 bits version of __kernel_clock_gettime() which is
-y2038 compliant.
+On Tue, Nov 03, 2020 at 08:39:12AM -0800, James Bottomley wrote:
+> On Mon, 2020-09-21 at 18:22 -0700, Sean Christopherson wrote:
+> > ASIDs too.  I'd also love to see more info in the docs and/or cover
+> > letter to explain why ASID management on SEV requires a cgroup.  I
+> > know what an ASID is, and have a decent idea of how KVM manages ASIDs
+> > for legacy VMs, but I know nothing about why ASIDs are limited for
+> > SEV and not legacy VMs.
+> 
+> Well, also, why would we only have a cgroup for ASIDs but not MSIDs?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v12: Added missing prototype
----
- arch/powerpc/include/asm/vdso/gettimeofday.h | 2 ++
- arch/powerpc/kernel/vdso32/gettimeofday.S    | 9 +++++++++
- arch/powerpc/kernel/vdso32/vdso32.lds.S      | 1 +
- arch/powerpc/kernel/vdso32/vgettimeofday.c   | 6 ++++++
- 4 files changed, 18 insertions(+)
+Assuming MSID==PCID in Intel terminology, which may be a bad assumption, the
+answer is that rationing PCIDs is a fools errand, at least on Intel CPUs.
 
-diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
-index cdbd297e61b8..f590b88bef1b 100644
---- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-+++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-@@ -187,6 +187,8 @@ int __c_kernel_clock_getres(clockid_t clock_id, struct __kernel_timespec *res,
- #else
- int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 			     const struct vdso_data *vd);
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd);
- int __c_kernel_clock_getres(clockid_t clock_id, struct old_timespec32 *res,
- 			    const struct vdso_data *vd);
- #endif
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index fd7b01c51281..a6e29f880e0e 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -35,6 +35,15 @@ V_FUNCTION_BEGIN(__kernel_clock_gettime)
- 	cvdso_call __c_kernel_clock_gettime
- V_FUNCTION_END(__kernel_clock_gettime)
- 
-+/*
-+ * Exact prototype of clock_gettime64()
-+ *
-+ * int __kernel_clock_gettime64(clockid_t clock_id, struct __timespec64 *ts);
-+ *
-+ */
-+V_FUNCTION_BEGIN(__kernel_clock_gettime64)
-+	cvdso_call __c_kernel_clock_gettime64
-+V_FUNCTION_END(__kernel_clock_gettime64)
- 
- /*
-  * Exact prototype of clock_getres()
-diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index 51e9b3f3f88a..27a2d03c72d5 100644
---- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -147,6 +147,7 @@ VERSION
- 		__kernel_get_syscall_map;
- 		__kernel_gettimeofday;
- 		__kernel_clock_gettime;
-+		__kernel_clock_gettime64;
- 		__kernel_clock_getres;
- 		__kernel_time;
- 		__kernel_get_tbfreq;
-diff --git a/arch/powerpc/kernel/vdso32/vgettimeofday.c b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-index 0d4bc217529e..65fb03fb1731 100644
---- a/arch/powerpc/kernel/vdso32/vgettimeofday.c
-+++ b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-@@ -10,6 +10,12 @@ int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 	return __cvdso_clock_gettime32_data(vd, clock, ts);
- }
- 
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd)
-+{
-+	return __cvdso_clock_gettime_data(vd, clock, ts);
-+}
-+
- int __c_kernel_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz,
- 			    const struct vdso_data *vd)
- {
--- 
-2.25.0
+> For the reader at home a Space ID (SID) is simply a tag that can be
+> placed on a cache line to control things like flushing.  Intel and AMD
+> use MSIDs which are allocated per process to allow fast context
+> switching by flushing all the process pages using a flush by SID. 
+> ASIDs are also used by both Intel and AMD to control nested/extended
+> paging of virtual machines, so ASIDs are allocated per VM.  So far it's
+> universal.
 
+On Intel CPUs, multiple things factor into the actual ASID that is used to tag
+TLB entries.  And underneath the hood, there are a _very_ limited number of
+ASIDs that are globally shared, i.e. a process in the host has an ASID, same
+as a process in the guest, and the CPU only supports tagging translations for
+N ASIDs at any given time.
+
+E.g. with TDX, the hardware/real ASID is derived from:
+
+   VPID + PCID + SEAM + EPTP
+
+where VPID=0 for host, PCID=0 if PCID is disabled, SEAM=1 for the TDX-Module
+and TDX VMs, and obviously EPTP is invalid/ignored when EPT is disabled.
+
+> AMD invented a mechanism for tying their memory encryption technology
+> to the ASID asserted on the memory bus, so now they can do encrypted
+> virtual machines since each VM is tagged by ASID which the memory
+> encryptor sees.  It is suspected that the forthcoming intel TDX
+> technology to encrypt VMs will operate in the same way as well.  This
+
+TDX uses MKTME keys, which are not tied to the ASID.  The KeyID is part of the
+physical address, at least in the initial hardware implementations, which means
+that from a memory perspective, each KeyID is a unique physical address.  This
+is completely orthogonal to ASIDs, e.g. a given KeyID+PA combo can have
+mutliple TLB entries if it's accessed by multiple ASIDs.
+
+> isn't everything you have to do to get an encrypted VM, but it's a core
+> part of it.
+> 
+> The problem with SIDs (both A and M) is that they get crammed into
+> spare bits in the CPU (like the upper bits of %CR3 for MSID) so we
+
+This CR3 reference is why I assume MSID==PCID, but the PCID is carved out of
+the lower bits (11:0) of CR3, which is why I'm unsure I interpreted this
+correctly.
+
+> don't have enough of them to do a 1:1 mapping of MSID to process or
+> ASID to VM.  Thus we have to ration them somewhat, which is what I
+> assume this patch is about?
+
+This cgroup is more about a hard limitation than about performance.
+
+With PCIDs, VPIDs, and AMD's ASIDs, there is always the option of recycling an
+existing ID (used for PCIDs and ASIDs), or simply disabling the feature (used
+for VPIDs).  In both cases, exhausting the resource affects performance due to
+incurring TLB flushes at transition points, but doesn't prevent creating new
+processes/VMs.
+
+And due to the way PCID=>ASID derivation works on Intel CPUs, the kernel
+doesn't even bother trying to use a large number of PCIDs.  IIRC, the current
+number of PCIDs used by the kernel is 5, i.e. the kernel intentionally
+recycles PCIDs long before it's forced to do so by the architectural
+limitation of 4k PCIDs, because using more than 5 PCIDs actually hurts
+performance (forced PCID recycling allows the kernel to keep *its* ASID live
+by flushing userspace PCIDs, whereas CPU recycling of ASIDs is indiscriminate).
+
+MKTME KeyIDs and SEV ASIDs are different.  There is a hard, relatively low
+limit on the number of IDs that are available, and exhausting that pool
+effectively prevents creating a new encrypted VM[*].  E.g. with TDX, on first
+gen hardware there is a hard limit of 127 KeyIDs that can be used to create
+TDX VMs.  IIRC, SEV-ES is capped 512 or so ASIDs.  Hitting that cap means no
+more protected VMs can be created.
+
+[*] KeyID exhaustion for TDX is a hard restriction, the old VM _must_ be torn
+    down to reuse the KeyID.  ASID exhaustion for SEV is not technically a
+    hard limit, e.g. KVM could theoretically park a VM to reuse its ASID, but
+    for all intents and purposes that VM is no longer live.
