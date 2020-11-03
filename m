@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF582A4D13
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2882A4D17
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgKCRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:34:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53286 "EHLO mail.kernel.org"
+        id S1728911AbgKCRfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:35:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbgKCRes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:34:48 -0500
+        id S1727530AbgKCRfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:35:18 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE3B621D91;
-        Tue,  3 Nov 2020 17:34:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3496621D91;
+        Tue,  3 Nov 2020 17:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604424888;
-        bh=ip59U7tSs/uZHMuxCZIR61tmzygdbBHUGZSDre8isGU=;
+        s=default; t=1604424917;
+        bh=d7GVDYNRB1nkxf2PedrfHEfVA3XJxfH6uOxe6MdezuI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cn6oexGmWcUT8AeX1aaNlsnN1iwcegecwZAwfuQYmSOYcoR925weIGH4XuHinqLD9
-         fmRG+2VDec5XAOclpBvYzjRtyVuq1jMW/vxo83M/BTUE857W1XZVO4eI7PBwLAaiwd
-         7Ftby+0twuq5orTtU1mBL40JWfOLaTdNJJYs2Hqw=
-Date:   Tue, 3 Nov 2020 17:34:38 +0000
+        b=DsK91wUdoGUZK4AOAEjAfqPztcJvbwC8CyX0S+vLU47sPGM5gelbPSEU3bUmDvfbu
+         Z1Fq3KEu7l+Fp0lM3rQJaPZW07CbsytQcFapNYcotHlya3IusuyrV4D5W8SdJOrluK
+         aeDX6YUY3YvZlmni1IvawcsMbL/osVIJe5RKz2WQ=
+Date:   Tue, 3 Nov 2020 17:35:08 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-Message-ID: <20201103173438.GD5545@sirena.org.uk>
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v3] MAINTAINERS: add Dan Murphy as TI LP8xxx drivers
+ maintainer
+Message-ID: <20201103173508.GE5545@sirena.org.uk>
+References: <20201103162832.14085-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BRE3mIcgqKzpedwo"
+        protocol="application/pgp-signature"; boundary="wchHw8dVAp53YPj8"
 Content-Disposition: inline
-In-Reply-To: <cover.1604393169.git.szabolcs.nagy@arm.com>
+In-Reply-To: <20201103162832.14085-1-krzk@kernel.org>
 X-Cookie: I don't get no respect.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -54,49 +60,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---BRE3mIcgqKzpedwo
+--wchHw8dVAp53YPj8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 03, 2020 at 10:25:37AM +0000, Szabolcs Nagy wrote:
+On Tue, Nov 03, 2020 at 05:28:32PM +0100, Krzysztof Kozlowski wrote:
+> Milo Kim's email in TI bounces with permanent error (550: Invalid
+> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> credits and add Dan Murphy from TI to look after:
+>  - TI LP855x backlight driver,
+>  - TI LP8727 charger driver,
+>  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
 
-> Re-mmap executable segments instead of mprotecting them in
-> case mprotect is seccomp filtered.
+Acked-by: Mark Brown <broonie@kernel.org>
 
-> For the kernel mapped main executable we don't have the fd
-> for re-mmap so linux needs to be updated to add BTI. (In the
-> presence of seccomp filters for mprotect(PROT_EXEC) the libc
-> cannot change BTI protection at runtime based on user space
-> policy so it is better if the kernel maps BTI compatible
-> binaries with PROT_BTI by default.)
-
-Given that there were still some ongoing discussions on a more robust
-kernel interface here and there seem to be a few concerns with this
-series should we perhaps just take a step back and disable this seccomp
-filter in systemd on arm64, at least for the time being?  That seems
-safer than rolling out things that set ABI quickly, a big part of the
-reason we went with having the dynamic linker enable PROT_BTI in the
-first place was to give us more flexibility to handle any unforseen
-consequences of enabling BTI that we run into.  We are going to have
-similar issues with other features like MTE so we need to make sure that
-whatever we're doing works with them too.
-
-Also updated to Will's current e-mail address - Will, do you have
-thoughts on what we should do here?
-
---BRE3mIcgqKzpedwo
+--wchHw8dVAp53YPj8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+hlK4ACgkQJNaLcl1U
-h9DD3gf/WNywQ/sgsuMwVB40sA+4Df/FGYWXM9/N6kUbBvcnoS9DtrP5HUMkJBzB
-XS2taPJPPVpHEm8WJti9lNOLj+5uLwGmPe9tv4APgATbU6xR9tpUaLqVTvnwGH9W
-G3DRggj5ExKwSc0ArcrpLktH2MTraSmlN7OsEnIB2RMRNzkEacr+AlbDxHmnT1Co
-SEbhoFrFKE452ptHVaHckiC6j6LGwDusc8uIOAaSHkNF9IbC+SU8UqnbiTkqbc68
-q9vnCmiSjRFEHZgq/NV+PQVRQqkj2vIzFK3CDN5wotJQ0OGGbK6OmjuyLCYlqX1l
-5S13yMzSMWD5ItabHkNWGMqfdrB0KA==
-=oJHO
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+hlMsACgkQJNaLcl1U
+h9DMeQf/S8R2hQl3+LVLzMNkd1Q6yWjRyQrQjxMjOqrmU4Cu/kQMMM5rQtHOGVQP
+uJmOlkrRnY6uOizYGLkrzxmhWHN8as6hkWahJvRB45G7UEco3DuZaRvUZpY9vK6+
+1NKh1ISoMhfCL9bq5EZgOacORZVXZF9kGV10il0adlO6EEIcYekefZMks2ESlvp+
+jmeq8iNlqj7u/BVm7X1SWFsHlUfB+Y/7ekebQxFYq+4DUfkc0r+Q+cREBgDYbX2B
+iUNK8o8/itBiJ2Wl84FaPjOMfyWRIUrwgo8UUhzsrtCFejjk8zFWiebFeFHeyFnV
+gSMg/Ymsj/xcLfaDYPbktl5KWprRdg==
+=Dr7Z
 -----END PGP SIGNATURE-----
 
---BRE3mIcgqKzpedwo--
+--wchHw8dVAp53YPj8--
