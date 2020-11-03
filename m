@@ -2,73 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6892A40AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC9E2A40B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgKCJvv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 04:51:51 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:39084 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgKCJvv (ORCPT
+        id S1727988AbgKCJwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:52:10 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47491 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbgKCJwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:51:51 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A39pdfM7015066, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A39pdfM7015066
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 3 Nov 2020 17:51:39 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 3 Nov 2020 17:51:38 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Tue, 3 Nov 2020 17:51:38 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Oliver Neukum <oliver@neukum.org>
-Subject: RE: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for RTL8153
-Thread-Topic: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
- RTL8153
-Thread-Index: AQHWrmwDnKDexsPDxUiMgOTBbfR/C6mx0pMAgAJFC4CAAKdeAIAA5pyAgACKw6A=
-Date:   Tue, 3 Nov 2020 09:51:38 +0000
-Message-ID: <47091014a31c41d5a0d329c49f6cdafa@realtek.com>
-References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
- <1394712342-15778-388-Taiwan-albertk@realtek.com>
- <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
- <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20201103093241.GA79239@kroah.com>
-In-Reply-To: <20201103093241.GA79239@kroah.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.146]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 3 Nov 2020 04:52:09 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 5A5D9B7A;
+        Tue,  3 Nov 2020 04:52:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 03 Nov 2020 04:52:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=eDQ3z6R7HELxuV1aufq8yOfVMPt
+        p2cGpDjOIGR+8JmM=; b=I3SUt8wWwADbU6MU/c2Rae3H24rPiVeyyJeN3vtoZrs
+        kqVmUGPHOwNWZ5tUnaS156kBAi48dhDlJP8/N4AWuXlw5U7oJLdYWy6XnUh4nC9B
+        qwLzuv0QaBAdr5QN3kkIA7ARaGjkzszRDbGkO5qoMUIEZFzJ4V0WSroJLu0ubREp
+        aQnGTzVYm1UlexzsRS7ce7nffOJOs5WibiS7SbbhuY8ywx3GL+HhKnbXvF8shY4L
+        LgCmn3qBgj62ik6exEJJp+V8i2hZH4xPMCfBc1nabPn9fq2ln2coz/ks1FAogC4W
+        /uD9K6+K5dZQ7GJuLcAR/ztySG1b/NzXRd+B2ty7+JA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=eDQ3z6
+        R7HELxuV1aufq8yOfVMPtp2cGpDjOIGR+8JmM=; b=lxU1ZyChE1RJZCuRZZAESM
+        OdGFL6WvqEk6looiCqrMDNesm5OOoD4mHT4sjBxUMR4e8D/DCrNWT+tPOi2dJMbq
+        cGAcvsjoUZHYjuAcRaREbYpW93RBtxpvvSFj+o8acQPEg/94EwnJgM6vSHAh8KU7
+        u1L5eHcvhi7J6hZ3CdDABEYC+F0fqUO82htz0pvPDXhPT7Z3QGgmvi2qzfEzF6aI
+        VOhUfAlxe9oEhpBS6n5/pFpUA6vujujHHhnE0qF54eFAIcwjKNr9w/F52zVJiAoo
+        RoLpmbOKCQE3kCGst0GCsTFk7/4vcwpEJ77eMyBIvRxTptPyZ5N2qflLMT2RogDQ
+        ==
+X-ME-Sender: <xms:RiihX0jhkJtxb4G6RI_7zmxO2bF_Rx5WgO9TUUPqKija5pRwDS0P1w>
+    <xme:RiihX9C3bM0Qn7iECZgKWKu_xu0C5I2AiKGwYjchs6UeVeUHo4jD3C5IvkgC-LOP9
+    jwBo2k5gqdTa2Da7uE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:RiihX8F7j-8E28eyza3ecFzXEITVk-aYN89jAUpDvhb8Y-LnP7typA>
+    <xmx:RiihX1SDFqIcuF8z2Rii8bai6OhJz8SKkHMcc_K6p-A4HvU7dGEKdQ>
+    <xmx:RiihXxwnR2OiRJW9mjqwkx_iSkBwZeTIGD5J9GzmU2Tf4B2xTZZsfg>
+    <xmx:RyihXzvvPZG5U5HcvNPtVuyMhsEOnPg4eKMDzbnLKNX1sTCTy36gXg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3CB1D3280069;
+        Tue,  3 Nov 2020 04:52:06 -0500 (EST)
+Date:   Tue, 3 Nov 2020 10:52:05 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+Message-ID: <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xs6ln5j4huqhrzhw"
+Content-Disposition: inline
+In-Reply-To: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Sent: Tuesday, November 3, 2020 5:33 PM
-[...]
-> There is a reason, it's a nightmare to maintain and handle merges for,
-> just don't do it.
-> 
-> Read the comments at the top of the pci_ids.h file if you are curious
-> why we don't even do this for PCI device ids anymore for the past 10+
-> years.
-> 
-> So no, please do not create such a common file, it is not needed or a
-> good idea.
 
-Oops. I have sent it.
+--xs6ln5j4huqhrzhw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 03, 2020 at 10:10:41AM +0800, Tian Tao wrote:
+> Add new api devm_drm_irq_install() to register interrupts,
+> no need to call drm_irq_uninstall() when the drm module is removed.
+>=20
+> v2:
+> fixed the wrong parameter.
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
+>  include/drm/drm_drv.h     |  3 ++-
+>  2 files changed, 25 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> index cd162d4..0fe5243 100644
+> --- a/drivers/gpu/drm/drm_drv.c
+> +++ b/drivers/gpu/drm/drm_drv.c
+> @@ -39,6 +39,7 @@
+>  #include <drm/drm_color_mgmt.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_file.h>
+> +#include <drm/drm_irq.h>
+>  #include <drm/drm_managed.h>
+>  #include <drm/drm_mode_object.h>
+>  #include <drm/drm_print.h>
+> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *parent,
+>  	return ret;
+>  }
+> =20
+> +static void devm_drm_dev_irq_uninstall(void *data)
+> +{
+> +	drm_irq_uninstall(data);
+> +}
+> +
+> +int devm_drm_irq_install(struct device *parent,
+> +			 struct drm_device *dev, int irq)
+> +{
+> +	int ret;
+> +
+> +	ret =3D drm_irq_install(dev, irq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
+> +	if (ret)
+> +		devm_drm_dev_irq_uninstall(dev);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(devm_drm_irq_install);
+> +
+
+Shouldn't we tie the IRQ to the drm device (so with drmm_add_action)
+instead of tying it to the underlying device?
+
+Maxime
+>=20
+
+--xs6ln5j4huqhrzhw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6EoRAAKCRDj7w1vZxhR
+xYkCAQC9VFY7e5GLo1YuFFmxexHLyg1jTL5G7fYo1CEBerCVbwD8DKPgZ4MI0x6P
+C0AMlKKWSCWLXIBmLvIKJ1KxLqMYbA0=
+=crER
+-----END PGP SIGNATURE-----
+
+--xs6ln5j4huqhrzhw--
