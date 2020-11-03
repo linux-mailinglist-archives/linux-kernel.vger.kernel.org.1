@@ -2,193 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB812A3D1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9B42A3D0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbgKCHA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgKCHA1 (ORCPT
+        id S1727829AbgKCGxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:53:07 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:13430 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727823AbgKCGxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:00:27 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDCAC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 23:00:25 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id 126so20737532lfi.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 23:00:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xd9jmL8NLRJagrGwF9PSXuFGxAsb2QDRMyRb3WHvNB8=;
-        b=nPPPBxXfD3t0mgR3L4eyvK3/ip01O16uclOf5uHPMNlPNhNVlAmqasJhy/a+r4og75
-         VW9Ub+qibTJzFwSdatbGsTSVcWLdZ5vbShHtw0xfiQO99DR2mPq/8XmHeP/Qm68xKuAQ
-         wwzecgg1L6Bv7EnTCa3Mad0MpPdOosUjlcauyy+nwM415UHSyR2fio4Zz3qJO+UyyZXF
-         cu9R4m9TE+Oy7OOiEHRm7uB1NTt4czRAQdjxrYBxdQqcOWXQh7I8dnfczwb8cKc2gwv4
-         e56usYVODCCZFNyfMYh4MGEeNfdW3bvgu48JhPWqdAeVATErc5slE6HbbmHhyKAe+72u
-         XKNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xd9jmL8NLRJagrGwF9PSXuFGxAsb2QDRMyRb3WHvNB8=;
-        b=lkz3PNpI8NwwW+DvqA1fQWzM6NY8SE3Wm7xU9vu6nftNhSCVKrJpAsClBJBKGVlSYf
-         1RpDPlZx1mLsjzq7x9XlGvPGcovr93pVM0gICsHpKLRZhBBaNZaUtbg64p4eVuq2vDhE
-         nDB3Cw0KB5Pjy8bFAmVcKl4q6lcEij8h3yr1hprfNDycM/vWxVAf17LfEYXkp6ph+agj
-         koHZdYLaqWdw7TzkE33STYh3QgaHC2JmjvkS2MjSWPlngTAgWxaFmWGdKQm6+wgGE2L5
-         bjetcuI0Nu8g4LvO4AlyitCV2PftzeaRyHu1JnFsDK49GQ5tEECXqilQEQhNPSjphgr6
-         0Vlw==
-X-Gm-Message-State: AOAM533DJTKk8G5z/AzQLQVrr8XPTJRFR4Y14++u20OlsGl9VQISpNar
-        8L/K3hqAtdCBtY7u4qA66SdjxLVWu9y/QrNpIhPUbA==
-X-Google-Smtp-Source: ABdhPJzi0uI6+FMH6ZkQJyTAi3yavIsi+kzHjb9xYY0N60Cx/lyDiUSdCeqHLAosIiGo/QeKWaOn0+S9nHNTkTOnzlE=
-X-Received: by 2002:a19:c345:: with SMTP id t66mr4461115lff.536.1604386823858;
- Mon, 02 Nov 2020 23:00:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103025347.510940-1-ajye_huang@compal.corp-partner.google.com>
- <20201103025347.510940-2-ajye_huang@compal.corp-partner.google.com>
-In-Reply-To: <20201103025347.510940-2-ajye_huang@compal.corp-partner.google.com>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Tue, 3 Nov 2020 15:00:13 +0800
-Message-ID: <CALprXBbPQBsRFWgGBhHo5=5GkcUEODe5pcqz7seeaOkxTb3c8w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: modify machine bindings
- for two MICs case
-To:     Ajye Huang <ajye.huang@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 3 Nov 2020 01:53:05 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201103065303epoutp03c964e426508c96d43b6e21d38189dac5~D7Oo-C80u0544905449epoutp03b
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:53:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201103065303epoutp03c964e426508c96d43b6e21d38189dac5~D7Oo-C80u0544905449epoutp03b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604386383;
+        bh=qDYMOrFOTz+ymAOrSh1pm/ZDNncI1MtDIPapENGjask=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=baIqBuCEgkoylISixSkP2wuTdTaBeZJrNGnTg2pOqnvFBpKj3XzcWIYiHT9rRLSDl
+         S9zzw/HwZR7SBptPyVfWW+7mM0lP+j7eEwvsoWN8LBLXERY6Mk7DSXnnI6hzPu9oOO
+         4oc+85CS3y5/c1a3dOCXyKoTS11eFAFrrihJCbDk=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201103065302epcas1p1c4d59162fca6a746d379f320791c13e8~D7Oobs95d2671126711epcas1p1l;
+        Tue,  3 Nov 2020 06:53:02 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CQL8C3TgkzMqYkh; Tue,  3 Nov
+        2020 06:52:59 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.D2.02418.34EF0AF5; Tue,  3 Nov 2020 15:52:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201103065250epcas1p4421332566646a4464d7871429aabafd9~D7OdrZBi63229732297epcas1p4u;
+        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201103065250epsmtrp12d27d340bb49b1148cdb2df1ee17688a~D7Odqu_Xn2631926319epsmtrp1L;
+        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
+X-AuditID: b6c32a35-c23ff70000010972-98-5fa0fe436747
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        27.63.08745.24EF0AF5; Tue,  3 Nov 2020 15:52:50 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103065250epsmtip1dcf9d0ead76d05133d25442a62a0ad06~D7Odb6axo1509215092epsmtip1b;
+        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+Subject: [PATCH] PM / devfreq: passive: Update frequency when start governor
+Date:   Tue,  3 Nov 2020 16:06:46 +0900
+Message-Id: <20201103070646.18687-1-cw00.choi@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIKsWRmVeSWpSXmKPExsWy7bCmvq7zvwXxBltbFC0m3rjCYnH9y3NW
+        i7NNb9gtLu+aw2bxufcIo8XtxhVsDmwem1Z1snn0bVnF6PF5k1wAc1S2TUZqYkpqkUJqXnJ+
+        SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QXiWFssScUqBQQGJxsZK+nU1R
+        fmlJqkJGfnGJrVJqQUpOgWWBXnFibnFpXrpecn6ulaGBgZEpUGFCdsaVJX4FTbwVS94tZ2xg
+        vMLVxcjJISFgIvFoTidbFyMXh5DADkaJxp5d7BDOJ0aJ9i23oZzPjBJ7ux6wwbTMvtDLBJHY
+        xSixavkaqKovjBLb9/xhAaliE9CS2P/iBliHiICVxOn/HcwgNrNAikT/7zNgNcICPhKbX71i
+        BbFZBFQl1vyZywRi8wLVvz2yhQlim7zE6g0HmEEWSAjMY5dYdOkqO0TCReLkuWZmCFtY4tXx
+        LVBxKYmX/W1QdrXEypNH2CCaOxgltuy/wAqRMJbYv3Qy0AYOoIs0Jdbv0ocIK0rs/D2XEeJQ
+        Pol3X3tYQUokBHglOtqEIEqUJS4/uAt1m6TE4vZOaKh4SNxpmQzWKiQQK7Hy/V22CYyysxAW
+        LGBkXMUollpQnJueWmxYYIgcS5sYwWlJy3QH48S3H/QOMTJxMB5ilOBgVhLhrYmcFy/Em5JY
+        WZValB9fVJqTWnyI0RQYYBOZpUST84GJMa8k3tDUyNjY2MLE0MzU0FBJnPePdke8kEB6Yklq
+        dmpqQWoRTB8TB6dUA9Oz+TfSCzk2N549s/CW+mzbEyKHgp91aTrGb67ribqf80VHOdclLFLx
+        7/+L6/+ZRf4xOsv44KeZR+DDL8edtlw1TPF1XXjNa0ZoyOepYlFlsrMVvlU/c98mEil5aX2f
+        5ha5XLcpnyY9P5G9LIptlcOx6cUfO5NCeK/UXp1v1OtyQHvvi82BF4xvxTjYRddu09sUrLxB
+        8KHcdZ6gSXN5FnhbXviw3XNKdxHHYeu3aifqk259TQo3S7z4zOHVigMX4qYmy2YW9CTc/3ln
+        mcPSuqky8s7bJSzOdB3uzKzVPH6g5IOukXSIx/zoOKdbfVn/hawuFUxxmVWidCVy4ca+v+9T
+        lvv5nbhZNPeCu9hLz19KLMUZiYZazEXFiQCglcRi1AMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLJMWRmVeSWpSXmKPExsWy7bCSnK7TvwXxBrc7jCwm3rjCYnH9y3NW
+        i7NNb9gtLu+aw2bxufcIo8XtxhVsDmwem1Z1snn0bVnF6PF5k1wAcxSXTUpqTmZZapG+XQJX
+        xpUlfgVNvBVL3i1nbGC8wtXFyMkhIWAiMftCL1MXIxeHkMAORonG7lmMEAlJiWkXjzJ3MXIA
+        2cIShw8XQ9R8YpR49qqFBaSGTUBLYv+LG2wgtoiAjcTdxddYQOqZBTIk/i9XAgkLC/hIbH71
+        ihXEZhFQlVjzZy4TiM0rYCXx9sgWJohV8hKrNxxgnsDIs4CRYRWjZGpBcW56brFhgVFearle
+        cWJucWleul5yfu4mRnCIaGntYNyz6oPeIUYmDsZDjBIczEoivDWR8+KFeFMSK6tSi/Lji0pz
+        UosPMUpzsCiJ836dtTBOSCA9sSQ1OzW1ILUIJsvEwSnVwBR7zenXkoNuiezrPmdbbfXQNbLy
+        qZNY4Sz+99NJV6EvFt9Pls14fHdjBUdXtKV+SoqcVFTU5mLd9LiIHRFb1LvNr/Jd/d07/WjT
+        DL4rrSfs56So8dsJTVX0DVqVLr0wcu2xXV6O9WY6nz737X/l5D53rXJQ4+tlp/PWnK1n/dkR
+        dXkz6+7eQ/sstx0qi1ifsLJWVjvxr3ePyOxPbzXNK0vlu9l//Jv1zi6kZNaX149X8ilP+F1/
+        ZHE2y8USse0WZy6GuqU1zln2q5uF4+NiGwOupaeEjpz07uuatnqB4l2537qrq09HPjNTE6/8
+        N6dg/8mAs69nKtnruW3Zdqxj57wk3Z1z/76+HCD4asNNlu9KLMUZiYZazEXFiQB/jnvkgAIA
+        AA==
+X-CMS-MailID: 20201103065250epcas1p4421332566646a4464d7871429aabafd9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201103065250epcas1p4421332566646a4464d7871429aabafd9
+References: <CGME20201103065250epcas1p4421332566646a4464d7871429aabafd9@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-Could you please kindly review this patch ?
+If the parent device changes the their frequency before registering
+the passive device, the passive device cannot receive the notification
+from parent device and then the passive device cannot be able to
+set the proper frequency according to the frequency of parent device.
 
- I had got your "reviewed-by" on v1 patch, the v1 depends on this patch series
-(https://patchwork.kernel.org/patch/11773221) at that time.
+So, when start the passive governor, update the frequency
+according to the frequency of parent device.
 
-Now, that patch what I depended (11773221) had made modification and
-it was Applied to
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-commit e158d2d83cab ("ASoC: google: dt-bindings: Add sc7180-trogdor
-machine bindings")
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+---
+ drivers/devfreq/governor_passive.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-I noted what I did on cover letter
-Changes from v1 to v2:
-- Documentation: Modify the dimc-gpios property description and examples.
+diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
+index 63332e4a65ae..375aa636027c 100644
+--- a/drivers/devfreq/governor_passive.c
++++ b/drivers/devfreq/governor_passive.c
+@@ -141,6 +141,21 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
+ 		if (!p_data->this)
+ 			p_data->this = devfreq;
+ 
++		/*
++		 * If the parent device changes the their frequency before
++		 * registering the passive device, the passive device cannot
++		 * receive the notification from parent device and then the
++		 * passive device cannot be able to set the proper frequency
++		 * according to the frequency of parent device.
++		 *
++		 * When start the passive governor, update the frequency
++		 * according to the frequency of parent device.
++		 */
++		ret = devfreq_update_target(devfreq, parent->previous_freq);
++		if (ret < 0)
++			dev_warn(&devfreq->dev,
++			"failed to update devfreq using passive governor\n");
++
+ 		nb->notifier_call = devfreq_passive_notifier_call;
+ 		ret = devfreq_register_notifier(parent, nb,
+ 					DEVFREQ_TRANSITION_NOTIFIER);
+-- 
+2.17.1
 
-That is why I bother you again to review it. Please let me know if
-this looks good to you.
-Thanks!
-
-On Tue, Nov 3, 2020 at 10:54 AM Ajye Huang <ajye.huang@gmail.com> wrote:
->
-> Add a property "dmic-gpios" for switching between two MICs.
->
-> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-> ---
->  .../bindings/sound/google,sc7180-trogdor.yaml | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> index efc34689d6b5..9e0505467e57 100644
-> --- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> +++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> @@ -34,6 +34,9 @@ properties:
->    "#size-cells":
->      const: 0
->
-> +  dmic-gpios:
-> +    description: GPIO for switching between DMICs
-> +
->  patternProperties:
->    "^dai-link(@[0-9])?$":
->      description:
-> @@ -81,6 +84,7 @@ additionalProperties: false
->  examples:
->
->    - |
-> +    //Example 1
->      sound {
->          compatible = "google,sc7180-trogdor";
->          model = "sc7180-rt5682-max98357a-1mic";
-> @@ -128,3 +132,57 @@ examples:
->              };
->          };
->      };
-> +
-> +  - |
-> +    //Example 2 (2mic case)
-> +    sound {
-> +        compatible = "google,sc7180-trogdor";
-> +        model = "sc7180-rt5682-max98357a-2mic";
-> +
-> +        audio-routing =
-> +                    "Headphone Jack", "HPOL",
-> +                    "Headphone Jack", "HPOR";
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        dmic-gpios = <&tlmm 86 0>;
-> +
-> +        dai-link@0 {
-> +            link-name = "MultiMedia0";
-> +            reg = <0>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 0>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&alc5682 0>;
-> +            };
-> +        };
-> +
-> +        dai-link@1 {
-> +            link-name = "MultiMedia1";
-> +            reg = <1>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 1>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&max98357a>;
-> +            };
-> +        };
-> +
-> +        dai-link@2 {
-> +            link-name = "MultiMedia2";
-> +            reg = <2>;
-> +            cpu {
-> +                sound-dai = <&lpass_hdmi 0>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&msm_dp>;
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> --
-> 2.25.1
->
