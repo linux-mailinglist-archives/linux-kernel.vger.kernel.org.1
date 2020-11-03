@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E5D2A3768
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9AD2A3773
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgKCABq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:01:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17324 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725869AbgKCABp (ORCPT
+        id S1727157AbgKCAGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgKCAGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:01:45 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2NXESV171339;
-        Mon, 2 Nov 2020 19:01:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Y9Nos3ahvz3IxqudanRH2iJeOKQpNN+5l54NhP5KCzo=;
- b=GpLg8o8hjViBDzluxNHyklEF+vhU8vjmP2xyfuH6d4Rv/kMexNEGOhTqc1hIh63yib6y
- m/TFDF9sIeN1Z1mOr8+KLU9z5LWH+PCFLF8sX+H19/mLvJNf7WnGQrkuuwmk+ShUgX/6
- y6LPzyZ9FjC1R+R0hVawrrpjilykMY2wfzrNIIwa1705dE3dnjFVOm5N9+CxpmlBH9hZ
- W2e8dqWPuxRv/u4s4OVGS8/XSlxYzaFqDR103DecE8Dc3JH8okN9EblgddwA3IKPysGp
- w9/F/7hDCyU33jOq77tfBaMSur/dVYJSCvbwKAphBFXXwnX8YRc54XJMmWuYMUaOQVlk gw== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34jm70eska-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Nov 2020 19:01:30 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A2NvnaX013803;
-        Tue, 3 Nov 2020 00:01:28 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 34h01khb87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 00:01:28 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A301PBZ55050680
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Nov 2020 00:01:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA332AE04D;
-        Tue,  3 Nov 2020 00:01:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 762FCAE045;
-        Tue,  3 Nov 2020 00:01:25 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Nov 2020 00:01:25 +0000 (GMT)
-Received: from [9.81.211.185] (unknown [9.81.211.185])
-        (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id A72E8A00BD;
-        Tue,  3 Nov 2020 11:01:23 +1100 (AEDT)
-Subject: Re: [PATCH v2 2/2] misc: ocxl: config: Rename function attribute
- description
-To:     Lee Jones <lee.jones@linaro.org>, gregkh@linuxfoundation.org,
-        arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20201102142001.560490-1-lee.jones@linaro.org>
- <20201102142001.560490-2-lee.jones@linaro.org>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <82b78262-14a5-d384-0c78-d4876d85f713@linux.ibm.com>
-Date:   Tue, 3 Nov 2020 11:01:22 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 2 Nov 2020 19:06:33 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B90C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:06:31 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l2so19850629lfk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:06:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WHMOmkhlRWyq97AfxS2rXTffakjk5zbzZZUU7niR7ko=;
+        b=hv08MmKqPW2kwHXqrNQp2ucUSP5RIUEfSR109ZFv/+GCfvLMMs748r0m1pga8q2tP7
+         NKctrAbp0S6uaLSATDuyAfO2MPnGC4c4ilXwVCDYmawkODWJXJ/TkvVBDFuStFWWuL1R
+         ySxawLXlGOyaudd+de2xvN3RGV4tNKoNyIGq8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WHMOmkhlRWyq97AfxS2rXTffakjk5zbzZZUU7niR7ko=;
+        b=D8cB0oiMBbFwHKzkCOtAnl78anJtjH8kEwFHlq7NL0XwlY9O28DaO4kL4u6ilKqlvV
+         6E548Gk6UC+ZG1ROGZMtyVsPJ8/2afsrjdTOwzByBwW5WNcg6zjV13N737KWhjVjsTUn
+         fhqlwBTfTBjDbBrm1Cq9qXGPRxnkCtrDEEnS0QGkntoF3XuJ+BQKxr8KPBM1RSaG5urR
+         ovK29MmOdfp+qkgMTAEAuCGUkdiiulqCuxD+iJzY9s+V5MXAElZBn39XBwftdMLKwl+D
+         1YJRa0eM6VLU1QFPoRk5xb5J28gOwWqoHvVJkBYKZIHHK4aYk+Z6mFahQFx9Q0wpRQ20
+         n0Ww==
+X-Gm-Message-State: AOAM533pTrCrN5l9dOqevULqtBuLCnDAS2Vi2lPqIwF6zmUEk3wj3qri
+        HRBad0pVBu4VbA99DYUqflh0ytIMg9sz1w==
+X-Google-Smtp-Source: ABdhPJw1F2oWzyt2ConAqdvO1ATul71/sCe5jM+6GsbMN0GSuR0yTcoJasUnTawUhVtEcCmvPMHfEQ==
+X-Received: by 2002:a19:3816:: with SMTP id f22mr7007439lfa.210.1604361989308;
+        Mon, 02 Nov 2020 16:06:29 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id f6sm3245674ljg.83.2020.11.02.16.06.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 16:06:28 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id i6so19834318lfd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:06:28 -0800 (PST)
+X-Received: by 2002:a19:41d7:: with SMTP id o206mr7188801lfa.396.1604361987822;
+ Mon, 02 Nov 2020 16:06:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201102142001.560490-2-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-02_16:2020-11-02,2020-11-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 clxscore=1011 malwarescore=0 bulkscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011020181
+References: <20201102112410.1049272-1-lee.jones@linaro.org> <20201102112410.1049272-42-lee.jones@linaro.org>
+In-Reply-To: <20201102112410.1049272-42-lee.jones@linaro.org>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Mon, 2 Nov 2020 16:06:15 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
+Message-ID: <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
+Subject: Re: [PATCH 41/41] realtek: rtw88: pci: Add prototypes for .probe,
+ .remove and .shutdown
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/20 1:20 am, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/misc/ocxl/config.c:81: warning: Function parameter or member 'dev' not described in 'get_function_0'
->   drivers/misc/ocxl/config.c:81: warning: Excess function parameter 'device' description in 'get_function_0'
-> 
-> Cc: Frederic Barrat <fbarrat@linux.ibm.com>
-> Cc: Andrew Donnellan <ajd@linux.ibm.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Mon, Nov 2, 2020 at 3:25 AM Lee Jones <lee.jones@linaro.org> wrote:
+> --- a/drivers/net/wireless/realtek/rtw88/pci.h
+> +++ b/drivers/net/wireless/realtek/rtw88/pci.h
+> @@ -212,6 +212,10 @@ struct rtw_pci {
+>         void __iomem *mmap;
+>  };
+>
+> +int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+> +void rtw_pci_remove(struct pci_dev *pdev);
+> +void rtw_pci_shutdown(struct pci_dev *pdev);
+> +
+>
 
-Thanks!
+These definitions are already in 4 other header files:
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
+drivers/net/wireless/realtek/rtw88/rtw8723de.h
+drivers/net/wireless/realtek/rtw88/rtw8821ce.h
+drivers/net/wireless/realtek/rtw88/rtw8822be.h
+drivers/net/wireless/realtek/rtw88/rtw8822ce.h
 
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+Seems like you should be moving them, not just adding yet another duplicate.
+
+Brian
