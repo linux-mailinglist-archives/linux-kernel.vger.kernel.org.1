@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277DF2A51F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A11F2A52DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbgKCUpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:45:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33746 "EHLO mail.kernel.org"
+        id S1732530AbgKCUyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729594AbgKCUp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:28 -0500
+        id S1731586AbgKCUx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:53:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 903C02242A;
-        Tue,  3 Nov 2020 20:45:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90BBA223AC;
+        Tue,  3 Nov 2020 20:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436328;
-        bh=gLPsMMtg8h3PCVEwjjq1vYIdLiYw3TYvAjq8fwP6FLg=;
+        s=default; t=1604436839;
+        bh=U7q6IsHGxgGy0DhsvaEUmSl/VKB9Gc10EIlR1fV+ykE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SEjO8hwFQGqix61sbPzFpAHgpm2iTTRAL9VO+CLxMlJyiJ9XI821m0HXUb5kSitIH
-         IeXajyJuSRjWcrDedAuOpRGhCIoVoDHQITCIKyiK+x2fodflkLf/YwnVuQaM37pOij
-         SOz4z0BuwOo5ZNznDkXmCxXTZSqxf2J7k+28ZpA4=
+        b=a+u+/OvGFuaVI3Bv1V2SHG99Th/GG3Fj/9M7FZJ/92wkRg2C7ONBqcFCcFFK3qeiP
+         JX9D/kxT7oG0jJCj3PLLvHIutCGmGu3NaUStYxJndQB7BB/g5PIlzgxgm4j0O8mtc9
+         cFNRFhZCWHn3jlslt0CTodBsRH9ObttxkfgbSPMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 202/391] fs: Dont invalidate page buffers in block_write_full_page()
-Date:   Tue,  3 Nov 2020 21:34:13 +0100
-Message-Id: <20201103203400.524817708@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
+        Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 5.4 006/214] xen/netback: use lateeoi irq binding
+Date:   Tue,  3 Nov 2020 21:34:14 +0100
+Message-Id: <20201103203250.172867787@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,94 +43,256 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Juergen Gross <jgross@suse.com>
 
-commit 6dbf7bb555981fb5faf7b691e8f6169fc2b2e63b upstream.
+commit 23025393dbeb3b8b3b60ebfa724cdae384992e27 upstream.
 
-If block_write_full_page() is called for a page that is beyond current
-inode size, it will truncate page buffers for the page and return 0.
-This logic has been added in 2.5.62 in commit 81eb69062588 ("fix ext3
-BUG due to race with truncate") in history.git tree to fix a problem
-with ext3 in data=ordered mode. This particular problem doesn't exist
-anymore because ext3 is long gone and ext4 handles ordered data
-differently. Also normally buffers are invalidated by truncate code and
-there's no need to specially handle this in ->writepage() code.
+In order to reduce the chance for the system becoming unresponsive due
+to event storms triggered by a misbehaving netfront use the lateeoi
+irq binding for netback and unmask the event channel only just before
+going to sleep waiting for new events.
 
-This invalidation of page buffers in block_write_full_page() is causing
-issues to filesystems (e.g. ext4 or ocfs2) when block device is shrunk
-under filesystem's hands and metadata buffers get discarded while being
-tracked by the journalling layer. Although it is obviously "not
-supported" it can cause kernel crashes like:
+Make sure not to issue an EOI when none is pending by introducing an
+eoi_pending element to struct xenvif_queue.
 
-[ 7986.689400] BUG: unable to handle kernel NULL pointer dereference at
-+0000000000000008
-[ 7986.697197] PGD 0 P4D 0
-[ 7986.699724] Oops: 0002 [#1] SMP PTI
-[ 7986.703200] CPU: 4 PID: 203778 Comm: jbd2/dm-3-8 Kdump: loaded Tainted: G
-+O     --------- -  - 4.18.0-147.5.0.5.h126.eulerosv2r9.x86_64 #1
-[ 7986.716438] Hardware name: Huawei RH2288H V3/BC11HGSA0, BIOS 1.57 08/11/2015
-[ 7986.723462] RIP: 0010:jbd2_journal_grab_journal_head+0x1b/0x40 [jbd2]
-...
-[ 7986.810150] Call Trace:
-[ 7986.812595]  __jbd2_journal_insert_checkpoint+0x23/0x70 [jbd2]
-[ 7986.818408]  jbd2_journal_commit_transaction+0x155f/0x1b60 [jbd2]
-[ 7986.836467]  kjournald2+0xbd/0x270 [jbd2]
+When no request has been consumed set the spurious flag when sending
+the EOI for an interrupt.
 
-which is not great. The crash happens because bh->b_private is suddently
-NULL although BH_JBD flag is still set (this is because
-block_invalidatepage() cleared BH_Mapped flag and subsequent bh lookup
-found buffer without BH_Mapped set, called init_page_buffers() which has
-rewritten bh->b_private). So just remove the invalidation in
-block_write_full_page().
+This is part of XSA-332.
 
-Note that the buffer cache invalidation when block device changes size
-is already careful to avoid similar problems by using
-invalidate_mapping_pages() which skips busy buffers so it was only this
-odd block_write_full_page() behavior that could tear down bdev buffers
-under filesystem's hands.
-
-Reported-by: Ye Bin <yebin10@huawei.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-CC: stable@vger.kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: stable@vger.kernel.org
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/buffer.c |   16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/net/xen-netback/common.h    |   15 ++++++++
+ drivers/net/xen-netback/interface.c |   61 ++++++++++++++++++++++++++++++------
+ drivers/net/xen-netback/netback.c   |   11 +++++-
+ drivers/net/xen-netback/rx.c        |   13 +++++--
+ 4 files changed, 86 insertions(+), 14 deletions(-)
 
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2771,16 +2771,6 @@ int nobh_writepage(struct page *page, ge
- 	/* Is the page fully outside i_size? (truncate in progress) */
- 	offset = i_size & (PAGE_SIZE-1);
- 	if (page->index >= end_index+1 || !offset) {
--		/*
--		 * The page may have dirty, unmapped buffers.  For example,
--		 * they may have been added in ext3_writepage().  Make them
--		 * freeable here, so the page does not leak.
--		 */
--#if 0
--		/* Not really sure about this  - do we need this ? */
--		if (page->mapping->a_ops->invalidatepage)
--			page->mapping->a_ops->invalidatepage(page, offset);
--#endif
- 		unlock_page(page);
- 		return 0; /* don't care */
- 	}
-@@ -2975,12 +2965,6 @@ int block_write_full_page(struct page *p
- 	/* Is the page fully outside i_size? (truncate in progress) */
- 	offset = i_size & (PAGE_SIZE-1);
- 	if (page->index >= end_index+1 || !offset) {
--		/*
--		 * The page may have dirty, unmapped buffers.  For example,
--		 * they may have been added in ext3_writepage().  Make them
--		 * freeable here, so the page does not leak.
--		 */
--		do_invalidatepage(page, 0, PAGE_SIZE);
- 		unlock_page(page);
- 		return 0; /* don't care */
- 	}
+--- a/drivers/net/xen-netback/common.h
++++ b/drivers/net/xen-netback/common.h
+@@ -140,6 +140,20 @@ struct xenvif_queue { /* Per-queue data
+ 	char name[QUEUE_NAME_SIZE]; /* DEVNAME-qN */
+ 	struct xenvif *vif; /* Parent VIF */
+ 
++	/*
++	 * TX/RX common EOI handling.
++	 * When feature-split-event-channels = 0, interrupt handler sets
++	 * NETBK_COMMON_EOI, otherwise NETBK_RX_EOI and NETBK_TX_EOI are set
++	 * by the RX and TX interrupt handlers.
++	 * RX and TX handler threads will issue an EOI when either
++	 * NETBK_COMMON_EOI or their specific bits (NETBK_RX_EOI or
++	 * NETBK_TX_EOI) are set and they will reset those bits.
++	 */
++	atomic_t eoi_pending;
++#define NETBK_RX_EOI		0x01
++#define NETBK_TX_EOI		0x02
++#define NETBK_COMMON_EOI	0x04
++
+ 	/* Use NAPI for guest TX */
+ 	struct napi_struct napi;
+ 	/* When feature-split-event-channels = 0, tx_irq = rx_irq. */
+@@ -375,6 +389,7 @@ int xenvif_dealloc_kthread(void *data);
+ 
+ irqreturn_t xenvif_ctrl_irq_fn(int irq, void *data);
+ 
++bool xenvif_have_rx_work(struct xenvif_queue *queue, bool test_kthread);
+ void xenvif_rx_action(struct xenvif_queue *queue);
+ void xenvif_rx_queue_tail(struct xenvif_queue *queue, struct sk_buff *skb);
+ 
+--- a/drivers/net/xen-netback/interface.c
++++ b/drivers/net/xen-netback/interface.c
+@@ -77,12 +77,28 @@ int xenvif_schedulable(struct xenvif *vi
+ 		!vif->disabled;
+ }
+ 
++static bool xenvif_handle_tx_interrupt(struct xenvif_queue *queue)
++{
++	bool rc;
++
++	rc = RING_HAS_UNCONSUMED_REQUESTS(&queue->tx);
++	if (rc)
++		napi_schedule(&queue->napi);
++	return rc;
++}
++
+ static irqreturn_t xenvif_tx_interrupt(int irq, void *dev_id)
+ {
+ 	struct xenvif_queue *queue = dev_id;
++	int old;
+ 
+-	if (RING_HAS_UNCONSUMED_REQUESTS(&queue->tx))
+-		napi_schedule(&queue->napi);
++	old = atomic_fetch_or(NETBK_TX_EOI, &queue->eoi_pending);
++	WARN(old & NETBK_TX_EOI, "Interrupt while EOI pending\n");
++
++	if (!xenvif_handle_tx_interrupt(queue)) {
++		atomic_andnot(NETBK_TX_EOI, &queue->eoi_pending);
++		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -116,19 +132,46 @@ static int xenvif_poll(struct napi_struc
+ 	return work_done;
+ }
+ 
++static bool xenvif_handle_rx_interrupt(struct xenvif_queue *queue)
++{
++	bool rc;
++
++	rc = xenvif_have_rx_work(queue, false);
++	if (rc)
++		xenvif_kick_thread(queue);
++	return rc;
++}
++
+ static irqreturn_t xenvif_rx_interrupt(int irq, void *dev_id)
+ {
+ 	struct xenvif_queue *queue = dev_id;
++	int old;
+ 
+-	xenvif_kick_thread(queue);
++	old = atomic_fetch_or(NETBK_RX_EOI, &queue->eoi_pending);
++	WARN(old & NETBK_RX_EOI, "Interrupt while EOI pending\n");
++
++	if (!xenvif_handle_rx_interrupt(queue)) {
++		atomic_andnot(NETBK_RX_EOI, &queue->eoi_pending);
++		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+ irqreturn_t xenvif_interrupt(int irq, void *dev_id)
+ {
+-	xenvif_tx_interrupt(irq, dev_id);
+-	xenvif_rx_interrupt(irq, dev_id);
++	struct xenvif_queue *queue = dev_id;
++	int old;
++
++	old = atomic_fetch_or(NETBK_COMMON_EOI, &queue->eoi_pending);
++	WARN(old, "Interrupt while EOI pending\n");
++
++	/* Use bitwise or as we need to call both functions. */
++	if ((!xenvif_handle_tx_interrupt(queue) |
++	     !xenvif_handle_rx_interrupt(queue))) {
++		atomic_andnot(NETBK_COMMON_EOI, &queue->eoi_pending);
++		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -595,7 +638,7 @@ int xenvif_connect_ctrl(struct xenvif *v
+ 	shared = (struct xen_netif_ctrl_sring *)addr;
+ 	BACK_RING_INIT(&vif->ctrl, shared, XEN_PAGE_SIZE);
+ 
+-	err = bind_interdomain_evtchn_to_irq(vif->domid, evtchn);
++	err = bind_interdomain_evtchn_to_irq_lateeoi(vif->domid, evtchn);
+ 	if (err < 0)
+ 		goto err_unmap;
+ 
+@@ -653,7 +696,7 @@ int xenvif_connect_data(struct xenvif_qu
+ 
+ 	if (tx_evtchn == rx_evtchn) {
+ 		/* feature-split-event-channels == 0 */
+-		err = bind_interdomain_evtchn_to_irqhandler(
++		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
+ 			queue->vif->domid, tx_evtchn, xenvif_interrupt, 0,
+ 			queue->name, queue);
+ 		if (err < 0)
+@@ -664,7 +707,7 @@ int xenvif_connect_data(struct xenvif_qu
+ 		/* feature-split-event-channels == 1 */
+ 		snprintf(queue->tx_irq_name, sizeof(queue->tx_irq_name),
+ 			 "%s-tx", queue->name);
+-		err = bind_interdomain_evtchn_to_irqhandler(
++		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
+ 			queue->vif->domid, tx_evtchn, xenvif_tx_interrupt, 0,
+ 			queue->tx_irq_name, queue);
+ 		if (err < 0)
+@@ -674,7 +717,7 @@ int xenvif_connect_data(struct xenvif_qu
+ 
+ 		snprintf(queue->rx_irq_name, sizeof(queue->rx_irq_name),
+ 			 "%s-rx", queue->name);
+-		err = bind_interdomain_evtchn_to_irqhandler(
++		err = bind_interdomain_evtchn_to_irqhandler_lateeoi(
+ 			queue->vif->domid, rx_evtchn, xenvif_rx_interrupt, 0,
+ 			queue->rx_irq_name, queue);
+ 		if (err < 0)
+--- a/drivers/net/xen-netback/netback.c
++++ b/drivers/net/xen-netback/netback.c
+@@ -162,6 +162,10 @@ void xenvif_napi_schedule_or_enable_even
+ 
+ 	if (more_to_do)
+ 		napi_schedule(&queue->napi);
++	else if (atomic_fetch_andnot(NETBK_TX_EOI | NETBK_COMMON_EOI,
++				     &queue->eoi_pending) &
++		 (NETBK_TX_EOI | NETBK_COMMON_EOI))
++		xen_irq_lateeoi(queue->tx_irq, 0);
+ }
+ 
+ static void tx_add_credit(struct xenvif_queue *queue)
+@@ -1622,9 +1626,14 @@ static bool xenvif_ctrl_work_todo(struct
+ irqreturn_t xenvif_ctrl_irq_fn(int irq, void *data)
+ {
+ 	struct xenvif *vif = data;
++	unsigned int eoi_flag = XEN_EOI_FLAG_SPURIOUS;
+ 
+-	while (xenvif_ctrl_work_todo(vif))
++	while (xenvif_ctrl_work_todo(vif)) {
+ 		xenvif_ctrl_action(vif);
++		eoi_flag = 0;
++	}
++
++	xen_irq_lateeoi(irq, eoi_flag);
+ 
+ 	return IRQ_HANDLED;
+ }
+--- a/drivers/net/xen-netback/rx.c
++++ b/drivers/net/xen-netback/rx.c
+@@ -490,13 +490,13 @@ static bool xenvif_rx_queue_ready(struct
+ 	return queue->stalled && prod - cons >= 1;
+ }
+ 
+-static bool xenvif_have_rx_work(struct xenvif_queue *queue)
++bool xenvif_have_rx_work(struct xenvif_queue *queue, bool test_kthread)
+ {
+ 	return xenvif_rx_ring_slots_available(queue) ||
+ 		(queue->vif->stall_timeout &&
+ 		 (xenvif_rx_queue_stalled(queue) ||
+ 		  xenvif_rx_queue_ready(queue))) ||
+-		kthread_should_stop() ||
++		(test_kthread && kthread_should_stop()) ||
+ 		queue->vif->disabled;
+ }
+ 
+@@ -527,15 +527,20 @@ static void xenvif_wait_for_rx_work(stru
+ {
+ 	DEFINE_WAIT(wait);
+ 
+-	if (xenvif_have_rx_work(queue))
++	if (xenvif_have_rx_work(queue, true))
+ 		return;
+ 
+ 	for (;;) {
+ 		long ret;
+ 
+ 		prepare_to_wait(&queue->wq, &wait, TASK_INTERRUPTIBLE);
+-		if (xenvif_have_rx_work(queue))
++		if (xenvif_have_rx_work(queue, true))
+ 			break;
++		if (atomic_fetch_andnot(NETBK_RX_EOI | NETBK_COMMON_EOI,
++					&queue->eoi_pending) &
++		    (NETBK_RX_EOI | NETBK_COMMON_EOI))
++			xen_irq_lateeoi(queue->rx_irq, 0);
++
+ 		ret = schedule_timeout(xenvif_rx_queue_timeout(queue));
+ 		if (!ret)
+ 			break;
 
 
