@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043A52A5864
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130F92A584D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgKCVuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:50:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
+        id S1731673AbgKCVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:50:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731634AbgKCUst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:49 -0500
+        id S1731679AbgKCUs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2C3A22409;
-        Tue,  3 Nov 2020 20:48:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E3E8223FD;
+        Tue,  3 Nov 2020 20:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436528;
-        bh=1dwYbPMQBXAQKaz+SOdJ4IiZ66CnPun/MaRc7YvlahA=;
+        s=default; t=1604436537;
+        bh=KHK/C3N24xx45UXY68MfwEVkkgX6kFMk9DiZL/RyCpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TgnoxVn6hFiNCeB0m0k1cBXvT/MdTcv70RE3YFb8htq0iC8IDiwXZXd2fmiWEE4sJ
-         4BzioKa6cUhk8ov7k7piWhHrBONv3dx3asfTra+oUnCc3g8GEgPGl+T7w70SBQDjr7
-         BmtHS43LFjZaMBudVfIpqaQ7Wsm/k6+HRrSddw1c=
+        b=wXGigPYNTaXPYbxZ1YTxd7GvV24r5CIUrNiQL7Rsl7XWyq6V4CiTqPUXYdftHody0
+         E9r1uZJhCCU/3c8yce0BqQxwlquHJNWmI0+ILC0aO9boZHipPfxzgwmgkQi6BpCeD/
+         N+Fw41ZBFXjClvHuPH04XDvJcybIUfI96vLrpBxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, Michael Neuling <mikey@neuling.org>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 289/391] powerpc/powernv/elog: Fix race while processing OPAL error log event.
-Date:   Tue,  3 Nov 2020 21:35:40 +0100
-Message-Id: <20201103203406.550411806@linuxfoundation.org>
+Subject: [PATCH 5.9 292/391] powerpc: Fix undetected data corruption with P9N DD2.1 VSX CI load emulation
+Date:   Tue,  3 Nov 2020 21:35:43 +0100
+Message-Id: <20201103203406.774479535@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,128 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+From: Michael Neuling <mikey@neuling.org>
 
-commit aea948bb80b478ddc2448f7359d574387521a52d upstream.
+commit 1da4a0272c5469169f78cd76cf175ff984f52f06 upstream.
 
-Every error log reported by OPAL is exported to userspace through a
-sysfs interface and notified using kobject_uevent(). The userspace
-daemon (opal_errd) then reads the error log and acknowledges the error
-log is saved safely to disk. Once acknowledged the kernel removes the
-respective sysfs file entry causing respective resources to be
-released including kobject.
+__get_user_atomic_128_aligned() stores to kaddr using stvx which is a
+VMX store instruction, hence kaddr must be 16 byte aligned otherwise
+the store won't occur as expected.
 
-However it's possible the userspace daemon may already be scanning
-elog entries when a new sysfs elog entry is created by the kernel.
-User daemon may read this new entry and ack it even before kernel can
-notify userspace about it through kobject_uevent() call. If that
-happens then we have a potential race between
-elog_ack_store->kobject_put() and kobject_uevent which can lead to
-use-after-free of a kernfs object resulting in a kernel crash. eg:
+Unfortunately when we call __get_user_atomic_128_aligned() in
+p9_hmi_special_emu(), the buffer we pass as kaddr (ie. vbuf) isn't
+guaranteed to be 16B aligned. This means that the write to vbuf in
+__get_user_atomic_128_aligned() has the bottom bits of the address
+truncated. This results in other local variables being
+overwritten. Also vbuf will not contain the correct data which results
+in the userspace emulation being wrong and hence undetected user data
+corruption.
 
-  BUG: Unable to handle kernel data access on read at 0x6b6b6b6b6b6b6bfb
-  Faulting instruction address: 0xc0000000008ff2a0
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
-  CPU: 27 PID: 805 Comm: irq/29-opal-elo Not tainted 5.9.0-rc2-gcc-8.2.0-00214-g6f56a67bcbb5-dirty #363
-  ...
-  NIP kobject_uevent_env+0xa0/0x910
-  LR  elog_event+0x1f4/0x2d0
-  Call Trace:
-    0x5deadbeef0000122 (unreliable)
-    elog_event+0x1f4/0x2d0
-    irq_thread_fn+0x4c/0xc0
-    irq_thread+0x1c0/0x2b0
-    kthread+0x1c4/0x1d0
-    ret_from_kernel_thread+0x5c/0x6c
+In the past we've been mostly lucky as vbuf has ended up aligned but
+this is fragile and isn't always true. CONFIG_STACKPROTECTOR in
+particular can change the stack arrangement enough that our luck runs
+out.
 
-This patch fixes this race by protecting the sysfs file
-creation/notification by holding a reference count on kobject until we
-safely send kobject_uevent().
+This issue only occurs on POWER9 Nimbus <= DD2.1 bare metal.
 
-The function create_elog_obj() returns the elog object which if used
-by caller function will end up in use-after-free problem again.
-However, the return value of create_elog_obj() function isn't being
-used today and there is no need as well. Hence change it to return
-void to make this fix complete.
+The fix is to align vbuf to a 16 byte boundary.
 
-Fixes: 774fea1a38c6 ("powerpc/powernv: Read OPAL error log and export it through sysfs")
-Cc: stable@vger.kernel.org # v3.15+
-Reported-by: Oliver O'Halloran <oohall@gmail.com>
-Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-[mpe: Rework the logic to use a single return, reword comments, add oops]
+Fixes: 5080332c2c89 ("powerpc/64s: Add workaround for P9 vector CI load issue")
+Cc: stable@vger.kernel.org # v4.15+
+Signed-off-by: Michael Neuling <mikey@neuling.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201006122051.190176-1-mpe@ellerman.id.au
+Link: https://lore.kernel.org/r/20201013043741.743413-1-mikey@neuling.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/opal-elog.c |   33 ++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
+ arch/powerpc/kernel/traps.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/platforms/powernv/opal-elog.c
-+++ b/arch/powerpc/platforms/powernv/opal-elog.c
-@@ -179,14 +179,14 @@ static ssize_t raw_attr_read(struct file
- 	return count;
- }
- 
--static struct elog_obj *create_elog_obj(uint64_t id, size_t size, uint64_t type)
-+static void create_elog_obj(uint64_t id, size_t size, uint64_t type)
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -889,7 +889,7 @@ static void p9_hmi_special_emu(struct pt
  {
- 	struct elog_obj *elog;
- 	int rc;
+ 	unsigned int ra, rb, t, i, sel, instr, rc;
+ 	const void __user *addr;
+-	u8 vbuf[16], *vdst;
++	u8 vbuf[16] __aligned(16), *vdst;
+ 	unsigned long ea, msr, msr_mask;
+ 	bool swap;
  
- 	elog = kzalloc(sizeof(*elog), GFP_KERNEL);
- 	if (!elog)
--		return NULL;
-+		return;
- 
- 	elog->kobj.kset = elog_kset;
- 
-@@ -219,18 +219,37 @@ static struct elog_obj *create_elog_obj(
- 	rc = kobject_add(&elog->kobj, NULL, "0x%llx", id);
- 	if (rc) {
- 		kobject_put(&elog->kobj);
--		return NULL;
-+		return;
- 	}
- 
-+	/*
-+	 * As soon as the sysfs file for this elog is created/activated there is
-+	 * a chance the opal_errd daemon (or any userspace) might read and
-+	 * acknowledge the elog before kobject_uevent() is called. If that
-+	 * happens then there is a potential race between
-+	 * elog_ack_store->kobject_put() and kobject_uevent() which leads to a
-+	 * use-after-free of a kernfs object resulting in a kernel crash.
-+	 *
-+	 * To avoid that, we need to take a reference on behalf of the bin file,
-+	 * so that our reference remains valid while we call kobject_uevent().
-+	 * We then drop our reference before exiting the function, leaving the
-+	 * bin file to drop the last reference (if it hasn't already).
-+	 */
-+
-+	/* Take a reference for the bin file */
-+	kobject_get(&elog->kobj);
- 	rc = sysfs_create_bin_file(&elog->kobj, &elog->raw_attr);
--	if (rc) {
-+	if (rc == 0) {
-+		kobject_uevent(&elog->kobj, KOBJ_ADD);
-+	} else {
-+		/* Drop the reference taken for the bin file */
- 		kobject_put(&elog->kobj);
--		return NULL;
- 	}
- 
--	kobject_uevent(&elog->kobj, KOBJ_ADD);
-+	/* Drop our reference */
-+	kobject_put(&elog->kobj);
- 
--	return elog;
-+	return;
- }
- 
- static irqreturn_t elog_event(int irq, void *data)
 
 
