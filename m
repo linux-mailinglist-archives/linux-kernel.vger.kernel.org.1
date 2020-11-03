@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60E72A4CA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856972A4CA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgKCRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:22:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727323AbgKCRWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:22:54 -0500
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CC8922264;
-        Tue,  3 Nov 2020 17:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604424173;
-        bh=nuhB/4sintLQzxwxCT17pYI6UZJrHoBwz0+DQysykcU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=B20/5fh25nwLzmTpD5b9hwR2s1AoKsI4d8mSqOJiae5rj9+zXJhV7hOcTb1W3tHRX
-         6aSpQoEHR2qW+Q06enA9bT0sb3ikeKGVoBjvsBSmSL0BA1SdDcdpl74ILitvwBCFJY
-         9CxEwCZ0ulKY4Hh9JzjczNrIPMszTZx9kIAb3pJU=
-Received: by mail-ej1-f41.google.com with SMTP id w13so11855845eju.13;
-        Tue, 03 Nov 2020 09:22:53 -0800 (PST)
-X-Gm-Message-State: AOAM533KUgJeTx3Tfrp8zIq4vqRttnDNCFZMM1D/vTmgVQ30P3YiJDWY
-        QpBdCa8KHlaf9rBP1tn529vHOJ0SK1LI73I9GtQ=
-X-Google-Smtp-Source: ABdhPJzp1lyF41abtZbU7xkRpbqw9yIv88mVCATEX/AZrjpQkucHXAEjzpUgFOFgt3xOMhgVymGjlQjXeXMTCKDx3rM=
-X-Received: by 2002:a17:906:c0c1:: with SMTP id bn1mr1239098ejb.454.1604424171757;
- Tue, 03 Nov 2020 09:22:51 -0800 (PST)
+        id S1728690AbgKCRYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:24:04 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46512 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727323AbgKCRYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:24:03 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3HNwPW072377;
+        Tue, 3 Nov 2020 11:23:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604424238;
+        bh=9kuksq4yFMyIjn0oeqUqnIj/lw1ExH8Ewm915oA7JAI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=TtMneYH2VgghEwI9nWETot7BPBuBdB3i7CNjLMQ0OwX3Rn+gs3YrgYmy4pk+JSJS4
+         JD7SSFz1DXufR2BjXT8b8HZRu8Kmpz/8TlYZ8O/KrkuN6YXV2K1bymWi72KDDvLdb+
+         rTqdgtDIsL0TCSaPEfiCkvLm+uI+/Gu8nePsrVeE=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3HNw1M058948
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 11:23:58 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 11:23:57 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 11:23:57 -0600
+Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3HNvJs041617;
+        Tue, 3 Nov 2020 11:23:57 -0600
+Subject: Re: [PATCH net-next v3 4/4] net: phy: dp83td510: Add support for the
+ DP83TD510 Ethernet PHY
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
+        <f.fainelli@gmail.com>, <hkallweit1@gmail.com>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201030172950.12767-1-dmurphy@ti.com>
+ <20201030172950.12767-5-dmurphy@ti.com>
+ <20201030160330.622c55a7@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <5b32a56b-f054-5790-c5cf-bf1e86403bad@ti.com>
+ <20201103172153.GO1042051@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <d51ef446-1528-5d3f-8548-831598a005a7@ti.com>
+Date:   Tue, 3 Nov 2020 11:23:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CGME20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40@eucas1p2.samsung.com>
- <20201103164423.GE14739@kozik-lap> <dleftjsg9qs6ss.fsf%l.stelmach@samsung.com>
-In-Reply-To: <dleftjsg9qs6ss.fsf%l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 3 Nov 2020 18:22:39 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdTU74P6PDqPqoW-qF3QkvK_0wXCVSUeuExfQyHZdvcpg@mail.gmail.com>
-Message-ID: <CAJKOXPdTU74P6PDqPqoW-qF3QkvK_0wXCVSUeuExfQyHZdvcpg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ARM: dts: exynos: Add Ethernet interface description
- for Odroid X/X2
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201103172153.GO1042051@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 at 18:13, Lukasz Stelmach <l.stelmach@samsung.com> wrote=
-:
->
-> It was <2020-11-03 wto 17:44>, when Krzysztof Kozlowski wrote:
-> > On Tue, Nov 03, 2020 at 01:46:18PM +0100, =C5=81ukasz Stelmach wrote:
-> >> Add Ethernet interface description for Odroid X/X2.
-> >>
-> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> >> ---
-> >>  arch/arm/boot/dts/exynos4412-odroidx.dts | 28 +++++++++++++++++++++++=
-+
-> >>  1 file changed, 28 insertions(+)
-> >>
-> >> diff --git a/arch/arm/boot/dts/exynos4412-odroidx.dts b/arch/arm/boot/=
-dts/exynos4412-odroidx.dts
-> >> index 3ea2a0101e80..8f154f431f6c 100644
-> >> --- a/arch/arm/boot/dts/exynos4412-odroidx.dts
-> >> +++ b/arch/arm/boot/dts/exynos4412-odroidx.dts
-> >> @@ -15,6 +15,10 @@ / {
-> >>      model =3D "Hardkernel ODROID-X board based on Exynos4412";
-> >>      compatible =3D "hardkernel,odroid-x", "samsung,exynos4412", "sams=
-ung,exynos4";
-> >>
-> >> +    aliases {
-> >> +            ethernet =3D &ethernet;
-> >> +    };
-> >> +
-> >>      memory@40000000 {
-> >>              device_type =3D "memory";
-> >>              reg =3D <0x40000000 0x3FF00000>;
-> >> @@ -72,8 +76,32 @@ &buck8_reg {
-> >>  };
-> >>
-> >>  &ehci {
-> >> +    #address-cells =3D <1>;
-> >> +    #size-cells =3D <0>;
-> >>      phys =3D <&exynos_usbphy 2>;
-> >>      phy-names =3D "hsic0";
-> >> +
-> >> +    hub@2 {
-> >> +            compatible =3D "usb0424,3503";
-> >> +            reg =3D <2>;
-> >> +            #address-cells =3D <1>;
-> >> +            #size-cells =3D <0>;
-> >> +
-> >> +            hub@1 {
-> >> +                    compatible =3D "usb0424:9514";
-> >
-> > Does not look like correct compatible.
->
-> As odd as it may seem (and considering my mistakes) this is correct.
+Andrew
 
-Not the numbers, the format. Comma is needed.
+On 11/3/20 11:21 AM, Andrew Lunn wrote:
+> On Tue, Nov 03, 2020 at 11:09:44AM -0600, Dan Murphy wrote:
+>> Hello
+>>
+>> On 10/30/20 6:03 PM, Jakub Kicinski wrote:
+>>> On Fri, 30 Oct 2020 12:29:50 -0500 Dan Murphy wrote:
+>>>> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
+>>>> that supports 10M single pair cable.
+>>>>
+>>>> The device supports both 2.4-V p2p and 1-V p2p output voltage as defined
+>>>> by IEEE 802.3cg 10Base-T1L specfications. These modes can be forced via
+>>>> the device tree or the device is defaulted to auto negotiation to
+>>>> determine the proper p2p voltage.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> drivers/net/phy/dp83td510.c:70:11: warning: symbol 'dp83td510_feature_array' was not declared. Should it be static?
+>> I did not see this warning. Did you use W=1?
+> I _think_ that one is W=1. All the PHY drivers are W=1 clean, and i
+> want to keep it that way. And i hope to make it the default in a lot
+> of the network code soon.
+OK I built with the W=1 before submission I did not see this but I will 
+try some other things.
+>>> Also this:
+>>>
+>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+>>> #429: FILE: drivers/net/phy/dp83td510.c:371:
+>>> +		return -ENOTSUPP;
+>>>
+>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+>>> #524: FILE: drivers/net/phy/dp83td510.c:466:
+>>> +		return -ENOTSUPP;
+>> Same with these warnings how where they reproduced?
+Same as above
+>>> ERROR: space required before the open parenthesis '('
+>>> #580: FILE: drivers/net/phy/dp83td510.c:522:
+>>> +		if(phydev->autoneg) {
+>>>
+>>> ERROR: space required before the open parenthesis '('
+>>> #588: FILE: drivers/net/phy/dp83td510.c:530:
+>>> +		if(phydev->autoneg) {
+>>>
+> These look like checkpatch.
+These I missed
+>>> And please try to wrap the code on 80 chars on the non trivial lines:
+>> What is the LoC limit for networking just for my clarification and I will
+>> align with that.
+> 80. I would not be too surprised to see checkpatch getting a patch to
+> set it to 80 for networking code.
 
-Best regards,
-Krzysztof
+OK I will align the lines to 80 then.
+
+Dan
+
+
+>      Andrew
