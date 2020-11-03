@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD302A52E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FBB2A51FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732556AbgKCUyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:54:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
+        id S1731056AbgKCUpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732522AbgKCUyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:04 -0500
+        id S1730204AbgKCUpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32EF5223BF;
-        Tue,  3 Nov 2020 20:54:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52EAC223FD;
+        Tue,  3 Nov 2020 20:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436843;
-        bh=1QU0X+cZNOMSsCz3QzirAZWQ4Y7CgmqBKEihPMI2TIg=;
+        s=default; t=1604436334;
+        bh=eBRmqu99kZWcHkh6EQT+K4NWWSd1JKx92F9NSTTOQUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M9/b0kFYxcNsocx5/8YwaD6spW3kILEdBo1P2SyA7rzJueyz+3kz1dJ2PIv51Kbj6
-         lhX8xfflT9K+aAxRpRMkblMRREkp0oMh6E+0Cklm38htI4uG+sVPKeF7POEnBmWqbO
-         7Zul7cwsky81WRF0ToOCGlSRrLQHqIGw7pY2yJK8=
+        b=U1PZSJPxIgQNShR4KC+qfLA5WUp9BqGDT/tNg7Qx2aw7NhIyWpZNLHrcKHalQJPfD
+         1d5BVnQSfeUnqlVJY0pMjqlX2Rk2TdJTRDhhKc4IvpuZiuw83j3r/sVml6PbHYw+Rr
+         LvaIgvBdnDD032HzgrRsH6sjBtHZEeAY6/uFecak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wl@xen.org>
-Subject: [PATCH 5.4 008/214] xen/pvcallsback: use lateeoi irq binding
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.9 205/391] ACPI: button: fix handling lid state changes when input device closed
 Date:   Tue,  3 Nov 2020 21:34:16 +0100
-Message-Id: <20201103203250.415746972@linuxfoundation.org>
+Message-Id: <20201103203400.729488148@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,230 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: dmitry.torokhov@gmail.com <dmitry.torokhov@gmail.com>
 
-commit c8d647a326f06a39a8e5f0f1af946eacfa1835f8 upstream.
+commit 21988a8e51479ceffe7b0568b170effabb708dfe upstream.
 
-In order to reduce the chance for the system becoming unresponsive due
-to event storms triggered by a misbehaving pvcallsfront use the lateeoi
-irq binding for pvcallsback and unmask the event channel only after
-handling all write requests, which are the ones coming in via an irq.
+The original intent of 84d3f6b76447 was to delay evaluating lid state until
+all drivers have been loaded, with input device being opened from userspace
+serving as a signal for this condition. Let's ensure that state updates
+happen even if userspace closed (or in the future inhibited) input device.
 
-This requires modifying the logic a little bit to not require an event
-for each write request, but to keep the ioworker running until no
-further data is found on the ring page to be processed.
+Note that if we go through suspend/resume cycle we assume the system has
+been fully initialized even if LID input device has not been opened yet.
 
-This is part of XSA-332.
+This has a side-effect of fixing access to input->users outside of
+input->mutex protections by the way of eliminating said accesses and using
+driver private flag.
 
-Cc: stable@vger.kernel.org
-Reported-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Wei Liu <wl@xen.org>
+Fixes: 84d3f6b76447 ("ACPI / button: Delay acpi_lid_initialize_state() until first user space open")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Cc: 4.15+ <stable@vger.kernel.org> # 4.15+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/pvcalls-back.c |   76 +++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 30 deletions(-)
+ drivers/acpi/button.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/drivers/xen/pvcalls-back.c
-+++ b/drivers/xen/pvcalls-back.c
-@@ -66,6 +66,7 @@ struct sock_mapping {
- 	atomic_t write;
- 	atomic_t io;
- 	atomic_t release;
-+	atomic_t eoi;
- 	void (*saved_data_ready)(struct sock *sk);
- 	struct pvcalls_ioworker ioworker;
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -153,6 +153,7 @@ struct acpi_button {
+ 	int last_state;
+ 	ktime_t last_time;
+ 	bool suspended;
++	bool lid_state_initialized;
  };
-@@ -87,7 +88,7 @@ static int pvcalls_back_release_active(s
- 				       struct pvcalls_fedata *fedata,
- 				       struct sock_mapping *map);
  
--static void pvcalls_conn_back_read(void *opaque)
-+static bool pvcalls_conn_back_read(void *opaque)
+ static struct acpi_device *lid_device;
+@@ -383,6 +384,8 @@ static int acpi_lid_update_state(struct
+ 
+ static void acpi_lid_initialize_state(struct acpi_device *device)
  {
- 	struct sock_mapping *map = (struct sock_mapping *)opaque;
- 	struct msghdr msg;
-@@ -107,17 +108,17 @@ static void pvcalls_conn_back_read(void
- 	virt_mb();
- 
- 	if (error)
--		return;
-+		return false;
- 
- 	size = pvcalls_queued(prod, cons, array_size);
- 	if (size >= array_size)
--		return;
-+		return false;
- 	spin_lock_irqsave(&map->sock->sk->sk_receive_queue.lock, flags);
- 	if (skb_queue_empty(&map->sock->sk->sk_receive_queue)) {
- 		atomic_set(&map->read, 0);
- 		spin_unlock_irqrestore(&map->sock->sk->sk_receive_queue.lock,
- 				flags);
--		return;
-+		return true;
- 	}
- 	spin_unlock_irqrestore(&map->sock->sk->sk_receive_queue.lock, flags);
- 	wanted = array_size - size;
-@@ -141,7 +142,7 @@ static void pvcalls_conn_back_read(void
- 	ret = inet_recvmsg(map->sock, &msg, wanted, MSG_DONTWAIT);
- 	WARN_ON(ret > wanted);
- 	if (ret == -EAGAIN) /* shouldn't happen */
--		return;
-+		return true;
- 	if (!ret)
- 		ret = -ENOTCONN;
- 	spin_lock_irqsave(&map->sock->sk->sk_receive_queue.lock, flags);
-@@ -160,10 +161,10 @@ static void pvcalls_conn_back_read(void
- 	virt_wmb();
- 	notify_remote_via_irq(map->irq);
- 
--	return;
-+	return true;
- }
- 
--static void pvcalls_conn_back_write(struct sock_mapping *map)
-+static bool pvcalls_conn_back_write(struct sock_mapping *map)
- {
- 	struct pvcalls_data_intf *intf = map->ring;
- 	struct pvcalls_data *data = &map->data;
-@@ -180,7 +181,7 @@ static void pvcalls_conn_back_write(stru
- 	array_size = XEN_FLEX_RING_SIZE(map->ring_order);
- 	size = pvcalls_queued(prod, cons, array_size);
- 	if (size == 0)
--		return;
-+		return false;
- 
- 	memset(&msg, 0, sizeof(msg));
- 	msg.msg_flags |= MSG_DONTWAIT;
-@@ -198,12 +199,11 @@ static void pvcalls_conn_back_write(stru
- 
- 	atomic_set(&map->write, 0);
- 	ret = inet_sendmsg(map->sock, &msg, size);
--	if (ret == -EAGAIN || (ret >= 0 && ret < size)) {
-+	if (ret == -EAGAIN) {
- 		atomic_inc(&map->write);
- 		atomic_inc(&map->io);
-+		return true;
- 	}
--	if (ret == -EAGAIN)
--		return;
- 
- 	/* write the data, then update the indexes */
- 	virt_wmb();
-@@ -216,9 +216,13 @@ static void pvcalls_conn_back_write(stru
- 	}
- 	/* update the indexes, then notify the other end */
- 	virt_wmb();
--	if (prod != cons + ret)
-+	if (prod != cons + ret) {
- 		atomic_inc(&map->write);
-+		atomic_inc(&map->io);
-+	}
- 	notify_remote_via_irq(map->irq);
++	struct acpi_button *button = acpi_driver_data(device);
 +
-+	return true;
- }
- 
- static void pvcalls_back_ioworker(struct work_struct *work)
-@@ -227,6 +231,7 @@ static void pvcalls_back_ioworker(struct
- 		struct pvcalls_ioworker, register_work);
- 	struct sock_mapping *map = container_of(ioworker, struct sock_mapping,
- 		ioworker);
-+	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
- 
- 	while (atomic_read(&map->io) > 0) {
- 		if (atomic_read(&map->release) > 0) {
-@@ -234,10 +239,18 @@ static void pvcalls_back_ioworker(struct
- 			return;
- 		}
- 
--		if (atomic_read(&map->read) > 0)
--			pvcalls_conn_back_read(map);
--		if (atomic_read(&map->write) > 0)
--			pvcalls_conn_back_write(map);
-+		if (atomic_read(&map->read) > 0 &&
-+		    pvcalls_conn_back_read(map))
-+			eoi_flags = 0;
-+		if (atomic_read(&map->write) > 0 &&
-+		    pvcalls_conn_back_write(map))
-+			eoi_flags = 0;
+ 	switch (lid_init_state) {
+ 	case ACPI_BUTTON_LID_INIT_OPEN:
+ 		(void)acpi_lid_notify_state(device, 1);
+@@ -394,13 +397,14 @@ static void acpi_lid_initialize_state(st
+ 	default:
+ 		break;
+ 	}
 +
-+		if (atomic_read(&map->eoi) > 0 && !atomic_read(&map->write)) {
-+			atomic_set(&map->eoi, 0);
-+			xen_irq_lateeoi(map->irq, eoi_flags);
-+			eoi_flags = XEN_EOI_FLAG_SPURIOUS;
-+		}
- 
- 		atomic_dec(&map->io);
- 	}
-@@ -334,12 +347,9 @@ static struct sock_mapping *pvcalls_new_
- 		goto out;
- 	map->bytes = page;
- 
--	ret = bind_interdomain_evtchn_to_irqhandler(fedata->dev->otherend_id,
--						    evtchn,
--						    pvcalls_back_conn_event,
--						    0,
--						    "pvcalls-backend",
--						    map);
-+	ret = bind_interdomain_evtchn_to_irqhandler_lateeoi(
-+			fedata->dev->otherend_id, evtchn,
-+			pvcalls_back_conn_event, 0, "pvcalls-backend", map);
- 	if (ret < 0)
- 		goto out;
- 	map->irq = ret;
-@@ -873,15 +883,18 @@ static irqreturn_t pvcalls_back_event(in
- {
- 	struct xenbus_device *dev = dev_id;
- 	struct pvcalls_fedata *fedata = NULL;
-+	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
- 
--	if (dev == NULL)
--		return IRQ_HANDLED;
-+	if (dev) {
-+		fedata = dev_get_drvdata(&dev->dev);
-+		if (fedata) {
-+			pvcalls_back_work(fedata);
-+			eoi_flags = 0;
-+		}
-+	}
- 
--	fedata = dev_get_drvdata(&dev->dev);
--	if (fedata == NULL)
--		return IRQ_HANDLED;
-+	xen_irq_lateeoi(irq, eoi_flags);
- 
--	pvcalls_back_work(fedata);
- 	return IRQ_HANDLED;
++	button->lid_state_initialized = true;
  }
  
-@@ -891,12 +904,15 @@ static irqreturn_t pvcalls_back_conn_eve
- 	struct pvcalls_ioworker *iow;
+ static void acpi_button_notify(struct acpi_device *device, u32 event)
+ {
+ 	struct acpi_button *button = acpi_driver_data(device);
+ 	struct input_dev *input;
+-	int users;
  
- 	if (map == NULL || map->sock == NULL || map->sock->sk == NULL ||
--		map->sock->sk->sk_user_data != map)
-+		map->sock->sk->sk_user_data != map) {
-+		xen_irq_lateeoi(irq, 0);
- 		return IRQ_HANDLED;
-+	}
+ 	switch (event) {
+ 	case ACPI_FIXED_HARDWARE_EVENT:
+@@ -409,10 +413,7 @@ static void acpi_button_notify(struct ac
+ 	case ACPI_BUTTON_NOTIFY_STATUS:
+ 		input = button->input;
+ 		if (button->type == ACPI_BUTTON_TYPE_LID) {
+-			mutex_lock(&button->input->mutex);
+-			users = button->input->users;
+-			mutex_unlock(&button->input->mutex);
+-			if (users)
++			if (button->lid_state_initialized)
+ 				acpi_lid_update_state(device, true);
+ 		} else {
+ 			int keycode;
+@@ -457,7 +458,7 @@ static int acpi_button_resume(struct dev
+ 	struct acpi_button *button = acpi_driver_data(device);
  
- 	iow = &map->ioworker;
- 
- 	atomic_inc(&map->write);
-+	atomic_inc(&map->eoi);
- 	atomic_inc(&map->io);
- 	queue_work(iow->wq, &iow->register_work);
- 
-@@ -931,7 +947,7 @@ static int backend_connect(struct xenbus
- 		goto error;
- 	}
- 
--	err = bind_interdomain_evtchn_to_irq(dev->otherend_id, evtchn);
-+	err = bind_interdomain_evtchn_to_irq_lateeoi(dev->otherend_id, evtchn);
- 	if (err < 0)
- 		goto error;
- 	fedata->irq = err;
+ 	button->suspended = false;
+-	if (button->type == ACPI_BUTTON_TYPE_LID && button->input->users) {
++	if (button->type == ACPI_BUTTON_TYPE_LID) {
+ 		button->last_state = !!acpi_lid_evaluate_state(device);
+ 		button->last_time = ktime_get();
+ 		acpi_lid_initialize_state(device);
 
 
