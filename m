@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FAD2A51AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B082A51AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730617AbgKCUm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:42:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55876 "EHLO mail.kernel.org"
+        id S1730632AbgKCUnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:43:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730608AbgKCUm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:42:56 -0500
+        id S1730108AbgKCUm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:42:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 205AA223BD;
-        Tue,  3 Nov 2020 20:42:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FCC12224E;
+        Tue,  3 Nov 2020 20:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436175;
-        bh=Ruz/DldL8PDflyqGNbomgVXGltzi7AuKlFJAXU/Bg6k=;
+        s=default; t=1604436177;
+        bh=C4vWTdQtFLrCe1HavvWLal4gIoXh6UkTw3EtsP2qTaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jUX+TBLAYnqBiOBZ5nEFiEEf8PsWiOaWA2u00UfHJmcXQGY5bC3N7eGY10JM2sr7z
-         mYr7uD/zjn6kXxrfEPWVFMb9x6sWWjTZZdNQCoTpTxj5/bbojFXwMJxZ6SBPx4TFdY
-         MiImLQaUOI4dZDsZe0lCzuXva/21C5Kg+8Cx6QOQ=
+        b=x5pdykFPbsTg41J3BbQYdB7rw/OiBHuxziiA8B9OdfCo6aG+6sTo2J6mCZbAVK3sl
+         X/Z1JeTj3uxeUGJ1AEwba/8BNW5FOWgg1j9vnK8i8tb5uc/Jn+h2M0ixLhslT6w0XF
+         Wl/FX+brlq27soBLQuaWaFGhKhrBFFr0sLs2LOuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 134/391] bus: mhi: core: Abort suspends due to outgoing pending packets
-Date:   Tue,  3 Nov 2020 21:33:05 +0100
-Message-Id: <20201103203355.871687185@linuxfoundation.org>
+Subject: [PATCH 5.9 135/391] bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
+Date:   Tue,  3 Nov 2020 21:33:06 +0100
+Message-Id: <20201103203355.939595689@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,49 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+From: Diana Craciun <diana.craciun@oss.nxp.com>
 
-[ Upstream commit 515847c557dd33167be86cb429fc0674a331bc88 ]
+[ Upstream commit 5026cf605143e764e1785bbf9158559d17f8d260 ]
 
-Add the missing check to abort suspends if a client driver has pending
-outgoing packets to send to the device. This allows better utilization
-of the MHI bus wherein clients on the host are not left waiting for
-longer suspend or resume cycles to finish for data transfers.
+Before destroying the mc_io, check first that it was
+allocated.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20200929175218.8178-4-manivannan.sadhasivam@linaro.org
+Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+Link: https://lore.kernel.org/r/20200929085441.17448-11-diana.craciun@oss.nxp.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/core/pm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/bus/fsl-mc/mc-io.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 7960980780832..661d704c8093d 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -686,7 +686,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
- 		return -EIO;
+diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
+index a30b53f1d87d8..305015486b91c 100644
+--- a/drivers/bus/fsl-mc/mc-io.c
++++ b/drivers/bus/fsl-mc/mc-io.c
+@@ -129,7 +129,12 @@ error_destroy_mc_io:
+  */
+ void fsl_destroy_mc_io(struct fsl_mc_io *mc_io)
+ {
+-	struct fsl_mc_device *dpmcp_dev = mc_io->dpmcp_dev;
++	struct fsl_mc_device *dpmcp_dev;
++
++	if (!mc_io)
++		return;
++
++	dpmcp_dev = mc_io->dpmcp_dev;
  
- 	/* Return busy if there are any pending resources */
--	if (atomic_read(&mhi_cntrl->dev_wake))
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts))
- 		return -EBUSY;
- 
- 	/* Take MHI out of M2 state */
-@@ -712,7 +713,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 
--	if (atomic_read(&mhi_cntrl->dev_wake)) {
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts)) {
- 		write_unlock_irq(&mhi_cntrl->pm_lock);
- 		return -EBUSY;
- 	}
+ 	if (dpmcp_dev)
+ 		fsl_mc_io_unset_dpmcp(mc_io);
 -- 
 2.27.0
 
