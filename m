@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327A02A4737
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEFA2A4739
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729466AbgKCOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:04:51 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:43857 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729432AbgKCOEB (ORCPT
+        id S1729484AbgKCOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:04:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729440AbgKCOEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:04:01 -0500
-X-UUID: e74818044ead4c7fa295b06134707924-20201103
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bhRnUTD1xu2itKmWSn3uPQ8AOD0EU3W6g5Vk2gTnsog=;
-        b=M24ObXQ5CD6jDsnzqejx95O9k6+44puG5qPRrd7A4MkNX1SL/+hnArNJ04XAsJgxD0UEZoGO0u4QApOlct7z50bXKxDLNQ931wM8DmLdXu9zIa6Ll8i3NyLdHTxRF2oSEErvjrBDnaRWFdGwXo4llB2/L8LMUrSe9XolbhWLVlM=;
-X-UUID: e74818044ead4c7fa295b06134707924-20201103
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1008270133; Tue, 03 Nov 2020 22:03:48 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 3 Nov 2020 22:03:47 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Nov 2020 22:03:46 +0800
-Message-ID: <1604412227.13152.11.camel@mtkswgap22>
-Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
- caused by ufshcd_hold()
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 3 Nov 2020 22:03:47 +0800
-In-Reply-To: <09c5d4d31a0bd9bed99815cfbf51aaad@codeaurora.org>
-References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
-         <1604384682-15837-2-git-send-email-cang@codeaurora.org>
-         <1604387262.13152.2.camel@mtkswgap22>
-         <09c5d4d31a0bd9bed99815cfbf51aaad@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 3 Nov 2020 09:04:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604412243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IsejNI8EYSmowoiAvOvFY33zKF4jozyNUSQ9LBHEIew=;
+        b=G+BmjeiHfQkXjo4My/zO9tdhf0PVaW6LzA6xieVKsT5aLa3SQ+ShQaVSrO9xBSVu7t3APa
+        uBxUBvfLqOmYlO6YTGOT195Iev6lE3DfIyJx5UZxqf+SxQ+wHN+ULxm3QVPctVECVC2ubb
+        ePwmjgOqrpCbmh3SGWKBKM2gK7J2ZpQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-cvTYnFueNbGheckDPJMuxw-1; Tue, 03 Nov 2020 09:03:58 -0500
+X-MC-Unique: cvTYnFueNbGheckDPJMuxw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A2E3107465A;
+        Tue,  3 Nov 2020 14:03:56 +0000 (UTC)
+Received: from localhost (ovpn-12-165.pek2.redhat.com [10.72.12.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5383F5C230;
+        Tue,  3 Nov 2020 14:03:55 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 22:03:52 +0800
+From:   "bhe@redhat.com" <bhe@redhat.com>
+To:     Rahul Gopakumar <gopakumarr@vmware.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "natechancellor@gmail.com" <natechancellor@gmail.com>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Rajender M <manir@vmware.com>,
+        Yiu Cho Lau <lauyiuch@vmware.com>,
+        Peter Jonasson <pjonasson@vmware.com>,
+        Venkatesh Rajaram <rajaramv@vmware.com>
+Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
+Message-ID: <20201103140352.GB3177@MiWiFi-R3L-srv>
+References: <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201013131735.GL25604@MiWiFi-R3L-srv>
+ <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201020151814.GU25604@MiWiFi-R3L-srv>
+ <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201022040440.GX25604@MiWiFi-R3L-srv>
+ <DM6PR05MB5292D8B85FA9DDE263F6147AA41D0@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <DM6PR05MB5292DF14DF1C82FFE001AC24A4100@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201102143035.GA3177@MiWiFi-R3L-srv>
+ <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjAtMTEtMDMgYXQgMTg6MDEgKzA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IE9uIDIwMjAtMTEtMDMgMTU6MDcsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEhpIENh
-biwNCj4gPiANCj4gPiBPbiBNb24sIDIwMjAtMTEtMDIgYXQgMjI6MjQgLTA4MDAsIENhbiBHdW8g
-d3JvdGU6DQo+ID4+IFRoZSBzY3NpX2Jsb2NrX3JlcXNfY250IGluY3JlYXNlZCBpbiB1ZnNoY2Rf
-aG9sZCgpIGlzIHN1cHBvc2VkIHRvIGJlDQo+ID4+IGRlY3JlYXNlZCBiYWNrIGluIHVmc2hjZF91
-bmdhdGVfd29yaygpIGluIGEgcGFpcmVkIHdheS4gSG93ZXZlciwgaWYNCj4gPj4gc3BlY2lmaWMg
-dWZzaGNkX2hvbGQvcmVsZWFzZSBzZXF1ZW5jZXMgYXJlIG1ldCwgaXQgaXMgcG9zc2libGUgdGhh
-dA0KPiA+PiBzY3NpX2Jsb2NrX3JlcXNfY250IGlzIGluY3JlYXNlZCB0d2ljZSBidXQgb25seSBv
-bmUgdW5nYXRlIHdvcmsgaXMNCj4gPj4gcXVldWVkLiBUbyBtYWtlIHN1cmUgc2NzaV9ibG9ja19y
-ZXFzX2NudCBpcyBoYW5kbGVkIGJ5IHVmc2hjZF9ob2xkKCkgDQo+ID4+IGFuZA0KPiA+IA0KPiA+
-IEp1c3QgY3VyaW91cyB0aGF0IGhvdyBjb3VsZCB0aGlzIGJlIHBvc3NpYmxlPyBXb3VsZCB5b3Ug
-aGF2ZSBzb21lIA0KPiA+IGZhaWxlZA0KPiA+IGV4YW1wbGVzPw0KPiA+IA0KPiANCj4gWzFdIE9u
-ZSBnYXRlX3dvcmsoKSBpcyBpbiB0aGUgd29ya3F1ZXVlLCBub3QgeWV0IGV4ZWN1dGVkLCBub3cg
-Y2xrIHN0YXRlIA0KPiA9PSBSRVFfQ0xLU19PRkYuDQo+IFsyXSB1ZnNoY2RfcXVldWVjb21tYW5k
-KCkgY2FsbHMgdWZzaGNkX2hvbGQoYXN5bmMgPT0gdHVyZSkgLT4gDQo+IGFjdGl2ZV9yZXErKyAt
-PiBzY3NpX2Jsb2NrX3JlcXNfY250KysgLT4gUkVRX0NMS1NfT04gLT4gcXVldWUgdW5nYXRlIA0K
-PiB3b3JrIC0+IGFjdGl2ZV9yZXEtLSAtPiByZXR1cm4gLUVBR0FJTi4NCj4gWzNdIE5vdyBnYXRl
-X3dvcmsoKSBzdGFydHMgdG8gcnVuLCBidXQgc2luY2UgdGhlIGNsayBzdGF0ZSBpcyANCj4gUkVR
-X0NMS1NfT04sIGdhdGVfd29yaygpIGp1c3Qgc2V0cyBjbGsgc3RhdGUgdG8gQ0xLU19PTiBhbmQg
-YmFpbC4NCj4gWzNdIFNvbWVvbmUgY2FsbHMgdWZzaGNkX2hvbGQoYXN5bmMgPT0gZmFsc2UpIC0+
-IGRvIHNvbWV0aGluZyAtPiANCj4gdWZzaGNkX3JlbGVhc2UoKSAtPiBjbGsgc3RhdGUgaXMgY2hh
-bmdlZCB0byBSRVFfQ0xLU19PRkYuIE5vdGUgdGhhdCwgDQo+IHRpbGwgbm93LCB1bmdhdGVfd29y
-aygpIGlzIHN0aWxsIGluIHRoZSB3b3JrIHF1ZXVlLCBub3QgZXhlY3V0ZWQgeWV0Lg0KPiBbNF0g
-Tm93LCBpZiBzb21lb25lIGNhbGxzIHVmc2hjZF9ob2xkKCksIHdlIHdpbGwgaGl0IHRoZSBpc3N1
-ZS4NCj4gDQo+IEFib3ZlIHNlcXVlbmNlIGlzIGEgdmVyeSBjb21tb24gY2xrIGdhdGUvdW5nYXRl
-IHNlcXVlbmNlLiBUaGUgaXNzdWUNCj4gaXMgYmVjYXVzZSB1bmdhdGVfd29yayBpcyBxdWV1ZWQg
-YnV0IGNhbm5vdCBiZSBleGVjdXRlZCBpbiB0aW1lLiBJbiBteQ0KPiBjYXNlLCBJIHNlZSB0aGUg
-dW5nYXRlX3dvcmsgaXMgc29tZWhvdyBkZWxheWVkIGZvciBhYm91dCAxNTBtcy4gVGhpcw0KPiBj
-aGFuZ2UgaGFzIGJlZW4gdGVzdGVkIGJ5IGN1c3RvbWVycyBvbiBtdWx0aXBsZSBwbGF0Zm9ybXMu
-IEFuZCB5b3UNCj4gY2FuIHRlbGwgZnJvbSB0aGUgY29kZSB0aGF0IGl0IHdvbid0IGJyZWFrIGFu
-eXRoaW5nLiA6KQ0KDQpUaGFua3Mgc28gbXVjaCBmb3IgdGhlIGRldGFpbHMuIExvb2tzIGdvb2Qg
-dG8gbWUuDQoNClJldmlld2VkLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsu
-Y29tPg0KDQo+IA0KPiBUaGFua3MsDQo+IA0KPiBDYW4gR3VvLg0KPiANCj4gPj4gdWZzaGNkX3Vu
-Z2F0ZV93b3JrKCkgaW4gYSBwYWlyZWQgd2F5LCBpbmNyZWFzZSBpdCBvbmx5IGlmIHF1ZXVlX3dv
-cmsoKQ0KPiA+PiByZXR1cm5zIHRydWUuDQo+ID4+IA0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBDYW4g
-R3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiA+PiBSZXZpZXdlZC1ieTogSG9uZ3d1IFN1IDxo
-b25nd3VzQGNvZGVhdXJvcmEub3JnPg0KPiA+PiAtLS0NCj4gPj4gIGRyaXZlcnMvc2NzaS91ZnMv
-dWZzaGNkLmMgfCA2ICsrKy0tLQ0KPiA+PiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkNCj4gPj4gDQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kv
-dWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+PiBpbmRleCA4NDdm
-MzU1Li5lZmE3ZDg2IDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5j
-DQo+ID4+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPj4gQEAgLTE2MzQsMTIg
-KzE2MzQsMTIgQEAgaW50IHVmc2hjZF9ob2xkKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgDQo+
-ID4+IGFzeW5jKQ0KPiA+PiAgCQkgKi8NCj4gPj4gIAkJLyogZmFsbHRocm91Z2ggKi8NCj4gPj4g
-IAljYXNlIENMS1NfT0ZGOg0KPiA+PiAtCQl1ZnNoY2Rfc2NzaV9ibG9ja19yZXF1ZXN0cyhoYmEp
-Ow0KPiA+PiAgCQloYmEtPmNsa19nYXRpbmcuc3RhdGUgPSBSRVFfQ0xLU19PTjsNCj4gPj4gIAkJ
-dHJhY2VfdWZzaGNkX2Nsa19nYXRpbmcoZGV2X25hbWUoaGJhLT5kZXYpLA0KPiA+PiAgCQkJCQlo
-YmEtPmNsa19nYXRpbmcuc3RhdGUpOw0KPiA+PiAtCQlxdWV1ZV93b3JrKGhiYS0+Y2xrX2dhdGlu
-Zy5jbGtfZ2F0aW5nX3dvcmtxLA0KPiA+PiAtCQkJICAgJmhiYS0+Y2xrX2dhdGluZy51bmdhdGVf
-d29yayk7DQo+ID4+ICsJCWlmIChxdWV1ZV93b3JrKGhiYS0+Y2xrX2dhdGluZy5jbGtfZ2F0aW5n
-X3dvcmtxLA0KPiA+PiArCQkJICAgICAgICZoYmEtPmNsa19nYXRpbmcudW5nYXRlX3dvcmspKQ0K
-PiA+PiArCQkJdWZzaGNkX3Njc2lfYmxvY2tfcmVxdWVzdHMoaGJhKTsNCj4gPj4gIAkJLyoNCj4g
-Pj4gIAkJICogZmFsbCB0aHJvdWdoIHRvIGNoZWNrIGlmIHdlIHNob3VsZCB3YWl0IGZvciB0aGlz
-DQo+ID4+ICAJCSAqIHdvcmsgdG8gYmUgZG9uZSBvciBub3QuDQo+ID4gDQo+ID4gVGhhbmtzLA0K
-PiA+IFN0YW5sZXkgQ2h1DQoNCg==
+On 11/03/20 at 12:34pm, Rahul Gopakumar wrote:
+> >> So, you mean with the draft patch applied, the initial performance
+> regression goes away, just many page corruption errors with call trace
+> are seen, right?
+> 
+> Yes, that's right.
+> 
+> >> And the performance regression is about 2sec delay in
+> your system?
+> 
+> The delay due to this new page corruption issue is about
+> 3 secs.
+> 
+> Here is the summary
+> 
+> * Initial problem - 2 secs
+> * Draft patch - Fixes initial problem (recovers 2 secs) but
+> brings in new page corruption issue (3 secs)
+> 
+> >> Could you tell how you setup vmware VM so that I can ask our QA for
+> help to create a vmware VM for me to test?
+> 
+> * Use vSphere ESXi 6.7 or 7.0 GA.
+> * Create VM using vSphere Web Client and specify 1TB VM Memory.
+> * Install RHEL 8.1, that's the guest used in this test.
+
+OK, I see. The draft patch fix the original issue, seems some boundary
+of memory region is not handled correctly. Thanks for confirmation.
+
+The memory layout is important in this case. Not sure if making a VM gesut
+as you suggested can also create a system with below memory layout.
+
+[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
+[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xbfffffff]
+[    0.008843] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x55ffffffff]
+[    0.008844] ACPI: SRAT: Node 1 PXM 1 [mem 0x5600000000-0xaaffffffff]
+[    0.008844] ACPI: SRAT: Node 2 PXM 2 [mem 0xab00000000-0xfcffffffff]
+[    0.008845] ACPI: SRAT: Node 2 PXM 2 [mem 0x10000000000-0x1033fffffff]
+
+
+> 
+> With draft patch, you should be able to reproduce the issue.
+> Let me know if you need more details.
 
