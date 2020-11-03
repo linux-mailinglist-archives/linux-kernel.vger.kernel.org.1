@@ -2,214 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC732A4D2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D582A4D2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgKCRhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:37:48 -0500
-Received: from mga17.intel.com ([192.55.52.151]:54345 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgKCRhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:37:47 -0500
-IronPort-SDR: EIeQjmezlqvNmQflk2HkM8pmgGaN+H5AY5OWmx161xu3UjF/UrsbXNRmOPXLt/LWdzw4SbbHJV
- 064NSRBNfR/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="148948709"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="148948709"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 09:37:47 -0800
-IronPort-SDR: OlYDv4DCyMDK8xLnuzjXbpt259rLbyYpEk76dCuXhiBmdryRIOZ6KAP+g2MhXDPBcedZFvPtrD
- /gmNdIkAnMCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="320518698"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 09:37:46 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ka0Fd-0000PB-IK; Tue, 03 Nov 2020 17:37:45 +0000
-Date:   Wed, 04 Nov 2020 01:36:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/uapi/netfilter] BUILD SUCCESS
- 91b7283a05efa53a50234852de97827317e4f98b
-Message-ID: <5fa1952d.Lqwof52xsJ+/znoZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728767AbgKCRhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:37:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728292AbgKCRhQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:37:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604425033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9snDXU2ybJXDGo7hnFXq/Cq4lV2fEeQCxKYcIflCyI=;
+        b=dl3ZU6uec7ImMuwXl5lcYQzvp1l4dC3/HpOPU2bFdUiDzf6GJh6aDAuzhKKc4+KPwp+6va
+        nm4qcwM1O1t8AYwIHv5FKZgk2pTZrNfZyyKQYoKa35cxQs8lDPssnXa+I9kr5LQg/dD8L5
+        tAX99AL0h4vMdo1iFFdyoChzFd1AQKE=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-QwfIywIMNOOCUvchKEnJdA-1; Tue, 03 Nov 2020 12:37:10 -0500
+X-MC-Unique: QwfIywIMNOOCUvchKEnJdA-1
+Received: by mail-pg1-f198.google.com with SMTP id s4so11700102pgk.17
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:37:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i9snDXU2ybJXDGo7hnFXq/Cq4lV2fEeQCxKYcIflCyI=;
+        b=BAZnXZC14fEi93cOhYTdw1Et5kIMZTUzcbODlFiWxjSz50kv6g01+A6GiGuKTFbhcT
+         MqO2P4vdmZDe+RoarOFaTvVlSNzoGUAU1SfdWhP3BtMRhj4bD8rN6oZTGprCFvIkAkF5
+         oux8cs5rjBEsSxHo8lWvS0QC84OWF8RPx9G3g3lVxe+FisQ8d6vR01mzfjo0Gvj6wgKT
+         d6ykZga0aLk49uWC4T5+iTtCB6bpio6yL10YpCJzaeiQsR56QtO0XC1qu9siZy3XXT/Z
+         n1++EdZh3DRhCjJy1TCMlM0JONziR8+CT8eiT04Sa6zY6Q4PMFVw9YfYAVV3qyIWKCLl
+         OkZg==
+X-Gm-Message-State: AOAM533Su4ysJiiMBP7WMsoeA3YW1lIvMLyH9knCkHnmTDK9/gHVVOoW
+        wm269tTlS7DMAjX19CTyL71/xQDUG3RCfndkEABwRLp05JFVg25jkdRf2myeBrhDjJ0/SOif8+W
+        bbsnbBGq/deqOj3K+oSmudPmqb51Ce+oIS+7Za+XS
+X-Received: by 2002:a63:d74b:: with SMTP id w11mr17871859pgi.147.1604425028708;
+        Tue, 03 Nov 2020 09:37:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwgnRxy+mIMGzy7XC/GOFiP6yZOPAWkEdf6uab1jr5p7QNhGD5kIaPyQx4W6QIz081jstK8hvGO/ej73DhfvxQ=
+X-Received: by 2002:a63:d74b:: with SMTP id w11mr17871840pgi.147.1604425028365;
+ Tue, 03 Nov 2020 09:37:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201101193504.679934-1-lzye@google.com> <CAO-hwJJVKOM7Om8E+kmYXTrA7SiOFgFt46BHfv+0j+ORhepbaQ@mail.gmail.com>
+ <7505bbc6-9f76-0875-c1c1-95d611a980bb@gmail.com>
+In-Reply-To: <7505bbc6-9f76-0875-c1c1-95d611a980bb@gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 3 Nov 2020 18:36:57 +0100
+Message-ID: <CAO-hwJK3EzeQbiPMy=8YAVp91nN6bMcAqqfzff+-6mti9PFMHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Input: Fix the HID usage of DPAD input event generation.
+To:     Chris Ye <linzhao.ye@gmail.com>
+Cc:     Chris Ye <lzye@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/uapi/netfilter
-branch HEAD: 91b7283a05efa53a50234852de97827317e4f98b  uapi: netfilter/nf_nat: Avoid the use of one-element array
+Hi Chris,
 
-elapsed time: 724m
+On Mon, Nov 2, 2020 at 6:24 PM Chris Ye <linzhao.ye@gmail.com> wrote:
+>
+> Hi Benjamin,
+>
+>      I've tried the hid-tool for testing on my linux machine and it
+> works.  However the issue comes from a game controller I don't posses in
+> hand right now so I can't physically connect it and provide the log from
+> hid-tool recording.  I do have the raw HID descriptor and in Linux
+> kernel the debug info is like below:
+>
+> # cat /d/hid/0005\:27F8\:0BBE.0001/rdesc
+> 05 01 09 05 a1 01 a1 02 15 81 25 7f 05 01 09 01 a1 00 75 08 95 04 35 00
+> 46 ff 00 09 30 09 31 09 32 09 35 81 02 75 08 95 02 15 01 26 ff 00 09 39
+> 09 39 81 02 c0 05 07 19 4f 29 52 15 00 25 01 75 01 95 04 81 02 05 01 09
+> 90 09 91 09 92 09 93 75 01 95 04 81 02 75 01 95 10 05 09 19 01 29 10 81
+> 02 06 02 ff 09 01 a1 01 15 00 25 01 09 04 75 01 95 01 81 02 c0 05 0c 09
+> 01 a1 01 15 00 25 01 0a 24 02 75 01 95 01 81 06 c0 75 01 95 06 81 03 15
+> 00 25 ff 05 02 09 01 a1 00 75 08 95 02 35 00 45 ff 09 c4 09 c5 81 02 c0
+> 06 00 ff 09 80 75 08 95 08 15 00 26 ff 00 b1 02 c0 c0
 
-configs tested: 150
-configs skipped: 3
+Thanks for the report descriptor. That allowed me to add the device to
+the tests at https://gitlab.freedesktop.org/bentiss/hid-tools/-/commits/wip/gamevice
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+And also to realize that... "how is that thing supposed to be working????"
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                  cavium_octeon_defconfig
-mips                     loongson1b_defconfig
-arm                           h3600_defconfig
-powerpc                     sequoia_defconfig
-sh                        sh7757lcr_defconfig
-arm                        spear3xx_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                       rbtx49xx_defconfig
-arm                          exynos_defconfig
-arm                        neponset_defconfig
-arm                        oxnas_v6_defconfig
-arc                     nsimosci_hs_defconfig
-sh                          rsk7269_defconfig
-powerpc                      obs600_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                             alldefconfig
-riscv                            alldefconfig
-powerpc                      arches_defconfig
-powerpc                    gamecube_defconfig
-powerpc                     redwood_defconfig
-arm                        shmobile_defconfig
-mips                      bmips_stb_defconfig
-arm                         lubbock_defconfig
-arm                        vexpress_defconfig
-powerpc                     mpc512x_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7264_defconfig
-powerpc                     asp8347_defconfig
-powerpc                        fsp2_defconfig
-arm                          ep93xx_defconfig
-powerpc                  iss476-smp_defconfig
-sh                          rsk7203_defconfig
-powerpc                    adder875_defconfig
-powerpc                      cm5200_defconfig
-arm                        mvebu_v5_defconfig
-m68k                          sun3x_defconfig
-arm                            zeus_defconfig
-mips                      malta_kvm_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                     ep8248e_defconfig
-arm                          pcm027_defconfig
-powerpc                     stx_gp3_defconfig
-m68k                          hp300_defconfig
-powerpc                      walnut_defconfig
-arm                         s5pv210_defconfig
-arm                            dove_defconfig
-mips                            e55_defconfig
-openrisc                    or1ksim_defconfig
-powerpc64                           defconfig
-arm                       imx_v6_v7_defconfig
-um                             i386_defconfig
-sh                   sh7770_generic_defconfig
-mips                           ip32_defconfig
-arm                             mxs_defconfig
-openrisc                            defconfig
-powerpc                       holly_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7722_defconfig
-m68k                        mvme16x_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      ep88xc_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                    sam440ep_defconfig
-arm                       spear13xx_defconfig
-arm                          pxa168_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                         lpc18xx_defconfig
-sh                            shmin_defconfig
-powerpc                 mpc834x_mds_defconfig
-nds32                             allnoconfig
-ia64                                defconfig
-mips                         tb0287_defconfig
-arm                              zx_defconfig
-m68k                       m5249evb_defconfig
-arm                         mv78xx0_defconfig
-mips                          ath79_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201103
-x86_64               randconfig-a005-20201103
-x86_64               randconfig-a003-20201103
-x86_64               randconfig-a002-20201103
-x86_64               randconfig-a006-20201103
-x86_64               randconfig-a001-20201103
-i386                 randconfig-a004-20201103
-i386                 randconfig-a006-20201103
-i386                 randconfig-a005-20201103
-i386                 randconfig-a001-20201103
-i386                 randconfig-a002-20201103
-i386                 randconfig-a003-20201103
-i386                 randconfig-a013-20201103
-i386                 randconfig-a015-20201103
-i386                 randconfig-a014-20201103
-i386                 randconfig-a016-20201103
-i386                 randconfig-a011-20201103
-i386                 randconfig-a012-20201103
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+>
+>    INPUT[INPUT]
+>      Field(0)
+>        Physical(GenericDesktop.Pointer)
+>        Application(GenericDesktop.GamePad)
+>        Usage(4)
+>          GenericDesktop.X
+>          GenericDesktop.Y
+>          GenericDesktop.Z
+>          GenericDesktop.Rz
+>        Logical Minimum(-127)
+>        Logical Maximum(127)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(8)
+>        Report Count(4)
+>        Report Offset(0)
+>        Flags( Variable Absolute )
+>      Field(1)
+>        Physical(GenericDesktop.Pointer)
+>        Application(GenericDesktop.GamePad)
+>        Usage(2)
+>          GenericDesktop.HatSwitch
+>          GenericDesktop.HatSwitch
+>        Logical Minimum(1)
+>        Logical Maximum(255)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(8)
+>        Report Count(2)
+>        Report Offset(32)
+>        Flags( Variable Absolute )
+>      Field(2)
+>        Application(GenericDesktop.GamePad)
+>        Usage(4)
+>          Keyboard.004f
+>          Keyboard.0050
+>          Keyboard.0051
+>          Keyboard.0052
+>        Logical Minimum(0)
+>        Logical Maximum(1)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(1)
+>        Report Count(4)
+>        Report Offset(48)
+>        Flags( Variable Absolute )
+>      Field(3)
+>        Application(GenericDesktop.GamePad)
+>        Usage(4)
+>          GenericDesktop.D-PadUp
+>          GenericDesktop.D-PadDown
+>          GenericDesktop.D-PadRight
+>          GenericDesktop.D-PadLeft
+>        Logical Minimum(0)
+>        Logical Maximum(1)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(1)
+>        Report Count(4)
+>        Report Offset(52)
+>        Flags( Variable Absolute )
+>      Field(4)
+>        Application(GenericDesktop.GamePad)
+>        Usage(16)
+>          Button.0001
+>          Button.0002
+>          Button.0003
+>          Button.0004
+>          Button.0005
+>          Button.0006
+>          Button.0007
+>          Button.0008
+>          Button.0009
+>          Button.000a
+>          Button.000b
+>          Button.000c
+>          Button.000d
+>          Button.000e
+>          Button.000f
+>          Button.0010
+>        Logical Minimum(0)
+>        Logical Maximum(1)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(1)
+>        Report Count(16)
+>        Report Offset(56)
+>        Flags( Variable Absolute )
+>      Field(5)
+>        Application(ff02.0001)
+>        Usage(1)
+>          ff02.0004
+>        Logical Minimum(0)
+>        Logical Maximum(1)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(1)
+>        Report Count(1)
+>        Report Offset(72)
+>        Flags( Variable Absolute )
+>      Field(6)
+>        Application(Consumer.0001)
+>        Usage(1)
+>          Consumer.0224
+>        Logical Minimum(0)
+>        Logical Maximum(1)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(1)
+>        Report Count(1)
+>        Report Offset(73)
+>        Flags( Variable Relative )
+>      Field(7)
+>        Physical(Simulation.0001)
+>        Application(GenericDesktop.GamePad)
+>        Usage(2)
+>          Simulation.00c4
+>          Simulation.00c5
+>        Logical Minimum(0)
+>        Logical Maximum(255)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(8)
+>        Report Count(2)
+>        Report Offset(80)
+>        Flags( Variable Absolute )
+>    FEATURE[FEATURE]
+>      Field(0)
+>        Application(GenericDesktop.GamePad)
+>        Usage(8)
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>          ff00.0080
+>        Logical Minimum(0)
+>        Logical Maximum(255)
+>        Physical Minimum(0)
+>        Physical Maximum(255)
+>        Report Size(8)
+>        Report Count(8)
+>        Report Offset(0)
+>        Flags( Variable Absolute )
+>
+> GenericDesktop.X ---> Absolute.X
+> GenericDesktop.Y ---> Absolute.Y
+> GenericDesktop.Z ---> Absolute.Z
+> GenericDesktop.Rz ---> Absolute.Rz
+> GenericDesktop.HatSwitch ---> Absolute.Hat0X
+> GenericDesktop.HatSwitch ---> Absolute.Hat0Y
 
-clang tested configs:
-x86_64               randconfig-a012-20201103
-x86_64               randconfig-a015-20201103
-x86_64               randconfig-a011-20201103
-x86_64               randconfig-a013-20201103
-x86_64               randconfig-a014-20201103
-x86_64               randconfig-a016-20201103
+It took me a while to realize that you were needing
+https://patchwork.kernel.org/project/linux-input/patch/20201101193452.678628-1-lzye@google.com/
+for that.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+But the weird part is that Hat switch are usually used as a single
+variable, with values being mapped to Hat0X and Hat0Y. So I still
+haven't manage to understand how the hid-input driver would map the
+axis to a regular one between 1 and 255...
+
+> Keyboard.004f ---> Key.Right
+> Keyboard.0050 ---> Key.Left
+> Keyboard.0051 ---> Key.Down
+> Keyboard.0052 ---> Key.Up
+> GenericDesktop.D-PadUp ---> Absolute.Hat1X
+> GenericDesktop.D-PadDown ---> Sync.Report
+> GenericDesktop.D-PadRight ---> Sync.Report
+> GenericDesktop.D-PadLeft ---> Sync.Report
+> Button.0001 ---> Key.BtnA
+> Button.0002 ---> Key.BtnB
+> Button.0003 ---> Key.BtnC
+> Button.0004 ---> Key.BtnX
+> Button.0005 ---> Key.BtnY
+> Button.0006 ---> Key.BtnZ
+> Button.0007 ---> Key.BtnTL
+> Button.0008 ---> Key.BtnTR
+> Button.0009 ---> Key.BtnTL2
+> Button.000a ---> Key.BtnTR2
+> Button.000b ---> Key.BtnSelect
+> Button.000c ---> Key.BtnStart
+> Button.000d ---> Key.BtnMode
+> Button.000e ---> Key.BtnThumbL
+> Button.000f ---> Key.BtnThumbR
+> Button.0010 ---> Key.?
+> ff02.0004 ---> Key.Btn0
+> Consumer.0224 ---> Key.Back
+> Simulation.00c4 ---> Absolute.Gas
+> Simulation.00c5 ---> Absolute.Brake
+>
+> So you can see the device has D-Up, D-Down,D-Right,D-Left usages, and
+> D-up is mapped to Hat1X.
+
+OK, now I am starting to understand the problem better.
+
+>
+> Also if you can send HID report from hid-tool,  you will see there are
+> always intail events on Hat1X/Hat1Y as the HatDir is 0, even no DPAD
+> buttons pressed.  When you send HID report with D-DPAD buttons with
+> different state, it doesn't generate any axis events because the HatDir
+> internally is still 0 regardless the report value of the 4 DPAD usages.
+
+That's the part I am a little bit stuck. I can emulate events for X,Y,
+buttons,... but I am not sure how the gamepad sends the events for the
+Hat switch and the D-Pad together.
+
+Again, before we merge anything, I'd like to have the proper tests
+written for it, on top of
+https://gitlab.freedesktop.org/bentiss/hid-tools/-/commits/wip/gamevice
+so we can ensure there is no regression for it, and that we will not
+regress on it later on.
+
+Cheers,
+Benjamin
+
+>
+>
+> Thanks!
+>
+> Chris
+>
+>
+> On 11/2/20 12:16 AM, Benjamin Tissoires wrote:
+> > Hi Chris,
+> >
+> >
+> > On Sun, Nov 1, 2020 at 8:35 PM Chris Ye <lzye@google.com> wrote:
+> >> Generic Desktop DPAD usage is mapped by hid-input, that only the first
+> >> DPAD usage maps to usage type EV_ABS and code of an axis. If HID
+> >> descriptor has DPAD UP/DOWN/LEFT/RIGHT HID usages and each of usage size
+> >> is 1 bit, then only the first one will generate input event, the rest of
+> >> the HID usages will be assigned to hat direction only.
+> >> The hid input event should check the HID report value and generate
+> >> HID event for its hat direction.
+> >>
+> >> Test: Connect HID device with Generic Desktop DPAD usage and press the
+> >> DPAD to generate input events.
+> > Thanks for the patch, but I would rather have a proper tests added to
+> > https://gitlab.freedesktop.org/libevdev/hid-tools
+> >
+> > We already have gamepads tests, and it would be very nice to have this
+> > patch reflected as a test as well. This would also allow me to better
+> > understand the problem. I am not sure I follow the whole logic of this
+> > patch without seeing the 2 variants of report descriptors.
+> >
+> > Cheers,
+> > Benjamin
+> >
+> >> Signed-off-by: Chris Ye <lzye@google.com>
+> >> ---
+> >>   drivers/hid/hid-input.c | 16 ++++++++++++----
+> >>   1 file changed, 12 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> >> index 9770db624bfa..6c1007de3409 100644
+> >> --- a/drivers/hid/hid-input.c
+> >> +++ b/drivers/hid/hid-input.c
+> >> @@ -1269,7 +1269,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+> >>          struct input_dev *input;
+> >>          unsigned *quirks = &hid->quirks;
+> >>
+> >> -       if (!usage->type)
+> >> +       if (!usage->type && !field->dpad)
+> >>                  return;
+> >>
+> >>          if (usage->type == EV_PWR) {
+> >> @@ -1286,9 +1286,17 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct
+> >>                  int hat_dir = usage->hat_dir;
+> >>                  if (!hat_dir)
+> >>                          hat_dir = (value - usage->hat_min) * 8 / (usage->hat_max - usage->hat_min + 1) + 1;
+> >> -               if (hat_dir < 0 || hat_dir > 8) hat_dir = 0;
+> >> -               input_event(input, usage->type, usage->code    , hid_hat_to_axis[hat_dir].x);
+> >> -               input_event(input, usage->type, usage->code + 1, hid_hat_to_axis[hat_dir].y);
+> >> +               if (hat_dir < 0 || hat_dir > 8 || value == 0)
+> >> +                       hat_dir = 0;
+> >> +               if (field->dpad) {
+> >> +                       input_event(input, EV_ABS, field->dpad, hid_hat_to_axis[hat_dir].x);
+> >> +                       input_event(input, EV_ABS, field->dpad + 1, hid_hat_to_axis[hat_dir].y);
+> >> +               } else {
+> >> +                       input_event(input, usage->type, usage->code,
+> >> +                               hid_hat_to_axis[hat_dir].x);
+> >> +                       input_event(input, usage->type, usage->code + 1,
+> >> +                               hid_hat_to_axis[hat_dir].y);
+> >> +               }
+> >>                  return;
+> >>          }
+> >>
+> >> --
+> >> 2.29.1.341.ge80a0c044ae-goog
+> >>
+>
+
