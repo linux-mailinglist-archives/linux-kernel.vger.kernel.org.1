@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F522A4384
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0243D2A438C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgKCKy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgKCKyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:54:25 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88F3C0613D1;
-        Tue,  3 Nov 2020 02:54:25 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id y14so13837800pfp.13;
-        Tue, 03 Nov 2020 02:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pr70uaXWQ5V9OEnpZUw1+PkE5bFME26YS/kMKBh3/j4=;
-        b=Z1nxH0jDHYEqq8hm0bVNqvQCGIZiEpIpb3zSwcYXQieBLtra1nCwDJgpu5pP89uJzE
-         AkhrBgNlD6HCyN456iYZGK8zXMn2VqjNio/0ngfT65e6vFKeH9P/k+YNx0fz0NX90SQM
-         JId+N9RTHwMw0LwsVjrJ0K/iWTlm+/5RRX+O/Qjs6Unhw7bP80fuwGuRg+eAD4HDASkn
-         xBbZ2MPC8C7aomhpP8xQDtCO64OoJw54a0Ax1nTLubP8Yh2DLws0e+6UO7/9eRpRrt3U
-         p4wJZFBQok7bOE/bbaJc+Lng79kYbok1iizF3WW9gFugdQUddODfxMzleDA0d88pCHQj
-         0aaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pr70uaXWQ5V9OEnpZUw1+PkE5bFME26YS/kMKBh3/j4=;
-        b=KhYowi0p4JPdFuQDL4U9C4tbhOF93OAKZnlct2EApYZEkm/24aWOSHYQST80UYw9Yr
-         Hz01mQ38VeKsuixq6djqtVEoXAlbimS/G/zPd50fUq7s0C/pxudSwE3FQOzVzJo8CnfV
-         iy61KrGMAsAafRBFNq6k1+rqPSr6r7WIyenCwsw1XDuuVJqijnJEsH9jdb2PStpPicKK
-         uDTrXLeVkXzIiTOIByj7cSE+E9UGQItmNd1Z4BbFgAdJqpTIPeAhCzELhISZiLioM3Sf
-         jSSm7nk0JPTdIbz9lMiiKM3jZovJY6MKPKF3jsnV4fayJzJsC7/+iAij1IPup5UdBJ4p
-         tsJw==
-X-Gm-Message-State: AOAM531idUhQ0JUOmkBoRSoMwZZ/WLb3JPWwg3u/SYLz0VIGF8kiZbut
-        p/DvF7A2AeJcQI+yQoEGswWkx0SmSbiCDSRpoCE=
-X-Google-Smtp-Source: ABdhPJzFEjyEEdc+kSmf/T1nHeNhjOJHPnuC+7t9Znx2RJFmaAHHYOf4fCTxwiGuX4v/1cJJtqmJw1ySNSiuUS5bxLE=
-X-Received: by 2002:a17:90a:430b:: with SMTP id q11mr3222009pjg.129.1604400865170;
- Tue, 03 Nov 2020 02:54:25 -0800 (PST)
+        id S1728261AbgKCKz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:55:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728248AbgKCKz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:55:26 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3FFC223BD;
+        Tue,  3 Nov 2020 10:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604400925;
+        bh=Gx/xjl1lJ2zVpy4vXYoDX8bz9kjv23h23jTvE3/Hxbg=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=2sEeylef5AtEFxa+uyhscnSV6SoxvnPd4MSyfVxYTzKxNFoH0FbBX+085E6KdkwwP
+         4vV8ZWaOIEwHSTPKOmq8PFRXoe+pcvjYqj/HdrYTsDDnFQke3cisQ+0KvJUx2qYnLz
+         mWIhbwbEF6BRJDWLFqQWq+e9aeJsKvHlXBqVdyrM=
+Date:   Tue, 3 Nov 2020 11:55:22 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Pascal Giard <pascal.giard@etsmtl.ca>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sanjay Govind <sanjay.govind9@gmail.com>
+Subject: Re: [PATCH] HID: ghlive: support for ghlive ps3/wii u dongles
+In-Reply-To: <CAJNNDmn1OBzRouNUcAmWSfj4piSHRFfc6V6gvb2D+2qYO1Ob7g@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2011031152270.18859@cbobk.fhfr.pm>
+References: <20201009022722.123943-1-pascal.giard@etsmtl.ca> <nycvar.YFH.7.76.2010291622380.18859@cbobk.fhfr.pm> <CAJNNDmn1OBzRouNUcAmWSfj4piSHRFfc6V6gvb2D+2qYO1Ob7g@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201102152037.963-1-brgl@bgdev.pl> <21d80265fccfcb5d76851c84d1c2d88e0421ab85.camel@perches.com>
- <CAMRc=Me4-4Cmoq3UdpYEEhERP6fvt97bEJsZYhrcFSQf+a_voA@mail.gmail.com>
-In-Reply-To: <CAMRc=Me4-4Cmoq3UdpYEEhERP6fvt97bEJsZYhrcFSQf+a_voA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 3 Nov 2020 12:55:14 +0200
-Message-ID: <CAHp75VdpriwuktGrMpcXXQuHgfDL6SzqmQTsGFNKLBb=QiKuGg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/8] slab: provide and use krealloc_array()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:VFIO DRIVER" <kvm@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 12:13 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> On Tue, Nov 3, 2020 at 5:14 AM Joe Perches <joe@perches.com> wrote:
-> > On Mon, 2020-11-02 at 16:20 +0100, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, 29 Oct 2020, Pascal Giard wrote:
 
-> Yeah so I had this concern for devm_krealloc() and even sent a patch
-> that extended it to honor __GFP_ZERO before I noticed that regular
-> krealloc() silently ignores __GFP_ZERO. I'm not sure if this is on
-> purpose. Maybe we should either make krealloc() honor __GFP_ZERO or
-> explicitly state in its documentation that it ignores it?
+> > >  drivers/hid/Kconfig      |   6 ++
+> > >  drivers/hid/Makefile     |   1 +
+> > >  drivers/hid/hid-ghlive.c | 220 +++++++++++++++++++++++++++++++++++++++
+> >
+> > Would it make more sense (with respect to how we are structuring/naming
+> > the hid drivers) to incorporate this into hid-sony (irrespective of
+> > currently ongoing discussions about actually splitting that driver :) )?
+> >
+> 
+> I think it would be most appropriate, yes.
+> 
+> Note that there are 3 other dongles out there:
+> - the xbox360 dongle does not need any special treatment, it just
+> works with hid-generic;
+> - the ps4 dongle obviously makes sense to go into hid-sony (although
+> no one has reversed engineered that one (yet));
+> - the xboxone dongle: that's an unknown one to me. I don't have any
+> information about that one unfortunately and do not own one.
+> 
+> I wrote this as a separate hid driver as I saw that email [1] from
+> Roderick Colenbrander in which he expressed a preference for a
+> seperate driver in cases where the device is not from Sony proper.
 
-And my voice here is to ignore for the same reasons: respect
-realloc(3) and making common sense with the idea of REallocating
-(capital letters on purpose).
+Yeah, but before that happens, I think we should just continue with status 
+quo, meaning putting the support into hid-sony, if noone has any 
+objections.
+
+> > So if one of the allocations above succeeds and a subsequent one fails,
+> > you're going to try re-allocate all of them next time again, leaking the
+> > ones that previously succeeded, right?
+> >
+> 
+> I attempted to avoid such a case. IIUC there are 4 possible scenarios
+> tied to those 3 allocs (cr, databuf, and urb):
+> 1) alloc of cr fails. nothing to be freed, we reschedule;
+> 2) alloc of cr succeeds, alloc of databuf fails. we free cr and we reschedule;
+> 3) allocs of cr and databuf succeed, alloc of urb fails. we free cr
+> and databuf, and we reschedule;
+> 4) all allocs succeed, we submit the urb, and free urb. once the
+> control packet is sent, the callback is called and we free cr and
+> databuf.
+> 
+> Am I missing something? 
+
+No, I probably didn't have my first coffee of the day when looking at your 
+patch, sorry.
+
+Still, the way it tries to allocate the buffers is sub-optimal, as if 
+either (not necessarily the first one) fails, it retries the next 
+iteration with attempting to allocate from scratch.
+
+If the system really is in tight memory condition, it'd make more sense to 
+keep the ones for which the allocation succeeded already allocated, and 
+retry only the failed one(s).
+
+Thanks,
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jiri Kosina
+SUSE Labs
+
