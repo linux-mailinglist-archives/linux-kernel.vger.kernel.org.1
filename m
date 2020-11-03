@@ -2,84 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EA22A3ECB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFA02A3ECF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgKCIUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:20:16 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7449 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgKCIUP (ORCPT
+        id S1727068AbgKCIWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:22:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36456 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgKCIWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:20:15 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQN4s2bXGzhg9l;
-        Tue,  3 Nov 2020 16:20:13 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 16:20:07 +0800
-Subject: Re: [PATCH v2] iio: adc: rockchip_saradc: fix missing
- clk_disable_unprepare() on error in rockchip_saradc_resume
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Heiko Stuebner <heiko@sntech.de>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201103074909.195465-1-miaoqinglang@huawei.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <6739f62b-c88e-6792-3237-49787c73c662@huawei.com>
-Date:   Tue, 3 Nov 2020 16:20:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 3 Nov 2020 03:22:35 -0500
+Date:   Tue, 03 Nov 2020 08:22:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604391752;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eGmEXxoC5+8X1wzAfB3whBFlDni8ICsiEU+Qx32qLAc=;
+        b=TXQICX1LQ0mI/Mg4qa4DPwrhHc6qLFuv/DNN+X+Wwxbez8ArlBm3JcshR+x/RwIkws33sJ
+        B6vfeaTH6/gxC4t6b3Z+IbBWMen7uGu1cRX9LZ76diK/1Dee0arZrn+RO98h8NdhmASyOL
+        P8vk1aWs55ckg+8OmVFv2HB7/QLsKTLHYqFtTasppDQ46bqpWjZoDmBiIOikoJi1oyexw2
+        5uU5zD6BAHHJD6e/WN0Dfetg4Rik6Lckyvt1irjvsNw8UPcJt0SeUUGukZWGzvm4D/vh4z
+        jmKlfeepvKi7Yl6wy0QyPVxA9JvAvh2tfsj+qwszZ39GM20n8sgQSnLCFTN2/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604391752;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eGmEXxoC5+8X1wzAfB3whBFlDni8ICsiEU+Qx32qLAc=;
+        b=5Dl1f0Y1TowtzU8DBGkPXF+/3GCrGNG/TMc0Qh9m46CRNOqWy7zTL14Kv15VmluI/pxZp0
+        pGelDHBZa/zy2xAA==
+From:   "tip-bot2 for Dexuan Cui" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] x86/hyperv: Enable 15-bit APIC ID if the hypervisor
+ supports it
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201103011136.59108-1-decui@microsoft.com>
+References: <20201103011136.59108-1-decui@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103074909.195465-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+Message-ID: <160439175109.397.2766842993612981452.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/apic branch of tip:
 
+Commit-ID:     af2abc92c5ddf5fc5a2036bc106c4d9a80a4d5f7
+Gitweb:        https://git.kernel.org/tip/af2abc92c5ddf5fc5a2036bc106c4d9a80a4d5f7
+Author:        Dexuan Cui <decui@microsoft.com>
+AuthorDate:    Mon, 02 Nov 2020 17:11:36 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 03 Nov 2020 09:16:46 +01:00
 
-ÔÚ 2020/11/3 15:49, Qinglang Miao Ð´µÀ:
-> Fix the missing clk_disable_unprepare() of info->pclk
-> before return from rockchip_saradc_resume in the error
-> handling case when fails to prepare and enable info->clk.
-> 
-> Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->   drivers/iio/adc/rockchip_saradc.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-> index 1f3d7d639..5eb566274 100644
-> --- a/drivers/iio/adc/rockchip_saradc.c
-> +++ b/drivers/iio/adc/rockchip_saradc.c
-> @@ -461,9 +461,10 @@ static int rockchip_saradc_resume(struct device *dev)
->   		return ret;
->   
->   	ret = clk_prepare_enable(info->clk);
-> -	if (ret)
-> +	if (ret) {
-> +		clk_disable_unprepare(info->pclk);
->   		return ret;
-> -
-> +	}
->   	return ret;
->   }
->   #endif
-> 
-Hi everyone,
+x86/hyperv: Enable 15-bit APIC ID if the hypervisor supports it
 
-I made a careless mistake for adding v2 as subject-prefix, this patch is 
-the base version actually.
+When a Linux VM runs on Hyper-V, if the VM has CPUs with >255 APIC IDs,
+the CPUs can't be the destination of IOAPIC interrupts, because the
+IOAPIC RTE's Dest Field has only 8 bits. Currently the hackery driver
+drivers/iommu/hyperv-iommu.c is used to ensure IOAPIC interrupts are
+only routed to CPUs that don't have >255 APIC IDs. However, there is
+an issue with kdump, because the kdump kernel can run on any CPU, and
+hence IOAPIC interrupts can't work if the kdump kernel run on a CPU
+with a >255 APIC ID.
 
-Sorry about that.
+The kdump issue can be fixed by the Extended Dest ID, which is introduced
+recently by David Woodhouse (for IOAPIC, see the field virt_destid_8_14 in
+struct IO_APIC_route_entry). Of course, the Extended Dest ID needs the
+support of the underlying hypervisor. The latest Hyper-V has added the
+support recently: with this commit, on such a Hyper-V host, Linux VM
+does not use hyperv-iommu.c because hyperv_prepare_irq_remapping()
+returns -ENODEV; instead, Linux kernel's generic support of Extended Dest
+ID from David is used, meaning that Linux VM is able to support up to
+32K CPUs, and IOAPIC interrupts can be routed to all the CPUs.
 
-Thanks.
+On an old Hyper-V host that doesn't support the Extended Dest ID, nothing
+changes with this commit: Linux VM is still able to bring up the CPUs with
+can not go to such CPUs, and the kdump kernel still can not work properly
+on such CPUs.
+
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: David Woodhouse <dwmw@amazon.co.uk>                                                                                                                                                                                                                                  
+Link: https://lore.kernel.org/r/20201103011136.59108-1-decui@microsoft.com
+
+---
+ arch/x86/include/asm/hyperv-tlfs.h |  7 +++++++-
+ arch/x86/kernel/cpu/mshyperv.c     | 30 +++++++++++++++++++++++++++++-
+ 2 files changed, 37 insertions(+)
+
+diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+index 0ed20e8..6bf42ae 100644
+--- a/arch/x86/include/asm/hyperv-tlfs.h
++++ b/arch/x86/include/asm/hyperv-tlfs.h
+@@ -23,6 +23,13 @@
+ #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
+ #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
+ 
++#define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
++#define HYPERV_VS_INTERFACE_EAX_SIGNATURE	0x31235356  /* "VS#1" */
++
++#define HYPERV_CPUID_VIRT_STACK_PROPERTIES	0x40000082
++/* Support for the extended IOAPIC RTE format */
++#define HYPERV_VS_PROPERTIES_EAX_EXTENDED_IOAPIC_RTE	BIT(2)
++
+ #define HYPERV_HYPERVISOR_PRESENT_BIT		0x80000000
+ #define HYPERV_CPUID_MIN			0x40000005
+ #define HYPERV_CPUID_MAX			0x4000ffff
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index 05ef1f4..cc4037d 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -366,9 +366,39 @@ static void __init ms_hyperv_init_platform(void)
+ #endif
+ }
+ 
++static bool __init ms_hyperv_x2apic_available(void)
++{
++	return x2apic_supported();
++}
++
++/*
++ * If ms_hyperv_msi_ext_dest_id() returns true, hyperv_prepare_irq_remapping()
++ * returns -ENODEV and the Hyper-V IOMMU driver is not used; instead, the
++ * generic support of the 15-bit APIC ID is used: see __irq_msi_compose_msg().
++ *
++ * Note: For a VM on Hyper-V, no emulated legacy device supports PCI MSI/MSI-X,
++ * and PCI MSI/MSI-X only come from the assigned physical PCIe device, and the
++ * PCI MSI/MSI-X interrupts are handled by the pci-hyperv driver. Here despite
++ * the word "msi" in the name "msi_ext_dest_id", actually the callback only
++ * affects how IOAPIC interrupts are routed.
++ */
++static bool __init ms_hyperv_msi_ext_dest_id(void)
++{
++	u32 eax;
++
++	eax = cpuid_eax(HYPERV_CPUID_VIRT_STACK_INTERFACE);
++	if (eax != HYPERV_VS_INTERFACE_EAX_SIGNATURE)
++		return false;
++
++	eax = cpuid_eax(HYPERV_CPUID_VIRT_STACK_PROPERTIES);
++	return eax & HYPERV_VS_PROPERTIES_EAX_EXTENDED_IOAPIC_RTE;
++}
++
+ const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
+ 	.name			= "Microsoft Hyper-V",
+ 	.detect			= ms_hyperv_platform,
+ 	.type			= X86_HYPER_MS_HYPERV,
++	.init.x2apic_available	= ms_hyperv_x2apic_available,
++	.init.msi_ext_dest_id	= ms_hyperv_msi_ext_dest_id,
+ 	.init.init_platform	= ms_hyperv_init_platform,
+ };
