@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D402A517E
+	by mail.lfdr.de (Postfix) with ESMTP id D19E82A517F
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730351AbgKCUlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:41:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52880 "EHLO mail.kernel.org"
+        id S1730363AbgKCUlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:41:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730323AbgKCUlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:11 -0500
+        id S1729934AbgKCUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 807052236F;
-        Tue,  3 Nov 2020 20:41:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A40622226;
+        Tue,  3 Nov 2020 20:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436071;
-        bh=Jxdjxaiw5yyUpd4PQEW9YWR9yqBD1g8R1TWTG+rUFSI=;
+        s=default; t=1604436075;
+        bh=6D9VE4v3ufIQL1YLkBfnxzjUVIA3Z4NKpkz5j8Xkx+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fbDY0ObgRsOScw2DzjQZzb7psuDs9xWuL/hq6Ns4Tk4gq/EjRNFsZKe3YK5IRsZ+T
-         PJN/uYbbUXa076kaQeH8l9H8GAf9nWeGInxNi82+0Ko7eq7dcpkhY8KPy3GFH+Yc//
-         EdgNPLr5ZAKTNN8wqcrQvOOYoO0tiR9w2kW9HZL8=
+        b=WaFflSmx94z/XW7pyYy6y4Gka/GVXknjTCUSQfag2OXuq0cCuil6oUsBHvtKthZJU
+         IZwtGqqBQVYgPq6FZSkYT3sg6tCLwQTk0uodCbKW/I1rv8OFlOOXiP6RDGyCuZMlZV
+         UaC40HN/4NrnLdocPdaS9m6tc5TN87c60XWNTve4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 089/391] media: tw5864: check status of tw5864_frameinterval_get
-Date:   Tue,  3 Nov 2020 21:32:20 +0100
-Message-Id: <20201103203352.985795758@linuxfoundation.org>
+Subject: [PATCH 5.9 091/391] media: imx274: fix frame interval handling
+Date:   Tue,  3 Nov 2020 21:32:22 +0100
+Message-Id: <20201103203353.092548309@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,61 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
 
-[ Upstream commit 780d815dcc9b34d93ae69385a8465c38d423ff0f ]
+[ Upstream commit 49b20d981d723fae5a93843c617af2b2c23611ec ]
 
-clang static analysis reports this problem
+1) the numerator and/or denominator might be 0, in that case
+   fall back to the default frame interval. This is per the spec
+   and this caused a v4l2-compliance failure.
 
-tw5864-video.c:773:32: warning: The left expression of the compound
-  assignment is an uninitialized value.
-  The computed value will also be garbage
-        fintv->stepwise.max.numerator *= std_max_fps;
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+2) the updated frame interval wasn't returned in the s_frame_interval
+   subdev op.
 
-stepwise.max is set with frameinterval, which comes from
-
-	ret = tw5864_frameinterval_get(input, &frameinterval);
-	fintv->stepwise.step = frameinterval;
-	fintv->stepwise.min = frameinterval;
-	fintv->stepwise.max = frameinterval;
-	fintv->stepwise.max.numerator *= std_max_fps;
-
-When tw5864_frameinterval_get() fails, frameinterval is not
-set. So check the status and fix another similar problem.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/tw5864/tw5864-video.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/media/i2c/imx274.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/pci/tw5864/tw5864-video.c b/drivers/media/pci/tw5864/tw5864-video.c
-index ec1e06da7e4fb..a65114e7ca346 100644
---- a/drivers/media/pci/tw5864/tw5864-video.c
-+++ b/drivers/media/pci/tw5864/tw5864-video.c
-@@ -767,6 +767,9 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
- 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
+diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+index 6011cec5e351d..e6aa9f32b6a83 100644
+--- a/drivers/media/i2c/imx274.c
++++ b/drivers/media/i2c/imx274.c
+@@ -1235,6 +1235,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
+ 	ret = imx274_set_frame_interval(imx274, fi->interval);
  
- 	ret = tw5864_frameinterval_get(input, &frameinterval);
-+	if (ret)
-+		return ret;
+ 	if (!ret) {
++		fi->interval = imx274->frame_interval;
 +
- 	fintv->stepwise.step = frameinterval;
- 	fintv->stepwise.min = frameinterval;
- 	fintv->stepwise.max = frameinterval;
-@@ -785,6 +788,9 @@ static int tw5864_g_parm(struct file *file, void *priv,
- 	cp->capability = V4L2_CAP_TIMEPERFRAME;
+ 		/*
+ 		 * exposure time range is decided by frame interval
+ 		 * need to update it after frame interval changes
+@@ -1730,9 +1732,9 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+ 		__func__, frame_interval.numerator,
+ 		frame_interval.denominator);
  
- 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
-+	if (ret)
-+		return ret;
-+
- 	cp->timeperframe.numerator *= input->frame_interval;
- 	cp->capturemode = 0;
- 	cp->readbuffers = 2;
+-	if (frame_interval.numerator == 0) {
+-		err = -EINVAL;
+-		goto fail;
++	if (frame_interval.numerator == 0 || frame_interval.denominator == 0) {
++		frame_interval.denominator = IMX274_DEF_FRAME_RATE;
++		frame_interval.numerator = 1;
+ 	}
+ 
+ 	req_frame_rate = (u32)(frame_interval.denominator
 -- 
 2.27.0
 
