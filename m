@@ -2,82 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A742A4C45
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C712A4C4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKCRGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:06:15 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1629 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgKCRGP (ORCPT
+        id S1728524AbgKCRHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:07:12 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42046 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgKCRHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:06:15 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa18e060000>; Tue, 03 Nov 2020 09:06:14 -0800
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 17:06:13 +0000
-Subject: Re: [PATCH] drm/tegra: sor: Don't warn on probe deferral
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        Tue, 3 Nov 2020 12:07:12 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3H75ZD057067;
+        Tue, 3 Nov 2020 11:07:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604423226;
+        bh=5jr2NaHoF/hYVKjlqvgEQz3+dRAvWa8eW4Ujvs32+RY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=CS6LP50iXykiutgauJNqZeRIeMrm5mtqICHJFsNl9vNMAU3AJvuiVnVEfCaIYbpmN
+         QKutN8OoFdrUugIALtp9YjoCcvMT56qnR75REUByZ4L0nt530rsdTz+lJ01MIVQJ3m
+         hfXskvmoSN122687jcgQMsNUA72Z6RBxpoyolA7U=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3H75H4072200
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 11:07:05 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 11:07:05 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 11:07:05 -0600
+Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3H75hd041336;
+        Tue, 3 Nov 2020 11:07:05 -0600
+Subject: Re: [PATCH net-next v3 4/4] net: phy: dp83td510: Add support for the
+ DP83TD510 Ethernet PHY
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-References: <20201103114426.546626-1-jonathanh@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <cc0e6f6e-2e06-81b3-38b8-fbdc5c772658@nvidia.com>
-Date:   Tue, 3 Nov 2020 17:06:11 +0000
+References: <20201030172950.12767-1-dmurphy@ti.com>
+ <20201030172950.12767-5-dmurphy@ti.com> <20201030201515.GE1042051@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <202b6626-b7bf-3159-f474-56f6fa0c8247@ti.com>
+Date:   Tue, 3 Nov 2020 11:07:00 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103114426.546626-1-jonathanh@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20201030201515.GE1042051@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604423174; bh=wLq1VK2L7j+qzIJOsu91q3Us07fpe99UhftzABkPUJw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=bzkNQpyjQa6zoWrV4LtF9I/xCCgR5HgfDSoaKMcSTx+viezL7EssCm7uAx4gsHtGw
-         6BO59p5M9FkbGxoE4K3MWb9TMiv1h3dS+YqX4c+04R+l7xUxlPSbLoZuKCIjC1s+Sh
-         k05cflTwL/pLCWRwWuDKXv9SzBdxo+cJYHMcoPl5kvFi0Rq/0Q/DPgu7XMSHYV0Wrb
-         Zx/wNP8oyB58cUBEjZnQG4CPoDPNVTxL1oUs79AK6Opy955M6utfl6JEur7Q49Yg0J
-         gIjZGozkIyfITji3Vnhp62NPQkSU08Ya95av0aI85LZY5h0IpEjCNp24L3gMLfRmFb
-         7Q7tMx9aIRD1A==
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Andrew
 
-On 03/11/2020 11:44, Jon Hunter wrote:
-> Deferred probe is an expected return value for tegra_output_probe().
-> Given that the driver deals with it properly, there's no need to output
-> a warning that may potentially confuse users.
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  drivers/gpu/drm/tegra/sor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-> index e88a17c2937f..5a232055b8cc 100644
-> --- a/drivers/gpu/drm/tegra/sor.c
-> +++ b/drivers/gpu/drm/tegra/sor.c
-> @@ -3765,7 +3765,7 @@ static int tegra_sor_probe(struct platform_device *pdev)
->  
->  	err = tegra_output_probe(&sor->output);
->  	if (err < 0) {
-> -		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
-> +		dev_err_probe(&pdev->dev, "failed to probe output: %d\n", err);
->  		return err;
->  	}
+On 10/30/20 3:15 PM, Andrew Lunn wrote:
+>> +static int dp83td510_config_init(struct phy_device *phydev)
+>> +{
+>> +	struct dp83td510_private *dp83td510 = phydev->priv;
+>> +	int mst_slave_cfg;
+>> +	int ret = 0;
+>> +
+>> +	if (phy_interface_is_rgmii(phydev)) {
+>> +		if (dp83td510->rgmii_delay) {
+>> +			ret = phy_set_bits_mmd(phydev, DP83TD510_DEVADDR,
+>> +					       DP83TD510_MAC_CFG_1, dp83td510->rgmii_delay);
+>> +			if (ret)
+>> +				return ret;
+>> +		}
+>> +	}
+> Hi Dan
+>
+> I'm getting a bit paranoid about RGMII delays...
+Not sure what this means.
+>
+>> +static int dp83td510_read_straps(struct phy_device *phydev)
+>> +{
+>> +	struct dp83td510_private *dp83td510 = phydev->priv;
+>> +	int strap;
+>> +
+>> +	strap = phy_read_mmd(phydev, DP83TD510_DEVADDR, DP83TD510_SOR_1);
+>> +	if (strap < 0)
+>> +		return strap;
+>> +
+>> +	if (strap & DP83TD510_RGMII)
+>> +		dp83td510->is_rgmii = true;
+>> +
+>> +	return 0;
+>> +};
+> So dp83td510->is_rgmii is the strapping configuration. So if one of
+> the four RGMII modes is selected, your appear to ignore which of the
+> four is selected, and program the hardware with the strapping?
+>
+> That seems like a bad idea.
+I will re-look at this code.
+>
+>> +#if IS_ENABLED(CONFIG_OF_MDIO)
+>> +static int dp83td510_of_init(struct phy_device *phydev)
+>> +{
+>> +	struct dp83td510_private *dp83td510 = phydev->priv;
+>> +	struct device *dev = &phydev->mdio.dev;
+>> +	struct device_node *of_node = dev->of_node;
+>> +	s32 rx_int_delay;
+>> +	s32 tx_int_delay;
+>> +	int ret;
+>> +
+>> +	if (!of_node)
+>> +		return -ENODEV;
+>> +
+>> +	ret = dp83td510_read_straps(phydev);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	dp83td510->hi_diff_output = device_property_read_bool(&phydev->mdio.dev,
+>> +							      "tx-rx-output-high");
+>> +
+>> +	if (device_property_read_u32(&phydev->mdio.dev, "tx-fifo-depth",
+>> +				     &dp83td510->tx_fifo_depth))
+>> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_5_B_NIB;
+> Please don't use device_property_read_foo API, we don't want to give
+> the impression it is O.K. to stuff DT properties in ACPI
+> tables. Please use of_ API calls.
 
-Sorry this is not right. I will fix this in V2.
+Hmm. Is this a new stance in DT handling for the networking tree?
 
-Jon
+If it is should I go back and rework some of my other drivers that use 
+device_property APIs
 
--- 
-nvpublic
+Dan
+
