@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467702A59CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6842A59B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731763AbgKCWKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:10:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47348 "EHLO mail.kernel.org"
+        id S1729901AbgKCUiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:38:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgKCUhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:40 -0500
+        id S1729869AbgKCUiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:38:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB4EF2224E;
-        Tue,  3 Nov 2020 20:37:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDC5022226;
+        Tue,  3 Nov 2020 20:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435860;
-        bh=byPK70+5pE06e1/UUMLk8VuJsIfZZaPpFggvr2BzTDg=;
+        s=default; t=1604435881;
+        bh=/GclZEcaBTfiRQa/ogs0zaxm6VHYHLeOr/Y4F7bTqEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T15OmLJCoXVpKvZNs0nAZfhmcanmAkWdSoVVjv09wU4Ex09AmR/ucDga7Xl2vl0ny
-         DEAFmBWLkS9QRp0fxLEu3lO0Gldm5x1FKyewYiCxy5YN8LucoMUC7lN9mZR7Bg9RwP
-         WCefo7yEgGsoaLc+CbKKBPzZcAP761F9DQzwFxk8=
+        b=ldcAkZIiLERToUgXTSXUIw/LHNdbyQNFcWHNMMsuqrt2o4asZsppCe5ENRfgzTznf
+         vOA6yJtIkDEydHgR19stiGhIOOQmATetiGhsRsGdim05YMDoIP0i98lFIQNna8Z9kE
+         nGd7HBMcPBLX7JW8ESPk/kX6xrzrcl2hH2Vx4ha0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 014/391] firmware: arm_scmi: Fix ARCH_COLD_RESET
-Date:   Tue,  3 Nov 2020 21:31:05 +0100
-Message-Id: <20201103203348.952852393@linuxfoundation.org>
+Subject: [PATCH 5.9 016/391] tee: client UUID: Skip REE kernel login method as well
+Date:   Tue,  3 Nov 2020 21:31:07 +0100
+Message-Id: <20201103203349.059249313@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,37 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@linaro.org>
+From: Sumit Garg <sumit.garg@linaro.org>
 
-[ Upstream commit 45b9e04d5ba0b043783dfe2b19bb728e712cb32e ]
+[ Upstream commit 722939528a37aa0cb22d441e2045c0cf53e78fb0 ]
 
-The defination for ARCH_COLD_RESET is wrong. Let us fix it according to
-the SCMI specification.
+Since the addition of session's client UUID generation via commit [1],
+login via REE kernel method was disallowed. So fix that via passing
+nill UUID in case of TEE_IOCTL_LOGIN_REE_KERNEL method as well.
 
-Link: https://lore.kernel.org/r/20201008143722.21888-5-etienne.carriere@linaro.org
-Fixes: 95a15d80aa0d ("firmware: arm_scmi: Add RESET protocol in SCMI v2.0")
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Fixes: e33bcbab16d1 ("tee: add support for session's client UUID generation") [1]
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/arm_scmi/reset.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/tee/tee_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index 3691bafca0574..86bda46de8eb8 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -36,9 +36,7 @@ struct scmi_msg_reset_domain_reset {
- #define EXPLICIT_RESET_ASSERT	BIT(1)
- #define ASYNCHRONOUS_RESET	BIT(2)
- 	__le32 reset_state;
--#define ARCH_RESET_TYPE		BIT(31)
--#define COLD_RESET_STATE	BIT(0)
--#define ARCH_COLD_RESET		(ARCH_RESET_TYPE | COLD_RESET_STATE)
-+#define ARCH_COLD_RESET		0
- };
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 64637e09a0953..2f6199ebf7698 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -200,7 +200,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	int name_len;
+ 	int rc;
  
- struct scmi_msg_reset_notify {
+-	if (connection_method == TEE_IOCTL_LOGIN_PUBLIC) {
++	if (connection_method == TEE_IOCTL_LOGIN_PUBLIC ||
++	    connection_method == TEE_IOCTL_LOGIN_REE_KERNEL) {
+ 		/* Nil UUID to be passed to TEE environment */
+ 		uuid_copy(uuid, &uuid_null);
+ 		return 0;
 -- 
 2.27.0
 
