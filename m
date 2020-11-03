@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863212A59BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD22A59C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgKCWJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730418AbgKCWJs (ORCPT
+        id S1731729AbgKCWKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:10:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45012 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729764AbgKCWKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:09:48 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82F9C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:09:47 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id o18so20225668edq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:09:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WO1e+L++wPESWfr9nzOE54SCt7afrEsmsB9fEuoYvbI=;
-        b=T+/A6+J62VDvQMKYPtVg2CtBW5xawhHVZqWOERIyixTczN4MfytqxhoJQJOcs2790L
-         sj4ZJgiKijp3n63RZQtMlQ3es9rYo1weSDlwxcJm5Ag+lH4tps5I28z8LxvfwKmYtzJJ
-         /7ODS6RyMh7GrhkYAYzKWrZUgtjo08ShY2d8lFIlqSiQY56zEC4lJ332rH1cpQ0Jikk9
-         7t5YiToX4pGXA3cBIa8hr/lWANYeeU9HgWErCB0IiUFAAt6bSVSfurD3RBJy3BliIelp
-         YL3WFMt/TsTNhYtMeHyiS4JaRXQkTDS7Em1++6Jk3gmVGF0kwFa501K00ou4nDd0zP9v
-         pO8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WO1e+L++wPESWfr9nzOE54SCt7afrEsmsB9fEuoYvbI=;
-        b=uOUdHUg1qYnn5nOFek+pXFmAG65OY/z5YEGLD3RaQgud9C5XrDipx8qUOmjcLd7atW
-         lD++jdJZEVFsX4iEJjoCVOtZ3Mzi928jIR0NeDQOFNPuQB2GFwtgxBFlwkkBn+kRQBws
-         eOl0aZc4XbWQigfBXWB++E3IaT95WeRcZSIDQVA00DPWAFoY92Azz7SFhy+QUY75Ay7g
-         stTdlRK0F3iW+HeRElIwyCLNdAVYO12xoIR2YC0yml2mNbr9g0WtilFiIQ+ZAj3yt19l
-         B0GLzLWvRIm0mzJAx7x0ZaeZZ7Jz3c4uoUshXdYHIrTqTBoDlwDDS28lSgANrbRaiDrv
-         D9yw==
-X-Gm-Message-State: AOAM530+ltsTKR1v+pdEzayEnBFnp5XoQrB8r5p2On5pps0tzHgbSxsX
-        lTINl+vvNVuWyOJqyGoZok0+qKrg3hezVzLY8zs7tg==
-X-Google-Smtp-Source: ABdhPJz1NDE7PM2O7672wRWt1a0mL/+PL68eDdfq2Oj69hckQbQldL+V0lbGY3zFDyAcHIRlbnAQxlg/ZySh5dCl9Ns=
-X-Received: by 2002:aa7:d843:: with SMTP id f3mr24583081eds.354.1604441386651;
- Tue, 03 Nov 2020 14:09:46 -0800 (PST)
+        Tue, 3 Nov 2020 17:10:09 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604441407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8fYu6MuaJ0Ok/Y49A6p/r2wWyaAYSztubvJXZfAJjx8=;
+        b=kSOrZCkd+5bm3VUzBCKp+nXf6Jm7gHJqEst/8Y8Y7kCKavfTO6EsO6Fbfu5IWFm7Yh0rOh
+        ViOh1ai4o5f0PzkGC6gnQU0hccQS3A0dsAu6zIpTriXCVe8LYJKI0b83pLLX4BemllgEQ6
+        +IQR9J0bMajTKl5Wq0d2SPBn9SWwC3qrE+PB++4G0G8IfyOx9BoLgfM6EkEutRo8WTxhwq
+        MlO0X8D6Jsn2qbEWzgvUE1Zb1jqzlTRrYhfELhwbbtuWglFP6/4tTy4CG7I7hp5vG+2T3N
+        IPrsCMkaOm0iBHMsLlRmPUmfvf6Gy5W+vaq7iru3s8Ka7+yMQ3SgEgROjA8WHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604441407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8fYu6MuaJ0Ok/Y49A6p/r2wWyaAYSztubvJXZfAJjx8=;
+        b=0XFyqK39HcF4/ENuNbZFJU0QS3/l+9z7UfPcGscjnLvY1kuRMumepPSyYBcqHw+YIi3h5E
+        hih5bXfXsCTgC8Cw==
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Elliot Berman <eberman@codeaurora.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+In-Reply-To: <20201030174531.ywwkcntq4ge33lrh@bogus>
+References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org> <87v9f04n8r.fsf@nanos.tec.linutronix.de> <a6d7f84679240fcf580520230a88c058@codeaurora.org> <20201026171224.GV2611@hirez.programming.kicks-ass.net> <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org> <20201028145516.23lm66mora5b3wqr@e107158-lin> <20201028151558.odxwolnwbes2gihi@bogus> <cb175d84-7a89-344d-0dd8-76bf4ece9e3b@codeaurora.org> <20201030174531.ywwkcntq4ge33lrh@bogus>
+Date:   Tue, 03 Nov 2020 23:10:06 +0100
+Message-ID: <871rha148x.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201030100815.2269-12-daniel.vetter@ffwll.ch> <20201103212840.GA266427@bjorn-Precision-5520>
-In-Reply-To: <20201103212840.GA266427@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 3 Nov 2020 14:09:35 -0800
-Message-ID: <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
-Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Fri, Oct 30 2020 at 17:45, Sudeep Holla wrote:
+> On Thu, Oct 29, 2020 at 02:37:06PM -0700, Elliot Berman wrote:
+>> In the case where commercial device is using feature for thermal, device
+>> should boot multiple small cores. Booting only one core means we would not
+>> be able to use all possible cores to maximum extent possible in this thermal
+>> case.
 >
-> On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
-> > There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
-> > files, and the old proc interface. Two check against
-> > iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
-> > this starts to matter, since we don't want random userspace having
-> > access to PCI BARs while a driver is loaded and using it.
-> >
-> > Fix this by adding the same iomem_is_exclusive() check we already have
-> > on the sysfs side in pci_mmap_resource().
-> >
-> > References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
->
-> This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
-> only used in a few places:
->
->   e1000_probe() calls pci_request_selected_regions_exclusive(),
->   ne_pci_probe() calls pci_request_regions_exclusive(),
->   vmbus_allocate_mmio() calls request_mem_region_exclusive()
->
-> which raises the question of whether it's worth keeping
-> IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
-> completely.
+> I understood that point. But you haven't responded on my logical vs physical
+> number argument. I am clearly NACKing this patch as is for just usage of
+> logical CPU IDs in the command line while your intention is to control
+> the physical CPUs. So once again, NACK for that reason.
 
-Now that CONFIG_IO_STRICT_DEVMEM upgrades IORESOURCE_BUSY to
-IORESOURCE_EXCLUSIVE semantics the latter has lost its meaning so I'd
-be in favor of removing it as well.
+Correct. And no, we are not going to add a command line option to select
+physical CPU ids.
+
+There are two ways to solve that:
+
+  1) The firmware can tell the kernel whether a CPU should be brought up
+     or not, e.g. by failing the bootup request.
+
+  2) The kernel has a way to figure out the current thermal and/or power
+     budget early in the boot process and sorts out which and how many
+     CPUs fit into that limit.
+
+Thanks,
+
+        tglx
+
