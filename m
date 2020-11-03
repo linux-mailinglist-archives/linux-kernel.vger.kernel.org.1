@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A46F2A5295
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163762A533B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgKCUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45940 "EHLO mail.kernel.org"
+        id S1733055AbgKCU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731921AbgKCUvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:09 -0500
+        id S1732615AbgKCU65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D993622404;
-        Tue,  3 Nov 2020 20:51:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F16792053B;
+        Tue,  3 Nov 2020 20:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436669;
-        bh=sXan1nAS0f593JpMG0xDuKoxr2+n90gQdTJYmpCswxc=;
+        s=default; t=1604437137;
+        bh=SutxnjuQiNcWOuXeErlj94rMuCuFG4npuCUEcq4W/d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AjbMDmvQ1hdsMdOZ/FLU2VGTWIJ5TiP1WcbLv7Q7sFmb+iAFwQ6f4PBoEtNR8MVgL
-         0fkhgMpTLDn26neOnRG5wL4q8/l92CnAOV7fP+mB+5ljwFesLuD8spLRH6Qo26mok7
-         chO+4wui4stW/uShpFA4UbvBL+EcIB86hfTH8Ysk=
+        b=bKOR0Bi6KrRgWT+NIhMz7gAo0cDTwQlNQZPA4+p59VZ8eo6k5WT28sCnr+7RpO3Nc
+         H7lZgfrvkiNW5mKVlOL6PbPQ9CdznXNJ3fafaCKyWaCxrjkPY32seu+uDDBHt2qtR9
+         Xh6bvQYO+P3LclvL5IBsSa5/2XCSDxEs3H7PumVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.9 352/391] mmc: sdhci: Use Auto CMD Auto Select only when v4_mode is true
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 155/214] powerpc/drmem: Make lmb_size 64 bit
 Date:   Tue,  3 Nov 2020 21:36:43 +0100
-Message-Id: <20201103203410.889558968@linuxfoundation.org>
+Message-Id: <20201103203305.328304107@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-commit b3e1ea16fb39fb6e1a1cf1dbdd6738531de3dc7d upstream.
+commit ec72024e35dddb88a81e40071c87ceb18b5ee835 upstream.
 
-sdhci-of-dwcmshc meets an eMMC read performance regression with below
-command after commit 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto
-Select support"):
+Similar to commit 89c140bbaeee ("pseries: Fix 64 bit logical memory block panic")
+make sure different variables tracking lmb_size are updated to be 64 bit.
 
-dd if=/dev/mmcblk0 of=/dev/null bs=8192 count=100000
+This was found by code audit.
 
-Before the commit, the above command gives 120MB/s
-After the commit, the above command gives 51.3 MB/s
-
-So it looks like sdhci-of-dwcmshc expects Version 4 Mode for Auto
-CMD Auto Select. Fix the performance degradation by ensuring v4_mode
-is true to use Auto CMD Auto Select.
-
-Fixes: 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto Select support")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201015174115.4cf2c19a@xhacker.debian
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Acked-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201007114836.282468-2-aneesh.kumar@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/powerpc/include/asm/drmem.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1384,9 +1384,11 @@ static inline void sdhci_auto_cmd_select
- 	/*
- 	 * In case of Version 4.10 or later, use of 'Auto CMD Auto
- 	 * Select' is recommended rather than use of 'Auto CMD12
--	 * Enable' or 'Auto CMD23 Enable'.
-+	 * Enable' or 'Auto CMD23 Enable'. We require Version 4 Mode
-+	 * here because some controllers (e.g sdhci-of-dwmshc) expect it.
- 	 */
--	if (host->version >= SDHCI_SPEC_410 && (use_cmd12 || use_cmd23)) {
-+	if (host->version >= SDHCI_SPEC_410 && host->v4_mode &&
-+	    (use_cmd12 || use_cmd23)) {
- 		*mode |= SDHCI_TRNS_AUTO_SEL;
+--- a/arch/powerpc/include/asm/drmem.h
++++ b/arch/powerpc/include/asm/drmem.h
+@@ -20,7 +20,7 @@ struct drmem_lmb {
+ struct drmem_lmb_info {
+ 	struct drmem_lmb        *lmbs;
+ 	int                     n_lmbs;
+-	u32                     lmb_size;
++	u64                     lmb_size;
+ };
  
- 		ctrl2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+ extern struct drmem_lmb_info *drmem_info;
+@@ -79,7 +79,7 @@ struct of_drconf_cell_v2 {
+ #define DRCONF_MEM_AI_INVALID	0x00000040
+ #define DRCONF_MEM_RESERVED	0x00000080
+ 
+-static inline u32 drmem_lmb_size(void)
++static inline u64 drmem_lmb_size(void)
+ {
+ 	return drmem_info->lmb_size;
+ }
 
 
