@@ -2,88 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935EF2A4178
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9FC2A4183
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgKCKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
+        id S1728103AbgKCKSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgKCKQ6 (ORCPT
+        with ESMTP id S1727470AbgKCKSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:16:58 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2649FC0613D1;
-        Tue,  3 Nov 2020 02:16:58 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604398616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gpvq/2A1yvnMwjL+wAA74Kn6/JPuAETBiuqTCH14fqo=;
-        b=A8zpMpCfPTvAWGaiNtuCYgrtlN4XtGIUidHXWXDyiPmNCzHYxjgvQglp4o4zdPYBXLQD/q
-        fDMGjdPh6sDM/Bjgb9UqJCNfBghh5+YCBn2vZd4Bbh80UPc7v6lvhO8dR3zWBMI8hajT7o
-        nuZsG3Y1n/EOhFP2NHHdziAFtESpY8h6q7xr/uDi/+8FNujB7BFMj0OGlzSeUdvu5UQQz+
-        qEl3FQ5oiMU8rGJA4NN7Ns+CKcE4wM7KlI40VQ7LJ0VBqBK5VzJdCqPvQpRsTKgPR0whVV
-        DObuN4wzHHNFH2tCVxfAh+KNZI1Vhd5oWiAJu2R75cUUn+kq0StjH4rSqNXXTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604398616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gpvq/2A1yvnMwjL+wAA74Kn6/JPuAETBiuqTCH14fqo=;
-        b=3xR/dsrIRDTurROfujbz4Q4AchrZlTwRSm9Jtw/CEB2g10wK0qvFQby2/nH7G3i8nhxDLS
-        1FNL9iat9504AGAQ==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de> <df5565a2f1e821041c7c531ad52a3344@kernel.org> <87h7q791j8.fsf@nanos.tec.linutronix.de> <877dr38kt8.fsf@nanos.tec.linutronix.de> <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
-Date:   Tue, 03 Nov 2020 11:16:56 +0100
-Message-ID: <87o8ke7njb.fsf@nanos.tec.linutronix.de>
+        Tue, 3 Nov 2020 05:18:03 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C2AC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:18:01 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id n15so17920801wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 02:18:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RkZWB0YhFN4kfhpEwAzxOH2XCdZ9MftAr89MTrZn16Q=;
+        b=X5uil4N9Z53aYQFnI9RDv/6fz8htR+bMfAIv+v8xnmX/vvGcSKZ2yq3pqPWd4cKq4X
+         0Jnh2mjqBzZkGGex9Z7GstOPkNWLPvj5f30HOk4r9TXYtjkqlIZfkpHhWZuIt+g7Zbiv
+         e0nP8PrvPnSNIX2Y+ERh7RdiwDNRV9CT51PBI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=RkZWB0YhFN4kfhpEwAzxOH2XCdZ9MftAr89MTrZn16Q=;
+        b=iEKBQMe0YICtgvUK4M9oLeYLlYMIbJ9lRWefumGhSMo9Rxx65kg692dLaNZwlgJ2GV
+         LocZP5m9R7P89+mt5qTPRtgKohzuB/SCcQcBGjn6VSpZwcGR4Q3BbUm2oaw61XK22c+5
+         NmHR4WzX0uHqGjRVCl3knEaqPlZ6SzW6a1rca0JgjiyjFbt6cqS8wKByhyZCRKNX/+8w
+         HAui9Hf4t2CnzuWj6CcpgbC4Ddfmj/gs1magO76bXMPpxnimpWQOq6CPANdVxQK7znci
+         zHykZT8WWrDhSw+VKxHxXaBYF8ig0neHVsWp2tvwMezqo89wGcdXuF2YiXKDQlFkfutf
+         Bm4g==
+X-Gm-Message-State: AOAM533pft7/okNo2kH4qOlI4Uv0NN3EwFgXacMJhMfsG4V9g9hf3vKt
+        TuAG+DCllaOlGcBorEtHuDtejA==
+X-Google-Smtp-Source: ABdhPJwXRyExMaTfPcmlrJRkH4KKkMLLcznxQYv3FwgqCUWtAtnMKUUCqsLSZhSubgJwprE3FwTK8A==
+X-Received: by 2002:a5d:43c6:: with SMTP id v6mr25147340wrr.20.1604398680376;
+        Tue, 03 Nov 2020 02:18:00 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 30sm25397063wrs.84.2020.11.03.02.17.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 02:17:59 -0800 (PST)
+Date:   Tue, 3 Nov 2020 11:17:57 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] drm/ingenic: Add option to alloc cached GEM buffers
+Message-ID: <20201103101757.GZ401619@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201102220651.22069-1-paul@crapouillou.net>
+ <20201102220651.22069-6-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102220651.22069-6-paul@crapouillou.net>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03 2020 at 09:54, Marc Zyngier wrote:
-> On 2020-11-02 22:18, Thomas Gleixner wrote:
->> On Mon, Nov 02 2020 at 17:16, Thomas Gleixner wrote:
->>> On Mon, Nov 02 2020 at 11:30, Marc Zyngier wrote:
->>>> --- a/drivers/pci/probe.c
->>>> +++ b/drivers/pci/probe.c
->>>> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus
->>>> *bus)
->>>>   		d = pci_host_bridge_msi_domain(b);
->>>> 
->>>>   	dev_set_msi_domain(&bus->dev, d);
->>>> +	if (!d)
->>>> +		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
->>> 
->>> Hrm, that might break legacy setups (no irqdomain support). I'd rather
->>> prefer to explicitly tell the pci core at host registration time.
->> 
->> s/might break/ breaks /     Just validated :)
->
-> For my own edification, can you point me to the failing case?
+On Mon, Nov 02, 2020 at 10:06:51PM +0000, Paul Cercueil wrote:
+> With the module parameter ingenic-drm.cached_gem_buffers, it is possible
+> to specify that we want GEM buffers backed by non-coherent memory.
+> 
+> This dramatically speeds up software rendering on Ingenic SoCs, even for
+> tasks where write-combine memory should in theory be faster (e.g. simple
+> blits).
+> 
+> Leave it disabled by default, since it is specific to one use-case
+> (software rendering).
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-Any architecture which selects PCI_MSI_ARCH_FALLBACKS and does not have
-irqdomain support runs into:
+Hm so maybe I'm making myself supremely unpopular here again with being
+very late, but we have dev->mode_config.prefer_shadow for this. Drivers
+should set this if software rendering is slow, and userspace should follow
+this.
 
-	if (!d)
-		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+Now unfortunately it looks like most kms drivers don't bother setting
+this, and we're a lot worse.
 
-which in turn makes pci_msi_supported() return 0 and consequently makes
-pci_enable_msi[x]() fail.
+So if "slow sw rendering" is the only reason, setting that flag is the
+right option.
 
-Thanks,
+Now the other thing is fbdev, since fbdev doesn't have this hint at all.
+But we already have full generic fbdev shadow support (for defio), so for
+that I think the best option is adding a force_shadow option to fbdev.
 
-        tglx
+If we otoh do this here, and some drivers get a in-kernel shadow support
+for kms, while others don't, then we have a pretty supreme mess. I'd like
+to avoid that.
+
+So maybe the right solution here is that we make sure that when you have
+cma helpers set up that mode_config.prefer_shadow is set. Ideally only
+when coherent dma memory is uncached/write-combine and hence slow for sw
+rendering. This might need a slight dma-api layering violation.
+-Daniel
+
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 58 +++++++++++++++++++++--
+>  drivers/gpu/drm/ingenic/ingenic-drm.h     |  4 ++
+>  drivers/gpu/drm/ingenic/ingenic-ipu.c     | 12 ++++-
+>  3 files changed, 69 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index b9c156e13156..1ec2ec2faa04 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/component.h>
+>  #include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/of_device.h>
+> @@ -22,6 +23,7 @@
+>  #include <drm/drm_color_mgmt.h>
+>  #include <drm/drm_crtc.h>
+>  #include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_damage_helper.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_gem_cma_helper.h>
+>  #include <drm/drm_fb_cma_helper.h>
+> @@ -97,6 +99,11 @@ struct ingenic_drm {
+>  	struct notifier_block clock_nb;
+>  };
+>  
+> +static bool ingenic_drm_cached_gem_buf;
+> +module_param_named(cached_gem_buffers, ingenic_drm_cached_gem_buf, bool, 0400);
+> +MODULE_PARM_DESC(cached_gem_buffers,
+> +		 "Enable fully cached GEM buffers [default=false]");
+> +
+>  static bool ingenic_drm_writeable_reg(struct device *dev, unsigned int reg)
+>  {
+>  	switch (reg) {
+> @@ -400,6 +407,8 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+>  	     plane->state->fb->format->format != state->fb->format->format))
+>  		crtc_state->mode_changed = true;
+>  
+> +	drm_atomic_helper_check_plane_damage(state->state, state);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -531,6 +540,14 @@ static void ingenic_drm_update_palette(struct ingenic_drm *priv,
+>  	}
+>  }
+>  
+> +void ingenic_drm_sync_data(struct device *dev,
+> +			   struct drm_plane_state *old_state,
+> +			   struct drm_plane_state *state)
+> +{
+> +	if (ingenic_drm_cached_gem_buf)
+> +		drm_gem_cma_sync_data(dev, old_state, state);
+> +}
+> +
+>  static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>  					    struct drm_plane_state *oldstate)
+>  {
+> @@ -543,6 +560,8 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>  	u32 fourcc;
+>  
+>  	if (state && state->fb) {
+> +		ingenic_drm_sync_data(priv->dev, oldstate, state);
+> +
+>  		crtc_state = state->crtc->state;
+>  
+>  		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
+> @@ -714,7 +733,36 @@ static void ingenic_drm_disable_vblank(struct drm_crtc *crtc)
+>  	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL, JZ_LCD_CTRL_EOF_IRQ, 0);
+>  }
+>  
+> -DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
+> +static struct drm_framebuffer *
+> +ingenic_drm_gem_fb_create(struct drm_device *dev, struct drm_file *file,
+> +			  const struct drm_mode_fb_cmd2 *mode_cmd)
+> +{
+> +	if (ingenic_drm_cached_gem_buf)
+> +		return drm_gem_fb_create_with_dirty(dev, file, mode_cmd);
+> +
+> +	return drm_gem_fb_create(dev, file, mode_cmd);
+> +}
+> +
+> +static int ingenic_drm_gem_cma_mmap(struct file *filp,
+> +				    struct vm_area_struct *vma)
+> +{
+> +	if (ingenic_drm_cached_gem_buf)
+> +		return drm_gem_cma_mmap_noncoherent(filp, vma);
+> +
+> +	return drm_gem_cma_mmap(filp, vma);
+> +}
+> +
+> +static const struct file_operations ingenic_drm_fops = {
+> +	.owner		= THIS_MODULE,
+> +	.open		= drm_open,
+> +	.release	= drm_release,
+> +	.unlocked_ioctl	= drm_ioctl,
+> +	.compat_ioctl	= drm_compat_ioctl,
+> +	.poll		= drm_poll,
+> +	.read		= drm_read,
+> +	.llseek		= noop_llseek,
+> +	.mmap		= ingenic_drm_gem_cma_mmap,
+> +};
+>  
+>  static struct drm_driver ingenic_drm_driver_data = {
+>  	.driver_features	= DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
+> @@ -726,7 +774,7 @@ static struct drm_driver ingenic_drm_driver_data = {
+>  	.patchlevel		= 0,
+>  
+>  	.fops			= &ingenic_drm_fops,
+> -	DRM_GEM_CMA_DRIVER_OPS,
+> +	DRM_GEM_CMA_DRIVER_OPS_WITH_DUMB_CREATE(drm_gem_cma_dumb_create_noncoherent),
+>  
+>  	.irq_handler		= ingenic_drm_irq_handler,
+>  };
+> @@ -778,7 +826,7 @@ static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs =
+>  };
+>  
+>  static const struct drm_mode_config_funcs ingenic_drm_mode_config_funcs = {
+> -	.fb_create		= drm_gem_fb_create,
+> +	.fb_create		= ingenic_drm_gem_fb_create,
+>  	.output_poll_changed	= drm_fb_helper_output_poll_changed,
+>  	.atomic_check		= drm_atomic_helper_check,
+>  	.atomic_commit		= drm_atomic_helper_commit,
+> @@ -932,6 +980,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  		return ret;
+>  	}
+>  
+> +	drm_plane_enable_fb_damage_clips(&priv->f1);
+> +
+>  	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+>  
+>  	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+> @@ -960,6 +1010,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  			return ret;
+>  		}
+>  
+> +		drm_plane_enable_fb_damage_clips(&priv->f0);
+> +
+>  		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && has_components) {
+>  			ret = component_bind_all(dev, drm);
+>  			if (ret) {
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> index 9b48ce02803d..ee3a892c0383 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> @@ -171,6 +171,10 @@ void ingenic_drm_plane_config(struct device *dev,
+>  			      struct drm_plane *plane, u32 fourcc);
+>  void ingenic_drm_plane_disable(struct device *dev, struct drm_plane *plane);
+>  
+> +void ingenic_drm_sync_data(struct device *dev,
+> +			   struct drm_plane_state *old_state,
+> +			   struct drm_plane_state *state);
+> +
+>  extern struct platform_driver *ingenic_ipu_driver_ptr;
+>  
+>  #endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> index fc8c6e970ee3..38c83e8cc6a5 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> @@ -20,6 +20,7 @@
+>  
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_damage_helper.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_fb_cma_helper.h>
+>  #include <drm/drm_fourcc.h>
+> @@ -316,6 +317,8 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
+>  				JZ_IPU_CTRL_CHIP_EN | JZ_IPU_CTRL_LCDC_SEL);
+>  	}
+>  
+> +	ingenic_drm_sync_data(ipu->master, oldstate, state);
+> +
+>  	/* New addresses will be committed in vblank handler... */
+>  	ipu->addr_y = drm_fb_cma_get_gem_addr(state->fb, state, 0);
+>  	if (finfo->num_planes > 1)
+> @@ -534,7 +537,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  
+>  	if (!state->crtc ||
+>  	    !crtc_state->mode.hdisplay || !crtc_state->mode.vdisplay)
+> -		return 0;
+> +		goto out_check_damage;
+>  
+>  	/* Plane must be fully visible */
+>  	if (state->crtc_x < 0 || state->crtc_y < 0 ||
+> @@ -551,7 +554,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  		return -EINVAL;
+>  
+>  	if (!osd_changed(state, plane->state))
+> -		return 0;
+> +		goto out_check_damage;
+>  
+>  	crtc_state->mode_changed = true;
+>  
+> @@ -578,6 +581,9 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  	ipu->denom_w = denom_w;
+>  	ipu->denom_h = denom_h;
+>  
+> +out_check_damage:
+> +	drm_atomic_helper_check_plane_damage(state->state, state);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -759,6 +765,8 @@ static int ingenic_ipu_bind(struct device *dev, struct device *master, void *d)
+>  		return err;
+>  	}
+>  
+> +	drm_plane_enable_fb_damage_clips(plane);
+> +
+>  	/*
+>  	 * Sharpness settings range is [0,32]
+>  	 * 0       : nearest-neighbor
+> -- 
+> 2.28.0
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
