@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33812A5785
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5FC2A5878
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732967AbgKCVnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:43:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54594 "EHLO mail.kernel.org"
+        id S1731422AbgKCVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:52:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732643AbgKCUyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:55 -0500
+        id S1731341AbgKCUrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53E682053B;
-        Tue,  3 Nov 2020 20:54:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 655642242E;
+        Tue,  3 Nov 2020 20:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436894;
-        bh=omeB6+tOCoWWr9ipWW8m5cq5w0L9ieeSNwjQ2wXzrrg=;
+        s=default; t=1604436451;
+        bh=cdwq7e+MxYCBy7Mn8XuxZ/5qELbyFyuJUbTwgl7F0Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCBF/QOBQHO0HG8F9iQHqFottuJW/GgVn17EsQt5faDaNUb1a2MLh4CKYlJUEsZby
-         k3O43YiXAx2jxHiJJEKBBlVgHsVXLeTzD5iKr1Hn4poqF1c26Q9rUN6CRZaYq8oOU2
-         efU4RjVk2JnKa+4Qt+8n7fKzcYze2Qy9WiWXkJOI=
+        b=KDO/7MQWmESH6RLvOlDzQwaEolle9sJcXjuAPRRtK0jPPjhQL+IQHRMdzmE9TNxMn
+         0Vns/gYChZYXkdJiWVGiwTzT6vldeHofGJhH609eEe9hWBFKN0zQlKAvhYNatBeug0
+         Ki46EIOTpdxyGLvqdBey7xxMf8sLD4CCqb1WrPfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 057/214] USB: adutux: fix debugging
-Date:   Tue,  3 Nov 2020 21:35:05 +0100
-Message-Id: <20201103203255.667406952@linuxfoundation.org>
+        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 5.9 255/391] vt: keyboard, extend func_buf_lock to readers
+Date:   Tue,  3 Nov 2020 21:35:06 +0100
+Message-Id: <20201103203404.228554758@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
+commit 82e61c3909db51d91b9d3e2071557b6435018b80 upstream.
 
-Handling for removal of the controller was missing at one place.
-Add it.
+Both read-side users of func_table/func_buf need locking. Without that,
+one can easily confuse the code by repeatedly setting altering strings
+like:
+while (1)
+	for (a = 0; a < 2; a++) {
+		struct kbsentry kbs = {};
+		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
+		ioctl(fd, KDSKBSENT, &kbs);
+	}
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
+When that program runs, one can get unexpected output by holding F1
+(note the unxpected period on the last line):
+.
+88888
+.8888
+
+So protect all accesses to 'func_table' (and func_buf) by preexisting
+'func_buf_lock'.
+
+It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
+On the other hand, KDGKBSENT needs a local (atomic) copy of the string
+because copy_to_user can sleep. Use already allocated, but unused
+'kbs->kb_string' for that purpose.
+
+Note that the program above needs at least CAP_SYS_TTY_CONFIG.
+
+This depends on the previous patch and on the func_buf_lock lock added
+in commit 46ca3f735f34 (tty/vt: fix write/write race in ioctl(KDSKBSENT)
+handler) in 5.2.
+
+Likely fixes CVE-2020-25656.
+
+Cc: <stable@vger.kernel.org>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20201019085517.10176-2-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/usb/misc/adutux.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/vt/keyboard.c |   17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
-index d8d157c4c271d..96495fcd952aa 100644
---- a/drivers/usb/misc/adutux.c
-+++ b/drivers/usb/misc/adutux.c
-@@ -209,6 +209,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -743,8 +743,13 @@ static void k_fn(struct vc_data *vc, uns
+ 		return;
  
- 	if (status != 0) {
- 		if ((status != -ENOENT) &&
-+		    (status != -ESHUTDOWN) &&
- 		    (status != -ECONNRESET)) {
- 			dev_dbg(&dev->udev->dev,
- 				"%s :nonzero status received: %d\n", __func__,
--- 
-2.27.0
-
+ 	if ((unsigned)value < ARRAY_SIZE(func_table)) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&func_buf_lock, flags);
+ 		if (func_table[value])
+ 			puts_queue(vc, func_table[value]);
++		spin_unlock_irqrestore(&func_buf_lock, flags);
++
+ 	} else
+ 		pr_err("k_fn called with value=%d\n", value);
+ }
+@@ -1991,7 +1996,7 @@ out:
+ #undef s
+ #undef v
+ 
+-/* FIXME: This one needs untangling and locking */
++/* FIXME: This one needs untangling */
+ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ {
+ 	struct kbsentry *kbs;
+@@ -2023,10 +2028,14 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
+ 	switch (cmd) {
+ 	case KDGKBSENT: {
+ 		/* size should have been a struct member */
+-		unsigned char *from = func_table[i] ? : "";
++		ssize_t len = sizeof(user_kdgkb->kb_string);
++
++		spin_lock_irqsave(&func_buf_lock, flags);
++		len = strlcpy(kbs->kb_string, func_table[i] ? : "", len);
++		spin_unlock_irqrestore(&func_buf_lock, flags);
+ 
+-		ret = copy_to_user(user_kdgkb->kb_string, from,
+-				strlen(from) + 1) ? -EFAULT : 0;
++		ret = copy_to_user(user_kdgkb->kb_string, kbs->kb_string,
++				len + 1) ? -EFAULT : 0;
+ 
+ 		goto reterr;
+ 	}
 
 
