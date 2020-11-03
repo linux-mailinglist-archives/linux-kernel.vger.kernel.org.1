@@ -2,88 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0872A50F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE83F2A5329
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgKCUgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:36:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
+        id S1732962AbgKCU6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbgKCUgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:36:32 -0500
-Received: from localhost (p5486c89f.dip0.t-ipconnect.de [84.134.200.159])
+        id S1731620AbgKCU6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:09 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA52521556;
-        Tue,  3 Nov 2020 20:36:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10D7A22226;
+        Tue,  3 Nov 2020 20:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435792;
-        bh=Z2x8JtW7Jt659gqXkTckJoKqTGCGca7XWCshbN9LalU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f1agjOoRFfQYunkxE+6Zmd+jg7qf23289C3JbK1rnumqNpWseEp/RpejcbhbMm8ga
-         572Ifxp2+z1PteOtOI5Ov7XdhGLXvjG6EsG0w1+c42p1a3TCaF2119BWm+rhLj6PPQ
-         29FMl18V27l0NleVWLfu6Dveu7u6VR+ERH2s1RTE=
-Date:   Tue, 3 Nov 2020 21:36:29 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: aT91: remove legacy DMA left overs
-Message-ID: <20201103203629.GB1583@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
+        s=default; t=1604437088;
+        bh=6gqfKi7nRYV04QdamIXbFjjF4hzO7LFY2ItuIf0RGDY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uDeZKCp1wJdj6qMpiP/Zs7Kcm6uci7BAkUG+rpZsgnWzoquKQTXABP6DmUhxLQhBL
+         9c0mFwYmQKM4oOtm77D5BNYrlolmODIETlFSg7zsYRK7YO8PUwQS5sW+btgRRUl3Ey
+         PtT9OvCMj2yfLEeZCrgF4HC5SEYqDSsywxVpfNCM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Pascal Vizeli <pascal.vizeli@nabucasa.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 5.4 141/214] usb: cdc-acm: fix cooldown mechanism
+Date:   Tue,  3 Nov 2020 21:36:29 +0100
+Message-Id: <20201103203304.045751616@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jerome Brunet <jbrunet@baylibre.com>
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 38203b8385bf6283537162bde7d499f830964711 upstream.
 
-On Wed, Sep 30, 2020 at 04:56:54PM +0200, Alexandre Belloni wrote:
-> Commit dc6df6e90de9 ("i2c: at91: remove legacy DMA support") removed legcy
-> DMA support from the driver. Remove the last use of the definitions from
-> linux/platform_data/dma-atmel.h and stop including this header.
->=20
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Commit a4e7279cd1d1 ("cdc-acm: introduce a cool down") is causing
+regression if there is some USB error, such as -EPROTO.
 
-Fixed the typo in the commit message and applied to for-next, thanks!
+This has been reported on some samples of the Odroid-N2 using the Combee II
+Zibgee USB dongle.
+
+> struct acm *acm = container_of(work, struct acm, work)
+
+is incorrect in case of a delayed work and causes warnings, usually from
+the workqueue:
+
+> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:1474 __queue_work+0x480/0x528.
+
+When this happens, USB eventually stops working completely after a while.
+Also the ACM_ERROR_DELAY bit is never set, so the cooldown mechanism
+previously introduced cannot be triggered and acm_submit_read_urb() is
+never called.
+
+This changes makes the cdc-acm driver use a single delayed work, fixing the
+pointer arithmetic in acm_softint() and set the ACM_ERROR_DELAY when the
+cooldown mechanism appear to be needed.
+
+Fixes: a4e7279cd1d1 ("cdc-acm: introduce a cool down")
+Cc: Oliver Neukum <oneukum@suse.com>
+Reported-by: Pascal Vizeli <pascal.vizeli@nabucasa.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201019170702.150534-1-jbrunet@baylibre.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/usb/class/cdc-acm.c |   12 +++++-------
+ drivers/usb/class/cdc-acm.h |    3 +--
+ 2 files changed, 6 insertions(+), 9 deletions(-)
+
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -507,6 +507,7 @@ static void acm_read_bulk_callback(struc
+ 			"%s - cooling babbling device\n", __func__);
+ 		usb_mark_last_busy(acm->dev);
+ 		set_bit(rb->index, &acm->urbs_in_error_delay);
++		set_bit(ACM_ERROR_DELAY, &acm->flags);
+ 		cooldown = true;
+ 		break;
+ 	default:
+@@ -532,7 +533,7 @@ static void acm_read_bulk_callback(struc
+ 
+ 	if (stopped || stalled || cooldown) {
+ 		if (stalled)
+-			schedule_work(&acm->work);
++			schedule_delayed_work(&acm->dwork, 0);
+ 		else if (cooldown)
+ 			schedule_delayed_work(&acm->dwork, HZ / 2);
+ 		return;
+@@ -562,13 +563,13 @@ static void acm_write_bulk(struct urb *u
+ 	acm_write_done(acm, wb);
+ 	spin_unlock_irqrestore(&acm->write_lock, flags);
+ 	set_bit(EVENT_TTY_WAKEUP, &acm->flags);
+-	schedule_work(&acm->work);
++	schedule_delayed_work(&acm->dwork, 0);
+ }
+ 
+ static void acm_softint(struct work_struct *work)
+ {
+ 	int i;
+-	struct acm *acm = container_of(work, struct acm, work);
++	struct acm *acm = container_of(work, struct acm, dwork.work);
+ 
+ 	if (test_bit(EVENT_RX_STALL, &acm->flags)) {
+ 		smp_mb(); /* against acm_suspend() */
+@@ -584,7 +585,7 @@ static void acm_softint(struct work_stru
+ 	if (test_and_clear_bit(ACM_ERROR_DELAY, &acm->flags)) {
+ 		for (i = 0; i < acm->rx_buflimit; i++)
+ 			if (test_and_clear_bit(i, &acm->urbs_in_error_delay))
+-					acm_submit_read_urb(acm, i, GFP_NOIO);
++				acm_submit_read_urb(acm, i, GFP_KERNEL);
+ 	}
+ 
+ 	if (test_and_clear_bit(EVENT_TTY_WAKEUP, &acm->flags))
+@@ -1364,7 +1365,6 @@ made_compressed_probe:
+ 	acm->ctrlsize = ctrlsize;
+ 	acm->readsize = readsize;
+ 	acm->rx_buflimit = num_rx_buf;
+-	INIT_WORK(&acm->work, acm_softint);
+ 	INIT_DELAYED_WORK(&acm->dwork, acm_softint);
+ 	init_waitqueue_head(&acm->wioctl);
+ 	spin_lock_init(&acm->write_lock);
+@@ -1574,7 +1574,6 @@ static void acm_disconnect(struct usb_in
+ 	}
+ 
+ 	acm_kill_urbs(acm);
+-	cancel_work_sync(&acm->work);
+ 	cancel_delayed_work_sync(&acm->dwork);
+ 
+ 	tty_unregister_device(acm_tty_driver, acm->minor);
+@@ -1617,7 +1616,6 @@ static int acm_suspend(struct usb_interf
+ 		return 0;
+ 
+ 	acm_kill_urbs(acm);
+-	cancel_work_sync(&acm->work);
+ 	cancel_delayed_work_sync(&acm->dwork);
+ 	acm->urbs_in_error_delay = 0;
+ 
+--- a/drivers/usb/class/cdc-acm.h
++++ b/drivers/usb/class/cdc-acm.h
+@@ -112,8 +112,7 @@ struct acm {
+ #		define ACM_ERROR_DELAY	3
+ 	unsigned long urbs_in_error_delay;		/* these need to be restarted after a delay */
+ 	struct usb_cdc_line_coding line;		/* bits, stop, parity */
+-	struct work_struct work;			/* work queue entry for various purposes*/
+-	struct delayed_work dwork;			/* for cool downs needed in error recovery */
++	struct delayed_work dwork;		        /* work queue entry for various purposes */
+ 	unsigned int ctrlin;				/* input control lines (DCD, DSR, RI, break, overruns) */
+ 	unsigned int ctrlout;				/* output control lines (DTR, RTS) */
+ 	struct async_icount iocount;			/* counters for control line changes */
 
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+hv00ACgkQFA3kzBSg
-KbbxNhAAptbL/WGIALpRuck5F7tHm5Jhm2Ip+AE2vgOOer5/BGU9yIEJ0ii0W50T
-jrPq/Roxv5HJBMB3ZbQ7BYApPYzRlfsQn1YhqMH8MELAFQb9cpQGlZwIn00i5cGV
-RJ5TUueJ/skficks+ZyMuXJ1ZA1KZjbdeDFsrE3iHDui5H7H38pErxgZDSMflitY
-sKEFAGJJyFl4YYbl6UgAJXY1namXn3eiyV0CMwg8NRlEzAGdcua0Z7bgxNU1H9N7
-2Du9QvRjtd8bBhHVTg8Ryvj+MDyZIjQkN47SR2P6A1bbpSfs8F7PGXiHTBEbsNrl
-bkM+Z30qqxeJMglqlOS0P+Hy7uPSb17OhEOACmgsPPLszis3tpNv86B9PYMpDxYN
-DA00us++qDtjeFV0wdBkSjhxwJekm8ap1ZySsucJ6/MWm1miRtou4VWQY/4qkExg
-ZZ1SJ8eqFiQtJD7QTeAcXyBAypSIrSSQaAO5n53BQJll3R4caKdCg2l2sl2pZ2rj
-QDnMonsXtsCth5ZaNE5Nb2lWABOUsIHNsi90/fZjO4ZgAfBv+VH9nFfVjmv2qV1i
-JeIVk0gWJEFeOWJWac8nzBQcOJKS9e7/ZYIsexPMEazmbTWlL9pM7nRVZiktm7CE
-/FxNBnCIjwksol9BUBOZ8OnYs8m9S+wPPC6YpkRaJSN5ZUmsQLk=
-=sZgt
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
