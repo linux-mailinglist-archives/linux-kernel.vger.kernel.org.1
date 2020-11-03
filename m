@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C33B2A4391
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9532A4393
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgKCK5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:57:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:53256 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgKCK5c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:57:32 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A3AnVlA081704;
-        Tue, 3 Nov 2020 10:57:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=2X1DUNb7To2PAAzGAe4OVTg1saE+DpGcHkMxTZvhejc=;
- b=lhatHrAZ27vTwLGDvdySIM4TkXbcTkRBQxsciVmT3ZFsOF9i7uQj8p3D4EkwVvIbkVL7
- xams4Y+M0UlhYgIUUjDhz64N9DqQiyxV7Y1VzkABlyw5uvTQ4T7tEI3BVo3rqK8e+Ldz
- b6t54hPGJVvVaxCUir3uJbNdbZjjTeYSS799xL6cV73fg54rAmIEO9x1d5W/A1GXWjNQ
- D03LRhtC/CI6QenahRQsOC6sXFvbXkER00gwQSDnmZHJuvUCWyBoIx+cRwlsUd3ps9sy
- kA2Ol1ai3s7OTpp4SIdr5+6wc1Vx1hUIc8885l0RF/1s9a/yUrOkIwNkME73lTCo8s21 xA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34hhb20nx2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 03 Nov 2020 10:57:25 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A3AuaPQ113472;
-        Tue, 3 Nov 2020 10:57:24 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34hw0gsn2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Nov 2020 10:57:24 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A3AvKt6017566;
-        Tue, 3 Nov 2020 10:57:20 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Nov 2020 02:57:20 -0800
-Date:   Tue, 3 Nov 2020 13:57:13 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Stephen Boyd <sboyd@kernel.org>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [kbuild] sound/soc/codecs/wcd934x.c:1571:9: warning: Identical
- condition 'ret', second condition is always false
-Message-ID: <20201103105713.GC18329@kadam>
+        id S1728122AbgKCK6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:58:10 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50384 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726058AbgKCK6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:58:10 -0500
+Received: from zn.tnic (p200300ec2f10e0003c085ddaf11537c5.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:e000:3c08:5dda:f115:37c5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 24C661EC02E6;
+        Tue,  3 Nov 2020 11:58:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604401089;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0eBb3iz1k3ff6oq56+v0Kv7pCTv1NKfu1eGxm6iHIkw=;
+        b=I7gx60bFgf5QXE+FwMSrWylpE6J7ELZCLfIhjJFDV2uLKE2NeTIDveyGroKNbygbJLKq/U
+        TUYO2lPj1CbSqmSmbEG79dcSHXpAq0KrlKr879C5jsRbaMVCxKdjHlC2Odhlp2j7QZwXia
+        OaKlCNjVV31ejUaWDS2ivLlU+GJgXZE=
+Date:   Tue, 3 Nov 2020 11:57:57 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Anand K. Mistry" <amistry@google.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Joel Fernandes <joelaf@google.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        tglx@linutronix.de, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] x86/speculation: Allow IBPB to be conditionally
+ enabled on CPUs with always-on STIBP
+Message-ID: <20201103105757.GC6310@zn.tnic>
+References: <20201029065133.3027749-1-amistry@google.com>
+ <20201029175120.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid>
+ <839fad53-4377-592a-a0da-2cf18b5c6027@amd.com>
+ <CAATStaOTMrdserLepxkSdFErrjhMKyvd_g_GNBqOo_4p932ikw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-ID-Hash: E7S6N33ZAPIYBPXD4MTHB3JGUIZFI3ZE
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011030074
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011030073
+In-Reply-To: <CAATStaOTMrdserLepxkSdFErrjhMKyvd_g_GNBqOo_4p932ikw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   b7cbaf59f62f8ab8f157698f9e31642bff525bd0
-commit: bbd7ffdbef6888459f301c5889f3b14ada38b913 clk: Allow the common clk framework to be selectable
-compiler: ia64-linux-gcc (GCC) 9.3.0
+On Mon, Nov 02, 2020 at 11:02:10AM +1100, Anand K. Mistry wrote:
+> > I like the idea of passing in the mode you want to check, but it appears
+> > they are never used independently. The ibpb and stibp modes are always
+> > checked together in one of the if statements below, so you could make this
+> > a function that checks both modes and just have a single call. I'll leave
+> > that up to the maintainers to see what is preferred.
+> 
+> I can see both sides to this. Personally, I think I prefer it as-is
+> since I think it improves readability a bit by making the conditions
+> less complicated whilst not hiding too many details. I'll wait to see
+> what others say before changing this one.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Yes, but if you make it a single function with a descriptive name, you'd
+make the call sites even more readable:
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+	if (!is_spec_ib_conditional(..))
+		bla;
 
->> sound/soc/codecs/wcd934x.c:1571:9: warning: Identical condition 'ret', second condition is always false [identicalConditionAfterEarlyExit]
-    return ret;
-           ^
-   sound/soc/codecs/wcd934x.c:1568:6: note: first condition
-    if (ret)
-        ^
-   sound/soc/codecs/wcd934x.c:1571:9: note: second condition
-    return ret;
-           ^
+or
 
-vim +/ret +1571 sound/soc/codecs/wcd934x.c
+	if (!is_spec_ib_user_controlled(..))
+		blu;
 
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1561  
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1562  	ret = wcd934x_set_prim_interpolator_rate(dai, (u8)rate_val,
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1563  						 sample_rate);
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1564  	if (ret)
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1565  		return ret;
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1566  	ret = wcd934x_set_mix_interpolator_rate(dai, (u8)rate_val,
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1567  						sample_rate);
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1568  	if (ret)
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1569  		return ret;
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1570  
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19 @1571  	return ret;
-                                                        ^^^^^^^^^^^
-Just "return 0;"
+and that function should simply check both spectre_v2_user_ibpb *and*
+spectre_v2_user_stibp in one go.
 
-a61f3b4f476eceb Srinivas Kandagatla 2019-12-19  1572  }
+Why should we do that?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+Exactly because you both got your brains twisted just from looking at
+this. Because this mitigation crap is such an ugly and complex maze that
+we would take even the smallest simplification any day of the week!
+
+Welcome to my life since meltdown. Brain twist feels good, doesn't it?
+
+:-)))
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
