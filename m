@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550262A5718
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1D32A5716
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732778AbgKCVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:34:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
+        id S2387862AbgKCVeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:34:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732169AbgKCU4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:43 -0500
+        id S1729971AbgKCU4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 121B92080D;
-        Tue,  3 Nov 2020 20:56:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DC1320732;
+        Tue,  3 Nov 2020 20:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437002;
-        bh=kcskiwX7bdMvjhRCV6N6pCuJXa2NDRQFDRAqPYhFQD4=;
+        s=default; t=1604437004;
+        bh=625CS+VVUcH2j+DlX50bWniL4e5cbojM1+nNSZ7KK1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z4WYvmxIRpbqQWfA++8cmtmVhKBk7HJfeOZNukzjZhtYcJsDL7WczLR0RtFsfJtVb
-         iKRAr+97Lrh1OqGUfXQlfcasiugmYQr/aAfGCCeXplX4IJKxLf9rXK6/GkjX9rBhZe
-         iSuESm+QfxNmhd/ttuBJG/Zfjw+Vxi+/7NOMGTfo=
+        b=BtWTVWism9dSQ9hxcnhNQHfCn/2RPjBfyz3uL97IA+m8Io5ZB+rOJsy6+x7ir1CRG
+         mUfmhuKZTqCiGSKCBWdBUyUxy4pJyEbBP5Erz9w6IcOqbLLjdNnBbioWgHRgBW7SqQ
+         JbPDIkJ54WMfzpcOU2deYEeZy5suo1SwbSu9KVpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephane Eranian <stephane.eranian@google.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 103/214] perf/x86/amd/ibs: Fix raw sample data accumulation
-Date:   Tue,  3 Nov 2020 21:35:51 +0100
-Message-Id: <20201103203300.397882535@linuxfoundation.org>
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 104/214] spi: sprd: Release DMA channel also on probe deferral
+Date:   Tue,  3 Nov 2020 21:35:52 +0100
+Message-Id: <20201103203300.738353279@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -44,80 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 36e1be8ada994d509538b3b1d0af8b63c351e729 upstream.
+commit 687a2e76186dcfa42f22c14b655c3fb159839e79 upstream.
 
-Neither IbsBrTarget nor OPDATA4 are populated in IBS Fetch mode.
-Don't accumulate them into raw sample user data in that case.
+If dma_request_chan() for TX channel fails with EPROBE_DEFER, the RX
+channel would not be released and on next re-probe it would be requested
+second time.
 
-Also, in Fetch mode, add saving the IBS Fetch Control Extended MSR.
-
-Technically, there is an ABI change here with respect to the IBS raw
-sample data format, but I don't see any perf driver version information
-being included in perf.data file headers, but, existing users can detect
-whether the size of the sample record has reduced by 8 bytes to
-determine whether the IBS driver has this fix.
-
-Fixes: 904cb3677f3a ("perf/x86/amd/ibs: Update IBS MSRs and feature definitions")
-Reported-by: Stephane Eranian <stephane.eranian@google.com>
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200908214740.18097-6-kim.phillips@amd.com
+Fixes: 386119bc7be9 ("spi: sprd: spi: sprd: Add DMA mode support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
+Link: https://lore.kernel.org/r/20200901152713.18629-1-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/events/amd/ibs.c        |   26 ++++++++++++++++----------
- arch/x86/include/asm/msr-index.h |    1 +
- 2 files changed, 17 insertions(+), 10 deletions(-)
+ drivers/spi/spi-sprd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -636,18 +636,24 @@ fail:
- 				       perf_ibs->offset_max,
- 				       offset + 1);
- 	} while (offset < offset_max);
-+	/*
-+	 * Read IbsBrTarget, IbsOpData4, and IbsExtdCtl separately
-+	 * depending on their availability.
-+	 * Can't add to offset_max as they are staggered
-+	 */
- 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
--		/*
--		 * Read IbsBrTarget and IbsOpData4 separately
--		 * depending on their availability.
--		 * Can't add to offset_max as they are staggered
--		 */
--		if (ibs_caps & IBS_CAPS_BRNTRGT) {
--			rdmsrl(MSR_AMD64_IBSBRTARGET, *buf++);
--			size++;
-+		if (perf_ibs == &perf_ibs_op) {
-+			if (ibs_caps & IBS_CAPS_BRNTRGT) {
-+				rdmsrl(MSR_AMD64_IBSBRTARGET, *buf++);
-+				size++;
-+			}
-+			if (ibs_caps & IBS_CAPS_OPDATA4) {
-+				rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
-+				size++;
-+			}
- 		}
--		if (ibs_caps & IBS_CAPS_OPDATA4) {
--			rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
-+		if (perf_ibs == &perf_ibs_fetch && (ibs_caps & IBS_CAPS_FETCHCTLEXTD)) {
-+			rdmsrl(MSR_AMD64_ICIBSEXTDCTL, *buf++);
- 			size++;
- 		}
+--- a/drivers/spi/spi-sprd.c
++++ b/drivers/spi/spi-sprd.c
+@@ -563,11 +563,11 @@ static int sprd_spi_dma_request(struct s
+ 
+ 	ss->dma.dma_chan[SPRD_SPI_TX]  = dma_request_chan(ss->dev, "tx_chn");
+ 	if (IS_ERR_OR_NULL(ss->dma.dma_chan[SPRD_SPI_TX])) {
++		dma_release_channel(ss->dma.dma_chan[SPRD_SPI_RX]);
+ 		if (PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]) == -EPROBE_DEFER)
+ 			return PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]);
+ 
+ 		dev_err(ss->dev, "request TX DMA channel failed!\n");
+-		dma_release_channel(ss->dma.dma_chan[SPRD_SPI_RX]);
+ 		return PTR_ERR(ss->dma.dma_chan[SPRD_SPI_TX]);
  	}
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -432,6 +432,7 @@
- #define MSR_AMD64_IBSOP_REG_MASK	((1UL<<MSR_AMD64_IBSOP_REG_COUNT)-1)
- #define MSR_AMD64_IBSCTL		0xc001103a
- #define MSR_AMD64_IBSBRTARGET		0xc001103b
-+#define MSR_AMD64_ICIBSEXTDCTL		0xc001103c
- #define MSR_AMD64_IBSOPDATA4		0xc001103d
- #define MSR_AMD64_IBS_REG_COUNT_MAX	8 /* includes MSR_AMD64_IBSBRTARGET */
- #define MSR_AMD64_SEV			0xc0010131
+ 
 
 
