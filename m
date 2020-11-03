@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4D32A5376
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BC32A54FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387434AbgKCVBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:01:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37488 "EHLO mail.kernel.org"
+        id S2388851AbgKCVLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:11:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733059AbgKCVBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:01:09 -0500
+        id S2388361AbgKCVLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:11:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06C4721534;
-        Tue,  3 Nov 2020 21:01:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF54521534;
+        Tue,  3 Nov 2020 21:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437268;
-        bh=dV5HgVQ8i1v1jeoxbx40rf/N/s9JLAL6Hg+cjHksn3w=;
+        s=default; t=1604437877;
+        bh=TG50nwkbsifVMv6k6jdz5GTFDBMqrGJndteAx42ttsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aX39iwKlQ/EnYV5q3tas6nzMY8cMZl7KKEZbjrkgUXJJXdmE7gpve5a1+7HgupWzz
-         vApGHlo6n2QLFeOPa0nMiaHnpcwy9k71tgNNyDEhY26/INJajlOA/PFcCjOgyWsOXk
-         qNCkTkXXGhaiYY9cysNmHH8rvT8151BzUDdtmNWg=
+        b=wjFOdm1b/pVSy1Zhm0N7mRNVu6aNlU3i8za7aHJ/Hl2OE9SjEuTTrJG11BVCXdxSO
+         9A324EfwRwBfV7kecUo7dHxYV2SUfj+GpLEGJ/QGjrt0RuNhO1aNRNsAmoYD/dQAuK
+         orDE/mxsJYmbz9X0Kk+mad1PXZyxcUrZnCUZ8E9c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jiri Slaby <jirislaby@kernel.org>, Greg KH <greg@kroah.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 200/214] tty: make FONTX ioctl use the tty pointer they were actually passed
+        stable@vger.kernel.org,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>
+Subject: [PATCH 4.14 071/125] w1: mxc_w1: Fix timeout resolution problem leading to bus error
 Date:   Tue,  3 Nov 2020 21:37:28 +0100
-Message-Id: <20201103203309.375880823@linuxfoundation.org>
+Message-Id: <20201103203207.265575603@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,153 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-commit 90bfdeef83f1d6c696039b6a917190dcbbad3220 upstream.
+commit c9723750a699c3bd465493ac2be8992b72ccb105 upstream.
 
-Some of the font tty ioctl's always used the current foreground VC for
-their operations.  Don't do that then.
+On my platform (i.MX53) bus access sometimes fails with
+	w1_search: max_slave_count 64 reached, will continue next search.
 
-This fixes a data race on fg_console.
+The reason is the use of jiffies to implement a 200us timeout in
+mxc_w1_ds2_touch_bit().
+On some platforms the jiffies timer resolution is insufficient for this.
 
-Side note: both Michael Ellerman and Jiri Slaby point out that all these
-ioctls are deprecated, and should probably have been removed long ago,
-and everything seems to be using the KDFONTOP ioctl instead.
+Fix by replacing jiffies by ktime_get().
 
-In fact, Michael points out that it looks like busybox's loadfont
-program seems to have switched over to using KDFONTOP exactly _because_
-of this bug (ahem.. 12 years ago ;-).
+For consistency apply the same change to the other use of jiffies in
+mxc_w1_ds2_reset_bus().
 
-Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
-Cc: Greg KH <greg@kroah.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f80b2581a706 ("w1: mxc_w1: Optimize mxc_w1_ds2_touch_bit()")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Link: https://lore.kernel.org/r/1601455030-6607-1-git-send-email-martin.fuzzey@flowbird.group
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt_ioctl.c |   32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ drivers/w1/masters/mxc_w1.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -244,7 +244,7 @@ int vt_waitactive(int n)
+--- a/drivers/w1/masters/mxc_w1.c
++++ b/drivers/w1/masters/mxc_w1.c
+@@ -15,7 +15,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
+-#include <linux/jiffies.h>
++#include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
  
- 
- static inline int 
--do_fontx_ioctl(int cmd, struct consolefontdesc __user *user_cfd, int perm, struct console_font_op *op)
-+do_fontx_ioctl(struct vc_data *vc, int cmd, struct consolefontdesc __user *user_cfd, int perm, struct console_font_op *op)
+@@ -47,12 +47,12 @@ struct mxc_w1_device {
+ static u8 mxc_w1_ds2_reset_bus(void *data)
  {
- 	struct consolefontdesc cfdarg;
- 	int i;
-@@ -262,15 +262,16 @@ do_fontx_ioctl(int cmd, struct consolefo
- 		op->height = cfdarg.charheight;
- 		op->charcount = cfdarg.charcount;
- 		op->data = cfdarg.chardata;
--		return con_font_op(vc_cons[fg_console].d, op);
--	case GIO_FONTX: {
-+		return con_font_op(vc, op);
-+
-+	case GIO_FONTX:
- 		op->op = KD_FONT_OP_GET;
- 		op->flags = KD_FONT_FLAG_OLD;
- 		op->width = 8;
- 		op->height = cfdarg.charheight;
- 		op->charcount = cfdarg.charcount;
- 		op->data = cfdarg.chardata;
--		i = con_font_op(vc_cons[fg_console].d, op);
-+		i = con_font_op(vc, op);
- 		if (i)
- 			return i;
- 		cfdarg.charheight = op->height;
-@@ -278,7 +279,6 @@ do_fontx_ioctl(int cmd, struct consolefo
- 		if (copy_to_user(user_cfd, &cfdarg, sizeof(struct consolefontdesc)))
- 			return -EFAULT;
- 		return 0;
--		}
- 	}
- 	return -EINVAL;
+ 	struct mxc_w1_device *dev = data;
+-	unsigned long timeout;
++	ktime_t timeout;
+ 
+ 	writeb(MXC_W1_CONTROL_RPP, dev->regs + MXC_W1_CONTROL);
+ 
+ 	/* Wait for reset sequence 511+512us, use 1500us for sure */
+-	timeout = jiffies + usecs_to_jiffies(1500);
++	timeout = ktime_add_us(ktime_get(), 1500);
+ 
+ 	udelay(511 + 512);
+ 
+@@ -62,7 +62,7 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
+ 		/* PST bit is valid after the RPP bit is self-cleared */
+ 		if (!(ctrl & MXC_W1_CONTROL_RPP))
+ 			return !(ctrl & MXC_W1_CONTROL_PST);
+-	} while (time_is_after_jiffies(timeout));
++	} while (ktime_before(ktime_get(), timeout));
+ 
+ 	return 1;
  }
-@@ -924,7 +924,7 @@ int vt_ioctl(struct tty_struct *tty,
- 		op.height = 0;
- 		op.charcount = 256;
- 		op.data = up;
--		ret = con_font_op(vc_cons[fg_console].d, &op);
-+		ret = con_font_op(vc, &op);
- 		break;
- 	}
- 
-@@ -935,7 +935,7 @@ int vt_ioctl(struct tty_struct *tty,
- 		op.height = 32;
- 		op.charcount = 256;
- 		op.data = up;
--		ret = con_font_op(vc_cons[fg_console].d, &op);
-+		ret = con_font_op(vc, &op);
- 		break;
- 	}
- 
-@@ -952,7 +952,7 @@ int vt_ioctl(struct tty_struct *tty,
- 
- 	case PIO_FONTX:
- 	case GIO_FONTX:
--		ret = do_fontx_ioctl(cmd, up, perm, &op);
-+		ret = do_fontx_ioctl(vc, cmd, up, perm, &op);
- 		break;
- 
- 	case PIO_FONTRESET:
-@@ -969,11 +969,11 @@ int vt_ioctl(struct tty_struct *tty,
- 		{
- 		op.op = KD_FONT_OP_SET_DEFAULT;
- 		op.data = NULL;
--		ret = con_font_op(vc_cons[fg_console].d, &op);
-+		ret = con_font_op(vc, &op);
- 		if (ret)
- 			break;
- 		console_lock();
--		con_set_default_unimap(vc_cons[fg_console].d);
-+		con_set_default_unimap(vc);
- 		console_unlock();
- 		break;
- 		}
-@@ -1100,8 +1100,9 @@ struct compat_consolefontdesc {
- };
- 
- static inline int
--compat_fontx_ioctl(int cmd, struct compat_consolefontdesc __user *user_cfd,
--			 int perm, struct console_font_op *op)
-+compat_fontx_ioctl(struct vc_data *vc, int cmd,
-+		   struct compat_consolefontdesc __user *user_cfd,
-+		   int perm, struct console_font_op *op)
+@@ -75,12 +75,12 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
+ static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
  {
- 	struct compat_consolefontdesc cfdarg;
- 	int i;
-@@ -1119,7 +1120,8 @@ compat_fontx_ioctl(int cmd, struct compa
- 		op->height = cfdarg.charheight;
- 		op->charcount = cfdarg.charcount;
- 		op->data = compat_ptr(cfdarg.chardata);
--		return con_font_op(vc_cons[fg_console].d, op);
-+		return con_font_op(vc, op);
-+
- 	case GIO_FONTX:
- 		op->op = KD_FONT_OP_GET;
- 		op->flags = KD_FONT_FLAG_OLD;
-@@ -1127,7 +1129,7 @@ compat_fontx_ioctl(int cmd, struct compa
- 		op->height = cfdarg.charheight;
- 		op->charcount = cfdarg.charcount;
- 		op->data = compat_ptr(cfdarg.chardata);
--		i = con_font_op(vc_cons[fg_console].d, op);
-+		i = con_font_op(vc, op);
- 		if (i)
- 			return i;
- 		cfdarg.charheight = op->height;
-@@ -1217,7 +1219,7 @@ long vt_compat_ioctl(struct tty_struct *
- 	 */
- 	case PIO_FONTX:
- 	case GIO_FONTX:
--		return compat_fontx_ioctl(cmd, up, perm, &op);
-+		return compat_fontx_ioctl(vc, cmd, up, perm, &op);
+ 	struct mxc_w1_device *dev = data;
+-	unsigned long timeout;
++	ktime_t timeout;
  
- 	case KDFONTOP:
- 		return compat_kdfontop_ioctl(up, perm, &op, vc);
+ 	writeb(MXC_W1_CONTROL_WR(bit), dev->regs + MXC_W1_CONTROL);
+ 
+ 	/* Wait for read/write bit (60us, Max 120us), use 200us for sure */
+-	timeout = jiffies + usecs_to_jiffies(200);
++	timeout = ktime_add_us(ktime_get(), 200);
+ 
+ 	udelay(60);
+ 
+@@ -90,7 +90,7 @@ static u8 mxc_w1_ds2_touch_bit(void *dat
+ 		/* RDST bit is valid after the WR1/RD bit is self-cleared */
+ 		if (!(ctrl & MXC_W1_CONTROL_WR(bit)))
+ 			return !!(ctrl & MXC_W1_CONTROL_RDST);
+-	} while (time_is_after_jiffies(timeout));
++	} while (ktime_before(ktime_get(), timeout));
+ 
+ 	return 0;
+ }
 
 
