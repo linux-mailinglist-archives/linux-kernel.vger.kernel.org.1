@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC842A4ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8FF2A4AD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgKCQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:09:57 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57712 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgKCQJ5 (ORCPT
+        id S1728133AbgKCQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:10:48 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:59683 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbgKCQKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:09:57 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3G9i12043428;
-        Tue, 3 Nov 2020 10:09:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604419784;
-        bh=ASRLdMFpDPF7L3jGqEBGSpdlOd3m9t3o2Wgd10aMWTM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=nO4fqgvvEGIUGo30PQRjIP/l1NjcMLhpChcn0uR7mPJxZ2J9DvZ/sliyNG33Fx3PG
-         T7kyUTiE1zh1OcZpiPjajXdpwUAEpjm6dbIPtdJodBS+HHjmknYvrajIBg0ii+uNxH
-         +ISWD4Sk24j7oawLkaQwcdSaCQejS+W87/9WbPWQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3G9i1R115061
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 10:09:44 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 10:09:43 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 10:09:44 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3G9hxR016819;
-        Tue, 3 Nov 2020 10:09:43 -0600
-Date:   Tue, 3 Nov 2020 21:39:42 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-CC:     <broonie@kernel.org>, <vigneshr@ti.com>,
-        <tudor.ambarus@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
-        <richard@nod.at>, <cheol.yong.kim@intel.com>,
-        <qi-ming.wu@intel.com>
-Subject: Re: [PATCH v6 2/6] spi: cadence-quadspi: Disable the DAC for Intel
- LGM SoC
-Message-ID: <20201103160834.mfbasmmlgsptnl5l@ti.com>
-References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201030053153.5319-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        Tue, 3 Nov 2020 11:10:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1604419848; x=1635955848;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=zTPDYdidNpsJUUpkE9GN1mubpnYBq2FW8t9MBgfgivw=;
+  b=ZltQsqJvhyyO3Yo9p5q+TzK781tXaY/VCsDZf2qgqFCiY2TwDjNX2OVm
+   gtk5fVHwiDh7y9dBjQyBa7oiD3EjcF7UeWtpEoVvHFkr6yeTl8QEodd51
+   w9FygN7wQPUQWwE3x7+FPruSfBCng1ESVqTft36XtwjLw2IBgKqTBM0d8
+   M=;
+X-IronPort-AV: E=Sophos;i="5.77,448,1596499200"; 
+   d="scan'208";a="90193583"
+Subject: Re: [x86/ioapic] b643128b91: Kernel panic - not syncing: timer doesn't work
+ through Interrupt-remapped IO-APIC
+Thread-Topic: [x86/ioapic] b643128b91: Kernel panic - not syncing: timer doesn't work
+ through Interrupt-remapped IO-APIC
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-e69428c4.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 03 Nov 2020 16:10:25 +0000
+Received: from EX13MTAUEE001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-e69428c4.us-east-1.amazon.com (Postfix) with ESMTPS id EDE9CC1FFC;
+        Tue,  3 Nov 2020 16:10:23 +0000 (UTC)
+Received: from EX13D08UEE002.ant.amazon.com (10.43.62.92) by
+ EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 3 Nov 2020 16:10:23 +0000
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13D08UEE002.ant.amazon.com (10.43.62.92) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 3 Nov 2020 16:10:23 +0000
+Received: from EX13D08UEE001.ant.amazon.com ([10.43.62.126]) by
+ EX13D08UEE001.ant.amazon.com ([10.43.62.126]) with mapi id 15.00.1497.006;
+ Tue, 3 Nov 2020 16:10:23 +0000
+From:   "Woodhouse, David" <dwmw@amazon.co.uk>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "oliver.sang@intel.com" <oliver.sang@intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        "lkp@intel.com" <lkp@intel.com>, "x86@kernel.org" <x86@kernel.org>
+Thread-Index: AQHWsexDmAkdJp6GaE23nmBsr3EqOam2hmSAgAANa4A=
+Date:   Tue, 3 Nov 2020 16:10:23 +0000
+Message-ID: <b79375495beb782aabcf4b9e57d6ebd000edcf47.camel@amazon.co.uk>
+References: <20201103143130.GA5804@xsang-OptiPlex-9020>
+         <871rha31p0.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <871rha31p0.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.162.50]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E18D48305B798040ADDAA852E638144E@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201030053153.5319-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/10/20 01:31PM, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
-> Direct Access Controller(DAC).
-> 
-> This patch adds a quirk to disable the Direct Access Controller
-> for data transfer instead it uses indirect data transfer.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index d7b10c46fa70..6d6f7c440ece 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -1107,6 +1107,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
->  	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
->  
->  	cqspi_controller_enable(cqspi, 1);
-> +
-> +	/* Disable direct access controller */
-> +	if (!cqspi->use_direct_mode) {
-> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-> +	}
+T24gVHVlLCAyMDIwLTExLTAzIGF0IDE2OjIyICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
+DQo+IEhpIQ0KPiANCj4gT24gVHVlLCBOb3YgMDMgMjAyMCBhdCAyMjozMSwgbGtwIHdyb3RlOg0K
+PiA+IEZZSSwgd2Ugbm90aWNlZCB0aGUgZm9sbG93aW5nIGNvbW1pdCAoYnVpbHQgd2l0aCBnY2Mt
+OSk6DQo+ID4gDQo+ID4gY29tbWl0OiBiNjQzMTI4YjkxN2NhOGYxYzhiMWUxNGFmNjRlYmRjODEx
+NDdiMmQxICgieDg2L2lvYXBpYzogVXNlDQo+ID4gaXJxX2ZpbmRfbWF0Y2hpbmdfZndzcGVjKCkg
+dG8gZmluZCByZW1hcHBpbmcgaXJxZG9tYWluIikNCj4gPiANCj4gPiBbICAgIDMuMTQ4ODE5XSAu
+LlRJTUVSOiB2ZWN0b3I9MHgzMCBhcGljMT0wIHBpbjE9MiBhcGljMj0tMSBwaW4yPS0xDQo+ID4g
+WyAgICAzLjE1NDgyNV0gRE1BUjogRFJIRDogaGFuZGxpbmcgZmF1bHQgc3RhdHVzIHJlZyAyDQo+
+ID4gWyAgICAzLjE1OTcwMV0gRE1BUjogW0lOVFItUkVNQVBdIFJlcXVlc3QgZGV2aWNlIFtmMDox
+Zi43XSBmYXVsdA0KPiA+IGluZGV4IDAgW2ZhdWx0IHJlYXNvbiAzN10gQmxvY2tlZCBhIGNvbXBh
+dGliaWxpdHkgZm9ybWF0IGludGVycnVwdA0KPiA+IHJlcXVlc3QNCj4gPiBbICAgIDMuMTczODcw
+XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogdGltZXIgZG9lc24ndCB3b3JrDQo+ID4gdGhy
+b3VnaCBJbnRlcnJ1cHQtcmVtYXBwZWQgSU8tQVBJQw0KPiA+IFsgICAgMy4xODIzODFdIENQVTog
+MCBQSUQ6IDAgQ29tbTogc3dhcHBlci8wIE5vdCB0YWludGVkIDUuMTAuMC0NCj4gPiByYzEtMDAw
+MjktZ2I2NDMxMjhiOTE3YyAjMQ0KPiA+IFsgICAgMy4xOTAzNzBdIEhhcmR3YXJlIG5hbWU6IFN1
+cGVybWljcm8gU1lTLTUwMThELUZONFQvWDEwU0RWLThDLQ0KPiA+IFRMTjRGLCBCSU9TIDEuMSAw
+My8wMi8yMDE2DQo+ID4gWyAgICAzLjE5ODUzNF0gQ2FsbCBUcmFjZToNCj4gPiBbICAgIDMuMjAw
+OTgzXSAgZHVtcF9zdGFjaysweDU3LzB4NmENCj4gPiBbICAgIDMuMjA0Mjk4XSAgcGFuaWMrMHgx
+MDIvMHgyZDINCj4gPiBbICAgIDMuMjA3MzQ5XSAgcGFuaWNfaWZfaXJxX3JlbWFwLmNvbGQrMHg1
+LzB4NQ0KPiA+IFsgICAgMy4yMTE2MTNdICBjaGVja190aW1lcisweDFmNi8weDY5NA0KPiA+IFsg
+ICAgMy4yMTUxODRdICA/IHByaW50aysweDU4LzB4NmYNCj4gPiBbICAgIDMuMjE4MzIwXSAgc2V0
+dXBfSU9fQVBJQysweDE3Yi8weDFjMw0KPiA+IFsgICAgMy4yMjIwNjddICB4ODZfbGF0ZV90aW1l
+X2luaXQrMHgyMC8weDMwDQo+ID4gWyAgICAzLjIyNjA3N10gIHN0YXJ0X2tlcm5lbCsweDQwYy8w
+eDRjNw0KPiA+IFsgICAgMy4yMjk3MzRdICBzZWNvbmRhcnlfc3RhcnR1cF82NF9ub192ZXJpZnkr
+MHhiOC8weGJiDQo+IA0KPiBJdCdzIG5vdCByZXByb2R1Y2luZyBoZXJlLiBDYW4geW91IHBsZWFz
+ZSByZWRvIHRoZSB0ZXN0IHdpdGgNCj4gYXBpYz12ZXJib3NlIG9uIHRoZSBrZXJuZWwgY29tbWFu
+ZCBsaW5lIGFuZCBwcm92aWRlIHRoZSBmdWxsIGRtZXNnDQo+IG91dHB1dD8NCg0KQWgsIGl0IGFs
+cmVhZHkgaGFkIGFwaWM9ZGVidWc7IHNvcnJ5LiBJIHdhcyBsb29raW5nIGZvciB0aGUgSVJURSBz
+ZXR1cA0KbWVzc2FnZXMsIHdoaWNoIGNsZWFybHkgYXJlbid0IHRoZXJlIHdoaWNoIGlzIHdoeSBp
+dCB3YXMgZ2VuZXJhdGluZw0KY29tcGF0aWJpbGl0eSBmb3JtYXQgaW50ZXJydXB0cy4NCg0KSXQn
+cyBwcm9iYWJseSB0aGlzLiBXaWxsIHRyeSBoYXJkZXIgdG8gcmVwcm9kdWNlIHRvIGNvbmZpcm0u
+Li4NCg0KLS0tIGEvYXJjaC94ODYva2VybmVsL2FwaWMvaW9fYXBpYy5jDQorKysgYi9hcmNoL3g4
+Ni9rZXJuZWwvYXBpYy9pb19hcGljLmMNCkBAIC0yMzM1LDcgKzIzMzUsNyBAQCBzdGF0aWMgaW50
+IG1wX2lycWRvbWFpbl9jcmVhdGUoaW50IGlvYXBpYykNCiAgICAgICAgaWYgKGNmZy0+ZGV2KSB7
+DQogICAgICAgICAgICAgICAgZm4gPSBvZl9ub2RlX3RvX2Z3bm9kZShjZmctPmRldik7DQogICAg
+ICAgIH0gZWxzZSB7DQotICAgICAgICAgICAgICAgZm4gPSBpcnFfZG9tYWluX2FsbG9jX25hbWVk
+X2lkX2Z3bm9kZSgiSU8tQVBJQyIsIGlvYXBpYyk7DQorICAgICAgICAgICAgICAgZm4gPSBpcnFf
+ZG9tYWluX2FsbG9jX25hbWVkX2lkX2Z3bm9kZSgiSU8tQVBJQyIsIG1wY19pb2FwaWNfaWQoaW9h
+cGljKSk7DQogICAgICAgICAgICAgICAgaWYgKCFmbikNCiAgICAgICAgICAgICAgICAgICAgICAg
+IHJldHVybiAtRU5PTUVNOw0KICAgICAgICB9DQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudHJl
+IChMb25kb24pIEx0ZC4gUmVnaXN0ZXJlZCBpbiBFbmdsYW5kIGFuZCBXYWxlcyB3aXRoIHJlZ2lz
+dHJhdGlvbiBudW1iZXIgMDQ1NDMyMzIgd2l0aCBpdHMgcmVnaXN0ZXJlZCBvZmZpY2UgYXQgMSBQ
+cmluY2lwYWwgUGxhY2UsIFdvcnNoaXAgU3RyZWV0LCBMb25kb24gRUMyQSAyRkEsIFVuaXRlZCBL
+aW5nZG9tLgoKCg==
 
-You did not address my comment here from last time around [0]. Please 
-replace this hunk with the one below and test it. Also mention in the 
-commit message that the DAC bit resets to 1 so there is no need to 
-explicitly set it.
-
---- 8< ---
-diff --git a/drivers/spi/spi-cadence-quadspi.c 
-b/drivers/spi/spi-cadence-quadspi.c
-index d7ad8b198a11..d2c5d448a944 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -2156,10 +2156,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
- 	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
- 	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
- 
--	/* Enable Direct Access Controller */
--	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
--	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
--	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-+	/* Disable Direct Access Controller */
-+	if (!cqspi->use_dac_mode) {
-+		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-+		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-+		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-+	}
- 
- 	cqspi_controller_enable(cqspi, 1);
- }
---- >8 ---
-
-Same disclaimer as last time: not tested at all.
-
-[0] https://lore.kernel.org/linux-spi/20201022090146.2uj5gfx73dsfumjl@ti.com/
-
-PS: Please Cc me in the next revision. I missed 3 revisions in between 
-because I'm not subscribed to this list. Otherwise I would have sent 
-this much sooner :-)
-
->  }
->  
->  static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
-> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
->  	.quirks = CQSPI_NEEDS_WR_DELAY,
->  };
->  
-> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
-> +	.quirks = CQSPI_DISABLE_DAC_MODE,
-> +};
-> +
->  static const struct of_device_id cqspi_dt_ids[] = {
->  	{
->  		.compatible = "cdns,qspi-nor",
-> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
->  	},
->  	{
->  		.compatible = "intel,lgm-qspi",
-> +		.data = &intel_lgm_qspi,
->  	},
->  	{ /* end of table */ }
->  };
-> -- 
-> 2.11.0
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
