@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87A52A5570
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E448C2A5579
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389062AbgKCVSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
+        id S2389059AbgKCVSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731398AbgKCVR7 (ORCPT
+        with ESMTP id S2388441AbgKCVSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:17:59 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCAEC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 13:17:53 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id d24so20591312ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:17:53 -0800 (PST)
+        Tue, 3 Nov 2020 16:18:47 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5098EC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 13:18:47 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id d24so20593649ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:18:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jasiak-xyz.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tstgg3vKoiDwsRipOpBFOIS+Y4+ArIdAGlRHw0sw9m8=;
-        b=yERDrGyWs9LQaBc8vwTXKGtVCnBlE3wL/3bg3Dmyy7QT/M5SwRSfUaUTdKWJWntjLe
-         Ro9kg3N03rypCKnbDYXnxiEfcYaQsF+tSx4fMNuwNIukZx0ukRnVS+me/VvpwUZzAyP0
-         aQDKbrr7bji2ltGAkv/GpzEZAMLt4TLueRLRsFG317F8qiLMp2XYHiSgRFV9d7fIn351
-         XnH+n3l3CNcyOUKizAzFS/PvmfyeacEAhaKKJymK+Us5UPAaPsloMulN4Thzoren2M29
-         bhAMTyFwhEby/wO/cZFX+gwoTksjDZ+yLcCv5edSuzUwpgitb3TzbFSMspWpuzDeCBa+
-         dxEQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x1oznCzOsfgXOnjkPl5WF72YkAccBrOZyur/fVTJggM=;
+        b=UsJWIiTtAjnFwwv9bApjy2GgCUu0iWbipJntRxQ6dEMLm/5hQFlYzx3Z6xGETmnheM
+         B7JlGY+lLtiGBnD0phF7JVug3zOEtgz5GP0Kz+9uTq5kvb+twlgPsPfsuywtXAFYWuqi
+         eeaItfZdMpLcVhi/fbUDjY3vh0yHHGCIJmC2s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tstgg3vKoiDwsRipOpBFOIS+Y4+ArIdAGlRHw0sw9m8=;
-        b=f1SoX1tddIyl5rsgknL3IFlny3clPzf9M++vkQe5J9QFkNfz0XHAvOhrH4ROUVTh6m
-         b+o1fHHE6d+B7fDeNxgsTOkgMYWJg16gwFGOIcidiIYZDVXeRZ4c0AA8mvuyv1ZMRho5
-         hkJmZYF1whEtJzvxVnNCk9MeSsGlzjBTHPFEF3g5nnY2+iapmRj7ZBbHny+/HUnsAbd0
-         dS8MKPYx42TzBKjibdXEeR/lGOhlnnOh0yS3MpPM8DlqDSmHop+Zs/RFUkxTfBRHC5k/
-         L5T4BwwHv/92TrkXYqPWJN6Xc4XN70LvtzbrKbpu30j+GJ5wa1oXy0mgBUFm/Z9zuFXi
-         cwRA==
-X-Gm-Message-State: AOAM530bgA+EoRoC++ov52JGTyNaaGb/R59svZw0tt3dPHXYEkIidqWq
-        FPNWHp8tV/kFisB8bPw8EmYymQ==
-X-Google-Smtp-Source: ABdhPJy+wuMCdOzonwK9ZUMWakHw+7Idzq8eUv964AirLZNn3GMX/fDHIgH3xkMOd07Gtao35i3YCg==
-X-Received: by 2002:a2e:b0cc:: with SMTP id g12mr10210749ljl.403.1604438271390;
-        Tue, 03 Nov 2020 13:17:51 -0800 (PST)
-Received: from gmail.com (wireless-nat-78.ip4.greenlan.pl. [185.56.211.78])
-        by smtp.gmail.com with ESMTPSA id f78sm4271820lfd.271.2020.11.03.13.17.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 13:17:50 -0800 (PST)
-Date:   Tue, 3 Nov 2020 22:17:47 +0100
-From:   =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201103211747.GA3688@gmail.com>
-References: <20201101212738.GA16924@gmail.com>
- <20201102122638.GB23988@quack2.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x1oznCzOsfgXOnjkPl5WF72YkAccBrOZyur/fVTJggM=;
+        b=IG/B7CzF2koDPTdAiak+8oh2aom+yezXhaSyl7EbfqGt35nO94I3KYsd+OE+tHDdT4
+         b2Snq7YftweF9C3NbueSMB8Be/S9doWZdoXD58c/+QDEtiIAkczcugjsA3IiOmsjrlG/
+         mosgpzXkOhFaj5GN8CjQStuGDwzsnDUskUL+GQpG1bSyzVeYU8Z7Gd++NSnbfph+OEt5
+         p+gyQhNQ1B/fwGJKuxDdAEYv8zzrGQq158I8Z1W8EfhgZAM68Nlv4TrfHsTR+l/+M3v/
+         aoguhM2vw3H1GemsMQd6EnTHytTt3f7my9Wt9s65Xp6hSadJg6r5OwyUeWxWvQZCgs0z
+         uB6A==
+X-Gm-Message-State: AOAM531Z1u9fABq/HuS5bCCNtKAm58bNpqJ37NyHGP0pqxJ5eDdgxc24
+        5RJHqkWfuu7VGX2WYgEtLJUoTVN5cAF+eA==
+X-Google-Smtp-Source: ABdhPJxc4goW/n8oY61jZrdXX53Pn0gHKjKweNBPZi1N1D6KzK08Gox3CEnOyQUMgaeA0lGWpVtSUw==
+X-Received: by 2002:a2e:2202:: with SMTP id i2mr8711301lji.70.1604438325522;
+        Tue, 03 Nov 2020 13:18:45 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id v20sm19598ljj.50.2020.11.03.13.18.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 13:18:44 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 11so1081076ljf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:18:44 -0800 (PST)
+X-Received: by 2002:a2e:868b:: with SMTP id l11mr9088907lji.102.1604438323851;
+ Tue, 03 Nov 2020 13:18:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102122638.GB23988@quack2.suse.cz>
+References: <20201103124420.46bf5a37@lwn.net>
+In-Reply-To: <20201103124420.46bf5a37@lwn.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 3 Nov 2020 13:18:27 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
+Message-ID: <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
+Subject: Re: [GIT PULL] Docs-build warning fixes for 5.10-rc3
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have written small patch that fixes problem for me and doesn't break
-x86_64.
+On Tue, Nov 3, 2020 at 11:44 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> This pull contains a series of warning fixes from Mauro; once applied, the
+> number of warnings from the once-noisy docs build process is nearly zero.
+> Getting to this point has required a lot of work; once there, hopefully we
+> can keep things that way.
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 3e01d8f2ab90..cf0b97309975 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -1285,12 +1285,27 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
- 	return ret;
- }
- 
-+#if defined(CONFIG_X86) && !defined(CONFIG_64BIT)
-+SYSCALL_DEFINE6(fanotify_mark,
-+			int, fanotify_fd, unsigned int, flags, __u32, mask0,
-+			__u32, mask1, int, dfd, const char  __user *, pathname)
-+{
-+	return do_fanotify_mark(fanotify_fd, flags,
-+#ifdef __BIG_ENDIAN
-+				((__u64)mask0 << 32) | mask1,
-+#else
-+				((__u64)mask1 << 32) | mask0,
-+#endif
-+				 dfd, pathname);
-+}
-+#else
- SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
- 			      __u64, mask, int, dfd,
- 			      const char  __user *, pathname)
- {
- 	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
- }
-+#endif
- 
- #ifdef CONFIG_COMPAT
- COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+I wonder if it is quiet enough that we could make new doc build noise
+trigger some kind of linux-next warning?
 
+I know Stephen was at least looking at doc build warnings justding by
+the thread a couple of weeks ago.
 
--- 
-
-Paweł Jasiak
+             Linus
