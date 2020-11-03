@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97ADC2A5304
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F81F2A5267
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732358AbgKCUzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:55:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56048 "EHLO mail.kernel.org"
+        id S1731618AbgKCUtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:49:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732318AbgKCUza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:55:30 -0500
+        id S1731548AbgKCUt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF3ED223BF;
-        Tue,  3 Nov 2020 20:55:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1BE422404;
+        Tue,  3 Nov 2020 20:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436929;
-        bh=e96ElzH4qHjRxBT24OfmOK6z68omUfbEfRe3bZg8ZNQ=;
+        s=default; t=1604436567;
+        bh=qQUYyIIlL7XImKMyfkk8YkKHO06lifVUOfq4x+HBHzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DGvibOXQcOwBLmVYva3g59Se7BRffRzelQ1VnTPuHAeUaYoCtovKfZB0UcIDKfLze
-         4JvcvjC2TXPnQoqbzjlvQ+AgbavKi2I194IbPBDlQEBBmYfhYCZDHgIQK7WuYUs/dj
-         1pfeC7t/s02dus3zGgAhoEoUjzV0Sbk4Ua4ewN38=
+        b=DLB2e5O93TAh9XkOWeQeQp5RHn+R04bdnBEYZKGqhDWMmU0U8iK7E0QeF3MRBrAIJ
+         AeyFEahFWCCddj2cqYi8HFjWyUmDyXucIHQRBHnZ83wf3dHRHZljCRIDFuNwhvD9Sh
+         rsM40HPgj97tyN7IHmIv05u/iHQaEIA0xNPa/fbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/214] power: supply: test_power: add missing newlines when printing parameters by sysfs
-Date:   Tue,  3 Nov 2020 21:35:18 +0100
-Message-Id: <20201103203256.962911591@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.9 268/391] iio: ltc2983: Fix of_node refcounting
+Date:   Tue,  3 Nov 2020 21:35:19 +0100
+Message-Id: <20201103203405.113250315@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+From: Nuno Sá <nuno.sa@analog.com>
 
-[ Upstream commit c07fa6c1631333f02750cf59f22b615d768b4d8f ]
+commit b07c47bfab6f5c4c7182d23e854bbceaf7829c85 upstream.
 
-When I cat some module parameters by sysfs, it displays as follows.
-It's better to add a newline for easy reading.
+When returning or breaking early from a
+`for_each_available_child_of_node()` loop, we need to explicitly call
+`of_node_put()` on the child node to possibly release the node.
 
-root@syzkaller:~# cd /sys/module/test_power/parameters/
-root@syzkaller:/sys/module/test_power/parameters# cat ac_online
-onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
-trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
-goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
-dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
-LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
-onroot@syzkaller:/sys/module/test_power/parameters#
+Fixes: f110f3188e563 ("iio: temperature: Add support for LTC2983")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200925091045.302-1-nuno.sa@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/test_power.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/iio/temperature/ltc2983.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-index c3cad2b6dabae..1139ca7251952 100644
---- a/drivers/power/supply/test_power.c
-+++ b/drivers/power/supply/test_power.c
-@@ -341,6 +341,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
- static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
+--- a/drivers/iio/temperature/ltc2983.c
++++ b/drivers/iio/temperature/ltc2983.c
+@@ -1285,18 +1285,20 @@ static int ltc2983_parse_dt(struct ltc29
+ 		ret = of_property_read_u32(child, "reg", &sensor.chan);
+ 		if (ret) {
+ 			dev_err(dev, "reg property must given for child nodes\n");
+-			return ret;
++			goto put_child;
+ 		}
+ 
+ 		/* check if we have a valid channel */
+ 		if (sensor.chan < LTC2983_MIN_CHANNELS_NR ||
+ 		    sensor.chan > LTC2983_MAX_CHANNELS_NR) {
++			ret = -EINVAL;
+ 			dev_err(dev,
+ 				"chan:%d must be from 1 to 20\n", sensor.chan);
+-			return -EINVAL;
++			goto put_child;
+ 		} else if (channel_avail_mask & BIT(sensor.chan)) {
++			ret = -EINVAL;
+ 			dev_err(dev, "chan:%d already in use\n", sensor.chan);
+-			return -EINVAL;
++			goto put_child;
+ 		}
+ 
+ 		ret = of_property_read_u32(child, "adi,sensor-type",
+@@ -1304,7 +1306,7 @@ static int ltc2983_parse_dt(struct ltc29
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"adi,sensor-type property must given for child nodes\n");
+-			return ret;
++			goto put_child;
+ 		}
+ 
+ 		dev_dbg(dev, "Create new sensor, type %u, chann %u",
+@@ -1334,13 +1336,15 @@ static int ltc2983_parse_dt(struct ltc29
+ 			st->sensors[chan] = ltc2983_adc_new(child, st, &sensor);
+ 		} else {
+ 			dev_err(dev, "Unknown sensor type %d\n", sensor.type);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto put_child;
+ 		}
+ 
+ 		if (IS_ERR(st->sensors[chan])) {
+ 			dev_err(dev, "Failed to create sensor %ld",
+ 				PTR_ERR(st->sensors[chan]));
+-			return PTR_ERR(st->sensors[chan]);
++			ret = PTR_ERR(st->sensors[chan]);
++			goto put_child;
+ 		}
+ 		/* set generic sensor parameters */
+ 		st->sensors[chan]->chan = sensor.chan;
+@@ -1351,6 +1355,9 @@ static int ltc2983_parse_dt(struct ltc29
+ 	}
+ 
+ 	return 0;
++put_child:
++	of_node_put(child);
++	return ret;
  }
  
-@@ -354,6 +355,7 @@ static int param_set_usb_online(const char *key, const struct kernel_param *kp)
- static int param_get_usb_online(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -368,6 +370,7 @@ static int param_set_battery_status(const char *key,
- static int param_get_battery_status(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -382,6 +385,7 @@ static int param_set_battery_health(const char *key,
- static int param_get_battery_health(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -397,6 +401,7 @@ static int param_get_battery_present(char *buffer,
- 					const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -414,6 +419,7 @@ static int param_get_battery_technology(char *buffer,
- {
- 	strcpy(buffer,
- 		map_get_key(map_technology, battery_technology, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
--- 
-2.27.0
-
+ static int ltc2983_setup(struct ltc2983_data *st, bool assign_iio)
 
 
