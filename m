@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009082A3B72
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 05:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ADD2A3B75
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 05:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKCEiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 23:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S1727051AbgKCEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 23:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKCEiN (ORCPT
+        with ESMTP id S1725940AbgKCEkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 23:38:13 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AF9C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 20:38:13 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id w4so2470249pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 20:38:13 -0800 (PST)
+        Mon, 2 Nov 2020 23:40:18 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C935CC0617A6;
+        Mon,  2 Nov 2020 20:40:18 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id s24so10368605ioj.13;
+        Mon, 02 Nov 2020 20:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9GceZK4ciAeCqop9b1Rb6X2DCDZMt62Lqok/xRlnDwI=;
-        b=GdsE7ywRxLmTLQddQqHjTdfGGLdIwdHyLWTICxjsEYocs7mHhh8Nc/hUZiYRQkmHXw
-         X7ZsoZZA+rJ32jjjMs9l+1xaVIAra2fqlXnBJQl55hZ/ZF6jB0nwx6pPakPjO/xGAq/K
-         Ndeco6Cb+oRWeuH1uA5Xb1fBb4zyPCXklF8E2qmX0rS669/GRkFiEPrKkuy5mANBmXn1
-         frFbwFhxWPew0eKSZlYWEsHwzTJU8ex3zcMKicVF80lKn//N5VhMsJ/hco5jtEvva17y
-         OLtJogPDZLi4qfrsgDxSk5EZprt6ddLSJwum2g0lJ13ciqmEUjf6ptDz0/Z4DvfoaGs/
-         FDcQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kyN1XeWyQpkbiJCeFGA26wLQw+p9xunsGOlf3ZLborY=;
+        b=RPwBQPLTrZ3EMYbCp7SoD5ujiPpnye+sHtn72lwrunMvg+rlqqM7BFQ5CK6mKtQM6I
+         0FmFhKg3FHZyTJUOBOYuYCP9xIcK04MIo15Euk7wOJzBomvGP0dnUWi9HpCsAe1uYpSg
+         gYCStvPrS0ZECmXZA1e/mWY9HRH/oEn+2s27Vi4NEXGgPZcwPbkopl0meTVava5hu/gF
+         EJAV1tmrm38vj0HbfBGEHQTN3ysz2ZTortd8JU2ollTZAqLXZ1YPESD0R7W/9sclKmbr
+         X2NY8kYvsNp38YQbr2NuK1DmbdRydDn6XIU7hoGDWQu6bxxRnWeKg1DRyepsGo//vq25
+         /Shg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9GceZK4ciAeCqop9b1Rb6X2DCDZMt62Lqok/xRlnDwI=;
-        b=oxiyYeEVWSEqU4sSZ9z+ZLldtFye/hjwmA7W+JktPggrY8amBUT2ProXMyeXiHm+A8
-         LeMlxwXY3Jb9Pkb4DX1f3OYDhEVjHdb+zcsDcUXUGlvc8n7JThmK3r/LaM8ejaFoq5PQ
-         Uy/Yzz+1aFdRRz1XdnxdqURuxe0FVU9oe7YArAS1FY0eIQ71z6w/f6Dfhm11AFxYd9QS
-         T8mo+EE3s0AfqaIon/jgNCmP3LWjzwf7Rf+cJW96SDDV8L00+jqyxkUt3XzyDiWOUsxv
-         UqDm70ugBire7XsUUM+MkNfKhippnli+Q09BcJDKB1vvVGz7ZcpjheNwTH6pMiZQs72L
-         suAg==
-X-Gm-Message-State: AOAM532jBRQ2Pp+qw9XuhzyiQSpa8vZSF709GgYJvzEwk8TSNb96snOc
-        f6y0glRJURiKJevjvPt/0BQ=
-X-Google-Smtp-Source: ABdhPJy55kLAJIDI5ctckB372baVfeN1E0BOyGabuU8MWUzkNfifE3FSGziJWMGaNJyIkxWTVJFXCA==
-X-Received: by 2002:a17:90a:318d:: with SMTP id j13mr1831845pjb.209.1604378292632;
-        Mon, 02 Nov 2020 20:38:12 -0800 (PST)
-Received: from localhost.localdomain ([8.210.202.142])
-        by smtp.gmail.com with ESMTPSA id v16sm13630948pgk.26.2020.11.02.20.38.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Nov 2020 20:38:12 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     khilman@baylibre.com, narmstrong@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        p.zabel@pengutronix.de, repk@triplefau.lt, yejune.deng@gmail.com,
-        lorenzo.pieralisi@arm.com
-Cc:     kishon@ti.com, vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH] phy: amlogic: Replace devm_reset_control_array_get()
-Date:   Tue,  3 Nov 2020 12:37:54 +0800
-Message-Id: <1604378274-6860-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kyN1XeWyQpkbiJCeFGA26wLQw+p9xunsGOlf3ZLborY=;
+        b=LbkMZKfDjDC64OuBDuKEf5gm1e/0Jqu9l+GFCDH6FFyy1iu1Ph97NFTVPEThz+8cfq
+         4WJNVoZ4fbXHT+OvQpH9Yq3wzUJwIPkTfUndwzoCouvquZcMHw9rHD0fFqcEdazBsLmX
+         BdeARNQc1+HIum6EYL/oVehAnrtAkjimHu7brIO86G1GRjg4WLNj0SQzsem7zB+vftr6
+         T6gCyc9itt+UM30PTqF/0qLAvZ1QOD+Bew49luE/31DFhBhSkdqd8/YalgeMCnPSxDu0
+         w33fZdcIyNKMfQAygl4JURkg7cdULT43MYHIeq6om9QZLXRA3BqPD5lwzj3wIxFI8kHc
+         DvCw==
+X-Gm-Message-State: AOAM531Y68qMceP85ncgpSb8skeR2NyzFtYLdlApSBfbtPVydEtJ7OfS
+        FEhpOVzQ6a9xq5Kk15fFUk0wBMyfh7fTjIthCJz48QKi
+X-Google-Smtp-Source: ABdhPJyvABDrMU7RNxRcJtmrOH21gElCtLNzWUfKNY4J0ZhliqU+g4STqw5+59sOHoG430d7LfRreTSoBRpO81UaykY=
+X-Received: by 2002:a5e:9743:: with SMTP id h3mr12614836ioq.158.1604378418103;
+ Mon, 02 Nov 2020 20:40:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20200807101854.844619-1-clg@kaod.org> <9c5eca863c63e360662fae7597213e8927c2a885.camel@redhat.com>
+ <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org> <89726af2-00ca-9d47-f417-4bea8d5b8b1f@ozlabs.ru>
+ <3497b725-9108-9f63-9cc2-ac7b1dd06c09@kaod.org>
+In-Reply-To: <3497b725-9108-9f63-9cc2-ac7b1dd06c09@kaod.org>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Tue, 3 Nov 2020 15:40:07 +1100
+Message-ID: <CAOSf1CFwsc1uqcdaF5Et7eHjZGMB0gZcwQFykkVwQR0B+PvsHw@mail.gmail.com>
+Subject: Re: [PATCH v2] powerpc/pci: unmap legacy INTx interrupts when a PHB
+ is removed
+To:     =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, Qian Cai <cai@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_reset_control_array_get_exclusive() looks more readable
+On Tue, Nov 3, 2020 at 1:39 AM C=C3=A9dric Le Goater <clg@kaod.org> wrote:
+>
+> On 10/14/20 4:55 AM, Alexey Kardashevskiy wrote:
+> >
+> > How do you remove PHBs exactly? There is no such thing in the powernv p=
+latform, I thought someone added this and you are fixing it but no. PHBs on=
+ powernv are created at the boot time and there is no way to remove them, y=
+ou can only try removing all the bridges.
+>
+> yes. I noticed that later when proposing the fix for the double
+> free.
+>
+> > So what exactly are you doing?
+>
+> What you just said above, with the commands :
+>
+>   echo 1 >  /sys/devices/pci0031\:00/0031\:00\:00.0/remove
+>   echo 1 >  /sys/devices/pci0031\:00/pci_bus/0031\:00/rescan
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- drivers/phy/amlogic/phy-meson-axg-pcie.c       | 2 +-
- drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c | 2 +-
- drivers/soc/amlogic/meson-ee-pwrc.c            | 3 +--
- drivers/soc/amlogic/meson-gx-pwrc-vpu.c        | 2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/phy/amlogic/phy-meson-axg-pcie.c b/drivers/phy/amlogic/phy-meson-axg-pcie.c
-index 377ed0d..3204f02 100644
---- a/drivers/phy/amlogic/phy-meson-axg-pcie.c
-+++ b/drivers/phy/amlogic/phy-meson-axg-pcie.c
-@@ -155,7 +155,7 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->regmap))
- 		return PTR_ERR(priv->regmap);
- 
--	priv->reset = devm_reset_control_array_get(dev, false, false);
-+	priv->reset = devm_reset_control_array_get_exclusive(dev);
- 	if (IS_ERR(priv->reset))
- 		return PTR_ERR(priv->reset);
- 
-diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-index 08e3227..bab6345 100644
---- a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-+++ b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-@@ -418,7 +418,7 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_disable_clk_ref;
- 
--	priv->reset = devm_reset_control_array_get(dev, false, false);
-+	priv->reset = devm_reset_control_array_get_exclusive(dev);
- 	if (IS_ERR(priv->reset))
- 		return PTR_ERR(priv->reset);
- 
-diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-index ed7d2fb..3a879a4 100644
---- a/drivers/soc/amlogic/meson-ee-pwrc.c
-+++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-@@ -413,8 +413,7 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
- 			dev_warn(&pdev->dev, "Invalid resets count %d for domain %s\n",
- 				 count, dom->desc.name);
- 
--		dom->rstc = devm_reset_control_array_get(&pdev->dev, false,
--							 false);
-+		dom->rstc = devm_reset_control_array_get_exclusive(&pdev->dev)
- 		if (IS_ERR(dom->rstc))
- 			return PTR_ERR(dom->rstc);
- 	}
-diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-index 8790627..b4615b2 100644
---- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-+++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-@@ -304,7 +304,7 @@ static int meson_gx_pwrc_vpu_probe(struct platform_device *pdev)
- 		return PTR_ERR(regmap_hhi);
- 	}
- 
--	rstc = devm_reset_control_array_get(&pdev->dev, false, false);
-+	rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
- 	if (IS_ERR(rstc)) {
- 		if (PTR_ERR(rstc) != -EPROBE_DEFER)
- 			dev_err(&pdev->dev, "failed to get reset lines\n");
--- 
-1.9.1
-
+Right, so that'll remove the root port device (and Bus 01 beneath it),
+but the PHB itself is still there. If it was removed the root bus
+would also disappear.
