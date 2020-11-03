@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E41F2A532C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1074C2A529F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732977AbgKCU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:58:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
+        id S1731986AbgKCUvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732967AbgKCU6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:25 -0500
+        id S1731974AbgKCUvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C0AC223C7;
-        Tue,  3 Nov 2020 20:58:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DC6E2071E;
+        Tue,  3 Nov 2020 20:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437104;
-        bh=YMsQInCazoApgrY+92/b5y6QEoKHwNezzaCHAZQXFWc=;
+        s=default; t=1604436692;
+        bh=61khsE1TzuDOx5YXSlWjxBV41HDaFppGH788FB9Bx3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D4lXy1ElA9Uv0DU96pJZ622kHN8T1keyCxDE6NWit/gX9+OwoLZPGPh1OmKJRGm7H
-         si2CaqwUR10mg52F9SS58LEnajCbBkE4YN+h74+XNxVIGekMsm5gGSMe4yu8QgvyFV
-         bVQU2+mqolcJzmKveXi13lN+wL+oryVzkDOYVnIE=
+        b=bR0GKshO2geE/PmfyA5msqWY+4fy76SdQz8WhXNuPq7WXIIXWhuqTpgc276N33mhI
+         KyP4mXIsD0rFde+gKW7sTNOJ0dR85LoqjULwBzFLgyUx/sYsXWQ0dRtBMfK6aVMxlV
+         iszdFPo8ChuGgx3SyWJ9hUyDqZpiN44X6qh03FZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.4 147/214] HID: wacom: Avoid entering wacom_wac_pen_report for pad / battery
+        stable@vger.kernel.org, stable@kernel.org,
+        Constantine Sapuntzakis <costa@purestorage.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.9 344/391] ext4: fix superblock checksum calculation race
 Date:   Tue,  3 Nov 2020 21:36:35 +0100
-Message-Id: <20201103203304.591985448@linuxfoundation.org>
+Message-Id: <20201103203410.349940532@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <jason.gerecke@wacom.com>
+From: Constantine Sapuntzakis <costa@purestorage.com>
 
-commit d9216d753b2b1406b801243b12aaf00a5ce5b861 upstream.
+commit acaa532687cdc3a03757defafece9c27aa667546 upstream.
 
-It has recently been reported that the "heartbeat" report from devices
-like the 2nd-gen Intuos Pro (PTH-460, PTH-660, PTH-860) or the 2nd-gen
-Bluetooth-enabled Intuos tablets (CTL-4100WL, CTL-6100WL) can cause the
-driver to send a spurious BTN_TOUCH=0 once per second in the middle of
-drawing. This can result in broken lines while drawing on Chrome OS.
+The race condition could cause the persisted superblock checksum
+to not match the contents of the superblock, causing the
+superblock to be considered corrupt.
 
-The source of the issue has been traced back to a change which modified
-the driver to only call `wacom_wac_pad_report()` once per report instead
-of once per collection. As part of this change, pad-handling code was
-removed from `wacom_wac_collection()` under the assumption that the
-`WACOM_PEN_FIELD` and `WACOM_TOUCH_FIELD` checks would not be satisfied
-when a pad or battery collection was being processed.
+An example of the race follows.  A first thread is interrupted in the
+middle of a checksum calculation. Then, another thread changes the
+superblock, calculates a new checksum, and sets it. Then, the first
+thread resumes and sets the checksum based on the older superblock.
 
-To be clear, the macros `WACOM_PAD_FIELD` and `WACOM_PEN_FIELD` do not
-currently check exclusive conditions. In fact, most "pad" fields will
-also appear to be "pen" fields simply due to their presence inside of
-a Digitizer application collection. Because of this, the removal of
-the check from `wacom_wac_collection()` just causes pad / battery
-collections to instead trigger a call to `wacom_wac_pen_report()`
-instead. The pen report function in turn resets the tip switch state
-just prior to exiting, resulting in the observed BTN_TOUCH=0 symptom.
+To fix, serialize the superblock checksum calculation using the buffer
+header lock. While a spinlock is sufficient, the buffer header is
+already there and there is precedent for locking it (e.g. in
+ext4_commit_super).
 
-To correct this, we restore a version of the `WACOM_PAD_FIELD` check
-in `wacom_wac_collection()` and return early. This effectively prevents
-pad / battery collections from being reported until the very end of the
-report as originally intended.
+Tested the patch by booting up a kernel with the patch, creating
+a filesystem and some files (including some orphans), and then
+unmounting and remounting the file system.
 
-Fixes: d4b8efeb46d9 ("HID: wacom: generic: Correct pad syncing")
-Cc: stable@vger.kernel.org # v4.17+
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Tested-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Cc: stable@kernel.org
+Signed-off-by: Constantine Sapuntzakis <costa@purestorage.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Suggested-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200914161014.22275-1-costa@purestorage.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/wacom_wac.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext4/super.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2773,7 +2773,9 @@ static int wacom_wac_collection(struct h
- 	if (report->type != HID_INPUT_REPORT)
- 		return -1;
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -201,7 +201,18 @@ void ext4_superblock_csum_set(struct sup
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return;
  
--	if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
-+	if (WACOM_PAD_FIELD(field))
-+		return 0;
-+	else if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
- 		wacom_wac_pen_report(hdev, report);
- 	else if (WACOM_FINGER_FIELD(field) && wacom->wacom_wac.touch_input)
- 		wacom_wac_finger_report(hdev, report);
++	/*
++	 * Locking the superblock prevents the scenario
++	 * where:
++	 *  1) a first thread pauses during checksum calculation.
++	 *  2) a second thread updates the superblock, recalculates
++	 *     the checksum, and updates s_checksum
++	 *  3) the first thread resumes and finishes its checksum calculation
++	 *     and updates s_checksum with a potentially stale or torn value.
++	 */
++	lock_buffer(EXT4_SB(sb)->s_sbh);
+ 	es->s_checksum = ext4_superblock_csum(sb, es);
++	unlock_buffer(EXT4_SB(sb)->s_sbh);
+ }
+ 
+ ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
 
 
