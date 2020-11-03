@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2686D2A5604
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D312A5633
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731278AbgKCVYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        id S2388297AbgKCV0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730178AbgKCVYg (ORCPT
+        with ESMTP id S1730211AbgKCVZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:24:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C1C0613D1;
-        Tue,  3 Nov 2020 13:24:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OTpGkkPVLBqbuJKuUynXBJXRcpvpXyRlR7kNaipl1g0=; b=a+KaNNfb2mVrCm1dq9NVVz+odZ
-        dvqawNcTbxQSpsvdaZ8nL6kisjevYihXuUJF2z4lP92tQqlv/LhumY0XjYepewKztLrOD0zRcjwLX
-        euBLlfQCduNg9c3F/XONx14QVIzRmq+lO9t3G3MkaXRkuw4VYwO3YHrmTtsxe9kBJ6Y6QvH2Ll4Wl
-        xIoPa44txA/PG3m06s1qOSiTbA0dxjGTtbUDK8kAyFXbma4mx3qc/v/VXiRZnZJnLBdhZ10mRRE6Z
-        rbWXMIPJSWPo7uL81/qrQuZ3aD7TcsORr59fNVxxMevMOz1tiB0mpj44uR0tmBRnBhzy8KcfjdN/1
-        ZHegQFNQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ka3n6-00010w-DI; Tue, 03 Nov 2020 21:24:32 +0000
-Date:   Tue, 3 Nov 2020 21:24:32 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [GIT PULL] Docs-build warning fixes for 5.10-rc3
-Message-ID: <20201103212432.GI27442@casper.infradead.org>
-References: <20201103124420.46bf5a37@lwn.net>
- <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
+        Tue, 3 Nov 2020 16:25:55 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB81C0613D1;
+        Tue,  3 Nov 2020 13:25:55 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id c80so8404780oib.2;
+        Tue, 03 Nov 2020 13:25:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=81wt1tPj/BxcBwwRoWyE7MypzcQnmXMztKbxFRVr+VQ=;
+        b=a36fZagFMGMorZ2liHyAVrUhLCz3yT/mmm3AFEg0P64dpbdkl05IisByWa12Ql6GlJ
+         dp/q3yPH5Vf3nX0CE47TCYyYGHDWEllV+sGuGg936kppzpQC5a89v9jJq3aiu8kzUCfZ
+         OKxK5yStKPm3yCaSY8EjAIbyKWOOcssUTPgxehW9k+LXcu960ZHzG6gB7g665R/WaedT
+         7myTGox5B1bDH19XHzZuqLE6MgwUpvc/p/p85qnOiiQwMLyuDAbSKSV84cym97k3M/V7
+         piz8HjqtUjwkY7+25N/Blq2lJTv9DxKzlN/XxSt0g+w2JEHtY83natwK6cM9VcFXdWR2
+         9bZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=81wt1tPj/BxcBwwRoWyE7MypzcQnmXMztKbxFRVr+VQ=;
+        b=qRJXB4l1d6lZE6/ch0MSFd9onxOU09xOo25Hl7DGy3bp5c6WNo28Z847fWD6srKiZK
+         cQRaCprbC86oF/M+3UE5AM0w/vCy4tZD2yySMhORvuyT67VI08eXoRF14RcQLibRccpr
+         6pRW7YwD35FrbE+7NtbkJwhLrEh/CPvhun6I7idAU7DIhrC91jA+JOpKOdTrqbkpo4sy
+         l4IUQnfYqTUnNbdsj11cbvx2NqHWZEU1rcEPA8vALr3zc/HMgizcNToMCfJsthXZCsxB
+         gVkfPe/a10ayi4cMHWJRrncfRUCA6I1oC1WmJzBCflYB166aNIwrbAOsFXWyz8hZjD4d
+         D31A==
+X-Gm-Message-State: AOAM530HMwhL/6YQQ5e3TXS6EX1yYVxa+6pKx6IVv/BfBKZ3Dmp4lpjT
+        EzMxXaefSfHvPKUtnoYsArBP3wE8EovEO/TUBlo=
+X-Google-Smtp-Source: ABdhPJzGDR5hv+OWS/pJ7ALtJgwBHWDgNKRbbXGjEEuYMpoT17sOWpkGAkNdfhs6dSDZUqLVugZjiJzoAEQMYmKBEd4=
+X-Received: by 2002:aca:c70b:: with SMTP id x11mr763770oif.58.1604438754543;
+ Tue, 03 Nov 2020 13:25:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wghhw0SpqSKKUqt5eum=UfLD3Qa0suoRxLy_cJc4hChug@mail.gmail.com>
+References: <20201001230403.2445035-1-danielwinkler@google.com>
+ <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com>
+ <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
+ <CAP2xMbs4sUyap_-YAFA6=52Qj+_uxGww7LwmbWACVC0j0LvbLQ@mail.gmail.com>
+ <CABBYNZ+0LW0sOPPe+QHWLn7XXdAjqKB3Prm21SyUQLeQqW=StA@mail.gmail.com> <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com>
+In-Reply-To: <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Tue, 3 Nov 2020 13:25:43 -0800
+Message-ID: <CABBYNZL835FLHq3y_1_k0vyQEW2_teoqvkt=pPDjqENegTU4FQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
+To:     Daniel Winkler <danielwinkler@google.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:18:27PM -0800, Linus Torvalds wrote:
-> On Tue, Nov 3, 2020 at 11:44 AM Jonathan Corbet <corbet@lwn.net> wrote:
+Hi Daniel,
+
+On Tue, Nov 3, 2020 at 9:42 AM Daniel Winkler <danielwinkler@google.com> wrote:
+>
+> Hello Luiz,
+>
+> Thank you for the information. It is good to know that this tool is
+> actively used and that there is a way to skip existing flaky tests.
+> Just for clarification, is this a requirement to land the kernel
+> changes, i.e. should I prioritize adding these tests immediately to
+> move the process forward? Or can we land the changes based on the
+> testing I have already done and I'll work on these tests in parallel?
+
+We used to require updates to mgmt-tester but it seems some of recent
+command did not have a test yet, but if we intend to have the CI to
+tests the kernel changes properly I think we should start to requiring
+it some basic testing, obviously it will be hard to cover everything
+that is affected by a new command but the basic formatting, etc, we
+should be able to test, also tester supports the concept of 'not run'
+which we can probably use for experimental commands.
+
+> Thanks,
+> Daniel
+>
+> On Thu, Oct 29, 2020 at 5:04 PM Luiz Augusto von Dentz
+> <luiz.dentz@gmail.com> wrote:
 > >
-> > This pull contains a series of warning fixes from Mauro; once applied, the
-> > number of warnings from the once-noisy docs build process is nearly zero.
-> > Getting to this point has required a lot of work; once there, hopefully we
-> > can keep things that way.
-> 
-> I wonder if it is quiet enough that we could make new doc build noise
-> trigger some kind of linux-next warning?
+> > Hi Daniel,
+> >
+> > On Thu, Oct 29, 2020 at 3:25 PM Daniel Winkler <danielwinkler@google.com> wrote:
+> > >
+> > > Hi Luiz,
+> > >
+> > > Thank you for the feedback regarding mgmt-tester. I intended to use
+> > > the tool, but found that it had a very high rate of test failure even
+> > > before I started adding new tests. If you have a strong preference for
+> > > its use, I can look into it again but it may take some time. These
+> > > changes were tested with manual and automated functional testing on
+> > > our end.
+> > >
+> > > Please let me know your thoughts.
+> >
+> > Total: 406, Passed: 358 (88.2%), Failed: 43, Not Run: 5
+> >
+> > Looks like there are some 43 tests failing, we will need to fix these
+> > but it should prevent us to add new ones as well, you can use -p to
+> > filter what tests to run if you want to avoid these for now.
 
-We can move checkdoc out of W=1 ... something like this?
 
-+++ b/scripts/Makefile.build
-@@ -103,9 +103,7 @@ else ifeq ($(KBUILD_CHECKSRC),2)
-         cmd_force_checksrc = $(CHECK) $(CHECKFLAGS) $(c_flags) $<
- endif
- 
--ifneq ($(KBUILD_EXTRA_WARN),)
--  cmd_checkdoc = $(srctree)/scripts/kernel-doc -none $<
--endif
-+cmd_checkdoc = $(srctree)/scripts/kernel-doc -none $<
- 
- # Compile C sources (.c)
- # ---------------------------------------------------------------------------
 
-although people might whinge if it increases kernel build time noticably
-(I haven't checked if it does).
-
-It won't catch all the things that actually running Sphinx will, but
-it catches the common things (forgot to update the docs after changing a
-function parameter, for example)
+-- 
+Luiz Augusto von Dentz
