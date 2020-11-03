@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2A42A48CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFEC2A48BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgKCO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:58:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32538 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727921AbgKCO5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:57:12 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3EVL1A133433;
-        Tue, 3 Nov 2020 09:56:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=d+ttMI8RznKeqnuEOJDJAyYBTWIbZi5WbaijtL+dfYM=;
- b=XtwOPwn4xc4rk4l4d4p/pZnAyO/aP39L8sdnulaV0XxBXtS4HK7RiOGgvNI9SOzpR/1T
- /VtI+r7D9daNZXRLTpSV/uO83lge+N0pdMvcDOVyk/sHJBSeSsocYvA+aKjIyjJg2YRE
- bzX8DLNiCdD2htLFiGL/mIm2XNi2fCamR3xEnQ2SlToXGLJpr3KYn2VxHze/o0b537zC
- 0RCkaQXsndmBxh0SZGLX64O+q91DGXpUnKHuLGtsVCCki4vtpC+Shj+06NzaQiHt9ETT
- 8QSvsF7o5l+saaXOWU/oXshHTb5jyXfN9zrRGIt8E6GBOtB+tcAU8ZmjKbs2wOABNtLy FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34jwj1dvyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 09:56:15 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A3EXTND149155;
-        Tue, 3 Nov 2020 09:56:02 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34jwj1dvfh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 09:55:59 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A3Elr8Q023438;
-        Tue, 3 Nov 2020 14:55:36 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 34h01khqe6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 14:55:36 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A3EtXsB1770012
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Nov 2020 14:55:33 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1AFB4C04E;
-        Tue,  3 Nov 2020 14:55:33 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46EE94C058;
-        Tue,  3 Nov 2020 14:55:26 +0000 (GMT)
-Received: from sig-9-65-255-16.ibm.com (unknown [9.65.255.16])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Nov 2020 14:55:26 +0000 (GMT)
-Message-ID: <87f63dc12739b346d556f85537324d3ae055097d.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 2/4] powerpc: Refactor kexec functions to move arch
- independent code to ima
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-Date:   Tue, 03 Nov 2020 09:55:24 -0500
-In-Reply-To: <20201030174429.29893-3-nramas@linux.microsoft.com>
-References: <20201030174429.29893-1-nramas@linux.microsoft.com>
-         <20201030174429.29893-3-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- suspectscore=11 adultscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 impostorscore=0 spamscore=0 mlxlogscore=996 mlxscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011030097
+        id S1728133AbgKCO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:56:27 -0500
+Received: from mga18.intel.com ([134.134.136.126]:21842 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728090AbgKCO4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:56:22 -0500
+IronPort-SDR: 5K5AZammkKEUe+i7/XNqUZnw0jJdgvQwksvg989VjzxG7RTJOvLAnq6V7TAEnsO5yjN83O7ev1
+ AsJODC2cuqNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156841348"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="156841348"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 06:56:22 -0800
+IronPort-SDR: KYI2S/nqQuwfQOylVpgemLjwXWSAsuFH0eNZBI3VQ4uLQsyg4Qhf6eguLRBChQdggD6DtpMRXf
+ updwEaV03DaQ==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="306067752"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 06:56:18 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id BC4DE209D9; Tue,  3 Nov 2020 16:56:16 +0200 (EET)
+Date:   Tue, 3 Nov 2020 16:56:16 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v4 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20201103145616.GJ26150@paasikivi.fi.intel.com>
+References: <20201103133400.24805-1-sakari.ailus@linux.intel.com>
+ <20201103144747.GD4077@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103144747.GD4077@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
+Hi Andy,
 
-On Fri, 2020-10-30 at 10:44 -0700, Lakshmi Ramasubramanian wrote:
-> The functions ima_get_kexec_buffer() and ima_free_kexec_buffer(),
-> that handle carrying forward the IMA measurement logs on kexec for
-> powerpc do not have architecture specific code, but they are currently
-> defined for powerpc only.
+On Tue, Nov 03, 2020 at 04:47:47PM +0200, Andy Shevchenko wrote:
+> On Tue, Nov 03, 2020 at 03:34:00PM +0200, Sakari Ailus wrote:
+> > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > so the same implementation can be used.
 > 
-> Move ima_get_kexec_buffer() and ima_free_kexec_buffer() to IMA
-> subsystem. A later patch in this series will use these functions for
-> carrying forward the IMA measurement log for ARM64.
+> ...
 > 
-> With the above refactoring arch/powerpc/kexec/ima.c contains only
-> functions used when CONFIG_IMA_KEXEC is enabled. Update Makefile
-> in arch/powerpc/kexec to include arch/powerpc/kexec/ima.c only
-> when CONFIG_IMA_KEXEC is enabled.
+> > +static noinline_for_stack
+> > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> > +		    struct printf_spec spec, const char *fmt)
+> > +{
+> > +	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
 > 
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> I would add a comment that there is another possibility, i.e. big-endian, but
+> it occupies less space.
 
-Similar comments to 1/4.
--  Last line of first paragraph can be rephrased like " ... on kexec,
-do not contain architecture specific code, but are currently limited to
-powerpc."
--  This patch should be limited to moving existing functions.  
-Truncate the Subject line to "Move arch independent IMA kexec functions
-to ima_kexec.c."
-- Don't refer to a later patch, but explain the purpose here.  For
-example, "Move ... , making them accessible to other archs."
-- The definition of "FDT_PROP_IMA_KEXEC_BUFFER" should be made as a
-separate, prepartory patch, prior to the existing 1/4.  The resulting
-code being moved in this patch (and similarly for 1/4) will be exactly
-the same as the code being deleted.
+This string is here to represent the longest possible output of the
+function. Most of the time it's less. Saying that might make sense but it's
+fairly clear already. Either way works for me though.
 
-thanks,
+> 
+> > +	char *p = output;
+> > +	unsigned int i;
+> > +	u32 val;
+> > +
+> > +	if (fmt[1] != 'c' || fmt[2] != 'c')
+> > +		return error_string(output, end, "(%p4?)", spec);
+> > +
+> > +	if (check_pointer(&buf, end, fourcc, spec))
+> > +		return buf;
+> > +
+> > +	val = *fourcc & ~BIT(31);
+> > +
+> > +	for (i = 0; i < sizeof(*fourcc); i++) {
+> > +		unsigned char c = val >> (i * 8);
+> > +
+> > +		/* Weed out spaces */
+> > +		if (c == ' ')
+> > +			continue;
+> > +
+> > +		/* Print non-control ASCII characters as-is */
+> > +		if (isascii(c) && isprint(c)) {
+> > +			*p++ = c;
+> > +			continue;
+> > +		}
+> > +
+> > +		*p++ = '(';
+> > +		p = hex_byte_pack(p, c);
+> > +		*p++ = ')';
+> > +	}
+> 
+> I guess above loop can be still optimized, but I have to think about it.
+> 
+> > +	strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
+> > +	p += strlen(p);
+> > +
+> > +	*p++ = ' ';
+> > +	*p++ = '(';
+> > +	/* subtract parenthesis and the space from the size */
+> 
+> This comment misleading. What you are subtracting is a room for closing
+> parenthesis and NUL.
 
-Mimi
+Agreed, I'll update it for v5.
 
+> 
+> > +	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
+> > +			       sizeof(u32));
+> 
+> I would go with one line here.
+
+It's wrapped since the result would be over 80 otherwise.
+
+> 
+> The (theoretical) problem is here that the case when buffer size is not enough
+> to print a value will be like '(0xabc)' but should be rather '(0xabcd' like
+> snprintf() does in general.
+> 
+> > +	*p++ = ')';
+> > +	*p = '\0';
+> > +
+> > +	return string(buf, end, output, spec);
+> > +}
+> 
+
+-- 
+Regards,
+
+Sakari Ailus
