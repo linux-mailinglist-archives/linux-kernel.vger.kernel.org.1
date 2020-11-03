@@ -2,147 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC35F2A50A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A8B2A509F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbgKCUDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:03:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729672AbgKCUDO (ORCPT
+        id S1729578AbgKCUDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:03:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20084 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725997AbgKCUDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:03:14 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E55C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 12:03:13 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l2so23967056lfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 12:03:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rcG44gg9JsBMcXwjHb9lFTw4mEeTDRbo5E0yF7tkVWM=;
-        b=IlnaKg9pnQyq0XUhrMVsb14/FfEzSGxZgCGRFpNWpo0uhl/vXHX/tQm5vYGv5dWTFJ
-         GKogd8GDu22uIOaPdGPGkL1Noh5+YlHSCNA6BFxfWdlZLRI04t6OwpEq/arYeti4M3j6
-         9aNcXUFYVIDR76sfBfVmD/XU0AnosmmaEPl2pddcOMgn+5tjPeNG1kCOn7tl+FqHkCUJ
-         6fai9CFex2KGCDSkW5hS4lEipbq7S9Th+80kKKaULtkkORrKztFPpw7JBn8RNM07jNaL
-         sabXXa8ThiDQMraZ8yXB3uVHIoMTj5FBH9KqRab3ge25ceqIRO7KP8bNNOyd5yY1Ce4p
-         aIew==
+        Tue, 3 Nov 2020 15:03:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604433785;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hs/zXGHlz9vLFkghpxlnSjQMAlQ6jTL7a/WUuTWkQUQ=;
+        b=V8kSaHMw/xDs7HKMnAitNiYBTIHRM8pJeLEq9+tYTs+cScZbAvUQ8C73BtkLhKKssfHUfR
+        xDkNkIAR0cI+XsLZQThIXWZUii1L57SGhlgm9wStW7sPoeEOeOoWGfd+zNsczEZUOVYGj5
+        sLU15tkUok1gEVVBFowBS9srBT1q0Sk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-QmF2bu4SMemwnoMi8hTSbw-1; Tue, 03 Nov 2020 15:03:04 -0500
+X-MC-Unique: QmF2bu4SMemwnoMi8hTSbw-1
+Received: by mail-qv1-f72.google.com with SMTP id s9so8416184qvt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 12:03:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rcG44gg9JsBMcXwjHb9lFTw4mEeTDRbo5E0yF7tkVWM=;
-        b=NHszxW+Zf5fVTbuggpBDc/ZYIazS20B7t+7z2Y6I2csc9D8oYlmQfDICXuihUYr78K
-         kMZcQRfml4TSmJnJ1YjWb/jFYOgv4hU2kLwsRI6DrNk6JQULnN6CsJtXk9fG9TAqbP4M
-         iAo+BomsM+UYVSx1yIFIDLTvcdzRNkm0kd1RKSPiwiGK53+OnyuXL2z/qFFhZ2iz0Cjc
-         tM7K87r9hWtViUYNzXmp/OxYUQu+XkdH7L/9Aq0YERMHSj8UR5lyNORHuoVUvl8B39zs
-         d0MWoPxrwzEeDs1X8N/qfypIuwxWwxD3qK1nZ4MHY3z2gnbtjg7Ws/735mBly2842uW2
-         qtmw==
-X-Gm-Message-State: AOAM531xC9oqoLbctdYCznyWDNGRCv6Bk9+FUOEo1RowpAHiCq6Zev1f
-        6sVb5Hvp8xHUDcnPkBeM3ubN3s6t4YsgkG9C0eqWR/4ANTiWzw==
-X-Google-Smtp-Source: ABdhPJycWFdT224NrSwndSwQpqkFFygXdjoqovHnnFXfJksc8uvzfhyps3gDpGQo2rQBVrc/co9YDPwlOQUVk+JVbIA=
-X-Received: by 2002:a19:834e:: with SMTP id f75mr7941538lfd.111.1604433792181;
- Tue, 03 Nov 2020 12:03:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103054810.21978-1-dwaipayanray1@gmail.com>
- <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
- <e9d540c35ac04f0bb69e26d29c76c7cbd5693df8.camel@perches.com>
- <CAKXUXMwH+tEBSV6xA952xQQFe+HvdJ5ew6V=n63sk89enj6p7Q@mail.gmail.com> <6c275d95c3033422addfc256a30e6ae3dd37941d.camel@perches.com>
-In-Reply-To: <6c275d95c3033422addfc256a30e6ae3dd37941d.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Wed, 4 Nov 2020 01:32:41 +0530
-Message-ID: <CABJPP5D3xVKGC2ESwQbgO4_5eEB5A1JFxKB-ghCOsWGU3FoEbg@mail.gmail.com>
-Subject: Re: [PATCH v2] checkpatch: improve email parsing
-To:     Joe Perches <joe@perches.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=hs/zXGHlz9vLFkghpxlnSjQMAlQ6jTL7a/WUuTWkQUQ=;
+        b=ndAYcIc4wIS6mKcDKbHVvqxZAqU6PXimXUXF/JK7wzXjSCZ7XkN05+3oJl+aVfvtJ0
+         L4DasWELkO8UxNzfD5mH8T9F/u6AmFOJ2upTpleU1yiiUgfgY3fOGWDPvldxwcUZfx7X
+         uJRR5JLQRp+hQCYbasNyk2Kr7gCRUA1n/NyMLs8ntbjP7C6hW+wyeoH+CChIfNxZmsPK
+         dbzlDdyaEfq0fnrqWnb5UWLjWBTLSGRrg5eVyY5mqVk1PveU0ECzDqcuoicwYFReQTpb
+         /tpZ1/trJEB0Q0IV8G8Iz+v0AdyjaiOOOGwkQA//Ym4wm74Rb7NYKkD/fFBMzk53TXAY
+         NuHw==
+X-Gm-Message-State: AOAM532klyuLzusTT0BA224SMSbqerUsWklwk4jRbnXI/XbJawQ8q4Hi
+        ht7nIsU956utiCVgduf/Lu+Qs8Jy35tvRi095LRZwwvzgQdrRYuztGPbh+dSSFqfwRhdPhYccuw
+        W91PNbV/NYadH+gc4FC2RO6n7
+X-Received: by 2002:a05:620a:1193:: with SMTP id b19mr8991536qkk.42.1604433784110;
+        Tue, 03 Nov 2020 12:03:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz3Uif/P5KpG7c3Wmsy5fgC5l2WzpKVRev2cYaqxmHthv/mJZZ6oxzAqBLM1VOiN/jiyFC7lg==
+X-Received: by 2002:a05:620a:1193:: with SMTP id b19mr8991516qkk.42.1604433783827;
+        Tue, 03 Nov 2020 12:03:03 -0800 (PST)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id o21sm206002qko.9.2020.11.03.12.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 12:03:03 -0800 (PST)
+Message-ID: <dd9b5ea4409886e83b87a6769e7ed45c753298cb.camel@redhat.com>
+Subject: Re: [PATCH] drm/edid: Fix uninitialized variable in drm_cvt_modes()
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Airlie <airlied@linux.ie>, Chao Yu <chao@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "# 3.9+" <stable@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>
+Date:   Tue, 03 Nov 2020 15:03:01 -0500
+In-Reply-To: <CAKb7UvjJHMbDEAYJRCCdQ=LZfpogb4Z6y+yYFgPYKvbE1mM1ig@mail.gmail.com>
+References: <20201022165450.682571-1-lyude@redhat.com>
+         <CAKb7UvhfWA6ijoQnq2Mvrx8jfn57EC-P5KBkYR3HmrBUrntJhg@mail.gmail.com>
+         <8d15a513bd38a01b3607e5c75b5754cc599fe33c.camel@redhat.com>
+         <CAKb7UvjJHMbDEAYJRCCdQ=LZfpogb4Z6y+yYFgPYKvbE1mM1ig@mail.gmail.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 1:02 AM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-11-03 at 09:10 +0100, Lukas Bulwahn wrote:
-> > Maybe you can coordinate among each other who would want to create
-> > suitable fix rules here?
->
-> Yes please.
->
-> > Also, start with the class of the most frequent mistakes for
-> > unexpected content after email addresses.
-> >
-> > I imagine that a maintainer can simply run a tag sanitizing script
-> > which just cleans up those stupid mistakes before creating their git
-> > trees or sending git pulls to Linus.
->
-> Does anyone really do that?
-> It generally requires rebasing or post processing each commit after
-> being committed before another commit occurs.
->
-> > Let us try to add these
-> > sanitizing rules to checkpatch.pl with fix options for now; if that
-> > sanitizing feature becomes a monster script of its own within
-> > checkpatch.pl, we can refactor that into an independent script for
-> > cleaning up.
->
-> I rather doubt an independent script is going to be worthwhile
-> as these rules shouldn't be all that complex.
->
-> The only prefixes acceptable for a stable address should be
-> CC:|Cc:|cc:.  There are 2 uses in the last 100k commits for
-> Signed-off-by: and Acked-by: with stable addresses, those should have a
-> message/warning emitted in the future.
->
-> The forms used with those cc: stable addresses:
->
-> 2777    stable without comment
-> 1381    stable # comment
-> 74      stable [ comment ]
->
-> So I suggest standardizing on no comment and # comment with any other
-> style getting a warning.
->
-> For non-stable <foo>-by: and cc: addresses and other signatures:
->
-> Likely any content after a email address other than a parenthesized
-> block should have some checkpatch message emitted.
->
-> This should be OK:
->
-> Signed-off-by: Full Name (comment) <address@domain.tld> (maintainer:...)
->
-> But perhaps this should not be OK:
->
-> Signed-off-by: Full Name (comment) <address@domain.tld> # comment
->
-> There are 316 uses of this # comment style in the last 100k commits
-> and 103 with (comment) after the address.
-> Maybe the # use should be ok, maybe not.
->
-> And anyone that uses a multiple comments in a name or a even
-> a single comment in the email address should also get warned.
->
-> The below should not be OK even if actually valid address forms:
->
-> Signed-off-by: Full (comment1) Name (comment2) <address@domain.tld>
-> Signed-off-by: Full Name <address@(comment)domain.tld>
->
+On Tue, 2020-11-03 at 14:53 -0500, Ilia Mirkin wrote:
+> On Tue, Nov 3, 2020 at 2:47 PM Lyude Paul <lyude@redhat.com> wrote:
+> > 
+> > Sorry! Thought I had responded to this but apparently not, comments down
+> > below
+> > 
+> > On Thu, 2020-10-22 at 14:04 -0400, Ilia Mirkin wrote:
+> > > On Thu, Oct 22, 2020 at 12:55 PM Lyude Paul <lyude@redhat.com> wrote:
+> > > > 
+> > > > Noticed this when trying to compile with -Wall on a kernel fork. We
+> > > > potentially
+> > > > don't set width here, which causes the compiler to complain about width
+> > > > potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
+> > > > 
+> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > > > 
+> > > > Cc: <stable@vger.kernel.org> # v5.9+
+> > > > Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
+> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > > > ---
+> > > >  drivers/gpu/drm/drm_edid.c | 8 +++++++-
+> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > > > index 631125b46e04..2da158ffed8e 100644
+> > > > --- a/drivers/gpu/drm/drm_edid.c
+> > > > +++ b/drivers/gpu/drm/drm_edid.c
+> > > > @@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector
+> > > > *connector,
+> > > > 
+> > > >         for (i = 0; i < 4; i++) {
+> > > >                 int width, height;
+> > > > +               u8 cvt_aspect_ratio;
+> > > > 
+> > > >                 cvt = &(timing->data.other_data.data.cvt[i]);
+> > > > 
+> > > > @@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector
+> > > > *connector,
+> > > >                         continue;
+> > > > 
+> > > >                 height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) +
+> > > > 1) *
+> > > > 2;
+> > > > -               switch (cvt->code[1] & 0x0c) {
+> > > > +               cvt_aspect_ratio = cvt->code[1] & 0x0c;
+> > > > +               switch (cvt_aspect_ratio) {
+> > > >                 case 0x00:
+> > > >                         width = height * 4 / 3;
+> > > >                         break;
+> > > > @@ -3114,6 +3116,10 @@ static int drm_cvt_modes(struct drm_connector
+> > > > *connector,
+> > > >                 case 0x0c:
+> > > >                         width = height * 15 / 9;
+> > > >                         break;
+> > > > +               default:
+> > > 
+> > > What value would cvt->code[1] have such that this gets hit?
+> > > 
+> > > Or is this a "compiler is broken, so let's add more code" situation?
+> > > If so, perhaps the code added could just be enough to silence the
+> > > compiler (unreachable, etc)?
+> > 
+> > I mean, this information comes from the EDID which inherently means it's
+> > coming
+> > from an untrusted source so the value could be literally anything as long as
+> > the
+> > EDID has a valid checksum. Note (assuming I'm understanding this code
+> > correctly):
+> > 
+> > drm_add_edid_modes() → add_cvt_modes() → drm_for_each_detailed_block() →
+> > do_cvt_mode() → drm_cvt_modes()
+> > 
+> > So afaict this isn't a broken compiler but a legitimate uninitialized
+> > variable.
+> 
+> The value can be anything, but it has to be something. The switch is
+> on "unknown & 0x0c", so only 4 cases are possible, which are
+> enumerated in the switch.
 
-Thanks for your time and review.
+oops, you're completely right lol. will figure out what the unreachable macro in
+the kernel is and use that in a respin of this patch
 
-I will try to handle these in my next iteration.
-Probably there could be extra warnings under
-BAD_SIGN_OFF to handle these cases.
+> 
+>   -ilia
+> 
 
-Am currently looking to achieve the following:
-- unexpected content after email
-- Use of multiple name comments
-- Use of comments in between address
-- stable@vger signoffs
+-- 
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
-Thanks & Regards,
-Dwaipayan.
