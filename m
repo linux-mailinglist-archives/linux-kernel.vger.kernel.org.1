@@ -2,206 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A1B2A3D35
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235612A3D4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgKCHLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:11:00 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19738 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgKCHK7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:10:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa102830000>; Mon, 02 Nov 2020 23:10:59 -0800
-Received: from [172.27.13.204] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 07:10:51 +0000
-Subject: Re: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead
- code
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        gregkh <gregkh@linuxfoundation.org>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <netdev@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
-        <broonie@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        <ranjani.sridharan@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <fred.oh@linux.intel.com>,
-        <shiraz.saleem@intel.com>, <dan.j.williams@intel.com>,
-        <kiran.patil@intel.com>, <linux-kernel@vger.kernel.org>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-12-leon@kernel.org>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <845b26c8-4dfa-5ef2-67a8-1ae6f556fd71@nvidia.com>
-Date:   Tue, 3 Nov 2020 09:10:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201101201542.2027568-12-leon@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604387459; bh=4WUhWdFgickYDSVFf73IeSlsegDSnCyqJHXLcImggck=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Dah3vnxqaguW+nzDWpLeyjsmEMHzddxz/bOE8aJ2quo8SYWhPfZW9duce4clcU2ej
-         GDvO7zRgP2eEzc57IkWZzFs0B8FdA4oKAREzx4GKnuosH6K8N+gYKCzkRksHIwl+BY
-         J/lDEDeZ/jEIpOjtHSLOLEuTrWFl7yRZOjGW0s9jh0zRZFgVXmWM6aWYdZpEf4+sBU
-         py9TwqCM+HnDehlKgL3fsLF3JZPH3K0pmL260bnNDmwfiW9C6vnS4YaXSX/rdNX2uZ
-         ih2ncLS8xu/ZN9QxF8Ygw1/FKacbdTF/cGpwDzDrqYWjFzaJI/phkRuYPZhzRozU3o
-         Z1jQ9+kZh73JA==
+        id S1727749AbgKCHMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:12:16 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37224 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725968AbgKCHMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:12:14 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79PGAqFfIKEEAA--.12977S2;
+        Tue, 03 Nov 2020 15:12:06 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v3 0/6] Modify some registers operations and move decode_cpucfg() to loongson_regs.h
+Date:   Tue,  3 Nov 2020 15:11:59 +0800
+Message-Id: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx79PGAqFfIKEEAA--.12977S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWkWw1xKr18Cr43Ar1UZFb_yoW3Krg_Kr
+        y2yF93G3yxW3WfJFykXF4xXrW7XFW8C3y3CFn8tr9av3WYqr98Zr48Cr4UWws8uanF9ry5
+        XF48WFykA3Z7XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VCY1x0262k0Y48FwI0_Jr0_Gr1lYx0Ex4A2jsIE14v26r
+        4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUj5fQtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v2: Add some callbacks in csr_ipi probe() for patch #4
+v3: Update the commit message and comment for patch #5
 
+Tiezhu Yang (6):
+  MIPS: Loongson64: Do not write the read only field LPA of CP0_CONFIG3
+  MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
+  MIPS: Loongson64: Set IPI_Enable register per core by itself
+  MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU
+  MIPS: Loongson64: SMP: Fix up play_dead jump indicator
+  MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
 
-On 2020-11-01 10:15 PM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Delete dead code.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->   drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
->   drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
->   2 files changed, 7 insertions(+), 55 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-> index 9810bdd7f3bc..a1a9450ed92c 100644
-> --- a/drivers/infiniband/hw/mlx5/ib_rep.c
-> +++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-> @@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
->   	struct mlx5_ib_dev *ibdev;
->   	int vport_index;
-> 
-> -	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
-> +	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
->   	vport_index = rep->vport_index;
-> 
->   	ibdev->port[vport_index].rep = rep;
-> @@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
->   	return ret;
->   }
-> 
-> +static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-> +{
-> +	return rep->rep_data[REP_IB].priv;
-> +}
-> +
->   static void
->   mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
->   {
-> @@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
->   		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
->   }
-> 
-> -static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
-> -{
-> -	return mlx5_ib_rep_to_dev(rep);
-> -}
-> -
->   static const struct mlx5_eswitch_rep_ops rep_ops = {
->   	.load = mlx5_ib_vport_rep_load,
->   	.unload = mlx5_ib_vport_rep_unload,
-> -	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
-> +	.get_proto_dev = mlx5_ib_rep_to_dev,
->   };
-> 
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num)
-> -{
-> -	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
-> -}
-> -
->   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   					  u16 vport_num)
->   {
->   	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
->   }
-> 
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
-> -{
-> -	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
-> -}
-> -
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num)
-> -{
-> -	return mlx5_eswitch_vport_rep(esw, vport_num);
-> -}
-> -
->   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
->   						   struct mlx5_ib_sq *sq,
->   						   u16 port)
-> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
-> index 93f562735e89..ce1dcb105dbd 100644
-> --- a/drivers/infiniband/hw/mlx5/ib_rep.h
-> +++ b/drivers/infiniband/hw/mlx5/ib_rep.h
-> @@ -12,11 +12,6 @@
->   extern const struct mlx5_ib_profile raw_eth_profile;
-> 
->   #ifdef CONFIG_MLX5_ESWITCH
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num);
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num);
->   int mlx5r_rep_init(void);
->   void mlx5r_rep_cleanup(void);
->   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
-> @@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
->   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   					  u16 vport_num);
->   #else /* CONFIG_MLX5_ESWITCH */
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num)
-> -{
-> -	return NULL;
-> -}
-> -
->   static inline int mlx5r_rep_init(void) { return 0; }
->   static inline void mlx5r_rep_cleanup(void) {}
->   static inline
-> @@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   	return NULL;
->   }
->   #endif
-> -
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-> -{
-> -	return rep->rep_data[REP_IB].priv;
-> -}
->   #endif /* __MLX5_IB_REP_H__ */
-> --
-> 2.28.0
-> 
+ .../asm/mach-loongson64/kernel-entry-init.h        |   8 --
+ .../include/asm/mach-loongson64/loongson_regs.h    |  34 ++++++
+ arch/mips/kernel/cpu-probe.c                       |  31 +-----
+ arch/mips/loongson64/numa.c                        |  20 +---
+ arch/mips/loongson64/smp.c                         | 123 +++++++++++++++++----
+ 5 files changed, 136 insertions(+), 80 deletions(-)
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+-- 
+2.1.0
+
