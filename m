@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE432A5542
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233F82A5500
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388293AbgKCVHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:07:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46564 "EHLO mail.kernel.org"
+        id S2388893AbgKCVLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:11:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387708AbgKCVHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:07:22 -0500
+        id S2388885AbgKCVLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:11:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07968205ED;
-        Tue,  3 Nov 2020 21:07:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F3D7206B5;
+        Tue,  3 Nov 2020 21:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437641;
-        bh=Yv/f268HFJkN+1vSeyywKjbrMmMCXFppzKgHQgZDufA=;
+        s=default; t=1604437893;
+        bh=nhRx4EJYriHHfpjRx8j5MBvhx6AGq6kZtYp+1aD1704=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YEK0GstQQF1Se1CQoZJSfZ6Pu2aoLZTIKV5HVSrHVg842vgqFPQ8V9Ux+heyPcPDe
-         3+ofn6xu3GJ8eVsKD9EdESzK0CByLLOStHYP2hBmoTbidWG5xrXjrwqDwbFJD3PaiP
-         pbIqYFW1vjWgthfqCR6rnOSRs9vkYbX0HEog3ICk=
+        b=RhmI/wHglX0RwB5b3Ggg6IfqsnsJULhZCTxwLOcRGRTbp9MQI5Tc1gy4sA1p9L8Ly
+         fp7hdsITkYW9AyVNwy0+kfdLvUwHSUXmD7/pA00SJMtVnyjOkGdy8F903+McPL+BOB
+         Uyvy1tpIoThOK5Kzn6U4umbJtEih8GnvxscaN/44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4.19 162/191] perf python scripting: Fix printable strings in python3 scripts
-Date:   Tue,  3 Nov 2020 21:37:34 +0100
-Message-Id: <20201103203247.627003357@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.14 078/125] usb: dwc3: ep0: Fix ZLP for OUT ep0 requests
+Date:   Tue,  3 Nov 2020 21:37:35 +0100
+Message-Id: <20201103203208.235916877@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,62 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit 6fcd5ddc3b1467b3586972ef785d0d926ae4cdf4 upstream.
+commit 66706077dc89c66a4777a4c6298273816afb848c upstream.
 
-Hagen reported broken strings in python3 tracepoint scripts:
+The current ZLP handling for ep0 requests is only for control IN
+requests. For OUT direction, DWC3 needs to check and setup for MPS
+alignment.
 
-  make PYTHON=python3
-  perf record -e sched:sched_switch -a -- sleep 5
-  perf script --gen-script py
-  perf script -s ./perf-script.py
+Usually, control OUT requests can indicate its transfer size via the
+wLength field of the control message. So usb_request->zero is usually
+not needed for OUT direction. To handle ZLP OUT for control endpoint,
+make sure the TRB is MPS size.
 
-  [..]
-  sched__sched_switch      7 563231.759525792        0 swapper   prev_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), prev_pid=0, prev_prio=120, prev_state=, next_comm=bytearray(b'mutex-thread-co\x00'),
-
-The problem is in the is_printable_array function that does not take the
-zero byte into account and claim such string as not printable, so the
-code will create byte array instead of string.
-
-Committer testing:
-
-After this fix:
-
-sched__sched_switch 3 484522.497072626  1158680 kworker/3:0-eve  prev_comm=kworker/3:0, prev_pid=1158680, prev_prio=120, prev_state=I, next_comm=swapper/3, next_pid=0, next_prio=120
-Sample: {addr=0, cpu=3, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1158680, tid=1158680, time=484522497072626, transaction=0, values=[(0, 0)], weight=0}
-
-sched__sched_switch 4 484522.497085610  1225814 perf             prev_comm=perf, prev_pid=1225814, prev_prio=120, prev_state=, next_comm=migration/4, next_pid=30, next_prio=0
-Sample: {addr=0, cpu=4, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1225814, tid=1225814, time=484522497085610, transaction=0, values=[(0, 0)], weight=0}
-
-Fixes: 249de6e07458 ("perf script python: Fix string vs byte array resolving")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Tested-by: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200928201135.3633850-1-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: c7fcdeb2627c ("usb: dwc3: ep0: simplify EP0 state machine")
+Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/util/print_binary.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc3/ep0.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/tools/perf/util/print_binary.c
-+++ b/tools/perf/util/print_binary.c
-@@ -50,7 +50,7 @@ int is_printable_array(char *p, unsigned
+--- a/drivers/usb/dwc3/ep0.c
++++ b/drivers/usb/dwc3/ep0.c
+@@ -967,12 +967,16 @@ static void dwc3_ep0_xfer_complete(struc
+ static void __dwc3_ep0_do_control_data(struct dwc3 *dwc,
+ 		struct dwc3_ep *dep, struct dwc3_request *req)
+ {
++	unsigned int		trb_length = 0;
+ 	int			ret;
  
- 	len--;
+ 	req->direction = !!dep->number;
  
--	for (i = 0; i < len; i++) {
-+	for (i = 0; i < len && p[i]; i++) {
- 		if (!isprint(p[i]) && !isspace(p[i]))
- 			return 0;
- 	}
+ 	if (req->request.length == 0) {
+-		dwc3_ep0_prepare_one_trb(dep, dwc->ep0_trb_addr, 0,
++		if (!req->direction)
++			trb_length = dep->endpoint.maxpacket;
++
++		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr, trb_length,
+ 				DWC3_TRBCTL_CONTROL_DATA, false);
+ 		ret = dwc3_ep0_start_trans(dep);
+ 	} else if (!IS_ALIGNED(req->request.length, dep->endpoint.maxpacket)
+@@ -1024,9 +1028,12 @@ static void __dwc3_ep0_do_control_data(s
+ 
+ 		req->trb = &dwc->ep0_trb[dep->trb_enqueue - 1];
+ 
++		if (!req->direction)
++			trb_length = dep->endpoint.maxpacket;
++
+ 		/* Now prepare one extra TRB to align transfer size */
+ 		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr,
+-					 0, DWC3_TRBCTL_CONTROL_DATA,
++					 trb_length, DWC3_TRBCTL_CONTROL_DATA,
+ 					 false);
+ 		ret = dwc3_ep0_start_trans(dep);
+ 	} else {
 
 
