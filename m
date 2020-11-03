@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC412A59EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25452A59ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730057AbgKCWSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S1730218AbgKCWSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730242AbgKCWSB (ORCPT
+        with ESMTP id S1730131AbgKCWSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:18:01 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03598C061A04
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:18:01 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id v19so15845590lji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:18:00 -0800 (PST)
+        Tue, 3 Nov 2020 17:18:08 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3286FC061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:18:08 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id h6so24400342lfj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:18:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z0GfssSb9lxM+saQ7V+1ta/Gt8yaqMW9vqfv+WXLTwo=;
-        b=FeZn//b1sOnMrO86t7PxeEcDowXD4Ju86jS3F2Ovkk/9uHRoKyViEL8FoAGe1M6Dsc
-         24tIc4S+LsQx1PS2ucPg54frQ40elJZesPOG4kOonbBE0WF0P0m3JpGqm3g8z3hK1YjI
-         qT/pfOxKrxqo9F2RMyW1BXUdBXaedR4oQLBXmSeAA8UtMPxdMoGaY8uOb2ar5h6kPNc1
-         osM55zh33/mU4PHPqktEsnB0Tixgu/FqGh2MLGmhFh3pbpMLU4QhKYtapoUre6M+T3Ka
-         7147e1t/Jwu0QVFanpXFlTNpj+ZCQNIC6wt7G7UdezZJAZEj4v31ZuoTvI9gA8os5HX6
-         Wgxw==
+        bh=6ZRbguQ1x9dT0hAvOuP/VOG3YF2apB5kK77xWV7GZj8=;
+        b=e64Bz7BE2EMfuJBK4v0zmQPnFN9lNFRh9kkgkxlITo7rvrh4p1X05aLqaDZJSCwgqf
+         NkeYbCBk8ymR4KZ5eZ+T66JiIkjjMwGwgn9upz0vlatttnaRTo8CD6zYhX2kd7tIqPYW
+         brnBkGNp71HDWqcjeGkuHw1qA/1Y/KgRTXT9IDiMHfaeLlnr7KXPEhveqxLCwahO8XB1
+         jKWgHrwbjsUmMQUlYFTygFpkHnBCxT6s04QdNzXg6iWssqG+3KJiWmRM/5nMGf3jGKrZ
+         FSx7sS6fS0MxkiItNy0e+PB9mNqHK/XFbxPInS/zqp1SIdiN6cFuaNybFI7yGGCRMe1v
+         pDvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z0GfssSb9lxM+saQ7V+1ta/Gt8yaqMW9vqfv+WXLTwo=;
-        b=RGEuLlspXdNLfaU1PWDcgurvO9XxdCvg/RM3QQKUba0eLKNsNoorebyC3/2lqUTpp5
-         BaMsgYdseQDuCgd5n4ZLcvc5J9R+pfHnSQqZgLuu3A+R/axpQUJkNhJCWyNq+/8vV6wK
-         oT1yo9cGuNwac+jUnBRU0o3x89Bk9L5WPe4S3nr2OhnL7UFNq8/ctP2nvCx6FUSEWuHy
-         FVwvY9TtZDetpPy6itXg2OOr0Q3RlPjmnBElWmSnzs/I0mzX7mMUD8dZg+KyaFbRFRAS
-         qcDrmKwidoYWV7SjXSA0wMq58RG/xcfjn6rE+Gmr8ya6ijrSy347iGPpp1uKzKYiaQFB
-         dZBA==
-X-Gm-Message-State: AOAM533DR4NqY8luIOiqIpgtrr7ZMY+uq5yfBTefL42JHwQh9rT05O8S
-        YIMHbwfKrJOV9YNLMAKm3bXbzeKkTXOtsABOui5TBg==
-X-Google-Smtp-Source: ABdhPJx1YLpbLOmJgqu3eQzQ+sA7YY36W5ObSZZ3HEKf4jnleqY9lVAuhTWuMxAk5yJC8NxBNIaDG96Wmw/e3PGz5t8=
-X-Received: by 2002:a2e:9c84:: with SMTP id x4mr9140798lji.326.1604441879292;
- Tue, 03 Nov 2020 14:17:59 -0800 (PST)
+        bh=6ZRbguQ1x9dT0hAvOuP/VOG3YF2apB5kK77xWV7GZj8=;
+        b=FPkIw+y7Lw6SQlyZIjsOVZ4B+/xT0kmVO/kYDAOnpRsu8ZUUycu99dKVWzkfwoabCD
+         asNHWMEGHi0J14IphAJ4E9nVKp3lbCnhmi3eUitwYW6zFB/uZjC+bR9wd/qY9DmYUxEI
+         D7DvM6LdaC3Z75DSfui+xqvWWqBgCxw01qFSVPB2vzga0Yj3C3yWQQKlJQU9i+BbaBir
+         UbOeOY6piqGfwNPRLoQ0XYnT6IYmcXyyZrvB4+LU6zmgUK2V/iTBecRSgldM1RC8WZNZ
+         jCaNmwJLIahdYJyicHN6Hl1lQYLbkppg8DZ45crJLCBUKMJLOTp4c9u9L52HN5QgU0KN
+         eTtw==
+X-Gm-Message-State: AOAM532raJKokRtPjmMpo6QjeeLJbN6RhQPHVS7Jnb8EPHimbrDAyFb8
+        WJjKjuJIB2cw1jtJujvtS/CT6ayEKN8hzUYVggEm2w==
+X-Google-Smtp-Source: ABdhPJxNMJdmM5bO0n1X/nCLwlnn2NzVmKdN9XM7NV2nBD3hCpQn9Lo3KTe5+IezyPBL6NgtbGJbT2zP0+jEAYS0fZ0=
+X-Received: by 2002:a19:83c1:: with SMTP id f184mr7817703lfd.97.1604441886422;
+ Tue, 03 Nov 2020 14:18:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201103175841.3495947-1-elver@google.com> <20201103175841.3495947-8-elver@google.com>
-In-Reply-To: <20201103175841.3495947-8-elver@google.com>
+References: <20201103175841.3495947-1-elver@google.com> <20201103175841.3495947-9-elver@google.com>
+In-Reply-To: <20201103175841.3495947-9-elver@google.com>
 From:   Jann Horn <jannh@google.com>
-Date:   Tue, 3 Nov 2020 23:17:32 +0100
-Message-ID: <CAG48ez0=_ZoUsZvh99UJo7GziiTqZUKYgqHzvd784a-Fs-kEcw@mail.gmail.com>
-Subject: Re: [PATCH v7 7/9] kfence, Documentation: add KFENCE documentation
+Date:   Tue, 3 Nov 2020 23:17:39 +0100
+Message-ID: <CAG48ez0040+=Grn6nELgPfV4VntStm8iXTC62+ouiF29=9K_rg@mail.gmail.com>
+Subject: Re: [PATCH v7 8/9] kfence: add test suite
 To:     Marco Elver <elver@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Alexander Potapenko <glider@google.com>,
@@ -93,7 +93,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Nov 3, 2020 at 6:59 PM Marco Elver <elver@google.com> wrote:
-> Add KFENCE documentation in dev-tools/kfence.rst, and add to index.
+> Add KFENCE test suite, testing various error detection scenarios. Makes
+> use of KUnit for test organization. Since KFENCE's interface to obtain
+> error reports is via the console, the test verifies that KFENCE outputs
+> expected reports to the console.
 >
 > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 > Co-developed-by: Alexander Potapenko <glider@google.com>
