@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B9A2A5890
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8C82A58BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgKCUq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:46:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
+        id S1729865AbgKCVyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:54:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731186AbgKCUqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:46:23 -0500
+        id S1730997AbgKCUpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 487F420719;
-        Tue,  3 Nov 2020 20:46:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64730223C6;
+        Tue,  3 Nov 2020 20:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436382;
-        bh=xvYuqG/nqQCnqPp65IkugOL6wIjSVb3Do3e6ftfhyx0=;
+        s=default; t=1604436316;
+        bh=ntqQHSCvw4gPTX8zPXR8IMcXwra6zzoLk7qKbdD1KS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aZYS1cEHgaV8UDlsy3bCMvBTeWlecrUFS1EpmYhSsJphwIWm+TspVb3YuZc/hiCSg
-         cEnSE/cEPBSRhpeqyT6LtVUhgf1h3c8p5sD+pzhjX+/Mif64xdS8bnmqXrgH0JL7TE
-         87ZgpXIgjGeR4CGfGHmOafwn/btaT/YccXhcGAJA=
+        b=A0OiKJhkv0nEMxKZ1O5CeEabRkscO96MU1J+HrTNReUrraLtm0EJFp7dqcoe6u/10
+         T4IGkPr0X/CXWL2itOx0ZenEuW3dhGSPGVFH35ybmlq8aXdAgwAaLywxweSyzt3M+0
+         w+P7Kb2FX8Avj7TZ6H8Z2LjroPIE7Ue/wKiKMSbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 178/391] arm64: dts: qcom: kitakami: Temporarily disable SDHCI1
-Date:   Tue,  3 Nov 2020 21:33:49 +0100
-Message-Id: <20201103203358.883649659@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 180/391] sgl_alloc_order: fix memory leak
+Date:   Tue,  3 Nov 2020 21:33:51 +0100
+Message-Id: <20201103203359.018184395@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,39 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konradybcio@gmail.com>
+From: Douglas Gilbert <dgilbert@interlog.com>
 
-[ Upstream commit e884fb6cc89dce1debeae33704edd7735a3d6d9c ]
+[ Upstream commit b2a182a40278bc5849730e66bca01a762188ed86 ]
 
-There is an issue with Kitakami eMMCs dying when a quirk
-isn't addressed. Until that happens, disable it.
+sgl_alloc_order() can fail when 'length' is large on a memory
+constrained system. When order > 0 it will potentially be
+making several multi-page allocations with the later ones more
+likely to fail than the earlier one. So it is important that
+sgl_alloc_order() frees up any pages it has obtained before
+returning NULL. In the case when order > 0 it calls the wrong
+free page function and leaks. In testing the leak was
+sufficient to bring down my 8 GiB laptop with OOM.
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-Link: https://lore.kernel.org/r/20200814154749.257837-1-konradybcio@gmail.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ lib/scatterlist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-index 4032b7478f044..791f254ac3f87 100644
---- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-@@ -221,7 +221,12 @@
- };
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index 5d63a8857f361..c448642e0f786 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -514,7 +514,7 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
+ 		elem_len = min_t(u64, length, PAGE_SIZE << order);
+ 		page = alloc_pages(gfp, order);
+ 		if (!page) {
+-			sgl_free(sgl);
++			sgl_free_order(sgl, order);
+ 			return NULL;
+ 		}
  
- &sdhc1 {
--	status = "okay";
-+	/* There is an issue with the eMMC causing permanent
-+	 * damage to the card if a quirk isn't addressed.
-+	 * Until it's fixed, disable the MMC so as not to brick
-+	 * devices.
-+	 */
-+	status = "disabled";
- 
- 	/* Downstream pushes 2.95V to the sdhci device,
- 	 * but upstream driver REALLY wants to make vmmc 1.8v
 -- 
 2.27.0
 
