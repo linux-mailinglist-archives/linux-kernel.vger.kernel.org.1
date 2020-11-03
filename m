@@ -2,162 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4401B2A4E0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B03D2A4E10
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgKCSNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCSNE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:13:04 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50200C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:13:04 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id s21so19348057oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:13:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gR/SlmlCtWaTEuhJ75HH1ougxe6tbAau9fplmY1Gd1c=;
-        b=IDtCg9rskaSN2GRu9GYPUrlAigWfkkKXdz55Esi6x09u3Nz0r64d4Fw9IsXDmga/XN
-         GgDQfpQzJkFyCDSKyUpA0GAoKY1SEr5B7jIxLFrvjg3531Qx9jb49Wx7l2KZDPC5qG4X
-         joRv5XuwsCZbv1u4xmQ6yLpmTNrCZHtzMugF+dmyIIUPMvlbuqryIz99kidhenUsYvxg
-         +DbU2TIV9EXBwbtKsGBcSC0RboDX+NRK/vZNOc5D3FiPiUjb0JG2Fq0G/ypVWi9IUE2w
-         5d7iOfhaaH6qyc7Aw8JaLq5Rvgvn8/LxsH2VkBjKvwVtud/VXvr4zr5LefWLmUAw8S4M
-         LR5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gR/SlmlCtWaTEuhJ75HH1ougxe6tbAau9fplmY1Gd1c=;
-        b=nLpP7CC4OQEEhH9EtWNwfIj47EmtBsBjoIQ893Wp9FdVNyz+lmNCrtMQD9Bybr3GFF
-         sisyPhlIwyGX8dqJUwQVbjnwt9vQpBekKzPoFLWtaWrqfyMsGN5tDLbChFdY71+Kp9kR
-         e2R9eSYRNFHZaTzlTAwTyOGhcHBLvNv+3shSoDnA7gr25gy91v7mOS6Ik0dalOIkNUG9
-         hMwayqzDDe76wIYFpESI3DYVXeMNU/rsQzBBHe2777XMxK8VVWWbwuxsbgPGjpNb5wl3
-         sCCQI3Ek1bZa3tvIFr2IidkkcUS8WOSyykSuq6n6jnzjtI+pIVXUgZYn/p3iQ2bzaX9a
-         3mmA==
-X-Gm-Message-State: AOAM5327gUjmAqSOm5z6jipcV7ucdWjDlz3JmSPH71P9shgE7Kh2QXgT
-        uCeMrYA7J+6l46y8WMAcXD5M5g==
-X-Google-Smtp-Source: ABdhPJxRsv4PojQL36+xDxGkDTX6Y1faXi/IayqSpIVC+vvP+rkjhV+Cd07S7O92ZiBj/F10ccQT4A==
-X-Received: by 2002:aca:3387:: with SMTP id z129mr221653oiz.123.1604427183670;
-        Tue, 03 Nov 2020 10:13:03 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e47sm2643616ote.50.2020.11.03.10.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 10:13:03 -0800 (PST)
-Date:   Tue, 3 Nov 2020 12:13:01 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v18 2/4] iommu/arm-smmu: Add a way for implementations to
- influence SCTLR
-Message-ID: <20201103181301.GR3151@builder.lan>
-References: <20201102171416.654337-1-jcrouse@codeaurora.org>
- <20201102171416.654337-3-jcrouse@codeaurora.org>
- <0a00c162-ad77-46b7-85ad-e11229b57a3d@arm.com>
+        id S1729111AbgKCSOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:14:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727971AbgKCSON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:14:13 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A35C720780;
+        Tue,  3 Nov 2020 18:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604427252;
+        bh=xcmtesgScEThQWVAlyFHd721UIZTZBM+vfZNEw5TWHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VimesJGlvik33xmtNnlRSxLtCoeagRnzi3P48Mt4udCeWae8MrB7kbLbSumPf5F15
+         Ku982wT3xj9JAYwm4Ol3n+M9OgWO5KrFlHYhIod0StZ0pIG7z+e+jY0wUOJ/cHUyho
+         JVeirJgujY0qEwRZE13TH1EGI5f/uLoc09DA1ca4=
+Date:   Tue, 3 Nov 2020 19:14:07 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V2 05/10] x86/pks: Add PKS kernel API
+Message-ID: <20201103181407.GA83845@kroah.com>
+References: <20201102205320.1458656-1-ira.weiny@intel.com>
+ <20201102205320.1458656-6-ira.weiny@intel.com>
+ <20201103065024.GC75930@kroah.com>
+ <20201103175335.GA1531489@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a00c162-ad77-46b7-85ad-e11229b57a3d@arm.com>
+In-Reply-To: <20201103175335.GA1531489@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02 Nov 12:18 CST 2020, Robin Murphy wrote:
-
-> On 2020-11-02 17:14, Jordan Crouse wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> > 
-> > For the Adreno GPU's SMMU, we want SCTLR.HUPCF set to ensure that
-> > pending translations are not terminated on iova fault.  Otherwise
-> > a terminated CP read could hang the GPU by returning invalid
-> > command-stream data.
-> > 
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> > ---
-> > 
-> >   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 6 ++++++
-> >   drivers/iommu/arm/arm-smmu/arm-smmu.c      | 3 +++
-> >   drivers/iommu/arm/arm-smmu/arm-smmu.h      | 3 +++
-> >   3 files changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > index 1e942eed2dfc..0663d7d26908 100644
-> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > @@ -129,6 +129,12 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-> >   	    (smmu_domain->cfg.fmt == ARM_SMMU_CTX_FMT_AARCH64))
-> >   		pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_ARM_TTBR1;
-> > +	/*
-> > +	 * On the GPU device we want to process subsequent transactions after a
-> > +	 * fault to keep the GPU from hanging
-> > +	 */
-> > +	smmu_domain->cfg.sctlr_set |= ARM_SMMU_SCTLR_HUPCF;
-> > +
-> >   	/*
-> >   	 * Initialize private interface with GPU:
-> >   	 */
-> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> > index dad7fa86fbd4..1f06ab219819 100644
-> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> > @@ -617,6 +617,9 @@ void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
-> >   	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-> >   		reg |= ARM_SMMU_SCTLR_E;
-> > +	reg |= cfg->sctlr_set;
-> > +	reg &= ~cfg->sctlr_clr;
+On Tue, Nov 03, 2020 at 09:53:36AM -0800, Ira Weiny wrote:
+> On Tue, Nov 03, 2020 at 07:50:24AM +0100, Greg KH wrote:
+> > On Mon, Nov 02, 2020 at 12:53:15PM -0800, ira.weiny@intel.com wrote:
+> > > From: Fenghua Yu <fenghua.yu@intel.com>
+> > > 
 > 
-> Since we now have a write_s2cr hook, I'm inclined to think that the
-> consistency of a write_sctlr hook that could similarly apply its own
-> arbitrary tweaks would make sense for this. Does anyone have any strong
-> opinions?
+> [snip]
 > 
-
-I like it.
-
-Regards,
-Bjorn
-
-> Robin.
-> 
-> > +
-> >   	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
-> >   }
-> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> > index 6c5ff9999eae..ddf2ca4c923d 100644
-> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> > @@ -144,6 +144,7 @@ enum arm_smmu_cbar_type {
-> >   #define ARM_SMMU_CB_SCTLR		0x0
-> >   #define ARM_SMMU_SCTLR_S1_ASIDPNE	BIT(12)
-> >   #define ARM_SMMU_SCTLR_CFCFG		BIT(7)
-> > +#define ARM_SMMU_SCTLR_HUPCF		BIT(8)
-> >   #define ARM_SMMU_SCTLR_CFIE		BIT(6)
-> >   #define ARM_SMMU_SCTLR_CFRE		BIT(5)
-> >   #define ARM_SMMU_SCTLR_E		BIT(4)
-> > @@ -341,6 +342,8 @@ struct arm_smmu_cfg {
-> >   		u16			asid;
-> >   		u16			vmid;
-> >   	};
-> > +	u32				sctlr_set;    /* extra bits to set in SCTLR */
-> > +	u32				sctlr_clr;    /* bits to mask in SCTLR */
-> >   	enum arm_smmu_cbar_type		cbar;
-> >   	enum arm_smmu_context_fmt	fmt;
-> >   };
+> > > diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+> > > index 2955ba976048..0959a4c0ca64 100644
+> > > --- a/include/linux/pkeys.h
+> > > +++ b/include/linux/pkeys.h
+> > > @@ -50,4 +50,28 @@ static inline void copy_init_pkru_to_fpregs(void)
+> > >  
+> > >  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
+> > >  
+> > > +#define PKS_FLAG_EXCLUSIVE 0x00
+> > > +
+> > > +#ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> > > +static inline int pks_key_alloc(const char * const pkey_user, int flags)
+> > > +{
+> > > +	return -EOPNOTSUPP;
+> > > +}
+> > > +static inline void pks_key_free(int pkey)
+> > > +{
+> > > +}
+> > > +static inline void pks_mk_noaccess(int pkey)
+> > > +{
+> > > +	WARN_ON_ONCE(1);
 > > 
+> > So for panic-on-warn systems, this is ok to reboot the box?
+> 
+> I would not expect this to reboot the box no.  But it is a violation of the API
+> contract.  If pky_key_alloc() returns an error calling any of the other
+> functions is an error.
+> 
+> > 
+> > Are you sure, that feels odd...
+> 
+> It does feel odd and downright wrong...  But there are a lot of WARN_ON_ONCE's
+> out there to catch this type of internal programming error.  Is panic-on-warn
+> commonly used?
+
+Yes it is, and we are trying to recover from that as it is something
+that you should recover from.  Properly handle the error and move on.
+
+thanks,
+
+greg k-h
