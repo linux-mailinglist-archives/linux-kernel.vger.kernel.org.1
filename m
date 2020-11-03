@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF672A5636
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC25F2A5448
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730781AbgKCVA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35970 "EHLO mail.kernel.org"
+        id S2388163AbgKCVJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733199AbgKCVAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:19 -0500
+        id S2388553AbgKCVJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFDA722226;
-        Tue,  3 Nov 2020 21:00:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FEA0206B5;
+        Tue,  3 Nov 2020 21:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437218;
-        bh=UZwC1BRGNu+cfL6LMrplE7QsUP/WDAzBR/EDPltJrmE=;
+        s=default; t=1604437780;
+        bh=MdjBSPkgsz9paR4rhfpj8KntD4vYei0etpsLlNxD7tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zfsYjFWyt162tA6mEJkOgz2kvgXgX0bHFbGaHIZ5ISBADAihJnl77sR8GuVk9i/j+
-         ugscZhGEQTuMDhMZJo4My44PVtAOG0At8zX5zuiblI6auZSExdPZGHnjP19o95Klug
-         e5R9o/ltJDyHYNQcrWISUVfQgPRCAWjK1DnEt+c0=
+        b=YVzcayY72Lb2OuCMSHS7mP5h324t0Nwe35lqu2hlulFr9g5ZE+c4rhlcrMHgcJZ5E
+         9ixGoxAZ+/+ULsXu9eNvaMOX6f3KE45HdlEa02w72ItDGdaYbIYCgysftKGzDc9E9t
+         k0oXSmsApSJu3WWB+8tCpS1Z4ITlr7SJ/a/VUv7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 159/214] powerpc: Warn about use of smt_snooze_delay
+        stable@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        Xia Jiang <xia.jiang@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 030/125] media: platform: Improve queue set up flow for bug fixing
 Date:   Tue,  3 Nov 2020 21:36:47 +0100
-Message-Id: <20201103203305.693586293@linuxfoundation.org>
+Message-Id: <20201103203201.080789134@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,104 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Xia Jiang <xia.jiang@mediatek.com>
 
-commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
+[ Upstream commit 5095a6413a0cf896ab468009b6142cb0fe617e66 ]
 
-It's not done anything for a long time. Save the percpu variable, and
-emit a warning to remind users to not expect it to do anything.
+Add checking created buffer size follow in mtk_jpeg_queue_setup().
 
-This uses pr_warn_once instead of pr_warn_ratelimit as testing
-'ppc64_cpu --smt=off' on a 24 core / 4 SMT system showed the warning
-to be noisy, as the online/offline loop is slow.
-
-Fixes: 3fa8cad82b94 ("powerpc/pseries/cpuidle: smt-snooze-delay cleanup.")
-Cc: stable@vger.kernel.org # v3.14
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Acked-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200902000012.3440389-1-joel@jms.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/sysfs.c |   42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+ drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/powerpc/kernel/sysfs.c
-+++ b/arch/powerpc/kernel/sysfs.c
-@@ -31,29 +31,27 @@
+diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+index 46c996936798a..fd9e13500fe7f 100644
+--- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
++++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+@@ -579,6 +579,13 @@ static int mtk_jpeg_queue_setup(struct vb2_queue *q,
+ 	if (!q_data)
+ 		return -EINVAL;
  
- static DEFINE_PER_CPU(struct cpu, cpu_devices);
- 
--/*
-- * SMT snooze delay stuff, 64-bit only for now
-- */
--
- #ifdef CONFIG_PPC64
- 
--/* Time in microseconds we delay before sleeping in the idle loop */
--static DEFINE_PER_CPU(long, smt_snooze_delay) = { 100 };
-+/*
-+ * Snooze delay has not been hooked up since 3fa8cad82b94 ("powerpc/pseries/cpuidle:
-+ * smt-snooze-delay cleanup.") and has been broken even longer. As was foretold in
-+ * 2014:
-+ *
-+ *  "ppc64_util currently utilises it. Once we fix ppc64_util, propose to clean
-+ *  up the kernel code."
-+ *
-+ * powerpc-utils stopped using it as of 1.3.8. At some point in the future this
-+ * code should be removed.
-+ */
- 
- static ssize_t store_smt_snooze_delay(struct device *dev,
- 				      struct device_attribute *attr,
- 				      const char *buf,
- 				      size_t count)
- {
--	struct cpu *cpu = container_of(dev, struct cpu, dev);
--	ssize_t ret;
--	long snooze;
--
--	ret = sscanf(buf, "%ld", &snooze);
--	if (ret != 1)
--		return -EINVAL;
--
--	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
-+	pr_warn_once("%s (%d) stored to unsupported smt_snooze_delay, which has no effect.\n",
-+		     current->comm, current->pid);
- 	return count;
- }
- 
-@@ -61,9 +59,9 @@ static ssize_t show_smt_snooze_delay(str
- 				     struct device_attribute *attr,
- 				     char *buf)
- {
--	struct cpu *cpu = container_of(dev, struct cpu, dev);
--
--	return sprintf(buf, "%ld\n", per_cpu(smt_snooze_delay, cpu->dev.id));
-+	pr_warn_once("%s (%d) read from unsupported smt_snooze_delay\n",
-+		     current->comm, current->pid);
-+	return sprintf(buf, "100\n");
- }
- 
- static DEVICE_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
-@@ -71,16 +69,10 @@ static DEVICE_ATTR(smt_snooze_delay, 064
- 
- static int __init setup_smt_snooze_delay(char *str)
- {
--	unsigned int cpu;
--	long snooze;
--
- 	if (!cpu_has_feature(CPU_FTR_SMT))
- 		return 1;
- 
--	snooze = simple_strtol(str, NULL, 10);
--	for_each_possible_cpu(cpu)
--		per_cpu(smt_snooze_delay, cpu) = snooze;
--
-+	pr_warn("smt-snooze-delay command line option has no effect\n");
- 	return 1;
- }
- __setup("smt-snooze-delay=", setup_smt_snooze_delay);
++	if (*num_planes) {
++		for (i = 0; i < *num_planes; i++)
++			if (sizes[i] < q_data->sizeimage[i])
++				return -EINVAL;
++		return 0;
++	}
++
+ 	*num_planes = q_data->fmt->colplanes;
+ 	for (i = 0; i < q_data->fmt->colplanes; i++) {
+ 		sizes[i] = q_data->sizeimage[i];
+-- 
+2.27.0
+
 
 
