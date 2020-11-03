@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF392A4056
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCBB2A404F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgKCJc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727864AbgKCJcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:32:53 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B23C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 01:32:53 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id x13so13674251pfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 01:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fossix-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bXPiKnajprsVmoagr8lc4F80WvhfqnnWb0E5r9CyaTA=;
-        b=T5pOlxf8VV1zzfEju8qFL0DQ4EgCEIfPJz8yMuOXt9szWzNyKhE3E7pCm9Z+QU9CmQ
-         nFrDtg7EldsI+XtcSwwtrCnMy2PqYorfKH7J31UgniG2rjwnNWjcnLc6uVdBJdxsxsoU
-         vE/JNiNwI72jpR/PfnREef8qfnb/YPJj/H4Mhz0hrhMa+s7R3UzhhVoATGKGImB+hfZf
-         vJB9T46VmRkQyPI5Dvtxp8xkOVwKj96e1WYcF9kvLK2nU6ol8WdoGfdDU8IHvSXXa7s+
-         l+vQ+h0j0cZAxTv6mCAnYz5y+8WayoQQIJ+8zbVpb9CODqZgIxt+fV7VxCv+38oV9fKV
-         3JvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bXPiKnajprsVmoagr8lc4F80WvhfqnnWb0E5r9CyaTA=;
-        b=X2Ce0Q0axSHm4HsOMrppN9TFkYDBUEzOj3me3eio3eA8jJfj2iDiKrAG/VAfztYjD7
-         /dh6tZqtKxvia6cL7UxQ3ToYm9cmbmioLvwYkllrXCJSSaprgSAUBsRQ2d/8XeOVk5bz
-         GK1I12b81MIxIyIole+V/Mwl7ywIv0xUHLN3D4IezRMmIqszEmORFDHjtfx3YNG3JgVR
-         1Mv0p/iNfpOslHJgAyIUH6MShOa7wKCkH3CGEeFSzdAZxQCp9K9HceHssFuWrMXvYGLz
-         ysgKFA/lShxqgCHid790LK7J3AXaCt3AnvqlUJ+wT7TkmyoVFFfXJxkwARXnETY4KQM2
-         Tquw==
-X-Gm-Message-State: AOAM530eiIuMl8nYOwfe+nqX8pq8ynA+T9QNGgOrem8cnWqPc6HkAjX+
-        S9ZWkjTTul4pTZs63z/5536o6iP5yG3VcA==
-X-Google-Smtp-Source: ABdhPJxFlhZATRI9DgOKBEyXjdfT2Eg14GrNTRW8hc1WOeEvBSg28bBtiktlPKw2bfrHQ9h0nZhDOA==
-X-Received: by 2002:a65:688b:: with SMTP id e11mr6790464pgt.175.1604395972269;
-        Tue, 03 Nov 2020 01:32:52 -0800 (PST)
-Received: from santosiv.in.ibm.com.com ([103.21.79.4])
-        by smtp.gmail.com with ESMTPSA id 194sm4441193pfz.142.2020.11.03.01.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 01:32:51 -0800 (PST)
-From:   Santosh Sivaraj <santosh@fossix.org>
-To:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     pmladek@suse.com, bala24@linux.ibm.com,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: [RESEND PATCH] kernel/watchdog: Fix watchdog_allowed_mask not used warning
-Date:   Tue,  3 Nov 2020 15:02:35 +0530
-Message-Id: <20201103093235.655665-1-santosh@fossix.org>
-X-Mailer: git-send-email 2.26.2
+        id S1727553AbgKCJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:32:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgKCJcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:32:46 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69A10223BD;
+        Tue,  3 Nov 2020 09:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604395965;
+        bh=IrV4h0rvAGQFEgmyY4cuxqFV+gpefvvnyQJqDUsME3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1FEPBqXYPwCDlxZrsBNgbv2PQxi4axoAfn6avNNmtBODJlGOZb/OcadPpYwk2CR6o
+         cyuOSWUNaT+gmCmN/IsYKxix5LyehVhBY3imN8/P5g4eWmlAW48qcsczhDHgT1OC8/
+         MIRWMEVLNZ7OL+tWm3mo9pUHqIyF7JjP0DpMhzro=
+Date:   Tue, 3 Nov 2020 10:32:41 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Hayes Wang <hayeswang@realtek.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
+ RTL8153
+Message-ID: <20201103093241.GA79239@kroah.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+ <1394712342-15778-388-Taiwan-albertk@realtek.com>
+ <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
+ <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define watchdog_allowed_mask only when SOFTLOCKUP_DETECTOR is enabled.
+On Mon, Nov 02, 2020 at 11:47:18AM -0800, Jakub Kicinski wrote:
+> On Mon, 2 Nov 2020 07:20:15 +0000 Hayes Wang wrote:
+> > Jakub Kicinski <kuba@kernel.org>
+> > > Can you describe the use case in more detail?
+> > > 
+> > > AFAICT r8152 defines a match for the exact same device.
+> > > Does it not mean that which driver is used will be somewhat random
+> > > if both are built?  
+> > 
+> > I export rtl_get_version() from r8152. It would return none zero
+> > value if r8152 could support this device. Both r8152 and r8153_ecm
+> > would check the return value of rtl_get_version() in porbe().
+> > Therefore, if rtl_get_version() return none zero value, the r8152
+> > is used for the device with vendor mode. Otherwise, the r8153_ecm
+> > is used for the device with ECM mode.
+> 
+> Oh, I see, I missed that the rtl_get_version() checking is the inverse
+> of r8152.
+> 
+> > > > +/* Define these values to match your device */
+> > > > +#define VENDOR_ID_REALTEK		0x0bda
+> > > > +#define VENDOR_ID_MICROSOFT		0x045e
+> > > > +#define VENDOR_ID_SAMSUNG		0x04e8
+> > > > +#define VENDOR_ID_LENOVO		0x17ef
+> > > > +#define VENDOR_ID_LINKSYS		0x13b1
+> > > > +#define VENDOR_ID_NVIDIA		0x0955
+> > > > +#define VENDOR_ID_TPLINK		0x2357  
+> > > 
+> > > $ git grep 0x2357 | grep -i tplink
+> > > drivers/net/usb/cdc_ether.c:#define TPLINK_VENDOR_ID	0x2357
+> > > drivers/net/usb/r8152.c:#define VENDOR_ID_TPLINK		0x2357
+> > > drivers/usb/serial/option.c:#define TPLINK_VENDOR_ID			0x2357
+> > > 
+> > > $ git grep 0x17ef | grep -i lenovo
+> > > drivers/hid/hid-ids.h:#define USB_VENDOR_ID_LENOVO		0x17ef
+> > > drivers/hid/wacom.h:#define USB_VENDOR_ID_LENOVO	0x17ef
+> > > drivers/net/usb/cdc_ether.c:#define LENOVO_VENDOR_ID	0x17ef
+> > > drivers/net/usb/r8152.c:#define VENDOR_ID_LENOVO		0x17ef
+> > > 
+> > > Time to consolidate those vendor id defines perhaps?  
+> > 
+> > It seems that there is no such header file which I could include
+> > or add the new vendor IDs.
+> 
+> Please create one. (Adding Greg KH to the recipients, in case there is
+> a reason that USB subsystem doesn't have a common vendor id header.)
 
-Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
----
+There is a reason, it's a nightmare to maintain and handle merges for,
+just don't do it.
 
-Original patch is here:
-https://lore.kernel.org/lkml/20190807014417.9418-1-santosh@fossix.org/
+Read the comments at the top of the pci_ids.h file if you are curious
+why we don't even do this for PCI device ids anymore for the past 10+
+years.
 
-A similar patch was also sent by Balamuruhan and reviewed by Petr.
-https://lkml.org/lkml/2020/8/20/1030
+So no, please do not create such a common file, it is not needed or a
+good idea.
 
- kernel/watchdog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 5abb5b22ad13..71109065bd8e 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -44,8 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
- int __read_mostly watchdog_thresh = 10;
- static int __read_mostly nmi_watchdog_available;
- 
--static struct cpumask watchdog_allowed_mask __read_mostly;
--
- struct cpumask watchdog_cpumask __read_mostly;
- unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
- 
-@@ -162,6 +160,8 @@ static void lockup_detector_update_enable(void)
- int __read_mostly sysctl_softlockup_all_cpu_backtrace;
- #endif
- 
-+static struct cpumask watchdog_allowed_mask __read_mostly;
-+
- /* Global variables, exported for sysctl */
- unsigned int __read_mostly softlockup_panic =
- 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
--- 
-2.26.2
-
+greg k-h
