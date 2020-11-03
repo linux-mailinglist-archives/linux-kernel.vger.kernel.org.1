@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B682A5934
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76762A5933
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730549AbgKCWFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:05:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
+        id S1730986AbgKCWFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:05:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730502AbgKCUmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:42:23 -0500
+        id S1730474AbgKCUm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:42:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7997522226;
-        Tue,  3 Nov 2020 20:42:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29B8A223AC;
+        Tue,  3 Nov 2020 20:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436143;
-        bh=5mFpgCB6E/y0tiFWU5q3mX8hvSsWWfQnbJDOXtty6dQ=;
+        s=default; t=1604436147;
+        bh=T+r+X2nmQjLJPghDqoWFD7MwfQ8XrtzxFcRXHkVV63Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WPBjiCvsdiOAaioJ6fgNl2IGgWtEZkFKgw4BLGGKljlQcVg55N3I4/iRSz7aW1otf
-         iZ+3zH7UPFVSwPt8XVYCtRzjoloLHHLgtvVuyaFd6FKiIa16iSwc/Si/3MpGPyHAOT
-         RzVKCZu8dqjG5ClMcsrecMIZlZA1EkY3eIlT6LwU=
+        b=j+prSvzSe3tZxkB3bwY9y+UN4cZFiLor0cKozvsjbdwbBTe5CRf8V12jgNQw4Y9Yl
+         /Em43166PhYdHI5Cjloqg8uNs1/vzJoEN2nU9qIh5XNiNQrm+rdOJHFbvny5aKKa0z
+         yvQKSbkUZCePrZmvU7d6KFYnmaMpVU6olF0IIJxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
-        Gavin Shan <gshan@redhat.com>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org, farah kassabri <fkassabri@habana.ai>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 121/391] arm64/mm: return cpu_all_mask when node is NUMA_NO_NODE
-Date:   Tue,  3 Nov 2020 21:32:52 +0100
-Message-Id: <20201103203354.989563152@linuxfoundation.org>
+Subject: [PATCH 5.9 123/391] habanalabs: remove security from ARB_MST_QUIET register
+Date:   Tue,  3 Nov 2020 21:32:54 +0100
+Message-Id: <20201103203355.124778809@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,59 +43,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
+From: farah kassabri <fkassabri@habana.ai>
 
-[ Upstream commit a194c5f2d2b3a05428805146afcabe5140b5d378 ]
+[ Upstream commit acd330c141b4c49f468f00719ebc944656061eac ]
 
-The @node passed to cpumask_of_node() can be NUMA_NO_NODE, in that
-case it will trigger the following WARN_ON(node >= nr_node_ids) due to
-mismatched data types of @node and @nr_node_ids. Actually we should
-return cpu_all_mask just like most other architectures do if passed
-NUMA_NO_NODE.
+Allow user application to write to this register in order
+to be able to configure the quiet period of the QMAN between grants.
 
-Also add a similar check to the inline cpumask_of_node() in numa.h.
-
-Signed-off-by: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Link: https://lore.kernel.org/r/20200921023936.21846-1-liuzhengyuan@tj.kylinos.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: farah kassabri <fkassabri@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/numa.h | 3 +++
- arch/arm64/mm/numa.c          | 6 +++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ .../misc/habanalabs/gaudi/gaudi_security.c    | 55 +++++++------------
+ 1 file changed, 19 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm64/include/asm/numa.h b/arch/arm64/include/asm/numa.h
-index 626ad01e83bf0..dd870390d639f 100644
---- a/arch/arm64/include/asm/numa.h
-+++ b/arch/arm64/include/asm/numa.h
-@@ -25,6 +25,9 @@ const struct cpumask *cpumask_of_node(int node);
- /* Returns a pointer to the cpumask of CPUs on Node 'node'. */
- static inline const struct cpumask *cpumask_of_node(int node)
- {
-+	if (node == NUMA_NO_NODE)
-+		return cpu_all_mask;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+index 8d5d6ddee6eda..615b547ad2b7d 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+@@ -831,8 +831,7 @@ static void gaudi_init_mme_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmMME0_QM_ARB_MST_CHOISE_PUSH_OFST_23 &
+ 			PROT_BITS_OFFS) >> 7) << 2;
+-	mask = 1 << ((mmMME0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmMME0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmMME0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -1311,8 +1310,7 @@ static void gaudi_init_mme_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmMME2_QM_ARB_MST_CHOISE_PUSH_OFST_23 &
+ 			PROT_BITS_OFFS) >> 7) << 2;
+-	mask = 1 << ((mmMME2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmMME2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmMME2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmMME2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -1790,8 +1788,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA0_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2186,8 +2183,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA1_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA1_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA1_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2582,8 +2578,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA2_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -2978,8 +2973,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA3_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA3_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA3_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -3374,8 +3368,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA4_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA4_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA4_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -3770,8 +3763,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA5_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA5_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA5_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -4166,8 +4158,8 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA6_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA6_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
 +
- 	return node_to_cpumask_map[node];
- }
- #endif
-diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-index 73f8b49d485c2..88e51aade0da0 100644
---- a/arch/arm64/mm/numa.c
-+++ b/arch/arm64/mm/numa.c
-@@ -46,7 +46,11 @@ EXPORT_SYMBOL(node_to_cpumask_map);
-  */
- const struct cpumask *cpumask_of_node(int node)
- {
--	if (WARN_ON(node >= nr_node_ids))
-+
-+	if (node == NUMA_NO_NODE)
-+		return cpu_all_mask;
-+
-+	if (WARN_ON(node < 0 || node >= nr_node_ids))
- 		return cpu_none_mask;
++	mask = 1 << ((mmDMA6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA6_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -4562,8 +4554,7 @@ static void gaudi_init_dma_protection_bits(struct hl_device *hdev)
+ 	word_offset =
+ 		((mmDMA7_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS) >> 7)
+ 		<< 2;
+-	mask = 1 << ((mmDMA7_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmDMA7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmDMA7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmDMA7_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -5491,8 +5482,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
  
- 	if (WARN_ON(node_to_cpumask_map[node] == NULL))
+ 	word_offset = ((mmTPC0_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC0_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC0_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC0_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -5947,8 +5937,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 
+ 	word_offset = ((mmTPC1_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC1_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC1_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC1_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -6402,8 +6391,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC2_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC2_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC2_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC2_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -6857,8 +6845,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC3_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC3_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC3_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC3_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -7312,8 +7299,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC4_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC4_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC4_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC4_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -7767,8 +7753,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 								PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC5_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC5_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC5_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC5_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -8223,8 +8208,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 
+ 	word_offset = ((mmTPC6_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC6_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC6_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC6_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
+@@ -8681,8 +8665,7 @@ static void gaudi_init_tpc_protection_bits(struct hl_device *hdev)
+ 			PROT_BITS_OFFS;
+ 	word_offset = ((mmTPC7_QM_ARB_MST_CHOISE_PUSH_OFST_23 & PROT_BITS_OFFS)
+ 								>> 7) << 2;
+-	mask = 1 << ((mmTPC7_QM_ARB_MST_QUIET_PER & 0x7F) >> 2);
+-	mask |= 1 << ((mmTPC7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
++	mask = 1 << ((mmTPC7_QM_ARB_SLV_CHOISE_WDT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_MAX_INFLIGHT & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_AWUSER_31_11 & 0x7F) >> 2);
+ 	mask |= 1 << ((mmTPC7_QM_ARB_MSG_AWUSER_SEC_PROP & 0x7F) >> 2);
 -- 
 2.27.0
 
