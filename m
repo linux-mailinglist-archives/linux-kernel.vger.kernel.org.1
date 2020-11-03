@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375BB2A5335
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992FC2A52BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733007AbgKCU6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:58:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33278 "EHLO mail.kernel.org"
+        id S1732134AbgKCUwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732997AbgKCU6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:43 -0500
+        id S1731696AbgKCUwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB31A223BF;
-        Tue,  3 Nov 2020 20:58:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23CEC2071E;
+        Tue,  3 Nov 2020 20:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437121;
-        bh=3iK3aVReR0jqP67eQryy4jne8FcaTAU+6QLhdiub758=;
+        s=default; t=1604436754;
+        bh=0rj+ug9R9MpMJQzwapoymSxbfpj6sNKwYChpyIoCe0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0pNuvx4pL0GX5ozlhrz6Mp8o0+VWj2LZLbAPRqX3XUZzwOpSm9Ql2D/mL9LdWmoS
-         TP3zjcvGSJcl15O1cGyPVD0aDYTr+AfuxuNExJxF53MBZByLPewWrfZ4mQUAKVX/sA
-         QM2j7J0j9wQUK7yrDtNDf5mC1XhTvMMkpRR5kpAs=
+        b=z+ldPxR3tPGmIIjuUzeuURyfYuzoVrLl4BhH+xISLxE+SMp8NsVy7QJeVCU9m6+5h
+         EIeiwVyCrYsn1VP+gJgH45TQbHDijXK0Qh6f/X0OhXX03vlMrP268Jfe6zgwYmPi0p
+         w/rYd7Bf6acX5jX6uK5KiKBNiZDyLpELCknYQUh8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>, Stable@vger.kernel.org
-Subject: [PATCH 5.4 153/214] iio:adc:ti-adc12138 Fix alignment issue with timestamp
+        stable@vger.kernel.org, Yangbo Lu <yangbo.lu@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.9 350/391] mmc: sdhci-of-esdhc: make sure delay chain locked for HS400
 Date:   Tue,  3 Nov 2020 21:36:41 +0100
-Message-Id: <20201103203305.129572129@linuxfoundation.org>
+Message-Id: <20201103203410.755470067@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,87 +43,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Yangbo Lu <yangbo.lu@nxp.com>
 
-commit 293e809b2e8e608b65a949101aaf7c0bd1224247 upstream.
+commit 011fde48394b7dc8dfd6660d1013b26a00157b80 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
+For eMMC HS400 mode initialization, the DLL reset is a required step
+if DLL is enabled to use previously, like in bootloader.
+This step has not been documented in reference manual, but the RM will
+be fixed sooner or later.
 
-We move to a suitable structure in the iio_priv() data with alignment
-explicitly requested.  This data is allocated with kzalloc so no
-data can leak apart from previous readings. Note that previously
-no leak at all could occur, but previous readings should never
-be a problem.
+This patch is to add the step of DLL reset, and make sure delay chain
+locked for HS400.
 
-In this case the timestamp location depends on what other channels
-are enabled. As such we can't use a structure without misleading
-by suggesting only one possible timestamp location.
-
-Fixes: 50a6edb1b6e0 ("iio: adc: add ADC12130/ADC12132/ADC12138 ADC driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722155103.979802-26-jic23@kernel.org
+Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20201020081116.20918-1-yangbo.lu@nxp.com
+Fixes: 54e08d9a95ca ("mmc: sdhci-of-esdhc: add hs400 mode support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/ti-adc12138.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/mmc/host/sdhci-esdhc.h    |    2 ++
+ drivers/mmc/host/sdhci-of-esdhc.c |   17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
---- a/drivers/iio/adc/ti-adc12138.c
-+++ b/drivers/iio/adc/ti-adc12138.c
-@@ -47,6 +47,12 @@ struct adc12138 {
- 	struct completion complete;
- 	/* The number of cclk periods for the S/H's acquisition time */
- 	unsigned int acquisition_time;
-+	/*
-+	 * Maximum size needed: 16x 2 bytes ADC data + 8 bytes timestamp.
-+	 * Less may be need if not all channels are enabled, as long as
-+	 * the 8 byte alignment of the timestamp is maintained.
-+	 */
-+	__be16 data[20] __aligned(8);
+--- a/drivers/mmc/host/sdhci-esdhc.h
++++ b/drivers/mmc/host/sdhci-esdhc.h
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2007 Freescale Semiconductor, Inc.
+  * Copyright (c) 2009 MontaVista Software, Inc.
+  * Copyright (c) 2010 Pengutronix e.K.
++ * Copyright 2020 NXP
+  *   Author: Wolfram Sang <kernel@pengutronix.de>
+  */
  
- 	u8 tx_buf[2] ____cacheline_aligned;
- 	u8 rx_buf[2];
-@@ -329,7 +335,6 @@ static irqreturn_t adc12138_trigger_hand
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct adc12138 *adc = iio_priv(indio_dev);
--	__be16 data[20] = { }; /* 16x 2 bytes ADC data + 8 bytes timestamp */
- 	__be16 trash;
- 	int ret;
- 	int scan_index;
-@@ -345,7 +350,7 @@ static irqreturn_t adc12138_trigger_hand
- 		reinit_completion(&adc->complete);
+@@ -88,6 +89,7 @@
+ /* DLL Config 0 Register */
+ #define ESDHC_DLLCFG0			0x160
+ #define ESDHC_DLL_ENABLE		0x80000000
++#define ESDHC_DLL_RESET			0x40000000
+ #define ESDHC_DLL_FREQ_SEL		0x08000000
  
- 		ret = adc12138_start_and_read_conv(adc, scan_chan,
--						   i ? &data[i - 1] : &trash);
-+					i ? &adc->data[i - 1] : &trash);
- 		if (ret) {
- 			dev_warn(&adc->spi->dev,
- 				 "failed to start conversion\n");
-@@ -362,7 +367,7 @@ static irqreturn_t adc12138_trigger_hand
- 	}
+ /* DLL Config 1 Register */
+--- a/drivers/mmc/host/sdhci-of-esdhc.c
++++ b/drivers/mmc/host/sdhci-of-esdhc.c
+@@ -4,6 +4,7 @@
+  *
+  * Copyright (c) 2007, 2010, 2012 Freescale Semiconductor, Inc.
+  * Copyright (c) 2009 MontaVista Software, Inc.
++ * Copyright 2020 NXP
+  *
+  * Authors: Xiaobo Xie <X.Xie@freescale.com>
+  *	    Anton Vorontsov <avorontsov@ru.mvista.com>
+@@ -19,6 +20,7 @@
+ #include <linux/clk.h>
+ #include <linux/ktime.h>
+ #include <linux/dma-mapping.h>
++#include <linux/iopoll.h>
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/mmc.h>
+ #include "sdhci-pltfm.h"
+@@ -743,6 +745,21 @@ static void esdhc_of_set_clock(struct sd
+ 		if (host->mmc->actual_clock == MMC_HS200_MAX_DTR)
+ 			temp |= ESDHC_DLL_FREQ_SEL;
+ 		sdhci_writel(host, temp, ESDHC_DLLCFG0);
++
++		temp |= ESDHC_DLL_RESET;
++		sdhci_writel(host, temp, ESDHC_DLLCFG0);
++		udelay(1);
++		temp &= ~ESDHC_DLL_RESET;
++		sdhci_writel(host, temp, ESDHC_DLLCFG0);
++
++		/* Wait max 20 ms */
++		if (read_poll_timeout(sdhci_readl, temp,
++				      temp & ESDHC_DLL_STS_SLV_LOCK,
++				      10, 20000, false,
++				      host, ESDHC_DLLSTAT0))
++			pr_err("%s: timeout for delay chain lock.\n",
++			       mmc_hostname(host->mmc));
++
+ 		temp = sdhci_readl(host, ESDHC_TBCTL);
+ 		sdhci_writel(host, temp | ESDHC_HS400_WNDW_ADJUST, ESDHC_TBCTL);
  
- 	if (i) {
--		ret = adc12138_read_conv_data(adc, &data[i - 1]);
-+		ret = adc12138_read_conv_data(adc, &adc->data[i - 1]);
- 		if (ret) {
- 			dev_warn(&adc->spi->dev,
- 				 "failed to get conversion data\n");
-@@ -370,7 +375,7 @@ static irqreturn_t adc12138_trigger_hand
- 		}
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data,
-+	iio_push_to_buffers_with_timestamp(indio_dev, adc->data,
- 					   iio_get_time_ns(indio_dev));
- out:
- 	mutex_unlock(&adc->lock);
 
 
