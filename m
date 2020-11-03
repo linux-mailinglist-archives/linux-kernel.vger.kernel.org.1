@@ -2,133 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9C62A4C64
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BC92A4C68
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgKCRMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:12:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:52406 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727530AbgKCRMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:12:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3579B106F;
-        Tue,  3 Nov 2020 09:12:00 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.57.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2D123F718;
-        Tue,  3 Nov 2020 09:11:58 -0800 (PST)
-Date:   Tue, 3 Nov 2020 17:11:53 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: Does LOCKDEP work on ARM64?
-Message-ID: <20201103171153.GA46833@C02TD0UTHF1T.local>
-References: <CACT4Y+aAzoJ48Mh1wNYD17pJqyEcDnrxGfApir=-j171TnQXhw@mail.gmail.com>
+        id S1728570AbgKCRNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:13:40 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:58420 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727323AbgKCRNj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:13:39 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103171327euoutp02d3922ca81977dce748f5c8cbc457db81~EDsU0INnd0968709687euoutp02d;
+        Tue,  3 Nov 2020 17:13:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103171327euoutp02d3922ca81977dce748f5c8cbc457db81~EDsU0INnd0968709687euoutp02d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604423607;
+        bh=4+R92XtKdFg0pbHY8n6lWZbiD2Yi0RLFMFQuW88KsPw=;
+        h=From:To:Cc:Subject:In-Reply-To:Date:References:From;
+        b=l5GF3+UAqmIF6KoyEi5l6XkJ1GBRLtBJIRYsCXIVQrdZft6rD4o1wZ7h7gLOLoFFC
+         SwldEEXQycmIT106lSk8Kx8QXYNSRRK0xJrUE1Iuzf0YRNA/n2R79+bTiqQ0cnorPO
+         6DO9aS0DjjBJclReXXH+Op5y2faUzBFEtEcyT9RQ=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201103171327eucas1p2e869ff30350112f45b98d062d2f58f0e~EDsUhYPQT1934319343eucas1p2x;
+        Tue,  3 Nov 2020 17:13:27 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id BB.5C.06456.6BF81AF5; Tue,  3
+        Nov 2020 17:13:26 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40~EDsUAZ9fm2801528015eucas1p2Q;
+        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201103171326eusmtrp2e614f4d1e9fe67d9b82df845fdeb7d47~EDsT-srQh1227412274eusmtrp2w;
+        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-e7-5fa18fb637f1
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 59.CE.06017.6BF81AF5; Tue,  3
+        Nov 2020 17:13:26 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201103171326eusmtip13e52bf20cf5be4a1a17a190283d29085~EDsT0GxUk3053630536eusmtip1F;
+        Tue,  3 Nov 2020 17:13:26 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 5/5] ARM: dts: exynos: Add Ethernet interface
+ description for Odroid X/X2
+In-Reply-To: <20201103164423.GE14739@kozik-lap> (Krzysztof Kozlowski's
+        message of "Tue, 3 Nov 2020 17:44:23 +0100")
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Tue, 03 Nov 2020 18:12:51 +0100
+Message-ID: <dleftjsg9qs6ss.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+aAzoJ48Mh1wNYD17pJqyEcDnrxGfApir=-j171TnQXhw@mail.gmail.com>
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeT3nbMfh5HWtfFgRMuxDRVOxyymzq9goiOpDlGVr6mld3JQd
+        L2mQyy7UslYaZBJ5qay8zLmm6bqRaVIzV4kapgUqWJmWzi42urgdBb/93uf5/58bL01InJSM
+        PqBLYfU6daJcICJrn407F9WailWhHyoimOr8KoopbGylGFPfIME4nRYhY+3roJg2+1UBk+98
+        5MOYq7uETGVjj5A5+bBRuEakrC/oESqtZWcEyrs3spTnbWVI6bLO3ULFiFYmsIkH0lh9yKq9
+        ov15Z/sFyX1w2PFovgGNS43Ilwa8GK6PuCgjEtESfBuBramX5B9jCFqGLk1mXAjsQwNoytI0
+        bPGyBN9C0NuZwYsGEDRWjwiMiKYFWAGVlTs8GimeD51/fnoLEdhAgGnkgdc8A6ugosHgZV+c
+        CgMvjgk9PBMvB9vHD14m8TyocbspD4vxMii994PgOQCeX+knPUxgLVxxfkGeBoDfC8FgaJ6c
+        NAqud+T78DwDPjfbhDzPgX/1hT6eQQFnQV7uUt6bg6D26i+S10RAd+tvAa9ZC+72OB794e1Q
+        AN/WH3JrLxN8WAynT0l4YzCYTQ8mi8jg3Ofbk8MooX/YLuBPlY3gZlEbdQEFFUzbpmDaNgUT
+        ZYmJ01XZQ/jwQigtHiR4jgSz+StZhKgyFMimcloNy4Xp2HQFp9ZyqTqNIj5Ja0UTX8vxt3m0
+        Dn1/E9eAMI3kfuI1bJFKQqnTuAxtAwqeqNRrKX+FZKQuScfKpeJ1Lx17JOIEdUYmq09S6VMT
+        Wa4BzaZJeaA4vORTrARr1CnsIZZNZvVTWR/aV2ZA5mUOixtHdsuP/+zaOWvM+OXZnRpNyXbT
+        +OjB8PZwv8KM9BWy+0+po0s4k2/HO8umb5pq/9BXYReviQbFUdaDhpxQI6pzZe/c/T5h34kj
+        zifbXLuC4tdZups2Vka7Y2uyqwYc9sy8DQxWKGyj2163nEoZjS7Hm2O2SgO1+asfr5eT3H51
+        2AJCz6n/A75wMHxiAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7rb+hfGG2xZI22xccZ6Vov5R86x
+        WvQ/fs1scf78BnaLTY+vsVpc3jWHzWLG+X1MFus23mK3WHvkLrtF694j7A5cHjtn3WX32LSq
+        k81j85J6j74tqxg9Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXS
+        t7NJSc3JLEst0rdL0MuY3P2EreCxRMXpfZoNjD9Fuhg5OSQETCSOvtvA2MXIxSEksJRRomdS
+        K5DDAZSQklg5Nx2iRljiz7UuNoiap4wSSxp6wWrYBPQk1q6NAKkREdCUuP73OytIDbNAE7PE
+        45sz2EASwgKxEu3LvzKB2JwCpRLLPs8Gs4WAejd83c4OYosKWEpseXEfzGYRUJXY+vs3K4jN
+        K2AusWz7N2YIW1Di5MwnLCA2s0C2xNfVz5knMArMQpKahSQ1C+g8ZqCb1u/ShwhrSyxb+JoZ
+        wraVWLfuPcsCRtZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgTG37djPLTsYu94FH2IU4GBU
+        4uF1SF0QL8SaWFZcmXuIUQVozKMNqy8wSrHk5eelKonwOp09HSfEm5JYWZValB9fVJqTWnyI
+        0RTon4nMUqLJ+cA0kVcSb2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1Oq
+        gfEUX/hhseY4kc1T3k8z2ltZcW6GPdM0sx1ujUXZIRkHXxtNiu/8cI9heeXfLr+qRttM2e41
+        /CV/66vnNr/+FPX0jqqxqHnEhSdLk9Zc/8TQ43fteFnk7kMV1h1RS/Mlrm65dNvEwXnusrOf
+        X+u2h+UeCqu2LD/I1Xn78acXCsubXGcatn7ullViKc5INNRiLipOBABo+zhJ2wIAAA==
+X-CMS-MailID: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
+X-Msg-Generator: CA
+X-RootMTR: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40
+References: <20201103164423.GE14739@kozik-lap>
+        <CGME20201103171326eucas1p25d2ea836878fb2e4f56f31c166243c40@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 24, 2020 at 11:51:49AM +0200, Dmitry Vyukov wrote:
-> Hello ARM64/LOCKDEP maintainers,
-> 
-> I've started experimenting with running syzkaller on ARM64 using
-> QEMU/TCG. Total execution speed is very low and it ran just a handful
-> of tests, but I am seeing massive amounts of locking bugs. Most of
-> these were not observed on x86_64, while x86_64 ran gazillions of
-> tests by now and most of these are trivial to trigger (depend only on
-> call stack) and they do not look ARM64-specific. So I wonder:
-> 1. Are there any known issues with LOCKDEP on ARM64?
-> 2. Or are all these real and it's x86_64 LOCKDEP that's misbehaving?
-> 3. Or are both x86_64 and ARM64 fine and these are just somehow ARM64-specific?
+It was <2020-11-03 wto 17:44>, when Krzysztof Kozlowski wrote:
+> On Tue, Nov 03, 2020 at 01:46:18PM +0100, =C5=81ukasz Stelmach wrote:
+>> Add Ethernet interface description for Odroid X/X2.
+>>=20
+>> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+>> ---
+>>  arch/arm/boot/dts/exynos4412-odroidx.dts | 28 ++++++++++++++++++++++++
+>>  1 file changed, 28 insertions(+)
+>>=20
+>> diff --git a/arch/arm/boot/dts/exynos4412-odroidx.dts b/arch/arm/boot/dt=
+s/exynos4412-odroidx.dts
+>> index 3ea2a0101e80..8f154f431f6c 100644
+>> --- a/arch/arm/boot/dts/exynos4412-odroidx.dts
+>> +++ b/arch/arm/boot/dts/exynos4412-odroidx.dts
+>> @@ -15,6 +15,10 @@ / {
+>>  	model =3D "Hardkernel ODROID-X board based on Exynos4412";
+>>  	compatible =3D "hardkernel,odroid-x", "samsung,exynos4412", "samsung,e=
+xynos4";
+>>=20=20
+>> +	aliases {
+>> +		ethernet =3D &ethernet;
+>> +	};
+>> +
+>>  	memory@40000000 {
+>>  		device_type =3D "memory";
+>>  		reg =3D <0x40000000 0x3FF00000>;
+>> @@ -72,8 +76,32 @@ &buck8_reg {
+>>  };
+>>=20=20
+>>  &ehci {
+>> +	#address-cells =3D <1>;
+>> +	#size-cells =3D <0>;
+>>  	phys =3D <&exynos_usbphy 2>;
+>>  	phy-names =3D "hsic0";
+>> +
+>> +	hub@2 {
+>> +		compatible =3D "usb0424,3503";
+>> +		reg =3D <2>;
+>> +		#address-cells =3D <1>;
+>> +		#size-cells =3D <0>;
+>> +
+>> +		hub@1 {
+>> +			compatible =3D "usb0424:9514";
+>
+> Does not look like correct compatible.
 
-I haven't seen quite the same issues you're seeing, but I haven't had
-the chance to fuzz a kernel since ~v5.8. Today I've stumbled over an irq
-flag tracing issue (since v5.9) which can cause lockdep's idea of irq
-and preemption state to go wrong, which could explain some of the
-warnings -- I'm currently investigating that, with more details below.
+As odd as it may seem (and considering my mistakes) this is correct.
 
-Otherwise, I have seen warnings regarding suspicious RCU usage in the
-past, but didn't have the time to investigate those, so the ones I saw
-may have been legitimate. The other warnings you cite below don't look
-familiar.
+=2D-8<---------------cut here---------------start------------->8---
+root@target:~# cat /proc/device-tree/compatible ; echo
+hardkernel,odroid-x2samsung,exynos4412samsung,exynos4
+root@target:~# lsusb -t
+/:  Bus 01.Port 1: Dev 1, Class=3Droot_hub, Driver=3Dexynos-ehci/3p, 480M
+    |__ Port 2: Dev 2, If 0, Class=3DHub, Driver=3Dhub/3p, 480M
+        |__ Port 1: Dev 3, If 0, Class=3DHub, Driver=3Dhub/5p, 480M
+            |__ Port 1: Dev 4, If 0, Class=3DVendor Specific Class, Driver=
+=3Dsmsc95xx, 480M
+root@target:~# lsusb
+Bus 001 Device 004: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 =
+Fast Ethernet Adapter
+Bus 001 Device 003: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
+Bus 001 Device 002: ID 0424:3503 Standard Microsystems Corp.=20
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+=2D-8<---------------cut here---------------end--------------->8---
 
-The issue I'm seeing bisected to commit:
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
 
-  044d0d6de9f50192 ("ockdep: Only trace IRQ edges")
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-... which (with my fuzzing config) causes
-lockdep_assert_preemption_disabled() to blow up during boot:
+-----BEGIN PGP SIGNATURE-----
 
-| ------------[ cut here ]------------
-| WARNING: CPU: 3 PID: 1 at include/linux/seqlock.h:271 vtime_user_enter+0x2a8/0x598
-| CPU: 3 PID: 1 Comm: init Not tainted 5.10.0-rc2-00001-gfd9f9bd1d7eb #1
-| Hardware name: linux,dummy-virt (DT)
-| pstate: 104003c5 (nzcV DAIF +PAN -UAO -TCO BTYPE=--)
-| pc : vtime_user_enter+0x2a8/0x598
-| lr : __context_tracking_enter+0x190/0x198
-| sp : ffff3aeb8096fdd0
-| x29: ffff3aeb8096fdd0 x28: ffff3aeb80960000
-| x27: 0000000000000000 x26: 0000000000000000
-| x25: 0000000000000001 x24: ffff3aeb80960000
-| x23: ffffa000589d30e8 x22: ffff3aeb80960010
-| x21: 0000000100000000 x20: ffff3aeb809605d8
-| x19: ffff3aeb80960000 x18: 0000000000001080
-| x17: 0000000000001168 x16: 1fffe75d7012dee4
-| x15: 0000000000000003 x14: ffffa00053a72c00
-| x13: ffff875d7012dfc1 x12: 1fffe75d7012dfc0
-| x11: 1fffe75d7012dfc0 x10: ffff875d7012dfc0
-| x9 : ffffa000589d30e8 x8 : ffff3aeb8096fe07
-| x7 : 0000000000000001 x6 : ffff875d7012dfc1
-| x5 : ffff3aeb80960000 x4 : 1ffff4000ba7106f
-| x3 : 1fffe75d753fd32c x2 : 1fffe75d7012c002
-| x1 : 1fffe75d7012c002 x0 : 0000000100000000
-| Call trace:
-|  vtime_user_enter+0x2a8/0x598
-|  __context_tracking_enter+0x190/0x198
-|  context_tracking_enter.part.1+0x64/0xd0
-|  context_tracking_user_enter+0x98/0xb8
-|  finish_ret_to_user+0x2c/0x13c
-| Kernel panic - not syncing: panic_on_warn set ..
-
-... and so it looks like our IRQ flag tracing is going wrong, I suspect
-due to the way our local_daif_*() functions trace irqstate changes.
-
-Thanks,
-Mark.
-  
-> 
-> Here are details. Kernel is on
-> f9893351acaecf0a414baf9942b48d5bb5c688c6 (recent upstream HEAD).
-> Kernel config:
-> https://gist.githubusercontent.com/dvyukov/c92a1e08f3f7e22b1f0387096d98b18b/raw/9f79f83c3b018ac27a040649f7d0fef36b63b960/gistfile1.txt
-> 
-> Here is one "Invalid wait context". It looks like just a put_user
-> inside of syscall function:
-> https://gist.githubusercontent.com/dvyukov/15639a949278a981c8eb125b3088a6b8/raw/286117bc292578c07c8afbf0fa563cd5528821e7/gistfile1.txt
-> 
-> Here is one "bad unlock balance detected". The looks well balanced and
-> the code path is well exercised:
-> https://gist.githubusercontent.com/dvyukov/805f867823b9f77a26c2ebedec5b9b9e/raw/2e6605fb5c90f56ebd1ccda78d613b5c219dfb82/gistfile1.txt
-> 
-> Here is one "workqueue leaked lock". Again, lock/unlock are very local
-> and there is no control flow in between:
-> https://gist.githubusercontent.com/dvyukov/4d18d35a79d7e74bf66d6e7ec3794ec0/raw/1ff3e2a5d3a825eb0d196af1f81c67a47fa3a2f6/gistfile1.txt
-> 
-> Here is one confusing "bad unlock balance detected":
-> https://gist.githubusercontent.com/dvyukov/e222fa34e04104678c52a5b5b1ad15a3/raw/943c6ebbc022418b89fa63b6282fa1f1f40a276a/gistfile1.txt
-> 
-> Here is one confusing "suspicious RCU usage":
-> https://gist.githubusercontent.com/dvyukov/77b0ec246e1db86e549a80e4a11ec218/raw/0bce97be186c0a6617d8835a694443ed1aa2a98a/gistfile1.txt
-> 
-> Overall I have more than 50 of these now.
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+hj5MACgkQsK4enJil
+gBAtWgf/VVpoZimv8UPfw0nTkbc3kZSq2lB8r5ucz9yMeT9FMTVxrVwuj1qmk7No
+VyOzVQmP3+zIAGjOLF5RsYOz0RNXNw2d5DVTLY0HVOeM53UfK3EhNL1v7DbZC/dV
+N6lG09htOMTFK87Y62idffwPx70ev5w+crR5bahDuui8RdxjgYTMflpxlCF7UKkG
+i3je+q+5S8FaV3oL8hHbgbqTxFPvlLY6m8IW1aa+W4opUK8p+xeKzhj4COFBlsmR
+F/+NUmH+80oOgODqGKeumiteLjgZ9Eu7SnD3ydNMkg/FWaCaWKuvMKrgu7E9sfss
+Wnrx7myESmsitc9iveZnE6xcrr30lg==
+=/8Mr
+-----END PGP SIGNATURE-----
+--=-=-=--
