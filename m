@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061D82A5341
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B382A52A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgKCU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
+        id S1730623AbgKCUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733072AbgKCU7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:10 -0500
+        id S1731979AbgKCUvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E202822226;
-        Tue,  3 Nov 2020 20:59:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E9E822226;
+        Tue,  3 Nov 2020 20:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437149;
-        bh=jXUjiPtxynW4AdqW9KM6Th1BPteywzmQp9HJnobJPbQ=;
+        s=default; t=1604436703;
+        bh=7o6PnexcbnawDZVe77YRWuYlKfqy5LWqQZ3f1Dyoj1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLLqaWatPtt+XEbRZS2RwVU32lPOftzbHBHTvMyovafNrOBkr/bNd4EYvwN2x6H3G
-         41PeRiaz0yuffTYNkk36cWBIAe2HF7QkylwLhXWOn4AsWg5xD2cE6vD21p/zrCl4oE
-         v90/MdhX/Fk3Bqd2Mcrddo+i67cB2xZPTgNE8/xE=
+        b=cy4tikNH85HhoQyj6/JuQzMGex8YwAf51v1wDyJWVqwOJubDj3mApEayZXHEMFeay
+         NV50CsD6s6HhwJRH6lBa0fAlcKpP9/qOmeYZMVp3oxKFutbD2hrIT9KlZrLt526EDU
+         cE2EMTCA2G00rfrae/edHo7340BTYfDdGrHKQiWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.4 168/214] ubifs: xattr: Fix some potential memory leaks while iterating entries
-Date:   Tue,  3 Nov 2020 21:36:56 +0100
-Message-Id: <20201103203306.515423776@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH 5.9 366/391] arm: dts: mt7623: add missing pause for switchport
+Date:   Tue,  3 Nov 2020 21:36:57 +0100
+Message-Id: <20201103203411.843713307@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,107 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Frank Wunderlich <frank-w@public-files.de>
 
-commit f2aae745b82c842221f4f233051f9ac641790959 upstream.
+commit 36f0a5fc5284838c544218666c63ee8cfa46a9c3 upstream.
 
-Fix some potential memory leaks in error handling branches while
-iterating xattr entries. For example, function ubifs_tnc_remove_ino()
-forgets to free pxent if it exists. Similar problems also exist in
-ubifs_purge_xattrs(), ubifs_add_orphan() and ubifs_jnl_write_inode().
+port6 of mt7530 switch (= cpu port 0) on bananapi-r2 misses pause option
+which causes rx drops on running iperf.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: f4ff257cd160 ("arm: dts: mt7623: add support for Bananapi R2 (BPI-R2) board")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200907070517.51715-1-linux@fw-web.de
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ubifs/journal.c |    2 ++
- fs/ubifs/orphan.c  |    2 ++
- fs/ubifs/tnc.c     |    3 +++
- fs/ubifs/xattr.c   |    2 ++
- 4 files changed, 9 insertions(+)
+ arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -894,6 +894,7 @@ int ubifs_jnl_write_inode(struct ubifs_i
- 				if (err == -ENOENT)
- 					break;
- 
-+				kfree(pxent);
- 				goto out_release;
- 			}
- 
-@@ -906,6 +907,7 @@ int ubifs_jnl_write_inode(struct ubifs_i
- 				ubifs_err(c, "dead directory entry '%s', error %d",
- 					  xent->name, err);
- 				ubifs_ro_mode(c, err);
-+				kfree(pxent);
- 				kfree(xent);
- 				goto out_release;
- 			}
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -173,6 +173,7 @@ int ubifs_add_orphan(struct ubifs_info *
- 			err = PTR_ERR(xent);
- 			if (err == -ENOENT)
- 				break;
-+			kfree(pxent);
- 			return err;
- 		}
- 
-@@ -182,6 +183,7 @@ int ubifs_add_orphan(struct ubifs_info *
- 
- 		xattr_orphan = orphan_add(c, xattr_inum, orphan);
- 		if (IS_ERR(xattr_orphan)) {
-+			kfree(pxent);
- 			kfree(xent);
- 			return PTR_ERR(xattr_orphan);
- 		}
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -2885,6 +2885,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
- 			err = PTR_ERR(xent);
- 			if (err == -ENOENT)
- 				break;
-+			kfree(pxent);
- 			return err;
- 		}
- 
-@@ -2898,6 +2899,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
- 		fname_len(&nm) = le16_to_cpu(xent->nlen);
- 		err = ubifs_tnc_remove_nm(c, &key1, &nm);
- 		if (err) {
-+			kfree(pxent);
- 			kfree(xent);
- 			return err;
- 		}
-@@ -2906,6 +2908,7 @@ int ubifs_tnc_remove_ino(struct ubifs_in
- 		highest_ino_key(c, &key2, xattr_inum);
- 		err = ubifs_tnc_remove_range(c, &key1, &key2);
- 		if (err) {
-+			kfree(pxent);
- 			kfree(xent);
- 			return err;
- 		}
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -522,6 +522,7 @@ int ubifs_purge_xattrs(struct inode *hos
- 				  xent->name, err);
- 			ubifs_ro_mode(c, err);
- 			kfree(pxent);
-+			kfree(xent);
- 			return err;
- 		}
- 
-@@ -531,6 +532,7 @@ int ubifs_purge_xattrs(struct inode *hos
- 		err = remove_xattr(c, host, xino, &nm);
- 		if (err) {
- 			kfree(pxent);
-+			kfree(xent);
- 			iput(xino);
- 			ubifs_err(c, "cannot remove xattr, error %d", err);
- 			return err;
+--- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
++++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+@@ -192,6 +192,7 @@
+ 					fixed-link {
+ 						speed = <1000>;
+ 						full-duplex;
++						pause;
+ 					};
+ 				};
+ 			};
 
 
