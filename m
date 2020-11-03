@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B02A57BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC9D2A57B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbgKCUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:52:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50000 "EHLO mail.kernel.org"
+        id S1732253AbgKCVpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:45:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732165AbgKCUwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:51 -0500
+        id S1732182AbgKCUwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BC6C22226;
-        Tue,  3 Nov 2020 20:52:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A203A2053B;
+        Tue,  3 Nov 2020 20:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436770;
-        bh=JBaCx8sNsgI2+hW/u7K6XjkgDbpF9jMGNnZWhz2w7uE=;
+        s=default; t=1604436775;
+        bh=RAJY/o5wLsTD7a8m2ah2SQ32/iyA/FEWJLhEtrirAw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rW6wQ4UE9MaIaXy/DWDBNLIa3jSXRORPhc6aW5URCVQ4Tgdu0FHcbf2bl2HgZfU2h
-         UCIB4/nJOWmNwzyIgw0bjQqLhFkDUF4E67wXU2u3pVMO+R1TvlSSFuFzG42Eyg+S5p
-         OPH0cZuDJPd9FX1MYqaIM0/+SZ9t9y6yu87M7n8s=
+        b=Ndh8Tm4cDj6mgGzcKGAfxKQddumQxXQGcb0wPRxmsUQ4Prkg3OF+8Ybn/4TFx91XB
+         D2gvRikRajjVDQVGXqRcuzCaImmUrjhcXgyNMeB1VBoodjanq8qY4iec7MWiASA58O
+         FBQE+0IbuNqxXy5c61pZjuSGd5vocrOacpwe2G/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH 5.9 388/391] vdpa/mlx5: Fix error return in map_direct_mr()
-Date:   Tue,  3 Nov 2020 21:37:19 +0100
-Message-Id: <20201103203413.345130932@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.9 390/391] time/sched_clock: Mark sched_clock_read_begin/retry() as notrace
+Date:   Tue,  3 Nov 2020 21:37:21 +0100
+Message-Id: <20201103203413.480694586@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,46 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-commit 7ba08e81cb4aec9724ab7674a5de49e7a341062c upstream.
+commit 4cd2bb12981165f865d2b8ed92b446b52310ef74 upstream.
 
-Fix to return the variable "err" from the error handling case instead
-of "ret".
+Since sched_clock_read_begin() and sched_clock_read_retry() are called
+by notrace function sched_clock(), they shouldn't be traceable either,
+or else ftrace_graph_caller will run into a dead loop on the path
+as below (arm for instance):
 
-Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Link: https://lore.kernel.org/r/20201026070637.164321-1-jingxiangfeng@huawei.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Eli Cohen <elic@nvidia.com>
+  ftrace_graph_caller()
+    prepare_ftrace_return()
+      function_graph_enter()
+        ftrace_push_return_trace()
+          trace_clock_local()
+            sched_clock()
+              sched_clock_read_begin/retry()
+
+Fixes: 1b86abc1c645 ("sched_clock: Expose struct clock_read_data")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20200929082027.16787-1-quanyang.wang@windriver.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/vdpa/mlx5/core/mr.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/time/sched_clock.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -239,7 +239,6 @@ static int map_direct_mr(struct mlx5_vdp
- 	u64 paend;
- 	struct scatterlist *sg;
- 	struct device *dma = mvdev->mdev->device;
--	int ret;
+--- a/kernel/time/sched_clock.c
++++ b/kernel/time/sched_clock.c
+@@ -68,13 +68,13 @@ static inline u64 notrace cyc_to_ns(u64
+ 	return (cyc * mult) >> shift;
+ }
  
- 	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
- 	     map; map = vhost_iotlb_itree_next(map, start, mr->end - 1)) {
-@@ -277,8 +276,8 @@ static int map_direct_mr(struct mlx5_vdp
- done:
- 	mr->log_size = log_entity_size;
- 	mr->nsg = nsg;
--	ret = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
--	if (!ret)
-+	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-+	if (!err)
- 		goto err_map;
+-struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
++notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+ {
+ 	*seq = raw_read_seqcount_latch(&cd.seq);
+ 	return cd.read_data + (*seq & 1);
+ }
  
- 	err = create_direct_mr(mvdev, mr);
+-int sched_clock_read_retry(unsigned int seq)
++notrace int sched_clock_read_retry(unsigned int seq)
+ {
+ 	return read_seqcount_retry(&cd.seq, seq);
+ }
 
 
