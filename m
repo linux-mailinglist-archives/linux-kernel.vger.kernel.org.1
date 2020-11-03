@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B242A2A5426
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3DD2A554D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388452AbgKCVIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:08:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47688 "EHLO mail.kernel.org"
+        id S2388433AbgKCVI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388389AbgKCVIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:08:19 -0500
+        id S2388124AbgKCVIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D3C1206B5;
-        Tue,  3 Nov 2020 21:08:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B081F20757;
+        Tue,  3 Nov 2020 21:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437698;
-        bh=CseOyHCV9MBdOPnhzck/lxACPf7GkhLUByGiEgsL6HQ=;
+        s=default; t=1604437701;
+        bh=lZKNM1DIWonWgeQTV5OF8/xydOHLFS5D60gi0D0Y84s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C/cc9xUa38nZqFfWREEmHTEDt6zNRo3i+lTcoZPRAFr1z13D+u4TEmxyBSG95Uf18
-         vutl/oRJJWW9vVOZKJ5rhWr8FI/hjYCnZWZm6W4bdsmGrJzAC2DrX5gBLPeQMH5+5z
-         pPVqS5L9QV345CpSEuQ1m5g0uPBAq7Onf8/puc6s=
+        b=J84t0Zd1koxC+XCGf85x2D6psCmSaAg6zXHrAbe5edULYDrFGU6eEEikBntAOp1o1
+         /Dbajc0rFHDOwhn19mQbpJt3Y5FkonrmPfj13OCgbyM6dfZfYNZYdxRxNo367EP0Vt
+         Jcz7CFHtVDz1+kcV4yt41j9MHuX6uRtQJY2zSKAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ferry Toth <fntoth@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.19 187/191] device property: Dont clear secondary pointer for shared primary firmware node
-Date:   Tue,  3 Nov 2020 21:37:59 +0100
-Message-Id: <20201103203250.301542655@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.19 188/191] KVM: arm64: Fix AArch32 handling of DBGD{CCINT,SCRext} and DBGVCR
+Date:   Tue,  3 Nov 2020 21:38:00 +0100
+Message-Id: <20201103203250.424217220@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -44,50 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 99aed9227073fb34ce2880cbc7063e04185a65e1 upstream.
+commit 4a1c2c7f63c52ccb11770b5ae25920a6b79d3548 upstream.
 
-It appears that firmware nodes can be shared between devices. In such case
-when a (child) device is about to be deleted, its firmware node may be shared
-and ACPI_COMPANION_SET(..., NULL) call for it breaks the secondary link
-of the shared primary firmware node.
+The DBGD{CCINT,SCRext} and DBGVCR register entries in the cp14 array
+are missing their target register, resulting in all accesses being
+targetted at the guard sysreg (indexed by __INVALID_SYSREG__).
 
-In order to prevent that, check, if the device has a parent and parent's
-firmware node is shared with its child, and avoid crashing the link.
+Point the emulation code at the actual register entries.
 
-Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
-Reported-by: Ferry Toth <fntoth@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Tested-by: Ferry Toth <fntoth@gmail.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: bdfb4b389c8d ("arm64: KVM: add trap handlers for AArch32 debug registers")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201029172409.2768336-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/core.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/kvm_host.h |    1 +
+ arch/arm64/kvm/sys_regs.c         |    6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -3333,6 +3333,7 @@ static inline bool fwnode_is_primary(str
-  */
- void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
- {
-+	struct device *parent = dev->parent;
- 	struct fwnode_handle *fn = dev->fwnode;
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -192,6 +192,7 @@ enum vcpu_sysreg {
+ #define cp14_DBGWCR0	(DBGWCR0_EL1 * 2)
+ #define cp14_DBGWVR0	(DBGWVR0_EL1 * 2)
+ #define cp14_DBGDCCINT	(MDCCINT_EL1 * 2)
++#define cp14_DBGVCR	(DBGVCR32_EL2 * 2)
  
- 	if (fwnode) {
-@@ -3347,7 +3348,8 @@ void set_primary_fwnode(struct device *d
- 	} else {
- 		if (fwnode_is_primary(fn)) {
- 			dev->fwnode = fn->secondary;
--			fn->secondary = ERR_PTR(-ENODEV);
-+			if (!(parent && fn == parent->fwnode))
-+				fn->secondary = ERR_PTR(-ENODEV);
- 		} else {
- 			dev->fwnode = NULL;
- 		}
+ #define NR_COPRO_REGS	(NR_SYS_REGS * 2)
+ 
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1555,9 +1555,9 @@ static const struct sys_reg_desc cp14_re
+ 	{ Op1( 0), CRn( 0), CRm( 1), Op2( 0), trap_raz_wi },
+ 	DBG_BCR_BVR_WCR_WVR(1),
+ 	/* DBGDCCINT */
+-	{ Op1( 0), CRn( 0), CRm( 2), Op2( 0), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 2), Op2( 0), trap_debug32, NULL, cp14_DBGDCCINT },
+ 	/* DBGDSCRext */
+-	{ Op1( 0), CRn( 0), CRm( 2), Op2( 2), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 2), Op2( 2), trap_debug32, NULL, cp14_DBGDSCRext },
+ 	DBG_BCR_BVR_WCR_WVR(2),
+ 	/* DBGDTR[RT]Xint */
+ 	{ Op1( 0), CRn( 0), CRm( 3), Op2( 0), trap_raz_wi },
+@@ -1572,7 +1572,7 @@ static const struct sys_reg_desc cp14_re
+ 	{ Op1( 0), CRn( 0), CRm( 6), Op2( 2), trap_raz_wi },
+ 	DBG_BCR_BVR_WCR_WVR(6),
+ 	/* DBGVCR */
+-	{ Op1( 0), CRn( 0), CRm( 7), Op2( 0), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 7), Op2( 0), trap_debug32, NULL, cp14_DBGVCR },
+ 	DBG_BCR_BVR_WCR_WVR(7),
+ 	DBG_BCR_BVR_WCR_WVR(8),
+ 	DBG_BCR_BVR_WCR_WVR(9),
 
 
