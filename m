@@ -2,251 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4128F2A3C2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5A82A3C2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgKCFrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 00:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S1726143AbgKCFsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 00:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgKCFrU (ORCPT
+        with ESMTP id S1725934AbgKCFsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:47:20 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31C2C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 21:47:19 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id u2so2106809pls.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 21:47:19 -0800 (PST)
+        Tue, 3 Nov 2020 00:48:40 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C83C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 21:48:40 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id j5so8044160plk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 21:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wKHMeBJ7HB8kaIi/ChT9IdtHhkbmgmqmq8Ca+RXUM4Q=;
-        b=VZXDHtEGHjAf7Yak4JNPB3TB6267NMXR+146A1bnK7feF1c8NNuDtcIOxiM8KgfJzT
-         xUvCerLXHlXMloGzQsvccrQfo9/6cFgJA4EUGlSLDMoIxWkDTrAAlK8O30Fpmmlns5q6
-         Vk14A9lFw3r4oHjvbJol59T8JlMPk2yGcOMxSZCqLKwqDy/ehXtMkPVF0X3fV7qWNyNh
-         KWy+NBjZfxru3Ewddb74DtuiVi0KTyXlIbTfEQEmFEuePWiqP9C+/H6lbhK0hC2Sk+a8
-         VoiVlHftgmOzumnygzFU1w+N1gwbmMDIS/Mqg0HHoz37fTkGTrzMPPFYkY2MD1+dW36q
-         LLvQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mR1QkDyPTyXg0sfV86lfe9Sb5xsrO/S7r01fQ+mnp6Q=;
+        b=T1/EcaPJZSf64kQx/eeiXOxrDxi5NedAfCmLUzI68doU3cKMYX0i/pynTGah3jEmWp
+         qtIayvkROX6ldtNFhSZAqyth4RKR1zCduetEhHg0HOJVXqA6MC3DPR5Tf/Rkvg3EDEI4
+         h/a4LCEbLVqHmkyetn4hhHOdUSn4hShI9ubdeGt8KjiduGFFYkR1SsoHXUdhnXvNPlo/
+         8HcxpoCH0SGvGPDq63VTou77H0WrWZ7MTl7GOSEAamqtnvpQq8zoMDAL9EW/wwMz/RTt
+         FYGEqRUMFtv/GGXrjIuaodgS4169EJN2wkg+yRXYdEg6k9n8e9CpJeB/ypaEyHSAa0yC
+         CPSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wKHMeBJ7HB8kaIi/ChT9IdtHhkbmgmqmq8Ca+RXUM4Q=;
-        b=DHitx7Ly6u5BbAtU3o1GzLei5nb55KPjb13tkmnB0gaLuFXkJg7BqXpZTKdHkipfPl
-         19UPCm1ysBqqXzG1qZr7X9E2fCb0g5HLUaWybqEoT20kmtv6lMLMKw5p/DkXxI1NxjxQ
-         ictg7SBegwMAJQo0IovmvyWSoEcm/f9nEDrmjtUtXmmD8dtyo+9ryfvxkp0umcROUkJ5
-         m0Y1WxRwihh0yEg9H+iDX9nqhn4r/U9CeuK6bnU7fslR7f+XeM+f1hD03fr3ejqpfbAe
-         zAyprWMD+wC6WErgqw3x7y+QY1tZNNo6YvCw48qhIAKv5pzEmypxYv2EtH0Xc3qej6/G
-         4V0Q==
-X-Gm-Message-State: AOAM530TJHod+ITA3EWNuGfTseyciUwCtiO4ZZY7xKJgHHLpnozn2kjq
-        neL1jTiex3o/G3mSMJcVB/tI0g==
-X-Google-Smtp-Source: ABdhPJwsNqhX2FzrkX0gNclVTETovDS95JPRUA8wffUnhM4f7cA1FnDx4jSTzq6/A2hFCWSnnSc4aQ==
-X-Received: by 2002:a17:902:8490:b029:d6:d165:fde with SMTP id c16-20020a1709028490b02900d6d1650fdemr6435454plo.73.1604382439293;
-        Mon, 02 Nov 2020 21:47:19 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id mt2sm1455427pjb.7.2020.11.02.21.47.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Nov 2020 21:47:17 -0800 (PST)
-Date:   Tue, 3 Nov 2020 11:17:15 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-Message-ID: <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
-References: <20201012020958.229288-8-robdclark@gmail.com>
- <20201012143555.GA438822@phenom.ffwll.local>
- <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
- <20201020090729.qgqish5kqamhvatj@vireshk-i7>
- <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
- <20201020112413.xbk2vow2kgjky3pb@vireshk-i7>
- <CAF6AEGsCj-AtFozn8d1xiNNFNbuMJ0UxS-eMhBVXiQ7rKahKnQ@mail.gmail.com>
- <20201022080644.2ck4okrxygmkuatn@vireshk-i7>
- <CAF6AEGv6RMCsK4yp-W2d1mVTMcEiiwFGAb+V8rYLhDdMhqP80Q@mail.gmail.com>
- <20201027113532.nriqqws7gdcu5su6@vireshk-i7>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mR1QkDyPTyXg0sfV86lfe9Sb5xsrO/S7r01fQ+mnp6Q=;
+        b=Ws01eImNc8dNZhcK922VP5k3lRoeezZohowcLaNG5VHcvsPgVRsXIybqodaYZXwkgk
+         7eZau+3yWydmiFTazfu7hj9pbHM4oc/GDfHcJ1KhVrInx64dyN3L9dFeOQtcURJfwjJZ
+         nG4M2HKDGb4GHbe/XW0bJg9BzSvfJUfG0kBoJcTn8wnYzGFNYmjQp49ndOgnIekSKxDz
+         NVmbkKRvBgki5aL2nA5gWgGXAmos6o1E/H4+JuT8OyLFRgXSAlAAjj06CM4pw8LLAZf7
+         dZUUlV2f9xRqdEAY9H1IDbDrCE9399NdcJUCj2xC4LKfvRJ78U+qFudalaxrmSQuNaj0
+         11JA==
+X-Gm-Message-State: AOAM531YO4S+Byqc6l6sC1F4Pj92ei4qVXwp9mCUxpCXURSeyDrjXJuW
+        JS63/UAtdSkYxXyeKNHC4g8uJEeA3ztKZi/X
+X-Google-Smtp-Source: ABdhPJwJ+t8XYHF2C4S4h0qHAV86mWJWEsbuLFK4FUIT6TKEv05JsmNehBIFFWQ49btQwLKp3NaErg==
+X-Received: by 2002:a17:902:7408:b029:d6:8208:bc7 with SMTP id g8-20020a1709027408b02900d682080bc7mr23942194pll.82.1604382519915;
+        Mon, 02 Nov 2020 21:48:39 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:605e:3f8e:a675:34b8:3ea1])
+        by smtp.gmail.com with ESMTPSA id s18sm14023643pgh.60.2020.11.02.21.48.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 21:48:39 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com, yashsri421@gmail.com
+Subject: [PATCH v2] checkpatch: improve email parsing
+Date:   Tue,  3 Nov 2020 11:18:10 +0530
+Message-Id: <20201103054810.21978-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027113532.nriqqws7gdcu5su6@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 17:05, Viresh Kumar wrote:
-> It isn't that straight forward unfortunately, we need to make sure the
-> table doesn't get allocated for the same device twice, so
-> find+allocate needs to happen within a locked region.
-> 
-> I have taken, not so straight forward, approach to fixing this issue,
-> lets see if this fixes it or not.
-> 
-> -------------------------8<-------------------------
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 4ac4e7ce6b8b..6f4a73a6391f 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -29,6 +29,8 @@
->  LIST_HEAD(opp_tables);
->  /* Lock to allow exclusive modification to the device and opp lists */
->  DEFINE_MUTEX(opp_table_lock);
-> +/* Flag indicating that opp_tables list is being updated at the moment */
-> +static bool opp_tables_busy;
->  
->  static struct opp_device *_find_opp_dev(const struct device *dev,
->  					struct opp_table *opp_table)
-> @@ -1036,8 +1038,8 @@ static void _remove_opp_dev(struct opp_device *opp_dev,
->  	kfree(opp_dev);
->  }
->  
-> -static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
-> -						struct opp_table *opp_table)
-> +struct opp_device *_add_opp_dev(const struct device *dev,
-> +				struct opp_table *opp_table)
->  {
->  	struct opp_device *opp_dev;
->  
-> @@ -1048,7 +1050,9 @@ static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
->  	/* Initialize opp-dev */
->  	opp_dev->dev = dev;
->  
-> +	mutex_lock(&opp_table->lock);
->  	list_add(&opp_dev->node, &opp_table->dev_list);
-> +	mutex_unlock(&opp_table->lock);
->  
->  	/* Create debugfs entries for the opp_table */
->  	opp_debug_register(opp_dev, opp_table);
-> @@ -1056,18 +1060,6 @@ static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
->  	return opp_dev;
->  }
->  
-> -struct opp_device *_add_opp_dev(const struct device *dev,
-> -				struct opp_table *opp_table)
-> -{
-> -	struct opp_device *opp_dev;
-> -
-> -	mutex_lock(&opp_table->lock);
-> -	opp_dev = _add_opp_dev_unlocked(dev, opp_table);
-> -	mutex_unlock(&opp_table->lock);
-> -
-> -	return opp_dev;
-> -}
-> -
->  static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  {
->  	struct opp_table *opp_table;
-> @@ -1121,8 +1113,6 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
->  	INIT_LIST_HEAD(&opp_table->opp_list);
->  	kref_init(&opp_table->kref);
->  
-> -	/* Secure the device table modification */
-> -	list_add(&opp_table->node, &opp_tables);
->  	return opp_table;
->  
->  err:
-> @@ -1135,27 +1125,64 @@ void _get_opp_table_kref(struct opp_table *opp_table)
->  	kref_get(&opp_table->kref);
->  }
->  
-> +/*
-> + * We need to make sure that the OPP table for a device doesn't get added twice,
-> + * if this routine gets called in parallel with the same device pointer.
-> + *
-> + * The simplest way to enforce that is to perform everything (find existing
-> + * table and if not found, create a new one) under the opp_table_lock, so only
-> + * one creator gets access to the same. But that expands the critical section
-> + * under the lock and may end up causing circular dependencies with frameworks
-> + * like debugfs, interconnect or clock framework as they may be direct or
-> + * indirect users of OPP core.
-> + *
-> + * And for that reason we have to go for a bit tricky implementation here, which
-> + * uses the opp_tables_busy flag to indicate if another creator is in the middle
-> + * of adding an OPP table and others should wait for it to finish.
-> + */
->  static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
->  {
->  	struct opp_table *opp_table;
->  
-> -	/* Hold our table modification lock here */
-> +again:
->  	mutex_lock(&opp_table_lock);
->  
->  	opp_table = _find_opp_table_unlocked(dev);
->  	if (!IS_ERR(opp_table))
->  		goto unlock;
->  
-> +	/*
-> +	 * The opp_tables list or an OPP table's dev_list is getting updated by
-> +	 * another user, wait for it to finish.
-> +	 */
-> +	if (unlikely(opp_tables_busy)) {
-> +		mutex_unlock(&opp_table_lock);
-> +		cpu_relax();
-> +		goto again;
-> +	}
-> +
-> +	opp_tables_busy = true;
->  	opp_table = _managed_opp(dev, index);
-> +
-> +	/* Drop the lock to reduce the size of critical section */
-> +	mutex_unlock(&opp_table_lock);
-> +
->  	if (opp_table) {
-> -		if (!_add_opp_dev_unlocked(dev, opp_table)) {
-> +		if (!_add_opp_dev(dev, opp_table)) {
->  			dev_pm_opp_put_opp_table(opp_table);
->  			opp_table = ERR_PTR(-ENOMEM);
->  		}
-> -		goto unlock;
-> +
-> +		mutex_lock(&opp_table_lock);
-> +	} else {
-> +		opp_table = _allocate_opp_table(dev, index);
-> +
-> +		mutex_lock(&opp_table_lock);
-> +		if (!IS_ERR(opp_table))
-> +			list_add(&opp_table->node, &opp_tables);
->  	}
->  
-> -	opp_table = _allocate_opp_table(dev, index);
-> +	opp_tables_busy = false;
->  
->  unlock:
->  	mutex_unlock(&opp_table_lock);
-> @@ -1181,6 +1208,10 @@ static void _opp_table_kref_release(struct kref *kref)
->  	struct opp_device *opp_dev, *temp;
->  	int i;
->  
-> +	/* Drop the lock as soon as we can */
-> +	list_del(&opp_table->node);
-> +	mutex_unlock(&opp_table_lock);
-> +
->  	_of_clear_opp_table(opp_table);
->  
->  	/* Release clk */
-> @@ -1208,10 +1239,7 @@ static void _opp_table_kref_release(struct kref *kref)
->  
->  	mutex_destroy(&opp_table->genpd_virt_dev_lock);
->  	mutex_destroy(&opp_table->lock);
-> -	list_del(&opp_table->node);
->  	kfree(opp_table);
-> -
-> -	mutex_unlock(&opp_table_lock);
->  }
->  
->  void dev_pm_opp_put_opp_table(struct opp_table *opp_table)
+checkpatch doesn't report warnings for many common mistakes
+in emails. Some of which are trailing commas and incorrect
+use of email comments.
 
-Rob, Ping.
+At the same time several false positives are reported due to
+incorrect handling of mail comments. The most common of which
+is due to the pattern:
 
+<stable@vger.kernel.org> # X.X
+
+Improve email parsing mechanism in checkpatch.
+
+What is added:
+
+- Support for multiple name/address comments.
+- Improved handling of quoted names.
+- Sanitize improperly formatted comments.
+- Sanitize trailing semicolon or dot after email.
+
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 44 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 30 insertions(+), 14 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..9a9049480077 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1152,6 +1152,7 @@ sub parse_email {
+ 	my ($formatted_email) = @_;
+ 
+ 	my $name = "";
++	my $quoted = "";
+ 	my $name_comment = "";
+ 	my $address = "";
+ 	my $comment = "";
+@@ -1183,14 +1184,25 @@ sub parse_email {
+ 		}
+ 	}
+ 
+-	$comment = trim($comment);
+-	$name = trim($name);
+-	$name =~ s/^\"|\"$//g;
+-	if ($name =~ s/(\s*\([^\)]+\))\s*//) {
+-		$name_comment = trim($1);
++	# Extract comments from names excluding quoted parts
++	# "John A. (Kennedy)" - Do not extract
++	if ($name =~ s/\"(.+)\"//) {
++		$quoted = $1;
++	}
++	while ($name =~ s/\s*($balanced_parens)\s*/ /) {
++		$name_comment .= trim($1);
++	}
++	$name =~ s/^[ \"]|[ \"]$//g;
++	$name = trim("$quoted $name");
++
++	# Extract comments from address
++	# <john(his mail)@doe.com>
++	while ($address =~ s/\s*($balanced_parens)\s*//) {
++		$comment .= trim($1);
+ 	}
+ 	$address = trim($address);
+ 	$address =~ s/^\<|\>$//g;
++	$comment = trim($comment);
+ 
+ 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
+ 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
+@@ -1205,17 +1217,25 @@ sub format_email {
+ 
+ 	my $formatted_email;
+ 
+-	$name_comment = trim($name_comment);
+-	$comment = trim($comment);
+ 	$name = trim($name);
+ 	$name =~ s/^\"|\"$//g;
+ 	$address = trim($address);
++	$address =~ s/(?:\.|\,)*$//; ##trailing commas or dots
+ 
+ 	if ($name =~ /[^\w \-]/i) { ##has "must quote" chars
+ 		$name =~ s/(?<!\\)"/\\"/g; ##escape quotes
+ 		$name = "\"$name\"";
+ 	}
+ 
++	$name_comment = trim($name_comment);
++	$name_comment =~ s/(.+)/ $1/;
++
++	# Sanitize comment
++	$comment = trim($comment);
++	if ($comment ne "" && $comment !~ s/^\s*((?:\#|\(|\/|\[).*)/ $1/) {
++		$comment = "";
++	}
++
+ 	if ("$name" eq "") {
+ 		$formatted_email = "$address";
+ 	} else {
+@@ -1233,15 +1253,11 @@ sub reformat_email {
+ }
+ 
+ sub same_email_addresses {
+-	my ($email1, $email2, $match_comment) = @_;
++	my ($email1, $email2) = @_;
+ 
+ 	my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
+ 	my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
+ 
+-	if ($match_comment != 1) {
+-		return $email1_name eq $email2_name &&
+-		       $email1_address eq $email2_address;
+-	}
+ 	return $email1_name eq $email2_name &&
+ 	       $email1_address eq $email2_address &&
+ 	       $name1_comment eq $name2_comment &&
+@@ -2704,7 +2720,7 @@ sub process {
+ 			$signoff++;
+ 			$in_commit_log = 0;
+ 			if ($author ne ''  && $authorsignoff != 1) {
+-				if (same_email_addresses($1, $author, 1)) {
++				if (same_email_addresses($1, $author)) {
+ 					$authorsignoff = 1;
+ 				} else {
+ 					my $ctx = $1;
+@@ -2800,7 +2816,7 @@ sub process {
+ 				$dequoted =~ s/" </ </;
+ 				# Don't force email to have quotes
+ 				# Allow just an angle bracketed address
+-				if (!same_email_addresses($email, $suggested_email, 0)) {
++				if (!same_email_addresses($email, $suggested_email)) {
+ 					WARN("BAD_SIGN_OFF",
+ 					     "email address '$email' might be better as '$suggested_email'\n" . $herecurr);
+ 				}
 -- 
-viresh
+2.27.0
+
