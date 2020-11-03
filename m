@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961502A3CA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66702A3CA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbgKCGLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:11:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:11:38 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E042CC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 22:11:37 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id k3so3112903otp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 22:11:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dUQECi2b2OmyDRScJrepUtAejD+g0Cf0SRxo1IXKJxY=;
-        b=AGsR20jXoMdzQ00xNiD1IByazVm3Bjl1NGCQe8DmtoViitMuOzzhNDj4356l6HRndU
-         ufR3hTueJY933LmLdYrDp/+7G4OrFkaq+aICNtNkYiU81Hlistf3a185hBRPZBl2qrLa
-         mGIysGc0x1l6nhMqd79AcDLH3YFYF8nkkWhYT0aBHEvcA/9cT+BWFJd85Z8Q7ZqI9Im+
-         4jnrw49j2InpIIHwzfjMTPqeYejLKOxS6BKTfgqsr2gxDZdRkBj5I2d2HtKm7NtcuqY0
-         PJE+EqBMSGrGq4i94va785QaD4H4c28JVorFUqDcArbglf8zJOWO04u7YD50eu2oWLnA
-         692Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dUQECi2b2OmyDRScJrepUtAejD+g0Cf0SRxo1IXKJxY=;
-        b=cqsoeQhvX08a9PsJctyGw7Uw6MTgguvRmAdwAG01XLWoW1Ag5uWZgvnImGuDIPSKtr
-         3yvWG38oDCuoaRiTEzyUBKE5im09kmv2JdVBALxpYukIhAn7JPHlLNsFIWr7wM7nzIcy
-         P5GeH6uxw1/Xlxv8xI7pzcalWCs8ko3yg5aNFqGsYDTzYn0mw0NBmm4bewsoj3TR86/M
-         kUzGy7xQ8S2/0YdQahn/D3Ag6vMYzLYTHULBDLI5Bk3vPDlhYT5UCseyAQf/G6oBL0NR
-         Xy5JjnB6+OLCjy1pa3xoybHm7l8GWuXNyONXRFsygcW6RA73zprm9zNxnalwHJQmmNP8
-         O5FQ==
-X-Gm-Message-State: AOAM531/x7fU9oo9qULk4stw2o17ZCFmf4FrewyJEMQFjTCyuJ6Fc165
-        +cIC0+UnZSyPEf2bGB5OOk8oDCZKXgza7TIVD6JrHQqVZTM=
-X-Google-Smtp-Source: ABdhPJyauU4JLerz1H5+gLLJB3GH4BxZ3L8r2UynN2PUKLok0mhN5q3GnRNnc8QUueR3kZObrzxW7/MHby1sWLLv8ZY=
-X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr5385725otp.102.1604383897321;
- Mon, 02 Nov 2020 22:11:37 -0800 (PST)
+        id S1727443AbgKCGMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:12:47 -0500
+Received: from mga18.intel.com ([134.134.136.126]:42433 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgKCGMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:12:47 -0500
+IronPort-SDR: jESKfE7+rU7U9IVR1F60q5nifyN4rCL+8w7GYh2/zqfm+1Qct23J2JxY9joSiT3a76W5f1LycO
+ RWGRdBkk7ndQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156784134"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="156784134"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 22:12:46 -0800
+IronPort-SDR: xNIyDGLfoFK7i4p3oARDq1lrrWYtrHxt+zWGPYWrnjYPZMV0pMjBM4ajqmiHH9yNMOpDWTq8NO
+ fl+0TvZJdMpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="353094900"
+Received: from shzintpr02.sh.intel.com (HELO [0.0.0.0]) ([10.109.19.68])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2020 22:12:43 -0800
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+ <CALMp9eTrsz4fq19HXGjfQF3GmsQ7oqGW9GXVnMYXtwnPmJcsOA@mail.gmail.com>
+From:   Tao Xu <tao3.xu@intel.com>
+Message-ID: <d4388899-665f-8012-c609-8162fa7015ae@intel.com>
+Date:   Tue, 3 Nov 2020 14:12:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201026180026.3350-1-sudipm.mukherjee@gmail.com>
-In-Reply-To: <20201026180026.3350-1-sudipm.mukherjee@gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 2 Nov 2020 22:11:25 -0800
-Message-ID: <CALAqxLVzsQs6_G9DOTkaBsUa93-97c136mtx7WRPNjBFjfkyAA@mail.gmail.com>
-Subject: Re: [PATCH] misc: hisi_hikey_usb: use PTR_ERR_OR_ZERO
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CALMp9eTrsz4fq19HXGjfQF3GmsQ7oqGW9GXVnMYXtwnPmJcsOA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:02 AM Sudip Mukherjee
-<sudipm.mukherjee@gmail.com> wrote:
->
-> Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-> we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-> doing 'return 0'.
->
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-Thanks for sending this!
 
-Acked-by: John Stultz <john.stultz@linaro.org>
-
-thanks
--john
+On 11/3/20 6:53 AM, Jim Mattson wrote:
+> On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
+>>
+>> There are some cases that malicious virtual machines can cause CPU stuck
+>> (event windows don't open up), e.g., infinite loop in microcode when
+>> nested #AC (CVE-2015-5307). No event window obviously means no events,
+>> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
+>> hardware CPU can't be used by host or other VM.
+>>
+>> To resolve those cases, it can enable a notify VM exit if no
+>> event window occur in VMX non-root mode for a specified amount of
+>> time (notify window).
+>>
+>> Expose a module param for setting notify window, default setting it to
+>> the time as 1/10 of periodic tick, and user can set it to 0 to disable
+>> this feature.
+>>
+>> TODO:
+>> 1. The appropriate value of notify window.
+>> 2. Another patch to disable interception of #DB and #AC when notify
+>> VM-Exiting is enabled.
+>>
+>> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>> Signed-off-by: Tao Xu <tao3.xu@intel.com>
+>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> 
+> Do you have test cases?
+> 
+Not yet, because we are waiting real silicon to do some test. I should 
+add RFC next time before I test it in hardware.
