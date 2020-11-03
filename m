@@ -2,252 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F992A4756
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680192A4760
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729530AbgKCOKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S1729508AbgKCOKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729508AbgKCOJZ (ORCPT
+        with ESMTP id S1729502AbgKCOJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:09:25 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6061EC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:09:25 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id n63so6098668qte.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 06:09:25 -0800 (PST)
+        Tue, 3 Nov 2020 09:09:09 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5662BC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:09:08 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id j12so3932145iow.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 06:09:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MdB11KsZ9kb3QT0CE4efS+SKgKC9dAMzdAa5Mt8uTP4=;
-        b=qQih5dfA8aeh28xOv4figzxjDNauGjngrewXbXtDS2d78iT+kmz0SsKz7Fl3bv7twF
-         S2Zd/qjv39he5ujkJnIWPLCeIFGjezlsCF27bG+97pqqslcCrzqpeZYYyina1vOSNM0y
-         ZUNOkFhjFJByqofgee+obb4+FGDSDktqfHNJo23nPWPALftytwt+w4oS+QZjbakOLqlU
-         JNVpnAd42ko7N+de91PL1aut9gNzuKz/2eUwLnVl1RCF4h2brM2VZNDrh2UWtgeopAO0
-         v6v8EXUIOLCAEQrkK3FmVaju4CP3O/UPkSfx1qcYdsXhY8M7Vyo3xzV24s3LjaPdhXID
-         xkUA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l4FOhOeqEnVDoJ5bRT/ISdT4bxQ89fRTQwVSHjkBPV4=;
+        b=wCYdVovMWgk50XhjaI6MZEIe+2qazFELy2KweoNTlevdXGalqq+TNcRGcqrJ3jlbCR
+         9FlLQTcVyeigRJKthVgaTYg61ILCpXVmFsmb9Bd87N4wUhED2MRCzh9TlIt5v3MWSLtg
+         19Uxm6paNYF3LL38Ltlc/pL387aIUtRGJPt320OkS7aiqLjDPB02HaGZMiu9HHW07d1N
+         HbroL7AjMb3V9olgRYf+B4Op9ZZPWQH7s6TsgsDJ9D9Lu9yrOct6EFEamd/SoOV9jlNH
+         YokGScBs6FeqPbhPRQDnPYByaKjczh/aS5zRU142Jkh+1gS7i+ageCLLotjPAv091Fvi
+         SQtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MdB11KsZ9kb3QT0CE4efS+SKgKC9dAMzdAa5Mt8uTP4=;
-        b=qhmm2M5HSlVEff0C+Svjz8z7KT4W3quRS99gbnpCQGIYp6xgS6AlZd5FqgbZt+oNsU
-         8nlFoeXLVlOxZuqFkmcrA6U0EhI7eT8qrEoOkc4HBaR6guZQ1p1S0OZDsLF4z5rxM19n
-         0Be1idng5DuFfSRskBSiISfTXY4Q7seSYJxcR+hp0Bw6V9cjYDx+rbpXQXKHS2n3bhMU
-         YJPJIDAfS6fV4CqdP42xfI64vlO12IcADJjYTdqn46cAQtTDgBYJqD8N75J1fCgynQDr
-         xn3yfAB5w7r5pH6GdFaINq2d/WxN+q/DMPF0mSZTaiTCzXnb41P/OgtNCvjDqHrP6v72
-         0M5g==
-X-Gm-Message-State: AOAM532HKFZqL2CYBzuJsffgZEmGJUNSUdLjjlUhj7tBNDsBlP+9Xb1n
-        QD68s/Vjqp+ZO+LBXr03VkM=
-X-Google-Smtp-Source: ABdhPJyfXiE2s1N4B792n6mU9ybY8NvK/eFNuQMHPTc8qdBsA2l6ZfW8Q+ovHDIqbTK+Ou5Nb6F8mg==
-X-Received: by 2002:aed:2685:: with SMTP id q5mr3943177qtd.151.1604412564558;
-        Tue, 03 Nov 2020 06:09:24 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id n7sm10067485qtp.93.2020.11.03.06.09.23
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Nov 2020 06:09:23 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 67C0327C0054;
-        Tue,  3 Nov 2020 09:09:22 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 03 Nov 2020 09:09:22 -0500
-X-ME-Sender: <xms:kWShXykEstgNT_gFqJIh9oDI-0FtomDGnZQqObNgOXFGgmZZTkxo_g>
-    <xme:kWShX523St9qhLWyHl7YKHFaB3uXaVhcEpMScgUk3PlPnw0PUKWO7lFhyL3x9ZsPo
-    x9iievR4QcNx967BA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepheegveeiteeufeeggfejteeghfekueetteeuleevgedtteegveeugeeutdeh
-    iefgnecuffhomhgrihhnpehprghsthgvsghinhdrtghomhenucfkphepudefuddruddtje
-    drudegjedruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
-    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
-    ohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:kWShXwqU45VUbeMXk770W4VrtkDQfkE2Nk-DUrBFVN0aH9kK4qgoRw>
-    <xmx:kWShX2lwArMJi4eU83K8N-xen8Gyl6N80xItJpL_WE1eqBRl0V7qVA>
-    <xmx:kWShXw33F1SEtAvk3qWuZKWEAnDxujSQPLoTd8XWutlfRUJsDQBMkA>
-    <xmx:kmShXzTlCQMW0Ha8skLFwrLpLVRt5hTCU_BPWCeDC3mftdbBiB0ALw>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 915063064674;
-        Tue,  3 Nov 2020 09:09:21 -0500 (EST)
-Date:   Tue, 3 Nov 2020 22:08:28 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Filipe Manana <fdmanana@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, peterz@infradead.org,
-        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: possible lockdep regression introduced by 4d004099a668
- ("lockdep: Fix lockdep recursion")
-Message-ID: <20201103140828.GA2713762@boqun-archlinux>
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l4FOhOeqEnVDoJ5bRT/ISdT4bxQ89fRTQwVSHjkBPV4=;
+        b=oJBRFTB+PwR9snPn6OQXr730pKWNzMD6iBYZvAwHTquyT8/XMYOhSmUKDjgwFCWb06
+         c0tHXq24nlEeFzAOqtBPDxUzSAJe879pfbk1l3caNGzafL4N8PAXVlnUBVweD6h2eICA
+         lbFtGvG8qDG01FxCAuV6ga4j2YjdspNlw/nID/WLYykH6O3QaC8fOsoallbF/hOAkS7v
+         JnohtPi5NsHxtqjpL/snT+grKoq+oavPxc8/TI3cwPTKzbO/04c1QNbB7f7DSB5NZNUk
+         bhvzPIwJvFRNOkImzeZKtWLe+JbV9KD8GwUcH1nC7PHDjFu67DXhHYUBGIUT0k23chYr
+         Q5xg==
+X-Gm-Message-State: AOAM533jApCcwYfpJilw0XI93ORIM4dCSUzNtfWX2klQAfd4/0p+RX2D
+        Oe4zyn+pksWOUMX489upvf5fpg==
+X-Google-Smtp-Source: ABdhPJy+Ec2OoR+gvf+GTh9vliPMPS2o/zLXQZlL9vFyi0qFZvf0Iv9DJF3eWtdyWzPQ/PpQXmpmCA==
+X-Received: by 2002:a6b:bbc6:: with SMTP id l189mr14375899iof.145.1604412547589;
+        Tue, 03 Nov 2020 06:09:07 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t2sm11484264iob.5.2020.11.03.06.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 06:09:07 -0800 (PST)
+Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        oleg@redhat.com, tglx@linutronix.de,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+References: <yt9do8ke4seh.fsf@linux.ibm.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <75a238c7-fc37-21dd-bd89-d4c87a206eaa@kernel.dk>
+Date:   Tue, 3 Nov 2020 07:09:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+In-Reply-To: <yt9do8ke4seh.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Filipe,
-
-On Mon, Oct 26, 2020 at 11:26:49AM +0000, Filipe Manana wrote:
-> Hello,
+On 11/3/20 4:00 AM, Sven Schnelle wrote:
+> Hi Jens,
 > 
-> I've recently started to hit a warning followed by tasks hanging after
-> attempts to freeze a filesystem. A git bisection pointed to the
-> following commit:
+> Heiko Carstens <hca () linux ! ibm ! com> writes:
 > 
-> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Fri Oct 2 11:04:21 2020 +0200
+>> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
+>>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
+>>>
+>>> Cc: linux-s390@vger.kernel.org
+>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>> ---
+>>>
+>>> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+>>> for details:
+>>>
+>>> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+>>>
+>>> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+>>> as that will enable a set of cleanups once all of them support it. I'm
+>>> happy carrying this patch if need be, or it can be funelled through the
+>>> arch tree. Let me know.
+>>>
+>>>  arch/s390/include/asm/thread_info.h | 2 ++
+>>>  arch/s390/kernel/entry.S            | 7 ++++++-
+>>>  2 files changed, 8 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
+>>> index 13a04fcf7762..0045341ade48 100644
+>>> --- a/arch/s390/include/asm/thread_info.h
+>>> +++ b/arch/s390/include/asm/thread_info.h
+>>> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
+>>>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
+>>>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
+>>>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
+>>> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
+>>>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
+>>>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
+>>>  
+>>> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
+>>>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
+>>>  
+>>>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
+>>> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
+>>>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
+>>>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
+>>>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
+>>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+>>> index 86235919c2d1..a30d891e8045 100644
+>>> --- a/arch/s390/kernel/entry.S
+>>> +++ b/arch/s390/kernel/entry.S
+>>> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
+>>>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
+>>>  
+>>>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
+>>> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
+>>> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
+>>> +		   _TIF_NOTIFY_SIGNAL)
+>>>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
+>>>  		   _TIF_SYSCALL_TRACEPOINT)
+>>>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
+>>> @@ -463,6 +464,8 @@ ENTRY(system_call)
+>>>  #endif
+>>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+>>>  	jo	.Lsysc_syscall_restart
+>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>>> +	jo	.Lsysc_sigpending
+>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>>>  	jo	.Lsysc_sigpending
+>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>>> @@ -857,6 +860,8 @@ ENTRY(io_int_handler)
+>>>  #endif
+>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>>>  	jo	.Lio_sigpending
+>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>>> +	jo	.Lio_sigpending
+>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+>>>  	jo	.Lio_notify_resume
+>>>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
+>>
+>> (full quote so you can make sense of the patch below).
+>>
+>> Please merge the patch below into this one. With that:
+>>
+>> Acked-by: Heiko Carstens <hca@linux.ibm.com>
+>>
+>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+>> index a30d891e8045..31f16d903ef3 100644
+>> --- a/arch/s390/kernel/entry.S
+>> +++ b/arch/s390/kernel/entry.S
+>> @@ -464,9 +464,7 @@ ENTRY(system_call)
+>>  #endif
+>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+>>  	jo	.Lsysc_syscall_restart
+>> -	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
+>> -	jo	.Lsysc_sigpending
+>> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+>> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
+>>  	jo	.Lsysc_sigpending
 > 
->     lockdep: Fix lockdep recursion
-> 
-> This happens very reliably when running all xfstests with lockdep
-> enabled, and the tested filesystem is btrfs (haven't tried other
-> filesystems, but it shouldn't matter). The warning and task hangs always
-> happen at either test generic/068 or test generic/390, and (oddly)
-> always have to run all tests for it to trigger, running those tests
-> individually on an infinite loop doesn't seem to trigger it (at least
-> for a couple hours).
-> 
-> The warning triggered is at fs/super.c:__sb_start_write() which always
-> results later in several tasks hanging on a percpu rw_sem:
-> 
-> https://pastebin.com/qnLvf94E
-> 
+> We need to also change the jo to jnz - in combination with tm, jo means
+> 'jump if all tested bits are set' while jnz means 'jump if at least one
+> bit is set'
 
-In your dmesg, I see line:
+Ah thanks, good catch. And you also caught the braino in signal.c, here's
+the end result:
 
-	[ 9304.920151] INFO: lockdep is turned off.
 
-, that means debug_locks is 0, that usually happens when lockdep find a
-problem (i.e. a deadlock) and it turns itself off, because a problem is
-found and it's pointless for lockdep to continue to run.
+commit 0eb7d372d5319970bd15f2dbc18264ea576214d4
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Fri Oct 9 15:34:12 2020 -0600
 
-And I haven't found a lockdep splat in your dmesg, do you have a full
-dmesg so that I can have a look?
+    s390: add support for TIF_NOTIFY_SIGNAL
+    
+    Wire up TIF_NOTIFY_SIGNAL handling for s390.
+    
+    Cc: linux-s390@vger.kernel.org
+    Acked-by: Heiko Carstens <hca@linux.ibm.com>
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-This may be relevant because in commit 4d004099a66, we have
-
-	@@ -5056,13 +5081,13 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-		unsigned long flags;
-		int ret = 0;
-
-	-       if (unlikely(current->lockdep_recursion))
-	+       if (unlikely(!lockdep_enabled()))
-			return 1; /* avoid false negative lockdep_assert_held() */
-
-before this commit lock_is_held_type() and its friends may return false
-if debug_locks==0, after this commit lock_is_held_type() and its friends
-will always return true if debug_locks == 0. That could cause the
-behavior here.
-
-In case I'm correct, the following "fix" may be helpful. 
-
-Regards,
-Boqun
-
-----------8
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 3e99dfef8408..c0e27fb949ff 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5471,7 +5464,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
- 	unsigned long flags;
- 	int ret = 0;
+diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
+index 13a04fcf7762..0045341ade48 100644
+--- a/arch/s390/include/asm/thread_info.h
++++ b/arch/s390/include/asm/thread_info.h
+@@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
+ #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
+ #define TIF_PATCH_PENDING	5	/* pending live patching update */
+ #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
++#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
+ #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
+ #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
  
--	if (unlikely(!lockdep_enabled()))
-+	if (unlikely(debug_locks && !lockdep_enabled()))
- 		return 1; /* avoid false negative lockdep_assert_held() */
+@@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
+ #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
  
- 	raw_local_irq_save(flags);
+ #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
++#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
+ #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
+ #define _TIF_UPROBE		BIT(TIF_UPROBE)
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index 86235919c2d1..19a89f292290 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
+ STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
+ 
+ _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
+-		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
++		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
++		   _TIF_NOTIFY_SIGNAL)
+ _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
+ 		   _TIF_SYSCALL_TRACEPOINT)
+ _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
+@@ -463,8 +464,8 @@ ENTRY(system_call)
+ #endif
+ 	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
+ 	jo	.Lsysc_syscall_restart
+-	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+-	jo	.Lsysc_sigpending
++	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
++	jnz	.Lsysc_sigpending
+ 	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+ 	jo	.Lsysc_notify_resume
+ 	TSTMSK	__LC_CPU_FLAGS,(_CIF_ASCE_PRIMARY|_CIF_ASCE_SECONDARY)
+@@ -855,8 +856,8 @@ ENTRY(io_int_handler)
+ 	TSTMSK	__TI_flags(%r12),_TIF_PATCH_PENDING
+ 	jo	.Lio_patch_pending
+ #endif
+-	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
+-	jo	.Lio_sigpending
++	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
++	jnz	.Lio_sigpending
+ 	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
+ 	jo	.Lio_notify_resume
+ 	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
+diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+index 9e900a8977bd..b27b6c1f058d 100644
+--- a/arch/s390/kernel/signal.c
++++ b/arch/s390/kernel/signal.c
+@@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
+ 	current->thread.system_call =
+ 		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
+ 
+-	if (get_signal(&ksig)) {
++	if (test_thread_flag(TIF_SIGPENDING) && get_signal(&ksig)) {
+ 		/* Whee!  Actually deliver the signal.  */
+ 		if (current->thread.system_call) {
+ 			regs->int_code = current->thread.system_call;
 
+-- 
+Jens Axboe
 
-
-> What happens is percpu_rwsem_is_held() is apparently returning a false
-> positive, so this makes __sb_start_write() do a
-> percpu_down_read_trylock() on a percpu_rw_sem at a higher level, which
-> is expected to always succeed, because if the calling task is holding a
-> freeze percpu_rw_sem at level 1, it's supposed to be able to try_lock
-> the semaphore at level 2, since the freeze semaphores are always
-> acquired by increasing level order.
-> 
-> But the try_lock fails, it triggers the warning at __sb_start_write(),
-> then its caller sb_start_pagefault() ignores the return value and
-> callers such as btrfs_page_mkwrite() make the assumption the freeze
-> semaphore was taken, proceed to do their stuff, and later call
-> sb_end_pagefault(), which which will do an up_read() on the percpu_rwsem
-> at level 2 despite not having not been able to down_read() the
-> semaphore. This obviously corrupts the semaphore's read_count state, and
-> later causes any task trying to down_write() it to hang forever.
-> 
-> After such a hang I ran a drgn script to confirm it:
-> 
-> $ cat dump_freeze_sems.py
-> import sys
-> import drgn
-> from drgn import NULL, Object, cast, container_of, execscript, \
->     reinterpret, sizeof
-> from drgn.helpers.linux import *
-> 
-> mnt_path = b'/home/fdmanana/btrfs-tests/scratch_1'
-> 
-> mnt = None
-> for mnt in for_each_mount(prog, dst = mnt_path):
->     pass
-> 
-> if mnt is None:
->     sys.stderr.write(f'Error: mount point {mnt_path} not found\n')
->     sys.exit(1)
-> 
-> def dump_sem(level_enum):
->     level = level_enum.value_()
->     sem = mnt.mnt.mnt_sb.s_writers.rw_sem[level - 1]
->     print(f'freeze semaphore at level {level}, {str(level_enum)}')
->     print(f'    block {sem.block.counter.value_()}')
->     for i in for_each_possible_cpu(prog):
->         read_count = per_cpu_ptr(sem.read_count, i)
->         print(f'    read_count at cpu {i} = {read_count}')
->     print()
-> 
-> # dump semaphore read counts for all freeze levels (fs.h)
-> dump_sem(prog['SB_FREEZE_WRITE'])
-> dump_sem(prog['SB_FREEZE_PAGEFAULT'])
-> dump_sem(prog['SB_FREEZE_FS'])
-> 
-> 
-> $ drgn dump_freeze_sems.py
-> freeze semaphore at level 1, (enum <anonymous>)SB_FREEZE_WRITE
->     block 1
->     read_count at cpu 0 = *(unsigned int *)0xffffc2ec3ee00c74 = 3
->     read_count at cpu 1 = *(unsigned int *)0xffffc2ec3f200c74 = 4294967293
->     read_count at cpu 2 = *(unsigned int *)0xffffc2ec3f600c74 = 3
->     read_count at cpu 3 = *(unsigned int *)0xffffc2ec3fa00c74 = 4294967293
-> 
-> freeze semaphore at level 2, (enum <anonymous>)SB_FREEZE_PAGEFAULT
->     block 1
->     read_count at cpu 0 = *(unsigned int *)0xffffc2ec3ee00c78 = 0
->     read_count at cpu 1 = *(unsigned int *)0xffffc2ec3f200c78 = 4294967295
->     read_count at cpu 2 = *(unsigned int *)0xffffc2ec3f600c78 = 0
->     read_count at cpu 3 = *(unsigned int *)0xffffc2ec3fa00c78 = 0
-> 
-> freeze semaphore at level 3, (enum <anonymous>)SB_FREEZE_FS
->     block 0
->     read_count at cpu 0 = *(unsigned int *)0xffffc2ec3ee00c7c = 0
->     read_count at cpu 1 = *(unsigned int *)0xffffc2ec3f200c7c = 0
->     read_count at cpu 2 = *(unsigned int *)0xffffc2ec3f600c7c = 0
->     read_count at cpu 3 = *(unsigned int *)0xffffc2ec3fa00c7c = 0
-> 
-> At levels 1 and 3, read_count sums to 0, so it's fine, but at level 2 it
-> sums to -1. The system remains like that for hours at least, with no
-> progress at all.
-> 
-> Is there a known regression with that lockdep commit?
-> Anything I can do to help debug it in case it's not obvious?
-> 
-> Thanks.
