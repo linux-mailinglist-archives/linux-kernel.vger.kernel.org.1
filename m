@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59942A5493
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B048A2A54B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389044AbgKCVMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:12:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        id S2389367AbgKCVNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389039AbgKCVMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:12:36 -0500
+        id S2389357AbgKCVNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:13:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7558B207BC;
-        Tue,  3 Nov 2020 21:12:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3001205ED;
+        Tue,  3 Nov 2020 21:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437956;
-        bh=zC9Ql3LGYYfxpLM89wSqHg61NrZ02jY9gvTFD8s/YR4=;
+        s=default; t=1604438028;
+        bh=i13f+RCrQiQ3XRKmiUGw0IZSvInfuItExFonnu0hxHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4pCy3nJpA4ym/vr3FFzDT0vf5OdJn6YmNfxjWyyXzSOoNecGZrdObAoa51E0sXGp
-         2n9bEbfKkcAfGM1mVCPX0bbZ12Y5BFpQile4/d21zpQbsONv4y0H1j1Zi59HXE6aDR
-         F3gEb8T3gyBEmPNv6ga0skRg/rF7wDbJU9H9mGps=
+        b=d9z9E9o7D+fNjadL4K5NSLytL1R6TD5bBgI9eaX42GL7XfEd/pI2Plj8SJMR9EyiK
+         /z1OmoybijAa6Coidi5pYFZhHYAHg0i6ZnsDbAQNoWX3YV+QM41oql7Ewmp65DHqPk
+         2Pm4ufspuO4M+GtLQe0mvvbnWpdAgQy9jgTuJmuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Madhav Chauhan <madhav.chauhan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.14 101/125] drm/amdgpu: dont map BO in reserved region
-Date:   Tue,  3 Nov 2020 21:37:58 +0100
-Message-Id: <20201103203211.653412914@linuxfoundation.org>
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 4.14 102/125] ceph: promote to unsigned long long before shifting
+Date:   Tue,  3 Nov 2020 21:37:59 +0100
+Message-Id: <20201103203211.833175190@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
 References: <20201103203156.372184213@linuxfoundation.org>
@@ -44,48 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhav Chauhan <madhav.chauhan@amd.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit c4aa8dff6091cc9536aeb255e544b0b4ba29faf4 upstream.
+commit c403c3a2fbe24d4ed33e10cabad048583ebd4edf upstream.
 
-2MB area is reserved at top inside VM.
+On 32-bit systems, this shift will overflow for files larger than 4GB.
 
-Suggested-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Madhav Chauhan <madhav.chauhan@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
+Fixes: 61f68816211e ("ceph: check caps in filemap_fault and page_mkwrite")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/ceph/addr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@ -551,6 +551,7 @@ int amdgpu_gem_va_ioctl(struct drm_devic
- 	struct ww_acquire_ctx ticket;
- 	struct list_head list;
- 	uint64_t va_flags;
-+	uint64_t vm_size;
- 	int r = 0;
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -1443,7 +1443,7 @@ static int ceph_filemap_fault(struct vm_
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	struct ceph_file_info *fi = vma->vm_file->private_data;
+ 	struct page *pinned_page = NULL;
+-	loff_t off = vmf->pgoff << PAGE_SHIFT;
++	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
+ 	int want, got, ret;
+ 	sigset_t oldset;
  
- 	if (args->va_address < AMDGPU_VA_RESERVED_SIZE) {
-@@ -561,6 +562,15 @@ int amdgpu_gem_va_ioctl(struct drm_devic
- 		return -EINVAL;
- 	}
- 
-+	vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
-+	vm_size -= AMDGPU_VA_RESERVED_SIZE;
-+	if (args->va_address + args->map_size > vm_size) {
-+		dev_dbg(&dev->pdev->dev,
-+			"va_address 0x%llx is in top reserved area 0x%llx\n",
-+			args->va_address + args->map_size, vm_size);
-+		return -EINVAL;
-+	}
-+
- 	if ((args->flags & ~valid_flags) && (args->flags & ~prt_flags)) {
- 		dev_err(&dev->pdev->dev, "invalid flags combination 0x%08X\n",
- 			args->flags);
 
 
