@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEA12A52FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8172A5201
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732267AbgKCUzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:55:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50702 "EHLO mail.kernel.org"
+        id S1731095AbgKCUpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732220AbgKCUxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:07 -0500
+        id S1730546AbgKCUpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E50D5223AC;
-        Tue,  3 Nov 2020 20:53:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A92D922404;
+        Tue,  3 Nov 2020 20:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436786;
-        bh=tCUGBjX1fs6OEe4JqQ+2zebzNjjVqbwuywMzf5MGGdI=;
+        s=default; t=1604436346;
+        bh=OF1UzrEkpvQY/H024MBR+tM08Hv99WeM2oKPJDlgaAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YO5KEzH4f7yfd/xQkuInMBETuDzSaJ1bs+g3U3J4Tf0r1E0KLtdc21QG9VgyaC8dk
-         6OTSfgilqiOgc3B06ofbVgFNKQk6YamxP7HaVQQzNtSobxSt1zweSbrPorB5VRIjPG
-         7ONJPeey8GTfvHfhV8Dy+Pqf0Ux9e7QFH77bEHNA=
+        b=ci/+F+ztzjsTT6Eph4nJx/6juErmCzSabiPaEUDMCCtKN5gait7JcUZApvW7653pm
+         0cr780Odi2p5YKhWSKuwk9GV+Kgsnxy3UcKLlOLUjeTfNtLeANVpxUJxiRCBxz1rUh
+         Ko2V3baBJfPiALVtRZhWJAcs3D71lr+dQNgL3HCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
-Subject: [PATCH 5.4 011/214] xen/events: use a common cpu hotplug hook for event channels
-Date:   Tue,  3 Nov 2020 21:34:19 +0100
-Message-Id: <20201103203250.769667178@linuxfoundation.org>
+        stable@vger.kernel.org, Aaron Zakhrov <aaron.zakhrov@gmail.com>,
+        Michal Rostecki <mrostecki@suse.com>,
+        Shai Coleman <git@shaicoleman.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Arthur Borsboom <arthurborsboom@gmail.com>,
+        matoro <matoro@airmail.cc>
+Subject: [PATCH 5.9 209/391] PCI/ACPI: Whitelist hotplug ports for D3 if power managed by ACPI
+Date:   Tue,  3 Nov 2020 21:34:20 +0100
+Message-Id: <20201103203401.009760569@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,161 +48,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 7beb290caa2adb0a399e735a1e175db9aae0523a upstream.
+commit c6e331312ebfb52b7186e5d82d517d68b4d2f2d8 upstream.
 
-Today only fifo event channels have a cpu hotplug callback. In order
-to prepare for more percpu (de)init work move that callback into
-events_base.c and add percpu_init() and percpu_deinit() hooks to
-struct evtchn_ops.
+Recent laptops with dual AMD GPUs fail to suspend the discrete GPU, thus
+causing lockups on system sleep and high power consumption at runtime.
+The discrete GPU would normally be suspended to D3cold by turning off
+ACPI _PR3 Power Resources of the Root Port above the GPU.
 
-This is part of XSA-332.
+However on affected systems, the Root Port is hotplug-capable and
+pci_bridge_d3_possible() only allows hotplug ports to go to D3 if they
+belong to a Thunderbolt device or if the Root Port possesses a
+"HotPlugSupportInD3" ACPI property.  Neither is the case on affected
+laptops.  The reason for whitelisting only specific, known to work
+hotplug ports for D3 is that there have been reports of SkyLake Xeon-SP
+systems raising Hardware Error NMIs upon suspending their hotplug ports:
+https://lore.kernel.org/linux-pci/20170503180426.GA4058@otc-nc-03/
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Wei Liu <wl@xen.org>
+But if a hotplug port is power manageable by ACPI (as can be detected
+through presence of Power Resources and corresponding _PS0 and _PS3
+methods) then it ought to be safe to suspend it to D3.  To this end,
+amend acpi_pci_bridge_d3() to whitelist such ports for D3.
+
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1222
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1252
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1304
+Reported-and-tested-by: Arthur Borsboom <arthurborsboom@gmail.com>
+Reported-and-tested-by: matoro <matoro@airmail.cc>
+Reported-by: Aaron Zakhrov <aaron.zakhrov@gmail.com>
+Reported-by: Michal Rostecki <mrostecki@suse.com>
+Reported-by: Shai Coleman <git@shaicoleman.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/events/events_base.c     |   25 +++++++++++++++++++++
- drivers/xen/events/events_fifo.c     |   40 ++++++++++++++++-------------------
- drivers/xen/events/events_internal.h |    3 ++
- 3 files changed, 47 insertions(+), 21 deletions(-)
+ drivers/pci/pci-acpi.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -34,6 +34,7 @@
- #include <linux/irqnr.h>
- #include <linux/pci.h>
- #include <linux/spinlock.h>
-+#include <linux/cpuhotplug.h>
+--- a/drivers/pci/pci-acpi.c
++++ b/drivers/pci/pci-acpi.c
+@@ -944,6 +944,16 @@ static bool acpi_pci_bridge_d3(struct pc
+ 	if (!dev->is_hotplug_bridge)
+ 		return false;
  
- #ifdef CONFIG_X86
- #include <asm/desc.h>
-@@ -1834,6 +1835,26 @@ void xen_callback_vector(void) {}
- static bool fifo_events = true;
- module_param(fifo_events, bool, 0);
- 
-+static int xen_evtchn_cpu_prepare(unsigned int cpu)
-+{
-+	int ret = 0;
++	/* Assume D3 support if the bridge is power-manageable by ACPI. */
++	adev = ACPI_COMPANION(&dev->dev);
++	if (!adev && !pci_dev_is_added(dev)) {
++		adev = acpi_pci_find_companion(&dev->dev);
++		ACPI_COMPANION_SET(&dev->dev, adev);
++	}
 +
-+	if (evtchn_ops->percpu_init)
-+		ret = evtchn_ops->percpu_init(cpu);
++	if (adev && acpi_device_power_manageable(adev))
++		return true;
 +
-+	return ret;
-+}
-+
-+static int xen_evtchn_cpu_dead(unsigned int cpu)
-+{
-+	int ret = 0;
-+
-+	if (evtchn_ops->percpu_deinit)
-+		ret = evtchn_ops->percpu_deinit(cpu);
-+
-+	return ret;
-+}
-+
- void __init xen_init_IRQ(void)
- {
- 	int ret = -EINVAL;
-@@ -1844,6 +1865,10 @@ void __init xen_init_IRQ(void)
- 	if (ret < 0)
- 		xen_evtchn_2l_init();
- 
-+	cpuhp_setup_state_nocalls(CPUHP_XEN_EVTCHN_PREPARE,
-+				  "xen/evtchn:prepare",
-+				  xen_evtchn_cpu_prepare, xen_evtchn_cpu_dead);
-+
- 	evtchn_to_irq = kcalloc(EVTCHN_ROW(xen_evtchn_max_channels()),
- 				sizeof(*evtchn_to_irq), GFP_KERNEL);
- 	BUG_ON(!evtchn_to_irq);
---- a/drivers/xen/events/events_fifo.c
-+++ b/drivers/xen/events/events_fifo.c
-@@ -385,21 +385,6 @@ static void evtchn_fifo_resume(void)
- 	event_array_pages = 0;
- }
- 
--static const struct evtchn_ops evtchn_ops_fifo = {
--	.max_channels      = evtchn_fifo_max_channels,
--	.nr_channels       = evtchn_fifo_nr_channels,
--	.setup             = evtchn_fifo_setup,
--	.bind_to_cpu       = evtchn_fifo_bind_to_cpu,
--	.clear_pending     = evtchn_fifo_clear_pending,
--	.set_pending       = evtchn_fifo_set_pending,
--	.is_pending        = evtchn_fifo_is_pending,
--	.test_and_set_mask = evtchn_fifo_test_and_set_mask,
--	.mask              = evtchn_fifo_mask,
--	.unmask            = evtchn_fifo_unmask,
--	.handle_events     = evtchn_fifo_handle_events,
--	.resume            = evtchn_fifo_resume,
--};
--
- static int evtchn_fifo_alloc_control_block(unsigned cpu)
- {
- 	void *control_block = NULL;
-@@ -422,19 +407,36 @@ static int evtchn_fifo_alloc_control_blo
- 	return ret;
- }
- 
--static int xen_evtchn_cpu_prepare(unsigned int cpu)
-+static int evtchn_fifo_percpu_init(unsigned int cpu)
- {
- 	if (!per_cpu(cpu_control_block, cpu))
- 		return evtchn_fifo_alloc_control_block(cpu);
- 	return 0;
- }
- 
--static int xen_evtchn_cpu_dead(unsigned int cpu)
-+static int evtchn_fifo_percpu_deinit(unsigned int cpu)
- {
- 	__evtchn_fifo_handle_events(cpu, true);
- 	return 0;
- }
- 
-+static const struct evtchn_ops evtchn_ops_fifo = {
-+	.max_channels      = evtchn_fifo_max_channels,
-+	.nr_channels       = evtchn_fifo_nr_channels,
-+	.setup             = evtchn_fifo_setup,
-+	.bind_to_cpu       = evtchn_fifo_bind_to_cpu,
-+	.clear_pending     = evtchn_fifo_clear_pending,
-+	.set_pending       = evtchn_fifo_set_pending,
-+	.is_pending        = evtchn_fifo_is_pending,
-+	.test_and_set_mask = evtchn_fifo_test_and_set_mask,
-+	.mask              = evtchn_fifo_mask,
-+	.unmask            = evtchn_fifo_unmask,
-+	.handle_events     = evtchn_fifo_handle_events,
-+	.resume            = evtchn_fifo_resume,
-+	.percpu_init       = evtchn_fifo_percpu_init,
-+	.percpu_deinit     = evtchn_fifo_percpu_deinit,
-+};
-+
- int __init xen_evtchn_fifo_init(void)
- {
- 	int cpu = smp_processor_id();
-@@ -448,9 +450,5 @@ int __init xen_evtchn_fifo_init(void)
- 
- 	evtchn_ops = &evtchn_ops_fifo;
- 
--	cpuhp_setup_state_nocalls(CPUHP_XEN_EVTCHN_PREPARE,
--				  "xen/evtchn:prepare",
--				  xen_evtchn_cpu_prepare, xen_evtchn_cpu_dead);
--
- 	return ret;
- }
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -69,6 +69,9 @@ struct evtchn_ops {
- 
- 	void (*handle_events)(unsigned cpu);
- 	void (*resume)(void);
-+
-+	int (*percpu_init)(unsigned int cpu);
-+	int (*percpu_deinit)(unsigned int cpu);
- };
- 
- extern const struct evtchn_ops *evtchn_ops;
+ 	/*
+ 	 * Look for a special _DSD property for the root port and if it
+ 	 * is set we know the hierarchy behind it supports D3 just fine.
 
 
