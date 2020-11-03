@@ -2,141 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F9E2A5A13
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F6A2A5A1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgKCW1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:27:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43570 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729966AbgKCW1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:27:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604442440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7WnNFtdh/XhSWs/5uRGkdqLklaY8lxiV5/cBXnNnAz4=;
-        b=AgqEseaRnfbFXI+ViBEY0jVRwr7rW6HNPn6OaiYV+9bElGwDKPWZ1kBR3X/e8eZCwHtw2E
-        g5rb8St8/MO6N0dgu0bDMt3ajSaNRFMjHCB4NQJrlJV2jwewWEw+dJ9ncJKPpu7C+qI5gr
-        4UhYa9XvtYIla7cq+Jlw3D9p8jDCbVQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-EHaD4s-SOFKDMck5QzoaPQ-1; Tue, 03 Nov 2020 17:27:18 -0500
-X-MC-Unique: EHaD4s-SOFKDMck5QzoaPQ-1
-Received: by mail-qv1-f69.google.com with SMTP id w1so11390492qvv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:27:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7WnNFtdh/XhSWs/5uRGkdqLklaY8lxiV5/cBXnNnAz4=;
-        b=RljI72fUxs5CL4RuLEepTJEgCIxFKcDPAD1ncNefGnlpsFWRdvUs52jiEtOAj3il2f
-         f8jXacFqXxhhHC0vGj/88jP1vakz8wfU5TMl7BjgnDaEmDb0TVIgzhamdtLnEW47c8Lq
-         uPJMvhzQW17PcJusf3dt33AU/XIFXePaUS90xVN/ZamvX9sOtafWUGSWuRQoNUo5/Igb
-         ah0utXeCq1x5n+dlug5nWNZGB1Ox3kOzqycx0Q2GNGOFqWWqxi6BAheYCQzHSV3gOEXv
-         4oBGduugtwx0S6jWNlu9UGbylf51OA1rdfiITj+Kn16UXRpQVFG/3XT/Dd3mwstfW75n
-         +bUw==
-X-Gm-Message-State: AOAM532pSjciTjbmKz2PwnsHepZ8lqzO1O4nSE3vgofJbE32zULrYFTJ
-        ziIcRB16I+s6Ss+qo7fYZdLHCj6JKbs7HJTjgvYngNFS8f5p+YfQ6kJHRqbUIrGAhUFMl+9JylE
-        OqrleWOr7AWuYO1TkFBWn5fGl
-X-Received: by 2002:ad4:5807:: with SMTP id dd7mr29352845qvb.35.1604442437878;
-        Tue, 03 Nov 2020 14:27:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzc70C60zkSdfPRst23C2RS+oSt5cbk//7/42r9EKzo6ozDdmjq2gYpA4ML73cF1vBY8EL8Aw==
-X-Received: by 2002:ad4:5807:: with SMTP id dd7mr29352821qvb.35.1604442437641;
-        Tue, 03 Nov 2020 14:27:17 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id q27sm169750qki.60.2020.11.03.14.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 14:27:16 -0800 (PST)
-Date:   Tue, 3 Nov 2020 17:27:15 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Peter Feiner <pfeiner@google.com>
-Subject: Re: [PATCH 5/5] KVM: selftests: Introduce the dirty log perf test
-Message-ID: <20201103222715.GM20600@xz-x1>
-References: <20201027233733.1484855-1-bgardon@google.com>
- <20201027233733.1484855-6-bgardon@google.com>
- <20201102222102.GE20600@xz-x1>
- <CANgfPd_sLtqFb3sdpBpd6FWLV4MWKHXH8TSzDbPthzVSQPMJ+A@mail.gmail.com>
- <20201103011205.GG20600@xz-x1>
- <CANgfPd-cWpZviQJj6p5qUDex8rve7N9kFK0Ym_Qt3DBU7QwqJQ@mail.gmail.com>
+        id S1730277AbgKCWcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:32:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729342AbgKCWcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:32:19 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66B68223C6;
+        Tue,  3 Nov 2020 22:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604442738;
+        bh=LVFmfl7SFRM115YRpJ+p2JJKc/6zzZ3EFVZTVi2Yqiw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=sptZfr8rJcsKmBnkii0A6TKNyefSYP2WXK4SaT01qTobFRe8FM34wyknauXgwNOZD
+         xrAGhSZ0Dx0zmzbv+syOwDsRhxZhKz/HRbICaztCIz0gXIJHj42UtJZg1P8wG+m5rT
+         c3/Y636UnmcPM2nt+zGltkOBYZ6vrR3XPY1sYsb8=
+Date:   Tue, 3 Nov 2020 16:32:16 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [RFC PATCH 1/3] PCI: Add the IDs for Etron EJ168 and EJ188
+Message-ID: <20201103223216.GA270921@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANgfPd-cWpZviQJj6p5qUDex8rve7N9kFK0Ym_Qt3DBU7QwqJQ@mail.gmail.com>
+In-Reply-To: <CAFBinCCNHXfit5FkkvgHSh4NdbunKBp3kw3okqTY6ohsK7zNzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 02:17:53PM -0800, Ben Gardon wrote:
-> On Mon, Nov 2, 2020 at 5:12 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > On Mon, Nov 02, 2020 at 03:56:05PM -0800, Ben Gardon wrote:
-> > > On Mon, Nov 2, 2020 at 2:21 PM Peter Xu <peterx@redhat.com> wrote:
-> > > >
-> > > > On Tue, Oct 27, 2020 at 04:37:33PM -0700, Ben Gardon wrote:
-> > > > > The dirty log perf test will time verious dirty logging operations
-> > > > > (enabling dirty logging, dirtying memory, getting the dirty log,
-> > > > > clearing the dirty log, and disabling dirty logging) in order to
-> > > > > quantify dirty logging performance. This test can be used to inform
-> > > > > future performance improvements to KVM's dirty logging infrastructure.
-> > > >
-> > > > One thing to mention is that there're a few patches in the kvm dirty ring
-> > > > series that reworked the dirty log test quite a bit (to add similar test for
-> > > > dirty ring).  For example:
-> > > >
-> > > >   https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
-> > > >
-> > > > Just a FYI if we're going to use separate test programs.  Merging this tests
-> > > > should benefit in many ways, of course (e.g., dirty ring may directly runnable
-> > > > with the perf tests too; so we can manually enable this "perf mode" as a new
-> > > > parameter in dirty_log_test, if possible?), however I don't know how hard -
-> > > > maybe there's some good reason to keep them separate...
-> > >
-> > > Absolutely, we definitely need a performance test for both modes. I'll
-> > > take a look at the patch you linked and see what it would take to
-> > > support dirty ring in this test.
-> >
-> > That would be highly appreciated.
-> >
-> > > Do you think that should be done in this series, or would it make
-> > > sense to add as a follow up?
-> >
-> > To me I slightly lean toward working upon those patches, since we should
-> > potentially share quite some code there (e.g., the clear dirty log cleanup
-> > seems necessary, or not easy to add the dirty ring tests anyway).  But current
-> > one is still ok to me at least as initial version - we should always be more
-> > tolerant for test cases, aren't we? :)
-> >
-> > So maybe we can wait for a 3rd opinion before you change the direction.
+On Wed, Oct 07, 2020 at 09:45:23PM +0200, Martin Blumenstingl wrote:
+> Hi Linus,
 > 
-> I took a look at your patches for dirty ring and dirty logging modes
-> and thought about this some more.
-> I think your patch to merge the get and clear dirty log tests is
-> great, and I can try to include it and build on it in my series as
-> well if desired. I don't think it would be hard to use the same mode
-> approach in the dirty log perf test. That said, I think it would be
-> easier to keep the functional test (dirty_log_test,
-> clear_dirty_log_test) separate from the performance test because the
-> dirty log validation is extra time and complexity not needed in the
-> dirty log perf test. I did try building them in the same test
-> initially, but it was really ugly. Perhaps a future refactoring could
-> merge them better.
+> On Wed, Oct 7, 2020 at 11:14 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
+> > <martin.blumenstingl@googlemail.com> wrote:
+> >
+> > > Add the vendor ID for Etron Technology, Inc. as well as the device IDs
+> > > for the two USB xHCI controllers EJ168 and EJ188.
+> > >
+> > > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> >
+> > (...)
+> >
+> > >  #define PCI_VENDOR_ID_REDHAT           0x1b36
+> > >
+> > > +#define PCI_VENDOR_ID_ETRON            0x1b6f
+> > > +#define PCI_DEVICE_ID_ETRON_EJ168      0x7023
+> > > +#define PCI_DEVICE_ID_ETRON_EJ188      0x7052
+> >
+> > If you're defining that here, I think it should also be
+> > removed in
+> > drivers/usb/host/xhci-pci.c
+> > by including this file instead?
+> you are absolutely right - I missed that part
+> I will change this in v2 - thanks for pointing it out!
 
-We can conditionally bypass the validation part.  Let's keep it separate for
-now - which is totally fine by me.  Actually I also don't want the dirty ring
-series to block your series since I still don't know when it'll land.  That'll
-be unnecessary depencency.  Thanks,
-
--- 
-Peter Xu
-
+And please mention the 2+ places these are used in the commit log (see
+the comment at the top of include/linux/pci_ids.h).
