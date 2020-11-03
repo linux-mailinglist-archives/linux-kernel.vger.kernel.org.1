@@ -2,116 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87222A5A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F9E2A5A13
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729946AbgKCW1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729342AbgKCW1R (ORCPT
+        id S1730232AbgKCW1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:27:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43570 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729966AbgKCW1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:27:17 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465F8C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:27:17 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b19so9286752pld.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3g/UXdTcvEaVpEpHCFk6DWCyxnMD9jfZ4IYbgmoi5Do=;
-        b=uq428C0MISj1+Yl3N5njjURIa/fb2YaK/JiA0AEh+acv8LHAXJ7l0yTVpCqIB6Qr3o
-         QRceQ69dCamC4YCnafirBV/b52//G3ZG/U3YJIABb7lP7NPRk4BPkds/NfGKod7xn/AU
-         pVbJDMR8Y/vSDADnZbMUgZFib80urJO1Sb+GncvjQKy9wsVQ3/SBq0jKbcDZ0EVCqCoV
-         QP53Q4L17XlBU1RROAaBjEw/LUqKoF5rQBM+ClVV6UlEChNhO+guriWVeNo7MkjxxVx9
-         xGA01uekR50k6+ccmbEr+cf/7zkpKcVdUrwRJhEF44xWzdGv3A4UN5QoKt1E2+IKv6J6
-         kjlg==
+        Tue, 3 Nov 2020 17:27:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604442440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7WnNFtdh/XhSWs/5uRGkdqLklaY8lxiV5/cBXnNnAz4=;
+        b=AgqEseaRnfbFXI+ViBEY0jVRwr7rW6HNPn6OaiYV+9bElGwDKPWZ1kBR3X/e8eZCwHtw2E
+        g5rb8St8/MO6N0dgu0bDMt3ajSaNRFMjHCB4NQJrlJV2jwewWEw+dJ9ncJKPpu7C+qI5gr
+        4UhYa9XvtYIla7cq+Jlw3D9p8jDCbVQ=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-EHaD4s-SOFKDMck5QzoaPQ-1; Tue, 03 Nov 2020 17:27:18 -0500
+X-MC-Unique: EHaD4s-SOFKDMck5QzoaPQ-1
+Received: by mail-qv1-f69.google.com with SMTP id w1so11390492qvv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:27:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3g/UXdTcvEaVpEpHCFk6DWCyxnMD9jfZ4IYbgmoi5Do=;
-        b=riaQHq467XWpMIpKElXExCidYBUniagttWiwpGXnflt31yDNrpstFC2BDDA81X3C1R
-         wYUw7JXBLC/gz9TUp/zA4PA6lyEaYf4rP3l1y31ihJBUux9XCpgl4QXYwQiw0LetD51c
-         cGucsLawgcFbILcXKaXRBZ2a0uo9tCMpSG7hWjn6jQcy5qpqPjEED32DN9qqi+gNqEOQ
-         1GnjXhW1wPVB9cPDMtaQEWeClqjDJTGN4vfj5BiVddFabWL66Qp/WMfuBU4E4Wm03Snl
-         Uvotv52AZHhrCyeuGgCafX8ZBV4BnmQbAX9QEEtCB+sdiGC2gq3RypinAq9Y2zWRnsQL
-         cd0w==
-X-Gm-Message-State: AOAM532chbqNfxuKcPzPQW8/EGumqd07juMl1z1hvgHLoENd73UKrTBY
-        jJeX2TBlwpJtrSqb5auAIdszEKiuJs+Y2Dw2x3w/Mg==
-X-Google-Smtp-Source: ABdhPJyzqR5QvlI4cfiyph6xzOX86tQ5A8IroUFqjIYkfjsSV1kYveibhPKE50Q3QeizC8CNh1NZNbCh9lgi7xuOhV0=
-X-Received: by 2002:a17:902:ee85:b029:d6:c43e:2321 with SMTP id
- a5-20020a170902ee85b02900d6c43e2321mr12767000pld.29.1604442436696; Tue, 03
- Nov 2020 14:27:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7WnNFtdh/XhSWs/5uRGkdqLklaY8lxiV5/cBXnNnAz4=;
+        b=RljI72fUxs5CL4RuLEepTJEgCIxFKcDPAD1ncNefGnlpsFWRdvUs52jiEtOAj3il2f
+         f8jXacFqXxhhHC0vGj/88jP1vakz8wfU5TMl7BjgnDaEmDb0TVIgzhamdtLnEW47c8Lq
+         uPJMvhzQW17PcJusf3dt33AU/XIFXePaUS90xVN/ZamvX9sOtafWUGSWuRQoNUo5/Igb
+         ah0utXeCq1x5n+dlug5nWNZGB1Ox3kOzqycx0Q2GNGOFqWWqxi6BAheYCQzHSV3gOEXv
+         4oBGduugtwx0S6jWNlu9UGbylf51OA1rdfiITj+Kn16UXRpQVFG/3XT/Dd3mwstfW75n
+         +bUw==
+X-Gm-Message-State: AOAM532pSjciTjbmKz2PwnsHepZ8lqzO1O4nSE3vgofJbE32zULrYFTJ
+        ziIcRB16I+s6Ss+qo7fYZdLHCj6JKbs7HJTjgvYngNFS8f5p+YfQ6kJHRqbUIrGAhUFMl+9JylE
+        OqrleWOr7AWuYO1TkFBWn5fGl
+X-Received: by 2002:ad4:5807:: with SMTP id dd7mr29352845qvb.35.1604442437878;
+        Tue, 03 Nov 2020 14:27:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzc70C60zkSdfPRst23C2RS+oSt5cbk//7/42r9EKzo6ozDdmjq2gYpA4ML73cF1vBY8EL8Aw==
+X-Received: by 2002:ad4:5807:: with SMTP id dd7mr29352821qvb.35.1604442437641;
+        Tue, 03 Nov 2020 14:27:17 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
+        by smtp.gmail.com with ESMTPSA id q27sm169750qki.60.2020.11.03.14.27.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 14:27:16 -0800 (PST)
+Date:   Tue, 3 Nov 2020 17:27:15 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Subject: Re: [PATCH 5/5] KVM: selftests: Introduce the dirty log perf test
+Message-ID: <20201103222715.GM20600@xz-x1>
+References: <20201027233733.1484855-1-bgardon@google.com>
+ <20201027233733.1484855-6-bgardon@google.com>
+ <20201102222102.GE20600@xz-x1>
+ <CANgfPd_sLtqFb3sdpBpd6FWLV4MWKHXH8TSzDbPthzVSQPMJ+A@mail.gmail.com>
+ <20201103011205.GG20600@xz-x1>
+ <CANgfPd-cWpZviQJj6p5qUDex8rve7N9kFK0Ym_Qt3DBU7QwqJQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201022012106.1875129-1-ndesaulniers@google.com> <20201022014448.mcx5n7unf7kkka3o@google.com>
-In-Reply-To: <20201022014448.mcx5n7unf7kkka3o@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 3 Nov 2020 14:27:05 -0800
-Message-ID: <CAKwvOdmLN5BWAh35z2LyHvQ_P4pgyCaFohOphpgXUmMAehnV_g@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: implement support for DWARF5
-To:     Fangrui Song <maskray@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANgfPd-cWpZviQJj6p5qUDex8rve7N9kFK0Ym_Qt3DBU7QwqJQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 6:44 PM Fangrui Song <maskray@google.com> wrote:
->
-> On 2020-10-21, 'Nick Desaulniers' via Clang Built Linux wrote:
-> >DWARF5 is the latest standard of the DWARF debug info format.
+On Tue, Nov 03, 2020 at 02:17:53PM -0800, Ben Gardon wrote:
+> On Mon, Nov 2, 2020 at 5:12 PM Peter Xu <peterx@redhat.com> wrote:
 > >
-> >Feature detection of DWARF5 is onerous, especially given that we've
-> >removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> >support. Further -gdwarf-X where X is an unsupported value doesn't
-> >produce an error in $(CC). GNU `as` only recently gained support for
-> >specifying -gdwarf-5.
+> > On Mon, Nov 02, 2020 at 03:56:05PM -0800, Ben Gardon wrote:
+> > > On Mon, Nov 2, 2020 at 2:21 PM Peter Xu <peterx@redhat.com> wrote:
+> > > >
+> > > > On Tue, Oct 27, 2020 at 04:37:33PM -0700, Ben Gardon wrote:
+> > > > > The dirty log perf test will time verious dirty logging operations
+> > > > > (enabling dirty logging, dirtying memory, getting the dirty log,
+> > > > > clearing the dirty log, and disabling dirty logging) in order to
+> > > > > quantify dirty logging performance. This test can be used to inform
+> > > > > future performance improvements to KVM's dirty logging infrastructure.
+> > > >
+> > > > One thing to mention is that there're a few patches in the kvm dirty ring
+> > > > series that reworked the dirty log test quite a bit (to add similar test for
+> > > > dirty ring).  For example:
+> > > >
+> > > >   https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
+> > > >
+> > > > Just a FYI if we're going to use separate test programs.  Merging this tests
+> > > > should benefit in many ways, of course (e.g., dirty ring may directly runnable
+> > > > with the perf tests too; so we can manually enable this "perf mode" as a new
+> > > > parameter in dirty_log_test, if possible?), however I don't know how hard -
+> > > > maybe there's some good reason to keep them separate...
+> > >
+> > > Absolutely, we definitely need a performance test for both modes. I'll
+> > > take a look at the patch you linked and see what it would take to
+> > > support dirty ring in this test.
 > >
-> >The DWARF version of a binary can be validated with:
->
-> To be more correct: this is just the version number of the .debug_info section.
-> Other sections can use different version numbers.
-> (For example, GNU as still does not support version 5 .debug_line)
+> > That would be highly appreciated.
+> >
+> > > Do you think that should be done in this series, or would it make
+> > > sense to add as a follow up?
+> >
+> > To me I slightly lean toward working upon those patches, since we should
+> > potentially share quite some code there (e.g., the clear dirty log cleanup
+> > seems necessary, or not easy to add the dirty ring tests anyway).  But current
+> > one is still ok to me at least as initial version - we should always be more
+> > tolerant for test cases, aren't we? :)
+> >
+> > So maybe we can wait for a 3rd opinion before you change the direction.
+> 
+> I took a look at your patches for dirty ring and dirty logging modes
+> and thought about this some more.
+> I think your patch to merge the get and clear dirty log tests is
+> great, and I can try to include it and build on it in my series as
+> well if desired. I don't think it would be hard to use the same mode
+> approach in the dirty log perf test. That said, I think it would be
+> easier to keep the functional test (dirty_log_test,
+> clear_dirty_log_test) separate from the performance test because the
+> dirty log validation is extra time and complexity not needed in the
+> dirty log perf test. I did try building them in the same test
+> initially, but it was really ugly. Perhaps a future refactoring could
+> merge them better.
 
-How do you recommend we validate that then?
-
->
-> >$ llvm-dwarfdump vmlinux | head -n 5 | grep version
-> >or
-> >$ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
-> >diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> >index cd14444bf600..0382808ef9fe 100644
-> >--- a/include/asm-generic/vmlinux.lds.h
-> >+++ b/include/asm-generic/vmlinux.lds.h
-> >@@ -828,7 +828,11 @@
-> >               .debug_types    0 : { *(.debug_types) }                 \
-> >               /* DWARF 5 */                                           \
-> >               .debug_macro    0 : { *(.debug_macro) }                 \
-> >-              .debug_addr     0 : { *(.debug_addr) }
-> >+              .debug_addr     0 : { *(.debug_addr) }                  \
-> >+              .debug_line_str 0 : { *(.debug_line_str) }              \
-> >+              .debug_loclists 0 : { *(.debug_loclists) }              \
-> >+              .debug_rnglists 0 : { *(.debug_rnglists) }              \
-> >+              .debug_str_offsets 0 : { *(.debug_str_offsets) }
->
-> Consider adding .debug_names for the accelerator table.
-> It is the DWARF v5 version of .debug_pub{names,types} (which are mentioned
-> a few lines above).
-
-I hadn't seen that section produced in my limited testing.  Being a
-fan of TDD, I kind of would like to see the linker warn on orphan
-section placement, then add it to the list, as I did with the above.
-Do you have more info on when or how .debug_pub* can be produced?
-
-Thanks for the rest of the feedback, I'll incorporate it into v2.
+We can conditionally bypass the validation part.  Let's keep it separate for
+now - which is totally fine by me.  Actually I also don't want the dirty ring
+series to block your series since I still don't know when it'll land.  That'll
+be unnecessary depencency.  Thanks,
 
 -- 
-Thanks,
-~Nick Desaulniers
+Peter Xu
+
