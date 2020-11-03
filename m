@@ -2,66 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E0E2A48C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EF62A48BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgKCO4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:56:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgKCOzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:55:04 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7190223EA;
-        Tue,  3 Nov 2020 14:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604415303;
-        bh=qbfxBieownkCAG2H1cJlnxfBKecOOT4MnsnXDzLjJVM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pxuPDZtAN55F4/4h6zD3Qp92igX5zZS4nw+S5r0H3/0axJ6X9EsyQlxa2By5Q6b8G
-         uzyQK38K5xCGmEVS1d4aWKHfRfygAzcLseTAlcLwW1NFLFHzrPGmQep1kyO3gCTGok
-         7j2aE8ojk6xUcePovUoZ8kJQKrEpdwPxcS5bvxro=
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Valentin.Schneider@arm.com, Anshuman.Khandual@arm.com,
-        patches@amperecomputing.com
-Subject: Re: [PATCH v3] arm64: NUMA: Kconfig: Increase NODES_SHIFT to 4
-Date:   Tue,  3 Nov 2020 14:54:52 +0000
-Message-Id: <160439588576.1151017.825552867492752498.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201030173050.1182876-1-vanshikonda@os.amperecomputing.com>
-References: <20201030173050.1182876-1-vanshikonda@os.amperecomputing.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728162AbgKCO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:56:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27954 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728087AbgKCO4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:56:19 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3EXvAX083657;
+        Tue, 3 Nov 2020 09:55:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=wwBNzfpsSPmSsQz65LMWGCrtvQLcfVtSMBGkdkyC3MU=;
+ b=s7nq2whjfZtOMzbXNJ5esd2sqRQzcwitui9hWfGHEGsxsz3kE+qs87i2x7ZM01Q7ad4w
+ cSugHQDzcgBBgyoluEQ91obYvuxBNsxvxBwLBVDXrFormrI2vbv+Nm8DGmKJIC0NZx+5
+ 22VlYNamyuIKoEdlmijwgA41n3uUFFUBhACzex09TBU5Ym6rJxpZNqOcw0ICvvc+soL9
+ +97CIe8mqtDsFr/T9DSlyZzGwFdawAzcR+5duStjceYPLyFkxgvYwbJ8kNkbJYKd5Yqo
+ E8fxVBi9R6xFZaN0puPf+hisuuHksxNVHz8TB5eyjnMEOL/YOXmQLbl+WiDqoXsWKlyk Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34jyyta3px-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 09:55:26 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A3EZ27b091221;
+        Tue, 3 Nov 2020 09:55:22 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34jyyta3js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 09:55:22 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A3En4u0011411;
+        Tue, 3 Nov 2020 14:55:14 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 34h0f6sq5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 14:55:14 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A3EtBKw64946674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Nov 2020 14:55:11 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B902FA4064;
+        Tue,  3 Nov 2020 14:55:11 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4477FA4054;
+        Tue,  3 Nov 2020 14:55:04 +0000 (GMT)
+Received: from sig-9-65-255-16.ibm.com (unknown [9.65.255.16])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  3 Nov 2020 14:55:04 +0000 (GMT)
+Message-ID: <506372c01decf59bc2ef39c92a86ba7f6f2ae81b.camel@linux.ibm.com>
+Subject: Re: [PATCH v8 1/4] powerpc: Refactor kexec functions to move arch
+ independent code to drivers/of
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        bauerman@linux.ibm.com, robh@kernel.org,
+        gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
+        balajib@linux.microsoft.com
+Date:   Tue, 03 Nov 2020 09:55:03 -0500
+In-Reply-To: <20201030174429.29893-2-nramas@linux.microsoft.com>
+References: <20201030174429.29893-1-nramas@linux.microsoft.com>
+         <20201030174429.29893-2-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 suspectscore=11 priorityscore=1501
+ adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 10:30:50 -0700, Vanshidhar Konda wrote:
-> The current arm64 default config limits max NUMA nodes available on
-> system to 4 (NODES_SHIFT = 2). Today's arm64 systems can reach or
-> exceed 16 NUMA nodes. To accomodate current hardware and to fit
-> NODES_SHIFT within page flags on arm64, increase NODES_SHIFT to 4.
+Hi Lakshmi,
+
+On Fri, 2020-10-30 at 10:44 -0700, Lakshmi Ramasubramanian wrote:
+> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
+> carrying forward the IMA measurement logs on kexec for powerpc do not
+> have architecture specific code, but they are currently defined for
+> powerpc only.
+
+^ ... logs on kexec, do not have architecture specific code, but are
+currently limited to powerpc.
+
 > 
-> Discussion on v1 of the patch:
-> https://lore.kernel.org/linux-arm-kernel/20201020173409.1266576-1-vanshikonda@os.amperecomputing.com/
+> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
+> the IMA log entry from the device tree and free the memory reserved
+> for the log. These functions need to be defined even if the current
+> kernel does not support carrying forward IMA log across kexec since
+> the previous kernel could have supported that and therefore the current
+> kernel needs to free the allocation.
+
+The first paragraph describes these function as "handle carrying
+forward the IMA measurement logs on kexec", while this paragraph says
+"are used to remove the IMA log entry".  Consider listing all of the
+functions being moved in the first paragrah, then "handle carrying
+forward" could be expanded to "carrying ... and removing".
+
 > 
-> [...]
+> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
+> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in
+> drivers/of/fdt.c. A later patch in this series will use these functions
+> to free the allocation, if any, made by the previous kernel for ARM64.
 
-Applied to arm64 (for-next/fixes), thanks!
+- ^Define -> Move
+- Three functions are being moved, but only two are listed. 
+"do_get_kexec_buffer" is not mentioned.
+- Don't refer to a later patch, but explain the purpose here.  For
+example, "Move ... , making them accessible to other archs."
 
-[1/1] arm64: NUMA: Kconfig: Increase NODES_SHIFT to 4
-      https://git.kernel.org/arm64/c/2a13c13b39a8
+> 
+> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
+> "linux,ima-kexec-buffer", that is added to the DTB to hold
+> the address and the size of the memory reserved to carry
+> the IMA measurement log.
 
-Cheers,
--- 
-Will
+The above two paragraphs describe renaming a function and defining a
+chosen node.  These two preparatory changes should be made,
+independently of each other, prior to this patch.  This patch should be
+limited to moving code, with the subject line truncated to "move arch
+independent code to drivers/of".
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+thanks,
+
+Mimi
+
