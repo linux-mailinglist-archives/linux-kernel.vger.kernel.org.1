@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E3D2A4D55
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BC42A4D73
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgKCRn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:43:28 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:34232 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729002AbgKCRn1 (ORCPT
+        id S1728970AbgKCRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:47:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727706AbgKCRrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:43:27 -0500
-Received: by mail-il1-f198.google.com with SMTP id w13so13460538ilj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:43:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3PbhNGIds7XOrD/2VjJDM9R8/om7poBeAPU/xJajmXA=;
-        b=PcUDOXsVtbHD5T+eGw9P/QtzwKcT83hfKCEzsZAo/JiPTySfWZIKl8f83uMIjAvQqn
-         rLgXlb2bBbJTcjoLKQj7ubrVhh3r4uXU9EyE9kr5ZfAfwuzjG1O1NtkvNyNgbQ6ejOBt
-         PbQR0xRz2/LVn7xsLEX2vRGnyIgHnyrfOV3hTGZat6MskBxNG7BDmX1z2euWUZd98OLz
-         27EPm0BwR9DQ7Wf9ZeBxLnIdBrbZ7dS2OmxT8sIyfvsUsR8JcLPagV5cK+ORB0k1dQ6U
-         ghhMnuTjd/VSXlNVaVslM1izURYG4QfhyPMJE2mezy+qCyldnEJKh0fQH7m8rLn4cgC0
-         k1sA==
-X-Gm-Message-State: AOAM5302wE/B9UM4V/QGWn56lka0sXp5ZATYMjJn/pJci9TBGdq37LL2
-        oCkwWhREYxcqmesJs9/800jv3aogpSobZkbRgUFJHpVbL7jx
-X-Google-Smtp-Source: ABdhPJweEsMdDkQm/7IWQ1kYD0ypZOoNQxN1yi13kh7ih2M2CSqeiPGWmGr0ILEoDeLgcCIH4tZjhEFNEHKSV+ln1DZkDR3hI9Sp
+        Tue, 3 Nov 2020 12:47:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604425674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WgRi4ilnni8Y9F1p1LpA7qgU7oPkykAPZ77JfJ1gB88=;
+        b=JydzMmaQMY1j/c8CgWv0wXl/qNl6bcHdDG638ak0TVRKlqyggnku3X+moG/d83qYvtNVlb
+        xYBXAKsbyQIZxxQN2uEuPWdh9zvEWXrL0k+lgYOkqXW3cVpAW/fivYHxLw0Wp/xd4lP4vy
+        5EnIXKiv5VI2cAxaLDpu5pdRY+GY7x0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-ZxEiFgO3O8KveyTxj8puLg-1; Tue, 03 Nov 2020 12:47:50 -0500
+X-MC-Unique: ZxEiFgO3O8KveyTxj8puLg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C10F7186DD33;
+        Tue,  3 Nov 2020 17:47:48 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.6])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B5876CE53;
+        Tue,  3 Nov 2020 17:47:46 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  3 Nov 2020 18:47:48 +0100 (CET)
+Date:   Tue, 3 Nov 2020 18:47:44 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Mark Mossberg <mark.mossberg@gmail.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        hpa@zytor.com, jannh@google.com, kyin@redhat.com
+Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
+ error message
+Message-ID: <20201103174744.GB23992@redhat.com>
+References: <20201002042915.403558-1-mark.mossberg@gmail.com>
+ <20201103125034.GA30391@redhat.com>
+ <20201103171537.GC4111@zn.tnic>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cbb5:: with SMTP id v21mr8929106jap.80.1604425406103;
- Tue, 03 Nov 2020 09:43:26 -0800 (PST)
-Date:   Tue, 03 Nov 2020 09:43:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000664beb05b33766bd@google.com>
-Subject: general protection fault in __fget_files
-From:   syzbot <syzbot+4bbd040ddada1c7801f4@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103171537.GC4111@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/03, Borislav Petkov wrote:
+>
+> On Tue, Nov 03, 2020 at 01:50:34PM +0100, Oleg Nesterov wrote:
+> > Another problem is that show_opcodes() makes no sense if user_mode(regs)
+> > and tsk is not current.
+>
+> Because if not current, we would access *some* user address space but
+> not the one to which regs belong to?
 
-syzbot found the following issue on:
+Yes, because if not current, copy_from_user() will access the current's
+user address space at address = foreign process's regs->ip.
 
-HEAD commit:    b49976d8 Add linux-next specific files for 20201102
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=158bbb82500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe87d079ac78e2be
-dashboard link: https://syzkaller.appspot.com/bug?extid=4bbd040ddada1c7801f4
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ef32500000
+> > Try "echo t > /proc/sysrq-trigger".
+>
+> What am I looking for?
+>
+> I see a bunch of:
+>
+> [   37.622896] Code: Unable to access opcode bytes at RIP <user address>
 
-The issue was bisected to:
+this means that foreign_regs->ip is not mmapped,
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+> and three Code: lines with opcode bytes, as expected:
+>
+> [   37.148693] Code: 11 0d 00 48 89 c6 4c 89 ef e8 98 07 00 00 48 83 f8 ff 0f 84 3e 02 00 00 48 3b 05 b7 28 0d 00 48 89 c3 0f 83 b5 00 00 00 48 8b <0d> e7 10 0d 00 48 83 f8 0d 76 13 48 b8 28 75 6e 72 65 61 63 68 48
 
-    lockdep: Fix lockdep recursion
+I'd say this is NOT expected and adds the unnecessary confusion.
+./scripts/decodecode reports
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14fb9c3a500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16fb9c3a500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12fb9c3a500000
+	...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4bbd040ddada1c7801f4@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+	Code starting with the faulting instruction
+	===========================================
+	   0:	0d e7 10 0d 00       	or     $0xd10e7,%eax
+	   5:	48 83 f8 0d          	cmp    $0xd,%rax
+	   9:	76 13                	jbe    0x1e
+	   b:	48 b8 28 75 6e 72 65 	movabs $0x68636165726e7528,%rax
+	  12:	61 63 68
+	  15:	48                   	rex.W
 
-general protection fault, probably for non-canonical address 0xdffffc000000000b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000058-0x000000000000005f]
-CPU: 1 PID: 8824 Comm: io_uring-sq Not tainted 5.10.0-rc1-next-20201102-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:fcheck_files include/linux/fdtable.h:99 [inline]
-RIP: 0010:__fget_files+0xef/0x400 fs/file.c:829
-Code: db 74 1d e8 43 0d ac ff 0f b6 1d c1 82 14 0b 31 ff 89 de e8 43 05 ac ff 84 db 0f 84 d0 01 00 00 e8 26 0d ac ff 48 8b 44 24 10 <80> 38 00 0f 85 c3 02 00 00 48 8b 44 24 08 48 8b 68 58 48 89 e8 48
-RSP: 0018:ffffc900023dfb28 EFLAGS: 00010293
-RAX: dffffc000000000b RBX: 0000000000000001 RCX: ffffffff81c4157a
-RDX: ffff88814193b500 RSI: ffffffff81c4139a RDI: 0000000000000005
-RBP: ffffc900023dfd20 R08: 0000000000000001 R09: ffffffff8ebb4667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000003 R15: ffffc900023dfd30
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f42329d7db8 CR3: 000000001b67b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __io_file_get fs/io_uring.c:2770 [inline]
- io_file_get+0x454/0x8b0 fs/io_uring.c:6295
- io_req_set_file fs/io_uring.c:6304 [inline]
- io_init_req fs/io_uring.c:6724 [inline]
- io_submit_sqes+0xf1c/0x25f0 fs/io_uring.c:6774
- __io_sq_thread fs/io_uring.c:6921 [inline]
- io_sq_thread+0x4d2/0x1700 fs/io_uring.c:6990
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace 71851a1d0e522d2e ]---
-RIP: 0010:fcheck_files include/linux/fdtable.h:99 [inline]
-RIP: 0010:__fget_files+0xef/0x400 fs/file.c:829
-Code: db 74 1d e8 43 0d ac ff 0f b6 1d c1 82 14 0b 31 ff 89 de e8 43 05 ac ff 84 db 0f 84 d0 01 00 00 e8 26 0d ac ff 48 8b 44 24 10 <80> 38 00 0f 85 c3 02 00 00 48 8b 44 24 08 48 8b 68 58 48 89 e8 48
-RSP: 0018:ffffc900023dfb28 EFLAGS: 00010293
-RAX: dffffc000000000b RBX: 0000000000000001 RCX: ffffffff81c4157a
-RDX: ffff88814193b500 RSI: ffffffff81c4139a RDI: 0000000000000005
-RBP: ffffc900023dfd20 R08: 0000000000000001 R09: ffffffff8ebb4667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000003 R15: ffffc900023dfd30
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdc225dc7c CR3: 000000000b08e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+and this is because foreign_regs->ip happens to be a valid address in current->mm.
 
+> I'm thinking this should not use the atomic variant if it can get called
+> in !atomic context too.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+For what?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Oleg.
+
