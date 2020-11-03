@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569952A516F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5113C2A5173
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbgKCUkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
+        id S1730280AbgKCUk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730255AbgKCUkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:45 -0500
+        id S1728157AbgKCUks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B3992236F;
-        Tue,  3 Nov 2020 20:40:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A16222226;
+        Tue,  3 Nov 2020 20:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436045;
-        bh=bsmJsPbH0u3/Zqb1jRX4ZEi7lf7A2VEA92xYPAEa1JI=;
+        s=default; t=1604436047;
+        bh=8hGHDXMWSq6XTetTsQUdib7ikANqPhCCabylkUeWxl8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dCJY2Fdfz525KyxvCrupulAvMpiypTNJH5UnzEgikyDm8vp3MABjRHcOqIFUF81yS
-         OrwzLwZh/ZIQStGMZ0saHKWaLCBWDe7go73UHOU7LCEdj191hQE8QPbxsITppXHG9b
-         CNg+u7rDsFhPRFE2TVxMBb/7WDJXn6hunZbjM63Q=
+        b=yM9k6e/MozJu5x958QVG/G2NbWyjDr3xvXtWLUM4a1S60+IIoqmM8bp0MReZL6srM
+         cZM5LdaYLdvMoK0W7rjk2tbB/ZhsDD9GVSLBepjb/GpaFFG3MgW7Yy03SrIG5qLpFX
+         s9BNnK0nDyQTZQ2jGkkBnT2FUnXhqybRoGjU31u0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 079/391] drm/brige/megachips: Add checking if ge_b850v3_lvds_init() is working correctly
-Date:   Tue,  3 Nov 2020 21:32:10 +0100
-Message-Id: <20201103203352.452333518@linuxfoundation.org>
+Subject: [PATCH 5.9 080/391] ASoC: SOF: fix a runtime pm issue in SOF when HDMI codec doesnt work
+Date:   Tue,  3 Nov 2020 21:32:11 +0100
+Message-Id: <20201103203352.505472614@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,57 +47,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit f688a345f0d7a6df4dd2aeca8e4f3c05e123a0ee ]
+[ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
 
-If ge_b850v3_lvds_init() does not allocate memory for ge_b850v3_lvds_ptr,
-then a null pointer dereference is accessed.
+When hda_codec_probe() doesn't initialize audio component, we disable
+the codec and keep going. However,the resources are not released. The
+child_count of SOF device is increased in snd_hdac_ext_bus_device_init
+but is not decrease in error case, so SOF can't get suspended.
 
-The patch adds checking of the return value of ge_b850v3_lvds_init().
+snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
+gets a error. Now copy this behavior to release resources and decrease
+SOF device child_count to release SOF device.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200819143756.30626-1-lutovinova@ispras.ru
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-index 6200f12a37e69..ab8174831cf40 100644
---- a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-+++ b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-@@ -302,8 +302,12 @@ static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
- 				       const struct i2c_device_id *id)
- {
- 	struct device *dev = &stdp4028_i2c->dev;
-+	int ret;
-+
-+	ret = ge_b850v3_lvds_init(dev);
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 2c5c451fa19d7..c475955c6eeba 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+ 		if (!hdev->bus->audio_component) {
+ 			dev_dbg(sdev->dev,
+ 				"iDisp hw present but no driver\n");
+-			return -ENOENT;
++			goto error;
+ 		}
+ 		hda_priv->need_display_power = true;
+ 	}
+@@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+ 		 * other return codes without modification
+ 		 */
+ 		if (ret == 0)
+-			ret = -ENOENT;
++			goto error;
+ 	}
  
--	ge_b850v3_lvds_init(dev);
-+	if (ret)
-+		return ret;
- 
- 	ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
- 	i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
-@@ -361,8 +365,12 @@ static int stdp2690_ge_b850v3_fw_probe(struct i2c_client *stdp2690_i2c,
- 				       const struct i2c_device_id *id)
- {
- 	struct device *dev = &stdp2690_i2c->dev;
-+	int ret;
-+
-+	ret = ge_b850v3_lvds_init(dev);
- 
--	ge_b850v3_lvds_init(dev);
-+	if (ret)
-+		return ret;
- 
- 	ge_b850v3_lvds_ptr->stdp2690_i2c = stdp2690_i2c;
- 	i2c_set_clientdata(stdp2690_i2c, ge_b850v3_lvds_ptr);
+ 	return ret;
 -- 
 2.27.0
 
