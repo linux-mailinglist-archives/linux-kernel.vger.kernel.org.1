@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333102A56FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E822A5710
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387667AbgKCVcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:32:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S1731348AbgKCVdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:33:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730581AbgKCVcd (ORCPT
+        with ESMTP id S1733285AbgKCVdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:32:33 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51737C0613D1;
-        Tue,  3 Nov 2020 13:32:33 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id p4so1879282plr.1;
-        Tue, 03 Nov 2020 13:32:33 -0800 (PST)
+        Tue, 3 Nov 2020 16:33:40 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3106EC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 13:33:39 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id f140so16174425ybg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:33:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0Rflj5FeVFQvvR71X1g+Z0EkePu6R/sIbeOUdmV31Zo=;
-        b=SM5hm/s/rUbBqvOtec7WpIsvEOMJPkG934FXjlJcEmBErrV8eJeFro3qH2XeaSIzZy
-         vN6NJlmKIWtxmUfYzOWd6k36JMaF/+tRiMDavvHwJlYQvvtyJQzNo4WMp3RSmR1xSGwY
-         rSTkSeyQeId5RJaJS1LCnpo134QaLxaYNvv1RqScfZFO0kkHebOHk+6gosud/2dzZEer
-         nldUB9sQt32LyCSeC5Dd+bwYHUpzqGXRfHbk6W8hXYc3nGw/ANWmO6h6LnBumcLVAgon
-         /OZB2GUSWXzAwz/qL9wOS1WGPtO/wnulhCS2HfhNr1U9noCdzBTDCRdqBLTqIATtdxLc
-         UlwQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fk/nsYSwR82is1IswQNV9CoWpeZ/r1DixUE7u1e345M=;
+        b=uAp3NG5SStd5TJYHFpvgeRo6jxiQkTV1fy3ZqwB/OC2ncEnkE5F1TfV26AJnr2TGu1
+         oVbv9u3HHp5JTchQzRweXIWHM+22I8bv5EDjfj3eQerG5GvxvL7S7PfiSDRrS/rkV/dH
+         ol6sbPWdsFEjfnjhx0ktOf4lNchgK/uLVo6OV2IyDAaS95uFKS2xEHoJTQ6uLfSnJowt
+         UDwjqqyzvuxfu7nG7r6Rs2m9HvoQu4qr7SRIIljKPh3yEDT7o/ROVmL/dCNNasitwNHE
+         Noth4qSTj68Nz4vImzESO78uoC61JJEB5j/vf4XzPy0ma+IeDYj4i3xveELFGlNnQMMo
+         oF4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0Rflj5FeVFQvvR71X1g+Z0EkePu6R/sIbeOUdmV31Zo=;
-        b=BanFM4P0+zvHr7hYDg09Sc/Ia+w3IFNOBaTfs3/fn+ox2G0RCffyj+bcqsacZCofxR
-         m642saJuyKsmZZoUyRXlVlBXbaQlrDBO/iNmZQnM58hN024VqtT3FHniUc393squSX79
-         KUidpShc9h6eLIqXDHu7fW9LKVLIPL1pCTkoRhQLtafQXSzcy2hm1OfU9g2FbAKsx0oB
-         i5JSMVCpskvej2x/Ls0yvCRF/Dlr9JWEW3MyJitNXiUOCo3AxsQvPhYdtxSMGCRQcuu/
-         W4AlPCnjnwl9OzwFu5/7u7hiKfKLqakiYm/UFhiOrvSTaRN7ESf9mJ7cQJDRVYrHECTe
-         +tvQ==
-X-Gm-Message-State: AOAM530klED2bEnlp7+KJnhm1cc64yxGRhbD9Q1vwizfEaUzkcCFfQ6K
-        vvYaMzAn+NaqQub5NMxHE3c=
-X-Google-Smtp-Source: ABdhPJxfymqYguZC9tMMm4xPTSJq8KyM1kPmTukDkHGwybfrB40JI6+eLDF4l0XvD9SuZiCqxA26YA==
-X-Received: by 2002:a17:902:aa97:b029:d5:ac09:c5ec with SMTP id d23-20020a170902aa97b02900d5ac09c5ecmr26100575plr.78.1604439152426;
-        Tue, 03 Nov 2020 13:32:32 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id a10sm91190pjq.17.2020.11.03.13.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 13:32:31 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 3 Nov 2020 13:32:28 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201103213228.GB1631979@google.com>
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz>
- <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
- <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
- <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com>
- <20201103093550.GE21990@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fk/nsYSwR82is1IswQNV9CoWpeZ/r1DixUE7u1e345M=;
+        b=Xa0A1te11podVXsx8REnbLNcSM2NfYxkv5JOlmHkGWRtQxetekT45mhQ3MZC9HPR2X
+         OE4pW2S/ZLqwCATsFqR4ShZ6+yCY/JetG9K0lkxl5looV1FVtF0J1IcswlaMo0Fx32Di
+         ajxA3wxsUOtQrr3A+epBfr+eCs1qwRqa3xnC5xR7ybpRYULtD0W8Hj14l/rYp0TmZbVm
+         TcULofJefFkwu/usPoaehqoY3FJc0snCVi3VkrvfZpYzGuNziPHfi86xcLD3IUZlBGtE
+         oW0+bwDIRiTIt2UYHFG/IvjYIfsrmPyi5pg/PcOtkxrO9TEJ+uFVfbNknbhfKl/zqCJj
+         hbyA==
+X-Gm-Message-State: AOAM532ALg0DUzlE97Lacw2jlF/2YXi2nAcs047lEtGFodynZD+JBAYo
+        HOLIhrEpneOST1grveTbkDR/idlJ+r8SGZ3B8e4=
+X-Google-Smtp-Source: ABdhPJxjJ4eULrh9pdjvcTZZtuVavMohH+EUECQWWFsj5FLZnHGq3psx56m+cLX6NQhUCZen1W3Voa9jB98PfD/+w4E=
+X-Received: by 2002:a25:d441:: with SMTP id m62mr32045484ybf.422.1604439218468;
+ Tue, 03 Nov 2020 13:33:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103093550.GE21990@dhcp22.suse.cz>
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+In-Reply-To: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 3 Nov 2020 22:33:27 +0100
+Message-ID: <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Joe Perches <joe@perches.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:35:50AM +0100, Michal Hocko wrote:
-> On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
-> [...]
-> > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
-> > which in addition to sending a kill signal would also reap the
-> > victim's mm in the context of the caller? Maybe having some code will
-> > get the discussion moving forward?
-> 
-> Yeah, having a code, even preliminary, might help here. This definitely
-> needs a good to go from process management people as that proper is land
-> full of surprises...
+Hi Joe,
 
-Just to remind a idea I suggested to reuse existing concept
+On Tue, Nov 3, 2020 at 7:29 PM Joe Perches <joe@perches.com> wrote:
+>
+> Now that the clang minimum supported version is > 10.0, enable the
+> commented out conditional reformatting key:value lines in the file.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>
+> Hey Miguel.
+>
+> I don't use this, but on its face it seems a reasonable change
+> if the commented out key:value lines are correct.
 
-    fd = pidfd_open(victim process)
-    fdatasync(fd);
-    close(fd);
+It is, yeah; however, the concern is that there may be developers
+running an old clang-format from their distro (i.e. not using it for
+compiling the kernel). We need to compare the functionality advantage
+vs. the inconvenience of installing a current LLVM. The best would be
+to ask whoever is using it right now, but there is no easy way to do
+that -- many will only notice when the change is actually pushed :-)
 
+So far, I have avoided upgrading the requirement until clang-format
+could match the kernel style even better (i.e. so that when the
+upgrade happens, there is a reason for it). Also, the configuration
+can be overridden in subfolders, thus a maintainer can push things
+forward in a subsystem meanwhile.
+
+Cheers,
+Miguel
