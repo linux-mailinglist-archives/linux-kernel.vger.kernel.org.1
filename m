@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B01C2A4B9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC63A2A4BA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgKCQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:33:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S1728437AbgKCQgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:36:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgKCQdz (ORCPT
+        with ESMTP id S1726212AbgKCQgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:33:55 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF4EC0613D1;
-        Tue,  3 Nov 2020 08:33:55 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id 11so183239ljf.2;
-        Tue, 03 Nov 2020 08:33:55 -0800 (PST)
+        Tue, 3 Nov 2020 11:36:17 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ACEC0613D1;
+        Tue,  3 Nov 2020 08:36:17 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id h62so16501070oth.9;
+        Tue, 03 Nov 2020 08:36:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=34FUKrlTw4RJE4wc96wmEi0mDFfiWN/1D02cQfL3FNE=;
-        b=giZMOFQupVXi4K8d+56dUwXWx2KJi/G0pjlx6IE7XMUpydIvXs2MYInQ0Ch7BbKoEd
-         wuHG8OZHot108jjcg+u+o1HOTvxFBF3rhW7V6nqUrCaLBs2JX8t1GBRQSY8+V+UQr495
-         /ZiyBknZ2z4e9z5/D2Ogj32eMCZxFIzvg0V1YkheHV6YTD+E5RDKG0fmYTTlefqOko6e
-         X9yB1h8/qHRnnD555Ln9ugKJ4lEuL24xPtZazUuIJqHf+gaJBNmTudBQGctuArfrWNzd
-         lPdvevY7KOdDX8zEhaz8feX5D4ZRUHpEzYSwp8AQ4yb9Z7dcpiM0gRvG3pgDfUiRyyuV
-         zFFQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qOjuB9yQXP7C641wWPryW22kq2BalJ5tPu+GIQifkY4=;
+        b=hmqVKyWvHooVnj/4kZHvh/H6joHado2yvZt1Djo+bE5z44+ra3hDj5WQzOPf5NOnAJ
+         roMvmZojrXqwwoDXGBCvpz7eDXZ2NpukfXypP4LzjxMKVJi2QwTsZ9GQmL5szBHZCf3u
+         jmUkKOSPFRk07A+cj8gHnAjGP6PHN3rZUgS6dZngsqKKU6rn9iiw/9ccfRK2/dqjlK4r
+         DW3SU0yZcWy2p/JJVTVmARsZd1W/dj8ghYelMQ4NiqBz5LHQo4PchTajUI1GNoQD4O2f
+         HclFIz+iX/2LqJqe7iwv7i1krd/lEzCiFAnqGmV8qcO1LyJyE4DowT3mdyBSIN6iICO6
+         rUeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=34FUKrlTw4RJE4wc96wmEi0mDFfiWN/1D02cQfL3FNE=;
-        b=DX1b2zGnfdKX4/fBvTR3FtsOEoL5kXw+/tm1E0S+XeTwiwOL4SdCzfy7UoAoE2LX0y
-         ui8UR9C5BQXDLOIT37gMzKEKNZGLYzhRYK5/epIO0yCryNKLdm89crGxl73CX2BXoxQg
-         kaMIAoQad4zvDwD6yedC0bfrYc+PcCEodrSNc+H3JpnfUJF7N9f7QN1PV90cOfnpGzQn
-         xcMMbFXae45OgYo914mtAPCEg8ETfmjPeEYbbBv5Z9LpxHkOkb6kZtYS5IYhkf6g/rbU
-         bV2zquZC91hS6oDb/bch2t24Qe12BJToc5/WJF2etVzUjaLH8sGOLybD4SKuntxoBgXg
-         jh6Q==
-X-Gm-Message-State: AOAM530yt6MaO+V3jv92DxDRpl/WcRCghSR3jT8uMja+PUytIbWgXjgP
-        U1ucqw94lbefy2I7LXx/s8o=
-X-Google-Smtp-Source: ABdhPJw6kSH2j7rA0jUgk/horOzGYR0HLbfG4aE0at50yXgqVRdZBk6kiE3eyyY7oINDu5j7L4CGXQ==
-X-Received: by 2002:a2e:9449:: with SMTP id o9mr7844019ljh.457.1604421233930;
-        Tue, 03 Nov 2020 08:33:53 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id y27sm4477343ljm.74.2020.11.03.08.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 08:33:53 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 3 Nov 2020 17:33:50 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        willy@infradead.org
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201103163350.GA10665@pc636>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103154723.GA1310511@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qOjuB9yQXP7C641wWPryW22kq2BalJ5tPu+GIQifkY4=;
+        b=EqTk5m8+XSXG31QSRnK5EOFZrcPnlLPNj1gwcXjW8FlctaD4p5DQkDvZHhSrceO83s
+         kEUnKqm9cLHuf9LPX86OnlZsWmkmS6oXwtrDOFDBR2B9AcFk1kKeX9n7XhM8OQMvgx7I
+         c1lOwPy88sbkKlofSLEYBCifPt09ztlNe1uK5nPT/6q1qnREVDTnjUOUNeh8cgHGPyJR
+         613nbNJuLgwYQ1i35z/bgGmYEnjedAQlj0R3pR0bLNSUz7fIOg/SPazNGgQj/sBVS8mu
+         H0Zz0kuwvnBVuzMDx9PMmkOPj6R1bC1En6ELm0+kJSR8QS19+d8Pq9c81W83QKWUg10s
+         wBHw==
+X-Gm-Message-State: AOAM530T8qsOfArirh5DXNNekF1zkMafUNhXWqlSfdb1Ow0uGBD5YysM
+        tfr7bf6PFgSo6Rmfe1V8YEhX5EmRXQfOQNJztRI=
+X-Google-Smtp-Source: ABdhPJwYrtXU7g2SczGLnlQDB9IF5CshbaxR9gpK1/W5xkG0eIDW5YcvMSsB4SQnWRBA7VjWHf2lqwzEA+gELnMEozY=
+X-Received: by 2002:a9d:2487:: with SMTP id z7mr15277413ota.133.1604421376593;
+ Tue, 03 Nov 2020 08:36:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103154723.GA1310511@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201030202727.1053534-1-cezarsa@gmail.com> <9140ef65-f76d-4bf1-b211-e88c101a5461@ssi.bg>
+In-Reply-To: <9140ef65-f76d-4bf1-b211-e88c101a5461@ssi.bg>
+From:   =?UTF-8?Q?Cezar_S=C3=A1_Espinola?= <cezarsa@gmail.com>
+Date:   Tue, 3 Nov 2020 13:36:05 -0300
+Message-ID: <CA++F93jp=6mfVm9brGOMeBE0EKoJhg4EAuN04jeBnXKsC-rTag@mail.gmail.com>
+Subject: Re: [PATCH RFC] ipvs: add genetlink cmd to dump all services and destinations
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        "open list:IPVS" <netdev@vger.kernel.org>,
+        "open list:IPVS" <lvs-devel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:47:23AM -0500, Joel Fernandes wrote:
-> On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > The current memmory-allocation interface presents to following
-> > difficulties that this patch is designed to overcome:
-> > 
-> > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-> >    complain about violation("BUG: Invalid wait context") of the
-> >    nesting rules. It does the raw_spinlock vs. spinlock nesting
-> >    checks, i.e. it is not legal to acquire a spinlock_t while
-> >    holding a raw_spinlock_t.
-> > 
-> >    Internally the kfree_rcu() uses raw_spinlock_t whereas the
-> >    "page allocator" internally deals with spinlock_t to access
-> >    to its zones. The code also can be broken from higher level
-> >    of view:
-> >    <snip>
-> >        raw_spin_lock(&some_lock);
-> >        kfree_rcu(some_pointer, some_field_offset);
-> >    <snip>
-> > 
-> > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-> >    is converted into sleepable variant. Invoking the page allocator from
-> >    atomic contexts leads to "BUG: scheduling while atomic".
-> > 
-> > c) call_rcu() is invoked from raw atomic context and kfree_rcu()
-> >    and kvfree_rcu() are expected to be called from atomic raw context
-> >    as well.
-> > 
-> > Move out a page allocation from contexts which trigger kvfree_rcu()
-> > function to the separate worker. When a k[v]free_rcu() per-cpu page
-> > cache is empty a fallback mechanism is used and a special job is
-> > scheduled to refill the per-cpu cache.
-> 
-> Looks good, still reviewing here. BTW just for my education, I was wondering
-> about Thomas's email:
-> https://lkml.org/lkml/2020/8/11/939
-> 
-> If slab allocations in pure raw-atomic context on RT is not allowed or
-> recommended, should kfree_rcu() be allowed?
->
-Thanks for reviewing, Joel :)
+Hi,
 
-The decision was made that we need to support kfree_rcu() from "real atomic contexts",
-to align with how it used to be before. We can go and just convert our local locks
-to the spinlock_t variant but that was not Paul goal, it can be that some users need
-kfree_rcu() for raw atomics.
+> > +     if (ctx->idx_svc =3D=3D ctx->start_svc && ctx->last_svc !=3D svc)
+> > +             return 0;
+> > +
+> > +     if (ctx->idx_svc > ctx->start_svc) {
+> > +             if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
+> > +                     ctx->idx_svc--;
+> > +                     return -EMSGSIZE;
+> > +             }
+> > +             ctx->last_svc =3D svc;
+> > +             ctx->start_dest =3D 0;
+> > +     }
+> > +
+> > +     ctx->idx_dest =3D 0;
+> > +     list_for_each_entry(dest, &svc->destinations, n_list) {
+> > +             if (++ctx->idx_dest <=3D ctx->start_dest)
+> > +                     continue;
+> > +             if (ip_vs_genl_dump_dest(skb, dest, cb) < 0) {
+> > +                     ctx->idx_dest--;
+>
+>         At this point idx_svc is incremented and we
+> stop at the middle of dest list, so we need ctx->idx_svc-- too.
+>
+>         And now what happens if all dests can not fit in a packet?
+> We should start next packet with the same svc? And then
+> user space should merge the dests when multiple packets
+> start with same service?
+
+My (maybe not so great) idea was to avoid repeating the svc on each
+packet. It's possible for a packet to start with a destination and
+user space must consider then as belonging to the last svc received on
+the previous packet. The comparison "ctx->last_svc !=3D svc" was
+intended to ensure that a packet only starts with destinations if the
+current service is the same as the svc we sent on the previous packet.
 
 >
-> slab can have same issue right? If per-cpu cache is drained, it has to
-> allocate page from buddy allocator and there's no GFP flag to tell it about
-> context where alloc is happening from.
-> 
-Sounds like that. Apart of that, it might turn out soon that we or somebody
-else will rise a question one more time about something GFP_RAW or GFP_NOLOCKS.
-So who knows..
-
+>         The main points are:
 >
-> Or are we saying that we want to support kfree on RT from raw atomic atomic
-> context, even though kmalloc is not supported? I hate to bring up this
-> elephant in the room, but since I am a part of the people maintaining this
-> code, I believe I would rather set some rules than supporting unsupported
-> usages. :-\ (Once I know what is supported and what isn't that is). If indeed
-> raw atomic kfree_rcu() is a bogus use case because of -RT, then we ought to
-> put a giant warning than supporting it :-(.
-> 
-We discussed it several times, the conclusion was that we need to support 
-kfree_rcu() from raw contexts. At least that was a clear signal from Paul 
-to me. I think, if we obtain the preemtable(), so it becomes versatile, we
-can drop the patch that is in question later on in the future.
+> - the virtual services are in hash table, their order is
+> not important, user space can sort them
+>
+> - order of dests in a service is important for the schedulers
+>
+> - every packet should contain info for svc, so that we can
+> properly add dests to the right svc
 
+Thanks, I will rework the patch with these points in mind. It does
+sound safer to ensure every packet starts with service information.
+
+> > +nla_put_failure:
+> > +     mutex_unlock(&__ip_vs_mutex);
+> > +     cb->args[0] =3D ctx.idx_svc;
+> > +     cb->args[1] =3D ctx.idx_dest;
+> > +     cb->args[2] =3D (long)ctx.last_svc;
+>
+>         last_svc is used out of __ip_vs_mutex region,
+> so it is not safe. We can get a reference count but this
+> is bad if user space blocks.
+
+I thought it would be relatively safe to store a pointer to the last
+svc since I would only use it for pointer comparison and never
+dereferencing it. But in retrospect it does look unsafe and fragile
+and could probably lead to errors especially if services are modified
+during a dump causing the stored pointer to point to a different
+service.
+
+>         But even if we use just indexes it should be ok.
+> If multiple agents are used in parallel it is not our
+> problem. What can happen is that we can send duplicates
+> or to skip entries (both svcs and dests). It is impossible
+> to keep any kind of references to current entries or even
+> keys to lookup them if another agent can remove them.
+
+Got it. I noticed this behavior while writing this patch and even
+created a few crude validation scripts running parallel agents and
+checking the diff in [1].
+
+[1] - https://github.com/cezarsa/ipvsadm-validate/blob/37ebd39785b1e835c6d4=
+b5c58aaca7be60d5e194/test.sh#L86-L87
+
+Thanks a lot for the review,
 --
-Vlad Rezki
+Cezar S=C3=A1 Espinola
