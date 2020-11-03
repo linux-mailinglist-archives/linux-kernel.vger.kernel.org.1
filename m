@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F8D2A5264
+	by mail.lfdr.de (Postfix) with ESMTP id 856F42A5265
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731564AbgKCUt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:49:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
+        id S1731574AbgKCUte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:49:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730350AbgKCUtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:12 -0500
+        id S1731515AbgKCUtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E627F20719;
-        Tue,  3 Nov 2020 20:49:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF55720719;
+        Tue,  3 Nov 2020 20:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436551;
-        bh=jBdtUyidvY7/tvRSy+a9k2ubj3BOvxHKOAruaIWL+qc=;
+        s=default; t=1604436558;
+        bh=HePFGk/7Ox50I1nfd/BRrMQxdtgsuScb9PBwP6v/v98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IaAtMUPAfeKaYQSzLRQHcmjUL6U53ytPShxHW74qPIERcwUH/Ah1u3oCmxe72MSzx
-         w1cnRUAuj/sVdrvL9K2Jh5Febx6KBuOReK6yTzTwqR+LsWrrqej+yy8wEiQglSJv0l
-         5EpEsNc1oaDKRHdrdwL4ShOR6G9l4GVXASRP+BHw=
+        b=k2RydcmgQiKC+m8dt6f/Ow8a4gXZwhz/dvl3XAozqq0KJNXgPeTDlxs+NpKIVmedc
+         qDb7oe5vajKleQbmS5CYdLakvhq6rWKy1ajT5FlTxofVUFuU+ePTVGp1nviTlwv/hi
+         v0kUcFSdSqgYm5ozQfI+Ah3GJuyyyA7PDpiF4MUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.9 298/391] gfs2: Make sure we dont miss any delayed withdraws
-Date:   Tue,  3 Nov 2020 21:35:49 +0100
-Message-Id: <20201103203407.188542811@linuxfoundation.org>
+        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>
+Subject: [PATCH 5.9 300/391] NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE
+Date:   Tue,  3 Nov 2020 21:35:51 +0100
+Message-Id: <20201103203407.327284940@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -41,175 +42,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Benjamin Coddington <bcodding@redhat.com>
 
-commit 5a61ae1402f15276ee4e003e198aab816958ca69 upstream.
+commit b4868b44c5628995fdd8ef2e24dda73cef963a75 upstream.
 
-Commit ca399c96e96e changes gfs2_log_flush to not withdraw the
-filesystem while holding the log flush lock, but it fails to check if
-the filesystem needs to be withdrawn once the log flush lock has been
-released.  Likewise, commit f05b86db314d depends on gfs2_log_flush to
-trigger for delayed withdraws.  Add that and clean up the code flow
-somewhat.
+Since commit 0e0cb35b417f ("NFSv4: Handle NFS4ERR_OLD_STATEID in
+CLOSE/OPEN_DOWNGRADE") the following livelock may occur if a CLOSE races
+with the update of the nfs_state:
 
-In gfs2_put_super, add a check for delayed withdraws that have been
-missed to prevent these kinds of bugs in the future.
+Process 1           Process 2           Server
+=========           =========           ========
+ OPEN file
+                    OPEN file
+                                        Reply OPEN (1)
+                                        Reply OPEN (2)
+ Update state (1)
+ CLOSE file (1)
+                                        Reply OLD_STATEID (1)
+ CLOSE file (2)
+                                        Reply CLOSE (-1)
+                    Update state (2)
+                    wait for state change
+ OPEN file
+                    wake
+ CLOSE file
+ OPEN file
+                    wake
+ CLOSE file
+ ...
+                    ...
 
-Fixes: ca399c96e96e ("gfs2: flesh out delayed withdraw for gfs2_log_flush")
-Fixes: f05b86db314d ("gfs2: Prepare to withdraw as soon as an IO error occurs in log write")
-Cc: stable@vger.kernel.org # v5.7+: 462582b99b607: gfs2: add some much needed cleanup for log flushes that fail
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+We can avoid this situation by not issuing an immediate retry with a bumped
+seqid when CLOSE/OPEN_DOWNGRADE receives NFS4ERR_OLD_STATEID.  Instead,
+take the same approach used by OPEN and wait at least 5 seconds for
+outstanding stateid updates to complete if we can detect that we're out of
+sequence.
+
+Note that after this change it is still possible (though unlikely) that
+CLOSE waits a full 5 seconds, bumps the seqid, and retries -- and that
+attempt races with another OPEN at the same time.  In order to avoid this
+race (which would result in the livelock), update
+nfs_need_update_open_stateid() to handle the case where:
+ - the state is NFS_OPEN_STATE, and
+ - the stateid doesn't match the current open stateid
+
+Finally, nfs_need_update_open_stateid() is modified to be idempotent and
+renamed to better suit the purpose of signaling that the stateid passed
+is the next stateid in sequence.
+
+Fixes: 0e0cb35b417f ("NFSv4: Handle NFS4ERR_OLD_STATEID in CLOSE/OPEN_DOWNGRADE")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/log.c   |   61 ++++++++++++++++++++++++++++----------------------------
- fs/gfs2/super.c |    2 +
- fs/gfs2/util.h  |   10 +++++++++
- 3 files changed, 43 insertions(+), 30 deletions(-)
+ fs/nfs/nfs4_fs.h   |    8 +++++
+ fs/nfs/nfs4proc.c  |   81 ++++++++++++++++++++++++++++++-----------------------
+ fs/nfs/nfs4trace.h |    1 
+ 3 files changed, 56 insertions(+), 34 deletions(-)
 
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -954,10 +954,8 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 		goto out;
- 
- 	/* Log might have been flushed while we waited for the flush lock */
--	if (gl && !test_bit(GLF_LFLUSH, &gl->gl_flags)) {
--		up_write(&sdp->sd_log_flush_lock);
--		return;
--	}
-+	if (gl && !test_bit(GLF_LFLUSH, &gl->gl_flags))
-+		goto out;
- 	trace_gfs2_log_flush(sdp, 1, flags);
- 
- 	if (flags & GFS2_LOG_HEAD_FLUSH_SHUTDOWN)
-@@ -971,25 +969,25 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 		if (unlikely (state == SFS_FROZEN))
- 			if (gfs2_assert_withdraw_delayed(sdp,
- 			       !tr->tr_num_buf_new && !tr->tr_num_databuf_new))
--				goto out;
-+				goto out_withdraw;
- 	}
- 
- 	if (unlikely(state == SFS_FROZEN))
- 		if (gfs2_assert_withdraw_delayed(sdp, !sdp->sd_log_num_revoke))
--			goto out;
-+			goto out_withdraw;
- 	if (gfs2_assert_withdraw_delayed(sdp,
- 			sdp->sd_log_num_revoke == sdp->sd_log_committed_revoke))
--		goto out;
-+		goto out_withdraw;
- 
- 	gfs2_ordered_write(sdp);
- 	if (gfs2_withdrawn(sdp))
--		goto out;
-+		goto out_withdraw;
- 	lops_before_commit(sdp, tr);
- 	if (gfs2_withdrawn(sdp))
--		goto out;
-+		goto out_withdraw;
- 	gfs2_log_submit_bio(&sdp->sd_log_bio, REQ_OP_WRITE);
- 	if (gfs2_withdrawn(sdp))
--		goto out;
-+		goto out_withdraw;
- 
- 	if (sdp->sd_log_head != sdp->sd_log_flush_head) {
- 		log_flush_wait(sdp);
-@@ -1000,7 +998,7 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 		log_write_header(sdp, flags);
- 	}
- 	if (gfs2_withdrawn(sdp))
--		goto out;
-+		goto out_withdraw;
- 	lops_after_commit(sdp, tr);
- 
- 	gfs2_log_lock(sdp);
-@@ -1020,7 +1018,7 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 		if (!sdp->sd_log_idle) {
- 			empty_ail1_list(sdp);
- 			if (gfs2_withdrawn(sdp))
--				goto out;
-+				goto out_withdraw;
- 			atomic_dec(&sdp->sd_log_blks_free); /* Adjust for unreserved buffer */
- 			trace_gfs2_log_blocks(sdp, -1);
- 			log_write_header(sdp, flags);
-@@ -1033,27 +1031,30 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 			atomic_set(&sdp->sd_freeze_state, SFS_FROZEN);
- 	}
- 
--out:
--	if (gfs2_withdrawn(sdp)) {
--		trans_drain(tr);
--		/**
--		 * If the tr_list is empty, we're withdrawing during a log
--		 * flush that targets a transaction, but the transaction was
--		 * never queued onto any of the ail lists. Here we add it to
--		 * ail1 just so that ail_drain() will find and free it.
--		 */
--		spin_lock(&sdp->sd_ail_lock);
--		if (tr && list_empty(&tr->tr_list))
--			list_add(&tr->tr_list, &sdp->sd_ail1_list);
--		spin_unlock(&sdp->sd_ail_lock);
--		ail_drain(sdp); /* frees all transactions */
--		tr = NULL;
--	}
--
-+out_end:
- 	trace_gfs2_log_flush(sdp, 0, flags);
-+out:
- 	up_write(&sdp->sd_log_flush_lock);
--
- 	gfs2_trans_free(sdp, tr);
-+	if (gfs2_withdrawing(sdp))
-+		gfs2_withdraw(sdp);
-+	return;
-+
-+out_withdraw:
-+	trans_drain(tr);
-+	/**
-+	 * If the tr_list is empty, we're withdrawing during a log
-+	 * flush that targets a transaction, but the transaction was
-+	 * never queued onto any of the ail lists. Here we add it to
-+	 * ail1 just so that ail_drain() will find and free it.
-+	 */
-+	spin_lock(&sdp->sd_ail_lock);
-+	if (tr && list_empty(&tr->tr_list))
-+		list_add(&tr->tr_list, &sdp->sd_ail1_list);
-+	spin_unlock(&sdp->sd_ail_lock);
-+	ail_drain(sdp); /* frees all transactions */
-+	tr = NULL;
-+	goto out_end;
+--- a/fs/nfs/nfs4_fs.h
++++ b/fs/nfs/nfs4_fs.h
+@@ -599,6 +599,14 @@ static inline bool nfs4_stateid_is_newer
+ 	return (s32)(be32_to_cpu(s1->seqid) - be32_to_cpu(s2->seqid)) > 0;
  }
  
- /**
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -702,6 +702,8 @@ restart:
- 		if (error)
- 			gfs2_io_error(sdp);
- 	}
-+	WARN_ON(gfs2_withdrawing(sdp));
-+
- 	/*  At this point, we're through modifying the disk  */
- 
- 	/*  Release stuff  */
---- a/fs/gfs2/util.h
-+++ b/fs/gfs2/util.h
-@@ -205,6 +205,16 @@ static inline bool gfs2_withdrawn(struct
- 		test_bit(SDF_WITHDRAWING, &sdp->sd_flags);
- }
- 
-+/**
-+ * gfs2_withdrawing - check if a withdraw is pending
-+ * @sdp: the superblock
-+ */
-+static inline bool gfs2_withdrawing(struct gfs2_sbd *sdp)
++static inline bool nfs4_stateid_is_next(const nfs4_stateid *s1, const nfs4_stateid *s2)
 +{
-+	return test_bit(SDF_WITHDRAWING, &sdp->sd_flags) &&
-+	       !test_bit(SDF_WITHDRAWN, &sdp->sd_flags);
++	u32 seq1 = be32_to_cpu(s1->seqid);
++	u32 seq2 = be32_to_cpu(s2->seqid);
++
++	return seq2 == seq1 + 1U || (seq2 == 1U && seq1 == 0xffffffffU);
 +}
 +
- #define gfs2_tune_get(sdp, field) \
- gfs2_tune_get_i(&(sdp)->sd_tune, &(sdp)->sd_tune.field)
+ static inline bool nfs4_stateid_match_or_older(const nfs4_stateid *dst, const nfs4_stateid *src)
+ {
+ 	return nfs4_stateid_match_other(dst, src) &&
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -1547,19 +1547,6 @@ static void nfs_state_log_update_open_st
+ 		wake_up_all(&state->waitq);
+ }
  
+-static void nfs_state_log_out_of_order_open_stateid(struct nfs4_state *state,
+-		const nfs4_stateid *stateid)
+-{
+-	u32 state_seqid = be32_to_cpu(state->open_stateid.seqid);
+-	u32 stateid_seqid = be32_to_cpu(stateid->seqid);
+-
+-	if (stateid_seqid == state_seqid + 1U ||
+-	    (stateid_seqid == 1U && state_seqid == 0xffffffffU))
+-		nfs_state_log_update_open_stateid(state);
+-	else
+-		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
+-}
+-
+ static void nfs_test_and_clear_all_open_stateid(struct nfs4_state *state)
+ {
+ 	struct nfs_client *clp = state->owner->so_server->nfs_client;
+@@ -1585,21 +1572,19 @@ static void nfs_test_and_clear_all_open_
+  * i.e. The stateid seqids have to be initialised to 1, and
+  * are then incremented on every state transition.
+  */
+-static bool nfs_need_update_open_stateid(struct nfs4_state *state,
++static bool nfs_stateid_is_sequential(struct nfs4_state *state,
+ 		const nfs4_stateid *stateid)
+ {
+-	if (test_bit(NFS_OPEN_STATE, &state->flags) == 0 ||
+-	    !nfs4_stateid_match_other(stateid, &state->open_stateid)) {
++	if (test_bit(NFS_OPEN_STATE, &state->flags)) {
++		/* The common case - we're updating to a new sequence number */
++		if (nfs4_stateid_match_other(stateid, &state->open_stateid) &&
++			nfs4_stateid_is_next(&state->open_stateid, stateid)) {
++			return true;
++		}
++	} else {
++		/* This is the first OPEN in this generation */
+ 		if (stateid->seqid == cpu_to_be32(1))
+-			nfs_state_log_update_open_stateid(state);
+-		else
+-			set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
+-		return true;
+-	}
+-
+-	if (nfs4_stateid_is_newer(stateid, &state->open_stateid)) {
+-		nfs_state_log_out_of_order_open_stateid(state, stateid);
+-		return true;
++			return true;
+ 	}
+ 	return false;
+ }
+@@ -1673,16 +1658,16 @@ static void nfs_set_open_stateid_locked(
+ 	int status = 0;
+ 	for (;;) {
+ 
+-		if (!nfs_need_update_open_stateid(state, stateid))
+-			return;
+-		if (!test_bit(NFS_STATE_CHANGE_WAIT, &state->flags))
++		if (nfs_stateid_is_sequential(state, stateid))
+ 			break;
++
+ 		if (status)
+ 			break;
+ 		/* Rely on seqids for serialisation with NFSv4.0 */
+ 		if (!nfs4_has_session(NFS_SERVER(state->inode)->nfs_client))
+ 			break;
+ 
++		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
+ 		prepare_to_wait(&state->waitq, &wait, TASK_KILLABLE);
+ 		/*
+ 		 * Ensure we process the state changes in the same order
+@@ -1693,6 +1678,7 @@ static void nfs_set_open_stateid_locked(
+ 		spin_unlock(&state->owner->so_lock);
+ 		rcu_read_unlock();
+ 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
++
+ 		if (!signal_pending(current)) {
+ 			if (schedule_timeout(5*HZ) == 0)
+ 				status = -EAGAIN;
+@@ -3435,7 +3421,8 @@ static bool nfs4_refresh_open_old_statei
+ 	__be32 seqid_open;
+ 	u32 dst_seqid;
+ 	bool ret;
+-	int seq;
++	int seq, status = -EAGAIN;
++	DEFINE_WAIT(wait);
+ 
+ 	for (;;) {
+ 		ret = false;
+@@ -3447,15 +3434,41 @@ static bool nfs4_refresh_open_old_statei
+ 				continue;
+ 			break;
+ 		}
++
++		write_seqlock(&state->seqlock);
+ 		seqid_open = state->open_stateid.seqid;
+-		if (read_seqretry(&state->seqlock, seq))
+-			continue;
+ 
+ 		dst_seqid = be32_to_cpu(dst->seqid);
+-		if ((s32)(dst_seqid - be32_to_cpu(seqid_open)) >= 0)
+-			dst->seqid = cpu_to_be32(dst_seqid + 1);
+-		else
++
++		/* Did another OPEN bump the state's seqid?  try again: */
++		if ((s32)(be32_to_cpu(seqid_open) - dst_seqid) > 0) {
+ 			dst->seqid = seqid_open;
++			write_sequnlock(&state->seqlock);
++			ret = true;
++			break;
++		}
++
++		/* server says we're behind but we haven't seen the update yet */
++		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
++		prepare_to_wait(&state->waitq, &wait, TASK_KILLABLE);
++		write_sequnlock(&state->seqlock);
++		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
++
++		if (signal_pending(current))
++			status = -EINTR;
++		else
++			if (schedule_timeout(5*HZ) != 0)
++				status = 0;
++
++		finish_wait(&state->waitq, &wait);
++
++		if (!status)
++			continue;
++		if (status == -EINTR)
++			break;
++
++		/* we slept the whole 5 seconds, we must have lost a seqid */
++		dst->seqid = cpu_to_be32(dst_seqid + 1);
+ 		ret = true;
+ 		break;
+ 	}
+--- a/fs/nfs/nfs4trace.h
++++ b/fs/nfs/nfs4trace.h
+@@ -1511,6 +1511,7 @@ DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_set
+ DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_delegreturn);
+ DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_open_stateid_update);
+ DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_open_stateid_update_wait);
++DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_close_stateid_update_wait);
+ 
+ DECLARE_EVENT_CLASS(nfs4_getattr_event,
+ 		TP_PROTO(
 
 
