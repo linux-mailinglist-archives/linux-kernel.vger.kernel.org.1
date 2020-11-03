@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0312A51B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3E42A51B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730627AbgKCUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:43:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
+        id S1730695AbgKCUnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:43:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730671AbgKCUnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:43:03 -0500
+        id S1730615AbgKCUnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:43:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA4D5223BD;
-        Tue,  3 Nov 2020 20:43:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11A79223BD;
+        Tue,  3 Nov 2020 20:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436182;
-        bh=XK+JwLNwFBnzw1dOvd4diA5ROaKZzxkW1o9TjvYVOuI=;
+        s=default; t=1604436191;
+        bh=ZHdm73npPxc3HkiRS9j9pQeYPuOlOCW9dZ/VgnwzAm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sqDEasQqmOeb0V/hbuVcAQWr8tOPG5uTS/UevVe93+G36/eGgChx6qQNReSMmm/m
-         rVxZKeOppKkJC0tMTYmOvq/pXgdj0nJuEBkwnVrvp1GsbCqisWZTxxnyD3E3SlRZk5
-         zOhhOeU3/lW5jlWBfuaq1HGz/bEX/asfSkf1eVx4=
+        b=oI/hHmwuL7B193K6rBShgZ2D0hnNw7zpCWgrgkBvLFwsWE5nlZm3ggrgaV6AbbZ+v
+         RFht4cqv0B5353/ATOPBh7ZfVdSMc2AF+e8VZWf2+qTIGVdFaZfVeBOQRmkvYrDDrl
+         0s3FF7Qec7rqLxYAnPJfi5iR7vuT9ZbVdJFDq7g0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 101/391] drm: exynos: fix common struct sg_table related issues
-Date:   Tue,  3 Nov 2020 21:32:32 +0100
-Message-Id: <20201103203353.652537234@linuxfoundation.org>
+        Steven Price <steven.price@arm.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 104/391] drm: panfrost: fix common struct sg_table related issues
+Date:   Tue,  3 Nov 2020 21:32:35 +0100
+Message-Id: <20201103203353.843935062@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -46,7 +46,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-[ Upstream commit 84404614167b829f7b58189cd24b6c0c74897171 ]
+[ Upstream commit 34a4e66faf8b22c8409cbd46839ba5e488b1e6a9 ]
 
 The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
 returns the number of the created entries in the DMA address space.
@@ -72,42 +72,55 @@ nents and orig_nents entries, making the code robust, easier to follow
 and copy/paste safe.
 
 Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Acked-by : Inki Dae <inki.dae@samsung.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_g2d.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gem.c | 4 ++--
+ drivers/gpu/drm/panfrost/panfrost_mmu.c | 7 +++----
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-index 03be314271811..967a5cdc120e3 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-@@ -395,8 +395,8 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
- 		return;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+index 33355dd302f11..1a6cea0e0bd74 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gem.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+@@ -41,8 +41,8 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
  
- out:
--	dma_unmap_sg(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt->sgl,
--			g2d_userptr->sgt->nents, DMA_BIDIRECTIONAL);
-+	dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
-+			  DMA_BIDIRECTIONAL, 0);
+ 		for (i = 0; i < n_sgt; i++) {
+ 			if (bo->sgts[i].sgl) {
+-				dma_unmap_sg(pfdev->dev, bo->sgts[i].sgl,
+-					     bo->sgts[i].nents, DMA_BIDIRECTIONAL);
++				dma_unmap_sgtable(pfdev->dev, &bo->sgts[i],
++						  DMA_BIDIRECTIONAL, 0);
+ 				sg_free_table(&bo->sgts[i]);
+ 			}
+ 		}
+diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+index e8f7b11352d27..776448c527ea9 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -253,7 +253,7 @@ static int mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_mmu *mmu,
+ 	struct io_pgtable_ops *ops = mmu->pgtbl_ops;
+ 	u64 start_iova = iova;
  
- 	pages = frame_vector_pages(g2d_userptr->vec);
- 	if (!IS_ERR(pages)) {
-@@ -511,10 +511,10 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
+-	for_each_sg(sgt->sgl, sgl, sgt->nents, count) {
++	for_each_sgtable_dma_sg(sgt, sgl, count) {
+ 		unsigned long paddr = sg_dma_address(sgl);
+ 		size_t len = sg_dma_len(sgl);
  
- 	g2d_userptr->sgt = sgt;
+@@ -517,10 +517,9 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
+ 	if (ret)
+ 		goto err_pages;
  
--	if (!dma_map_sg(to_dma_dev(g2d->drm_dev), sgt->sgl, sgt->nents,
--				DMA_BIDIRECTIONAL)) {
-+	ret = dma_map_sgtable(to_dma_dev(g2d->drm_dev), sgt,
-+			      DMA_BIDIRECTIONAL, 0);
-+	if (ret) {
- 		DRM_DEV_ERROR(g2d->dev, "failed to map sgt with dma region.\n");
--		ret = -ENOMEM;
- 		goto err_sg_free_table;
- 	}
+-	if (!dma_map_sg(pfdev->dev, sgt->sgl, sgt->nents, DMA_BIDIRECTIONAL)) {
+-		ret = -EINVAL;
++	ret = dma_map_sgtable(pfdev->dev, sgt, DMA_BIDIRECTIONAL, 0);
++	if (ret)
+ 		goto err_map;
+-	}
  
+ 	mmu_map_sg(pfdev, bomapping->mmu, addr,
+ 		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
 -- 
 2.27.0
 
