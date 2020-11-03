@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147B92A5248
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4682A524C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731546AbgKCUsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
+        id S1731569AbgKCUsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731521AbgKCUsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:33 -0500
+        id S1731525AbgKCUsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2E7D22404;
-        Tue,  3 Nov 2020 20:48:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AD2B2242A;
+        Tue,  3 Nov 2020 20:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436512;
-        bh=XpVGLq94+KKOiYrxhWttVWeedqtom3bFNP9WqutPqzg=;
+        s=default; t=1604436514;
+        bh=Tc+a0R0ddChdNKfV715b+7dPZll5JAjLYsO+XpnY9kU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tbgb9COxxFf44OtXKjUetUeVpioJqWMkOex9+ecgqVEiQwEik5L9ITKPmQg8ePNxY
-         5ylGW2o2Vu3ph52KksEYK6oHl+80m2nXucFoucffxcEUI2nWkPct8DjCVmf8kgWleP
-         haAOzuFC0e8MoflvVSYQk7Sa63wXSSnCuAsQZKT4=
+        b=hKWiBctocetJ5zm1NL4AomjsH4Sx6ssb9/qdpHQTre0nEXHHeSHQWbBzJcaYiAUQp
+         PslijXEdRWY8EGtkCav7d8mISqg7RjlwZwgqIfd3aKw4Rsnr1hhTP4LbGx/Id47Lch
+         lK1roKva+Qg7oWRPUZ6bvwkpG/+NAGhOmyXKZgLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 5.9 282/391] rcu-tasks: Enclose task-list scan in rcu_read_lock()
-Date:   Tue,  3 Nov 2020 21:35:33 +0100
-Message-Id: <20201103203406.066176422@linuxfoundation.org>
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.9 283/391] MIPS: DEC: Restore bootmem reservation for firmware working memory area
+Date:   Tue,  3 Nov 2020 21:35:34 +0100
+Message-Id: <20201103203406.136549709@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,49 +42,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Maciej W. Rozycki <macro@linux-mips.org>
 
-commit f747c7e15d7bc71a967a94ceda686cf2460b69e8 upstream.
+commit cf3af0a4d3b62ab48e0b90180ea161d0f5d4953f upstream.
 
-The rcu_tasks_trace_postgp() function uses for_each_process_thread()
-to scan the task list without the benefit of RCU read-side protection,
-which can result in use-after-free errors on task_struct structures.
-This error was missed because the TRACE01 rcutorture scenario enables
-lockdep, but also builds with CONFIG_PREEMPT_NONE=y.  In this situation,
-preemption is disabled everywhere, so lockdep thinks everywhere can
-be a legitimate RCU reader.  This commit therefore adds the needed
-rcu_read_lock() and rcu_read_unlock().
+Fix a crash on DEC platforms starting with:
 
-Note that this bug can occur only after an RCU Tasks Trace CPU stall
-warning, which by default only happens after a grace period has extended
-for ten minutes (yes, not a typo, minutes).
+VFS: Mounted root (nfs filesystem) on device 0:11.
+Freeing unused PROM memory: 124k freed
+BUG: Bad page state in process swapper  pfn:00001
+page:(ptrval) refcount:0 mapcount:-128 mapping:00000000 index:0x1 pfn:0x1
+flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000001 00000000 ffffff7f 00000000
+page dumped because: nonzero mapcount
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-00858-g865c50e1d279 #1
+Stack : 8065dc48 0000000b 8065d2b8 9bc27dcc 80645bfc 9bc259a4 806a1b97 80703124
+        80710000 8064a900 00000001 80099574 806b116c 1000ec00 9bc27d88 806a6f30
+        00000000 00000000 80645bfc 00000000 31232039 80706ba4 2e392e35 8039f348
+        2d383538 00000070 0000000a 35363867 00000000 806c2830 80710000 806b0000
+        80710000 8064a900 00000001 81000000 00000000 00000000 8035af2c 80700000
+        ...
+Call Trace:
+[<8004bc5c>] show_stack+0x34/0x104
+[<8015675c>] bad_page+0xfc/0x128
+[<80157714>] free_pcppages_bulk+0x1f4/0x5dc
+[<801591cc>] free_unref_page+0xc0/0x130
+[<8015cb04>] free_reserved_area+0x144/0x1d8
+[<805abd78>] kernel_init+0x20/0x100
+[<80046070>] ret_from_kernel_thread+0x14/0x1c
+Disabling lock debugging due to kernel taint
 
-Fixes: 4593e772b502 ("rcu-tasks: Add stall warnings for RCU Tasks Trace")
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.7.x
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+caused by an attempt to free bootmem space that as from
+commit b93ddc4f9156 ("mips: Reserve memory for the kernel image resources")
+has not been anymore reserved due to the removal of generic MIPS arch code
+that used to reserve all the memory from the beginning of RAM up to the
+kernel load address.
+
+This memory does need to be reserved on DEC platforms however as it is
+used by REX firmware as working area, as per the TURBOchannel firmware
+specification[1]:
+
+Table 2-2  REX Memory Regions
+-------------------------------------------------------------------------
+        Starting        Ending
+Region  Address         Address         Use
+-------------------------------------------------------------------------
+0       0xa0000000      0xa000ffff      Restart block, exception vectors,
+                                        REX stack and bss
+1       0xa0010000      0xa0017fff      Keyboard or tty drivers
+
+2       0xa0018000      0xa001f3ff 1)   CRT driver
+
+3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
+
+4       0xa0020000      0xa002ffff      64KB scratch space
+-------------------------------------------------------------------------
+1) Note that the last 3 Kbytes of region 2 are reserved for backward
+compatibility with previous system software.
+-------------------------------------------------------------------------
+
+(this table uses KSEG2 unmapped virtual addresses, which in the MIPS
+architecture are offset from physical addresses by a fixed value of
+0xa0000000 and therefore the regions referred do correspond to the
+beginning of the physical address space) and we call into the firmware
+on several occasions throughout the bootstrap process.  It is believed
+that pre-REX firmware used with non-TURBOchannel DEC platforms has the
+same requirements, as hinted by note #1 cited.
+
+Recreate the discarded reservation then, in DEC platform code, removing
+the crash.
+
+
+[1] "TURBOchannel Firmware Specification", On-line version,
+    EK-TCAAD-FS-004, Digital Equipment Corporation, January 1993,
+    Chapter 2 "System Module Firmware", p. 2-5
+
+Signed-off-by: Maciej W. Rozycki <macro@linux-mips.org>
+Fixes: b93ddc4f9156 ("mips: Reserve memory for the kernel image resources")
+Cc: stable@vger.kernel.org # v5.2+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- kernel/rcu/tasks.h |    2 ++
- 1 file changed, 2 insertions(+)
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1078,9 +1078,11 @@ static void rcu_tasks_trace_postgp(struc
- 		if (ret)
- 			break;  // Count reached zero.
- 		// Stall warning time, so make a list of the offenders.
-+		rcu_read_lock();
- 		for_each_process_thread(g, t)
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
- 				trc_add_holdout(t, &holdouts);
-+		rcu_read_unlock();
- 		firstreport = true;
- 		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list) {
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
+---
+ arch/mips/dec/setup.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- a/arch/mips/dec/setup.c
++++ b/arch/mips/dec/setup.c
+@@ -6,7 +6,7 @@
+  * for more details.
+  *
+  * Copyright (C) 1998 Harald Koerfgen
+- * Copyright (C) 2000, 2001, 2002, 2003, 2005  Maciej W. Rozycki
++ * Copyright (C) 2000, 2001, 2002, 2003, 2005, 2020  Maciej W. Rozycki
+  */
+ #include <linux/console.h>
+ #include <linux/export.h>
+@@ -15,6 +15,7 @@
+ #include <linux/ioport.h>
+ #include <linux/irq.h>
+ #include <linux/irqnr.h>
++#include <linux/memblock.h>
+ #include <linux/param.h>
+ #include <linux/percpu-defs.h>
+ #include <linux/sched.h>
+@@ -22,6 +23,7 @@
+ #include <linux/types.h>
+ #include <linux/pm.h>
+ 
++#include <asm/addrspace.h>
+ #include <asm/bootinfo.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+@@ -29,7 +31,9 @@
+ #include <asm/irq.h>
+ #include <asm/irq_cpu.h>
+ #include <asm/mipsregs.h>
++#include <asm/page.h>
+ #include <asm/reboot.h>
++#include <asm/sections.h>
+ #include <asm/time.h>
+ #include <asm/traps.h>
+ #include <asm/wbflush.h>
+@@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
+ 
+ 	ioport_resource.start = ~0UL;
+ 	ioport_resource.end = 0UL;
++
++	/* Stay away from the firmware working memory area for now. */
++	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
+ }
+ 
+ /*
 
 
