@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A032A5164
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F63B2A5168
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgKCUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51842 "EHLO mail.kernel.org"
+        id S1730239AbgKCUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730217AbgKCUkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:31 -0500
+        id S1729702AbgKCUkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 098202236F;
-        Tue,  3 Nov 2020 20:40:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5300422226;
+        Tue,  3 Nov 2020 20:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436029;
-        bh=Y1Pn9np0wB+6pPQcbGHYcjbaA8ylYPCflBapr0RiuGA=;
+        s=default; t=1604436031;
+        bh=K8Qm99nZlFsLcr3tHOpBLRNE8KeIUfRgLcW6fKBPqmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pXs3QOfm4HdPfsZ3ErT87YQ5VeULbP93eRTmoA3JqO6tnWV0BtaY6JX4tJiU5fgOC
-         Kz3yWglRS2/KF3I3zuYrp6IydHYnvA+uxv8EEECBcl6HDUtfWgHYMSLDe14IilXXLg
-         tjrZ9SY2tSEdnHyiaGcdt7u6FeFLkZ64JvRr9HXM=
+        b=WbHpHmjnM/pdyFXkD5wsN4Ajr3HOQ8G9OpBPwt9iNCFY+TUhP9k8k8MgkCr4kdG3M
+         SQhnDaxfS2eM2KIRtdIMPCFA3EOIafW41RX2+Qf30Z5lkfhxlb0iqwLVHTM2Xb/fmX
+         uWjfcX1HbR+75ntMyFFvhZxdwpzEkXoFv6rvRHCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 073/391] drm/ast: Separate DRM driver from PCI code
-Date:   Tue,  3 Nov 2020 21:32:04 +0100
-Message-Id: <20201103203352.132041253@linuxfoundation.org>
+Subject: [PATCH 5.9 074/391] drm/amdgpu: restore ras flags when user resets eeprom(v2)
+Date:   Tue,  3 Nov 2020 21:32:05 +0100
+Message-Id: <20201103203352.185549880@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,138 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Guchun Chen <guchun.chen@amd.com>
 
-[ Upstream commit d50ace1e72f05708cc5dbc89b9bbb9873f150092 ]
+[ Upstream commit bf0b91b78f002faa1be1902a75eeb0797f9fbcf3 ]
 
-Putting the DRM driver to the top of the file and the PCI code to the
-bottom makes ast_drv.c more readable. While at it, the patch prefixes
-file-scope variables with ast_.
+RAS flags needs to be cleaned as well when user requires
+one clean eeprom.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200730135206.30239-3-tzimmermann@suse.de
+v2: RAS flags shall be restored after eeprom reset succeeds.
+
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ast/ast_drv.c | 59 ++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 28 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
-index 0b58f7aee6b01..9d04f2b5225cf 100644
---- a/drivers/gpu/drm/ast/ast_drv.c
-+++ b/drivers/gpu/drm/ast/ast_drv.c
-@@ -43,9 +43,33 @@ int ast_modeset = -1;
- MODULE_PARM_DESC(modeset, "Disable/Enable modesetting");
- module_param_named(modeset, ast_modeset, int, 0400);
- 
--#define PCI_VENDOR_ASPEED 0x1a03
-+/*
-+ * DRM driver
-+ */
-+
-+DEFINE_DRM_GEM_FOPS(ast_fops);
-+
-+static struct drm_driver ast_driver = {
-+	.driver_features = DRIVER_ATOMIC |
-+			   DRIVER_GEM |
-+			   DRIVER_MODESET,
-+
-+	.fops = &ast_fops,
-+	.name = DRIVER_NAME,
-+	.desc = DRIVER_DESC,
-+	.date = DRIVER_DATE,
-+	.major = DRIVER_MAJOR,
-+	.minor = DRIVER_MINOR,
-+	.patchlevel = DRIVER_PATCHLEVEL,
- 
--static struct drm_driver driver;
-+	DRM_GEM_VRAM_DRIVER
-+};
-+
-+/*
-+ * PCI driver
-+ */
-+
-+#define PCI_VENDOR_ASPEED 0x1a03
- 
- #define AST_VGA_DEVICE(id, info) {		\
- 	.class = PCI_BASE_CLASS_DISPLAY << 16,	\
-@@ -56,13 +80,13 @@ static struct drm_driver driver;
- 	.subdevice = PCI_ANY_ID,		\
- 	.driver_data = (unsigned long) info }
- 
--static const struct pci_device_id pciidlist[] = {
-+static const struct pci_device_id ast_pciidlist[] = {
- 	AST_VGA_DEVICE(PCI_CHIP_AST2000, NULL),
- 	AST_VGA_DEVICE(PCI_CHIP_AST2100, NULL),
- 	{0, 0, 0},
- };
- 
--MODULE_DEVICE_TABLE(pci, pciidlist);
-+MODULE_DEVICE_TABLE(pci, ast_pciidlist);
- 
- static void ast_kick_out_firmware_fb(struct pci_dev *pdev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+index 1bedb416eebd0..b4fb5a473df5a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+@@ -367,12 +367,19 @@ static ssize_t amdgpu_ras_debugfs_ctrl_write(struct file *f, const char __user *
+ static ssize_t amdgpu_ras_debugfs_eeprom_write(struct file *f, const char __user *buf,
+ 		size_t size, loff_t *pos)
  {
-@@ -94,7 +118,7 @@ static int ast_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		return ret;
+-	struct amdgpu_device *adev = (struct amdgpu_device *)file_inode(f)->i_private;
++	struct amdgpu_device *adev =
++		(struct amdgpu_device *)file_inode(f)->i_private;
+ 	int ret;
  
--	dev = drm_dev_alloc(&driver, &pdev->dev);
-+	dev = drm_dev_alloc(&ast_driver, &pdev->dev);
- 	if (IS_ERR(dev))
- 		return  PTR_ERR(dev);
+-	ret = amdgpu_ras_eeprom_reset_table(&adev->psp.ras.ras->eeprom_control);
++	ret = amdgpu_ras_eeprom_reset_table(
++			&(amdgpu_ras_get_context(adev)->eeprom_control));
  
-@@ -118,11 +142,9 @@ err_ast_driver_unload:
- err_drm_dev_put:
- 	drm_dev_put(dev);
- 	return ret;
--
+-	return ret == 1 ? size : -EIO;
++	if (ret == 1) {
++		amdgpu_ras_get_context(adev)->flags = RAS_DEFAULT_FLAGS;
++		return size;
++	} else {
++		return -EIO;
++	}
  }
  
--static void
--ast_pci_remove(struct pci_dev *pdev)
-+static void ast_pci_remove(struct pci_dev *pdev)
- {
- 	struct drm_device *dev = pci_get_drvdata(pdev);
- 
-@@ -217,30 +239,12 @@ static const struct dev_pm_ops ast_pm_ops = {
- 
- static struct pci_driver ast_pci_driver = {
- 	.name = DRIVER_NAME,
--	.id_table = pciidlist,
-+	.id_table = ast_pciidlist,
- 	.probe = ast_pci_probe,
- 	.remove = ast_pci_remove,
- 	.driver.pm = &ast_pm_ops,
- };
- 
--DEFINE_DRM_GEM_FOPS(ast_fops);
--
--static struct drm_driver driver = {
--	.driver_features = DRIVER_ATOMIC |
--			   DRIVER_GEM |
--			   DRIVER_MODESET,
--
--	.fops = &ast_fops,
--	.name = DRIVER_NAME,
--	.desc = DRIVER_DESC,
--	.date = DRIVER_DATE,
--	.major = DRIVER_MAJOR,
--	.minor = DRIVER_MINOR,
--	.patchlevel = DRIVER_PATCHLEVEL,
--
--	DRM_GEM_VRAM_DRIVER
--};
--
- static int __init ast_init(void)
- {
- 	if (vgacon_text_force() && ast_modeset == -1)
-@@ -261,4 +265,3 @@ module_exit(ast_exit);
- MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL and additional rights");
--
+ static const struct file_operations amdgpu_ras_debugfs_ctrl_ops = {
 -- 
 2.27.0
 
