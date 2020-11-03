@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5D62A5012
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC88A2A5014
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbgKCT0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:26:48 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:59626 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgKCT0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:26:47 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 195FF20B4905;
-        Tue,  3 Nov 2020 11:26:46 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 195FF20B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604431606;
-        bh=W0Zh911SvMPBVmdEXmA1HcYsG++HUAmXbKA5/8UO44g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=iuF/o2WK5I9LEylsm091pAyVfXK+P1AU4Afj1Dcmwc+awaZDdF4z+OO6lS42ENqvG
-         CfVTYLd/4+L/UrGBS3R714iOd07K7cQK/N6L95GDpf0QF4/L0/W3tnrXo13e9y2Qqw
-         hOOWvgFlOzFOwvzya6D7NrtOnZgLm/fPEfzYEYy8=
-Subject: Re: [PATCH v8 0/4] Carry forward IMA measurement log on kexec on
- ARM64
-To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
-        robh@kernel.org, gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-References: <20201030174429.29893-1-nramas@linux.microsoft.com>
- <053cf58ae21f2e7088e22eedf8c5ee6e73a1e835.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <1f01055c-acb8-6497-0144-dfeb78f08eee@linux.microsoft.com>
-Date:   Tue, 3 Nov 2020 11:26:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <053cf58ae21f2e7088e22eedf8c5ee6e73a1e835.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+        id S1729651AbgKCT0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:26:52 -0500
+Received: from mail-eopbgr10056.outbound.protection.outlook.com ([40.107.1.56]:39148
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725957AbgKCT0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:26:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OKeAoNkQbVnNDJD/KE0GtN2Wygj7QFRVW+r76Masx5b1RMgSuTUIUS8Vj1cltQJkIZUOE+U8hI+GVUrq4qYBBIAHUniS3HF7hTaA6VGV3iDTWvYZn2AjJDYiXnDUn16i6xF0SejkeS1bJQItk3Bh8ArY+2ZYdNiJfcFj7yZpTKZF0BFDBRbmfOUcm+LyFVt4wtxVG3gKQknQXOGx5oxddme//AuxcYGwmnSpL04vOZ/9TTM7f/eYEEAul+/gmuW3fjIwDfOLplAf86JIKrTL8DHLT3xoW0MxJAfUe1mKjBNAT3D1zuXtDKrfY3bDHDS4dC1rHEhlLxU3J9Qs5WWRjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v3Aq7WvLL36LXEe20RCCxCbdDSXoKOdgxtC1OC9uDfY=;
+ b=ErgzpMPfJcComoH5o/mT8pOp/5SEISWZbLm8FTtYVsf5uACuN4+VxXMKUyDBPb7PUis8OLoBJj+0vBW980WKe8dyZgbwYY5ftfDXFtvSS6lBAOOus9IqgmZ+G+BeoEaDlai5C0ZWI6TFzdb3EIMBLhmsDnkBnD3PTVMRgIrsDYmqEMmAYbeqxFcM10Nm7dcJjAR0hByFzGeOOMk3eAWw2NL8jT7UxzQOhM7cKEDmiIGpuBsYFUlozYx/UHLuK0U/ETxxcgZR8ocIjMUp1Fb1/FINib22afbnuOMlvUspFI153PRO11F9uqMOn6zOfcWGJoLYt0kCDJmOYDuQ/0g0rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v3Aq7WvLL36LXEe20RCCxCbdDSXoKOdgxtC1OC9uDfY=;
+ b=Bx19HKXXERxW/DeoRsisI2EKyJqPQ55XobGs/rllILv/Zi9f6wx3Sgj47qCdGba3uWrseBgX0zjyMw2xonYGlu1/Vi4WDH4U7NRNcvtMGWjpyIYvLAwPl/jNDwq0p+BX+Ugeo/DT/3thfKRFjbF66UhLomg/2iIZmEKoOKZXN4w=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB3199.eurprd04.prod.outlook.com (2603:10a6:802:3::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 3 Nov
+ 2020 19:26:45 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
+ 19:26:45 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Pujin Shi <shipujin.t@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] net: ethernet: mscc: fix missing brace warning for old
+ compilers
+Thread-Topic: [PATCH V2] net: ethernet: mscc: fix missing brace warning for
+ old compilers
+Thread-Index: AQHWsYzUZKuYzdPB3kGCvYd2O8gSwam2xWWAgAAGCAA=
+Date:   Tue, 3 Nov 2020 19:26:45 +0000
+Message-ID: <20201103192644.5amowv4yvjclhway@skbuf>
+References: <20201103025519.1916-1-shipujin.t@gmail.com>
+ <20201103110509.6bb18273@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201103110509.6bb18273@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.177]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bf66fb1c-0288-4d18-f073-08d8802e66d3
+x-ms-traffictypediagnostic: VI1PR04MB3199:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB319911DCB6D01F34F7A31CB1E0110@VI1PR04MB3199.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1013;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a58Sj/rNdK7Ui5DBYEy5bGofBd01DKGQNOa8SA4IeL0MuDMlbzjr+Bpc36nbJhrNc+J0YFI8NXI5VMAZ4xNSs+kCfMH4/cnmAm2oUMZfZc1753mfSrEY+rg3f7B7RZZGN7/V7g0u/HwOL/H+wKESCWQ3OrS0uZa0S4aqxMAjdQ1MT2NFW/A9VDFWTBn7+7FIaEwm8CUfQ0AJSIkC649NtPLUPKEgCkDMtCEnUKO7G+2KLvERW1HQPH24my3rVZDhV471v/sgo+udeIPd4GLoU7gyMNesplzSlhLnHujZpu5W8CV9uG1TM10GXHQGypM4dSB9g3R51S1WSkss6DzoCw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(396003)(366004)(346002)(39830400003)(376002)(9686003)(8676002)(6512007)(508600001)(71200400001)(26005)(6506007)(66946007)(66556008)(66476007)(6486002)(76116006)(8936002)(558084003)(66446008)(91956017)(5660300002)(64756008)(6916009)(86362001)(1076003)(33716001)(4326008)(44832011)(186003)(54906003)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 0yp+NbIK6c1kjJ/b8HWZMQHmhKvaVU71IAVjgxdzPiYzzkRRIlAbHIgVu/eX5XJt4nIHBponwBpT04wzkngw1XsPlfCfEWhI5bP2xpS/pwcFfnlLHbRPSdFaENOfFYEHVzowhb5+g9G6PPzM7wBa6H+7hZG3UBIOCfcVxmc4akMCNqczKnuTejL5tlFvHVAD1oTJPbFVmOFXNGltiMe3WDD6yupmOBYpkQtCgQ0n7uScT339reFIm7JAhoqE5+rwN4bwUwRwBh8NwRvgDX2FuFUxGQdTIfMf4HEo55dLpBLV9r/xZK5max3G0SIax1Ey8rPqSJr49HxAs+aGjx6m6rHm+cGSk0pgsvtY9gE4sIwqe3HhzbACxiKn2dbcbYduTGXApfbHUULuRvUcpIMGVyPqIoLXsScg3mjcUVAwKsMq4G5SsTw05WXEHYUWFdV8F3kinVs8FOOKaVyzgiBOSIbdcauBx9hNMkrulazcn3pizFxClESHSfk9qH8UJJV90zX9DU4ULPWFCrI7B/QgCQeT7k8fiidTW23XXwz8NQWVA2LIgXtJW3eUt8ZrllwLlITBhbNc8coz61zpCcl4S26PFIuLN1oz1cgI6mKNyXpxZbFDdliXgpYVSnP+2RXXB46dVzs6luqR8K6uV/Q/eg==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A0520637BCE35C489717ECD298978427@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf66fb1c-0288-4d18-f073-08d8802e66d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 19:26:45.3752
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NbyyeNV6a+O/6M6MWsnHEoV+e1lT2eP1LA4D7bybo3ywH/2xDVt+o/GT2wTH7/E4WOVU/PIxeV9osprU6ofOjw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3199
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 7:18 AM, Mimi Zohar wrote:
+On Tue, Nov 03, 2020 at 11:05:09AM -0800, Jakub Kicinski wrote:
+> I believe Vladimir asked to use a memset instead;
+>=20
+> 			struct ocelot_vcap_u16 etype;
+>=20
+> 			memset(&etype, 0, sizeof(etype));
 
-Hi Mimi,
-
-> On Fri, 2020-10-30 at 10:44 -0700, Lakshmi Ramasubramanian wrote:
->> On kexec file load Integrity Measurement Architecture (IMA) subsystem
->> may verify the IMA signature of the kernel and initramfs, and measure
->> it. The command line parameters passed to the kernel in the kexec call
->> may also be measured by IMA. A remote attestation service can verify
->> the measurement through the IMA log and the TPM PCR data. This can be
->> achieved only if the IMA measurement log is carried over from
->> the current kernel to the next kernel across the kexec call.
-> 
-> Nice, but you might want to tweak it a bit.  This is just a suggestion.
-> "A remote attestation service can verify a TPM quote based on the TPM
-> event log, the IMA measurement list, and the TPM PCR data".
-Sure - will make this change.
-
-> 
->> However in the current implementation the IMA measurement logs are not
->> carried over on ARM64 platforms. Therefore a remote attestation service
->> cannot verify the authenticity of the running kernel on ARM64 platforms
->> when the kernel is updated through the kexec system call.
-> 
-> The paragraphs above and below are redundant.  The first paragraph
-> already explained why carrying the measurement across kexec is needed.
-> Perhaps drop the above paragraph.
-Sure.
-
-> 
->> This patch series adds support for carrying forward the IMA measurement
->> log on kexec on ARM64. powerpc already supports carrying forward
->> the IMA measurement log on kexec.
-> 
-> And invert these sentences, starting the paragraph with "Powerpc
-> already" and ending with ARM64.
-Sure.
-
-> 
->>
->> This series refactors the platform independent code defined for powerpc
->> such that it can be reused for ARM64 as well. A chosen node namely
->> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
->> the address and the size of the memory reserved to carry
->> the IMA measurement log.
-> 
-> ^This patch set moves ..."
-Sure - will make this change.
-
-Thanks again for reviewing the patches. Will post the updated patch set 
-shortly.
-
-  -lakshmi
+Thanks, Jakub.=
