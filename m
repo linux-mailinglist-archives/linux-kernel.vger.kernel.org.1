@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79D52A53FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA24B2A549B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388211AbgKCVGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45680 "EHLO mail.kernel.org"
+        id S2389101AbgKCVMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:12:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388199AbgKCVGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:42 -0500
+        id S2389055AbgKCVMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:12:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B985420658;
-        Tue,  3 Nov 2020 21:06:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0695520757;
+        Tue,  3 Nov 2020 21:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437601;
-        bh=gtGJRTeE1GYtV8jUwiVQZ1nLMsjyOwDDWUZtwMSjvA4=;
+        s=default; t=1604437970;
+        bh=QIR7QxhESG8JRaNtk3JR9sfwhWYaRi6nXoekJg7PX7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FMoA6m/8TWVxnqVQnd2nTIwy1UEtbBA1GhHmf3fbRQZkTP2o7AH+/PHBQTNVCA7hP
-         fJNsx6UazW07JQSzxlvYa8GQ0+NwNhwoFHU7g8bUh5Fct7IQwtephvUx/dlGXEDhPH
-         8mcYaxZQHyExuMdXszxDeYwn1RJjQTxYpwqdPV7A=
+        b=oW56NKaj1brLM6cYBbWHL+MHd/Brpig0jH89vMLYY91DTgm0LRxgSch+1BaIl3cVK
+         A7/UU99ksRfmAk33B71ZesWflpWVnYerq5oXNy/lzMpaIEqfR+EhnymSMs2Hv0Pp93
+         VnkyHOkm2apYlHwlSEQU/PqPv2ZdayWV0HNXOghc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.19 146/191] HID: wacom: Avoid entering wacom_wac_pen_report for pad / battery
+        stable@vger.kernel.org, KoWei Sung <winders@amazon.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.14 061/125] md/raid5: fix oops during stripe resizing
 Date:   Tue,  3 Nov 2020 21:37:18 +0100
-Message-Id: <20201103203246.442871831@linuxfoundation.org>
+Message-Id: <20201103203205.795649304@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <jason.gerecke@wacom.com>
+From: Song Liu <songliubraving@fb.com>
 
-commit d9216d753b2b1406b801243b12aaf00a5ce5b861 upstream.
+commit b44c018cdf748b96b676ba09fdbc5b34fc443ada upstream.
 
-It has recently been reported that the "heartbeat" report from devices
-like the 2nd-gen Intuos Pro (PTH-460, PTH-660, PTH-860) or the 2nd-gen
-Bluetooth-enabled Intuos tablets (CTL-4100WL, CTL-6100WL) can cause the
-driver to send a spurious BTN_TOUCH=0 once per second in the middle of
-drawing. This can result in broken lines while drawing on Chrome OS.
+KoWei reported crash during raid5 reshape:
 
-The source of the issue has been traced back to a change which modified
-the driver to only call `wacom_wac_pad_report()` once per report instead
-of once per collection. As part of this change, pad-handling code was
-removed from `wacom_wac_collection()` under the assumption that the
-`WACOM_PEN_FIELD` and `WACOM_TOUCH_FIELD` checks would not be satisfied
-when a pad or battery collection was being processed.
+[ 1032.252932] Oops: 0002 [#1] SMP PTI
+[...]
+[ 1032.252943] RIP: 0010:memcpy_erms+0x6/0x10
+[...]
+[ 1032.252947] RSP: 0018:ffffba1ac0c03b78 EFLAGS: 00010286
+[ 1032.252949] RAX: 0000784ac0000000 RBX: ffff91bec3d09740 RCX: 0000000000001000
+[ 1032.252951] RDX: 0000000000001000 RSI: ffff91be6781c000 RDI: 0000784ac0000000
+[ 1032.252953] RBP: ffffba1ac0c03bd8 R08: 0000000000001000 R09: ffffba1ac0c03bf8
+[ 1032.252954] R10: 0000000000000000 R11: 0000000000000000 R12: ffffba1ac0c03bf8
+[ 1032.252955] R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
+[ 1032.252958] FS:  0000000000000000(0000) GS:ffff91becf500000(0000) knlGS:0000000000000000
+[ 1032.252959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1032.252961] CR2: 0000784ac0000000 CR3: 000000031780a002 CR4: 00000000001606e0
+[ 1032.252962] Call Trace:
+[ 1032.252969]  ? async_memcpy+0x179/0x1000 [async_memcpy]
+[ 1032.252977]  ? raid5_release_stripe+0x8e/0x110 [raid456]
+[ 1032.252982]  handle_stripe_expansion+0x15a/0x1f0 [raid456]
+[ 1032.252988]  handle_stripe+0x592/0x1270 [raid456]
+[ 1032.252993]  handle_active_stripes.isra.0+0x3cb/0x5a0 [raid456]
+[ 1032.252999]  raid5d+0x35c/0x550 [raid456]
+[ 1032.253002]  ? schedule+0x42/0xb0
+[ 1032.253006]  ? schedule_timeout+0x10e/0x160
+[ 1032.253011]  md_thread+0x97/0x160
+[ 1032.253015]  ? wait_woken+0x80/0x80
+[ 1032.253019]  kthread+0x104/0x140
+[ 1032.253022]  ? md_start_sync+0x60/0x60
+[ 1032.253024]  ? kthread_park+0x90/0x90
+[ 1032.253027]  ret_from_fork+0x35/0x40
 
-To be clear, the macros `WACOM_PAD_FIELD` and `WACOM_PEN_FIELD` do not
-currently check exclusive conditions. In fact, most "pad" fields will
-also appear to be "pen" fields simply due to their presence inside of
-a Digitizer application collection. Because of this, the removal of
-the check from `wacom_wac_collection()` just causes pad / battery
-collections to instead trigger a call to `wacom_wac_pen_report()`
-instead. The pen report function in turn resets the tip switch state
-just prior to exiting, resulting in the observed BTN_TOUCH=0 symptom.
+This is because cache_size_mutex was unlocked too early in resize_stripes,
+which races with grow_one_stripe() that grow_one_stripe() allocates a
+stripe with wrong pool_size.
 
-To correct this, we restore a version of the `WACOM_PAD_FIELD` check
-in `wacom_wac_collection()` and return early. This effectively prevents
-pad / battery collections from being reported until the very end of the
-report as originally intended.
+Fix this issue by unlocking cache_size_mutex after updating pool_size.
 
-Fixes: d4b8efeb46d9 ("HID: wacom: generic: Correct pad syncing")
-Cc: stable@vger.kernel.org # v4.17+
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Tested-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Cc: <stable@vger.kernel.org> # v4.4+
+Reported-by: KoWei Sung <winders@amazon.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/wacom_wac.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/md/raid5.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2729,7 +2729,9 @@ static int wacom_wac_collection(struct h
- 	if (report->type != HID_INPUT_REPORT)
- 		return -1;
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -2415,8 +2415,6 @@ static int resize_stripes(struct r5conf
+ 	} else
+ 		err = -ENOMEM;
  
--	if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
-+	if (WACOM_PAD_FIELD(field))
-+		return 0;
-+	else if (WACOM_PEN_FIELD(field) && wacom->wacom_wac.pen_input)
- 		wacom_wac_pen_report(hdev, report);
- 	else if (WACOM_FINGER_FIELD(field) && wacom->wacom_wac.touch_input)
- 		wacom_wac_finger_report(hdev, report);
+-	mutex_unlock(&conf->cache_size_mutex);
+-
+ 	conf->slab_cache = sc;
+ 	conf->active_name = 1-conf->active_name;
+ 
+@@ -2439,6 +2437,8 @@ static int resize_stripes(struct r5conf
+ 
+ 	if (!err)
+ 		conf->pool_size = newsize;
++	mutex_unlock(&conf->cache_size_mutex);
++
+ 	return err;
+ }
+ 
 
 
