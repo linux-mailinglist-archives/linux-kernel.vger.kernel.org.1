@@ -2,52 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3970F2A5833
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF102A5703
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731609AbgKCUth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:49:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42284 "EHLO mail.kernel.org"
+        id S1732933AbgKCVcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:32:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731535AbgKCUt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:26 -0500
+        id S1732109AbgKCU5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:57:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64561223FD;
-        Tue,  3 Nov 2020 20:49:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EC5B22226;
+        Tue,  3 Nov 2020 20:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436564;
-        bh=H/bahLUtNGlRGYIevvmapEfWHWWFAfHpFt8kL4xiXQA=;
+        s=default; t=1604437037;
+        bh=L8ZuELjMeM0ZMowK9r/ZBhw2Y6O/DsmCbS5s3XpXKqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZNhfo31Yy6TcO9SQ1wjM64U4BOIlj6Wt1UcsqvtLGLHktjT5qTQnj1D5bHJoSzzL
-         5urSeXgEO6V+Fn0upevWsZXDInHEwJQUSmzbVXFBSRsRXI0GAFJwPZhSFWRnGbWQCs
-         5dLw7muACcI7fKTFgepnuXq0aF8vAxYvRb32Aa58=
+        b=P77tFukUqfiM3BbaPco3gVz7noKCPn5rSfX/8oio/EvhqYhpRP8DrLnMHjUhZ5/HM
+         fpyBbViwsH1ildTDGzr4ksfPpxH13ZtSiJnAZRH67MBhjoW84M/4l32aXa8HYjljPY
+         syBilEiI8m1I7K1e/tsfqLFJnq0hLsr1t1/KZnKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        piotr.oniszczuk@gmail.com, Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 5.9 267/391] drm/shme-helpers: Fix dma_buf_mmap forwarding bug
-Date:   Tue,  3 Nov 2020 21:35:18 +0100
-Message-Id: <20201103203405.042055538@linuxfoundation.org>
+        stable@vger.kernel.org, Fangzhi Zuo <Jerry.Zuo@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>, Eryk Brol <eryk.brol@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 071/214] drm/amd/display: HDMI remote sink need mode validation for Linux
+Date:   Tue,  3 Nov 2020 21:35:19 +0100
+Message-Id: <20201103203257.058919226@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,94 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Fangzhi Zuo <Jerry.Zuo@amd.com>
 
-commit f49a51bfdc8ea717c97ccd4cc98b7e6daaa5553a upstream.
+[ Upstream commit 95d620adb48f7728e67d82f56f756e8d451cf8d2 ]
 
-When we forward an mmap to the dma_buf exporter, they get to own
-everything. Unfortunately drm_gem_mmap_obj() overwrote
-vma->vm_private_data after the driver callback, wreaking the
-exporter complete. This was noticed because vb2_common_vm_close blew
-up on mali gpu with panfrost after commit 26d3ac3cb04d
-("drm/shmem-helpers: Redirect mmap for imported dma-buf").
+[Why]
+Currently mode validation is bypassed if remote sink exists. That
+leads to mode set issue when a BW bottle neck exists in the link path,
+e.g., a DP-to-HDMI converter that only supports HDMI 1.4.
 
-Unfortunately drm_gem_mmap_obj also acquires a surplus reference that
-we need to drop in shmem helpers, which is a bit of a mislayer
-situation. Maybe the entire dma_buf_mmap forwarding should be pulled
-into core gem code.
+Any invalid mode passed to Linux user space will cause the modeset
+failure due to limitation of Linux user space implementation.
 
-Note that the only two other drivers which forward mmap in their own
-code (etnaviv and exynos) get this somewhat right by overwriting the
-gem mmap code. But they seem to still have the leak. This might be a
-good excuse to move these drivers over to shmem helpers completely.
+[How]
+Mode validation is skipped only if in edid override. For real remote
+sink, clock limit check should be done for HDMI remote sink.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Russell King <linux+etnaviv@armlinux.org.uk>
-Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Fixes: 26d3ac3cb04d ("drm/shmem-helpers: Redirect mmap for imported dma-buf")
-Cc: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Gerd Hoffmann <kraxel@redhat.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: <stable@vger.kernel.org> # v5.9+
-Reported-and-tested-by: piotr.oniszczuk@gmail.com
-Cc: piotr.oniszczuk@gmail.com
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201027214922.3566743-1-daniel.vetter@ffwll.ch
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Have HDMI related remote sink going through mode validation to
+elimiate modes which pixel clock exceeds BW limitation.
 
+Signed-off-by: Fangzhi Zuo <Jerry.Zuo@amd.com>
+Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
+Acked-by: Eryk Brol <eryk.brol@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_gem.c              |    4 ++--
- drivers/gpu/drm/drm_gem_shmem_helper.c |    7 ++++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_gem.c
-+++ b/drivers/gpu/drm/drm_gem.c
-@@ -1085,6 +1085,8 @@ int drm_gem_mmap_obj(struct drm_gem_obje
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index 3efee7b3378a3..47cefc05fd3f5 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -2268,7 +2268,7 @@ enum dc_status dc_link_validate_mode_timing(
+ 	/* A hack to avoid failing any modes for EDID override feature on
+ 	 * topology change such as lower quality cable for DP or different dongle
  	 */
- 	drm_gem_object_get(obj);
+-	if (link->remote_sinks[0])
++	if (link->remote_sinks[0] && link->remote_sinks[0]->sink_signal == SIGNAL_TYPE_VIRTUAL)
+ 		return DC_OK;
  
-+	vma->vm_private_data = obj;
-+
- 	if (obj->funcs && obj->funcs->mmap) {
- 		ret = obj->funcs->mmap(obj, vma);
- 		if (ret) {
-@@ -1107,8 +1109,6 @@ int drm_gem_mmap_obj(struct drm_gem_obje
- 		vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
- 	}
- 
--	vma->vm_private_data = obj;
--
- 	return 0;
- }
- EXPORT_SYMBOL(drm_gem_mmap_obj);
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -594,8 +594,13 @@ int drm_gem_shmem_mmap(struct drm_gem_ob
- 	/* Remove the fake offset */
- 	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
- 
--	if (obj->import_attach)
-+	if (obj->import_attach) {
-+		/* Drop the reference drm_gem_mmap_obj() acquired.*/
-+		drm_gem_object_put(obj);
-+		vma->vm_private_data = NULL;
-+
- 		return dma_buf_mmap(obj->dma_buf, vma, 0);
-+	}
- 
- 	shmem = to_drm_gem_shmem_obj(obj);
- 
+ 	/* Passive Dongle */
+-- 
+2.27.0
+
 
 
