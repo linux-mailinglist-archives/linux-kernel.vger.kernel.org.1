@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F9E2A52FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5504A2A5203
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgKCUzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:55:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50880 "EHLO mail.kernel.org"
+        id S1731110AbgKCUp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732444AbgKCUxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:14 -0500
+        id S1731090AbgKCUpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B59E3223AC;
-        Tue,  3 Nov 2020 20:53:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC303223EA;
+        Tue,  3 Nov 2020 20:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436793;
-        bh=wxicaN8Xq01Q9Z8XES/h1oYBUXwh7kb/qivCuBkce54=;
+        s=default; t=1604436355;
+        bh=UxO+sYER6SO6bqmjI5fTh/TIDIq4JIRTDMfYA7xSGtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dVQn4+4a+IMdwpU1gGp/y3UdkwbohK/H+Q9Sr7eiQHYvzqu+a694l3yYPDpMDMf1Z
-         cdUDdFz9zwUOSPu8acFWhpJEke98ke6ccmZwgGNUF+II+Au2bJdTbwxbrz5A5DCKDg
-         vMWBAPw5wOGLK2oGuQzKLmlvwtFKybtFZxisS6qU=
+        b=U1Txfjlgimcr4ej3ewjOQZH52zGANnr7OjL7bwx6c4E//+70eIA7DZfPjrprdE48a
+         +bj4lUwyQGDjxEJ4f1wCb5KWSX6KoFJSPkc1AWAC4VriTqtSNpXq9zR1gYcj02cN++
+         2jCzGaWEVZicm6WxclpFU7gmwrFkmqFfrJUeBHCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/214] firmware: arm_scmi: Fix ARCH_COLD_RESET
-Date:   Tue,  3 Nov 2020 21:34:22 +0100
-Message-Id: <20201103203251.081486503@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.9 213/391] io-wq: assign NUMA node locality if appropriate
+Date:   Tue,  3 Nov 2020 21:34:24 +0100
+Message-Id: <20201103203401.305923534@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@linaro.org>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 45b9e04d5ba0b043783dfe2b19bb728e712cb32e ]
+commit a8b595b22d31f83b715511f59012f152a269d83b upstream.
 
-The defination for ARCH_COLD_RESET is wrong. Let us fix it according to
-the SCMI specification.
+There was an assumption that kthread_create_on_node() would properly set
+NUMA affinities in terms of CPUs allowed, but it doesn't. Make sure we
+do this when creating an io-wq context on NUMA.
 
-Link: https://lore.kernel.org/r/20201008143722.21888-5-etienne.carriere@linaro.org
-Fixes: 95a15d80aa0d ("firmware: arm_scmi: Add RESET protocol in SCMI v2.0")
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Stefan Metzmacher <metze@samba.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/firmware/arm_scmi/reset.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/io-wq.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index ab42c21c55175..6d223f345b6c9 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -35,9 +35,7 @@ struct scmi_msg_reset_domain_reset {
- #define EXPLICIT_RESET_ASSERT	BIT(1)
- #define ASYNCHRONOUS_RESET	BIT(2)
- 	__le32 reset_state;
--#define ARCH_RESET_TYPE		BIT(31)
--#define COLD_RESET_STATE	BIT(0)
--#define ARCH_COLD_RESET		(ARCH_RESET_TYPE | COLD_RESET_STATE)
-+#define ARCH_COLD_RESET		0
- };
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -654,6 +654,7 @@ static bool create_io_worker(struct io_w
+ 		kfree(worker);
+ 		return false;
+ 	}
++	kthread_bind_mask(worker->task, cpumask_of_node(wqe->node));
  
- struct reset_dom_info {
--- 
-2.27.0
-
+ 	raw_spin_lock_irq(&wqe->lock);
+ 	hlist_nulls_add_head_rcu(&worker->nulls_node, &wqe->free_list);
 
 
