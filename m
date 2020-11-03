@@ -2,215 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19B22A4B58
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0642A4B5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgKCQ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727688AbgKCQ0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:26:20 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B7BC061A04
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:26:20 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id h62so16467839oth.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:26:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AUwE9Rysw1nQCYcg+XE2XA62F+xkLhn1VmBT0V3THV0=;
-        b=Q9bY4D8l+m7nmefBKpOmlCB8Nu6/VT3gTZ0CN+qvHXPYZtOjEifl3iNd+MhJ27Y+Xx
-         9him88J4ok1SYgqz/DKI6Kro8JmvGA5Dc6lVmKRAIz3w7CcxGFH7AjFVv8aKWhCnZOwZ
-         uUrQ4mMfM/qGGTTwxufNgetRnvER8/AxCTuc5lh9g7+TtEoJlLpzl+HkM8qGFl3wphWU
-         W8k6jJx4JrIUZb/M+QT7NuT3JdGwKBHsB4NPmt1tqfJPe5uiVPMndV7nSwHyKetwGfkk
-         lXdCGAGiMT7vs26Y0g9pBCraWWiXGLAcUjS6kejb2X3E2+NxwT+HOtUQvRmogdY1VSBW
-         GnSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AUwE9Rysw1nQCYcg+XE2XA62F+xkLhn1VmBT0V3THV0=;
-        b=ZCKTcHA5PULGynW2SjqJjSN89WbnUkvCNZTnADsHaN/T2IFJg6AcgEFyU99rxjnbOs
-         cVRU7nqpu0zSaUlgg7snje0n/DKyybSA4SH+Ip9v/mSPeZyk0Ebn4aT4mEGx0vyRnsT2
-         fpS7mHb3dkPqItfEGMBtz+cqgwHy78OUzB88fwJlPnRhmaHHQ8Hd0Ws8RsMstUwoc3M1
-         dQAnT+az6YYCW68g5oMsQwvfImKcE+A1jO/qC5KFtVfQAM4nilnwhpmizGAm2w9V0uz1
-         Mjms+Kc/Gpa3drtTKTG+zFyktEzw3wMbmPIpUyLmeajW5bDxa7QRUYjmcUsgO1zzm6DS
-         VMxw==
-X-Gm-Message-State: AOAM532rQqgy/6Jp7eimbtIOHh6QScV/KMWAG4eVN7aLNc0mBbjItWLn
-        OSN7pJoAjptLqrtAfMvmemWO7A==
-X-Google-Smtp-Source: ABdhPJxZL9kMeoA6m7/GwIoujaBpWXDJ5FAQNwuWiO+6snPsyt5gkY8V2BzjUIOXlM5MugE3FLt4uw==
-X-Received: by 2002:a05:6830:2401:: with SMTP id j1mr9244756ots.235.1604420779988;
-        Tue, 03 Nov 2020 08:26:19 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 72sm2532704otd.11.2020.11.03.08.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 08:26:18 -0800 (PST)
-Date:   Tue, 3 Nov 2020 10:26:16 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add SDX55 pincontrol driver
-Message-ID: <20201103162616.GN3151@builder.lan>
-References: <20201103055801.472736-1-vkoul@kernel.org>
- <20201103055801.472736-2-vkoul@kernel.org>
+        id S1728431AbgKCQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:26:31 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:22047 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728302AbgKCQ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:26:30 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa184b50000>; Wed, 04 Nov 2020 00:26:29 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 16:26:29 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 3 Nov 2020 16:26:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aPDFVR1c41RSTJb4p9Im6hEFjb3QFOYbPbmMsQHgAAmwMjA2TjQjSI0ytEDziPxgf6Vdm/yDfoohV4ohux422i2PfLrydbhBrIBQBpNJk6Xacs5N4qDlBVJvppHz7nLOjpLIfi1DC1l63wnI9/ikD2hQG3pPlYEucNupCggp4lQws480gl/KEHnzC1FW5hZDqENTk4rKWAiqPVnkbfUGBeHvgEwWLAu3yr7a8RO4ddFdNOoGfsaYaKVjKIoaHHdGrJuKHIJRip8fIDYGtW4I3PvV5Y0CgbWzMfFatoUY2T02594W3X8ZpXZyurJznib59n6gRwNsOnWZac28WmeEug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e1tATsxgREHFZSoWYxz7YKJIHFSOswzbNqM3WpL7Fok=;
+ b=XuAvpwpCIAY2KqApdJWYa+gtZCeuBy371d/uYvDsyrezFiTo8W283XKdiCZrX6TBp042A8bSWK09tm1MtFJFqtFiT3f/+MwDSFoS/6mZPrUiX2lMaUuxk6XgkJ9VfXWzRve2cP1+Oycz8BoabyJBKuJQGkmIB/ewHeoUsh2LxMzLy+6QG3iuORUiGQVmeMFPfureTYkikD0j7Not9jMFEJiF19y3bquLSjzHomGGj72TqleNXRx5WxEDtkw7yo7D33tRyAVURUv3nULSxkxG5CRifz+OJ98w7FIlp+fqZlpDPFLMLXJggs9NMc1DKEtn1lb1x6Cb4kXv08+riHCJwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) by
+ DM5PR1201MB2488.namprd12.prod.outlook.com (2603:10b6:3:e1::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Tue, 3 Nov 2020 16:26:26 +0000
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::a164:31dd:cebe:4d49]) by DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::a164:31dd:cebe:4d49%12]) with mapi id 15.20.3499.029; Tue, 3 Nov 2020
+ 16:26:26 +0000
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+To:     "menglong8.dong@gmail.com" <menglong8.dong@gmail.com>,
+        Roopa Prabhu <roopa@nvidia.com>
+CC:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] net: bridge: disable multicast while delete bridge
+Thread-Topic: [PATCH] net: bridge: disable multicast while delete bridge
+Thread-Index: AQHWsSXrHRI1tvW7iUS7+/80e/6fF6m2mdgA
+Date:   Tue, 3 Nov 2020 16:26:25 +0000
+Message-ID: <067c94269abed15f777ac078a216be314c935fd5.camel@nvidia.com>
+References: <20201102143828.5286-1-menglong8.dong@gmail.com>
+In-Reply-To: <20201102143828.5286-1-menglong8.dong@gmail.com>
+Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [84.238.136.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a3653253-377b-4282-0dcb-08d880153603
+x-ms-traffictypediagnostic: DM5PR1201MB2488:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR1201MB2488351A3A379C4DE106B698DF110@DM5PR1201MB2488.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1388;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D9a/ktX2cIqRbf1XGWB0Vqbq8ml1INh1Q4vaNDY2v3ufZEdVJm+P4ibII6moX1/BS3z0xPi15IH6aOpSXtcGsSsqGn7at1mOZae2AfBW/+ZHoLxZAtiKIAzFdxLDPYmPpfuufPGcPZM6hkxv9ieT0qZ3nik0d2qwXDrOsZn8Wxgnty1FZMc50Wj0GmYKDdkiCHYauksg0LWkTYPqV1UfDHeStlmcms/ft/F4WUXXnTBuCr84Z6V3CuMYXHxiNnRWLrU3BFv2D3Btj05avUVcLeMBo1EwUgovkYr9ac3ZDRNcJ5MNHYzYSJx3TSp40TbQNswa85N3mir81nMespEYnQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1244.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(54906003)(316002)(110136005)(2906002)(478600001)(36756003)(26005)(5660300002)(186003)(71200400001)(2616005)(4326008)(3450700001)(6636002)(83380400001)(76116006)(6512007)(91956017)(66446008)(64756008)(66556008)(66946007)(8936002)(86362001)(66476007)(8676002)(6486002)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: oQczqZM6P9n53wO8+kALGlOXPCk63ZGECA3t02Rid4AOQNzOS/AnmVl1FkEq//anMtuI1qO9y5eUIuc7e0lNXtidGQHc6mjHB24mo+P64za3rxiplP7H0h03W/Q+7iglpLY5jCuJDIB6FKNikrPsrdDTU2FZMmTiMi5O6P6wcQGeDHx3zdCpq2JgKa31UI2utkcLW7gEBtH8ZjP3F7w3DqaaPL8c0EfDYxB7cWfCdsLjJIHkb603sNI0+AvH5oyaqXnj21NNswEgUywnwcUzr9tSKFe9hpmnkUsn0rpwaXueReq4LkidSbFyiC4OcZvThqBx/ylQCzXcCtFkchsm5Z9nueCg59TnMQsOtIEMfDTH73OAQPfPT69Hl7SPnoe7EKIIteBU18iJp51mdftiEGv+PfkdOgsiFs46AM/eQ+TSDc8h0+4iPLn9X/riLodi2YanzRvIHsyga1IXW2jqUaUB5LPudUGdDkNbwrBO4XnmQhb0VkbiHHu40U0CCuHsH6bMRG8Z+kidFzM4K30wyB4R6P7OWPGSQxYuXN9sgRk5fSao4l7x9/uPvO8I5aC/i60Vecaa/C/IsGoOjrTzBaDbW1tVUeuOYM9PuvZCO3G05aSEwSud21k454cPTZKhEauKxkTcdylhGIxVzjYFzg==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <680D0BE04AACBD4292520B4598C416B7@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103055801.472736-2-vkoul@kernel.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1244.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3653253-377b-4282-0dcb-08d880153603
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 16:26:26.0384
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gp1RErNGirDjAl5U9+j77dj2QAlklUHSVd1F1yZWPEmZB8/p62EB2/riNfcY9BVdUe+7ErHolsicgbyI8ilpZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2488
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604420789; bh=e1tATsxgREHFZSoWYxz7YKJIHFSOswzbNqM3WpL7Fok=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Reply-To:Accept-Language:Content-Language:
+         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
+         authentication-results:x-originating-ip:x-ms-publictraffictype:
+         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
+         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=T9fiDLVXHn+bSQ3JVHTmryS/wfQgRS0ZUDK94dzm46ygJIRNqh7l/FcOLuCQYtTq2
+         PEuPkXTA4nucld7raOuMzpLS/afdanfTcgPSKwjm1OhdhptAONYlFWbnIGMILrvCZP
+         EgpWD1wbLT754vuZd6iasLFx0xZhzaIJdTGUHhQ0JfqP64RL19a+SV16F6UVazzvyr
+         EWcF4+VZuwVNLZ59U9FZtsxC9Wn0gKKILpzw+0VZ/LJio1FokANeUHOSV39/VDojj4
+         MOII4K9/zOjX+VQWVwNlYYKKmqsSXojPqo7cn+0u4ZbV/3AQWMb8pyCbcgS7rc15Sj
+         MCGP6mzSZg0Yw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02 Nov 23:58 CST 2020, Vinod Koul wrote:
-
-> From: Jeevan Shriram <jshriram@codeaurora.org>
-> 
-> Add initial Qualcomm SDX55 pinctrl driver to support pin configuration
-> with pinctrl framewor for SDX55 SoC.
-> 
-> Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
-> [ported from downstream and tidy up]
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
-
-No changes since v1? ;)
-
->  drivers/pinctrl/qcom/Kconfig         |    9 +
->  drivers/pinctrl/qcom/Makefile        |    1 +
->  drivers/pinctrl/qcom/pinctrl-sdx55.c | 1018 ++++++++++++++++++++++++++
->  3 files changed, 1028 insertions(+)
->  create mode 100644 drivers/pinctrl/qcom/pinctrl-sdx55.c
-[..]
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-[..]
-> +static const struct msm_pingroup sdx55_groups[] = {
-> +	[0] = PINGROUP(0, uim2_data, blsp_uart1, qdss_stm, ebi0_wrcdc, _, _, _, _, _),
-> +	[1] = PINGROUP(1, uim2_present, blsp_uart1, qdss_stm, _, _, _, _, _, _),
-> +	[2] = PINGROUP(2, uim2_reset, blsp_uart1, blsp_i2c1, qdss_stm, ebi0_wrcdc, _, _, _, _),
-> +	[3] = PINGROUP(3, uim2_clk, blsp_uart1, blsp_i2c1, qdss_stm, _, _, _, _, _),
-> +	[4] = PINGROUP(4, blsp_spi2, blsp_uart2, _, qdss_stm, qdss_gpio, _, _, _, _),
-> +	[5] = PINGROUP(5, blsp_spi2, blsp_uart2, _, qdss_stm, qdss_gpio, _, _, _, _),
-> +	[6] = PINGROUP(6, blsp_spi2, blsp_uart2, blsp_i2c2, char_exec, _, qdss_stm, qdss_gpio, _, _),
-> +	[7] = PINGROUP(7, blsp_spi2, blsp_uart2, blsp_i2c2, char_exec, _, qdss_stm, qdss_gpio, _, _),
-> +	[8] = PINGROUP(8, pri_mi2s, blsp_spi3, blsp_uart3, ext_dbg, ldo_en, _, _, _, _),
-> +	[9] = PINGROUP(9, pri_mi2s, blsp_spi3, blsp_uart3, ext_dbg, _, _, _, _, _),
-> +	[10] = PINGROUP(10, pri_mi2s, blsp_spi3, blsp_uart3, blsp_i2c3, ext_dbg, _, _, _, _),
-> +	[11] = PINGROUP(11, pri_mi2s, blsp_spi3, blsp_uart3, blsp_i2c3, ext_dbg, gcc_gp3, _, _, _),
-> +	[12] = PINGROUP(12, pri_mi2s, _, qdss_stm, qdss_gpio, _, _, _, _, _),
-> +	[13] = PINGROUP(13, pri_mi2s, _, qdss_stm, qdss_gpio, _, _, _, _, _),
-> +	[14] = PINGROUP(14, pri_mi2s, emac_gcc1, _, _, qdss_stm, qdss_gpio, bimc_dte0, native_tsens, vsense_trigger),
-> +	[15] = PINGROUP(15, pri_mi2s, emac_gcc0, _, _, qdss_stm, qdss_gpio, bimc_dte1, _, _),
-> +	[16] = PINGROUP(16, sec_mi2s, blsp_spi4, blsp_uart4, qdss_cti, qdss_cti, _, _, qdss_stm, qdss_gpio),
-> +	[17] = PINGROUP(17, sec_mi2s, blsp_spi4, blsp_uart4, qdss_cti, qdss_cti, _, qdss_stm, qdss_gpio, _),
-> +	[18] = PINGROUP(18, sec_mi2s, blsp_spi4, blsp_uart4, blsp_i2c4, gcc_gp1, qdss_stm, qdss_gpio, _, _),
-> +	[19] = PINGROUP(19, sec_mi2s, blsp_spi4, blsp_uart4, blsp_i2c4, jitter_bist, gcc_gp2, _, qdss_stm, qdss_gpio),
-> +	[20] = PINGROUP(20, sec_mi2s, ebi2_a, blsp_uart1, blsp_uart4, qdss_stm, _, _, _, _),
-> +	[21] = PINGROUP(21, sec_mi2s, ebi2_lcd, blsp_uart1, blsp_uart4, _, qdss_stm, _, _, _),
-> +	[22] = PINGROUP(22, sec_mi2s, ebi2_lcd, blsp_uart1, qdss_cti, qdss_cti, blsp_uart4, pll_bist, _, qdss_stm),
-> +	[23] = PINGROUP(23, sec_mi2s, ebi2_lcd, qdss_cti, qdss_cti, blsp_uart1, blsp_uart4, qdss_stm, _, _),
-> +	[24] = PINGROUP(24, adsp_ext, _, _, _, _, _, _, _, _),
-> +	[25] = PINGROUP(25, adsp_ext, _, _, _, _, _, _, _, _),
-> +	[26] = PINGROUP(26, _, _, _, native_char, _, _, _, _, _),
-> +	[27] = PINGROUP(27, _, _, _, _, _, _, _, _, _),
-> +	[28] = PINGROUP(28, qlink0_wmss, _, native_char3, _, _, _, _, _, _),
-> +	[29] = PINGROUP(29, _, _, _, native_char2, native_tsense, _, _, _, _),
-> +	[30] = PINGROUP(30, _, _, _, _, _, _, _, _, _),
-> +	[31] = PINGROUP(31, nav_gpio, _, _, _, _, _, _, _, _),
-> +	[32] = PINGROUP(32, nav_gpio, pll_ref, _, _, _, _, _, _, _),
-> +	[33] = PINGROUP(33, _, pa_indicator, native_char0, _, _, _, _, _, _),
-> +	[34] = PINGROUP(34, qlink0_en, _, _, _, _, _, _, _, _),
-> +	[35] = PINGROUP(35, qlink0_req, pll_test, _, _, _, _, _, _, _),
-> +	[36] = PINGROUP(36, _, _, cri_trng, dbg_out, _, _, _, _, _),
-> +	[37] = PINGROUP(37, _, _, _, _, _, _, _, _, _),
-> +	[38] = PINGROUP(38, _, _, prng_rosc, _, _, _, _, _, _),
-> +	[39] = PINGROUP(39, _, _, _, _, _, _, _, _, _),
-> +	[40] = PINGROUP(40, _, _, cri_trng0, _, _, _, _, _, _),
-> +	[41] = PINGROUP(41, _, _, cri_trng1, _, _, _, _, _, _),
-> +	[42] = PINGROUP(42, _, qdss_gpio, native_char1, _, _, _, _, _, _),
-> +	[43] = PINGROUP(43, _, _, _, _, _, _, _, _, _),
-> +	[44] = PINGROUP(44, coex_uart, spmi_coex, _, qdss_stm, _, _, _, _, _),
-> +	[45] = PINGROUP(45, coex_uart, spmi_coex, qdss_stm, ddr_pxi0, _, _, _, _, _),
-> +	[46] = PINGROUP(46, m_voc, ddr_bist, ddr_pxi0, _, _, _, _, _, _),
-> +	[47] = PINGROUP(47, ddr_bist, _, _, _, _, _, _, _, _),
-> +	[48] = PINGROUP(48, m_voc, ddr_bist, _, _, _, _, _, _, _),
-> +	[49] = PINGROUP(49, m_voc, ddr_bist, _, _, _, _, _, _, _),
-> +	[50] = PINGROUP(50, _, _, _, _, _, _, _, _, _),
-> +	[51] = PINGROUP(51, _, _, _, _, _, _, _, _, _),
-> +	[52] = PINGROUP(52, blsp_spi2, blsp_spi1, blsp_spi3, blsp_spi4, _, _, qdss_stm, _, _),
-> +	[53] = PINGROUP(53, pci_e, _, _, qdss_stm, _, _, _, _, _),
-> +	[54] = PINGROUP(54, qdss_cti, qdss_cti, _, _, _, _, _, _, _),
-> +	[55] = PINGROUP(55, qdss_cti, qdss_cti, tgu_ch0, _, _, _, _, _, _),
-> +	[56] = PINGROUP(56, pcie_clkreq, _, qdss_stm, _, _, _, _, _, _),
-> +	[57] = PINGROUP(57, _, qdss_stm, _, _, _, _, _, _, _),
-> +	[58] = PINGROUP(58, _, _, _, _, _, _, _, _, _),
-> +	[59] = PINGROUP(59, qdss_cti, m_voc, bimc_dte0, _, _, _, _, _, _),
-> +	[60] = PINGROUP(60, qdss_cti, _, m_voc, _, _, _, _, _, _),
-> +	[61] = PINGROUP(61, mgpi_clk, qdss_stm, qdss_gpio, bimc_dte1, _, _, _, _, _),
-> +	[62] = PINGROUP(62, i2s_mclk, audio_ref, blsp_spi1, blsp_spi2, blsp_spi3, blsp_spi4, ldo_update, qdss_stm, _),
-> +	[63] = PINGROUP(63, blsp_uart2, _, qdss_stm, qdss_gpio, atest, _, _, _, _),
-> +	[64] = PINGROUP(64, blsp_uart2, qdss_stm, qdss_gpio, atest, _, _, _, _, _),
-> +	[65] = PINGROUP(65, blsp_uart2, blsp_i2c2, _, qdss_stm, qdss_gpio, atest, _, _, _),
-> +	[66] = PINGROUP(66, blsp_uart2, blsp_i2c2, qdss_stm, qdss_gpio, atest, _, _, _, _),
-> +	[67] = PINGROUP(67, uim1_data, atest, _, _, _, _, _, _, _),
-> +	[68] = PINGROUP(68, uim1_present, _, _, _, _, _, _, _, _),
-> +	[69] = PINGROUP(69, uim1_reset, _, _, _, _, _, _, _, _),
-> +	[70] = PINGROUP(70, uim1_clk, _, _, _, _, _, _, _, _),
-> +	[71] = PINGROUP(71, mgpi_clk, blsp_spi1, blsp_spi2, blsp_spi3, blsp_spi4, _, _, _, _),
-> +	[72] = PINGROUP(72, qlink1_en, _, _, _, _, _, _, _, _),
-> +	[73] = PINGROUP(73, qlink1_req, _, _, _, _, _, _, _, _),
-> +	[74] = PINGROUP(74, qlink1_wmss, _, _, _, _, _, _, _, _),
-> +	[75] = PINGROUP(75, coex_uart2, _, _, _, _, _, _, _, _),
-> +	[76] = PINGROUP(76, coex_uart2, nav_gpio, _, _, _, _, _, _, _),
-> +	[77] = PINGROUP(77, _, _, _, _, _, _, _, _, _),
-> +	[78] = PINGROUP(78, spmi_vgi, blsp_i2c4, _, _, _, _, _, _, _),
-> +	[79] = PINGROUP(79, spmi_vgi, blsp_i2c4, _, _, _, _, _, _, _),
-> +	[80] = PINGROUP(80, _, blsp_spi1, _, _, _, _, _, _, _),
-> +	[81] = PINGROUP(81, _, blsp_spi1, _, gcc_plltest, _, _, _, _, _),
-> +	[82] = PINGROUP(82, _, blsp_spi1, _, blsp_i2c1, gcc_plltest, _, _, _, _),
-> +	[83] = PINGROUP(83, _, blsp_spi1, _, blsp_i2c1, _, _, _, _, _),
-> +	[84] = PINGROUP(84, _, _, _, _, _, _, _, _, _),
-> +	[85] = PINGROUP(85, _, _, _, _, _, _, _, _, _),
-> +	[86] = PINGROUP(86, _, _, _, _, _, _, _, _, _),
-> +	[87] = PINGROUP(87, _, _, _, _, _, _, _, _, _),
-> +	[88] = PINGROUP(88, _, _, _, _, _, _, _, _, _),
-> +	[89] = PINGROUP(89, _, _, _, _, _, _, _, _, _),
-> +	[90] = PINGROUP(90, _, _, _, _, _, _, _, _, _),
-> +	[91] = PINGROUP(91, _, _, _, _, _, _, _, _, _),
-> +	[92] = PINGROUP(92, _, _, _, _, _, _, _, _, _),
-> +	[93] = PINGROUP(93, _, _, usb2phy_ac, _, _, _, _, _, _),
-> +	[94] = PINGROUP(94, qdss_cti, qdss_cti, _, _, _, _, _, _, _),
-> +	[95] = PINGROUP(95, qdss_cti, qdss_cti, emac_pps1, _, _, _, _, _, _),
-> +	[96] = PINGROUP(96, _, _, _, _, _, _, _, _, _),
-> +	[97] = PINGROUP(97, _, _, _, _, _, _, _, _, _),
-> +	[98] = PINGROUP(98, _, _, _, _, _, _, _, _, _),
-> +	[99] = PINGROUP(99, _, _, _, _, _, _, _, _, _),
-> +	[100] = PINGROUP(100, _, _, _, _, _, _, _, _, _),
-> +	[101] = PINGROUP(101, _, _, _, _, _, _, _, _, _),
-> +	[102] = PINGROUP(102, _, _, _, _, _, _, _, _, _),
-> +	[103] = PINGROUP(103, _, _, _, _, _, _, _, _, _),
-> +	[104] = PINGROUP(104, _, _, _, _, _, _, _, _, _),
-> +	[105] = PINGROUP(105, _, _, _, _, _, _, _, _, _),
-> +	[106] = PINGROUP(106, emac_pps0, _, _, _, _, _, _, _, _),
-> +	[107] = PINGROUP(107, _, _, _, _, _, _, _, _, _),
-> +	[109] = SDC_PINGROUP(sdc1_rclk, 0x9a000, 15, 0),
-> +	[110] = SDC_PINGROUP(sdc1_clk, 0x9a000, 13, 6),
-> +	[111] = SDC_PINGROUP(sdc1_cmd, 0x9a000, 11, 3),
-> +	[112] = SDC_PINGROUP(sdc1_data, 0x9a000, 9, 0),
-> +};
-
-Looks better, and ngpios is good.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Thanks,
-Bjorn
+T24gTW9uLCAyMDIwLTExLTAyIGF0IDIyOjM4ICswODAwLCBNZW5nbG9uZyBEb25nIHdyb3RlOg0K
+PiBGcm9tOiBNZW5nbG9uZyBEb25nIDxkb25nLm1lbmdsb25nQHp0ZS5jb20uY24+DQo+IA0KPiBU
+aGlzIGNvbW1pdCBzZWVtcyBtYWtlIG5vIHNlbnNlLCBhcyBicmlkZ2UgaXMgZGVzdHJveWVkIHdo
+ZW4NCj4gYnJfbXVsdGljYXN0X2Rldl9kZWwgaXMgY2FsbGVkLg0KPiANCj4gSW4gY29tbWl0IGIx
+YjlkMzY2MDI4Zg0KPiAoImJyaWRnZTogbW92ZSBicmlkZ2UgbXVsdGljYXN0IGNsZWFudXAgdG8g
+bmRvX3VuaW5pdCIpLCBYaW4gTG9uZw0KPiBmaXhlZCB0aGUgdXNlLWFmdGVyLWZyZWUgcGFuaWMg
+aW4gYnJfbXVsdGljYXN0X2dyb3VwX2V4cGlyZWQgYnkNCj4gbW92aW5nIGJyX211bHRpY2FzdF9k
+ZXZfZGVsIHRvIG5kb191bmluaXQuIEhvd2V2ZXIsIHRoYXQgcGF0Y2ggaXMNCj4gbm90IGFwcGxp
+ZWQgdG8gNC40LlgsIGFuZCB0aGUgYnVnIGV4aXN0cy4NCj4gDQo+IEZpeCB0aGF0IGJ1ZyBieSBk
+aXNhYmxpbmcgbXVsdGljYXN0IGluIGJyX211bHRpY2FzdF9kZXZfZGVsIGZvcg0KPiA0LjQuWCwg
+YW5kIHRoZXJlIGlzIG5vIGhhcm0gZm9yIG90aGVyIGJyYW5jaGVzLg0KPiANCj4gU2lnbmVkLW9m
+Zi1ieTogTWVuZ2xvbmcgRG9uZyA8ZG9uZy5tZW5nbG9uZ0B6dGUuY29tLmNuPg0KPiAtLS0NCj4g
+IG5ldC9icmlkZ2UvYnJfbXVsdGljYXN0LmMgfCAxICsNCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
+c2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL25ldC9icmlkZ2UvYnJfbXVsdGljYXN0LmMg
+Yi9uZXQvYnJpZGdlL2JyX211bHRpY2FzdC5jDQo+IGluZGV4IGVhZTg5OGMzY2ZmNy4uOTk5MmZk
+ZmYyOTUxIDEwMDY0NA0KPiAtLS0gYS9uZXQvYnJpZGdlL2JyX211bHRpY2FzdC5jDQo+ICsrKyBi
+L25ldC9icmlkZ2UvYnJfbXVsdGljYXN0LmMNCj4gQEAgLTMzNjksNiArMzM2OSw3IEBAIHZvaWQg
+YnJfbXVsdGljYXN0X2Rldl9kZWwoc3RydWN0IG5ldF9icmlkZ2UgKmJyKQ0KPiAgCWhsaXN0X2Zv
+cl9lYWNoX2VudHJ5X3NhZmUobXAsIHRtcCwgJmJyLT5tZGJfbGlzdCwgbWRiX25vZGUpDQo+ICAJ
+CWJyX211bHRpY2FzdF9kZWxfbWRiX2VudHJ5KG1wKTsNCj4gIAlobGlzdF9tb3ZlX2xpc3QoJmJy
+LT5tY2FzdF9nY19saXN0LCAmZGVsZXRlZF9oZWFkKTsNCj4gKwlicl9vcHRfdG9nZ2xlKGJyLCBC
+Uk9QVF9NVUxUSUNBU1RfRU5BQkxFRCwgZmFsc2UpOw0KPiAgCXNwaW5fdW5sb2NrX2JoKCZici0+
+bXVsdGljYXN0X2xvY2spOw0KPiAgDQo+ICAJYnJfbXVsdGljYXN0X2djKCZkZWxldGVkX2hlYWQp
+Ow0KDQpUaGlzIGRvZXNuJ3QgbWFrZSBhbnkgc2Vuc2UuIEl0IGRvZXNuJ3QgZml4IGFueXRoaW5n
+Lg0KSWYgNC40IGhhcyBhIHByb2JsZW0gdGhlbiB0aGUgcmVsZXZhbnQgcGF0Y2hlcyBzaG91bGQg
+Z2V0IGJhY2twb3J0ZWQgdG8gaXQuDQpXZSBkb24ndCBhZGQgcmFuZG9tIGNoYW5nZXMgdG8gZml4
+IG9sZGVyIHJlbGVhc2VzLg0KDQpDaGVlcnMsDQogTmlrDQoNCk5hY2tlZC1ieTogTmlrb2xheSBB
+bGVrc2FuZHJvdiA8bmlrb2xheUBudmlkaWEuY29tPg0K
