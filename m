@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F702A567F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA86A2A56A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388309AbgKCV2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:28:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731845AbgKCV2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:28:42 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D35D2074B;
-        Tue,  3 Nov 2020 21:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604438921;
-        bh=8ytUCsyZVeF3ujFgYm5L1sW7UkyVhphiOKLK38YXOJo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=r3rNM/R7N18tFkDui7jKc1s7Rf1w4AGB0oy4QLfqljsFx0cgfbQoVLb4YXPv8FJ21
-         3GOcK6tXRCXbaRCS5TJewrPlPhPnEk4+UMQFmaSlDABV6b/XkOfyrQcMw74G4iOpe0
-         oHBd90d8NCZ7lRYb6RIVYqEyC0t2dJj32/rqukig=
-Date:   Tue, 3 Nov 2020 15:28:40 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
-Message-ID: <20201103212840.GA266427@bjorn-Precision-5520>
+        id S2388388AbgKCV3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387438AbgKCV3H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:29:07 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1FBC0613D1;
+        Tue,  3 Nov 2020 13:29:07 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id o3so14695093pgr.11;
+        Tue, 03 Nov 2020 13:29:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ljv1+KvI5hTHcQoof79AZSHu3gwcUWXr8lrxs/yX5Kk=;
+        b=bEVxy2H7uj4F63AnHPagvePAt3sVaVtR2OIFbguAGJ7EePVrcUc5Df23c/kp7ynJUC
+         08rrmUBSbnzZi2s3Z/EvZKEaMNaq/1ZBp80Qn0LwMw9h0RLZvCgy5fS191wad3UdMTSp
+         sj8HE+AuzgIeDvQYB9SAbZLOMW5ImzYT4hUMR3NtyAUl0s+SIubIIRtkMd3U2JHFCroB
+         B6vHfOIq+rfhNoChAXNmO+KUH8OkT6ZBc2fkvvNOSJt+9/G4olmfrmJDAP4CixpLIxZS
+         ILh+9iE0fnPihopFkQHwqlFr7ZBkVwE6ZTtv02RChzRGFvp9opKOl9vmbNXowQq5NQIC
+         3N8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ljv1+KvI5hTHcQoof79AZSHu3gwcUWXr8lrxs/yX5Kk=;
+        b=B6CeL5GJTeDM3W5xBpoEMQKe1hv3l7E5gN+955Xt6KYIUKVXZotlIJv28l5yVXLqBj
+         sxTaW9Cnnaj3N2yz2nZv8Whf0i7KOrYTHbKwC25tT9jvxd92+FbkqXz4m7ZHuYPzNyhJ
+         c9Rx9Bv5MYdQLJBryVKHHLdgm79niWwtPkBrWq0EGji27bk7HsnZrKqrzVqsrsfTEQFS
+         NIdHL0fyto5sR0R7T59//jhj1rG3zxcCHGDloQxeAOEKcRKAHRqiCs6ajn3B9Szd2cXK
+         aXDf2mGivLcfsx5DYxuFG49SCs6HfYAes2lR26zdGYqgUc4heTqHHxup9MVoYrsHF62O
+         rjJg==
+X-Gm-Message-State: AOAM530j8usol3US6e5R+KUwYQ1aJC7Eym+CaPW9y5c4F3LL1DeOR7Qa
+        rM8eu3yENXXfguWnOO7FiMcCAe/Fb+w=
+X-Google-Smtp-Source: ABdhPJyKloXD4xINSbgF3o5VbXFU1LF8DbROP7U4Z7BqRpP3+EpVjb9iMilSJqvIIGW0IBezf/lpIg==
+X-Received: by 2002:a62:5f83:0:b029:18a:e039:4908 with SMTP id t125-20020a625f830000b029018ae0394908mr12272492pfb.23.1604438946885;
+        Tue, 03 Nov 2020 13:29:06 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id a184sm55618pfa.86.2020.11.03.13.28.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 13:28:52 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 3 Nov 2020 13:28:47 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     Rui Salvaterra <rsalvaterra@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, ngupta@vflare.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] zram: break the strict dependency from lzo
+Message-ID: <20201103212847.GA1631979@google.com>
+References: <20201028115921.848-1-rsalvaterra@gmail.com>
+ <20201028185927.GB128655@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201030100815.2269-12-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201028185927.GB128655@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
-> There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
-> files, and the old proc interface. Two check against
-> iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
-> this starts to matter, since we don't want random userspace having
-> access to PCI BARs while a driver is loaded and using it.
+Hi Sergey and Rui,
+
+On Thu, Oct 29, 2020 at 03:59:27AM +0900, Sergey Senozhatsky wrote:
+> Cc-ing Andrew
 > 
-> Fix this by adding the same iomem_is_exclusive() check we already have
-> on the sysfs side in pci_mmap_resource().
+> message-id: 20201028115921.848-1-rsalvaterra@gmail.com
 > 
-> References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> On (20/10/28 11:59), Rui Salvaterra wrote:
+> > There's nothing special about zram and lzo. It works just fine without it, so
+> > as long as at least one of the other supported compression algorithms is
+> > selected.
+> > 
+> > Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+> > Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
 
-This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
-only used in a few places:
+Sorry for the late. I am still looking for the time to look into this
+patch.
 
-  e1000_probe() calls pci_request_selected_regions_exclusive(),
-  ne_pci_probe() calls pci_request_regions_exclusive(),
-  vmbus_allocate_mmio() calls request_mem_region_exclusive()
+I totally agree with the motivation of Rui. Before that, just a
+dumb question.
 
-which raises the question of whether it's worth keeping
-IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
-completely.
+Can't we just provide choice/endchoice in Kconfig to select default
+comp algorithm from admin?
 
-But if you want it,
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Jérôme Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-pci@vger.kernel.org
-> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> --
-> v2: Improve commit message (Bjorn)
+> 
+> Minchan, I'm fine with the change.
+> 
+> Two things from my side:
+> 
+> 1) The commit message, probably, can be a bit more informative. Something
+> like this?
+> 
+> 	ZRAM always enables CRYPTO_LZO because lzo-rle is the hardcoded
+> 	fallback compression algorithm, which means that on systems where
+> 	ZRAM always use, for instance, CRYPTO_ZSTD lzo kernel module
+> 	becomes unneeded. This patch removes the hardcoded lzo-lre
+> 	dependency, instead ZRAM picks the first supported CRYPTO
+> 	compression algorithm, should it be ZSTD or LZ4, etc; and only
+> 	forcibly enables CRYPTO_LZO (previous behaviour) if none of the
+> 	alternative algorithms were selected.
+> 
+> 
+> 2) The ZRAM_AUTOSEL_ALGO allows to deselect CRYPTO_LZO only if
+> CRYPTO_LZ4/CRYPTO_LZ4HC/CRYPTO_842/CRYPTO_ZSTD are compiled in (=y).
+> If any of the algorithms is selected as a module (=m) then CRYPTO_LZO
+> is selected as the default algorithm. Apparently depends on !(CONFIG_FOO)
+> means depends on !(CONFIG_FOO=y).
+> 
+> It appears that the below change fixes it, but it looks a bit ugly.
+> 
 > ---
->  drivers/pci/proc.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+> index 141ce0ebad06..f2fd34de9200 100644
+> --- a/drivers/block/zram/Kconfig
+> +++ b/drivers/block/zram/Kconfig
+> @@ -15,7 +15,7 @@ config ZRAM
+>  
+>  config ZRAM_AUTOSEL_ALGO
+>  	def_bool y
+> -	depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
+> +	depends on ZRAM && !(CRYPTO_LZ4=m || CRYPTO_LZ4HC=m || CRYPTO_842=m || CRYPTO_ZSTD=m || CRYPTO_LZ4=y || CRYPTO_LZ4HC=y || CRYPTO_842=y || CRYPTO_ZSTD=y)
+>  	select CRYPTO_LZO
+>  
+>  config ZRAM_WRITEBACK
+> ---
 > 
-> diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-> index d35186b01d98..3a2f90beb4cb 100644
-> --- a/drivers/pci/proc.c
-> +++ b/drivers/pci/proc.c
-> @@ -274,6 +274,11 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
->  		else
->  			return -EINVAL;
->  	}
-> +
-> +	if (dev->resource[i].flags & IORESOURCE_MEM &&
-> +	    iomem_is_exclusive(dev->resource[i].start))
-> +		return -EINVAL;
-> +
->  	ret = pci_mmap_page_range(dev, i, vma,
->  				  fpriv->mmap_state, write_combine);
->  	if (ret < 0)
-> -- 
-> 2.28.0
-> 
+> 	-ss
