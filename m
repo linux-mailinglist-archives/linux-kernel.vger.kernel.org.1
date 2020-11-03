@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D83E2A5153
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5E62A5157
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgKCUjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:39:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S1730148AbgKCUkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730113AbgKCUjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:39:53 -0500
+        id S1730127AbgKCUj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:39:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0D2022226;
-        Tue,  3 Nov 2020 20:39:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 983932224E;
+        Tue,  3 Nov 2020 20:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435992;
-        bh=iGEgOCDkbm1xGN4RoEK1TxS/V9O+IkxdIQz+aBqBTxY=;
+        s=default; t=1604435999;
+        bh=+2fPEDkeuBa0U3jZ0ahFGPzrljTJ2aqNeor3jcAZEDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YQ6UxySiNH0NvXNUKejqIvkwk49rTJMnaDsjFbXrH2xnCcx1BscpwUmesVH5lEnZy
-         2Bpf3z9B/MxcHyzbclR4kffuxxNpz4pCYvs1S+RWcRlzjN3uCLibwewwudttWimmCD
-         q8HNPhti3/Vpf7wdzuOjEEFF9xuymSeat79bS8gY=
+        b=Sp3rn0eSoKksPvvqKqI9QYtfAqDFJhX16TdIQFmWrJgZuy6x+XZvw3k95U4Ay3/o+
+         XbLul5me7hAt0keTfQNq8mrETUFBQPtvlqidsyBvHQpB/9ILx5QaE6wHBU8nilLQdy
+         cmFL4jDZeF6KwZeAUd3BKmwN1DwaTzhiUnWd4rn0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 019/391] firmware: arm_scmi: Fix locking in notifications
-Date:   Tue,  3 Nov 2020 21:31:10 +0100
-Message-Id: <20201103203349.219858293@linuxfoundation.org>
+Subject: [PATCH 5.9 021/391] x86/alternative: Dont call text_poke() in lazy TLB mode
+Date:   Tue,  3 Nov 2020 21:31:12 +0100
+Message-Id: <20201103203349.326507694@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,92 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Marussi <cristian.marussi@arm.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit c7821c2d9c0dda0adf2bcf88e79b02a19a430be4 ]
+[ Upstream commit abee7c494d8c41bb388839bccc47e06247f0d7de ]
 
-When a protocol registers its events, the notification core takes care
-to rescan the hashtable of pending event handlers and activate all the
-possibly existent handlers referring to any of the events that are just
-registered by the new protocol. When a pending handler becomes active
-the core requests and enables the corresponding events in the SCMI
-firmware.
+When running in lazy TLB mode the currently active page tables might
+be the ones of a previous process, e.g. when running a kernel thread.
 
-If, for whatever reason, the enable fails, such invalid event handler
-must be finally removed and freed. Let us ensure to use the
-scmi_put_active_handler() helper which handles properly the needed
-additional locking.
+This can be problematic in case kernel code is being modified via
+text_poke() in a kernel thread, and on another processor exit_mmap()
+is active for the process which was running on the first cpu before
+the kernel thread.
 
-Failing to properly acquire all the needed mutexes exposes a race that
-leads to the following splat being observed:
+As text_poke() is using a temporary address space and the former
+address space (obtained via cpu_tlbstate.loaded_mm) is restored
+afterwards, there is a race possible in case the cpu on which
+exit_mmap() is running wants to make sure there are no stale
+references to that address space on any cpu active (this e.g. is
+required when running as a Xen PV guest, where this problem has been
+observed and analyzed).
 
- WARNING: CPU: 0 PID: 388 at lib/refcount.c:28 refcount_warn_saturate+0xf8/0x148
- Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
- 	Platform, BIOS EDK II Jun 30 2020
- pstate: 40000005 (nZcv daif -PAN -UAO BTYPE=--)
- pc : refcount_warn_saturate+0xf8/0x148
- lr : refcount_warn_saturate+0xf8/0x148
- Call trace:
-  refcount_warn_saturate+0xf8/0x148
-  scmi_put_handler_unlocked.isra.10+0x204/0x208
-  scmi_put_handler+0x50/0xa0
-  scmi_unregister_notifier+0x1bc/0x240
-  scmi_notify_tester_remove+0x4c/0x68 [dummy_scmi_consumer]
-  scmi_dev_remove+0x54/0x68
-  device_release_driver_internal+0x114/0x1e8
-  driver_detach+0x58/0xe8
-  bus_remove_driver+0x88/0xe0
-  driver_unregister+0x38/0x68
-  scmi_driver_unregister+0x1c/0x28
-  scmi_drv_exit+0x1c/0xae0 [dummy_scmi_consumer]
-  __arm64_sys_delete_module+0x1a4/0x268
-  el0_svc_common.constprop.3+0x94/0x178
-  do_el0_svc+0x2c/0x98
-  el0_sync_handler+0x148/0x1a8
-  el0_sync+0x158/0x180
+In order to avoid that, drop off TLB lazy mode before switching to the
+temporary address space.
 
-Link: https://lore.kernel.org/r/20201013133109.49821-1-cristian.marussi@arm.com
-Fixes: e7c215f358a35 ("firmware: arm_scmi: Add notification callbacks-registration")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Fixes: cefa929c034eb5d ("x86/mm: Introduce temporary mm structs")
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201009144225.12019-1-jgross@suse.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/arm_scmi/notify.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ arch/x86/kernel/alternative.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 4731daaacd19e..4d9f6de3a7fae 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -1403,15 +1403,21 @@ static void scmi_protocols_late_init(struct work_struct *work)
- 				"finalized PENDING handler - key:%X\n",
- 				hndl->key);
- 			ret = scmi_event_handler_enable_events(hndl);
-+			if (ret) {
-+				dev_dbg(ni->handle->dev,
-+					"purging INVALID handler - key:%X\n",
-+					hndl->key);
-+				scmi_put_active_handler(ni, hndl);
-+			}
- 		} else {
- 			ret = scmi_valid_pending_handler(ni, hndl);
--		}
--		if (ret) {
--			dev_dbg(ni->handle->dev,
--				"purging PENDING handler - key:%X\n",
--				hndl->key);
--			/* this hndl can be only a pending one */
--			scmi_put_handler_unlocked(ni, hndl);
-+			if (ret) {
-+				dev_dbg(ni->handle->dev,
-+					"purging PENDING handler - key:%X\n",
-+					hndl->key);
-+				/* this hndl can be only a pending one */
-+				scmi_put_handler_unlocked(ni, hndl);
-+			}
- 		}
- 	}
- 	mutex_unlock(&ni->pending_mtx);
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index cdaab30880b91..cd6be6f143e85 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -807,6 +807,15 @@ static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
+ 	temp_mm_state_t temp_state;
+ 
+ 	lockdep_assert_irqs_disabled();
++
++	/*
++	 * Make sure not to be in TLB lazy mode, as otherwise we'll end up
++	 * with a stale address space WITHOUT being in lazy mode after
++	 * restoring the previous mm.
++	 */
++	if (this_cpu_read(cpu_tlbstate.is_lazy))
++		leave_mm(smp_processor_id());
++
+ 	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	switch_mm_irqs_off(NULL, mm, current);
+ 
 -- 
 2.27.0
 
