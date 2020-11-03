@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F63B2A5168
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6878E2A516A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbgKCUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51878 "EHLO mail.kernel.org"
+        id S1730250AbgKCUkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgKCUkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:32 -0500
+        id S1729702AbgKCUkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5300422226;
-        Tue,  3 Nov 2020 20:40:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AE8C22226;
+        Tue,  3 Nov 2020 20:40:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436031;
-        bh=K8Qm99nZlFsLcr3tHOpBLRNE8KeIUfRgLcW6fKBPqmI=;
+        s=default; t=1604436038;
+        bh=MvTsDodUIbN0+ytdtfzjfZbMHKo0QtHflkva6NlDow8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WbHpHmjnM/pdyFXkD5wsN4Ajr3HOQ8G9OpBPwt9iNCFY+TUhP9k8k8MgkCr4kdG3M
-         SQhnDaxfS2eM2KIRtdIMPCFA3EOIafW41RX2+Qf30Z5lkfhxlb0iqwLVHTM2Xb/fmX
-         uWjfcX1HbR+75ntMyFFvhZxdwpzEkXoFv6rvRHCw=
+        b=JFFeYI2lcFqfBKQNXphyJ9jjxYKWKn41D/1WB1VUBzgmeTbJcodCC4r506giMhyGh
+         DMmJdNRxJ7I2hpJR5i7NzJUGwOSkvDfjlMbdv7PUgmv3eQqjnbx5Gqt4K5T4ZGbJ29
+         tZpRTWngibZZ+LnvNxoMCoBpwj38Z+/yt2VRgKDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 074/391] drm/amdgpu: restore ras flags when user resets eeprom(v2)
-Date:   Tue,  3 Nov 2020 21:32:05 +0100
-Message-Id: <20201103203352.185549880@linuxfoundation.org>
+Subject: [PATCH 5.9 076/391] ath10k: start recovery process when payload length exceeds max htc length for sdio
+Date:   Tue,  3 Nov 2020 21:32:07 +0100
+Message-Id: <20201103203352.292204880@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,50 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guchun Chen <guchun.chen@amd.com>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit bf0b91b78f002faa1be1902a75eeb0797f9fbcf3 ]
+[ Upstream commit 2fd3c8f34d08af0a6236085f9961866ad92ef9ec ]
 
-RAS flags needs to be cleaned as well when user requires
-one clean eeprom.
+When simulate random transfer fail for sdio write and read, it happened
+"payload length exceeds max htc length" and recovery later sometimes.
 
-v2: RAS flags shall be restored after eeprom reset succeeds.
+Test steps:
+1. Add config and update kernel:
+CONFIG_FAIL_MMC_REQUEST=y
+CONFIG_FAULT_INJECTION=y
+CONFIG_FAULT_INJECTION_DEBUG_FS=y
 
-Signed-off-by: Guchun Chen <guchun.chen@amd.com>
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+2. Run simulate fail:
+cd /sys/kernel/debug/mmc1/fail_mmc_request
+echo 10 > probability
+echo 10 > times # repeat until hitting issues
+
+3. It happened payload length exceeds max htc length.
+[  199.935506] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+....
+[  264.990191] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+
+4. after some time, such as 60 seconds, it start recovery which triggered
+by wmi command timeout for periodic scan.
+[  269.229232] ieee80211 phy0: Hardware restart was requested
+[  269.734693] ath10k_sdio mmc1:0001:1: device successfully recovered
+
+The simulate fail of sdio is not a real sdio transter fail, it only
+set an error status in mmc_should_fail_request after the transfer end,
+actually the transfer is success, then sdio_io_rw_ext_helper will
+return error status and stop transfer the left data. For example,
+the really RX len is 286 bytes, then it will split to 2 blocks in
+sdio_io_rw_ext_helper, one is 256 bytes, left is 30 bytes, if the
+first 256 bytes get an error status by mmc_should_fail_request,then
+the left 30 bytes will not read in this RX operation. Then when the
+next RX arrive, the left 30 bytes will be considered as the header
+of the read, the top 4 bytes of the 30 bytes will be considered as
+lookaheads, but actually the 4 bytes is not the lookaheads, so the len
+from this lookaheads is not correct, it exceeds max htc length 4088
+sometimes. When happened exceeds, the buffer chain is not matched between
+firmware and ath10k, then it need to start recovery ASAP. Recently then
+recovery will be started by wmi command timeout, but it will be long time
+later, for example, it is 60+ seconds later from the periodic scan, if
+it does not have periodic scan, it will be longer.
+
+Start recovery when it happened "payload length exceeds max htc length"
+will be reasonable.
+
+This patch only effect sdio chips.
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200108031957.22308-3-wgong@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 1bedb416eebd0..b4fb5a473df5a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -367,12 +367,19 @@ static ssize_t amdgpu_ras_debugfs_ctrl_write(struct file *f, const char __user *
- static ssize_t amdgpu_ras_debugfs_eeprom_write(struct file *f, const char __user *buf,
- 		size_t size, loff_t *pos)
- {
--	struct amdgpu_device *adev = (struct amdgpu_device *)file_inode(f)->i_private;
-+	struct amdgpu_device *adev =
-+		(struct amdgpu_device *)file_inode(f)->i_private;
- 	int ret;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 63f882c690bff..0841e69b10b1a 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -557,6 +557,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 				    le16_to_cpu(htc_hdr->len),
+ 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
+ 			ret = -ENOMEM;
++
++			queue_work(ar->workqueue, &ar->restart_work);
++			ath10k_warn(ar, "exceeds length, start recovery\n");
++
+ 			goto err;
+ 		}
  
--	ret = amdgpu_ras_eeprom_reset_table(&adev->psp.ras.ras->eeprom_control);
-+	ret = amdgpu_ras_eeprom_reset_table(
-+			&(amdgpu_ras_get_context(adev)->eeprom_control));
- 
--	return ret == 1 ? size : -EIO;
-+	if (ret == 1) {
-+		amdgpu_ras_get_context(adev)->flags = RAS_DEFAULT_FLAGS;
-+		return size;
-+	} else {
-+		return -EIO;
-+	}
- }
- 
- static const struct file_operations amdgpu_ras_debugfs_ctrl_ops = {
 -- 
 2.27.0
 
