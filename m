@@ -2,134 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF1C2A3ADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6AC2A3AEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgKCDK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:10:27 -0500
-Received: from ozlabs.org ([203.11.71.1]:40777 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbgKCDK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:10:27 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQFCL6zX8z9sTD;
-        Tue,  3 Nov 2020 14:10:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604373023;
-        bh=Ges7C/ArmWXFW7iXv4In31BW3V8JG3ZYIfuu2ZQ/2Eo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ihTKrRAAmZV55x3NC2ail+/22dwge79zOKTUdMXsR5E16ngd+5GMpvIwhZMiSlNIq
-         wyz/6eW8N/hvlCpAisSw+OgS8zbcIp+B4E08wPddFqFByO8JjPPWh+HCWgmxKd/VUa
-         ryOvXEh/XY2ncxPRa0U8/neehB1YqBhaBsPN9uJ3dSxpqTBhanERYr7J6p3Hssb4ZB
-         my58L21LYozpYr2TJb7OmNfIXfnCm9ErUexWatF6vXnl815FdzPAuxSz3d+OgKuprk
-         jp3cyJBvJgDc1KVI6CZwf2XhpzTJ1qAlreYj4lDBCUGJyEZ36kYTBRipLg3S0651t+
-         1Gy+P0TMbPtOg==
-Date:   Tue, 3 Nov 2020 14:10:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the amdgpu tree with Linus' tree
-Message-ID: <20201103141021.2ee64034@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dV=H1/m1EVRXXYbS0uMdmQQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1727087AbgKCDPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:15:19 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47014 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725913AbgKCDPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 22:15:13 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7387y6BfU3sEAA--.3657S2;
+        Tue, 03 Nov 2020 11:15:07 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 0/6] Modify some registers operations and move decode_cpucfg() to loongson_regs.h
+Date:   Tue,  3 Nov 2020 11:15:00 +0800
+Message-Id: <1604373306-3599-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx7387y6BfU3sEAA--.3657S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWkGw1fKw1kAryrAr1UKFg_yoW3ZFg_KF
+        W7tas5J3yxW3WfJa4kXr18XrW7XFW8Cay3GFn8tr9aqa4Yqr98Zr48Cr4UWa1DWa1q9ryr
+        Xr48WFykA3WIqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU84SoDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dV=H1/m1EVRXXYbS0uMdmQQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+v2: Add some callbacks in csr_ipi probe() for patch #4
 
-Hi all,
+Tiezhu Yang (6):
+  MIPS: Loongson64: Do not write the read only field LPA of CP0_CONFIG3
+  MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
+  MIPS: Loongson64: Set IPI_Enable register per core by itself
+  MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU
+  MIPS: Loongson64: Make sure the PC address is correct when 3A4000+ CPU
+    hotplug
+  MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+ .../asm/mach-loongson64/kernel-entry-init.h        |   8 --
+ .../include/asm/mach-loongson64/loongson_regs.h    |  34 ++++++
+ arch/mips/kernel/cpu-probe.c                       |  31 +-----
+ arch/mips/loongson64/numa.c                        |  20 +---
+ arch/mips/loongson64/smp.c                         | 123 +++++++++++++++++----
+ 5 files changed, 136 insertions(+), 80 deletions(-)
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+-- 
+2.1.0
 
-between commit:
-
-  0a667b500703 ("drm/ttm: remove bdev from ttm_tt")
-
-from Linus' tree and commit:
-
-  c4c5ae67d179 ("drm/amdgpu/amdgpu: use "*" adjacent to data name")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 8039d2399584,69ebd07f3eee..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@@ -63,16 -63,13 +63,16 @@@
- =20
-  #define AMDGPU_TTM_VRAM_MAX_DW_READ	(size_t)128
- =20
- +static int amdgpu_ttm_backend_bind(struct ttm_bo_device *bdev,
- +				   struct ttm_tt *ttm,
- +				   struct ttm_resource *bo_mem);
- +
-  static int amdgpu_ttm_init_on_chip(struct amdgpu_device *adev,
-  				    unsigned int type,
-- 				    uint64_t size)
-+ 				    uint64_t size_in_page)
-  {
-  	return ttm_range_man_init(&adev->mman.bdev, type,
-- 				  false, size >> PAGE_SHIFT);
- -				  TTM_PL_FLAG_UNCACHED, TTM_PL_FLAG_UNCACHED,
-+ 				  false, size_in_page);
-  }
- =20
-  /**
-@@@ -1107,12 -1111,11 +1107,12 @@@ gart_bind_fail
-   * Called by ttm_tt_bind() on behalf of ttm_bo_handle_move_mem().
-   * This handles binding GTT memory to the device address space.
-   */
- -static int amdgpu_ttm_backend_bind(struct ttm_tt *ttm,
- +static int amdgpu_ttm_backend_bind(struct ttm_bo_device *bdev,
- +				   struct ttm_tt *ttm,
-  				   struct ttm_resource *bo_mem)
-  {
- -	struct amdgpu_device *adev =3D amdgpu_ttm_adev(ttm->bdev);
- +	struct amdgpu_device *adev =3D amdgpu_ttm_adev(bdev);
-- 	struct amdgpu_ttm_tt *gtt =3D (void*)ttm;
-+ 	struct amdgpu_ttm_tt *gtt =3D (void *)ttm;
-  	uint64_t flags;
-  	int r =3D 0;
- =20
-
---Sig_/dV=H1/m1EVRXXYbS0uMdmQQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+gyh0ACgkQAVBC80lX
-0Gy8fgf/UpmdpGoqG9MhMzVybDdehT9ooRhhVvYV0bd5it86taYyXudjRo6CxRUp
-4TS6M1A6TKjRY9DXAtQZsmHJ/kBagcTYUbhurylHmtlqDP493apOB29O1/VtBRi3
-IRHk13rXjHp57L6TvRWJTm89JlXA6hDgo34bhg62nOh6aou9qkRmnvUAdf5cRwLd
-UVg/wc7WOcvQ8C8cc44UZ+/41iEAyO2SweR83qcn80WO2hPwecB3eE3DUp1TS5uF
-OatbXOtbo7dbrIQINH1xOLJzYxKBB8EhoGtryn3eyahqMqgmQwjw0z60tk6v+d6F
-T9KgKJBd5RWx4+tDR6DYhlY0XliTrQ==
-=tmF5
------END PGP SIGNATURE-----
-
---Sig_/dV=H1/m1EVRXXYbS0uMdmQQ--
