@@ -2,224 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904782A3BFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602D22A3BFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgKCFdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 00:33:32 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:46956 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgKCFdb (ORCPT
+        id S1727194AbgKCFez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 00:34:55 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41152 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgKCFez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:33:31 -0500
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [151.80.165.199])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 75613200FE;
-        Tue,  3 Nov 2020 05:33:27 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id E251C3ECDA;
-        Tue,  3 Nov 2020 06:33:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 2C34A2A2AC;
-        Tue,  3 Nov 2020 00:33:25 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604381605;
-        bh=nThwOyjBWAJcktJqpzjkWAMAlH9oE9b3JGu8MjJPvjQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mmObzJcw3jfec3MDqauonU9ifBncXLpVbmfReDTOmZImXkaGlxPvLWoSSfl1flz8Q
-         dDCcktafC2DnOnak6GeX2A2J5G8J4IQ0FBhtV2pQcd7NQd75NbIO7fvZPFCmoF/Qim
-         l5u/zzeHmjx5pWtiZJSwPz8/2ACKRb8hZjG0uQ7k=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ldwlfpXFIyOX; Tue,  3 Nov 2020 00:33:24 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Tue,  3 Nov 2020 00:33:23 -0500 (EST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id DD232400C9;
-        Tue,  3 Nov 2020 05:33:22 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="u3QOr+xc";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0D467400C9;
-        Tue,  3 Nov 2020 05:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1604381599;
-        bh=nThwOyjBWAJcktJqpzjkWAMAlH9oE9b3JGu8MjJPvjQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=u3QOr+xckya2+HbbVmcqPlrjYt3dmMDYzGy59D+Wy1p4GxyUOSvZXICZMHJDz0qP/
-         8WNzwdncFjhUssBtTccWNrm09IYFtcfUDGF1jbo9zxp1OXWDEnLaYTXHoqVajhFzaL
-         HouHkaEeqqmy//KT/P+LAIUZiVVwMxqzNGEGqRps=
-Subject: Re: [PATCH v2 6/6] MIPS: Loongson64: Move decode_cpucfg() to
- loongson_regs.h
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1604373306-3599-1-git-send-email-yangtiezhu@loongson.cn>
- <1604373306-3599-7-git-send-email-yangtiezhu@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <e6354e46-648b-ccd1-c0ee-c20158ac8a8e@flygoat.com>
-Date:   Tue, 3 Nov 2020 13:33:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 3 Nov 2020 00:34:55 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A35YmhY057709;
+        Tue, 3 Nov 2020 05:34:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ from : mime-version : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=HlT5yJVmAJtxWGJeAI2tVIvqrtonMltJepMGyY8oo38=;
+ b=Wx+EmW8BNpU+Dka5DuqAk6puQvQotsLuVBMOBSJqKpYabLf+eJp9ItSmf33Kr5XwOjFY
+ t2qhYultNad0JHbxteK+ND5qv5vKurNvuPZn2dILJ61m9l/Yn2NhB82qdt12oIB8LoWB
+ 2JcLqjMdyB4joOs1JTj5+Yz+VM0mrgwEeqOZnNrBW0mJ6G6VsZxR9efNVjnFZln0BAjY
+ RV3V2RGgTylwq0PCmQ6Ohq8dn2x2c11mObHnJ3U3qA2+DXFbK60Gy+rQrP3Ibucy1zcD
+ yOEDwcJiQDyPbhqUxTYpla87v5cDrwh/5CjKLjC+b+ISO6l4ubnGmKXlNIq+a6B0R2t5 PQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34hhb1yc5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 03 Nov 2020 05:34:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A35UgPr053927;
+        Tue, 3 Nov 2020 05:34:47 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34hw0cy2w9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Nov 2020 05:34:47 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A35YkoU015307;
+        Tue, 3 Nov 2020 05:34:46 GMT
+Received: from [10.159.241.142] (/10.159.241.142)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Nov 2020 21:34:46 -0800
+Message-ID: <5FA0EBF4.5050802@oracle.com>
+Date:   Mon, 02 Nov 2020 21:34:44 -0800
+From:   si-wei liu <si-wei.liu@oracle.com>
+Organization: Oracle Corporation
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-In-Reply-To: <1604373306-3599-7-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+CC:     lingshan.zhu@intel.com, joao.m.martins@oracle.com,
+        boris.ostrovsky@oracle.com, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] vhost-vdpa: fix page pinning leakage in error
+ path
+References: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com> <1601701330-16837-3-git-send-email-si-wei.liu@oracle.com> <574a64e3-8873-0639-fe32-248cb99204bc@redhat.com> <5F863B83.6030204@oracle.com> <835e79de-52d9-1d07-71dd-d9bee6b9f62e@redhat.com> <20201015091150-mutt-send-email-mst@kernel.org> <5F88AE4A.9030300@oracle.com> <20201029175305-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201029175305-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: DD232400C9
-X-Spamd-Result: default: False [2.90 / 10.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030040
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011030041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-ÔÚ 2020/11/3 11:15, Tiezhu Yang Ð´µÀ:
-> Since decode_cpucfg() is only used for Loongson64, just move
-> it to loongson_regs.h to avoid the pollution of common code
-> with #ifdef CONFIG_CPU_LOONGSON64.
+On 10/29/2020 2:53 PM, Michael S. Tsirkin wrote:
+> On Thu, Oct 15, 2020 at 01:17:14PM -0700, si-wei liu wrote:
+>> On 10/15/2020 6:11 AM, Michael S. Tsirkin wrote:
+>>> On Thu, Oct 15, 2020 at 02:15:32PM +0800, Jason Wang wrote:
+>>>> On 2020/10/14 ä¸Šåˆ7:42, si-wei liu wrote:
+>>>>>> So what I suggest is to fix the pinning leakage first and do the
+>>>>>> possible optimization on top (which is still questionable to me).
+>>>>> OK. Unfortunately, this was picked and got merged in upstream. So I will
+>>>>> post a follow up patch set to 1) revert the commit to the original
+>>>>> __get_free_page() implementation, and 2) fix the accounting and leakage
+>>>>> on top. Will it be fine?
+>>>> Fine.
+>>>>
+>>>> Thanks
+>>> Fine by me too.
+>>>
+>> Thanks, Michael & Jason. I will post the fix shortly. Stay tuned.
+>>
+>> -Siwei
+> did I miss the patch?
 >
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+The patch had been posted last Friday. See this thread:
 
-Hi all,
+https://lore.kernel.org/virtualization/1604043944-4897-2-git-send-email-si-wei.liu@oracle.com/
 
-Don't know if it's a good idea to move this piece of code around...
-Also I do think loongson_regs.h should be a common header while
-cpucfg_decode won't be reused else where.
-
-But I do respect Thomas's decision if it's necessary.
-
-Thanks
-
-- Jiaxun
-
-> ---
->
-> v2: No changes
->
->   .../include/asm/mach-loongson64/loongson_regs.h    | 24 +++++++++++++++++
->   arch/mips/kernel/cpu-probe.c                       | 31 +---------------------
->   2 files changed, 25 insertions(+), 30 deletions(-)
->
-> diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-> index 1659935..2d469d6 100644
-> --- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-> +++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-> @@ -129,6 +129,30 @@ static inline u32 read_cpucfg(u32 reg)
->   #define LOONGSON_CFG7_GCCAEQRP	BIT(0)
->   #define LOONGSON_CFG7_UCAWINP	BIT(1)
->   
-> +static inline void decode_cpucfg(struct cpuinfo_mips *c)
-> +{
-> +	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
-> +	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
-> +	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
-> +
-> +	if (cfg1 & LOONGSON_CFG1_MMI)
-> +		c->ases |= MIPS_ASE_LOONGSON_MMI;
-> +
-> +	if (cfg2 & LOONGSON_CFG2_LEXT1)
-> +		c->ases |= MIPS_ASE_LOONGSON_EXT;
-> +
-> +	if (cfg2 & LOONGSON_CFG2_LEXT2)
-> +		c->ases |= MIPS_ASE_LOONGSON_EXT2;
-> +
-> +	if (cfg2 & LOONGSON_CFG2_LSPW) {
-> +		c->options |= MIPS_CPU_LDPTE;
-> +		c->guest.options |= MIPS_CPU_LDPTE;
-> +	}
-> +
-> +	if (cfg3 & LOONGSON_CFG3_LCAMP)
-> +		c->ases |= MIPS_ASE_LOONGSON_CAM;
-> +}
-> +
->   static inline bool cpu_has_csr(void)
->   {
->   	if (cpu_has_cfg())
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index e685369..1fa2c8b 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -31,6 +31,7 @@
->   #include "fpu-probe.h"
->   
->   #include <asm/mach-loongson64/cpucfg-emul.h>
-> +#include <asm/mach-loongson64/loongson_regs.h>
->   
->   /* Hardware capabilities */
->   unsigned int elf_hwcap __read_mostly;
-> @@ -1692,33 +1693,6 @@ static inline void cpu_probe_cavium(struct cpuinfo_mips *c, unsigned int cpu)
->   	}
->   }
->   
-> -#ifdef CONFIG_CPU_LOONGSON64
-> -#include <loongson_regs.h>
-> -
-> -static inline void decode_cpucfg(struct cpuinfo_mips *c)
-> -{
-> -	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
-> -	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
-> -	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
-> -
-> -	if (cfg1 & LOONGSON_CFG1_MMI)
-> -		c->ases |= MIPS_ASE_LOONGSON_MMI;
-> -
-> -	if (cfg2 & LOONGSON_CFG2_LEXT1)
-> -		c->ases |= MIPS_ASE_LOONGSON_EXT;
-> -
-> -	if (cfg2 & LOONGSON_CFG2_LEXT2)
-> -		c->ases |= MIPS_ASE_LOONGSON_EXT2;
-> -
-> -	if (cfg2 & LOONGSON_CFG2_LSPW) {
-> -		c->options |= MIPS_CPU_LDPTE;
-> -		c->guest.options |= MIPS_CPU_LDPTE;
-> -	}
-> -
-> -	if (cfg3 & LOONGSON_CFG3_LCAMP)
-> -		c->ases |= MIPS_ASE_LOONGSON_CAM;
-> -}
-> -
->   static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->   {
->   	decode_configs(c);
-> @@ -1787,9 +1761,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->   		break;
->   	}
->   }
-> -#else
-> -static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu) { }
-> -#endif
->   
->   static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
->   {
+-Siwei
