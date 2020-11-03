@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48182A53BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687ED2A5696
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387552AbgKCVED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:04:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41788 "EHLO mail.kernel.org"
+        id S1733043AbgKCU6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387915AbgKCVD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:03:58 -0500
+        id S1733026AbgKCU6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13BD4206B5;
-        Tue,  3 Nov 2020 21:03:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11BA32053B;
+        Tue,  3 Nov 2020 20:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437437;
-        bh=yqBwzzgFt+eDq0D+gtUwTG62XzSszG/FzkUVBMHpgT4=;
+        s=default; t=1604437130;
+        bh=lTsYLD4/3AZ0wNQQTQ9iTZNTU29uhtenMZP9Qvc8jRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iPIJh1orQ9cOHL4RoQDHxbBaLZLZlKJgQos34bWmopmXI8PuHtTfuztxjlwNhBDqV
-         OCFUa44iQAD9wqaF6S9gQHHvniKyJc+COcMZGlTK8vsiy2p/knJetBwatbkG/VSr0n
-         nXq89xq7SzzQoBWx17Bh65+XDc49kDOZ8tPEWiB4=
+        b=MdBVxclrNxg/5aHYlHtwz8J16lQCeOvKBqCT2RAn7U6B9syNvjKDYMEn5H3CtVh/j
+         6HqmdUOlmpl2FOOzfpwcEnpAVfNYTN80NOaD6rOlgQMFOeXSApQzAVbmfSFsbAKyw0
+         zVEyebx8r+alxFfTucDSIMuHOLSv6fgJR1x1ZXRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 075/191] drm/bridge/synopsys: dsi: add support for non-continuous HS clock
-Date:   Tue,  3 Nov 2020 21:36:07 +0100
-Message-Id: <20201103203241.349550764@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 120/214] scsi: qla2xxx: Fix crash on session cleanup with unload
+Date:   Tue,  3 Nov 2020 21:36:08 +0100
+Message-Id: <20201103203302.131319515@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit c6d94e37bdbb6dfe7e581e937a915ab58399b8a5 ]
+commit 50457dab670f396557e60c07f086358460876353 upstream.
 
-Current code enables the HS clock when video mode is started or to
-send out a HS command, and disables the HS clock to send out a LP
-command. This is not what DSI spec specify.
+On unload, session cleanup prematurely gave the signal for driver unload
+path to advance.
 
-Enable HS clock either in command and in video mode.
-Set automatic HS clock management for panels and devices that
-support non-continuous HS clock.
+Link: https://lore.kernel.org/r/20200929102152.32278-6-njavali@marvell.com
+Fixes: 726b85487067 ("qla2xxx: Add framework for async fabric discovery")
+Cc: stable@vger.kernel.org
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Tested-by: Philippe Cornu <philippe.cornu@st.com>
-Reviewed-by: Philippe Cornu <philippe.cornu@st.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200701194234.18123-1-yannick.fertre@st.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/scsi/qla2xxx/qla_target.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index fd7999642cf8a..8b5f9241a8876 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -326,7 +326,6 @@ static void dw_mipi_message_config(struct dw_mipi_dsi *dsi,
- 	if (lpm)
- 		val |= CMD_MODE_ALL_LP;
- 
--	dsi_write(dsi, DSI_LPCLK_CTRL, lpm ? 0 : PHY_TXREQUESTCLKHS);
- 	dsi_write(dsi, DSI_CMD_MODE_CFG, val);
- }
- 
-@@ -488,16 +487,22 @@ static void dw_mipi_dsi_video_mode_config(struct dw_mipi_dsi *dsi)
- static void dw_mipi_dsi_set_mode(struct dw_mipi_dsi *dsi,
- 				 unsigned long mode_flags)
- {
-+	u32 val;
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -1230,14 +1230,15 @@ void qlt_schedule_sess_for_deletion(stru
+ 	case DSC_DELETE_PEND:
+ 		return;
+ 	case DSC_DELETED:
+-		if (tgt && tgt->tgt_stop && (tgt->sess_count == 0))
+-			wake_up_all(&tgt->waitQ);
+-		if (sess->vha->fcport_count == 0)
+-			wake_up_all(&sess->vha->fcport_waitQ);
+-
+ 		if (!sess->plogi_link[QLT_PLOGI_LINK_SAME_WWN] &&
+-			!sess->plogi_link[QLT_PLOGI_LINK_CONFLICT])
++			!sess->plogi_link[QLT_PLOGI_LINK_CONFLICT]) {
++			if (tgt && tgt->tgt_stop && tgt->sess_count == 0)
++				wake_up_all(&tgt->waitQ);
 +
- 	dsi_write(dsi, DSI_PWR_UP, RESET);
- 
- 	if (mode_flags & MIPI_DSI_MODE_VIDEO) {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_VIDEO_MODE);
- 		dw_mipi_dsi_video_mode_config(dsi);
--		dsi_write(dsi, DSI_LPCLK_CTRL, PHY_TXREQUESTCLKHS);
- 	} else {
- 		dsi_write(dsi, DSI_MODE_CFG, ENABLE_CMD_MODE);
- 	}
- 
-+	val = PHY_TXREQUESTCLKHS;
-+	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
-+		val |= AUTO_CLKLANE_CTRL;
-+	dsi_write(dsi, DSI_LPCLK_CTRL, val);
-+
- 	dsi_write(dsi, DSI_PWR_UP, POWERUP);
- }
- 
--- 
-2.27.0
-
++			if (sess->vha->fcport_count == 0)
++				wake_up_all(&sess->vha->fcport_waitQ);
+ 			return;
++		}
+ 		break;
+ 	case DSC_UPD_FCPORT:
+ 		/*
 
 
