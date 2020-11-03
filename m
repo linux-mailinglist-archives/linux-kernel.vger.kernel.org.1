@@ -2,193 +2,731 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612B92A4F6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A572A4F6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729079AbgKCSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
+        id S1729425AbgKCSxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:53:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgKCSxe (ORCPT
+        with ESMTP id S1725385AbgKCSxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:53:34 -0500
+        Tue, 3 Nov 2020 13:53:48 -0500
 Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3117C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:53:32 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c20so15043046pfr.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:53:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434A5C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:53:48 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 10so15055194pfp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:53:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=6wbMpMDbsPnNn1F4g2wW5/vG7RtDIz8QzbbN5We5DBc=;
-        b=gpcWqTY3QAMN4XeftvhDgmWNBbCT68d9S2c6ljWhAwPMUUd6VT+gPS1pdh4O7CTWuM
-         vAnw0c8r5yaHb73maBkVPeQU3QO7Nle7shZiYoA3eQKCULrNuzw8kEWn89Pz6Fp8aVtt
-         /VqnuArj+7GOmuDoY+RkY++XGwQBboRw4uo+9YkCmqHjZg5e2HVnCWdTe8kNeofa9L8M
-         oG3sfhYTYggz/IH85tClKRGF8HNz/oxJDef7YafSLGsIQ5j1IelRZ45xZSciN3yJmvSn
-         3oLfT5HN0mqv/7GETGC4WT+fSL9VrYutq5Od80YVtxX/65FHYRzsDlR59jIw3d1LVH7s
-         JDcg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=30PlVhd6fh4P4V1osOO1RHSt05M+R9eDbzAG19zf+eg=;
+        b=UvfFV/sjJaozEA5Dm1ISjT39wyoHxdUW13BvA+ndfr+HdWJ+4UfLYxAt/OLWUpEaDE
+         JUn0ocTLwyQr8Rkne7eSNAhToLvikUhkMT1av4f67L48jXTyR8tx/+b61YG+RFkqD6eK
+         H4dfUBMcFyBdRbR2UBxHo/7i6DV3sTeX0IsGq2bL/3KURsrQrzKdu91vfTASkSZ5tCjM
+         fbpfzY7gNr+XeMizlBPhtc+AWy5y6SIfV03GTdRj5b5s6NlAJWbUEk3+iFMqr99SGZ30
+         XHdTwrEMhOs1UXOpq8l+9sUcX3PNbzoabu/CyUEtNAe59GEo5jnHMv4O6YheH/t45KjR
+         ALFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=6wbMpMDbsPnNn1F4g2wW5/vG7RtDIz8QzbbN5We5DBc=;
-        b=SycYUYvMq/0rsLKRqzEM8pM299WPlC1wwqgdEBqTsA53pEoCebOhocucDo8IvOY0gO
-         B1g6MrGgDRfzdGFUq1QOnNDn4TgkK6y9ri/jvUD+UTuk1e4J3FLfzfYf36dTm+gPjMy4
-         3jEDsNJmyp7PTvuRmFfcUITTzm9IlnGpzZNiThhAItzAvAvZZOSuK1gekrCckzxH9ybi
-         exH92gl4neyfaWFCOLyZDuB6YRIYo8c31baxvZd7AsuUL3cvKStdO/rFB+BYdYyUFIna
-         YMKur59AXqvCuuoT9HnZ/s6SWjuGXpYo+GPpXywnxm72qMIj/tIZHNKtG3Q+seJhxA6O
-         RCeQ==
-X-Gm-Message-State: AOAM532Z5dzQJyz+RJ+3OhucnK7KKkNAHnwhiM11vQCrHDcavFzsSRFz
-        GKsLqvvahn1APcv7mMkiJSoSlg==
-X-Google-Smtp-Source: ABdhPJwsmhHY1aVzCHF78OlMwhf6QAXy9+zV7FjolLHkf/W38jn1YNn6JyV1YwqEBq04X8MqYTk+mQ==
-X-Received: by 2002:a63:d245:: with SMTP id t5mr17291046pgi.283.1604429612029;
-        Tue, 03 Nov 2020 10:53:32 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id e184sm17930081pfe.146.2020.11.03.10.53.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=30PlVhd6fh4P4V1osOO1RHSt05M+R9eDbzAG19zf+eg=;
+        b=f5YEU0wmCEeeQiXMlxUTxXPjjDfO+y8e/KsoQZfbZeDVg3N1cb6hytywqarOpWPDw+
+         aF0vjq27DCcEbsSFV/+gIQLrur2sbqBHjtzoQXjTsvNEGTEwL+PqD8Knfx0oSeXpY1iO
+         n2mwPCagMXXyntiWuI2JYySuJbyBuOfUyjmsphaUR0tXTPpWRP6wQ+cZuotl6KTRGjos
+         +StrfeLY6RSBxNhB+ly0WbUQmKnW6LJegJ2lQgKwxIIXvx81bw2/ZrLTTp9OuAmzGVJe
+         ZDYlANBOh2L9PLy2vN+Pvh69LUTEwBeGU9Rmzc34eWTtxkIgh9CTJVuA4m4WI3q2jOi2
+         PFbA==
+X-Gm-Message-State: AOAM530skAFCX5HO/XYc8tnjJNzMNKNQAQMq8aKCj3rCgF40dIWKAa5d
+        4vMySGeUK/5ampdpXDJMXMWa4bl9ieyEbg==
+X-Google-Smtp-Source: ABdhPJwO18pUh4xAxQR87is2lhSWOjiEoJ8uGoM4qrWj0EHlBk2NPeesC6psDCCb52ruyKfbMDEwZg==
+X-Received: by 2002:a62:834a:0:b029:18a:e0b1:f0d9 with SMTP id h71-20020a62834a0000b029018ae0b1f0d9mr12221516pfe.73.1604429627459;
+        Tue, 03 Nov 2020 10:53:47 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id h5sm11205847pfk.126.2020.11.03.10.53.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 10:53:31 -0800 (PST)
-Date:   Tue, 3 Nov 2020 10:53:30 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     kernel test robot <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>
-cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Heesub Shin <heesub.shin@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        0day robot <lkp@intel.com>, lkp@lists.01.org
-Subject: Re: [cma] 1ea6c22c9b:
- page_allocation_failure:order:#,mode:#(__GFP_RECLAIMABLE),nodemask=(null)
-In-Reply-To: <20201103053007.GQ31092@shao2-debian>
-Message-ID: <alpine.DEB.2.23.453.2011031048350.237832@chino.kir.corp.google.com>
-References: <20201103053007.GQ31092@shao2-debian>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        Tue, 03 Nov 2020 10:53:46 -0800 (PST)
+Date:   Tue, 3 Nov 2020 11:53:44 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/26] coresight: etm4x: Convert all register accesses
+Message-ID: <20201103185344.GE2855763@xps15>
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-14-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028220945.3826358-14-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020, kernel test robot wrote:
+On Wed, Oct 28, 2020 at 10:09:31PM +0000, Suzuki K Poulose wrote:
+> Convert all register accesses from etm4x driver to use a wrapper
+> to allow switching the access at runtime with little overhead.
+> 
+> co-developed by sed tool ;-), mostly equivalent to :
+> 
+> s/readl\(_relaxed\)\?(drvdata->base + \(.*\))/etm4x_\1_read32(csdev, \2)
+> s/writel\(_relaxed\)\?(\(.*\), drvdata->base + \(.*\))/etm4x_\1_write32(csdev, \2, \3)
+> 
+> We don't want to replace them with the csdev_access_* to
+> avoid a function call for every register access for system
+> register access. This is a prepartory step to add system
+> register access later where the support is available.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  .../coresight/coresight-etm4x-core.c          | 326 +++++++++---------
+>  .../coresight/coresight-etm4x-sysfs.c         |   9 +-
+>  drivers/hwtracing/coresight/coresight-etm4x.h |  24 ++
+>  3 files changed, 187 insertions(+), 172 deletions(-)
 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 1ea6c22c9b85ec176bb78d7076be06a4142f8bdd ("[PATCH 1/2] cma: redirect page allocation to CMA")
-> url: https://github.com/0day-ci/linux/commits/Chris-Goldsworthy/Increasing-CMA-Utilization-with-a-GFP-Flag/20201102-224143
-> base: https://git.kernel.org/cgit/linux/kernel/git/axboe/linux-block.git for-next
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +---------------------------------------------------------------------------+------------+------------+
-> |                                                                           | 67b6d2ce11 | 1ea6c22c9b |
-> +---------------------------------------------------------------------------+------------+------------+
-> | boot_successes                                                            | 6          | 0          |
-> | boot_failures                                                             | 0          | 8          |
-> | page_allocation_failure:order:#,mode:#(__GFP_RECLAIMABLE),nodemask=(null) | 0          | 8          |
-> | Mem-Info                                                                  | 0          | 8          |
-> | kernel_BUG_at_kernel/workqueue.c                                          | 0          | 8          |
-> | invalid_opcode:#[##]                                                      | 0          | 8          |
-> | EIP:workqueue_init_early                                                  | 0          | 8          |
-> | Kernel_panic-not_syncing:Fatal_exception                                  | 0          | 8          |
-> +---------------------------------------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> [    2.108390] Memory: 8203240K/8388088K available (12819K kernel code, 6610K rwdata, 11292K rodata, 628K init, 12064K bss, 184848K reserved, 0K cma-reserved, 7481224K highmem)
-> [    2.111999] Checking if this processor honours the WP bit even in supervisor mode...Ok.
-> [    2.113918] random: get_random_u32 called from kmem_cache_open+0x1f/0x240 with crng_init=0
-> [    2.114387] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-> [    2.117656] Kernel/User page tables isolation: enabled
-> [    2.119610] swapper: page allocation failure: order:0, mode:0x10(__GFP_RECLAIMABLE), nodemask=(null)
-> [    2.121604] CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc1-00365-g1ea6c22c9b85 #1
-> [    2.123401] Call Trace:
-> [    2.123990]  dump_stack+0x1b/0x1d
-> [    2.124787]  warn_alloc+0x81/0xd9
-> [    2.125599]  __alloc_pages_slowpath+0x79c/0x7a9
-> [    2.126690]  ? get_page_from_freelist+0xb8/0x20d
-> [    2.127750]  __alloc_pages_nodemask+0x107/0x188
-> [    2.128795]  __alloc_pages_node+0x17/0x1c
-> [    2.129757]  alloc_slab_page+0x26/0x4e
-> [    2.130649]  allocate_slab+0x80/0x27e
-> [    2.131521]  ___slab_alloc+0x247/0x2ec
-> [    2.132605]  ? radix_tree_node_alloc+0x5e/0x8e
-> [    2.133915]  ? validate_chain+0x5a8/0x5c3
-> [    2.134838]  __slab_alloc+0x34/0x4d
-> [    2.135830]  ? __slab_alloc+0x34/0x4d
-> [    2.136909]  ? fs_reclaim_release+0x8/0x13
-> [    2.137910]  kmem_cache_alloc+0x46/0x157
-> [    2.138854]  ? radix_tree_node_alloc+0x5e/0x8e
-> [    2.140103]  radix_tree_node_alloc+0x5e/0x8e
-> [    2.141369]  idr_get_free+0xc1/0x21a
-> [    2.142230]  idr_alloc_u32+0x4d/0x80
-> [    2.143016]  idr_alloc+0x30/0x3e
-> [    2.143751]  worker_pool_assign_id+0x37/0x47
-> [    2.144682]  workqueue_init_early+0x9f/0x1f6
-> [    2.145707]  start_kernel+0x206/0x467
-> [    2.146592]  ? early_idt_handler_common+0x44/0x44
-> [    2.147671]  i386_start_kernel+0x42/0x44
-> [    2.148607]  startup_32_smp+0x164/0x168
-> [    2.149567] Mem-Info:
-> [    2.150101] active_anon:0 inactive_anon:0 isolated_anon:0
-> [    2.150101]  active_file:0 inactive_file:0 isolated_file:0
-> [    2.150101]  unevictable:0 dirty:0 writeback:0
-> [    2.150101]  slab_reclaimable:0 slab_unreclaimable:88
-> [    2.150101]  mapped:0 shmem:0 pagetables:0 bounce:0
-> [    2.150101]  free:2050715 free_pcp:0 free_cma:0
-> [    2.156588] Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB kernel_stack:0kB all_unreclaimable? no
-> [    2.162313] Normal free:721636kB min:0kB low:0kB high:0kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:906864kB managed:722016kB mlocked:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-> [    2.162318] lowmem_reserve[]: 0 0 0
-> [    2.169009] HighMem free:7481224kB min:0kB low:0kB high:0kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:7481224kB managed:7481224kB mlocked:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-> [    2.169014] lowmem_reserve[]: 0 0 0
-> [    2.175914] Normal: 1*4kB (M) 2*8kB (M) 1*16kB (U) 2*32kB (UM) 2*64kB (M) 2*128kB (UM) 1*256kB (M) 0*512kB 2*1024kB (UM) 1*2048kB (M) 175*4096kB (M) = 721636kB
-> [    2.179229] HighMem: 0*4kB 1*8kB (M) 0*16kB 0*32kB 0*64kB 1*128kB (M) 1*256kB (M) 1*512kB (M) 1*1024kB (M) 2*2048kB (M) 1825*4096kB (M) = 7481224kB
-> [    2.182343] 0 total pagecache pages
-> [    2.183068] 2097022 pages RAM
-> [    2.183799] 1870306 pages HighMem/MovableOnly
-> [    2.184853] 46212 pages reserved
-> [    2.185675] 0 pages cma reserved
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Normally what would happen for a __GFP_RECLAIMABLE allocation is that we'd 
-grab one of the free order-10 MIGRATE_MOVABLE pageblocks and convert it to 
-MIGRATE_RECLAIMABLE as fallback and then allocate the page from there.  
-Looks like the commit is breaking the fallback logic since I see an 
-abundance of free memory yet no MIGRATE_RECLAIMABLE pageblocks (which 
-would show 'E' in these lines):
-
- Normal: 1*4kB (M) 2*8kB (M) 1*16kB (U) 2*32kB (UM) 2*64kB (M) 2*128kB (UM) 1*256kB (M) 0*512kB 2*1024kB (UM) 1*2048kB (M) 175*4096kB (M) = 721636kB
- HighMem: 0*4kB 1*8kB (M) 0*16kB 0*32kB 0*64kB 1*128kB (M) 1*256kB (M) 1*512kB (M) 1*1024kB (M) 2*2048kB (M) 1825*4096kB (M) = 7481224kB
-
-I'm concerned about the change in general, however, because it seems like 
-__GFP_CMA doesn't absolutely *have* to exist and we get code like this 
-that will quickly become unmaintainable:
-
-#ifdef CONFIG_CMA
-#define ___GFP_CMA		0x800000u
-#else
-#define ___GFP_CMA		0
-#endif
-#ifdef CONFIG_LOCKDEP
-#ifdef CONFIG_CMA
-#define ___GFP_NOLOCKDEP	0x1000000u
-#else
-#define ___GFP_NOLOCKDEP	0x800000u
-#endif
-
-I suspect that Michal Hocko <mhocko@suse.com> may also have an opinion on 
-this patch.
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 4f1bcf98fefe..4af7d45dfe63 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -56,18 +56,28 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
+>  
+>  static enum cpuhp_state hp_online;
+>  
+> -static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
+> +static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
+>  {
+>  	/* Writing 0 to TRCOSLAR unlocks the trace registers */
+> -	writel_relaxed(0x0, drvdata->base + TRCOSLAR);
+> +	etm4x_relaxed_write32(csa, 0x0, TRCOSLAR);
+>  	drvdata->os_unlock = true;
+>  	isb();
+>  }
+>  
+> +static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
+> +{
+> +	if (!WARN_ON(!drvdata->csdev))
+> +		etm4_os_unlock_csa(drvdata, &drvdata->csdev->access);
+> +
+> +}
+> +
+>  static void etm4_os_lock(struct etmv4_drvdata *drvdata)
+>  {
+> +	if (WARN_ON(!drvdata->csdev))
+> +		return;
+> +
+>  	/* Writing 0x1 to TRCOSLAR locks the trace registers */
+> -	writel_relaxed(0x1, drvdata->base + TRCOSLAR);
+> +	etm4x_relaxed_write32(&drvdata->csdev->access, 0x1, TRCOSLAR);
+>  	drvdata->os_unlock = false;
+>  	isb();
+>  }
+> @@ -120,45 +130,39 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  		goto done;
+>  
+>  	/* Disable the trace unit before programming trace registers */
+> -	writel_relaxed(0, drvdata->base + TRCPRGCTLR);
+> +	etm4x_relaxed_write32(csa, 0, TRCPRGCTLR);
+>  
+>  	/* wait for TRCSTATR.IDLE to go up */
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1))
+>  		dev_err(etm_dev,
+>  			"timeout while waiting for Idle Trace Status\n");
+>  	if (drvdata->nr_pe)
+> -		writel_relaxed(config->pe_sel, drvdata->base + TRCPROCSELR);
+> -	writel_relaxed(config->cfg, drvdata->base + TRCCONFIGR);
+> +		etm4x_relaxed_write32(csa, config->pe_sel, TRCPROCSELR);
+> +	etm4x_relaxed_write32(csa, config->cfg, TRCCONFIGR);
+>  	/* nothing specific implemented */
+> -	writel_relaxed(0x0, drvdata->base + TRCAUXCTLR);
+> -	writel_relaxed(config->eventctrl0, drvdata->base + TRCEVENTCTL0R);
+> -	writel_relaxed(config->eventctrl1, drvdata->base + TRCEVENTCTL1R);
+> -	writel_relaxed(config->stall_ctrl, drvdata->base + TRCSTALLCTLR);
+> -	writel_relaxed(config->ts_ctrl, drvdata->base + TRCTSCTLR);
+> -	writel_relaxed(config->syncfreq, drvdata->base + TRCSYNCPR);
+> -	writel_relaxed(config->ccctlr, drvdata->base + TRCCCCTLR);
+> -	writel_relaxed(config->bb_ctrl, drvdata->base + TRCBBCTLR);
+> -	writel_relaxed(drvdata->trcid, drvdata->base + TRCTRACEIDR);
+> -	writel_relaxed(config->vinst_ctrl, drvdata->base + TRCVICTLR);
+> -	writel_relaxed(config->viiectlr, drvdata->base + TRCVIIECTLR);
+> -	writel_relaxed(config->vissctlr,
+> -		       drvdata->base + TRCVISSCTLR);
+> +	etm4x_relaxed_write32(csa, 0x0, TRCAUXCTLR);
+> +	etm4x_relaxed_write32(csa, config->eventctrl0, TRCEVENTCTL0R);
+> +	etm4x_relaxed_write32(csa, config->eventctrl1, TRCEVENTCTL1R);
+> +	etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
+> +	etm4x_relaxed_write32(csa, config->ts_ctrl, TRCTSCTLR);
+> +	etm4x_relaxed_write32(csa, config->syncfreq, TRCSYNCPR);
+> +	etm4x_relaxed_write32(csa, config->ccctlr, TRCCCCTLR);
+> +	etm4x_relaxed_write32(csa, config->bb_ctrl, TRCBBCTLR);
+> +	etm4x_relaxed_write32(csa, drvdata->trcid, TRCTRACEIDR);
+> +	etm4x_relaxed_write32(csa, config->vinst_ctrl, TRCVICTLR);
+> +	etm4x_relaxed_write32(csa, config->viiectlr, TRCVIIECTLR);
+> +	etm4x_relaxed_write32(csa, config->vissctlr, TRCVISSCTLR);
+>  	if (drvdata->nr_pe_cmp)
+> -		writel_relaxed(config->vipcssctlr,
+> -			       drvdata->base + TRCVIPCSSCTLR);
+> +		etm4x_relaxed_write32(csa, config->vipcssctlr, TRCVIPCSSCTLR);
+>  	for (i = 0; i < drvdata->nrseqstate - 1; i++)
+> -		writel_relaxed(config->seq_ctrl[i],
+> -			       drvdata->base + TRCSEQEVRn(i));
+> -	writel_relaxed(config->seq_rst, drvdata->base + TRCSEQRSTEVR);
+> -	writel_relaxed(config->seq_state, drvdata->base + TRCSEQSTR);
+> -	writel_relaxed(config->ext_inp, drvdata->base + TRCEXTINSELR);
+> +		etm4x_relaxed_write32(csa, config->seq_ctrl[i], TRCSEQEVRn(i));
+> +	etm4x_relaxed_write32(csa, config->seq_rst, TRCSEQRSTEVR);
+> +	etm4x_relaxed_write32(csa, config->seq_state, TRCSEQSTR);
+> +	etm4x_relaxed_write32(csa, config->ext_inp, TRCEXTINSELR);
+>  	for (i = 0; i < drvdata->nr_cntr; i++) {
+> -		writel_relaxed(config->cntrldvr[i],
+> -			       drvdata->base + TRCCNTRLDVRn(i));
+> -		writel_relaxed(config->cntr_ctrl[i],
+> -			       drvdata->base + TRCCNTCTLRn(i));
+> -		writel_relaxed(config->cntr_val[i],
+> -			       drvdata->base + TRCCNTVRn(i));
+> +		etm4x_relaxed_write32(csa, config->cntrldvr[i], TRCCNTRLDVRn(i));
+> +		etm4x_relaxed_write32(csa, config->cntr_ctrl[i], TRCCNTCTLRn(i));
+> +		etm4x_relaxed_write32(csa, config->cntr_val[i], TRCCNTVRn(i));
+>  	}
+>  
+>  	/*
+> @@ -166,52 +170,45 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  	 * such start at 2.
+>  	 */
+>  	for (i = 2; i < drvdata->nr_resource * 2; i++)
+> -		writel_relaxed(config->res_ctrl[i],
+> -			       drvdata->base + TRCRSCTLRn(i));
+> +		etm4x_relaxed_write32(csa, config->res_ctrl[i], TRCRSCTLRn(i));
+>  
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+>  		/* always clear status bit on restart if using single-shot */
+>  		if (config->ss_ctrl[i] || config->ss_pe_cmp[i])
+>  			config->ss_status[i] &= ~BIT(31);
+> -		writel_relaxed(config->ss_ctrl[i],
+> -			       drvdata->base + TRCSSCCRn(i));
+> -		writel_relaxed(config->ss_status[i],
+> -			       drvdata->base + TRCSSCSRn(i));
+> +		etm4x_relaxed_write32(csa, config->ss_ctrl[i], TRCSSCCRn(i));
+> +		etm4x_relaxed_write32(csa, config->ss_status[i], TRCSSCSRn(i));
+>  		if (drvdata->nr_pe)
+> -			writel_relaxed(config->ss_pe_cmp[i],
+> -				       drvdata->base + TRCSSPCICRn(i));
+> +			etm4x_relaxed_write32(csa, config->ss_pe_cmp[i], TRCSSPCICRn(i));
+>  	}
+>  	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
+> -		writeq_relaxed(config->addr_val[i],
+> -			       drvdata->base + TRCACVRn(i));
+> -		writeq_relaxed(config->addr_acc[i],
+> -			       drvdata->base + TRCACATRn(i));
+> +		etm4x_relaxed_write64(csa, config->addr_val[i], TRCACVRn(i));
+> +		etm4x_relaxed_write64(csa, config->addr_acc[i], TRCACATRn(i));
+>  	}
+>  	for (i = 0; i < drvdata->numcidc; i++)
+> -		writeq_relaxed(config->ctxid_pid[i],
+> -			       drvdata->base + TRCCIDCVRn(i));
+> -	writel_relaxed(config->ctxid_mask0, drvdata->base + TRCCIDCCTLR0);
+> +		etm4x_relaxed_write64(csa, config->ctxid_pid[i], TRCCIDCVRn(i));
+> +	etm4x_relaxed_write32(csa, config->ctxid_mask0, TRCCIDCCTLR0);
+>  	if (drvdata->numcidc > 4)
+> -		writel_relaxed(config->ctxid_mask1, drvdata->base + TRCCIDCCTLR1);
+> +		etm4x_relaxed_write32(csa, config->ctxid_mask1, TRCCIDCCTLR1);
+>  
+>  	for (i = 0; i < drvdata->numvmidc; i++)
+> -		writeq_relaxed(config->vmid_val[i],
+> -			       drvdata->base + TRCVMIDCVRn(i));
+> -	writel_relaxed(config->vmid_mask0, drvdata->base + TRCVMIDCCTLR0);
+> +		etm4x_relaxed_write64(csa, config->vmid_val[i], TRCVMIDCVRn(i));
+> +	etm4x_relaxed_write32(csa, config->vmid_mask0, TRCVMIDCCTLR0);
+>  	if (drvdata->numvmidc > 4)
+> -		writel_relaxed(config->vmid_mask1, drvdata->base + TRCVMIDCCTLR1);
+> +		etm4x_relaxed_write32(csa, config->vmid_mask1, TRCVMIDCCTLR1);
+>  
+>  	if (!drvdata->skip_power_up) {
+> +		u32 trcpdcr = etm4x_relaxed_read32(csa, TRCPDCR);
+> +
+>  		/*
+>  		 * Request to keep the trace unit powered and also
+>  		 * emulation of powerdown
+>  		 */
+> -		writel_relaxed(readl_relaxed(drvdata->base + TRCPDCR) |
+> -			       TRCPDCR_PU, drvdata->base + TRCPDCR);
+> +		etm4x_relaxed_write32(csa, trcpdcr | TRCPDCR_PU, TRCPDCR);
+>  	}
+>  
+>  	/* Enable the trace unit */
+> -	writel_relaxed(1, drvdata->base + TRCPRGCTLR);
+> +	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
+>  
+>  	/* wait for TRCSTATR.IDLE to go back down to '0' */
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 0))
+> @@ -487,12 +484,12 @@ static void etm4_disable_hw(void *info)
+>  
+>  	if (!drvdata->skip_power_up) {
+>  		/* power can be removed from the trace unit now */
+> -		control = readl_relaxed(drvdata->base + TRCPDCR);
+> +		control = etm4x_relaxed_read32(csa, TRCPDCR);
+>  		control &= ~TRCPDCR_PU;
+> -		writel_relaxed(control, drvdata->base + TRCPDCR);
+> +		etm4x_relaxed_write32(csa, control, TRCPDCR);
+>  	}
+>  
+> -	control = readl_relaxed(drvdata->base + TRCPRGCTLR);
+> +	control = etm4x_relaxed_read32(csa, TRCPRGCTLR);
+>  
+>  	/* EN, bit[0] Trace unit enable bit */
+>  	control &= ~0x1;
+> @@ -504,7 +501,7 @@ static void etm4_disable_hw(void *info)
+>  	 */
+>  	dsb(sy);
+>  	isb();
+> -	writel_relaxed(control, drvdata->base + TRCPRGCTLR);
+> +	etm4x_relaxed_write32(csa, control, TRCPRGCTLR);
+>  
+>  	/* wait for TRCSTATR.PMSTABLE to go to '1' */
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
+> @@ -514,13 +511,13 @@ static void etm4_disable_hw(void *info)
+>  	/* read the status of the single shot comparators */
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+>  		config->ss_status[i] =
+> -			readl_relaxed(drvdata->base + TRCSSCSRn(i));
+> +			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
+>  	}
+>  
+>  	/* read back the current counter values */
+>  	for (i = 0; i < drvdata->nr_cntr; i++) {
+>  		config->cntr_val[i] =
+> -			readl_relaxed(drvdata->base + TRCCNTVRn(i));
+> +			etm4x_relaxed_read32(csa, TRCCNTVRn(i));
+>  	}
+>  
+>  	coresight_disclaim_device_unlocked(csdev);
+> @@ -549,7 +546,7 @@ static int etm4_disable_perf(struct coresight_device *csdev,
+>  	 * scheduled again.  Configuration of the start/stop logic happens in
+>  	 * function etm4_set_event_filters().
+>  	 */
+> -	control = readl_relaxed(drvdata->base + TRCVICTLR);
+> +	control = etm4x_relaxed_read32(&csdev->access, TRCVICTLR);
+>  	/* TRCVICTLR::SSSTATUS, bit[9] */
+>  	filters->ssstatus = (control & BIT(9));
+>  
+> @@ -629,15 +626,17 @@ static void etm4_init_arch_data(void *info)
+>  	u32 etmidr4;
+>  	u32 etmidr5;
+>  	struct etmv4_drvdata *drvdata = info;
+> +	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
+> +	struct csdev_access *csa = &tmp_csa;
+>  	int i;
+>  
+>  	/* Make sure all registers are accessible */
+> -	etm4_os_unlock(drvdata);
+> +	etm4_os_unlock_csa(drvdata, csa);
+>  
+>  	CS_UNLOCK(drvdata->base);
+>  
+>  	/* find all capabilities of the tracing unit */
+> -	etmidr0 = readl_relaxed(drvdata->base + TRCIDR0);
+> +	etmidr0 = etm4x_relaxed_read32(csa, TRCIDR0);
+>  
+>  	/* INSTP0, bits[2:1] P0 tracing support field */
+>  	if (BMVAL(etmidr0, 1, 1) && BMVAL(etmidr0, 2, 2))
+> @@ -677,7 +676,7 @@ static void etm4_init_arch_data(void *info)
+>  	drvdata->ts_size = BMVAL(etmidr0, 24, 28);
+>  
+>  	/* base architecture of trace unit */
+> -	etmidr1 = readl_relaxed(drvdata->base + TRCIDR1);
+> +	etmidr1 = etm4x_relaxed_read32(csa, TRCIDR1);
+>  	/*
+>  	 * TRCARCHMIN, bits[7:4] architecture the minor version number
+>  	 * TRCARCHMAJ, bits[11:8] architecture major versin number
+> @@ -686,7 +685,7 @@ static void etm4_init_arch_data(void *info)
+>  	drvdata->config.arch = drvdata->arch;
+>  
+>  	/* maximum size of resources */
+> -	etmidr2 = readl_relaxed(drvdata->base + TRCIDR2);
+> +	etmidr2 = etm4x_relaxed_read32(csa, TRCIDR2);
+>  	/* CIDSIZE, bits[9:5] Indicates the Context ID size */
+>  	drvdata->ctxid_size = BMVAL(etmidr2, 5, 9);
+>  	/* VMIDSIZE, bits[14:10] Indicates the VMID size */
+> @@ -694,7 +693,7 @@ static void etm4_init_arch_data(void *info)
+>  	/* CCSIZE, bits[28:25] size of the cycle counter in bits minus 12 */
+>  	drvdata->ccsize = BMVAL(etmidr2, 25, 28);
+>  
+> -	etmidr3 = readl_relaxed(drvdata->base + TRCIDR3);
+> +	etmidr3 = etm4x_relaxed_read32(csa, TRCIDR3);
+>  	/* CCITMIN, bits[11:0] minimum threshold value that can be programmed */
+>  	drvdata->ccitmin = BMVAL(etmidr3, 0, 11);
+>  	/* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
+> @@ -744,7 +743,7 @@ static void etm4_init_arch_data(void *info)
+>  		drvdata->nooverflow = false;
+>  
+>  	/* number of resources trace unit supports */
+> -	etmidr4 = readl_relaxed(drvdata->base + TRCIDR4);
+> +	etmidr4 = etm4x_relaxed_read32(csa, TRCIDR4);
+>  	/* NUMACPAIRS, bits[0:3] number of addr comparator pairs for tracing */
+>  	drvdata->nr_addr_cmp = BMVAL(etmidr4, 0, 3);
+>  	/* NUMPC, bits[15:12] number of PE comparator inputs for tracing */
+> @@ -770,14 +769,14 @@ static void etm4_init_arch_data(void *info)
+>  	drvdata->nr_ss_cmp = BMVAL(etmidr4, 20, 23);
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+>  		drvdata->config.ss_status[i] =
+> -			readl_relaxed(drvdata->base + TRCSSCSRn(i));
+> +			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
+>  	}
+>  	/* NUMCIDC, bits[27:24] number of Context ID comparators for tracing */
+>  	drvdata->numcidc = BMVAL(etmidr4, 24, 27);
+>  	/* NUMVMIDC, bits[31:28] number of VMID comparators for tracing */
+>  	drvdata->numvmidc = BMVAL(etmidr4, 28, 31);
+>  
+> -	etmidr5 = readl_relaxed(drvdata->base + TRCIDR5);
+> +	etmidr5 = etm4x_relaxed_read32(csa, TRCIDR5);
+>  	/* NUMEXTIN, bits[8:0] number of external inputs implemented */
+>  	drvdata->nr_ext_inp = BMVAL(etmidr5, 0, 8);
+>  	/* TRACEIDSIZE, bits[21:16] indicates the trace ID width */
+> @@ -1196,56 +1195,56 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  
+>  	state = drvdata->save_state;
+>  
+> -	state->trcprgctlr = readl(drvdata->base + TRCPRGCTLR);
+> +	state->trcprgctlr = etm4x_read32(csa, TRCPRGCTLR);
+>  	if (drvdata->nr_pe)
+> -		state->trcprocselr = readl(drvdata->base + TRCPROCSELR);
+> -	state->trcconfigr = readl(drvdata->base + TRCCONFIGR);
+> -	state->trcauxctlr = readl(drvdata->base + TRCAUXCTLR);
+> -	state->trceventctl0r = readl(drvdata->base + TRCEVENTCTL0R);
+> -	state->trceventctl1r = readl(drvdata->base + TRCEVENTCTL1R);
+> -	state->trcstallctlr = readl(drvdata->base + TRCSTALLCTLR);
+> -	state->trctsctlr = readl(drvdata->base + TRCTSCTLR);
+> -	state->trcsyncpr = readl(drvdata->base + TRCSYNCPR);
+> -	state->trcccctlr = readl(drvdata->base + TRCCCCTLR);
+> -	state->trcbbctlr = readl(drvdata->base + TRCBBCTLR);
+> -	state->trctraceidr = readl(drvdata->base + TRCTRACEIDR);
+> -	state->trcqctlr = readl(drvdata->base + TRCQCTLR);
+> -
+> -	state->trcvictlr = readl(drvdata->base + TRCVICTLR);
+> -	state->trcviiectlr = readl(drvdata->base + TRCVIIECTLR);
+> -	state->trcvissctlr = readl(drvdata->base + TRCVISSCTLR);
+> +		state->trcprocselr = etm4x_read32(csa, TRCPROCSELR);
+> +	state->trcconfigr = etm4x_read32(csa, TRCCONFIGR);
+> +	state->trcauxctlr = etm4x_read32(csa, TRCAUXCTLR);
+> +	state->trceventctl0r = etm4x_read32(csa, TRCEVENTCTL0R);
+> +	state->trceventctl1r = etm4x_read32(csa, TRCEVENTCTL1R);
+> +	state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
+> +	state->trctsctlr = etm4x_read32(csa, TRCTSCTLR);
+> +	state->trcsyncpr = etm4x_read32(csa, TRCSYNCPR);
+> +	state->trcccctlr = etm4x_read32(csa, TRCCCCTLR);
+> +	state->trcbbctlr = etm4x_read32(csa, TRCBBCTLR);
+> +	state->trctraceidr = etm4x_read32(csa, TRCTRACEIDR);
+> +	state->trcqctlr = etm4x_read32(csa, TRCQCTLR);
+> +
+> +	state->trcvictlr = etm4x_read32(csa, TRCVICTLR);
+> +	state->trcviiectlr = etm4x_read32(csa, TRCVIIECTLR);
+> +	state->trcvissctlr = etm4x_read32(csa, TRCVISSCTLR);
+>  	if (drvdata->nr_pe_cmp)
+> -		state->trcvipcssctlr = readl(drvdata->base + TRCVIPCSSCTLR);
+> -	state->trcvdctlr = readl(drvdata->base + TRCVDCTLR);
+> -	state->trcvdsacctlr = readl(drvdata->base + TRCVDSACCTLR);
+> -	state->trcvdarcctlr = readl(drvdata->base + TRCVDARCCTLR);
+> +		state->trcvipcssctlr = etm4x_read32(csa, TRCVIPCSSCTLR);
+> +	state->trcvdctlr = etm4x_read32(csa, TRCVDCTLR);
+> +	state->trcvdsacctlr = etm4x_read32(csa, TRCVDSACCTLR);
+> +	state->trcvdarcctlr = etm4x_read32(csa, TRCVDARCCTLR);
+>  
+>  	for (i = 0; i < drvdata->nrseqstate - 1; i++)
+> -		state->trcseqevr[i] = readl(drvdata->base + TRCSEQEVRn(i));
+> +		state->trcseqevr[i] = etm4x_read32(csa, TRCSEQEVRn(i));
+>  
+> -	state->trcseqrstevr = readl(drvdata->base + TRCSEQRSTEVR);
+> -	state->trcseqstr = readl(drvdata->base + TRCSEQSTR);
+> -	state->trcextinselr = readl(drvdata->base + TRCEXTINSELR);
+> +	state->trcseqrstevr = etm4x_read32(csa, TRCSEQRSTEVR);
+> +	state->trcseqstr = etm4x_read32(csa, TRCSEQSTR);
+> +	state->trcextinselr = etm4x_read32(csa, TRCEXTINSELR);
+>  
+>  	for (i = 0; i < drvdata->nr_cntr; i++) {
+> -		state->trccntrldvr[i] = readl(drvdata->base + TRCCNTRLDVRn(i));
+> -		state->trccntctlr[i] = readl(drvdata->base + TRCCNTCTLRn(i));
+> -		state->trccntvr[i] = readl(drvdata->base + TRCCNTVRn(i));
+> +		state->trccntrldvr[i] = etm4x_read32(csa, TRCCNTRLDVRn(i));
+> +		state->trccntctlr[i] = etm4x_read32(csa, TRCCNTCTLRn(i));
+> +		state->trccntvr[i] = etm4x_read32(csa, TRCCNTVRn(i));
+>  	}
+>  
+>  	for (i = 0; i < drvdata->nr_resource * 2; i++)
+> -		state->trcrsctlr[i] = readl(drvdata->base + TRCRSCTLRn(i));
+> +		state->trcrsctlr[i] = etm4x_read32(csa, TRCRSCTLRn(i));
+>  
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+> -		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
+> -		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
+> +		state->trcssccr[i] = etm4x_read32(csa, TRCSSCCRn(i));
+> +		state->trcsscsr[i] = etm4x_read32(csa, TRCSSCSRn(i));
+>  		if (drvdata->nr_pe)
+> -			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
+> +			state->trcsspcicr[i] = etm4x_read32(csa, TRCSSPCICRn(i));
+>  	}
+>  
+>  	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
+> -		state->trcacvr[i] = readq(drvdata->base + TRCACVRn(i));
+> -		state->trcacatr[i] = readq(drvdata->base + TRCACATRn(i));
+> +		state->trcacvr[i] = etm4x_read64(csa, TRCACVRn(i));
+> +		state->trcacatr[i] = etm4x_read64(csa, TRCACATRn(i));
+>  	}
+>  
+>  	/*
+> @@ -1256,22 +1255,22 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	 */
+>  
+>  	for (i = 0; i < drvdata->numcidc; i++)
+> -		state->trccidcvr[i] = readq(drvdata->base + TRCCIDCVRn(i));
+> +		state->trccidcvr[i] = etm4x_read64(csa, TRCCIDCVRn(i));
+>  
+>  	for (i = 0; i < drvdata->numvmidc; i++)
+> -		state->trcvmidcvr[i] = readq(drvdata->base + TRCVMIDCVRn(i));
+> +		state->trcvmidcvr[i] = etm4x_read64(csa, TRCVMIDCVRn(i));
+>  
+> -	state->trccidcctlr0 = readl(drvdata->base + TRCCIDCCTLR0);
+> +	state->trccidcctlr0 = etm4x_read32(csa, TRCCIDCCTLR0);
+>  	if (drvdata->numcidc > 4)
+> -		state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
+> +		state->trccidcctlr1 = etm4x_read32(csa, TRCCIDCCTLR1);
+>  
+> -	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
+> +	state->trcvmidcctlr0 = etm4x_read32(csa, TRCVMIDCCTLR0);
+>  	if (drvdata->numvmidc > 4)
+> -		state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
+> +		state->trcvmidcctlr0 = etm4x_read32(csa, TRCVMIDCCTLR1);
+>  
+> -	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
+> +	state->trcclaimset = etm4x_read32(csa, TRCCLAIMCLR);
+>  
+> -	state->trcpdcr = readl(drvdata->base + TRCPDCR);
+> +	state->trcpdcr = etm4x_read32(csa, TRCPDCR);
+>  
+>  	/* wait for TRCSTATR.IDLE to go up */
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
+> @@ -1289,8 +1288,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	 * potentially save power on systems that respect the TRCPDCR_PU
+>  	 * despite requesting software to save/restore state.
+>  	 */
+> -	writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
+> -			drvdata->base + TRCPDCR);
+> +	etm4x_relaxed_write32(csa, (state->trcpdcr & ~TRCPDCR_PU), TRCPDCR);
+>  
+>  out:
+>  	CS_LOCK(drvdata->base);
+> @@ -1301,92 +1299,82 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  {
+>  	int i;
+>  	struct etmv4_save_state *state = drvdata->save_state;
+> +	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
+> +	struct csdev_access *csa = &tmp_csa;
+>  
+>  	CS_UNLOCK(drvdata->base);
+>  
+> -	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
+> +	etm4x_relaxed_write32(csa, state->trcclaimset, TRCCLAIMSET);
+>  
+> -	writel_relaxed(state->trcprgctlr, drvdata->base + TRCPRGCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcprgctlr, TRCPRGCTLR);
+>  	if (drvdata->nr_pe)
+> -		writel_relaxed(state->trcprocselr, drvdata->base + TRCPROCSELR);
+> -	writel_relaxed(state->trcconfigr, drvdata->base + TRCCONFIGR);
+> -	writel_relaxed(state->trcauxctlr, drvdata->base + TRCAUXCTLR);
+> -	writel_relaxed(state->trceventctl0r, drvdata->base + TRCEVENTCTL0R);
+> -	writel_relaxed(state->trceventctl1r, drvdata->base + TRCEVENTCTL1R);
+> -	writel_relaxed(state->trcstallctlr, drvdata->base + TRCSTALLCTLR);
+> -	writel_relaxed(state->trctsctlr, drvdata->base + TRCTSCTLR);
+> -	writel_relaxed(state->trcsyncpr, drvdata->base + TRCSYNCPR);
+> -	writel_relaxed(state->trcccctlr, drvdata->base + TRCCCCTLR);
+> -	writel_relaxed(state->trcbbctlr, drvdata->base + TRCBBCTLR);
+> -	writel_relaxed(state->trctraceidr, drvdata->base + TRCTRACEIDR);
+> -	writel_relaxed(state->trcqctlr, drvdata->base + TRCQCTLR);
+> -
+> -	writel_relaxed(state->trcvictlr, drvdata->base + TRCVICTLR);
+> -	writel_relaxed(state->trcviiectlr, drvdata->base + TRCVIIECTLR);
+> -	writel_relaxed(state->trcvissctlr, drvdata->base + TRCVISSCTLR);
+> +		etm4x_relaxed_write32(csa, state->trcprocselr, TRCPROCSELR);
+> +	etm4x_relaxed_write32(csa, state->trcconfigr, TRCCONFIGR);
+> +	etm4x_relaxed_write32(csa, state->trcauxctlr, TRCAUXCTLR);
+> +	etm4x_relaxed_write32(csa, state->trceventctl0r, TRCEVENTCTL0R);
+> +	etm4x_relaxed_write32(csa, state->trceventctl1r, TRCEVENTCTL1R);
+> +	etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
+> +	etm4x_relaxed_write32(csa, state->trctsctlr, TRCTSCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcsyncpr, TRCSYNCPR);
+> +	etm4x_relaxed_write32(csa, state->trcccctlr, TRCCCCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcbbctlr, TRCBBCTLR);
+> +	etm4x_relaxed_write32(csa, state->trctraceidr, TRCTRACEIDR);
+> +	etm4x_relaxed_write32(csa, state->trcqctlr, TRCQCTLR);
+> +
+> +	etm4x_relaxed_write32(csa, state->trcvictlr, TRCVICTLR);
+> +	etm4x_relaxed_write32(csa, state->trcviiectlr, TRCVIIECTLR);
+> +	etm4x_relaxed_write32(csa, state->trcvissctlr, TRCVISSCTLR);
+>  	if (drvdata->nr_pe_cmp)
+> -		writel_relaxed(state->trcvipcssctlr, drvdata->base + TRCVIPCSSCTLR);
+> -	writel_relaxed(state->trcvdctlr, drvdata->base + TRCVDCTLR);
+> -	writel_relaxed(state->trcvdsacctlr, drvdata->base + TRCVDSACCTLR);
+> -	writel_relaxed(state->trcvdarcctlr, drvdata->base + TRCVDARCCTLR);
+> +		etm4x_relaxed_write32(csa, state->trcvipcssctlr, TRCVIPCSSCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcvdctlr, TRCVDCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcvdsacctlr, TRCVDSACCTLR);
+> +	etm4x_relaxed_write32(csa, state->trcvdarcctlr, TRCVDARCCTLR);
+>  
+>  	for (i = 0; i < drvdata->nrseqstate - 1; i++)
+> -		writel_relaxed(state->trcseqevr[i],
+> -			       drvdata->base + TRCSEQEVRn(i));
+> +		etm4x_relaxed_write32(csa, state->trcseqevr[i], TRCSEQEVRn(i));
+>  
+> -	writel_relaxed(state->trcseqrstevr, drvdata->base + TRCSEQRSTEVR);
+> -	writel_relaxed(state->trcseqstr, drvdata->base + TRCSEQSTR);
+> -	writel_relaxed(state->trcextinselr, drvdata->base + TRCEXTINSELR);
+> +	etm4x_relaxed_write32(csa, state->trcseqrstevr, TRCSEQRSTEVR);
+> +	etm4x_relaxed_write32(csa, state->trcseqstr, TRCSEQSTR);
+> +	etm4x_relaxed_write32(csa, state->trcextinselr, TRCEXTINSELR);
+>  
+>  	for (i = 0; i < drvdata->nr_cntr; i++) {
+> -		writel_relaxed(state->trccntrldvr[i],
+> -			       drvdata->base + TRCCNTRLDVRn(i));
+> -		writel_relaxed(state->trccntctlr[i],
+> -			       drvdata->base + TRCCNTCTLRn(i));
+> -		writel_relaxed(state->trccntvr[i],
+> -			       drvdata->base + TRCCNTVRn(i));
+> +		etm4x_relaxed_write32(csa, state->trccntrldvr[i], TRCCNTRLDVRn(i));
+> +		etm4x_relaxed_write32(csa, state->trccntctlr[i], TRCCNTCTLRn(i));
+> +		etm4x_relaxed_write32(csa, state->trccntvr[i], TRCCNTVRn(i));
+>  	}
+>  
+>  	for (i = 0; i < drvdata->nr_resource * 2; i++)
+> -		writel_relaxed(state->trcrsctlr[i],
+> -			       drvdata->base + TRCRSCTLRn(i));
+> +		etm4x_relaxed_write32(csa, state->trcrsctlr[i], TRCRSCTLRn(i));
+>  
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+> -		writel_relaxed(state->trcssccr[i],
+> -			       drvdata->base + TRCSSCCRn(i));
+> -		writel_relaxed(state->trcsscsr[i],
+> -			       drvdata->base + TRCSSCSRn(i));
+> +		etm4x_relaxed_write32(csa, state->trcssccr[i], TRCSSCCRn(i));
+> +		etm4x_relaxed_write32(csa, state->trcsscsr[i], TRCSSCSRn(i));
+>  		if (drvdata->nr_pe)
+> -			writel_relaxed(state->trcsspcicr[i],
+> -				       drvdata->base + TRCSSPCICRn(i));
+> +			etm4x_relaxed_write32(csa, state->trcsspcicr[i], TRCSSPCICRn(i));
+>  	}
+>  
+>  	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
+> -		writeq_relaxed(state->trcacvr[i],
+> -			       drvdata->base + TRCACVRn(i));
+> -		writeq_relaxed(state->trcacatr[i],
+> -			       drvdata->base + TRCACATRn(i));
+> +		etm4x_relaxed_write64(csa, state->trcacvr[i], TRCACVRn(i));
+> +		etm4x_relaxed_write64(csa, state->trcacatr[i], TRCACATRn(i));
+>  	}
+>  
+>  	for (i = 0; i < drvdata->numcidc; i++)
+> -		writeq_relaxed(state->trccidcvr[i],
+> -			       drvdata->base + TRCCIDCVRn(i));
+> +		etm4x_relaxed_write64(csa, state->trccidcvr[i], TRCCIDCVRn(i));
+>  
+>  	for (i = 0; i < drvdata->numvmidc; i++)
+> -		writeq_relaxed(state->trcvmidcvr[i],
+> -			       drvdata->base + TRCVMIDCVRn(i));
+> +		etm4x_relaxed_write64(csa, state->trcvmidcvr[i], TRCVMIDCVRn(i));
+>  
+> -	writel_relaxed(state->trccidcctlr0, drvdata->base + TRCCIDCCTLR0);
+> +	etm4x_relaxed_write32(csa, state->trccidcctlr0, TRCCIDCCTLR0);
+>  	if (drvdata->numcidc > 4)
+> -		writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
+> +		etm4x_relaxed_write32(csa, state->trccidcctlr1, TRCCIDCCTLR1);
+>  
+> -	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
+> +	etm4x_relaxed_write32(csa, state->trcvmidcctlr0, TRCVMIDCCTLR0);
+>  	if (drvdata->numvmidc > 4)
+> -		writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
+> +		etm4x_relaxed_write32(csa, state->trcvmidcctlr0, TRCVMIDCCTLR1);
+>  
+> -	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
+> +	etm4x_relaxed_write32(csa, state->trcclaimset, TRCCLAIMSET);
+>  
+> -	writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
+> +	etm4x_relaxed_write32(csa, state->trcpdcr, TRCPDCR);
+>  
+>  	drvdata->state_needs_restore = false;
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> index c4781d4e5886..fce9df16bfb5 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> @@ -2319,7 +2319,8 @@ static struct attribute *coresight_etmv4_attrs[] = {
+>  };
+>  
+>  struct etmv4_reg {
+> -	void __iomem *addr;
+> +	struct coresight_device *csdev;
+> +	u32 offset;
+>  	u32 data;
+>  };
+>  
+> @@ -2327,7 +2328,7 @@ static void do_smp_cross_read(void *data)
+>  {
+>  	struct etmv4_reg *reg = data;
+>  
+> -	reg->data = readl_relaxed(reg->addr);
+> +	reg->data = etm4x_relaxed_read32(&reg->csdev->access, reg->offset);
+>  }
+>  
+>  static u32 etmv4_cross_read(const struct device *dev, u32 offset)
+> @@ -2335,7 +2336,9 @@ static u32 etmv4_cross_read(const struct device *dev, u32 offset)
+>  	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev);
+>  	struct etmv4_reg reg;
+>  
+> -	reg.addr = drvdata->base + offset;
+> +	reg.offset = offset;
+> +	reg.csdev = drvdata->csdev;
+> +
+>  	/*
+>  	 * smp cross call ensures the CPU will be powered up before
+>  	 * accessing the ETMv4 trace core registers
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index eefc7371c6c4..14e0f29db6b3 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -120,6 +120,30 @@
+>  #define TRCCIDR2			0xFF8
+>  #define TRCCIDR3			0xFFC
+>  
+> +#define etm4x_relaxed_read32(csa, offset)		\
+> +	readl_relaxed((csa)->base + (offset))
+> +
+> +#define etm4x_read32(csa, offset)			\
+> +	readl((csa)->base + (offset))
+> +
+> +#define etm4x_relaxed_write32(csa, val, offset)		\
+> +	writel_relaxed((val), (csa)->base + (offset))
+> +
+> +#define etm4x_write32(csa, val, offset)			\
+> +	writel((val), (csa)->base + (offset))
+> +
+> +#define etm4x_relaxed_read64(csa, offset)		\
+> +	readq_relaxed((csa)->base + (offset))
+> +
+> +#define etm4x_read64(csa, offset)			\
+> +	readq((csa)->base + (offset))
+> +
+> +#define etm4x_relaxed_write64(csa, val, offset)		\
+> +	writeq_relaxed((val), (csa)->base + (offset))
+> +
+> +#define etm4x_write64(csa, val, offset)			\
+> +	writeq((val), (csa)->base + (offset))
+> +
+>  /* ETMv4 resources */
+>  #define ETM_MAX_NR_PE			8
+>  #define ETMv4_MAX_CNTR			4
+> -- 
+> 2.24.1
+> 
