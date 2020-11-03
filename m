@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D1B2A5472
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CC82A53FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388845AbgKCVLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:11:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52784 "EHLO mail.kernel.org"
+        id S2388217AbgKCVGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:06:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733204AbgKCVLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:11:15 -0500
+        id S2388197AbgKCVGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:06:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6288C206B5;
-        Tue,  3 Nov 2020 21:11:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03A91205ED;
+        Tue,  3 Nov 2020 21:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437874;
-        bh=5E6Ms5SfmAhlWvxTxvU+REQ6RjzNmk5P07PNfAQXR/o=;
+        s=default; t=1604437603;
+        bh=h848nwEJXYf0dQwb43J2aJaYw0aMHUutm5aHaz0qk3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vep0Jbv3lOqrsO0YIFh5KPpINCGx3Uab7vQ6/9mUYxqSJOgs+QncAiiiPOu8Zv17V
-         4eZ4U0QgBkBPZhfbKC9GNT1ur+HTMyJiMrR5EYnKTnwg7QNVIonATX4ijAIO/M+H9y
-         o5db6tOFTkpBUteRItMtAKv2Na9jh6hhjIloLg3E=
+        b=bEO25DNKH+L3zCg7HHtqQRQ92Rfuo5xx+w9i5Q48iGSryqdSVkzae16oSvHJnso3v
+         6aa3VscVeB2pFzxRq3+4OZOzYKFCGbxYAgOwyO5eir3DeKZVBNUMayYWzJ7HwIH/jP
+         cPDW0Nox0yYedyE7HGWRacs6KA4icLC7yvHcAUYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.14 062/125] perf/x86/amd/ibs: Dont include randomized bits in get_ibs_op_count()
+        stable@vger.kernel.org,
+        syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH 4.19 147/191] udf: Fix memory leak when mounting
 Date:   Tue,  3 Nov 2020 21:37:19 +0100
-Message-Id: <20201103203205.932699323@linuxfoundation.org>
+Message-Id: <20201103203246.512693936@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Jan Kara <jack@suse.cz>
 
-commit 680d69635005ba0e58fe3f4c52fc162b8fc743b0 upstream.
+commit a7be300de800e755714c71103ae4a0d205e41e99 upstream.
 
-get_ibs_op_count() adds hardware's current count (IbsOpCurCnt) bits
-to its count regardless of hardware's valid status.
+udf_process_sequence() allocates temporary array for processing
+partition descriptors on volume which it fails to free. Free the array
+when it is not needed anymore.
 
-According to the PPR for AMD Family 17h Model 31h B0 55803 Rev 0.54,
-if the counter rolls over, valid status is set, and the lower 7 bits
-of IbsOpCurCnt are randomized by hardware.
-
-Don't include those bits in the driver's event count.
-
-Fixes: 8b1e13638d46 ("perf/x86-ibs: Fix usage of IBS op current count")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Fixes: 7b78fd02fb19 ("udf: Fix handling of Partition Descriptors")
+CC: stable@vger.kernel.org
+Reported-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/events/amd/ibs.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/udf/super.c |   21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -347,11 +347,15 @@ static u64 get_ibs_op_count(u64 config)
- {
- 	u64 count = 0;
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -1685,7 +1685,8 @@ static noinline int udf_process_sequence
+ 					"Pointers (max %u supported)\n",
+ 					UDF_MAX_TD_NESTING);
+ 				brelse(bh);
+-				return -EIO;
++				ret = -EIO;
++				goto out;
+ 			}
  
-+	/*
-+	 * If the internal 27-bit counter rolled over, the count is MaxCnt
-+	 * and the lower 7 bits of CurCnt are randomized.
-+	 * Otherwise CurCnt has the full 27-bit current counter value.
-+	 */
- 	if (config & IBS_OP_VAL)
--		count += (config & IBS_OP_MAX_CNT) << 4; /* cnt rolled over */
+ 			vdp = (struct volDescPtr *)bh->b_data;
+@@ -1705,7 +1706,8 @@ static noinline int udf_process_sequence
+ 			curr = get_volume_descriptor_record(ident, bh, &data);
+ 			if (IS_ERR(curr)) {
+ 				brelse(bh);
+-				return PTR_ERR(curr);
++				ret = PTR_ERR(curr);
++				goto out;
+ 			}
+ 			/* Descriptor we don't care about? */
+ 			if (!curr)
+@@ -1727,28 +1729,31 @@ static noinline int udf_process_sequence
+ 	 */
+ 	if (!data.vds[VDS_POS_PRIMARY_VOL_DESC].block) {
+ 		udf_err(sb, "Primary Volume Descriptor not found!\n");
+-		return -EAGAIN;
++		ret = -EAGAIN;
++		goto out;
+ 	}
+ 	ret = udf_load_pvoldesc(sb, data.vds[VDS_POS_PRIMARY_VOL_DESC].block);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+ 	if (data.vds[VDS_POS_LOGICAL_VOL_DESC].block) {
+ 		ret = udf_load_logicalvol(sb,
+ 				data.vds[VDS_POS_LOGICAL_VOL_DESC].block,
+ 				fileset);
+ 		if (ret < 0)
+-			return ret;
++			goto out;
+ 	}
+ 
+ 	/* Now handle prevailing Partition Descriptors */
+ 	for (i = 0; i < data.num_part_descs; i++) {
+ 		ret = udf_load_partdesc(sb, data.part_descs_loc[i].rec.block);
+ 		if (ret < 0)
+-			return ret;
++			goto out;
+ 	}
 -
--	if (ibs_caps & IBS_CAPS_RDWROPCNT)
--		count += (config & IBS_OP_CUR_CNT) >> 32;
-+		count = (config & IBS_OP_MAX_CNT) << 4;
-+	else if (ibs_caps & IBS_CAPS_RDWROPCNT)
-+		count = (config & IBS_OP_CUR_CNT) >> 32;
- 
- 	return count;
+-	return 0;
++	ret = 0;
++out:
++	kfree(data.part_descs_loc);
++	return ret;
  }
+ 
+ /*
 
 
