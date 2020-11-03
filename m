@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359DD2A56B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255BB2A5436
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732839AbgKCVac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:30:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
+        id S2388664AbgKCVI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732822AbgKCU6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:04 -0500
+        id S2388648AbgKCVIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42FC6223AC;
-        Tue,  3 Nov 2020 20:58:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43823206B5;
+        Tue,  3 Nov 2020 21:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437083;
-        bh=vtbQ9rDNVPi+7e9cw7/1BDc9XPgJvcQ1yasgkOTW7Qw=;
+        s=default; t=1604437734;
+        bh=ImkCi6wVJfwB6SBF9cHHXCHQVVWly6Y7DHUD+gkteAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I6X+Ur/1LEcNyfqVvG2d7aKNTkLD/uBnbzji9DgYfr+gc+shCqtjNlfT90nzrWQ/L
-         PiMkuhwHSsqzmdvj6spH/vbEDPJPjYLZ5JjY3VehIvumXuNXVvNxBw6q9VaB/jPwE8
-         qAy1Uom9D0DCo8mao7sdP1a+DWoLl9lw+5+xtjWE=
+        b=p+RuctpMeO3MOeG/qbKmGp5GJrT1BUUfqyOA3ttoH/tjpHW+QjMi5aD42F2sOeln7
+         RpTSccvZCiAYHPLzCF9zXBUx8rZ2K2ro7N6uzIE52Q2d2FUr6rmP8+fBypiMcmj4BE
+         uuYvHsLHieTid4GQPUjyEiDUiEvjHrWUrac2pQk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 139/214] usb: dwc3: gadget: Resume pending requests after CLEAR_STALL
-Date:   Tue,  3 Nov 2020 21:36:27 +0100
-Message-Id: <20201103203303.858633715@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.14 011/125] mtd: lpddr: Fix bad logic in print_drs_error
+Date:   Tue,  3 Nov 2020 21:36:28 +0100
+Message-Id: <20201103203158.371468906@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit c503672abe1348f10f5a54a662336358c6e1a297 upstream.
+commit 1c9c02bb22684f6949d2e7ddc0a3ff364fd5a6fc upstream.
 
-The function driver may queue new requests right after halting the
-endpoint (i.e. queue new requests while the endpoint is stalled).
-There's no restriction preventing it from doing so. However, dwc3
-currently drops those requests after CLEAR_STALL. The driver should only
-drop started requests. Keep the pending requests in the pending list to
-resume and process them after the host issues ClearFeature(Halt) to the
-endpoint.
+Update logic for broken test. Use a more common logging style.
 
+It appears the logic in this function is broken for the
+consecutive tests of
+
+        if (prog_status & 0x3)
+                ...
+        else if (prog_status & 0x2)
+                ...
+        else (prog_status & 0x1)
+                ...
+
+Likely the first test should be
+
+        if ((prog_status & 0x3) == 0x3)
+
+Found by inspection of include files using printk.
+
+Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
 Cc: stable@vger.kernel.org
-Fixes: cb11ea56f37a ("usb: dwc3: gadget: Properly handle ClearFeature(halt)")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |   22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ include/linux/mtd/pfow.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1521,8 +1521,13 @@ static int __dwc3_gadget_ep_queue(struct
- 	list_add_tail(&req->list, &dep->pending_list);
- 	req->status = DWC3_REQUEST_STATUS_QUEUED;
+--- a/include/linux/mtd/pfow.h
++++ b/include/linux/mtd/pfow.h
+@@ -128,7 +128,7 @@ static inline void print_drs_error(unsig
  
--	/* Start the transfer only after the END_TRANSFER is completed */
--	if (dep->flags & DWC3_EP_END_TRANSFER_PENDING) {
-+	/*
-+	 * Start the transfer only after the END_TRANSFER is completed
-+	 * and endpoint STALL is cleared.
-+	 */
-+	if ((dep->flags & DWC3_EP_END_TRANSFER_PENDING) ||
-+	    (dep->flags & DWC3_EP_WEDGE) ||
-+	    (dep->flags & DWC3_EP_STALL)) {
- 		dep->flags |= DWC3_EP_DELAY_START;
- 		return 0;
- 	}
-@@ -1728,13 +1733,14 @@ int __dwc3_gadget_ep_set_halt(struct dwc
- 		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
- 			dwc3_gadget_move_cancelled_request(req);
- 
--		list_for_each_entry_safe(req, tmp, &dep->pending_list, list)
--			dwc3_gadget_move_cancelled_request(req);
--
--		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING)) {
--			dep->flags &= ~DWC3_EP_DELAY_START;
-+		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING))
- 			dwc3_gadget_ep_cleanup_cancelled_requests(dep);
--		}
-+
-+		if ((dep->flags & DWC3_EP_DELAY_START) &&
-+		    !usb_endpoint_xfer_isoc(dep->endpoint.desc))
-+			__dwc3_gadget_kick_transfer(dep);
-+
-+		dep->flags &= ~DWC3_EP_DELAY_START;
- 	}
- 
- 	return ret;
+ 	if (!(dsr & DSR_AVAILABLE))
+ 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
+-	if (prog_status & 0x03)
++	if ((prog_status & 0x03) == 0x03)
+ 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+ 						"half with 41h command\n");
+ 	else if (prog_status & 0x02)
 
 
