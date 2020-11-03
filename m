@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F5E2A480E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A446A2A4800
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729748AbgKCO0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        id S1729752AbgKCO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729540AbgKCO0M (ORCPT
+        with ESMTP id S1729697AbgKCO0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Nov 2020 09:26:12 -0500
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA12C0613D1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B216FC0613D1
         for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:26:12 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id s14so14718556qkg.11
+Received: by mail-qk1-x743.google.com with SMTP id z6so14784813qkz.4
         for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 06:26:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7WAm6LEwf7u9tXFdi3sEYrHJm97X0MI4pQJ1QEmpt68=;
-        b=ZcYsY6bwyZHqcpYTz5xqkVw1dxBfUSeWIhfyzkkAW/Dr1KK/QEXlO64iDa575yvlNH
-         NGHO60qpWNDbDUN67du/VQNt6EwJIaoF7ThpnMBu2GR1RKhj6F69ZD+GEegvyjyoTepO
-         yQVRh93lPf5Ncl//XJ+T8wObt3OdpyqERRLEw=
+        bh=K36lTmcygIVW9GX4CyKRbjzZ9I8J8t7aoDmagNP67Xo=;
+        b=xamyF4mQ1HWNRmynLV9Nmwh902AuT4oNHrYm/uYQggun56ZLLojds5LizwcvilZP2U
+         OJUI86QvCobbDatJMo22AiPONLvKEkkR3B0ToQD4WroQP+3KgRF5Vq9PSzpvSD3pseYh
+         EigdUa0blpBR9wIw8iyZ5BBWmkcDeuhfSmd1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7WAm6LEwf7u9tXFdi3sEYrHJm97X0MI4pQJ1QEmpt68=;
-        b=I/713ZxfWinE5wLs4byofO+rJooajzrmNpzMt5fK2lWRh+eUpM5M1l6f8uYsT9QXqV
-         AB8TsyOrgE+IleadgIUzQDVXyH+4iTC3d28k0KUQn8mhQvONH1/xIXX8wwyWG619HjKT
-         IrF4J+u1Zfl/shGjsEEW7o2U5h5pIEDcx+xRAoFZy35nWZ7ekZpAqjYrYlkwGSEylHSE
-         C4/iWJKGUO5q11Zh93HnuZ3at3mkL6i35si1NWCNCaTEjN/Jy0U3HuRreCzXlbP3lMft
-         N5AjtGVMrs3AFqK5ZeJE2vm321aexEVX1kDKzeEakiDWUTBWkm3uFEaE4vR75prhndhR
-         0J/Q==
-X-Gm-Message-State: AOAM530N3JI8OIL6i/xS0iYPCxwnNt4t357xYZ+82mUeHYazVX/wAoX7
-        WA61oKx7LYUPa2DfQ0/gJD28ytiXHMPPWQ==
-X-Google-Smtp-Source: ABdhPJzFSYxUmEZ+qavfpiMNYyRWDrwCZChE8c9zWzWtadTx3og601/qmA21DVqX3QY+/VKBSYEyOQ==
-X-Received: by 2002:a37:aac2:: with SMTP id t185mr13703027qke.58.1604413570325;
-        Tue, 03 Nov 2020 06:26:10 -0800 (PST)
+        bh=K36lTmcygIVW9GX4CyKRbjzZ9I8J8t7aoDmagNP67Xo=;
+        b=tJKwuMO46NiyFb7aATLBz5wYWSRvkAW+5DOmQruWDhLRs+PvXQoB/CzRVw1yjdGZPj
+         8q4UVL8c3RW3I6p+4wv8q/nKsgs9ZeDOdW6AxBogVTmC+Fno7ec2m3TcUXqycKXyd/WA
+         1r5n8E8NhPrA7zFxM1+HBVUFqbNBtRs8u1FdYj/04B4T6T/VLNMjlOUZcOro3XkGpL+i
+         cJyXVjp8/eWjmKi5OL5lkC9m+ahaKaiCnzEz8il4MaAFf9kk6GiI7uszLonhWkURXXdU
+         Q7zUFYE8Y6pMjJtqHiy1i7Tbv+822Non0Fj8XqiP/jXe3ISyw/aLf+SKjAJhYmZVedT8
+         okGg==
+X-Gm-Message-State: AOAM533LoX/BRXYxbL43I7h7dAagzY0Ok4oXqOzmCcHDwmXI0Wzg39If
+        LaJY7n3Tsy3Af4OXZd5cMM79E4Rt2OPcRQ==
+X-Google-Smtp-Source: ABdhPJwOhrBBUvwa9ziHirIS7CLjwOg6CTiQdj6jEL5BgZ4EVQpNJurVWc0ps+A45iWg096UfcGKag==
+X-Received: by 2002:a05:620a:20d2:: with SMTP id f18mr20404850qka.190.1604413571691;
+        Tue, 03 Nov 2020 06:26:11 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id l30sm10564967qta.73.2020.11.03.06.26.09
+        by smtp.gmail.com with ESMTPSA id l30sm10564967qta.73.2020.11.03.06.26.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 06:26:09 -0800 (PST)
+        Tue, 03 Nov 2020 06:26:11 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -57,9 +57,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
         neeraj.iitr10@gmail.com
-Subject: [PATCH v9 2/7] rcu/segcblist: Add counters to segcblist datastructure
-Date:   Tue,  3 Nov 2020 09:25:58 -0500
-Message-Id: <20201103142603.1302207-3-joel@joelfernandes.org>
+Subject: [PATCH v9 3/7] srcu: Fix invoke_rcu_callbacks() segcb length adjustment
+Date:   Tue,  3 Nov 2020 09:25:59 -0500
+Message-Id: <20201103142603.1302207-4-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201103142603.1302207-1-joel@joelfernandes.org>
 References: <20201103142603.1302207-1-joel@joelfernandes.org>
@@ -69,311 +69,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add counting of segment lengths of segmented callback list.
-
-This will be useful for a number of things such as knowing how big the
-ready-to-execute segment have gotten. The immediate benefit is ability
-to trace how the callbacks in the segmented callback list change.
-
-Also this patch remove hacks related to using donecbs's ->len field as a
-temporary variable to save the segmented callback list's length. This cannot be
-done anymore and is not needed.
+With earlier patches, the negative counting of the unsegmented list
+cannot be used to adjust the segmented one. To fix this, sample the
+unsegmented length in advance, and use it after CB execution to adjust
+the segmented list's length.
 
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcu_segcblist.h |   1 +
- kernel/rcu/rcu_segcblist.c    | 120 ++++++++++++++++++++++------------
- kernel/rcu/rcu_segcblist.h    |   2 -
- 3 files changed, 79 insertions(+), 44 deletions(-)
+ kernel/rcu/srcutree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-index b36afe7b22c9..6c01f09a6456 100644
---- a/include/linux/rcu_segcblist.h
-+++ b/include/linux/rcu_segcblist.h
-@@ -72,6 +72,7 @@ struct rcu_segcblist {
- #else
- 	long len;
- #endif
-+	long seglen[RCU_CBLIST_NSEGS];
- 	u8 enabled;
- 	u8 offloaded;
- };
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index bb246d8c6ef1..357c19bbcb00 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -7,10 +7,11 @@
-  * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 0f23d20d485a..79b7081143a7 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1160,6 +1160,7 @@ static void srcu_advance_state(struct srcu_struct *ssp)
   */
- 
--#include <linux/types.h>
--#include <linux/kernel.h>
-+#include <linux/cpu.h>
- #include <linux/interrupt.h>
-+#include <linux/kernel.h>
- #include <linux/rcupdate.h>
-+#include <linux/types.h>
- 
- #include "rcu_segcblist.h"
- 
-@@ -88,6 +89,46 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
- #endif
- }
- 
-+/* Get the length of a segment of the rcu_segcblist structure. */
-+static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
-+{
-+	return READ_ONCE(rsclp->seglen[seg]);
-+}
-+
-+/* Set the length of a segment of the rcu_segcblist structure. */
-+static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-+{
-+	WRITE_ONCE(rsclp->seglen[seg], v);
-+}
-+
-+/* Return number of callbacks in a segment of the segmented callback list. */
-+static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-+{
-+	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
-+}
-+
-+/* Move from's segment length to to's segment. */
-+static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
-+{
+ static void srcu_invoke_callbacks(struct work_struct *work)
+ {
 +	long len;
-+
-+	if (from == to)
-+		return;
-+
-+	len = rcu_segcblist_get_seglen(rsclp, from);
-+	if (!len)
-+		return;
-+
-+	rcu_segcblist_add_seglen(rsclp, to, len);
-+	rcu_segcblist_set_seglen(rsclp, from, 0);
-+}
-+
-+/* Increment segment's length. */
-+static void rcu_segcblist_inc_seglen(struct rcu_segcblist *rsclp, int seg)
-+{
-+	rcu_segcblist_add_seglen(rsclp, seg, 1);
-+}
-+
- /*
-  * Increase the numeric length of an rcu_segcblist structure by the
-  * specified amount, which can be negative.  This can cause the ->len
-@@ -119,26 +160,6 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
- 	rcu_segcblist_add_len(rsclp, 1);
- }
- 
--/*
-- * Exchange the numeric length of the specified rcu_segcblist structure
-- * with the specified value.  This can cause the ->len field to disagree
-- * with the actual number of callbacks on the structure.  This exchange is
-- * fully ordered with respect to the callers accesses both before and after.
-- */
--static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
--{
--#ifdef CONFIG_RCU_NOCB_CPU
--	return atomic_long_xchg(&rsclp->len, v);
--#else
--	long ret = rsclp->len;
--
--	smp_mb(); /* Up to the caller! */
--	WRITE_ONCE(rsclp->len, v);
--	smp_mb(); /* Up to the caller! */
--	return ret;
--#endif
--}
--
- /*
-  * Initialize an rcu_segcblist structure.
-  */
-@@ -149,8 +170,10 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
- 	BUILD_BUG_ON(RCU_NEXT_TAIL + 1 != ARRAY_SIZE(rsclp->gp_seq));
- 	BUILD_BUG_ON(ARRAY_SIZE(rsclp->tails) != ARRAY_SIZE(rsclp->gp_seq));
- 	rsclp->head = NULL;
--	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-+	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
- 		rsclp->tails[i] = &rsclp->head;
-+		rcu_segcblist_set_seglen(rsclp, i, 0);
-+	}
- 	rcu_segcblist_set_len(rsclp, 0);
- 	rsclp->enabled = 1;
- }
-@@ -246,6 +269,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
- {
- 	rcu_segcblist_inc_len(rsclp);
- 	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
-+	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
- 	rhp->next = NULL;
- 	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
- 	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-@@ -274,27 +298,13 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
- 	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
- 		if (rsclp->tails[i] != rsclp->tails[i - 1])
- 			break;
-+	rcu_segcblist_inc_seglen(rsclp, i);
- 	WRITE_ONCE(*rsclp->tails[i], rhp);
- 	for (; i <= RCU_NEXT_TAIL; i++)
- 		WRITE_ONCE(rsclp->tails[i], &rhp->next);
- 	return true;
- }
- 
--/*
-- * Extract only the counts from the specified rcu_segcblist structure,
-- * and place them in the specified rcu_cblist structure.  This function
-- * supports both callback orphaning and invocation, hence the separation
-- * of counts and callbacks.  (Callbacks ready for invocation must be
-- * orphaned and adopted separately from pending callbacks, but counts
-- * apply to all callbacks.  Locking must be used to make sure that
-- * both orphaned-callbacks lists are consistent.)
-- */
--void rcu_segcblist_extract_count(struct rcu_segcblist *rsclp,
--					       struct rcu_cblist *rclp)
--{
--	rclp->len = rcu_segcblist_xchg_len(rsclp, 0);
--}
--
- /*
-  * Extract only those callbacks ready to be invoked from the specified
-  * rcu_segcblist structure and place them in the specified rcu_cblist
-@@ -307,6 +317,7 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
- 
- 	if (!rcu_segcblist_ready_cbs(rsclp))
- 		return; /* Nothing to do. */
-+	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_DONE_TAIL);
- 	*rclp->tail = rsclp->head;
- 	WRITE_ONCE(rsclp->head, *rsclp->tails[RCU_DONE_TAIL]);
- 	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-@@ -314,6 +325,7 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
- 	for (i = RCU_CBLIST_NSEGS - 1; i >= RCU_DONE_TAIL; i--)
- 		if (rsclp->tails[i] == rsclp->tails[RCU_DONE_TAIL])
- 			WRITE_ONCE(rsclp->tails[i], &rsclp->head);
-+	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
- }
- 
- /*
-@@ -330,11 +342,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
- 
- 	if (!rcu_segcblist_pend_cbs(rsclp))
- 		return; /* Nothing to do. */
-+	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-+		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-+		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
- 	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
- 	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
- 	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
--	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
-+	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
- 		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
-+		rcu_segcblist_set_seglen(rsclp, i, 0);
-+	}
- }
- 
- /*
-@@ -345,7 +362,6 @@ void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
- 				struct rcu_cblist *rclp)
- {
- 	rcu_segcblist_add_len(rsclp, rclp->len);
--	rclp->len = 0;
- }
- 
- /*
-@@ -359,6 +375,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
- 
- 	if (!rclp->head)
- 		return; /* No callbacks to move. */
-+	rcu_segcblist_add_seglen(rsclp, RCU_DONE_TAIL, rclp->len);
- 	*rclp->tail = rsclp->head;
- 	WRITE_ONCE(rsclp->head, rclp->head);
- 	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
-@@ -379,6 +396,8 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
- {
- 	if (!rclp->head)
- 		return; /* Nothing to do. */
-+
-+	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
- 	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
- 	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
- }
-@@ -403,6 +422,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- 		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
- 			break;
- 		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
-+		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
+ 	bool more;
+ 	struct rcu_cblist ready_cbs;
+ 	struct rcu_head *rhp;
+@@ -1182,6 +1183,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	/* We are on the job!  Extract and invoke ready callbacks. */
+ 	sdp->srcu_cblist_invoking = true;
+ 	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
++	len = ready_cbs.len;
+ 	spin_unlock_irq_rcu_node(sdp);
+ 	rhp = rcu_cblist_dequeue(&ready_cbs);
+ 	for (; rhp != NULL; rhp = rcu_cblist_dequeue(&ready_cbs)) {
+@@ -1190,13 +1192,14 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 		rhp->func(rhp);
+ 		local_bh_enable();
  	}
++	WARN_ON_ONCE(ready_cbs.len);
  
- 	/* If no callbacks moved, nothing more need be done. */
-@@ -423,6 +443,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- 		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
- 			break;  /* No more callbacks. */
- 		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
-+		rcu_segcblist_move_seglen(rsclp, i, j);
- 		rsclp->gp_seq[j] = rsclp->gp_seq[i];
- 	}
- }
-@@ -444,7 +465,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
-  */
- bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- {
--	int i;
-+	int i, j;
- 
- 	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
- 	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
-@@ -487,6 +508,10 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- 	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
- 		return false;
- 
-+	/* Accounting: everything below i is about to get merged into i. */
-+	for (j = i + 1; j <= RCU_NEXT_TAIL; j++)
-+		rcu_segcblist_move_seglen(rsclp, j, i);
-+
  	/*
- 	 * Merge all later callbacks, including newly arrived callbacks,
- 	 * into the segment located by the for-loop above.  Assign "seq"
-@@ -514,13 +539,24 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 	struct rcu_cblist donecbs;
- 	struct rcu_cblist pendcbs;
- 
-+	lockdep_assert_cpus_held();
-+
- 	rcu_cblist_init(&donecbs);
- 	rcu_cblist_init(&pendcbs);
--	rcu_segcblist_extract_count(src_rsclp, &donecbs);
-+
- 	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
- 	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-+
-+	/*
-+	 * No need smp_mb() before setting length to 0, because CPU hotplug
-+	 * lock excludes rcu_barrier.
-+	 */
-+	rcu_segcblist_set_len(src_rsclp, 0);
-+
- 	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-+	rcu_segcblist_insert_count(dst_rsclp, &pendcbs);
- 	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
- 	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-+
- 	rcu_segcblist_init(src_rsclp);
- }
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 1d2d61406463..cd35c9faaf51 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -89,8 +89,6 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
- 			   struct rcu_head *rhp);
- bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
- 			   struct rcu_head *rhp);
--void rcu_segcblist_extract_count(struct rcu_segcblist *rsclp,
--				 struct rcu_cblist *rclp);
- void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
- 				    struct rcu_cblist *rclp);
- void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
+ 	 * Update counts, accelerate new callbacks, and if needed,
+ 	 * schedule another round of callback invocation.
+ 	 */
+ 	spin_lock_irq_rcu_node(sdp);
+-	rcu_segcblist_insert_count(&sdp->srcu_cblist, &ready_cbs);
++	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+ 	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+ 				       rcu_seq_snap(&ssp->srcu_gp_seq));
+ 	sdp->srcu_cblist_invoking = false;
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
