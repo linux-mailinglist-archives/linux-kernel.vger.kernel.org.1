@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956392A5122
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A57C2A5123
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgKCUiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:38:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
+        id S1729910AbgKCUiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:38:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729878AbgKCUiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:38:10 -0500
+        id S1729912AbgKCUiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:38:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CF9B22277;
-        Tue,  3 Nov 2020 20:38:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F149D22226;
+        Tue,  3 Nov 2020 20:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604435890;
-        bh=HZ0UlOng7ybFLQxvqtHXjpkSuYOAUR3Hx67xi1gwmLA=;
+        s=default; t=1604435897;
+        bh=MNWuRsbaqZbwvImpaxXFVUygwK+q3aVGcuO+mMLktVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OW/eS1WsJxgVxb06zNXB3uyOK5QkF4/Hgu4VBpCTihfka26WW47sqXwjGi3ZAtV8C
-         aPjQeQasObovRzSuXD4+dMPaMfARS6ogOGHydIc8FQnlXnf4Uq2sLhH08+yAi2Kevf
-         nBirTIl4OgEt5NiI68rZ+/D7ECQpQL2P7U8KClB8=
+        b=H1jNp5b+YNccWiDilChBwaT8KaugHZOdPoXFKkMS2GWAoMjqMbuHZSFAqHtSJK2XE
+         rKVuHuHWZI5gVAyrbRFMVGyCcQbbFd/l2kY/MfGxb6O744GnI2V2IOQ6oQLzOyZTNO
+         rdHGduf6DZT57QmUEX3vhRafesgYTtkaO3TStYgw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Alok Prasad <palok@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 028/391] RDMA/qedr: Fix memory leak in iWARP CM
-Date:   Tue,  3 Nov 2020 21:31:19 +0100
-Message-Id: <20201103203349.703907354@linuxfoundation.org>
+Subject: [PATCH 5.9 031/391] afs: Fix to take ref on page when PG_private is set
+Date:   Tue,  3 Nov 2020 21:31:22 +0100
+Message-Id: <20201103203349.864174637@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -46,35 +44,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alok Prasad <palok@marvell.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit a2267f8a52eea9096861affd463f691be0f0e8c9 ]
+[ Upstream commit fa04a40b169fcee615afbae97f71a09332993f64 ]
 
-Fixes memory leak in iWARP CM
+Fix afs to take a ref on a page when it sets PG_private on it and to drop
+the ref when removing the flag.
 
-Fixes: e411e0587e0d ("RDMA/qedr: Add iWARP connection management functions")
-Link: https://lore.kernel.org/r/20201021115008.28138-1-palok@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Alok Prasad <palok@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Note that in afs_write_begin(), a lot of the time, PG_private is already
+set on a page to which we're going to add some data.  In such a case, we
+leave the bit set and mustn't increment the page count.
+
+As suggested by Matthew Wilcox, use attach/detach_page_private() where
+possible.
+
+Fixes: 31143d5d515e ("AFS: implement basic file write support")
+Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/qedr_iw_cm.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/afs/dir.c      | 12 ++++--------
+ fs/afs/dir_edit.c |  6 ++----
+ fs/afs/file.c     |  8 ++------
+ fs/afs/write.c    | 18 ++++++++++--------
+ 4 files changed, 18 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-index c7169d2c69e5b..c4bc58736e489 100644
---- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-+++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-@@ -727,6 +727,7 @@ int qedr_iw_destroy_listen(struct iw_cm_id *cm_id)
- 						    listener->qed_handle);
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 1d2e61e0ab047..1bb5b9d7f0a2c 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -281,8 +281,7 @@ retry:
+ 			if (ret < 0)
+ 				goto error;
  
- 	cm_id->rem_ref(cm_id);
-+	kfree(listener);
- 	return rc;
+-			set_page_private(req->pages[i], 1);
+-			SetPagePrivate(req->pages[i]);
++			attach_page_private(req->pages[i], (void *)1);
+ 			unlock_page(req->pages[i]);
+ 			i++;
+ 		} else {
+@@ -1975,8 +1974,7 @@ static int afs_dir_releasepage(struct page *page, gfp_t gfp_flags)
+ 
+ 	_enter("{{%llx:%llu}[%lu]}", dvnode->fid.vid, dvnode->fid.vnode, page->index);
+ 
+-	set_page_private(page, 0);
+-	ClearPagePrivate(page);
++	detach_page_private(page);
+ 
+ 	/* The directory will need reloading. */
+ 	if (test_and_clear_bit(AFS_VNODE_DIR_VALID, &dvnode->flags))
+@@ -2003,8 +2001,6 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
+ 		afs_stat_v(dvnode, n_inval);
+ 
+ 	/* we clean up only if the entire page is being invalidated */
+-	if (offset == 0 && length == PAGE_SIZE) {
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-	}
++	if (offset == 0 && length == PAGE_SIZE)
++		detach_page_private(page);
  }
+diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
+index b108528bf010d..2ffe09abae7fc 100644
+--- a/fs/afs/dir_edit.c
++++ b/fs/afs/dir_edit.c
+@@ -243,10 +243,8 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
+ 						   index, gfp);
+ 			if (!page)
+ 				goto error;
+-			if (!PagePrivate(page)) {
+-				set_page_private(page, 1);
+-				SetPagePrivate(page);
+-			}
++			if (!PagePrivate(page))
++				attach_page_private(page, (void *)1);
+ 			dir_page = kmap(page);
+ 		}
  
+diff --git a/fs/afs/file.c b/fs/afs/file.c
+index 371d1488cc549..bdcf418e4a5c0 100644
+--- a/fs/afs/file.c
++++ b/fs/afs/file.c
+@@ -626,11 +626,9 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
+ #endif
+ 
+ 		if (PagePrivate(page)) {
+-			priv = page_private(page);
++			priv = (unsigned long)detach_page_private(page);
+ 			trace_afs_page_dirty(vnode, tracepoint_string("inval"),
+ 					     page->index, priv);
+-			set_page_private(page, 0);
+-			ClearPagePrivate(page);
+ 		}
+ 	}
+ 
+@@ -660,11 +658,9 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
+ #endif
+ 
+ 	if (PagePrivate(page)) {
+-		priv = page_private(page);
++		priv = (unsigned long)detach_page_private(page);
+ 		trace_afs_page_dirty(vnode, tracepoint_string("rel"),
+ 				     page->index, priv);
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+ 	}
+ 
+ 	/* indicate that the page can be released */
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index b937ec047ec98..02facb19a0f1d 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -151,8 +151,10 @@ try_again:
+ 	priv |= f;
+ 	trace_afs_page_dirty(vnode, tracepoint_string("begin"),
+ 			     page->index, priv);
+-	SetPagePrivate(page);
+-	set_page_private(page, priv);
++	if (PagePrivate(page))
++		set_page_private(page, priv);
++	else
++		attach_page_private(page, (void *)priv);
+ 	_leave(" = 0");
+ 	return 0;
+ 
+@@ -334,10 +336,9 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
+ 		ASSERTCMP(pv.nr, ==, count);
+ 
+ 		for (loop = 0; loop < count; loop++) {
+-			priv = page_private(pv.pages[loop]);
++			priv = (unsigned long)detach_page_private(pv.pages[loop]);
+ 			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
+ 					     pv.pages[loop]->index, priv);
+-			set_page_private(pv.pages[loop], 0);
+ 			end_page_writeback(pv.pages[loop]);
+ 		}
+ 		first += count;
+@@ -863,8 +864,10 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	priv |= 0; /* From */
+ 	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
+ 			     vmf->page->index, priv);
+-	SetPagePrivate(vmf->page);
+-	set_page_private(vmf->page, priv);
++	if (PagePrivate(vmf->page))
++		set_page_private(vmf->page, priv);
++	else
++		attach_page_private(vmf->page, (void *)priv);
+ 	file_update_time(file);
+ 
+ 	sb_end_pagefault(inode->i_sb);
+@@ -926,10 +929,9 @@ int afs_launder_page(struct page *page)
+ 		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
+ 	}
+ 
++	priv = (unsigned long)detach_page_private(page);
+ 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"),
+ 			     page->index, priv);
+-	set_page_private(page, 0);
+-	ClearPagePrivate(page);
+ 
+ #ifdef CONFIG_AFS_FSCACHE
+ 	if (PageFsCache(page)) {
 -- 
 2.27.0
 
