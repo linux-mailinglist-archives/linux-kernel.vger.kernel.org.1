@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C302A4870
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61CB2A4879
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgKCOld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:41:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728072AbgKCOlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:41:31 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21F1A2054F;
-        Tue,  3 Nov 2020 14:41:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604414490;
-        bh=08cuWeirHWRvjZCSTIQ57wvVDcL2egfmvBLTZ0vGBBM=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=aSW1sCiQnhM5NTjlu9OUrXZ7nBHjUGjJls8kcfNUmW/1zhsZn6HoWBL6hyMsaVkvZ
-         R3kyXvwvIPw/5EDhxsE7Drp88jD5k4NHVtQ+rVSnq2tDVr9nm1ESJBa8x44Pf9Y7Bj
-         XtB1uabq6jbJNwECF/ZJg3qKnlpRhk1f0j1Sq/hQ=
-Date:   Tue, 3 Nov 2020 15:41:19 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+        id S1727901AbgKCOnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727688AbgKCOnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:43:12 -0500
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F1DC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:43:12 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 33982B9A;
+        Tue,  3 Nov 2020 15:43:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CDy0WbOmmdeQ; Tue,  3 Nov 2020 15:43:08 +0100 (CET)
+Received: from function.youpi.perso.aquilenet.fr (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 4A3CBAAC;
+        Tue,  3 Nov 2020 15:43:08 +0100 (CET)
+Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1kZxWd-00G3OY-5s; Tue, 03 Nov 2020 15:43:07 +0100
+Date:   Tue, 3 Nov 2020 15:43:07 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
 Subject: Re: [PATCH] speakup: Fix var_id_t values and thus keymap
-Message-ID: <20201103144119.GA3110335@kroah.com>
+Message-ID: <20201103144307.3sdr34iafiaa7aza@function>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org
 References: <20201012160646.qmdo4eqtj24hpch4@function>
  <20201103143142.c3juf3lqj4wz5nge@function>
+ <20201103144119.GA3110335@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103143142.c3juf3lqj4wz5nge@function>
+In-Reply-To: <20201103144119.GA3110335@kroah.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 03:31:42PM +0100, Samuel Thibault wrote:
-> Ping?
+Greg KH, le mar. 03 nov. 2020 15:41:19 +0100, a ecrit:
+> On Tue, Nov 03, 2020 at 03:31:42PM +0100, Samuel Thibault wrote:
+> > This is a change that should got into 5.10, in the meanwhile the bug
+> > (appeared in 5.8) is very inconvenient for users.
 > 
-> This is a change that should got into 5.10, in the meanwhile the bug
-> (appeared in 5.8) is very inconvenient for users.
+> It's in my to-apply queue, sorry, it's really long at the moment.
 
-It's in my to-apply queue, sorry, it's really long at the moment.  Don't
-worry, it's not lost...
+Ok, np, juste making sure!
 
-thanks,
-
-greg k-h
+Thanks,
+Samuel
