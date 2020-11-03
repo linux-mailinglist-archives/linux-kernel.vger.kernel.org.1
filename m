@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2632A52AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DE42A532E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732030AbgKCUwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:52:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47856 "EHLO mail.kernel.org"
+        id S1732986AbgKCU6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgKCUv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:58 -0500
+        id S1732967AbgKCU6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CC0F2071E;
-        Tue,  3 Nov 2020 20:51:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 003FA2053B;
+        Tue,  3 Nov 2020 20:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436717;
-        bh=mBXyxO7ug7xUgmt42FXa3IFZYYfuyjhlhInNpetqWAM=;
+        s=default; t=1604437109;
+        bh=Hd4XbZiTS7NDDUJEkgjX4l37jNWVlR3STL53BlmaYcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhj6RRoxzUGSAaHPvpfYssc5aRWxwuFKU8W9sdaTcN19T7cjJ4XbkCZBC+wdF4exH
-         S7aa0M2PE1meFFniNBYvKQCZLe4iePhisQILmO9Js8bzdERIfGrz1gUh7WI2k2pjas
-         zf2ttHmOhYK1DDDdl5MuG5Y97d+sE6ho9fwovQHE=
+        b=E0fHlcNDrJ76QBHv+iNDG7+vxda8Ggc2ziFRIW4XYS1t2hTLmaPsr0ku16OdjXf41
+         acXw1wzdXkwKS8OQB3IIlVVsfiyuS9Uw8pn7O14SEsWRd1R8XeW4yprTVqQa3ZBToG
+         oiGFp2NE/sHJxTddqNZ7KfUJLaXiJmRoF4ySFaPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.9 345/391] ext4: clear buffer verified flag if read meta block from disk
-Date:   Tue,  3 Nov 2020 21:36:36 +0100
-Message-Id: <20201103203410.416848527@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.4 149/214] dmaengine: dma-jz4780: Fix race in jz4780_dma_tx_status
+Date:   Tue,  3 Nov 2020 21:36:37 +0100
+Message-Id: <20201103203304.757947181@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,124 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit d9befedaafcf3a111428baa7c45b02923eab2d87 upstream.
+commit baf6fd97b16ea8f981b8a8b04039596f32fc2972 upstream.
 
-The metadata buffer is no longer trusted after we read it from disk
-again because it is not uptodate for some reasons (e.g. failed to write
-back). Otherwise we may get below memory corruption problem in
-ext4_ext_split()->memset() if we read stale data from the newly
-allocated extent block on disk which has been failed to async write
-out but miss verify again since the verified bit has already been set
-on the buffer.
+The jz4780_dma_tx_status() function would check if a channel's cookie
+state was set to 'completed', and if not, it would enter the critical
+section. However, in that time frame, the jz4780_dma_chan_irq() function
+was able to set the cookie to 'completed', and clear the jzchan->vchan
+pointer, which was deferenced in the critical section of the first
+function.
 
-[   29.774674] BUG: unable to handle kernel paging request at ffff88841949d000
-...
-[   29.783317] Oops: 0002 [#2] SMP
-[   29.784219] R10: 00000000000f4240 R11: 0000000000002e28 R12: ffff88842fa1c800
-[   29.784627] CPU: 1 PID: 126 Comm: kworker/u4:3 Tainted: G      D W
-[   29.785546] R13: ffffffff9cddcc20 R14: ffffffff9cddd420 R15: ffff88842fa1c2f8
-[   29.786679] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS ?-20190727_0738364
-[   29.787588] FS:  0000000000000000(0000) GS:ffff88842fa00000(0000) knlGS:0000000000000000
-[   29.789288] Workqueue: writeback wb_workfn
-[   29.790319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   29.790321]  (flush-8:0)
-[   29.790844] CR2: 0000000000000008 CR3: 00000004234f2000 CR4: 00000000000006f0
-[   29.791924] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   29.792839] RIP: 0010:__memset+0x24/0x30
-[   29.793739] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   29.794256] Code: 90 90 90 90 90 90 0f 1f 44 00 00 49 89 f9 48 89 d1 83 e2 07 48 c1 e9 033
-[   29.795161] Kernel panic - not syncing: Fatal exception in interrupt
-...
-[   29.808149] Call Trace:
-[   29.808475]  ext4_ext_insert_extent+0x102e/0x1be0
-[   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
-[   29.809652]  ext4_map_blocks+0x290/0x8a0
-[   29.809085]  ext4_ext_map_blocks+0xa89/0x1bb0
-[   29.809652]  ext4_map_blocks+0x290/0x8a0
-[   29.810161]  ext4_writepages+0xc85/0x17c0
-...
+Fix this race by checking the channel's cookie state after entering the
+critical function and not before.
 
-Fix this by clearing buffer's verified bit if we read meta block from
-disk again.
-
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200924073337.861472-2-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: d894fc6046fe ("dmaengine: jz4780: add driver for the Ingenic JZ4780 DMA controller")
+Cc: stable@vger.kernel.org # v4.0
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reported-by: Artur Rojek <contact@artur-rojek.eu>
+Tested-by: Artur Rojek <contact@artur-rojek.eu>
+Link: https://lore.kernel.org/r/20201004140307.885556-1-paul@crapouillou.net
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/balloc.c  |    1 +
- fs/ext4/extents.c |    1 +
- fs/ext4/ialloc.c  |    1 +
- fs/ext4/inode.c   |    5 ++++-
- fs/ext4/super.c   |    1 +
- 5 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/dma/dma-jz4780.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -494,6 +494,7 @@ ext4_read_block_bitmap_nowait(struct sup
- 	 * submit the buffer_head for reading
- 	 */
- 	set_buffer_new(bh);
-+	clear_buffer_verified(bh);
- 	trace_ext4_read_block_bitmap_load(sb, block_group, ignore_locked);
- 	bh->b_end_io = ext4_end_bitmap_read;
- 	get_bh(bh);
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -501,6 +501,7 @@ __read_extent_tree_block(const char *fun
+--- a/drivers/dma/dma-jz4780.c
++++ b/drivers/dma/dma-jz4780.c
+@@ -639,11 +639,11 @@ static enum dma_status jz4780_dma_tx_sta
+ 	unsigned long flags;
+ 	unsigned long residue = 0;
  
- 	if (!bh_uptodate_or_lock(bh)) {
- 		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
-+		clear_buffer_verified(bh);
- 		err = bh_submit_read(bh);
- 		if (err < 0)
- 			goto errout;
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -188,6 +188,7 @@ ext4_read_inode_bitmap(struct super_bloc
- 	/*
- 	 * submit the buffer_head for reading
- 	 */
-+	clear_buffer_verified(bh);
- 	trace_ext4_load_inode_bitmap(sb, block_group);
- 	bh->b_end_io = ext4_end_bitmap_read;
- 	get_bh(bh);
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -884,6 +884,7 @@ struct buffer_head *ext4_bread(handle_t
- 		return bh;
- 	if (!bh || ext4_buffer_uptodate(bh))
- 		return bh;
-+	clear_buffer_verified(bh);
- 	ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1, &bh);
- 	wait_on_buffer(bh);
- 	if (buffer_uptodate(bh))
-@@ -909,9 +910,11 @@ int ext4_bread_batch(struct inode *inode
++	spin_lock_irqsave(&jzchan->vchan.lock, flags);
++
+ 	status = dma_cookie_status(chan, cookie, txstate);
+ 	if ((status == DMA_COMPLETE) || (txstate == NULL))
+-		return status;
+-
+-	spin_lock_irqsave(&jzchan->vchan.lock, flags);
++		goto out_unlock_irqrestore;
  
- 	for (i = 0; i < bh_count; i++)
- 		/* Note that NULL bhs[i] is valid because of holes. */
--		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
-+		if (bhs[i] && !ext4_buffer_uptodate(bhs[i])) {
-+			clear_buffer_verified(bhs[i]);
- 			ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1,
- 				    &bhs[i]);
-+		}
+ 	vdesc = vchan_find_desc(&jzchan->vchan, cookie);
+ 	if (vdesc) {
+@@ -660,6 +660,7 @@ static enum dma_status jz4780_dma_tx_sta
+ 	    && jzchan->desc->status & (JZ_DMA_DCS_AR | JZ_DMA_DCS_HLT))
+ 		status = DMA_ERROR;
  
- 	if (!wait)
- 		return 0;
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -156,6 +156,7 @@ ext4_sb_bread(struct super_block *sb, se
- 		return ERR_PTR(-ENOMEM);
- 	if (ext4_buffer_uptodate(bh))
- 		return bh;
-+	clear_buffer_verified(bh);
- 	ll_rw_block(REQ_OP_READ, REQ_META | op_flags, 1, &bh);
- 	wait_on_buffer(bh);
- 	if (buffer_uptodate(bh))
++out_unlock_irqrestore:
+ 	spin_unlock_irqrestore(&jzchan->vchan.lock, flags);
+ 	return status;
+ }
 
 
