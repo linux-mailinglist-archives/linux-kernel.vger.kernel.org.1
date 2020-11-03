@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131392A5463
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BF42A567A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388765AbgKCVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:10:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51584 "EHLO mail.kernel.org"
+        id S2387696AbgKCV2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388742AbgKCVKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:10:35 -0500
+        id S1729585AbgKCU7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20DE5207BC;
-        Tue,  3 Nov 2020 21:10:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB0952053B;
+        Tue,  3 Nov 2020 20:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437834;
-        bh=ReV1V7pMKD9At0XOvgCgrQ2xGFrSYOtpAOr9izbozR4=;
+        s=default; t=1604437181;
+        bh=L5ms5j8ReJco365fFQYVbJCEw0Wt1/KFNY135X55fwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jQzLs2NJ/Ne7OBuRbxXfNkC3EKrxANLq+0RCMI00GTAgFXrBGzEjREJTau7GmGvr2
-         RbpyUBueS4fSLJ0c80FWKc2qqHYqNdFbdrbB4MZtnLozC6wYwqBsrbPysUrZSeldec
-         2fmY8/RTNcArakNZwaVNKljoP6bREG3fM4dNJWt4=
+        b=Cwa02dHa+gg7ZDHdubLApG1gj3Tf1XOmoJgqD9MSFOiti19DUP3M7MMlkQo2X5H8x
+         jEtW2tk2Tv2L6M567Kh8JtWCUuS03RmNft4iMqHpgfOlKPndvtmF6JD6mfYazhD9vA
+         A4+szNqQx2nBIIl84GAIAJhoyU8bPZGeAUW3wn4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 051/125] ext4: Detect already used quota file early
-Date:   Tue,  3 Nov 2020 21:37:08 +0100
-Message-Id: <20201103203204.374370157@linuxfoundation.org>
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jane Jian <Jane.Jian@amd.com>
+Subject: [PATCH 5.4 181/214] drm/amdgpu: correct the gpu reset handling for job != NULL case
+Date:   Tue,  3 Nov 2020 21:37:09 +0100
+Message-Id: <20201103203307.677176739@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
+commit 207ac684792560acdb9e06f9d707ebf63c84b0e0 upstream.
 
-When we try to use file already used as a quota file again (for the same
-or different quota type), strange things can happen. At the very least
-lockdep annotations may be wrong but also inode flags may be wrongly set
-/ reset. When the file is used for two quota types at once we can even
-corrupt the file and likely crash the kernel. Catch all these cases by
-checking whether passed file is already used as quota file and bail
-early in that case.
+Current code wrongly treat all cases as job == NULL.
 
-This fixes occasional generic/219 failure due to lockdep complaint.
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-and-tested-by: Jane Jian <Jane.Jian@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 634c822d1dc98..d941b0cee5f8e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5626,6 +5626,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
- 	/* Quotafile not on the same filesystem? */
- 	if (path->dentry->d_sb != sb)
- 		return -EXDEV;
-+
-+	/* Quota already enabled for this file? */
-+	if (IS_NOQUOTA(d_inode(path->dentry)))
-+		return -EBUSY;
-+
- 	/* Journaling quota? */
- 	if (EXT4_SB(sb)->s_qf_names[type]) {
- 		/* Quotafile not in fs root? */
--- 
-2.27.0
-
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3890,7 +3890,7 @@ retry:	/* Rest of adevs pre asic reset f
+ 
+ 		amdgpu_device_lock_adev(tmp_adev, false);
+ 		r = amdgpu_device_pre_asic_reset(tmp_adev,
+-						 NULL,
++						 (tmp_adev == adev) ? job : NULL,
+ 						 &need_full_reset);
+ 		/*TODO Should we stop ?*/
+ 		if (r) {
 
 
