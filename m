@@ -2,112 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0BA2A378E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDFE2A3790
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgKCAQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:16:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgKCAQ0 (ORCPT
+        id S1727191AbgKCARR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:17:17 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34070 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgKCARQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:16:26 -0500
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F190FC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:16:25 -0800 (PST)
-Received: by mail-ua1-x941.google.com with SMTP id p12so2024024uam.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p7j2MkqbzfmNDffUUJc2UA/rAd92pXTAvHkKX+n2Ey0=;
-        b=kSydRRrNnUb20Ij+6fkK3MbRCz5KLiSa0VZqCZtc+WNLyQf/+BUD3QYq9V0bXFh7l2
-         sQemKcpvArm+0zAmqI9hD1Z0ZJsZIdh2WO6Weucj/evPtWOjZNAhJjpHg29trekQqWXN
-         vIzoI/n6ew5YlKlM68cPh+TdcsN3T/lelf++I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p7j2MkqbzfmNDffUUJc2UA/rAd92pXTAvHkKX+n2Ey0=;
-        b=eiWdYLBsOJAqJ+ZxGwdjMI8ec2g6m61pQG6iUWThns1MTKvxgR9oWx3Z7MFsDFNLKL
-         JCGMALT74O/dPgKEFPVU+N+7ozF8+gSLDWSk3pjEKbdLV170Yq0K7wACmx4q5G4by+Lm
-         ZjRpdqzYYVCw8rpqBUfJd5/ads/tZSrnGM1D8+wAr2ka9rAyNwzEohCF4UACAV17DAev
-         8DzDSPO+lkvA/LFZL6v+vIzKw7vQeUbvYII7ghOWo5ETMvn/Iwv40mt1xtQ8VMdHm34K
-         l1gbNAzEJND6ru4q7TthT7j8Uz2TS3/gOAk+kVhoH76clMNmcnE+eNW8GKxmw+EJLK9g
-         HWGA==
-X-Gm-Message-State: AOAM533NLv0+BANXhB5ritHkDKbHVtB4vbPB7o9AKWZ5A0kRCpPDcZoV
-        MK+lYCvaCvpFnWjxprxgXM53JMMqthRdJg==
-X-Google-Smtp-Source: ABdhPJyS3zaZaMxmkG18zQnEeoKZt+Dt8VD+hN2KPjd+gcMsXYNby/6DhAn855YcDA3Mwtv556l+6w==
-X-Received: by 2002:ab0:31:: with SMTP id 46mr8820920uai.131.1604362584385;
-        Mon, 02 Nov 2020 16:16:24 -0800 (PST)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id u203sm1999829vkb.34.2020.11.02.16.16.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 16:16:22 -0800 (PST)
-Received: by mail-ua1-f52.google.com with SMTP id f15so4496421uaq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:16:22 -0800 (PST)
-X-Received: by 2002:a9f:2f15:: with SMTP id x21mr9142861uaj.104.1604362582272;
- Mon, 02 Nov 2020 16:16:22 -0800 (PST)
+        Mon, 2 Nov 2020 19:17:16 -0500
+Date:   Tue, 3 Nov 2020 01:17:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604362634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MByvycUX+rn60Vq2M21WP4xK2GmTKyADM01aIsR7iQU=;
+        b=GP7dznI9z6LRZT6wgbHKVocpu2MqqLHkQBq5MI6Ao32VwjpYLBWttOdvkYqXKu6H0sfUY6
+        A+izxSs9gBfEX3xDUXVRefkNu9BSc0A4UyKg6KIBhR4nr/RHT7brjb65o3wuo8nVJ+CqRX
+        quVSL8JMQEl2EieF/ThIPPgpiNOYvredmOZ01Zx69bHtL37SjTGQNdmMrn0wEBReI14BOx
+        qfrM3eWDJkuoP9VU+Yhm9YlPIGWzYQIzzydaBOsLAej4WBJCZPZPsNpfC2K5SzkROhRFiB
+        HYJ9NLGVpHr8yAUY05ou3uDRotclr17GvLU0DB1bkBdj76UcwAUMo+BbFfaxeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604362634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MByvycUX+rn60Vq2M21WP4xK2GmTKyADM01aIsR7iQU=;
+        b=47Sa4dnZdc4cdcAGn1otUqMq1Eeu10KAf8Kx3rrLhXH/EqPxkJMQhQ9hf6hFrvNxUbaSOf
+        aY/zSGYgVQdj4LBA==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during
+ fork
+Message-ID: <20201103001712.GB52235@lx-t490>
+References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+ <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+ <20201030225250.GB6357@xz-x1>
+ <20201030235121.GQ2620339@nvidia.com>
 MIME-Version: 1.0
-References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
- <20201030164743.GA3967106@bogus>
-In-Reply-To: <20201030164743.GA3967106@bogus>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 2 Nov 2020 16:16:04 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UoDUVyUakJGL=Pmedjj7DFexbi=WHeEkkD9XNhay64JQ@mail.gmail.com>
-Message-ID: <CAD=FV=UoDUVyUakJGL=Pmedjj7DFexbi=WHeEkkD9XNhay64JQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as deprecated
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-input@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030235121.GQ2620339@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 30, 2020 at 08:51:21PM -0300, Jason Gunthorpe wrote:
+> On Fri, Oct 30, 2020 at 06:52:50PM -0400, Peter Xu wrote:
 
-On Fri, Oct 30, 2020 at 9:47 AM Rob Herring <robh@kernel.org> wrote:
+...
+
 >
-> On Fri, Oct 23, 2020 at 04:22:52PM -0700, Douglas Anderson wrote:
-> > As pointed out by Rob Herring [1], we should have a device-specific
-> > compatible string.  This means people shouldn't be using the
-> > "i2c-over-hid" compatible string anymore, or at least not without a
-> > more specific compatible string before it.  Specifically:
+> > > diff --git a/mm/memory.c b/mm/memory.c
+> > > index c48f8df6e50268..294c2c3c4fe00d 100644
+> > > +++ b/mm/memory.c
+> > > @@ -1171,6 +1171,12 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+> > >  		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
+> > >  					0, src_vma, src_mm, addr, end);
+> > >  		mmu_notifier_invalidate_range_start(&range);
+> > > +		/*
+> > > +		 * The read side doesn't spin, it goes to the mmap_lock, so the
+> > > +		 * raw version is used to avoid disabling preemption here
+> > > +		 */
+> > > +		mmap_assert_write_locked(src_mm);
+> > > +		raw_write_seqcount_t_begin(&src_mm->write_protect_seq);
 > >
-> > 1. For newly added devices we should just have the device-specific
-> >    device string (no "hid-over-i2c" fallback) and infer the timings
-> >    and hid-descr-addr from there.
+> > Would raw_write_seqcount_begin() be better here?
 >
-> I wouldn't go that far. Having a fallback is perfectly acceptible. And
-> hopefully there are at least some devices where that's good enough for
-> drivers to use.
+> Hum..
 >
-> If we have cases of only 'i2c-over-hid' being used (in DT), then the
-> solution is making this a schema so we can enforce that as not valid.
+> I felt no because it had the preempt stuff added into it, however it
+> would work - __seqcount_lock_preemptible() == false for the seqcount_t
+> case (see below)
+>
+> Looking more closely, maybe the right API to pick is
+> write_seqcount_t_begin() and write_seqcount_t_end() ??
+>
 
-OK, fair enough.  I think in the case of the Goodix touchscreen I'm
-trying to support, though, it's not useful to have the fallback since
-it really doesn't seem to work without all the delays.  :(  I sent my
-v3 without touching anything about "i2c-over-hid" as far as bindings
-goes.
+No, that's not the right API: it is also internal to seqlock.h.
 
-For my edification, though, when do you believe "i2c-over-hid" should
-be the fallback?  Presumably you would advocate for
-"post-power-on-delay-ms" being marked as deprecated, right?  That
-should have been inferred by the compatible string, right?  So, in
-theory, anyone who needed this delay couldn't have ever taken
-advantage of the fallback, right?  They wouldn't have worked without
-the delay?
+Please stick with the official exported API: raw_write_seqcount_begin().
 
--Doug
+It should satisfy your needs, and the raw_*() variant is created exactly
+for contexts wishing to avoid the lockdep checks (e.g. NMI handlers
+cannot invoke lockdep, etc.)
+
+> However, no idea what the intention of the '*_seqcount_t_*' family is
+> - it only seems to be used to implement the seqlock..
+>
+
+Exactly. '*_seqcount_t_*' is a seqlock.h implementation detail, and it
+has _zero_ relevance to what is discussed in this thread actually.
+
+...
+
+> Ahmed explained in commit 8117ab508f the reason the seqcount_t write
+> side has preemption disabled is because it can livelock RT kernels if
+> the read side is spinning after preempting the write side. eg look at
+> how __read_seqcount_begin() is implemented:
+>
+> 	while ((seq = __seqcount_sequence(s)) & 1)			\
+> 		cpu_relax();						\
+>
+> However, in this patch, we don't spin on the read side.
+>
+> If the read side collides with a writer it immediately goes to the
+> mmap_lock, which is sleeping, and so it will sort itself out properly,
+> even if it was preempted.
+>
+
+Correct.
+
+Thanks,
+
+--
+Ahmed Darwish
+Linutronix GmbH
