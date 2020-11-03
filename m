@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651BF2A55AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B7C2A5433
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388147AbgKCVV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:21:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45030 "EHLO mail.kernel.org"
+        id S2388634AbgKCVIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388119AbgKCVGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:11 -0500
+        id S2388601AbgKCVIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 802FA205ED;
-        Tue,  3 Nov 2020 21:06:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8924420757;
+        Tue,  3 Nov 2020 21:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437571;
-        bh=RGRplAmYxujE5GLwdQEMcv7jg6rmi59tS7wxg0AjfJ0=;
+        s=default; t=1604437730;
+        bh=iKu5MqBtl/4hCSBKRUyPCLxrStMYy5wqnUdU7kNxxUM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bK/DQ33RHmbXq/eS7zBTQdZVU5LO3BAOYqL/Vy2rgmgnnj9Ed2UggOuUPyepFIDyt
-         1ZpeJtTqG4DQTvjK7+hiXPewVFM9ySB7/FlFzO9QDer94+6ySaJAVUrdUdNSeWagGT
-         31IrGVORy+1p16qqFK5mtKK5cTcMe7mv9hy3XHGE=
+        b=w2PTNAnzzOMcq5X8H8BuDeYMrQOI1upvSfKRlU4jaE70hMZ4uVbfjWT3nrswbbopP
+         0wo/0fiEId5U89W+ASZSz92omlspFSQ9Gk6mG8ZGjG+6oon2h9xLM67YelhfIwFoDV
+         2TQ8K8XDPldV7V3X9TfTm3qcUAD4SSQFYP8ibnOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jun Li <jun.li@nxp.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 085/191] usb: xhci: omit duplicate actions when suspending a runtime suspended host.
-Date:   Tue,  3 Nov 2020 21:36:17 +0100
-Message-Id: <20201103203242.052499066@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.14 001/125] scripts/setlocalversion: make git describe output more reliable
+Date:   Tue,  3 Nov 2020 21:36:18 +0100
+Message-Id: <20201103203156.547256706@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,57 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Chen <peter.chen@nxp.com>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-[ Upstream commit 18a367e8947d72dd91b6fc401e88a2952c6363f7 ]
+commit 548b8b5168c90c42e88f70fcf041b4ce0b8e7aa8 upstream.
 
-If the xhci-plat.c is the platform driver, after the runtime pm is
-enabled, the xhci_suspend is called if nothing is connected on
-the port. When the system goes to suspend, it will call xhci_suspend again
-if USB wakeup is enabled.
+When building for an embedded target using Yocto, we're sometimes
+observing that the version string that gets built into vmlinux (and
+thus what uname -a reports) differs from the path under /lib/modules/
+where modules get installed in the rootfs, but only in the length of
+the -gabc123def suffix. Hence modprobe always fails.
 
-Since the runtime suspend wakeup setting is not always the same as
-system suspend wakeup setting, eg, at runtime suspend we always need
-wakeup if the controller is in low power mode; but at system suspend,
-we may not need wakeup. So, we move the judgement after changing
-wakeup setting.
+The problem is that Yocto has the concept of "sstate" (shared state),
+which allows different developers/buildbots/etc. to share build
+artifacts, based on a hash of all the metadata that went into building
+that artifact - and that metadata includes all dependencies (e.g. the
+compiler used etc.). That normally works quite well; usually a clean
+build (without using any sstate cache) done by one developer ends up
+being binary identical to a build done on another host. However, one
+thing that can cause two developers to end up with different builds
+[and thus make one's vmlinux package incompatible with the other's
+kernel-dev package], which is not captured by the metadata hashing, is
+this `git describe`: The output of that can be affected by
 
-[commit message rewording -Mathias]
+(1) git version: before 2.11 git defaulted to a minimum of 7, since
+2.11 (git.git commit e6c587) the default is dynamic based on the
+number of objects in the repo
+(2) hence even if both run the same git version, the output can differ
+based on how many remotes are being tracked (or just lots of local
+development branches or plain old garbage)
+(3) and of course somebody could have a core.abbrev config setting in
+~/.gitconfig
 
-Reviewed-by: Jun Li <jun.li@nxp.com>
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200918131752.16488-8-mathias.nyman@linux.intel.com
+So in order to avoid `uname -a` output relying on such random details
+of the build environment which are rather hard to ensure are
+consistent between developers and buildbots, make sure the abbreviated
+sha1 always consists of exactly 12 hex characters. That is consistent
+with the current rule for -stable patches, and is almost always enough
+to identify the head commit unambigously - in the few cases where it
+does not, the v5.4.3-00021- prefix would certainly nail it down.
+
+[Adapt to `` vs $() differences between 5.4 and upstream.]
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/usb/host/xhci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ scripts/setlocalversion |   19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 6f976c4cccdae..0348ea899d062 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -972,12 +972,15 @@ int xhci_suspend(struct xhci_hcd *xhci, bool do_wakeup)
- 			xhci->shared_hcd->state != HC_STATE_SUSPENDED)
- 		return -EINVAL;
+--- a/scripts/setlocalversion
++++ b/scripts/setlocalversion
+@@ -45,7 +45,7 @@ scm_version()
  
--	xhci_dbc_suspend(xhci);
--
- 	/* Clear root port wake on bits if wakeup not allowed. */
- 	if (!do_wakeup)
- 		xhci_disable_port_wake_on_bits(xhci);
+ 	# Check for git and a git repo.
+ 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
+-	   head=`git rev-parse --verify --short HEAD 2>/dev/null`; then
++	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
  
-+	if (!HCD_HW_ACCESSIBLE(hcd))
-+		return 0;
-+
-+	xhci_dbc_suspend(xhci);
-+
- 	/* Don't poll the roothubs on bus suspend. */
- 	xhci_dbg(xhci, "%s: stopping port polling.\n", __func__);
- 	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
--- 
-2.27.0
-
+ 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
+ 		# it, because this version is defined in the top level Makefile.
+@@ -59,11 +59,22 @@ scm_version()
+ 			fi
+ 			# If we are past a tagged commit (like
+ 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
+-			if atag="`git describe 2>/dev/null`"; then
+-				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
++			#
++			# Ensure the abbreviated sha1 has exactly 12
++			# hex characters, to make the output
++			# independent of git version, local
++			# core.abbrev settings and/or total number of
++			# objects in the current repository - passing
++			# --abbrev=12 ensures a minimum of 12, and the
++			# awk substr() then picks the 'g' and first 12
++			# hex chars.
++			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
++				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),substr($(NF),0,13))}'
+ 
+-			# If we don't have a tag at all we print -g{commitish}.
++			# If we don't have a tag at all we print -g{commitish},
++			# again using exactly 12 hex chars.
+ 			else
++				head="$(echo $head | cut -c1-12)"
+ 				printf '%s%s' -g $head
+ 			fi
+ 		fi
 
 
