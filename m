@@ -2,168 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303902A5062
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BBB2A506B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbgKCTsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:48:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729775AbgKCTsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:48:20 -0500
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 599ED223AB;
-        Tue,  3 Nov 2020 19:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604432899;
-        bh=bXMJFyfw+FNXyHRc5tYigurM8UxL/0+jUxPYBTID90A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IjkxjKQCg1olfsbUBLnHt1RwWnl5FYwoQhlH3KVPvkTqYUAxwAL2vCeN8x5IZ9Qwi
-         irJ9Jfl8pY4Xxi++9mpV4pexT/VGGksPHsbZtwgkVVfsCwkrn3oCRasMMoKklUXmty
-         ihKPNN3Kl1qfER0Hxf1HhqeSru/s8uuikHOIRmxc=
-Received: by mail-ot1-f42.google.com with SMTP id l36so9124094ota.4;
-        Tue, 03 Nov 2020 11:48:19 -0800 (PST)
-X-Gm-Message-State: AOAM532uGcL+eeJn/OXIq2Dd6bbbqOcSTzzoif+NRLRj0EM/nSE9PkEw
-        LhRVEKYQqX1x62EnSRxPUk/98mFE+yAVgtylXg==
-X-Google-Smtp-Source: ABdhPJykk+1CmTJiX1rVki4BdtzGhHBD1kMcVah9N6xLLsyuRsiTbYnkYTNHR4+zFVAH3zebGgvXxCx9aHLfCnXyUQ8=
-X-Received: by 2002:a9d:6e0c:: with SMTP id e12mr5793797otr.129.1604432898566;
- Tue, 03 Nov 2020 11:48:18 -0800 (PST)
+        id S1729694AbgKCTtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:49:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726232AbgKCTtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:49:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604432975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RMhmlI7J39tGZ2SV4Ku6FWb6g9FR/7RgJqLGVWssnYI=;
+        b=A6gX3MyQxOcW5lJS+7zIpigaVS/Zhz5Kkzn03XLouIfhLMKmEeJ+06LxLKnCTP8ndDVt8D
+        i6If1YTM60q14nLe9M2giJRRgttpf9JuDzUb6tKEDMQtOlieIveASlPynLiMAM+EsrcOXg
+        9F0OUXOzPpB7DhM745X33q7ppcOzCxs=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-RHIyxyWoNx656_rsuRvTnA-1; Tue, 03 Nov 2020 14:49:33 -0500
+X-MC-Unique: RHIyxyWoNx656_rsuRvTnA-1
+Received: by mail-qk1-f199.google.com with SMTP id n23so10463406qkn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 11:49:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RMhmlI7J39tGZ2SV4Ku6FWb6g9FR/7RgJqLGVWssnYI=;
+        b=g6XYq1Gc9aRP8/OybBulixEHT/MGwDBcrahiDrM9ar+OTqW7FoiJs4cZFlELGyphwJ
+         SFYxVaHN6Y6o8bProNggKc5OFScvSsPkn1hfmocOioLtLFv8WvRzvXxCw6h+W0l5R0aK
+         xRrzeIwh+NlpCuUUq4bmzvFYhDWgiV+Rfc0z20lNt6TrcSwfkPCG3FBRQJ38hGJ62qmf
+         dJZy/fFXuyvp8YLwdWQ0mbElB08vFGk3kjsAPGs/kA0/AXPPjxtY9LV4y0tsTo/mqdwv
+         Dt0vkq0VhBBeekk7KhYRJwj0gAF3B0Eik7fxpbYWi9MTXKrmonfmJrdFND9nIpinbDnz
+         Rvjg==
+X-Gm-Message-State: AOAM530+7LKO/3hQAj4/ykcd5fDuZyT6NPCTSdMMZAPEnjm67DLEP3KL
+        szfCNrIvgXaJPrcL1La0SNOZsff66UGLrQ/D4Bb40odNXqP9UgYYm+QTlSMGnJLY5q5g6RAo7J7
+        KfBiYpQ+/q4UBMv3/4XrGjP2v
+X-Received: by 2002:a37:c441:: with SMTP id h1mr21747178qkm.298.1604432973154;
+        Tue, 03 Nov 2020 11:49:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy41D81xBVSWbgfUtCJ62NG9CG/yhsi1aEcls1TS+xTGUJGjh7vp2/8LAkziyOyD18UEa3N7Q==
+X-Received: by 2002:a37:c441:: with SMTP id h1mr21747159qkm.298.1604432972928;
+        Tue, 03 Nov 2020 11:49:32 -0800 (PST)
+Received: from xps13.redhat.com ([2605:a601:a639:f01:1ac8:8e0c:f1cc:7a29])
+        by smtp.gmail.com with ESMTPSA id w25sm11392532qkj.85.2020.11.03.11.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 11:49:31 -0800 (PST)
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     Lyude Paul <lyude@redhat.com>, Karol Herbst <kherbst@redhat.com>,
+        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jeremy Cline <jcline@redhat.com>
+Subject: [PATCH 0/3] drm/nouveau: fix a use-after-free in postclose()
+Date:   Tue,  3 Nov 2020 14:49:09 -0500
+Message-Id: <20201103194912.184413-1-jcline@redhat.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201029053959.31361-1-vidyas@nvidia.com> <20201029053959.31361-3-vidyas@nvidia.com>
- <CAL_Jsq+3Ek9SRbsTqEmjiZtszvi7Er=TNgOt8t=0OESva2=sTg@mail.gmail.com>
- <902c0445-9fed-8e61-3aba-0e87988eb8df@nvidia.com> <DM5PR12MB18357E6BF282C9C65278460EDA100@DM5PR12MB1835.namprd12.prod.outlook.com>
- <CAL_Jsq+jH_bwv2dQrY-O4PTD1kK=BMObLjH_NFmfG8kQUUpD8Q@mail.gmail.com> <DM5PR12MB1835187E112C8854D4483E42DA100@DM5PR12MB1835.namprd12.prod.outlook.com>
-In-Reply-To: <DM5PR12MB1835187E112C8854D4483E42DA100@DM5PR12MB1835.namprd12.prod.outlook.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 3 Nov 2020 13:48:06 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK-0vKJMCzTGa-1LJbgAA9m7dNaie_=dG9kX3jQxGmB+w@mail.gmail.com>
-Message-ID: <CAL_JsqK-0vKJMCzTGa-1LJbgAA9m7dNaie_=dG9kX3jQxGmB+w@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, Jingoo Han <jingoohan1@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 4:38 PM Gustavo Pimentel
-<Gustavo.Pimentel@synopsys.com> wrote:
->
-> On Mon, Nov 2, 2020 at 21:16:52, Rob Herring <robh@kernel.org> wrote:
->
-> > On Mon, Nov 2, 2020 at 9:12 AM Gustavo Pimentel
-> > <Gustavo.Pimentel@synopsys.com> wrote:
-> > >
-> > > On Mon, Nov 2, 2020 at 14:27:9, Vidya Sagar <vidyas@nvidia.com> wrote:
-> > >
-> > > >
-> > > >
-> > > > On 11/2/2020 7:45 PM, Rob Herring wrote:
-> > > > > External email: Use caution opening links or attachments
-> > > > >
-> > > > >
-> > > > > On Thu, Oct 29, 2020 at 12:40 AM Vidya Sagar <vidyas@nvidia.com> wrote:
-> > > > >>
-> > > > >> DesignWare core has a TLP digest (TD) override bit in one of the control
-> > > > >> registers of ATU. This bit also needs to be programmed for proper ECRC
-> > > > >> functionality. This is currently identified as an issue with DesignWare
-> > > > >> IP version 4.90a. This patch does the required programming in ATU upon
-> > > > >> querying the system policy for ECRC.
-> > > > >>
-> > > > >> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > > > >> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
-> > > > >> ---
-> > > > >> V3:
-> > > > >> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
-> > > > >>
-> > > > >> V2:
-> > > > >> * Addressed Jingoo's review comment
-> > > > >> * Removed saving 'td' bit information in 'dw_pcie' structure
-> > > > >>
-> > > > >>   drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
-> > > > >>   drivers/pci/controller/dwc/pcie-designware.h | 1 +
-> > > > >>   2 files changed, 7 insertions(+), 2 deletions(-)
-> > > > >>
-> > > > >> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > > > >> index b5e438b70cd5..cbd651b219d2 100644
-> > > > >> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > > > >> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > > > >> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
-> > > > >>          dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
-> > > > >>                                   upper_32_bits(pci_addr));
-> > > > >>          val = type | PCIE_ATU_FUNC_NUM(func_no);
-> > > > >> +       if (pci->version == 0x490A)
-> > > > >> +               val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
-> > > > >>          val = upper_32_bits(size - 1) ?
-> > > > >>                  val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-> > > > >>          dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
-> > > > >> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
-> > > > >>                             lower_32_bits(pci_addr));
-> > > > >>          dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
-> > > > >>                             upper_32_bits(pci_addr));
-> > > > >> -       dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> > > > >> -                          PCIE_ATU_FUNC_NUM(func_no));
-> > > > >> +       val = type | PCIE_ATU_FUNC_NUM(func_no);
-> > > > >> +       if (pci->version == 0x490A)
-> > > > >
-> > > > > Is this even possible? Are the non-unroll ATU registers available post 4.80?
-> > > > I'm not sure. Gustavo might have information about this. I made this
-> > > > change so that it is taken care off even if they available.
-> > >
-> > > The Synopsys DesignWare PCIe IP is highly configurable, therefore is
-> > > dependable on what the design team has configured for their solution.
-> > > Although Synopsys doesn't recommend the use of non-unroll ATU, the
-> > > customers are free to select what they want for their design.
+This series fixes a number of use-after-frees in nouveau's postclose()
+handler. It was discovered by pointing IGT's core_hotunplug tests at a
+nouveau device, but the steps to reproduce it are simple:
 
-Then given the feature is not really tied to the IP version, using
-version wasn't really a good choice. A better choice would have been a
-quirk flag that platforms could set. Perhaps called
-'iatu_unroll_enabled'...
+1. Open the device file
+2. Unbind the driver or remove the device
+3. Close the file opened in step 1.
 
-> > Okay, then there's a bug in the driver if the version is set to 0x480A
-> > or later and non-unroll is used:
-> >
-> > if (pci->version >= 0x480A || (!pci->version &&
-> >        dw_pcie_iatu_unroll_enabled(pci))) {
-> >
-> > Probably can just drop the version checking. The detection should always work.
->
-> Hi Rob,
->
-> The "detection" is based on the assumption that the read value on
-> PCIE_ATU_VIEWPORT register is 0xffffffff (which is a hard-coded value by
-> design), if it's true then the iATU is unrolled and the function returns
-> 1, otherwise is non-unrolled returns 0. So like you said it should always
-> work, however, this code behavior was changed by Kishon on the following
-> patch 2aadcb0cd39 ("PCI: dwc: Fix ATU identification for designware
-> version >= 4.80"). His patch makes me believe that on keystone platform
-> the read operation on that register causes some unpredicted behavior
-> leads his platform to crash/abort, that's why he created this alternative
-> version approach to avoid the "detection" algorithm.
+During the device removal, the nouveau_drm structure is de-allocated,
+but is dereferenced in the postclose() handler.
 
-Ah, h/w designers and their love for bus aborts...
+One obvious solution is to ensure all the operations in the postclose()
+handler are valid by extending the lifetime of the nouveau_drm
+structure. This is possible with the new devm_drm_dev_alloc() interface,
+but the change is somewhat invasive so I thought it best to submit that
+work separately.
 
-> From what I'm seeing the only drivers that use this "version" approach
-> are the keystone and intel-gw (which probably doesn't need it).
->
-> To summarize, this is a workaround so that the keystone driver doesn't
-> break independent of the controller IP version.
+Instead, we make use of the drm_dev_unplug() API, clean up all clients
+in the device removal call, and check to make sure the device has not
+been unplugged in the postclose() handler. While this does not enable
+hot-unplug support for nouveau, it's enough to avoid crashing the kernel
+and leads to all the core_hotunplug tests to pass.
 
-Keystone is also broken in another way. The dts files claim 16 in and
-out regions, but the ATU region is 4KB. It would need 8KB for 16
-regions as unroll has a stride of 512bytes for each region.
+Jeremy Cline (3):
+  drm/nouveau: use drm_dev_unplug() during device removal
+  drm/nouveau: Add a dedicated mutex for the clients list
+  drm/nouveau: clean up all clients on device removal
 
-Rob
+ drivers/gpu/drm/nouveau/nouveau_drm.c | 39 +++++++++++++++++++++++----
+ drivers/gpu/drm/nouveau/nouveau_drv.h |  5 ++++
+ 2 files changed, 39 insertions(+), 5 deletions(-)
+
+-- 
+2.28.0
+
