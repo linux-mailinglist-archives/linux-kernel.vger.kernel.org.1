@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD5B2A576E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA06F2A583C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732946AbgKCVmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:42:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55692 "EHLO mail.kernel.org"
+        id S1732007AbgKCVuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:50:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732278AbgKCUzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:55:21 -0500
+        id S1730816AbgKCUtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 806DE223BD;
-        Tue,  3 Nov 2020 20:55:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08D5C22404;
+        Tue,  3 Nov 2020 20:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436920;
-        bh=p8r48/0O0bFuRYbXSO15mbWvfUOyDkFCWdH+Jt+GNHI=;
+        s=default; t=1604436560;
+        bh=Hd4XbZiTS7NDDUJEkgjX4l37jNWVlR3STL53BlmaYcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VDQr3Xp/xIT6Fvm3Hn9BsQTSpWqVA/MFMLk5VeO/gZLRhLUEkkzQW8K8sFy1OlJsv
-         nJ4wvXUwG6qwVk827oY9njboXiwZTpsf/dUs2VihOYfFGER9t6wpZxbwxxXz0E1kpS
-         wX7LtjNQBeUL5kQECZjxZ6ywpUpY118h9onkt2q8=
+        b=BILkHH/n7aqrbyRDcVISO7MBSJbfjPO5GC9TVnDaaDEVNwCZDfr/xbzD+FTjIPOih
+         bdJgEZ4YKt8AnpTgREzuXbWNziXR+JM3uJZ5OiWCEodd77h1ZyEmD58rRxBkUMQ40C
+         fzDfe4RhgzSl76nVgMluQQh8PhkFYuzFtIwk5XCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/214] drivers/net/wan/hdlc_fr: Correctly handle special skb->protocol values
-Date:   Tue,  3 Nov 2020 21:35:15 +0100
-Message-Id: <20201103203256.667064609@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.9 265/391] dmaengine: dma-jz4780: Fix race in jz4780_dma_tx_status
+Date:   Tue,  3 Nov 2020 21:35:16 +0100
+Message-Id: <20201103203404.904108363@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,187 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 8306266c1d51aac9aa7aa907fe99032a58c6382c ]
+commit baf6fd97b16ea8f981b8a8b04039596f32fc2972 upstream.
 
-The fr_hard_header function is used to prepend the header to skbs before
-transmission. It is used in 3 situations:
-1) When a control packet is generated internally in this driver;
-2) When a user sends an skb on an Ethernet-emulating PVC device;
-3) When a user sends an skb on a normal PVC device.
+The jz4780_dma_tx_status() function would check if a channel's cookie
+state was set to 'completed', and if not, it would enter the critical
+section. However, in that time frame, the jz4780_dma_chan_irq() function
+was able to set the cookie to 'completed', and clear the jzchan->vchan
+pointer, which was deferenced in the critical section of the first
+function.
 
-These 3 situations need to be handled differently by fr_hard_header.
-Different headers should be prepended to the skb in different situations.
+Fix this race by checking the channel's cookie state after entering the
+critical function and not before.
 
-Currently fr_hard_header distinguishes these 3 situations using
-skb->protocol. For situation 1 and 2, a special skb->protocol value
-will be assigned before calling fr_hard_header, so that it can recognize
-these 2 situations. All skb->protocol values other than these special ones
-are treated by fr_hard_header as situation 3.
+Fixes: d894fc6046fe ("dmaengine: jz4780: add driver for the Ingenic JZ4780 DMA controller")
+Cc: stable@vger.kernel.org # v4.0
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reported-by: Artur Rojek <contact@artur-rojek.eu>
+Tested-by: Artur Rojek <contact@artur-rojek.eu>
+Link: https://lore.kernel.org/r/20201004140307.885556-1-paul@crapouillou.net
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-However, it is possible that in situation 3, the user sends an skb with
-one of the special skb->protocol values. In this case, fr_hard_header
-would incorrectly treat it as situation 1 or 2.
-
-This patch tries to solve this issue by using skb->dev instead of
-skb->protocol to distinguish between these 3 situations. For situation
-1, skb->dev would be NULL; for situation 2, skb->dev->type would be
-ARPHRD_ETHER; and for situation 3, skb->dev->type would be ARPHRD_DLCI.
-
-This way fr_hard_header would be able to distinguish these 3 situations
-correctly regardless what skb->protocol value the user tries to use in
-situation 3.
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_fr.c | 98 ++++++++++++++++++++-------------------
- 1 file changed, 51 insertions(+), 47 deletions(-)
+ drivers/dma/dma-jz4780.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index d6cfd51613ed8..3a44dad87602d 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -273,63 +273,69 @@ static inline struct net_device **get_dev_p(struct pvc_device *pvc,
+--- a/drivers/dma/dma-jz4780.c
++++ b/drivers/dma/dma-jz4780.c
+@@ -639,11 +639,11 @@ static enum dma_status jz4780_dma_tx_sta
+ 	unsigned long flags;
+ 	unsigned long residue = 0;
  
- static int fr_hard_header(struct sk_buff **skb_p, u16 dlci)
- {
--	u16 head_len;
- 	struct sk_buff *skb = *skb_p;
++	spin_lock_irqsave(&jzchan->vchan.lock, flags);
++
+ 	status = dma_cookie_status(chan, cookie, txstate);
+ 	if ((status == DMA_COMPLETE) || (txstate == NULL))
+-		return status;
+-
+-	spin_lock_irqsave(&jzchan->vchan.lock, flags);
++		goto out_unlock_irqrestore;
  
--	switch (skb->protocol) {
--	case cpu_to_be16(NLPID_CCITT_ANSI_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CCITT_ANSI_LMI;
--		break;
--
--	case cpu_to_be16(NLPID_CISCO_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CISCO_LMI;
--		break;
--
--	case cpu_to_be16(ETH_P_IP):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IP;
--		break;
--
--	case cpu_to_be16(ETH_P_IPV6):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IPV6;
--		break;
--
--	case cpu_to_be16(ETH_P_802_3):
--		head_len = 10;
--		if (skb_headroom(skb) < head_len) {
--			struct sk_buff *skb2 = skb_realloc_headroom(skb,
--								    head_len);
-+	if (!skb->dev) { /* Control packets */
-+		switch (dlci) {
-+		case LMI_CCITT_ANSI_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CCITT_ANSI_LMI;
-+			break;
-+
-+		case LMI_CISCO_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CISCO_LMI;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_DLCI) {
-+		switch (skb->protocol) {
-+		case htons(ETH_P_IP):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IP;
-+			break;
-+
-+		case htons(ETH_P_IPV6):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IPV6;
-+			break;
-+
-+		default:
-+			skb_push(skb, 10);
-+			skb->data[3] = FR_PAD;
-+			skb->data[4] = NLPID_SNAP;
-+			/* OUI 00-00-00 indicates an Ethertype follows */
-+			skb->data[5] = 0x00;
-+			skb->data[6] = 0x00;
-+			skb->data[7] = 0x00;
-+			/* This should be an Ethertype: */
-+			*(__be16 *)(skb->data + 8) = skb->protocol;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_ETHER) {
-+		if (skb_headroom(skb) < 10) {
-+			struct sk_buff *skb2 = skb_realloc_headroom(skb, 10);
- 			if (!skb2)
- 				return -ENOBUFS;
- 			dev_kfree_skb(skb);
- 			skb = *skb_p = skb2;
- 		}
--		skb_push(skb, head_len);
-+		skb_push(skb, 10);
- 		skb->data[3] = FR_PAD;
- 		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
-+		/* OUI 00-80-C2 stands for the 802.1 organization */
-+		skb->data[5] = 0x00;
- 		skb->data[6] = 0x80;
- 		skb->data[7] = 0xC2;
-+		/* PID 00-07 stands for Ethernet frames without FCS */
- 		skb->data[8] = 0x00;
--		skb->data[9] = 0x07; /* bridged Ethernet frame w/out FCS */
--		break;
-+		skb->data[9] = 0x07;
+ 	vdesc = vchan_find_desc(&jzchan->vchan, cookie);
+ 	if (vdesc) {
+@@ -660,6 +660,7 @@ static enum dma_status jz4780_dma_tx_sta
+ 	    && jzchan->desc->status & (JZ_DMA_DCS_AR | JZ_DMA_DCS_HLT))
+ 		status = DMA_ERROR;
  
--	default:
--		head_len = 10;
--		skb_push(skb, head_len);
--		skb->data[3] = FR_PAD;
--		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
--		skb->data[6] = FR_PAD;
--		skb->data[7] = FR_PAD;
--		*(__be16*)(skb->data + 8) = skb->protocol;
-+	} else {
-+		return -EINVAL;
- 	}
- 
- 	dlci_to_q922(skb->data, dlci);
-@@ -425,8 +431,8 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
- 				skb_put(skb, pad);
- 				memset(skb->data + len, 0, pad);
- 			}
--			skb->protocol = cpu_to_be16(ETH_P_802_3);
- 		}
-+		skb->dev = dev;
- 		if (!fr_hard_header(&skb, pvc->dlci)) {
- 			dev->stats.tx_bytes += skb->len;
- 			dev->stats.tx_packets++;
-@@ -494,10 +500,8 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
- 	memset(skb->data, 0, len);
- 	skb_reserve(skb, 4);
- 	if (lmi == LMI_CISCO) {
--		skb->protocol = cpu_to_be16(NLPID_CISCO_LMI);
- 		fr_hard_header(&skb, LMI_CISCO_DLCI);
- 	} else {
--		skb->protocol = cpu_to_be16(NLPID_CCITT_ANSI_LMI);
- 		fr_hard_header(&skb, LMI_CCITT_ANSI_DLCI);
- 	}
- 	data = skb_tail_pointer(skb);
--- 
-2.27.0
-
++out_unlock_irqrestore:
+ 	spin_unlock_irqrestore(&jzchan->vchan.lock, flags);
+ 	return status;
+ }
 
 
