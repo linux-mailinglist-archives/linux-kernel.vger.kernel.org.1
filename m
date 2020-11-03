@@ -2,167 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7C32A4F37
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB902A4F42
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgKCSo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:44:56 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:45385 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbgKCSov (ORCPT
+        id S1729348AbgKCSpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728621AbgKCSpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:44:51 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103184428euoutp01e9b9e6ee51bf6bb0832d045ca4312ac1~EE7y5mEBT1728317283euoutp01N
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 18:44:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103184428euoutp01e9b9e6ee51bf6bb0832d045ca4312ac1~EE7y5mEBT1728317283euoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604429068;
-        bh=X5n64N6kj5gULS9ipRbmJr/IBJyN3axgfQr6eluL9Lg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UHrmmjRs26Ad/uawKnaS9tL/5bH34cpcqxp9n6n5R2d44tFxeC4iHe2vs4fByuMqX
-         AZH1yYccRkLa3V7y3Rn2wOHOI6vV3AamLQK9voaFirQs9smttmfTHaaLPTimLzrg6n
-         4oIatJQigMx1idDb8xGBGwhFvpUrtiCfSxUIEg1Q=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201103184420eucas1p29feafc6dbad3fdfe38625829902e1eee~EE7rmGpt00616406164eucas1p26;
-        Tue,  3 Nov 2020 18:44:20 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id AB.0F.06318.405A1AF5; Tue,  3
-        Nov 2020 18:44:20 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103184419eucas1p1e5f855727fae95d992f8e95c7dbda787~EE7qmGWfZ1968619686eucas1p1h;
-        Tue,  3 Nov 2020 18:44:19 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201103184419eusmtrp1b56fab8163c69e98f6c77ee17d2a0dc1~EE7qleLXT0548305483eusmtrp1f;
-        Tue,  3 Nov 2020 18:44:19 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-0d-5fa1a504a35e
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id CF.BB.06314.305A1AF5; Tue,  3
-        Nov 2020 18:44:19 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201103184419eusmtip103f5e6b1ba44483895603efda47fba32~EE7qWi-iT2261422614eusmtip1E;
-        Tue,  3 Nov 2020 18:44:19 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v2 6/6] ARM: dts: exynos: Add Ethernet interface description
- for Odroid X/X2
-Date:   Tue,  3 Nov 2020 19:44:12 +0100
-Message-Id: <20201103184412.18874-7-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201103184412.18874-1-l.stelmach@samsung.com>
+        Tue, 3 Nov 2020 13:45:38 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932C1C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:45:36 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id o11so8236206ioo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:45:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OgVWTpOrMPjIuVeL2cgLMKQdzQLhuvarJci2SpLh/5A=;
+        b=Oc8HAjuJZ68YBgtTDuQdDaeD/6Ez3BIuvplKaOikIXW6HcKAreBYOsB0tGpUmahmnu
+         eflyjgP2lAVt36ZGob1IP6VB9qqWZRg3pA6ykiWdogLm2b0lk7Kv1sXA++RDvN9ueXc6
+         9mA2evAAtea8ROCk+mCHUp4aiwacb4zyghC0s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgVWTpOrMPjIuVeL2cgLMKQdzQLhuvarJci2SpLh/5A=;
+        b=tpxs4PUThUo/c4gzLrnCa9wJFrMvErNPcDqweJIANzzetErCv0+5IOZheuSaa8K7R2
+         vtVFh3Is5AXK2gJBXxh5aLncwfed327YdfnlizwTDSiQyUkwsRATyW8FmQcgo72VZ+Pq
+         JwYkDupNthsNuL5B/yHKPg0WY1pSDGj7t6z1dp15YWCVqhZ/mSp4jr99XATiLSY5S9p5
+         YsjKxSXAAkNi5ENmkT7SdA3wi/PuEn3v75L+wVN15MZDuotb/fVQD25J6Urn4xqbFJgy
+         kABwdcE4avGr3kdgPIj3m/X5KUEruxGhuhho7pwB53f+F7VoGOM4JI8hQKHZTK88yMl+
+         FkzQ==
+X-Gm-Message-State: AOAM5308s34d/q3fPpVT2gCGGuuG2FPoBKj42Gou9w3u2WjZnqkQ7362
+        +mwBnYccdOi7NvHcM/zCjtZHkFK2OQEcowH0gGbP
+X-Google-Smtp-Source: ABdhPJz1NA93CqwEifS/bxYYelWtdS7ZycUNmgghuVgW1N+oYS/M06/fanY+hPWy8svInJcHT9+EBcUwEevIx+iMc78=
+X-Received: by 2002:a5e:9244:: with SMTP id z4mr15350442iop.53.1604429136023;
+ Tue, 03 Nov 2020 10:45:36 -0800 (PST)
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7osSxfGG9w+rWaxccZ6Vov5R86x
-        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrvF2iN32S1a9x5hd+D22Dnr
-        LrvHplWdbB6bl9R79G1ZxejxeZNcAGsUl01Kak5mWWqRvl0CV8bs6c9ZCrZyVzTMXMbewPib
-        o4uRk0NCwESi+dEHZhBbSGAFo8Tdez5djFxA9hdGifauZkaIxGdGic3/q2Earq59zg5RtJxR
-        4tSeOawQznNGiT23N7KCVLEJOEr0Lz0BlhARmM4ksXTPfGYQh1lgH6PEzntTwBYKC8RJXDv3
-        CMxmEVCVOLLxGBOIzStgLbH3y3dWiH3yEu3Lt7OB2JwCNhLbXnczQtQISpyc+YQFxOYX0JJY
-        03QdzGYGqm/eOhtsmYTAJXaJZR03gRIcQI6LxKHHDhAzhSVeHd/CDmHLSJye3ANVUi8xeZIZ
-        RGsPo8S2OT9YIGqsJe6c+8UGUsMsoCmxfpc+RNhR4mdPIztEK5/EjbeCEBfwSUzaNp0ZIswr
-        0dEmBFGtIrGufw/UQCmJ3lcrGCcwKs1C8sssJPfPQti1gJF5FaN4amlxbnpqsXFearlecWJu
-        cWleul5yfu4mRmA6Ov3v+NcdjPv+JB1iFOBgVOLhdUhdEC/EmlhWXJl7iFGCg1lJhNfp7Ok4
-        Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzGi17GCgmkJ5akZqemFqQWwWSZODilGhhPV5+9kL5l
-        0a6khapii4+yha1iMruwYwrD/fkMxucuXWlbtnnvvxkRAYHTekRO5b1OOzxJ+fpCy1P/LktH
-        hy3g8VGL/Kvh8eVrX4/BnbWdszpW9wdJuCh+fm79PcRlT8HMW98yNWp2PFzN5PH68e+kVUct
-        rL4LdRSz62Wz29xdu/+yXvkhT/5vSizFGYmGWsxFxYkAMYO/XUMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsVy+t/xu7rMSxfGG6y/Lm+xccZ6Vov5R86x
-        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrvF2iN32S1a9x5hd+D22Dnr
-        LrvHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
-        rJWRqZK+nU1Kak5mWWqRvl2CXsbs6c9ZCrZyVzTMXMbewPibo4uRk0NCwETi6trn7F2MXBxC
-        AksZJY7M7WTuYuQASkhJrJybDlEjLPHnWhcbiC0k8JRR4ux7eRCbTcBRon/pCVaQXhGB+UwS
-        p2Z3gDnMAvsYJfYfXcwOUiUsECOxZcMisG4WAVWJIxuPMYHYvALWEnu/fGeF2CAv0b58O1gN
-        p4CNxLbX3YwQ26wl/kxezQpRLyhxcuYTFpDjmAXUJdbPEwIJ8wtoSaxpus4CYjMDjWneOpt5
-        AqPQLCQdsxA6ZiGpWsDIvIpRJLW0ODc9t9hQrzgxt7g0L10vOT93EyMw/rYd+7l5B+OljcGH
-        GAU4GJV4eB1SF8QLsSaWFVfmHmKU4GBWEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjKdCbE5ml
-        RJPzgakhryTe0NTQ3MLS0NzY3NjMQkmct0PgYIyQQHpiSWp2ampBahFMHxMHp1QDY0OwJkdl
-        yqxOkXwp7i+HTVTvCvFNjJBcrHLCvP9adjzXxS16V66muTK0fhddxiJ70eb3r4crfQ83nkmc
-        0ljyRiqT+V1jqsjmqFv/+E6+i+w+ffnLgi0V1RvX1IssVI1VZbuRcZnz7LTpJ7ZNVUoWXlM3
-        cePeNyo9bXl7GS/du26+ImV/zQ2z/0osxRmJhlrMRcWJAKL1QiXVAgAA
-X-CMS-MailID: 20201103184419eucas1p1e5f855727fae95d992f8e95c7dbda787
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201103184419eucas1p1e5f855727fae95d992f8e95c7dbda787
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201103184419eucas1p1e5f855727fae95d992f8e95c7dbda787
-References: <20201103184412.18874-1-l.stelmach@samsung.com>
-        <CGME20201103184419eucas1p1e5f855727fae95d992f8e95c7dbda787@eucas1p1.samsung.com>
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
+ <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk> <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
+ <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk> <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
+ <fbe404b5-3bb1-dd00-e558-e4a55960b767@microchip.com> <fe079b4a-5410-5cc8-3f5e-8a95b573078a@codethink.co.uk>
+ <CAOnJCUKH77XDymG+jAUYHP+5TC2aabTR4f8jF6s6FqqQNR=_CQ@mail.gmail.com> <22800ecc-a91b-ee3c-4717-4ee8802f31a2@codethink.co.uk>
+In-Reply-To: <22800ecc-a91b-ee3c-4717-4ee8802f31a2@codethink.co.uk>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 3 Nov 2020 10:45:24 -0800
+Message-ID: <CAOnJCUJogU-dZTi1ycvC3g8HAq6-4vkULy3B9+A8srf1n0sTjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Cyril.Jean@microchip.com, devicetree@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daire McNamara <Daire.McNamara@microchip.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Padmarao Begari <Padmarao.Begari@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Ethernet interface description for Odroid X/X2.
+On Tue, Nov 3, 2020 at 10:39 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 03/11/2020 18:36, Atish Patra wrote:
+> > On Tue, Nov 3, 2020 at 10:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> >>
+> >> On 03/11/2020 18:10, Cyril.Jean@microchip.com wrote:
+> >>> On 11/3/20 3:07 PM, Atish Patra wrote:
+> >>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>>
+> >>>> On Fri, Oct 30, 2020 at 2:20 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> >>
+> >> ,snip[
+> >>
+> >>>>>> @Cyril : Can we enable both eMMC & sdcard at the same time ?
+> >>>>> I would put /both/ in but only enable the one in use for the moment.
+> >>>>> Our boards are booting of eMMC as supplied, so this isn't going to work
+> >>>>> as well. The eMMC is 8bit wide, and thus is only delivering 11MB/sec
+> >>>>> instead of 22MB/sec. This performance is still not great, but losing
+> >>>>> half the data-rate is just not good.
+> >>>>>
+> >>>> I am not sure what should be enabled by default. Updating sdcard is much
+> >>>> easier than eMMC card and we use that approach.
+> >>>>
+> >>>> @Cyril: Is there a way that we can enable both ?
+> >>>>
+> >>> Yes, we can enable both but this requires a modification to the FPGA
+> >>> design. One of the guys prototyped this while I was away. We will move
+> >>> this along. This will require reprogramming the FPGA with a new design
+> >>> and HSS version.
+> >>>
+> >>> Regards,
+> >>>
+> >>> Cyril.
+> >>
+> >> I either missed or couldn't find a way of forcing the boot mode to be
+> >> from the SD slot. Have I missed something? At the moment we'd like to
+> >> have more storage available as the ~7G free on the eMMC is not enough.
+> >>
+> >
+> > I use tftpboot to load the kernel & DT from the network. SD card is
+> > enabled in this DT and Linux
+> > kernel uses SD slot instead of eMMC.
+> >
+> > To summarize, eMMC is used for HSS & U-Boot while SD card is used for
+> > Linux which makes
+> > more storage available to Linux.
+> >
+> > IMO, we should enable the sdcard for Linux DT until updated FPGA
+> > design & HSS is available.
+>
+> Interesting as for me the default is for Linux to use the eMMC as
+> well. I can't see any way for forcing the selection lines in the
+> DT to say eMMC vs SD.
+>
 
-Add an alias to enable bootloaders to find the Ethernet
-interface and assign a MAC address.
+because you are probably loading the DT passed by U-boot. I load the DTB
+built from the Linux source (the one present in this patch) by
+stopping the autoboot in U-Boot.
 
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- arch/arm/boot/dts/exynos4412-odroidx.dts | 28 ++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+The DT in U-Boot disables the SD card.
 
-diff --git a/arch/arm/boot/dts/exynos4412-odroidx.dts b/arch/arm/boot/dts/exynos4412-odroidx.dts
-index 3ea2a0101e80..2da220102883 100644
---- a/arch/arm/boot/dts/exynos4412-odroidx.dts
-+++ b/arch/arm/boot/dts/exynos4412-odroidx.dts
-@@ -15,6 +15,10 @@ / {
- 	model = "Hardkernel ODROID-X board based on Exynos4412";
- 	compatible = "hardkernel,odroid-x", "samsung,exynos4412", "samsung,exynos4";
- 
-+	aliases {
-+		ethernet = &ethernet;
-+	};
-+
- 	memory@40000000 {
- 		device_type = "memory";
- 		reg = <0x40000000 0x3FF00000>;
-@@ -72,8 +76,32 @@ &buck8_reg {
- };
- 
- &ehci {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
- 	phys = <&exynos_usbphy 2>;
- 	phy-names = "hsic0";
-+
-+	hub@2 {
-+		compatible = "usb0424,3503";
-+		reg = <2>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		hub@1 {
-+			compatible = "usb0424,9514";
-+			reg = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			ethernet: usbether@1 {
-+				compatible = "usb0424,ec00";
-+				reg = <1>;
-+				local-mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
-+			};
-+		};
-+	};
-+
-+
- };
- 
- &mshc_0 {
--- 
-2.26.2
 
+> If there is a way of controlling the selection lines then it might
+> be possible to have both cards enabled with a bus selection MUX in
+> software.
+>
+>
+> --
+> Ben Dooks                               http://www.codethink.co.uk/
+> Senior Engineer                         Codethink - Providing Genius
+>
+> https://www.codethink.co.uk/privacy.html
+
+
+
+--
+Regards,
+Atish
