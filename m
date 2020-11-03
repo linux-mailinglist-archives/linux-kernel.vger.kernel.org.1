@@ -2,191 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F742A4561
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40BD2A455E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgKCMnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgKCMnk (ORCPT
+        id S1728759AbgKCMnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:43:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726581AbgKCMnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:43:40 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A51C0613D1;
-        Tue,  3 Nov 2020 04:43:40 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p4so1183381plr.1;
-        Tue, 03 Nov 2020 04:43:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7QLqywFmU+KaV60QUG9EODca87X6CJuhGzY9qo8iUx8=;
-        b=dE5XLc60bPPpOgAkikgyNnt4irBqLPJVHNswiVXxrJfDXpwKDeSA4gn5W+o+/zaqc9
-         LH9BPrKLyZqf7DBI3bhDHA+6Q9V4VELrhD6rsA+2ad8jTRWDOS/BO9IEbcKQ6hIgcBtR
-         gd7b9eMw7lY7uZ/B1tURBiW7xEdBn6yqUVGlsJFXCDBFp8aKi/6EYZPSjGvym7z1esi6
-         d+WM4dQpd+3RaTaDfiSzQnShFJEmCYU66Pplvtz4RWgwC+DetqaNuYVFld+S72FT/TTL
-         r1m3VVZ3INzMr5CgOh3KmG63HOKbwZJs0MREGjoCmqJa/tcavIhD47Ahx62OqBFfyNfo
-         XOqw==
+        Tue, 3 Nov 2020 07:43:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604407382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F84fRXLZfMfvouZKtilNzMebEPZg/rkOtWVtPorkAYY=;
+        b=Lf2GMiRpgypbHM38xaSgVNd46VJMn7tfQ2ttZ2FxgqInE1mnMusixWrzKMk+eqKaWphlh3
+        F3zuDBpR0evMJNJTjGgn38yAwc+Uf5koiE5bN37RPphU4L9tDwl/bzM/jx+RHyaivduHWj
+        iGL1Wx6AjcVtzJ/gD8+Y7H4c7Kg+9cY=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-gRJ46luiPjmq2aMgUallZA-1; Tue, 03 Nov 2020 07:43:00 -0500
+X-MC-Unique: gRJ46luiPjmq2aMgUallZA-1
+Received: by mail-pf1-f197.google.com with SMTP id a27so12027234pfl.17
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 04:43:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7QLqywFmU+KaV60QUG9EODca87X6CJuhGzY9qo8iUx8=;
-        b=gOzzv30B1+QsPFHL6KlLRRccAQuglTxRwS+BUPlxGE1/p3IJLhcnxg/CvcQNrFe0mi
-         yPOtbeIYHnTIJl6hiWSf/uT3vebnJecBfPTQVKuj8eG2IDA0HjZ3JsixeJmFOB07r354
-         7mzz1xrAQG60V4qp+kHdXATg7KeDiBb4PC6KHDW+DJ0/i7X9ewxYwT21M9Aa+dIZeAS5
-         1KRZ+gDz1eDVzy0/WHwZjhMza7JyShbVpRtIbpzJaRN/moKKvxBEnCmo4XyIuajoNkaz
-         VRBIWvSL+A84Lo/a8D2a/2+wj7FDnMDk8rl0Sfu7UyJeCErf1yh1hEJucIbtXD8qa5TS
-         /AEw==
-X-Gm-Message-State: AOAM532GTyxkXGVRmduoJhN9hwzJfnmuPdbYix+egxCjM5wf9HyFn9q9
-        wXihAepKcMrFO2Tkn0a8XAY=
-X-Google-Smtp-Source: ABdhPJz2GvCFIqY6W4UxW1xm8db2BdF1YNPaJTdDR+a+GeeFHJk0okS/34jHpWmAvDZ9s7qDCW257A==
-X-Received: by 2002:a17:902:8eca:b029:d2:4276:1b2d with SMTP id x10-20020a1709028ecab02900d242761b2dmr25197624plo.17.1604407419759;
-        Tue, 03 Nov 2020 04:43:39 -0800 (PST)
-Received: from localhost.localdomain ([45.77.27.82])
-        by smtp.gmail.com with ESMTPSA id a25sm3024461pfg.138.2020.11.03.04.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 04:43:39 -0800 (PST)
-From:   Dongdong Tao <tdd21151186@gmail.com>
-To:     colyli@suse.de
-Cc:     gavin.guo@canonical.com, gerald.yang@canonical.com,
-        trent.lloyd@canonical.com,
-        dongdong tao <dongdong.tao@canonical.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org (open list:BCACHE (BLOCK LAYER CACHE)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] bcache: consider the fragmentation when update the writeback rate
-Date:   Tue,  3 Nov 2020 20:42:35 +0800
-Message-Id: <20201103124235.14440-1-tdd21151186@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F84fRXLZfMfvouZKtilNzMebEPZg/rkOtWVtPorkAYY=;
+        b=N1ElG/Q00EP9sg6foOJ+JDIqyFxbVx/zeayqPApEdagSDA/n0ZI8GvwwyeTaA8RaO/
+         ElSmM7W4nKadcioU7hu7WFr2e/+2+AYsjfz+tgTtVBYXpjvSS6cMyNpiGH4L2r3GbYZr
+         4h4l0ah0gkpLoraMd+eMvu9RTHCKbL8q/hBimrBrJhnuwVdZQn3R83W6BP0UAarek8LD
+         3ZOiDH49AVM5Ja5w1abMX4DXbha7CyTj5Ewt9jofWvSiM2ulccLm37qs19313gZw/tcV
+         sRYo6FiPUiGnhcthmWQdpdFMxNEDtQeYBkI47WNTPEcopYJAUpochvpprJTgrI1uMMmO
+         Yoyw==
+X-Gm-Message-State: AOAM533vt6+sWs9bEXVOEkJ03HF07/pD4lFfY+XIsalxy8usAMKBGnJ/
+        ISTPLFBgiRsVQ1IwXeMlqeYFdZpiiqWjou7L6Lb1h3XtftVSKKhGBQdhdlQVma7SbtWACYiJm+H
+        LT8CSSPK7SZQH9mKA+tSqcAKLEAZJcyH+T7PjHbmx
+X-Received: by 2002:a17:902:8341:b029:d4:e3fa:e464 with SMTP id z1-20020a1709028341b02900d4e3fae464mr25504381pln.66.1604407378927;
+        Tue, 03 Nov 2020 04:42:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzCSfQ64saOLX5LWijdtM2Fq5blGHymwhge3rMASlkcCq2TButQB+Up8kV9F5JnSR0PJcWZA4MtXbke5oigqkE=
+X-Received: by 2002:a17:902:8341:b029:d4:e3fa:e464 with SMTP id
+ z1-20020a1709028341b02900d4e3fae464mr25504358pln.66.1604407378497; Tue, 03
+ Nov 2020 04:42:58 -0800 (PST)
+MIME-Version: 1.0
+References: <20201102161210.v3.1.Ibb28033c81d87fcc13a6ba28c6ea7ac154d65f93@changeid>
+ <20201102161210.v3.2.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+ <CAL_JsqLxGugWg7Xwr-NQa1h+a_=apQsfFCU0KF-97xt1ZB8jMg@mail.gmail.com> <28e75d51-28d8-5a9a-adf9-71f107e94dfb@redhat.com>
+In-Reply-To: <28e75d51-28d8-5a9a-adf9-71f107e94dfb@redhat.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 3 Nov 2020 13:42:47 +0100
+Message-ID: <CAO-hwJK2DfU_v==uwWyyPkH9N6zb9Vh_pJOxz8dZ_mqJ1+CdsA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] HID: i2c-hid: Allow subclasses of i2c-hid for
+ power sequencing
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Input <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kai Heng Feng <kai.heng.feng@canonical.com>,
+        andrea@borgia.bo.it, Aaron Ma <aaron.ma@canonical.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>, Pavel Balan <admin@kryma.net>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongdong tao <dongdong.tao@canonical.com>
+Hi,
 
-Current way to calculate the writeback rate only considered the
-dirty sectors, this usually works fine when the fragmentation
-is not high, but it will give us unreasonable small rate when
-we are under a situation that very few dirty sectors consumed
-a lot dirty buckets. In some case, the dirty bucekts can reached
-to CUTOFF_WRITEBACK_SYNC while the dirty data(sectors) noteven
-reached the writeback_percent, the writeback rate will still
-be the minimum value (4k), thus it will cause all the writes to be
-stucked in a non-writeback mode because of the slow writeback.
+On Tue, Nov 3, 2020 at 10:09 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 11/3/20 2:46 AM, Rob Herring wrote:
+> > On Mon, Nov 2, 2020 at 6:13 PM Douglas Anderson <dianders@chromium.org> wrote:
+> >>
+> >> This exports some things from i2c-hid so that we can have a driver
+> >> that's effectively a subclass of it and that can do its own power
+> >> sequencing.
+> >>
+> >> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> >> ---
+> >>
+> >> Changes in v3:
+> >> - Rework to use subclassing.
+> >>
+> >> Changes in v2:
+> >> - Use a separate compatible string for this new touchscreen.
+> >> - Get timings based on the compatible string.
+> >>
+> >>  drivers/hid/i2c-hid/i2c-hid-core.c    | 78 +++++++++++++++++----------
+> >>  include/linux/input/i2c-hid-core.h    | 19 +++++++
+> >>  include/linux/platform_data/i2c-hid.h |  9 ++++
+> >>  3 files changed, 79 insertions(+), 27 deletions(-)
+> >>  create mode 100644 include/linux/input/i2c-hid-core.h
+> >>
+> >> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> >> index 786e3e9af1c9..910e9089fcf8 100644
+> >> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> >> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> >> @@ -22,6 +22,7 @@
+> >>  #include <linux/i2c.h>
+> >>  #include <linux/interrupt.h>
+> >>  #include <linux/input.h>
+> >> +#include <linux/input/i2c-hid-core.h>
+> >>  #include <linux/irq.h>
+> >>  #include <linux/delay.h>
+> >>  #include <linux/slab.h>
+> >> @@ -1007,8 +1008,33 @@ static void i2c_hid_fwnode_probe(struct i2c_client *client,
+> >>                 pdata->post_power_delay_ms = val;
+> >>  }
+> >>
+> >> -static int i2c_hid_probe(struct i2c_client *client,
+> >> -                        const struct i2c_device_id *dev_id)
+> >> +static int i2c_hid_power_up_device(struct i2c_hid_platform_data *pdata)
+> >> +{
+> >> +       struct i2c_hid *ihid = container_of(pdata, struct i2c_hid, pdata);
+> >> +       struct hid_device *hid = ihid->hid;
+> >> +       int ret;
+> >> +
+> >> +       ret = regulator_bulk_enable(ARRAY_SIZE(pdata->supplies),
+> >> +                                   pdata->supplies);
+> >> +       if (ret) {
+> >> +               if (hid)
+> >> +                       hid_warn(hid, "Failed to enable supplies: %d\n", ret);
+> >> +               return ret;
+> >> +       }
+> >> +
+> >> +       if (pdata->post_power_delay_ms)
+> >> +               msleep(pdata->post_power_delay_ms);
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static void i2c_hid_power_down_device(struct i2c_hid_platform_data *pdata)
+> >> +{
+> >> +       regulator_bulk_disable(ARRAY_SIZE(pdata->supplies), pdata->supplies);
+> >> +}
+> >> +
+> >> +int i2c_hid_probe(struct i2c_client *client,
+> >> +                 const struct i2c_device_id *dev_id)
+> >>  {
+> >>         int ret;
+> >>         struct i2c_hid *ihid;
+> >> @@ -1035,6 +1061,9 @@ static int i2c_hid_probe(struct i2c_client *client,
+> >>         if (!ihid)
+> >>                 return -ENOMEM;
+> >>
+> >> +       if (platform_data)
+> >> +               ihid->pdata = *platform_data;
+> >> +
+> >>         if (client->dev.of_node) {
+> >>                 ret = i2c_hid_of_probe(client, &ihid->pdata);
+> >>                 if (ret)
+> >> @@ -1043,13 +1072,16 @@ static int i2c_hid_probe(struct i2c_client *client,
+> >>                 ret = i2c_hid_acpi_pdata(client, &ihid->pdata);
+> >>                 if (ret)
+> >>                         return ret;
+> >> -       } else {
+> >> -               ihid->pdata = *platform_data;
+> >>         }
+> >>
+> >>         /* Parse platform agnostic common properties from ACPI / device tree */
+> >>         i2c_hid_fwnode_probe(client, &ihid->pdata);
+> >>
+> >> +       if (!ihid->pdata.power_up_device)
+> >> +               ihid->pdata.power_up_device = i2c_hid_power_up_device;
+> >> +       if (!ihid->pdata.power_down_device)
+> >> +               ihid->pdata.power_down_device = i2c_hid_power_down_device;
+> >> +
+> >>         ihid->pdata.supplies[0].supply = "vdd";
+> >>         ihid->pdata.supplies[1].supply = "vddl";
+> >>
+> >> @@ -1059,14 +1091,10 @@ static int i2c_hid_probe(struct i2c_client *client,
+> >>         if (ret)
+> >>                 return ret;
+> >>
+> >> -       ret = regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
+> >> -                                   ihid->pdata.supplies);
+> >> -       if (ret < 0)
+> >> +       ret = ihid->pdata.power_up_device(&ihid->pdata);
+> >> +       if (ret)
+> >
+> > This is an odd driver structure IMO. I guess platform data is already
+> > there, but that's not what we'd use for any new driver.
+> >
+> > Why not export i2c_hid_probe, i2c_hid_remove, etc. and then just call
+> > them from the goodix driver and possibly make it handle all DT
+> > platforms?
+> >
+> > Who else needs regulators besides DT platforms? I thought with ACPI
+> > it's all wonderfully abstracted away?
+>
+> Right with ACPI we do not need the regulators, actually not checking
+> for them with ACPI would be preferable, if only to suppress kernel
+> messages like these:
+>
+> [    3.515658] i2c_hid i2c-SYNA8007:00: supply vdd not found, using dummy regulator
+> [    3.515848] i2c_hid i2c-SYNA8007:00: supply vddl not found, using dummy regulator
+>
+> To be fair the i2c-hid-core.c code does have some acpi specific handling too.
+>
+> With the latest fixes from:
+> https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git/log/?h=for-5.10/upstream-fixes
+> taken into account we have the following acpi specific functions being called
+> from various places:
+>
+> i2c_hid_acpi_fix_up_power   (called on probe)
+> i2c_hid_acpi_enable_wakeup  (called on probe)
+> i2c_hid_acpi_shutdown       (called on shutdown)
+>
+> Not I'm not Benjamin / not the MAINTAINER of this code, but I think that
+> splitting out both the ACPI *and* the of/dt handling might make sense.
 
-This patch will try to accelerate the writeback rate when the
-fragmentation is high. It calculate the propotional_scaled value
-based on below:
-(dirty_sectors / writeback_rate_p_term_inverse) * fragment
-As we can see, the higher fragmentation will result a larger
-proportional_scaled value, thus cause a larger writeback rate.
-The fragment value is calculated based on below:
-(dirty_buckets *  bucket_size) / dirty_sectors
-If you think about it, the value of fragment will be always
-inside [1, bucket_size].
+Yep, fully agree.
 
-This patch only considers the fragmentation when the number of
-dirty_buckets reached to a dirty threshold(configurable by
-writeback_fragment_percent, default is 50), so bcache will
-remain the original behaviour before the dirty buckets reached
-the threshold.
+>
+> Maybe even turn drivers/hid/i2c-hid/i2c-hid-core.c into a library
+> and have 2 separate:
+>
+> drivers/hid/i2c-hid/i2c-hid-acpi.c
+> drivers/hid/i2c-hid/i2c-hid-of.c
+>
+> drivers using that library.
+>
+> That would change the kernel-module name, but there only is the debug
+> module parameter which is affected by that from a userspace API point
+> of break, so I think that changing the kernel-module name is fine.
 
-Signed-off-by: dongdong tao <dongdong.tao@canonical.com>
----
- drivers/md/bcache/bcache.h    |  1 +
- drivers/md/bcache/sysfs.c     |  6 ++++++
- drivers/md/bcache/writeback.c | 21 +++++++++++++++++++++
- 3 files changed, 28 insertions(+)
+Ack, this is a small downside compared to a better extensibility of the driver.
 
-diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-index 1d57f48307e6..87632f7032b6 100644
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -374,6 +374,7 @@ struct cached_dev {
- 	unsigned int		writeback_metadata:1;
- 	unsigned int		writeback_running:1;
- 	unsigned char		writeback_percent;
-+	unsigned char		writeback_fragment_percent;
- 	unsigned int		writeback_delay;
- 
- 	uint64_t		writeback_rate_target;
-diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
-index 554e3afc9b68..69499113aef8 100644
---- a/drivers/md/bcache/sysfs.c
-+++ b/drivers/md/bcache/sysfs.c
-@@ -115,6 +115,7 @@ rw_attribute(stop_when_cache_set_failed);
- rw_attribute(writeback_metadata);
- rw_attribute(writeback_running);
- rw_attribute(writeback_percent);
-+rw_attribute(writeback_fragment_percent);
- rw_attribute(writeback_delay);
- rw_attribute(writeback_rate);
- 
-@@ -197,6 +198,7 @@ SHOW(__bch_cached_dev)
- 	var_printf(writeback_running,	"%i");
- 	var_print(writeback_delay);
- 	var_print(writeback_percent);
-+	var_print(writeback_fragment_percent);
- 	sysfs_hprint(writeback_rate,
- 		     wb ? atomic_long_read(&dc->writeback_rate.rate) << 9 : 0);
- 	sysfs_printf(io_errors,		"%i", atomic_read(&dc->io_errors));
-@@ -308,6 +310,9 @@ STORE(__cached_dev)
- 	sysfs_strtoul_clamp(writeback_percent, dc->writeback_percent,
- 			    0, bch_cutoff_writeback);
- 
-+	sysfs_strtoul_clamp(writeback_fragment_percent, dc->writeback_fragment_percent,
-+			    0, bch_cutoff_writeback_sync);
-+
- 	if (attr == &sysfs_writeback_rate) {
- 		ssize_t ret;
- 		long int v = atomic_long_read(&dc->writeback_rate.rate);
-@@ -498,6 +503,7 @@ static struct attribute *bch_cached_dev_files[] = {
- 	&sysfs_writeback_running,
- 	&sysfs_writeback_delay,
- 	&sysfs_writeback_percent,
-+	&sysfs_writeback_fragment_percent,
- 	&sysfs_writeback_rate,
- 	&sysfs_writeback_rate_update_seconds,
- 	&sysfs_writeback_rate_i_term_inverse,
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index 3c74996978da..34babc89fdf3 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -88,6 +88,26 @@ static void __update_writeback_rate(struct cached_dev *dc)
- 	int64_t integral_scaled;
- 	uint32_t new_rate;
- 
-+	/*
-+	 * We need to consider the number of dirty buckets as well
-+	 * when calculating the proportional_scaled, Otherwise we might
-+	 * have an unreasonable small writeback rate at a highly fragmented situation
-+	 * when very few dirty sectors consumed a lot dirty buckets, the
-+	 * worst case is when dirty_data reached writeback_percent and
-+	 * dirty buckets reached to cutoff_writeback_sync, but the rate
-+	 * still will be at the minimum value, which will cause the write
-+	 * stuck at a non-writeback mode.
-+	 */
-+	struct cache_set *c = dc->disk.c;
-+
-+	if (c->gc_stats.in_use > dc->writeback_fragment_percent && dirty > 0) {
-+		int64_t dirty_buckets = (c->gc_stats.in_use * c->nbuckets) / 100;
-+		int64_t fragment = (dirty_buckets *  c->cache->sb.bucket_size) / dirty;
-+
-+		proportional_scaled =
-+		div_s64(dirty, dc->writeback_rate_p_term_inverse) * (fragment);
-+	}
-+
- 	if ((error < 0 && dc->writeback_rate_integral > 0) ||
- 	    (error > 0 && time_before64(local_clock(),
- 			 dc->writeback_rate.next + NSEC_PER_MSEC))) {
-@@ -969,6 +989,7 @@ void bch_cached_dev_writeback_init(struct cached_dev *dc)
- 	dc->writeback_metadata		= true;
- 	dc->writeback_running		= false;
- 	dc->writeback_percent		= 10;
-+	dc->writeback_fragment_percent	= 50;
- 	dc->writeback_delay		= 30;
- 	atomic_long_set(&dc->writeback_rate.rate, 1024);
- 	dc->writeback_rate_minimum	= 8;
--- 
-2.17.1
+Also, we could then delete entirely the platform_data as the register
+of the hid_descriptor_address could simply be added as an argument to
+i2c_hid_probe. Though that would force me to rewrite my testing patch
+with custom i2c-hid devices over an USB<->I2C adapter.
+
+>
+> So you would have 2 i2c drivers, one with an acpi_match_table and one
+> with an of_match_table. And then either also have 2 separate probe
+> functions, or have a probe helper which gets passed some platform_data
+> given by the acpi/of probe function + some extra callbacks (either
+> as extra arguments or inside the pdata).
+>
+> Having a separate drivers/hid/i2c-hid/i2c-hid-of.c file also allows
+> for a separate MAINTAINER entry where someone else then Benjamin
+> becomes responsible for reviewing DT related changes...
+
+I like that :)
+
+>
+> Anyways just my 2 cents, it is probably wise to wait what Benjamin
+> has to say before sinking time in implementing my suggestion :)
+
+I also want to say that I like the general idea of Doug's patch.
+Having a separate driver that handles the specific use case of goodix
+is really nice, as it allows to just load this driver without touching
+the core of i2c-hid. I believe this is in line with what Google tries
+to do with their kernel that OEMs can not touch, but only add overlays
+to it. The implementation is not polished (I don't think this new
+driver belongs to the input subsystem), but I like the general idea of
+having the "subclassing". Maybe we can make it prettier with Hans'
+suggestion, given that this mainly means we are transforming
+i2c-hid-core.c into a library.
+
+As for where this new goodix driver goes, it can stay in
+drivers/hid/i2c-hid IMO.
+
+Cheers,
+Benjamin
 
