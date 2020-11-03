@@ -2,105 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4742A4900
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D122A4907
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgKCPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        id S1728334AbgKCPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728192AbgKCPHk (ORCPT
+        with ESMTP id S1728291AbgKCPIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:07:40 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC19C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:07:40 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id i17so5808180qvp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:07:40 -0800 (PST)
+        Tue, 3 Nov 2020 10:08:46 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE30BC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:08:46 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id p7so18786281ioo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:08:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4n4eKbeBF029LZEVM8Tx6GsjHib9jcrVPlcNT/Y/Yx0=;
-        b=NSZmoJN8BVndRdwEMQQd1+hTP/RRmifn9wf265YZzYwbSlBwPLhY/7F+PPW8+Y/68Z
-         WhaRUJ9ki+KpWXZMu3+oEIcJ3fB2Gebdj/gTiMHYKlV8qP+I6Q7s1tqR8f9p+oMu9ftV
-         5LSvV7PyTDq2NTyClPrKeEVZGckDJ2mmhvauo=
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XrYo9O0i05esQNevxBJRekZg/PnpDyjXAgTjbtO6ZbQ=;
+        b=GtodWBZgnt/01Qr4mekcBNERbrUasrZM+mr1F5Oj4I84rSfafAepqUPCe69+3zNHWL
+         6OMmQS4yS7pmCZPqfhwLc4h/PwNCYu9kKXlij8tyXfcRNeHPuHeUZTzJB5+9InIe/jAh
+         Q3MCWiRdtcU/MRKPI1InMspF8gb4SHb2QjHrw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4n4eKbeBF029LZEVM8Tx6GsjHib9jcrVPlcNT/Y/Yx0=;
-        b=Ikkil5UmRD1O65DARgxMC5Pv85pEhrsfad0/wyv2mowa9a/6LQ6GMKRC7Iltz1rb7l
-         p2V5Z0a8cImtBHcauW9vxUtNIySM5uo4NUXkzT0YyItwYz7kBp2l8MDTrQGwsIRdwFp2
-         /TtP2r6RKRWL6KXff7dGGdlwl+4gOo70Jt05wEUwt4MSbhi1doiitz/nIAsa576PANGZ
-         fO8yAecNE7BGSI4wIkgYz2Q5HuN+gGEjSlhFQGm4lW6PfT7CdQ9K4kPofyVMXjT/pZFu
-         QzXxXr0WYMhoBg38EU3BwZUhuoeXbL7iMUcd22On64dR9Oe6kH5mt0D1vNBCeEXRIdgQ
-         Nl2g==
-X-Gm-Message-State: AOAM530Wh7kIQAFJWK+CIXakjXUj7f4/BFbhtQU67i7iFqrlx6OImdPw
-        o6uPFxeAnAdR04Qb7Gw7Flmu8IVIy8uJpA==
-X-Google-Smtp-Source: ABdhPJzzlcDLLdFjM34pMHGZgTdfKu/8EkQtfR2uV18EK3dvw/pyiibGX7BzyhFs4My2qNIiqkFtUA==
-X-Received: by 2002:ad4:4985:: with SMTP id t5mr25591422qvx.27.1604416059573;
-        Tue, 03 Nov 2020 07:07:39 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id c6sm4857206qke.35.2020.11.03.07.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 07:07:38 -0800 (PST)
-Date:   Tue, 3 Nov 2020 10:07:38 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 3/7] srcu: Fix invoke_rcu_callbacks() segcb length
- adjustment
-Message-ID: <20201103150738.GB1304393@google.com>
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-4-joel@joelfernandes.org>
- <20201103144714.GA432431@lothringen>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XrYo9O0i05esQNevxBJRekZg/PnpDyjXAgTjbtO6ZbQ=;
+        b=XXeFYjK/v7VqJr1NUuLn1VUdbRsjXNYV+GM85W4aCVd2CIr7DEmU+gFGYrm7opoyZb
+         gvURYNeTqF5b4wm8MvltYqHivDvhr97aqx2nH7MlMJDSWs+jH3SmbGKe5wSgRbMopoVH
+         aT8BEZ7GceC5jKCm0t51OvaUIS/kBmGNXanjNebk6yjCDon7ZNlrZ8rerPr7Abri948x
+         tUIEVrRWcAmwapOudNy7l5aghy8mS0pjYu+MaAisnxqbdo6Dptw5BXzxhUEMPGuWh4o1
+         zY9SDn6lmtEKtMdbHJqXgvwjPs2YCUu1GVPqt4fn83L8v7FvSlLOwgF//vhGWad2/vLD
+         /f6g==
+X-Gm-Message-State: AOAM532Xa1F7vWarwaH3uh0hiVGOR9n6HckdpVQjSsrTfyFWjrBtDgcp
+        C5AQcMiKss4he37GV3FCsO6tI8+KtY1FdSjXvDsP
+X-Google-Smtp-Source: ABdhPJzqzs/NB1K8HBkkw07rlFBru3y1mQ/Kj5vQRDvo9rz/SNNFqYuUqOQrko55mRHImrw86ttj+W7Cth3Cy/mXo2E=
+X-Received: by 2002:a02:65cf:: with SMTP id u198mr15912776jab.24.1604416126101;
+ Tue, 03 Nov 2020 07:08:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103144714.GA432431@lothringen>
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
+ <CAAhSdy0pW8AFCDtFkEO_4zjg8Exp+XTb09AjhErdX9u-Jw3OuQ@mail.gmail.com>
+ <CAOnJCUKCbkZVGX5Rjputs9QQAHCvH6Fikt7kVGsyCkNjbdMv=Q@mail.gmail.com> <734904fe-975a-5908-d08c-266a5049deac@codethink.co.uk>
+In-Reply-To: <734904fe-975a-5908-d08c-266a5049deac@codethink.co.uk>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 3 Nov 2020 07:08:33 -0800
+Message-ID: <CAOnJCU+Zj7JCHssg_+Vj3E1NhK_etXauDDbKK08v=C6o4gDv2g@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Anup Patel <anup@brainfault.org>, devicetree@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>, Cyril.Jean@microchip.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Padmarao Begari <padmarao.begari@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 03:47:14PM +0100, Frederic Weisbecker wrote:
-> On Tue, Nov 03, 2020 at 09:25:59AM -0500, Joel Fernandes (Google) wrote:
-> > With earlier patches, the negative counting of the unsegmented list
-> > cannot be used to adjust the segmented one. To fix this, sample the
-> > unsegmented length in advance, and use it after CB execution to adjust
-> > the segmented list's length.
-> > 
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > Suggested-by: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> This breaks bisection, you need to either fix up the previous patch
-> by adding this diff inside or better yet: expand what you did
-> in "rcu/tree: Make rcu_do_batch count how many callbacks were executed"
-> to also handle srcu before introducing the segcb count.
+On Tue, Nov 3, 2020 at 2:59 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 30/10/2020 20:27, Atish Patra wrote:
+> > On Fri, Oct 30, 2020 at 2:05 AM Anup Patel <anup@brainfault.org> wrote:
+> >>
+> >> On Thu, Oct 29, 2020 at 4:58 AM Atish Patra <atish.patra@wdc.com> wrot=
+e:
+> >>>
+> >>> Add initial DTS for Microchip ICICLE board having only
+> >>> essential devcies (clocks, sdhci, ethernet, serial, etc).
+> >>>
+> >>> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> >>> ---
+> >>>   arch/riscv/boot/dts/Makefile                  |   1 +
+> >>>   arch/riscv/boot/dts/microchip/Makefile        |   2 +
+> >>>   .../microchip/microchip-icicle-kit-a000.dts   | 313 +++++++++++++++=
++++
+> >>
+> >> I suggest we split this DTS into two parts:
+> >> 1. SOC (microchip-polarfire.dtsi)
+> >> 2. Board (microchip-icicle-kit-a000.dts)
+> >>
+> >> This will be much cleaner and aligned with what is done
+> >> on other architectures.
+> >>
+> >
+> > Sure. I will do that in v2.
+> >
+> >>>   3 files changed, 316 insertions(+)
+> >>>   create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+> >>>   create mode 100644 arch/riscv/boot/dts/microchip/microchip-icicle-k=
+it-a000.dts
+> >>>
+> >>> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makef=
+ile
+> >>> index ca1f8cbd78c0..3ea94ea0a18a 100644
+> >>> --- a/arch/riscv/boot/dts/Makefile
+> >>> +++ b/arch/riscv/boot/dts/Makefile
+> >>> @@ -1,5 +1,6 @@
+> >>>   # SPDX-License-Identifier: GPL-2.0
+> >>>   subdir-y +=3D sifive
+> >>>   subdir-y +=3D kendryte
+> >>> +subdir-y +=3D microchip
+> >>>
+> >>>   obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> >>> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot=
+/dts/microchip/Makefile
+> >>> new file mode 100644
+> >>> index 000000000000..55ad77521304
+> >>> --- /dev/null
+> >>> +++ b/arch/riscv/boot/dts/microchip/Makefile
+> >>> @@ -0,0 +1,2 @@
+> >>> +# SPDX-License-Identifier: GPL-2.0
+> >>> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) +=3D microchip-icicle-kit-a000=
+.dtb
+> >>> diff --git a/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.=
+dts b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> >>> new file mode 100644
+> >>> index 000000000000..5848920af55c
+> >>> --- /dev/null
+> >>> +++ b/arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
+> >>> @@ -0,0 +1,313 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0+
+> >>> +/* Copyright (c) 2020 Microchip Technology Inc */
+> >>> +
+> >>> +/dts-v1/;
+> >>> +
+> >>> +/* Clock frequency (in Hz) of the rtcclk */
+> >>> +#define RTCCLK_FREQ            1000000
+> >>> +
+> >>> +/ {
+> >>> +       #address-cells =3D <2>;
+> >>> +       #size-cells =3D <2>;
+> >>> +       model =3D "Microchip PolarFire-SoC";
+> >>> +       compatible =3D "microchip,polarfire-soc";
+> >>> +
+> >>> +       chosen {
+> >>> +               stdout-path =3D &serial0;
+> >>> +       };
+> >>> +
+> >>> +       cpus {
+> >>> +               #address-cells =3D <1>;
+> >>> +               #size-cells =3D <0>;
+> >>> +               timebase-frequency =3D <RTCCLK_FREQ>;
+> >>> +
+> >>> +               cpu@0 {
+> >>> +                       clock-frequency =3D <0>;
+> >>> +                       compatible =3D "sifive,rocket0", "riscv";
+> >>> +                       device_type =3D "cpu";
+> >>> +                       i-cache-block-size =3D <64>;
+> >>> +                       i-cache-sets =3D <128>;
+> >>> +                       i-cache-size =3D <16384>;
+> >>> +                       reg =3D <0>;
+> >>> +                       riscv,isa =3D "rv64imac";
+> >>> +                       status =3D "disabled";
+> >>> +
+> >>> +                       cpu0_intc: interrupt-controller {
+> >>> +                               #interrupt-cells =3D <1>;
+> >>> +                               compatible =3D "riscv,cpu-intc";
+> >>> +                               interrupt-controller;
+> >>> +                       };
+> >>> +               };
+> >>> +
+> >>> +               cpu@1 {
+> >>> +                       clock-frequency =3D <0>;
+> >>> +                       compatible =3D "sifive,rocket0", "riscv";
+> >>> +                       d-cache-block-size =3D <64>;
+> >>> +                       d-cache-sets =3D <64>;
+> >>> +                       d-cache-size =3D <32768>;
+> >>> +                       d-tlb-sets =3D <1>;
+> >>> +                       d-tlb-size =3D <32>;
+> >>> +                       device_type =3D "cpu";
+> >>> +                       i-cache-block-size =3D <64>;
+> >>> +                       i-cache-sets =3D <64>;
+> >>> +                       i-cache-size =3D <32768>;
+> >>> +                       i-tlb-sets =3D <1>;
+> >>> +                       i-tlb-size =3D <32>;
+> >>> +                       mmu-type =3D "riscv,sv39";
+> >>> +                       reg =3D <1>;
+> >>> +                       riscv,isa =3D "rv64imafdc";
+> >>> +                       tlb-split;
+> >>> +                       status =3D "okay";
+> >>> +
+> >>> +                       cpu1_intc: interrupt-controller {
+> >>> +                               #interrupt-cells =3D <1>;
+> >>> +                               compatible =3D "riscv,cpu-intc";
+> >>> +                               interrupt-controller;
+> >>> +                       };
+> >>> +               };
+> >>> +
+> >>> +               cpu@2 {
+> >>> +                       clock-frequency =3D <0>;
+> >>> +                       compatible =3D "sifive,rocket0", "riscv";
+> >>> +                       d-cache-block-size =3D <64>;
+> >>> +                       d-cache-sets =3D <64>;
+> >>> +                       d-cache-size =3D <32768>;
+> >>> +                       d-tlb-sets =3D <1>;
+> >>> +                       d-tlb-size =3D <32>;
+> >>> +                       device_type =3D "cpu";
+> >>> +                       i-cache-block-size =3D <64>;
+> >>> +                       i-cache-sets =3D <64>;
+> >>> +                       i-cache-size =3D <32768>;
+> >>> +                       i-tlb-sets =3D <1>;
+> >>> +                       i-tlb-size =3D <32>;
+> >>> +                       mmu-type =3D "riscv,sv39";
+> >>> +                       reg =3D <2>;
+> >>> +                       riscv,isa =3D "rv64imafdc";
+> >>> +                       tlb-split;
+> >>> +                       status =3D "okay";
+> >>> +
+> >>> +                       cpu2_intc: interrupt-controller {
+> >>> +                               #interrupt-cells =3D <1>;
+> >>> +                               compatible =3D "riscv,cpu-intc";
+> >>> +                               interrupt-controller;
+> >>> +                       };
+> >>> +               };
+> >>> +
+> >>> +               cpu@3 {
+> >>> +                       clock-frequency =3D <0>;
+> >>> +                       compatible =3D "sifive,rocket0", "riscv";
+> >>> +                       d-cache-block-size =3D <64>;
+> >>> +                       d-cache-sets =3D <64>;
+> >>> +                       d-cache-size =3D <32768>;
+> >>> +                       d-tlb-sets =3D <1>;
+> >>> +                       d-tlb-size =3D <32>;
+> >>> +                       device_type =3D "cpu";
+> >>> +                       i-cache-block-size =3D <64>;
+> >>> +                       i-cache-sets =3D <64>;
+> >>> +                       i-cache-size =3D <32768>;
+> >>> +                       i-tlb-sets =3D <1>;
+> >>> +                       i-tlb-size =3D <32>;
+> >>> +                       mmu-type =3D "riscv,sv39";
+> >>> +                       reg =3D <3>;
+> >>> +                       riscv,isa =3D "rv64imafdc";
+> >>> +                       tlb-split;
+> >>> +                       status =3D "okay";
+> >>> +
+> >>> +                       cpu3_intc: interrupt-controller {
+> >>> +                               #interrupt-cells =3D <1>;
+> >>> +                               compatible =3D "riscv,cpu-intc";
+> >>> +                               interrupt-controller;
+> >>> +                       };
+> >>> +               };
+> >>> +
+> >>> +               cpu@4 {
+> >>> +                       clock-frequency =3D <0>;
+> >>> +                       compatible =3D "sifive,rocket0", "riscv";
+> >>> +                       d-cache-block-size =3D <64>;
+> >>> +                       d-cache-sets =3D <64>;
+> >>> +                       d-cache-size =3D <32768>;
+> >>> +                       d-tlb-sets =3D <1>;
+> >>> +                       d-tlb-size =3D <32>;
+> >>> +                       device_type =3D "cpu";
+> >>> +                       i-cache-block-size =3D <64>;
+> >>> +                       i-cache-sets =3D <64>;
+> >>> +                       i-cache-size =3D <32768>;
+> >>> +                       i-tlb-sets =3D <1>;
+> >>> +                       i-tlb-size =3D <32>;
+> >>> +                       mmu-type =3D "riscv,sv39";
+> >>> +                       reg =3D <4>;
+> >>> +                       riscv,isa =3D "rv64imafdc";
+> >>> +                       tlb-split;
+> >>> +                       status =3D "okay";
+> >>> +                       cpu4_intc: interrupt-controller {
+> >>> +                               #interrupt-cells =3D <1>;
+> >>> +                               compatible =3D "riscv,cpu-intc";
+> >>> +                               interrupt-controller;
+> >>> +                       };
+> >>> +               };
+> >>> +       };
+> >>> +
+> >>> +       memory@80000000 {
+> >>> +               device_type =3D "memory";
+> >>> +               reg =3D <0x0 0x80000000 0x0 0x40000000>;
+> >>> +               clocks =3D <&clkcfg 26>;
+> >>> +       };
+> >>> +
+> >>> +       soc {
+> >>> +               #address-cells =3D <2>;
+> >>> +               #size-cells =3D <2>;
+> >>> +               compatible =3D "simple-bus";
+> >>> +               ranges;
+> >>> +
+> >>> +               cache-controller@2010000 {
+> >>> +                       compatible =3D "sifive,fu540-c000-ccache", "c=
+ache";
+> >>> +                       cache-block-size =3D <64>;
+> >>> +                       cache-level =3D <2>;
+> >>> +                       cache-sets =3D <1024>;
+> >>> +                       cache-size =3D <2097152>;
+> >>> +                       cache-unified;
+> >>> +                       interrupt-parent =3D <&plic>;
+> >>> +                       interrupts =3D <1 2 3>;
+> >>> +                       reg =3D <0x0 0x2010000 0x0 0x1000>;
+> >>> +               };
+> >>> +
+> >>> +               clint@2000000 {
+> >>> +                       compatible =3D "riscv,clint0";
+> >>> +                       reg =3D <0x0 0x2000000 0x0 0xC000>;
+> >>> +                       interrupts-extended =3D <&cpu0_intc 3 &cpu0_i=
+ntc 7
+> >>> +                                               &cpu1_intc 3 &cpu1_in=
+tc 7
+> >>> +                                               &cpu2_intc 3 &cpu2_in=
+tc 7
+> >>> +                                               &cpu3_intc 3 &cpu3_in=
+tc 7
+> >>> +                                               &cpu4_intc 3 &cpu4_in=
+tc 7>;
+> >>> +               };
+> >>> +
+> >>> +               plic: interrupt-controller@c000000 {
+> >>> +                       #interrupt-cells =3D <1>;
+> >>> +                       compatible =3D "sifive,plic-1.0.0";
+> >>> +                       reg =3D <0x0 0xc000000 0x0 0x4000000>;
+> >>> +                       riscv,ndev =3D <53>;
+> >>> +                       interrupt-controller;
+> >>> +                       interrupts-extended =3D <&cpu0_intc 11
+> >>> +                                       &cpu1_intc 11 &cpu1_intc 9
+> >>> +                                       &cpu2_intc 11 &cpu2_intc 9
+> >>> +                                       &cpu3_intc 11 &cpu3_intc 9
+> >>> +                                       &cpu4_intc 11 &cpu4_intc 9>;
+> >>> +               };
+> >>> +
+> >>> +               dma@3000000 {
+> >>> +                       compatible =3D "sifive,fu540-c000-pdma";
+> >>> +                       reg =3D <0x0 0x3000000 0x0 0x8000>;
+> >>> +                       interrupt-parent =3D <&plic>;
+> >>> +                       interrupts =3D <23 24 25 26 27 28 29 30>;
+> >>> +                       #dma-cells =3D <1>;
+> >>> +               };
+> >>> +
+> >>> +               refclk: refclk {
+> >>> +                       compatible =3D "fixed-clock";
+> >>> +                       #clock-cells =3D <0>;
+> >>> +                       clock-frequency =3D <600000000>;
+> >>> +                       clock-output-names =3D "msspllclk";
+> >>> +               };
+> >>> +
+> >>> +               clkcfg: clkcfg@20002000 {
+> >>> +                       compatible =3D "microchip,pfsoc-clkcfg";
+> >>> +                       reg =3D <0x0 0x20002000 0x0 0x1000>;
+> >>> +                       reg-names =3D "mss_sysreg";
+> >>> +                       clocks =3D <&refclk>;
+> >>> +                       #clock-cells =3D <1>;
+> >>> +                       clock-output-names =3D "cpuclk", "axiclk", "a=
+hbclk", "ENVMclk", "MAC0clk", "MAC1clk", "MMCclk", "TIMERclk", "MMUART0clk"=
+, "MMUART1clk", "MMUART2clk", "MMUART3clk", "MMUART4clk", "SPI0clk", "SPI1c=
+lk", "I2C0clk", "I2C1clk", "CAN0clk", "CAN1clk", "USBclk", "RESERVED", "RTC=
+clk", "QSPIclk", "GPIO0clk", "GPIO1clk", "GPIO2clk", "DDRCclk", "FIC0clk", =
+"FIC1clk", "FIC2clk", "FIC3clk", "ATHENAclk", "CFMclk";
+> >>> +               };
+> >>> +
+>
+> H ow about doing something like
+> >               clock-output-names =3D "cpuclk", "axiclk", "ahbclk", "ENV=
+Mclk", "MAC0clk",        /* 0 -4 */
+> >                               "MAC1clk", "MMCclk", "TIMERclk", "MMUART0=
+clk", "MMUART1clk", /* 5-9 */
+>
+> this means we can easily work out what clocks are in which index
+>
+> As per the previos email, I'd leave these all populated as coming back
+> and adding ones later is just going to be a pain with merge conflicts.
+>
 
-Since doing the latter is a lot more tedious and I want to get reviewing
-other's RCU patches today :) , I just squashed the suggestion into the
-counters patch to fix bissection:
-https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=rcu/segcb-counts&id=595e3a65eeef109cb8fcbfcc114fd3ea2064b873
+Sounds good to me.
 
-Hope that's Ok. Also, so that I don't have to resend everything, here is the
-final branch if Paul wants to take it:
-git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git (branch rcu/segcb-counts)
-
-Thank you for your time, Frederick!
-
- - Joel
+>
+>
+> --
+> Ben Dooks                               http://www.codethink.co.uk/
+> Senior Engineer                         Codethink - Providing Genius
+>
+> https://www.codethink.co.uk/privacy.html
 
 
 
-
-
+--=20
+Regards,
+Atish
