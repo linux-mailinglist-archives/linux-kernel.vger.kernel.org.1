@@ -2,115 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610CB2A3F51
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03BA2A3F55
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgKCIvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S1727787AbgKCIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgKCIvi (ORCPT
+        with ESMTP id S1725968AbgKCIwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:51:38 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19329C0613D1;
-        Tue,  3 Nov 2020 00:51:38 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id t13so18071855ljk.12;
-        Tue, 03 Nov 2020 00:51:38 -0800 (PST)
+        Tue, 3 Nov 2020 03:52:42 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD001C0613D1;
+        Tue,  3 Nov 2020 00:52:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i7so11214671pgh.6;
+        Tue, 03 Nov 2020 00:52:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbXe1gSHDJtWpmFhQy3RN/GG3byFqOLTcG3m6UD8/EE=;
-        b=XFbUDt6At7a6IcBVG5+dt2H5oaIlgs0pZlVdGxQemMsQhJQOAkktr9puE0svB8lcjO
-         uh7AabaIUYoHQglfLVkcvXdm3pLFM4Qa2DSPCDi2wTIKEztgQ08aUqIEKEZ5n6Ir+MeB
-         0PGy8qV2COLEGDj6/esurAvGdIiEj0DHVPNAZ50XsDot/5S6hOYU0Y659neTQ7PoP0EN
-         N8YgX04/oUVMBqZbBceKR9zvn7oY1SPeL6I07A3aPzbNs0FVEwZJoZwnNmKLZcC6yhBc
-         ms9eQJdfg+SyH9cJiLxXgSAJjpm9R5rvPoIJd3sJlu6zMKJ5SP9A7ntFHzN82rOrVGiM
-         tYuQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0V9Eqsw0P/c1uqnmbZIL7sQkwkXO9ZRETLMblzJ8gw=;
+        b=mmHGeeOfpKkGy9BXLSA5CXBvj1YkjRIcKTdmituqmoxcsQkc/MaSlOf2gMGlU/PADh
+         z0P4HpgvC3s9CIiP3T8sJuahEWTNB3j9eogiQo+kqAMCK58eQDF80XcGc0o3vY3Jj3y+
+         cuBt8QUScSQu1vfWOef6m8SDoDvgfh7WbsKKIY01sRy56WhFWXMHqMjtIPeV88DCUHiU
+         ky5y36SyCraqGgjwSfb+c4mhqWQPOJsGNLzV30NYpqON3PeK9eSuDZKPkoWK+4bXmFUF
+         sF4GIKawTEPZ/wik8JHK/wxWqBJGVGa5SnHu0D7MzPKtJJVU4rj4O76awq5f5ZxTB0wG
+         6o2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbXe1gSHDJtWpmFhQy3RN/GG3byFqOLTcG3m6UD8/EE=;
-        b=svby4BVWcs9H+KY8pXYQq5GLy+HFmiT5VXcD6AgAqz1VTUNJ7oMTSiUslh66n3RcCA
-         ooKOE9tae+1hVk1yMt8BD4JK4JpX2jfqqJvn8FQhqvATahy9GKekRr96hCNZ5+ysYvNh
-         F93ObewGLfmP3z1fezTHLFgQZZ8gkuK0mmYX/PmQs3BPG/UpbAHBJwSzSW242JpLkZ2P
-         plKfJaGFFr02el305BSuV9r6vjhB9cYre+87x+7hLFGw2ooYdHkR8yfc+5y3DtDErvza
-         eXxjWNspzNQlMjyaNPZEQ+oYJ7y+BEblI1eW2tegksbK6XKM45ybZX62cDl6FhUfNaOH
-         7D8w==
-X-Gm-Message-State: AOAM532EepOTc+NjV8fcXEhDDDEuZerLD2ogZJv+S/y4Mn+7bjfPa1J8
-        7wRR8F7AsjFnSo5yBpjP0txPonb6Oy769Pn+Xn8=
-X-Google-Smtp-Source: ABdhPJyY+Fu78Ls0VuBpA0ax7wQZa2fb41kBkHynOYsX7pdQKvuvkHHMStDqk3iemAWYKaWGnHRwe8Ui77LH33hMLyE=
-X-Received: by 2002:a2e:86c8:: with SMTP id n8mr8044638ljj.321.1604393496516;
- Tue, 03 Nov 2020 00:51:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0V9Eqsw0P/c1uqnmbZIL7sQkwkXO9ZRETLMblzJ8gw=;
+        b=eBRFSecLlF0uA8qKiuRvuBjed0gcev6/bnb62WQuR7jWHWIcAJbHaDbK9ey8fxAQ8r
+         OF5IcYcLrarvZ1B5M+H9f44CDMn2MeAL6mAxKCkqqEYvjjnv5XqX7JZllBXSMOeiYgpY
+         o7HfTIotObCaxudTjJPtm3+XJY2RYiHDPNELC1n9m3+oCfnkyX5gkLkqIUurZ/K2a6qk
+         Z/5bAVgWJYW63IFRATqQAHdlUiyTvJQ7ba+b7ODzns2XyDIGqqDMWP1rGV8zrMYYxs5i
+         pAdne5sYkZHfo4RMxE3O68TZwBsE83/gg5PnqBQ5xDN3zVx9MYOQs6KynOeFZJkEZUhT
+         ahvQ==
+X-Gm-Message-State: AOAM533bEsYdmlL8gA+bV002B8IE+L+jgXoYZV1ZvPM3MnqwxahjVl1O
+        LIbzRRsbERvkn6iF6FWj8gHDQlKHsanFN8s=
+X-Google-Smtp-Source: ABdhPJxcq5b+6l9ITRsWB1Ya1KrxYn9ZW+9/FYoZ0RkoB4msCHH1juevPLTgR45sRW2PGWSk75YCkg==
+X-Received: by 2002:a17:90b:384b:: with SMTP id nl11mr2799496pjb.126.1604393560956;
+        Tue, 03 Nov 2020 00:52:40 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id q13sm15978340pfg.3.2020.11.03.00.52.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Nov 2020 00:52:40 -0800 (PST)
+From:   lihaiwei.kernel@gmail.com
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH v5] KVM: Check the allocation of pv cpu mask
+Date:   Tue,  3 Nov 2020 16:52:27 +0800
+Message-Id: <20201103085227.25098-1-lihaiwei.kernel@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201022122421.133976-1-gnurou@gmail.com> <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
-In-Reply-To: <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
-From:   Alexandre Courbot <gnurou@gmail.com>
-Date:   Tue, 3 Nov 2020 17:51:24 +0900
-Message-ID: <CAAVeFuKCEQYBs84ssCvwAkGUxGikeDFc+XNX2LzkENGc5B1n8g@mail.gmail.com>
-Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+From: Haiwei Li <lihaiwei@tencent.com>
 
-On Sat, Oct 31, 2020 at 12:09 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 22/10/2020 14:24, Alexandre Courbot wrote:
-> > do_poll()/do_select() seem to set the _qproc member of poll_table to
-> > NULL the first time they are called on a given table, making subsequent
-> > calls of poll_wait() on that table no-ops. This is a problem for mem2mem
-> > which calls poll_wait() on the V4L2 queues' waitqueues only when a
-> > queue-related event is requested, which may not necessarily be the case
-> > during the first poll.
-> >
-> > For instance, a stateful decoder is typically only interested in
-> > EPOLLPRI events when it starts, and will switch to listening to both
-> > EPOLLPRI and EPOLLIN after receiving the initial resolution change event
-> > and configuring the CAPTURE queue. However by the time that switch
-> > happens and v4l2_m2m_poll_for_data() is called for the first time,
-> > poll_wait() has become a no-op and the V4L2 queues waitqueues thus
-> > cannot be registered.
-> >
-> > Fix this by moving the registration to v4l2_m2m_poll() and do it whether
-> > or not one of the queue-related events are requested.
->
-> This looks good, but would it be possible to add a test for this to
-> v4l2-compliance? (Look for POLL_MODE_EPOLL in v4l2-test-buffers.cpp)
->
-> If I understand this right, calling EPOLL_CTL_ADD for EPOLLPRI, then
-> calling EPOLL_CTL_ADD for EPOLLIN/OUT would trigger this? Or does there
-> have to be an epoll_wait call in between?
+Both 'kvm_send_ipi_mask_allbutself' and 'kvm_flush_tlb_others' are using
+per-cpu __pv_cpu_mask. Init pv ipi ops only if the allocation succeeds and
+check the cpumask in 'kvm_flush_tlb_others'.
 
-Even without an epoll_wait() in between the behavior is visible.
-v4l2_m2m_poll() will be called once during the initial EPOLL_CTL_ADD
-and this will trigger the bug.
+Thanks to Vitaly Kuznetsov's tireless advice.
 
-> Another reason for adding this test is that I wonder if regular capture
-> or output V4L2 devices don't have the same issue.
->
-> It's a very subtle bug and so adding a test for this to v4l2-compliance
-> would be very useful.
+Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+v1 -> v2:
+ * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
+v2 -> v3:
+ * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
+v3 -> v4:
+ * mov kvm_setup_pv_ipi to kvm_alloc_cpumask and get rid of kvm_apic_init
+v4 -> v5:
+ * remove kvm_apic_init as an empty function
+ * define pv_ipi_supported() in !CONFIG_SMP case as 'false' to get rid of
+ 'alloc' variable
+ * move kvm_setup_pv_ipi and define the implementation in CONFIG_SMP
 
-I fully agree, this is very counter-intuitive since what basically
-happens is that the kernel's poll_wait() function becomes a no-op
-after the poll() hook of a driver is called for the first time. There
-is no way one can expect this behavior just from browsing the code so
-this is likely to affect other drivers.
+ arch/x86/kernel/kvm.c | 75 +++++++++++++++++++++++++------------------
+ 1 file changed, 44 insertions(+), 31 deletions(-)
 
-As for the test itself, we can easily reproduce the conditions for
-failure in v4l2-test-buffers.cpp's captureBufs() function, but doing
-so will make the streaming tests fail without being specific about the
-cause. Or maybe we should add another pollmode to specifically test
-epoll in this setup? Can I get your thoughts?
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 42c6e0deff9e..2f2cc25d5078 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -547,16 +547,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
+ 	__send_ipi_mask(local_mask, vector);
+ }
+ 
+-/*
+- * Set the IPI entry points
+- */
+-static void kvm_setup_pv_ipi(void)
+-{
+-	apic->send_IPI_mask = kvm_send_ipi_mask;
+-	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+-	pr_info("setup PV IPIs\n");
+-}
+-
+ static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
+ {
+ 	int cpu;
+@@ -609,7 +599,24 @@ static int kvm_cpu_down_prepare(unsigned int cpu)
+ 	local_irq_enable();
+ 	return 0;
+ }
++#else
++static bool pv_ipi_supported(void)
++{
++	return false;
++}
++#endif
++
++/*
++ * Set the IPI entry points
++ */
++static void kvm_setup_pv_ipi(void)
++{
++#if defined(CONFIG_SMP)
++	apic->send_IPI_mask = kvm_send_ipi_mask;
++	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
++	pr_info("setup PV IPIs\n");
+ #endif
++}
+ 
+ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 			const struct flush_tlb_info *info)
+@@ -619,6 +626,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 	struct kvm_steal_time *src;
+ 	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+ 
++	if (unlikely(!flushmask)) {
++		native_flush_tlb_others(cpumask, info);
++		return;
++	}
++
+ 	cpumask_copy(flushmask, cpumask);
+ 	/*
+ 	 * We have to call flush only on online vCPUs. And
+@@ -730,18 +742,9 @@ static uint32_t __init kvm_detect(void)
+ 	return kvm_cpuid_base();
+ }
+ 
+-static void __init kvm_apic_init(void)
+-{
+-#if defined(CONFIG_SMP)
+-	if (pv_ipi_supported())
+-		kvm_setup_pv_ipi();
+-#endif
+-}
+-
+ static void __init kvm_init_platform(void)
+ {
+ 	kvmclock_init();
+-	x86_platform.apic_post_init = kvm_apic_init;
+ }
+ 
+ const __initconst struct hypervisor_x86 x86_hyper_kvm = {
+@@ -765,29 +768,39 @@ static __init int activate_jump_labels(void)
+ }
+ arch_initcall(activate_jump_labels);
+ 
++static void kvm_free_cpumask(void)
++{
++	unsigned int cpu;
++
++	for_each_possible_cpu(cpu)
++		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
++}
++
+ static __init int kvm_alloc_cpumask(void)
+ {
+ 	int cpu;
+-	bool alloc = false;
+ 
+ 	if (!kvm_para_available() || nopv)
+ 		return 0;
+ 
+-	if (pv_tlb_flush_supported())
+-		alloc = true;
+-
+-#if defined(CONFIG_SMP)
+-	if (pv_ipi_supported())
+-		alloc = true;
+-#endif
+-
+-	if (alloc)
++	if (pv_tlb_flush_supported() || pv_ipi_supported()) {
+ 		for_each_possible_cpu(cpu) {
+-			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+-				GFP_KERNEL, cpu_to_node(cpu));
++			if (!zalloc_cpumask_var_node(
++				per_cpu_ptr(&__pv_cpu_mask, cpu),
++				GFP_KERNEL, cpu_to_node(cpu))) {
++				goto zalloc_cpumask_fail;
++			}
+ 		}
++	}
++
++	if (pv_ipi_supported())
++		kvm_setup_pv_ipi();
+ 
+ 	return 0;
++
++zalloc_cpumask_fail:
++	kvm_free_cpumask();
++	return -ENOMEM;
+ }
+ arch_initcall(kvm_alloc_cpumask);
+ 
+-- 
+2.18.4
 
-Cheers,
-Alex.
