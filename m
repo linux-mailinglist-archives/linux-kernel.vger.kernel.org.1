@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5870F2A40E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5AE2A40F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbgKCJ6d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 04:58:33 -0500
-Received: from mga12.intel.com ([192.55.52.136]:62748 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgKCJ6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:58:32 -0500
-IronPort-SDR: RewzBUIiezlD+TwUtNOOOs9lkZ7SUQqhY+gDPnH4GrttGQw2MRogGEFTPgVl7oT8aIvjHf1Zp5
- wpj6zEaCkdVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="148308737"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="148308737"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 01:58:31 -0800
-IronPort-SDR: qXZ3CdVSYmts5JPldn4hVxPQrAnAqM0Gp50/FrVIsGpM55HmGd9I+qH+0dA28fc+ZNECT9313p
- hjOw5WMKj6fQ==
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="528363463"
-Received: from stevenro-mobl.ger.corp.intel.com (HELO localhost) ([10.252.23.13])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 01:58:28 -0800
-Content-Type: text/plain; charset="utf-8"
+        id S1728226AbgKCJ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728159AbgKCJ7C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:59:02 -0500
+Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BA2C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 01:59:02 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp3.goneo.de (Postfix) with ESMTP id 4F3882401A0;
+        Tue,  3 Nov 2020 10:59:01 +0100 (CET)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.941
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.941 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.041, BAYES_00=-1.9] autolearn=ham
+Received: from smtp3.goneo.de ([127.0.0.1])
+        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Uxs5ESElOXak; Tue,  3 Nov 2020 10:58:59 +0100 (CET)
+Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
+        by smtp3.goneo.de (Postfix) with ESMTPA id 9818C240283;
+        Tue,  3 Nov 2020 10:58:59 +0100 (CET)
+From:   poeschel@lemonage.de
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH v6 23/25] auxdisplay: charlcd: Do not print chars at end of line
+Date:   Tue,  3 Nov 2020 10:58:26 +0100
+Message-Id: <20201103095828.515831-24-poeschel@lemonage.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103095828.515831-1-poeschel@lemonage.de>
+References: <20201103095828.515831-1-poeschel@lemonage.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <99a0d1eb-7fde-dff4-225f-92b68fbf7620@linux.intel.com>
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com> <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com> <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com> <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com> <3f5694f3-62f9-cc2b-1c2b-f9e99a4788c1@linux.intel.com> <1ce5b94a-38b3-548e-3b1a-a68390b93953@linux.intel.com> <82dab98e-0761-8946-c31c-92f19a0615b4@linux.intel.com> <99a0d1eb-7fde-dff4-225f-92b68fbf7620@linux.intel.com>
-Cc:     Ashok Raj <ashok.raj@intel.com>, Intel-gfx@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-To:     Christoph Hellwig <hch@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu api
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <160439750572.8460.14782978404889004150@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Tue, 03 Nov 2020 11:58:26 +0200
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Tvrtko Ursulin (2020-11-03 11:14:32)
-> 
-> 
-> On 03/11/2020 02:53, Lu Baolu wrote:
-> > On 11/2/20 7:52 PM, Tvrtko Ursulin wrote:
-> >>
-> >> On 02/11/2020 02:00, Lu Baolu wrote:
-> >>> Hi Tvrtko,
-> >>> On 10/12/20 4:44 PM, Tvrtko Ursulin wrote:
-> >>>>
-> >>>> On 29/09/2020 01:11, Lu Baolu wrote:
+From: Lars Poeschel <poeschel@lemonage.de>
 
-<SNIP>
+Skip printing characters at the end of a display line. This fits to the
+behaviour we already had, that the cursor is nailed to the last position
+of a line.
+This might slightly change behaviour.
+On hd44780 displays with one or two lines the previous implementation
+did still write characters to the buffer of the display even if they are
+currently not visible. The shift_display command could be used to set
+the "viewing window" to a new position in the buffer and then you could
+see the characters previously written.
+This described behaviour does not work for hd44780 displays with more
+than two display lines. There simply is not enough buffer.
+So the behaviour was a bit inconsistent across different displays.
+The new behaviour is to stop writing characters at the end of a visible
+line, even if there would be room in the buffer. This allows us to have
+an easy implementation, that should behave equal on all supported
+displays. This is not hd44780 hardware dependent anymore.
 
-> >>>> FYI we have merged the required i915 patches to out tree last week 
-> >>>> or so. I *think* this means they will go into 5.11. So the i915 
-> >>>> specific workaround patch will not be needed in Intel IOMMU.
-> >>>
-> >>> Do you mind telling me what's the status of this fix patch? I tried this
-> >>> series on v5.10-rc1 with the graphic quirk patch dropped. I am still
-> >>> seeing dma faults from graphic device.
-> >>
-> >> Hmm back then I thought i915 fixes for this would land in 5.11 so I 
-> >> will stick with that. :) (See my quoted text a paragraph above yours.)
-> > 
-> > What size are those fixes? I am considering pushing this series for
-> > v5.11. Is it possible to get some acks for those patches and let them
-> > go to Linus through iommu tree?
-> 
-> For 5.10 you mean? They feel a bit too large for comfort to go via a 
-> non-i915/drm tree. These are the two patches required:
-> 
-> https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-gt-next&id=8a473dbadccfc6206150de3db3223c40785da348
-> https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-gt-next&id=934941ed5a3070a7833c688c9b1d71484fc01a68
-> 
-> I'll copy Joonas as our maintainer - how does the idea of taking the 
-> above two patches through the iommu tree sound to you?
+Reviewed-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+---
+Changes in v6:
+- Fix some typos in commit message
 
-Hi Lu,
+Changes in v3:
+- Better patch description
+---
+ drivers/auxdisplay/charlcd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The patches have already been merged into our tree and are heading
-towards 5.11, so I don't think we should merge them elsewhere. DRM
-subsystem had the feature freeze for 5.10 at the time of 5.9-rc5
-and only drm-intel-fixes pull requests are sent after that.
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index ef10b5ca0e16..f43430e9dcee 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -111,6 +111,9 @@ static void charlcd_home(struct charlcd *lcd)
+ 
+ static void charlcd_print(struct charlcd *lcd, char c)
+ {
++	if (lcd->addr.x >= lcd->width)
++		return;
++
+ 	if (lcd->char_conv)
+ 		c = lcd->char_conv[(unsigned char)c];
+ 
+-- 
+2.28.0
 
-The patches seem to target to eliminate need for a previously used
-workaround. To me it seems more appropriate for the patches to follow
-the regular process as new feature for 5.11 to make sure the changes
-get validated as part of linux-next.
-
-Would that work for you? We intend to send the feature pull requests
-to DRM for 5.11 in the upcoming weeks.
-
-Regards, Joonas
