@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EEC2A56F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9782D2A56EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732926AbgKCVcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:32:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
+        id S1732914AbgKCVcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:32:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732023AbgKCU5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:57:22 -0500
+        id S1732160AbgKCU5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:57:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28C5222226;
-        Tue,  3 Nov 2020 20:57:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F2612053B;
+        Tue,  3 Nov 2020 20:57:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437041;
-        bh=V1ebKRZILqhuVkapQZVuUtsopgzgh0nAYU7+1qLih9I=;
+        s=default; t=1604437043;
+        bh=fDVkSL4OoH29SROqNLFPW+q5KCXRY4XKiT46PihVJVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=maZcqnYjJP9ZxmY3cdUUXIqspi3fw9TQbKbsY1yoRl7swY4MufKEmPdBv4NgTAPdi
-         uDFN1VUjVc4Ok862UQd3szg83cjiAV96W91opkdRhds12XQh1+KfRfb4sy17X5lzyu
-         61hjCHtj61OpvdPb/k0TUbLKMIvuamAsvnxNaLAw=
+        b=DVXhskhA+CpNl3EW2XPtnxWOShkyO9orXVnUaEehcXJu6IOf10F3lw5PzMBMnTMUg
+         CI0HnM2tnVUqh0ibHx2JnzG951a4C1YRMKlP/0Hx4tHDcOGEh6QCrhBTydyK8wueCt
+         S8llGQU0Uerz7rW3xXaQK2AtiAHL37ixgeY5udaE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 122/214] btrfs: qgroup: fix wrong qgroup metadata reserve for delayed inode
-Date:   Tue,  3 Nov 2020 21:36:10 +0100
-Message-Id: <20201103203302.294976395@linuxfoundation.org>
+        stable@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 123/214] btrfs: improve device scanning messages
+Date:   Tue,  3 Nov 2020 21:36:11 +0100
+Message-Id: <20201103203302.395004126@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -42,66 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Anand Jain <anand.jain@oracle.com>
 
-commit b4c5d8fdfff3e2b6c4fa4a5043e8946dff500f8c upstream.
+commit 79dae17d8d44b2d15779e332180080af45df5352 upstream.
 
-For delayed inode facility, qgroup metadata is reserved for it, and
-later freed.
+Systems booting without the initramfs seems to scan an unusual kind
+of device path (/dev/root). And at a later time, the device is updated
+to the correct path. We generally print the process name and PID of the
+process scanning the device but we don't capture the same information if
+the device path is rescanned with a different pathname.
 
-However we're freeing more bytes than we reserved.
-In btrfs_delayed_inode_reserve_metadata():
+The current message is too long, so drop the unnecessary UUID and add
+process name and PID.
 
-	num_bytes = btrfs_calc_metadata_size(fs_info, 1);
-	...
-		ret = btrfs_qgroup_reserve_meta_prealloc(root,
-				fs_info->nodesize, true);
-		...
-		if (!ret) {
-			node->bytes_reserved = num_bytes;
+While at this also update the duplicate device warning to include the
+process name and PID so the messages are consistent
 
-But in btrfs_delayed_inode_release_metadata():
-
-	if (qgroup_free)
-		btrfs_qgroup_free_meta_prealloc(node->root,
-				node->bytes_reserved);
-	else
-		btrfs_qgroup_convert_reserved_meta(node->root,
-				node->bytes_reserved);
-
-This means, we're always releasing more qgroup metadata rsv than we have
-reserved.
-
-This won't trigger selftest warning, as btrfs qgroup metadata rsv has
-extra protection against cases like quota enabled half-way.
-
-But we still need to fix this problem any way.
-
-This patch will use the same num_bytes for qgroup metadata rsv so we
-could handle it correctly.
-
-Fixes: f218ea6c4792 ("btrfs: delayed-inode: Remove wrong qgroup meta reservation calls")
 CC: stable@vger.kernel.org # 4.19+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=89721
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/delayed-inode.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/volumes.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -627,8 +627,7 @@ static int btrfs_delayed_inode_reserve_m
- 	 */
- 	if (!src_rsv || (!trans->bytes_reserved &&
- 			 src_rsv->type != BTRFS_BLOCK_RSV_DELALLOC)) {
--		ret = btrfs_qgroup_reserve_meta_prealloc(root,
--				fs_info->nodesize, true);
-+		ret = btrfs_qgroup_reserve_meta_prealloc(root, num_bytes, true);
- 		if (ret < 0)
- 			return ret;
- 		ret = btrfs_block_rsv_add(root, dst_rsv, num_bytes,
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1123,16 +1123,18 @@ static noinline struct btrfs_device *dev
+ 				bdput(path_bdev);
+ 				mutex_unlock(&fs_devices->device_list_mutex);
+ 				btrfs_warn_in_rcu(device->fs_info,
+-			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
+-					disk_super->fsid, devid,
+-					rcu_str_deref(device->name), path);
++	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
++						  path, devid, found_transid,
++						  current->comm,
++						  task_pid_nr(current));
+ 				return ERR_PTR(-EEXIST);
+ 			}
+ 			bdput(path_bdev);
+ 			btrfs_info_in_rcu(device->fs_info,
+-				"device fsid %pU devid %llu moved old:%s new:%s",
+-				disk_super->fsid, devid,
+-				rcu_str_deref(device->name), path);
++	"devid %llu device path %s changed to %s scanned by %s (%d)",
++					  devid, rcu_str_deref(device->name),
++					  path, current->comm,
++					  task_pid_nr(current));
+ 		}
+ 
+ 		name = rcu_string_strdup(path, GFP_NOFS);
 
 
