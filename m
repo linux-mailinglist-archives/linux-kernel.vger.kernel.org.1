@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8902A407D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894C62A4083
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgKCJnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgKCJnW (ORCPT
+        id S1727844AbgKCJoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:44:30 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6694 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCJo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:43:22 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28E0C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 01:43:21 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id a10so343809edt.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 01:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=FFd3mvhuQMY/+bsfnVKNY7hNDVTrPNGeeWvSKBTt/6w=;
-        b=arYDKw0T/wCpqExPGZaCoxeicaXqBaBLG/rtsFLovNIGxliIWwpjvyoeoIX4sLmmQ/
-         XcJeYYzamHLxiqIZVvh8ECoqpzi6zQuhnT8yHA2NI4i7Oj12Nu7NPW3/H2HRuAhxFS/f
-         m8UHRQjc5aVaOzzjo+9URvrphNdC8NtQCUjiXVPj6vXBJqVu1/u8sVFtS6Q6Rn/Eut9A
-         Pp6AzIsTVAnc421Fw+Jp0wXnOGkkUmdSdfGpfinV+YTNaPaJMglfAna460V9XmlJXzFC
-         sjzB/+B2mjgarsY/89FEJRgGoZGkfPCrRzBJOiTRwo3XgCpBvb9gI3Fo1VPEOR7o4jBF
-         5ETA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=FFd3mvhuQMY/+bsfnVKNY7hNDVTrPNGeeWvSKBTt/6w=;
-        b=CuEbFsr9mXdAdK01cAhjVXNPZdDxkJxO45D7hw4Rq4NABNh97PDg+b0iYRUpbgUtJT
-         ysdqviQTOuLSqXQZImAoMdyiTK/hHU4UJhXXimbfzFFcL+PCj7U6CnzE9MbLkb+lRzSn
-         9u9vrjw3dlEaZX2Qdq8hN6UKtJvkMTy44v4ZIv+2W93k7/lsS+B7ILBlk5c3pAPwOlqT
-         kqrb2xf5j0d7wTfokvn7v1/c6xeaUwtktMR71TU8MeJ9fDP5145RVvOqe13CZpEK3MHe
-         p455YAu0J0dRUBx0IsijuAdlzOEJ1o8Wt9kx4aJolcSgM7xVhy0SD9mKLI7KmLf42qvF
-         yOpA==
-X-Gm-Message-State: AOAM533/wZKUWJAnPslcf4lPyIy3vQnl/TywtWgkDTkMaQ4BWtYWDUSr
-        PaqAEVRKv6dIzZwn3oajEPVCxIGswBvhaFXAu0aUbA==
-X-Google-Smtp-Source: ABdhPJwGZRXstRG2NgMYG0hFSTe89LWHITcBb74FWuHjiKJrodeo1tE1qaHQHTez8XVyFSt3zX7Yx29h1pErpyUZhEc=
-X-Received: by 2002:a50:cc86:: with SMTP id q6mr21740872edi.78.1604396599677;
- Tue, 03 Nov 2020 01:43:19 -0800 (PST)
+        Tue, 3 Nov 2020 04:44:29 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQPxy1xWNz15QSh;
+        Tue,  3 Nov 2020 17:44:22 +0800 (CST)
+Received: from [10.174.179.182] (10.174.179.182) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 17:44:22 +0800
+Subject: Re: [PATCH v4 0/6] resource: introduce union(), intersection() API
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>
+References: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
+ <1183267b-3e90-ab71-b1f6-7760ad0ca57c@huawei.com>
+ <CAHp75VcEhdmU6NW8Dn-r7Aipden7vYda72nP3_LW09+jTFxOBg@mail.gmail.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <2c616805-6c35-8790-2e13-c18f0953edee@huawei.com>
+Date:   Tue, 3 Nov 2020 17:44:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 3 Nov 2020 15:13:08 +0530
-Message-ID: <CA+G9fYsqbbtYXaw3=upAMnhccjLezaN7RUjysEF4QhS6TfRr-A@mail.gmail.com>
-Subject: ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-btrfs@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75VcEhdmU6NW8Dn-r7Aipden7vYda72nP3_LW09+jTFxOBg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.182]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next 20201103 tag make modules failed for i386 and arm
-architecture builds.
+On 2020/11/3 16:31, Andy Shevchenko wrote:
+> On Tue, Nov 3, 2020 at 2:46 AM Hanjun Guo <guohanjun@huawei.com> wrote:
+>>
+>> On 2020/11/3 5:00, Andy Shevchenko wrote:
+>>> Some users may want to use resource library to manage their own resources,
+>>> besides existing users that open code union() and intersection()
+>>> implementations.
+>>>
+>>> Provide a generic API for wider use.
+>>>
+>>> Changelog v4:
+>>> - added Rb tag (Rafael)
+>>> - Cc'ed to LKML and Greg (Rafael)
+>>>
+>>> Changelog v3:
+>>> - rebased on top of v5.10-rc1
+>>> - dropped upstreamed dependencies
+>>> - added Rb tag to the last patch (Mika)
+>>>
+>>> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+>>> Cc: linux-pci@vger.kernel.org
+>>>
+>>> Andy Shevchenko (6):
+>>>     resource: Simplify region_intersects() by reducing conditionals
+>>>     resource: Group resource_overlaps() with other inline helpers
+>>>     resource: Introduce resource_union() for overlapping resources
+>>>     resource: Introduce resource_intersection() for overlapping resources
+>>>     PCI/ACPI: Replace open coded variant of resource_union()
+>>>     ACPI: watchdog: Replace open coded variant of resource_union()
+>>>
+>>>    drivers/acpi/acpi_watchdog.c |  6 +-----
+>>>    drivers/acpi/pci_root.c      |  4 +---
+>>>    include/linux/ioport.h       | 34 +++++++++++++++++++++++++++-------
+>>>    kernel/resource.c            | 10 +++++-----
+>>>    4 files changed, 34 insertions(+), 20 deletions(-)
+>>
+>> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+> 
+> Thanks. Is it for the entire series?
 
-Error log:
-  LD [M]  fs/btrfs/btrfs.o
-  MODPOST Module.symvers
-ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-scripts/Makefile.modpost:111: recipe for target 'Module.symvers' failed
-make[2]: *** [Module.symvers] Error 1
+Yes.
 
-Full build log,
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-core2-32,label=docker-lkft/891/consoleText
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=am57xx-evm,label=docker-lkft/891/consoleText
+By the way, I tested this patch set on a ARM64 machine booting
+with ACPI against 5.10-rc2, and no regressions with PCI, so feel
+free to add my Tested-by tag for patch [1,2,3,5/6].
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Thanks
+Hanjun
