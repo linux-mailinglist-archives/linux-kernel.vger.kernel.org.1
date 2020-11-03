@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7555B2A3AC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41A52A3AD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 04:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbgKCDB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 22:01:26 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55180 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725913AbgKCDBZ (ORCPT
+        id S1726026AbgKCDE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 22:04:56 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:54223 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725913AbgKCDEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 22:01:25 -0500
-X-UUID: 581aa52763b349b5bf4d0609cc4cda79-20201103
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=kA10xqguhONUPZrUmipFwStozwcyihpqFitOURXTXYs=;
-        b=ZjjHKAJmsjSRD31djYgnwRx8Z2/8qJ2wJk5n4HnOk/ViUD4bw4ZzyObjQ5pnpUuOWdAatvfCN8gSJdi2MM9cBKyVSChqUjYH+u/66/vAcYjYP56BCSOwxThKV6L+2HrNXNKNxiXTM/bypTR1zQpDfC4BH0X7dNplX+XJ/A2MNv8=;
-X-UUID: 581aa52763b349b5bf4d0609cc4cda79-20201103
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 745087011; Tue, 03 Nov 2020 11:01:20 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs08n1.mediatek.inc
- (172.21.101.55) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Nov
- 2020 11:01:14 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Nov 2020 11:01:11 +0800
-Message-ID: <1604372472.31607.18.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: mediatek,mtk-xhci: add
- keep-clock-on
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Macpaul Lin <macpaul.lin@mediatek.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Mathias Nyman" <mathias.nyman@intel.com>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Ainge Hsu" <ainge.hsu@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        "Mediatek WSD Upstream" <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-Date:   Tue, 3 Nov 2020 11:01:12 +0800
-In-Reply-To: <1604301530-31546-1-git-send-email-macpaul.lin@mediatek.com>
-References: <1604301530-31546-1-git-send-email-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 2 Nov 2020 22:04:55 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UE2aS-g_1604372689;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UE2aS-g_1604372689)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 03 Nov 2020 11:04:49 +0800
+Subject: Re: [PATCH v20 15/20] mm/lru: introduce TestClearPageLRU
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-16-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102151008.GH724984@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ae59cae4-48f4-a7e9-044a-86790e16e641@linux.alibaba.com>
+Date:   Tue, 3 Nov 2020 11:02:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201102151008.GH724984@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFjcGF1bCwNCg0KT24gTW9uLCAyMDIwLTExLTAyIGF0IDE1OjE4ICswODAwLCBNYWNwYXVs
-IExpbiB3cm90ZToNCj4gT3B0aW9uICJtZWRpYXRlayxrZWVwLWNsb2NrLW9uIiBtZWFucyB0byBr
-ZWVwIGNsb2NrIG9uIGR1cmluZyBzeXN0ZW0NCj4gc3VzcGVuZCBhbmQgcmVzdW1lLiBTb21lIHBs
-YXRmb3JtIHdpbGwgZmx1c2ggcmVnaXN0ZXIgc2V0dGluZ3MgaWYgY2xvY2sgaGFzDQo+IGJlZW4g
-ZGlzYWJsZWQgd2hlbiBzeXN0ZW0gaXMgc3VzcGVuZGVkLiBTZXQgdGhpcyBvcHRpb24gdG8gYXZv
-aWQgY2xvY2sgb2ZmLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWFjcGF1bCBMaW4gPG1hY3BhdWwu
-bGluQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy91c2Iv
-bWVkaWF0ZWssbXRrLXhoY2kueWFtbCB8ICAgIDcgKysrKysrKw0KDQpUaGlzIGRlcGVuZHMgb24g
-cmV2aWV3aW5nIHBhdGNoOg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xp
-bnV4LW1lZGlhdGVrL3BhdGNoLzIwMjAxMDE0MDE0NDM0LjYyMjM5LTYtY2h1bmZlbmcueXVuQG1l
-ZGlhdGVrLmNvbS8NClt2Miw2LzhdIGR0LWJpbmRpbmdzOiB1c2I6IGNvbnZlcnQgbWVkaWF0ZWss
-IG10ay14aGNpLnR4dCB0byBZQU1MIHNjaGVtYQ0KDQpQbGVhc2UgYWRkIGl0IGFmdGVyICItLS0i
-LCB0aGFua3MNCg0KDQo+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRpYXRl
-ayxtdGsteGhjaS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9t
-ZWRpYXRlayxtdGsteGhjaS55YW1sDQo+IGluZGV4IGVhNjk2YzguLmE5NTZkZGUgMTAwNjQ0DQo+
-IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRr
-LXhoY2kueWFtbA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNi
-L21lZGlhdGVrLG10ay14aGNpLnlhbWwNCj4gQEAgLTEwNCw2ICsxMDQsMTIgQEAgcHJvcGVydGll
-czoNCj4gICAgICBkZXNjcmlwdGlvbjogZW5hYmxlIFVTQiByZW1vdGUgd2FrZXVwLCBzZWUgcG93
-ZXIvd2FrZXVwLXNvdXJjZS50eHQNCj4gICAgICB0eXBlOiBib29sZWFuDQo+ICANCj4gKyAgbWVk
-aWF0ZWssa2VlcC1jbG9jay1vbjoNCj4gKyAgICBkZXNjcmlwdGlvbjogfA0KPiArICAgICAgS2Vl
-cCBjbG9jayBvbiBkdXJpbmcgc3lzdGVtIHN1c3BlbmQgYW5kIHJlc3VtZS4gU29tZSBwbGF0Zm9y
-bSB3aWxsIGZsdXNoDQo+ICsgICAgICByZWdpc3RlciBzZXR0aW5ncyBpZiBjbG9jayBoYXMgYmVl
-biBkaXNhYmxlZCB3aGVuIHN5c3RlbSBpcyBzdXNwZW5kZWQuDQo+ICsgICAgdHlwZTogYm9vbGVh
-bg0KPiArDQo+ICAgIG1lZGlhdGVrLHN5c2Nvbi13YWtldXA6DQo+ICAgICAgJHJlZjogL3NjaGVt
-YXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvcGhhbmRsZS1hcnJheQ0KPiAgICAgIG1heEl0ZW1z
-OiAxDQo+IEBAIC0xNzUsNiArMTgxLDcgQEAgZXhhbXBsZXM6DQo+ICAgICAgICAgIGltb2QtaW50
-ZXJ2YWwtbnMgPSA8MTAwMDA+Ow0KPiAgICAgICAgICBtZWRpYXRlayxzeXNjb24td2FrZXVwID0g
-PCZwZXJpY2ZnIDB4NDAwIDE+Ow0KPiAgICAgICAgICB3YWtldXAtc291cmNlOw0KPiArICAgICAg
-ICBtZWRpYXRlayxrZWVwLWNsb2NrLW9uOw0KPiAgICAgICAgICB1c2IzLWxwbS1jYXBhYmxlOw0K
-PiAgICAgIH07DQo+ICAuLi4NCg0K
 
+
+ÔÚ 2020/11/2 ÏÂÎç11:10, Johannes Weiner Ð´µÀ:
+> On Thu, Oct 29, 2020 at 06:45:00PM +0800, Alex Shi wrote:
+>> Currently lru_lock still guards both lru list and page's lru bit, that's
+>> ok. but if we want to use specific lruvec lock on the page, we need to
+>> pin down the page's lruvec/memcg during locking. Just taking lruvec
+>> lock first may be undermined by the page's memcg charge/migration. To
+>> fix this problem, we could clear the lru bit out of locking and use
+>> it as pin down action to block the page isolation in memcg changing.
+> 
+> Small nit, but the use of "could" in this sentence sounds like you're
+> describing one possible solution that isn't being taken, when in fact
+> you are describing the chosen locking mechanism.
+> 
+> Replacing "could" with "will" would make things a bit clearer IMO.
+> 
+
+Yes, 'will' is better here. Thanks!
+
+>> So now a standard steps of page isolation is following:
+>> 	1, get_page(); 	       #pin the page avoid to be free
+>> 	2, TestClearPageLRU(); #block other isolation like memcg change
+>> 	3, spin_lock on lru_lock; #serialize lru list access
+>> 	4, delete page from lru list;
+>> The step 2 could be optimzed/replaced in scenarios which page is
+>> unlikely be accessed or be moved between memcgs.
+> 
+> This is a bit ominous. I'd either elaborate / provide an example /
+> clarify why some sites can deal with races - or just remove that
+> sentence altogether from this part of the changelog.
+> 
+
+A few scenarios here, so examples looks verbose or cann't describe whole.
+Maybe removing above 2 lines "The step 2 could be optimzed/replaced in 
+scenarios which page is unlikely be accessed or be moved between memcgs."
+is better. 
+
+Thanks!
+
+>> This patch start with the first part: TestClearPageLRU, which combines
+>> PageLRU check and ClearPageLRU into a macro func TestClearPageLRU. This
+>> function will be used as page isolation precondition to prevent other
+>> isolations some where else. Then there are may !PageLRU page on lru
+>> list, need to remove BUG() checking accordingly.
+>>
+>> There 2 rules for lru bit now:
+>> 1, the lru bit still indicate if a page on lru list, just in some
+>>    temporary moment(isolating), the page may have no lru bit when
+>>    it's on lru list.  but the page still must be on lru list when the
+>>    lru bit set.
+>> 2, have to remove lru bit before delete it from lru list.
+>>
+>> As Andrew Morton mentioned this change would dirty cacheline for page
+>> isn't on LRU. But the lost would be acceptable in Rong Chen
+>> <rong.a.chen@intel.com> report:
+>> https://lore.kernel.org/lkml/20200304090301.GB5972@shao2-debian/
+>>
+>> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>> Acked-by: Hugh Dickins <hughd@google.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: cgroups@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+
+Thanks!
+Alex
