@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25742A5A0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87222A5A11
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgKCWXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:23:01 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12359 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729342AbgKCWXB (ORCPT
+        id S1729946AbgKCW1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729342AbgKCW1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:23:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa1d8440002>; Tue, 03 Nov 2020 14:23:00 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 22:22:57 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 3 Nov 2020 22:22:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igbBPRL+zZKYcq3yYAqIYdlviW1GYJApuFypcnT88ygWyhiHAXsRoeO4Ts/hyJCm5x+hzA21lTSGMunRN4c6NlFFKrR+DeSh2C49eaZulaKaI76ylz0lY+rXfyITZTGsjNZduLQquJYwHb7MrbxPUhZCMmlGVsM5o7cKUK7EevUkCbOb+aFw0IL8TdHsocJiqmBr2QfwuRsFFMqiKSZ88tbZIAt3A4x3Rz6bx1/inFKj4HQGPCrJruTqH067xPKGwmOlIqedRKAqM7tzdgmVC6Disk19NhxYOEZcLyVHuq3oWEnZlOv/doLF0lJNdc1+oczqXrv8yWc4LrzlU+/XEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B0WzHpWkWcaNfBo4tCq/4Le9XPHR5I7NXBrDD4Oh1iw=;
- b=Gvu+OnElioIM7fAqYW3hbbejX3aH1Idecs3d3dxWrhA2We0mOKzrJedxfw5+YOAuWhBDqdp9uWJEjgGG/xft86ft0pJ3y8hDbEwe1Z/lx5BpEX+0a3H+1QZnT0IbDxac961yctOl8U5Tmxr8hQ35j7vQEC280t2192XNE4TJc1Ish8m4Zarwn/IBn08yYxabgjDNF7gUVtIhYm3zrXfmX4O9gY00GFvchNLTr1C8TgYxQzske4wMwBJwk3wehr5/lIYkxT04ytzGY6EHePfXKy/7D5xGos//IcVz1uUGC2HtITokvdwNuiWhLCp/mjkafTB7EyfRabmuoTh0rAFTgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from MN2PR12MB3616.namprd12.prod.outlook.com (2603:10b6:208:cc::25)
- by MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Tue, 3 Nov
- 2020 22:22:56 +0000
-Received: from MN2PR12MB3616.namprd12.prod.outlook.com
- ([fe80::89a:e4ad:708f:363f]) by MN2PR12MB3616.namprd12.prod.outlook.com
- ([fe80::89a:e4ad:708f:363f%5]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
- 22:22:55 +0000
-From:   Khalil Blaiech <kblaiech@nvidia.com>
-To:     Liu Shixin <liushixin2@huawei.com>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Vadim Pasternak <vadimp@mellanox.com>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
-Thread-Topic: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
-Thread-Index: AQHWsQ3PPh2vaT/kqUS5dM5uxtiw0Km2/L3Q
-Date:   Tue, 3 Nov 2020 22:22:54 +0000
-Message-ID: <MN2PR12MB36165494D3D965C4CF96628BAB110@MN2PR12MB3616.namprd12.prod.outlook.com>
-References: <20201102121234.1343672-1-liushixin2@huawei.com>
-In-Reply-To: <20201102121234.1343672-1-liushixin2@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [173.48.75.27]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 831c5ae7-38be-44bf-5573-08d880470344
-x-ms-traffictypediagnostic: MN2PR12MB3008:
-x-microsoft-antispam-prvs: <MN2PR12MB3008FF59D606EC47433E73A2AB110@MN2PR12MB3008.namprd12.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3O1B4IF7uEe/q5K3sHjYKArC9dt30HM/SmlrSrTC3VozsDLvp+jUv/4KUpPMsq/mzdwPYSsPxkQmE+JueBp9ewKtJQ+OZ1ZK/0sPOgWdH/sHJTTACjBJvm9LIP63IlIK8EbJfWN2S+6Xkl2MVclGIsuTHoXmqT3tyZX0uIRsEV5sRDlUOkjR664mR/DSy4EDa4uSREpapgl3t6/lTe86YUv2P5aOPvXYULumfHLofBE6pKAcKc+ejqs87LVtiIg1Wn3+UP6Ec+pOoORrcFubdz/C3HxoNB//O9s1DKpEpzvETrwTovkXUjr9joX/9AZ+vdqDf3sybhdws6c1Zd6X4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3616.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(376002)(396003)(9686003)(2906002)(54906003)(86362001)(8676002)(7696005)(4326008)(33656002)(5660300002)(6506007)(8936002)(478600001)(26005)(110136005)(66946007)(66476007)(64756008)(52536014)(55016002)(186003)(71200400001)(316002)(66556008)(76116006)(66446008)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: tPS3i8ZstlYYLJzc7XfexMBdQUtwp8mFh0vNhgUJ5/HvI2iC08jnog4OI0Q1ANwVHUiRA2zPHngNRdCaFj726t3jg9VKxUiB1tEeGoSzINozJnd5RG3eqg/HbhdBBlP9vkiwKh5qaL4e20anFHmBDm2+grTtVeZHKdKJiwaHWwiFC6sJp6CpbJOoxLgiMY//GaeoAAU1AJhX9r4L5b0zSHpqHBJ66APxxBztO/zndBmu6uLzpDkUwaY4RNI/7z7H0fkWe1X8awn+oDqrQkdyDPelpRf+8zXmOE130QUjnfJK5qqpE1mJeX1+SAxENjPfGm+rZLqU+Jc6uFXzuc3f97B6FvoDGRzpUshNWUpbft2/9yWVygQq/8kVh4ixgsQJkdooe/giA/KXJyAvdBuBOld30bYPVR6c04DUOEvuZYbIj7Ap/HKEa77wzxgv4djiC4ahtsqbdHpr/IjS5exXWeqLmMgkVU8vvlwvmsZL7mk7YeUO7J8UAFbc7Ja6QsOQi9rE9u3KnyuG+F8MX5eSD1qEXT2I8YlRFHVm78utQ0rrHgpznoJuU4qPjCVB33gjxtT+xESvyyWhyFqXShLmgohaa6APLWDkAmdxrul16+Lyq4Y1Uq0rD6S/prRGLsbXAmcf5k2YtONdn2DOfhMXyg==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 3 Nov 2020 17:27:17 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465F8C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:27:17 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b19so9286752pld.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:27:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3g/UXdTcvEaVpEpHCFk6DWCyxnMD9jfZ4IYbgmoi5Do=;
+        b=uq428C0MISj1+Yl3N5njjURIa/fb2YaK/JiA0AEh+acv8LHAXJ7l0yTVpCqIB6Qr3o
+         QRceQ69dCamC4YCnafirBV/b52//G3ZG/U3YJIABb7lP7NPRk4BPkds/NfGKod7xn/AU
+         pVbJDMR8Y/vSDADnZbMUgZFib80urJO1Sb+GncvjQKy9wsVQ3/SBq0jKbcDZ0EVCqCoV
+         QP53Q4L17XlBU1RROAaBjEw/LUqKoF5rQBM+ClVV6UlEChNhO+guriWVeNo7MkjxxVx9
+         xGA01uekR50k6+ccmbEr+cf/7zkpKcVdUrwRJhEF44xWzdGv3A4UN5QoKt1E2+IKv6J6
+         kjlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3g/UXdTcvEaVpEpHCFk6DWCyxnMD9jfZ4IYbgmoi5Do=;
+        b=riaQHq467XWpMIpKElXExCidYBUniagttWiwpGXnflt31yDNrpstFC2BDDA81X3C1R
+         wYUw7JXBLC/gz9TUp/zA4PA6lyEaYf4rP3l1y31ihJBUux9XCpgl4QXYwQiw0LetD51c
+         cGucsLawgcFbILcXKaXRBZ2a0uo9tCMpSG7hWjn6jQcy5qpqPjEED32DN9qqi+gNqEOQ
+         1GnjXhW1wPVB9cPDMtaQEWeClqjDJTGN4vfj5BiVddFabWL66Qp/WMfuBU4E4Wm03Snl
+         Uvotv52AZHhrCyeuGgCafX8ZBV4BnmQbAX9QEEtCB+sdiGC2gq3RypinAq9Y2zWRnsQL
+         cd0w==
+X-Gm-Message-State: AOAM532chbqNfxuKcPzPQW8/EGumqd07juMl1z1hvgHLoENd73UKrTBY
+        jJeX2TBlwpJtrSqb5auAIdszEKiuJs+Y2Dw2x3w/Mg==
+X-Google-Smtp-Source: ABdhPJyzqR5QvlI4cfiyph6xzOX86tQ5A8IroUFqjIYkfjsSV1kYveibhPKE50Q3QeizC8CNh1NZNbCh9lgi7xuOhV0=
+X-Received: by 2002:a17:902:ee85:b029:d6:c43e:2321 with SMTP id
+ a5-20020a170902ee85b02900d6c43e2321mr12767000pld.29.1604442436696; Tue, 03
+ Nov 2020 14:27:16 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3616.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 831c5ae7-38be-44bf-5573-08d880470344
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 22:22:55.7379
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VbzuwEj4mxcezA3Vyl02ZPxSRRVRu+xcLdpvKbHh7hQ9RjPxB8lQg8Glug725KkP6ejxOelD5HRElo7Do7PCrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3008
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604442180; bh=B0WzHpWkWcaNfBo4tCq/4Le9XPHR5I7NXBrDD4Oh1iw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
-         x-ms-exchange-transport-forked:x-ms-oob-tlc-oobclassifiers:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=KvbqX3F/wwgUo/TB3buJD2q/GbeIfHlKch7P/8O7s3+Z1z/s/KLIhEIOKEeggQKHr
-         /tcpHT78NRxtZ122RZUOpECDY5zpjVwv2jsOEz7279yvwlTNkeJ7CTk1X8pV4HGYFe
-         0KTfx4vFj6mvJtxdznopxiv4pQcUpI44cA8L+52ZLT+sfc+a6OMClUuGCBtvERcAaR
-         etwQU5MH7CqQvmHDrEFzJYBMcELHA6qR8s05AYpfuF1lQBDNUhyW6gTQG0oVw1XYhG
-         rEcvT9xYC78u3kLrjI6RwrmA09XAB1i0lpf3tvLOjMNWMrZxj+y4E6hMITJYwvgbPP
-         /GFvpVemG7hsg==
+References: <20201022012106.1875129-1-ndesaulniers@google.com> <20201022014448.mcx5n7unf7kkka3o@google.com>
+In-Reply-To: <20201022014448.mcx5n7unf7kkka3o@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 3 Nov 2020 14:27:05 -0800
+Message-ID: <CAKwvOdmLN5BWAh35z2LyHvQ_P4pgyCaFohOphpgXUmMAehnV_g@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+To:     Fangrui Song <maskray@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TGl1LCB0aGFuayB5b3UgdmVyeSBtdWNoIGZvciB0aGUgZml4Lg0KDQpQbGVhc2Ugbm90ZSB0aGF0
-IEkgcG9zdGVkIGEgcGF0Y2ggc2VyaWVzIG9uIE9jdG9iZXIsIDI4dGggaW5jbHVkaW5nDQp0aGlz
-IGZpeC4gQWxzbyBub3RlIHRoYXQgSSBwb3N0ZWQgYSB2MiB0b2RheS4NCg0KS2hhbGlsIA0KDQo+
-IFN1YmplY3Q6IFtQQVRDSF0gaTJjOiBtbHhiZjogRml4IGJ1aWxkIGVycm9yIHdpdGggQ09ORklH
-X0FDUEkgZGlzYWJsZWQNCj4gDQo+IGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbWx4YmYuYzogSW4g
-ZnVuY3Rpb24g4oCYbWx4YmZfaTJjX2FjcGlfcHJvYmXigJk6DQo+IGRyaXZlcnMvaTJjL2J1c3Nl
-cy9pMmMtbWx4YmYuYzoyMjk2Ojg6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5j
-dGlvbg0KPiDigJhhY3BpX2RldmljZV91aWTigJk7IGRpZCB5b3UgbWVhbiDigJhjcHVfZGV2aWNl
-X3Vw4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC0NCj4gZnVuY3Rpb24tZGVjbGFyYXRpb25dDQo+ICAg
-dWlkID0gYWNwaV9kZXZpY2VfdWlkKGFkZXYpOw0KPiAgICAgICAgIF5+fn5+fn5+fn5+fn5+fg0K
-PiAgICAgICAgIGNwdV9kZXZpY2VfdXANCj4gDQo+IFNpZ25lZC1vZmYtYnk6IExpdSBTaGl4aW4g
-PGxpdXNoaXhpbjJAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJj
-LW1seGJmLmMgfCA3ICsrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMgYi9kcml2
-ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMNCj4gaW5kZXggZWU1OWUwZGEwODJkLi5jZDhhOTA5
-NDMxYTkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbWx4YmYuYw0KPiAr
-KysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMNCj4gQEAgLTIyNzIsNiArMjI3Miw3
-IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQNCj4gbWx4YmZfaTJjX2FjcGlf
-aWRzW10gPSB7DQo+IA0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShhY3BpLCBtbHhiZl9pMmNfYWNw
-aV9pZHMpOw0KPiANCj4gKyNpZmRlZiBDT05GSUdfQUNQSQ0KPiAgc3RhdGljIGludCBtbHhiZl9p
-MmNfYWNwaV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtbHhiZl9pMmNfcHJpdg0K
-PiAqcHJpdikNCj4gIHsNCj4gIAljb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQgKmFpZDsNCj4g
-QEAgLTIzMDUsNiArMjMwNiwxMiBAQCBzdGF0aWMgaW50IG1seGJmX2kyY19hY3BpX3Byb2JlKHN0
-cnVjdCBkZXZpY2UNCj4gKmRldiwgc3RydWN0IG1seGJmX2kyY19wcml2ICpwcml2KQ0KPiANCj4g
-IAlyZXR1cm4gcmV0Ow0KPiAgfQ0KPiArI2Vsc2UNCj4gK3N0YXRpYyBpbnQgbWx4YmZfaTJjX2Fj
-cGlfcHJvYmUoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgbWx4YmZfaTJjX3ByaXYNCj4gKnBy
-aXYpDQo+ICt7DQo+ICsJcmV0dXJuIC1FTk9ERVY7DQo+ICt9DQo+ICsjZW5kaWYNCj4gDQo+ICBz
-dGF0aWMgaW50IG1seGJmX2kyY19vZl9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBt
-bHhiZl9pMmNfcHJpdg0KPiAqcHJpdikNCj4gIHsNCj4gLS0NCj4gMi4yNS4xDQoNCg==
+On Wed, Oct 21, 2020 at 6:44 PM Fangrui Song <maskray@google.com> wrote:
+>
+> On 2020-10-21, 'Nick Desaulniers' via Clang Built Linux wrote:
+> >DWARF5 is the latest standard of the DWARF debug info format.
+> >
+> >Feature detection of DWARF5 is onerous, especially given that we've
+> >removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> >support. Further -gdwarf-X where X is an unsupported value doesn't
+> >produce an error in $(CC). GNU `as` only recently gained support for
+> >specifying -gdwarf-5.
+> >
+> >The DWARF version of a binary can be validated with:
+>
+> To be more correct: this is just the version number of the .debug_info section.
+> Other sections can use different version numbers.
+> (For example, GNU as still does not support version 5 .debug_line)
+
+How do you recommend we validate that then?
+
+>
+> >$ llvm-dwarfdump vmlinux | head -n 5 | grep version
+> >or
+> >$ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+> >diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> >index cd14444bf600..0382808ef9fe 100644
+> >--- a/include/asm-generic/vmlinux.lds.h
+> >+++ b/include/asm-generic/vmlinux.lds.h
+> >@@ -828,7 +828,11 @@
+> >               .debug_types    0 : { *(.debug_types) }                 \
+> >               /* DWARF 5 */                                           \
+> >               .debug_macro    0 : { *(.debug_macro) }                 \
+> >-              .debug_addr     0 : { *(.debug_addr) }
+> >+              .debug_addr     0 : { *(.debug_addr) }                  \
+> >+              .debug_line_str 0 : { *(.debug_line_str) }              \
+> >+              .debug_loclists 0 : { *(.debug_loclists) }              \
+> >+              .debug_rnglists 0 : { *(.debug_rnglists) }              \
+> >+              .debug_str_offsets 0 : { *(.debug_str_offsets) }
+>
+> Consider adding .debug_names for the accelerator table.
+> It is the DWARF v5 version of .debug_pub{names,types} (which are mentioned
+> a few lines above).
+
+I hadn't seen that section produced in my limited testing.  Being a
+fan of TDD, I kind of would like to see the linker warn on orphan
+section placement, then add it to the list, as I did with the above.
+Do you have more info on when or how .debug_pub* can be produced?
+
+Thanks for the rest of the feedback, I'll incorporate it into v2.
+
+-- 
+Thanks,
+~Nick Desaulniers
