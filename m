@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDAC2A5309
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F5B2A530B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731824AbgKCUzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:55:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56818 "EHLO mail.kernel.org"
+        id S1732419AbgKCUzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:55:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732393AbgKCUzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:55:47 -0500
+        id S1730304AbgKCUzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:55:50 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF812223BD;
-        Tue,  3 Nov 2020 20:55:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C1D22053B;
+        Tue,  3 Nov 2020 20:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436947;
-        bh=nYkXlxOPZSUitD2CzHzQdz7UHLr8qkdADdbtwTfJVOg=;
+        s=default; t=1604436949;
+        bh=/jJJQYsAxHo+nTPa2BxSm0gmg8L8DZIrIjXVES5GSao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1vtLphLZZf0/nfUAqV/kItOoeRonBOxQF/+RNf+kgK55eEKvSrMA8G7A+aLFOMmy0
-         SzErquvprso9NIrVhMPxJ0zdB+DGVNElu3g5DjVSTJpCovehp5LOMXXtgz6fXTTCs6
-         EPXWojVMtGuD0POQhoqTTk4ybXBggxmFWO0jfzLs=
+        b=ZmFtA54TKabDShDorAKhhYxBb1YG9ex/tgSkJkqA5FjgB9sWay4J288E1o9UIgWzm
+         Yz40QxV/kcOcmWjNXeDVIJpgIOZ6rqpRJgrkUWNi+ae/SS2TmZYrS2nAR/BzyN/OIk
+         ShwoaPchtinRl8H+xMO+xPsZwnfsH36Zj6lAMmaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Fabiano Rosas <farosas@linux.ibm.com>,
+        Greg Kurz <groug@kaod.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/214] ext4: Detect already used quota file early
-Date:   Tue,  3 Nov 2020 21:35:29 +0100
-Message-Id: <20201103203257.945943373@linuxfoundation.org>
+Subject: [PATCH 5.4 082/214] KVM: PPC: Book3S HV: Do not allocate HPT for a nested guest
+Date:   Tue,  3 Nov 2020 21:35:30 +0100
+Message-Id: <20201103203258.034031426@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -44,46 +47,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Fabiano Rosas <farosas@linux.ibm.com>
 
-[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
+[ Upstream commit 05e6295dc7de859c9d56334805485c4d20bebf25 ]
 
-When we try to use file already used as a quota file again (for the same
-or different quota type), strange things can happen. At the very least
-lockdep annotations may be wrong but also inode flags may be wrongly set
-/ reset. When the file is used for two quota types at once we can even
-corrupt the file and likely crash the kernel. Catch all these cases by
-checking whether passed file is already used as quota file and bail
-early in that case.
+The current nested KVM code does not support HPT guests. This is
+informed/enforced in some ways:
 
-This fixes occasional generic/219 failure due to lockdep complaint.
+- Hosts < P9 will not be able to enable the nested HV feature;
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+- The nested hypervisor MMU capabilities will not contain
+  KVM_CAP_PPC_MMU_HASH_V3;
+
+- QEMU reflects the MMU capabilities in the
+  'ibm,arch-vec-5-platform-support' device-tree property;
+
+- The nested guest, at 'prom_parse_mmu_model' ignores the
+  'disable_radix' kernel command line option if HPT is not supported;
+
+- The KVM_PPC_CONFIGURE_V3_MMU ioctl will fail if trying to use HPT.
+
+There is, however, still a way to start a HPT guest by using
+max-compat-cpu=power8 at the QEMU machine options. This leads to the
+guest being set to use hash after QEMU calls the KVM_PPC_ALLOCATE_HTAB
+ioctl.
+
+With the guest set to hash, the nested hypervisor goes through the
+entry path that has no knowledge of nesting (kvmppc_run_vcpu) and
+crashes when it tries to execute an hypervisor-privileged (mtspr
+HDEC) instruction at __kvmppc_vcore_entry:
+
+root@L1:~ $ qemu-system-ppc64 -machine pseries,max-cpu-compat=power8 ...
+
+<snip>
+[  538.543303] CPU: 83 PID: 25185 Comm: CPU 0/KVM Not tainted 5.9.0-rc4 #1
+[  538.543355] NIP:  c00800000753f388 LR: c00800000753f368 CTR: c0000000001e5ec0
+[  538.543417] REGS: c0000013e91e33b0 TRAP: 0700   Not tainted  (5.9.0-rc4)
+[  538.543470] MSR:  8000000002843033 <SF,VEC,VSX,FP,ME,IR,DR,RI,LE>  CR: 22422882  XER: 20040000
+[  538.543546] CFAR: c00800000753f4b0 IRQMASK: 3
+               GPR00: c0080000075397a0 c0000013e91e3640 c00800000755e600 0000000080000000
+               GPR04: 0000000000000000 c0000013eab19800 c000001394de0000 00000043a054db72
+               GPR08: 00000000003b1652 0000000000000000 0000000000000000 c0080000075502e0
+               GPR12: c0000000001e5ec0 c0000007ffa74200 c0000013eab19800 0000000000000008
+               GPR16: 0000000000000000 c00000139676c6c0 c000000001d23948 c0000013e91e38b8
+               GPR20: 0000000000000053 0000000000000000 0000000000000001 0000000000000000
+               GPR24: 0000000000000001 0000000000000001 0000000000000000 0000000000000001
+               GPR28: 0000000000000001 0000000000000053 c0000013eab19800 0000000000000001
+[  538.544067] NIP [c00800000753f388] __kvmppc_vcore_entry+0x90/0x104 [kvm_hv]
+[  538.544121] LR [c00800000753f368] __kvmppc_vcore_entry+0x70/0x104 [kvm_hv]
+[  538.544173] Call Trace:
+[  538.544196] [c0000013e91e3640] [c0000013e91e3680] 0xc0000013e91e3680 (unreliable)
+[  538.544260] [c0000013e91e3820] [c0080000075397a0] kvmppc_run_core+0xbc8/0x19d0 [kvm_hv]
+[  538.544325] [c0000013e91e39e0] [c00800000753d99c] kvmppc_vcpu_run_hv+0x404/0xc00 [kvm_hv]
+[  538.544394] [c0000013e91e3ad0] [c0080000072da4fc] kvmppc_vcpu_run+0x34/0x48 [kvm]
+[  538.544472] [c0000013e91e3af0] [c0080000072d61b8] kvm_arch_vcpu_ioctl_run+0x310/0x420 [kvm]
+[  538.544539] [c0000013e91e3b80] [c0080000072c7450] kvm_vcpu_ioctl+0x298/0x778 [kvm]
+[  538.544605] [c0000013e91e3ce0] [c0000000004b8c2c] sys_ioctl+0x1dc/0xc90
+[  538.544662] [c0000013e91e3dc0] [c00000000002f9a4] system_call_exception+0xe4/0x1c0
+[  538.544726] [c0000013e91e3e20] [c00000000000d140] system_call_common+0xf0/0x27c
+[  538.544787] Instruction dump:
+[  538.544821] f86d1098 60000000 60000000 48000099 e8ad0fe8 e8c500a0 e9264140 75290002
+[  538.544886] 7d1602a6 7cec42a6 40820008 7d0807b4 <7d164ba6> 7d083a14 f90d10a0 480104fd
+[  538.544953] ---[ end trace 74423e2b948c2e0c ]---
+
+This patch makes the KVM_PPC_ALLOCATE_HTAB ioctl fail when running in
+the nested hypervisor, causing QEMU to abort.
+
+Reported-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Signed-off-by: Fabiano Rosas <farosas@linux.ibm.com>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/powerpc/kvm/book3s_hv.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4aae7e3e89a12..2603537b1f66b 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5856,6 +5856,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
- 	/* Quotafile not on the same filesystem? */
- 	if (path->dentry->d_sb != sb)
- 		return -EXDEV;
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index e2183fed947d4..dd9b19b1f459a 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -5191,6 +5191,12 @@ static long kvm_arch_vm_ioctl_hv(struct file *filp,
+ 	case KVM_PPC_ALLOCATE_HTAB: {
+ 		u32 htab_order;
+ 
++		/* If we're a nested hypervisor, we currently only support radix */
++		if (kvmhv_on_pseries()) {
++			r = -EOPNOTSUPP;
++			break;
++		}
 +
-+	/* Quota already enabled for this file? */
-+	if (IS_NOQUOTA(d_inode(path->dentry)))
-+		return -EBUSY;
-+
- 	/* Journaling quota? */
- 	if (EXT4_SB(sb)->s_qf_names[type]) {
- 		/* Quotafile not in fs root? */
+ 		r = -EFAULT;
+ 		if (get_user(htab_order, (u32 __user *)argp))
+ 			break;
 -- 
 2.27.0
 
