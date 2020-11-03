@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406A02A503C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7102A5044
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgKCTfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:35:32 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27864 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725957AbgKCTfb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:35:31 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3JXGsj054334;
-        Tue, 3 Nov 2020 14:35:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ut4uE+NvWkQTsIff4jbZGEfGEKX/xUUur0h37SibtEA=;
- b=RG3PBwyul0XWWp5Wsi9Q51/OJBf3epruopOWq3Z5FB/EQERDo5Gd5ipXSVa/8sYpX6RQ
- kWEskz6/x5TtjWTPQdIoNmGVawXUuKXLIaZGOo8LF7ses5tIPVH9l7XpAzaI2ypMFT2t
- CjLHKUgwGWe/tY4w/S9G5eg8e5889/iFU7i+lxfLW+6UPXCBjLCgqs6kYDZOaTFfBylM
- xG99z87XLOR8NprcVSlvFTFfyHOuRCcLRmpZcFBfijSlzCrc2UZCKTHmllMZPi5CVQx+
- HciXDRtOlgI8TF6XLzAEL681qkEZ7tgenXCn4ASAThGmyocpToKPxuM49qcSGIpgnkvc mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34kbppbdya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 14:35:25 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A3JXVe2055054;
-        Tue, 3 Nov 2020 14:35:24 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34kbppbdvm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 14:35:24 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A3JRXrg024180;
-        Tue, 3 Nov 2020 19:35:17 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 34hm6hattu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Nov 2020 19:35:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A3JZFDx6357506
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Nov 2020 19:35:15 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D7F6A4054;
-        Tue,  3 Nov 2020 19:35:15 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1463A405B;
-        Tue,  3 Nov 2020 19:35:14 +0000 (GMT)
-Received: from localhost (unknown [9.145.42.130])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  3 Nov 2020 19:35:14 +0000 (GMT)
-Date:   Tue, 3 Nov 2020 20:35:09 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        x86 <x86@kernel.org>
-Subject: [PATCH 1/1] x86/tools: Use tools headers for instruction decoder
- selftests
-Message-ID: <patch-1.thread-59328d.git-59328d9dc2b9.your-ad-here.call-01604429777-ext-1374@work.hours>
-References: <20201014162859.987d5f71f5e5456ffb812abc@kernel.org>
- <cover.thread-59328d.your-ad-here.call-01604429777-ext-1374@work.hours>
+        id S1729399AbgKCTiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:38:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727688AbgKCTiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:38:18 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DA9520732;
+        Tue,  3 Nov 2020 19:38:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604432297;
+        bh=ChrancI84uudo7GBf/psMLVpwHUgYOr9PFAAEf5CnNg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ohtt544WSZo+m4CG+tHrJLecJvikZ5VBMlgxuvozkeAMRRYXAqkYcjoVMpUgMmsnS
+         FO/7/hgmpDQ7ekY5wpI4I/8dv/255Bk1VIJaFCXhJtxnwhtl/NrNP3d4U7G6pOOKW0
+         bN4klNRDQ2bGTmE0n7mqk27i/vORvVIa8Ja++bCk=
+Date:   Tue, 3 Nov 2020 13:38:16 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] PCI: brcmstb: variable is missing proper
+ initialization
+Message-ID: <20201103193816.GA258457@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.thread-59328d.your-ad-here.call-01604429777-ext-1374@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 clxscore=1015 impostorscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 suspectscore=1 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011030130
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201102205712.23332-1-james.quinlan@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently x86 instruction decoder is used from:
-- the kernel itself
-- from tools like objtool and perf
-- within x86 tools, i.e. instruction decoder selftests
+On Mon, Nov 02, 2020 at 03:57:12PM -0500, Jim Quinlan wrote:
+> The variable 'tmp' is used multiple times in the brcm_pcie_setup()
+> function.  One such usage did not initialize 'tmp' to the current value of
+> the target register.  By luck the mistake does not currently affect
+> behavior;  regardless 'tmp' is now initialized properly.
 
-The first two cases are similar, because tools headers try to mimic
-kernel headers.
+This is so trivial that there's probably no reason to post this again,
+but if you post a v2 for some reason, please update the subject to
+match the convention ("PCI: brcmstb: Verb ..."), e.g.,
 
-Instruction decoder selftests include some of the kernel headers
-directly, including uapi headers. This works until headers dependencies
-are kept to minimum and tools are not cross-compiled. Since the goal of
-the x86 instruction decoder selftests is not to verify uapi headers move
-it to using tools headers, like this is already done for vdso2c tool,
-mkpiggy and other tools in arch/x86/boot/.
+  PCI: brcmstb: Initialize "tmp" before use
 
-This effectively fixes x86 kernel cross-compilation with
-CONFIG_X86_DECODER_SELFTEST=y. And posttests are run successfully at
-least on s390.
+The commit log does not say what the patch does, leaving it to the
+reader to infer it.
 
-Fixes: 2a522b53c470 ("x86/insn: Support big endian cross-compiles")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- Based on jpoimboe/objtool/core
+Lorenzo will likely fix this up when he applies it.
 
- arch/x86/tools/Makefile      | 8 ++++----
- arch/x86/tools/insn_sanity.c | 4 ----
- 2 files changed, 4 insertions(+), 8 deletions(-)
+Incidental curiosity: where should I look to see what
+u32p_replace_bits() does?  "git grep u32p_replace_bits" shows several
+calls, but no definitions.
 
-diff --git a/arch/x86/tools/Makefile b/arch/x86/tools/Makefile
-index 55b1ab378974..bddfc9a46645 100644
---- a/arch/x86/tools/Makefile
-+++ b/arch/x86/tools/Makefile
-@@ -29,14 +29,14 @@ posttest: $(obj)/insn_decoder_test vmlinux $(obj)/insn_sanity
- hostprogs += insn_decoder_test insn_sanity
- 
- # -I needed for generated C source and C source which in the kernel tree.
--HOSTCFLAGS_insn_decoder_test.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/uapi/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/uapi/
-+HOSTCFLAGS_insn_decoder_test.o := -Wall -I$(srctree)/tools/arch/x86/lib/ -I$(srctree)/tools/arch/x86/include/ -I$(objtree)/arch/x86/lib/
- 
--HOSTCFLAGS_insn_sanity.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/
-+HOSTCFLAGS_insn_sanity.o := -Wall -I$(srctree)/tools/arch/x86/lib/ -I$(srctree)/tools/arch/x86/include/ -I$(objtree)/arch/x86/lib/
- 
- # Dependencies are also needed.
--$(obj)/insn_decoder_test.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/inat.c $(srctree)/arch/x86/include/asm/inat_types.h $(srctree)/arch/x86/include/asm/inat.h $(srctree)/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
-+$(obj)/insn_decoder_test.o: $(srctree)/tools/arch/x86/lib/insn.c $(srctree)/tools/arch/x86/lib/inat.c $(srctree)/tools/arch/x86/include/asm/inat_types.h $(srctree)/tools/arch/x86/include/asm/inat.h $(srctree)/tools/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
- 
--$(obj)/insn_sanity.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/inat.c $(srctree)/arch/x86/include/asm/inat_types.h $(srctree)/arch/x86/include/asm/inat.h $(srctree)/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
-+$(obj)/insn_sanity.o: $(srctree)/tools/arch/x86/lib/insn.c $(srctree)/tools/arch/x86/lib/inat.c $(srctree)/tools/arch/x86/include/asm/inat_types.h $(srctree)/tools/arch/x86/include/asm/inat.h $(srctree)/tools/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
- 
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include
- hostprogs	+= relocs
-diff --git a/arch/x86/tools/insn_sanity.c b/arch/x86/tools/insn_sanity.c
-index 185ceba9d289..c6a0000ae635 100644
---- a/arch/x86/tools/insn_sanity.c
-+++ b/arch/x86/tools/insn_sanity.c
-@@ -14,10 +14,6 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
--
--#define unlikely(cond) (cond)
--#define ARRAY_SIZE(a)	(sizeof(a)/sizeof(a[0]))
--
- #include <asm/insn.h>
- #include <inat.c>
- #include <insn.c>
--- 
-2.25.4
+> Fixes: c0452137034b ("PCI: brcmstb: Add Broadcom STB PCIe host controller driver")
+> Suggested-by: Rafał Miłecki <zajec5@gmail.com>
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index bea86899bd5d..9c3d2982248d 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -893,6 +893,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+>  		burst = 0x2; /* 512 bytes */
+>  
+>  	/* Set SCB_MAX_BURST_SIZE, CFG_READ_UR_MODE, SCB_ACCESS_EN */
+> +	tmp = readl(base + PCIE_MISC_MISC_CTRL);
+>  	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK);
+>  	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK);
+>  	u32p_replace_bits(&tmp, burst, PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK);
+> -- 
+> 2.17.1
+> 
+
+
