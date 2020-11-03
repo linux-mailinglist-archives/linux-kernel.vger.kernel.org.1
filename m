@@ -2,390 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3A92A3B83
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 05:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5492A3B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 05:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgKCEuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 23:50:10 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:54665 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgKCEuJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 23:50:09 -0500
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201103045004epoutp043d3401130a4abdfd51b2640fac472be4~D5jRgxZze0513105131epoutp04O
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 04:50:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201103045004epoutp043d3401130a4abdfd51b2640fac472be4~D5jRgxZze0513105131epoutp04O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604379004;
-        bh=AE5Y54hy79nRyrvLCQp46RgklUi4nsXwcfS7RTI/kEA=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=DB8PzYpWeOfQCZtaF4HBwzRJg42ffcpe+M+zxnWhwZ3/KI2lMZ9mSSeT97L9Ud5yx
-         BjMOWQMBhJizlOQ1qYuClhc+nCAmEwFtzG3j8M4WHCMSAY2b4q/czGPdV1eWpGatu3
-         vGrw90GnbEQWeJ41r82yaik6XqcYQMNoW+tZ7QxY=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
-        20201103045004epcas3p4ee194e70b976a292684138a9a8d65595~D5jRGOPmi1716517165epcas3p4y;
-        Tue,  3 Nov 2020 04:50:04 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4CQHQN2zQDzMqYkb; Tue,  3 Nov 2020 04:50:04 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v13 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <878274034.81604379004406.JavaMail.epsvc@epcpadp3>
-Date:   Tue, 03 Nov 2020 13:47:38 +0900
-X-CMS-MailID: 20201103044738epcms2p694c36abf6df81c9dae913f144889c377
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20201103044021epcms2p8f1556853fc23414442b9e958f20781ce
-References: <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
-        <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p6>
+        id S1726018AbgKCEz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 23:55:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725952AbgKCEz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 23:55:28 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08A5222243;
+        Tue,  3 Nov 2020 04:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604379328;
+        bh=+/Zb/Rd1pwj4ivtng24HgDPmrWpJWrx1iasx4QMAmCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gPKVNGX3SHWfoC3mgv91kVID9sQ5o+RHNVJfdwSBIcDlD+nKCRFYHcldiaiw3TpGl
+         sYrxQq4DY8FkNgCWTfuQFyuXAhpfhX284/vOkmxZzLQG/gBAGMnzDRdX/CGNi/bD8F
+         /KxbYvjnKNJi2I/lc55H8Vm8sms7/1Vj0SKL1jCg=
+Date:   Tue, 3 Nov 2020 06:55:21 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] compiler-clang: add build check for clang 10.0.1
+Message-ID: <20201103045521.GA58906@kernel.org>
+References: <20200902225911.209899-1-ndesaulniers@google.com>
+ <20200902225911.209899-2-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902225911.209899-2-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes the read I/O to the HPB read I/O.
-
-If the logical address of the read I/O belongs to active sub-region, the
-HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
-command of UFS instead of modifying the existing SCSI command.
-
-In the HPB version 1.0, the maximum read I/O size that can be converted to
-HPB read is 4KB.
-
-The dirty map of the active sub-region prevents an incorrect HPB read that
-has stale physical page number which is updated by previous write I/O.
-
-Acked-by: Avri Altman <Avri.Altman@wdc.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufshcd.c |   2 +
- drivers/scsi/ufs/ufshpb.c | 232 ++++++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h |   2 +
- 3 files changed, 236 insertions(+)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index bff919dcc164..71793c3b0f4c 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2555,6 +2555,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 
- 	ufshcd_comp_scsi_upiu(hba, lrbp);
- 
-+	ufshpb_prep(hba, lrbp);
-+
- 	err = ufshcd_map_sg(hba, lrbp);
- 	if (err) {
- 		lrbp->cmd = NULL;
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 2f38751d8fde..5ebb2fef7492 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -31,6 +31,29 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
- 	return !(hba->ufshpb_dev.hpb_disabled);
- }
- 
-+static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
-+			     struct ufshpb_subregion *srgn)
-+{
-+	return rgn->rgn_state != HPB_RGN_INACTIVE &&
-+		srgn->srgn_state == HPB_SRGN_VALID;
-+}
-+
-+static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
-+{
-+	return req_op(cmd->request) == REQ_OP_READ;
-+}
-+
-+static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
-+{
-+	return op_is_write(req_op(cmd->request)) ||
-+	       op_is_discard(req_op(cmd->request));
-+}
-+
-+static bool ufshpb_is_support_chunk(int transfer_len)
-+{
-+	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-+}
-+
- static bool ufshpb_is_general_lun(int lun)
- {
- 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-@@ -98,6 +121,215 @@ static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
- 	atomic_set(&hpb->hpb_state, state);
- }
- 
-+static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+			     int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int set_bit_len;
-+	int bitmap_len = hpb->entries_per_srgn;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		set_bit_len = bitmap_len - srgn_offset;
-+	else
-+		set_bit_len = cnt;
-+
-+	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
-+	    srgn->srgn_state == HPB_SRGN_VALID)
-+		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= set_bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	WARN_ON(cnt < 0);
-+}
-+
-+static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+				   int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int bitmap_len = hpb->entries_per_srgn;
-+	int bit_len;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if (!ufshpb_is_valid_srgn(rgn, srgn))
-+		return true;
-+
-+	/*
-+	 * If the region state is active, mctx must be allocated.
-+	 * In this case, check whether the region is evicted or
-+	 * mctx allcation fail.
-+	 */
-+	WARN_ON(!srgn->mctx);
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		bit_len = bitmap_len - srgn_offset;
-+	else
-+		bit_len = cnt;
-+
-+	if (find_next_bit(srgn->mctx->ppn_dirty,
-+			  bit_len, srgn_offset) >= srgn_offset)
-+		return true;
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	return false;
-+}
-+
-+static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-+			  struct ufshpb_map_ctx *mctx, int pos, int *error)
-+{
-+	u64 *ppn_table;
-+	struct page *page;
-+	int index, offset;
-+
-+	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-+	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-+
-+	page = mctx->m_page[index];
-+	if (unlikely(!page)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot find page in mctx\n");
-+		return 0;
-+	}
-+
-+	ppn_table = page_address(page);
-+	if (unlikely(!ppn_table)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot get ppn_table\n");
-+		return 0;
-+	}
-+
-+	return ppn_table[offset];
-+}
-+
-+static void
-+ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
-+			int *srgn_idx, int *offset)
-+{
-+	int rgn_offset;
-+
-+	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-+	rgn_offset = lpn & hpb->entries_per_rgn_mask;
-+	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-+	*offset = rgn_offset & hpb->entries_per_srgn_mask;
-+}
-+
-+static void
-+ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
-+				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-+{
-+	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-+
-+	cdb[0] = UFSHPB_READ;
-+
-+	put_unaligned_be64(ppn, &cdb[6]);
-+	cdb[14] = transfer_len;
-+}
-+
-+/*
-+ * This function will set up HPB read command using host-side L2P map data.
-+ * In HPB v1.0, maximum size of HPB read command is 4KB.
-+ */
-+void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-+{
-+	struct ufshpb_lu *hpb;
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	struct scsi_cmnd *cmd = lrbp->cmd;
-+	u32 lpn;
-+	u64 ppn;
-+	unsigned long flags;
-+	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-+	int err = 0;
-+
-+	hpb = ufshpb_get_hpb_data(cmd->device);
-+	if (!hpb)
-+		return;
-+
-+	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
-+		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-+			   "%s: ufshpb state is not PRESENT", __func__);
-+		return;
-+	}
-+
-+	if (!ufshpb_is_write_or_discard_cmd(cmd) &&
-+	    !ufshpb_is_read_cmd(cmd))
-+		return;
-+
-+	transfer_len = sectors_to_logical(cmd->device, blk_rq_sectors(cmd->request));
-+	if (unlikely(!transfer_len))
-+		return;
-+
-+	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
-+	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	/* If command type is WRITE or DISCARD, set bitmap as drity */
-+	if (ufshpb_is_write_or_discard_cmd(cmd)) {
-+		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				 transfer_len);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	if (!ufshpb_is_support_chunk(transfer_len))
-+		return;
-+
-+	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				   transfer_len)) {
-+		atomic_inc(&hpb->stats.miss_cnt);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
-+	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+	if (unlikely(err)) {
-+		/*
-+		 * In this case, the region state is active,
-+		 * but the ppn table is not allocated.
-+		 * Make sure that ppn table must be allocated on
-+		 * active state.
-+		 */
-+		WARN_ON(true);
-+		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
-+		return;
-+	}
-+
-+	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-+
-+	atomic_inc(&hpb->stats.hit_cnt);
-+}
-+
- static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 					     struct ufshpb_subregion *srgn)
- {
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index e3a9d073cb76..b9072c71038d 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -197,6 +197,7 @@ struct ufs_hba;
- struct ufshcd_lrb;
- 
- #ifndef CONFIG_SCSI_UFS_HPB
-+static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
- static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
- static void ufshpb_resume(struct ufs_hba *hba) {}
- static void ufshpb_suspend(struct ufs_hba *hba) {}
-@@ -210,6 +211,7 @@ static bool ufshpb_is_allowed(struct ufs_hba *hba) { return false; }
- static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
- static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
- #else
-+void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_resume(struct ufs_hba *hba);
- void ufshpb_suspend(struct ufs_hba *hba);
--- 
-2.25.1
+On Wed, Sep 02, 2020 at 03:59:05PM -0700, Nick Desaulniers wrote:
+> During Plumbers 2020, we voted to just support the latest release of
+> Clang for now.  Add a compile time check for this.
+> 
+> We plan to remove workarounds for older versions now, which will break
+> in subtle and not so subtle ways.
+> 
+> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+> Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Acked-by: Marco Elver <elver@google.com>
+> Acked-by: Nathan Chancellor <natechancellor@gmail.com>
+> Acked-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/9
+> Link: https://github.com/ClangBuiltLinux/linux/issues/941
+> ---
+>  include/linux/compiler-clang.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index cee0c728d39a..230604e7f057 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -3,6 +3,14 @@
+>  #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
+>  #endif
+>  
+> +#define CLANG_VERSION (__clang_major__ * 10000	\
+> +		     + __clang_minor__ * 100	\
+> +		     + __clang_patchlevel__)
+> +
+> +#if CLANG_VERSION < 100001
+> +# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
+> +#endif
 
 
+I'm trying to compile a BPF enabled test kernel for a live system and I
+get this error even though I have much newer clang:
+
+➜  ~ (master) ✔ clang --version          
+Ubuntu clang version 11.0.0-2
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+
+Tried to Google for troubleshooter tips but this patch is basically the
+only hit I get :-)
+
+
+> +
+>  /* Compiler specific definitions for Clang compiler */
+>  
+>  /* same as gcc, this was present in clang-2.6 so we can assume it works
+> -- 
+> 2.28.0.402.g5ffc5be6b7-goog
+> 
+
+/Jarkko
