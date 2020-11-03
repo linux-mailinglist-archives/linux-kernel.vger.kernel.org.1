@@ -2,128 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4302A5A40
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DA22A5A44
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbgKCWok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:44:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730606AbgKCWok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:44:40 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4779F21534;
-        Tue,  3 Nov 2020 22:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604443479;
-        bh=B0hofVyjbIarQN5JcfzWbRMadJujwsK3/oEFwLCaHaE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=aGJthRPHhGnUHt1ZdKqRmEtO85M2aHQ0EeBOkvpHEdxgqcV5i3Ard2wiJ81JAWc/6
-         kqheh439OJUiLwEjikfrm/596btquk1VT+KMzM6CPVKq/RwToIlXTv8sbNUy6UTy0i
-         BatF/rWkEZdP538Vqd3i+3FwP4h+TInyIqmAjSB8=
-Date:   Tue, 3 Nov 2020 16:44:37 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 0/6] Add DW PCIe support for Exynos5433 SoCs
-Message-ID: <20201103224437.GA271545@bjorn-Precision-5520>
+        id S1730643AbgKCWqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729575AbgKCWqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:46:24 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7331CC0613D1;
+        Tue,  3 Nov 2020 14:46:24 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id n5so17636486ile.7;
+        Tue, 03 Nov 2020 14:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lH5i5uFYniMMbkFnLq314abTav522BASpBwrryyYWwY=;
+        b=tT3lywaupetn0TrYjXdzpPpxeD9U/1IlHZPYYir0qeOhE2FYiVW92l943BHtWSbs2v
+         Df9YMKONfCDMM1nbDOgjntrym7OaJEdA8+oONqvsOKySS4L9Qw/7MuuZWFfm7/BupbCu
+         xbNMTft7hB9pp83NslYC59CPvn1P5Feuxszcb13db+to4mZkXIzpuYTfU/j2W8La/Aiz
+         Cr18py9cDYlTKTlt1nWXzElBMaoS4xpysLNjS8O27SXhh6/caIQxDGgm7Zpb4IFA4L0m
+         YxDDVJQhVwZG/7dlBxY9QYJxSFPK0Ubj5a++0c0RBoO09xg17u1LlAfAy0TZQlpyOLOU
+         UO5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lH5i5uFYniMMbkFnLq314abTav522BASpBwrryyYWwY=;
+        b=Sf4oakqRG0I4j+dI7WkcwIluxZ/uo8i13m+YjRnlBaPb8QEz7/usoiwihRy2VyMbeN
+         NKAEZIM3OafFiKo5QM1qyRSdGAF93ZI/1VAiJcW7qvJI6eM6Vl4F2hbLsmQFpncFLKXo
+         hL4MCJI3yyjMq+x2Z7OsovTY0jMRutKrIi6Xoob3A70mj8Vpu3E9/Q/t0EL3mULbE0t4
+         oCq2kjbY1UI7BseB+oJFVK3N2K/FV03F1FZWyb2f5dZK1dQPMd34vJ3aKGQeD4CAy3VW
+         OmMbYts2xEZ+wj0sn9xNAfEDTUIV8wI8OKtUh1k96iFALEtBVHMwZDxB1vhUfiqSJ8mG
+         TtAQ==
+X-Gm-Message-State: AOAM531Jc5SZrGXioYpua11EOAjWSQflsAZICBxVrPbctR7gGQVsUn1H
+        JIlgiFZ4Vsc0dVYejRhgYcw=
+X-Google-Smtp-Source: ABdhPJxiZRwOga+D4mV8ngi2qwi8CBgjbZ/33tzOxuxZ1xcEHzWJMQ+P7ohOYuUCdzNqc2/HDvjSyA==
+X-Received: by 2002:a92:ae0e:: with SMTP id s14mr6751881ilh.94.1604443583815;
+        Tue, 03 Nov 2020 14:46:23 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:def:1f9b:2059:ffac])
+        by smtp.googlemail.com with ESMTPSA id l18sm94436ioc.31.2020.11.03.14.46.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 14:46:23 -0800 (PST)
+Subject: Re: [net-next,v1,5/5] selftests: add selftest for the SRv6 End.DT4
+ behavior
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20201103125242.11468-1-andrea.mayer@uniroma2.it>
+ <20201103125242.11468-6-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <2f11e5f5-7010-36e2-1e9b-800dc76d0091@gmail.com>
+Date:   Tue, 3 Nov 2020 15:46:19 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029134017.27400-1-m.szyprowski@samsung.com>
+In-Reply-To: <20201103125242.11468-6-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:40:11PM +0100, Marek Szyprowski wrote:
-> Dear All,
+On 11/3/20 5:52 AM, Andrea Mayer wrote:
+> this selftest is designed for evaluating the new SRv6 End.DT4 behavior
+> used, in this example, for implementing IPv4 L3 VPN use cases.
 > 
-> This patchset is a resurrection of the DW PCIe support for the Exynos5433
-> SoCs posted long time ago here: https://lkml.org/lkml/2016/12/26/6 and
-> later here: https://lkml.org/lkml/2017/12/21/296 .
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> ---
+>  .../selftests/net/srv6_end_dt4_l3vpn_test.sh  | 494 ++++++++++++++++++
+>  1 file changed, 494 insertions(+)
+>  create mode 100755 tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
 > 
-> In meantime the support for the Exynos5440 SoCs has been completely
-> dropped from mainline kernel, as those SoCs never reached the market. The
-> PCIe driver for Exynos5440 variant however has not been removed yet. This
-> patchset simply reworks it to support the Exynos5433 variant. The lack of
-> the need to support both variants significantly simplifies the driver
-> code.
-> 
-> This patchset is based on the following branch:
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git pci-more-dwc-cleanup
-> 
-> Best regards,
-> Marek Szyprowski
-> 
-> 
-> Changelog:
-> 
-> v3:
-> - rebased onto "[00/13] PCI: dwc: Another round of clean-ups" patchset:
->   https://patchwork.kernel.org/project/linux-samsung-soc/cover/20201028204646.356535-1-robh@kernel.org/
-> - fixed issues pointed by Rob in the driver logic:
->   * removed DBI_RO_WR_EN register poking
->   * made driver a standard module
-> - fixed section mismatch issue
-> - added "num-viewport = <3>" property to dts and bindings to fix warning
-> 
-> v2: https://lore.kernel.org/linux-samsung-soc/20201023075744.26200-1-m.szyprowski@samsung.com/
-> - fixed issues in dt-bindings pointed by Krzysztof and Rob
-> 
-> v1: https://lore.kernel.org/linux-samsung-soc/20201019094715.15343-1-m.szyprowski@samsung.com/
-> - initial version of this resurrected patchset
-> 
-> 
-> Patch summary:
+> diff --git a/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh b/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+> new file mode 100755
+> index 000000000000..a5547fed5048
+> --- /dev/null
+> +++ b/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+> @@ -0,0 +1,494 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# author: Andrea Mayer <andrea.mayer@uniroma2.it>
+> +
+> +# This test is designed for evaluating the new SRv6 End.DT4 behavior used for
+> +# implementing IPv4 L3 VPN use cases.
+> +#
+> +# Hereafter a network diagram is shown, where two different tenants (named 100
+> +# and 200) offer IPv4 L3 VPN services allowing hosts to communicate with each
+> +# other across an IPv6 network.
+> +#
+> +# Only hosts belonging to the same tenant (and to the same VPN) can communicate
+> +# with each other. Instead, the communication among hosts of different tenants
+> +# is forbidden.
+> +# In other words, hosts hs-t100-1 and hs-t100-2 are connected through the IPv4
+> +# L3 VPN of tenant 100 while hs-t200-3 and hs-t200-4 are connected using the
+> +# IPv4 L3 VPN of tenant 200. Cross connection between tenant 100 and tenant 200
+> +# is forbidden and thus, for example, hs-t100-1 cannot reach hs-t200-3 and vice
+> +# versa.
+> +#
+> +# Routers rt-1 and rt-2 implement IPv4 L3 VPN services leveraging the SRv6
+> +# architecture. The key components for such VPNs are: a) SRv6 Encap behavior,
+> +# b) SRv6 End.DT4 behavior and c) VRF.
+> +#
+> +# To explain how an IPv4 L3 VPN based on SRv6 works, let us briefly consider an
+> +# example where, within the same domain of tenant 100, the host hs-t100-1 pings
+> +# the host hs-t100-2.
+> +#
+> +# First of all, L2 reachability of the host hs-t100-2 is taken into account by
+> +# the router rt-1 which acts as an arp proxy.
+> +#
+> +# When the host hs-t100-1 sends an IPv4 packet destined to hs-t100-2, the
+> +# router rt-1 receives the packet on the internal veth-t100 interface. Such
+> +# interface is enslaved to the VRF vrf-100 whose associated table contains the
+> +# SRv6 Encap route for encapsulating any IPv4 packet in a IPv6 plus the Segment
+> +# Routing Header (SRH) packet. This packet is sent through the (IPv6) core
+> +# network up to the router rt-2 that receives it on veth0 interface.
+> +#
+> +# The rt-2 router uses the 'localsid' routing table to process incoming
+> +# IPv6+SRH packets which belong to the VPN of the tenant 100. For each of these
+> +# packets, the SRv6 End.DT4 behavior removes the outer IPv6+SRH headers and
+> +# performs the lookup on the vrf-100 table using the destination address of
+> +# the decapsulated IPv4 packet. Afterwards, the packet is sent to the host
+> +# hs-t100-2 through the veth-t100 interface.
+> +#
+> +# The ping response follows the same processing but this time the role of rt-1
+> +# and rt-2 are swapped.
+> +#
+> +# Of course, the IPv4 L3 VPN for tenant 200 works exactly as the IPv4 L3 VPN
+> +# for tenant 100. In this case, only hosts hs-t200-3 and hs-t200-4 are able to
+> +# connect with each other.
+> +#
+> +#
+> +# +-------------------+                                   +-------------------+
+> +# |                   |                                   |                   |
+> +# |  hs-t100-1 netns  |                                   |  hs-t100-2 netns  |
+> +# |                   |                                   |                   |
+> +# |  +-------------+  |                                   |  +-------------+  |
+> +# |  |    veth0    |  |                                   |  |    veth0    |  |
+> +# |  | 10.0.0.1/24 |  |                                   |  | 10.0.0.2/24 |  |
+> +# |  +-------------+  |                                   |  +-------------+  |
+> +# |        .          |                                   |         .         |
+> +# +-------------------+                                   +-------------------+
+> +#          .                                                        .
+> +#          .                                                        .
+> +#          .                                                        .
+> +# +-----------------------------------+   +-----------------------------------+
+> +# |        .                          |   |                         .         |
+> +# | +---------------+                 |   |                 +---------------- |
+> +# | |   veth-t100   |                 |   |                 |   veth-t100   | |
+> +# | | 10.0.0.254/24 |    +----------+ |   | +----------+    | 10.0.0.254/24 | |
+> +# | +-------+-------+    | localsid | |   | | localsid |    +-------+-------- |
+> +# |         |            |   table  | |   | |   table  |            |         |
+> +# |    +----+----+       +----------+ |   | +----------+       +----+----+    |
+> +# |    | vrf-100 |                    |   |                    | vrf-100 |    |
+> +# |    +---------+     +------------+ |   | +------------+     +---------+    |
+> +# |                    |   veth0    | |   | |   veth0    |                    |
+> +# |                    | fd00::1/64 |.|...|.| fd00::2/64 |                    |
+> +# |    +---------+     +------------+ |   | +------------+     +---------+    |
+> +# |    | vrf-200 |                    |   |                    | vrf-200 |    |
+> +# |    +----+----+                    |   |                    +----+----+    |
+> +# |         |                         |   |                         |         |
+> +# | +---------------+                 |   |                 +---------------- |
+> +# | |   veth-t200   |                 |   |                 |   veth-t200   | |
+> +# | | 10.0.0.254/24 |                 |   |                 | 10.0.0.254/24 | |
+> +# | +---------------+      rt-1 netns |   | rt-2 netns      +---------------- |
+> +# |        .                          |   |                          .        |
+> +# +-----------------------------------+   +-----------------------------------+
+> +#          .                                                         .
+> +#          .                                                         .
+> +#          .                                                         .
+> +#          .                                                         .
+> +# +-------------------+                                   +-------------------+
+> +# |        .          |                                   |          .        |
+> +# |  +-------------+  |                                   |  +-------------+  |
+> +# |  |    veth0    |  |                                   |  |    veth0    |  |
+> +# |  | 10.0.0.3/24 |  |                                   |  | 10.0.0.4/24 |  |
+> +# |  +-------------+  |                                   |  +-------------+  |
+> +# |                   |                                   |                   |
+> +# |  hs-t200-3 netns  |                                   |  hs-t200-4 netns  |
+> +# |                   |                                   |                   |
+> +# +-------------------+                                   +-------------------+
+> +#
+> +#
+> +# ~~~~~~~~~~~~~~~~~~~~~~~~~
+> +# | Network configuration |
+> +# ~~~~~~~~~~~~~~~~~~~~~~~~~
+> +#
+> +# rt-1: localsid table (table 90)
+> +# +----------------------------------------------+
+> +# |SID              |Action                      |
+> +# +----------------------------------------------+
+> +# |fc00:21:100::6004|apply SRv6 End.DT4 table 100|
+> +# +----------------------------------------------+
+> +# |fc00:21:200::6004|apply SRv6 End.DT4 table 200|
+> +# +----------------------------------------------+
+> +#
+> +# rt-1: VRF tenant 100 (table 100)
+> +# +---------------------------------------------------+
+> +# |host       |Action                                 |
+> +# +---------------------------------------------------+
+> +# |10.0.0.2   |apply seg6 encap segs fc00:12:100::6004|
+> +# +---------------------------------------------------+
+> +# |10.0.0.0/24|forward to dev veth_t100               |
+> +# +---------------------------------------------------+
+> +#
+> +# rt-1: VRF tenant 200 (table 200)
+> +# +---------------------------------------------------+
+> +# |host       |Action                                 |
+> +# +---------------------------------------------------+
+> +# |10.0.0.4   |apply seg6 encap segs fc00:12:200::6004|
+> +# +---------------------------------------------------+
+> +# |10.0.0.0/24|forward to dev veth_t200               |
+> +# +---------------------------------------------------+
+> +#
+> +#
+> +# rt-2: localsid table (table 90)
+> +# +----------------------------------------------+
+> +# |SID              |Action                      |
+> +# +----------------------------------------------+
+> +# |fc00:12:100::6004|apply SRv6 End.DT4 table 100|
+> +# +----------------------------------------------+
+> +# |fc00:12:200::6004|apply SRv6 End.DT4 table 200|
+> +# +----------------------------------------------+
+> +#
+> +# rt-2: VRF tenant 100 (table 100)
+> +# +---------------------------------------------------+
+> +# |host       |Action                                 |
+> +# +---------------------------------------------------+
+> +# |10.0.0.1   |apply seg6 encap segs fc00:21:100::6004|
+> +# +---------------------------------------------------+
+> +# |10.0.0.0/24|forward to dev veth_t100               |
+> +# +---------------------------------------------------+
+> +#
+> +# rt-2: VRF tenant 200 (table 200)
+> +# +---------------------------------------------------+
+> +# |host       |Action                                 |
+> +# +---------------------------------------------------+
+> +# |10.0.0.3   |apply seg6 encap segs fc00:21:200::6004|
+> +# +---------------------------------------------------+
+> +# |10.0.0.0/24|forward to dev veth_t200               |
+> +# +---------------------------------------------------+
+> +#
+> +
+>
 
-Please follow the subject line convention:
+thanks for creating the very well documented test case.
 
-  PCI: exynos: Rework to support Exynos5433 variant
-  arm64: dts: exynos: Add WiFi/PCIe support to TM2(e) boards
-  dt-bindings: PCI: exynos: Drop samsung,exynos5440-pcie binding
-  dt-bindings: PCI: exynos: Add samsung,exynos-pcie binding
-  dt-bindings: phy: exynos: Add samsung,exynos-pcie-phy binding
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-You can save this trouble by running "git log --oneline" on the file
-(or directory, for new files) and copying the style.
 
-> Jaehoon Chung (3):
->   phy: samsung: phy-exynos-pcie: rework driver to support Exynos5433
->     PCIe PHY
->   pci: dwc: pci-exynos: rework the driver to support Exynos5433 variant
->   arm64: dts: exynos: add the WiFi/PCIe support to TM2(e) boards
-> 
-> Marek Szyprowski (3):
->   dt-bindings: pci: drop samsung,exynos5440-pcie binding
->   dt-bindings: pci: add the samsung,exynos-pcie binding
->   dt-bindings: phy: add the samsung,exynos-pcie-phy binding
-> 
->  .../bindings/pci/samsung,exynos-pcie.yaml     | 119 ++++++
->  .../bindings/pci/samsung,exynos5440-pcie.txt  |  58 ---
->  .../bindings/phy/samsung,exynos-pcie-phy.yaml |  51 +++
->  .../boot/dts/exynos/exynos5433-pinctrl.dtsi   |   2 +-
->  .../dts/exynos/exynos5433-tm2-common.dtsi     |  24 +-
->  arch/arm64/boot/dts/exynos/exynos5433.dtsi    |  36 ++
->  drivers/pci/controller/dwc/Kconfig            |  10 +-
->  drivers/pci/controller/dwc/pci-exynos.c       | 353 +++++++-----------
->  drivers/pci/quirks.c                          |   1 +
->  drivers/phy/samsung/phy-exynos-pcie.c         | 304 ++++++---------
->  10 files changed, 489 insertions(+), 469 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->  delete mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos5440-pcie.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
-> 
-> -- 
-> 2.17.1
-> 
