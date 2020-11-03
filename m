@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3822A4D56
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55EE2A4D58
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgKCRn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:43:27 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53524 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729001AbgKCRn1 (ORCPT
+        id S1729070AbgKCRne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:43:34 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:45504 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729017AbgKCRn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Nov 2020 12:43:27 -0500
-Received: by mail-io1-f71.google.com with SMTP id c17so11001800iom.20
+Received: by mail-il1-f198.google.com with SMTP id z18so13330222ilb.12
         for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:43:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cOp2atVuyrM4HQesHV0mHLyZ8BWipQWU0PDBlpE2oIs=;
-        b=IchuDe8z62k6uvy20crr2Yh+8dcNEP2BQIPSKwIuIGxdAnXtaLVcwdEbU0fKY+5N2J
-         ObQ0VT6I2L2uq0nnOfTM4AhknER9AbF/SjCMwxAhqKHcdR22ZOiVcM2Sn1K/Fxv00NKp
-         TXh53prRr+kXfec64ER6kzkO7Dqno8uuVrFeOrDSr5af9mgmImhunx8V08m7grncb1Tv
-         G1FK+QQxwmkYOCxM24yIvf5wen8ibc5QalFDgEweRLLPbBToLBhf+YnlmmAEbTVdXnPl
-         maYCxDBaBgRMRjxkNs+KSa6qZUwLzsDm0mrS9rCeV+pyEgMKYcScYZEKJfEghD7vbqrx
-         7Eyg==
-X-Gm-Message-State: AOAM5322b+ehLa4pUyO95SeQxlPQ0MAe21CKZ8oYbQOZs+ycOsz/oaCy
-        yU+YOf25+6rZQuiLfFZWNO9hWOGawhBHp8T+wwgVXPV7sDzk
-X-Google-Smtp-Source: ABdhPJygcscVZKNTTagOZ10gSni9xWDoDMuFCaXDyT73cyic5gEhSPh4UnvHgkWurxD2W+EW5RAVJ4W37E4yuHT8boMIZpnO/bL8
+        bh=D+S4B5TClngCIxW7RZpJraudOaV9HhZ8fHYmAJkNFjU=;
+        b=Ko6MyEWl8E0YIE/krmJVO3kROow5xkypm41YKBwJj8CetiNlitkzdmjGihXKmnZVDU
+         EErzWup1A9z5oyifCv/OrpcU7n774bUl7m5qRYOKZbmPPrtdnpx84WqGHowf+bgbh8Mn
+         EveI/WZLl7DBjoOejSJLICWaYpHVcT0Cj2ppUICD26gu6LLXUmkXjiVBMm6zl74E99LX
+         H6xEutmyktgk//E66a9w+sFo8qg00f/iegT4H2V28LTmVlUkLT5DdfhBgPfE8DhsrBdI
+         BEzTFhQONecHwz9QoVYxoYzwuWtBhOJCquzSmGXmP1mpaS90KFu3jtcIDRwV3FESSQto
+         vBVw==
+X-Gm-Message-State: AOAM531yB4kT5vTVchVw6Jyv3USX2RC0YmbXPi2JueCB1qzff67gR100
+        5zJr5k8riOfSWoVlQGXCXGAb8sUqYY1JLCQ7o90bFBKtm3uN
+X-Google-Smtp-Source: ABdhPJzQTw/5YLQJKwQ9jmeAgAi91/xW6raIVxcaYqDyLI/Vb+28qXO5S6DM7Q1HO9GUtJ8jUZIhis7NbWhuKkqDeq1vJrRUB4Yp
 MIME-Version: 1.0
-X-Received: by 2002:a92:850f:: with SMTP id f15mr3146516ilh.286.1604425405855;
+X-Received: by 2002:a5d:9850:: with SMTP id p16mr15104176ios.22.1604425405566;
  Tue, 03 Nov 2020 09:43:25 -0800 (PST)
 Date:   Tue, 03 Nov 2020 09:43:25 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000627c8805b33766e9@google.com>
-Subject: KASAN: use-after-free Write in io_submit_sqes
-From:   syzbot <syzbot+625ce3bb7835b63f7f3d@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <0000000000005e15f805b3376601@google.com>
+Subject: BUG: sleeping function called from invalid context in sta_info_move_state
+From:   syzbot <syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,108 +49,112 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b49976d8 Add linux-next specific files for 20201102
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a02732500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe87d079ac78e2be
-dashboard link: https://syzkaller.appspot.com/bug?extid=625ce3bb7835b63f7f3d
+HEAD commit:    04a55c94 Merge tag 'mac80211-for-net-2020-10-30' of git://..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=12079c3a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=803dd96a0e492ac1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d5a9416c6cafe53b5dd0
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12de9346500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1213fda8500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13714d8a500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155a5792500000
+
+The issue was bisected to:
+
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
+
+    mac80211: always wind down STA state
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d3158a500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11d3158a500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d3158a500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+625ce3bb7835b63f7f3d@syzkaller.appspotmail.com
+Reported-by: syzbot+d5a9416c6cafe53b5dd0@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
 
-IPVS: ftp: loaded support on port[0] = 21
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
-BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: use-after-free in io_init_req fs/io_uring.c:6700 [inline]
-BUG: KASAN: use-after-free in io_submit_sqes+0x15a9/0x25f0 fs/io_uring.c:6774
-Write of size 4 at addr ffff888011e08e48 by task syz-executor165/8487
-
-CPU: 1 PID: 8487 Comm: syz-executor165 Not tainted 5.10.0-rc1-next-20201102-syzkaller #0
+wlan0: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+wlan0: Creating new IBSS network, BSSID 50:50:50:50:50:50
+wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
+BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 8, name: kworker/u4:0
+4 locks held by kworker/u4:0/8:
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90000cd7da8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff888024610d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff888024610d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+ #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+Preemption disabled at:
+[<ffffffff88e616bf>] __mutex_lock_common kernel/locking/mutex.c:955 [inline]
+[<ffffffff88e616bf>] __mutex_lock+0x10f/0x10e0 kernel/locking/mutex.c:1103
+CPU: 0 PID: 8 Comm: kworker/u4:0 Not tainted 5.10.0-rc1-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy4 ieee80211_iface_work
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- io_init_req fs/io_uring.c:6700 [inline]
- io_submit_sqes+0x15a9/0x25f0 fs/io_uring.c:6774
- __do_sys_io_uring_enter+0xc8e/0x1b50 fs/io_uring.c:9159
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440e19
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 0f fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff644ff178 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 0000000000440e19
-RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000003
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000022b4850
-R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000000000
+ ___might_sleep.cold+0x1e8/0x22e kernel/sched/core.c:7298
+ sta_info_move_state+0x32/0x8d0 net/mac80211/sta_info.c:1962
+ sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+ sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+ ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+ ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+ ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-Allocated by task 8487:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- kmalloc include/linux/slab.h:552 [inline]
- io_register_personality fs/io_uring.c:9638 [inline]
- __io_uring_register fs/io_uring.c:9874 [inline]
- __do_sys_io_uring_register+0x10f0/0x40a0 fs/io_uring.c:9924
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8487:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3140 [inline]
- kfree+0xdb/0x360 mm/slub.c:4122
- io_identity_cow fs/io_uring.c:1380 [inline]
- io_prep_async_work+0x903/0xbc0 fs/io_uring.c:1492
- io_prep_async_link fs/io_uring.c:1505 [inline]
- io_req_defer fs/io_uring.c:5999 [inline]
- io_queue_sqe+0x212/0xed0 fs/io_uring.c:6448
- io_submit_sqe fs/io_uring.c:6542 [inline]
- io_submit_sqes+0x14f6/0x25f0 fs/io_uring.c:6784
- __do_sys_io_uring_enter+0xc8e/0x1b50 fs/io_uring.c:9159
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888011e08e00
- which belongs to the cache kmalloc-96 of size 96
-The buggy address is located 72 bytes inside of
- 96-byte region [ffff888011e08e00, ffff888011e08e60)
-The buggy address belongs to the page:
-page:00000000a7104751 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11e08
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea00004f8540 0000001f00000002 ffff888010041780
-raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888011e08d00: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
- ffff888011e08d80: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
->ffff888011e08e00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
-                                              ^
- ffff888011e08e80: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
- ffff888011e08f00: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
-==================================================================
+=============================
+[ BUG: Invalid wait context ]
+5.10.0-rc1-syzkaller #0 Tainted: G        W        
+-----------------------------
+kworker/u4:0/8 is trying to lock:
+ffff88801bb429d0 (&local->chanctx_mtx){+.+.}-{3:3}, at: ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+other info that might help us debug this:
+context-{4:4}
+4 locks held by kworker/u4:0/8:
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801b994138 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90000cd7da8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff888024610d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff888024610d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+ #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+stack backtrace:
+CPU: 0 PID: 8 Comm: kworker/u4:0 Tainted: G        W         5.10.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy4 ieee80211_iface_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4489 [inline]
+ check_wait_context kernel/locking/lockdep.c:4550 [inline]
+ __lock_acquire.cold+0x310/0x3a2 kernel/locking/lockdep.c:4787
+ lock_acquire kernel/locking/lockdep.c:5442 [inline]
+ lock_acquire+0x1af/0x8b0 kernel/locking/lockdep.c:5407
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+ ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+ sta_info_move_state+0x3cf/0x8d0 net/mac80211/sta_info.c:2019
+ sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+ sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+ ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+ ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+ ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
 
 
 ---
@@ -159,5 +164,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
