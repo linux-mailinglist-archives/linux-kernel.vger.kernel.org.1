@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361932A37A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C052A37A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbgKCAS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKCAS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:18:28 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06A9C061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:18:28 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id y1so4485979uac.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B5EWBdWu8UMzj2fy/b6+R99bCZwb5PgoyCKlY/KWrK8=;
-        b=GyELAh8UJAQ9j8T5R7lfyyPpYgOuleQHhkDVSzcdBjfMkVX+fb93Ww39Y+F7Z50iJa
-         U99tzTx9J/3Wnk9U9gYevwzBjmRn0nn2Ld//0+WnA2lH8Em3PHSYtzIn15UUwpvgIF6T
-         L0IdmplbDcEThNJBDqHEr97EUeUQ6iCkzk4cU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B5EWBdWu8UMzj2fy/b6+R99bCZwb5PgoyCKlY/KWrK8=;
-        b=MK2v8ySotFU8358RlgWjKji57t1Ptm+HwRLyo3OCfqHMQbRdcGxOSB2eQIaTzzElMm
-         SiKzCRk2dN1JWoBMJMbmciOuTlKft/vtwhMfF14zZtzpsRwc725F7JvfXMKYWnpUWznY
-         CChbEoWAj9ho4wLS855H6memazsextDkxgvAohs+93XsF1xkHt2w5ckIJLd0rc1qrWr0
-         fsekzk/Mhoxt2wsgwhqmdUFpUqykmKau9DDeFU8eIPWyxiCeetcUpk4BaetpJvPt8OLl
-         tCshGWoFCo6CDZiuQ6T3SltAHzXA5Ubyu+u+tpyhsa9WPcgaqO0OYX8Psv53FWB2uagv
-         90cg==
-X-Gm-Message-State: AOAM531zuLSkMeP9s6Umuk/0YIgwGR2f6E7PIvrZ7tYvGIKq07h1xJnz
-        UjPWjU2d49AMnWiMke5ohLwHXRaEgdLdpw==
-X-Google-Smtp-Source: ABdhPJwNnNHfqKpjsky1YxwOZt4/sg5tDAU4V2zmJZdXpzcRkESboCHIQrIe+ZWXRvS5Rj88m1SWiQ==
-X-Received: by 2002:ab0:48ab:: with SMTP id x40mr9257028uac.68.1604362707511;
-        Mon, 02 Nov 2020 16:18:27 -0800 (PST)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id d137sm658609vkf.53.2020.11.02.16.18.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 16:18:25 -0800 (PST)
-Received: by mail-vs1-f41.google.com with SMTP id z123so3793885vsb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:18:25 -0800 (PST)
-X-Received: by 2002:a67:ef98:: with SMTP id r24mr2212207vsp.37.1604362704803;
- Mon, 02 Nov 2020 16:18:24 -0800 (PST)
+        id S1727267AbgKCATp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:19:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgKCATp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 19:19:45 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C1042225E;
+        Tue,  3 Nov 2020 00:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604362784;
+        bh=rLRezgozMo36bMQEdpj1d95Jvx+If6mlRaMG5lcBdrs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MbvkXAq0VUXFsJuj2ZnX3LnowoI1qdCl/SgPBttkyxSaq4tckfVjdJVL1M41GarSN
+         vmkquE8NaEmjduVpMqy3/P6P3NU/G5T5EYfBw154R86gBXSzSKUFmEyW/tZ0sG75DF
+         wzIuIV2kQzVd3re/LNYLmrx8CWw9OLaXcYZGonAw=
+Date:   Mon, 2 Nov 2020 16:19:43 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John W Linville <linville@tuxdriver.com>
+Subject: Re: [PATCH 2/2] ethernet: igb: e1000_phy: Check for
+ ops.force_speed_duplex existence
+Message-ID: <20201102161943.343586b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201102231307.13021-3-pmenzel@molgen.mpg.de>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+        <20201102231307.13021-3-pmenzel@molgen.mpg.de>
 MIME-Version: 1.0
-References: <20201023162220.v2.1.I45b53fe84e2215946f900f5b28bab1aa9d029ac7@changeid>
- <CAO-hwJLn5XKV+cp+fCRY395uBWuX=JrxgiGSHUnJXFpTzFWu4w@mail.gmail.com>
- <20201030180042.GB3967106@bogus> <CAO-hwJK8c+BrH3u5PMCndv6Jjj6K2z=4nyKMAojD09EcHjBROA@mail.gmail.com>
-In-Reply-To: <CAO-hwJK8c+BrH3u5PMCndv6Jjj6K2z=4nyKMAojD09EcHjBROA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 2 Nov 2020 16:18:13 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XbXGRD8mkg6H57X=EVo8=0ptMz9s+YA0UR3Vwv-DLTDg@mail.gmail.com>
-Message-ID: <CAD=FV=XbXGRD8mkg6H57X=EVo8=0ptMz9s+YA0UR3Vwv-DLTDg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: HID: i2c-hid: Label this binding as deprecated
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Rob Herring <robh@kernel.org>, Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue,  3 Nov 2020 00:13:07 +0100 Paul Menzel wrote:
+> From: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
+> 
+> The ops field might no be defined, so add a check.
 
-On Fri, Oct 30, 2020 at 12:12 PM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> I honestly wish we could have this as a separate module that would be
-> in charge of the DT folks, but already having it as a separate file
-> would be a win.
+This change should be first, otherwise AFAIU if someone builds the
+kernel in between the commits (e.g. for bisection) it will crash.
 
-I've made my best effort at splitting it into a fully separate module
-in my v3.  I'm sure there will be bikeshed-type issues, but maybe it
-looks OK-ish now?
+> The patch is taken from Open Network Linux (ONL), and it was added there
+> as part of the patch
+> 
+>     packages/base/any/kernels/3.16+deb8/patches/driver-support-intel-igb-bcm5461X-phy.patch
+> 
+> in ONL commit f32316c63c (Support the BCM54616 and BCM5461S.) [1]. Part
+> of this commit was already upstreamed in Linux commit eeb0149660 (igb:
+> support BCM54616 PHY) in 2017.
+> 
+> I applied the forward-ported
+> 
+>     packages/base/any/kernels/5.4-lts/patches/0002-driver-support-intel-igb-bcm5461S-phy.patch
+> 
+> added in ONL commit 5ace6bcdb3 (Add 5.4 LTS kernel build.) [2].
+> 
+> [1]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/f32316c63ce3a64de125b7429115c6d45e942bd1
+> [2]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/5ace6bcdb37cb8065dcd1d4404b3dcb6424f6331
 
--Doug
+No need to put this in every commit message.
+
+We preserve the cover letter in tree as a merge commit message, so
+explaining things once in the cover letter is sufficient.
+
+> Cc: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
+
+Jefferey will need to provide a sign-off as the author.
+
+> Cc: John W Linville <linville@tuxdriver.com>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
