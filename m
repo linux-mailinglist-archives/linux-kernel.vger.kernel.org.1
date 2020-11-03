@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE06F2A57E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB402A57D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732611AbgKCVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:46:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47644 "EHLO mail.kernel.org"
+        id S1732049AbgKCUwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732003AbgKCUvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:53 -0500
+        id S1731418AbgKCUwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61E752071E;
-        Tue,  3 Nov 2020 20:51:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B246422226;
+        Tue,  3 Nov 2020 20:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436712;
-        bh=sPcDn3pCFsVf/hXUP2umMlz2D70RkKKsF+8Rs+E/f/A=;
+        s=default; t=1604436722;
+        bh=ht3LeBio6+cRc0XRV+RP1Vy/WvDlFFlCEtlcc46tvvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zavex8GFYnHMZENXJiZFWSyvXXK590JgR3Aj7V9kyX6NQ5lb9iTBgn5+r7tYbNINN
-         cHhF/PMSVBQqQQSXp0f/FHDn/kinVWroz3+hXNIsIAtF346TTGNGr/8esxRrXhow5o
-         ezOzCz1/43Fg899UvioPbdLP6PEnsyrH/hhGQ2N8=
+        b=0MMu6gfJ0X8yAm6n2moq2rsUKWLMVMLoQWGZVrazd9WVWzEffgKR3DObDnZuRMZo6
+         sjUFk7/oo4l0tmHwbJeAlQO0jmwk1mmkm+JdqpcKapYvpqPFYdLdWuA/yt3SKHZ+HD
+         nmQIIKa49toTkseC4WM/kjQCRyo8kALikdT03FfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.9 370/391] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
-Date:   Tue,  3 Nov 2020 21:37:01 +0100
-Message-Id: <20201103203412.114859901@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andre Heider <a.heider@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 5.9 373/391] arm64: dts: marvell: espressobin: Add ethernet switch aliases
+Date:   Tue,  3 Nov 2020 21:37:04 +0100
+Message-Id: <20201103203412.316278533@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,37 +45,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Pali Rohár <pali@kernel.org>
 
-commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
+commit b64d814257b027e29a474bcd660f6372490138c7 upstream.
 
-Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
-without CONFIG_MMU leads to build errors:
+Espressobin boards have 3 ethernet ports and some of them got assigned more
+then one MAC address. MAC addresses are stored in U-Boot environment.
 
-  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
-  arch/arm/plat-samsung/pm-debug.c:57:2: error:
-    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
+device") kernel can use MAC addresses from DT for particular DSA port.
 
-Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
+Currently Espressobin DTS file contains alias just for ethernet0.
+
+This patch defines additional ethernet aliases in Espressobin DTS files, so
+bootloader can fill correct MAC address for DSA switch ports if more MAC
+addresses were specified.
+
+DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
+are used for lan ports for both Espressobin revisions (V5 and V7).
+
+Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
+Cc: <stable@vger.kernel.org> # a2c7023f7075c: dsa: read mac address
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Andre Heider <a.heider@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/plat-samsung/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts |   10 ++++++--
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      |   10 ++++++--
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi        |   12 ++++++----
+ 3 files changed, 24 insertions(+), 8 deletions(-)
 
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -241,6 +241,7 @@ config SAMSUNG_PM_DEBUG
- 	depends on PM && DEBUG_KERNEL
- 	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
- 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
-+	depends on DEBUG_LL && MMU
- 	help
- 	  Say Y here if you want verbose debugging from the PM Suspend and
- 	  Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+@@ -20,17 +20,23 @@
+ 	compatible = "globalscale,espressobin-v7-emmc", "globalscale,espressobin-v7",
+ 		     "globalscale,espressobin", "marvell,armada3720",
+ 		     "marvell,armada3710";
++
++	aliases {
++		/* ethernet1 is wan port */
++		ethernet1 = &switch0port3;
++		ethernet3 = &switch0port1;
++	};
+ };
+ 
+ &switch0 {
+ 	ports {
+-		port@1 {
++		switch0port1: port@1 {
+ 			reg = <1>;
+ 			label = "lan1";
+ 			phy-handle = <&switch0phy0>;
+ 		};
+ 
+-		port@3 {
++		switch0port3: port@3 {
+ 			reg = <3>;
+ 			label = "wan";
+ 			phy-handle = <&switch0phy2>;
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+@@ -19,17 +19,23 @@
+ 	model = "Globalscale Marvell ESPRESSOBin Board V7";
+ 	compatible = "globalscale,espressobin-v7", "globalscale,espressobin",
+ 		     "marvell,armada3720", "marvell,armada3710";
++
++	aliases {
++		/* ethernet1 is wan port */
++		ethernet1 = &switch0port3;
++		ethernet3 = &switch0port1;
++	};
+ };
+ 
+ &switch0 {
+ 	ports {
+-		port@1 {
++		switch0port1: port@1 {
+ 			reg = <1>;
+ 			label = "lan1";
+ 			phy-handle = <&switch0phy0>;
+ 		};
+ 
+-		port@3 {
++		switch0port3: port@3 {
+ 			reg = <3>;
+ 			label = "wan";
+ 			phy-handle = <&switch0phy2>;
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+@@ -13,6 +13,10 @@
+ / {
+ 	aliases {
+ 		ethernet0 = &eth0;
++		/* for dsa slave device */
++		ethernet1 = &switch0port1;
++		ethernet2 = &switch0port2;
++		ethernet3 = &switch0port3;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 	};
+@@ -120,7 +124,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
++			switch0port0: port@0 {
+ 				reg = <0>;
+ 				label = "cpu";
+ 				ethernet = <&eth0>;
+@@ -131,19 +135,19 @@
+ 				};
+ 			};
+ 
+-			port@1 {
++			switch0port1: port@1 {
+ 				reg = <1>;
+ 				label = "wan";
+ 				phy-handle = <&switch0phy0>;
+ 			};
+ 
+-			port@2 {
++			switch0port2: port@2 {
+ 				reg = <2>;
+ 				label = "lan0";
+ 				phy-handle = <&switch0phy1>;
+ 			};
+ 
+-			port@3 {
++			switch0port3: port@3 {
+ 				reg = <3>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy2>;
 
 
