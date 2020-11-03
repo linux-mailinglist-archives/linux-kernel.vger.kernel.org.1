@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452072A37C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AB2A37C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbgKCAcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S1726754AbgKCAbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgKCAcq (ORCPT
+        with ESMTP id S1725932AbgKCAbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:32:46 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6605C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 16:32:44 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id i39so9153260qtb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 16:32:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=4FrNzJg1aR1e5IxdfhK5vpGCyHiDXQ0Jq8P4BQVMTZk=;
-        b=PBgm8fy3QQi5IOq8hDzD4qxrNWroRHlYlatQPiR6flH42pcVtyQ6XYyA7LchOH+9Je
-         7sPYI8Dj/kXh2pHBLJ0s652A7YdyaV2NTHyq9AXgCeFqD1MMqsVwRcqbDwIOj/G8VOY5
-         Rkf7f0yUECJdsflxUgM9Gxd/PKPQEU11xE5LKKpOHTppeyKL83nT/NA2IuFFxhHHws5G
-         XdoSlNk2yJ5Ju9xzlB0Plr0Srz3JBWvP9nj0X+x5hdDqxHendXfQ7s2hKSPNV371bWfW
-         56zPbim7RHNqZT7fhiwlwpbKHPCV7tq7I4fAoJ5WIaIpNa9VIIi7GRTKQhe9I3mM8Mkm
-         mbkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=4FrNzJg1aR1e5IxdfhK5vpGCyHiDXQ0Jq8P4BQVMTZk=;
-        b=DmYI/hSl8mdV0yGVDssnhtqqBQmHFnQStv6QBtOVEj/KCCEPXVFxtZfEXuZE1JwzUU
-         6VqNN3otNr3aCkspxnuA36XbtfJ4k6KkW4ZnREf6SiJwGq/M6WlOS2M6R4iu7tS/Pue4
-         FvOYXhDIp1qW9e6yp24DMg7G8itiKLeFk/CejJC/aSDJb5aBKe8SV7+1Wfnt3lpJirTD
-         6HUqfOAfzICNEKaglRPuD4i11aCueYdINwabzYxF2DcIiZznaAe4rAn6pWsUOecNFjaM
-         o/1Y/bGVZiumiKksa86cwBQLVPY+v3vyLn22xr1ifFUzpBo1j1atOm9jcLjOx7kQwm6F
-         BcCw==
-X-Gm-Message-State: AOAM5311+Bw4MzxibfSO4KyTQaspUz9pyyTQbVJ85stTvVBoqC77sy8C
-        BOAltgFbG9LkdiQntJbh6KCcSP/mev09YcQ=
-X-Google-Smtp-Source: ABdhPJyk81T/dUq2WW/IVqG8pt9qyjKsvDRjHaakGQvyS+yoe4IpXlP8TrH+qKj18ohoqh8PysSvKlt/NeQuKRA=
-Sender: "pceballos via sendgmr" <pceballos@pceballos2.nyc.corp.google.com>
-X-Received: from pceballos2.nyc.corp.google.com ([2620:0:1003:510:de4a:3eff:fe70:84c])
- (user=pceballos job=sendgmr) by 2002:a0c:e40c:: with SMTP id
- o12mr25392268qvl.29.1604363563963; Mon, 02 Nov 2020 16:32:43 -0800 (PST)
-Date:   Mon,  2 Nov 2020 19:29:39 -0500
-Message-Id: <20201103002939.688690-1-pceballos@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] HID: hid-sensor-hub: Fix issue with devices with no report ID
-From:   Pablo Ceballos <pceballos@google.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pablo Ceballos <pceballos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 2 Nov 2020 19:31:40 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD43C0617A6;
+        Mon,  2 Nov 2020 16:31:40 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQ9gy0WJCz9sRR;
+        Tue,  3 Nov 2020 11:31:22 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604363497;
+        bh=abFiyo/RifuMQVqMIhH00amB1yormpJhfqr9G5pJa74=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EHYEdXwcf9uUh/CupNFo4xDhY0prmaZWJFlUYvdZu1Gl304yd0qg4NLSlfoXalgwK
+         yzAgrU4ad8RGQ6PiQQBYNlnRTSGgeEgvdFBEpYGsn/jz3VVf8OhuH0vvBgsbWk3cej
+         XnExO0LBywlM15X4Njrsbfh+fUzZ4YRzHuSrjB/xWyeCzBVOns+rO64v5XxOair4Y3
+         QMXci3CAooj0g1YbrdjSziALvJPriaDmgCZltLqOc7o0pItQ1GTSEF0f+rpzs1/NQR
+         9mxYltd0HTm7XdbDyq7HaspwW5Ij44XSBRsSY4qCcSKAvMMd9eoFmc8YE8EusGaFcN
+         WPBgvllj6aDGA==
+Date:   Tue, 3 Nov 2020 11:31:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-misc-fixes tree
+Message-ID: <20201103113121.4f1ffe17@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/gJqgW8ibeandfWFBKfAJJxB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some HID devices don't use a report ID because they only have a single
-report. In those cases, the report ID in struct hid_report will be zero
-and the data for the report will start at the first byte, so don't skip
-over the first byte.
+--Sig_/gJqgW8ibeandfWFBKfAJJxB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Pablo Ceballos <pceballos@google.com>
----
- drivers/hid/hid-sensor-hub.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-index 94c7398b5c27..3dd7d3246737 100644
---- a/drivers/hid/hid-sensor-hub.c
-+++ b/drivers/hid/hid-sensor-hub.c
-@@ -483,7 +483,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
- 		return 1;
- 
- 	ptr = raw_data;
--	ptr++; /* Skip report id */
-+	if (report->id)
-+		ptr++; /* Skip report id */
- 
- 	spin_lock_irqsave(&pdata->lock, flags);
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
+After merging the drm-misc-fixes tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
+drivers/gpu/drm/vc4/vc4_drv.c: In function 'vc4_drm_unbind':
+drivers/gpu/drm/vc4/vc4_drv.c:322:18: warning: unused variable 'vc4' [-Wunu=
+sed-variable]
+  322 |  struct vc4_dev *vc4 =3D to_vc4_dev(drm);
+      |                  ^~~
+
+Introduced by commit
+
+  dcda7c28bff2 ("drm/vc4: kms: Add functions to create the state objects")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gJqgW8ibeandfWFBKfAJJxB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+gpNkACgkQAVBC80lX
+0GzObAf9ELauIfurBLxpumwv/j7hYeA/o36O9sxR7KMYt/GU0Wf6N2v9s5jxS8nP
+kECfAc743DU2tB6ruz4LhM5Ftz/Bl1gIP0fkgjN9dx3dvBUSN17iyVJTkriSm+Pw
+wEHzVUhbZA0jDRL6+KceMBRbiijlrnjfeQ41yiEbLt7NX7zKoOwXwN/yXAAF11/Y
+z/urYPtssjKfOXTca/DbC27hE9N/voIII80qODgj4zDFD4N4UY5n/UBMyDrEUcc4
+BqF7pshekl9aSlRKODh3NIRP9D7CXij4ClP/Oz3mnX9F8ZiD0ma/SKBBoD6Vbqwi
+XIPcQ0x9tC6LyjM3EEuhtsHOgLE5yQ==
+=23z8
+-----END PGP SIGNATURE-----
+
+--Sig_/gJqgW8ibeandfWFBKfAJJxB--
