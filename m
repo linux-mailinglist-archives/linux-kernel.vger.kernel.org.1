@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0243D2A438C
+	by mail.lfdr.de (Postfix) with ESMTP id 718D92A438D
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgKCKz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728283AbgKCKz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728265AbgKCKz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Nov 2020 05:55:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728248AbgKCKz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:55:26 -0500
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3FFC223BD;
-        Tue,  3 Nov 2020 10:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604400925;
-        bh=Gx/xjl1lJ2zVpy4vXYoDX8bz9kjv23h23jTvE3/Hxbg=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=2sEeylef5AtEFxa+uyhscnSV6SoxvnPd4MSyfVxYTzKxNFoH0FbBX+085E6KdkwwP
-         4vV8ZWaOIEwHSTPKOmq8PFRXoe+pcvjYqj/HdrYTsDDnFQke3cisQ+0KvJUx2qYnLz
-         mWIhbwbEF6BRJDWLFqQWq+e9aeJsKvHlXBqVdyrM=
-Date:   Tue, 3 Nov 2020 11:55:22 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Pascal Giard <pascal.giard@etsmtl.ca>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sanjay Govind <sanjay.govind9@gmail.com>
-Subject: Re: [PATCH] HID: ghlive: support for ghlive ps3/wii u dongles
-In-Reply-To: <CAJNNDmn1OBzRouNUcAmWSfj4piSHRFfc6V6gvb2D+2qYO1Ob7g@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2011031152270.18859@cbobk.fhfr.pm>
-References: <20201009022722.123943-1-pascal.giard@etsmtl.ca> <nycvar.YFH.7.76.2010291622380.18859@cbobk.fhfr.pm> <CAJNNDmn1OBzRouNUcAmWSfj4piSHRFfc6V6gvb2D+2qYO1Ob7g@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A26DC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:55:27 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id p19so3111466wmg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 02:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+KRoxaxWoP931pjhgr3QuPJCTEb7tuzgIbQbwmrzu9g=;
+        b=Ol04UUQSfW6ux3RlOkA+C6+MmHfaKF74G+UFYH5yLKmlvLHa9sMqriK/aq/ywbcAuQ
+         Xnk83l/kUwaPaQp0nU6bevo5gwJ7RO7DE0bc4PQQ3RCyXpudJDJojvMzMWavOa2nGuuS
+         8+vOwvYk800pCIgua1SGmBKC4pZ1dWYP9GhlO+88pvhqlOcTkrRXZekOqjHFVWBiD9O+
+         Z0M8wibCQ3rXXzu97iz1U0eNGMrZLHnjas9qzmEXARzZvBlx+OHVf3qqkPqVC0z6mA8Q
+         bHUglms3pdQfbwweNAItA4ljBTit8bVGWWzNAnWRtUwv7x7O6zBsYC9ZMOc1Dk8pwXHL
+         rHxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+KRoxaxWoP931pjhgr3QuPJCTEb7tuzgIbQbwmrzu9g=;
+        b=jlIiUZtKrbBYnDjEOWa3RRStNCw05Hyi6fd4fDZ8vi+aRsG27PSfA0JTX8sX2cn6fD
+         AyZZ68nUFEY3+TsLJ2DFVUPT7EPPNk0HeYj0HQ0k8Njnb7UvrTWbw1zD5xQhxNdv2RSs
+         fQyb25uQjd3cIF7z0bEJxx2tNdsPe0un1Ijgbqk8VeslpCQmvqWahDzCpHcTshcpyaVL
+         ISg3Y9H95SvEmk3guTkn3EAbqyddv/3nJVfDvw6SA/eIp3MQXBZPWbbZ+i0cqa3+G51n
+         T+LRWGd8fjpcJF/p07X4ZauV6TSHafFfV2iHxGube/kUiiA9I6iC9dsmXBw+56gEUpU1
+         ZE0w==
+X-Gm-Message-State: AOAM5329ZQ+351B7ubgdHszzvMLs7Q0HWp8ZQeLp+eHcKr6MsAq0J63N
+        UaaQNO025Bj06Z1aI/dDHzfopg==
+X-Google-Smtp-Source: ABdhPJyHMlpjYWcgrY1NvCUqCBWvWxQQy2Hu/2TVnz7K91UtDbRzNOBmUhJ1oX0oDJrv7tqX2td3sQ==
+X-Received: by 2002:a1c:b746:: with SMTP id h67mr2876554wmf.43.1604400926171;
+        Tue, 03 Nov 2020 02:55:26 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id t5sm2638295wmg.19.2020.11.03.02.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 02:55:25 -0800 (PST)
+Date:   Tue, 3 Nov 2020 10:55:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
+Message-ID: <20201103105523.GO4488@dell>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <20201102183242.2031659-1-yepeilin.cs@gmail.com>
+ <20201103085324.GL4488@dell>
+ <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
+ <20201103091538.GA2663113@kroah.com>
+ <20201103095239.GW401619@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103095239.GW401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020, Pascal Giard wrote:
+On Tue, 03 Nov 2020, Daniel Vetter wrote:
 
-> > >  drivers/hid/Kconfig      |   6 ++
-> > >  drivers/hid/Makefile     |   1 +
-> > >  drivers/hid/hid-ghlive.c | 220 +++++++++++++++++++++++++++++++++++++++
-> >
-> > Would it make more sense (with respect to how we are structuring/naming
-> > the hid drivers) to incorporate this into hid-sony (irrespective of
-> > currently ongoing discussions about actually splitting that driver :) )?
-> >
+> On Tue, Nov 03, 2020 at 10:15:38AM +0100, Greg KH wrote:
+> > On Tue, Nov 03, 2020 at 09:58:18AM +0100, Daniel Vetter wrote:
+> > > On Tue, Nov 3, 2020 at 9:53 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Mon, 02 Nov 2020, Peilin Ye wrote:
+> > > >
+> > > > > From: Lee Jones <lee.jones@linaro.org>
+> > > > >
+> > > > > Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
+> > > > > fonts") introduced the following error when building rpc_defconfig (only
+> > > > > this build appears to be affected):
+> > > > >
+> > > > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+> > > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+> > > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+> > > > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+> > > > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+> > > > >
+> > > > > The .data section is discarded at link time.  Reinstating acorndata_8x8 as
+> > > > > const ensures it is still available after linking.  Do the same for the
+> > > > > other 12 built-in fonts as well, for consistency purposes.
+> > > > >
+> > > > > Cc: <stable@vger.kernel.org>
+> > > > > Cc: Russell King <linux@armlinux.org.uk>
+> > > > > Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
+> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > > > ---
+> > > > > Changes in v2:
+> > > > >   - Fix commit ID to 6735b4632def in commit message (Russell King
+> > > > >     <linux@armlinux.org.uk>)
+> > > > >   - Add `const` back for all 13 built-in fonts (Daniel Vetter
+> > > > >     <daniel.vetter@ffwll.ch>)
+> > > > >   - Add a Fixes: tag
+> > > > >
+> > > > >  lib/fonts/font_10x18.c     | 2 +-
+> > > > >  lib/fonts/font_6x10.c      | 2 +-
+> > > > >  lib/fonts/font_6x11.c      | 2 +-
+> > > > >  lib/fonts/font_6x8.c       | 2 +-
+> > > > >  lib/fonts/font_7x14.c      | 2 +-
+> > > > >  lib/fonts/font_8x16.c      | 2 +-
+> > > > >  lib/fonts/font_8x8.c       | 2 +-
+> > > > >  lib/fonts/font_acorn_8x8.c | 2 +-
+> > > > >  lib/fonts/font_mini_4x6.c  | 2 +-
+> > > > >  lib/fonts/font_pearl_8x8.c | 2 +-
+> > > > >  lib/fonts/font_sun12x22.c  | 2 +-
+> > > > >  lib/fonts/font_sun8x16.c   | 2 +-
+> > > > >  lib/fonts/font_ter16x32.c  | 2 +-
+> > > > >  13 files changed, 13 insertions(+), 13 deletions(-)
+> > > >
+> > > > LGTM.
+> > > >
+> > > > Thanks for keeping my authorship.  Much appreciated.
+> > > 
+> > > Should I stuff this into drm-misc-fixes? Or will someone else pick
+> > > this up? Greg?
+> > > 
+> > > I guess drm-misc-fixes might be easiest since there's a bunch of other
+> > > fbcon/font stuff in the queue in drm-misc from Peilin.
+> > 
+> > You can take it:
+> > 
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> I think it would be most appropriate, yes.
-> 
-> Note that there are 3 other dongles out there:
-> - the xbox360 dongle does not need any special treatment, it just
-> works with hid-generic;
-> - the ps4 dongle obviously makes sense to go into hid-sony (although
-> no one has reversed engineered that one (yet));
-> - the xboxone dongle: that's an unknown one to me. I don't have any
-> information about that one unfortunately and do not own one.
-> 
-> I wrote this as a separate hid driver as I saw that email [1] from
-> Roderick Colenbrander in which he expressed a preference for a
-> seperate driver in cases where the device is not from Sony proper.
+> Applied to drm-misc-fixes, thanks everyone!
 
-Yeah, but before that happens, I think we should just continue with status 
-quo, meaning putting the support into hid-sony, if noone has any 
-objections.
+Would you be kind enough to let us know when this lands in Mainline
+please?  We'll need to back-port it to start fixing up our Stable
+kernels ASAP.
 
-> > So if one of the allocations above succeeds and a subsequent one fails,
-> > you're going to try re-allocate all of them next time again, leaking the
-> > ones that previously succeeded, right?
-> >
-> 
-> I attempted to avoid such a case. IIUC there are 4 possible scenarios
-> tied to those 3 allocs (cr, databuf, and urb):
-> 1) alloc of cr fails. nothing to be freed, we reschedule;
-> 2) alloc of cr succeeds, alloc of databuf fails. we free cr and we reschedule;
-> 3) allocs of cr and databuf succeed, alloc of urb fails. we free cr
-> and databuf, and we reschedule;
-> 4) all allocs succeed, we submit the urb, and free urb. once the
-> control packet is sent, the callback is called and we free cr and
-> databuf.
-> 
-> Am I missing something? 
-
-No, I probably didn't have my first coffee of the day when looking at your 
-patch, sorry.
-
-Still, the way it tries to allocate the buffers is sub-optimal, as if 
-either (not necessarily the first one) fails, it retries the next 
-iteration with attempting to allocate from scratch.
-
-If the system really is in tight memory condition, it'd make more sense to 
-keep the ones for which the allocation succeeded already allocated, and 
-retry only the failed one(s).
-
-Thanks,
+TIA.
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
