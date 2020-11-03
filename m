@@ -2,271 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845732A533C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DE72A50FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733060AbgKCU7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33800 "EHLO mail.kernel.org"
+        id S1729599AbgKCUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:37:03 -0500
+Received: from mga18.intel.com ([134.134.136.126]:55780 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733028AbgKCU7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:01 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6470D22226;
-        Tue,  3 Nov 2020 20:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437139;
-        bh=N9oOqpj2dOBHUHc8ZX1sCGPiCvgVhyxCOv0E6mJpIQw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xAGYPyWh4T0mXg1kAaU5N/I8hLkM/jtbu6oVAln+IcQ8UokqGe5/JGhlQQTVcs+vv
-         gWXN9KLs7wYIyIgbSB9l0tSEmTC5JtehpyAnK3oRsJKC2zlnB4RhdSWiO+AIAAzTHT
-         V0exfA2X1VQoqwb7Gpv51Au0n5hFgg/+wqdZoxhs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>
-Subject: [PATCH 5.4 164/214] NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE
-Date:   Tue,  3 Nov 2020 21:36:52 +0100
-Message-Id: <20201103203306.144479336@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728157AbgKCUhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:37:00 -0500
+IronPort-SDR: 86qM8s9lziwD6JfrEIcE7RpXjoM7iw8vDhJP+0g76HMsoFhXs1b1wWCx+dJhtPGKdJg2khsu9j
+ iamIOA4OeMCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156898593"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="156898593"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:37:00 -0800
+IronPort-SDR: bBVUxlKg63ESgzPtszszhEl/LUUYJ98jT773/7tEGqR4BQpJD8EkTe3whc4gwWhBIPm23ZqUAl
+ j9AEyuWVY/+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="352454772"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 03 Nov 2020 12:36:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 11940646; Tue,  3 Nov 2020 22:36:56 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v5 5/7] resource: Add test cases for new resource API
+Date:   Tue,  3 Nov 2020 22:36:53 +0200
+Message-Id: <20201103203655.17701-6-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
+References: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Coddington <bcodding@redhat.com>
+Add test cases for newly added resource APIs.
 
-commit b4868b44c5628995fdd8ef2e24dda73cef963a75 upstream.
-
-Since commit 0e0cb35b417f ("NFSv4: Handle NFS4ERR_OLD_STATEID in
-CLOSE/OPEN_DOWNGRADE") the following livelock may occur if a CLOSE races
-with the update of the nfs_state:
-
-Process 1           Process 2           Server
-=========           =========           ========
- OPEN file
-                    OPEN file
-                                        Reply OPEN (1)
-                                        Reply OPEN (2)
- Update state (1)
- CLOSE file (1)
-                                        Reply OLD_STATEID (1)
- CLOSE file (2)
-                                        Reply CLOSE (-1)
-                    Update state (2)
-                    wait for state change
- OPEN file
-                    wake
- CLOSE file
- OPEN file
-                    wake
- CLOSE file
- ...
-                    ...
-
-We can avoid this situation by not issuing an immediate retry with a bumped
-seqid when CLOSE/OPEN_DOWNGRADE receives NFS4ERR_OLD_STATEID.  Instead,
-take the same approach used by OPEN and wait at least 5 seconds for
-outstanding stateid updates to complete if we can detect that we're out of
-sequence.
-
-Note that after this change it is still possible (though unlikely) that
-CLOSE waits a full 5 seconds, bumps the seqid, and retries -- and that
-attempt races with another OPEN at the same time.  In order to avoid this
-race (which would result in the livelock), update
-nfs_need_update_open_stateid() to handle the case where:
- - the state is NFS_OPEN_STATE, and
- - the stateid doesn't match the current open stateid
-
-Finally, nfs_need_update_open_stateid() is modified to be idempotent and
-renamed to better suit the purpose of signaling that the stateid passed
-is the next stateid in sequence.
-
-Fixes: 0e0cb35b417f ("NFSv4: Handle NFS4ERR_OLD_STATEID in CLOSE/OPEN_DOWNGRADE")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- fs/nfs/nfs4_fs.h   |    8 +++++
- fs/nfs/nfs4proc.c  |   81 ++++++++++++++++++++++++++++++-----------------------
- fs/nfs/nfs4trace.h |    1 
- 3 files changed, 56 insertions(+), 34 deletions(-)
+ kernel/Makefile         |   1 +
+ kernel/resource_kunit.c | 150 ++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug       |  11 +++
+ 3 files changed, 162 insertions(+)
+ create mode 100644 kernel/resource_kunit.c
 
---- a/fs/nfs/nfs4_fs.h
-+++ b/fs/nfs/nfs4_fs.h
-@@ -570,6 +570,14 @@ static inline bool nfs4_stateid_is_newer
- 	return (s32)(be32_to_cpu(s1->seqid) - be32_to_cpu(s2->seqid)) > 0;
- }
+diff --git a/kernel/Makefile b/kernel/Makefile
+index af601b9bda0e..aac15aeb9d69 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -123,6 +123,7 @@ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+ obj-$(CONFIG_RSEQ) += rseq.o
+ obj-$(CONFIG_WATCH_QUEUE) += watch_queue.o
  
-+static inline bool nfs4_stateid_is_next(const nfs4_stateid *s1, const nfs4_stateid *s2)
-+{
-+	u32 seq1 = be32_to_cpu(s1->seqid);
-+	u32 seq2 = be32_to_cpu(s2->seqid);
++obj-$(CONFIG_RESOURCE_KUNIT_TEST) += resource_kunit.o
+ obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
+ 
+ CFLAGS_stackleak.o += $(DISABLE_STACKLEAK_PLUGIN)
+diff --git a/kernel/resource_kunit.c b/kernel/resource_kunit.c
+new file mode 100644
+index 000000000000..9fdbca8426f1
+--- /dev/null
++++ b/kernel/resource_kunit.c
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Test cases for API provided by resource.c and ioport.h
++ */
 +
-+	return seq2 == seq1 + 1U || (seq2 == 1U && seq1 == 0xffffffffU);
++#include <kunit/test.h>
++#include <linux/ioport.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++
++#define R0_START	0x0000
++#define R0_END		0xffff
++#define R1_START	0x1234
++#define R1_END		0x2345
++#define R2_START	0x4567
++#define R2_END		0x5678
++#define R3_START	0x6789
++#define R3_END		0x789a
++#define R4_START	0x2000
++#define R4_END		0x7000
++
++static struct resource r0 = { .start = R0_START, .end = R0_END };
++static struct resource r1 = { .start = R1_START, .end = R1_END };
++static struct resource r2 = { .start = R2_START, .end = R2_END };
++static struct resource r3 = { .start = R3_START, .end = R3_END };
++static struct resource r4 = { .start = R4_START, .end = R4_END };
++
++struct result {
++	struct resource *r1;
++	struct resource *r2;
++	struct resource r;
++	bool ret;
++};
++
++static struct result results_for_union[] = {
++	{
++		.r1 = &r1, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
++	}, {
++		.r1 = &r3, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
++	}, {
++		.r1 = &r4, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r1, .ret = false,
++	}, {
++		.r1 = &r3, .r2 = &r1, .ret = false,
++	}, {
++		.r1 = &r4, .r2 = &r1, .r.start = R1_START, .r.end = R4_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r3, .ret = false,
++	}, {
++		.r1 = &r2, .r2 = &r4, .r.start = R4_START, .r.end = R4_END, .ret = true,
++	}, {
++		.r1 = &r3, .r2 = &r4, .r.start = R4_START, .r.end = R3_END, .ret = true,
++	},
++};
++
++static struct result results_for_intersection[] = {
++	{
++		.r1 = &r1, .r2 = &r0, .r.start = R1_START, .r.end = R1_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r0, .r.start = R2_START, .r.end = R2_END, .ret = true,
++	}, {
++		.r1 = &r3, .r2 = &r0, .r.start = R3_START, .r.end = R3_END, .ret = true,
++	}, {
++		.r1 = &r4, .r2 = &r0, .r.start = R4_START, .r.end = R4_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r1, .ret = false,
++	}, {
++		.r1 = &r3, .r2 = &r1, .ret = false,
++	}, {
++		.r1 = &r4, .r2 = &r1, .r.start = R4_START, .r.end = R1_END, .ret = true,
++	}, {
++		.r1 = &r2, .r2 = &r3, .ret = false,
++	}, {
++		.r1 = &r2, .r2 = &r4, .r.start = R2_START, .r.end = R2_END, .ret = true,
++	}, {
++		.r1 = &r3, .r2 = &r4, .r.start = R3_START, .r.end = R4_END, .ret = true,
++	},
++};
++
++static void resource_do_test(struct kunit *test, bool ret, struct resource *r,
++			     bool exp_ret, struct resource *exp_r,
++			     struct resource *r1, struct resource *r2)
++{
++	KUNIT_EXPECT_EQ_MSG(test, ret, exp_ret, "Resources %pR %pR", r1, r2);
++	KUNIT_EXPECT_EQ_MSG(test, r->start, exp_r->start, "Start elements are not equal");
++	KUNIT_EXPECT_EQ_MSG(test, r->end, exp_r->end, "End elements are not equal");
 +}
 +
- static inline void nfs4_stateid_seqid_inc(nfs4_stateid *s1)
- {
- 	u32 seqid = be32_to_cpu(s1->seqid);
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -1515,19 +1515,6 @@ static void nfs_state_log_update_open_st
- 		wake_up_all(&state->waitq);
- }
++static void resource_do_union_test(struct kunit *test, struct result *r)
++{
++	struct resource result;
++	bool ret;
++
++	memset(&result, 0, sizeof(result));
++	ret = resource_union(r->r1, r->r2, &result);
++	resource_do_test(test, ret, &result, r->ret, &r->r, r->r1, r->r2);
++
++	memset(&result, 0, sizeof(result));
++	ret = resource_union(r->r2, r->r1, &result);
++	resource_do_test(test, ret, &result, r->ret, &r->r, r->r2, r->r1);
++}
++
++static void resource_test_union(struct kunit *test)
++{
++	struct result *r = results_for_union;
++	unsigned int i = 0;
++
++	do {
++		resource_do_union_test(test, &r[i]);
++	} while (++i < ARRAY_SIZE(results_for_union));
++}
++
++static void resource_do_intersection_test(struct kunit *test, struct result *r)
++{
++	struct resource result;
++	bool ret;
++
++	memset(&result, 0, sizeof(result));
++	ret = resource_intersection(r->r1, r->r2, &result);
++	resource_do_test(test, ret, &result, r->ret, &r->r, r->r1, r->r2);
++
++	memset(&result, 0, sizeof(result));
++	ret = resource_intersection(r->r2, r->r1, &result);
++	resource_do_test(test, ret, &result, r->ret, &r->r, r->r2, r->r1);
++}
++
++static void resource_test_intersection(struct kunit *test)
++{
++	struct result *r = results_for_intersection;
++	unsigned int i = 0;
++
++	do {
++		resource_do_intersection_test(test, &r[i]);
++	} while (++i < ARRAY_SIZE(results_for_intersection));
++}
++
++static struct kunit_case resource_test_cases[] = {
++	KUNIT_CASE(resource_test_union),
++	KUNIT_CASE(resource_test_intersection),
++	{}
++};
++
++static struct kunit_suite resource_test_suite = {
++	.name = "resource",
++	.test_cases = resource_test_cases,
++};
++kunit_test_suite(resource_test_suite);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 8596989423bf..663e7238a56e 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2232,6 +2232,17 @@ config BITFIELD_KUNIT
  
--static void nfs_state_log_out_of_order_open_stateid(struct nfs4_state *state,
--		const nfs4_stateid *stateid)
--{
--	u32 state_seqid = be32_to_cpu(state->open_stateid.seqid);
--	u32 stateid_seqid = be32_to_cpu(stateid->seqid);
--
--	if (stateid_seqid == state_seqid + 1U ||
--	    (stateid_seqid == 1U && state_seqid == 0xffffffffU))
--		nfs_state_log_update_open_stateid(state);
--	else
--		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
--}
--
- static void nfs_test_and_clear_all_open_stateid(struct nfs4_state *state)
- {
- 	struct nfs_client *clp = state->owner->so_server->nfs_client;
-@@ -1553,21 +1540,19 @@ static void nfs_test_and_clear_all_open_
-  * i.e. The stateid seqids have to be initialised to 1, and
-  * are then incremented on every state transition.
-  */
--static bool nfs_need_update_open_stateid(struct nfs4_state *state,
-+static bool nfs_stateid_is_sequential(struct nfs4_state *state,
- 		const nfs4_stateid *stateid)
- {
--	if (test_bit(NFS_OPEN_STATE, &state->flags) == 0 ||
--	    !nfs4_stateid_match_other(stateid, &state->open_stateid)) {
-+	if (test_bit(NFS_OPEN_STATE, &state->flags)) {
-+		/* The common case - we're updating to a new sequence number */
-+		if (nfs4_stateid_match_other(stateid, &state->open_stateid) &&
-+			nfs4_stateid_is_next(&state->open_stateid, stateid)) {
-+			return true;
-+		}
-+	} else {
-+		/* This is the first OPEN in this generation */
- 		if (stateid->seqid == cpu_to_be32(1))
--			nfs_state_log_update_open_stateid(state);
--		else
--			set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
--		return true;
--	}
--
--	if (nfs4_stateid_is_newer(stateid, &state->open_stateid)) {
--		nfs_state_log_out_of_order_open_stateid(state, stateid);
--		return true;
-+			return true;
- 	}
- 	return false;
- }
-@@ -1641,16 +1626,16 @@ static void nfs_set_open_stateid_locked(
- 	int status = 0;
- 	for (;;) {
+ 	  If unsure, say N.
  
--		if (!nfs_need_update_open_stateid(state, stateid))
--			return;
--		if (!test_bit(NFS_STATE_CHANGE_WAIT, &state->flags))
-+		if (nfs_stateid_is_sequential(state, stateid))
- 			break;
++config RESOURCE_KUNIT_TEST
++	tristate "KUnit test for resource API"
++	depends on KUNIT
++	help
++	  This builds the resource API unit test.
++	  Tests the logic of API provided by resource.c and ioport.h.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
 +
- 		if (status)
- 			break;
- 		/* Rely on seqids for serialisation with NFSv4.0 */
- 		if (!nfs4_has_session(NFS_SERVER(state->inode)->nfs_client))
- 			break;
- 
-+		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
- 		prepare_to_wait(&state->waitq, &wait, TASK_KILLABLE);
- 		/*
- 		 * Ensure we process the state changes in the same order
-@@ -1661,6 +1646,7 @@ static void nfs_set_open_stateid_locked(
- 		spin_unlock(&state->owner->so_lock);
- 		rcu_read_unlock();
- 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
++	  If unsure, say N.
 +
- 		if (!signal_pending(current)) {
- 			if (schedule_timeout(5*HZ) == 0)
- 				status = -EAGAIN;
-@@ -3397,7 +3383,8 @@ static bool nfs4_refresh_open_old_statei
- 	__be32 seqid_open;
- 	u32 dst_seqid;
- 	bool ret;
--	int seq;
-+	int seq, status = -EAGAIN;
-+	DEFINE_WAIT(wait);
- 
- 	for (;;) {
- 		ret = false;
-@@ -3409,15 +3396,41 @@ static bool nfs4_refresh_open_old_statei
- 				continue;
- 			break;
- 		}
-+
-+		write_seqlock(&state->seqlock);
- 		seqid_open = state->open_stateid.seqid;
--		if (read_seqretry(&state->seqlock, seq))
--			continue;
- 
- 		dst_seqid = be32_to_cpu(dst->seqid);
--		if ((s32)(dst_seqid - be32_to_cpu(seqid_open)) >= 0)
--			dst->seqid = cpu_to_be32(dst_seqid + 1);
--		else
-+
-+		/* Did another OPEN bump the state's seqid?  try again: */
-+		if ((s32)(be32_to_cpu(seqid_open) - dst_seqid) > 0) {
- 			dst->seqid = seqid_open;
-+			write_sequnlock(&state->seqlock);
-+			ret = true;
-+			break;
-+		}
-+
-+		/* server says we're behind but we haven't seen the update yet */
-+		set_bit(NFS_STATE_CHANGE_WAIT, &state->flags);
-+		prepare_to_wait(&state->waitq, &wait, TASK_KILLABLE);
-+		write_sequnlock(&state->seqlock);
-+		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
-+
-+		if (signal_pending(current))
-+			status = -EINTR;
-+		else
-+			if (schedule_timeout(5*HZ) != 0)
-+				status = 0;
-+
-+		finish_wait(&state->waitq, &wait);
-+
-+		if (!status)
-+			continue;
-+		if (status == -EINTR)
-+			break;
-+
-+		/* we slept the whole 5 seconds, we must have lost a seqid */
-+		dst->seqid = cpu_to_be32(dst_seqid + 1);
- 		ret = true;
- 		break;
- 	}
---- a/fs/nfs/nfs4trace.h
-+++ b/fs/nfs/nfs4trace.h
-@@ -1291,6 +1291,7 @@ DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_set
- DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_delegreturn);
- DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_open_stateid_update);
- DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_open_stateid_update_wait);
-+DEFINE_NFS4_INODE_STATEID_EVENT(nfs4_close_stateid_update_wait);
- 
- DECLARE_EVENT_CLASS(nfs4_getattr_event,
- 		TP_PROTO(
-
+ config SYSCTL_KUNIT_TEST
+ 	tristate "KUnit test for sysctl" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+-- 
+2.28.0
 
