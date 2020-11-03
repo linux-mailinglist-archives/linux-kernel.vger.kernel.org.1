@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860EC2A3F38
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597B02A3F3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgKCIpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:45:08 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45492 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727864AbgKCIpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:45:07 -0500
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AEACD1F45388;
-        Tue,  3 Nov 2020 08:45:05 +0000 (GMT)
-Date:   Tue, 3 Nov 2020 09:45:02 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/panfrost: Fix module unload
-Message-ID: <20201103094502.70de59c9@collabora.com>
-In-Reply-To: <20201030145833.29006-1-steven.price@arm.com>
-References: <20201030145833.29006-1-steven.price@arm.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727566AbgKCIqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:46:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55776 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726211AbgKCIqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:46:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604393167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mVEcr7kDtyq7N5Wpt8+TN28/bLu1zMtwTW239bYnVGY=;
+        b=E9u2RP0eGfoyFhk4LCKLwiSp8ewzx4ZcEFNLXaThbEHn89+03I72D0/eiWpi8HIUJ9sxg9
+        kSKQGQJ5P8F0XpqVS60GP7aRV+zO6KE3Acng03ks4NGaJvW/60ukMu1rRiuPa7ydUvgYMu
+        igmIMRAgWvR77/HlcmAy+hbR6jNbMl4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 45541AE53;
+        Tue,  3 Nov 2020 08:46:07 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 09:46:06 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the printk tree
+Message-ID: <20201103084606.GK20201@alley>
+References: <20201103083201.4c653eed@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103083201.4c653eed@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020 14:58:33 +0000
-Steven Price <steven.price@arm.com> wrote:
-
-> When unloading the call to pm_runtime_put_sync_suspend() will attempt to
-> turn the GPU cores off, however panfrost_device_fini() will have turned
-> the clocks off. This leads to the hardware locking up.
+On Tue 2020-11-03 08:32:01, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Instead don't call pm_runtime_put_sync_suspend() and instead simply mark
-> the device as suspended using pm_runtime_set_suspended(). And also
-> include this on the error path in panfrost_probe().
+> In commit
 > 
-> Fixes: aebe8c22a912 ("drm/panfrost: Fix possible suspend in panfrost_remove")
-> Signed-off-by: Steven Price <steven.price@arm.com>
-
-Queued to drm-misc-fixes.
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/gpu/drm/panfrost/panfrost_drv.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>   8a8424bf2439 ("init/Kconfig: Fix CPU number in LOG_CPU_MAX_BUF_SHIFT description")
 > 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index 23513869500c..0ac8ad18fdc6 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -627,6 +627,7 @@ static int panfrost_probe(struct platform_device *pdev)
->  err_out1:
->  	pm_runtime_disable(pfdev->dev);
->  	panfrost_device_fini(pfdev);
-> +	pm_runtime_set_suspended(pfdev->dev);
->  err_out0:
->  	drm_dev_put(ddev);
->  	return err;
-> @@ -641,9 +642,9 @@ static int panfrost_remove(struct platform_device *pdev)
->  	panfrost_gem_shrinker_cleanup(ddev);
->  
->  	pm_runtime_get_sync(pfdev->dev);
-> -	panfrost_device_fini(pfdev);
-> -	pm_runtime_put_sync_suspend(pfdev->dev);
->  	pm_runtime_disable(pfdev->dev);
-> +	panfrost_device_fini(pfdev);
-> +	pm_runtime_set_suspended(pfdev->dev);
->  
->  	drm_dev_put(ddev);
->  	return 0;
+> Fixes tag
+> 
+>   Fixes: 23b2899f7f ("printk: allow increasing the ring buffer depending on the number of CPUs")
+> 
+> has these problem(s):
+> 
+>   - SHA1 should be at least 12 digits long
+>     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+>     or later) just making sure it is not set (or set to "auto").
 
+Should be fixed now. It is a pity that checkpatch.pl did not warn
+about it.
+
+Thanks for the report.
+
+Best Regards,
+Petr
