@@ -2,194 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE89B2A4B9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B01C2A4B9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKCQdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
+        id S1728487AbgKCQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgKCQd3 (ORCPT
+        with ESMTP id S1728082AbgKCQdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:33:29 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8221CC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:33:29 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s9so19193951wro.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:33:29 -0800 (PST)
+        Tue, 3 Nov 2020 11:33:55 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF4EC0613D1;
+        Tue,  3 Nov 2020 08:33:55 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id 11so183239ljf.2;
+        Tue, 03 Nov 2020 08:33:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version;
-        bh=Q4kLibuT5w52vf8rM7f7rdD5EtuXIibZ3sV5hoXRtaQ=;
-        b=K8GoAuWLpowlXhGUqLyydPTcQfs3w/mh1xBkH2lvJtdJKs1YevQSoDQSgHDjM0qDdy
-         /cUGhqlT2I+1raCyFwLOrs/e7KBfMU/hVmV66co+/pcTyQLZPCmA5K+favFR0hCU6ADc
-         0H/K5mVpyk2tTyliRO+AOJWLiwyMoeUYyGfMMZRYBajHN58Dk8Od7dNWCUhRzp3LReMQ
-         xwjlk5cdyHvc3ZQ0k9b9al3LkfgUXUzu5V7dKdbBqPq6I9ATKTOBoH9Qz8hg3GZ0ZU0O
-         /9ZBjyFS13KSn+g/s5xGkW0QtgW3+cDIACIqcbJr3Rfa0gV3CrjgWmIrT/LhyN69XIp2
-         rw+g==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=34FUKrlTw4RJE4wc96wmEi0mDFfiWN/1D02cQfL3FNE=;
+        b=giZMOFQupVXi4K8d+56dUwXWx2KJi/G0pjlx6IE7XMUpydIvXs2MYInQ0Ch7BbKoEd
+         wuHG8OZHot108jjcg+u+o1HOTvxFBF3rhW7V6nqUrCaLBs2JX8t1GBRQSY8+V+UQr495
+         /ZiyBknZ2z4e9z5/D2Ogj32eMCZxFIzvg0V1YkheHV6YTD+E5RDKG0fmYTTlefqOko6e
+         X9yB1h8/qHRnnD555Ln9ugKJ4lEuL24xPtZazUuIJqHf+gaJBNmTudBQGctuArfrWNzd
+         lPdvevY7KOdDX8zEhaz8feX5D4ZRUHpEzYSwp8AQ4yb9Z7dcpiM0gRvG3pgDfUiRyyuV
+         zFFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=Q4kLibuT5w52vf8rM7f7rdD5EtuXIibZ3sV5hoXRtaQ=;
-        b=MyVvO5bPOQQF8cbN2gqA6dS87RsWEFbXVxpIjvra5Pa1rS4ACxeI12qlO0bCD9bmA4
-         7AazX+Gbx2jcZbs/y45QFzlOmtKVaceNJeUQSvaTPpv0rWKdg5xWnzYsov78s6VfjNzW
-         7CM/jOgbWG+IvW6Gu2jiEIPzDfbE2JjXKsT1ZgggB4N7sjUCDFvazs45HTH0gyFkPg8n
-         1j4qOKXXNfNyV4RGWhpqXzx5sdf59xcq7Z/+g8knPTvOSVqFki/t4eXFsRTy5pAnUWrO
-         8Msvm10JlLCjYgxzhQpJTHjvD8z4eSDzRBqNn9JHDoZKqMlmSBIZ3YzgksZ11U74Y/rR
-         RnPQ==
-X-Gm-Message-State: AOAM530KW4pAZeFX8+b5R3pWlbC5OLvvHuu/BnXPNwkkODGG/I/7P1dx
-        ZyO10TWADNdZfQENiZbkDuc=
-X-Google-Smtp-Source: ABdhPJw5UyDokuC4QCMJs7wlcGDdbLr4hn+ovxWiGyWQ1C99NUuTP9rDhF59I8Ynh7dm2XzX45Fn2A==
-X-Received: by 2002:adf:f90f:: with SMTP id b15mr27360507wrr.343.1604421208127;
-        Tue, 03 Nov 2020 08:33:28 -0800 (PST)
-Received: from matteo-xps-15-9560.lan ([2a01:4b00:a40c:9900::14e])
-        by smtp.gmail.com with ESMTPSA id g17sm27135313wrw.37.2020.11.03.08.33.26
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=34FUKrlTw4RJE4wc96wmEi0mDFfiWN/1D02cQfL3FNE=;
+        b=DX1b2zGnfdKX4/fBvTR3FtsOEoL5kXw+/tm1E0S+XeTwiwOL4SdCzfy7UoAoE2LX0y
+         ui8UR9C5BQXDLOIT37gMzKEKNZGLYzhRYK5/epIO0yCryNKLdm89crGxl73CX2BXoxQg
+         kaMIAoQad4zvDwD6yedC0bfrYc+PcCEodrSNc+H3JpnfUJF7N9f7QN1PV90cOfnpGzQn
+         xcMMbFXae45OgYo914mtAPCEg8ETfmjPeEYbbBv5Z9LpxHkOkb6kZtYS5IYhkf6g/rbU
+         bV2zquZC91hS6oDb/bch2t24Qe12BJToc5/WJF2etVzUjaLH8sGOLybD4SKuntxoBgXg
+         jh6Q==
+X-Gm-Message-State: AOAM530yt6MaO+V3jv92DxDRpl/WcRCghSR3jT8uMja+PUytIbWgXjgP
+        U1ucqw94lbefy2I7LXx/s8o=
+X-Google-Smtp-Source: ABdhPJw6kSH2j7rA0jUgk/horOzGYR0HLbfG4aE0at50yXgqVRdZBk6kiE3eyyY7oINDu5j7L4CGXQ==
+X-Received: by 2002:a2e:9449:: with SMTP id o9mr7844019ljh.457.1604421233930;
+        Tue, 03 Nov 2020 08:33:53 -0800 (PST)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id y27sm4477343ljm.74.2020.11.03.08.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 08:33:27 -0800 (PST)
-Message-ID: <5064a1921b0ba98289c13f325e11347b09cd3672.camel@gmail.com>
-Subject: Re: [PATCH v2 5/6] ARM: dts: sun8i: s3: Add dts for the Elimo
- Initium SBC
-From:   Matteo Scordino <matteo.scordino@gmail.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 03 Nov 2020 16:33:26 +0000
-In-Reply-To: <20201102100632.g5tozkzfjzzch4ny@gilmour.lan>
-References: <20201029022000.601913-1-matteo.scordino@gmail.com>
-         <20201030234325.5865-6-matteo.scordino@gmail.com>
-         <20201102100632.g5tozkzfjzzch4ny@gilmour.lan>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-we+FtxMeYutOzm6ox5w0"
-User-Agent: Evolution 3.36.4-2 
+        Tue, 03 Nov 2020 08:33:53 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 3 Nov 2020 17:33:50 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        willy@infradead.org
+Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
+ regular context
+Message-ID: <20201103163350.GA10665@pc636>
+References: <20201029165019.14218-1-urezki@gmail.com>
+ <20201103154723.GA1310511@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103154723.GA1310511@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 03, 2020 at 10:47:23AM -0500, Joel Fernandes wrote:
+> On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
+> > The current memmory-allocation interface presents to following
+> > difficulties that this patch is designed to overcome:
+> > 
+> > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
+> >    complain about violation("BUG: Invalid wait context") of the
+> >    nesting rules. It does the raw_spinlock vs. spinlock nesting
+> >    checks, i.e. it is not legal to acquire a spinlock_t while
+> >    holding a raw_spinlock_t.
+> > 
+> >    Internally the kfree_rcu() uses raw_spinlock_t whereas the
+> >    "page allocator" internally deals with spinlock_t to access
+> >    to its zones. The code also can be broken from higher level
+> >    of view:
+> >    <snip>
+> >        raw_spin_lock(&some_lock);
+> >        kfree_rcu(some_pointer, some_field_offset);
+> >    <snip>
+> > 
+> > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
+> >    is converted into sleepable variant. Invoking the page allocator from
+> >    atomic contexts leads to "BUG: scheduling while atomic".
+> > 
+> > c) call_rcu() is invoked from raw atomic context and kfree_rcu()
+> >    and kvfree_rcu() are expected to be called from atomic raw context
+> >    as well.
+> > 
+> > Move out a page allocation from contexts which trigger kvfree_rcu()
+> > function to the separate worker. When a k[v]free_rcu() per-cpu page
+> > cache is empty a fallback mechanism is used and a special job is
+> > scheduled to refill the per-cpu cache.
+> 
+> Looks good, still reviewing here. BTW just for my education, I was wondering
+> about Thomas's email:
+> https://lkml.org/lkml/2020/8/11/939
+> 
+> If slab allocations in pure raw-atomic context on RT is not allowed or
+> recommended, should kfree_rcu() be allowed?
+>
+Thanks for reviewing, Joel :)
 
---=-we+FtxMeYutOzm6ox5w0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The decision was made that we need to support kfree_rcu() from "real atomic contexts",
+to align with how it used to be before. We can go and just convert our local locks
+to the spinlock_t variant but that was not Paul goal, it can be that some users need
+kfree_rcu() for raw atomics.
 
---=20
-Matteo Scordino / Embedded Software Consultant
-Mobile: +44 (0)7463701446
+>
+> slab can have same issue right? If per-cpu cache is drained, it has to
+> allocate page from buddy allocator and there's no GFP flag to tell it about
+> context where alloc is happening from.
+> 
+Sounds like that. Apart of that, it might turn out soon that we or somebody
+else will rise a question one more time about something GFP_RAW or GFP_NOLOCKS.
+So who knows..
 
-On Mon, 2020-11-02 at 11:06 +0100, Maxime Ripard wrote:
-> On Fri, Oct 30, 2020 at 11:43:24PM +0000, Matteo Scordino wrote:
-> > The Elimo Engineering Initium is an Open Source Hardware Single Board
-> > Computer based on the Elimo Impetus SoM.
-> >=20
-> > It is meant as the first development platform for the Impetus, providin=
-g
-> > convenient access to the peripherals on the Impetus.
-> >=20
-> > It provides:
-> > USB-C power input
-> > UART-to-USB bridge on the USB-C connector, connected to UART1
-> > USB-A connector for USB2.0 (Host, Device, OTG)
-> > Audio Line In/Out
-> > Pin header to access all signals on the M2 connector of the SoM
-> >=20
-> > Signed-off-by: Matteo Scordino <matteo.scordino@gmail.com>
-> > ---
-> >  arch/arm/boot/dts/Makefile                   |  1 +
-> >  arch/arm/boot/dts/sun8i-s3-elimo-initium.dts | 28 ++++++++++++++++++++
-> >  2 files changed, 29 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-> >=20
-> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> > index 4f0adfead547..dcfb8d39c267 100644
-> > --- a/arch/arm/boot/dts/Makefile
-> > +++ b/arch/arm/boot/dts/Makefile
-> > @@ -1210,6 +1210,7 @@ dtb-$(CONFIG_MACH_SUN8I) +=3D \
-> >  	sun8i-r40-bananapi-m2-ultra.dtb \
-> >  	sun8i-s3-lichee-zero-plus.dtb \
-> >  	sun8i-s3-pinecube.dtb \
-> > +	sun8i-s3-elimo-initium.dtb \
->=20
-> This should be sorted as well
+>
+> Or are we saying that we want to support kfree on RT from raw atomic atomic
+> context, even though kmalloc is not supported? I hate to bring up this
+> elephant in the room, but since I am a part of the people maintaining this
+> code, I believe I would rather set some rules than supporting unsupported
+> usages. :-\ (Once I know what is supported and what isn't that is). If indeed
+> raw atomic kfree_rcu() is a bogus use case because of -RT, then we ought to
+> put a giant warning than supporting it :-(.
+> 
+We discussed it several times, the conclusion was that we need to support 
+kfree_rcu() from raw contexts. At least that was a clear signal from Paul 
+to me. I think, if we obtain the preemtable(), so it becomes versatile, we
+can drop the patch that is in question later on in the future.
 
-Ouch. Will do.
-
->=20
-> >  	sun8i-t3-cqa3t-bv3.dtb \
-> >  	sun8i-v3s-licheepi-zero.dtb \
-> >  	sun8i-v3s-licheepi-zero-dock.dtb \
-> > diff --git a/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts b/arch/arm/bo=
-ot/dts/sun8i-s3-elimo-initium.dts
-> > new file mode 100644
-> > index 000000000000..7677ddc07bf9
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/sun8i-s3-elimo-initium.dts
-> > @@ -0,0 +1,28 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright (C) 2020 Matteo Scordino <matteo@elimo.io>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "sun8i-s3-elimo-impetus.dtsi"
-> > +
-> > +/ {
-> > +	model =3D "Elimo Initium";
-> > +	compatible =3D "elimo,initium", "elimo,impetus", "sochip,s3",
-> > +    "allwinner,sun8i-v3";
->=20
-> You should indent that properly
-
-Double ouch.=20
-However, how is a multiline dt property supposed to be indented?=20
-I have tried a few combinations but nothing seemed to make checkpatch.pl ha=
-ppy,
-except leaving no space at all at the beginning of the line. But I think ma=
-kes it
-quite unreadable?
-
-> > +	aliases {
-> > +		serial0 =3D &uart0;
-> > +		serial1 =3D &uart1;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path =3D "serial0:115200n8";
-> > +	};
-> > +};
->=20
-> It's already in the DTSI, there's no need to duplicate it here
-
-After your question about the UART1 in the Impetus dtsi, I think it makes m=
-ore
-sense to remove it from the dtsi, since UART1 is directly used in this boar=
-d (for
-an FTDI chip) but not necessarily used in the "bare" Impetus SoM.
-
-> Maxime
-
-
---=-we+FtxMeYutOzm6ox5w0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEzO0zAuXCENUlBKYqFH4A68XNhRoFAl+hhlYACgkQFH4A68XN
-hRrd7xAAjUw+5pi5twLc9zlFmWyz493U+jS0PUZnN7y9TDX5IjTvqj6t5ufAL/Sd
-Ss0jhmlN7XmoAfIylwPjJpCxIvtihAZwsvDcexOKQM397ZqrnfrmILsiCb4u2HZg
-gkWA0fFv9CpD3+J7EGKhI3+2rcIJ1cdr+Q03fYBHuHFcs+9lYquPnXNjL5IkB5OK
-rhiqu9JqwMIw3yldOtPMJZwRjdWghm9CZYv6V9Kqb4gXHmFstSPUnmRl+W/eTB7B
-YTXyNNR1I9F5aV1dyEdTHfLuMyow+yYK8elCZ+ekAxQpmUA+qB6/tpJJx8gNUq8L
-sx1/BIAkxL/9QG+6UdUfOjuW443/JKojgesZi7Hr6vvnmE0l5HaTN9jyGLbOgu2L
-t/WtUCADI8gtL/aNSKtx+sMlN19vyUPPj+J/srHtBY47p5DCCf1HjaTw7QD6zGVb
-eCCCvcul6TB4NkYCSUwbg/CdqvfpVM41mba94xEG3boq92o/x/y/JDmiTF/ZAFg2
-zptMya87AFSl8uFoPddvCtG+TpdmdW5vxKA6U47JWgSZ9OqmpPE6PrLtulmJ9qCi
-lbAKrTSGclbmPb3W8ADHYIP/YCzvI+LRnjcpAdo6BxSdK2eo9O8qErIU0VaFYM33
-5W+pVqDYnlng+oMHy0904xtpWJJ8Lcuzel5JKhBKInLd8kDesNE=
-=pUit
------END PGP SIGNATURE-----
-
---=-we+FtxMeYutOzm6ox5w0--
-
+--
+Vlad Rezki
