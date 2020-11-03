@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AEC2A5292
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEC82A5290
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731915AbgKCUvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45804 "EHLO mail.kernel.org"
+        id S1731902AbgKCUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731885AbgKCUvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:05 -0500
+        id S1731888AbgKCUu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:50:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B37A22404;
-        Tue,  3 Nov 2020 20:51:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78BCC223FD;
+        Tue,  3 Nov 2020 20:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436664;
-        bh=105FLhEB9Fme2C0x7n+BQeqVTD7Pll903VhnJOdLitM=;
+        s=default; t=1604436658;
+        bh=0iF8I9YAUIfLbPPrzUGyLLeDPMKrBWwDnJa4MK0o+A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v+XSZYQzxXEc9SpqFIvaAkhWNg062vKpKljNmrbUM61xr26hDggihTIG8B6U6IbPT
-         RnOMMO1D0hmG6ird5QOQ9Egf6+UZ6EqA7NsmrjiSCC+99jlOQBuOPqtkaC+vyWpFdk
-         +RFuHI+TC5J9lYhHtFhguuR4kdjtjGhlfHsqPhx0=
+        b=HjEmQ1LxFszYK385lUluluQ81fUoBKW/muC7PwcQgZQAUYgj81Hxeaxdjx/kucSja
+         TIzy/EdbDinOtHuc0SDprB5+NXiVMwC7C5nbaal8D6L9LFo6hfiyc52TK0afF1El3Z
+         0ftRhPHXoaXqg0elntYs6PXtBYEFIgUrIwJaJk30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>
-Subject: [PATCH 5.9 301/391] NFSv4.2: support EXCHGID4_FLAG_SUPP_FENCE_OPS 4.2 EXCHANGE_ID flag
-Date:   Tue,  3 Nov 2020 21:35:52 +0100
-Message-Id: <20201103203407.397104235@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.9 308/391] ubifs: mount_ubifs: Release authentication resource in error handling path
+Date:   Tue,  3 Nov 2020 21:35:59 +0100
+Message-Id: <20201103203407.887841528@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,71 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <kolga@netapp.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 8c39076c276be0b31982e44654e2c2357473258a upstream.
+commit e2a05cc7f8229e150243cdae40f2af9021d67a4a upstream.
 
-RFC 7862 introduced a new flag that either client or server is
-allowed to set: EXCHGID4_FLAG_SUPP_FENCE_OPS.
+Release the authentication related resource in some error handling
+branches in mount_ubifs().
 
-Client needs to update its bitmask to allow for this flag value.
-
-v2: changed minor version argument to unsigned int
-
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>  # 4.20+
+Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/nfs4proc.c         |    9 ++++++---
- include/uapi/linux/nfs4.h |    3 +++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ fs/ubifs/super.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -8052,9 +8052,11 @@ int nfs4_proc_secinfo(struct inode *dir,
-  * both PNFS and NON_PNFS flags set, and not having one of NON_PNFS, PNFS, or
-  * DS flags set.
-  */
--static int nfs4_check_cl_exchange_flags(u32 flags)
-+static int nfs4_check_cl_exchange_flags(u32 flags, u32 version)
- {
--	if (flags & ~EXCHGID4_FLAG_MASK_R)
-+	if (version >= 2 && (flags & ~EXCHGID4_2_FLAG_MASK_R))
-+		goto out_inval;
-+	else if (version < 2 && (flags & ~EXCHGID4_FLAG_MASK_R))
- 		goto out_inval;
- 	if ((flags & EXCHGID4_FLAG_USE_PNFS_MDS) &&
- 	    (flags & EXCHGID4_FLAG_USE_NON_PNFS))
-@@ -8467,7 +8469,8 @@ static int _nfs4_proc_exchange_id(struct
- 	if (status  != 0)
- 		goto out;
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1331,7 +1331,7 @@ static int mount_ubifs(struct ubifs_info
  
--	status = nfs4_check_cl_exchange_flags(resp->flags);
-+	status = nfs4_check_cl_exchange_flags(resp->flags,
-+			clp->cl_mvops->minor_version);
- 	if (status  != 0)
- 		goto out;
+ 	err = ubifs_read_superblock(c);
+ 	if (err)
+-		goto out_free;
++		goto out_auth;
  
---- a/include/uapi/linux/nfs4.h
-+++ b/include/uapi/linux/nfs4.h
-@@ -139,6 +139,8 @@
+ 	c->probing = 0;
  
- #define EXCHGID4_FLAG_UPD_CONFIRMED_REC_A	0x40000000
- #define EXCHGID4_FLAG_CONFIRMED_R		0x80000000
-+
-+#define EXCHGID4_FLAG_SUPP_FENCE_OPS		0x00000004
- /*
-  * Since the validity of these bits depends on whether
-  * they're set in the argument or response, have separate
-@@ -146,6 +148,7 @@
-  */
- #define EXCHGID4_FLAG_MASK_A			0x40070103
- #define EXCHGID4_FLAG_MASK_R			0x80070103
-+#define EXCHGID4_2_FLAG_MASK_R			0x80070107
+@@ -1343,18 +1343,18 @@ static int mount_ubifs(struct ubifs_info
+ 		ubifs_err(c, "'compressor \"%s\" is not compiled in",
+ 			  ubifs_compr_name(c, c->default_compr));
+ 		err = -ENOTSUPP;
+-		goto out_free;
++		goto out_auth;
+ 	}
  
- #define SEQ4_STATUS_CB_PATH_DOWN		0x00000001
- #define SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRING	0x00000002
+ 	err = init_constants_sb(c);
+ 	if (err)
+-		goto out_free;
++		goto out_auth;
+ 
+ 	sz = ALIGN(c->max_idx_node_sz, c->min_io_size) * 2;
+ 	c->cbuf = kmalloc(sz, GFP_NOFS);
+ 	if (!c->cbuf) {
+ 		err = -ENOMEM;
+-		goto out_free;
++		goto out_auth;
+ 	}
+ 
+ 	err = alloc_wbufs(c);
+@@ -1629,6 +1629,8 @@ out_wbufs:
+ 	free_wbufs(c);
+ out_cbuf:
+ 	kfree(c->cbuf);
++out_auth:
++	ubifs_exit_authentication(c);
+ out_free:
+ 	kfree(c->write_reserve_buf);
+ 	kfree(c->bu.buf);
 
 
