@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB052A5362
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5A82A5364
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733250AbgKCVAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
+        id S1733259AbgKCVAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733240AbgKCVAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:34 -0500
+        id S1733208AbgKCVAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D548223C6;
-        Tue,  3 Nov 2020 21:00:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C5B3223FD;
+        Tue,  3 Nov 2020 21:00:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437234;
-        bh=7o6PnexcbnawDZVe77YRWuYlKfqy5LWqQZ3f1Dyoj1M=;
+        s=default; t=1604437236;
+        bh=sPcDn3pCFsVf/hXUP2umMlz2D70RkKKsF+8Rs+E/f/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vP+TAIRnX6l4DUnLit4C5DiuwxWtYh0QB2ibNxsaXhw1VcMRAchLYX5A8HEDPk/ws
-         e6i2HZrBWqi/rC1o0c+g8hcSKgLscigdD96EuimKkKBc93thc7N9dSAjcevEtiXN+B
-         j3JXgtiOvkVbHLJWjYcFU40X2qL5Mo5UCXzzpK6Q=
+        b=LnUwS7DEZ2XBmFzrQYXS2/9f++XMPbvy1K7nwlzdYMdVK7LtEVfuk02POm0ZskxvX
+         EFowDDvXtDrddxKRXlIMxdPCkRBLZ/4c69/kk8Q43unZKKLEjMynORoGB12D6+y/hI
+         1V/tWygRW069SONSda3fOrg09S3y/kQs2w3i7lak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.4 204/214] arm: dts: mt7623: add missing pause for switchport
-Date:   Tue,  3 Nov 2020 21:37:32 +0100
-Message-Id: <20201103203309.748279233@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 5.4 205/214] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
+Date:   Tue,  3 Nov 2020 21:37:33 +0100
+Message-Id: <20201103203309.831128087@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -42,33 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 36f0a5fc5284838c544218666c63ee8cfa46a9c3 upstream.
+commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
 
-port6 of mt7530 switch (= cpu port 0) on bananapi-r2 misses pause option
-which causes rx drops on running iperf.
+Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
+without CONFIG_MMU leads to build errors:
 
-Fixes: f4ff257cd160 ("arm: dts: mt7623: add support for Bananapi R2 (BPI-R2) board")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200907070517.51715-1-linux@fw-web.de
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
+  arch/arm/plat-samsung/pm-debug.c:57:2: error:
+    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+
+Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |    1 +
+ arch/arm/plat-samsung/Kconfig |    1 +
  1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -192,6 +192,7 @@
- 					fixed-link {
- 						speed = <1000>;
- 						full-duplex;
-+						pause;
- 					};
- 				};
- 			};
+--- a/arch/arm/plat-samsung/Kconfig
++++ b/arch/arm/plat-samsung/Kconfig
+@@ -241,6 +241,7 @@ config SAMSUNG_PM_DEBUG
+ 	depends on PM && DEBUG_KERNEL
+ 	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
+ 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
++	depends on DEBUG_LL && MMU
+ 	help
+ 	  Say Y here if you want verbose debugging from the PM Suspend and
+ 	  Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
 
 
