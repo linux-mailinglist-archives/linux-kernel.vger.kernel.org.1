@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84F22A52B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAF02A52B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732067AbgKCUwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:52:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
+        id S1732082AbgKCUwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732045AbgKCUwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:10 -0500
+        id S1732047AbgKCUwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A187D2071E;
-        Tue,  3 Nov 2020 20:52:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 149EB2071E;
+        Tue,  3 Nov 2020 20:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436729;
-        bh=vqpjTQgjyfwkOk0kbiAhwxr37jvcJoqE8pNkFagWw28=;
+        s=default; t=1604436731;
+        bh=KIGoCyRaaMzjAcBz2Y6Mpoq76CMr2rKg+zblVGe55to=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CbHI1aBglUGZuP3DBpXr6SGXT8z8qbj/i7Ic9ZbZXpqia5qhWkCmj6XFJv8hh+hWE
-         OXrS4Le2nFCZOgAHAz2H/eBdqLKo+T6fhOkAp+7sHZZ+3fFu6B/m3aBpLuhM4SJcGb
-         f4uiajVC30YKrknxEIVsrEGJVuu9fnlSpuPXMwLU=
+        b=hvwA7a2uulpL3OxbCSW/cmzaKoR5I3x7dILFJpDJQnh56UyuualITo9n7Sfp3O1A9
+         YjKvwao0cSgN3vDwfeBNzg7vmZ0cdxbEYoL5JRhZ7D5zFYGGiIG7uCy+RmJoyLhkeH
+         JenwPVjXawHyewfolofcJS7OYSCD+9lqJO+vXHQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.9 376/391] device property: Keep secondary firmware node secondary by type
-Date:   Tue,  3 Nov 2020 21:37:07 +0100
-Message-Id: <20201103203412.533941859@linuxfoundation.org>
+Subject: [PATCH 5.9 377/391] device property: Dont clear secondary pointer for shared primary firmware node
+Date:   Tue,  3 Nov 2020 21:37:08 +0100
+Message-Id: <20201103203412.602482939@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -46,32 +46,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit d5dcce0c414fcbfe4c2037b66ac69ea5f9b3f75c upstream.
+commit 99aed9227073fb34ce2880cbc7063e04185a65e1 upstream.
 
-Behind primary and secondary we understand the type of the nodes
-which might define their ordering. However, if primary node gone,
-we can't maintain the ordering by definition of the linked list.
-Thus, by ordering secondary node becomes first in the list.
-But in this case the meaning of it is still secondary (or auxiliary).
-The type of the node is maintained by the secondary pointer in it:
+It appears that firmware nodes can be shared between devices. In such case
+when a (child) device is about to be deleted, its firmware node may be shared
+and ACPI_COMPANION_SET(..., NULL) call for it breaks the secondary link
+of the shared primary firmware node.
 
-	secondary pointer		Meaning
-	NULL or valid			primary node
-	ERR_PTR(-ENODEV)		secondary node
-
-So, if by some reason we do the following sequence of calls
-
-	set_primary_fwnode(dev, NULL);
-	set_primary_fwnode(dev, primary);
-
-we should preserve secondary node.
-
-This concept is supported by the description of set_primary_fwnode()
-along with implementation of set_secondary_fwnode(). Hence, fix
-the commit c15e1bdda436 to follow this as well.
+In order to prevent that, check, if the device has a parent and parent's
+firmware node is shared with its child, and avoid crashing the link.
 
 Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
-Cc: Ferry Toth <fntoth@gmail.com>
+Reported-by: Ferry Toth <fntoth@gmail.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Tested-by: Ferry Toth <fntoth@gmail.com>
@@ -80,17 +66,26 @@ Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/core.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 --- a/drivers/base/core.c
 +++ b/drivers/base/core.c
-@@ -4274,7 +4274,7 @@ void set_primary_fwnode(struct device *d
+@@ -4260,6 +4260,7 @@ static inline bool fwnode_is_primary(str
+  */
+ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+ {
++	struct device *parent = dev->parent;
+ 	struct fwnode_handle *fn = dev->fwnode;
+ 
+ 	if (fwnode) {
+@@ -4274,7 +4275,8 @@ void set_primary_fwnode(struct device *d
  	} else {
  		if (fwnode_is_primary(fn)) {
  			dev->fwnode = fn->secondary;
--			fn->secondary = NULL;
-+			fn->secondary = ERR_PTR(-ENODEV);
+-			fn->secondary = ERR_PTR(-ENODEV);
++			if (!(parent && fn == parent->fwnode))
++				fn->secondary = ERR_PTR(-ENODEV);
  		} else {
  			dev->fwnode = NULL;
  		}
