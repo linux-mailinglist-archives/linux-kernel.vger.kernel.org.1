@@ -2,275 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188B12A4919
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72482A493B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgKCPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgKCPMV (ORCPT
+        id S1728331AbgKCPRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:17:44 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:54960 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728366AbgKCPQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:12:21 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64948C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:12:21 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r12so9770921iot.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:12:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ug8fK7m5eh7whF/+i7AafuVKrr4WoRMnY59aR9Lk550=;
-        b=zKu2Sb0EIuI8/KAXy7LU4ZPBYdboOJBPJ3nxa5R+1jyFmkP9Vm14qWCTOAKYFvn9Do
-         wQM1nyGtcGAF1kWnfMVQ6j5YKNxdBocWSRAc3x2g+njMzUSzYAXxXV/EVojjG0dqgBEH
-         wdMSgeIhMI4ERr0dItVLUFr5jlCCeNoVIA7fGLFpUL/3A32k8Okbbxyp01nMwUBLYqM5
-         m9g15ZYVtMXYLGpjnryY3oEShjHzbhLghdAvbU/Uk8SR4NifFyszHcza7nDuZquytQDm
-         b5WYSkIhNxlhE2J6535hHggtKbcWyii/uBswu3awBOJ876w+7+RI1GYD7JuZY8XelGqi
-         tSNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ug8fK7m5eh7whF/+i7AafuVKrr4WoRMnY59aR9Lk550=;
-        b=jVML91QAg7/EuUq0SgNAMq0FeFMWXHbjgz9JYqmzmDOgaenVMd2f4zgp9CxERqsX+G
-         h1uDnXEf8w9kAAA4SHr+9V0gHyDx5a+pEX0IlsybDfWQYr9GVdhu6FHQ/pxBRGPpaplm
-         qSTXKwPktHbCd5WiRk9R3PwsXcSyQFGjluTXeG12EJhnnEbKW8a7sAPdynkB+bqn1DDd
-         vbddD1jPyPMmre0KmePCKi8ZBZNffq4tsdDHQvGNT0VGvWobEtE9OL3r6AGLL8W3qshc
-         4AlzeQzcqVeqEZjCMu4kxM/ylM3AQDx1WoJTNKKQtFoFSVMJadskhGOsqOCuhZ4wP1xy
-         bc0Q==
-X-Gm-Message-State: AOAM531vaBuRiZ/8EvE/B04Se7tFxVs276EFKGJ5ZXaX07ONIidUI+Fo
-        xwn1DBGyyBHOaB9+R6+PmBiHaQ==
-X-Google-Smtp-Source: ABdhPJzJqAJmYJVz7glef0OE/8EguiYNI7ZepjftULUIsvwkDD4FnLHDg9/4ZjevukvLjk6JskrNfQ==
-X-Received: by 2002:a6b:4014:: with SMTP id k20mr14377748ioa.177.1604416340638;
-        Tue, 03 Nov 2020 07:12:20 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d142sm7386448iof.43.2020.11.03.07.12.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 07:12:20 -0800 (PST)
-Subject: Re: [PATCH] s390: add support for TIF_NOTIFY_SIGNAL
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        oleg@redhat.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <yt9do8ke4seh.fsf@linux.ibm.com>
- <75a238c7-fc37-21dd-bd89-d4c87a206eaa@kernel.dk>
- <yt9dk0v21o0i.fsf@linux.ibm.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f3ef071a-bbbc-1133-ed7b-6307919c4c3c@kernel.dk>
-Date:   Tue, 3 Nov 2020 08:12:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 3 Nov 2020 10:16:04 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103151542euoutp025903f3b9ea5f67a7667da9681f517191~ECFhE2Zjc0677906779euoutp02o
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 15:15:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103151542euoutp025903f3b9ea5f67a7667da9681f517191~ECFhE2Zjc0677906779euoutp02o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604416542;
+        bh=ZTba4AdOdPYDi8vp/FOZDz4jSiA/NsyY2ZVYuq+hr7Y=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=iCSvQaRc2SQDUP2T9k70JjmYuZPKEbDYyUFed0qSavmbaoKYpfpRN8bqyImZiLakN
+         DpIT5vQDPtGbINrND2p3RjDj3OsG+EiahPmMbleCsunjqURR3FAsOILLxhwk600hpe
+         96xqBIh9Yl6dgAQaym0rNIN8w0ndV4Ndckqcniz0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201103151539eucas1p2a2bbb79dc79d75f19dae42bd2ec83e62~ECFeHxH2l2454424544eucas1p2F;
+        Tue,  3 Nov 2020 15:15:39 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 7A.BB.06456.B1471AF5; Tue,  3
+        Nov 2020 15:15:39 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201103151538eucas1p2682c895caedc83638c9a99e7f307e42b~ECFdth0NI3058530585eucas1p2x;
+        Tue,  3 Nov 2020 15:15:38 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201103151538eusmtrp2c9ae7f00da49232c784f957f88b735e8~ECFdssTMG0549405494eusmtrp2e;
+        Tue,  3 Nov 2020 15:15:38 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-3b-5fa1741b3422
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0E.8D.06017.A1471AF5; Tue,  3
+        Nov 2020 15:15:38 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201103151538eusmtip11380aae5dc705f13cbd7f4fea160e325~ECFdiKCUV0103701037eusmtip1O;
+        Tue,  3 Nov 2020 15:15:38 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v5 0/5] AX88796C SPI Ethernet Adapter
+Date:   Tue,  3 Nov 2020 16:15:31 +0100
+Message-Id: <20201103151536.26472-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <yt9dk0v21o0i.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SWUwTURTldWY6Q7U4jI3eAEJsahSi4s6LKCDRZD4w0fhhggsWmODCZgso
+        +sGmrRKhFlkrUdwC1gWoWAEBY4O4oFQFUVTcUIkIMYoYxLhQpkT+zj33nHfOTR5DcK8pD2ZH
+        fJKgiVfHKqUy0trys22eZ9KpiAX6x67Y3m0jcHVxJYVL7QdIfLK5jcKnvxRTuHPgJYUNPZ8J
+        bLdX0fihNZfCXbYKhC09nRRury+V4mJ7kwTbChoRvtTcTeOWsmn4YGMzHeLOt3c+Ivia810S
+        vs7UTfMW82Epf+VsGl9XOyjhc2vMiB+0eK9jwmUrooXYHSmCxj9om2x7QWsLnVit2ntDN0Km
+        o0KvbOTKALsEWnqvSrKRjOHYCgRVb384h+8IdCcyaHEYRPDk11c0bhka0kvFRTmC9udfnJZe
+        BFn3+0mHSsquAsO5O5RjoWBfEVCpf4McA8E2Iah7lU84VFPZpdBrbKIdmGRnwXWTcYyXs4Hw
+        4mYJKeb5gL78mlTk3eFuyfsxfgrrBxczn45hYlSTdfU44QgA9icNw+YMp3k1GNPtzuJToe92
+        DS1iL/hbd3K0NzOK0+BY3jLRewSBtXTY6Q2El20jUoeGYH2hst5fpFfBBVMOKVrd4NmAu1jB
+        DfKsRYRIy+GQjhPVKrhsaHA+6AE5fRXOMjzYDbXUUTTTNOEw04RjTP9zyxBhRtOFZG1cjKBd
+        GC/sma9Vx2mT42PmRyXEWdDot2v9c/tbLRp6HGlDLIOUk+UhQlkER6lTtKlxNgQMoVTIQx+0
+        buXk0erUfYImIUKTHCtobciTIZXT5YtPf9rCsTHqJGGXICQKmvGthHH1SEem+tCNHQkf+70j
+        j6bOCtt8pYNzPVB/IzMqXGEMbthdVR00V+G2PGBN/7tIlzB9+gfT2g3yb/nVbO33UzN6nw3c
+        8u8pMM/Wd27UuQQMsJbfVqMQNnJuk4HNl6n87uWXqIJ9zkzS6LiuXYtUf2w7AwvDpykqnxft
+        n7OeW4kHd/pKPJWkdrt6oR+h0ar/AXdxEWtyAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGIsWRmVeSWpSXmKPExsVy+t/xu7pSJQvjDdZ917c4f/cQs8XGGetZ
+        Leacb2GxmH/kHKvFovczWC2uvb3DatH/+DWzxfnzG9gtLmzrY7W4eWgFo8Wmx9dYLS7vmsNm
+        MeP8PiaLQ1P3MlqsPXKX3eLYAjGL1r1H2B0EPS5fu8jssWXlTSaPnbPusntsWtXJ5rF5Sb3H
+        zh2fmTz6tqxi9Pi8SS6AI0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/O
+        JiU1J7MstUjfLkEvY+rpY+wFG1Uq9rf9YmlgnCbTxcjJISFgIvH1aztbFyMXh5DAUkaJ45vW
+        ADkcQAkpiZVz0yFqhCX+XOtiA7GFBJ4ySlxsMwSx2QQcJfqXnmAF6RUReMMs0XTvLTuIwyyw
+        j1Fi/9HF7CBVwgKmEs8n7gOzWQRUJXbPmsgMYvMKWEvcPjiTBWKDvET78u1sEHFBiZMzn7CA
+        HMEsoC6xfp4QSJhfQEtiTdN1sHJmoPLmrbOZJzAKzELSMQuhYxaSqgWMzKsYRVJLi3PTc4uN
+        9IoTc4tL89L1kvNzNzEC43TbsZ9bdjB2vQs+xCjAwajEw+uQuiBeiDWxrLgy9xCjBAezkgiv
+        09nTcUK8KYmVValF+fFFpTmpxYcYTYHemcgsJZqcD0wheSXxhqaG5haWhubG5sZmFkrivB0C
+        B2OEBNITS1KzU1MLUotg+pg4OKUaGNfpKD/+ciq187bsevFJ4tlrL2XvdzgZeJb1tbPRuVVP
+        r7xa2NzHv3nhzQL/8g0bLi1r4gzZsK7t46/f1nnb47v6jaWluFgM2BtNhb92RGYdW7BB7Vtd
+        +RHFylf+D/XO1s3b0Obyt2zr1ZLSVWkJa3mNTWd84uu6W32yJWtjZ/96i4OTZX20ApVYijMS
+        DbWYi4oTAVJOnwHpAgAA
+X-CMS-MailID: 20201103151538eucas1p2682c895caedc83638c9a99e7f307e42b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201103151538eucas1p2682c895caedc83638c9a99e7f307e42b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201103151538eucas1p2682c895caedc83638c9a99e7f307e42b
+References: <CGME20201103151538eucas1p2682c895caedc83638c9a99e7f307e42b@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 8:03 AM, Sven Schnelle wrote:
-> Hi Jens,
-> 
-> Jens Axboe <axboe@kernel.dk> writes:
-> 
->> On 11/3/20 4:00 AM, Sven Schnelle wrote:
->>> Hi Jens,
->>>
->>> Heiko Carstens <hca () linux ! ibm ! com> writes:
->>>
->>>> On Thu, Oct 29, 2020 at 10:21:11AM -0600, Jens Axboe wrote:
->>>>> Wire up TIF_NOTIFY_SIGNAL handling for s390.
->>>>>
->>>>> Cc: linux-s390@vger.kernel.org
->>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>>> ---
->>>>>
->>>>> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
->>>>> for details:
->>>>>
->>>>> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
->>>>>
->>>>> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
->>>>> as that will enable a set of cleanups once all of them support it. I'm
->>>>> happy carrying this patch if need be, or it can be funelled through the
->>>>> arch tree. Let me know.
->>>>>
->>>>>  arch/s390/include/asm/thread_info.h | 2 ++
->>>>>  arch/s390/kernel/entry.S            | 7 ++++++-
->>>>>  2 files changed, 8 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
->>>>> index 13a04fcf7762..0045341ade48 100644
->>>>> --- a/arch/s390/include/asm/thread_info.h
->>>>> +++ b/arch/s390/include/asm/thread_info.h
->>>>> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
->>>>>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
->>>>>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
->>>>>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
->>>>> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
->>>>>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
->>>>>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
->>>>>  
->>>>> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
->>>>>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
->>>>>  
->>>>>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
->>>>> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
->>>>>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
->>>>>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
->>>>>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
->>>>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
->>>>> index 86235919c2d1..a30d891e8045 100644
->>>>> --- a/arch/s390/kernel/entry.S
->>>>> +++ b/arch/s390/kernel/entry.S
->>>>> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
->>>>>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
->>>>>  
->>>>>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
->>>>> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
->>>>> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
->>>>> +		   _TIF_NOTIFY_SIGNAL)
->>>>>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
->>>>>  		   _TIF_SYSCALL_TRACEPOINT)
->>>>>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
->>>>> @@ -463,6 +464,8 @@ ENTRY(system_call)
->>>>>  #endif
->>>>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
->>>>>  	jo	.Lsysc_syscall_restart
->>>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->>>>> +	jo	.Lsysc_sigpending
->>>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->>>>>  	jo	.Lsysc_sigpending
->>>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>>>> @@ -857,6 +860,8 @@ ENTRY(io_int_handler)
->>>>>  #endif
->>>>>  	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->>>>>  	jo	.Lio_sigpending
->>>>> +	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->>>>> +	jo	.Lio_sigpending
->>>>>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>>>>  	jo	.Lio_notify_resume
->>>>>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
->>>>
->>>> (full quote so you can make sense of the patch below).
->>>>
->>>> Please merge the patch below into this one. With that:
->>>>
->>>> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->>>>
->>>> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
->>>> index a30d891e8045..31f16d903ef3 100644
->>>> --- a/arch/s390/kernel/entry.S
->>>> +++ b/arch/s390/kernel/entry.S
->>>> @@ -464,9 +464,7 @@ ENTRY(system_call)
->>>>  #endif
->>>>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
->>>>  	jo	.Lsysc_syscall_restart
->>>> -	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_SIGNAL
->>>> -	jo	.Lsysc_sigpending
->>>> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->>>> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
->>>>  	jo	.Lsysc_sigpending
->>>
->>> We need to also change the jo to jnz - in combination with tm, jo means
->>> 'jump if all tested bits are set' while jnz means 'jump if at least one
->>> bit is set'
->>
->> Ah thanks, good catch. And you also caught the braino in signal.c, here's
->> the end result:
->>
->>
->> commit 0eb7d372d5319970bd15f2dbc18264ea576214d4
->> Author: Jens Axboe <axboe@kernel.dk>
->> Date:   Fri Oct 9 15:34:12 2020 -0600
->>
->>     s390: add support for TIF_NOTIFY_SIGNAL
->>     
->>     Wire up TIF_NOTIFY_SIGNAL handling for s390.
->>     
->>     Cc: linux-s390@vger.kernel.org
->>     Acked-by: Heiko Carstens <hca@linux.ibm.com>
->>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>
->> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
->> index 13a04fcf7762..0045341ade48 100644
->> --- a/arch/s390/include/asm/thread_info.h
->> +++ b/arch/s390/include/asm/thread_info.h
->> @@ -65,6 +65,7 @@ void arch_setup_new_exec(void);
->>  #define TIF_GUARDED_STORAGE	4	/* load guarded storage control block */
->>  #define TIF_PATCH_PENDING	5	/* pending live patching update */
->>  #define TIF_PGSTE		6	/* New mm's will use 4K page tables */
->> +#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
->>  #define TIF_ISOLATE_BP		8	/* Run process with isolated BP */
->>  #define TIF_ISOLATE_BP_GUEST	9	/* Run KVM guests with isolated BP */
->>  
->> @@ -82,6 +83,7 @@ void arch_setup_new_exec(void);
->>  #define TIF_SYSCALL_TRACEPOINT	27	/* syscall tracepoint instrumentation */
->>  
->>  #define _TIF_NOTIFY_RESUME	BIT(TIF_NOTIFY_RESUME)
->> +#define _TIF_NOTIFY_SIGNAL	BIT(TIF_NOTIFY_SIGNAL)
->>  #define _TIF_SIGPENDING		BIT(TIF_SIGPENDING)
->>  #define _TIF_NEED_RESCHED	BIT(TIF_NEED_RESCHED)
->>  #define _TIF_UPROBE		BIT(TIF_UPROBE)
->> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
->> index 86235919c2d1..19a89f292290 100644
->> --- a/arch/s390/kernel/entry.S
->> +++ b/arch/s390/kernel/entry.S
->> @@ -52,7 +52,8 @@ STACK_SIZE  = 1 << STACK_SHIFT
->>  STACK_INIT = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
->>  
->>  _TIF_WORK	= (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
->> -		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING)
->> +		   _TIF_UPROBE | _TIF_GUARDED_STORAGE | _TIF_PATCH_PENDING | \
->> +		   _TIF_NOTIFY_SIGNAL)
->>  _TIF_TRACE	= (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
->>  		   _TIF_SYSCALL_TRACEPOINT)
->>  _CIF_WORK	= (_CIF_ASCE_PRIMARY | _CIF_ASCE_SECONDARY | _CIF_FPU)
->> @@ -463,8 +464,8 @@ ENTRY(system_call)
->>  #endif
->>  	TSTMSK	__PT_FLAGS(%r11),_PIF_SYSCALL_RESTART
->>  	jo	.Lsysc_syscall_restart
->> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->> -	jo	.Lsysc_sigpending
->> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
->> +	jnz	.Lsysc_sigpending
->>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>  	jo	.Lsysc_notify_resume
->>  	TSTMSK	__LC_CPU_FLAGS,(_CIF_ASCE_PRIMARY|_CIF_ASCE_SECONDARY)
->> @@ -855,8 +856,8 @@ ENTRY(io_int_handler)
->>  	TSTMSK	__TI_flags(%r12),_TIF_PATCH_PENDING
->>  	jo	.Lio_patch_pending
->>  #endif
->> -	TSTMSK	__TI_flags(%r12),_TIF_SIGPENDING
->> -	jo	.Lio_sigpending
->> +	TSTMSK	__TI_flags(%r12),(_TIF_SIGPENDING|_TIF_NOTIFY_SIGNAL)
->> +	jnz	.Lio_sigpending
->>  	TSTMSK	__TI_flags(%r12),_TIF_NOTIFY_RESUME
->>  	jo	.Lio_notify_resume
->>  	TSTMSK	__TI_flags(%r12),_TIF_GUARDED_STORAGE
->> diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
->> index 9e900a8977bd..b27b6c1f058d 100644
->> --- a/arch/s390/kernel/signal.c
->> +++ b/arch/s390/kernel/signal.c
->> @@ -472,7 +472,7 @@ void do_signal(struct pt_regs *regs)
->>  	current->thread.system_call =
->>  		test_pt_regs_flag(regs, PIF_SYSCALL) ? regs->int_code : 0;
->>  
->> -	if (get_signal(&ksig)) {
->> +	if (test_thread_flag(TIF_SIGPENDING) && get_signal(&ksig)) {
->>  		/* Whee!  Actually deliver the signal.  */
->>  		if (current->thread.system_call) {
->>  			regs->int_code = current->thread.system_call;
-> 
-> Looks good, feel free to add my Acked-by.
+This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+found on ARTIK5 evaluation board. The driver has been ported from a
+v3.10.9 vendor kernel for ARTIK5 board.
 
-Thanks for your help! Added.
+Changes in v5:
+  - coding style (local variable declarations)
+  - added spi0 node in the DT binding example and removed
+    interrupt-parent
+  - removed comp module parameter
+  - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
+    state of SPI compression
+  - introduced new ethtool tunable "spi-compression" to controll SPI
+    transfer compression
+  - removed unused fields in struct ax88796c_device
+  - switched from using buffers allocated on stack for SPI transfers
+    to DMA safe ones embedded in struct ax_spi and allocated with
+    kmalloc()
+
+Changes in v4:
+  - fixed compilation problems in asix,ax88796c.yaml and in
+  ax88796c_main.c introduced in v3
+
+Changes in v3:
+  - modify vendor-prefixes.yaml in a separate patch
+  - fix several problems in the dt binding
+    - removed unnecessary descriptions and properties
+    - changed the order of entries
+    - fixed problems with missing defines in the example
+  - change (1 << N) to BIT(N), left a few (0 << N)
+  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+    ax88796c_set_mac_address() with appropriate kernel functions.
+  - disable PHY auto-polling in MAC and use PHYLIB to track the state
+    of PHY and configure MAC
+  - propagate return values instead of returning constants in several
+    places
+  - add WARN_ON() for unlocked mutex
+  - remove local work queue and use the system_wq
+  - replace phy_connect_direct() with phy_connect() and move
+    devm_register_netdev() to the end of ax88796c_probe()
+    (Unlike phy_connect_direct() phy_connect() does not crash if the
+    network device isn't registered yet.)
+  - remove error messages on ENOMEM
+  - move free_irq() to the end of ax88796c_close() to avoid race
+    condition
+  - implement flow-control
+
+Changes in v2:
+  - use phylib
+  - added DT bindings
+  - moved #includes to *.c files
+  - used mutex instead of a semaphore for locking
+  - renamed some constants
+  - added error propagation for several functions
+  - used ethtool for dumping registers
+  - added control over checksum offloading
+  - remove vendor specific PM
+  - removed macaddr module parameter and added support for reading a MAC
+    address from platform data (e.g. DT)
+  - removed dependency on SPI from NET_VENDOR_ASIX
+  - added an entry in the MAINTAINERS file
+  - simplified logging with appropriate netif_* and netdev_* helpers
+  - lots of style fixes
+
+Łukasz Stelmach (5):
+  dt-bindings: vendor-prefixes: Add asix prefix
+  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+  ARM: dts: exynos: Add Ethernet to Artik 5 board
+  ARM: defconfig: Enable ax88796c driver
+
+ .../bindings/net/asix,ax88796c.yaml           |   73 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ arch/arm/boot/dts/exynos3250-artik5-eval.dts  |   29 +
+ arch/arm/configs/exynos_defconfig             |    2 +
+ arch/arm/configs/multi_v7_defconfig           |    2 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/asix/Kconfig             |   35 +
+ drivers/net/ethernet/asix/Makefile            |    6 +
+ drivers/net/ethernet/asix/ax88796c_ioctl.c    |  235 ++++
+ drivers/net/ethernet/asix/ax88796c_ioctl.h    |   26 +
+ drivers/net/ethernet/asix/ax88796c_main.c     | 1132 +++++++++++++++++
+ drivers/net/ethernet/asix/ax88796c_main.h     |  561 ++++++++
+ drivers/net/ethernet/asix/ax88796c_spi.c      |  109 ++
+ drivers/net/ethernet/asix/ax88796c_spi.h      |   70 +
+ include/uapi/linux/ethtool.h                  |    1 +
+ net/ethtool/common.c                          |    1 +
+ 18 files changed, 2292 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+ create mode 100644 drivers/net/ethernet/asix/Kconfig
+ create mode 100644 drivers/net/ethernet/asix/Makefile
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
 
 -- 
-Jens Axboe
+2.26.2
 
