@@ -2,138 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952B72A4ACC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC842A4ACF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgKCQJc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 11:09:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727743AbgKCQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:09:32 -0500
-Received: from rorschach.local.home (unknown [172.58.235.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B33E22264;
-        Tue,  3 Nov 2020 16:09:26 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 11:09:13 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-ID: <20201103110913.2d7b4cea@rorschach.local.home>
-In-Reply-To: <20201103143938.704c7974e93c854511580c38@kernel.org>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-        <20201102092726.57cb643f@gandalf.local.home>
-        <20201103143938.704c7974e93c854511580c38@kernel.org>
-X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728066AbgKCQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:09:57 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57712 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726212AbgKCQJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:09:57 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3G9i12043428;
+        Tue, 3 Nov 2020 10:09:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604419784;
+        bh=ASRLdMFpDPF7L3jGqEBGSpdlOd3m9t3o2Wgd10aMWTM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=nO4fqgvvEGIUGo30PQRjIP/l1NjcMLhpChcn0uR7mPJxZ2J9DvZ/sliyNG33Fx3PG
+         T7kyUTiE1zh1OcZpiPjajXdpwUAEpjm6dbIPtdJodBS+HHjmknYvrajIBg0ii+uNxH
+         +ISWD4Sk24j7oawLkaQwcdSaCQejS+W87/9WbPWQ=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3G9i1R115061
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 10:09:44 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 10:09:43 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 10:09:44 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3G9hxR016819;
+        Tue, 3 Nov 2020 10:09:43 -0600
+Date:   Tue, 3 Nov 2020 21:39:42 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+CC:     <broonie@kernel.org>, <vigneshr@ti.com>,
+        <tudor.ambarus@microchip.com>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
+        <richard@nod.at>, <cheol.yong.kim@intel.com>,
+        <qi-ming.wu@intel.com>
+Subject: Re: [PATCH v6 2/6] spi: cadence-quadspi: Disable the DAC for Intel
+ LGM SoC
+Message-ID: <20201103160834.mfbasmmlgsptnl5l@ti.com>
+References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201030053153.5319-3-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201030053153.5319-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 14:39:38 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Ah, OK. This looks good to me.
+On 30/10/20 01:31PM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> BTW, in_nmi() in pre_handler_kretprobe() always be true because
-> now int3 is treated as an NMI. So you can always pass 1 there.
-
-What about the below patch then?
-
+> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
+> Direct Access Controller(DAC).
 > 
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> This patch adds a quirk to disable the Direct Access Controller
+> for data transfer instead it uses indirect data transfer.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index d7b10c46fa70..6d6f7c440ece 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1107,6 +1107,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+>  	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+>  
+>  	cqspi_controller_enable(cqspi, 1);
+> +
+> +	/* Disable direct access controller */
+> +	if (!cqspi->use_direct_mode) {
+> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+> +	}
 
-Thanks!
+You did not address my comment here from last time around [0]. Please 
+replace this hunk with the one below and test it. Also mention in the 
+commit message that the DAC bit resets to 1 so there is no need to 
+explicitly set it.
 
-From 29ac1a5c9068df06f3196173d4325c8076759551 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Mon, 2 Nov 2020 09:17:49 -0500
-Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
-
-Since the kprobe handlers have protection that prohibits other handlers from
-executing in other contexts (like if an NMI comes in while processing a
-kprobe, and executes the same kprobe, it will get fail with a "busy"
-return). Lockdep is unaware of this protection. Use lockdep's nesting api to
-differentiate between locks taken in INT3 context and other context to
-suppress the false warnings.
-
-Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/kprobes.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 8a12a25fa40d..30889ea5514f 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1249,7 +1249,12 @@ __acquires(hlist_lock)
+--- 8< ---
+diff --git a/drivers/spi/spi-cadence-quadspi.c 
+b/drivers/spi/spi-cadence-quadspi.c
+index d7ad8b198a11..d2c5d448a944 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -2156,10 +2156,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+ 	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
+ 	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
  
- 	*head = &kretprobe_inst_table[hash];
- 	hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, 1);
+-	/* Enable Direct Access Controller */
+-	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+-	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+-	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	/* Disable Direct Access Controller */
++	if (!cqspi->use_dac_mode) {
++		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
++		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
++		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	}
+ 
+ 	cqspi_controller_enable(cqspi, 1);
  }
- NOKPROBE_SYMBOL(kretprobe_hash_lock);
- 
-@@ -1258,7 +1263,12 @@ static void kretprobe_table_lock(unsigned long hash,
- __acquires(hlist_lock)
- {
- 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, 1);
- }
- NOKPROBE_SYMBOL(kretprobe_table_lock);
- 
-@@ -2028,7 +2038,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
--	raw_spin_lock_irqsave(&rp->lock, flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 	if (!hlist_empty(&rp->free_instances)) {
- 		ri = hlist_entry(rp->free_instances.first,
- 				struct kretprobe_instance, hlist);
-@@ -2039,7 +2054,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 		ri->task = current;
- 
- 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
--			raw_spin_lock_irqsave(&rp->lock, flags);
-+			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 			hlist_add_head(&ri->hlist, &rp->free_instances);
- 			raw_spin_unlock_irqrestore(&rp->lock, flags);
- 			return 0;
+--- >8 ---
+
+Same disclaimer as last time: not tested at all.
+
+[0] https://lore.kernel.org/linux-spi/20201022090146.2uj5gfx73dsfumjl@ti.com/
+
+PS: Please Cc me in the next revision. I missed 3 revisions in between 
+because I'm not subscribed to this list. Otherwise I would have sent 
+this much sooner :-)
+
+>  }
+>  
+>  static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
+> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>  	.quirks = CQSPI_NEEDS_WR_DELAY,
+>  };
+>  
+> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> +	.quirks = CQSPI_DISABLE_DAC_MODE,
+> +};
+> +
+>  static const struct of_device_id cqspi_dt_ids[] = {
+>  	{
+>  		.compatible = "cdns,qspi-nor",
+> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
+>  	},
+>  	{
+>  		.compatible = "intel,lgm-qspi",
+> +		.data = &intel_lgm_qspi,
+>  	},
+>  	{ /* end of table */ }
+>  };
+> -- 
+> 2.11.0
+> 
+
 -- 
-2.25.4
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
