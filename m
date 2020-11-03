@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C8E2A521E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289522A52E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731270AbgKCUq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:46:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36780 "EHLO mail.kernel.org"
+        id S1732592AbgKCUyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:54:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730006AbgKCUqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:46:55 -0500
+        id S1732567AbgKCUyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:54:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78DCC20719;
-        Tue,  3 Nov 2020 20:46:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F765223BD;
+        Tue,  3 Nov 2020 20:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436414;
-        bh=ETAY37V9+jSoGTqnl9UcgPunUWhPQ0cJvaAKy8DAllg=;
+        s=default; t=1604436860;
+        bh=PKXvgJAXqK8j6bX7Dlte8tO2NmsT5qMcDgFiPVCEyCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TyK3qJJN31RpE2WvSoVmNisRPqflDXFiqaGFiFJd76Y1ZbvdELaNN4tjBDTpryBwZ
-         vQU1i12U/xWvt9Rf/0bNyeZ4rbp4TMkNB+bg+edRibbDhytBJ/7fGCLKJgZzdXpl8b
-         QRJvaHhBePpVpdc8uGdUgHRuKzNKXE24OXxKssFM=
+        b=VMgOSlGXaNomCioEtUIWd93Id9tRBlsjp/N2J0pzYwCE0U+VilqE/r+xmjCwnsPM+
+         9bPMG6pXTjzauz301v1baBn2q4JLddDMoIJto5a/CbIWzDDuAaioij8wsKsC8/PoY6
+         sddxUy2fvPziBk2dqntwZ1K3QdF8L1D+yV3AorNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.9 240/391] usb: dwc3: ep0: Fix ZLP for OUT ep0 requests
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 043/214] media: tw5864: check status of tw5864_frameinterval_get
 Date:   Tue,  3 Nov 2020 21:34:51 +0100
-Message-Id: <20201103203403.200683135@linuxfoundation.org>
+Message-Id: <20201103203254.131220594@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Tom Rix <trix@redhat.com>
 
-commit 66706077dc89c66a4777a4c6298273816afb848c upstream.
+[ Upstream commit 780d815dcc9b34d93ae69385a8465c38d423ff0f ]
 
-The current ZLP handling for ep0 requests is only for control IN
-requests. For OUT direction, DWC3 needs to check and setup for MPS
-alignment.
+clang static analysis reports this problem
 
-Usually, control OUT requests can indicate its transfer size via the
-wLength field of the control message. So usb_request->zero is usually
-not needed for OUT direction. To handle ZLP OUT for control endpoint,
-make sure the TRB is MPS size.
+tw5864-video.c:773:32: warning: The left expression of the compound
+  assignment is an uninitialized value.
+  The computed value will also be garbage
+        fintv->stepwise.max.numerator *= std_max_fps;
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
 
-Cc: stable@vger.kernel.org
-Fixes: c7fcdeb2627c ("usb: dwc3: ep0: simplify EP0 state machine")
-Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+stepwise.max is set with frameinterval, which comes from
 
+	ret = tw5864_frameinterval_get(input, &frameinterval);
+	fintv->stepwise.step = frameinterval;
+	fintv->stepwise.min = frameinterval;
+	fintv->stepwise.max = frameinterval;
+	fintv->stepwise.max.numerator *= std_max_fps;
+
+When tw5864_frameinterval_get() fails, frameinterval is not
+set. So check the status and fix another similar problem.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/ep0.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/media/pci/tw5864/tw5864-video.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -942,12 +942,16 @@ static void dwc3_ep0_xfer_complete(struc
- static void __dwc3_ep0_do_control_data(struct dwc3 *dwc,
- 		struct dwc3_ep *dep, struct dwc3_request *req)
- {
-+	unsigned int		trb_length = 0;
- 	int			ret;
+diff --git a/drivers/media/pci/tw5864/tw5864-video.c b/drivers/media/pci/tw5864/tw5864-video.c
+index 09732eed7eb4f..656142c7a2cc7 100644
+--- a/drivers/media/pci/tw5864/tw5864-video.c
++++ b/drivers/media/pci/tw5864/tw5864-video.c
+@@ -767,6 +767,9 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
+ 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
  
- 	req->direction = !!dep->number;
- 
- 	if (req->request.length == 0) {
--		dwc3_ep0_prepare_one_trb(dep, dwc->ep0_trb_addr, 0,
-+		if (!req->direction)
-+			trb_length = dep->endpoint.maxpacket;
+ 	ret = tw5864_frameinterval_get(input, &frameinterval);
++	if (ret)
++		return ret;
 +
-+		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr, trb_length,
- 				DWC3_TRBCTL_CONTROL_DATA, false);
- 		ret = dwc3_ep0_start_trans(dep);
- 	} else if (!IS_ALIGNED(req->request.length, dep->endpoint.maxpacket)
-@@ -994,9 +998,12 @@ static void __dwc3_ep0_do_control_data(s
+ 	fintv->stepwise.step = frameinterval;
+ 	fintv->stepwise.min = frameinterval;
+ 	fintv->stepwise.max = frameinterval;
+@@ -785,6 +788,9 @@ static int tw5864_g_parm(struct file *file, void *priv,
+ 	cp->capability = V4L2_CAP_TIMEPERFRAME;
  
- 		req->trb = &dwc->ep0_trb[dep->trb_enqueue - 1];
- 
-+		if (!req->direction)
-+			trb_length = dep->endpoint.maxpacket;
+ 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
++	if (ret)
++		return ret;
 +
- 		/* Now prepare one extra TRB to align transfer size */
- 		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr,
--					 0, DWC3_TRBCTL_CONTROL_DATA,
-+					 trb_length, DWC3_TRBCTL_CONTROL_DATA,
- 					 false);
- 		ret = dwc3_ep0_start_trans(dep);
- 	} else {
+ 	cp->timeperframe.numerator *= input->frame_interval;
+ 	cp->capturemode = 0;
+ 	cp->readbuffers = 2;
+-- 
+2.27.0
+
 
 
