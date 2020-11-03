@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F192A51DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED7B2A51DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbgKCUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60160 "EHLO mail.kernel.org"
+        id S1730366AbgKCUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:44:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730910AbgKCUoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:39 -0500
+        id S1730920AbgKCUol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:44:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A322223C6;
-        Tue,  3 Nov 2020 20:44:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61451223BF;
+        Tue,  3 Nov 2020 20:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436278;
-        bh=DjQU9HofSHg9BKfjhAHr7uEhH5btJn+umr+IJXMmVic=;
+        s=default; t=1604436280;
+        bh=AgOgal3Yb3eN6Y9FrB9H497p9EXkPl6YCHZNi7+bxjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nUj1TgOvSxVVDI7P6mhTaEbwxjvLtcRGTivP39LMe15B0qQJhhN3M29fO5OZKZbkA
-         6G+OnGz0pmofxYmFIP2xSTthxtphxRxr1mOgOBl+c0+6iOUokteSy6cVsgXks+7/rD
-         rGwMt9eTh2r+1bWUkFCLCFEj9g2KVb14vW4ICtHI=
+        b=pk+qqiHIii5XUnn9U2Qqw4GV0T3EOqkvH27YeYB6km9g6IgPO4iFVqbT+Dex/UAIa
+         Zb813djMsavuHkg4NcNyYeRk42Kj8eOHIYMCI0KbS+gPZaOcAKqbG5JwCBXk8HOrjo
+         9kn1Juz+uaBjH6fmjdOiNEiIIhCShO0yCri+Nh4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhao Heming <heming.zhao@suse.com>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 143/391] md/bitmap: md_bitmap_get_counter returns wrong blocks
-Date:   Tue,  3 Nov 2020 21:33:14 +0100
-Message-Id: <20201103203356.480752874@linuxfoundation.org>
+Subject: [PATCH 5.9 144/391] f2fs: fix to set SBI_NEED_FSCK flag for inconsistent inode
+Date:   Tue,  3 Nov 2020 21:33:15 +0100
+Message-Id: <20201103203356.547641214@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,51 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Heming <heming.zhao@suse.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit d837f7277f56e70d82b3a4a037d744854e62f387 ]
+[ Upstream commit d662fad143c0470ad7f46ea7b02da539f613d7d7 ]
 
-md_bitmap_get_counter() has code:
+If compressed inode has inconsistent fields on i_compress_algorithm,
+i_compr_blocks and i_log_cluster_size, we missed to set SBI_NEED_FSCK
+to notice fsck to repair the inode, fix it.
 
-```
-    if (bitmap->bp[page].hijacked ||
-        bitmap->bp[page].map == NULL)
-        csize = ((sector_t)1) << (bitmap->chunkshift +
-                      PAGE_COUNTER_SHIFT - 1);
-```
-
-The minus 1 is wrong, this branch should report 2048 bits of space.
-With "-1" action, this only report 1024 bit of space.
-
-This bug code returns wrong blocks, but it doesn't inflence bitmap logic:
-1. Most callers focus this function return value (the counter of offset),
-   not the parameter blocks.
-2. The bug is only triggered when hijacked is true or map is NULL.
-   the hijacked true condition is very rare.
-   the "map == null" only true when array is creating or resizing.
-3. Even the caller gets wrong blocks, current code makes caller just to
-   call md_bitmap_get_counter() one more time.
-
-Signed-off-by: Zhao Heming <heming.zhao@suse.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md-bitmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index c61ab86a28b52..d910833feeb4d 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -1367,7 +1367,7 @@ __acquires(bitmap->lock)
- 	if (bitmap->bp[page].hijacked ||
- 	    bitmap->bp[page].map == NULL)
- 		csize = ((sector_t)1) << (bitmap->chunkshift +
--					  PAGE_COUNTER_SHIFT - 1);
-+					  PAGE_COUNTER_SHIFT);
- 	else
- 		csize = ((sector_t)1) << bitmap->chunkshift;
- 	*blocks = csize - (offset & (csize - 1));
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 5195e083fc1e6..12c7fa1631935 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -299,6 +299,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize,
+ 						i_log_cluster_size)) {
+ 		if (ri->i_compress_algorithm >= COMPRESS_MAX) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"compress algorithm: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -307,6 +308,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (le64_to_cpu(ri->i_compr_blocks) >
+ 				SECTOR_TO_BLOCK(inode->i_blocks)) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has inconsistent "
+ 				"i_compr_blocks:%llu, i_blocks:%llu, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -316,6 +318,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (ri->i_log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+ 			ri->i_log_cluster_size > MAX_COMPRESS_LOG_SIZE) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"log cluster size: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
 -- 
 2.27.0
 
