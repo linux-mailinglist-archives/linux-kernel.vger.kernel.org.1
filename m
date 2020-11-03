@@ -2,263 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17EC2A3A2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0012A3A33
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgKCCC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:02:28 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7034 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgKCCC1 (ORCPT
+        id S1727282AbgKCCFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgKCCFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:02:27 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQChw1pVFzhfy2;
-        Tue,  3 Nov 2020 10:02:24 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 3 Nov 2020
- 10:02:23 +0800
-Subject: Re: [PATCH] f2fs: compress: support chksum
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20201102122333.76667-1-yuchao0@huawei.com>
- <20201102163123.GD529594@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
-Date:   Tue, 3 Nov 2020 10:02:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 2 Nov 2020 21:05:16 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CB5C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 18:05:16 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b19so7825110pld.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 18:05:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGZQ0eNv5jFognYSAXpqqzXbISxqXlVmF2iO+e6yiH0=;
+        b=mkyPS9odEV84J1E76Z2rTlTyXpc8yZu1HmF8A9O4kzAAfqFlaW+MHnE6ehUeVlRuBj
+         cSbyg+GYxanofiSyWPTNMloWjcGvFRKlErtVuNpEzx66nhOWKabkl+bJLvuyTZpku0ze
+         smLS+OOHNNRbIrBXkDkSfS2FdISY2pkk0goC4LrpUMpD0eelA+lWD1NmaqCXkmfsD1sJ
+         hY/dI2uzegsRUkwWJkkrG1V8f8ecD+XE7b+uqMtygJRgBu8Ad3JzDuNNzTlhvz8pmi9t
+         DhCpd9L8jd1bqimJkllrBIObkSI6AVrKULVYHfEpTphPdqbG8asoG2uAV1qQSUq1XiID
+         wWuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGZQ0eNv5jFognYSAXpqqzXbISxqXlVmF2iO+e6yiH0=;
+        b=YaK9shu+8Kjnyk6/HEFzKfhhAHttd6J2uglxeBVJ3Nnk2dC/QNxEqWZVniW63pk63y
+         I5Mnmh0p3WsAf62C2IAKXCF1dwAA83lYb9EfbROL/xcVig5TGVZuHJSpS7Wp7WIOj0Mo
+         QknxG+tL0M1sPCGXL/NdcfwbuIQWpHVPO5vF5KHOhjtmixY7RHUzWRje5zh0q/ksRpRK
+         Ze0UW68Mp/BLM1+DBeYiiQFIp7X19GrMuIaNsu9HgLyR/OuerKzg/bROKFNmfC0zOv62
+         ermlMmVZSzKRfkRYbQdpLVEhT3eah3T4V7hofzbVnuz5fiSOOdXA9zjmDrlshatgXDAL
+         i9Lg==
+X-Gm-Message-State: AOAM532hE3QaxCg8ysMiADpMYHq6yffEdTZA4EEjKjwx7WePy4rfJWV2
+        d0NOHeI3TQElK0I+ut3IQZs=
+X-Google-Smtp-Source: ABdhPJxsk4VlonaleY3dMSjbAgJLzN5d6hInKyAVB3ACOKt5ohsnKX4FSJUqC0AQdyD2CWjbn7av5g==
+X-Received: by 2002:a17:902:bd85:b029:d6:c451:817d with SMTP id q5-20020a170902bd85b02900d6c451817dmr9694493pls.66.1604369115413;
+        Mon, 02 Nov 2020 18:05:15 -0800 (PST)
+Received: from localhost.localdomain (cl-ubuntu-kdev.xen.prgmr.com. [71.19.148.84])
+        by smtp.gmail.com with ESMTPSA id 16sm14213446pfp.163.2020.11.02.18.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 18:05:14 -0800 (PST)
+From:   Fox Chen <foxhlchen@gmail.com>
+To:     phillip@squashfs.org.uk
+Cc:     Fox Chen <foxhlchen@gmail.com>, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com
+Subject: [PATCH] squashfs: Add id_table sanity check to squashfs_get_id
+Date:   Tue,  3 Nov 2020 10:04:31 +0800
+Message-Id: <20201103020431.147711-1-foxhlchen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201102163123.GD529594@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/3 0:31, Jaegeuk Kim wrote:
-> On 11/02, Chao Yu wrote:
->> This patch supports to store chksum value with compressed
->> data, and verify the integrality of compressed data while
->> reading the data.
->>
->> The feature can be enabled through specifying mount option
->> 'compress_chksum'.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>   Documentation/filesystems/f2fs.rst |  1 +
->>   fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
->>   fs/f2fs/f2fs.h                     | 13 ++++++++++++-
->>   fs/f2fs/inode.c                    |  3 +++
->>   fs/f2fs/super.c                    |  9 +++++++++
->>   include/linux/f2fs_fs.h            |  2 +-
->>   6 files changed, 46 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->> index b8ee761c9922..985ae7d35066 100644
->> --- a/Documentation/filesystems/f2fs.rst
->> +++ b/Documentation/filesystems/f2fs.rst
->> @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
->>   			 For other files, we can still enable compression via ioctl.
->>   			 Note that, there is one reserved special extension '*', it
->>   			 can be set to enable compression for all files.
->> +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
->>   inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
->>   			 files using the blk-crypto framework rather than
->>   			 filesystem-layer encryption. This allows the use of
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 14262e0f1cd6..a4e0d2c745b6 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->>   				f2fs_cops[fi->i_compress_algorithm];
->>   	unsigned int max_len, new_nr_cpages;
->>   	struct page **new_cpages;
->> +	u32 chksum = 0;
->>   	int i, ret;
->>   
->>   	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
->> @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->>   
->>   	cc->cbuf->clen = cpu_to_le32(cc->clen);
->>   
->> +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
->> +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
->> +					cc->cbuf->cdata, cc->clen);
->> +	cc->cbuf->chksum = cpu_to_le32(chksum);
->> +
->>   	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
->>   		cc->cbuf->reserved[i] = cpu_to_le32(0);
->>   
->> @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>   			(struct decompress_io_ctx *)page_private(page);
->>   	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>   	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
->> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>   	const struct f2fs_compress_ops *cops =
->>   			f2fs_cops[fi->i_compress_algorithm];
->>   	int ret;
->> @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>   
->>   	ret = cops->decompress_pages(dic);
->>   
->> +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
->> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
->> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
->> +
->> +		if (provided != calculated) {
->> +			printk_ratelimited(
->> +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
->> +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
->> +				provided, calculated);
->> +			ret = -EFSCORRUPTED;
-> 
-> Do we need to change fsck.f2fs to recover this?
+When uid/gid info in superblocks or id_index_table is corrupted,
+The uid/gid index can be larger than the size of msblk->id_table.
+This is reported by syzkaller.
 
-Yes, prepared to update inode layout in fsck.f2fs w/ kernel side change.
+This patch adds a sanity check to squashfs_get_id which calculates
+the max available room for uid/gid table by doing
+msblk->xattr_table - msblk->id_table[0]
+and check if index is larger than this.
 
-Thanks,
+While this provides some sort of check, it is
+imperfect because id_table can be smaller than that.
 
-> 
->> +		}
->> +	}
->> +
->>   out_vunmap_cbuf:
->>   	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
->>   out_vunmap_rbuf:
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 99bcf4b44a9c..2ae254ab7b7d 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -147,7 +147,8 @@ struct f2fs_mount_info {
->>   
->>   	/* For compression */
->>   	unsigned char compress_algorithm;	/* algorithm type */
->> -	unsigned compress_log_size;		/* cluster log size */
->> +	unsigned char compress_log_size;	/* cluster log size */
->> +	bool compress_chksum;			/* compressed data chksum */
->>   	unsigned char compress_ext_cnt;		/* extension count */
->>   	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
->>   };
->> @@ -731,6 +732,7 @@ struct f2fs_inode_info {
->>   	atomic_t i_compr_blocks;		/* # of compressed blocks */
->>   	unsigned char i_compress_algorithm;	/* algorithm type */
->>   	unsigned char i_log_cluster_size;	/* log of cluster size */
->> +	unsigned short i_compress_flag;		/* compress flag */
->>   	unsigned int i_cluster_size;		/* cluster size */
->>   };
->>   
->> @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
->>   	COMPRESS_MAX,
->>   };
->>   
->> +enum compress_flag {
->> +	COMPRESS_CHKSUM,
->> +	COMPRESS_MAX_FLAG,
->> +};
->> +
->>   #define COMPRESS_DATA_RESERVED_SIZE		5
->>   struct compress_data {
->>   	__le32 clen;			/* compressed data size */
->> +	__le32 chksum;			/* compressed data chksum */
->>   	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
->>   	u8 cdata[];			/* compressed data */
->>   };
->> @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
->>   			F2FS_OPTION(sbi).compress_algorithm;
->>   	F2FS_I(inode)->i_log_cluster_size =
->>   			F2FS_OPTION(sbi).compress_log_size;
->> +	F2FS_I(inode)->i_compress_flag =
->> +			F2FS_OPTION(sbi).compress_chksum ?
->> +				1 << COMPRESS_CHKSUM : 0;
->>   	F2FS_I(inode)->i_cluster_size =
->>   			1 << F2FS_I(inode)->i_log_cluster_size;
->>   	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
->> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
->> index 657db2fb6739..de8f7fc89efa 100644
->> --- a/fs/f2fs/inode.c
->> +++ b/fs/f2fs/inode.c
->> @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
->>   					le64_to_cpu(ri->i_compr_blocks));
->>   			fi->i_compress_algorithm = ri->i_compress_algorithm;
->>   			fi->i_log_cluster_size = ri->i_log_cluster_size;
->> +			fi->i_compress_flag = ri->i_compress_flag;
->>   			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
->>   			set_inode_flag(inode, FI_COMPRESSED_FILE);
->>   		}
->> @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
->>   					&F2FS_I(inode)->i_compr_blocks));
->>   			ri->i_compress_algorithm =
->>   				F2FS_I(inode)->i_compress_algorithm;
->> +			ri->i_compress_flag =
->> +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
->>   			ri->i_log_cluster_size =
->>   				F2FS_I(inode)->i_log_cluster_size;
->>   		}
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index 00eff2f51807..f8de4d83a5be 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -146,6 +146,7 @@ enum {
->>   	Opt_compress_algorithm,
->>   	Opt_compress_log_size,
->>   	Opt_compress_extension,
->> +	Opt_compress_chksum,
->>   	Opt_atgc,
->>   	Opt_err,
->>   };
->> @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
->>   	{Opt_compress_algorithm, "compress_algorithm=%s"},
->>   	{Opt_compress_log_size, "compress_log_size=%u"},
->>   	{Opt_compress_extension, "compress_extension=%s"},
->> +	{Opt_compress_chksum, "compress_chksum"},
->>   	{Opt_atgc, "atgc"},
->>   	{Opt_err, NULL},
->>   };
->> @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>   			F2FS_OPTION(sbi).compress_ext_cnt++;
->>   			kfree(name);
->>   			break;
->> +		case Opt_compress_chksum:
->> +			F2FS_OPTION(sbi).compress_chksum = true;
->> +			break;
->>   #else
->>   		case Opt_compress_algorithm:
->>   		case Opt_compress_log_size:
->>   		case Opt_compress_extension:
->> +		case Opt_compress_chksum:
->>   			f2fs_info(sbi, "compression options not supported");
->>   			break;
->>   #endif
->> @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->>   		seq_printf(seq, ",compress_extension=%s",
->>   			F2FS_OPTION(sbi).extensions[i]);
->>   	}
->> +
->> +	if (F2FS_OPTION(sbi).compress_chksum)
->> +		seq_puts(seq, ",compress_chksum");
->>   }
->>   
->>   static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->> index a5dbb57a687f..7dc2a06cf19a 100644
->> --- a/include/linux/f2fs_fs.h
->> +++ b/include/linux/f2fs_fs.h
->> @@ -273,7 +273,7 @@ struct f2fs_inode {
->>   			__le64 i_compr_blocks;	/* # of compressed blocks */
->>   			__u8 i_compress_algorithm;	/* compress algorithm */
->>   			__u8 i_log_cluster_size;	/* log of cluster size */
->> -			__le16 i_padding;		/* padding */
->> +			__le16 i_compress_flag;		/* compress flag */
->>   			__le32 i_extra_end[0];	/* for attribute size calculation */
->>   		} __packed;
->>   		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
->> -- 
->> 2.26.2
-> .
-> 
+Reported-by: syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com
+Signed-off-by: Fox Chen <foxhlchen@gmail.com>
+---
+ fs/squashfs/id.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fs/squashfs/id.c b/fs/squashfs/id.c
+index 6be5afe7287d..81bd67c0f649 100644
+--- a/fs/squashfs/id.c
++++ b/fs/squashfs/id.c
+@@ -35,10 +35,16 @@ int squashfs_get_id(struct super_block *sb, unsigned int index,
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 	int block = SQUASHFS_ID_BLOCK(index);
+ 	int offset = SQUASHFS_ID_BLOCK_OFFSET(index);
+-	u64 start_block = le64_to_cpu(msblk->id_table[block]);
++	u64 start_block;
+ 	__le32 disk_id;
+ 	int err;
+ 
++	// sanity check
++	if (le64_to_cpu(msblk->id_table[0]) + block >= msblk->xattr_table)
++		return -EINVAL;
++
++	start_block = le64_to_cpu(msblk->id_table[block]);
++
+ 	err = squashfs_read_metadata(sb, &disk_id, &start_block, &offset,
+ 							sizeof(disk_id));
+ 	if (err < 0)
+-- 
+2.25.1
+
