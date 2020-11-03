@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC262A501B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A32A501D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbgKCT2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:28:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:54722 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgKCT2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:28:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87CE1139F;
-        Tue,  3 Nov 2020 11:28:03 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0D123F66E;
-        Tue,  3 Nov 2020 11:28:01 -0800 (PST)
-References: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for task wakeup
-In-reply-to: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
-Date:   Tue, 03 Nov 2020 19:27:56 +0000
-Message-ID: <jhjimamz1dv.mognet@arm.com>
+        id S1729690AbgKCT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgKCT2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:28:13 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700DBC0613D1;
+        Tue,  3 Nov 2020 11:28:13 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id h196so15862193ybg.4;
+        Tue, 03 Nov 2020 11:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=086QXPQOFmQa0/qNNMQMF6FnV1pJVActXTh078XtSYc=;
+        b=p3LFK3c3EHixzrX4mi7n6oPv+ZpesKIo7xuKoHcCiotv7JoEIM41cEMwWam6g2FeWF
+         xadndj/3JZ/H+GK+iIrOtl/gtUyESLr2lQkgJOGt3vYg0wR/aL/peh49K6O8RbDcC3Zl
+         EoaTjVEbZF7GGVeeRQm5ALl1b1caWaKBQM8EfDXi04E2zLGzy16/Cx7ROIm4RhE1+Tv7
+         p9M1YSIPkoMH8Yn5r5H2I9KOfaYoljvaatBGOHEJARaYb9Hw3zfOFmnvF+WJ/z2/kBLZ
+         g2PylIY5JUB8SD6YxZuC0hadhgLf/cRZwZcyDRoiUbeQP3qA3w7YjlpjtDwHihh5GzmT
+         VXHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=086QXPQOFmQa0/qNNMQMF6FnV1pJVActXTh078XtSYc=;
+        b=s5WgEef3Cp6LFPKEO66OrjGoQyCTTOJTfaTEMwkIkozL+nJFNYoy9vf4mz/y1XF+cc
+         QTHwPS/zq+ZRTMNpTydprgZV45iLrkvRizU7u5gsRvBtEKgBeQRyzAbreSoUKBqMKbiR
+         pjZJw3U5wJvj2JYZrGHj60kwVw4B++btlUxfR/LwlDFlTwbzW8Efe+cwXQ2MDuE+4C2p
+         +WV2q7WHS4zbCCXRaeke1L9TRLqj8hii5SvDQNZ1lxq5ZSZw5EWahApuGFjAC53Osum9
+         g8sTNLGd30IlmIm5xZG8zXVye0q/PvSR+NBoLq3ZeJwssvVRbvQ8vV1YQ6XxidXYAyDa
+         E5sw==
+X-Gm-Message-State: AOAM530HB/c0rRZJoeGO3BIEPPQdkMo43pKMtLbVBbskd4xtabg5qQ6n
+        NNZvJPHbe8ogkSUUANcNbqTT4wouvuGxpS00BexZ4dvw+Vk=
+X-Google-Smtp-Source: ABdhPJyRTxVYFvH+vCHhvE92SRpLSfLl8VAUYb6s2IyLJxS5DZNcR4smEyOo1rR106jfLpou5Z8wIScaTzq10cmmU/0=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr31418948ybl.347.1604431692776;
+ Tue, 03 Nov 2020 11:28:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201103153132.2717326-1-kpsingh@chromium.org> <20201103153132.2717326-3-kpsingh@chromium.org>
+In-Reply-To: <20201103153132.2717326-3-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Nov 2020 11:28:01 -0800
+Message-ID: <CAEf4Bza=80OMCBMLJJa5Vu1qokwzCtePcu4arruXUi8jHK8eWw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/8] libbpf: Add support for task local storage
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi,
-
-On 21/10/20 16:03, Aubrey Li wrote:
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6b3b59cc51d6..088d1995594f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6023,6 +6023,38 @@ void __update_idle_core(struct rq *rq)
->       rcu_read_unlock();
->  }
+On Tue, Nov 3, 2020 at 7:34 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> +static DEFINE_PER_CPU(bool, cpu_idle_state);
-
-I would've expected this to be far less compact than a cpumask, but that's
-not the story readelf is telling me. Objdump tells me this is recouping
-some of the padding in .data..percpu, at least with the arm64 defconfig.
-
-In any case this ought to be better wrt cacheline bouncing, which I suppose
-is what we ultimately want here.
-
-Also, see rambling about init value below.
-
-> @@ -10070,6 +10107,12 @@ static void nohz_balancer_kick(struct rq *rq)
->       if (unlikely(rq->idle_balance))
->               return;
+> From: KP Singh <kpsingh@google.com>
 >
-> +	/* The CPU is not in idle, update idle cpumask */
-> +	if (unlikely(sched_idle_cpu(cpu))) {
-> +		/* Allow SCHED_IDLE cpu as a wakeup target */
-> +		update_idle_cpumask(rq, true);
-> +	} else
-> +		update_idle_cpumask(rq, false);
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  tools/lib/bpf/libbpf_probes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index 5482a9b7ae2d..bed00ca194f0 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+>  /* Copyright (c) 2019 Netronome Systems, Inc. */
+>
+> +#include "linux/bpf.h"
 
-This means that without CONFIG_NO_HZ_COMMON, a CPU going into idle will
-never be accounted as going out of it, right? Eventually the cpumask
-should end up full, which conceptually implements the previous behaviour of
-select_idle_cpu() but in a fairly roundabout way...
+why "", not <>?
 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 9079d865a935..f14a6ef4de57 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
->               sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
->               atomic_inc(&sd->shared->ref);
->               atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-> +		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
-
-So at init you would have (single LLC for sake of simplicity):
-
-  \all cpu : cpu_idle_state[cpu]  == false
-  cpumask_full(sds_idle_cpus)     == true
-
-IOW it'll require all CPUs to go idle at some point for these two states to
-be properly aligned. Should cpu_idle_state not then be init'd to 1?
-
-This then happens again for hotplug, except that cpu_idle_state[cpu] may be
-either true or false when the sds_idle_cpus mask is reset to 1's.
+>  #include <errno.h>
+>  #include <fcntl.h>
+>  #include <string.h>
+> @@ -230,6 +231,7 @@ bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex)
+>                 break;
+>         case BPF_MAP_TYPE_SK_STORAGE:
+>         case BPF_MAP_TYPE_INODE_STORAGE:
+> +       case BPF_MAP_TYPE_TASK_STORAGE:
+>                 btf_key_type_id = 1;
+>                 btf_value_type_id = 3;
+>                 value_size = 8;
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
