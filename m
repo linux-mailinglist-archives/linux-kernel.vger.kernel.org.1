@@ -2,139 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1A32A4CDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9AC2A4CE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgKCRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:30:21 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:27397 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728701AbgKCRaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:30:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604424621; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=C4CMFwI1HM31pHkchZgqYiU+8s6XN3zv2mGhUlUukhY=; b=Fjh3Qh43Z5l7dA6Hkx3sS6ZhIFoNcoXtAnaJaMCWr3/gOHb3UExsCCcx/OIX/0UUre8Yt7mE
- Q4QLvQWYzDO4unX8cwT0OV0vBhC9FjM74K+6HnbD3gyIW8t0xb3NMYfrbqIcqQVLGkbxxQF1
- aE1Kz6HYyYsJIuy+m85opvN92cI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fa19396fcec43b7830a3837 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 17:29:58
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8A03EC433FE; Tue,  3 Nov 2020 17:29:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2239EC433C6;
-        Tue,  3 Nov 2020 17:29:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2239EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 3 Nov 2020 10:29:52 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     robdclark@gmail.com, konrad.dybcio@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm: a5xx: Make preemption reset case reentrant
-Message-ID: <20201103172951.GB5934@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
-        robdclark@gmail.com, konrad.dybcio@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20201102200227.8876-1-marijn.suijten@somainline.org>
+        id S1728767AbgKCRbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:31:00 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:33527 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728379AbgKCRa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:30:59 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103173048euoutp019d60560564ce04f695a4477a9e4284fe~ED7efw1ly2417724177euoutp01J
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 17:30:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103173048euoutp019d60560564ce04f695a4477a9e4284fe~ED7efw1ly2417724177euoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604424648;
+        bh=FvqSgYlnEFpwlpU+wYR8aeZGcpfordNaAzo8m3V9k1Y=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=e0Q0PFxldGQ5t3CCW7L+/5kKEm5g5LqgGrimRz22zkEC9Mv1WUdsBJ5zkRhTSjHQN
+         TtHkcfFltoKLwwGdVVWsYvk9UE5E9RpLX81BCBLejALIO22uaeqj5DnIHr+joRmXSR
+         39OlHnyjkiwoev8XsOnoyMrPTyo/GbuIAcuvRDY8=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201103173042eucas1p11d5610d3ebc068bbe49607afd374e33e~ED7ZSVmqO0494704947eucas1p18;
+        Tue,  3 Nov 2020 17:30:42 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id D0.CD.05997.2C391AF5; Tue,  3
+        Nov 2020 17:30:42 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201103173042eucas1p2035478a24d6104b5782214d89e1fffd2~ED7Y5y9Zt0590405904eucas1p2J;
+        Tue,  3 Nov 2020 17:30:42 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201103173042eusmtrp2412383902ac65b5e457be582d2c19af7~ED7Y5FUaq2312523125eusmtrp2j;
+        Tue,  3 Nov 2020 17:30:42 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-c9-5fa193c2218e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id E8.C7.06314.2C391AF5; Tue,  3
+        Nov 2020 17:30:42 +0000 (GMT)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103173041eusmtip1884fcdf07c829fed3a1c237954131935~ED7XtsfOD1391313913eusmtip1F;
+        Tue,  3 Nov 2020 17:30:41 +0000 (GMT)
+Subject: Re: [PATCH v7 2/6] interconnect: Add generic interconnect driver
+ for Exynos SoCs
+To:     cwchoi00@gmail.com
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <9081148f-5ed4-97a3-84a9-4ea3eb157b73@samsung.com>
+Date:   Tue, 3 Nov 2020 18:30:40 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102200227.8876-1-marijn.suijten@somainline.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAGTfZH3seoTUd68pq+RCSs9BfnmkUaeoipML=85aUPyvcWZ6fw@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA03SfUhTURQA8O7e29tmzZ7T2kFDcRiUomaGPErMInBQ0Af9EUbazIdabsqe
+        mhaRMee3JgrOhukKIhuKKaI5P8Axm2VqWpikMsVRKonKlvhRmttT8r/fveece86By8dEo1xP
+        fpIijVYqZMkSwgVvfb82FGiseBF74vNIGGWpUSOqqaqRS32z/+RSP3oDqFrTIJf6+nuRoDRd
+        zQQ1NPSWR30xVBOUrcSEqKqhbg7VYJrkUeNP6ghK3WXiUVUVc0TkQWm7dpInbdYXENKJ0U5C
+        aikyc6SlLXoktTV7XyGiXcLj6eSkDFoZHHHbJbFrqQBL7dqfuaxZ4GSjekEhEvCBPAXDlk7k
+        sIisQzDWLmdtR9C+hRUil23bEPwa03F3CzT5+Tw28BpB0V/9TtYyAvvwDObIcidvwnSFwWkP
+        8jC0VVqRIwkjN3FYNeQ5+xFkCJT0ljotJCOgbmOa4zBO+kH5RDfu8CEyBsqacnA2xw0+PLM6
+        LSCvwpv5PKcxUgzfrbUc1j7QtlDtnAjINR6MVU7i7NwXoEKlQqzdYd7cwmN9BLbaHcWOAhWC
+        4o5xHnsoQ2Ax63YqzsDE4DpRiPjbLY5DoyHYQSDPwYjpGEtXGFtwY2dwhfJWDcZeCyE/V8S+
+        4Qcbeg2HtScUWbfwMiTR7tlMu2cb7Z5ttP/b6hCuR2I6nZEn0MxJBX0/iJHJmXRFQtCdFHkz
+        2v5t/Ztm+ztk+BNnRCQfSQ4II2ldrIgry2Cy5EYEfEziITw/0B8jEsbLsh7QypRYZXoyzRiR
+        Fx+XiIWhL+duicgEWRp9j6ZTaeVulMMXeGajhIc5i30+hhbPlKnis7ZQIxb4uMbDPqPySlcq
+        1JcyVa711/vXOzL1I3FRPasd488brklCWtOii3r2zQas9PkuLJE6dV0YFTZrm7KPJnoP2AM8
+        knz1wxdFi1nGT0+jHl2+y0nRCl9FhByN+5gbu+nvusL4hQdor6j9025YTou9JTiTKAvxx5SM
+        7B+rFaUcaQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJIsWRmVeSWpSXmKPExsVy+t/xu7qHJi+MN1i8UM7i/rxWRouNM9az
+        Wlz/8pzV4tlRbYv5R86xWlz5+p7NYvreTWwW589vYLe4vGsOm8Xn3iOMFjPO72OyWHvkLrvF
+        7cYVbBate4+wW8yY/JLNgd9j56y77B6bVnWyedy5tofN4373cSaPvi2rGD0+b5ILYIvSsynK
+        Ly1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy9j7oZO5YC93
+        xcfpb5kaGNdwdjFyckgImEhM7+hg72Lk4hASWMoosaf1G0sXIwdQQkpifosSRI2wxJ9rXWwQ
+        Ne8ZJZ58uw5WIywQLTH1gyNIjYiAmMT2aU8YQWqYBVpYJW6feMEE0fCBSWLtjX5WkCo2AUOJ
+        3qN9jCA2r4CdxIrfD5lAbBYBFYlJd/axgNiiAnESPyb2skHUCEqcnPkELM4pECix8lU7mM0s
+        oC7xZ94lZghbXOLWk/lMELa8xPa3c5gnMArNQtI+C0nLLCQts5C0LGBkWcUoklpanJueW2yo
+        V5yYW1yal66XnJ+7iREYzduO/dy8g/HSxuBDjAIcjEo8vA6pC+KFWBPLiitzDzFKcDArifA6
+        nT0dJ8SbklhZlVqUH19UmpNafIjRFOi5icxSosn5wESTVxJvaGpobmFpaG5sbmxmoSTO2yFw
+        MEZIID2xJDU7NbUgtQimj4mDU6qBcZbX0orpmRZaKTuYy/U3fVNjf/aUS1Hz7+PpvxMyYrpm
+        XL146Laon9UkHhvjpcy7OzkfNFy+eWtSbYHFwSjRwmzVhdzsjFcazYMiBNil7nm8y0tOMEy3
+        1skyYf5icCLxTbzH1eNLvu9ru7/saV7jnUaWfyeFTZZ13p4lEr+O6+wKX/3f3/snKbEUZyQa
+        ajEXFScCAHCh7nv8AgAA
+X-CMS-MailID: 20201103173042eucas1p2035478a24d6104b5782214d89e1fffd2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
+References: <20201030125149.8227-1-s.nawrocki@samsung.com>
+        <CGME20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9@eucas1p2.samsung.com>
+        <20201030125149.8227-3-s.nawrocki@samsung.com>
+        <88af4e53-6c7a-c2e6-ad28-a9d6bb5bf623@samsung.com>
+        <6cc9a2f8-9d9a-68b7-9f47-e16fefb18d88@samsung.com>
+        <CAGTfZH3seoTUd68pq+RCSs9BfnmkUaeoipML=85aUPyvcWZ6fw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 09:02:25PM +0100, Marijn Suijten wrote:
-> nr_rings is reset to 1, but when this function is called for a second
-> (and third!) time nr_rings > 1 is false, thus the else case is entered
-> to set up a buffer for the RPTR shadow and consequently written to
-> RB_RPTR_ADDR, hanging platforms without WHERE_AM_I firmware support.
-> 
-> Restructure the condition in such a way that shadow buffer setup only
-> ever happens when has_whereami is true; otherwise preemption is only
-> finalized when the number of ring buffers has not been reset to 1 yet.
-> 
-> Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On 03.11.2020 15:12, Chanwoo Choi wrote:
+>>> I have a question about exynos_icc_get_parent().
+>>> As I checked, this function returns the only one icc_node
+>>> as parent node. But, bus_display dt node in the exynos4412.dtsi
+>>> specifies the two interconnect node as following with bus_leftbus, bus_dmc,
+>>>
+>>> When I checked the return value of exynos_icc_get_parent()
+>>> during probing for bus_display device, exynos_icc_get_parent() function
+>>> only returns 'bus_leftbus' icc_node. Do you need to add two phandle
+>>> of icc node?
+>> Yes, as we use the interconnect consumer bindings we need to specify a path,
+>> i.e. a <initiator, target> pair. When the provider node initializes it will
+>> link itself to that path. Currently the provider driver uses just the first
+>> phandle.
 
-Way better. Thanks for doing this.
-
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> As I knew, the interconnect consumer bindings use the two phandles
+> in the interconnect core as you commented. But, in case of this,
+> even if add two phandles with interconnect consuming binding style,
+> the exynos interconnect driver only uses the first phandle.
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index d6804a802355..9a202a7da131 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -755,12 +755,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
->  		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
->  
-> -	/* Disable preemption if WHERE_AM_I isn't available */
-> -	if (!a5xx_gpu->has_whereami && gpu->nr_rings > 1) {
-> -		a5xx_preempt_fini(gpu);
-> -		gpu->nr_rings = 1;
-> -	} else {
-> -		/* Create a privileged buffer for the RPTR shadow */
-> +	/* Create a privileged buffer for the RPTR shadow */
-> +	if (a5xx_gpu->has_whereami) {
->  		if (!a5xx_gpu->shadow_bo) {
->  			a5xx_gpu->shadow = msm_gem_kernel_new(gpu->dev,
->  				sizeof(u32) * gpu->nr_rings,
-> @@ -774,6 +770,10 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  
->  		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
->  			REG_A5XX_CP_RB_RPTR_ADDR_HI, shadowptr(a5xx_gpu, gpu->rb[0]));
-> +	} else if (gpu->nr_rings > 1) {
-> +		/* Disable preemption if WHERE_AM_I isn't available */
-> +		a5xx_preempt_fini(gpu);
-> +		gpu->nr_rings = 1;
->  	}
->  
->  	a5xx_preempt_hw_init(gpu);
-> -- 
-> 2.29.2
-> 
+> Instead, I think we better explain this case into a dt-binding
+> document for users.
+
+Fair enough, I'll try to improve the description, do you perhaps have 
+any suggestions?
+
+The DT binding reflects how the hardware structure looks like and the
+fact that the driver currently uses only one of the phandles could be
+considered an implementation detail.
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards,
+Sylwester
