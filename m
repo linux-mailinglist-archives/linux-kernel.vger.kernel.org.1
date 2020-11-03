@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4BA2A51F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851702A52CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgKCUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:45:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33408 "EHLO mail.kernel.org"
+        id S1732332AbgKCUxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:53:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731001AbgKCUpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:19 -0500
+        id S1731746AbgKCUx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:53:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB2D3223C6;
-        Tue,  3 Nov 2020 20:45:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CDF822226;
+        Tue,  3 Nov 2020 20:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436319;
-        bh=3LmE73ilyoamoywy8JIeklBSBGD9wt2T9SyH+QaKNxA=;
+        s=default; t=1604436806;
+        bh=nOGdb9uR5h52LS2DyYbrmfF9dn0bqiJYyKU3d5omfJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aLe5HS3te/5JS2FtY2rLfBrEshrTfPnwtTkdnQLyCQzotzCZsbCtOHudWJL2DVc+k
-         iSDUyKOQJ1As3ov1R3y0tZN4ep1rY7Ab6042XwnkowlqTVE2k8qgsdueYfFMnDbxY5
-         l2JNl8akW0Tm2sz7emWBceYN44UYzzJABsPpvVPc=
+        b=lkFf+piJMCIdRuC/H6TxoodR/StPlwQIZf2/G1yRrnp1uIOjPsgzoLEvc3aP6agl2
+         9fGVvh4QL34XFTWC3UW/h2t0PpMqvKMjiZz1WmNh5v/LKzG1sH28mS1LiPY7AT88Ks
+         psBzcynpEOWnANGYHkuBt0uiSNzAbK+seUDs/SEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH 5.9 198/391] extcon: ptn5150: Fix usage of atomic GPIO with sleeping GPIO chips
-Date:   Tue,  3 Nov 2020 21:34:09 +0100
-Message-Id: <20201103203400.254355642@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
+        Juergen Gross <jgross@suse.com>,
+        Julien Grall <jgrall@amazon.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 5.4 002/214] xen/events: add a proper barrier to 2-level uevent unmasking
+Date:   Tue,  3 Nov 2020 21:34:10 +0100
+Message-Id: <20201103203249.724325980@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Juergen Gross <jgross@suse.com>
 
-commit 6aaad58c872db062f7ea2761421ca748bd0931cc upstream.
+commit 4d3fe31bd993ef504350989786858aefdb877daa upstream.
 
-The driver uses atomic version of gpiod_set_value() without any real
-reason.  It is called in a workqueue under mutex so it could sleep
-there.  Changing it to "can_sleep" flavor allows to use the driver with
-all GPIO chips.
+A follow-up patch will require certain write to happen before an event
+channel is unmasked.
 
-Fixes: 4ed754de2d66 ("extcon: Add support for ptn5150 extcon driver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Vijai Kumar K <vijaikumar.kanagarajan@gmail.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+While the memory barrier is not strictly necessary for all the callers,
+the main one will need it. In order to avoid an extra memory barrier
+when using fifo event channels, mandate evtchn_unmask() to provide
+write ordering.
+
+The 2-level event handling unmask operation is missing an appropriate
+barrier, so add it. Fifo event channels are fine in this regard due to
+using sync_cmpxchg().
+
+This is part of XSA-332.
+
+Cc: stable@vger.kernel.org
+Suggested-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/extcon/extcon-ptn5150.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/xen/events/events_2l.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/extcon/extcon-ptn5150.c
-+++ b/drivers/extcon/extcon-ptn5150.c
-@@ -127,7 +127,7 @@ static void ptn5150_irq_work(struct work
- 			case PTN5150_DFP_ATTACHED:
- 				extcon_set_state_sync(info->edev,
- 						EXTCON_USB_HOST, false);
--				gpiod_set_value(info->vbus_gpiod, 0);
-+				gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 				extcon_set_state_sync(info->edev, EXTCON_USB,
- 						true);
- 				break;
-@@ -138,9 +138,9 @@ static void ptn5150_irq_work(struct work
- 					PTN5150_REG_CC_VBUS_DETECTION_MASK) >>
- 					PTN5150_REG_CC_VBUS_DETECTION_SHIFT);
- 				if (vbus)
--					gpiod_set_value(info->vbus_gpiod, 0);
-+					gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 				else
--					gpiod_set_value(info->vbus_gpiod, 1);
-+					gpiod_set_value_cansleep(info->vbus_gpiod, 1);
+--- a/drivers/xen/events/events_2l.c
++++ b/drivers/xen/events/events_2l.c
+@@ -91,6 +91,8 @@ static void evtchn_2l_unmask(unsigned po
  
- 				extcon_set_state_sync(info->edev,
- 						EXTCON_USB_HOST, true);
-@@ -156,7 +156,7 @@ static void ptn5150_irq_work(struct work
- 					EXTCON_USB_HOST, false);
- 			extcon_set_state_sync(info->edev,
- 					EXTCON_USB, false);
--			gpiod_set_value(info->vbus_gpiod, 0);
-+			gpiod_set_value_cansleep(info->vbus_gpiod, 0);
- 		}
- 	}
+ 	BUG_ON(!irqs_disabled());
  
++	smp_wmb();	/* All writes before unmask must be visible. */
++
+ 	if (unlikely((cpu != cpu_from_evtchn(port))))
+ 		do_hypercall = 1;
+ 	else {
 
 
