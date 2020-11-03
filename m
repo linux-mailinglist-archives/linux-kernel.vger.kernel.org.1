@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D62A37F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1760F2A37FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 01:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgKCAnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 19:43:19 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6736 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKCAnT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:43:19 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQ9xY5hbczkd80;
-        Tue,  3 Nov 2020 08:43:13 +0800 (CST)
-Received: from [10.174.179.182] (10.174.179.182) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 08:43:12 +0800
-Subject: Re: [PATCH v4 0/6] resource: introduce union(), intersection() API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>
-References: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <1183267b-3e90-ab71-b1f6-7760ad0ca57c@huawei.com>
-Date:   Tue, 3 Nov 2020 08:43:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727328AbgKCAoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 19:44:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725932AbgKCAoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 19:44:07 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFFCB22258;
+        Tue,  3 Nov 2020 00:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604364247;
+        bh=JbViUoCmtWwJ6RZtFVMHNjbS8wM0U77l4YnasnHFcR4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MB1eM19B5iaKGiNbMAR8pdZOynt8tDhHkglZPEFwWOsJUmN+z8FZzvzmhuJK5rndX
+         uQaWV34Lem6DRNenAZEIzhArexKBjYHGxhYAnkCo4eR4V8JqL1rRMZYtGkJNCeidBg
+         d0UgHAR+hfagITeTFQI7YUPQoBdNbaCZGqUvZJrE=
+Date:   Mon, 2 Nov 2020 16:44:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        "Reviewed-by : Jesse Brandeburg" <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH net-next v3 00/10] net: ethernet: ti: am65-cpsw: add
+ multi port support in mac-only mode
+Message-ID: <20201102164405.2c93e914@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201030200707.24294-1-grygorii.strashko@ti.com>
+References: <20201030200707.24294-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.182]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/3 5:00, Andy Shevchenko wrote:
-> Some users may want to use resource library to manage their own resources,
-> besides existing users that open code union() and intersection()
-> implementations.
+On Fri, 30 Oct 2020 22:06:57 +0200 Grygorii Strashko wrote:
+> This series adds multi-port support in mac-only mode (multi MAC mode) to TI
+> AM65x CPSW driver in preparation for enabling support for multi-port devices,
+> like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
 > 
-> Provide a generic API for wider use.
+> The multi MAC mode is implemented by configuring every enabled port in "mac-only"
+> mode (all ingress packets are sent only to the Host port and egress packets
+> directed to target Ext. Port) and creating separate net_device for
+> every enabled Ext. port.
 > 
-> Changelog v4:
-> - added Rb tag (Rafael)
-> - Cc'ed to LKML and Greg (Rafael)
+> This series does not affect on existing CPSW2g one Ext. Port devices and xmit
+> path changes are done only for multi-port devices by splitting xmit path for
+> one-port and multi-port devices. 
 > 
-> Changelog v3:
-> - rebased on top of v5.10-rc1
-> - dropped upstreamed dependencies
-> - added Rb tag to the last patch (Mika)
-> 
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-pci@vger.kernel.org
-> 
-> Andy Shevchenko (6):
->    resource: Simplify region_intersects() by reducing conditionals
->    resource: Group resource_overlaps() with other inline helpers
->    resource: Introduce resource_union() for overlapping resources
->    resource: Introduce resource_intersection() for overlapping resources
->    PCI/ACPI: Replace open coded variant of resource_union()
->    ACPI: watchdog: Replace open coded variant of resource_union()
-> 
->   drivers/acpi/acpi_watchdog.c |  6 +-----
->   drivers/acpi/pci_root.c      |  4 +---
->   include/linux/ioport.h       | 34 +++++++++++++++++++++++++++-------
->   kernel/resource.c            | 10 +++++-----
->   4 files changed, 34 insertions(+), 20 deletions(-)
+> Patches 1-3: Preparation patches to improve K3 CPSW configuration depending on DT
+> Patches 4-5: Fix VLAN offload for multi MAC mode
+> Patch 6: Fixes CPTS context lose issue during PM runtime transition
+> Patch 7: Fixes TX csum offload for multi MAC mode
+> Patches 8-9: add multi-port support to TI AM65x CPSW
+> Patch 10: handle deferred probe with new dev_err_probe() API
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Applied, thanks!
