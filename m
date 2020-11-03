@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698A42A3E63
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3647B2A3EBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKCIOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:14:08 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43418 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgKCIOH (ORCPT
+        id S1726126AbgKCIRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:17:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7577 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgKCIRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:14:07 -0500
-Received: by mail-oi1-f195.google.com with SMTP id t143so5992993oif.10;
-        Tue, 03 Nov 2020 00:14:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ML4Qf2IqKuHcmdLErDvia81aDuFZXWApB8R0myLdlug=;
-        b=M4XZErl9B0aIQdjMek68NW5uPjM3LZS8XFYIG1fECO24XjirO6YXXLBZK4dXtTmcJy
-         GuELGoo/XLhkLmco6aZjZr7B6utayagAOUl42VGhy6TLtY6AWvBdx0eu5Vkc77Cz8yQa
-         I96gAL0MXmNGZtgaspaBbsny9Mck7iUvLptQkPLJyRIb0ZzjFg6VNgx6cNvWjaoRJbWo
-         xaKtR8voriEhtPVrusYA0OYF5RmN+fIMVzGR9rKxrxf5qsWzOIr98qhh5vawvA5L0Q1+
-         IdEH0EcO4xA4j66EQTI5jhZ6E30D/QsIZ0Bovrj+qkBwrSlsvXmRtjkRP+y2ReC5Yy1x
-         WtPw==
-X-Gm-Message-State: AOAM5317/fdRU4nIsu731FiGBWOvVGU1WcT2N+f7qr5UgM58cKVPt8d6
-        IA1CP31V/CjGXSLBO58dRXavJ4fPGwraZR6N0F4=
-X-Google-Smtp-Source: ABdhPJxd/V5/vQ62F/8v5GZf9h7zRgvzdy/A865p+t6gXgSFDf+t3yUfm1M525rHBfhXHW6P8QU2h35EFUGW1cuZdb8=
-X-Received: by 2002:aca:52c9:: with SMTP id g192mr1290541oib.54.1604391246828;
- Tue, 03 Nov 2020 00:14:06 -0800 (PST)
+        Tue, 3 Nov 2020 03:17:45 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQN1v6N41zLsqq;
+        Tue,  3 Nov 2020 16:17:39 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 3 Nov 2020
+ 16:17:40 +0800
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: move ioctl interface definitions to
+ separated file
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201102062131.14205-1-yuchao0@huawei.com>
+ <20201103032234.GB2875@sol.localdomain>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <c7e47bac-16e6-2038-3eb3-0fdb787ce977@huawei.com>
+Date:   Tue, 3 Nov 2020 16:17:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <1604375093-6451-1-git-send-email-yejune.deng@gmail.com>
-In-Reply-To: <1604375093-6451-1-git-send-email-yejune.deng@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 3 Nov 2020 09:13:55 +0100
-Message-ID: <CAMuHMdWoGAEwT97R3pC-864FyG2fc7fQoaBmHxgZPnrRVWE9vw@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: rcar-usb2-clock-sel: Replace devm_reset_control_array_get()
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201103032234.GB2875@sol.localdomain>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 4:45 AM Yejune Deng <yejune.deng@gmail.com> wrote:
-> devm_reset_control_array_get_shared() looks more readable
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+On 2020/11/3 11:22, Eric Biggers wrote:
+> On Mon, Nov 02, 2020 at 02:21:31PM +0800, Chao Yu wrote:
+>> +#define F2FS_IOC_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
+>> +						struct f2fs_move_range)
+> [...]
+>> +#define F2FS_IOC_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,	\
+>> +						struct f2fs_gc_range)
+> [...]
+>> +
+>> +struct f2fs_gc_range {
+>> +	__u32 sync;
+>> +	__u64 start;
+>> +	__u64 len;
+>> +};
+> [...]
+>> +struct f2fs_move_range {
+>> +	__u32 dst_fd;		/* destination fd */
+>> +	__u64 pos_in;		/* start position in src_fd */
+>> +	__u64 pos_out;		/* start position in dst_fd */
+>> +	__u64 len;		/* size to move */
+>> +};
+> 
+> These two structs are weird because there is implicit padding between the __u32
+> field and the following __u64 field on some 32-bit architectures (e.g. x86_32)
+> but not others (e.g. arm32).
+> 
+> But f2fs_compat_ioctl() doesn't handle these two ioctls specially, but rather
+> just calls through to f2fs_ioctl().  That's wrong, and it means that
+> F2FS_IOC_MOVE_RANGE and F2FS_IOC_GARBAGE_COLLECT_RANGE won't work when called
+> from an x86_32 binary on an x86_64 kernel.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.11.
+Nice catch!
 
-Gr{oetje,eeting}s,
+> 
+> So something needs to be fixed.  I wonder if it's safe to just explicitly add
+> the padding field after the fact.  If no one is actually using these two ioctls
+> in a case where both userspace and the kernel lack the implicit padding (e.g.,
+> x86_32 userspace with x86_32 kernel), it should be fine...
 
-                        Geert
+IIRC, Jaegeuk added those interfaces, I hope it's not the requirement from other
+f2fs userspace developers...if it is, there may be users.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I found one patch in ext4 which fixes the similar issue, I guess we can fix this
+with the same way, thoughts?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+commit 4d92dc0f00a775dc2e1267b0e00befb783902fe7
+Author: Ben Hutchings <ben@decadent.org.uk>
+Date:   Mon May 17 06:00:00 2010 -0400
+
+     ext4: Fix compat EXT4_IOC_ADD_GROUP
+
+     struct ext4_new_group_input needs to be converted because u64 has
+     only 32-bit alignment on some 32-bit architectures, notably i386.
+
+Thanks,
+
+> 
+> - Eric
+> .
+> 
