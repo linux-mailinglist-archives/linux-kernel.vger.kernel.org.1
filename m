@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0A02A5162
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BD12A5167
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgKCUkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
+        id S1730219AbgKCUka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729787AbgKCUkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:22 -0500
+        id S1730206AbgKCUkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F17F0223AC;
-        Tue,  3 Nov 2020 20:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51340223AB;
+        Tue,  3 Nov 2020 20:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436022;
-        bh=IWxqs2X63agThMfuF3hPsQ3OgyfHQ83oTP7Q4kzW7JA=;
+        s=default; t=1604436024;
+        bh=vbhmWNAfFloNN1ZhGiiBhaSAizStjkbh4+d9cRpkQLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aogMO7yyvOigFeMl6w34ut0hVMj0qXyK83Bf8so8kXtcznxXOT5EVrelGDb1UeDkg
-         IWjzbtVChFdHCSni1/IEzi6pjNxl9ow56+mEskpUni2AphaQzBGJAnKJicImD7RK90
-         lfKRzJjDQDdNPKujoVYkt5BpEtrKmwqv/ZwBhI/8=
+        b=HFUoJltB2BAUUgSuxEPZz/+wqqxEWbJsiGhDNHe2ttvHhx4D6AYb+IkjphxOrecc5
+         cnWhfXoNNFJ9xQmTrEoUchpzEDiXH/uMgKpB/yf57ZRJez0CTpfmPasRO9s9Si7xuN
+         EGcbh4fctuoditHGhuncKbMsd+xKWDZlNOd4aaBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 070/391] io_uring: dont set COMP_LOCKED if wont put
-Date:   Tue,  3 Nov 2020 21:32:01 +0100
-Message-Id: <20201103203351.972293956@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Venkateswara Naralasetty <vnaralas@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 071/391] ath10k: fix retry packets update in station dump
+Date:   Tue,  3 Nov 2020 21:32:02 +0100
+Message-Id: <20201103203352.025477759@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,43 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 
-[ Upstream commit 368c5481ae7c6a9719c40984faea35480d9f4872 ]
+[ Upstream commit 67b927f9820847d30e97510b2f00cd142b9559b6 ]
 
-__io_kill_linked_timeout() sets REQ_F_COMP_LOCKED for a linked timeout
-even if it can't cancel it, e.g. it's already running. It not only races
-with io_link_timeout_fn() for ->flags field, but also leaves the flag
-set and so io_link_timeout_fn() may find it and decide that it holds the
-lock. Hopefully, the second problem is potential.
+When tx status enabled, retry count is updated from tx completion status.
+which is not working as expected due to firmware limitation where
+firmware can not provide per MSDU rate statistics from tx completion
+status. Due to this tx retry count is always 0 in station dump.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fix this issue by updating the retry packet count from per peer
+statistics. This patch will not break on SDIO devices since, this retry
+count is already updating from peer statistics for SDIO devices.
+
+Tested-on: QCA9984 PCI 10.4-3.6-00104
+Tested-on: QCA9882 PCI 10.2.4-1.0-00047
+
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1591856446-26977-1-git-send-email-vnaralas@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 59ab8c5c2aaaa..50a7a99dad4ca 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1650,6 +1650,7 @@ static bool io_link_cancel_timeout(struct io_kiocb *req)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 215ade6faf328..69ad4ca1a87c1 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -3583,12 +3583,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+ 	}
  
- 	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
- 	if (ret != -1) {
-+		req->flags |= REQ_F_COMP_LOCKED;
- 		io_cqring_fill_event(req, -ECANCELED);
- 		io_commit_cqring(ctx);
- 		req->flags &= ~REQ_F_LINK_HEAD;
-@@ -1672,7 +1673,6 @@ static bool __io_kill_linked_timeout(struct io_kiocb *req)
- 		return false;
+ 	if (ar->htt.disable_tx_comp) {
+-		arsta->tx_retries += peer_stats->retry_pkts;
+ 		arsta->tx_failed += peer_stats->failed_pkts;
+-		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
+-			   arsta->tx_retries, arsta->tx_failed);
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
++			   arsta->tx_failed);
+ 	}
  
- 	list_del_init(&link->link_list);
--	link->flags |= REQ_F_COMP_LOCKED;
- 	wake_ev = io_link_cancel_timeout(link);
- 	req->flags &= ~REQ_F_LINK_TIMEOUT;
- 	return wake_ev;
++	arsta->tx_retries += peer_stats->retry_pkts;
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
++
+ 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
+ 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
+ 						    rate_idx);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2177e9d92bdff..03c7edf05a1d1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8542,12 +8542,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
+ 
+ 	if (ar->htt.disable_tx_comp) {
+-		sinfo->tx_retries = arsta->tx_retries;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
+ 		sinfo->tx_failed = arsta->tx_failed;
+ 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
+ 	}
+ 
++	sinfo->tx_retries = arsta->tx_retries;
++	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
++
+ 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
+ }
+ 
 -- 
 2.27.0
 
