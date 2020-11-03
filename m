@@ -2,75 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391CD2A4B8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FE82A4B95
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgKCQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:30:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
+        id S1728107AbgKCQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:32:38 -0500
+Received: from mga17.intel.com ([192.55.52.151]:47964 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgKCQaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:30:52 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6493206DF;
-        Tue,  3 Nov 2020 16:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604421051;
-        bh=dhY+aUcvUDnN3GOi7rmB6auRLoyv4aZXRn9dLCqmgEA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=yt4jWbWzqlEY2R57hS3hfeYtDyOOfnCziXVs6pcJPBQIPh+Pu6t/qF6HiCY5NfNGI
-         Ykp8dYVQTd23SRWHrIVyf/Dq/w8SgXs71oqeHLQ6teu9q1fN/dxiPJMf3EDM4RJagi
-         uCa9Si6/FWe6WiZdwg6TDuEIew1gzziJbdQ5A2yo=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] mmc: meson-gx: drop of_match_ptr from of_device_id table
-Date:   Tue,  3 Nov 2020 17:30:46 +0100
-Message-Id: <20201103163046.14336-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726018AbgKCQch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:32:37 -0500
+IronPort-SDR: /sClODo3mhsqZh6EjCqLxl9xG+pD6SqA2fVGKn3573gtACvRyCLk6X5ue8iavqeBOiiyGOfQoo
+ YT5BGMeR+wiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="148938099"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="148938099"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:32:37 -0800
+IronPort-SDR: WfgwmvfGml5BSVZD4UDOE/583Vi++IgeIZe4vunJDVytGoRRzV7GKL6JCkJ7lKmfQMUPUANIsj
+ nkVs680ReJQw==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="538547046"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.201])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:32:36 -0800
+Date:   Tue, 3 Nov 2020 17:32:26 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
+Message-ID: <20201103163225.GA19947@ubuntu>
+References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
+ <20201027175218.1033609-4-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027175218.1033609-4-mathieu.poirier@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can match only via the DT table so the table should be always
-used and the of_match_ptr does not have any sense (this also allows ACPI
-matching via PRP0001, even though it is not relevant here).  This fixes
-compile warning (!CONFIG_OF && !CONFIG_MODULES):
+Hi Mathieu,
 
-    drivers/mmc/host/meson-gx-mmc.c:1252:34: warning:
-        ‘meson_mmc_of_match’ defined but not used [-Wunused-const-variable=]
+On Tue, Oct 27, 2020 at 11:52:13AM -0600, Mathieu Poirier wrote:
+> Move structure rpmsg_ns_msg to its own header file so that
+> it can be used by other entities.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 32 +-----------------------
+>  include/linux/rpmsg_ns.h         | 42 ++++++++++++++++++++++++++++++++
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mmc/host/meson-gx-mmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry for a delayed comment, it just occurred to me: there is a 
+include/linux/rpmsg directory already, so, perhaps it would be 
+better to place the new headers there as include/linux/rpmsg/ns.h 
+and include/linux/rpmsg/byteorder.h?
 
-diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-index 4ec41579940a..13f6a2c0ed04 100644
---- a/drivers/mmc/host/meson-gx-mmc.c
-+++ b/drivers/mmc/host/meson-gx-mmc.c
-@@ -1265,7 +1265,7 @@ static struct platform_driver meson_mmc_driver = {
- 	.driver		= {
- 		.name = DRIVER_NAME,
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
--		.of_match_table = of_match_ptr(meson_mmc_of_match),
-+		.of_match_table = meson_mmc_of_match,
- 	},
- };
- 
--- 
-2.25.1
-
+Thanks
+Guennadi
