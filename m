@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E312A40C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AEF2A40C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgKCJy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:54:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgKCJy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:54:26 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1C3F2080C;
-        Tue,  3 Nov 2020 09:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604397266;
-        bh=+PMSBSh/qsbOxi/PGx0X2fcaxpuGi6w2e85VksrgH70=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y5r7zekSZXihQG1+urqGj/cKRCuJEMUjeTlyba1YH27f4KbxZMsInaR1VZArSennh
-         s4+p3GyqFuCLDhCcYBUVK2Pn3at2pBqcf0ReYAzF8BMA/iqfIxvh6o4eA7yti2DJMy
-         AbyzLu2L9ZI0/yRbD45cLVXezL+6tqzn34eSfSrw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kZt1D-0075JQ-RE; Tue, 03 Nov 2020 09:54:23 +0000
+        id S1727668AbgKCJyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:54:44 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:39260 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCJyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:54:43 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A39sVo75015308, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A39sVo75015308
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 3 Nov 2020 17:54:31 +0800
+Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Tue, 3 Nov 2020
+ 17:54:30 +0800
+From:   <rui_feng@realsil.com.cn>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Subject: [PATCH 1/8] mmc: rtsx: Add test mode for RTS5261
+Date:   Tue, 3 Nov 2020 17:54:29 +0800
+Message-ID: <1604397269-2780-1-git-send-email-rui_feng@realsil.com.cn>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 03 Nov 2020 09:54:23 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <877dr38kt8.fsf@nanos.tec.linutronix.de>
-References: <20201031140330.83768-1-linux@fw-web.de>
- <878sbm9icl.fsf@nanos.tec.linutronix.de>
- <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de>
- <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22>
- <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
- <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
- <df5565a2f1e821041c7c531ad52a3344@kernel.org>
- <87h7q791j8.fsf@nanos.tec.linutronix.de>
- <877dr38kt8.fsf@nanos.tec.linutronix.de>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, frank-w@public-files.de, ryder.lee@mediatek.com, linux-mediatek@lists.infradead.org, linux@fw-web.de, linux-kernel@vger.kernel.org, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, bhelgaas@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [172.29.40.150]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-02 22:18, Thomas Gleixner wrote:
-> On Mon, Nov 02 2020 at 17:16, Thomas Gleixner wrote:
->> On Mon, Nov 02 2020 at 11:30, Marc Zyngier wrote:
->>> --- a/drivers/pci/probe.c
->>> +++ b/drivers/pci/probe.c
->>> @@ -871,6 +871,8 @@ static void pci_set_bus_msi_domain(struct pci_bus
->>> *bus)
->>>   		d = pci_host_bridge_msi_domain(b);
->>> 
->>>   	dev_set_msi_domain(&bus->dev, d);
->>> +	if (!d)
->>> +		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
->> 
->> Hrm, that might break legacy setups (no irqdomain support). I'd rather
->> prefer to explicitly tell the pci core at host registration time.
-> 
-> s/might break/ breaks /     Just validated :)
+From: Rui Feng <rui_feng@realsil.com.cn>
 
-For my own edification, can you point me to the failing case?
+This patch add test mode for RTS5261.
+If test mode is set, reader will switch to SD Express mode
+mandatorily, and this mode is used by factory testing only.
 
-> So we really need some other solution and removing the warning is not 
-> an
-> option. If MSI is enabled then we want to get a warning when a PCI
-> device has no MSI domain associated. Explicitly expressing the PCIE
-> brigde misfeature of not supporting MSI is way better than silently
-> returning an error code which is swallowed anyway.
+Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+---
+ drivers/misc/cardreader/rts5261.h |  5 -----
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 19 ++++++++++++++++---
+ include/linux/rtsx_pci.h          |  4 ++++
+ 3 files changed, 20 insertions(+), 8 deletions(-)
 
-I don't disagree here, though the PCI_MSI_ARCH_FALLBACKS mechanism
-makes it more difficult to establish.
-
-> Whatever the preferred way is via flags at host probe time or flagging
-> it post probe I don't care much as long as it is consistent.
-
-Host probe time is going to require some changes in the core PCI api,
-as everything that checks for a MSI domain is based on the pci_bus
-structure, which is only allocated much later.
-
-I'll have a think.
-
-         M.
+diff --git a/drivers/misc/cardreader/rts5261.h b/drivers/misc/cardreader/rts5261.h
+index 8d80f0d5d5d6..80179353bc46 100644
+--- a/drivers/misc/cardreader/rts5261.h
++++ b/drivers/misc/cardreader/rts5261.h
+@@ -60,11 +60,6 @@
+ /* DMACTL 0xFE2C */
+ #define RTS5261_DMA_PACK_SIZE_MASK	0xF0
+ 
+-/* FW config info register */
+-#define RTS5261_FW_CFG_INFO0		0xFF50
+-#define RTS5261_FW_EXPRESS_TEST_MASK	(0x01<<0)
+-#define RTS5261_FW_EA_MODE_MASK		(0x01<<5)
+-
+ /* FW status register */
+ #define RTS5261_FW_STATUS		0xFF56
+ #define RTS5261_EXPRESS_LINK_FAIL_MASK	(0x01<<7)
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index c453ad403aa8..26be11a096cb 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -47,6 +47,8 @@ struct realtek_pci_sdmmc {
+ 	bool			using_cookie;
+ };
+ 
++static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios);
++
+ static inline struct device *sdmmc_dev(struct realtek_pci_sdmmc *host)
+ {
+ 	return &(host->pdev->dev);
+@@ -898,6 +900,7 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 	struct mmc_host *mmc = host->mmc;
+ 	int err;
+ 	u32 val;
++	u8 test_mode;
+ 
+ 	if (host->power_state == SDMMC_POWER_ON)
+ 		return 0;
+@@ -925,6 +928,15 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 		return err;
+ 
+ 	if (PCI_PID(pcr) == PID_5261) {
++		/*
++		 * If test mode is set switch to SD Express mandatorily,
++		 * this is only for factory testing.
++		 */
++		rtsx_pci_read_register(pcr, RTS5261_FW_CFG_INFO0, &test_mode);
++		if (test_mode & RTS5261_FW_EXPRESS_TEST_MASK) {
++			sdmmc_init_sd_express(mmc, NULL);
++			return 0;
++		}
+ 		if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
+ 			mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
+ 		/*
+@@ -1354,11 +1366,12 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
+ 		RTS5261_AUX_CLK_16M_EN, RTS5261_AUX_CLK_16M_EN);
+ 	rtsx_pci_write_register(pcr, RTS5261_FW_CFG0,
+ 		RTS5261_FW_ENTER_EXPRESS, RTS5261_FW_ENTER_EXPRESS);
++	rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
++		RTS5261_MCU_CLOCK_GATING, RTS5261_MCU_CLOCK_GATING);
+ 	rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
+ 		RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
+-		| RTS5261_MCU_CLOCK_GATING | RTS5261_DRIVER_ENABLE_FW,
+-		RTS5261_MCU_CLOCK_SEL_16M | RTS5261_MCU_CLOCK_GATING
+-		| RTS5261_DRIVER_ENABLE_FW);
++		| RTS5261_DRIVER_ENABLE_FW,
++		RTS5261_MCU_CLOCK_SEL_16M | RTS5261_DRIVER_ENABLE_FW);
+ 	host->eject = true;
+ 	return 0;
+ }
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index b47959f48ccd..db249e8707f3 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -658,6 +658,10 @@
+ #define   PM_WAKE_EN			0x01
+ #define PM_CTRL4			0xFF47
+ 
++/* FW config info register */
++#define RTS5261_FW_CFG_INFO0		0xFF50
++#define   RTS5261_FW_EXPRESS_TEST_MASK	(0x01 << 0)
++#define   RTS5261_FW_EA_MODE_MASK	(0x01 << 5)
+ #define RTS5261_FW_CFG0			0xFF54
+ #define   RTS5261_FW_ENTER_EXPRESS	(0x01 << 0)
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
