@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353772A5487
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CADB2A537E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388975AbgKCVMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:12:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54286 "EHLO mail.kernel.org"
+        id S1731560AbgKCVBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:01:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388525AbgKCVMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:12:07 -0500
+        id S2387439AbgKCVBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:01:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 982BC21534;
-        Tue,  3 Nov 2020 21:12:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46AE621534;
+        Tue,  3 Nov 2020 21:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437927;
-        bh=iGi1A/HIjlPZYD+2SeqNGeJAXliQ5RfNBdSLrnNyclk=;
+        s=default; t=1604437277;
+        bh=iA1ttNm06iJLfQ8hdxVhFGVLcLxQCUX4bDZ3azqJbRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WpaJjmDBqXIMR42HRD463JrcFS0hkiWUkDxRuXpkJ8OfX26XwgX7er/76YbEyRtE/
-         GBjcdaZWxLSUuEkrsgeD7zkfY6YxjBT+MKAVgKPdEStsi8NM5rPf5H7N83Eb15qm5e
-         UFCAuz1NoS+HAGeMytm0MtaDpnHxE1A1W/9SDHDU=
+        b=U5ovmsOFptVQgRAU9WVp8BED5Leeqihj7p9wQRt1Q96Xga++2JzJt79p4+tZAEOe+
+         /okRTPv48ycKP9Ro4g5yVKtnouK2/R6k/GogqC2GwEasSU9aHh6YnZ35GMoye19sHx
+         VHkOBIEZRyjb7mLbkQ646GdLqEthuTQgKxc8K4XM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-        Jaedon Shin <jaedon.shin@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
-Subject: [PATCH 4.14 064/125] leds: bcm6328, bcm6358: use devres LED registering function
-Date:   Tue,  3 Nov 2020 21:37:21 +0100
-Message-Id: <20201103203206.192851985@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Luo Meng <luomeng12@huawei.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.4 194/214] ext4: fix invalid inode checksum
+Date:   Tue,  3 Nov 2020 21:37:22 +0100
+Message-Id: <20201103203308.841778637@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <marek.behun@nic.cz>
+From: Luo Meng <luomeng12@huawei.com>
 
-commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
+commit 1322181170bb01bce3c228b82ae3d5c6b793164f upstream.
 
-These two drivers do not provide remove method and use devres for
-allocation of other resources, yet they use led_classdev_register
-instead of the devres variant, devm_led_classdev_register.
+During the stability test, there are some errors:
+  ext4_lookup:1590: inode #6967: comm fsstress: iget: checksum invalid.
 
-Fix this.
+If the inode->i_iblocks too big and doesn't set huge file flag, checksum
+will not be recalculated when update the inode information to it's buffer.
+If other inode marks the buffer dirty, then the inconsistent inode will
+be flushed to disk.
 
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Cc: Álvaro Fernández Rojas <noltari@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>
-Cc: Jaedon Shin <jaedon.shin@gmail.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Fix this problem by checking i_blocks in advance.
+
 Cc: stable@kernel.org
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lore.kernel.org/r/20201020013631.3796673-1-luomeng12@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/leds/leds-bcm6328.c |    2 +-
- drivers/leds/leds-bcm6358.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/leds/leds-bcm6328.c
-+++ b/drivers/leds/leds-bcm6328.c
-@@ -336,7 +336,7 @@ static int bcm6328_led(struct device *de
- 	led->cdev.brightness_set = bcm6328_led_set;
- 	led->cdev.blink_set = bcm6328_blink_set;
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5271,6 +5271,12 @@ static int ext4_do_update_inode(handle_t
+ 	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
+ 		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
  
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
++	err = ext4_inode_blocks_set(handle, raw_inode, ei);
++	if (err) {
++		spin_unlock(&ei->i_raw_lock);
++		goto out_brelse;
++	}
++
+ 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+ 	i_uid = i_uid_read(inode);
+ 	i_gid = i_gid_read(inode);
+@@ -5304,11 +5310,6 @@ static int ext4_do_update_inode(handle_t
+ 	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
+ 	EXT4_EINODE_SET_XTIME(i_crtime, ei, raw_inode);
  
---- a/drivers/leds/leds-bcm6358.c
-+++ b/drivers/leds/leds-bcm6358.c
-@@ -141,7 +141,7 @@ static int bcm6358_led(struct device *de
- 
- 	led->cdev.brightness_set = bcm6358_led_set;
- 
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
- 
+-	err = ext4_inode_blocks_set(handle, raw_inode, ei);
+-	if (err) {
+-		spin_unlock(&ei->i_raw_lock);
+-		goto out_brelse;
+-	}
+ 	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
+ 	raw_inode->i_flags = cpu_to_le32(ei->i_flags & 0xFFFFFFFF);
+ 	if (likely(!test_opt2(inode->i_sb, HURD_COMPAT)))
 
 
