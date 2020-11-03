@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421A32A55C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF672A5636
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387841AbgKCVFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:05:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43946 "EHLO mail.kernel.org"
+        id S1730781AbgKCVA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:00:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387735AbgKCVF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:26 -0500
+        id S1733199AbgKCVAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA87F205ED;
-        Tue,  3 Nov 2020 21:05:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFDA722226;
+        Tue,  3 Nov 2020 21:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437526;
-        bh=5E6Ms5SfmAhlWvxTxvU+REQ6RjzNmk5P07PNfAQXR/o=;
+        s=default; t=1604437218;
+        bh=UZwC1BRGNu+cfL6LMrplE7QsUP/WDAzBR/EDPltJrmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JoKUof71QkzIhQn5K/Qe/2VnRCrJ1yGaYLYKEWLWZeaWc+kQlOODM56PJG7V2F2yn
-         e31c4jXUuqyKHXS1kujDbXlqSikBPxYxeQ3y6cxsfCn4oW/1sMoAinYaA9bKseF4t2
-         8dpEuZ0OQUabZ6x7Nag7WsZLDKvJMCm4OKOaLdns=
+        b=zfsYjFWyt162tA6mEJkOgz2kvgXgX0bHFbGaHIZ5ISBADAihJnl77sR8GuVk9i/j+
+         ugscZhGEQTuMDhMZJo4My44PVtAOG0At8zX5zuiblI6auZSExdPZGHnjP19o95Klug
+         e5R9o/ltJDyHYNQcrWISUVfQgPRCAWjK1DnEt+c0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 114/191] perf/x86/amd/ibs: Dont include randomized bits in get_ibs_op_count()
-Date:   Tue,  3 Nov 2020 21:36:46 +0100
-Message-Id: <20201103203244.086262036@linuxfoundation.org>
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 159/214] powerpc: Warn about use of smt_snooze_delay
+Date:   Tue,  3 Nov 2020 21:36:47 +0100
+Message-Id: <20201103203305.693586293@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Joel Stanley <joel@jms.id.au>
 
-commit 680d69635005ba0e58fe3f4c52fc162b8fc743b0 upstream.
+commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
 
-get_ibs_op_count() adds hardware's current count (IbsOpCurCnt) bits
-to its count regardless of hardware's valid status.
+It's not done anything for a long time. Save the percpu variable, and
+emit a warning to remind users to not expect it to do anything.
 
-According to the PPR for AMD Family 17h Model 31h B0 55803 Rev 0.54,
-if the counter rolls over, valid status is set, and the lower 7 bits
-of IbsOpCurCnt are randomized by hardware.
+This uses pr_warn_once instead of pr_warn_ratelimit as testing
+'ppc64_cpu --smt=off' on a 24 core / 4 SMT system showed the warning
+to be noisy, as the online/offline loop is slow.
 
-Don't include those bits in the driver's event count.
-
-Fixes: 8b1e13638d46 ("perf/x86-ibs: Fix usage of IBS op current count")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Fixes: 3fa8cad82b94 ("powerpc/pseries/cpuidle: smt-snooze-delay cleanup.")
+Cc: stable@vger.kernel.org # v3.14
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Acked-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200902000012.3440389-1-joel@jms.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/events/amd/ibs.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/powerpc/kernel/sysfs.c |   42 +++++++++++++++++-------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -347,11 +347,15 @@ static u64 get_ibs_op_count(u64 config)
- {
- 	u64 count = 0;
+--- a/arch/powerpc/kernel/sysfs.c
++++ b/arch/powerpc/kernel/sysfs.c
+@@ -31,29 +31,27 @@
  
-+	/*
-+	 * If the internal 27-bit counter rolled over, the count is MaxCnt
-+	 * and the lower 7 bits of CurCnt are randomized.
-+	 * Otherwise CurCnt has the full 27-bit current counter value.
-+	 */
- 	if (config & IBS_OP_VAL)
--		count += (config & IBS_OP_MAX_CNT) << 4; /* cnt rolled over */
+ static DEFINE_PER_CPU(struct cpu, cpu_devices);
+ 
+-/*
+- * SMT snooze delay stuff, 64-bit only for now
+- */
 -
--	if (ibs_caps & IBS_CAPS_RDWROPCNT)
--		count += (config & IBS_OP_CUR_CNT) >> 32;
-+		count = (config & IBS_OP_MAX_CNT) << 4;
-+	else if (ibs_caps & IBS_CAPS_RDWROPCNT)
-+		count = (config & IBS_OP_CUR_CNT) >> 32;
+ #ifdef CONFIG_PPC64
  
+-/* Time in microseconds we delay before sleeping in the idle loop */
+-static DEFINE_PER_CPU(long, smt_snooze_delay) = { 100 };
++/*
++ * Snooze delay has not been hooked up since 3fa8cad82b94 ("powerpc/pseries/cpuidle:
++ * smt-snooze-delay cleanup.") and has been broken even longer. As was foretold in
++ * 2014:
++ *
++ *  "ppc64_util currently utilises it. Once we fix ppc64_util, propose to clean
++ *  up the kernel code."
++ *
++ * powerpc-utils stopped using it as of 1.3.8. At some point in the future this
++ * code should be removed.
++ */
+ 
+ static ssize_t store_smt_snooze_delay(struct device *dev,
+ 				      struct device_attribute *attr,
+ 				      const char *buf,
+ 				      size_t count)
+ {
+-	struct cpu *cpu = container_of(dev, struct cpu, dev);
+-	ssize_t ret;
+-	long snooze;
+-
+-	ret = sscanf(buf, "%ld", &snooze);
+-	if (ret != 1)
+-		return -EINVAL;
+-
+-	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
++	pr_warn_once("%s (%d) stored to unsupported smt_snooze_delay, which has no effect.\n",
++		     current->comm, current->pid);
  	return count;
  }
+ 
+@@ -61,9 +59,9 @@ static ssize_t show_smt_snooze_delay(str
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+ {
+-	struct cpu *cpu = container_of(dev, struct cpu, dev);
+-
+-	return sprintf(buf, "%ld\n", per_cpu(smt_snooze_delay, cpu->dev.id));
++	pr_warn_once("%s (%d) read from unsupported smt_snooze_delay\n",
++		     current->comm, current->pid);
++	return sprintf(buf, "100\n");
+ }
+ 
+ static DEVICE_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
+@@ -71,16 +69,10 @@ static DEVICE_ATTR(smt_snooze_delay, 064
+ 
+ static int __init setup_smt_snooze_delay(char *str)
+ {
+-	unsigned int cpu;
+-	long snooze;
+-
+ 	if (!cpu_has_feature(CPU_FTR_SMT))
+ 		return 1;
+ 
+-	snooze = simple_strtol(str, NULL, 10);
+-	for_each_possible_cpu(cpu)
+-		per_cpu(smt_snooze_delay, cpu) = snooze;
+-
++	pr_warn("smt-snooze-delay command line option has no effect\n");
+ 	return 1;
+ }
+ __setup("smt-snooze-delay=", setup_smt_snooze_delay);
 
 
