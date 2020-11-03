@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8F62A4BF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5642A4C00
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728340AbgKCQvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:51:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgKCQvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:51:43 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A364F20709;
-        Tue,  3 Nov 2020 16:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604422302;
-        bh=ltFWbwZrKzlRod8Ro/4wG6vMt94SJxaRjMtj1TLMLYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HQdZwz6qSkFP7g8HiqaXmRItKdiuPmA3b/89ZigFPfM+QNyFJ7qO4NcRNf830wSRS
-         R+sL56de+WHAQIIJx3bhWqgcQQLsgy2ccFyTuOhz/Pbr9c4FY60sCCbbw7rbb9asSx
-         sKgdTAe6PpIiHcbikl84KlDdGFr90ZoCWhA3rSuo=
-Date:   Tue, 3 Nov 2020 18:51:34 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Steven Price <steven.price@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        Pratik Patel <pratikp@codeaurora.org>
-Subject: Re: mm/memblock: export memblock_{start/end}_of_DRAM
-Message-ID: <20201103165134.GL4879@kernel.org>
-References: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
- <20201030083842.GA4319@kernel.org>
- <ad242b868a291223218a33c05d6729fd@codeaurora.org>
+        id S1728630AbgKCQxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:53:12 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40310 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgKCQxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:53:11 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Gr4oZ061462;
+        Tue, 3 Nov 2020 10:53:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604422384;
+        bh=0Tkp6HLRVCB/7ivjFJeStRM6yrcVsh9/LqVVSNK0ysQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Anuz5tKbBGuCx0poQrMYXF/O5541STenRpOVtBf9We3N7ok2idb0GrDCk/Mxsox29
+         McVsSzhmdTxAUg7ONgpcec2G+4FFLg30BDwBWUtwepx3vU5hg+ZusFLMGS9z8Tj8Qg
+         4Z7NnvX8E2K2zUIuE/lg2VxytxpmMUxSrlEedoJw=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3Gr4Iu015522
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 10:53:04 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 10:53:03 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 10:53:04 -0600
+Received: from [10.250.36.55] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Gr3ej016284;
+        Tue, 3 Nov 2020 10:53:03 -0600
+Subject: Re: [PATCH net-next v3 2/4] dt-bindings: net: Add Rx/Tx output
+ configuration for 10base T1L
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201030172950.12767-1-dmurphy@ti.com>
+ <20201030172950.12767-3-dmurphy@ti.com> <20201030195655.GD1042051@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <a50fe8f3-2ca1-8969-08ac-013704a5a617@ti.com>
+Date:   Tue, 3 Nov 2020 10:52:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ad242b868a291223218a33c05d6729fd@codeaurora.org>
+In-Reply-To: <20201030195655.GD1042051@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 06:51:25PM -0800, Sudarshan Rajagopalan wrote:
-> On 2020-10-30 01:38, Mike Rapoport wrote:
-> > On Thu, Oct 29, 2020 at 02:29:27PM -0700, Sudarshan Rajagopalan wrote:
-> > > Hello all,
-> > > 
-> > > We have a usecase where a module driver adds certain memory blocks
-> > > using
-> > > add_memory_driver_managed(), so that it can perform memory hotplug
-> > > operations on these blocks. In general, these memory blocks aren’t
-> > > something
-> > > that gets physically added later, but is part of actual RAM that
-> > > system
-> > > booted up with. Meaning – we set the ‘mem=’ cmdline parameter to
-> > > limit the
-> > > memory and later add the remaining ones using add_memory*() variants.
-> > > 
-> > > The basic idea is to have driver have ownership and manage certain
-> > > memory
-> > > blocks for hotplug operations.
-> > > 
-> > > For the driver be able to know how much memory was limited and how
-> > > much
-> > > actually present, we take the delta of ‘bootmem physical end
-> > > address’ and
-> > > ‘memblock_end_of_DRAM’. The 'bootmem physical end address' is
-> > > obtained by
-> > > scanning the reg values in ‘memory’ DT node and determining the max
-> > > {addr,size}. Since our driver is getting modularized, we won’t have
-> > > access
-> > > to memblock_end_of_DRAM (i.e. end address of all memory blocks after
-> > > ‘mem=’
-> > > is applied).
-> > > 
-> > > So checking if memblock_{start/end}_of_DRAM() symbols can be
-> > > exported? Also,
-> > > this information can be obtained by userspace by doing ‘cat
-> > > /proc/iomem’ and
-> > > greping for ‘System RAM’. So wondering if userspace can have access
-> > > to such
-> > > info, can we allow kernel module drivers have access by exporting
-> > > memblock_{start/end}_of_DRAM().
-> > 
-> > These functions cannot be exported not because we want to hide this
-> > information from the modules but because it is unsafe to use them.
-> > On most architecturs these functions are __init so they are discarded
-> > after boot anyway. Beisdes, the memory configuration known to memblock
-> > might be not accurate in many cases as David explained in his reply.
-> > 
-> 
-> I don't see how information contained in memblock_{start/end}_of_DRAM() is
-> considered hidden if the information can be obtained using 'cat
-> /proc/iomem'. The memory resource manager adds these blocks either in
-> "System RAM", "reserved", "Kernel data/code" etc. Inspecting this, one could
-> determine whats the start and end of memblocks.
+Andrew
 
-I'm not saying that the memblock data is considered hidden. On most
-systems it is simply not present after boot. And even if it is not
-discarded, it might be not accurate on any arch except arm64.
+On 10/30/20 2:56 PM, Andrew Lunn wrote:
+> On Fri, Oct 30, 2020 at 12:29:48PM -0500, Dan Murphy wrote:
+>> Per the 802.3cg spec the 10base T1L can operate at 2 different
+>> differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
+>> drive that output is dependent on the PHY's on board power supply.
+> Hi Dan
+>
+> So this property is about the board being able to support the needed
+> voltages? The PHY is not forced into 2.4v p2p, it just says the PHY
+> can operate at 2.4v and the board will not melt, blow a fuse, etc?
+>
+> I actually think it is normal to specify the reverse. List the maximum
+> that device can do because of board restrictions. e.g.
+>
+> - maximum-power-milliwatt : Maximum module power consumption
+>    Specifies the maximum power consumption allowable by a module in the
+>    slot, in milli-Watts.  Presently, modules can be up to 1W, 1.5W or 2W.
+>
+> - max-link-speed:
+>     If present this property specifies PCI gen for link capability.  Host
+>     drivers could add this as a strategy to avoid unnecessary operation for
+>     unsupported link speed, for instance, trying to do training for
+>     unsupported link speed, etc.  Must be '4' for gen4, '3' for gen3, '2'
+>     for gen2, and '1' for gen1. Any other values are invalid.
+>
+>   - max-microvolt : The maximum voltage value supplied to the haptic motor.
+>                  [The unit of the voltage is a micro]
+>
+> So i think this property should be
+>
+>     max-tx-rx-p2p = <1000>;
 
-> I agree on the part that its __init annotated and could be removed after
-> boot. This is something that the driver can be vary of too.
-> 
-> > > Or are there any other ways where a module driver can get the end
-> > > address of
-> > > system memory block?
-> > 
-> > What do you mean by "system memory block"? There could be a lot of
-> > interpretations if you take into account memory hotplug, "mem=" option,
-> > reserved and firmware memory.
-> 
-> I meant the physical end address of memblock. The equivalent of
-> memblock_end_of_DRAM.
+When I was re-writing the code I couldn't come up with a better property 
+name but I like this one.
 
-> > I'd suggest you to describe the entire use case in more detail. Having
-> > the complete picture would help finding a proper solution.
-> 
-> The usecase in general is have a way to add/remove and online/offline
-> certain memory blocks which are part of boot. We do this by limiting the
-> memory using "mem=" and latter add the remaining blocks using
-> add_memory_driver_mamanaged().
+I will implement it.
 
-I think such infrastructure should be a part of core mm rather than
-external out-of-tree driver.
+Do you have any issue with the property being in the ethernet-phy.yaml?
 
-> Sudarshan
-> 
--- 
-Sincerely yours,
-Mike.
+Dan
+
+
