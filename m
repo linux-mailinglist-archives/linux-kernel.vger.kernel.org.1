@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBA52A53FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1EB2A551B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388184AbgKCVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45476 "EHLO mail.kernel.org"
+        id S2389097AbgKCVQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:16:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388173AbgKCVGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:32 -0500
+        id S2388782AbgKCVKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:10:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 630A120658;
-        Tue,  3 Nov 2020 21:06:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B985B205ED;
+        Tue,  3 Nov 2020 21:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437591;
-        bh=sN+tqHSXQ89aDEyAQLzAjoxXd0VmwnWxlC71/q/pbJk=;
+        s=default; t=1604437851;
+        bh=3hMGAx5cl3J9r3hhWcF3oOq1fS9krPCO+1IrkgH8BuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4lC+jBYNPd/1QXghsZPOcTfgOAZRXbelQXo5UDgWxGob61mJwPPzABqhXd1f0+xl
-         0lgqKuDNJ4fHjMgfFFBEST+1ffrfgpOj9g6gOrNmUy7myloeTMcKVQQJs+4JZ+2ETO
-         2I3uGrPsMsGDVSVNTf85gKwg98XWfOJr5e9nH5jU=
+        b=xS2FqoqsPYkCweE3GGolr5u1Pvqdw42UVc2vvmDKpF5jPsp5fyLfuZHYEnTozQAKx
+         /OcgvmyqsxzUg88bMhwD3U3lJUjID79eiINjaRSYoz7SCg48PBECJ/0atCTDikRDwm
+         1yBai1s4Y9NLkSlKwMkqdHIJripZEZWrbllt/Un8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Fritsch <sf@sfritsch.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 4.19 143/191] drm/i915: Force VTd workarounds when running as a guest OS
+        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 058/125] nbd: make the config put is called before the notifying the waiter
 Date:   Tue,  3 Nov 2020 21:37:15 +0100
-Message-Id: <20201103203246.208082091@linuxfoundation.org>
+Message-Id: <20201103203205.370701418@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Xiubo Li <xiubli@redhat.com>
 
-commit 8195400f7ea95399f721ad21f4d663a62c65036f upstream.
+[ Upstream commit 87aac3a80af5cbad93e63250e8a1e19095ba0d30 ]
 
-If i915.ko is being used as a passthrough device, it does not know if
-the host is using intel_iommu. Mixing the iommu and gfx causes a few
-issues (such as scanout overfetch) which we need to workaround inside
-the driver, so if we detect we are running under a hypervisor, also
-assume the device access is being virtualised.
+There has one race case for ceph's rbd-nbd tool. When do mapping
+it may fail with EBUSY from ioctl(nbd, NBD_DO_IT), but actually
+the nbd device has already unmaped.
 
-Reported-by: Stefan Fritsch <sf@sfritsch.de>
-Suggested-by: Stefan Fritsch <sf@sfritsch.de>
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Stefan Fritsch <sf@sfritsch.de>
-Cc: stable@vger.kernel.org
-Tested-by: Stefan Fritsch <sf@sfritsch.de>
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201019101523.4145-1-chris@chris-wilson.co.uk
-(cherry picked from commit f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It dues to if just after the wake_up(), the recv_work() is scheduled
+out and defers calling the nbd_config_put(), though the map process
+has exited the "nbd->recv_task" is not cleared.
 
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_drv.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -33,6 +33,8 @@
- #include <uapi/drm/i915_drm.h>
- #include <uapi/drm/drm_fourcc.h>
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index f22fad977c913..cdf62fb94fb15 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -725,9 +725,9 @@ static void recv_work(struct work_struct *work)
  
-+#include <asm/hypervisor.h>
-+
- #include <linux/io-mapping.h>
- #include <linux/i2c.h>
- #include <linux/i2c-algo-bit.h>
-@@ -2683,7 +2685,9 @@ static inline bool intel_vtd_active(void
- 	if (intel_iommu_gfx_mapped)
- 		return true;
- #endif
--	return false;
-+
-+	/* Running as a guest, we assume the host is enforcing VT'd */
-+	return !hypervisor_is_type(X86_HYPER_NATIVE);
+ 		blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
+ 	}
++	nbd_config_put(nbd);
+ 	atomic_dec(&config->recv_threads);
+ 	wake_up(&config->recv_wq);
+-	nbd_config_put(nbd);
+ 	kfree(args);
  }
  
- static inline bool intel_scanout_needs_vtd_wa(struct drm_i915_private *dev_priv)
+-- 
+2.27.0
+
 
 
