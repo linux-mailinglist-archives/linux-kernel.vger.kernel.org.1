@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557E72A4653
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD712A466C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgKCN2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:28:30 -0500
+        id S1729238AbgKCN31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:29:27 -0500
 Received: from m42-4.mailgun.net ([69.72.42.4]:63763 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729219AbgKCN2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:28:25 -0500
+        id S1729292AbgKCN3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:29:24 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604410104; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JLjIZJZw1u9HJgVMWdn4LPLwRFKRMpegIpRTqok6leY=;
- b=ZKaYr7+xRV3N4/VH1IXQud8PUdj/C+BUrxUKgmt36+23Z5IrIk+ciYjNrNmpVnfd2Z9iM3jS
- YD9wfcwob+kQQh5/LZnCrR8RqNyID2xNVth9EVJpbX9bVVMAdhN5KDeFuasSwocp5pSFIJkm
- zfaHBlCLSiQ8AaFWgXywuJQVR/E=
+ s=smtp; t=1604410164; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=EVEYr3r+1nK4mjqeUe+SKQHlRPiCZaaEh9hkp+cin7U=; b=XfPUOUb8oEreLqQhHuEFz6HdQbmp0CqPyTBG6fEcvihcNdq/FXPYymWBhyoVGyTVhfYTOirQ
+ ruazeI+bxCGQsoSyHBDCRBix9WPzKQUZ8N8K3rjuYUAF8No3yNwXe6yeHtWjmoCEPqXKcB6E
+ gb224mkzxQ9lrSiH/Zct/Lmmoco=
 X-Mailgun-Sending-Ip: 69.72.42.4
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fa15af7875877e3edaa822e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 13:28:23
+ 5fa15af81037425ce1164510 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 13:28:24
  GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0073C38591; Tue,  3 Nov 2020 10:01:07 +0000 (UTC)
+        id F0F04C38553; Tue,  3 Nov 2020 10:09:40 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69B04C38586;
-        Tue,  3 Nov 2020 10:01:02 +0000 (UTC)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C130C38538;
+        Tue,  3 Nov 2020 10:09:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5C130C38538
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, Tamizh Chelvam <tamizhr@codeaurora.org>,
+        lkp@intel.com, Dan Carpenter <error27@gmail.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        ath10k@lists.infradead.org
+Subject: Re: drivers/net/wireless/ath/ath10k/mac.c:9125 ath10k_mac_op_set_tid_config() error: uninitialized symbol 'ret'.
+References: <20201103100037.GE12347@kadam>
+Date:   Tue, 03 Nov 2020 12:09:35 +0200
+In-Reply-To: <20201103100037.GE12347@kadam> (Dan Carpenter's message of "Tue,
+        3 Nov 2020 13:00:37 +0300")
+Message-ID: <874km6u4yo.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 03 Nov 2020 18:01:01 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
- caused by ufshcd_hold()
-In-Reply-To: <1604387262.13152.2.camel@mtkswgap22>
-References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
- <1604384682-15837-2-git-send-email-cang@codeaurora.org>
- <1604387262.13152.2.camel@mtkswgap22>
-Message-ID: <09c5d4d31a0bd9bed99815cfbf51aaad@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-03 15:07, Stanley Chu wrote:
-> Hi Can,
-> 
-> On Mon, 2020-11-02 at 22:24 -0800, Can Guo wrote:
->> The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
->> decreased back in ufshcd_ungate_work() in a paired way. However, if
->> specific ufshcd_hold/release sequences are met, it is possible that
->> scsi_block_reqs_cnt is increased twice but only one ungate work is
->> queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() 
->> and
-> 
-> Just curious that how could this be possible? Would you have some 
-> failed
-> examples?
-> 
++ ath10k list
 
-[1] One gate_work() is in the workqueue, not yet executed, now clk state 
-== REQ_CLKS_OFF.
-[2] ufshcd_queuecommand() calls ufshcd_hold(async == ture) -> 
-active_req++ -> scsi_block_reqs_cnt++ -> REQ_CLKS_ON -> queue ungate 
-work -> active_req-- -> return -EAGAIN.
-[3] Now gate_work() starts to run, but since the clk state is 
-REQ_CLKS_ON, gate_work() just sets clk state to CLKS_ON and bail.
-[3] Someone calls ufshcd_hold(async == false) -> do something -> 
-ufshcd_release() -> clk state is changed to REQ_CLKS_OFF. Note that, 
-till now, ungate_work() is still in the work queue, not executed yet.
-[4] Now, if someone calls ufshcd_hold(), we will hit the issue.
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-Above sequence is a very common clk gate/ungate sequence. The issue
-is because ungate_work is queued but cannot be executed in time. In my
-case, I see the ungate_work is somehow delayed for about 150ms. This
-change has been tested by customers on multiple platforms. And you
-can tell from the code that it won't break anything. :)
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
+> commit: 7b2531d93bac6bea67e9c7f49901e9e8796d6d57 ath10k: Add new api to support TID specific configuration
+> config: x86_64-randconfig-m031-20201102 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/net/wireless/ath/ath10k/mac.c:9125 ath10k_mac_op_set_tid_config() error: uninitialized symbol 'ret'.
+>
+> vim +/ret +9125 drivers/net/wireless/ath/ath10k/mac.c
+>
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9089  static int ath10k_mac_op_set_tid_config(struct ieee80211_hw *hw,
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9090  					struct ieee80211_vif *vif,
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9091  					struct ieee80211_sta *sta,
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9092  					struct cfg80211_tid_config *tid_config)
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9093  {
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9094  	struct ath10k *ar = hw->priv;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9095  	struct ath10k_vif *arvif = (void *)vif->drv_priv;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9096  	struct ath10k_mac_iter_tid_conf_data data = {};
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9097  	struct wmi_per_peer_per_tid_cfg_arg arg = {};
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9098  	int ret, i;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9099  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9100  	mutex_lock(&ar->conf_mutex);
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9101  	arg.vdev_id = arvif->vdev_id;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9102  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9103  	memset(arvif->tid_conf_changed, 0, sizeof(arvif->tid_conf_changed));
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9104  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9105  	for (i = 0; i < tid_config->n_tid_conf; i++) {
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9106  		ret = ath10k_mac_parse_tid_config(ar, sta, vif,
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9107  						  &tid_config->tid_conf[i],
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9108  						  &arg);
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9109  		if (ret)
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9110  			goto exit;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9111  	}
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9112  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9113  	if (sta)
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9114  		goto exit;
+>                                                                 ^^^^^^^^^^
+>
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9115  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9116  	ret = 0;
+>                                                         ^^^^^^^^
+> Probably just move this to the "int ret = 0;" start of the function?
 
-Thanks,
+Or preferably before "if (sta)" check. Tamizh, please send a fix.
 
-Can Guo.
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9117  	data.curr_vif = vif;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9118  	data.ar = ar;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9119  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9120  	ieee80211_iterate_stations_atomic(hw, ath10k_mac_vif_stations_tid_conf,
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9121  					  &data);
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9122  
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9123  exit:
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9124  	mutex_unlock(&ar->conf_mutex);
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19 @9125  	return ret;
+> 7b2531d93bac6be Tamizh Chelvam  2020-08-19  9126  }
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
 
->> ufshcd_ungate_work() in a paired way, increase it only if queue_work()
->> returns true.
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 847f355..efa7d86 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -1634,12 +1634,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool 
->> async)
->>  		 */
->>  		/* fallthrough */
->>  	case CLKS_OFF:
->> -		ufshcd_scsi_block_requests(hba);
->>  		hba->clk_gating.state = REQ_CLKS_ON;
->>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
->>  					hba->clk_gating.state);
->> -		queue_work(hba->clk_gating.clk_gating_workq,
->> -			   &hba->clk_gating.ungate_work);
->> +		if (queue_work(hba->clk_gating.clk_gating_workq,
->> +			       &hba->clk_gating.ungate_work))
->> +			ufshcd_scsi_block_requests(hba);
->>  		/*
->>  		 * fall through to check if we should wait for this
->>  		 * work to be done or not.
-> 
-> Thanks,
-> Stanley Chu
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
