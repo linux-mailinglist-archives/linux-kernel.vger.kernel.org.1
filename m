@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F552A3F5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AF42A3F5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgKCIx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:53:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbgKCIx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:53:58 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A67FD2071A;
-        Tue,  3 Nov 2020 08:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604393637;
-        bh=jo0K/cLDuVuUpl2aYeEje63m8fCechvSnD6PO543SY4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=haESpG/hM7HKu0+swb8Zv08uNT8Uj6XX2KWm0Pv/SpuNXYU7xXy5XJXUoPevFdwOr
-         I6+G+CW960mWSMQ2LzqGLKod9hS6DqYz0a/R5OKiTYBvZujGEYHFch6nO5x63g35Ks
-         5m0UjLgY4c49YItIaxo0gVIkJ2qEN/E6dnThpp+o=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kZs4h-007483-FH; Tue, 03 Nov 2020 08:53:55 +0000
+        id S1726460AbgKCIz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:55:26 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:4504 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCIzZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:55:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1604393724; x=1635929724;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=wHik0GBc1Sfdm4lcekXjkseXFDMrpMWUcWyWYjoaZBU=;
+  b=Ie1VmUpl/FDv8zY/MoV8R7Xwc9ZkDLDEs1Oso1T0FAKAkTdM3X9DjryJ
+   iPc07ZzooCVXPt+qH2jFBcey3fnCB1Is+nPfinbAbW2LKMCfU6mQV7EC8
+   kNPc/WPtR8/6QAddotRTC1nJMZloYptkFbV0Baglzah1uYFfYLXR41GQS
+   s5tgiKwk2rCPuPNK7d3gjkc2eIwhmpi1oyi5qtV33EjegaZzHpd7gM+aS
+   zSNUpPAoUw+Ot4p2KPBpGQeh2ojo37Z7PP+7fJpFHWlsB2PMmPR0RkT2s
+   8MXZ0rwNK1kFNFNdTkpOwYJCaVZe9+es56axLhqE59jxbPtUzFBBUfZwr
+   w==;
+IronPort-SDR: nsCJw7cW0Rc11q92Txl70Fvg7z7obho71vWNDq5wPCgwgpAbgnShEznHkYCgQXfmbVfLiHG3OT
+ axwyeIge5seleuJsB5dAiZGUbzIGHQlXvWIDcz5c6MTNTJY0rpPgVrOTL6mWUTUi7NKvk8y8D8
+ E6DA0+RgrniHzulgtGsAtNYtwbyugJK+LhUWNLlrMKvuI+hKmh1lQ+THOtL2RlLln8t+P32san
+ 1bZB2adAqChaH8qXNjfDY+s261lY4kE3M1RPUsgR1DjpyT4htxKOr2p52Vwc+KdsDARHWkaabY
+ 9Qo=
+X-IronPort-AV: E=Sophos;i="5.77,447,1596470400"; 
+   d="scan'208";a="151704976"
+Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Nov 2020 16:55:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AIDvuPmu2b4OUW0EoXEIyyR/UjLipO3T+d1zH/OwfdQb4TrbnKhlcIEqqqI7mOCBtUv5IcwY8aLhV//j8qUFB3O++g8rUCvqpgH21VXWQm6leTV5iFjCF/RlLSKZYYv7r8rmWbcJ+76J+n+z6Vk6nhYcDNXrwW64r42AGovpGVkVBJwVBiKupc+KQCExijHos29OQ21FcMjgV85+eQYxb8ubE3wY+col9dDYIX8rMGgEMTmbaX1jXaZCVzBF5I/0K1nlImpaV8dYEUHCz6qXvQ8QH0dXCaw668YHsTx7n1WzD9Jxo0sXGtChV0x838zSXyc5D60ock9X+hY9yUhBBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wHik0GBc1Sfdm4lcekXjkseXFDMrpMWUcWyWYjoaZBU=;
+ b=c5LFplPn8D66sxVpauJsElh6Gg1nWpl4E8OkhjOyJTKianmgf5Z/yrwDPmS0z1xczP5+5uU8rmXHwG5QjFSo+3B6aS0ENJUwmVbwFbHHyPZnF657hQb4lhMZkdwQjIRM5Ab9ru9qUt6XDF0AFIUR0CJWqVLK0MGoW1ba+651B/t3tOy+j/RE7LSHPgrCSm+pF8mhs7L2/BJdlpxl3X7ThmmOqDpSwXVxBMr89i/RZ/ZImw9xtnd20R02VLGDkCVtjACkdCbiY5ZnD2Z1gjQmNtsNOcdnxtogdbKB475fS/EYYKKFplLUkSDPchLB5T6S6jdewdMUnjd5ToEfHENq4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wHik0GBc1Sfdm4lcekXjkseXFDMrpMWUcWyWYjoaZBU=;
+ b=j686fApgfp5XDJo+vDaFjxf/VB65yxVS+NlgmchDdpVih/uv5Z5sQmFNwOmr/D3CGPplaNHiGJBc49RuzUQ6YwyTbjACuTrxTt2pB2ji11YmV7gkTS6Ru9fFcyW9+e2QvfWgnxGHLHsCVeYMQ8Pz74malSnua4AslJQhy5EGsCY=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0970.namprd04.prod.outlook.com (2603:10b6:4:47::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.27; Tue, 3 Nov 2020 08:55:21 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::5c59:8281:ef4a:3e2a]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::5c59:8281:ef4a:3e2a%9]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
+ 08:55:21 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
+Subject: RE: [PATCH v1 1/6] scsi: ufs-mediatek: Assign arguments with correct
+ type
+Thread-Topic: [PATCH v1 1/6] scsi: ufs-mediatek: Assign arguments with correct
+ type
+Thread-Index: AQHWrerABC0BriD7CEyLHrMbpYegqqm2BS3AgAAH+wCAABQfQA==
+Date:   Tue, 3 Nov 2020 08:55:20 +0000
+Message-ID: <DM6PR04MB6575E34E36F90B72C4E89883FC110@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201029115750.24391-1-stanley.chu@mediatek.com>
+         <20201029115750.24391-2-stanley.chu@mediatek.com>
+         <DM6PR04MB6575F51915ED4E904ED82EC1FC110@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <1604389184.13152.9.camel@mtkswgap22>
+In-Reply-To: <1604389184.13152.9.camel@mtkswgap22>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 43eb1a6e-4411-4c24-74c0-08d87fd631ec
+x-ms-traffictypediagnostic: DM5PR04MB0970:
+x-microsoft-antispam-prvs: <DM5PR04MB09700F5EF09FD7E6EDABD510FC110@DM5PR04MB0970.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: M3S2o/dhmvoSzFyTFFVRX9/jxV93vq9irYTgUt6/dX0DreBpjac6dgL+gW/QprVp96Nxi2RZwOtLKVqq9IR9G3ARdTkhF2SsOBZCXd334OCW8jK+aWwwAZEt7YyqkWsCgADybpV8uuZPnI+a0mFNexSG7EwYK0dilMHfIgyH5RAsu6s1arDtcqPJYSkWCd5Z3JCOaX51IBbubpxVKkgcmwsKxajwy73shd6/psMPNzPDWUVElmn4oakh5AUL0fo3Gi3velBY6YrjQ5C3q1kTXPajb+wZH7wBW2BKDmYcxqSVXMGK+OSnR2ND/LsY9FIwv59eXEa7rjOanpTu17nz5zYq2aasjCxLOhptydoNcoeRZWTeSkPrGBnzJ8a9nXsyDUCSDV4hwB2IdBy0+jBn8w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(186003)(71200400001)(8676002)(76116006)(26005)(966005)(6916009)(5660300002)(478600001)(64756008)(66476007)(6506007)(8936002)(66556008)(66946007)(66446008)(86362001)(4326008)(2906002)(83380400001)(9686003)(33656002)(55016002)(7696005)(52536014)(7416002)(54906003)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: l2jqz5zKndwBj3ez7JChEX/9MlalbVUol5u1CP3RK6Rk+C1oK6QAkyhEFCB8nBV8ISiFhwj7u/VgWhJFQ3sz/LB3sQFXSwIMLF+yPcbPlU7rtfnf712UDhVoN2JlIX25VWzJemti2K0rznjmVmn6Wks8+9x83h2Y6XuyplOSXmsENguSF0LSOOmjEGbMVPJ5aL1t8gcEWq7Pdnq+ZuCvpppSDu2rIu9dI929DRYaOrmZ/7c2Mk5p7TV33qGh+sokqAWP9AeJsHbsHrla4DybllnKSBuA1RXKCW1wAZIH/ViczJbFSkDH1NYyMROYGWj4etpI+C5LyHYLYnLfocMZR3r8F/KCwxNM/5Z/lethfSFQGIg5rQoJfC69qT+YX/cbQh0V5MXbhoT9sbe5i2pHJBnOsk1B8Nvn33k0r/4ACh3pfmddUng7wlE2lF1v4rNY6gP/5++0GYyU/gNsVhq7vJ+Pu867SQrkRly6WwuwDrVyUgsQA1ocHKWXGAYl5CsTzKTDHsogpGmvpN4ZpzWmeTIbAZVRj3IQ/noNUzy06He0bgRTTy1JDOjY7YoYfRnMcwlpG1LRucEHcdcZp+hpa20scMiDMiiQIipcBawYl4SiqecCnPGSC1LjOJxCVPip2umx7TENp27o8mDqhc6m1Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 03 Nov 2020 08:53:55 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Dongjiu Geng <gengdongjiu@huawei.com>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Using fixed LPI number for some Device ID
-In-Reply-To: <8ff6a30a-b51f-f9f0-4a18-307948f3519b@huawei.com>
-References: <0baed5b0-6cbe-6492-b4af-fe758f461602@huawei.com>
- <04e31996-6eb8-3bb9-e333-bc46eebe3d7a@huawei.com>
- <87eeleen3m.wl-maz@kernel.org>
- <8ff6a30a-b51f-f9f0-4a18-307948f3519b@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <0882fef907e3b7bf9f23f941474c109f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: gengdongjiu@huawei.com, jason@lakedaemon.net, tglx@linutronix.de, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43eb1a6e-4411-4c24-74c0-08d87fd631ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 08:55:20.9328
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rBw0xTkcGmtxtDxqAntcKvi+yWBNAAqUhDyBCQnc03KKVpIqcidndcnh2r7t8LNYgt3wO+8imFZ6XI3bYsT/Uw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0970
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-03 05:22, Dongjiu Geng wrote:
-> On 2020/10/31 17:55, Marc Zyngier wrote:
->> Dongjiu,
->> 
->> On Sat, 31 Oct 2020 02:19:19 +0000,
->> Dongjiu Geng <gengdongjiu@huawei.com> wrote:
->>> 
->>> Hi Marc,
->>> Sorry to disturb you, Currently the LPI number is not fixed for the
->>> device. The LPI number is dynamically allocated start from 8092.
->>> For two OS which shares the ITS, One OS needs to configure the
->>> device interrupt required by another OS, and the other OS uses a
->>> fixed interrupt ID to respond the interrupt. Therefore, the LPI IRQ
->>> number of the device needed be fixed. I want to upstream this
->>> feature that allocate fixed LPI number for the device that is
->>> specified through the DTS. What is your meaning?  Thanks
->> 
->> I think you are starting from the wrong premises.
->> 
->> You can't "share" an ITS directly between two operating systems. The
->> ITS can only be controlled by a single operating system, because its
->> function goes way beyond allocating an LPI. How would you deal with
->> simple things such as masking an interrupt, which requires:
->> 
->> - Access to memory (configuration table)
->> - Access to the command queue (to insert an invalidation command)
->> - Access to MMIO registers (to kick the command queue into action)
->> 
->> all of which needs to be exclusive of concurrent modifications. How do
->> you propose this is implemented in a safe manner by two operating
->> systems which, by nature, distrust each other? Allocating LPIs is the
->> least of your problems, really.
-> Yes， I agree with you it . But in my HW platform, using
-> virtualization, the performance
-> deteriorates greatly.  So I distributed the I/O devices to different
-> operation systems. During the startup of one OS,
-> interrupts are bound to different OS in one OS, which can be exclusive
-> of concurrent modifications.
-> 
-> In fact it has some limitations as you said, such mask/enable/route
-> Interrupts, If want to
-> mask interrupts, need to mask interrupts on the source device.
-> 
-> If you think it is not a common feature, I will used it as a local
-> customization function and not upstream.
-
-I don't think this makes sense for Linux, at least not in a way
-that limits the way the kernel deals with simple things such as
-LPI allocation.
-
-We have systems in the tree where Linux route interrupts on behalf
-of other agents in the system (see what the TI PRUSS subsystem does,
-for example), and even direct interrupt injection is, to an extent,
-doing that. This requires a standardised way for describing the routing,
-the allocation, and potentially the life cycle of the interrupt.
-
-But hardcoding the allocation based on some non-standard scheme
-is not something I'm considering.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+PiANCj4gSGkgQXZyaSwNCj4gDQo+IE9uIFR1ZSwgMjAyMC0xMS0wMyBhdCAwNzoxMiArMDAwMCwg
+QXZyaSBBbHRtYW4gd3JvdGU6DQo+ID4gPg0KPiA+ID4gSW4gdWZzX210a191bmlwcm9fc2V0X2xw
+bSgpLCB1c2Ugc3BlY2lmaWMgdW5zaWduZWQgdmFsdWVzDQo+ID4gPiBhcyB0aGUgYXJndW1lbnQg
+dG8gaW52b2tlIHVmc2hjZF9kbWVfc2V0KCkuDQo+ID4gPg0KPiA+ID4gSW4gdGhlIHNhbWUgdGlt
+ZSwgY2hhbmdlIHRoZSBuYW1lIG9mIHVmc19tdGtfdW5pcHJvX3NldF9wbSgpDQo+ID4gPiB0byB1
+ZnNfbXRrX3VuaXByb19zZXRfbHBtKCkgdG8gYWxpZ24gdGhlIG5hbWluZyBjb252ZW50aW9uDQo+
+ID4gPiBpbiBNZWRpYVRlayBVRlMgZHJpdmVyLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6
+IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQo+ID4gTG9va3MgbGlrZSB0
+aGlzIHBhdGNoIGlzIGdpbGRpbmcgdGhlIGxpbHk/DQo+IA0KPiBUaGFua3MgZm9yIHRoZSByZXZp
+ZXcuDQo+IA0KPiBQbGVhc2Ugc2VlIGV4cGxhbmF0aW9uIGJlbG93Lg0KPiANCj4gPg0KPiA+ID4g
+LS0tDQo+ID4gPiAgZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDEyICsrKysrKy0t
+LS0tLQ0KPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25z
+KC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlh
+dGVrLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy0NCj4gbWVkaWF0ZWsuYw0KPiA+ID4gaW5kZXgg
+OGRmNzNiYzJmOGNiLi4wMTk2YTg5MDU1YjUgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ID4gPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1t
+ZWRpYXRlay5jDQo+ID4gPiBAQCAtNjM5LDE0ICs2MzksMTQgQEAgc3RhdGljIGludCB1ZnNfbXRr
+X3B3cl9jaGFuZ2Vfbm90aWZ5KHN0cnVjdA0KPiA+ID4gdWZzX2hiYSAqaGJhLA0KPiA+ID4gICAg
+ICAgICByZXR1cm4gcmV0Ow0KPiA+ID4gIH0NCj4gPiA+DQo+ID4gPiAtc3RhdGljIGludCB1ZnNf
+bXRrX3VuaXByb19zZXRfcG0oc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBscG0pDQo+ID4gPiAr
+c3RhdGljIGludCB1ZnNfbXRrX3VuaXByb19zZXRfbHBtKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJv
+b2wgbHBtKQ0KPiA+ID4gIHsNCj4gPiA+ICAgICAgICAgaW50IHJldDsNCj4gPiA+ICAgICAgICAg
+c3RydWN0IHVmc19tdGtfaG9zdCAqaG9zdCA9IHVmc2hjZF9nZXRfdmFyaWFudChoYmEpOw0KPiA+
+ID4NCj4gPiA+ICAgICAgICAgcmV0ID0gdWZzaGNkX2RtZV9zZXQoaGJhLA0KPiA+ID4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBVSUNfQVJHX01JQl9TRUwoVlNfVU5JUFJPUE9XRVJET1dO
+Q09OVFJPTCwNCj4gMCksDQo+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxwbSk7
+DQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxwbSA/IDEgOiAwKTsNCj4gPiBi
+b29sIGlzIGltcGxpY2l0bHkgY29udmVydGVkIHRvIGludCBhbnl3YXk/DQo+IA0KPiBUaGlzIGNo
+YW5nZSBpcyB0aGUgZWNobyBvZiB5b3VyIHN1Z2dlc3Rpb24gaW4NCj4gaHR0cHM6Ly9wYXRjaHdv
+cmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LQ0KPiBzY3NpL3BhdGNoLzIwMjAwOTA4MDY0NTA3
+LjMwNzc0LTQtc3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tLw0KPiANCj4gQWN0dWFsbHkgSSB0aGlu
+ayB5b3VyIHN1Z2dlc3Rpb24gaXMgY29uc3RydWN0aXZlIHRoYXQgdGhlIGFjY2VwdGVkDQo+IHZh
+bHVlcyBvZiBWU19VTklQUk9QT1dFUkRPV05DT05UUk9MIGFyZSBiZXR0ZXIgY2xlYXJseSBkZWZp
+bmVkIHNvIEkNCj4gdXNlDQo+IHRoZSBjYXN0aW5nIGhlcmUgaW4gdGhpcyBwYXRjaC4NCk15IHBy
+ZXZpb3VzIGNvbW1lbnQgdGhhdCB5b3UgcmVmZXIgdG8gd2FzIGFnYWluc3QgdXNpbmcgYm9vbCBh
+cyB3ZWxsLA0KQnV0IHRvIGxlYXZlIGl0IHUzMi4NCkFueXdheSwgSSBhbSBub3QgcmVsaWdpb3Vz
+IGFib3V0IGl0Lg0KDQpMb29rcyBmaW5lLA0KQXZyaQ0K
