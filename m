@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93CA2A545C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EB92A545D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388705AbgKCVKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:10:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50932 "EHLO mail.kernel.org"
+        id S2388711AbgKCVKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:10:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388388AbgKCVKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:10:13 -0500
+        id S2388614AbgKCVKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:10:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5566207BC;
-        Tue,  3 Nov 2020 21:10:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3960C205ED;
+        Tue,  3 Nov 2020 21:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437813;
-        bh=omCMwbtSSpyy2n/WDHZjzc96m/ab2hICi6j+nJa/RSQ=;
+        s=default; t=1604437815;
+        bh=TOlrAhGQzu7ICQWJ38bWKmZt9tSLQ3MxzMWP0Ou4oxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g9hfEg4OYdYIvyi8cwvx5YzehTZPZnxsus7H5YHFihWlHEZ4U9ZuLCVo1uIqsKWK7
-         fLXKAYlQ+NjLczIyk0Xw7K0nJA0UK6p6wpDEp3wiZB0BxDW4FhpGty/6hNrtw2nKWV
-         4t5Xeg8mrg5FnBqXK45nOPNj4Wx9ZMEdL+LITnok=
+        b=LxRAqWoLMWG4VXmRgvyS/qTSQgweixGR6gM8g/Y0ldMXY/5FfIj9JfBhA+yUWtqAs
+         HOjWi9NguAyrPt2dz+mRqm5T3gqy/9RBHrqieL6A/3C+MAoFLkzw7nH9Lxw6t8JKPy
+         eW3hlyeKRstkZa2HXD8Hb0Hi48D0hcitEdWZmDsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
+        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 043/125] bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
-Date:   Tue,  3 Nov 2020 21:37:00 +0100
-Message-Id: <20201103203203.228936574@linuxfoundation.org>
+Subject: [PATCH 4.14 044/125] power: supply: test_power: add missing newlines when printing parameters by sysfs
+Date:   Tue,  3 Nov 2020 21:37:01 +0100
+Message-Id: <20201103203203.361268301@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
 References: <20201103203156.372184213@linuxfoundation.org>
@@ -43,41 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Diana Craciun <diana.craciun@oss.nxp.com>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-[ Upstream commit 5026cf605143e764e1785bbf9158559d17f8d260 ]
+[ Upstream commit c07fa6c1631333f02750cf59f22b615d768b4d8f ]
 
-Before destroying the mc_io, check first that it was
-allocated.
+When I cat some module parameters by sysfs, it displays as follows.
+It's better to add a newline for easy reading.
 
-Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-Link: https://lore.kernel.org/r/20200929085441.17448-11-diana.craciun@oss.nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+root@syzkaller:~# cd /sys/module/test_power/parameters/
+root@syzkaller:/sys/module/test_power/parameters# cat ac_online
+onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
+trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
+goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
+dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
+LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
+onroot@syzkaller:/sys/module/test_power/parameters#
+
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/fsl-mc/bus/mc-io.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/power/supply/test_power.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/staging/fsl-mc/bus/mc-io.c b/drivers/staging/fsl-mc/bus/mc-io.c
-index f65c23ce83f16..deec2d04c2dd9 100644
---- a/drivers/staging/fsl-mc/bus/mc-io.c
-+++ b/drivers/staging/fsl-mc/bus/mc-io.c
-@@ -166,7 +166,12 @@ error_destroy_mc_io:
-  */
- void fsl_destroy_mc_io(struct fsl_mc_io *mc_io)
+diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
+index 57246cdbd0426..925abec45380f 100644
+--- a/drivers/power/supply/test_power.c
++++ b/drivers/power/supply/test_power.c
+@@ -344,6 +344,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
+ static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
  {
--	struct fsl_mc_device *dpmcp_dev = mc_io->dpmcp_dev;
-+	struct fsl_mc_device *dpmcp_dev;
-+
-+	if (!mc_io)
-+		return;
-+
-+	dpmcp_dev = mc_io->dpmcp_dev;
+ 	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
  
- 	if (dpmcp_dev)
- 		fsl_mc_io_unset_dpmcp(mc_io);
+@@ -357,6 +358,7 @@ static int param_set_usb_online(const char *key, const struct kernel_param *kp)
+ static int param_get_usb_online(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -371,6 +373,7 @@ static int param_set_battery_status(const char *key,
+ static int param_get_battery_status(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -385,6 +388,7 @@ static int param_set_battery_health(const char *key,
+ static int param_get_battery_health(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -400,6 +404,7 @@ static int param_get_battery_present(char *buffer,
+ 					const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -417,6 +422,7 @@ static int param_get_battery_technology(char *buffer,
+ {
+ 	strcpy(buffer,
+ 		map_get_key(map_technology, battery_technology, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
 -- 
 2.27.0
 
