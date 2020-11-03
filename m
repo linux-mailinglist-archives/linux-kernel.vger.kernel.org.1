@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3602A5739
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71032A573F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732551AbgKCVkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731789AbgKCVkD (ORCPT
+        id S1732756AbgKCVkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:40:31 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:39282 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732733AbgKCVkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:40:03 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A430C0617A6;
-        Tue,  3 Nov 2020 13:40:03 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id e7so15434296pfn.12;
-        Tue, 03 Nov 2020 13:40:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Kay+/pGgafzcJkffZWNTFPkoHCNna9I8Qp0W22XX95A=;
-        b=flTf5cILyNWgpLfAwfPLQMJlF50oKrmpRGujjbXXW++BK/Y2Ll86m8QXoPl4nXbUXz
-         rh6js5Sb8DmseSVN7IUcJRxpYJMmC23VGJw3NGSjy5gAPbgr7fibi9aUZQNCJRr6NBpf
-         x8/rWxBRBgM6WqT+o1fa3XXXGT/3pvMVIacusX4YmZRMeVkV3OPdJvM0tc2OvulUeoO1
-         SjR001KOASG5Di/zKqyhQFCTyp1p3rKhBNum0ZlAI1vaMOJfKohSAflhcND2c43u4MtM
-         kDeEpeSjo9kDI6KgdD3ve4opROeIseGizZMHtzVwxllANcb/cp7ZJ4TMKTcYxBctzdi7
-         ld4g==
+        Tue, 3 Nov 2020 16:40:31 -0500
+Received: by mail-wr1-f67.google.com with SMTP id y12so19984956wrp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:40:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kay+/pGgafzcJkffZWNTFPkoHCNna9I8Qp0W22XX95A=;
-        b=e/ISnLfqSuzKf9cuSZFW+eYDgXC49AlFY3pmUX0gbCWx4yk1MOTRkjXUM8TRTX77lf
-         6X+FjQ3mSgc9xUjS/sdqzBytIMTWIQj6ID5OoKXARdxzxzWKnDRYu+h82xs/n2rdg/L9
-         apQt/oL7SZGXkvWgh3D0Tme0RKAqAj7Ntcc+vcVtTV+YpnK8wIdXC7yAwPGA43pECyuP
-         LMdUozVLFJ4FDpuu88gEhEnt/iVQqs54NM48HVdBe1XNoqYKl0BekmyCEsbV2V7H1wRe
-         WmpxlExr6F9LlYIIq9nsBMC3Y2fhslxIvoXVDuVhvfSuDjQqAg8b172GXrMCEXus1Ni7
-         7BNA==
-X-Gm-Message-State: AOAM53303sz8qcm0hsrsU4qyNVOiWd5hHPEhhuPu26dWvl41zlzN+BXP
-        ZevPdbVXGm5pQWmIKBu+ox0=
-X-Google-Smtp-Source: ABdhPJzD+WlAj76QkDXIfZDHla5nSlgn/pNJPRMS1mH17Ja57/QB1VgLI+Ljx2zXwtzf/p7EWc/vgQ==
-X-Received: by 2002:a65:6493:: with SMTP id e19mr18352684pgv.276.1604439602619;
-        Tue, 03 Nov 2020 13:40:02 -0800 (PST)
-Received: from localhost.localdomain ([49.207.221.93])
-        by smtp.gmail.com with ESMTPSA id 15sm16420108pgs.52.2020.11.03.13.39.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HBJK6gAc4A6HKX1XSgfdTrGrZFL3pG4DMAC+mbxLKTw=;
+        b=NCESA9uq93W4x2E17t9GTXR2uJJgsW2oWiX6zg+4v8Hp+mM8fH842k44d2n7D5VSJg
+         Ds9xONO0lCNJUP2qb2rrvrhvbrsJHE3RUQeT6Y8x8TSt5/7+kYFTV+7SVB0WsNdZAh6e
+         GWP6Vbuoo062r8oSPhYCEYL7Z/YDC3c701e8i7UbZyXjh59l+VWOC7u+ZoBvOZqGdF4L
+         joee2idKRLUJAio7FPwQZBFs1TVGYmfkkV4zZsrzqQufUZ2c1uLw7Ce8ucksSAZ55NB1
+         QFRdy55t4ul1utOVv/k+m67SJlZG1Rbw9NjW4wSYRwxZHiRn3Tl5t5opTVXko3Kr0NeL
+         UXoQ==
+X-Gm-Message-State: AOAM532u+hDaxg3REIF/nq8syEeCTiA/7a2nLj1hUeJn5maHZxRVVmnb
+        Bws5aHQauCUrmRM224iSWK9Wh4fCyvSueDYM
+X-Google-Smtp-Source: ABdhPJx0D9M/FGVDpY32siW0SgrcYDYopddy1ngexK6ScQJOpCT7Tv2mS4B95pDslRd0+VTWAdoNkA==
+X-Received: by 2002:adf:f687:: with SMTP id v7mr30129447wrp.179.1604439628982;
+        Tue, 03 Nov 2020 13:40:28 -0800 (PST)
+Received: from msft-t490s.teknoraver.net (net-5-95-179-145.cust.vodafonedsl.it. [5.95.179.145])
+        by smtp.gmail.com with ESMTPSA id o63sm84450wmo.2.2020.11.03.13.40.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 13:40:01 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Subject: [PATCH 2/2] can: af_can: prevent potential access of uninitialized member in canfd_rcv()
-Date:   Wed,  4 Nov 2020 03:09:06 +0530
-Message-Id: <20201103213906.24219-3-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
-References: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
+        Tue, 03 Nov 2020 13:40:28 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3 0/3] fix parsing of reboot= cmdline
+Date:   Tue,  3 Nov 2020 22:40:22 +0100
+Message-Id: <20201103214025.116799-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In canfd_rcv(), cfd->len is uninitialized when skb->len = 0, and this
-uninitialized cfd->len is accessed nonetheless by pr_warn_once().
+From: Matteo Croce <mcroce@microsoft.com>
 
-Fix this uninitialized variable access by checking cfd->len's validity
-condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's
-condition is checked, and appropriately modify the log messages that
-are generated as well.
-In case either of the required conditions fail, the skb is freed and
-NET_RX_DROP is returned, same as before.
+The parsing of the reboot= cmdline has two major errors:
+- a missing bound check can crash the system on reboot
+- parsing of the cpu number only works if specified last
 
-Fixes: d4689846881d ("can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once")
-Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-This patch was locally tested using the reproducer and .config file
-generated by syzbot.
+Fix both, along with a small code refactor.
 
- net/can/af_can.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+v2->v3:
+Revert the offending commit first, then fix the other bug.
+CC stable
+v1->v2:
+As Petr suggested, don't force base 10 in simple_strtoul(),
+so hex values are accepted as well.
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 8ea01524f062..d759334f8843 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -703,16 +703,25 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
--		     cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
-+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
-+			     dev->type, skb->len);
-+		goto free_skb;
-+	}
-+
-+	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
-+	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
- 			     dev->type, skb->len, cfd->len);
--		kfree_skb(skb);
--		return NET_RX_DROP;
-+		goto free_skb;
- 	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
-+
-+free_skb:
-+	kfree_skb(skb);
-+	return NET_RX_DROP;
- }
- 
- /* af_can protocol functions */
+Matteo Croce (3):
+  Revert "kernel/reboot.c: convert simple_strtoul to kstrtoint"
+  reboot: fix overflow parsing reboot cpu number
+  reboot: refactor and comment the cpu selection code
+
+ kernel/reboot.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
+
 -- 
-2.25.1
+2.28.0
 
