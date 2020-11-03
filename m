@@ -2,329 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8509F2A4F27
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847BB2A4F32
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgKCSnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728351AbgKCSm7 (ORCPT
+        id S1729430AbgKCSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:44:45 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:45306 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729298AbgKCSoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:42:59 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D6CC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:42:59 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id s9so19567955wro.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ooc/4skm8b41a0c2OVLhlIuGfy2g3W0VRGaKqUSnLp8=;
-        b=ctpRq/I4KR2iZH4NQ6gdEh86ePuqpslZPlOn1mdzkX+79TdYTXNdWmtONeK67ocwGN
-         pnpFAv/UkMXqgSNTbgfO35gWmZtYuIVWAdwrgjXu9RMB5KxH7c7zATXBzZmaOElSiDzK
-         NwvUz6Q7ybj6DW34pIRDPsIQxRJWCajO81s7pGSLsvZdDy4fznW7405Todk5u6FFSd8s
-         KufWeN1WYlltVwSLTeOsO/I3lDFOi50n4uyXpU73x1h9OW13mFZ3neTy+WIlQ4D2ERrR
-         Phr0M4VzKyHdBJRzm+yQYqHyZiwM7sd9CoSEn8FYbmb5jNyA9AzBl0YZPKLHr68DCKPX
-         DbdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ooc/4skm8b41a0c2OVLhlIuGfy2g3W0VRGaKqUSnLp8=;
-        b=Byly49TJc+Myu5iaRPbjzH/CRa5rXnl3yVxsbwG2HVZ4Zgi9igui2grD3k+cQvWGm5
-         nup8ZQapBl8fFjRj0IxKGNmr8h+JwVMK6xuYSeLVpK/MbyJ3OfR2Y9h3qVyQZPVgl36c
-         /gSm7pt7RMnBf+Skv8Z98MYAz5cGlOlzZ+FirutdVpJmIENC7iXReIZP+32auF31yFpY
-         7eHagAXcKqmgm9AL2bjNxWVgz6hVtJIagDAhSOL9otHj0QkTJPcDFNlTzwxz5XVGhXbi
-         aSEioLvrZQmObyW6FFszqm/nf91bf9KXHKE1fnnm8RAnbBAcL64LuZIp9Uq5uPrlmhiQ
-         YmyA==
-X-Gm-Message-State: AOAM531HJJmQNRSUbwm7+jUWvXYs39J8dQ8rkCYg7punW/zg8ejNQ18i
-        rhqjSves3XV0WiiaH3zDzPPtG5Pxg7GYbA==
-X-Google-Smtp-Source: ABdhPJzSCwPs9bpReY1ZvH8McvR4XSDVsk/2lcaduCUpzCaPFMntxFxfCSMOOzAZtvID82wFkespPQ==
-X-Received: by 2002:a5d:6681:: with SMTP id l1mr28278104wru.356.1604428977874;
-        Tue, 03 Nov 2020 10:42:57 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f853:3b7b:eb7b:1bf? ([2a01:e34:ed2f:f020:f853:3b7b:eb7b:1bf])
-        by smtp.googlemail.com with ESMTPSA id y20sm3731260wma.15.2020.11.03.10.42.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 10:42:57 -0800 (PST)
-Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
- power management
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-4-daniel.lezcano@linaro.org>
- <4484e771-9011-0928-e961-cd3a53be55e9@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <18d2393a-2954-f271-817f-f9f9bf651f25@linaro.org>
-Date:   Tue, 3 Nov 2020 19:42:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 3 Nov 2020 13:44:39 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201103184428euoutp02ff5c9eb41cfe5108fa2a1588e835cba1~EE7ya67iM2225922259euoutp02X
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 18:44:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201103184428euoutp02ff5c9eb41cfe5108fa2a1588e835cba1~EE7ya67iM2225922259euoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604429068;
+        bh=NRc40O7dPMD4Kia7QJrNgj+GWRZloqQwkJKFlJSEraI=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=WepNZyM1bb1twBeYLuC7QwTIGRY8v4eqHhsRFDt+CJK5ZqPgLwUYOTsTtZi0EOUMl
+         3koufmvckjIxlLobgOOxvCOhLxY+W97Ac++rbGQurYuZ7Jow1f8nOMeYgChi5W4+3w
+         pyaB+wcb7jQELmiVLAKaNoIr5bkQO/ll6W3dj30A=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201103184417eucas1p21da0633e1b03ea9c494328633db793cc~EE7pFJQQA0668706687eucas1p2k;
+        Tue,  3 Nov 2020 18:44:17 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 9A.0F.06318.105A1AF5; Tue,  3
+        Nov 2020 18:44:17 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103184417eucas1p197b77670a32843abc1340b0979017bca~EE7okuZDe1969619696eucas1p1k;
+        Tue,  3 Nov 2020 18:44:17 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201103184417eusmtrp11b7fa6f1d69b862fbe67ca4952962bfc~EE7okDS0W0237602376eusmtrp1g;
+        Tue,  3 Nov 2020 18:44:17 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-09-5fa1a501e992
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id FD.BB.06314.105A1AF5; Tue,  3
+        Nov 2020 18:44:17 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201103184417eusmtip2bd84b53de809e7b1808e87d4ae701948~EE7obabI10993609936eusmtip2e;
+        Tue,  3 Nov 2020 18:44:17 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2 0/6] Add Ethernet interface description for Odroid boards
+Date:   Tue,  3 Nov 2020 19:44:06 +0100
+Message-Id: <20201103184412.18874-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <4484e771-9011-0928-e961-cd3a53be55e9@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEKsWRmVeSWpSXmKPExsWy7djP87qMSxfGG5xstbbYOGM9q8X8I+dY
+        Lfofv2a2OH9+A7vFzUMrGC02Pb7GanF51xw2ixnn9zFZrNt4i91i7ZG77Bate4+wO3B77Jx1
+        l91j06pONo/NS+o9+rasYvT4vEkugDWKyyYlNSezLLVI3y6BK+PJiX/MBZ2cFduvBTcwrmHv
+        YuTkkBAwkfgw4RVbFyMXh5DACkaJ6WeOsUI4XxglVuzbyA7hfGaUeNN7kAmmZdaCU8wQieWM
+        Eht2nYSqes4o8WXPLLAqNgFHif6lJ8BmiQhMZ5JYumc+WAuzwD5GiZ33pjCDVAkL+Eh82trE
+        BmKzCKhKXPz4ghHE5hWwljje8J8RYp+8RPvy7WwQcUGJkzOfsIDY/AJaEmuaroPZzEA1zVtn
+        gy2QENjGLnFgwmGoY10kpp+awgZhC0u8Or4F6m8ZidOTe4CaOYDseonJk8wgensYJbbN+cEC
+        UWMtcefcLzaQGmYBTYn1u/Qhwo4Skw5sYYZo5ZO48VYQ4gQ+iUnbpkOFeSU62oQgqlUk1vXv
+        gRooJdH7agXUVx4Sk6dOYZnAqDgLyWOzkDwzC2HvAkbmVYziqaXFuempxcZ5qeV6xYm5xaV5
+        6XrJ+bmbGIEp6fS/4193MO77k3SIUYCDUYmH1yF1QbwQa2JZcWXuIUYJDmYlEV6ns6fjhHhT
+        EiurUovy44tKc1KLDzFKc7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamBcfEV+grPRgv1B
+        tdkMk/cIrMg+Z7ju6gsD9+Pphd6+VRdYtv9pvrC24vC1O/ePTWoLvDgj6abjepVTX5VEw/lO
+        sTEbmO6u9QwJnaJxy+5rt/qFBQuN2U/7sUZ7M0f0qwVy75V4sUPgwTu/7Y5OZ77MVtBX8Ixx
+        Zq3e8FbsxeqyLxN0cnb/i12nxFKckWioxVxUnAgAF7LHBUUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsVy+t/xe7qMSxfGG3w6LmmxccZ6Vov5R86x
+        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWLfxFrvF2iN32S1a9x5hd+D22Dnr
+        LrvHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
+        rJWRqZK+nU1Kak5mWWqRvl2CXsaTE/+YCzo5K7ZfC25gXMPexcjJISFgIjFrwSnmLkYuDiGB
+        pYwSO1dcZO1i5ABKSEmsnJsOUSMs8edaFxtEzVNGiRnfT7CAJNgEHCX6l55gBUmICMxnkjg1
+        uwPMYRbYxyix/+hisBXCAj4Sn7Y2sYHYLAKqEhc/vmAEsXkFrCWON/xnhFghL9G+fDsbRFxQ
+        4uTMJywgVzALqEusnycEEuYX0JJY03QdbDEzUHnz1tnMExgFZiHpmIXQMQtJ1QJG5lWMIqml
+        xbnpucWGesWJucWleel6yfm5mxiB8bTt2M/NOxgvbQw+xCjAwajEw+uQuiBeiDWxrLgy9xCj
+        BAezkgiv09nTcUK8KYmVValF+fFFpTmpxYcYTYHemcgsJZqcD4z1vJJ4Q1NDcwtLQ3Njc2Mz
+        CyVx3g6BgzFCAumJJanZqakFqUUwfUwcnFINjBZecZlP/Ys1RJbV/uruz/s1+75T+TLLa7Vc
+        Ozlrp61hW7ZPLTDz7NGHE9cnivtJx6x6eMTaUO7oTuea59d9JsVZWmo17rItr3LWerplg+Ci
+        tW+NVk0umL5JzXNxid1N28x9DkuKf/uaa7+4dCHfVHe54BaLGJ+5rxPe/tt3WN2r4lNb/o+o
+        00osxRmJhlrMRcWJADX5dBm9AgAA
+X-CMS-MailID: 20201103184417eucas1p197b77670a32843abc1340b0979017bca
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201103184417eucas1p197b77670a32843abc1340b0979017bca
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201103184417eucas1p197b77670a32843abc1340b0979017bca
+References: <CGME20201103184417eucas1p197b77670a32843abc1340b0979017bca@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add devicetree description of Ethernet devices on Odroid boards. These
+descriptions enable setting MAC addresses with a bootloader.
 
-Hi Lukasz,
+Changes in v2:
+  - fixed compatible for hub@1 on X/X2 (: -> ,)
+  - split the patch for Odroid XU3 into two
+  - explained the purpose of aliases in commit messages
 
-thanks for the review and the comments.
+Łukasz Stelmach (6):
+  ARM: dts: exynos: Fix Ethernet interface description for Odroid XU3
+  ARM: dts: exynos: Add an alias for the Ethernet interface on Odroid XU3
+  ARM: dts: exynos: Add Ethernet interface description for Odroid XU3 Lite
+  ARM: dts: exynos: Add Ethernet interface description for Odroid XU
+  ARM: dts: exynos: Add Ethernet interface description for Odroid U3
+  ARM: dts: exynos: Add Ethernet interface description for Odroid X/X2
 
-On 23/10/2020 12:29, Lukasz Luba wrote:
-> Hi Daniel,
-
-[ ... ]
-
->> +
->> +config DTPM
->> +    bool "Power capping for dynamic thermal power management"
-> 
-> Maybe starting with capital letters: Dynamic Thermal Power Management?
-
-Ok, noted.
-
-[ ... ]
-
->> +++ b/drivers/powercap/dtpm.c
->> @@ -0,0 +1,430 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright 2020 Linaro Limited
->> + *
->> + * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
->> + *
->> + * The powercap based Dynamic Thermal Power Management framework
->> + * provides to the userspace a consistent API to set the power limit
->> + * on some devices.
->> + *
->> + * DTPM defines the functions to create a tree of constraints. Each
->> + * parent node is a virtual description of the aggregation of the
->> + * children. It propagates the constraints set at its level to its
->> + * children and collect the children power infomation. The leaves of
-> 
-> s/infomation/information/
-
-Ok, thanks
-
-[ ... ]
-
->> +static struct powercap_control_type *pct;
->> +static struct dtpm *root;
-> 
-> I wonder if it safe to have the tree without a global lock for it, like
-> mutex tree_lock ?
-> I have put some comments below when the code traverses the tree.
-
-The mutex is a heavy lock and the its purpose is to allow the current
-process to be preempted while the spinlock is very fast without preemption.
-
-Putting in place a single lock will simplify the code but I'm not sure
-it is worth as it could be a contention. It would be simpler to switch
-to a big lock than the opposite.
-
-[ ... ]
-
->> +static void dtpm_rebalance_weight(void)
->> +{
->> +    __dtpm_rebalance_weight(root);
->> +}
->> +
->> +static void dtpm_sub_power(struct dtpm *dtpm)
->> +{
->> +    struct dtpm *parent = dtpm->parent;
->> +
->> +    while (parent) {
-> 
-> I am not sure if it is safe for a corner case when the
-> nodes are removing from bottom to top. We don't hold a tree
-> lock, so these two (above line and below) operations might
-> be split/preempted and 'parent' freed before taking the lock.
-> Is it possible? (Note: I might missed something like double
-> locking using this local node spinlock).
-
-The parent can not be freed until it has children, the check is done in
-the release node function.
-
->> +        spin_lock(&parent->lock);
->> +        parent->power_min -= dtpm->power_min;
->> +        parent->power_max -= dtpm->power_max;
->> +        spin_unlock(&parent->lock);
->> +        parent = parent->parent;
->> +    }
->> +
->> +    dtpm_rebalance_weight();
->> +}
->> +
->> +static void dtpm_add_power(struct dtpm *dtpm)
->> +{
->> +    struct dtpm *parent = dtpm->parent;
->> +
->> +    while (parent) {
-> 
-> Similar here?
-> 
->> +        spin_lock(&parent->lock);
->> +        parent->power_min += dtpm->power_min;
->> +        parent->power_max += dtpm->power_max;
->> +        spin_unlock(&parent->lock);
->> +        parent = parent->parent;
->> +    }
->> +
->> +    dtpm_rebalance_weight();
->> +}
->> +
->> +/**
->> + * dtpm_update_power - Update the power on the dtpm
->> + * @dtpm: a pointer to a dtpm structure to update
->> + * @power_min: a u64 representing the new power_min value
->> + * @power_max: a u64 representing the new power_max value
->> + *
->> + * Function to update the power values of the dtpm node specified in
->> + * parameter. These new values will be propagated to the tree.
->> + *
->> + * Return: zero on success, -EINVAL if the values are inconsistent
->> + */
->> +int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max)
->> +{
->> +    if (power_min == dtpm->power_min && power_max == dtpm->power_max)
->> +        return 0;
->> +
->> +    if (power_max < power_min)
->> +        return -EINVAL;
->> +
->> +    dtpm_sub_power(dtpm);
->> +    spin_lock(&dtpm->lock);
->> +    dtpm->power_min = power_min;
->> +    dtpm->power_max = power_max;
->> +    spin_unlock(&dtpm->lock);
->> +    dtpm_add_power(dtpm);
->> +
->> +    return 0;
->> +}
->> +
->> +/**
->> + * dtpm_release_zone - Cleanup when the node is released
->> + * @pcz: a pointer to a powercap_zone structure
->> + *
->> + * Do some housecleaning and update the weight on the tree. The
->> + * release will be denied if the node has children. This function must
->> + * be called by the specific release callback of the different
->> + * backends.
->> + *
->> + * Return: 0 on success, -EBUSY if there are children
->> + */
->> +int dtpm_release_zone(struct powercap_zone *pcz)
->> +{
->> +    struct dtpm *dtpm = to_dtpm(pcz);
->> +    struct dtpm *parent = dtpm->parent;
->> +
-> 
-> I would lock the whole tree, just to play safe.
-> What do you think?
-
-I would like to keep the fine grain locking to prevent a potential
-contention. If it appears we hit a locking incorrectness or a race
-putting in question the fine grain locking scheme, then we can consider
-switching to a tree lock.
-
->> +    if (!list_empty(&dtpm->children))
->> +        return -EBUSY;
->> +
->> +    if (parent) {
->> +        spin_lock(&parent->lock);
->> +        list_del(&dtpm->sibling);
->> +        spin_unlock(&parent->lock);
->> +    }
->> +
->> +    dtpm_sub_power(dtpm);
->> +
->> +    kfree(dtpm);
->> +
->> +    return 0;
->> +}
-
-[ ... ]
-
->> +struct dtpm *dtpm_alloc(void)
->> +{
->> +    struct dtpm *dtpm;
->> +
->> +    dtpm = kzalloc(sizeof(*dtpm), GFP_KERNEL);
->> +    if (dtpm) {
->> +        INIT_LIST_HEAD(&dtpm->children);
->> +        INIT_LIST_HEAD(&dtpm->sibling);
->> +        spin_lock_init(&dtpm->lock);
-> 
-> Why do we use spinlock and not mutex?
-
-The mutex will force the calling process to be preempted, that is useful
-when the critical sections contains blocking calls.
-
-Here we are just changing values without blocking calls, so using the
-spinlock is more adequate as they are faster.
-
-[ ... ]
-
->> +static int __init dtpm_init(void)
->> +{
->> +    struct dtpm_descr **dtpm_descr;
->> +
->> +    pct = powercap_register_control_type(NULL, "dtpm", NULL);
->> +    if (!pct) {
->> +        pr_err("Failed to register control type\n");
->> +        return -EINVAL;
->> +    }
->> +
->> +    for_each_dtpm_table(dtpm_descr)
->> +        (*dtpm_descr)->init(*dtpm_descr);
-> 
-> We don't check the returned value here. It is required that the
-> devices should already be up and running (like cpufreq).
-> But if for some reason the init() failed, maybe it's worth to add a
-> field inside the dtpm_desc or dtpm struct like 'bool ready' ?
-> It could be retried to init later.
-
-It would be make sense to check the init return value if we want to
-rollback what we have done. Here we don't want to do that. If one
-subsystem fails to insert itself in the tree, it will log an error but
-the tree should continue to give access to what have been successfully
-initialized.
-
-The rollback is important in the init() ops, not in dtpm_init().
-
->> +
->> +    return 0;
->> +}
->> +late_initcall(dtpm_init);
-> 
-> The framework would start operating at late boot. We don't control
-> the thermal/power issues in earier stages.
-> Although, at this late stage all other things like cpufreq should be
-> ready, so the ->init() on them is likely to success.
-
-Right, the dtpm is accessible through sysfs for an userspace thermal
-daemon doing the smart mitigation. So do the initcall can be really late.
-
-[ ... ]
-
-Thanks for the review.
-
-  -- Daniel
-
+ arch/arm/boot/dts/exynos4412-odroidu3.dts     | 12 ++++++++
+ arch/arm/boot/dts/exynos4412-odroidx.dts      | 28 +++++++++++++++++++
+ arch/arm/boot/dts/exynos5410-odroidxu.dts     | 15 ++++++++++
+ .../boot/dts/exynos5422-odroidxu3-lite.dts    | 22 +++++++++++++++
+ arch/arm/boot/dts/exynos5422-odroidxu3.dts    |  8 ++++--
+ 5 files changed, 83 insertions(+), 2 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.26.2
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
