@@ -2,150 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC9E2A40B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860DD2A40B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgKCJwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:52:10 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47491 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbgKCJwJ (ORCPT
+        id S1728018AbgKCJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:52:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727518AbgKCJwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:52:09 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 5A5D9B7A;
-        Tue,  3 Nov 2020 04:52:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 03 Nov 2020 04:52:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=eDQ3z6R7HELxuV1aufq8yOfVMPt
-        p2cGpDjOIGR+8JmM=; b=I3SUt8wWwADbU6MU/c2Rae3H24rPiVeyyJeN3vtoZrs
-        kqVmUGPHOwNWZ5tUnaS156kBAi48dhDlJP8/N4AWuXlw5U7oJLdYWy6XnUh4nC9B
-        qwLzuv0QaBAdr5QN3kkIA7ARaGjkzszRDbGkO5qoMUIEZFzJ4V0WSroJLu0ubREp
-        aQnGTzVYm1UlexzsRS7ce7nffOJOs5WibiS7SbbhuY8ywx3GL+HhKnbXvF8shY4L
-        LgCmn3qBgj62ik6exEJJp+V8i2hZH4xPMCfBc1nabPn9fq2ln2coz/ks1FAogC4W
-        /uD9K6+K5dZQ7GJuLcAR/ztySG1b/NzXRd+B2ty7+JA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=eDQ3z6
-        R7HELxuV1aufq8yOfVMPtp2cGpDjOIGR+8JmM=; b=lxU1ZyChE1RJZCuRZZAESM
-        OdGFL6WvqEk6looiCqrMDNesm5OOoD4mHT4sjBxUMR4e8D/DCrNWT+tPOi2dJMbq
-        cGAcvsjoUZHYjuAcRaREbYpW93RBtxpvvSFj+o8acQPEg/94EwnJgM6vSHAh8KU7
-        u1L5eHcvhi7J6hZ3CdDABEYC+F0fqUO82htz0pvPDXhPT7Z3QGgmvi2qzfEzF6aI
-        VOhUfAlxe9oEhpBS6n5/pFpUA6vujujHHhnE0qF54eFAIcwjKNr9w/F52zVJiAoo
-        RoLpmbOKCQE3kCGst0GCsTFk7/4vcwpEJ77eMyBIvRxTptPyZ5N2qflLMT2RogDQ
-        ==
-X-ME-Sender: <xms:RiihX0jhkJtxb4G6RI_7zmxO2bF_Rx5WgO9TUUPqKija5pRwDS0P1w>
-    <xme:RiihX9C3bM0Qn7iECZgKWKu_xu0C5I2AiKGwYjchs6UeVeUHo4jD3C5IvkgC-LOP9
-    jwBo2k5gqdTa2Da7uE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgtdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:RiihX8F7j-8E28eyza3ecFzXEITVk-aYN89jAUpDvhb8Y-LnP7typA>
-    <xmx:RiihX1SDFqIcuF8z2Rii8bai6OhJz8SKkHMcc_K6p-A4HvU7dGEKdQ>
-    <xmx:RiihXxwnR2OiRJW9mjqwkx_iSkBwZeTIGD5J9GzmU2Tf4B2xTZZsfg>
-    <xmx:RyihXzvvPZG5U5HcvNPtVuyMhsEOnPg4eKMDzbnLKNX1sTCTy36gXg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3CB1D3280069;
-        Tue,  3 Nov 2020 04:52:06 -0500 (EST)
-Date:   Tue, 3 Nov 2020 10:52:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm: Add the new api to install irq
-Message-ID: <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
-References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+        Tue, 3 Nov 2020 04:52:45 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C28C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 01:52:43 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id y12so17773526wrp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 01:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tZURvADMiFaiJPFlm7U63ViQDE3v0TWLHH+E89RNfTM=;
+        b=JFvItVm0kvcse/IWL2EVvynsnyi3W9vwJPwpyUL/PNg0EQ+xrW0PyyNzU1ol/wNHEO
+         KaTQ0NgjUNksEIYXCiwvrhpgL+3p4v0N9HRRwbJKbHy3ZzVI/cknLbneL1Cxn+hHuf48
+         l1uke1kys9PZZ5UZYsV8oF8VXShVo0/kZGOIY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=tZURvADMiFaiJPFlm7U63ViQDE3v0TWLHH+E89RNfTM=;
+        b=G77STbYZZXSR1lTYWjczMwUDhK1mGR/RRFVOOQbGGQApAIFToIjXxoMdFXXaXxtbBq
+         wznWbWsVh9WKBq2cXUs7v4Xb395sZMC0qN+VKnYg2kffDW6tMOWLwonMIU4MQs4DcDyW
+         /xEf8DFILrl+liBjc3mbEJcj381+lhXVAUgeaW42pHziR+8YZPejS9MEaOzAvs5IHFBS
+         BX1ltgwrBjQZlctrEVTtBb2ZZe0vqftWyUl+WGGeoHaXvoWbZlBF0KS89gHHIbpgEK2S
+         OOvisFIzSSTYNJ82Csr2up4C20he/8BbfhZK+Ma/nlIutfLuLcoQaxsp7JZp06PbCEoG
+         ykug==
+X-Gm-Message-State: AOAM5323/xyMxBlQxtUSK2M3FT5enI9Ij3jn8HXxzGdiDqCCD6u4Mdp4
+        biboQyyoteEzTwoYxkQSLnwQwQ==
+X-Google-Smtp-Source: ABdhPJzusxtA0XkuTlkE8VCJBhBzvhLspVAmN9cw157VA0KKY9W4itB4ZEmLrfkkEt6x4UM89bMmbQ==
+X-Received: by 2002:adf:9f49:: with SMTP id f9mr17860205wrg.122.1604397162504;
+        Tue, 03 Nov 2020 01:52:42 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w11sm2515722wmg.36.2020.11.03.01.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 01:52:41 -0800 (PST)
+Date:   Tue, 3 Nov 2020 10:52:39 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Lee Jones <lee.jones@linaro.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
+Message-ID: <20201103095239.GW401619@phenom.ffwll.local>
+Mail-Followup-To: Greg KH <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Peilin Ye <yepeilin.cs@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <20201102183242.2031659-1-yepeilin.cs@gmail.com>
+ <20201103085324.GL4488@dell>
+ <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
+ <20201103091538.GA2663113@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xs6ln5j4huqhrzhw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20201103091538.GA2663113@kroah.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 03, 2020 at 10:15:38AM +0100, Greg KH wrote:
+> On Tue, Nov 03, 2020 at 09:58:18AM +0100, Daniel Vetter wrote:
+> > On Tue, Nov 3, 2020 at 9:53 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Mon, 02 Nov 2020, Peilin Ye wrote:
+> > >
+> > > > From: Lee Jones <lee.jones@linaro.org>
+> > > >
+> > > > Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
+> > > > fonts") introduced the following error when building rpc_defconfig (only
+> > > > this build appears to be affected):
+> > > >
+> > > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+> > > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+> > > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+> > > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+> > > >
+> > > > The .data section is discarded at link time.  Reinstating acorndata_8x8 as
+> > > > const ensures it is still available after linking.  Do the same for the
+> > > > other 12 built-in fonts as well, for consistency purposes.
+> > > >
+> > > > Cc: <stable@vger.kernel.org>
+> > > > Cc: Russell King <linux@armlinux.org.uk>
+> > > > Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > > ---
+> > > > Changes in v2:
+> > > >   - Fix commit ID to 6735b4632def in commit message (Russell King
+> > > >     <linux@armlinux.org.uk>)
+> > > >   - Add `const` back for all 13 built-in fonts (Daniel Vetter
+> > > >     <daniel.vetter@ffwll.ch>)
+> > > >   - Add a Fixes: tag
+> > > >
+> > > >  lib/fonts/font_10x18.c     | 2 +-
+> > > >  lib/fonts/font_6x10.c      | 2 +-
+> > > >  lib/fonts/font_6x11.c      | 2 +-
+> > > >  lib/fonts/font_6x8.c       | 2 +-
+> > > >  lib/fonts/font_7x14.c      | 2 +-
+> > > >  lib/fonts/font_8x16.c      | 2 +-
+> > > >  lib/fonts/font_8x8.c       | 2 +-
+> > > >  lib/fonts/font_acorn_8x8.c | 2 +-
+> > > >  lib/fonts/font_mini_4x6.c  | 2 +-
+> > > >  lib/fonts/font_pearl_8x8.c | 2 +-
+> > > >  lib/fonts/font_sun12x22.c  | 2 +-
+> > > >  lib/fonts/font_sun8x16.c   | 2 +-
+> > > >  lib/fonts/font_ter16x32.c  | 2 +-
+> > > >  13 files changed, 13 insertions(+), 13 deletions(-)
+> > >
+> > > LGTM.
+> > >
+> > > Thanks for keeping my authorship.  Much appreciated.
+> > 
+> > Should I stuff this into drm-misc-fixes? Or will someone else pick
+> > this up? Greg?
+> > 
+> > I guess drm-misc-fixes might be easiest since there's a bunch of other
+> > fbcon/font stuff in the queue in drm-misc from Peilin.
+> 
+> You can take it:
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
---xs6ln5j4huqhrzhw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to drm-misc-fixes, thanks everyone!
 
-On Tue, Nov 03, 2020 at 10:10:41AM +0800, Tian Tao wrote:
-> Add new api devm_drm_irq_install() to register interrupts,
-> no need to call drm_irq_uninstall() when the drm module is removed.
->=20
-> v2:
-> fixed the wrong parameter.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
->  include/drm/drm_drv.h     |  3 ++-
->  2 files changed, 25 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-> index cd162d4..0fe5243 100644
-> --- a/drivers/gpu/drm/drm_drv.c
-> +++ b/drivers/gpu/drm/drm_drv.c
-> @@ -39,6 +39,7 @@
->  #include <drm/drm_color_mgmt.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_file.h>
-> +#include <drm/drm_irq.h>
->  #include <drm/drm_managed.h>
->  #include <drm/drm_mode_object.h>
->  #include <drm/drm_print.h>
-> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *parent,
->  	return ret;
->  }
-> =20
-> +static void devm_drm_dev_irq_uninstall(void *data)
-> +{
-> +	drm_irq_uninstall(data);
-> +}
-> +
-> +int devm_drm_irq_install(struct device *parent,
-> +			 struct drm_device *dev, int irq)
-> +{
-> +	int ret;
-> +
-> +	ret =3D drm_irq_install(dev, irq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
-> +	if (ret)
-> +		devm_drm_dev_irq_uninstall(dev);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(devm_drm_irq_install);
-> +
-
-Shouldn't we tie the IRQ to the drm device (so with drmm_add_action)
-instead of tying it to the underlying device?
-
-Maxime
->=20
-
---xs6ln5j4huqhrzhw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6EoRAAKCRDj7w1vZxhR
-xYkCAQC9VFY7e5GLo1YuFFmxexHLyg1jTL5G7fYo1CEBerCVbwD8DKPgZ4MI0x6P
-C0AMlKKWSCWLXIBmLvIKJ1KxLqMYbA0=
-=crER
------END PGP SIGNATURE-----
-
---xs6ln5j4huqhrzhw--
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
