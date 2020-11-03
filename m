@@ -2,215 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C043D2A4ADB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CBE2A4AE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgKCQK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgKCQK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:10:58 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E101C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:10:58 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kZytP-0006KD-Ap; Tue, 03 Nov 2020 17:10:43 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:fc98:3f6c:e55:4519] (unknown [IPv6:2a03:f580:87bc:d400:fc98:3f6c:e55:4519])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id A24F05896D5;
-        Tue,  3 Nov 2020 16:10:35 +0000 (UTC)
-Subject: Re: [PATCH v7 0/6] CTU CAN FD open-source IP core SocketCAN driver,
- PCI, platform integration and documentation
-To:     Ondrej Ille <ondrej.ille@gmail.com>
-Cc:     Pavel Pisa <pisa@cmp.felk.cvut.cz>, linux-can@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
-        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>,
-        Drew Fustini <pdp7pdp7@gmail.com>
-References: <cover.1604095004.git.pisa@cmp.felk.cvut.cz>
- <2ccec201-1a84-1837-15a8-d2ad05f5753c@pengutronix.de>
- <202011031100.35922.pisa@cmp.felk.cvut.cz>
- <07227792-f75f-6998-bd09-ce6e612de79f@pengutronix.de>
- <CAA7ZjpaYA0jLaybxq_2amtWOcs3sPE5w_fQK7jMdgaKpA-YoUg@mail.gmail.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <6dabf1e0-683f-d3be-469f-bf4becb11271@pengutronix.de>
-Date:   Tue, 3 Nov 2020 17:10:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728307AbgKCQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:11:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726126AbgKCQLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:11:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604419907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=912wLAtwiZtWYV37HC58nqgMqZ/w1BjjSjMt3yAAK5w=;
+        b=a1Td+VeGkIiIcno9Dj7Jd2v0kg+qdD3Pt42xSyd6f59CbcdUQHXTc/MrEQLv/OCIZcqnRi
+        s091kK1dYeQsDk8ADWSOrSRExIAzzst6x/DZ1sjV3z8PMhj5829zcvgpCmyx52lxbUE5KZ
+        a6Uo9j4S4OjGPTX5gPwldtU2W0HANfg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AEADDAD35;
+        Tue,  3 Nov 2020 16:11:47 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 17:11:47 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        brendanhiggins@google.com, skhan@linuxfoundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, alexandre.belloni@bootlin.com,
+        rdunlap@infradead.org, idryomov@gmail.com,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+Message-ID: <20201103160728.GQ20201@alley>
+References: <20201103111049.51916-1-98.arpi@gmail.com>
+ <20201103113353.GC4077@smile.fi.intel.com>
+ <20201103115223.GA268796@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA7ZjpaYA0jLaybxq_2amtWOcs3sPE5w_fQK7jMdgaKpA-YoUg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="DEQeGb5aMYFzl9eN4yfnPHOvTp8529vAS"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201103115223.GA268796@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DEQeGb5aMYFzl9eN4yfnPHOvTp8529vAS
-Content-Type: multipart/mixed; boundary="ylA4F9LYT9n880wEfqxNkN9q8FPdAGpny";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ondrej Ille <ondrej.ille@gmail.com>
-Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>, linux-can@vger.kernel.org,
- devicetree@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
- Wolfgang Grandegger <wg@grandegger.com>, David Miller <davem@davemloft.net>,
- Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
- Carsten Emde <c.emde@osadl.org>, armbru@redhat.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marin Jerabek <martin.jerabek01@gmail.com>,
- Jiri Novak <jnovak@fel.cvut.cz>, Jaroslav Beran <jara.beran@gmail.com>,
- Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>,
- Drew Fustini <pdp7pdp7@gmail.com>
-Message-ID: <6dabf1e0-683f-d3be-469f-bf4becb11271@pengutronix.de>
-Subject: Re: [PATCH v7 0/6] CTU CAN FD open-source IP core SocketCAN driver,
- PCI, platform integration and documentation
-References: <cover.1604095004.git.pisa@cmp.felk.cvut.cz>
- <2ccec201-1a84-1837-15a8-d2ad05f5753c@pengutronix.de>
- <202011031100.35922.pisa@cmp.felk.cvut.cz>
- <07227792-f75f-6998-bd09-ce6e612de79f@pengutronix.de>
- <CAA7ZjpaYA0jLaybxq_2amtWOcs3sPE5w_fQK7jMdgaKpA-YoUg@mail.gmail.com>
-In-Reply-To: <CAA7ZjpaYA0jLaybxq_2amtWOcs3sPE5w_fQK7jMdgaKpA-YoUg@mail.gmail.com>
+On Tue 2020-11-03 12:52:23, Greg KH wrote:
+> On Tue, Nov 03, 2020 at 01:33:53PM +0200, Andy Shevchenko wrote:
+> > On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
+> > > Convert test lib/test_printf.c to KUnit. More information about
+> > > KUnit can be found at:
+> > > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> > > KUnit provides a common framework for unit tests in the kernel.
+> > > KUnit and kselftest are standardizing around KTAP, converting this
+> > > test to KUnit makes this test output in KTAP which we are trying to
+> > > make the standard test result format for the kernel. More about
+> > > the KTAP format can be found at:
+> > > https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
+> > > I ran both the original and converted tests as is to produce the
+> > > output for success of the test in the two cases. I also ran these
+> > > tests with a small modification to show the difference in the output
+> > > for failure of the test in both cases. The modification I made is:
+> > > - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > > + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > > 
+> > > Original test success:
+> > > [    0.540860] test_printf: loaded.
+> > > [    0.540863] test_printf: random seed = 0x5c46c33837bc0619
+> > > [    0.541022] test_printf: all 388 tests passed
+> > > 
+> > > Original test failure:
+> > > [    0.537980] test_printf: loaded.
+> > > [    0.537983] test_printf: random seed = 0x1bc1efd881954afb
+> > > [    0.538029] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > [    0.538030] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > [    0.538124] test_printf: failed 2 out of 388 tests
+> > > [    0.538125] test_printf: random seed used was 0x1bc1efd881954afb
+> > > 
+> > > Converted test success:
+> > >     # Subtest: printf
+> > >     1..25
+> > >     ok 1 - test_basic
+> > >     ok 2 - test_number
+> > >     ok 3 - test_string
+> > >     ok 4 - plain
+> > >     ok 5 - null_pointer
+> > >     ok 6 - error_pointer
+> > >     ok 7 - invalid_pointer
+> > >     ok 8 - symbol_ptr
+> > >     ok 9 - kernel_ptr
+> > >     ok 10 - struct_resource
+> > >     ok 11 - addr
+> > >     ok 12 - escaped_str
+> > >     ok 13 - hex_string
+> > >     ok 14 - mac
+> > >     ok 15 - ip
+> > >     ok 16 - uuid
+> > >     ok 17 - dentry
+> > >     ok 18 - struct_va_format
+> > >     ok 19 - time_and_date
+> > >     ok 20 - struct_clk
+> > >     ok 21 - bitmap
+> > >     ok 22 - netdev_features
+> > >     ok 23 - flags
+> > >     ok 24 - errptr
+> > >     ok 25 - fwnode_pointer
+> > > ok 1 - printf
+> > > 
+> > > Converted test failure:
+> > >     # Subtest: printf
+> > >     1..25
+> > >     ok 1 - test_basic
+> > >     ok 2 - test_number
+> > >     ok 3 - test_string
+> > >     ok 4 - plain
+> > >     ok 5 - null_pointer
+> > >     ok 6 - error_pointer
+> > >     ok 7 - invalid_pointer
+> > >     ok 8 - symbol_ptr
+> > >     ok 9 - kernel_ptr
+> > >     ok 10 - struct_resource
+> > >     ok 11 - addr
+> > >     ok 12 - escaped_str
+> > >     ok 13 - hex_string
+> > >     ok 14 - mac
+> > >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:82
+> > > vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:124
+> > > kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > >     not ok 15 - ip
+> > >     ok 16 - uuid
+> > >     ok 17 - dentry
+> > >     ok 18 - struct_va_format
+> > >     ok 19 - time_and_date
+> > >     ok 20 - struct_clk
+> > >     ok 21 - bitmap
+> > >     ok 22 - netdev_features
+> > >     ok 23 - flags
+> > >     ok 24 - errptr
+> > >     ok 25 - fwnode_pointer
+> > > not ok 1 - printf
+> > 
+> > Better, indeed.
+> > 
+> > But can be this improved to have a cumulative statistics, like showing only
+> > number of total, succeeded, failed with details of the latter ones?
+> 
+> Is that the proper test output format?  We have a standard...
 
---ylA4F9LYT9n880wEfqxNkN9q8FPdAGpny
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+What is the standard, please?
 
-On 11/3/20 2:36 PM, Ondrej Ille wrote:
-> Hello Marc,
->=20
-> thank you for review, I appreciate it. We will process all your notes, =
-and get
-> rid of uin32_t and bitfields then.
->=20
-> As Pavel pointed out, there are user space tests using this stuff, so i=
-t is
-> not just search and replace work. We will extend our IP-XACT generation=
+The original module produced:
 
-> toolchain (what a strong word for bunch of python scripts...), to gener=
-ate=20
-> Linux specific headers with GEN_MASK and BIT then.
+[   48.577739] test_printf: loaded.
+[   48.578046] test_printf: all 388 tests passed
 
-Fine!
-> It will take some time, since we have to modify quite a lot of stuff an=
-d
-> re-test it then, but we will try to do it fast. Btw, do you agree with
-> separation of HW specific part of driver into "_hw" file, or would you
-> preffer to get rid of this abstraction layer? If we should get rid of i=
-t, we
-> will, but it would take even more time to do it.
+It comes from KSTM_MODULE_LOADERS() macro that has been created
+by the commit eebf4dd452377921e3a26 ("kselftest: Add test module
+framework header"). There are 3 users:
 
-I haven't looked at the HW abstraction yet, but will do next. Usually Lin=
-ux is
-considered the HW abstraction layer :)
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+$> git grep KSTM_MODULE_LOADERS
+Documentation/dev-tools/kselftest.rst:   KSTM_MODULE_LOADERS(test_foo);
+lib/test_bitmap.c:KSTM_MODULE_LOADERS(test_bitmap);
+lib/test_printf.c:KSTM_MODULE_LOADERS(test_printf);
+lib/test_strscpy.c:KSTM_MODULE_LOADERS(test_strscpy);
+tools/testing/selftests/kselftest_module.h:#define KSTM_MODULE_LOADERS(__module)                        \
 
 
---ylA4F9LYT9n880wEfqxNkN9q8FPdAGpny--
+When I looked for similar strings then I see huge creativity:
 
---DEQeGb5aMYFzl9eN4yfnPHOvTp8529vAS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+drivers/firmware/psci/psci_checker.c:           pr_info("Hotplug tests passed OK\n");
+drivers/firmware/psci/psci_checker.c:           pr_info("Suspend tests passed OK\n");
+drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:            seq_printf(m, "ib ring tests passed.\n");
+drivers/mtd/chips/jedec_probe.c:        /* all tests passed - mark  as success */
+drivers/usb/host/xhci-mem.c:    xhci_dbg(xhci, "TRB math tests passed.\n");
+fs/unicode/utf8-selftest.c:             pr_info("All %u tests passed\n", total_tests);
+kernel/kcsan/selftest.c:        pr_info("selftest: %d/%d tests passed\n", passed, total);
+lib/crc32test.c:                pr_info("crc32c: self tests passed, processed %d bytes in %lld nsec\n",
+lib/crc32test.c:                pr_info("crc32c_combine: %d self tests passed\n", runs);
+lib/crc32test.c:                pr_info("crc32: self tests passed, processed %d bytes in %lld nsec\n",
+lib/crc32test.c:                pr_info("crc32_combine: %d self tests passed\n", runs);
+lib/globtest.c:         KERN_INFO "glob: %u self-tests passed, %u failed\n";
+lib/random32.c:         pr_info("prandom: %d self tests passed\n", runs);
+lib/test_hash.c:        pr_notice("%u tests passed.", tests);
+lib/test_hexdump.c:             pr_info("all %u tests passed\n", total_tests);
+lib/test_ida.c: printk("IDA: %u of %u tests passed\n", tests_passed, tests_run);
+lib/test_meminit.c:             pr_info("all %d tests passed!\n", num_tests);
+lib/test_overflow.c:            pr_info("all tests passed\n");
+lib/test_stackinit.c:           pr_info("all tests passed!\n");
+lib/test_user_copy.c:           pr_info("tests passed.\n");
+lib/test_uuid.c:                pr_info("all %u tests passed\n", total_tests);
+lib/test_xarray.c:      printk("XArray: %u of %u tests passed\n", tests_passed, tests_run);
+tools/bootconfig/test-bootconfig.sh:    echo "All tests passed"
+Binary file tools/testing/kunit/test_data/test_is_test_passed-all_passed.log matches
+Binary file tools/testing/kunit/test_data/test_is_test_passed-crash.log matches
+Binary file tools/testing/kunit/test_data/test_is_test_passed-failure.log matches
+Binary file tools/testing/kunit/test_data/test_output_isolated_correctly.log matches
+tools/testing/selftests/bpf/test_tc_tunnel.sh:  echo "OK. All tests passed"
+tools/testing/selftests/bpf/test_xdping.sh:echo "OK. All tests passed"
+tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c:     printf("Ioctl compatibility tests passed\n");
+tools/testing/selftests/kselftest_harness.h:    ksft_print_msg("%s: %u / %u tests passed.\n", ret ? "FAILED" : "PASSED",
+tools/testing/selftests/kselftest_module.h:             pr_info("all %u tests passed\n", total_tests);
+tools/testing/selftests/net/ipv6_flowlabel.sh:echo OK. All tests passed
+tools/testing/selftests/net/msg_zerocopy.sh:    echo "OK. All tests passed"
+tools/testing/selftests/net/psock_fanout.c:     printf("OK. All tests passed\n");
+tools/testing/selftests/net/psock_snd.sh:echo "OK. All tests passed"
+tools/testing/selftests/net/psock_tpacket.c:    printf("OK. All tests passed\n");
+tools/testing/selftests/net/so_txtime.sh:echo OK. All tests passed
+tools/testing/selftests/net/txtimestamp.sh:     echo "OK. All tests passed"
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+hgPYACgkQqclaivrt
-76lSrggAjr8U94Up39MhE0fLBeiufpYpaPFvhb9Pt87u4LHmSLVtR/5sMYlcsZuq
-YWzlO9sVSoR3ME4jZy0FN7ZtncBAbbEKXw92Je4tii+oBePQOHzCpnhFMZOZHaqv
-cbC7k0WvqE2kvUZHQsjOzsHwND8AZYzxS1JkTcZpsQ0r0aORyerZFxiMjAR9VXIt
-HeCNP/HCZnsAVhc/91JvXcmGMevKJraX4SurfHCu2v3UDWt8bCjuv1zxPwmj/9/w
-EMzRhT+FXQDwrCvNjnPkUqtiDHbsbJqJKL3fDnyy5EqXqbgDD8Q7Gtn4aw36OsiP
-OxA5jSWcThzYKJ4VY0bCMrmKTHBSTw==
-=q2fO
------END PGP SIGNATURE-----
 
---DEQeGb5aMYFzl9eN4yfnPHOvTp8529vAS--
+From my POV, KUnit is a framework that is supposed to actually
+unify many tests.
+
+There is alternative framework maintained by Shuah Khan. In compare
+with KUnit, it prints the results in the userspace. The format
+is quite similar, for example:
+
+tools/testing/selftests/livepatch/# make run_tests
+TAP version 13
+1..5
+# selftests: livepatch: test-livepatch.sh
+# TEST: basic function patching ... ok
+# TEST: multiple livepatches ... ok
+# TEST: atomic replace livepatch ... ok
+ok 1 selftests: livepatch: test-livepatch.sh
+# selftests: livepatch: test-callbacks.sh
+# TEST: target module before livepatch ... ok
+# TEST: module_coming notifier ... ok
+# TEST: module_going notifier ... ok
+# TEST: module_coming and module_going notifiers ... ok
+# TEST: target module not present ... ok
+# TEST: pre-patch callback -ENODEV ... ok
+# TEST: module_coming + pre-patch callback -ENODEV ... ok
+# TEST: multiple target modules ... ok
+# TEST: busy target module ... ok
+# TEST: multiple livepatches ... ok
+# TEST: atomic replace ... ok
+ok 2 selftests: livepatch: test-callbacks.sh
+# selftests: livepatch: test-shadow-vars.sh
+# TEST: basic shadow variable API ... ok
+ok 3 selftests: livepatch: test-shadow-vars.sh
+# selftests: livepatch: test-state.sh
+# TEST: system state modification ... ok
+# TEST: taking over system state modification ... ok
+# TEST: compatible cumulative livepatches ... ok
+# TEST: incompatible cumulative livepatches ... ok
+ok 4 selftests: livepatch: test-state.sh
+# selftests: livepatch: test-ftrace.sh
+# TEST: livepatch interaction with ftrace_enabled sysctl ... ok
+ok 5 selftests: livepatch: test-ftrace.sh
+
+
+I do not have strong meaning what format is better. But the format:
+
+    "doing something ... ok"
+
+is problematic in kernel log because it contains messages
+from all kernel activity. As a result, many unrelated messages might
+be added between "doing something ..." and "ok". It is much
+more reliable with stdout/stderr in userspace.
+
+For kernel, it is more reliable to print results when the test
+finishes. And it seems to be "easy" to spot an error in KUnit
+report.
+
+
+That said, it would be nice to see some summary on the very last line.
+It would be especially useful when the log is longer than one screen.
+
+The result of every subtest might help to locate the problem when
+the system freezes. It might be optional.
+
+I am personally fine with the proposed output of printf_kunit.c.
+
+Best Regards,
+Petr
