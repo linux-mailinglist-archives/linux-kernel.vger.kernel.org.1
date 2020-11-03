@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3F12A5424
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5B72A5586
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388405AbgKCVI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:08:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47788 "EHLO mail.kernel.org"
+        id S1729848AbgKCVTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:19:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387682AbgKCVIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:08:24 -0500
+        id S2388418AbgKCVI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DB17207BC;
-        Tue,  3 Nov 2020 21:08:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88674206B5;
+        Tue,  3 Nov 2020 21:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437703;
-        bh=R2uupPPjUrCiVXqiZGMwEogBjkihGfr35fgrFP4hGsY=;
+        s=default; t=1604437706;
+        bh=a0ebSi0AnJK+mCptB0zMJ+5KiZXVZOQe1vrtrYa9/1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rp6cdhp64nYGya9SbW4xDCvUFqcEWV/LdhfnIaZRNeKGKaCysfw06Ww6mMmwQ4Ioh
-         QsEvBuqTTV/8R397cHpkXqtX0tar2vYQfY7pi8rqhXOsHlHdrn8gth0k57+3SS1peb
-         +dmPkWA9Epic+jDRaWeSfj2Br0d8M5rUiNrD0n3A=
+        b=ZUqvBy5jsdYdkHgY2jRgTOvYbsTTBSFyCTATbNTlBH7V4JMzmX/eRYXG5XARqh7pX
+         pSpgloMLwVWtpBJMFgNBg01/mQfcZU0cNl6zZWouYCnocCKeQGCw0A7W2ElJCYEZWi
+         ZjGr8E4dbUHiwONTOkNpFFe5YabqAGl7CLFwqJLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.19 189/191] staging: comedi: cb_pcidas: Allow 2-channel commands for AO subdevice
-Date:   Tue,  3 Nov 2020 21:38:01 +0100
-Message-Id: <20201103203250.540817459@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Subject: [PATCH 4.19 190/191] staging: octeon: repair "fixed-link" support
+Date:   Tue,  3 Nov 2020 21:38:02 +0100
+Message-Id: <20201103203250.642773090@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -41,41 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-commit 647a6002cb41d358d9ac5de101a8a6dc74748a59 upstream.
+commit 179f5dc36b0a1aa31538d7d8823deb65c39847b3 upstream.
 
-The "cb_pcidas" driver supports asynchronous commands on the analog
-output (AO) subdevice for those boards that have an AO FIFO.  The code
-(in `cb_pcidas_ao_check_chanlist()` and `cb_pcidas_ao_cmd()`) to
-validate and set up the command supports output to a single channel or
-to two channels simultaneously (the boards have two AO channels).
-However, the code in `cb_pcidas_auto_attach()` that initializes the
-subdevices neglects to initialize the AO subdevice's `len_chanlist`
-member, leaving it set to 0, but the Comedi core will "correct" it to 1
-if the driver neglected to set it.  This limits commands to use a single
-channel (either channel 0 or 1), but the limit should be two channels.
-Set the AO subdevice's `len_chanlist` member to be the same value as the
-`n_chan` member, which will be 2.
+The PHYs must be registered once in device probe function, not in device
+open callback because it's only possible to register them once.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20201021122142.81628-1-abbotti@mev.co.uk
+Fixes: a25e278020bf ("staging: octeon: support fixed-link phys")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201016101858.11374-1-alexander.sverdlin@nokia.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/cb_pcidas.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/octeon/ethernet-mdio.c |    6 ------
+ drivers/staging/octeon/ethernet.c      |    9 +++++++++
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
---- a/drivers/staging/comedi/drivers/cb_pcidas.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas.c
-@@ -1342,6 +1342,7 @@ static int cb_pcidas_auto_attach(struct
- 		if (dev->irq && board->has_ao_fifo) {
- 			dev->write_subdev = s;
- 			s->subdev_flags	|= SDF_CMD_WRITE;
-+			s->len_chanlist	= s->n_chan;
- 			s->do_cmdtest	= cb_pcidas_ao_cmdtest;
- 			s->do_cmd	= cb_pcidas_ao_cmd;
- 			s->cancel	= cb_pcidas_ao_cancel;
+--- a/drivers/staging/octeon/ethernet-mdio.c
++++ b/drivers/staging/octeon/ethernet-mdio.c
+@@ -152,12 +152,6 @@ int cvm_oct_phy_setup_device(struct net_
+ 
+ 	phy_node = of_parse_phandle(priv->of_node, "phy-handle", 0);
+ 	if (!phy_node && of_phy_is_fixed_link(priv->of_node)) {
+-		int rc;
+-
+-		rc = of_phy_register_fixed_link(priv->of_node);
+-		if (rc)
+-			return rc;
+-
+ 		phy_node = of_node_get(priv->of_node);
+ 	}
+ 	if (!phy_node)
+--- a/drivers/staging/octeon/ethernet.c
++++ b/drivers/staging/octeon/ethernet.c
+@@ -13,6 +13,7 @@
+ #include <linux/phy.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
++#include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+@@ -875,6 +876,14 @@ static int cvm_oct_probe(struct platform
+ 				break;
+ 			}
+ 
++			if (priv->of_node && of_phy_is_fixed_link(priv->of_node)) {
++				if (of_phy_register_fixed_link(priv->of_node)) {
++					netdev_err(dev, "Failed to register fixed link for interface %d, port %d\n",
++						   interface, priv->port);
++					dev->netdev_ops = NULL;
++				}
++			}
++
+ 			if (!dev->netdev_ops) {
+ 				free_netdev(dev);
+ 			} else if (register_netdev(dev) < 0) {
 
 
