@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3812A454E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300FC2A4552
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgKCMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:35:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:48046 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgKCMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:35:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50202106F;
-        Tue,  3 Nov 2020 04:35:22 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20EFF3F718;
-        Tue,  3 Nov 2020 04:35:21 -0800 (PST)
-Subject: Re: [PATCH v5 2/2] iommu/iova: Free global iova rcache on iova alloc
- failure
-To:     vjitta@codeaurora.org, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com
-References: <1601451864-5956-1-git-send-email-vjitta@codeaurora.org>
- <1601451864-5956-2-git-send-email-vjitta@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <ff318311-77e8-b235-37dd-7b1b5f5d8ed9@arm.com>
-Date:   Tue, 3 Nov 2020 12:35:19 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728604AbgKCMhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:37:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgKCMhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:37:19 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D39C0613D1;
+        Tue,  3 Nov 2020 04:37:19 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id n11so15795878ota.2;
+        Tue, 03 Nov 2020 04:37:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HrbagZwNW9slCt6d/AW8rMDwMZtrFWYw7alPEHvkmb4=;
+        b=XD7mAythtfRoMdczS5VWBLhyjc7jTlavZz1aVCztraJAEromDAsGVN2YLNSbWrhI8m
+         QJAJ+ra69zL0lDZxUQJesUh91Q2B82zivVUoFqa/tUWzRJeDhEp+Tko0/5rU3DCqD1QU
+         u3GxNhasdzl/iL9iR2J2JR0JVKKiVQVA9mdTBYNzWmWCJqCKgX6KIBREHBksolSjLptU
+         4dVSjoml5xDkIa6S5ONv6595yfQ1j1IigtUI78jmegtrtWvgX0Dzu2LE5FQ06VZMnDEq
+         bBMk8WdZwFHTR3UKA0o3rINViXNQNSNWtH58O4NxyVLPTUAahVyJEVvkp5y64dANxo30
+         9fIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HrbagZwNW9slCt6d/AW8rMDwMZtrFWYw7alPEHvkmb4=;
+        b=VXtllIzxViOLhxamIz6n/6hMJya3FLsQXG0yjH/tETX7p6rQSHNdr8qWlVclShCE2n
+         Y/JqtmPZKWoRgF0sfDRqtWqZV52TV1030TPPEzJwo0tfpIxyv/DBgV3taUgyC6g87TRf
+         OkylXQ+ojGysHyUVSUs5bokhjHJfXU4Sc+A0yodXqS67VEI7QO4ecA8sGlVW//wwnTy5
+         AfAq7DzNYQjRfkQ4y1NAOOQTE/o9IWj2MCdNWaRTZS4undTjto+iFNHdjhQ+GJNj3zZm
+         3be4vKJU3nCRn3CRucIvc3kf7gAhQHguTr+7B3wap7fqqpo+Ck3lbnpiIQNTyUy1pm9v
+         7dHA==
+X-Gm-Message-State: AOAM530BNz3FeYFnVaBOLax7EsVB8GDu4NqsLNPIa7pfljAztGp9RaRU
+        Gpd+ml34X949T1qoVptBbaX5Q15dSZy+w3MXkDs=
+X-Google-Smtp-Source: ABdhPJyiy3o8C1TgEne1rTFHQu9/FF6LUkyCqxhXYUWuyQK4hEgSdw24cCTFKp2kv+fiAqnSzMITpQ8pDGqPeuVJmVI=
+X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr14654958ots.90.1604407038742;
+ Tue, 03 Nov 2020 04:37:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1601451864-5956-2-git-send-email-vjitta@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <cover.1604393169.git.szabolcs.nagy@arm.com> <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
+ <87r1pabu9g.fsf@oldenburg2.str.redhat.com>
+In-Reply-To: <87r1pabu9g.fsf@oldenburg2.str.redhat.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Tue, 3 Nov 2020 04:36:42 -0800
+Message-ID: <CAMe9rOpmiiBEZqLz-94_MEwgRky+EUsfd=X6Ue30H2c9R=dSKQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] elf: Move note processing after l_phdr is updated [BZ #26831]
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-30 08:44, vjitta@codeaurora.org wrote:
-> From: Vijayanand Jitta <vjitta@codeaurora.org>
-> 
-> When ever an iova alloc request fails we free the iova
-> ranges present in the percpu iova rcaches and then retry
-> but the global iova rcache is not freed as a result we could
-> still see iova alloc failure even after retry as global
-> rcache is holding the iova's which can cause fragmentation.
-> So, free the global iova rcache as well and then go for the
-> retry.
+On Tue, Nov 3, 2020 at 2:38 AM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Szabolcs Nagy:
+>
+> > Program headers are processed in two pass: after the first pass
+> > load segments are mmapped so in the second pass target specific
+> > note processing logic can access the notes.
+> >
+> > The second pass is moved later so various link_map fields are
+> > set up that may be useful for note processing such as l_phdr.
+> > ---
+> >  elf/dl-load.c | 30 +++++++++++++++---------------
+> >  1 file changed, 15 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/elf/dl-load.c b/elf/dl-load.c
+> > index ceaab7f18e..673cf960a0 100644
+> > --- a/elf/dl-load.c
+> > +++ b/elf/dl-load.c
+> > @@ -1259,21 +1259,6 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
+> >                                 maplength, has_holes, loader);
+> >      if (__glibc_unlikely (errstring != NULL))
+> >        goto call_lose;
+> > -
+> > -    /* Process program headers again after load segments are mapped in
+> > -       case processing requires accessing those segments.  Scan program
+> > -       headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
+> > -       exits.  */
+> > -    for (ph = &phdr[l->l_phnum]; ph != phdr; --ph)
+> > -      switch (ph[-1].p_type)
+> > -     {
+> > -     case PT_NOTE:
+> > -       _dl_process_pt_note (l, fd, &ph[-1]);
+> > -       break;
+> > -     case PT_GNU_PROPERTY:
+> > -       _dl_process_pt_gnu_property (l, fd, &ph[-1]);
+> > -       break;
+> > -     }
+> >    }
+> >
+> >    if (l->l_ld == 0)
+> > @@ -1481,6 +1466,21 @@ cannot enable executable stack as shared object requires");
+> >      /* Assign the next available module ID.  */
+> >      l->l_tls_modid = _dl_next_tls_modid ();
+> >
+> > +  /* Process program headers again after load segments are mapped in
+> > +     case processing requires accessing those segments.  Scan program
+> > +     headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
+> > +     exits.  */
+> > +  for (ph = &l->l_phdr[l->l_phnum]; ph != l->l_phdr; --ph)
+> > +    switch (ph[-1].p_type)
+> > +      {
+> > +      case PT_NOTE:
+> > +     _dl_process_pt_note (l, fd, &ph[-1]);
+> > +     break;
+> > +      case PT_GNU_PROPERTY:
+> > +     _dl_process_pt_gnu_property (l, fd, &ph[-1]);
+> > +     break;
+> > +      }
+> > +
+> >  #ifdef DL_AFTER_LOAD
+> >    DL_AFTER_LOAD (l);
+> >  #endif
+>
+> Is this still compatible with the CET requirements?
+>
+> I hope it is because the CET magic happens in _dl_open_check, so after
+> the the code in elf/dl-load.c has run.
+>
+>
 
-This looks reasonable to me - it's mildly annoying that we end up with 
-so many similar-looking functions, but the necessary differences are 
-right down in the middle of the loops so nothing can reasonably be 
-factored out :(
+_dl_process_pt_note and _dl_process_pt_gnu_property may call
+_dl_signal_error.  Are we prepared to clean more things up when it
+happens?  I am investigating:
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+https://sourceware.org/bugzilla/show_bug.cgi?id=26825
 
-> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
-> ---
->   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index c3a1a8e..faf9b13 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -25,6 +25,7 @@ static void init_iova_rcaches(struct iova_domain *iovad);
->   static void free_iova_rcaches(struct iova_domain *iovad);
->   static void fq_destroy_all_entries(struct iova_domain *iovad);
->   static void fq_flush_timeout(struct timer_list *t);
-> +static void free_global_cached_iovas(struct iova_domain *iovad);
->   
->   void
->   init_iova_domain(struct iova_domain *iovad, unsigned long granule,
-> @@ -442,6 +443,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
->   		flush_rcache = false;
->   		for_each_online_cpu(cpu)
->   			free_cpu_cached_iovas(cpu, iovad);
-> +		free_global_cached_iovas(iovad);
->   		goto retry;
->   	}
->   
-> @@ -1057,5 +1059,26 @@ void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
->   	}
->   }
->   
-> +/*
-> + * free all the IOVA ranges of global cache
-> + */
-> +static void free_global_cached_iovas(struct iova_domain *iovad)
-> +{
-> +	struct iova_rcache *rcache;
-> +	unsigned long flags;
-> +	int i, j;
-> +
-> +	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
-> +		rcache = &iovad->rcaches[i];
-> +		spin_lock_irqsave(&rcache->lock, flags);
-> +		for (j = 0; j < rcache->depot_size; ++j) {
-> +			iova_magazine_free_pfns(rcache->depot[j], iovad);
-> +			iova_magazine_free(rcache->depot[j]);
-> +			rcache->depot[j] = NULL;
-> +		}
-> +		rcache->depot_size = 0;
-> +		spin_unlock_irqrestore(&rcache->lock, flags);
-> +	}
-> +}
->   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
->   MODULE_LICENSE("GPL");
-> 
+I don't think cleanup of _dl_process_pt_gnu_property failure is done
+properly.
+
+-- 
+H.J.
