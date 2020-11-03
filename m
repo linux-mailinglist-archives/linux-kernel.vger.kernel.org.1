@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4782A5778
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33812A5785
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732654AbgKCUy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:54:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54518 "EHLO mail.kernel.org"
+        id S1732967AbgKCVnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:43:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732596AbgKCUyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:52 -0500
+        id S1732643AbgKCUyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:54:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 161CF2242A;
-        Tue,  3 Nov 2020 20:54:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53E682053B;
+        Tue,  3 Nov 2020 20:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436892;
-        bh=UI+huKp/NjLjpLSbAaV4Y2FsL5GoIL2RSYpGPaFsFrw=;
+        s=default; t=1604436894;
+        bh=omeB6+tOCoWWr9ipWW8m5cq5w0L9ieeSNwjQ2wXzrrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khqth1LYErQrCR9S1SSHxgBbd0B6bB8jc1dEaSXTMymU1aDAyqH50x08rjOp4ejFT
-         mZDapgkXyj1ezWcAd4RIYddCRHTG4iC6H44H4oog+d5EeoOwh5BhExlWXT8EfhNHkj
-         tyFdR+98bD8dKU1F+NAdasDft+o8KifG6yNr+4Do=
+        b=cCBF/QOBQHO0HG8F9iQHqFottuJW/GgVn17EsQt5faDaNUb1a2MLh4CKYlJUEsZby
+         k3O43YiXAx2jxHiJJEKBBlVgHsVXLeTzD5iKr1Hn4poqF1c26Q9rUN6CRZaYq8oOU2
+         efU4RjVk2JnKa+4Qt+8n7fKzcYze2Qy9WiWXkJOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <avolmat@me.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 056/214] cpufreq: sti-cpufreq: add stih418 support
-Date:   Tue,  3 Nov 2020 21:35:04 +0100
-Message-Id: <20201103203255.565690549@linuxfoundation.org>
+Subject: [PATCH 5.4 057/214] USB: adutux: fix debugging
+Date:   Tue,  3 Nov 2020 21:35:05 +0100
+Message-Id: <20201103203255.667406952@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -43,44 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <avolmat@me.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 01a163c52039e9426c7d3d3ab16ca261ad622597 ]
+[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
 
-The STiH418 can be controlled the same way as STiH407 &
-STiH410 regarding cpufreq.
+Handling for removal of the controller was missing at one place.
+Add it.
 
-Signed-off-by: Alain Volmat <avolmat@me.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/sti-cpufreq.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/misc/adutux.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
-index 8f16bbb164b84..2855b7878a204 100644
---- a/drivers/cpufreq/sti-cpufreq.c
-+++ b/drivers/cpufreq/sti-cpufreq.c
-@@ -141,7 +141,8 @@ static const struct reg_field sti_stih407_dvfs_regfields[DVFS_MAX_REGFIELDS] = {
- static const struct reg_field *sti_cpufreq_match(void)
- {
- 	if (of_machine_is_compatible("st,stih407") ||
--	    of_machine_is_compatible("st,stih410"))
-+	    of_machine_is_compatible("st,stih410") ||
-+	    of_machine_is_compatible("st,stih418"))
- 		return sti_stih407_dvfs_regfields;
+diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
+index d8d157c4c271d..96495fcd952aa 100644
+--- a/drivers/usb/misc/adutux.c
++++ b/drivers/usb/misc/adutux.c
+@@ -209,6 +209,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
  
- 	return NULL;
-@@ -258,7 +259,8 @@ static int sti_cpufreq_init(void)
- 	int ret;
- 
- 	if ((!of_machine_is_compatible("st,stih407")) &&
--		(!of_machine_is_compatible("st,stih410")))
-+		(!of_machine_is_compatible("st,stih410")) &&
-+		(!of_machine_is_compatible("st,stih418")))
- 		return -ENODEV;
- 
- 	ddata.cpu = get_cpu_device(0);
+ 	if (status != 0) {
+ 		if ((status != -ENOENT) &&
++		    (status != -ESHUTDOWN) &&
+ 		    (status != -ECONNRESET)) {
+ 			dev_dbg(&dev->udev->dev,
+ 				"%s :nonzero status received: %d\n", __func__,
 -- 
 2.27.0
 
