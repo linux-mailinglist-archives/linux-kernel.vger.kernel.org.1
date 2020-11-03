@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BF32A3CF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC022A3D00
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgKCGsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:48:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgKCGse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:48:34 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 932D422277;
-        Tue,  3 Nov 2020 06:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604386114;
-        bh=J6ULH5b4QZtm8WLIVr5QDXUfIIbcXfKJG0iuUwPIq50=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bUhAAQzbq5V8ClH5FZMNx4+49z0Ehhu9trpc9TTF+F2cHfLF5N3jlTCacPF90ftU6
-         U0G76aQsnxmw9F9HxQJ1ibUYhrfwCuzhPCMjTdhk2kE9kr8VGewZ22UqzwoGimpoBO
-         kImtIU+46NWGrraTCAn/ePU1VCZAVpEt0Pcpf0Ss=
-Date:   Tue, 3 Nov 2020 07:48:29 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] resource: introduce union(), intersection() API
-Message-ID: <20201103064829.GB75930@kroah.com>
-References: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
+        id S1727566AbgKCGwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:52:05 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50086 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgKCGwF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:52:05 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A36n4n8096222;
+        Tue, 3 Nov 2020 00:49:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604386144;
+        bh=ZwcdfWCCREuC1REgf4+LiouU2icWMDn+kcyDmC5qgtQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=y6XGwP4n4KVXCDSKjzBh4qJU7/zKqa4vvt9xCi6WWhRn72Uo6uXL/4fZkxOFmfi3X
+         oqa4C1Ilcrb67HCh/it+s7U6DL7o45icbnYLX2Zvz3fCzyOn+ZIHeQQV2GY6gToQTm
+         /BX+ooj98RQzn/tX2KjJqP8eMYVghvTz+POEYeyQ=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A36n4nI118555
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 00:49:04 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 00:49:04 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 00:49:04 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A36n15X083859;
+        Tue, 3 Nov 2020 00:49:01 -0600
+Subject: Re: [PATCH v2] drm/bridge: tpd12s015: Fix irq registering in
+ tpd12s015_probe
+To:     YueHaibing <yuehaibing@huawei.com>, <a.hajda@samsung.com>,
+        <narmstrong@baylibre.com>, <Laurent.pinchart@ideasonboard.com>,
+        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <sebastian.reichel@collabora.com>,
+        <sam@ravnborg.org>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20201031031648.42368-1-yuehaibing@huawei.com>
+ <20201102143024.26216-1-yuehaibing@huawei.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <8b1ac1a4-44ef-e0bd-cc4f-4045b10fe1d3@ti.com>
+Date:   Tue, 3 Nov 2020 08:49:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20201102143024.26216-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 11:00:19PM +0200, Andy Shevchenko wrote:
-> Some users may want to use resource library to manage their own resources,
-> besides existing users that open code union() and intersection()
-> implementations.
+On 02/11/2020 16:30, YueHaibing wrote:
+> gpiod_to_irq() return negative value in case of error,
+> the existing code doesn't handle negative error codes.
+> If the HPD gpio supports IRQs (gpiod_to_irq returns a
+> valid number), we use the IRQ. If it doesn't (gpiod_to_irq
+> returns an error), it gets polled via detect(). 
 > 
-> Provide a generic API for wider use.
+> Fixes: cff5e6f7e83f ("drm/bridge: Add driver for the TI TPD12S015 HDMI level shifter")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+> v2: Add checking for >= 0 and update commit message
+> ---
+>  drivers/gpu/drm/bridge/ti-tpd12s015.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Changelog v4:
-> - added Rb tag (Rafael)
-> - Cc'ed to LKML and Greg (Rafael)
+> diff --git a/drivers/gpu/drm/bridge/ti-tpd12s015.c b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> index 514cbf0eac75..e0e015243a60 100644
+> --- a/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> +++ b/drivers/gpu/drm/bridge/ti-tpd12s015.c
+> @@ -160,7 +160,7 @@ static int tpd12s015_probe(struct platform_device *pdev)
+>  
+>  	/* Register the IRQ if the HPD GPIO is IRQ-capable. */
+>  	tpd->hpd_irq = gpiod_to_irq(tpd->hpd_gpio);
+> -	if (tpd->hpd_irq) {
+> +	if (tpd->hpd_irq >= 0) {
+>  		ret = devm_request_threaded_irq(&pdev->dev, tpd->hpd_irq, NULL,
+>  						tpd12s015_hpd_isr,
+>  						IRQF_TRIGGER_RISING |
+> 
 
-Didn't we have some tests for this code somewhere?  Have you added tests
-for the new functions you have added?  If not, can you do that so that
-we "know" these work properly?
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-thanks,
+ Tomi
 
-greg k-h
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
