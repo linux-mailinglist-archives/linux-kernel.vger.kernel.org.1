@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776CF2A5578
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7DB2A55C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388709AbgKCVSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:18:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
+        id S2388055AbgKCVFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:05:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387910AbgKCVJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:07 -0500
+        id S2387474AbgKCVE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:04:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D5A8205ED;
-        Tue,  3 Nov 2020 21:09:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26B5A206B5;
+        Tue,  3 Nov 2020 21:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437746;
-        bh=ACCQKB0WI3QQDH1LpYwUo8Ei2lz8ycZmkcMhQYgGSxs=;
+        s=default; t=1604437495;
+        bh=ekXZWsUQPuYCNr0MTOi0LUt2p+uqRVQrtiTXrYDrISQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b0q47ttzTmY3AghbW06SIpjQkfHcEKMo3vKSvd0ijefIq0ykpIRRsPHAsFuLVCIFK
-         Tuyx8BOyCXwcpGC9dZikoN4YGX0+59s/Muz0mEhaaQmzpcXHED68tGCFFYfrhGjXG3
-         2NLcNdUDmgQ3u5sO6pLpchj8x6oNXFHgKkCbiquY=
+        b=nO86FKi+S/fu/94CVxphorwQj/DVr252xxIaIEN+A119DBq0BuBLn68xDVlQdoGxw
+         2U6H0NwxeW4ZD0IutJCzPLWZTfK1hZw7rJN4hzgdzt3OLdHPcXE0pjMh84R2qUeXzV
+         RGE+XwP6I0VRfxnobpGMgBZpVRsfUbbeQ6aATLM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mateusz Nosek <mateusznosek0@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 016/125] futex: Fix incorrect should_fail_futex() handling
-Date:   Tue,  3 Nov 2020 21:36:33 +0100
-Message-Id: <20201103203159.107223146@linuxfoundation.org>
+Subject: [PATCH 4.19 102/191] cifs: handle -EINTR in cifs_setattr
+Date:   Tue,  3 Nov 2020 21:36:34 +0100
+Message-Id: <20201103203243.225750535@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 921c7ebd1337d1a46783d7e15a850e12aed2eaa0 ]
+[ Upstream commit c6cc4c5a72505a0ecefc9b413f16bec512f38078 ]
 
-If should_futex_fail() returns true in futex_wake_pi(), then the 'ret'
-variable is set to -EFAULT and then immediately overwritten. So the failure
-injection is non-functional.
+RHBZ: 1848178
 
-Fix it by actually leaving the function and returning -EFAULT.
+Some calls that set attributes, like utimensat(), are not supposed to return
+-EINTR and thus do not have handlers for this in glibc which causes us
+to leak -EINTR to the applications which are also unprepared to handle it.
 
-The Fixes tag is kinda blury because the initial commit which introduced
-failure injection was already sloppy, but the below mentioned commit broke
-it completely.
+For example tar will break if utimensat() return -EINTR and abort unpacking
+the archive. Other applications may break too.
 
-[ tglx: Massaged changelog ]
+To handle this we add checks, and retry, for -EINTR in cifs_setattr()
 
-Fixes: 6b4f4bc9cb22 ("locking/futex: Allow low-level atomic operations to return -EAGAIN")
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200927000858.24219-1-mateusznosek0@gmail.com
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/cifs/inode.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 2921ebaa14676..8f0e62c59a55b 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1595,8 +1595,10 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_
- 	 */
- 	newval = FUTEX_WAITERS | task_pid_vnr(new_owner);
+diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
+index 4a38f16d944db..d30eb43506562 100644
+--- a/fs/cifs/inode.c
++++ b/fs/cifs/inode.c
+@@ -2550,13 +2550,18 @@ cifs_setattr(struct dentry *direntry, struct iattr *attrs)
+ {
+ 	struct cifs_sb_info *cifs_sb = CIFS_SB(direntry->d_sb);
+ 	struct cifs_tcon *pTcon = cifs_sb_master_tcon(cifs_sb);
++	int rc, retries = 0;
  
--	if (unlikely(should_fail_futex(true)))
-+	if (unlikely(should_fail_futex(true))) {
- 		ret = -EFAULT;
-+		goto out_unlock;
-+	}
+-	if (pTcon->unix_ext)
+-		return cifs_setattr_unix(direntry, attrs);
+-
+-	return cifs_setattr_nounix(direntry, attrs);
++	do {
++		if (pTcon->unix_ext)
++			rc = cifs_setattr_unix(direntry, attrs);
++		else
++			rc = cifs_setattr_nounix(direntry, attrs);
++		retries++;
++	} while (is_retryable_error(rc) && retries < 2);
  
- 	ret = cmpxchg_futex_value_locked(&curval, uaddr, uval, newval);
- 	if (!ret && (curval != uval)) {
+ 	/* BB: add cifs_setattr_legacy for really old servers */
++	return rc;
+ }
+ 
+ #if 0
 -- 
 2.27.0
 
