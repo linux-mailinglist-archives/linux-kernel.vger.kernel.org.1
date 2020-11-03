@@ -2,221 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FDA2A41E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3149E2A41A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728065AbgKCKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:30:21 -0500
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:53801 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725988AbgKCKaV (ORCPT
+        id S1728095AbgKCKXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:23:46 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:62553 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbgKCKXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:30:21 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id ZtZskFXTFlQTrZtZwk8PKj; Tue, 03 Nov 2020 11:30:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1604399418; bh=XW6g+Sp1Rd+1NkyLeSdpgSTFvj4baApnJo9OSUzUBE4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=W2Lm/8n7S8PI4WgufywOV5i5BlOYS0SnYXRgjwXXm381UC2PH7Dbes3tG64VSRcAc
-         rHXOYk0hhJ4enZXCaGNgzA572z2wSSyAr2HlxdNUX2mmkKa3WYxKqeli0VbpSakifx
-         uxcbOZG/3irAm+fXuFx6hH9W93p587plmB+EXjTrdVsJ7X/H6jmziJNYWxDGliuhiY
-         BHvUHvHFwBJu2hoe3EpcAi2LnyPNUn3hx3xgTFj/FGoLTlHhHHbPoTzbvNmCkuKJ9N
-         skOnrqRYB5imlu2Z5xDaO//1k7tCqEEVEBHjVTkSI+QSDLzO3Jt/yt+JS1VE9srTw7
-         ln4ThRLKeflZA==
-Subject: Re: [PATCH] v4l: Add source change event for colorimetry
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-References: <20200702100017.24700-1-stanimir.varbanov@linaro.org>
- <8dafbb4b-4626-5191-c57a-f3ef19c14618@linaro.org>
- <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
- <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
- <7db412a2-8fd3-6657-4fcd-1fbfde4b2c0e@linaro.org>
- <CAAFQd5Cw-23aE09+Gj35JN5ue_HHZQ8nyE+Bwfg5=GKA7WXTnw@mail.gmail.com>
- <aa04e5d7-8a98-82c7-a0fe-8afe84a1d9d0@linaro.org>
- <CAAFQd5DP0qMExsBY4UEhP9gLNUfwokzn3S7sgkAZPMTkkt7M6w@mail.gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <5f4684bb-ae62-805b-1175-68cb107cd1af@xs4all.nl>
-Date:   Tue, 3 Nov 2020 11:30:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 3 Nov 2020 05:23:42 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201103102338epoutp013e85f92335c96fc504b402ee833449f3~D_Gge0G8x0492204922epoutp01h
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:23:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201103102338epoutp013e85f92335c96fc504b402ee833449f3~D_Gge0G8x0492204922epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604399018;
+        bh=yNLUz3jizowRTL7wf4IGq96hb2BwdVZKZgn7GTUJYXg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=uqE7nDUtn86immrJVe4/sqJ2sZA0+o+QIzEVdjH/A8gcVYp0MlKkVJfj5Re9kogRW
+         L3jFTT8U8mX4lp9bpz1+bJ0R6sFoOl+rlqER30rLKrAoj4Zo0XcU3B4ZwgGS6Jrf1d
+         +Xta5Z8N2tDH06erGskK3osyUBQLUmI17o/9EWdo=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201103102337epcas1p15072d25469b65e9ffb91e29d9d44fcdb~D_GfhA_0B1444314443epcas1p1X;
+        Tue,  3 Nov 2020 10:23:37 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CQQqC0Y1szMqYkY; Tue,  3 Nov
+        2020 10:23:35 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        82.E9.09582.6AF21AF5; Tue,  3 Nov 2020 19:23:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201103102334epcas1p30384668d332edd34996621c926bb2156~D_GccntK11025510255epcas1p37;
+        Tue,  3 Nov 2020 10:23:34 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201103102334epsmtrp191fe0a26389ee27d162477b8c1012545~D_Gcbq0bk0607306073epsmtrp1P;
+        Tue,  3 Nov 2020 10:23:34 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-77-5fa12fa604ec
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.4A.13470.5AF21AF5; Tue,  3 Nov 2020 19:23:33 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103102333epsmtip14c24f37990d3c1bed96130a3743c384f~D_GcGu6cX3010030100epsmtip1L;
+        Tue,  3 Nov 2020 10:23:33 +0000 (GMT)
+Subject: Re: [PATCH v7 0/6] Exynos: Simple QoS for exynos-bus using
+ interconnect
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <d036412f-4a5a-3f30-1ede-ba191f4f0dd6@samsung.com>
+Date:   Tue, 3 Nov 2020 19:37:31 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5DP0qMExsBY4UEhP9gLNUfwokzn3S7sgkAZPMTkkt7M6w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <fae047dd-2564-61be-a185-ceb6f89d3e07@samsung.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOwMDSiGmHhB0lXesWLSE5d4/2WcTgo/wy/O5G47MlzSspC5WV3ymAYOX1XL6Nbykzgv1mMOwmNw7Ysf7mnGcFJuu/nWxIXrhksBY15drG6sb3aj+8KO
- VgfLdVOrfBUhL/3ZVIGrq7nhWwGfTGIJZG9noadovXKLzoQrFFpCmJY4R010/O408RPQDbfCtPRECZ80HxhPQ98zXTZHCtglaFTkNLYC2eefYqQxX5eyyKne
- eJo1GWS1qug/sqnweD8OMfkRLn8AuU+1JTxfZfvPcH1mKM5hbe0esx5Yl5IJwxzqSHZ+HUSOTHB2qq8VcnZECZwu1ooGTlxNZaFh0aplrHz/L/B2PNFbq336
- DPrtQ4Gat3Ab5ExV8/wTCZ9k4QSgdQ==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAJsWRmVeSWpSXmKPExsWy7bCmnu4y/YXxBp/321jcn9fKaLFxxnpW
+        i/lHzrFaXPn6ns1i+t5NbBaT7k9gsTh/fgO7xeVdc9gsPvceYbSYcX4fk8XaI3fZLW43rmCz
+        aN17hN3i8Jt2VosZk1+yOfB7bFrVyeZx59oeNo/73ceZPPq2rGL0+LxJLoA1KtsmIzUxJbVI
+        ITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB+hcJYWyxJxSoFBAYnGx
+        kr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJucWleul5yfq6VoYGBkSlQYUJ2xocFs5kK7olV
+        TF/cwtbAOF2oi5GTQ0LARGLNhFPsILaQwA5GiSWNsl2MXED2J0aJj1e2M0IkvjFKLNxnBdOw
+        d9oxdoiivYwSN162skA47xklJnybyApSJSwQJLF2YjtYt4hAtETHuaesIEXMAjeZJB6tuscG
+        kmAT0JLY/+IGmM0voChx9cdjsAZeATuJ3++ug9ksAioSF/r+MIPYogJhEie3tUDVCEqcnPmE
+        BcTmFLCXOH5sD1icWUBc4taT+UwQtrzE9rdzmEEWSwhc4ZDoXfGGGeIHF4nXa78xQdjCEq+O
+        b2GHsKUkXva3QdnVEitPHmGDaO5glNiy/wIrRMJYYv/SyUDNHEAbNCXW79KHCCtK7Pw9F+oI
+        Pol3X3tYQUokBHglOtqgYa0scfnBXai1khKL2zvZJjAqzULyziwkL8xC8sIshGULGFlWMYql
+        FhTnpqcWGxYYI8f2JkZwUtYy38E47e0HvUOMTByMhxglOJiVRHhrIufFC/GmJFZWpRblxxeV
+        5qQWH2I0BQbwRGYp0eR8YF7IK4k3NDUyNja2MDE0MzU0VBLn/aPdES8kkJ5YkpqdmlqQWgTT
+        x8TBKdXANNUxsjbef/uc9m2rUiPn/libvmrKff1nnjdfNNqv6Yz8qskrPeOOc6r06dOFirPV
+        axz9I3Uczsw/w92+lfvS8dU18x0aorZ2HI7ilDffPFvoffNT6RPstk0B+yNXBGtNed9/UMTp
+        C/PHJ4+ebs0O5r14kicyINO8snLJy2VNb7bI7dfNOrV9yt4F1r82bfOb6eh/iDcl7mzPsaOz
+        8idd13OZI3qEJawlg5v1X2D/DJYr7u6nZB5+T4zYcGVFQ09UxLGVaybsNPy+ufFExIPt3yqM
+        frou7Fpln1j+Mdlg2s+7ETf28xzaKdkkfXR9I0fAW+03DbeubGksTG3uY+QXuXtR6fKlh5vW
+        b3Vxs3GqOqrEUpyRaKjFXFScCADJ9x1fUwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSnO5S/YXxBk86zSzuz2tltNg4Yz2r
+        xfwj51gtrnx9z2Yxfe8mNotJ9yewWJw/v4Hd4vKuOWwWn3uPMFrMOL+PyWLtkbvsFrcbV7BZ
+        tO49wm5x+E07q8WMyS/ZHPg9Nq3qZPO4c20Pm8f97uNMHn1bVjF6fN4kF8AaxWWTkpqTWZZa
+        pG+XwJXxYcFspoJ7YhXTF7ewNTBOF+pi5OSQEDCR2DvtGHsXIxeHkMBuRomzS36xQyQkJaZd
+        PMrcxcgBZAtLHD5cDFHzllFi5tPnjCA1wgJBEmsntoPZIgLREgvOrWcGsZkFbjJJXNziAdHw
+        kEniz5+/YAk2AS2J/S9usIHY/AKKEld/PAZr5hWwk/j97jqYzSKgInGh7w9YvahAmMTOJY+Z
+        IGoEJU7OfMICYnMK2EscP7aHEWKZusSfeZegFotL3HoynwnClpfY/nYO8wRG4VlI2mchaZmF
+        pGUWkpYFjCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGC41NLcwfj9lUf9A4xMnEw
+        HmKU4GBWEuGtiZwXL8SbklhZlVqUH19UmpNafIhRmoNFSZz3RuHCOCGB9MSS1OzU1ILUIpgs
+        EwenVAOT2o6Vmx+2nlPc+v3m+vVXD89iMyp5e9gkgik4fc+Xz7laNxY4svZ56v22lcyetc+h
+        7vhNDS/mGpa7S3XWLnR/vkAk5WAb176UrgMLqpk+ht8O3sNXPFX9qMJ392rBwAYvfbZDy3Ul
+        tGdlqcm7KXYV/Y1+rZZXLHjjlsy+qC/vrKOv2zPxXk3r4pVeY7mW04NVNUj/2c2ji9OZm3un
+        L+d6svezbEpTeLi3bISw93U5JyN1r7BuwabbnD7Hnuxz0bh67txGpce1Suf41/yLXNkYbit3
+        VjbonkO23ME/pjL1Uk/K7Ay3PX96gy+y4DKnvsyd3YsLD2V4y22RvqexZ3uK4PIdKTu3s978
+        OvnPsvVKLMUZiYZazEXFiQDb11UlPgMAAA==
+X-CMS-MailID: 20201103102334epcas1p30384668d332edd34996621c926bb2156
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201030125221eucas1p14e525f75c4b8dadae04144ce7684d776
+References: <CGME20201030125221eucas1p14e525f75c4b8dadae04144ce7684d776@eucas1p1.samsung.com>
+        <20201030125149.8227-1-s.nawrocki@samsung.com>
+        <b586c2b7-9ca1-e641-b70c-27493ffd05e0@samsung.com>
+        <9285e2d4-f2fa-92f2-ba25-832f32f77d78@linaro.org>
+        <3e3038da-d5de-7ea9-9cb9-082ce63af91d@samsung.com>
+        <fae047dd-2564-61be-a185-ceb6f89d3e07@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 16:56, Tomasz Figa wrote:
-> On Tue, Oct 13, 2020 at 4:53 PM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->>
->>
->> On 10/13/20 5:07 PM, Tomasz Figa wrote:
->>> On Tue, Oct 13, 2020 at 3:53 PM Stanimir Varbanov
->>> <stanimir.varbanov@linaro.org> wrote:
->>>>
->>>>
->>>>
->>>> On 10/13/20 4:40 PM, Tomasz Figa wrote:
->>>>> On Tue, Oct 13, 2020 at 11:03 AM Stanimir Varbanov
->>>>> <stanimir.varbanov@linaro.org> wrote:
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> On 7/2/20 2:52 PM, Stanimir Varbanov wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> Once we have this event there is still open question how the client will
->>>>>>> know the data buffer on which the new colorspace is valid/applied.
->>>>>>>
->>>>>>> The options could be:
->>>>>>>  * a new buffer flag and
->>>>>>>  * some information in the v4l2_event structure.
->>>>>>>
->>>>>>> Thoughts?
->>>>>>
->>>>>> Kindly ping.
->>>>>>
->>>>>
->>>>> The event itself sounds good to me, but how do we know which buffer is
->>>>> the first to have the new colorimetry?
->>>>
->>>> I think Hans have a very good idea to have width/height and colorspace
->>>> specifiers in v4l2_ext_buffer [1].
->>>>
->>>> [1] https://lkml.org/lkml/2020/9/9/531
->>>>
->>>
->>> Hmm, I think that would basically make the event obsolete and without
->>> solving that problem I suspect the event is not very useful, because
->>> one could already receive and display (incorrectly) some buffers
->>> before realizing that they have different colorimetry
->>
->> Yes, I agree. I wasn't sure does Hans's idea will be well received, thus
->> I pinged.
+Hi Sylwester,
 
-I think we should wait with this patch. If this can be added to the
-proposed extended buffer API, then that will solve this issue in a
-clean way.
-
-For the time being I'll mark this patch as RFC in patchwork.
-
-Regards,
-
-	Hans
-
->>
->>>
->>> I believe for now we would have to handle this like a resolution
->>> change - flush the CAPTURE queue and the next buffer after the flush
->>> would have the new colorimetry. With the new API we could optimize the
->>
->> I'm not sure what you mean by flush capture queue? Dequeue until LAST
->> flag (EPIPE) and stop streaming g_fmt(capture queue) and decide what is
->> changed and start streaming ?
+On 11/3/20 7:12 PM, Sylwester Nawrocki wrote:
+> Hi Chanwoo, Georgi
 > 
-> Yes, although no strict need to stop streaming, other ways are defined
-> as well, e.g. DEC_CMD_START.
+> On 03.11.2020 09:53, Chanwoo Choi wrote:
+>> On 11/3/20 5:29 PM, Georgi Djakov wrote:
+>>> On 11/3/20 09:54, Chanwoo Choi wrote:
 > 
-> Of course we would need to make appropriate changes to the spec and so
-> I'd just unify it with the resolution change sequence. I think we
-> could rename it to "Stream parameter change".
-> 
->>
->>> decoding by getting rid of the flushes and relying on the in-bound
->>> information.
->>>
->>> Best regards,
->>> Tomasz
->>>
->>>>>
->>>>> Best regards,
->>>>> Tomasz
->>>>>
->>>>>>>
->>>>>>> On 7/2/20 1:00 PM, Stanimir Varbanov wrote:
->>>>>>>> This event indicate that the source colorspace is changed
->>>>>>>> during run-time. The client has to retrieve the new colorspace
->>>>>>>> identifiers by getting the format (G_FMT).
->>>>>>>>
->>>>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->>>>>>>> ---
->>>>>>>>  .../userspace-api/media/v4l/vidioc-dqevent.rst        | 11 ++++++++++-
->>>>>>>>  .../userspace-api/media/videodev2.h.rst.exceptions    |  1 +
->>>>>>>>  include/uapi/linux/videodev2.h                        |  1 +
->>>>>>>>  3 files changed, 12 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>>>>>> index a9a176d5256d..3f69c753db58 100644
->>>>>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>>>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>>>>>> @@ -381,7 +381,16 @@ call.
->>>>>>>>      that many Video Capture devices are not able to recover from a temporary
->>>>>>>>      loss of signal and so restarting streaming I/O is required in order for
->>>>>>>>      the hardware to synchronize to the video signal.
->>>>>>>> -
->>>>>>>> +    * - ``V4L2_EVENT_SRC_CH_COLORIMETRY``
->>>>>>>> +      - 0x0002
->>>>>>>> +      - This event gets triggered when a colorspace change is detected at
->>>>>>>> +    an input. By colorspace change here we include also changes in the
->>>>>>>> +    colorspace specifiers (transfer function, Y'CbCr encoding and
->>>>>>>> +    quantization). This event can come from an input or from video decoder.
->>>>>>>> +    Once the event has been send to the client the driver has to update
->>>>>>>> +    the colorspace specifiers internally so that they could be retrieved by
->>>>>>>> +    client. In that case queue re-negotiation is not needed as this change
->>>>>>>> +    only reflects on the interpretation of the data.
->>>>>>>>
->>>>>>>>  Return Value
->>>>>>>>  ============
->>>>>>>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>>>>>> index ca05e4e126b2..54fc21af852d 100644
->>>>>>>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>>>>>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>>>>>> @@ -492,6 +492,7 @@ replace define V4L2_EVENT_CTRL_CH_FLAGS ctrl-changes-flags
->>>>>>>>  replace define V4L2_EVENT_CTRL_CH_RANGE ctrl-changes-flags
->>>>>>>>
->>>>>>>>  replace define V4L2_EVENT_SRC_CH_RESOLUTION src-changes-flags
->>>>>>>> +replace define V4L2_EVENT_SRC_CH_COLORIMETRY src-changes-flags
->>>>>>>>
->>>>>>>>  replace define V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ :c:type:`v4l2_event_motion_det`
->>>>>>>>
->>>>>>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>>>>>>> index 303805438814..b5838bc4e3a3 100644
->>>>>>>> --- a/include/uapi/linux/videodev2.h
->>>>>>>> +++ b/include/uapi/linux/videodev2.h
->>>>>>>> @@ -2351,6 +2351,7 @@ struct v4l2_event_frame_sync {
->>>>>>>>  };
->>>>>>>>
->>>>>>>>  #define V4L2_EVENT_SRC_CH_RESOLUTION                (1 << 0)
->>>>>>>> +#define V4L2_EVENT_SRC_CH_COLORIMETRY               (1 << 1)
->>>>>>>>
->>>>>>>>  struct v4l2_event_src_change {
->>>>>>>>      __u32 changes;
->>>>>>>>
->>>>>>>
->>>>>>
->>>>>> --
->>>>>> regards,
->>>>>> Stan
+>>>> When I tested this patchset on Odroid-U3,
+>>>> After setting 0 bps by interconnect[1][2],
+>>>> the frequency of devfreq devs sustain the high frequency
+>>>> according to the pm qos request.
 >>>>
->>>> --
->>>> regards,
->>>> Stan
+>>>> So, I try to find the cause of this situation.
+>>>> In result, it seems that interconnect exynos driver
+>>>> updates the pm qos request to devfreq device
+>>>> during the kernel booting. Do you know why the exynos
+>>>> interconnect driver request the pm qos during probe
+>>>> without the mixer request?
+>>>
+>>> That's probably because of the sync_state support, that was introduced
+>>> recently. The icc_sync_state callback needs to be added to the driver
+>>> (i just left a comment on that patch), and then check again if it works.
+>>>
+>>> The idea of the sync_state is that there could be multiple users of a
+>>> path and we must wait for all consumers to tell their bandwidth needs.
+>>> Otherwise the first consumer may lower the bandwidth or disable a path
+>>> needed for another consumer (driver), which has not probed yet. So we
+>>> maintain a floor bandwidth until everyone has probed. By default the floor
+>>> bandwidth is INT_MAX, but can be overridden by implementing the get_bw()
+>>> callback.
+> 
+> Thanks for detailed explanation Georgi.
+> 
+>> Thanks for guide. I tested it with your comment of patch2.
+>> It is well working without problem as I mentioned previously.
 >>
->> --
->> regards,
->> Stan
+>> I caught the reset operation of PM QoS requested from interconnect
+>> on kernel log. In result, after completed the kernel booting,
+>> there is no pm qos request if hdmi cable is not connected.
+> 
+> Thanks for the bug report Chanwoo, it's related to the sync_state
+> feature as you guys already figured out.  I had to reorder some code 
+> in the interconnect driver probe() to avoid some issues, 
+> i.e. to register PM QoS request before icc_node_add() call but 
+> I forgot to check initial state of the bus frequencies.
+> 
+> I thought the get_bw implementation might be needed but the default
+> behaviour seems fine, the PM QoS derived bus frequencies will be 
+> clamped in the devfreq to valid OPP values.
+> 
+> Chanwoo, in order to set the bandwidth to 0 we could also just blank 
+> the display. Below are some of the commands I use for testing.
+> 
+> # blank display (disable the mixer entirely)
+> echo 4 > /sys/devices/platform/exynos-drm/graphics/fb0/blank
+> 
+> # unblank display
+> echo 0 > /sys/devices/platform/exynos-drm/graphics/fb0/blank
+> 
+> # modetest with 2 planes (higher bandwidth test)
+> ./modetest -s 47:1920x1080 -P 45:1920x1080 -v
+> 
 
+Thanks for the test guide.
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
