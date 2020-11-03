@@ -2,81 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7492A4E19
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AE12A4E23
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbgKCSPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:15:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728379AbgKCSPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:15:24 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACDB722243;
-        Tue,  3 Nov 2020 18:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604427324;
-        bh=cT2jsvR/KFDX7a+p2qqIuBrqBmdcJ+7JnFLUCRs4E6Q=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=WsqqhoLgZSgFuHCiQYDWerF//l8URkKrrQxv/2CIQDzZvF5yDjPzzDlypfzu+tiK3
-         ruyq7zyB4pLM0luOilIh1OUOtR4jsq2arbU/OJkCPVfGpw128W/oSioh8vOkJw532n
-         1hPqwPGoUvDHjGHZ9ZS38R0OnJ/dRt/Vo7U/M0zk=
-Date:   Tue, 03 Nov 2020 18:15:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, support.opensource@diasemi.com,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org, kernel@axis.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201103100021.19603-1-vincent.whitchurch@axis.com>
-References: <20201103100021.19603-1-vincent.whitchurch@axis.com>
-Subject: Re: [PATCH v2 0/2] DA9121 regulator support
-Message-Id: <160442731509.14990.12967764099458293588.b4-ty@kernel.org>
+        id S1729164AbgKCSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgKCSQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:16:45 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D0CC0613D1;
+        Tue,  3 Nov 2020 10:16:45 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id t22so8937366plr.9;
+        Tue, 03 Nov 2020 10:16:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :content-transfer-encoding:mime-version;
+        bh=k0DG4sb8XOtJOwN6TLhr+5qsFzs3ayb+63KIAEg2F6g=;
+        b=pZIDUWHuqmi0r+lNSw5OaFLd0XW/nVZVW2NTNpJSY9bPoYhh3CTe2BTZn3Exc/WI99
+         pfcwlwj5DnNgYX+EZRc8qS3UMjZVYzwQv0YCi5Q3JacETXmQaFnh7Bgab54NUYuRKN4s
+         IopkMD1pT+jRpbo+pVQmPJlQ9PyOnIgqNMCkAtmdDTWgQxX1wTtcZ6wiclbmB4464JKd
+         0nQW2djN9+lh3fevKAZtAhNp7OY1psFGkbF/eknVX6krJWiOhlhC78dr2FysjP/n9TyT
+         5bQ5r8r/78dra0KqKv46K4lgofN3lpwhCcYIRCSpA+fZMDG2s4yPGyBj+p2qZbW08eeC
+         u98g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
+         :date:message-id:references:in-reply-to:accept-language
+         :content-language:content-transfer-encoding:mime-version;
+        bh=k0DG4sb8XOtJOwN6TLhr+5qsFzs3ayb+63KIAEg2F6g=;
+        b=sZ4KkxDejlk81/Kv8AV3eGGdP9DpEnSy0v1G+wwY2TxFkOuJspzaat5TjXRmjX0i+T
+         JxqaJk7WkujhSFqMPaQvxebFr1sc+5ocPaaWswWtXdsfieYLRVlYl0AQ0sBr6y4o5UAt
+         8Pxp8n7Nx+unrP41uz+rYWiifB16fXAmQMfCCOwnUgcoFtXZg7dVy9JGCmxMvli6ugzw
+         xc0XRet+exjpgI6KVKBGtr9AtOehbKoQGMgM/GRub8zv8QWKHRVJ3QIervK2h28ggfvH
+         1jnAWUVDwZqM9yK5/85YtzsabFMdCKd9NQhVm2otfLlFUJUoNPFwV/ga86JJC1M+yQSK
+         xV8g==
+X-Gm-Message-State: AOAM53266XfalNwIc6xOqiix4jCCFE8Dwa4FJhlBMRCFjbZmAd4RvDS2
+        mzCkY74f0BXl0BYUWbfi2iOOQLTQzmRejQ==
+X-Google-Smtp-Source: ABdhPJy/3gdywHqjCB7waXp0Y7ytzLjBbiYVOp4zjKQvoTUg3oKoSphU2GPctv3qAoe+Et3YumYEAA==
+X-Received: by 2002:a17:902:be10:b029:d5:ced2:cc20 with SMTP id r16-20020a170902be10b02900d5ced2cc20mr18834350pls.25.1604427404853;
+        Tue, 03 Nov 2020 10:16:44 -0800 (PST)
+Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
+        by smtp.gmail.com with ESMTPSA id c2sm9075705pfb.196.2020.11.03.10.16.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Nov 2020 10:16:43 -0800 (PST)
+From:   Jingoo Han <jingoohan1@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
+CC:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Han Jingoo <jingoohan1@gmail.com>
+Subject: Re: [PATCH v3] MAINTAINERS: add Dan Murphy as TI LP8xxx drivers
+ maintainer
+Thread-Topic: [PATCH v3] MAINTAINERS: add Dan Murphy as TI LP8xxx drivers
+ maintainer
+Thread-Index: AWsxNDgwBJ/rfWbefi0QBZZ1bPG9z9cBsnfo
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date:   Tue, 3 Nov 2020 18:16:35 +0000
+Message-ID: <SLXP216MB047756F8B2B3BB88227BCD62AA110@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+References: <20201103162832.14085-1-krzk@kernel.org>
+In-Reply-To: <20201103162832.14085-1-krzk@kernel.org>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator: 
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 11:00:19 +0100, Vincent Whitchurch wrote:
-> This series adds support for the DA9121, a "High-Performance, 10 A, Dual-Phase
-> DC-DC Converter".  The datasheet is currently available here:
-> 
->  https://www.dialog-semiconductor.com/sites/default/files/da9121_datasheet_2v3.pdf
-> 
-> v2:
-> - Let the core get the constraints itself from a subnode in the device tree.
-> 
-> [...]
+On 11/3/20, 11:28 AM, Krzysztof Kozlowski wrote:
+>=20
+> Milo Kim's email in TI bounces with permanent error (550: Invalid
+> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> credits and add Dan Murphy from TI to look after:
+>  - TI LP855x backlight driver,
+>  - TI LP8727 charger driver,
+>  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Dan Murphy <dmurphy@ti.com>
+> Acked-by: Dan Murphy <dmurphy@ti.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Acked-by: Sebastian Reichel <sre@kernel.org>
 
-Applied to
+Acked-by: Jingoo Han <jingoohan1@gmail.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Best regards,
+Jingoo Han
 
-Thanks!
-
-[1/2] regulator: Add DA9121
-      commit: 1119c59404141200125af31f775d3fbbba52c651
-[2/2] regulator: Add support for DA9121 regulator
-      commit: e6ff10f24c587c1af705b898761e5df615fb0e1a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+[...]
