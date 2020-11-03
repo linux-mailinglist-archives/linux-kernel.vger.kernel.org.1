@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6FD2A5794
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8EA2A5881
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732680AbgKCVoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:44:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53176 "EHLO mail.kernel.org"
+        id S1730111AbgKCUqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732549AbgKCUyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:15 -0500
+        id S1730376AbgKCUqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:46:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC9412053B;
-        Tue,  3 Nov 2020 20:54:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39FB822404;
+        Tue,  3 Nov 2020 20:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436855;
-        bh=VUeq2k+hGnGaqdS/JS60ttsAYkd4Jg1emjn69elzK4Q=;
+        s=default; t=1604436412;
+        bh=i6Il6kjpPM77yfeullmaYgn7IGlIDL4NLgMvuN8Hpnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CxfstxiFM3u4JzKhh8XgGrgFL8nmoBf+jiqJXeGS0Zqjh3iWNfMtvI5NqxqdlnWCS
-         bRLIC9cYvZJgURsYFGvo6+8qm/musCEk7SYkfVZqL4dT4EEDF6QbH4m2KXYzA33WfB
-         v8un+ROECWzLkzF22eK9ryPdbpOLetd+oqYJ+qW0=
+        b=e0wTnDZllarW5W+0E/Blu65EhBoUNLllWVhlPtKIkomFksi43+i1nQ+nH8yHx1gb6
+         gt0CQYYy7gh2wT5cMYxgaB2+w8Z9Y4hd6VNk3roo/MsLM3PWMtzURdkjaHBrimXckF
+         RzSyC/y7d3D/T2050UXVLcVUBflbaf7nmdbzy/fA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/214] media: platform: Improve queue set up flow for bug fixing
-Date:   Tue,  3 Nov 2020 21:34:49 +0100
-Message-Id: <20201103203253.942345574@linuxfoundation.org>
+        stable@vger.kernel.org, Raymond Tan <raymond.tan@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.9 239/391] usb: dwc3: pci: Allow Elkhart Lake to utilize DSM method for PM functionality
+Date:   Tue,  3 Nov 2020 21:34:50 +0100
+Message-Id: <20201103203403.132715049@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xia Jiang <xia.jiang@mediatek.com>
+From: Raymond Tan <raymond.tan@intel.com>
 
-[ Upstream commit 5095a6413a0cf896ab468009b6142cb0fe617e66 ]
+commit a609ce2a13360d639b384b6ca783b38c1247f2db upstream.
 
-Add checking created buffer size follow in mtk_jpeg_queue_setup().
+Similar to some other IA platforms, Elkhart Lake too depends on the
+PMU register write to request transition of Dx power state.
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Thus, we add the PCI_DEVICE_ID_INTEL_EHLLP to the list of devices that
+shall execute the ACPI _DSM method during D0/D3 sequence.
+
+[heikki.krogerus@linux.intel.com: included Fixes tag]
+
+Fixes: dbb0569de852 ("usb: dwc3: pci: Add Support for Intel Elkhart Lake Devices")
+Cc: stable@vger.kernel.org
+Signed-off-by: Raymond Tan <raymond.tan@intel.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/dwc3/dwc3-pci.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-index ee802fc3bcdfc..9fa1bc5514f3e 100644
---- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-+++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-@@ -571,6 +571,13 @@ static int mtk_jpeg_queue_setup(struct vb2_queue *q,
- 	if (!q_data)
- 		return -EINVAL;
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -147,7 +147,8 @@ static int dwc3_pci_quirks(struct dwc3_p
  
-+	if (*num_planes) {
-+		for (i = 0; i < *num_planes; i++)
-+			if (sizes[i] < q_data->sizeimage[i])
-+				return -EINVAL;
-+		return 0;
-+	}
-+
- 	*num_planes = q_data->fmt->colplanes;
- 	for (i = 0; i < q_data->fmt->colplanes; i++) {
- 		sizes[i] = q_data->sizeimage[i];
--- 
-2.27.0
-
+ 	if (pdev->vendor == PCI_VENDOR_ID_INTEL) {
+ 		if (pdev->device == PCI_DEVICE_ID_INTEL_BXT ||
+-				pdev->device == PCI_DEVICE_ID_INTEL_BXT_M) {
++		    pdev->device == PCI_DEVICE_ID_INTEL_BXT_M ||
++		    pdev->device == PCI_DEVICE_ID_INTEL_EHLLP) {
+ 			guid_parse(PCI_INTEL_BXT_DSM_GUID, &dwc->guid);
+ 			dwc->has_dsm_for_pm = true;
+ 		}
 
 
