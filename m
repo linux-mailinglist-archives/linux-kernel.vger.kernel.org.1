@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8732A5639
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F2B2A53E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgKCVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36110 "EHLO mail.kernel.org"
+        id S2387851AbgKCVFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:05:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733220AbgKCVAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:24 -0500
+        id S2387843AbgKCVFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9875E223AC;
-        Tue,  3 Nov 2020 21:00:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE6D220658;
+        Tue,  3 Nov 2020 21:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437223;
-        bh=1dwYbPMQBXAQKaz+SOdJ4IiZ66CnPun/MaRc7YvlahA=;
+        s=default; t=1604437535;
+        bh=mXoUreHI0aNvEZzLZxyar8NXESuNJVxNrDSnXB+hF/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QrH/7qqD2i9iqvb9tTgCH5GknS5P64HreNlfryTDm9EYRR8U7AB8f5lpbUO6JJZuK
-         OwMref3IOzg0S1wkl3YAE7InxxWGM/NhNH/OVKavURGX35Fu9YRXfsT3UQInUkhyQT
-         Wm2gr6WaIIisfOgwSBaSSAVjL3oibW/uQtm1nQAc=
+        b=091Gy3cnRCJAy7T3ajbkEpqWksBfb58qQCgWnuoLB86Mn3XgfuCtbkCeJfCT8h+/p
+         xhDDos7nh5GHICNCl71SFvesp2PrDm0BapfUuhNbQKnfQMtvFFG1CtpnnLecit77ey
+         1X+Bpkx9s/vGtVo3roDjuXhxlb8GqFUKxIYNCiHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 161/214] powerpc/powernv/elog: Fix race while processing OPAL error log event.
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.19 117/191] media: uvcvideo: Fix uvc_ctrl_fixup_xu_info() not having any effect
 Date:   Tue,  3 Nov 2020 21:36:49 +0100
-Message-Id: <20201103203305.875676123@linuxfoundation.org>
+Message-Id: <20201103203244.321392388@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,128 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit aea948bb80b478ddc2448f7359d574387521a52d upstream.
+commit 93df48d37c3f03886d84831992926333e7810640 upstream.
 
-Every error log reported by OPAL is exported to userspace through a
-sysfs interface and notified using kobject_uevent(). The userspace
-daemon (opal_errd) then reads the error log and acknowledges the error
-log is saved safely to disk. Once acknowledged the kernel removes the
-respective sysfs file entry causing respective resources to be
-released including kobject.
+uvc_ctrl_add_info() calls uvc_ctrl_get_flags() which will override
+the fixed-up flags set by uvc_ctrl_fixup_xu_info().
 
-However it's possible the userspace daemon may already be scanning
-elog entries when a new sysfs elog entry is created by the kernel.
-User daemon may read this new entry and ack it even before kernel can
-notify userspace about it through kobject_uevent() call. If that
-happens then we have a potential race between
-elog_ack_store->kobject_put() and kobject_uevent which can lead to
-use-after-free of a kernfs object resulting in a kernel crash. eg:
+uvc_ctrl_init_xu_ctrl() already calls uvc_ctrl_get_flags() before
+calling uvc_ctrl_add_info(), so the uvc_ctrl_get_flags() call in
+uvc_ctrl_add_info() is not necessary for xu ctrls.
 
-  BUG: Unable to handle kernel data access on read at 0x6b6b6b6b6b6b6bfb
-  Faulting instruction address: 0xc0000000008ff2a0
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
-  CPU: 27 PID: 805 Comm: irq/29-opal-elo Not tainted 5.9.0-rc2-gcc-8.2.0-00214-g6f56a67bcbb5-dirty #363
-  ...
-  NIP kobject_uevent_env+0xa0/0x910
-  LR  elog_event+0x1f4/0x2d0
-  Call Trace:
-    0x5deadbeef0000122 (unreliable)
-    elog_event+0x1f4/0x2d0
-    irq_thread_fn+0x4c/0xc0
-    irq_thread+0x1c0/0x2b0
-    kthread+0x1c4/0x1d0
-    ret_from_kernel_thread+0x5c/0x6c
+This commit moves the uvc_ctrl_get_flags() call for normal controls
+from uvc_ctrl_add_info() to uvc_ctrl_init_ctrl(), so that we no longer
+call uvc_ctrl_get_flags() twice for xu controls and so that we no longer
+override the fixed-up flags set by uvc_ctrl_fixup_xu_info().
 
-This patch fixes this race by protecting the sysfs file
-creation/notification by holding a reference count on kobject until we
-safely send kobject_uevent().
+This fixes the xu motor controls not working properly on a Logitech
+046d:08cc, and presumably also on the other Logitech models which have
+a quirk for this in the uvc_ctrl_fixup_xu_info() function.
 
-The function create_elog_obj() returns the elog object which if used
-by caller function will end up in use-after-free problem again.
-However, the return value of create_elog_obj() function isn't being
-used today and there is no need as well. Hence change it to return
-void to make this fix complete.
-
-Fixes: 774fea1a38c6 ("powerpc/powernv: Read OPAL error log and export it through sysfs")
-Cc: stable@vger.kernel.org # v3.15+
-Reported-by: Oliver O'Halloran <oohall@gmail.com>
-Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-[mpe: Rework the logic to use a single return, reword comments, add oops]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201006122051.190176-1-mpe@ellerman.id.au
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/opal-elog.c |   33 ++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/arch/powerpc/platforms/powernv/opal-elog.c
-+++ b/arch/powerpc/platforms/powernv/opal-elog.c
-@@ -179,14 +179,14 @@ static ssize_t raw_attr_read(struct file
- 	return count;
- }
- 
--static struct elog_obj *create_elog_obj(uint64_t id, size_t size, uint64_t type)
-+static void create_elog_obj(uint64_t id, size_t size, uint64_t type)
- {
- 	struct elog_obj *elog;
- 	int rc;
- 
- 	elog = kzalloc(sizeof(*elog), GFP_KERNEL);
- 	if (!elog)
--		return NULL;
-+		return;
- 
- 	elog->kobj.kset = elog_kset;
- 
-@@ -219,18 +219,37 @@ static struct elog_obj *create_elog_obj(
- 	rc = kobject_add(&elog->kobj, NULL, "0x%llx", id);
- 	if (rc) {
- 		kobject_put(&elog->kobj);
--		return NULL;
-+		return;
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -2038,13 +2038,6 @@ static int uvc_ctrl_add_info(struct uvc_
+ 		goto done;
  	}
  
-+	/*
-+	 * As soon as the sysfs file for this elog is created/activated there is
-+	 * a chance the opal_errd daemon (or any userspace) might read and
-+	 * acknowledge the elog before kobject_uevent() is called. If that
-+	 * happens then there is a potential race between
-+	 * elog_ack_store->kobject_put() and kobject_uevent() which leads to a
-+	 * use-after-free of a kernfs object resulting in a kernel crash.
-+	 *
-+	 * To avoid that, we need to take a reference on behalf of the bin file,
-+	 * so that our reference remains valid while we call kobject_uevent().
-+	 * We then drop our reference before exiting the function, leaving the
-+	 * bin file to drop the last reference (if it hasn't already).
-+	 */
-+
-+	/* Take a reference for the bin file */
-+	kobject_get(&elog->kobj);
- 	rc = sysfs_create_bin_file(&elog->kobj, &elog->raw_attr);
--	if (rc) {
-+	if (rc == 0) {
-+		kobject_uevent(&elog->kobj, KOBJ_ADD);
-+	} else {
-+		/* Drop the reference taken for the bin file */
- 		kobject_put(&elog->kobj);
--		return NULL;
+-	/*
+-	 * Retrieve control flags from the device. Ignore errors and work with
+-	 * default flag values from the uvc_ctrl array when the device doesn't
+-	 * properly implement GET_INFO on standard controls.
+-	 */
+-	uvc_ctrl_get_flags(dev, ctrl, &ctrl->info);
+-
+ 	ctrl->initialized = 1;
+ 
+ 	uvc_trace(UVC_TRACE_CONTROL, "Added control %pUl/%u to device %s "
+@@ -2267,6 +2260,13 @@ static void uvc_ctrl_init_ctrl(struct uv
+ 		if (uvc_entity_match_guid(ctrl->entity, info->entity) &&
+ 		    ctrl->index == info->index) {
+ 			uvc_ctrl_add_info(dev, ctrl, info);
++			/*
++			 * Retrieve control flags from the device. Ignore errors
++			 * and work with default flag values from the uvc_ctrl
++			 * array when the device doesn't properly implement
++			 * GET_INFO on standard controls.
++			 */
++			uvc_ctrl_get_flags(dev, ctrl, &ctrl->info);
+ 			break;
+ 		 }
  	}
- 
--	kobject_uevent(&elog->kobj, KOBJ_ADD);
-+	/* Drop our reference */
-+	kobject_put(&elog->kobj);
- 
--	return elog;
-+	return;
- }
- 
- static irqreturn_t elog_event(int irq, void *data)
 
 
