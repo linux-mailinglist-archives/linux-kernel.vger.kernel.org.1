@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19E82A517F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308992A5181
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgKCUlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:41:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
+        id S1729916AbgKCUl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:41:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729934AbgKCUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:15 -0500
+        id S1730323AbgKCUlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A40622226;
-        Tue,  3 Nov 2020 20:41:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA1602224E;
+        Tue,  3 Nov 2020 20:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436075;
-        bh=6D9VE4v3ufIQL1YLkBfnxzjUVIA3Z4NKpkz5j8Xkx+k=;
+        s=default; t=1604436082;
+        bh=ESHlznezKFsYurk1Fpv9iSGrP+kA1qEmFSqEeIypMC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WaFflSmx94z/XW7pyYy6y4Gka/GVXknjTCUSQfag2OXuq0cCuil6oUsBHvtKthZJU
-         IZwtGqqBQVYgPq6FZSkYT3sg6tCLwQTk0uodCbKW/I1rv8OFlOOXiP6RDGyCuZMlZV
-         UaC40HN/4NrnLdocPdaS9m6tc5TN87c60XWNTve4=
+        b=okBzJM9W9315/Bh5wpV0y7LOMJGiF9eIa9oWXialbZczCTdz7bTF+J07CaJ4oliS9
+         9LOtTLIrlpEPTmjLuoF7yDZNab5uEIefoEuZGWCggzncCaFuESOsqzER8BkD/oSo+a
+         Uu9F7XbgZYxWbOH9qssxp56rovd9WwxEpBNrHz88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 091/391] media: imx274: fix frame interval handling
-Date:   Tue,  3 Nov 2020 21:32:22 +0100
-Message-Id: <20201103203353.092548309@linuxfoundation.org>
+Subject: [PATCH 5.9 094/391] brcmfmac: increase F2 watermark for BCM4329
+Date:   Tue,  3 Nov 2020 21:32:25 +0100
+Message-Id: <20201103203353.253418593@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,52 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil@xs4all.nl>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 49b20d981d723fae5a93843c617af2b2c23611ec ]
+[ Upstream commit 317da69d10b0247c4042354eb90c75b81620ce9d ]
 
-1) the numerator and/or denominator might be 0, in that case
-   fall back to the default frame interval. This is per the spec
-   and this caused a v4l2-compliance failure.
+This patch fixes SDHCI CRC errors during of RX throughput testing on
+BCM4329 chip if SDIO BUS is clocked above 25MHz. In particular the
+checksum problem is observed on NVIDIA Tegra20 SoCs. The good watermark
+value is borrowed from downstream BCMDHD driver and it's matching to the
+value that is already used for the BCM4339 chip, hence let's re-use it
+for BCM4329.
 
-2) the updated frame interval wasn't returned in the s_frame_interval
-   subdev op.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200830191439.10017-2-digetx@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx274.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-index 6011cec5e351d..e6aa9f32b6a83 100644
---- a/drivers/media/i2c/imx274.c
-+++ b/drivers/media/i2c/imx274.c
-@@ -1235,6 +1235,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
- 	ret = imx274_set_frame_interval(imx274, fi->interval);
- 
- 	if (!ret) {
-+		fi->interval = imx274->frame_interval;
-+
- 		/*
- 		 * exposure time range is decided by frame interval
- 		 * need to update it after frame interval changes
-@@ -1730,9 +1732,9 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
- 		__func__, frame_interval.numerator,
- 		frame_interval.denominator);
- 
--	if (frame_interval.numerator == 0) {
--		err = -EINVAL;
--		goto fail;
-+	if (frame_interval.numerator == 0 || frame_interval.denominator == 0) {
-+		frame_interval.denominator = IMX274_DEF_FRAME_RATE;
-+		frame_interval.numerator = 1;
- 	}
- 
- 	req_frame_rate = (u32)(frame_interval.denominator
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 3c07d1bbe1c6e..ac3ee93a23780 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4278,6 +4278,7 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
+ 			brcmf_sdiod_writeb(sdiod, SBSDIO_FUNC1_MESBUSYCTRL,
+ 					   CY_43012_MESBUSYCTRL, &err);
+ 			break;
++		case SDIO_DEVICE_ID_BROADCOM_4329:
+ 		case SDIO_DEVICE_ID_BROADCOM_4339:
+ 			brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes for 4339\n",
+ 				  CY_4339_F2_WATERMARK);
 -- 
 2.27.0
 
