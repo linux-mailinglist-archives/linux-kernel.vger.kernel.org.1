@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BF52A5345
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2B72A5346
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733108AbgKCU70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34432 "EHLO mail.kernel.org"
+        id S1733111AbgKCU72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733101AbgKCU7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:21 -0500
+        id S1733106AbgKCU70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54F6422226;
-        Tue,  3 Nov 2020 20:59:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC11C2053B;
+        Tue,  3 Nov 2020 20:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437160;
-        bh=Yv/f268HFJkN+1vSeyywKjbrMmMCXFppzKgHQgZDufA=;
+        s=default; t=1604437165;
+        bh=1C8r9xI3AEIUJPKi37mcrxU88njAYtT2vNbfJ4mxwQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BF/BKOh59UJcyNXIwT9z/2+fCmmN/Tq12322XWYp+QllnPGfMgdI1eDNc6PNshc1a
-         75vdZiSsQEFEg8rMonzMFtcvAZeIav3OPNA2mbvtwOPsv+hcwO/TGewf8qSD3PZP0I
-         JD4migetOmba3J/nZl7ABq4L6JkcCy/urFPnIaSg=
+        b=d7gl+jBceYtJHe/awry4mwZxX2HOncYXLae5Iv/yJNvsPC9SkI8FkrTuYAMrgBfPa
+         gDkB0un4P094wvYdNX22M47Y/vSJaQSbplcmMHlOnX0Ah/HA+Yx2u8s2XP38q8Cbk3
+         v8jLUWTnjpo++M6DdJSjM/Ao3qzaL9dOrd0OeNjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 5.4 173/214] perf python scripting: Fix printable strings in python3 scripts
-Date:   Tue,  3 Nov 2020 21:37:01 +0100
-Message-Id: <20201103203306.949707119@linuxfoundation.org>
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.4 174/214] ARC: perf: redo the pct irq missing in device-tree handling
+Date:   Tue,  3 Nov 2020 21:37:02 +0100
+Message-Id: <20201103203307.034472889@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -48,62 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-commit 6fcd5ddc3b1467b3586972ef785d0d926ae4cdf4 upstream.
+commit 8c42a5c02bec6c7eccf08957be3c6c8fccf9790b upstream.
 
-Hagen reported broken strings in python3 tracepoint scripts:
+commit feb92d7d3813456c11dce21 "(ARC: perf: don't bail setup if pct irq
+missing in device-tree)" introduced a silly brown-paper bag bug:
+The assignment and comparison in an if statement were not bracketed
+correctly leaving the order of evaluation undefined.
 
-  make PYTHON=python3
-  perf record -e sched:sched_switch -a -- sleep 5
-  perf script --gen-script py
-  perf script -s ./perf-script.py
+|
+| if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
+|                           ^^^                         ^^^^
 
-  [..]
-  sched__sched_switch      7 563231.759525792        0 swapper   prev_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), prev_pid=0, prev_prio=120, prev_state=, next_comm=bytearray(b'mutex-thread-co\x00'),
+And given such a chance, the compiler will bite you hard, fully entitled
+to generating this piece of beauty:
 
-The problem is in the is_printable_array function that does not take the
-zero byte into account and claim such string as not printable, so the
-code will create byte array instead of string.
+|
+| # if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
+|
+| bl.d @platform_get_irq  <-- irq returned in r0
+|
+| setge r2, r0, 0   	<-- r2 is bool 1 or 0 if irq >= 0 true/false
+| brlt.d r0, 0, @.L114
+|
+| st_s	r2,[sp]    	<-- irq saved is bool 1 or 0, not actual return val
+| st	1,[r3,160]   	# arc_pmu.18_29->irq <-- drops bool and assumes 1
+|
+| # return __request_percpu_irq(irq, handler, 0,
+|
+| bl.d @__request_percpu_irq;
+| mov_s	r0,1	   <-- drops even bool and assumes 1 which fails
 
-Committer testing:
+With the snafu fixed, everything is as expected.
 
-After this fix:
+| bl.d @platform_get_irq	<-- returns irq in r0
+|
+| mov_s	r2,r0
+| brlt.d r2, 0, @.L112
+|
+| st_s	r0,[sp]			<-- irq isaved is actual return value above
+| st	r0,[r13,160]	#arc_pmu.18_27->irq
+|
+| bl.d @__request_percpu_irq	<-- r0 unchanged so actual irq returned
+| add r4,r4,r12	#, tmp363, __ptr
 
-sched__sched_switch 3 484522.497072626  1158680 kworker/3:0-eve  prev_comm=kworker/3:0, prev_pid=1158680, prev_prio=120, prev_state=I, next_comm=swapper/3, next_pid=0, next_prio=120
-Sample: {addr=0, cpu=3, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1158680, tid=1158680, time=484522497072626, transaction=0, values=[(0, 0)], weight=0}
-
-sched__sched_switch 4 484522.497085610  1225814 perf             prev_comm=perf, prev_pid=1225814, prev_prio=120, prev_state=, next_comm=migration/4, next_pid=30, next_prio=0
-Sample: {addr=0, cpu=4, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744071841817196, period=1, phys_addr=0, pid=1225814, tid=1225814, time=484522497085610, transaction=0, values=[(0, 0)], weight=0}
-
-Fixes: 249de6e07458 ("perf script python: Fix string vs byte array resolving")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Tested-by: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200928201135.3633850-1-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/util/print_binary.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arc/kernel/perf_event.c |   29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
---- a/tools/perf/util/print_binary.c
-+++ b/tools/perf/util/print_binary.c
-@@ -50,7 +50,7 @@ int is_printable_array(char *p, unsigned
+--- a/arch/arc/kernel/perf_event.c
++++ b/arch/arc/kernel/perf_event.c
+@@ -562,7 +562,7 @@ static int arc_pmu_device_probe(struct p
+ {
+ 	struct arc_reg_pct_build pct_bcr;
+ 	struct arc_reg_cc_build cc_bcr;
+-	int i, has_interrupts, irq;
++	int i, has_interrupts, irq = -1;
+ 	int counter_size;	/* in bits */
  
- 	len--;
+ 	union cc_name {
+@@ -637,18 +637,27 @@ static int arc_pmu_device_probe(struct p
+ 		.attr_groups	= arc_pmu->attr_groups,
+ 	};
  
--	for (i = 0; i < len; i++) {
-+	for (i = 0; i < len && p[i]; i++) {
- 		if (!isprint(p[i]) && !isspace(p[i]))
- 			return 0;
- 	}
+-	if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
++	if (has_interrupts) {
++		irq = platform_get_irq(pdev, 0);
++		if (irq >= 0) {
++			int ret;
++
++			arc_pmu->irq = irq;
++
++			/* intc map function ensures irq_set_percpu_devid() called */
++			ret = request_percpu_irq(irq, arc_pmu_intr, "ARC perf counters",
++						 this_cpu_ptr(&arc_pmu_cpu));
++
++			if (!ret)
++				on_each_cpu(arc_cpu_pmu_irq_init, &irq, 1);
++			else
++				irq = -1;
++		}
+ 
+-		arc_pmu->irq = irq;
+-
+-		/* intc map function ensures irq_set_percpu_devid() called */
+-		request_percpu_irq(irq, arc_pmu_intr, "ARC perf counters",
+-				   this_cpu_ptr(&arc_pmu_cpu));
++	}
+ 
+-		on_each_cpu(arc_cpu_pmu_irq_init, &irq, 1);
+-	} else {
++	if (irq == -1)
+ 		arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
+-	}
+ 
+ 	/*
+ 	 * perf parser doesn't really like '-' symbol in events name, so let's
 
 
