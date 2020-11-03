@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B086C2A3840
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6682A3842
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 02:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgKCBP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 20:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S1726869AbgKCBPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 20:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbgKCBP1 (ORCPT
+        with ESMTP id S1725855AbgKCBPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 20:15:27 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ADDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 17:15:27 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id o3so12330700pgr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 17:15:27 -0800 (PST)
+        Mon, 2 Nov 2020 20:15:46 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98787C0617A6;
+        Mon,  2 Nov 2020 17:15:44 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t14so12371126pgg.1;
+        Mon, 02 Nov 2020 17:15:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=PqAbEpNaqalCL4gjVLHLOZmt8aSF7C4UgItgtzwaFzw=;
-        b=Co/H6SGZJetUfpLSN6UcHn8yI/ZbXVM4biUCT5+bBZHl4+NBtkDegXvPd4KMNIRHRb
-         UdL80W61Raf1tTMAfbBN/lrGNTNHZHHjIamdINXcd0oHCPJkL7DPv0+fs4uwhWiLDrUM
-         OrF3n4VztpswIGau9qDdHF3pzNmcsgzPKU/bc=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xoqgQuozW5oeUPf4CYzqwAx5luKyVrcBIWtsSxo//oc=;
+        b=UmCR742pXZ95PhnyDUM9lNeaGk+t71ddOr/Yx/dQFgpdWP0wYj9dGespx893SrJz3/
+         CIElnPy0jWEkYXgKkwpsx6+Y2weY+wVr80Ar9IqlD33xYsdS22QYmufYnuPaz/31IJPL
+         IkMO1Wt5mG9GJ1enacxJxaOmSrBQF/afxOq8rGVmIivqI0KQi7WJexA2oi0J4OknILex
+         uJKUD3clFAZUyLrPuQJnTjJkIy59rt/HsPDyuSug1JWX6inzelNTdriD0RNQ1JBnEEiq
+         32X96FFF9EhiEBINnmPqoIxWK8yDABWUkRUdNOpqWoDYmMLbH0ZlI91vUs/qwSBkPhuv
+         aBsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=PqAbEpNaqalCL4gjVLHLOZmt8aSF7C4UgItgtzwaFzw=;
-        b=An6aJ0Dgtu7aU/ZkHJZdUVuPS9RzHAopydp0k9lu4/PtCO24jQAI+eEKdFMApaD9vt
-         gk4RTZ4/MXSfQZ0KyLISSNImfXrbFfLtsQZYC2hfKBqVxOMx/pa3n6gu3D+WxeDY2bkS
-         CBpBoJgtPEH0R3IUB+LuD7oC/A3eM+D6aMAWOszJrIJKpveUFSkkQQv3Amw/AXSJDXkx
-         10sHOCb+TLHU5o5OnSxGJm3bVXos5BqkWrz6RJr0R/yTVlkhgMmur2Zy3sKvWJ94JOQS
-         ex6eTokX+dcE9MrW35budtMHlE8cGVeMWlOZA3EvWpTFjgKYhBK0eAx3wlEhrDDBvnrf
-         ozxw==
-X-Gm-Message-State: AOAM533a1Yq7zbMTa3h1OW51Sq5OvbR9znTXNCMBXsNuOC+Sbwxs1Kqx
-        ZcMq2JuKh4ZZMJO/XezMtPHxrA==
-X-Google-Smtp-Source: ABdhPJxyyHyCsFAt6uHd9IBB9Q7GU9/Cm2oktg1f3L5A2dQ2xhhfNg0ly2klkUgQPL5yKl3c5iQhAA==
-X-Received: by 2002:a62:2a94:0:b029:155:3225:6fd0 with SMTP id q142-20020a622a940000b029015532256fd0mr24297587pfq.64.1604366127124;
-        Mon, 02 Nov 2020 17:15:27 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id z12sm747236pfg.123.2020.11.02.17.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 17:15:26 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xoqgQuozW5oeUPf4CYzqwAx5luKyVrcBIWtsSxo//oc=;
+        b=SvyT9Tqy4OeIDO+aJX0cefqsrCscXrOdQBi7Tej/hswcpE9mx99UEzcyBfkWkk20Rw
+         ahkqhh0LMsHrXWJCv4pljwduWTs7ynGXTRQfCyyBrfZwrLVJLhfIokUbd7p55d8G2K6N
+         GYv90e+O5kRE1lsb4HfSGF/i2pIpBO+FCdOWefs7suZDBqS+E60PnGNWgy4JDrVJDguD
+         iBBLTMcYGmByatajGlSlkNlddwB5g5Pbe3u5vW1pM4e9OYzeHeo15nlF118h250h2P1Q
+         MBrlrQOkbnD+PZidciGL+r11yhIiEsrtSwROEaayqRycl3UlO3BJPBfMc8r71BagXgXF
+         he7w==
+X-Gm-Message-State: AOAM532WDzqH3aRicoECtIC1l0o6thmdbWyE+6679U9yzfXSIWnncg/H
+        xVnUIpOr6XXjUdR/XUaVpoo=
+X-Google-Smtp-Source: ABdhPJwouVsRBWLk0ddYKFjXwCr+PGhhQ2IcQFjcccYAm3gpVedigxELC15fWgkEEj98ZAyxRed+ng==
+X-Received: by 2002:a17:90b:a05:: with SMTP id gg5mr985229pjb.214.1604366144028;
+        Mon, 02 Nov 2020 17:15:44 -0800 (PST)
+Received: from [10.230.28.234] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id e2sm14004100pgd.27.2020.11.02.17.15.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 17:15:43 -0800 (PST)
+Subject: Re: [PATCH 1/2] ethernet: igb: Support PHY BCM5461S
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John W Linville <linville@tuxdriver.com>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+ <20201102231307.13021-2-pmenzel@molgen.mpg.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <cdcaf9fa-4983-934f-0d9c-09588fe07901@gmail.com>
+Date:   Mon, 2 Nov 2020 17:15:41 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201101173741.GA1293305@ravnborg.org>
-References: <20201030011738.2028313-1-swboyd@chromium.org> <20201101173741.GA1293305@ravnborg.org>
-Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Date:   Mon, 02 Nov 2020 17:15:24 -0800
-Message-ID: <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20201102231307.13021-2-pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sam Ravnborg (2020-11-01 09:37:41)
-> Hi Stephen.
->=20
-> On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
-> > This patch series cleans up the DDC code a little bit so that
-> > it is more efficient time wise and supports grabbing the EDID
-> > of the eDP panel over the aux channel. I timed this on a board
-> > I have on my desk and it takes about 20ms to grab the EDID out
-> > of the panel and make sure it is valid.
-> >=20
-> > The first two patches seem less controversial so I stuck them at
-> > the beginning. The third patch does the EDID reading and caches
-> > it so we don't have to keep grabbing it over and over again. And
-> > finally the last patch updates the reply field so that short
-> > reads and nacks over the channel are reflected properly instead of
-> > treating them as some sort of error that can't be discerned.
-> >=20
-> > Stephen Boyd (4):
-> >   drm/bridge: ti-sn65dsi86: Combine register accesses in
-> >     ti_sn_aux_transfer()
-> >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
-> >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-> >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
->=20
-> Series looks good. You can add my a-b on the full series.
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->=20
-> I can apply after Douglas have had a look at the patches he did not r-b
-> yet.
->=20
-> Any chance we can convince you to prepare this bridge driver for use in
-> a chained bridge setup where the connector is created by the display
-> driver and uses drm_bridge_funcs?
->=20
-> First step wuld be to introduce the use of a panel_bridge.
-> Then add get_edid to drm_bridge_funcs and maybe more helpers.
->=20
-> Then natural final step would be to move connector creation to the
-> display driver - see how other uses drm_bridge_connector_init() to do so
-> - it is relatively simple.
->=20
-> Should be doable - and reach out if you need some help.
->=20
 
-I started to look at this and got stuck at ti_sn_bridge_get_bpp(). Where
-can I get the details of the bpc for the downstream bridge or panel? Is
-there some function that can tell this bridge what the bpc is for the
-attached connector? I see that td_mode_valid() in
-drivers/gpu/drm/bridge/tc358775.c stores away the bpc from the incoming
-drm_display_info pointer but I'm not sure that is correct because can't
-that be called for various and not necessarily the one we're using?
+
+On 11/2/2020 3:13 PM, Paul Menzel wrote:
+> From: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
+> 
+> The BCM5461S PHY is used in switches.
+> 
+> The patch is taken from Open Network Linux, and it was added there as
+> patch
+> 
+>     packages/base/any/kernels/3.16+deb8/patches/driver-support-intel-igb-bcm5461X-phy.patch
+> 
+> in ONL commit f32316c63c (Support the BCM54616 and BCM5461S.) [1]. Part
+> of this commit was already upstreamed in Linux commit eeb0149660 (igb:
+> support BCM54616 PHY) in 2017.
+> 
+> I applied the forward-ported
+> 
+>     packages/base/any/kernels/5.4-lts/patches/0002-driver-support-intel-igb-bcm5461S-phy.patch
+> 
+> added in ONL commit 5ace6bcdb3 (Add 5.4 LTS kernel build.) [2].
+> 
+> [1]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/f32316c63ce3a64de125b7429115c6d45e942bd1
+> [2]: https://github.com/opencomputeproject/OpenNetworkLinux/commit/5ace6bcdb37cb8065dcd1d4404b3dcb6424f6331
+> 
+> Cc: Jeffrey Townsend <jeffrey.townsend@bigswitch.com>
+> Cc: John W Linville <linville@tuxdriver.com>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> ---
+
+[snip]
+
+> +
+> +/**
+> + *  igb_phy_init_script_5461s - Inits the BCM5461S PHY
+> + *  @hw: pointer to the HW structure
+> + *
+> + *  Initializes a Broadcom Gigabit PHY.
+> + **/
+> +s32 igb_phy_init_script_5461s(struct e1000_hw *hw)
+> +{
+> +	u16 mii_reg_led = 0;
+> +
+> +	/* 1. Speed LED (Set the Link LED mode), Shadow 00010, 0x1C.bit2=1 */
+> +	hw->phy.ops.write_reg(hw, 0x1C, 0x0800);
+> +	hw->phy.ops.read_reg(hw, 0x1C, &mii_reg_led);
+> +	mii_reg_led |= 0x0004;
+> +	hw->phy.ops.write_reg(hw, 0x1C, mii_reg_led | 0x8000);
+> +
+> +	/* 2. Active LED (Set the Link LED mode), Shadow 01001, 0x1C.bit4=1, 0x10.bit5=0 */
+> +	hw->phy.ops.write_reg(hw, 0x1C, 0x2400);
+> +	hw->phy.ops.read_reg(hw, 0x1C, &mii_reg_led);
+> +	mii_reg_led |= 0x0010;
+> +	hw->phy.ops.write_reg(hw, 0x1C, mii_reg_led | 0x8000);
+> +	hw->phy.ops.read_reg(hw, 0x10, &mii_reg_led);
+> +	mii_reg_led &= 0xffdf;
+> +	hw->phy.ops.write_reg(hw, 0x10, mii_reg_led);
+
+Please try at least to re-use the definitions from
+include/linux/brcmphy.h and add new ones where appropriate.
+
+It is already painful enough to see that Intel does not use the PHY
+library, there is no need to add insult to the injury by open coding all
+of these register addresses and values.
+
+Thanks
+-- 
+Florian
