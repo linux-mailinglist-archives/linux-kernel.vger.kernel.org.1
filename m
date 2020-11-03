@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E172A564C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBE02A5394
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387539AbgKCVB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:01:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
+        id S2387633AbgKCVCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:02:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731414AbgKCVBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:01:52 -0500
+        id S2387607AbgKCVCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:02:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0FB1205ED;
-        Tue,  3 Nov 2020 21:01:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C7D6205ED;
+        Tue,  3 Nov 2020 21:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437312;
-        bh=ETpU0BXfRtZxD2EQRg6oathVavk99g4z1nxhq8Anb7A=;
+        s=default; t=1604437337;
+        bh=UjwfcWSfJvnDSsyTrpo2npmVDrwoABCz4/fzHU1md+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uFQKjbCuroaK7185acrRCN5K/Pk6Wz1dMPvSWCXFF7TOcbij+DrQ+ysmr7K6bocCJ
-         SSCfqsoF1qNgPxTut4gz3R9Igfxk85kbc1nI/3vblanWwEk4c27JC93PDQmgBYNs2H
-         mrl6vpO1RhNmGi8byXNIzvbn6NtCMXe965425ec0=
+        b=YJek5NyoywPvTLcIPVNrQ+NnQouNG4JNvsyWCRJVcb/qEAtaN6g8RKNcPtJLmTrUo
+         fVhGbx/Q22FltoCNA2oCmYGA4F/cRfVnmkhk5ELieb584PJ0VaHORqTQJLPripP/B/
+         L9SPMuApW2r4bjuTIJFAm9BioCiHrjUDrPIp3Cl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: [PATCH 4.19 005/191] x86/PCI: Fix intel_mid_pci.c build error when ACPI is not enabled
-Date:   Tue,  3 Nov 2020 21:34:57 +0100
-Message-Id: <20201103203233.351951058@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Schaller <misch@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        dann frazier <dann.frazier@canonical.com>
+Subject: [PATCH 4.19 006/191] efivarfs: Replace invalid slashes with exclamation marks in dentries.
+Date:   Tue,  3 Nov 2020 21:34:58 +0100
+Message-Id: <20201103203233.485316544@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -48,45 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Michael Schaller <misch@google.com>
 
-commit 035fff1f7aab43e420e0098f0854470a5286fb83 upstream.
+commit 336af6a4686d885a067ecea8c3c3dd129ba4fc75 upstream.
 
-Fix build error when CONFIG_ACPI is not set/enabled by adding the header
-file <asm/acpi.h> which contains a stub for the function in the build
-error.
+Without this patch efivarfs_alloc_dentry creates dentries with slashes in
+their name if the respective EFI variable has slashes in its name. This in
+turn causes EIO on getdents64, which prevents a complete directory listing
+of /sys/firmware/efi/efivars/.
 
-    ../arch/x86/pci/intel_mid_pci.c: In function ‘intel_mid_pci_init’:
-    ../arch/x86/pci/intel_mid_pci.c:303:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
-      acpi_noirq_set();
+This patch replaces the invalid shlashes with exclamation marks like
+kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
+named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
 
-Fixes: a912a7584ec3 ("x86/platform/intel-mid: Move PCI initialization to arch_init()")
-Link: https://lore.kernel.org/r/ea903917-e51b-4cc9-2680-bc1e36efa026@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Jesse Barnes <jsbarnes@google.com>
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org	# v4.16+
-Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: Jesse Barnes <jsbarnes@google.com>
-Cc: Arjan van de Ven <arjan@linux.intel.com>
+Signed-off-by: Michael Schaller <misch@google.com>
+Link: https://lore.kernel.org/r/20200925074502.150448-1-misch@google.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: dann frazier <dann.frazier@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/pci/intel_mid_pci.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/efivarfs/super.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/x86/pci/intel_mid_pci.c
-+++ b/arch/x86/pci/intel_mid_pci.c
-@@ -33,6 +33,7 @@
- #include <asm/hw_irq.h>
- #include <asm/io_apic.h>
- #include <asm/intel-mid.h>
-+#include <asm/acpi.h>
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -145,6 +145,9 @@ static int efivarfs_callback(efi_char16_
  
- #define PCIE_CAP_OFFSET	0x100
+ 	name[len + EFI_VARIABLE_GUID_LEN+1] = '\0';
  
++	/* replace invalid slashes like kobject_set_name_vargs does for /sys/firmware/efi/vars. */
++	strreplace(name, '/', '!');
++
+ 	inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
+ 				   is_removable);
+ 	if (!inode)
 
 
