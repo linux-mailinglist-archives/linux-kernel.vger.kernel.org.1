@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E3E2A4D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF582A4D13
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgKCReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgKCReW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:34:22 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A96C061A47
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:34:22 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id j7so19126576oie.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1JaZqXqFdIPWnt0E572LVN0+nDbV1o5m6gHDSDoIC4I=;
-        b=Q2n8tpHV5nvmR2OSazRvxRWjiFH+PKL/RCPajflFlEudEY3RSDuRnYEQVw4yaus37x
-         8YPDStWRw8UUe7KUhTt/YXdJ6a4/b5XzFw7pgoJEeO4PnTLiFCiUR90suFcU6V3mm9Ag
-         v9kRYp1akaOMtiswKY5Ia6V3Wg5CAta7OWvv7YZ8vTpPXsWYlI8xONYzj4DrjflJU7nb
-         TfgTPj4oqYkDJNOZHZPciKnMyuo/pUcLdTxK00YuA/+1wpQGHhiuYp/lyRvW7tLb7GO8
-         qNPmiO4bXYC/5h5/j/Qqyl/0y+MmidTJDA4tmN2ow2p9SbLLsDtXgvDnfDBpAeVR5sLQ
-         wVjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1JaZqXqFdIPWnt0E572LVN0+nDbV1o5m6gHDSDoIC4I=;
-        b=NzOEcGCcguNZqMarg3wikNmjxKrYaRkmhlbmEBDF7hHEWNTciBvtsucEhLQxEDpyh/
-         Rm3pRPLIyYOt1mh3wFsTqM3n5bcYWJPzaeT2wfWm3x4TuM1E1qrI2gJMGFZEv6SshFpz
-         7Pd+8PwnfzgKlRqXUWN1VMeqU2rhJkNzAMkcE+t0E6YEMgKi6FUBCnxaaBopMTiwTeXV
-         AkHGo781p7h252ixJ1dM3LdRkoSUMGApaQ3R4q7vT+04TsHXYNchZA7KyiQj9Fn9cu76
-         UHCAFT+2S/GYAkTjlnr72cxSRBd+uAqhRy6itlTezRIB3fM62vVaR4C0tbR6csvLql/V
-         9TvQ==
-X-Gm-Message-State: AOAM532m6eAyPpSgPdWwZgW3KiQmsYC5OYB0N+MPXJwClt+3IiiXtZg6
-        DIqpFVjyOSa8vDKaV0oDnWxy1qAmAn48oQ==
-X-Google-Smtp-Source: ABdhPJxHzlfUfcI++bJ+iZGECeMfHDlxPyTogVh3GwkhPPMW09JbfIDc7FH7/XeiZPCfD6Y4u1WguA==
-X-Received: by 2002:aca:5d07:: with SMTP id r7mr135553oib.87.1604424861654;
-        Tue, 03 Nov 2020 09:34:21 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t65sm4261575oib.50.2020.11.03.09.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 09:34:20 -0800 (PST)
-Date:   Tue, 3 Nov 2020 11:34:19 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Add GCC and RPMh clock support for SDX55
-Message-ID: <20201103173419.GP3151@builder.lan>
-References: <20201028074232.22922-1-manivannan.sadhasivam@linaro.org>
- <20201028170853.GA3191@Mani-XPS-13-9360>
+        id S1728834AbgKCRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:34:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727688AbgKCRes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:34:48 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE3B621D91;
+        Tue,  3 Nov 2020 17:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604424888;
+        bh=ip59U7tSs/uZHMuxCZIR61tmzygdbBHUGZSDre8isGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cn6oexGmWcUT8AeX1aaNlsnN1iwcegecwZAwfuQYmSOYcoR925weIGH4XuHinqLD9
+         fmRG+2VDec5XAOclpBvYzjRtyVuq1jMW/vxo83M/BTUE857W1XZVO4eI7PBwLAaiwd
+         7Ftby+0twuq5orTtU1mBL40JWfOLaTdNJJYs2Hqw=
+Date:   Tue, 3 Nov 2020 17:34:38 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+Message-ID: <20201103173438.GD5545@sirena.org.uk>
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BRE3mIcgqKzpedwo"
 Content-Disposition: inline
-In-Reply-To: <20201028170853.GA3191@Mani-XPS-13-9360>
+In-Reply-To: <cover.1604393169.git.szabolcs.nagy@arm.com>
+X-Cookie: I don't get no respect.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28 Oct 12:08 CDT 2020, Manivannan Sadhasivam wrote:
 
-> On Wed, Oct 28, 2020 at 01:12:28PM +0530, Manivannan Sadhasivam wrote:
-> > Hello,
-> > 
-> > This series adds Global Clock Controller (GCC) and RPMh clock support
-> > for SDX55 SoC from Qualcomm with relevant DT bindings.
-> > 
-> > This series has been tested on SDX55 MTP board. The dts patches for this
-> > SoC/board will be posted later.
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > Manivannan Sadhasivam (1):
-> >   clk: qcom: Add support for SDX55 RPMh clocks
-> > 
-> > Naveen Yadav (1):
-> >   clk: qcom: Add SDX55 GCC support
-> 
-> Bjorn, I've inherited the gcc driver from downstream and did some modification.
-> But I'm not sure if I can take the authorship of this patch hence kept it to the
-> downstream author.
-> 
-> In my point of view, the downstream author wrote the driver so I should keep
-> the copyright and even list them as MODULE_AUTHOR. But I don't think I should
-> give the patch authorship to them because I haven't received the patch anyhow.
-> I usually keep the authorship if I take the patch from a source like LKML and
-> repost it. But in this case, I authored the patch using someone's code!
-> 
-> What is your view on this?
-> 
+--BRE3mIcgqKzpedwo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think the author should be the person whom prepared the patch.
+On Tue, Nov 03, 2020 at 10:25:37AM +0000, Szabolcs Nagy wrote:
 
-Given that the downstream driver is a series of patches from a single
-author it's not unreasonable to squash those and retain the author. But
-if your effort to prepare the patch for upstream was non-trivial I would
-consider it reasonable for you to claim authorship of the patch.
+> Re-mmap executable segments instead of mprotecting them in
+> case mprotect is seccomp filtered.
 
-If this is the case it's definitely preferable to give credit to the
-original author(s) by mentioning them in the commit message (e.g. "Based
-on downstream implementation by Jane Doe").
+> For the kernel mapped main executable we don't have the fd
+> for re-mmap so linux needs to be updated to add BTI. (In the
+> presence of seccomp filters for mprotect(PROT_EXEC) the libc
+> cannot change BTI protection at runtime based on user space
+> policy so it is better if the kernel maps BTI compatible
+> binaries with PROT_BTI by default.)
 
-And the copyright for the work definitely needs to come along, possibly
-with the addition of yours, depending on your modifications.
+Given that there were still some ongoing discussions on a more robust
+kernel interface here and there seem to be a few concerns with this
+series should we perhaps just take a step back and disable this seccomp
+filter in systemd on arm64, at least for the time being?  That seems
+safer than rolling out things that set ABI quickly, a big part of the
+reason we went with having the dynamic linker enable PROT_BTI in the
+first place was to give us more flexibility to handle any unforseen
+consequences of enabling BTI that we run into.  We are going to have
+similar issues with other features like MTE so we need to make sure that
+whatever we're doing works with them too.
 
-Thanks,
-Bjorn
+Also updated to Will's current e-mail address - Will, do you have
+thoughts on what we should do here?
 
-> Thanks,
-> Mani
-> 
-> > 
-> > Vinod Koul (2):
-> >   dt-bindings: clock: Add SDX55 GCC clock bindings
-> >   dt-bindings: clock: Introduce RPMHCC bindings for SDX55
-> > 
-> >  .../bindings/clock/qcom,gcc-sdx55.yaml        |   71 +
-> >  .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
-> >  drivers/clk/qcom/Kconfig                      |    8 +
-> >  drivers/clk/qcom/Makefile                     |    1 +
-> >  drivers/clk/qcom/clk-rpmh.c                   |   20 +
-> >  drivers/clk/qcom/gcc-sdx55.c                  | 1667 +++++++++++++++++
-> >  include/dt-bindings/clock/qcom,gcc-sdx55.h    |  112 ++
-> >  include/dt-bindings/clock/qcom,rpmh.h         |    1 +
-> >  8 files changed, 1881 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
-> >  create mode 100644 drivers/clk/qcom/gcc-sdx55.c
-> >  create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx55.h
-> > 
-> > -- 
-> > 2.17.1
-> > 
+--BRE3mIcgqKzpedwo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+hlK4ACgkQJNaLcl1U
+h9DD3gf/WNywQ/sgsuMwVB40sA+4Df/FGYWXM9/N6kUbBvcnoS9DtrP5HUMkJBzB
+XS2taPJPPVpHEm8WJti9lNOLj+5uLwGmPe9tv4APgATbU6xR9tpUaLqVTvnwGH9W
+G3DRggj5ExKwSc0ArcrpLktH2MTraSmlN7OsEnIB2RMRNzkEacr+AlbDxHmnT1Co
+SEbhoFrFKE452ptHVaHckiC6j6LGwDusc8uIOAaSHkNF9IbC+SU8UqnbiTkqbc68
+q9vnCmiSjRFEHZgq/NV+PQVRQqkj2vIzFK3CDN5wotJQ0OGGbK6OmjuyLCYlqX1l
+5S13yMzSMWD5ItabHkNWGMqfdrB0KA==
+=oJHO
+-----END PGP SIGNATURE-----
+
+--BRE3mIcgqKzpedwo--
