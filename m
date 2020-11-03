@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8070C2A3D22
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36E82A3D29
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgKCHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:06:07 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:2565 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgKCHGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:06:06 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CQLRF59cFz9vCyQ;
-        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id dy9O089jaZQ3; Tue,  3 Nov 2020 08:06:01 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CQLRF3rlfz9vCyP;
-        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 458018B783;
-        Tue,  3 Nov 2020 08:06:02 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id UlvOiLioe_Vf; Tue,  3 Nov 2020 08:06:02 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D42E8B77E;
-        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
-Subject: Re: [PATCH -next v2 1/2] watchdog: Clean up error handlings of
- __watchdog_register_device
-To:     Wang Wensheng <wangwensheng4@huawei.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rui.xiang@huawei.com, guohanjun@huawei.com
-References: <20201103065217.67876-1-wangwensheng4@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <11e45cab-108f-db0e-6350-82ae49ed6b23@csgroup.eu>
-Date:   Tue, 3 Nov 2020 08:05:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727612AbgKCHHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:07:47 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42291 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725958AbgKCHHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:07:47 -0500
+X-UUID: 0cd27029a24f41bca58df90019b241ea-20201103
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xgZxM4bZdBoYMDGnpcKBnJHgKjg4eO6nDZKJOGIeWdo=;
+        b=PUtkyKF0b3dBSMtd3cT167RsJne4PCUmgNlL025Hyu28j28uMYl/OclqQ41hYONY4kq+3wA2lmY8+3x8wUTSnReKNs5F3a/nMvaxOe0Nm5iDiibf6qNZmuXhmxBCrO8bjfWI67gY1zU3Ip93FM4PoKC03BkETquvzoCe15viT3c=;
+X-UUID: 0cd27029a24f41bca58df90019b241ea-20201103
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 957126120; Tue, 03 Nov 2020 15:07:44 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Nov 2020 15:07:42 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Nov 2020 15:07:42 +0800
+Message-ID: <1604387262.13152.2.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
+ caused by ufshcd_hold()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        "Alim Akhtar" <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 3 Nov 2020 15:07:42 +0800
+In-Reply-To: <1604384682-15837-2-git-send-email-cang@codeaurora.org>
+References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
+         <1604384682-15837-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20201103065217.67876-1-wangwensheng4@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 295080CDDDD8E39A2ADF44384CB5E35A2D4E5055CC367A2FD534E280F511F3EC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjAtMTEtMDIgYXQgMjI6MjQgLTA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IFRoZSBzY3NpX2Jsb2NrX3JlcXNfY250IGluY3JlYXNlZCBpbiB1ZnNoY2RfaG9sZCgp
+IGlzIHN1cHBvc2VkIHRvIGJlDQo+IGRlY3JlYXNlZCBiYWNrIGluIHVmc2hjZF91bmdhdGVfd29y
+aygpIGluIGEgcGFpcmVkIHdheS4gSG93ZXZlciwgaWYNCj4gc3BlY2lmaWMgdWZzaGNkX2hvbGQv
+cmVsZWFzZSBzZXF1ZW5jZXMgYXJlIG1ldCwgaXQgaXMgcG9zc2libGUgdGhhdA0KPiBzY3NpX2Js
+b2NrX3JlcXNfY250IGlzIGluY3JlYXNlZCB0d2ljZSBidXQgb25seSBvbmUgdW5nYXRlIHdvcmsg
+aXMNCj4gcXVldWVkLiBUbyBtYWtlIHN1cmUgc2NzaV9ibG9ja19yZXFzX2NudCBpcyBoYW5kbGVk
+IGJ5IHVmc2hjZF9ob2xkKCkgYW5kDQoNCkp1c3QgY3VyaW91cyB0aGF0IGhvdyBjb3VsZCB0aGlz
+IGJlIHBvc3NpYmxlPyBXb3VsZCB5b3UgaGF2ZSBzb21lIGZhaWxlZA0KZXhhbXBsZXM/DQoNCj4g
+dWZzaGNkX3VuZ2F0ZV93b3JrKCkgaW4gYSBwYWlyZWQgd2F5LCBpbmNyZWFzZSBpdCBvbmx5IGlm
+IHF1ZXVlX3dvcmsoKQ0KPiByZXR1cm5zIHRydWUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDYW4g
+R3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiBSZXZpZXdlZC1ieTogSG9uZ3d1IFN1IDxob25n
+d3VzQGNvZGVhdXJvcmEub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMg
+fCA2ICsrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
+bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJp
+dmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBpbmRleCA4NDdmMzU1Li5lZmE3ZDg2IDEwMDY0NA0K
+PiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91
+ZnMvdWZzaGNkLmMNCj4gQEAgLTE2MzQsMTIgKzE2MzQsMTIgQEAgaW50IHVmc2hjZF9ob2xkKHN0
+cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgYXN5bmMpDQo+ICAJCSAqLw0KPiAgCQkvKiBmYWxsdGhy
+b3VnaCAqLw0KPiAgCWNhc2UgQ0xLU19PRkY6DQo+IC0JCXVmc2hjZF9zY3NpX2Jsb2NrX3JlcXVl
+c3RzKGhiYSk7DQo+ICAJCWhiYS0+Y2xrX2dhdGluZy5zdGF0ZSA9IFJFUV9DTEtTX09OOw0KPiAg
+CQl0cmFjZV91ZnNoY2RfY2xrX2dhdGluZyhkZXZfbmFtZShoYmEtPmRldiksDQo+ICAJCQkJCWhi
+YS0+Y2xrX2dhdGluZy5zdGF0ZSk7DQo+IC0JCXF1ZXVlX3dvcmsoaGJhLT5jbGtfZ2F0aW5nLmNs
+a19nYXRpbmdfd29ya3EsDQo+IC0JCQkgICAmaGJhLT5jbGtfZ2F0aW5nLnVuZ2F0ZV93b3JrKTsN
+Cj4gKwkJaWYgKHF1ZXVlX3dvcmsoaGJhLT5jbGtfZ2F0aW5nLmNsa19nYXRpbmdfd29ya3EsDQo+
+ICsJCQkgICAgICAgJmhiYS0+Y2xrX2dhdGluZy51bmdhdGVfd29yaykpDQo+ICsJCQl1ZnNoY2Rf
+c2NzaV9ibG9ja19yZXF1ZXN0cyhoYmEpOw0KPiAgCQkvKg0KPiAgCQkgKiBmYWxsIHRocm91Z2gg
+dG8gY2hlY2sgaWYgd2Ugc2hvdWxkIHdhaXQgZm9yIHRoaXMNCj4gIAkJICogd29yayB0byBiZSBk
+b25lIG9yIG5vdC4NCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0K
 
-Can you provide in the commit a description of what you are doing and why ?
-
-Christophe
-
-Le 03/11/2020 à 07:52, Wang Wensheng a écrit :
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> ---
->   drivers/watchdog/watchdog_core.c | 17 ++++++++++-------
->   1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-> index 423844757812..c73871f41142 100644
-> --- a/drivers/watchdog/watchdog_core.c
-> +++ b/drivers/watchdog/watchdog_core.c
-> @@ -252,10 +252,8 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->   		wdd->id = id;
->   
->   		ret = watchdog_dev_register(wdd);
-> -		if (ret) {
-> -			ida_simple_remove(&watchdog_ida, id);
-> -			return ret;
-> -		}
-> +		if (ret)
-> +			goto id_remove;
->   	}
->   
->   	/* Module parameter to force watchdog policy on reboot. */
-> @@ -273,9 +271,7 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->   		if (ret) {
->   			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
->   			       wdd->id, ret);
-> -			watchdog_dev_unregister(wdd);
-> -			ida_simple_remove(&watchdog_ida, id);
-> -			return ret;
-> +			goto dev_unregister;
->   		}
->   	}
->   
-> @@ -289,6 +285,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->   	}
->   
->   	return 0;
-> +
-> +dev_unregister:
-> +	watchdog_dev_unregister(wdd);
-> +id_remove:
-> +	ida_simple_remove(&watchdog_ida, id);
-> +
-> +	return ret;
->   }
->   
->   /**
-> 
