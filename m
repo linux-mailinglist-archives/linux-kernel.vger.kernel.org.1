@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B382A52A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40F62A5343
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730623AbgKCUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47248 "EHLO mail.kernel.org"
+        id S1733102AbgKCU7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731979AbgKCUvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:44 -0500
+        id S1733088AbgKCU7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E9E822226;
-        Tue,  3 Nov 2020 20:51:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82D6222226;
+        Tue,  3 Nov 2020 20:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436703;
-        bh=7o6PnexcbnawDZVe77YRWuYlKfqy5LWqQZ3f1Dyoj1M=;
+        s=default; t=1604437154;
+        bh=AEjNpfgNS/by2nCOTPsKsz2AxJQ8Kb9EBXRz7/Ycyxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cy4tikNH85HhoQyj6/JuQzMGex8YwAf51v1wDyJWVqwOJubDj3mApEayZXHEMFeay
-         NV50CsD6s6HhwJRH6lBa0fAlcKpP9/qOmeYZMVp3oxKFutbD2hrIT9KlZrLt526EDU
-         cE2EMTCA2G00rfrae/edHo7340BTYfDdGrHKQiWg=
+        b=VDb7oI+OwA36yBjCM+W18qcvMOTp9Wh+/dt97z44/Tl1aYJLN9x8fPWGb3qWcz013
+         SzvtuBlIWkK3rZERlJf3pm98wgynzm2DTYBX8iI4fyY8r3OORVrKJ6CRlqBdK3HDu6
+         P8I7ydpzKLdGtlUCyJampQ2LqvfArhUzLlewdUlk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.9 366/391] arm: dts: mt7623: add missing pause for switchport
-Date:   Tue,  3 Nov 2020 21:36:57 +0100
-Message-Id: <20201103203411.843713307@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.4 170/214] ubifs: Fix a memleak after dumping authentication mount options
+Date:   Tue,  3 Nov 2020 21:36:58 +0100
+Message-Id: <20201103203306.692028642@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,33 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 36f0a5fc5284838c544218666c63ee8cfa46a9c3 upstream.
+commit 47f6d9ce45b03a40c34b668a9884754c58122b39 upstream.
 
-port6 of mt7530 switch (= cpu port 0) on bananapi-r2 misses pause option
-which causes rx drops on running iperf.
+Fix a memory leak after dumping authentication mount options in error
+handling branch.
 
-Fixes: f4ff257cd160 ("arm: dts: mt7623: add support for Bananapi R2 (BPI-R2) board")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200907070517.51715-1-linux@fw-web.de
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>  # 4.20+
+Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ubifs/super.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -192,6 +192,7 @@
- 					fixed-link {
- 						speed = <1000>;
- 						full-duplex;
-+						pause;
- 					};
- 				};
- 			};
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1123,6 +1123,18 @@ static int ubifs_parse_options(struct ub
+ 	return 0;
+ }
+ 
++/*
++ * ubifs_release_options - release mount parameters which have been dumped.
++ * @c: UBIFS file-system description object
++ */
++static void ubifs_release_options(struct ubifs_info *c)
++{
++	kfree(c->auth_key_name);
++	c->auth_key_name = NULL;
++	kfree(c->auth_hash_name);
++	c->auth_hash_name = NULL;
++}
++
+ /**
+  * destroy_journal - destroy journal data structures.
+  * @c: UBIFS file-system description object
+@@ -1632,8 +1644,7 @@ static void ubifs_umount(struct ubifs_in
+ 	ubifs_lpt_free(c, 0);
+ 	ubifs_exit_authentication(c);
+ 
+-	kfree(c->auth_key_name);
+-	kfree(c->auth_hash_name);
++	ubifs_release_options(c);
+ 	kfree(c->cbuf);
+ 	kfree(c->rcvrd_mst_node);
+ 	kfree(c->mst_node);
+@@ -2201,6 +2212,7 @@ out_umount:
+ out_unlock:
+ 	mutex_unlock(&c->umount_mutex);
+ out_close:
++	ubifs_release_options(c);
+ 	ubi_close_volume(c->ubi);
+ out:
+ 	return err;
 
 
