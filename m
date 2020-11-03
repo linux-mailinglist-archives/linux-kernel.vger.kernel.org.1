@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F592A5914
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4692A5919
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgKCUnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:43:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56614 "EHLO mail.kernel.org"
+        id S1730656AbgKCWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:04:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729964AbgKCUnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:43:14 -0500
+        id S1730678AbgKCUnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:43:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49C282224E;
-        Tue,  3 Nov 2020 20:43:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A21A223AC;
+        Tue,  3 Nov 2020 20:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436193;
-        bh=J8KuJl1/K8rhrVW1l2iJSlUTzFLshYrulf04j/Hssg0=;
+        s=default; t=1604436196;
+        bh=zjRG7D7u1rm0+nJsHPV8BElnQS5qBn3harx2yIna1Xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1MULf3h9uDqnuWkMmT3384S+K2orwvWmYyaKkAs/ApYfRJmL7r8zCRVuh1wHPIq2Y
-         v6394R/DCm4hPDzQhmAwA2/a6+vk6N+qqmJCs0r0PAaETnRbgLnkYava9PKNHpl6pi
-         ailvrQa4cRf9AJMc8DpGBTv3NNgtcxseK5nXcgSI=
+        b=zQWSzbOy3sU2nOx8hwMmVSM6g6ZbNaQMrieE/miVcf5kBB+l2MxDgmkiWnquD/C+4
+         Sm8wEhMU3UB+If5A+ngg6euMG3jUvQTsP/LIeLHuwjKuxCFEy5J7N8ljSABpOpTQEC
+         Sjxrils9J85ZLTQBxIu78VSOVb2j1y+jhgqNtoF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 105/391] media: uvcvideo: Fix dereference of out-of-bound list iterator
-Date:   Tue,  3 Nov 2020 21:32:36 +0100
-Message-Id: <20201103203353.910358959@linuxfoundation.org>
+Subject: [PATCH 5.9 106/391] nfc: s3fwrn5: Add missing CRYPTO_HASH dependency
+Date:   Tue,  3 Nov 2020 21:32:37 +0100
+Message-Id: <20201103203353.976625694@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,73 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit f875bcc375c738bf2f599ff2e1c5b918dbd07c45 ]
+[ Upstream commit 4aa62c62d4c41d71b2bda5ed01b78961829ee93c ]
 
-Fixes the following coccinelle report:
+The driver uses crypto hash functions so it needs to select CRYPTO_HASH.
+This fixes build errors:
 
-drivers/media/usb/uvc/uvc_ctrl.c:1860:5-11:
-ERROR: invalid reference to the index variable of the iterator on line 1854
+  arc-linux-ld: drivers/nfc/s3fwrn5/firmware.o: in function `s3fwrn5_fw_download':
+  firmware.c:(.text+0x152): undefined reference to `crypto_alloc_shash'
 
-by adding a boolean variable to check if the loop has found the
-
-Found using - Coccinelle (http://coccinelle.lip6.fr)
-
-[Replace cursor variable with bool found]
-
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/nfc/s3fwrn5/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index a30a8a731eda8..c13ed95cb06fe 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -1848,30 +1848,35 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
- {
- 	struct uvc_entity *entity;
- 	struct uvc_control *ctrl;
--	unsigned int i, found = 0;
-+	unsigned int i;
-+	bool found;
- 	u32 reqflags;
- 	u16 size;
- 	u8 *data = NULL;
- 	int ret;
- 
- 	/* Find the extension unit. */
-+	found = false;
- 	list_for_each_entry(entity, &chain->entities, chain) {
- 		if (UVC_ENTITY_TYPE(entity) == UVC_VC_EXTENSION_UNIT &&
--		    entity->id == xqry->unit)
-+		    entity->id == xqry->unit) {
-+			found = true;
- 			break;
-+		}
- 	}
- 
--	if (entity->id != xqry->unit) {
-+	if (!found) {
- 		uvc_trace(UVC_TRACE_CONTROL, "Extension unit %u not found.\n",
- 			xqry->unit);
- 		return -ENOENT;
- 	}
- 
- 	/* Find the control and perform delayed initialization if needed. */
-+	found = false;
- 	for (i = 0; i < entity->ncontrols; ++i) {
- 		ctrl = &entity->controls[i];
- 		if (ctrl->index == xqry->selector - 1) {
--			found = 1;
-+			found = true;
- 			break;
- 		}
- 	}
+diff --git a/drivers/nfc/s3fwrn5/Kconfig b/drivers/nfc/s3fwrn5/Kconfig
+index af9d18690afeb..3f8b6da582803 100644
+--- a/drivers/nfc/s3fwrn5/Kconfig
++++ b/drivers/nfc/s3fwrn5/Kconfig
+@@ -2,6 +2,7 @@
+ config NFC_S3FWRN5
+ 	tristate
+ 	select CRYPTO
++	select CRYPTO_HASH
+ 	help
+ 	  Core driver for Samsung S3FWRN5 NFC chip. Contains core utilities
+ 	  of chip. It's intended to be used by PHYs to avoid duplicating lots
 -- 
 2.27.0
 
