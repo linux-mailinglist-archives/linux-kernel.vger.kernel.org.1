@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D9C2A40D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913CD2A40DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgKCJz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:55:27 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:39322 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgKCJzY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:55:24 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A39tD5n9015391, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A39tD5n9015391
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 3 Nov 2020 17:55:14 +0800
-Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
- (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Tue, 3 Nov 2020
- 17:55:13 +0800
-From:   <rui_feng@realsil.com.cn>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        Rui Feng <rui_feng@realsil.com.cn>
-Subject: [PATCH 7/8] misc: rtsx: Add hardware auto power off for RTS5261
-Date:   Tue, 3 Nov 2020 17:55:12 +0800
-Message-ID: <1604397312-2991-1-git-send-email-rui_feng@realsil.com.cn>
-X-Mailer: git-send-email 1.9.1
+        id S1728068AbgKCJzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:55:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727470AbgKCJzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:55:25 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 633F82080C;
+        Tue,  3 Nov 2020 09:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604397325;
+        bh=BbJsCjFJLevMdoJHB4Z5uCMfmHDAE0eiDRnVczaq5uA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iOY0t65/MB44fqw06fHYEWykwbF1NDvtdiVH98cdRRovtg2vk2XAvc7nAq4kWROse
+         GguIzednQO73SSb3Fs6bQhNjjOp7gMvB83Pj5aizBulVH7XTgn/vxP7I3rhbieI01w
+         ZpQag6zhK/im8RNgtZHYMrr9HpACM+COwaoxILGU=
+Date:   Tue, 3 Nov 2020 10:55:21 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     netdev@vger.kernel.org, nic_swsd@realtek.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        oliver@neukum.org
+Subject: Re: [PATCH net-next v3 1/2] include/linux/usb: new header file for
+ the vendor ID of USB devices
+Message-ID: <20201103095521.GA81899@kroah.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+ <1394712342-15778-389-Taiwan-albertk@realtek.com>
+ <1394712342-15778-390-Taiwan-albertk@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.29.40.150]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1394712342-15778-390-Taiwan-albertk@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Feng <rui_feng@realsil.com.cn>
+On Tue, Nov 03, 2020 at 05:46:37PM +0800, Hayes Wang wrote:
+> diff --git a/include/linux/usb/usb_vendor_id.h b/include/linux/usb/usb_vendor_id.h
+> new file mode 100644
+> index 000000000000..23b6e6849515
+> --- /dev/null
+> +++ b/include/linux/usb/usb_vendor_id.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +
 
-This patch enable hardware auto power off when card is removed.
+<snip>
 
-Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
----
- drivers/misc/cardreader/rts5261.c | 9 +++++++++
- include/linux/rtsx_pci.h          | 3 +++
- 2 files changed, 12 insertions(+)
+No, this is not ok, sorry.  Please see the top of the pci_ids.h file why
+we do not do this.
 
-diff --git a/drivers/misc/cardreader/rts5261.c b/drivers/misc/cardreader/rts5261.c
-index 0ef6b3e04a8d..2ada973a0f33 100644
---- a/drivers/misc/cardreader/rts5261.c
-+++ b/drivers/misc/cardreader/rts5261.c
-@@ -176,6 +176,8 @@ static int rts5261_card_power_on(struct rtsx_pcr *pcr, int card)
- 	if (option->ocp_en)
- 		rtsx_pci_enable_ocp(pcr);
- 
-+	rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
-+		CFG_SD_POW_AUTO_PD, CFG_SD_POW_AUTO_PD);
- 
- 	rtsx_pci_write_register(pcr, RTS5261_LDO1_CFG1,
- 			RTS5261_LDO1_TUNE_MASK, RTS5261_LDO1_33);
-@@ -303,6 +305,8 @@ static int rts5261_card_power_off(struct rtsx_pcr *pcr, int card)
- 	err = rtsx_pci_write_register(pcr, RTS5261_LDO1233318_POW_CTL,
- 				RTS5261_LDO_POWERON_MASK, 0);
- 
-+	rtsx_pci_write_register(pcr, REG_CRC_DUMMY_0,
-+		CFG_SD_POW_AUTO_PD, 0);
- 	if (pcr->option.ocp_en)
- 		rtsx_pci_disable_ocp(pcr);
- 
-@@ -475,6 +479,7 @@ static void rts5261_init_from_cfg(struct rtsx_pcr *pcr)
- static int rts5261_extra_init_hw(struct rtsx_pcr *pcr)
- {
- 	struct rtsx_cr_option *option = &pcr->option;
-+	u32 val;
- 
- 	rtsx_pci_write_register(pcr, RTS5261_AUTOLOAD_CFG1,
- 			CD_RESUME_EN_MASK, CD_RESUME_EN_MASK);
-@@ -489,6 +494,10 @@ static int rts5261_extra_init_hw(struct rtsx_pcr *pcr)
- 			AUX_CLK_ACTIVE_SEL_MASK, MAC_CKSW_DONE);
- 	rtsx_pci_write_register(pcr, L1SUB_CONFIG3, 0xFF, 0);
- 
-+	if (is_version_higher_than(pcr, PID_5261, IC_VER_B)) {
-+		val = rtsx_pci_readl(pcr, RTSX_DUM_REG);
-+		rtsx_pci_writel(pcr, RTSX_DUM_REG, val | 0x1);
-+	}
- 	rtsx_pci_write_register(pcr, RTS5261_AUTOLOAD_CFG4,
- 			RTS5261_AUX_CLK_16M_EN, 0);
- 
-diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
-index db249e8707f3..fcaadc7c9df1 100644
---- a/include/linux/rtsx_pci.h
-+++ b/include/linux/rtsx_pci.h
-@@ -82,6 +82,7 @@
- #define   MS_OC_INT_EN			(1 << 23)
- #define   SD_OC_INT_EN			(1 << 22)
- 
-+#define RTSX_DUM_REG			0x1C
- 
- /*
-  * macros for easy use
-@@ -1272,6 +1273,8 @@ struct rtsx_pcr {
- #define PCI_PID(pcr)			((pcr)->pci->device)
- #define is_version(pcr, pid, ver)				\
- 	(CHK_PCI_PID(pcr, pid) && (pcr)->ic_version == (ver))
-+#define is_version_higher_than(pcr, pid, ver)			\
-+	(CHK_PCI_PID(pcr, pid) && (pcr)->ic_version > (ver))
- #define pcr_dbg(pcr, fmt, arg...)				\
- 	dev_dbg(&(pcr)->pci->dev, fmt, ##arg)
- 
--- 
-2.17.1
+There is nothing wrong with putting the individual ids in the different
+drivers, we don't want one single huge file that is a pain for merges
+and builds.  We learn from our past mistakes, please do not fail to
+learn from history :)
 
+thanks,
+
+greg k-h
