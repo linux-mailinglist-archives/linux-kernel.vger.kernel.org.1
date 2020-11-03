@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32922A566F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F312A53E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388080AbgKCV2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:28:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
+        id S2388063AbgKCVFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:05:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733199AbgKCVA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:28 -0500
+        id S2387843AbgKCVFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34EA6223FD;
-        Tue,  3 Nov 2020 21:00:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE17520658;
+        Tue,  3 Nov 2020 21:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437227;
-        bh=h8VO8aKLMLf4XmZjmCqV56IrKC+YonT/HRfwBjcxFM0=;
+        s=default; t=1604437542;
+        bh=5CMiBcE13Woy/n8DS3+p1YVb56DlVBeIAOrl52u0UVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjTbktvr0vqYhXBGScjD3wmujtEFYhOj29Cwgy2QVRJZZ87V4AwSxuYAq9CEdKBpL
-         ZmmXwSJn+d5QDuSq3lktTBdXdOZsVXtxK1/SoDiCk+Vmlhnfn5OB39/nXXsFZL2x1K
-         LlXV4b1uVdA4dCMqSTfWVURXKutvBzf5eJ1Dtayo=
+        b=BzqeldY1PvvQYlucCu2HaUYAH8KCuAbMO7R6K8UDzlZO4nGuLyWK55qdMc42qxxfR
+         AkyDGe/kxjf5F4O1l8iUizQNjLY+LHfcOcm2c0dj6Jn6vHD8FzpdrDJsQnqg/GO9cG
+         yfY6uAf63HeldXwuyCwnHt9tfkwjiUEVtF4/+lwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Neuling <mikey@neuling.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 163/214] powerpc: Fix undetected data corruption with P9N DD2.1 VSX CI load emulation
-Date:   Tue,  3 Nov 2020 21:36:51 +0100
-Message-Id: <20201103203306.048306295@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 120/191] ACPI: button: fix handling lid state changes when input device closed
+Date:   Tue,  3 Nov 2020 21:36:52 +0100
+Message-Id: <20201103203244.537854736@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Neuling <mikey@neuling.org>
+From: dmitry.torokhov@gmail.com <dmitry.torokhov@gmail.com>
 
-commit 1da4a0272c5469169f78cd76cf175ff984f52f06 upstream.
+commit 21988a8e51479ceffe7b0568b170effabb708dfe upstream.
 
-__get_user_atomic_128_aligned() stores to kaddr using stvx which is a
-VMX store instruction, hence kaddr must be 16 byte aligned otherwise
-the store won't occur as expected.
+The original intent of 84d3f6b76447 was to delay evaluating lid state until
+all drivers have been loaded, with input device being opened from userspace
+serving as a signal for this condition. Let's ensure that state updates
+happen even if userspace closed (or in the future inhibited) input device.
 
-Unfortunately when we call __get_user_atomic_128_aligned() in
-p9_hmi_special_emu(), the buffer we pass as kaddr (ie. vbuf) isn't
-guaranteed to be 16B aligned. This means that the write to vbuf in
-__get_user_atomic_128_aligned() has the bottom bits of the address
-truncated. This results in other local variables being
-overwritten. Also vbuf will not contain the correct data which results
-in the userspace emulation being wrong and hence undetected user data
-corruption.
+Note that if we go through suspend/resume cycle we assume the system has
+been fully initialized even if LID input device has not been opened yet.
 
-In the past we've been mostly lucky as vbuf has ended up aligned but
-this is fragile and isn't always true. CONFIG_STACKPROTECTOR in
-particular can change the stack arrangement enough that our luck runs
-out.
+This has a side-effect of fixing access to input->users outside of
+input->mutex protections by the way of eliminating said accesses and using
+driver private flag.
 
-This issue only occurs on POWER9 Nimbus <= DD2.1 bare metal.
-
-The fix is to align vbuf to a 16 byte boundary.
-
-Fixes: 5080332c2c89 ("powerpc/64s: Add workaround for P9 vector CI load issue")
-Cc: stable@vger.kernel.org # v4.15+
-Signed-off-by: Michael Neuling <mikey@neuling.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201013043741.743413-1-mikey@neuling.org
+Fixes: 84d3f6b76447 ("ACPI / button: Delay acpi_lid_initialize_state() until first user space open")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Cc: 4.15+ <stable@vger.kernel.org> # 4.15+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/traps.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/button.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -877,7 +877,7 @@ static void p9_hmi_special_emu(struct pt
- {
- 	unsigned int ra, rb, t, i, sel, instr, rc;
- 	const void __user *addr;
--	u8 vbuf[16], *vdst;
-+	u8 vbuf[16] __aligned(16), *vdst;
- 	unsigned long ea, msr, msr_mask;
- 	bool swap;
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -149,6 +149,7 @@ struct acpi_button {
+ 	int last_state;
+ 	ktime_t last_time;
+ 	bool suspended;
++	bool lid_state_initialized;
+ };
  
+ static BLOCKING_NOTIFIER_HEAD(acpi_lid_notifier);
+@@ -404,6 +405,8 @@ static int acpi_lid_update_state(struct
+ 
+ static void acpi_lid_initialize_state(struct acpi_device *device)
+ {
++	struct acpi_button *button = acpi_driver_data(device);
++
+ 	switch (lid_init_state) {
+ 	case ACPI_BUTTON_LID_INIT_OPEN:
+ 		(void)acpi_lid_notify_state(device, 1);
+@@ -415,13 +418,14 @@ static void acpi_lid_initialize_state(st
+ 	default:
+ 		break;
+ 	}
++
++	button->lid_state_initialized = true;
+ }
+ 
+ static void acpi_button_notify(struct acpi_device *device, u32 event)
+ {
+ 	struct acpi_button *button = acpi_driver_data(device);
+ 	struct input_dev *input;
+-	int users;
+ 
+ 	switch (event) {
+ 	case ACPI_FIXED_HARDWARE_EVENT:
+@@ -430,10 +434,7 @@ static void acpi_button_notify(struct ac
+ 	case ACPI_BUTTON_NOTIFY_STATUS:
+ 		input = button->input;
+ 		if (button->type == ACPI_BUTTON_TYPE_LID) {
+-			mutex_lock(&button->input->mutex);
+-			users = button->input->users;
+-			mutex_unlock(&button->input->mutex);
+-			if (users)
++			if (button->lid_state_initialized)
+ 				acpi_lid_update_state(device, true);
+ 		} else {
+ 			int keycode;
+@@ -478,7 +479,7 @@ static int acpi_button_resume(struct dev
+ 	struct acpi_button *button = acpi_driver_data(device);
+ 
+ 	button->suspended = false;
+-	if (button->type == ACPI_BUTTON_TYPE_LID && button->input->users) {
++	if (button->type == ACPI_BUTTON_TYPE_LID) {
+ 		button->last_state = !!acpi_lid_evaluate_state(device);
+ 		button->last_time = ktime_get();
+ 		acpi_lid_initialize_state(device);
 
 
