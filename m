@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D514E2A466B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5AA2A465D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgKCN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:29:16 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:30930 "EHLO z5.mailgun.us"
+        id S1729281AbgKCN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:28:45 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:22061 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729216AbgKCN2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:28:24 -0500
+        id S1729263AbgKCN2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:28:40 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604410104; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=NlUD522q1UZNeJibuUElRVCfmzqNBBfP4N2mc7yBIMU=; b=KX+l3mmJYISHkHhz3MYqZqp4m20gQz3KKHIOEkuyUs3etdPYgrFMfr4yMig02RLqNouVt//v
- Cq+DtXgADluPWRTq1PptaHmomSpg8gPRoDniSy3AbbUs3dRifptK8KPS49Fn9lITVNoX7JgD
- ryD2SwFtL78KgtKl/tP4u/E9HQQ=
+ s=smtp; t=1604410120; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dldIYfTJS6IkZ8/7xmZR8OD1UnVkZixlc/QiTKGvk1I=;
+ b=HA1RGYqw+XW527HoVmYIFcDvQaIIhNZEuFSvBPr6U0F+dQJvrHa+pHcaX+C6bHatpAhGXDNi
+ cVL78SX+m6XV46ogf1h4A5lzcDZnSfTeuCoI6Ha5KbVwhx9bMomICkRwIdZRls/n9se9J6mZ
+ X42FybIMqD+ce4AdLATGnV00lwk=
 X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fa15af723306fb6028ce10f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 13:28:23
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fa15af8b64b1c5b780e9877 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 13:28:24
  GMT
-Sender: clew=codeaurora.org@mg.codeaurora.org
+Sender: cang=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7947BC43452; Tue,  3 Nov 2020 03:19:23 +0000 (UTC)
+        id 02243C4345F; Tue,  3 Nov 2020 05:28:11 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from swarchsd3-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: clew)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7381C433B1;
-        Tue,  3 Nov 2020 03:19:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7381C433B1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clew@codeaurora.org
-From:   Chris Lew <clew@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     sibis@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clew@codeaurora.org
-Subject: [PATCH 2/2] soc: qcom: aoss: Add debugfs send entry
-Date:   Mon,  2 Nov 2020 19:19:01 -0800
-Message-Id: <1604373541-12641-2-git-send-email-clew@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604373541-12641-1-git-send-email-clew@codeaurora.org>
-References: <1604373541-12641-1-git-send-email-clew@codeaurora.org>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 638A0C433B1;
+        Tue,  3 Nov 2020 05:28:10 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 03 Nov 2020 13:28:10 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org
+Subject: Re: [PATCH v4 1/5] scsi: ufs: atomic update for clkgating_enable
+In-Reply-To: <20201028194352.GA3060274@google.com>
+References: <20201026195124.363096-1-jaegeuk@kernel.org>
+ <20201026195124.363096-2-jaegeuk@kernel.org>
+ <20d1c2ca06e95beb207fd4ba1b61dc80@codeaurora.org>
+ <20201027033311.GA1745317@google.com>
+ <76df977d164683c7404d2dc702f2e5ad@codeaurora.org>
+ <20201028194352.GA3060274@google.com>
+Message-ID: <2c73eb84991227b7e42ba4c1d268d390@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node to send
-messages through qmp to aoss for debugging and testing purposes.
+On 2020-10-29 03:43, Jaegeuk Kim wrote:
+> On 10/27, Can Guo wrote:
+>> On 2020-10-27 11:33, Jaegeuk Kim wrote:
+>> > On 10/27, Can Guo wrote:
+>> > > On 2020-10-27 03:51, Jaegeuk Kim wrote:
+>> > > > From: Jaegeuk Kim <jaegeuk@google.com>
+>> > > >
+>> > > > When giving a stress test which enables/disables clkgating, we hit
+>> > > > device
+>> > > > timeout sometimes. This patch avoids subtle racy condition to address
+>> > > > it.
+>> > > >
+>> > > > Note that, this requires a patch to address the device stuck by
+>> > > > REQ_CLKS_OFF in
+>> > > > __ufshcd_release().
+>> > > >
+>> > > > The fix is "scsi: ufs: avoid to call REQ_CLKS_OFF to CLKS_OFF".
+>> > >
+>> > > Why don't you just squash the fix into this one?
+>> >
+>> > I'm seeing this patch just revealed that problem.
+>> 
+>> That scenario (back to back calling of ufshcd_release()) only happens
+>> when you stress the clkgate_enable sysfs node, so let's keep the fix
+>> as one to make things simple. What do you think?
+> 
+> If we don't have this patch, do you think this issue won't happen at 
+> all?
+> 
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+At least I've never seen this scenario these years, otherwise I would 
+have
+put up a fix.
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 8f052db1880a..2fd755d2a92d 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -85,6 +86,8 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+
-+	struct dentry *debugfs_fp;
- };
- 
- struct qmp_pd {
-@@ -541,6 +544,34 @@ struct qmp_device *qmp_get(struct device_node *np)
- }
- EXPORT_SYMBOL_GPL(qmp_get);
- 
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return len;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
-+		return len;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+	if (ret)
-+		dev_err(qmp->dev, "debug send failed, ret:%d\n", ret);
-+
-+	return len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -595,6 +626,9 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, qmp);
- 
-+	qmp->debugfs_fp = debugfs_create_file("aoss_send_message", 0220, NULL,
-+					      qmp, &aoss_dbg_fops);
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -611,6 +645,8 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+	debugfs_remove(qmp->debugfs_fp);
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks,
 
+Can Guo.
+
+>> 
+>> Thanks,
+>> 
+>> Can Guo.
+>> 
+>> >
+>> > >
+>> > > Thanks,
+>> > >
+>> > > Can Guo.
+>> > >
+>> > > >
+>> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+>> > > > ---
+>> > > >  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
+>> > > >  1 file changed, 6 insertions(+), 6 deletions(-)
+>> > > >
+>> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> > > > index cc8d5f0c3fdc..6c9269bffcbd 100644
+>> > > > --- a/drivers/scsi/ufs/ufshcd.c
+>> > > > +++ b/drivers/scsi/ufs/ufshcd.c
+>> > > > @@ -1808,19 +1808,19 @@ static ssize_t
+>> > > > ufshcd_clkgate_enable_store(struct device *dev,
+>> > > >  		return -EINVAL;
+>> > > >
+>> > > >  	value = !!value;
+>> > > > +
+>> > > > +	spin_lock_irqsave(hba->host->host_lock, flags);
+>> > > >  	if (value == hba->clk_gating.is_enabled)
+>> > > >  		goto out;
+>> > > >
+>> > > > -	if (value) {
+>> > > > -		ufshcd_release(hba);
+>> > > > -	} else {
+>> > > > -		spin_lock_irqsave(hba->host->host_lock, flags);
+>> > > > +	if (value)
+>> > > > +		__ufshcd_release(hba);
+>> > > > +	else
+>> > > >  		hba->clk_gating.active_reqs++;
+>> > > > -		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> > > > -	}
+>> > > >
+>> > > >  	hba->clk_gating.is_enabled = value;
+>> > > >  out:
+>> > > > +	spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> > > >  	return count;
+>> > > >  }
