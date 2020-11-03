@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9826E2A3DA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D8A2A3DA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgKCH1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:27:50 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7407 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCH1u (ORCPT
+        id S1727874AbgKCH2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:28:09 -0500
+Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:59148 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725968AbgKCH2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:27:50 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CQLwD6rLMz71hY;
-        Tue,  3 Nov 2020 15:27:40 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 15:27:40 +0800
-Subject: Re: [PATCH] PCI: v3: fix missing clk_disable_unprepare() on error in
- v3_pci_probe
-To:     Rob Herring <robh@kernel.org>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201030013427.54086-1-miaoqinglang@huawei.com>
- <CAL_JsqKRDBMXjkBLrJo1GGo-tM4s3gO0rASsTtXmO5b2_BO+qg@mail.gmail.com>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <8f3677d9-6443-e550-553f-d8d61e8e8241@huawei.com>
-Date:   Tue, 3 Nov 2020 15:27:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 3 Nov 2020 02:28:09 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 88E3F1730877;
+        Tue,  3 Nov 2020 07:28:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3873:3874:4321:5007:6119:7514:7875:8545:9108:10004:10400:10848:11232:11658:11914:12043:12297:12663:12740:12760:12895:13069:13072:13095:13160:13229:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21433:21451:21627:21660:21819:30003:30022:30026:30029:30030:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: blade17_1707ebf272b6
+X-Filterd-Recvd-Size: 2792
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  3 Nov 2020 07:28:07 +0000 (UTC)
+Message-ID: <e9d540c35ac04f0bb69e26d29c76c7cbd5693df8.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: improve email parsing
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Aditya Srivastava <yashsri421@gmail.com>
+Date:   Mon, 02 Nov 2020 23:28:06 -0800
+In-Reply-To: <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
+References: <20201103054810.21978-1-dwaipayanray1@gmail.com>
+         <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKRDBMXjkBLrJo1GGo-tM4s3gO0rASsTtXmO5b2_BO+qg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-11-03 at 11:28 +0530, Dwaipayan Ray wrote:
+> On Tue, Nov 3, 2020 at 11:18 AM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+> > 
+> > checkpatch doesn't report warnings for many common mistakes
+> > in emails. Some of which are trailing commas and incorrect
+> > use of email comments.
+> > 
+> > At the same time several false positives are reported due to
+> > incorrect handling of mail comments. The most common of which
+> > is due to the pattern:
+> > 
+> > <stable@vger.kernel.org> # X.X
+> > 
+> > Improve email parsing mechanism in checkpatch.
+> > 
+> > What is added:
+> > 
+> > - Support for multiple name/address comments.
+> > - Improved handling of quoted names.
+> > - Sanitize improperly formatted comments.
+> > - Sanitize trailing semicolon or dot after email.
+[]
+> What do you think? Should warnings for the names which should
+> be quoted be reported considering this result?
 
+Clearly the quote suggestion is unnecessary.
 
-在 2020/11/2 21:48, Rob Herring 写道:
-> On Thu, Oct 29, 2020 at 8:28 PM Qinglang Miao <miaoqinglang@huawei.com> wrote:
->>
->> Fix the missing clk_disable_unprepare() before return
->> from v3_pci_probe() in the error handling case.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/pci/controller/pci-v3-semi.c | 14 +++++++++++---
->>   1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
->> index 154a53986..e24abc5b4 100644
->> --- a/drivers/pci/controller/pci-v3-semi.c
->> +++ b/drivers/pci/controller/pci-v3-semi.c
->> @@ -739,8 +739,10 @@ static int v3_pci_probe(struct platform_device *pdev)
->>
->>          regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>          v3->base = devm_ioremap_resource(dev, regs);
->> -       if (IS_ERR(v3->base))
->> +       if (IS_ERR(v3->base)) {
->> +               clk_disable_unprepare(clk);
-> 
-> You can reorder things moving the clock enable later (after mapping
-> resources, but before devm_request_irq) and avoid some of these. Also
-> move this check down:
-> 
-> if (readl(v3->base + V3_LB_IO_BASE) != (regs->start >> 16))
-> 
-Hi Rob,
+I think that "cc: stable@(?:vger\.)?kernel\.org" should be
+treated differently from other forms of invalid/odd address lines.
 
-I've sent a new patch which reorder things and cover all error branches.
+My suggestion is that the case insensitive form of
 
-But I'm not sure why and where should I move this check down:
-if (readl(v3->base + V3_LB_IO_BASE) != (regs->start >> 16)).  So I 
-didn't move it in current version.
+Cc: stable@vger.kernel.org
 
-If you think it's still necessary, please let me know.
+or only another similar case insensitive forms with a
+# comment separator like
 
-Thanks.
-> 
->>                  return PTR_ERR(v3->base);
->> +       }
->>          /*
->>           * The hardware has a register with the physical base address
->>           * of the V3 controller itself, verify that this is the same
->> @@ -754,17 +756,22 @@ static int v3_pci_probe(struct platform_device *pdev)
->>          regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->>          if (resource_size(regs) != SZ_16M) {
->>                  dev_err(dev, "config mem is not 16MB!\n");
->> +               clk_disable_unprepare(clk);
->>                  return -EINVAL;
->>          }
->>          v3->config_mem = regs->start;
->>          v3->config_base = devm_ioremap_resource(dev, regs);
->> -       if (IS_ERR(v3->config_base))
->> +       if (IS_ERR(v3->config_base)) {
->> +               clk_disable_unprepare(clk);
->>                  return PTR_ERR(v3->config_base);
->> +       }
->>
->>          /* Get and request error IRQ resource */
->>          irq = platform_get_irq(pdev, 0);
->> -       if (irq < 0)
->> +       if (irq < 0) {
->> +               clk_disable_unprepare(clk);
->>                  return irq;
->> +       }
->>
->>          ret = devm_request_irq(dev, irq, v3_irq, 0,
->>                          "PCIv3 error", v3);
->> @@ -772,6 +779,7 @@ static int v3_pci_probe(struct platform_device *pdev)
->>                  dev_err(dev,
->>                          "unable to request PCIv3 error IRQ %d (%d)\n",
->>                          irq, ret);
->> +               clk_disable_unprepare(clk);
->>                  return ret;
-> 
-> You still leave the clock enabled if pci_host_probe() fails.
-> 
-> Rob
-> .
-> 
+Cc: <stable@vger.kernel.org> # some comment
+
+be acceptable for stable.
+
+All other forms with stable@ should emit some message.
+
+And other <foo>-by: and cc: addresses should only have a form like
+
+Signed-off-by: "Full.Name" (possible comment) <email@domain.tld>
+or
+Signed-off-by: Full Name (possible comment) <email@domain.tld>
+
+etc..
+
+and any additional content after .tld in the email address be flagged
+with some message like "unexpected content after email address" rather
+than "might be better as".
+
+What do you think best?
+
