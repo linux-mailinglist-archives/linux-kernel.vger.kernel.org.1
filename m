@@ -2,112 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EADD2A3FC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663222A3FDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgKCJOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:14:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbgKCJOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:14:47 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CB8020756;
-        Tue,  3 Nov 2020 09:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604394885;
-        bh=ZHBZOejCjX5l8sZRwuQR75aiAkvpCacnS9a7dm3ZHWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qln8MdI6DivkRV8z0NNzzjlNCxVzjVdA/Fv1NgjVip/n/1gFGnqFFvPb71GuAnUIO
-         /2eNbcs3wGdBPupCY+nPbaFzvLuxEUzYibz1rSSFzK875xRQ0sASb7T2390zB6JrJ9
-         /8V+j5a9jQGnLDsnL73G32hmgIebDkvEIp3AO60Y=
-Date:   Tue, 3 Nov 2020 10:15:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
-Message-ID: <20201103091538.GA2663113@kroah.com>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <20201102183242.2031659-1-yepeilin.cs@gmail.com>
- <20201103085324.GL4488@dell>
- <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
+        id S1726211AbgKCJUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:20:37 -0500
+Received: from smtpcmd0987.aruba.it ([62.149.156.87]:42265 "EHLO
+        smtpcmd0987.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCJUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:20:36 -0500
+Received: from [192.168.1.132] ([93.146.66.165])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id ZsUMk9eeRiwdrZsUMkir2k; Tue, 03 Nov 2020 10:20:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1604395231; bh=p3NYnEsBV1+gOzvEA4H7wP3MD4VfueeB7ja3XqlV1qA=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=DPtPYg8actwqXljbQjOBvwnwnM1Ff7/dTyd6BqH2rOuyZLQOI0o1JCBm6hs5A/9hg
+         TUGN0ch5GA8/HEV9tv4jSh17/KQNqwFT7eNi0LEEZGtDv73qU3rLhfcyvv7jWt6imi
+         DADrbZTiR3POX0P1dgwAtpn3xayjEEyLUICqWv1RlepWxJEy51iz+ISlPTxeexzINa
+         scH6jBS2rChASFNulGmgFVUpr8wZxV2jy1qq4jcKxp6znq6tVuHHL2slDtL/adHRJf
+         eDp/GPPNySupe5KaqZ4wprdD4aqOoEngQY5rDoKIXydZHuW8ecVt9gnVvW+5piAdRA
+         81r1ARQ+8SgRQ==
+Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
+ more secure
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        David Laight <David.Laight@aculab.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20201102111211.1047972-1-lee.jones@linaro.org>
+ <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+ <20201102114903.GN4127@dell> <20201102121150.GA663356@kroah.com>
+ <20201102124301.GC4488@dell> <20201102125910.GA1008111@kroah.com>
+ <20201102134729.GD4488@dell>
+ <9f10500a-cfd7-bcbe-7b8e-edd49ab4d43c@enneenne.com>
+ <20201103085726.GN4488@dell>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <82957cb2-0ad0-8b26-cfdc-2482efb3f7b5@enneenne.com>
+Date:   Tue, 3 Nov 2020 10:20:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
+In-Reply-To: <20201103085726.GN4488@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfO4mtq8keX3eKwLVlULaMK/t6hE2iJWGNFpCR/+9VEEoOJvwzgnIGNgkigcAf3Lj0gOrxKMVQLx/PGt8aZEYkn7LyzeCv7RWqHecIuKY3bYPUvHDHiBK
+ dd4NPvf3Tg5oQf60A+4lNRJ3l7+oi/3L6N6d6MDjdrlSGgGlH5q8hZVwsQS8w15i8QJGhqa68ih5IOqpqwxrzZtsz7p2xqQYPizOj54jWrGs9nTXNHpYrUtM
+ wiV1QViy/63O0fSXApBZUYy9L5zNosTTvffetNl7kX18ptL/6qLXlULYvRtp2SErZ81LBo923kMgQLGY36S6rQzdcu/SJljDn4a9Cui8wpC/VcnmGsNRENVO
+ LPOP3hVlg0OZEuSkIiOWuRXnEglf4Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:58:18AM +0100, Daniel Vetter wrote:
-> On Tue, Nov 3, 2020 at 9:53 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Mon, 02 Nov 2020, Peilin Ye wrote:
-> >
-> > > From: Lee Jones <lee.jones@linaro.org>
-> > >
-> > > Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
-> > > fonts") introduced the following error when building rpc_defconfig (only
-> > > this build appears to be affected):
-> > >
-> > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-> > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-> > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
-> > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
-> > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
-> > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
-> > >
-> > > The .data section is discarded at link time.  Reinstating acorndata_8x8 as
-> > > const ensures it is still available after linking.  Do the same for the
-> > > other 12 built-in fonts as well, for consistency purposes.
-> > >
-> > > Cc: <stable@vger.kernel.org>
-> > > Cc: Russell King <linux@armlinux.org.uk>
-> > > Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > > ---
-> > > Changes in v2:
-> > >   - Fix commit ID to 6735b4632def in commit message (Russell King
-> > >     <linux@armlinux.org.uk>)
-> > >   - Add `const` back for all 13 built-in fonts (Daniel Vetter
-> > >     <daniel.vetter@ffwll.ch>)
-> > >   - Add a Fixes: tag
-> > >
-> > >  lib/fonts/font_10x18.c     | 2 +-
-> > >  lib/fonts/font_6x10.c      | 2 +-
-> > >  lib/fonts/font_6x11.c      | 2 +-
-> > >  lib/fonts/font_6x8.c       | 2 +-
-> > >  lib/fonts/font_7x14.c      | 2 +-
-> > >  lib/fonts/font_8x16.c      | 2 +-
-> > >  lib/fonts/font_8x8.c       | 2 +-
-> > >  lib/fonts/font_acorn_8x8.c | 2 +-
-> > >  lib/fonts/font_mini_4x6.c  | 2 +-
-> > >  lib/fonts/font_pearl_8x8.c | 2 +-
-> > >  lib/fonts/font_sun12x22.c  | 2 +-
-> > >  lib/fonts/font_sun8x16.c   | 2 +-
-> > >  lib/fonts/font_ter16x32.c  | 2 +-
-> > >  13 files changed, 13 insertions(+), 13 deletions(-)
-> >
-> > LGTM.
-> >
-> > Thanks for keeping my authorship.  Much appreciated.
+On 03/11/2020 09:57, Lee Jones wrote:
+> On Mon, 02 Nov 2020, Rodolfo Giometti wrote:
 > 
-> Should I stuff this into drm-misc-fixes? Or will someone else pick
-> this up? Greg?
+>> On 02/11/2020 14:47, Lee Jones wrote:
+>>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+>>>
+>>>> On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
+>>>>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+>>>>>
+>>>>>> On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
+>>>>>>> On Mon, 02 Nov 2020, David Laight wrote:
+>>>>>>>
+>>>>>>>> From: Lee Jones
+>>>>>>>>> Sent: 02 November 2020 11:12
+>>>>>>>>>
+>>>>>>>>> strncpy() may not provide a NUL terminator, which means that a 1-byte
+>>>>>>>>> leak would be possible *if* this was ever copied to userspace.  Ensure
+>>>>>>>>> the buffer will always be NUL terminated by using the kernel's
+>>>>>>>>> strscpy() which a) uses the destination (instead of the source) size
+>>>>>>>>> as the bytes to copy and b) is *always* NUL terminated.
+>>>>>>>>>
+>>>>>>>>> Cc: Rodolfo Giometti <giometti@enneenne.com>
+>>>>>>>>> Cc: "Eurotech S.p.A" <info@eurotech.it>
+>>>>>>>>> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>>>>>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>>>>>>>> ---
+>>>>>>>>>  drivers/misc/c2port/core.c | 2 +-
+>>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+>>>>>>>>> index 80d87e8a0bea9..b96444ec94c7e 100644
+>>>>>>>>> --- a/drivers/misc/c2port/core.c
+>>>>>>>>> +++ b/drivers/misc/c2port/core.c
+>>>>>>>>> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+>>>>>>>>>  	}
+>>>>>>>>>  	dev_set_drvdata(c2dev->dev, c2dev);
+>>>>>>>>>
+>>>>>>>>> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+>>>>>>>>> +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+>>>>>>>>
+>>>>>>>> strscpy() doesn't zero fill so if the memory isn't zeroed
+>>>>>>>> and a 'blind' copy to user of the structure is done
+>>>>>>>> then more data is leaked.
+>>>>>>>>
+>>>>>>>> strscpy() may be better, but rational isn't right.
+>>>>>>>
+>>>>>>> The original patch zeroed the data too, but I was asked to remove that
+>>>>>>> part [0].  In your opinion, should it be reinstated?
+>>>>>>>
+>>>>>>> [0] https://lore.kernel.org/patchwork/patch/1272290/
+>>>>>>
+>>>>>> Just keep the kzalloc() part of the patch, this portion makes no sense
+>>>>>> to me.
+>>>>>
+>>>>> Can do.
+>>>>>
+>>>>>> But if you REALLY want to get it correct, call dev_set_name()
+>>>>>> instead please, as that is what it is there for.
+>>>>>
+>>>>> The line above isn't setting the 'struct device' name.  It looks as
+>>>>> though 'struct c2port' has it's own member, also called 'name'.  As to
+>>>>> how they differ, I'm not currently aware.  Nor do I wish to mess
+>>>>> around with the semantics all that much.
+>>>>>
+>>>>> Going with suggestion #1.
+>>>>
+>>>> As the "device" already has a name, I suggest just getting rid of this
+>>>> name field anyway, no need for duplicates.
+>>>
+>>> That definitely goes against the point I made above:
+>>>
+>>>  "Nor do I wish to mess around with the semantics all that much."
+>>>
+>>> It looks as though the device name 'c2port%d' varies greatly to the
+>>> requested name 'uc'.  I don't have enough knowledge of how user-
+>>> space expects to use the provided sysfs entries to be able to
+>>> competently merge/decide which of these should be kept and which to
+>>> discard.
+>>>
+>>> Hopefully one of the authors/maintainers are reading this and can come
+>>> up with an acceptable solution.
+>>
+>> User-space usage can change its behavior so, please, consider the best solution
+>> from the kernel space point-of-view. :)
 > 
-> I guess drm-misc-fixes might be easiest since there's a bunch of other
-> fbcon/font stuff in the queue in drm-misc from Peilin.
+> If you're sure, I can add it to my TODO.
 
-You can take it:
+Yes, no problem!
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ciao,
+
+Rodolfo
+
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
