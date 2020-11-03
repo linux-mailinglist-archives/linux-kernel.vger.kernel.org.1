@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6223F2A5741
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3002A571E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732772AbgKCVkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:40:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58280 "EHLO mail.kernel.org"
+        id S1732741AbgKCU4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:56:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732721AbgKCU43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:29 -0500
+        id S1732732AbgKCU4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5FC820732;
-        Tue,  3 Nov 2020 20:56:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D2182053B;
+        Tue,  3 Nov 2020 20:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436989;
-        bh=jCh3GPxe7Xy+C+hwntiI4Tqu9vycF/OM7TydPDkmcTw=;
+        s=default; t=1604436991;
+        bh=te4H7KDbiguDBzWhtYno9Wfee3FJDvyCwukbvBPGZIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBri5T3EBXnza1BqRQRGQLX7WzZNXkyFOpuV3Z5qiKFaPaiC/utp7PR4E3ZwhhrQV
-         4trJPxiymTE+R12EbzdK9/nES+u/yyIuA0JkgMwiOWCjXHik8jw5fjYYvzhMIVYN4D
-         DRYltOs2YVvi49NwQcx1kMoFGeFrmJtBREDjHHPw=
+        b=yQfBuRWHLlsUbn3yiM/emJgdeYAB45Bq8dLtEdGdb4GN1Da8M3RWCS1KDsD61t5IY
+         RMQMzPL4R+OJ7FxV6cjcd2IgDTFfpAwlbWEsOhTRFwgl53v499x281Pgd0QoEpYyP5
+         w0XTTD0Qwr490kIZAemZoTPeqWYoU2QJg6JsOtpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raul E Rangel <rrangel@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 098/214] mmc: sdhci-acpi: AMDI0040: Set SDHCI_QUIRK2_PRESET_VALUE_BROKEN
-Date:   Tue,  3 Nov 2020 21:35:46 +0100
-Message-Id: <20201103203259.699593182@linuxfoundation.org>
+        stable@vger.kernel.org, Tycho Andersen <tycho@tycho.pizza>,
+        Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 099/214] seccomp: Make duplicate listener detection non-racy
+Date:   Tue,  3 Nov 2020 21:35:47 +0100
+Message-Id: <20201103203259.806931684@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -43,80 +42,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raul E Rangel <rrangel@chromium.org>
+From: Jann Horn <jannh@google.com>
 
-commit f23cc3ba491af77395cea3f9d51204398729f26b upstream.
+commit dfe719fef03d752f1682fa8aeddf30ba501c8555 upstream.
 
-This change fixes HS400 tuning for devices with invalid presets.
+Currently, init_listener() tries to prevent adding a filter with
+SECCOMP_FILTER_FLAG_NEW_LISTENER if one of the existing filters already
+has a listener. However, this check happens without holding any lock that
+would prevent another thread from concurrently installing a new filter
+(potentially with a listener) on top of the ones we already have.
 
-SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
-used for DDR52. The HS400 retuning sequence is:
+Theoretically, this is also a data race: The plain load from
+current->seccomp.filter can race with concurrent writes to the same
+location.
 
-    HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
+Fix it by moving the check into the region that holds the siglock to guard
+against concurrent TSYNC.
 
-This means that when HS400 tuning happens, we transition through DDR52
-for a very brief period. This causes presets to be enabled
-unintentionally and stay enabled when transitioning back to HS200 or
-HS400. Some firmware has invalid presets, so we end up with driver
-strengths that can cause I/O problems.
+(The "Fixes" tag points to the commit that introduced the theoretical
+data race; concurrent installation of another filter with TSYNC only
+became possible later, in commit 51891498f2da ("seccomp: allow TSYNC and
+USER_NOTIF together").)
 
-Fixes: 34597a3f60b1 ("mmc: sdhci-acpi: Add support for ACPI HID of AMD Controller with HS400")
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
+Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20201005014401.490175-1-jannh@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci-acpi.c |   37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ kernel/seccomp.c |   38 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
---- a/drivers/mmc/host/sdhci-acpi.c
-+++ b/drivers/mmc/host/sdhci-acpi.c
-@@ -658,6 +658,43 @@ static int sdhci_acpi_emmc_amd_probe_slo
- 	    (host->mmc->caps & MMC_CAP_1_8V_DDR))
- 		host->mmc->caps2 = MMC_CAP2_HS400_1_8V;
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1219,13 +1219,7 @@ static const struct file_operations secc
  
-+	/*
-+	 * There are two types of presets out in the wild:
-+	 * 1) Default/broken presets.
-+	 *    These presets have two sets of problems:
-+	 *    a) The clock divisor for SDR12, SDR25, and SDR50 is too small.
-+	 *       This results in clock frequencies that are 2x higher than
-+	 *       acceptable. i.e., SDR12 = 25 MHz, SDR25 = 50 MHz, SDR50 =
-+	 *       100 MHz.x
-+	 *    b) The HS200 and HS400 driver strengths don't match.
-+	 *       By default, the SDR104 preset register has a driver strength of
-+	 *       A, but the (internal) HS400 preset register has a driver
-+	 *       strength of B. As part of initializing HS400, HS200 tuning
-+	 *       needs to be performed. Having different driver strengths
-+	 *       between tuning and operation is wrong. It results in different
-+	 *       rise/fall times that lead to incorrect sampling.
-+	 * 2) Firmware with properly initialized presets.
-+	 *    These presets have proper clock divisors. i.e., SDR12 => 12MHz,
-+	 *    SDR25 => 25 MHz, SDR50 => 50 MHz. Additionally the HS200 and
-+	 *    HS400 preset driver strengths match.
-+	 *
-+	 *    Enabling presets for HS400 doesn't work for the following reasons:
-+	 *    1) sdhci_set_ios has a hard coded list of timings that are used
-+	 *       to determine if presets should be enabled.
-+	 *    2) sdhci_get_preset_value is using a non-standard register to
-+	 *       read out HS400 presets. The AMD controller doesn't support this
-+	 *       non-standard register. In fact, it doesn't expose the HS400
-+	 *       preset register anywhere in the SDHCI memory map. This results
-+	 *       in reading a garbage value and using the wrong presets.
-+	 *
-+	 *       Since HS400 and HS200 presets must be identical, we could
-+	 *       instead use the the SDR104 preset register.
-+	 *
-+	 *    If the above issues are resolved we could remove this quirk for
-+	 *    firmware that that has valid presets (i.e., SDR12 <= 12 MHz).
-+	 */
-+	host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+ static struct file *init_listener(struct seccomp_filter *filter)
+ {
+-	struct file *ret = ERR_PTR(-EBUSY);
+-	struct seccomp_filter *cur;
+-
+-	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
+-		if (cur->notif)
+-			goto out;
+-	}
++	struct file *ret;
+ 
+ 	ret = ERR_PTR(-ENOMEM);
+ 	filter->notif = kzalloc(sizeof(*(filter->notif)), GFP_KERNEL);
+@@ -1252,6 +1246,31 @@ out:
+ 	return ret;
+ }
+ 
++/*
++ * Does @new_child have a listener while an ancestor also has a listener?
++ * If so, we'll want to reject this filter.
++ * This only has to be tested for the current process, even in the TSYNC case,
++ * because TSYNC installs @child with the same parent on all threads.
++ * Note that @new_child is not hooked up to its parent at this point yet, so
++ * we use current->seccomp.filter.
++ */
++static bool has_duplicate_listener(struct seccomp_filter *new_child)
++{
++	struct seccomp_filter *cur;
 +
- 	host->mmc_host_ops.select_drive_strength = amd_select_drive_strength;
- 	host->mmc_host_ops.set_ios = amd_set_ios;
- 	host->mmc_host_ops.execute_tuning = amd_sdhci_execute_tuning;
++	/* must be protected against concurrent TSYNC */
++	lockdep_assert_held(&current->sighand->siglock);
++
++	if (!new_child->notif)
++		return false;
++	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
++		if (cur->notif)
++			return true;
++	}
++
++	return false;
++}
++
+ /**
+  * seccomp_set_mode_filter: internal function for setting seccomp filter
+  * @flags:  flags to change filter behavior
+@@ -1321,6 +1340,11 @@ static long seccomp_set_mode_filter(unsi
+ 	if (!seccomp_may_assign_mode(seccomp_mode))
+ 		goto out;
+ 
++	if (has_duplicate_listener(prepared)) {
++		ret = -EBUSY;
++		goto out;
++	}
++
+ 	ret = seccomp_attach_filter(flags, prepared);
+ 	if (ret)
+ 		goto out;
 
 
