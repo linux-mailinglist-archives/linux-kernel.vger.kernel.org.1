@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A222A42CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4593A2A42E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgKCKeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:34:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728621AbgKCKef (ORCPT
+        id S1728182AbgKCKfW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 05:35:22 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:60260 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725988AbgKCKfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:34:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604399674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NeyfLxLqbPXnSVbIXerlFIoWQVVpshnlirjJvDi476c=;
-        b=MXLKW2eqIxXz/kMc4QgmxEJjHXl1yOpHlfTmO0N7cZfXWo3CkvaC8t1xhtF+GKGKJSTDCZ
-        0CsQvIdCI0S3/0X+ONuE+W44rb3pAXz0wovT5m5joLoxRZ7cHWSDqQ3bXvL43Zbl3yxaNJ
-        SV8VQus5Ynhb5e1gWRtoImaDVkSx6kk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-9pmT0jXYPpibXCdCo9ZU8g-1; Tue, 03 Nov 2020 05:34:30 -0500
-X-MC-Unique: 9pmT0jXYPpibXCdCo9ZU8g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95DB580B72B;
-        Tue,  3 Nov 2020 10:34:27 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAB611C4;
-        Tue,  3 Nov 2020 10:34:23 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/4] aarch64: Use mmap to add PROT_BTI instead of
- mprotect [BZ #26831]
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
-        <f5eaa74cb7538382b2fd2439755386ac68f7c8db.1604393169.git.szabolcs.nagy@arm.com>
-Date:   Tue, 03 Nov 2020 11:34:22 +0100
-In-Reply-To: <f5eaa74cb7538382b2fd2439755386ac68f7c8db.1604393169.git.szabolcs.nagy@arm.com>
-        (Szabolcs Nagy's message of "Tue, 3 Nov 2020 10:26:29 +0000")
-Message-ID: <87v9embufl.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 3 Nov 2020 05:35:19 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-233-2rsIwucwNt6IOklb3brp3w-1; Tue, 03 Nov 2020 10:35:14 +0000
+X-MC-Unique: 2rsIwucwNt6IOklb3brp3w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 3 Nov 2020 10:35:13 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 3 Nov 2020 10:35:13 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Chao Yu' <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: RE: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Thread-Topic: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Thread-Index: AQHWsYo6GU/sZ9yvlUirgmcRS3PqXKm2M3MA
+Date:   Tue, 3 Nov 2020 10:35:13 +0000
+Message-ID: <aa11afd31edb42979c03d2a27ed9e850@AcuMS.aculab.com>
+References: <20201102122333.76667-1-yuchao0@huawei.com>
+ <20201102163123.GD529594@google.com>
+ <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
+ <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
+In-Reply-To: <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Szabolcs Nagy:
+From: Chao Yu
+> Sent: 03 November 2020 02:37
+...
+> >> Do we need to change fsck.f2fs to recover this?
+> 
+> However, we don't know which one is correct, compressed data or chksum value?
+> if compressed data was corrupted, repairing chksum value doesn't help.
+> 
+> Or how about adding chksum values for both raw data and compressed data.
 
-> Re-mmap executable segments if possible instead of using mprotect
-> to add PROT_BTI. This allows using BTI protection with security
-> policies that prevent mprotect with PROT_EXEC.
->
-> If the fd of the ELF module is not available because it was kernel
-> mapped then mprotect is used and failures are ignored.  It is
-> expected that linux kernel will add PROT_BTI when mapping a module
-> (current linux as of version 5.9 does not do this).
->
-> Computing the mapping parameters follows the logic of
-> _dl_map_object_from_fd more closely now.
+What errors are you trying to detect?
 
-What's the performance of this on execve-heavy workloads, such as kernel
-or glibc builds?  Hopefully it's cheap because these mappings have not
-been faulted in yet.
+If there are errors in the data then 'fixing' the checksum is pointless.
+(You've got garbage data - might as well not have the checksum).
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+If you are worried about the implementation of the compression
+algorithm then a checksum of the raw data is needed.
+
+If you want to try error correcting burst errors in the compressed
+data then a crc of the compressed data can be used for error correction.
+
+OTOH the most likely error is that the file meta-data and data sector
+weren't both committed to disk when the system crashed.
+In which case the checksum has done its job and the file is corrupt.
+fsck should probably move the file to 'lost+found' for manual checking.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
