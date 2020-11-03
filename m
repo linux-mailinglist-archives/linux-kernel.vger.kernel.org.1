@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69992A57EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034682A5801
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731978AbgKCUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46670 "EHLO mail.kernel.org"
+        id S1732974AbgKCVrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:47:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731971AbgKCUv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:28 -0500
+        id S1731962AbgKCUvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7953620719;
-        Tue,  3 Nov 2020 20:51:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C24B22053B;
+        Tue,  3 Nov 2020 20:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436688;
-        bh=wVLLopMnkUunpVigXiTm5cdhAoAq2FHLPwHRt6HrWNA=;
+        s=default; t=1604436690;
+        bh=Tpe9V9+Ce0Apl347M+XtbWasUJ1aIj3qNAf92SdisEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a+dS2TxD/ow9madbE4zZeDbvhishV/a/WWnuOOFCfErOJUIy9tgaPyzpt32p8tXYq
-         JKNjfiTF6tOYDRlivc63NcxC5vW1hB30lklzUaltOCgY5dxbawFbEsL8MBhss5qqVU
-         hgPbe/JNVcsggccO6mkPBwOa/7OkjQb8vcB2lw1g=
+        b=y0CM61Hhu8uhJCofbzub9LW3nS1NN0LB3c6snZbSnOKhGPC0oRCEhIUfqTF5yKU0+
+         ZbdFl4gqr7YCeHEXPOLIUFqlXQ3SpF/FbZqLux3d6jmExxAVr8fhRvtGP2GBogFNQQ
+         qwpYZ3SQAokdrUGSGfiCGJWLJpUWJMry82+EfvI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        stable@vger.kernel.org, Likun Gao <Likun.Gao@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.9 360/391] drm/amd/psp: Fix sysfs: cannot create duplicate filename
-Date:   Tue,  3 Nov 2020 21:36:51 +0100
-Message-Id: <20201103203411.429637272@linuxfoundation.org>
+Subject: [PATCH 5.9 361/391] drm/amdgpu: correct the cu and rb info for sienna cichlid
+Date:   Tue,  3 Nov 2020 21:36:52 +0100
+Message-Id: <20201103203411.499157211@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,35 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+From: Likun Gao <Likun.Gao@amd.com>
 
-commit f1bcddffe46b349a82445a8d9efd5f5fcb72557f upstream.
+commit 687e79c0feb4243b141b1e9a20adba3c0ec66f7f upstream.
 
-psp sysfs not cleaned up on driver unload for sienna_cichlid
+Skip disabled sa to correct the cu_info and active_rbs for sienna cichlid.
 
-Fixes: ce87c98db428e7 ("drm/amdgpu: Include sienna_cichlid in USBC PD FW support.")
-Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Likun Gao <Likun.Gao@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org # 5.9.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-@@ -206,7 +206,8 @@ static int psp_sw_fini(void *handle)
- 		adev->psp.ta_fw = NULL;
- 	}
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -4537,12 +4537,17 @@ static void gfx_v10_0_setup_rb(struct am
+ 	int i, j;
+ 	u32 data;
+ 	u32 active_rbs = 0;
++	u32 bitmap;
+ 	u32 rb_bitmap_width_per_sh = adev->gfx.config.max_backends_per_se /
+ 					adev->gfx.config.max_sh_per_se;
  
--	if (adev->asic_type == CHIP_NAVI10)
-+	if (adev->asic_type == CHIP_NAVI10 ||
-+	    adev->asic_type == CHIP_SIENNA_CICHLID)
- 		psp_sysfs_fini(adev);
- 
- 	return 0;
+ 	mutex_lock(&adev->grbm_idx_mutex);
+ 	for (i = 0; i < adev->gfx.config.max_shader_engines; i++) {
+ 		for (j = 0; j < adev->gfx.config.max_sh_per_se; j++) {
++			bitmap = i * adev->gfx.config.max_sh_per_se + j;
++			if ((adev->asic_type == CHIP_SIENNA_CICHLID) &&
++			    ((gfx_v10_3_get_disabled_sa(adev) >> bitmap) & 1))
++				continue;
+ 			gfx_v10_0_select_se_sh(adev, i, j, 0xffffffff);
+ 			data = gfx_v10_0_get_rb_active_bitmap(adev);
+ 			active_rbs |= data << ((i * adev->gfx.config.max_sh_per_se + j) *
+@@ -8761,6 +8766,10 @@ static int gfx_v10_0_get_cu_info(struct
+ 	mutex_lock(&adev->grbm_idx_mutex);
+ 	for (i = 0; i < adev->gfx.config.max_shader_engines; i++) {
+ 		for (j = 0; j < adev->gfx.config.max_sh_per_se; j++) {
++			bitmap = i * adev->gfx.config.max_sh_per_se + j;
++			if ((adev->asic_type == CHIP_SIENNA_CICHLID) &&
++			    ((gfx_v10_3_get_disabled_sa(adev) >> bitmap) & 1))
++				continue;
+ 			mask = 1;
+ 			ao_bitmap = 0;
+ 			counter = 0;
 
 
