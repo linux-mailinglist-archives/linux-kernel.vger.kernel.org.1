@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0F92A5340
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25382A50FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733073AbgKCU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
+        id S1729656AbgKCUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:37:08 -0500
+Received: from mga14.intel.com ([192.55.52.115]:43072 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733052AbgKCU7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:05 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39B4222226;
-        Tue,  3 Nov 2020 20:59:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437144;
-        bh=nKmsieHP+Q5iP8RVEYxwtSZMk69vmjd3cYIPI16zKf0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puNZKkSaIvRKpb3fQ25GgCUTP9EtQHCKLKs/eZMXExHfrPtGe3BMl0HFQvnRjDvX+
-         FYOHE8NompNOO28MfdJWWr8NvPXaR7FFnI65MQr0Z+SA+mgYMpT8SKA+qByN0O1F3m
-         n0zjBUqxoiqUV7eARHEo3P5hLH1lJx/vZQmezsBM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: [PATCH 5.4 166/214] NFSD: Add missing NFSv2 .pc_func methods
-Date:   Tue,  3 Nov 2020 21:36:54 +0100
-Message-Id: <20201103203306.337882350@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729585AbgKCUhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:37:02 -0500
+IronPort-SDR: 94Kk2mYrv18X6qDMOqRq2i2n5qi6U+pVocgGW8Je74GJrY/ooNaNOLX8kQijBJlj+xhgw9LW6Z
+ GlVwKVooFYtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="168335730"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="168335730"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:37:01 -0800
+IronPort-SDR: EHvYHLukS0D03UUpC/qD2N7PKwqkcpo49siycse5WSH9eerqoxyJ074+xbRnzMh3YCPEGRMeHJ
+ Qj/ws4DxzFdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="320565288"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 12:36:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1A46A89F; Tue,  3 Nov 2020 22:36:56 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v5 6/7] PCI/ACPI: Replace open coded variant of resource_union()
+Date:   Tue,  3 Nov 2020 22:36:54 +0200
+Message-Id: <20201103203655.17701-7-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
+References: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+Since we have resource_union() helper, let's utilize it here.
 
-commit 6b3dccd48de8a4c650b01499a0b09d1e2279649e upstream.
-
-There's no protection in nfsd_dispatch() against a NULL .pc_func
-helpers. A malicious NFS client can trigger a crash by invoking the
-unused/unsupported NFSv2 ROOT or WRITECACHE procedures.
-
-The current NFSD dispatcher does not support returning a void reply
-to a non-NULL procedure, so the reply to both of these is wrong, for
-the moment.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- fs/nfsd/nfsproc.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/acpi/pci_root.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/fs/nfsd/nfsproc.c
-+++ b/fs/nfsd/nfsproc.c
-@@ -118,6 +118,13 @@ done:
- 	return nfsd_return_attrs(nfserr, resp);
- }
- 
-+/* Obsolete, replaced by MNTPROC_MNT. */
-+static __be32
-+nfsd_proc_root(struct svc_rqst *rqstp)
-+{
-+	return nfs_ok;
-+}
-+
- /*
-  * Look up a path name component
-  * Note: the dentry in the resp->fh may be negative if the file
-@@ -203,6 +210,13 @@ nfsd_proc_read(struct svc_rqst *rqstp)
- 	return fh_getattr(&resp->fh, &resp->stat);
- }
- 
-+/* Reserved */
-+static __be32
-+nfsd_proc_writecache(struct svc_rqst *rqstp)
-+{
-+	return nfs_ok;
-+}
-+
- /*
-  * Write data to a file
-  * N.B. After this call resp->fh needs an fh_put
-@@ -617,6 +631,7 @@ static const struct svc_procedure nfsd_p
- 		.pc_xdrressize = ST+AT,
- 	},
- 	[NFSPROC_ROOT] = {
-+		.pc_func = nfsd_proc_root,
- 		.pc_decode = nfssvc_decode_void,
- 		.pc_encode = nfssvc_encode_void,
- 		.pc_argsize = sizeof(struct nfsd_void),
-@@ -654,6 +669,7 @@ static const struct svc_procedure nfsd_p
- 		.pc_xdrressize = ST+AT+1+NFSSVC_MAXBLKSIZE_V2/4,
- 	},
- 	[NFSPROC_WRITECACHE] = {
-+		.pc_func = nfsd_proc_writecache,
- 		.pc_decode = nfssvc_decode_void,
- 		.pc_encode = nfssvc_encode_void,
- 		.pc_argsize = sizeof(struct nfsd_void),
-
+diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+index c12b5fb3e8fb..0bf072cef6cf 100644
+--- a/drivers/acpi/pci_root.c
++++ b/drivers/acpi/pci_root.c
+@@ -722,9 +722,7 @@ static void acpi_pci_root_validate_resources(struct device *dev,
+ 			 * our resources no longer match the ACPI _CRS, but
+ 			 * the kernel resource tree doesn't allow overlaps.
+ 			 */
+-			if (resource_overlaps(res1, res2)) {
+-				res2->start = min(res1->start, res2->start);
+-				res2->end = max(res1->end, res2->end);
++			if (resource_union(res1, res2, res2)) {
+ 				dev_info(dev, "host bridge window expanded to %pR; %pR ignored\n",
+ 					 res2, res1);
+ 				free = true;
+-- 
+2.28.0
 
