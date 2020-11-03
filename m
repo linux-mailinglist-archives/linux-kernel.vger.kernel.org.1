@@ -2,83 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FF02A4AF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEB42A4A97
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgKCQPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:15:00 -0500
-Received: from mga06.intel.com ([134.134.136.31]:3252 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgKCQO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:14:59 -0500
-IronPort-SDR: tcd1DVBA6GpzwLkeCqBcXYbf++tR9LPnxZfGAHlAkvaN5ecPEOG1GS+xLjtva1XGs2gllDCKPi
- /coqEmOuVQRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="230709170"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="230709170"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:14:58 -0800
-IronPort-SDR: O2DhVTMd6e778exoN8PgT9cKVFe6JJwL6CN3YdTAaIhxsJYlVAmSvFH6r9usWVHX086eEYTB2a
- iKok52xZcMAA==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="528532324"
-Received: from ctanriov-mobl1.amr.corp.intel.com (HELO [10.212.114.78]) ([10.212.114.78])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:14:58 -0800
-Subject: Re: [PATCH v2 3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets
- and route
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org
-References: <20201029110829.16425-1-srinivas.kandagatla@linaro.org>
- <20201029110829.16425-4-srinivas.kandagatla@linaro.org>
- <3300f31e-28d1-becf-41e7-814b38082dcb@linux.intel.com>
- <b21abfab-108e-50f4-f905-5d9d0fc5168b@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <798ac8de-2d04-9966-6104-9a676730f44c@linux.intel.com>
-Date:   Tue, 3 Nov 2020 09:51:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <b21abfab-108e-50f4-f905-5d9d0fc5168b@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1727883AbgKCQCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727385AbgKCQCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:02:24 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBF6C061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:02:24 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z24so14027667pgk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=8p0zAqijMFY2LZHySc9B1ski8j200B9xN63VufhvfZE=;
+        b=WUvK9hiBfaewCF9lu/rnHA/ky1TO9SLKq5ubWrc5NfyBQalP1EDJFCgB620q5hzm8P
+         w7RqbA90o7pWxpiD+JQTGkZj/vELhrwHlo53vmxaXkdrHs56KSdUT8cmWchK9SdOLPsb
+         MIyRS6VCBLK3GkPdVZpsjiuVJ8eZo29MM7dRDd/oC3PF2hJu9WHHNg8Q3/eeqDnEVe8M
+         u5s/UYCObUpv8BdQ2ssY0JMUat1++qs66Y2pTlhfDXutXg95e2WmlZ0amNC2BUaQsQfu
+         T+70gsyMITdKOD5SRY5wpAN6KRH2geAbi9LnGmLunPGcay45ZutIZULvHh8iF/s+a1Js
+         Z2xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8p0zAqijMFY2LZHySc9B1ski8j200B9xN63VufhvfZE=;
+        b=SLZOrbfVbbiTma0ShVAOrb/taSUlItdt77Eu7b1K32pQU52VQhBILw5Kk421+QDq67
+         QzIVU0XGbF3vm4qtJZq9wIPdiAPp4qKx38L2d0s83gw58ON/TDEwgEpy33CL/xssRLqQ
+         VDEJvSQAlIsmWU6Pebp1YN9OxFK+gUzW0MSPGsnEfDGkA5lU02Mjab1Xh0SVGZJzcaGh
+         FcGHz+Kxhq3CqngnfChTiX8vj0hrYZNzX1wVy0wKm0/mwMugRC+vwvduyZgzyhN1nNQr
+         QgYL7ysC9zuoP/T6GuG+x9j0Lrc4Vz+uVQE+M3Yzmkok88PwNDK5hv9z8hXHzIjK0lqM
+         08fA==
+X-Gm-Message-State: AOAM533hY978qBWNRFLRrQXAr8IMBH3Tk2VWqJ9BzhcE4nCFObQ4Gm3P
+        eVDgUS8Zh8V8bUrczFebKGNrUw==
+X-Google-Smtp-Source: ABdhPJzP+u5vyjCsNCaso/eSJbT/0D07SqbTdgo7fO1H1p7jSMwcJ3JjzNbr2nmtIaOIuGQqaoxE5Q==
+X-Received: by 2002:a63:5466:: with SMTP id e38mr17855102pgm.23.1604419343676;
+        Tue, 03 Nov 2020 08:02:23 -0800 (PST)
+Received: from localhost.localdomain ([122.173.169.225])
+        by smtp.gmail.com with ESMTPSA id j140sm8471006pfd.216.2020.11.03.08.02.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Nov 2020 08:02:22 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v8 0/4] Introduce TEE based Trusted Keys support
+Date:   Tue,  3 Nov 2020 21:31:42 +0530
+Message-Id: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for TEE based trusted keys where TEE provides the functionality
+to seal and unseal trusted keys using hardware unique key. Also, this is
+an alternative in case platform doesn't possess a TPM device.
 
+This patch-set has been tested with OP-TEE based early TA which is already
+merged in upstream [1].
 
->>> +static bool wsa_macro_adie_lb(struct snd_soc_component *component,
->>> +                  int interp_idx)
->>> +{
->>> +    u16 int_mux_cfg0 = 0, int_mux_cfg1 = 0;
->>
->> these inits are ignored
->>
->>> +    u8 int_mux_cfg0_val = 0, int_mux_cfg1_val = 0;
->>
->> these as well
->>
->>> +    u8 int_n_inp0 = 0, int_n_inp1 = 0, int_n_inp2 = 0;
->>
->> and these are also ignored.
->>
-> Yes, these are ignored, I should have removed the unnecessary 
-> initialization!
-> It would have been nice if sparse could catch such errors!
-> 
-> are you using tool to catch these?
+[1] https://github.com/OP-TEE/optee_os/commit/f86ab8e7e0de869dfa25ca05a37ee070d7e5b86b
 
-make W=1 and cppcheck.
+Changes in v8:
+1. Added static calls support instead of indirect calls.
+2. Documented trusted keys source module parameter.
+3. Refined patch #1 commit message discription.
+4. Addressed misc. comments on patch #2.
+5. Added myself as Trusted Keys co-maintainer instead.
+6. Rebased to latest tpmdd master.
 
-"
-Run cppcheck on this sort of code:
+Changes in v7:
+1. Added a trusted.source module parameter in order to enforce user's
+   choice in case a particular platform posses both TPM and TEE.
+2. Refine commit description for patch #1.
 
-cppcheck --platform=unix32 --force --max-configs=1024 --inconclusive
---enable=all --suppress=variableScope sound/soc/codecs/lpass-wsa-macro.c
-"
+Changes in v6:
+1. Revert back to dynamic detection of trust source.
+2. Drop author mention from trusted_core.c and trusted_tpm1.c files.
+3. Rebased to latest tpmdd/master.
+
+Changes in v5:
+1. Drop dynamic detection of trust source and use compile time flags
+   instead.
+2. Rename trusted_common.c -> trusted_core.c.
+3. Rename callback: cleanup() -> exit().
+4. Drop "tk" acronym.
+5. Other misc. comments.
+6. Added review tags for patch #3 and #4.
+
+Changes in v4:
+1. Pushed independent TEE features separately:
+  - Part of recent TEE PR: https://lkml.org/lkml/2020/5/4/1062
+2. Updated trusted-encrypted doc with TEE as a new trust source.
+3. Rebased onto latest tpmdd/master.
+
+Changes in v3:
+1. Update patch #2 to support registration of multiple kernel pages.
+2. Incoporate dependency patch #4 in this patch-set:
+   https://patchwork.kernel.org/patch/11091435/
+
+Changes in v2:
+1. Add reviewed-by tags for patch #1 and #2.
+2. Incorporate comments from Jens for patch #3.
+3. Switch to use generic trusted keys framework.
+
+Sumit Garg (4):
+  KEYS: trusted: Add generic trusted keys framework
+  KEYS: trusted: Introduce TEE based Trusted Keys
+  doc: trusted-encrypted: updates with TEE as a new trust source
+  MAINTAINERS: Add myself as Trusted Keys co-maintainer
+
+ Documentation/admin-guide/kernel-parameters.txt   |  12 +
+ Documentation/security/keys/trusted-encrypted.rst | 203 +++++++++++--
+ MAINTAINERS                                       |   2 +
+ include/keys/trusted-type.h                       |  47 +++
+ include/keys/trusted_tee.h                        |  55 ++++
+ include/keys/trusted_tpm.h                        |  17 +-
+ security/keys/trusted-keys/Makefile               |   2 +
+ security/keys/trusted-keys/trusted_core.c         | 354 ++++++++++++++++++++++
+ security/keys/trusted-keys/trusted_tee.c          | 278 +++++++++++++++++
+ security/keys/trusted-keys/trusted_tpm1.c         | 336 ++++----------------
+ 10 files changed, 979 insertions(+), 327 deletions(-)
+ create mode 100644 include/keys/trusted_tee.h
+ create mode 100644 security/keys/trusted-keys/trusted_core.c
+ create mode 100644 security/keys/trusted-keys/trusted_tee.c
+
+-- 
+2.7.4
+
