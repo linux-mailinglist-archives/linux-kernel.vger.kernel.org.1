@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C0A2A49B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0639F2A49B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 16:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgKCPaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 10:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        id S1728787AbgKCPaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 10:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbgKCP3n (ORCPT
+        with ESMTP id S1728660AbgKCP3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:29:43 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2635C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:29:42 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s9so18990972wro.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:29:42 -0800 (PST)
+        Tue, 3 Nov 2020 10:29:44 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213D8C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 07:29:44 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id a9so18973954wrg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:29:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MFpjk4zX/2wadqqqsM0maoUWA+IXg/GlxrDq3yCnAFA=;
-        b=Qkv/V/csOn9qV3pYb6lVPgWvEdd3Ta8GDAq86IVNAUc3c0jR6XNImUocikmt93rRg2
-         h1Gyw2dnX6+eku//9wJYPUfZDgdiZRw8yMNfhxwLvZyJR7/rgIpW8JHwUhGw+JQ+/01l
-         JRpT/oiFbltYm10ijlqHJ5+3lKj2M+nEQSvVXJe+ieToN2rbOJSYzmNLewUITApjxA99
-         KI71SXemg3k+zgI3lASOaj//Tf42Pjyc2/Da0Hc3n6eyPIypsQtkyzSNoDFQ8TpgLJfW
-         O2nf19pS/jbIlnE9RfqOtyWG3BpGwjS5NSWttgumNXbln287Z4zPVmVQChWlnaCc47Uy
-         Wm+A==
+        bh=qtstZ8Ss1ZAgmytvl8BCDCnRUt17GN9LrR/wkx5bkhc=;
+        b=JaziDNI2dZRnNVL5YCwTqVWJum+QZWTUU+vs6VYmxJT7BLEQH5posc6/WC0AWBKwwX
+         4EA5q8jb1aDG1Qx8mSIZIvnF38Fmo9qbDB+CflrTNa5NulvbCNZXnBF9VEZQT8KG7DxU
+         6+3I7zAk4NLRGqNIWxSsf7NVHdlBanIQn/093/L5uzkRt/gwwkBjtCbRLH8IZ9FOlvIe
+         4mAv1E7ipUbKi6Ug07SR2idrs0IX2STzlguTxLvcvRsHMYITCo9255Iv6zU2eRFF1R3e
+         NrSz765fBbjXJUk3Nfjy2gOSshWI1nJKMnhi+SZ6rf/XcpwkS7M6bwWro1jkNr6bymOa
+         aDZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MFpjk4zX/2wadqqqsM0maoUWA+IXg/GlxrDq3yCnAFA=;
-        b=co6U6+1YwCkYG0R4UMg896RV+LoxmUUfDioAEEf9Ur8LtQiVI8+rWSsGuhsddNcnfa
-         bUdsrGLz9xMumFCu030byyngQ+v56cb5GK+OK786YxrYdGoHblew3ZBDDt1U0hXlXbPo
-         KNM+XfcTG9pQscHP62kRvdp6DB1Qb7VUATOd82vyr+wdH7nYuW0d9BUs3vt8Qm9EM0+m
-         7UOGcoi/TMRFRMFyhngORaFufYDypP674CKYuiXowkcYCVViVeuv5pzz9P3aAuDi1zcR
-         AMwrnfhGIBOqjeYySrYlxjd9PZT059J+Za7oB1h+l3ajIy7/xCL5FiwKy+gzVZdTvTqn
-         LxQQ==
-X-Gm-Message-State: AOAM533etggFDCcN6C6lfgJ43Qq72i/OEZ0Ckf/XA7VACXi7rmFMTiF0
-        Rwi3/+2x3E8czvj0fXc8CFpBqQ==
-X-Google-Smtp-Source: ABdhPJyApWsuQrwG87jrLEV9umSx+qWrIi0rU75XA05LIQc9vRCphOrnl1PsoRjfi3qvIDo9fZrhSA==
-X-Received: by 2002:a5d:664b:: with SMTP id f11mr25450929wrw.195.1604417381575;
-        Tue, 03 Nov 2020 07:29:41 -0800 (PST)
+        bh=qtstZ8Ss1ZAgmytvl8BCDCnRUt17GN9LrR/wkx5bkhc=;
+        b=A7u4rJYpotyGgFq0FAwOqU9CvpVmd86e//Jh9Zyj/bbPgN399s3A2FsyqIWeDJUJO2
+         XujLvVcVmTUNGKJGC6fI4cZPWNPyDsRsDLqFiyCi7J2k1QvX/Vt4tolZGhCm525nRaZN
+         1m2w4+7gDjYoQWr51wYaDNNlCo5HaUeKHtAKaLVlHfY7xcJIy5DFl8fIJAFuf8nkD5p/
+         3A7Vpf/gt12Q/sI3Ts5aclitCqLWiGJBGks/JpyE/DC75jz5BTxCNahhNaG8HxQUolbo
+         F4IHdrChiBylXuXWL7hgjXFBTriLARH4zv6AH/gnqDYsey0NuJRrGwLdEaZP46P1GkWD
+         3AhQ==
+X-Gm-Message-State: AOAM5334W5EY5ZQfiRZbg2UXIv9Kmgs1EHKnU4pOr8g/XFyX0qtY+jG3
+        9EN9AijdMqtYWrz/X3YZlmgM9g==
+X-Google-Smtp-Source: ABdhPJwfFIvO98y22nwny1fM75XJYeVuQtBFhjTRJDvug6VV5vIaDlVpdV8Lsm6ohJKNfWsYSxQtRg==
+X-Received: by 2002:adf:c101:: with SMTP id r1mr25707250wre.87.1604417382870;
+        Tue, 03 Nov 2020 07:29:42 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id j127sm3491779wma.31.2020.11.03.07.29.40
+        by smtp.gmail.com with ESMTPSA id j127sm3491779wma.31.2020.11.03.07.29.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 07:29:40 -0800 (PST)
+        Tue, 03 Nov 2020 07:29:42 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH 24/25] soc: tegra: fuse: speedo-tegra210: Remove a group of set but unused variables
-Date:   Tue,  3 Nov 2020 15:28:37 +0000
-Message-Id: <20201103152838.1290217-25-lee.jones@linaro.org>
+        Li Yang <leoyang.li@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 25/25] soc: fsl: qbman: qman: Remove unused variable 'dequeue_wq'
+Date:   Tue,  3 Nov 2020 15:28:38 +0000
+Message-Id: <20201103152838.1290217-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201103152838.1290217-1-lee.jones@linaro.org>
 References: <20201103152838.1290217-1-lee.jones@linaro.org>
@@ -69,45 +68,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/soc/tegra/fuse/speedo-tegra210.c: In function ‘tegra210_init_speedo_data’:
- drivers/soc/tegra/fuse/speedo-tegra210.c:105:56: warning: variable ‘soc_iddq’ set but not used [-Wunused-but-set-variable]
- drivers/soc/tegra/fuse/speedo-tegra210.c:105:46: warning: variable ‘gpu_iddq’ set but not used [-Wunused-but-set-variable]
- drivers/soc/tegra/fuse/speedo-tegra210.c:105:36: warning: variable ‘cpu_iddq’ set but not used [-Wunused-but-set-variable]
+ drivers/soc/fsl/qbman/qman.c: In function ‘qman_shutdown_fq’:
+ drivers/soc/fsl/qbman/qman.c:2700:8: warning: variable ‘dequeue_wq’ set but not used [-Wunused-but-set-variable]
 
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-tegra@vger.kernel.org
+Cc: Li Yang <leoyang.li@nxp.com>
+Cc: YueHaibing <yuehaibing@huawei.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/soc/tegra/fuse/speedo-tegra210.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/soc/fsl/qbman/qman.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soc/tegra/fuse/speedo-tegra210.c b/drivers/soc/tegra/fuse/speedo-tegra210.c
-index 70d3f6e1aa33d..7f2cc09a00bbf 100644
---- a/drivers/soc/tegra/fuse/speedo-tegra210.c
-+++ b/drivers/soc/tegra/fuse/speedo-tegra210.c
-@@ -102,7 +102,7 @@ static int get_process_id(int value, const u32 *speedos, unsigned int num)
+diff --git a/drivers/soc/fsl/qbman/qman.c b/drivers/soc/fsl/qbman/qman.c
+index 9888a70618730..62b182c3a8b04 100644
+--- a/drivers/soc/fsl/qbman/qman.c
++++ b/drivers/soc/fsl/qbman/qman.c
+@@ -2622,7 +2622,7 @@ int qman_shutdown_fq(u32 fqid)
+ 	union qm_mc_command *mcc;
+ 	union qm_mc_result *mcr;
+ 	int orl_empty, drain = 0, ret = 0;
+-	u32 channel, wq, res;
++	u32 channel, res;
+ 	u8 state;
  
- void __init tegra210_init_speedo_data(struct tegra_sku_info *sku_info)
- {
--	int cpu_speedo[3], soc_speedo[3], cpu_iddq, gpu_iddq, soc_iddq;
-+	int cpu_speedo[3], soc_speedo[3];
- 	unsigned int index;
- 	u8 speedo_revision;
+ 	p = get_affine_portal();
+@@ -2655,7 +2655,7 @@ int qman_shutdown_fq(u32 fqid)
+ 	DPAA_ASSERT((mcr->verb & QM_MCR_VERB_MASK) == QM_MCR_VERB_QUERYFQ);
+ 	/* Need to store these since the MCR gets reused */
+ 	channel = qm_fqd_get_chan(&mcr->queryfq.fqd);
+-	wq = qm_fqd_get_wq(&mcr->queryfq.fqd);
++	qm_fqd_get_wq(&mcr->queryfq.fqd);
  
-@@ -122,9 +122,9 @@ void __init tegra210_init_speedo_data(struct tegra_sku_info *sku_info)
- 	soc_speedo[1] = tegra_fuse_read_early(FUSE_SOC_SPEEDO_1);
- 	soc_speedo[2] = tegra_fuse_read_early(FUSE_SOC_SPEEDO_2);
+ 	if (channel < qm_channel_pool1) {
+ 		channel_portal = get_portal_for_channel(channel);
+@@ -2697,7 +2697,6 @@ int qman_shutdown_fq(u32 fqid)
+ 			 * to dequeue from the channel the FQ is scheduled on
+ 			 */
+ 			int found_fqrn = 0;
+-			u16 dequeue_wq = 0;
  
--	cpu_iddq = tegra_fuse_read_early(FUSE_CPU_IDDQ) * 4;
--	soc_iddq = tegra_fuse_read_early(FUSE_SOC_IDDQ) * 4;
--	gpu_iddq = tegra_fuse_read_early(FUSE_GPU_IDDQ) * 5;
-+	tegra_fuse_read_early(FUSE_CPU_IDDQ);
-+	tegra_fuse_read_early(FUSE_SOC_IDDQ);
-+	tegra_fuse_read_early(FUSE_GPU_IDDQ);
- 
- 	/*
- 	 * Determine CPU, GPU and SoC speedo values depending on speedo fusing
+ 			/* Flag that we need to drain FQ */
+ 			drain = 1;
+@@ -2705,11 +2704,8 @@ int qman_shutdown_fq(u32 fqid)
+ 			if (channel >= qm_channel_pool1 &&
+ 			    channel < qm_channel_pool1 + 15) {
+ 				/* Pool channel, enable the bit in the portal */
+-				dequeue_wq = (channel -
+-					      qm_channel_pool1 + 1)<<4 | wq;
+ 			} else if (channel < qm_channel_pool1) {
+ 				/* Dedicated channel */
+-				dequeue_wq = wq;
+ 			} else {
+ 				dev_err(dev, "Can't recover FQ 0x%x, ch: 0x%x",
+ 					fqid, channel);
 -- 
 2.25.1
 
