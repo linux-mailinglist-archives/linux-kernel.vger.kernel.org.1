@@ -2,561 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C7B2A5ABD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 00:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D492A5AC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 00:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgKCXuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 18:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729836AbgKCXuF (ORCPT
+        id S1730037AbgKCXuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 18:50:37 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57470 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729980AbgKCXuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 18:50:05 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A4DC061A48
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 15:50:05 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id w79so6376268pfc.14
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 15:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=YuPVXPIs+oAF6nqulwmCCATyWXqtM2SPNUrSYxxwjxA=;
-        b=mqW/fAgViGjqPiPoJdO0pG6Z9l7sQ2LOlHf7VRbzIvcHqW8WZc5a+8/MjKWsE0xu+3
-         v21UyF9J9GNpwRZgEGW8R9vV8PDju+3MGLUlzkn0y5Gc5IVsxUmP0+jCzqR44N1uBaAJ
-         HkfdOLNaRkU6F4C+VWZHGrEj0o/vdxzzoOgG2YpkaTcoP7X0DhSMYCy42yuCUtpz3rZp
-         8gzMSkn5a6k4vn1hU7GZODB+6gsPzUioM91J1/BElMClXqOVHBNSIsupsFZHalt518Bt
-         K+u9+HKinBawN2aJ29h4F9So2xNGVca83H8nzFJXBp2HPpohTgz49O5nWRwmsDM9dLK9
-         XSIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YuPVXPIs+oAF6nqulwmCCATyWXqtM2SPNUrSYxxwjxA=;
-        b=BUwI31drwugGWEQdDrVWMDdLa+vrzwgboDEpqIV1p2Asv5CuVngjux4ew1zt5UIj+u
-         FoNP/CfGitE9zaMXDUqy7FAIcoEOkg+sTObyEkcHuJiZEFtLBG/p33O2jJhEhWnMega5
-         d8J+nRjCQuOqN7YTrgZB7ZM37BIpuk4syDyQH/Eii83rPHJ7t3+t3wRtvNeVnuaTt6+X
-         fUiZGhAsyjpXPu0+e8yXh8/TLHsLUT4uxH9k5vU/jm5+H7N4wdrnN4+8PNplaaFybBfT
-         xK5C2D+SKum8B1ELT7/xTfWxrzxcJ+svFlOPFklCNPZG2iNDsoZGoSxMqtJlVLy/53CN
-         +PSw==
-X-Gm-Message-State: AOAM533F/VjrKKnknmvVl+s3sEynpgoDXGzFhCSnFME6N9QoaH4iWrKB
-        GEexdqiS5qr9SinSkV4hzgNql1lVRzN46Saviiz8RoZGjApipptewwM9PXDf86bB4637E5jlJIT
-        YBNYA1mHmkcVx6+GCKvfSDAfHlV8UIko5VkSYJC6rMNULpaj9JcVlOP0k20DTN5VuimwkuteH
-X-Google-Smtp-Source: ABdhPJwApRdOkDio9W8rKcaGzvmtUQxK0nL250NtfMQgrMUOx2Y5xG9zq6Tdot8+tbEbQXBXF0Qv5EPaDIjz
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90a:9b15:: with SMTP id
- f21mr237591pjp.0.1604447403892; Tue, 03 Nov 2020 15:50:03 -0800 (PST)
-Date:   Tue,  3 Nov 2020 15:49:52 -0800
-In-Reply-To: <20201103234952.1626730-1-bgardon@google.com>
-Message-Id: <20201103234952.1626730-6-bgardon@google.com>
-Mime-Version: 1.0
-References: <20201103234952.1626730-1-bgardon@google.com>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v2 5/5] KVM: selftests: Introduce the dirty log perf test
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 3 Nov 2020 18:50:37 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A3NjPus000307;
+        Tue, 3 Nov 2020 15:50:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=o8dtlvx9Uda4O/HWJ5IWsuarcMNdMlOcyoPCxmVO+DM=;
+ b=RD/cnoFi9TxJRREkvczK8hUkvodh4OCLSzTjLDc2Ro75B9i5mY49TG5NguPKk3trIKQb
+ FQMnaRzOLMBs2wS72GXdMWx5JYb5atns9HW0+4u9O2LhkRcN9V2JLEq3XARGYmBBs6gF
+ FqzBFLJfCC+Eyyfh/riXoLZCveipfXkkNU0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 34k9k3b5wf-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 03 Nov 2020 15:50:19 -0800
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 3 Nov 2020 15:50:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KCHNSY8B9q9TcD+kWiFk0xwaw/H702i5JwXcJ2JmETZrdNNq6c0D0T62HnKQNNUU7WevKcpMhbseookQH8rKEnLBSH7DAObVPdN5pcGvk7tu4Jj2ip95ObC5thd3tG4ok74Xqikz8mUeydOh+fza7a0K1LxmJnhw1ExVKczOn0tL76ur1cEv0JjE/OQrZCaCdJlp/QD2Q1IhO8v2O5OkVIEPnO9d2uS5vRXckMiNe2giAF+1RepUMslTp3iEJLuFuUMtFBIsId1XQFfFCs+/hmObfcp5tM7eeuzfFUJFM1H40av6qLeEsiWxYHnn4/B8UfxfaIGe/md1DXyh1wFfhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o8dtlvx9Uda4O/HWJ5IWsuarcMNdMlOcyoPCxmVO+DM=;
+ b=O2cqD9Kn98GI5vjAYjrAtusovHLKzB6Cm3gUJlonSvsJJteB77+D6OGUTnRmrOF/IMnwaBQ0nnxMlzksfu2TJmJYbpL7xNKq0/zKUJLxHmU01KKNTovqLxzJhDK4wlgJnksAYDBP7tRWezxT0+/dMzwRgSYbLqqLivhhPw6dYzHQl4YbCg1pA9gT4W6HEmpDZqD+A8QWJ7itwlE4YYfBS2mnUwreDyeRhPuN9bRgQd2ZCyGzvKMRUCt63EaChjkhsusd8awNQo0/ECBMM+R2QGol0vVwDI6aTEDmQ33u/6rSarnqtgH5HBm3bQi8g9ZQXJcTcSsvyJoHcCrBo6+1PQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o8dtlvx9Uda4O/HWJ5IWsuarcMNdMlOcyoPCxmVO+DM=;
+ b=Pl754GIqYe+yakjNkxAfF1shUw0Szar2l6oWMwxKs8VPjRG8edj5RQpYRENGIflrgZv8kA0dnICZ3R6TLEkrVIxCtdR6VUqNC76wR2uVG0ZY1dopL/F/jHyRyB2B9ClpjaIhEtYCZbWHd4CU0000jbGL/KPfX0dEVpklkRYxzFM=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2408.namprd15.prod.outlook.com (2603:10b6:a02:85::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Tue, 3 Nov
+ 2020 23:50:17 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 23:50:17 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v2 3/8] bpftool: Add support for task local
+ storage
+Thread-Topic: [PATCH bpf-next v2 3/8] bpftool: Add support for task local
+ storage
+Thread-Index: AQHWsfZ4Nw1Elb1/MES4VzBqzrlwoqm3FDsA
+Date:   Tue, 3 Nov 2020 23:50:17 +0000
+Message-ID: <583FEE32-93BF-42AB-9EDB-621F5417470C@fb.com>
+References: <20201103153132.2717326-1-kpsingh@chromium.org>
+ <20201103153132.2717326-4-kpsingh@chromium.org>
+In-Reply-To: <20201103153132.2717326-4-kpsingh@chromium.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:ca49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 61113745-7e1a-4162-31b0-08d88053375d
+x-ms-traffictypediagnostic: BYAPR15MB2408:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2408FB18A1CB116EEA58F15AB3110@BYAPR15MB2408.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:103;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JlEWs43VCTWSjMayetVtmUmfB5qgX4ibRBgpz7cNoq6arLPd3w+guWo8iZc9/etRyQv2gi8h61lG7WR8SGPMsBk2jGEuBnSgVhWJ1kij2VwV8Ldrge7jPu85TRtRlDx1j6iNjK04S+1RRPA8TG+F8cW4ZspkVtU2EDRc8YZrDYbYUj7S2oZDUTBtPJ3QJiUZH7daomW1DmQwmK/A/kGRGbZ2PN6HWbuEQUYhG0zj4PAzglMXBXUft1oHA2JTfIBEsfrxbeVwhawcM31p2zS5ZkJWj/bv84ri3LRNx3bbCSx2geFUHnNK6yExzTNej5zP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39860400002)(316002)(76116006)(6512007)(36756003)(5660300002)(8676002)(4326008)(71200400001)(54906003)(33656002)(91956017)(6506007)(66556008)(8936002)(64756008)(66946007)(66446008)(6486002)(66476007)(53546011)(478600001)(2906002)(6916009)(83380400001)(86362001)(2616005)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: FtM8hx+5b3xHirrvdompBKF8hJ4akkMxQz3WgzFwnLCE1+qoNy5XUWgOepLBuRT+MkavHC+QspQItfRYkPZAiAEfp0FIwRbcGoDTBxwFxiOcFjQk0h4WZWMqsH94imVDDTTxHf+qGWaPDPErx3yVQKi8vDIOOlonFoY/PxwPDwv+8IW3jfvZcVCvopwmHSGR54yMS1xYL1B60ovCfR8MPsz/2iALUGmGm/5Tef9Tq6bdnxIirRhsMxGIWaU68IqlO9C0/rxYS91Kd1OtlmXIiuCkNj4MByyDIz/B3kH6V38Bo+yuRLcOoyOeiNrpTPQOXOEdTF63xfLaTg0/WE8YsxAlWx36qwJiWF9/zNCeoRPt+hIVwcQ8kKB1O8qqncBJm5rD612S7Y50a5TU+m1CP5TBwoa5QnMJ1KPErm0anV4M/+Z3RHE9D2dyTXuVG6BqYRI7C+vY0NASIT6WO9y7EW+5Vlm7Pjf4wodn/b9hpoCx6kFEwLGXTMM/JWQleCW+BNCyQ7tVYtRMo3rfmRXR2NL+iarzehB43NC4+oMGTe15OtGvdg+Jy/P5xZXe4hd5F9ZdBHE69ik3HMGJ0U2vOBFohdlXNpXjfYACPD79U4s9o0x/CjO1jBJGmfqEn+K60zdJI5QPjXABMDIS8Z8RKiBlN/isdLh5PhiGwpR/HMPljfYak1yqVIKH8hyUI5p6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <191BFA141698134FA0A5B8603DB4429A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61113745-7e1a-4162-31b0-08d88053375d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 23:50:17.1111
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iSoXZT4Y84BJsh8wjGvbVUwrL7bg7lQgEB17fMLxaz50RzpA2Qb0e80dn7Ts8ootsW2ZIdH/O/M6ChQvmaCDLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2408
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_17:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ adultscore=0 malwarescore=0 clxscore=1015 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030157
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dirty log perf test will time verious dirty logging operations
-(enabling dirty logging, dirtying memory, getting the dirty log,
-clearing the dirty log, and disabling dirty logging) in order to
-quantify dirty logging performance. This test can be used to inform
-future performance improvements to KVM's dirty logging infrastructure.
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/dirty_log_perf_test.c       | 381 ++++++++++++++++++
- .../testing/selftests/kvm/include/test_util.h |   1 +
- .../selftests/kvm/lib/perf_test_util.c        |  18 +-
- tools/testing/selftests/kvm/lib/test_util.c   |   7 +
- 6 files changed, 401 insertions(+), 8 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/dirty_log_perf_test.c
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index d2c2d6205008c..c8adc4f6e8f6c 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -24,6 +24,7 @@
- /clear_dirty_log_test
- /demand_paging_test
- /dirty_log_test
-+/dirty_log_perf_test
- /kvm_create_max_vcpus
- /set_memory_region_test
- /steal_time
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 9b2bebb64175b..518ca3edafa29 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -63,6 +63,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/user_msr_test
- TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
-+TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
- TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
- TEST_GEN_PROGS_x86_64 += set_memory_region_test
- TEST_GEN_PROGS_x86_64 += steal_time
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-new file mode 100644
-index 0000000000000..bfbfec2313e22
---- /dev/null
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -0,0 +1,381 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KVM dirty page logging performance test
-+ *
-+ * Based on dirty_log_test.c
-+ *
-+ * Copyright (C) 2018, Red Hat, Inc.
-+ * Copyright (C) 2020, Google, Inc.
-+ */
-+
-+#define _GNU_SOURCE /* for program_invocation_name */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <time.h>
-+#include <pthread.h>
-+#include <linux/bitmap.h>
-+#include <linux/bitops.h>
-+
-+#include "kvm_util.h"
-+#include "perf_test_util.h"
-+#include "processor.h"
-+#include "test_util.h"
-+
-+/* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
-+#define TEST_HOST_LOOP_N		2UL
-+
-+#define DEFAULT_VCPU_MEMORY_BYTES (1UL << 30) /* 1G */
-+
-+/* Host variables */
-+static bool host_quit;
-+static int iteration;
-+static int vcpu_last_completed_iteration[MAX_VCPUS];
-+
-+static void *vcpu_worker(void *data)
-+{
-+	int ret;
-+	struct kvm_vm *vm = perf_test_args.vm;
-+	uint64_t pages_count = 0;
-+	struct kvm_run *run;
-+	struct timespec start;
-+	struct timespec ts_diff;
-+	struct timespec total = (struct timespec){0};
-+	struct timespec avg;
-+	struct vcpu_args *vcpu_args = (struct vcpu_args *)data;
-+	int vcpu_id = vcpu_args->vcpu_id;
-+
-+	vcpu_args_set(vm, vcpu_id, 1, vcpu_id);
-+	run = vcpu_state(vm, vcpu_id);
-+
-+	while (!READ_ONCE(host_quit)) {
-+		int current_iteration = READ_ONCE(iteration);
-+
-+		clock_gettime(CLOCK_MONOTONIC, &start);
-+		ret = _vcpu_run(vm, vcpu_id);
-+		ts_diff = timespec_elapsed(start);
-+
-+		TEST_ASSERT(ret == 0, "vcpu_run failed: %d\n", ret);
-+		TEST_ASSERT(get_ucall(vm, vcpu_id, NULL) == UCALL_SYNC,
-+			    "Invalid guest sync status: exit_reason=%s\n",
-+			    exit_reason_str(run->exit_reason));
-+
-+		pr_debug("Got sync event from vCPU %d\n", vcpu_id);
-+		vcpu_last_completed_iteration[vcpu_id] = current_iteration;
-+		pr_debug("vCPU %d updated last completed iteration to %d\n",
-+			 vcpu_id, vcpu_last_completed_iteration[vcpu_id]);
-+
-+		if (current_iteration) {
-+			pages_count += vcpu_args->pages;
-+			total = timespec_add(total, ts_diff);
-+			pr_debug("vCPU %d iteration %d dirty memory time: %ld.%.9lds\n",
-+				vcpu_id, current_iteration, ts_diff.tv_sec,
-+				ts_diff.tv_nsec);
-+		} else {
-+			pr_debug("vCPU %d iteration %d populate memory time: %ld.%.9lds\n",
-+				vcpu_id, current_iteration, ts_diff.tv_sec,
-+				ts_diff.tv_nsec);
-+		}
-+
-+		while (current_iteration == READ_ONCE(iteration) &&
-+		       !READ_ONCE(host_quit)) {}
-+	}
-+
-+	avg = timespec_div(total, vcpu_last_completed_iteration[vcpu_id]);
-+	pr_debug("\nvCPU %d dirtied 0x%lx pages over %d iterations in %ld.%.9lds. (Avg %ld.%.9lds/iteration)\n",
-+		vcpu_id, pages_count, vcpu_last_completed_iteration[vcpu_id],
-+		total.tv_sec, total.tv_nsec, avg.tv_sec, avg.tv_nsec);
-+
-+	return NULL;
-+}
-+
-+#ifdef USE_CLEAR_DIRTY_LOG
-+static u64 dirty_log_manual_caps;
-+#endif
-+
-+static void run_test(enum vm_guest_mode mode, unsigned long iterations,
-+		     uint64_t phys_offset, int vcpus,
-+		     uint64_t vcpu_memory_bytes, int wr_fract)
-+{
-+	pthread_t *vcpu_threads;
-+	struct kvm_vm *vm;
-+	unsigned long *bmap;
-+	uint64_t guest_num_pages;
-+	uint64_t host_num_pages;
-+	int vcpu_id;
-+	struct timespec start;
-+	struct timespec ts_diff;
-+	struct timespec get_dirty_log_total = (struct timespec){0};
-+	struct timespec vcpu_dirty_total = (struct timespec){0};
-+	struct timespec avg;
-+#ifdef USE_CLEAR_DIRTY_LOG
-+	struct kvm_enable_cap cap = {};
-+	struct timespec clear_dirty_log_total = (struct timespec){0};
-+#endif
-+
-+	perf_test_args.wr_fract = wr_fract;
-+
-+	vm = create_vm(mode, vcpus, vcpu_memory_bytes);
-+
-+	guest_num_pages = (vcpus * vcpu_memory_bytes) >> vm_get_page_shift(vm);
-+	guest_num_pages = vm_adjust_num_guest_pages(mode, guest_num_pages);
-+	host_num_pages = vm_num_host_pages(mode, guest_num_pages);
-+	bmap = bitmap_alloc(host_num_pages);
-+
-+#ifdef USE_CLEAR_DIRTY_LOG
-+	cap.cap = KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2;
-+	cap.args[0] = dirty_log_manual_caps;
-+	vm_enable_cap(vm, &cap);
-+#endif
-+
-+	vcpu_threads = malloc(vcpus * sizeof(*vcpu_threads));
-+	TEST_ASSERT(vcpu_threads, "Memory allocation failed");
-+
-+
-+	/* Start the iterations */
-+	iteration = 0;
-+	host_quit = false;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++) {
-+		vcpu_last_completed_iteration[vcpu_id] = -1;
-+
-+		pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
-+			       &perf_test_args.vcpu_args[vcpu_id]);
-+	}
-+
-+	/* Allow the vCPUs to populate memory */
-+	pr_debug("Starting iteration %d - Populating\n", iteration);
-+	for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++) {
-+		while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) !=
-+		       iteration) {}
-+	}
-+
-+	ts_diff = timespec_elapsed(start);
-+	pr_info("Populate memory time: %ld.%.9lds\n",
-+		ts_diff.tv_sec, ts_diff.tv_nsec);
-+
-+	/* Enable dirty logging */
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	vm_mem_region_set_flags(vm, TEST_MEM_SLOT_INDEX,
-+				KVM_MEM_LOG_DIRTY_PAGES);
-+	ts_diff = timespec_elapsed(start);
-+	pr_info("Enabling dirty logging time: %ld.%.9lds\n\n",
-+		ts_diff.tv_sec, ts_diff.tv_nsec);
-+
-+	while (iteration < iterations) {
-+		/*
-+		 * Incrementing the iteration number will start the vCPUs
-+		 * dirtying memory again.
-+		 */
-+		clock_gettime(CLOCK_MONOTONIC, &start);
-+		iteration++;
-+
-+		pr_debug("Starting iteration %d\n", iteration);
-+		for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++) {
-+			while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) !=
-+			       iteration) {}
-+		}
-+
-+		ts_diff = timespec_elapsed(start);
-+		vcpu_dirty_total = timespec_add(vcpu_dirty_total, ts_diff);
-+		pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
-+			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
-+
-+		clock_gettime(CLOCK_MONOTONIC, &start);
-+		kvm_vm_get_dirty_log(vm, TEST_MEM_SLOT_INDEX, bmap);
-+
-+		ts_diff = timespec_elapsed(start);
-+		get_dirty_log_total = timespec_add(get_dirty_log_total,
-+						   ts_diff);
-+		pr_info("Iteration %d get dirty log time: %ld.%.9lds\n",
-+			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
-+
-+#ifdef USE_CLEAR_DIRTY_LOG
-+		clock_gettime(CLOCK_MONOTONIC, &start);
-+		kvm_vm_clear_dirty_log(vm, TEST_MEM_SLOT_INDEX, bmap, 0,
-+				       host_num_pages);
-+
-+		ts_diff = timespec_elapsed(start);
-+		clear_dirty_log_total = timespec_add(clear_dirty_log_total,
-+						     ts_diff);
-+		pr_info("Iteration %d clear dirty log time: %ld.%.9lds\n",
-+			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
-+#endif
-+	}
-+
-+	/* Tell the vcpu thread to quit */
-+	host_quit = true;
-+	for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++)
-+		pthread_join(vcpu_threads[vcpu_id], NULL);
-+
-+	/* Disable dirty logging */
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	vm_mem_region_set_flags(vm, TEST_MEM_SLOT_INDEX, 0);
-+	ts_diff = timespec_elapsed(start);
-+	pr_info("Disabling dirty logging time: %ld.%.9lds\n",
-+		ts_diff.tv_sec, ts_diff.tv_nsec);
-+
-+	avg = timespec_div(get_dirty_log_total, iterations);
-+	pr_info("Get dirty log over %lu iterations took %ld.%.9lds. (Avg %ld.%.9lds/iteration)\n",
-+		iterations, get_dirty_log_total.tv_sec,
-+		get_dirty_log_total.tv_nsec, avg.tv_sec, avg.tv_nsec);
-+
-+#ifdef USE_CLEAR_DIRTY_LOG
-+	avg = timespec_div(clear_dirty_log_total, iterations);
-+	pr_info("Clear dirty log over %lu iterations took %ld.%.9lds. (Avg %ld.%.9lds/iteration)\n",
-+		iterations, clear_dirty_log_total.tv_sec,
-+		clear_dirty_log_total.tv_nsec, avg.tv_sec, avg.tv_nsec);
-+#endif
-+
-+	free(bmap);
-+	free(vcpu_threads);
-+	ucall_uninit(vm);
-+	kvm_vm_free(vm);
-+}
-+
-+struct guest_mode {
-+	bool supported;
-+	bool enabled;
-+};
-+static struct guest_mode guest_modes[NUM_VM_MODES];
-+
-+#define guest_mode_init(mode, supported, enabled) ({ \
-+	guest_modes[mode] = (struct guest_mode){ supported, enabled }; \
-+})
-+
-+static void help(char *name)
-+{
-+	int i;
-+
-+	puts("");
-+	printf("usage: %s [-h] [-i iterations] [-p offset] "
-+	       "[-m mode] [-b vcpu bytes] [-v vcpus]\n", name);
-+	puts("");
-+	printf(" -i: specify iteration counts (default: %"PRIu64")\n",
-+	       TEST_HOST_LOOP_N);
-+	printf(" -p: specify guest physical test memory offset\n"
-+	       "     Warning: a low offset can conflict with the loaded test code.\n");
-+	printf(" -m: specify the guest mode ID to test "
-+	       "(default: test all supported modes)\n"
-+	       "     This option may be used multiple times.\n"
-+	       "     Guest mode IDs:\n");
-+	for (i = 0; i < NUM_VM_MODES; ++i) {
-+		printf("         %d:    %s%s\n", i, vm_guest_mode_string(i),
-+		       guest_modes[i].supported ? " (supported)" : "");
-+	}
-+	printf(" -b: specify the size of the memory region which should be\n"
-+	       "     dirtied by each vCPU. e.g. 10M or 3G.\n"
-+	       "     (default: 1G)\n");
-+	printf(" -f: specify the fraction of pages which should be written to\n"
-+	       "     as opposed to simply read, in the form\n"
-+	       "     1/<fraction of pages to write>.\n"
-+	       "     (default: 1 i.e. all pages are written to.)\n");
-+	printf(" -v: specify the number of vCPUs to run.\n");
-+	puts("");
-+	exit(0);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	unsigned long iterations = TEST_HOST_LOOP_N;
-+	uint64_t vcpu_memory_bytes = DEFAULT_VCPU_MEMORY_BYTES;
-+	bool mode_selected = false;
-+	uint64_t phys_offset = 0;
-+	unsigned int mode;
-+	int opt, i;
-+	int wr_fract = 1;
-+	int vcpus = 1;
-+
-+#ifdef USE_CLEAR_DIRTY_LOG
-+	dirty_log_manual_caps =
-+		kvm_check_cap(KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2);
-+	if (!dirty_log_manual_caps) {
-+		print_skip("KVM_CLEAR_DIRTY_LOG not available");
-+		exit(KSFT_SKIP);
-+	}
-+	dirty_log_manual_caps &= (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE |
-+				  KVM_DIRTY_LOG_INITIALLY_SET);
-+#endif
-+
-+#ifdef __x86_64__
-+	guest_mode_init(VM_MODE_PXXV48_4K, true, true);
-+#endif
-+#ifdef __aarch64__
-+	guest_mode_init(VM_MODE_P40V48_4K, true, true);
-+	guest_mode_init(VM_MODE_P40V48_64K, true, true);
-+
-+	{
-+		unsigned int limit = kvm_check_cap(KVM_CAP_ARM_VM_IPA_SIZE);
-+
-+		if (limit >= 52)
-+			guest_mode_init(VM_MODE_P52V48_64K, true, true);
-+		if (limit >= 48) {
-+			guest_mode_init(VM_MODE_P48V48_4K, true, true);
-+			guest_mode_init(VM_MODE_P48V48_64K, true, true);
-+		}
-+	}
-+#endif
-+#ifdef __s390x__
-+	guest_mode_init(VM_MODE_P40V48_4K, true, true);
-+#endif
-+
-+	while ((opt = getopt(argc, argv, "hi:p:m:b:f:v:")) != -1) {
-+		switch (opt) {
-+		case 'i':
-+			iterations = strtol(optarg, NULL, 10);
-+			break;
-+		case 'p':
-+			phys_offset = strtoull(optarg, NULL, 0);
-+			break;
-+		case 'm':
-+			if (!mode_selected) {
-+				for (i = 0; i < NUM_VM_MODES; ++i)
-+					guest_modes[i].enabled = false;
-+				mode_selected = true;
-+			}
-+			mode = strtoul(optarg, NULL, 10);
-+			TEST_ASSERT(mode < NUM_VM_MODES,
-+				    "Guest mode ID %d too big", mode);
-+			guest_modes[mode].enabled = true;
-+			break;
-+		case 'b':
-+			vcpu_memory_bytes = parse_size(optarg);
-+			break;
-+		case 'f':
-+			wr_fract = atoi(optarg);
-+			TEST_ASSERT(wr_fract >= 1,
-+				    "Write fraction cannot be less than one");
-+			break;
-+		case 'v':
-+			vcpus = atoi(optarg);
-+			TEST_ASSERT(vcpus > 0,
-+				    "Must have a positive number of vCPUs");
-+			TEST_ASSERT(vcpus <= MAX_VCPUS,
-+				    "This test does not currently support\n"
-+				    "more than %d vCPUs.", MAX_VCPUS);
-+			break;
-+		case 'h':
-+		default:
-+			help(argv[0]);
-+			break;
-+		}
-+	}
-+
-+	TEST_ASSERT(iterations > 2, "Iterations must be greater than two");
-+
-+	pr_info("Test iterations: %"PRIu64"\n",	iterations);
-+
-+	for (i = 0; i < NUM_VM_MODES; ++i) {
-+		if (!guest_modes[i].enabled)
-+			continue;
-+		TEST_ASSERT(guest_modes[i].supported,
-+			    "Guest mode ID %d (%s) not supported.",
-+			    i, vm_guest_mode_string(i));
-+		run_test(i, iterations, phys_offset, vcpus, vcpu_memory_bytes,
-+			 wr_fract);
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index a1564f98223d9..b86090ef82dac 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -65,5 +65,6 @@ struct timespec timespec_add_ns(struct timespec ts, int64_t ns);
- struct timespec timespec_add(struct timespec ts1, struct timespec ts2);
- struct timespec timespec_sub(struct timespec ts1, struct timespec ts2);
- struct timespec timespec_elapsed(struct timespec start);
-+struct timespec timespec_div(struct timespec ts, int divisor);
- 
- #endif /* SELFTEST_KVM_TEST_UTIL_H */
-diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
-index 1abb6b1321c3c..ccc5d67f38cc4 100644
---- a/tools/testing/selftests/kvm/lib/perf_test_util.c
-+++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
-@@ -41,16 +41,18 @@ void guest_code(uint32_t vcpu_id)
- 	gva = vcpu_args->gva;
- 	pages = vcpu_args->pages;
- 
--	for (i = 0; i < pages; i++) {
--		uint64_t addr = gva + (i * perf_test_args.guest_page_size);
-+	while (true) {
-+		for (i = 0; i < pages; i++) {
-+			uint64_t addr = gva + (i * perf_test_args.guest_page_size);
- 
--		if (i % perf_test_args.wr_fract == 0)
--			*(uint64_t *)addr = 0x0123456789ABCDEF;
--		else
--			READ_ONCE(*(uint64_t *)addr);
--	}
-+			if (i % perf_test_args.wr_fract == 0)
-+				*(uint64_t *)addr = 0x0123456789ABCDEF;
-+			else
-+				READ_ONCE(*(uint64_t *)addr);
-+		}
- 
--	GUEST_SYNC(1);
-+		GUEST_SYNC(1);
-+	}
- }
- 
- static void add_vcpus(struct kvm_vm *vm, int vcpus, uint64_t vcpu_memory_bytes)
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index c2cee1ea20a31..5f87ed32caf56 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -92,6 +92,13 @@ struct timespec timespec_elapsed(struct timespec start)
- 	return timespec_sub(end, start);
- }
- 
-+struct timespec timespec_div(struct timespec ts, int divisor)
-+{
-+	int64_t ns = timespec_to_ns(ts) / divisor;
-+
-+	return timespec_add_ns((struct timespec){0}, ns);
-+}
-+
- void print_skip(const char *fmt, ...)
- {
- 	va_list ap;
--- 
-2.29.1.341.ge80a0c044ae-goog
+> On Nov 3, 2020, at 7:31 AM, KP Singh <kpsingh@chromium.org> wrote:
+>=20
+> From: KP Singh <kpsingh@google.com>
+>=20
+> Signed-off-by: KP Singh <kpsingh@google.com>
+
+LGTM, except that commit log is missing (also for 2/8).=20
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+> ---
+> tools/bpf/bpftool/Documentation/bpftool-map.rst | 3 ++-
+> tools/bpf/bpftool/bash-completion/bpftool       | 2 +-
+> tools/bpf/bpftool/map.c                         | 4 +++-
+> 3 files changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/=
+bpftool/Documentation/bpftool-map.rst
+> index dade10cdf295..3d52256ba75f 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> @@ -50,7 +50,8 @@ MAP COMMANDS
+> |		| **lru_percpu_hash** | **lpm_trie** | **array_of_maps** | **hash_of_m=
+aps**
+> |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap**=
+ | **sockhash**
+> |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_stora=
+ge**
+> -|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf=
+** | **inode_storage** }
+> +|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf=
+** | **inode_storage**
+> +		| **task_storage** }
+>=20
+> DESCRIPTION
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftoo=
+l/bash-completion/bpftool
+> index 3f1da30c4da6..fdffbc64c65c 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -705,7 +705,7 @@ _bpftool()
+>                                 hash_of_maps devmap devmap_hash sockmap c=
+pumap \
+>                                 xskmap sockhash cgroup_storage reuseport_=
+sockarray \
+>                                 percpu_cgroup_storage queue stack sk_stor=
+age \
+> -                                struct_ops inode_storage' -- \
+> +                                struct_ops inode_storage task_storage' -=
+- \
+>                                                    "$cur" ) )
+>                             return 0
+>                             ;;
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index a7efbd84fbcc..b400364ee054 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+> @@ -51,6 +51,7 @@ const char * const map_type_name[] =3D {
+> 	[BPF_MAP_TYPE_STRUCT_OPS]		=3D "struct_ops",
+> 	[BPF_MAP_TYPE_RINGBUF]			=3D "ringbuf",
+> 	[BPF_MAP_TYPE_INODE_STORAGE]		=3D "inode_storage",
+> +	[BPF_MAP_TYPE_TASK_STORAGE]		=3D "task_storage",
+> };
+>=20
+> const size_t map_type_name_size =3D ARRAY_SIZE(map_type_name);
+> @@ -1464,7 +1465,8 @@ static int do_help(int argc, char **argv)
+> 		"                 lru_percpu_hash | lpm_trie | array_of_maps | hash_of_=
+maps |\n"
+> 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | so=
+ckhash |\n"
+> 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_=
+storage |\n"
+> -		"                 queue | stack | sk_storage | struct_ops | ringbuf | =
+inode_storage }\n"
+> +		"                 queue | stack | sk_storage | struct_ops | ringbuf | =
+inode_storage |\n"
+> +		"		  task_storage }\n"
+> 		"       " HELP_SPEC_OPTIONS "\n"
+> 		"",
+> 		bin_name, argv[-2]);
+> --=20
+> 2.29.1.341.ge80a0c044ae-goog
+>=20
 
