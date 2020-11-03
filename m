@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875452A4067
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB0E2A4066
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgKCJgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:36:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727827AbgKCJgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727957AbgKCJgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 3 Nov 2020 04:36:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604396167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=utrPveW+BJMu+H8w9gP8ENBbrrz/FW0t+ZI2x7qQEJ0=;
-        b=DYlA+yEmJ7gP0aBQHs0vwyFnoQcOi6B7GtFPngrzVlgPx3eM0Z/5pghf5xD1QcXI8YRrTa
-        rR8rZXb/XorcPEHboBQJ3BcIOTVG7rh1mstJkSwgaK+MfP8L3BKxWbTf3c+ahUv7pfN8Am
-        7hE+Hb1qHwfL0s9AaM6diljvoTMnFEs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-lpCegt6tOfaU8CrQ3kraSw-1; Tue, 03 Nov 2020 04:36:04 -0500
-X-MC-Unique: lpCegt6tOfaU8CrQ3kraSw-1
-Received: by mail-ed1-f70.google.com with SMTP id c2so1918765edw.21
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 01:36:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=utrPveW+BJMu+H8w9gP8ENBbrrz/FW0t+ZI2x7qQEJ0=;
-        b=GuF0fmlSYC635I1XL3/654fa5WKPJ9wZ4H61JYjK4QPhnIHL8waaASq/wT7kCB0lrE
-         5MDqruOn06QawYmxA/+8tQI2hnYT02fbNrEJV5rnwRjOcbiEGS2ztKLUfYPkP53Tajj3
-         9hHKyVqkBj5LMI4fHArJagBk/5H3xaC/85y73KxW3X1NBhs+9DfsTpvVbr8/IYv+J/zB
-         hb3mmuGqxYhgO/KczNJrzXQ092fOzfPeXcyFcTMvA4UzjZicQ9qAPovjeNb5H/bJv0G1
-         IXQdQynR8kckbAhHVAU2PQ+R03ES7k78l+6YaTJ5PtAA/usDgUqzOdxsaa+lCuOOQIQ3
-         0PTw==
-X-Gm-Message-State: AOAM532JsXly4XWBsnsFpIedpoDYx4zBJXfO/NvaxaeMkGqX4Rs+z0as
-        YZ+k9DyUb4rvPSXoo6dC1uLweVKFpoalx93L+vltPGZCEFbdYrqWo52+5sqx0MNEZmteUTvUrtR
-        VZ5KwvrgSIIO/nzDtf+eR3t1i
-X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr16365525ejb.454.1604396162610;
-        Tue, 03 Nov 2020 01:36:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJySyprnOznFAnABrhRiUSLsGjXxSGaLlIw0abYlPr+aHBuTZm4tdcRRUniVh8KiZ9aMowrB4w==
-X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr16365509ejb.454.1604396162372;
-        Tue, 03 Nov 2020 01:36:02 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id d1sm10653069ejo.17.2020.11.03.01.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 01:36:01 -0800 (PST)
-Subject: Re: [PATCH] MAINTAINERS: rectify DELL WMI SYSMAN DRIVERS section
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Divya Bharathi <divya.bharathi@dell.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201029114425.22520-1-lukas.bulwahn@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0eea5f3d-b3bc-e3b4-1b7f-d6528f33bd44@redhat.com>
-Date:   Tue, 3 Nov 2020 10:36:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:37069 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbgKCJgI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:36:08 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 9F2B647B;
+        Tue,  3 Nov 2020 04:36:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 03 Nov 2020 04:36:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=JxU4guRP0kokkXgNKXrKatN5k3v
+        smVhnFnCYvoqD/QA=; b=CTkd6WvjWIpgaP7CXxIemCJLc9bT8akFL3sq1vB4oiT
+        QW7ILahxaxyJ2dhPmQ1JF6bJ/I+e56o23kBcKeT1Pl15ylnJB6yvoWCVQZMctDzG
+        CLPNFfP+s3bqzk1B4mWDAlgKl27n+uZNqPqEmVKc2IBZwMkshOG9nzbIi2yaf4Wk
+        TVfk57WnuO2RfNMD/DVre2yEf7j8Ojhmq3AhhhYBxfJI5KPLXJ3tQU6GmVy/cAwA
+        eeVG77Y+1oBhgUltmV+dfMPjgWNhYOlLhJj+D9mvQXhTzAOT93SSVwSjoPrKCWmi
+        fe/GmMRZInwrR9/VW5w2LDLKOCMZnhOSs/RdIGJocCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JxU4gu
+        RP0kokkXgNKXrKatN5k3vsmVhnFnCYvoqD/QA=; b=ddJQ9Rb9k3rT2qSgeD+nJQ
+        nYOEqWxfs5PqONCgtfnGpsYQDbbyV7SHzngtorMVKDstddeVARRXBzyXNAvf56lv
+        QEyWdWXhlxUsssUkdhiGmq8tzJfsHBkraqyo4M48DZ6/rClGI3FlouaLSYx6DVBU
+        QzCP89u5660+8kEjgSzzyQG1aHZcQl1GaICpEMPxqivePD+WBIeZrVPieONg60vc
+        4oWqDxTUTX0VqCxt6gVCP5IsMZxNZvOSslSiRYHZzDqcnO7U2plo9RFKsBg3ba6E
+        mE19IrN+G7h4Uk1icEovu4J3UPCmldQxgJn/lg7gl5ui8VW+kfn7N4Ju6xXXQ4LA
+        ==
+X-ME-Sender: <xms:hSShX-9JqxH3mzEIKNwd5Wi0aNl4YxGJ7qoDfDLmWNuq5KSvlBD0RA>
+    <xme:hSShX-tQpRzQzNjsYVZixEJqtz8dTfEWhW2t5ukaCEJ8HwIc06MyLNvpXus269KBr
+    lx5lxU8FFtABR8seCc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:hSShX0DuGhN4hN75UK9w7o6-RYGaQiGZ5xSDKkRGVpcd_WStCDOtPA>
+    <xmx:hSShX2ddaLxlo4K16R5o3m5srECuuEeqbFIDFcwSBelLMA1gXQlv0Q>
+    <xmx:hSShXzMTkqWqVhuvg-cM72ck0Tj5cgqtP89OdHgz3nKMBshKRYuGMg>
+    <xmx:hiShX8r4L9_4OYfjp2n-brspBy4QnC9A0-bIyJLvUoqgnn7iOF7g4w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0F7ED3280065;
+        Tue,  3 Nov 2020 04:36:04 -0500 (EST)
+Date:   Tue, 3 Nov 2020 10:36:03 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-misc-fixes tree
+Message-ID: <20201103093603.mzmcvbzmna77vh4r@gilmour.lan>
+References: <20201103113121.4f1ffe17@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201029114425.22520-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gk5a7k24qfabtq46"
+Content-Disposition: inline
+In-Reply-To: <20201103113121.4f1ffe17@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/29/20 12:44 PM, Lukas Bulwahn wrote:
-> Commit e8a60aa7404b ("platform/x86: Introduce support for Systems
-> Management Driver over WMI for Dell Systems") added a new section
-> DELL WMI SYSMAN DRIVERS in MAINTAINERS, but slipped in a typo.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> 
->   warning: no file matches    F:    drivers/platform/x86/dell-wmi-syman/*
-> 
-> Point the file entry to the right location and add an entry for its
-> Documentation while at it.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+--gk5a7k24qfabtq46
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi Stephen,
 
-> ---
-> Divya, please ack.
-> 
-> Hans, please pick this minor non-urgent patch into your -next x86 platform
-> driver tree on top of commit mentioned above.
-> 
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b8a905354ee9..a0a86daa9c51 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4974,7 +4974,8 @@ M:	Mario Limonciello <mario.limonciello@dell.com>
->  M:	Prasanth Ksr <prasanth.ksr@dell.com>
->  L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
-> -F:	drivers/platform/x86/dell-wmi-syman/*
-> +F:	Documentation/ABI/testing/sysfs-class-firmware-attributes
-> +F:	drivers/platform/x86/dell-wmi-sysman/
->  
->  DELL WMI NOTIFICATIONS DRIVER
->  M:	Matthew Garrett <mjg59@srcf.ucam.org>
-> 
+On Tue, Nov 03, 2020 at 11:31:21AM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the drm-misc-fixes tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+>=20
+> drivers/gpu/drm/vc4/vc4_drv.c: In function 'vc4_drm_unbind':
+> drivers/gpu/drm/vc4/vc4_drv.c:322:18: warning: unused variable 'vc4' [-Wu=
+nused-variable]
+>   322 |  struct vc4_dev *vc4 =3D to_vc4_dev(drm);
+>       |                  ^~~
+>=20
+> Introduced by commit
+>=20
+>   dcda7c28bff2 ("drm/vc4: kms: Add functions to create the state objects")
 
+I just pushed a fix for that one, it should be resolved tomorrow
+
+Thanks!
+Maxime
+
+--gk5a7k24qfabtq46
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6EkgwAKCRDj7w1vZxhR
+xa7EAP4/4A3YLK6xqMRbgjbgjleRIoIpCAk2DyiaUKp0KsvDhAEApKtHtdCXkKBK
+6850n4kdukU0vDfZRT+HksVQqxlitAo=
+=5/0a
+-----END PGP SIGNATURE-----
+
+--gk5a7k24qfabtq46--
