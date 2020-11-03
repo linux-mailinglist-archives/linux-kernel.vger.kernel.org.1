@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785092A448F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8BE2A4496
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKCLvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:51:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727109AbgKCLvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:51:32 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728611AbgKCLyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:54:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58241 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727109AbgKCLyG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:54:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604404445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BPw+R9lbRaHll82w4OBRRxRYwhGO19DIYM+z7EqSIzo=;
+        b=WBtVekXpxZUpdn3ewKGvkDvp4lqgl1mM3PcQYWORmR7XoW3//fs2pmrVRCjaU6QvHrj73+
+        OlKw3tX/fsFGm/UqZT8rVPvnHvNh9Zndd9QApZnoy2qCQWhiEJVWx1lCnKVMLkKVyo7hW4
+        F5HCaCRFDKg846tvrAN2IHd65w3aU4E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-_uTXrKrDOZCjMFL4nIFQxw-1; Tue, 03 Nov 2020 06:54:03 -0500
+X-MC-Unique: _uTXrKrDOZCjMFL4nIFQxw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C90BC216C4;
-        Tue,  3 Nov 2020 11:51:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604404290;
-        bh=Yly+YBQXz1BJFPkxLQ3+VIkwL3j8nlMITPnLrkow/5E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pd1bnQSks9juZc5GStHYlWWB9dC3yW8B/FXDUCh4ICB51qx6joekx5V+03CPVryB7
-         GjLbfkLStPJGYTBedQPKpSdlSPhiJ6NZ0XRbq1/U8laYmfVou6Yskb01upui1nCfAX
-         VVml7+da8Hejfv8BL3w3XV7QoB4Hns1qYo1AnV8o=
-Date:   Tue, 3 Nov 2020 12:52:23 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>, brendanhiggins@google.com,
-        skhan@linuxfoundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        alexandre.belloni@bootlin.com, rdunlap@infradead.org,
-        idryomov@gmail.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
-Message-ID: <20201103115223.GA268796@kroah.com>
-References: <20201103111049.51916-1-98.arpi@gmail.com>
- <20201103113353.GC4077@smile.fi.intel.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 822301868414;
+        Tue,  3 Nov 2020 11:54:01 +0000 (UTC)
+Received: from krava (unknown [10.40.195.210])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B6B9121E95;
+        Tue,  3 Nov 2020 11:53:58 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 12:53:57 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] perf lock: Don't free "lock_seq_stat" if
+ read_count isn't zero
+Message-ID: <20201103115357.GF3597846@krava>
+References: <20201021003948.28817-1-leo.yan@linaro.org>
+ <20201021003948.28817-2-leo.yan@linaro.org>
+ <20201102165626.GD3405508@krava>
+ <20201103022944.GB13232@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201103113353.GC4077@smile.fi.intel.com>
+In-Reply-To: <20201103022944.GB13232@leoy-ThinkPad-X240s>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:33:53PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
-> > Convert test lib/test_printf.c to KUnit. More information about
-> > KUnit can be found at:
-> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> > KUnit provides a common framework for unit tests in the kernel.
-> > KUnit and kselftest are standardizing around KTAP, converting this
-> > test to KUnit makes this test output in KTAP which we are trying to
-> > make the standard test result format for the kernel. More about
-> > the KTAP format can be found at:
-> > https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
-> > I ran both the original and converted tests as is to produce the
-> > output for success of the test in the two cases. I also ran these
-> > tests with a small modification to show the difference in the output
-> > for failure of the test in both cases. The modification I made is:
-> > - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
-> > + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+On Tue, Nov 03, 2020 at 10:29:44AM +0800, Leo Yan wrote:
+> On Mon, Nov 02, 2020 at 05:56:26PM +0100, Jiri Olsa wrote:
+> > On Wed, Oct 21, 2020 at 08:39:48AM +0800, Leo Yan wrote:
+> > > When execute command "perf lock report", it hits failure and outputs log
+> > > as follows:
+> > > 
+> > >   perf: builtin-lock.c:623: report_lock_release_event: Assertion `!(seq->read_count < 0)' failed.
+> > >   Aborted
+> > > 
+> > > This is an imbalance issue.  The locking sequence structure
+> > > "lock_seq_stat" contains the reader counter and it is used to check if
+> > > the locking sequence is balance or not between acquiring and releasing.
+> > > 
+> > > If the tool wrongly frees "lock_seq_stat" when "read_count" isn't zero,
+> > > the "read_count" will be reset to zero when allocate a new structure at
+> > > the next time; thus it causes the wrong counting for reader and finally
+> > > results in imbalance issue.
+> > > 
+> > > To fix this issue, if detects "read_count" is not zero (means still
+> > > have read user in the locking sequence), goto the "end" tag to skip
+> > > freeing structure "lock_seq_stat".
+> > > 
+> > > Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
+> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > > ---
+> > >  tools/perf/builtin-lock.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> > > index 5cecc1ad78e1..a2f1e53f37a7 100644
+> > > --- a/tools/perf/builtin-lock.c
+> > > +++ b/tools/perf/builtin-lock.c
+> > > @@ -621,7 +621,7 @@ static int report_lock_release_event(struct evsel *evsel,
+> > >  	case SEQ_STATE_READ_ACQUIRED:
+> > >  		seq->read_count--;
+> > >  		BUG_ON(seq->read_count < 0);
+> > > -		if (!seq->read_count) {
+> > > +		if (seq->read_count) {
+> > >  			ls->nr_release++;
 > > 
-> > Original test success:
-> > [    0.540860] test_printf: loaded.
-> > [    0.540863] test_printf: random seed = 0x5c46c33837bc0619
-> > [    0.541022] test_printf: all 388 tests passed
-> > 
-> > Original test failure:
-> > [    0.537980] test_printf: loaded.
-> > [    0.537983] test_printf: random seed = 0x1bc1efd881954afb
-> > [    0.538029] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> > [    0.538030] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> > [    0.538124] test_printf: failed 2 out of 388 tests
-> > [    0.538125] test_printf: random seed used was 0x1bc1efd881954afb
-> > 
-> > Converted test success:
-> >     # Subtest: printf
-> >     1..25
-> >     ok 1 - test_basic
-> >     ok 2 - test_number
-> >     ok 3 - test_string
-> >     ok 4 - plain
-> >     ok 5 - null_pointer
-> >     ok 6 - error_pointer
-> >     ok 7 - invalid_pointer
-> >     ok 8 - symbol_ptr
-> >     ok 9 - kernel_ptr
-> >     ok 10 - struct_resource
-> >     ok 11 - addr
-> >     ok 12 - escaped_str
-> >     ok 13 - hex_string
-> >     ok 14 - mac
-> >     ok 15 - ip
-> >     ok 16 - uuid
-> >     ok 17 - dentry
-> >     ok 18 - struct_va_format
-> >     ok 19 - time_and_date
-> >     ok 20 - struct_clk
-> >     ok 21 - bitmap
-> >     ok 22 - netdev_features
-> >     ok 23 - flags
-> >     ok 24 - errptr
-> >     ok 25 - fwnode_pointer
-> > ok 1 - printf
-> > 
-> > Converted test failure:
-> >     # Subtest: printf
-> >     1..25
-> >     ok 1 - test_basic
-> >     ok 2 - test_number
-> >     ok 3 - test_string
-> >     ok 4 - plain
-> >     ok 5 - null_pointer
-> >     ok 6 - error_pointer
-> >     ok 7 - invalid_pointer
-> >     ok 8 - symbol_ptr
-> >     ok 9 - kernel_ptr
-> >     ok 10 - struct_resource
-> >     ok 11 - addr
-> >     ok 12 - escaped_str
-> >     ok 13 - hex_string
-> >     ok 14 - mac
-> >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:82
-> > vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:124
-> > kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> >     not ok 15 - ip
-> >     ok 16 - uuid
-> >     ok 17 - dentry
-> >     ok 18 - struct_va_format
-> >     ok 19 - time_and_date
-> >     ok 20 - struct_clk
-> >     ok 21 - bitmap
-> >     ok 22 - netdev_features
-> >     ok 23 - flags
-> >     ok 24 - errptr
-> >     ok 25 - fwnode_pointer
-> > not ok 1 - printf
+> > it seems ok, but I fail to see what's nr_release for
+> > the point is just to skip the removal of seq right?
 > 
-> Better, indeed.
+> To be honest, I'm not sure if I understand your question :)
 > 
-> But can be this improved to have a cumulative statistics, like showing only
-> number of total, succeeded, failed with details of the latter ones?
+> Either remove "seq" or not, "nr_release" will be increased.  When remove
+> "seq", the code line [1] will increase '1' for "nr_release"; when skip
+> to remove "seq", "nr_release" is also increased 1 [2].  So I don't see
+> the logic issue for "nr_release", do I miss anything?
+> 
+> Another side topic is the four metrics "nr_acquire", "nr_release",
+> "nr_readlock", "nr_trylock" have been accounted, but they are not really
+> used for output final result.  I'd like to defer this later as a task
+> for refine the output metrics.
 
-Is that the proper test output format?  We have a standard...
+yes, that was my point, that I don't see nr_release being
+used for anything
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
 thanks,
+jirka
 
-greg k-h
+> 
+> Thanks,
+> Leo
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/builtin-lock.c#n641
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/builtin-lock.c#n625
+> 
+
