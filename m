@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A10F2A44DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114B22A44E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgKCMON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:14:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:47814 "EHLO foss.arm.com"
+        id S1729014AbgKCMPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:15:34 -0500
+Received: from mga02.intel.com ([134.134.136.20]:17445 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728354AbgKCMON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:14:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C0DC106F;
-        Tue,  3 Nov 2020 04:14:12 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFC453F7BB;
-        Tue,  3 Nov 2020 04:14:10 -0800 (PST)
-Date:   Tue, 3 Nov 2020 12:14:07 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S1728889AbgKCMPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:15:34 -0500
+IronPort-SDR: z6lbI9/rdZqCH+ITG5lJKQsBoCxpuBsyoaVCBhIeN2Mxiz/rFaSkdBzSrNo35n5+4Nq1EuThmb
+ 5ZpbXOQLPswQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156030734"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="156030734"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 04:15:33 -0800
+IronPort-SDR: w2Z0yU18SM1WOXKQgjzJ2A4bre+P+PzGlF/xTtG2KjRbBL5yxEt5NCrvEhf31R7JF0BOiAa5I5
+ AU1JKBpeGIgQ==
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="538468244"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.28.220]) ([10.255.28.220])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 04:15:29 -0800
+Subject: Re: [PATCH RFC v3 2/4] x86/bus_lock: Handle warn and fatal in #DB for
+ bus lock
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andre Przywara <Andre.Przywara@arm.com>,
-        James Clark <James.Clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 20/21] perf arm_spe: Decode memory tagging properties
-Message-ID: <20201103121407.GN6882@arm.com>
-References: <20201030025724.19157-1-leo.yan@linaro.org>
- <20201030025724.19157-21-leo.yan@linaro.org>
- <20201102162519.GA6882@arm.com>
- <20201103065101.GE13232@leoy-ThinkPad-X240s>
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Christopherson Sean J <sean.j.christopherson@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+References: <20201031002714.3649728-1-fenghua.yu@intel.com>
+ <20201031002714.3649728-3-fenghua.yu@intel.com>
+From:   Xiaoyao Li <xiaoyao.li@linux.intel.com>
+Message-ID: <21d0415c-9af4-db18-8e65-410f6ab5ec68@linux.intel.com>
+Date:   Tue, 3 Nov 2020 20:15:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103065101.GE13232@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201031002714.3649728-3-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 06:51:01AM +0000, Leo Yan wrote:
-> On Mon, Nov 02, 2020 at 04:25:36PM +0000, Dave Martin wrote:
-> > On Fri, Oct 30, 2020 at 02:57:23AM +0000, Leo Yan wrote:
-> > > From: Andre Przywara <andre.przywara@arm.com>
-> > > 
-> > > When SPE records a physical address, it can additionally tag the event
-> > > with information from the Memory Tagging architecture extension.
-> > > 
-> > > Decode the two additional fields in the SPE event payload.
-> > > 
-> > > [leoy: Refined patch to use predefined macros]
-> > > 
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > ---
-> > >  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 +++++-
-> > >  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 2 ++
-> > >  2 files changed, 7 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > index 3fca65e9cbbf..9ec3057de86f 100644
-> > > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > @@ -371,6 +371,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
-> > >  				 char *buf, size_t buf_len)
-> > >  {
-> > >  	int ns, el, idx = packet->index;
-> > > +	int ch, pat;
-> > >  	u64 payload = packet->payload;
-> > >  	int err = 0;
-> > >  
-> > > @@ -388,9 +389,12 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
-> > >  					    "VA 0x%llx", payload);
-> > >  	case SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS:
-> > >  		ns = !!SPE_ADDR_PKT_GET_NS(payload);
-> > > +		ch = !!SPE_ADDR_PKT_GET_CH(payload);
-> > > +		pat = SPE_ADDR_PKT_GET_PAT(payload);
-> > >  		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
-> > >  		return arm_spe_pkt_snprintf(&err, &buf, &buf_len,
-> > > -					    "PA 0x%llx ns=%d", payload, ns);
-> > > +					    "PA 0x%llx ns=%d ch=%d, pat=%x",
-> > 
-> > Nit: given that this data is all closely related, do we really want the
-> > extra comma here?
+On 10/31/2020 8:27 AM, Fenghua Yu wrote:
+
+...
+
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index 3c70fb34028b..1c3442000972 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -953,6 +953,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+>   		goto out_irq;
+>   	}
+>   
+> +	/*
+> +	 * Handle bus lock. #DB for bus lock can only be triggered from
+> +	 * userspace.
+> +	 */
+> +	if (!(dr6 & DR_BUS_LOCK))
+
+it should be
+
+	if (dr6 & DR_BUS_LOCK)
+
+since you keep DR6.[bit 11] reserved in this version. bit 11 of 
+debug_read_clear_dr6() being set to 1 means bus lock detected.
+
+
+> +		handle_bus_lock(regs);
+> +
+>   	/* Add the virtual_dr6 bits for signals. */
+>   	dr6 |= current->thread.virtual_dr6;
+>   	if (dr6 & (DR_STEP | DR_TRAP_BITS) || icebp)
 > 
-> No reason for adding comma.  Will remove it.
 
-OK, I'm happy for my Reviewed-by to stand.
-
-[...]
-
-Cheers
----Dave
