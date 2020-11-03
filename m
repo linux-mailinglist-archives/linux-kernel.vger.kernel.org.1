@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B22A4E3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE03F2A4E38
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgKCSTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:19:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729072AbgKCSTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:19:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604427552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d/hWu+N+wOTe562y79WDJHfHrZYi3ZnAqNsDEEWdHNM=;
-        b=ijWnBu820WSzt/327gvE1FiZssZ8/BjoJvpqW9BxGPzA7jNGMYJnM5UqpbSiRkHdDcdwrv
-        bJ+ulpTuyMn3C08VdgFlzvx0EQySIa34nOmFv6ZmArj1UbFQkMF8zQqOWJR+JLR7i+msh+
-        lbgcfjmkjYKP+kqvyveOGC9AMnED148=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-VCYS1BjpMkqsO61RFv8BAQ-1; Tue, 03 Nov 2020 13:19:08 -0500
-X-MC-Unique: VCYS1BjpMkqsO61RFv8BAQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729020AbgKCSTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:19:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725957AbgKCSTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:19:08 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D7751009E23;
+        by mail.kernel.org (Postfix) with ESMTPSA id D24E620757;
         Tue,  3 Nov 2020 18:19:07 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4843A2C31E;
-        Tue,  3 Nov 2020 18:19:03 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 11:19:02 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
-        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] vfio/fsl-mc: return -EFAULT if copy_to_user() fails
-Message-ID: <20201103111902.1ac78ae3@w520.home>
-In-Reply-To: <20201023113450.GH282278@mwanda>
-References: <20201023113450.GH282278@mwanda>
-MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604427548;
+        bh=Qy5s1NAtEIojqVksxSHVm3F5XXZqPZGBiGCDzHx7iD8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QVSpz+cJ/k/J1C/+B7pJevQKOg4AJS/uRjknGB2ip0qjRXq4+JJh/nylcXj8PAjSf
+         D7B6rqbB9kJLobAbXIDNpbtjm77z9IWQAofecB0xkVVRuz6Yoz1WgSmOuFy0ElLOmd
+         ZhTLiysbxH26bvzaZUSIgXdJe3FbpfruZEJWMi8k=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1ka0td-007E4I-JL; Tue, 03 Nov 2020 18:19:05 +0000
+Date:   Tue, 03 Nov 2020 18:19:04 +0000
+Message-ID: <87imamtiav.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Xu Qiang <xuqiang36@huawei.com>
+Cc:     <tglx@linutronix.de>, <jason@lakedaemon.net>,
+        <linux-kernel@vger.kernel.org>, <rui.xiang@huawei.com>
+Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS executes the residual commands in the queue again when the ITS wakes up from sleep mode.
+In-Reply-To: <20201103081123.119969-1-xuqiang36@huawei.com>
+References: <20201103081123.119969-1-xuqiang36@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: xuqiang36@huawei.com, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, rui.xiang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 14:34:50 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
-
-> The copy_to_user() function returns the number of bytes remaining to be
-> copied, but this code should return -EFAULT.
+On Tue, 03 Nov 2020 08:11:23 +0000,
+Xu Qiang <xuqiang36@huawei.com> wrote:
 > 
-> Fixes: df747bcd5b21 ("vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> During wakeup, the ATF restore interface restores the values of
+> the cbaser and cwriter registers. As a result, the ITS executes
+> the residual commands in the queue, which may cause memory corruption.
+> 
+> To solve this problem, clear all data in the command queue
+> in the suspend interface of the ITS driver.
+> 
+> Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
 > ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-
-Applied this and the following patch to vfio for-linus branch with
-Diana's acks for v5.10.  Thanks,
-
-Alex
-
-
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index 0113a980f974..21f22e3da11f 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -248,7 +248,9 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
->  		info.size = vdev->regions[info.index].size;
->  		info.flags = vdev->regions[info.index].flags;
+>  drivers/irqchip/irq-gic-v3-its.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 0fec31931e11..b8487f78ac21 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -4741,6 +4741,14 @@ static int its_save_disable(void)
+>  	list_for_each_entry(its, &its_nodes, entry) {
+>  		void __iomem *base;
 >  
-> -		return copy_to_user((void __user *)arg, &info, minsz);
-> +		if (copy_to_user((void __user *)arg, &info, minsz))
-> +			return -EFAULT;
-> +		return 0;
->  	}
->  	case VFIO_DEVICE_GET_IRQ_INFO:
->  	{
-> @@ -267,7 +269,9 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
->  		info.flags = VFIO_IRQ_INFO_EVENTFD;
->  		info.count = 1;
->  
-> -		return copy_to_user((void __user *)arg, &info, minsz);
-> +		if (copy_to_user((void __user *)arg, &info, minsz))
-> +			return -EFAULT;
-> +		return 0;
->  	}
->  	case VFIO_DEVICE_SET_IRQS:
->  	{
+> +		/*
+> +		 * Clear the command queue so that the ITS will not re-execute
+> +		 * the remaining commands in the command queue when
+> +		 * the cwriter and cbaser registers are restored
+> +		 * in the restore interface of the firmware.
+> +		 */
+> +		memset(its->cmd_base, 0, ITS_CMD_QUEUE_SZ);
+> +
+>  		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+>  			continue;
 
+You are wiping the ITS queue before even stopping the ITS. How well is
+that going to work? What if there is something in flight?
+
+I don't understand what you are trying to do here, nor how ATF is
+involved. So please describe the whole sequence of events, and we'll
+decide whether that's something we need to fix.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
