@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA292A534D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6825F2A534F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733146AbgKCU7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35036 "EHLO mail.kernel.org"
+        id S1731841AbgKCU7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732560AbgKCU7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:44 -0500
+        id S1733148AbgKCU7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25FA1223BF;
-        Tue,  3 Nov 2020 20:59:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66BA522226;
+        Tue,  3 Nov 2020 20:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437183;
-        bh=NGI8kfOtgD+B03FqUS/r+/N6XslvOicZxXgEFEfwXSM=;
+        s=default; t=1604437185;
+        bh=VN2joP1QwjsTsFMr9W1EBaKAcBuzynY8faArlkwSbJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zs+P9SBI329CDIAbUKZB5+gh72w1J4ISn/HntqfHfh4j6/U7PS+MEO9ZErgs2zlua
-         7pIh18AndS3ghDfVmg4gI5hWgb9ixQGHO4f9d2DRZn7QirZ0MVIOhnDkajJWM0ROV4
-         RbtTscoXMNWY6jQzNASIWMkUEl6BylZsf9n87ftU=
+        b=JjwC6anBCamWjrl/E+fc2gRkXVEkS/1M4fhZmerbQANbwAbqaXKNtDdLCUWF/eMvc
+         cvYgx01/EZQxOceWH8ptNd2I6PMXvrJecAh381k4vV/olQw0Ih44K9vHH1CgTMejIM
+         mbv+0CGr8fWN2UMA3oBNrkBqEfWCFBoVkCM1h9wU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jay Cornwall <jay.cornwall@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
+        stable@vger.kernel.org,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 182/214] drm/amdkfd: Use same SQ prefetch setting as amdgpu
-Date:   Tue,  3 Nov 2020 21:37:10 +0100
-Message-Id: <20201103203307.760826744@linuxfoundation.org>
+Subject: [PATCH 5.4 183/214] drm/amd/display: Avoid MST manager resource leak.
+Date:   Tue,  3 Nov 2020 21:37:11 +0100
+Message-Id: <20201103203307.859116601@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -43,39 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jay Cornwall <jay.cornwall@amd.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-commit d56b1980d7efe9ef08469e856fc0703d0cef65e4 upstream.
+commit 5dff80bdce9e385af5716ed083f9e33e814484ab upstream.
 
-0 causes instruction fetch stall at cache line boundary under some
-conditions on Navi10. A non-zero prefetch is the preferred default
-in any case.
+On connector destruction call drm_dp_mst_topology_mgr_destroy
+to release resources allocated in drm_dp_mst_topology_mgr_init.
+Do it only if MST manager was initilized before otherwsie a crash
+is seen on driver unload/device unplug.
 
-Fixes soft hang in Luxmark.
-
-Signed-off-by: Jay Cornwall <jay.cornwall@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager_v10.c
-@@ -58,8 +58,9 @@ static int update_qpd_v10(struct device_
- 	/* check if sh_mem_config register already configured */
- 	if (qpd->sh_mem_config == 0) {
- 		qpd->sh_mem_config =
--				SH_MEM_ALIGNMENT_MODE_UNALIGNED <<
--					SH_MEM_CONFIG__ALIGNMENT_MODE__SHIFT;
-+			(SH_MEM_ALIGNMENT_MODE_UNALIGNED <<
-+				SH_MEM_CONFIG__ALIGNMENT_MODE__SHIFT) |
-+			(3 << SH_MEM_CONFIG__INITIAL_INST_PREFETCH__SHIFT);
- #if 0
- 		/* TODO:
- 		 *    This shouldn't be an issue with Navi10.  Verify.
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -3956,6 +3956,13 @@ static void amdgpu_dm_connector_destroy(
+ 	struct amdgpu_device *adev = connector->dev->dev_private;
+ 	struct amdgpu_display_manager *dm = &adev->dm;
+ 
++	/*
++	 * Call only if mst_mgr was iniitalized before since it's not done
++	 * for all connector types.
++	 */
++	if (aconnector->mst_mgr.dev)
++		drm_dp_mst_topology_mgr_destroy(&aconnector->mst_mgr);
++
+ #if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) ||\
+ 	defined(CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
+ 
 
 
