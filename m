@@ -2,43 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975252A4F4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C982A4F4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgKCSsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:48:19 -0500
-Received: from verein.lst.de ([213.95.11.211]:38682 "EHLO verein.lst.de"
+        id S1729495AbgKCSs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:48:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725892AbgKCSsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:48:18 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9F29A6736F; Tue,  3 Nov 2020 19:48:15 +0100 (CET)
-Date:   Tue, 3 Nov 2020 19:48:15 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: support splice reads on seq_file based procfs files
-Message-ID: <20201103184815.GA24136@lst.de>
-References: <20201029100950.46668-1-hch@lst.de>
+        id S1725892AbgKCSs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:48:27 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 845362074B;
+        Tue,  3 Nov 2020 18:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604429307;
+        bh=mhnhjXYnoZRjTVV0+BmHHD9GHzPNnQ++V5jc3nsiVgw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nw8/KJ50ac5pXyiV+6vpXfx7qtzyacV1FEI41Ff0mKAJuHD718TmhcplbJVk1DDv3
+         G6jZvkh0YZXcdKZnlR/mniyvY4h9hoQ22S3tVAK1IcbV5uVrsxCKaCQqfC7p1nwysI
+         iqwwspF1Ri2XTuMLkTE1mF0HvrLrCu51I5rfiMRM=
+Date:   Tue, 3 Nov 2020 19:48:23 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4.9..v4.19] rtc: rx8010: don't modify the global rtc ops
+Message-ID: <20201103184823.GA173459@kroah.com>
+References: <20201103172901.18231-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029100950.46668-1-hch@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201103172901.18231-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping?
-
-On Thu, Oct 29, 2020 at 11:09:47AM +0100, Christoph Hellwig wrote:
-> Hi Al,
+On Tue, Nov 03, 2020 at 06:29:01PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Greg reported a problem due to the fact that Android tests use procfs
-> files to test splice, which stopped working with 5.10-rc1.  This series
-> adds read_iter support for seq_file, and uses those for all proc files
-> using seq_file to restore splice read support.
----end quoted text---
+> The way the driver is implemented is buggy for the (admittedly unlikely)
+> use case where there are two RTCs with one having an interrupt configured
+> and the second not. This is caused by the fact that we use a global
+> rtc_class_ops struct which we modify depending on whether the irq number
+> is present or not.
+> 
+> Fix it by using two const ops structs with and without alarm operations.
+> While at it: not being able to request a configured interrupt is an error
+> so don't ignore it and bail out of probe().
+> 
+> Fixes: ed13d89b08e3 ("rtc: Add Epson RX8010SJ RTC driver")
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/r/20200914154601.32245-2-brgl@bgdev.pl
+> ---
+>  drivers/rtc/rtc-rx8010.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+
+Now queued up, thanks!
+
+greg k-h
