@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4572A5474
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918852A540B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388867AbgKCVLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:11:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52982 "EHLO mail.kernel.org"
+        id S2387762AbgKCVHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:07:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388857AbgKCVLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:11:23 -0500
+        id S2388268AbgKCVHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:07:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84D3C205ED;
-        Tue,  3 Nov 2020 21:11:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BAA220757;
+        Tue,  3 Nov 2020 21:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437882;
-        bh=TWrTMweXrqlEF4N3cvdIivXLRoSCEPr6AQiG4A02JmE=;
+        s=default; t=1604437632;
+        bh=Z0Ba5uh0n5O1GxGbXMg75EWKsHCdvgxTkVPHxJff2Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uPXkK8+14iLatGFwGiFUr3jVWs8X+OROnJX30a1IxbDSCqFIkdw7Ju/uBKbvhBUwt
-         Va/Rwb6E1dOohCWAAaMkgOEfsOKFbfFwLfcRq8Pb/2w+bhf6tOK1lNXvE71zIAG20b
-         mw7sm8Bf23rNTIaOob4rzEZWl0xdH7IXoOhAX4ng=
+        b=afu+bAIhGB6WZn/n86CouCthljQ60A0hzNB/NCqeTWbMb0TtdE2WQX2rczxK7K1I7
+         L0ZgPTSnwSq39RpKyvqRMQ9PcdfteG7Ux+KXnuCRAbkjMhuxmLRLDX3vBhWQegyYhk
+         6kHe8seBSKSHeKMsZUoyCEtjy3rm1KEOgVB7LWgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.14 073/125] btrfs: reschedule if necessary when logging directory items
+        stable@vger.kernel.org, Michael Neuling <mikey@neuling.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 158/191] powerpc: Fix undetected data corruption with P9N DD2.1 VSX CI load emulation
 Date:   Tue,  3 Nov 2020 21:37:30 +0100
-Message-Id: <20201103203207.546519592@linuxfoundation.org>
+Message-Id: <20201103203247.335202377@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,111 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Michael Neuling <mikey@neuling.org>
 
-commit bb56f02f26fe23798edb1b2175707419b28c752a upstream.
+commit 1da4a0272c5469169f78cd76cf175ff984f52f06 upstream.
 
-Logging directories with many entries can take a significant amount of
-time, and in some cases monopolize a cpu/core for a long time if the
-logging task doesn't happen to block often enough.
+__get_user_atomic_128_aligned() stores to kaddr using stvx which is a
+VMX store instruction, hence kaddr must be 16 byte aligned otherwise
+the store won't occur as expected.
 
-Johannes and Lu Fengqi reported test case generic/041 triggering a soft
-lockup when the kernel has CONFIG_SOFTLOCKUP_DETECTOR=y. For this test
-case we log an inode with 3002 hard links, and because the test removed
-one hard link before fsyncing the file, the inode logging causes the
-parent directory do be logged as well, which has 6004 directory items to
-log (3002 BTRFS_DIR_ITEM_KEY items plus 3002 BTRFS_DIR_INDEX_KEY items),
-so it can take a significant amount of time and trigger the soft lockup.
+Unfortunately when we call __get_user_atomic_128_aligned() in
+p9_hmi_special_emu(), the buffer we pass as kaddr (ie. vbuf) isn't
+guaranteed to be 16B aligned. This means that the write to vbuf in
+__get_user_atomic_128_aligned() has the bottom bits of the address
+truncated. This results in other local variables being
+overwritten. Also vbuf will not contain the correct data which results
+in the userspace emulation being wrong and hence undetected user data
+corruption.
 
-So just make tree-log.c:log_dir_items() reschedule when necessary,
-releasing the current search path before doing so and then resume from
-where it was before the reschedule.
+In the past we've been mostly lucky as vbuf has ended up aligned but
+this is fragile and isn't always true. CONFIG_STACKPROTECTOR in
+particular can change the stack arrangement enough that our luck runs
+out.
 
-The stack trace produced when the soft lockup happens is the following:
+This issue only occurs on POWER9 Nimbus <= DD2.1 bare metal.
 
-[10480.277653] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [xfs_io:28172]
-[10480.279418] Modules linked in: dm_thin_pool dm_persistent_data (...)
-[10480.284915] irq event stamp: 29646366
-[10480.285987] hardirqs last  enabled at (29646365): [<ffffffff85249b66>] __slab_alloc.constprop.0+0x56/0x60
-[10480.288482] hardirqs last disabled at (29646366): [<ffffffff8579b00d>] irqentry_enter+0x1d/0x50
-[10480.290856] softirqs last  enabled at (4612): [<ffffffff85a00323>] __do_softirq+0x323/0x56c
-[10480.293615] softirqs last disabled at (4483): [<ffffffff85800dbf>] asm_call_on_stack+0xf/0x20
-[10480.296428] CPU: 2 PID: 28172 Comm: xfs_io Not tainted 5.9.0-rc4-default+ #1248
-[10480.298948] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[10480.302455] RIP: 0010:__slab_alloc.constprop.0+0x19/0x60
-[10480.304151] Code: 86 e8 31 75 21 00 66 66 2e 0f 1f 84 00 00 00 (...)
-[10480.309558] RSP: 0018:ffffadbe09397a58 EFLAGS: 00000282
-[10480.311179] RAX: ffff8a495ab92840 RBX: 0000000000000282 RCX: 0000000000000006
-[10480.313242] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff85249b66
-[10480.315260] RBP: ffff8a497d04b740 R08: 0000000000000001 R09: 0000000000000001
-[10480.317229] R10: ffff8a497d044800 R11: ffff8a495ab93c40 R12: 0000000000000000
-[10480.319169] R13: 0000000000000000 R14: 0000000000000c40 R15: ffffffffc01daf70
-[10480.321104] FS:  00007fa1dc5c0e40(0000) GS:ffff8a497da00000(0000) knlGS:0000000000000000
-[10480.323559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[10480.325235] CR2: 00007fa1dc5befb8 CR3: 0000000004f8a006 CR4: 0000000000170ea0
-[10480.327259] Call Trace:
-[10480.328286]  ? overwrite_item+0x1f0/0x5a0 [btrfs]
-[10480.329784]  __kmalloc+0x831/0xa20
-[10480.331009]  ? btrfs_get_32+0xb0/0x1d0 [btrfs]
-[10480.332464]  overwrite_item+0x1f0/0x5a0 [btrfs]
-[10480.333948]  log_dir_items+0x2ee/0x570 [btrfs]
-[10480.335413]  log_directory_changes+0x82/0xd0 [btrfs]
-[10480.336926]  btrfs_log_inode+0xc9b/0xda0 [btrfs]
-[10480.338374]  ? init_once+0x20/0x20 [btrfs]
-[10480.339711]  btrfs_log_inode_parent+0x8d3/0xd10 [btrfs]
-[10480.341257]  ? dget_parent+0x97/0x2e0
-[10480.342480]  btrfs_log_dentry_safe+0x3a/0x50 [btrfs]
-[10480.343977]  btrfs_sync_file+0x24b/0x5e0 [btrfs]
-[10480.345381]  do_fsync+0x38/0x70
-[10480.346483]  __x64_sys_fsync+0x10/0x20
-[10480.347703]  do_syscall_64+0x2d/0x70
-[10480.348891]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[10480.350444] RIP: 0033:0x7fa1dc80970b
-[10480.351642] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 (...)
-[10480.356952] RSP: 002b:00007fffb3d081d0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-[10480.359458] RAX: ffffffffffffffda RBX: 0000562d93d45e40 RCX: 00007fa1dc80970b
-[10480.361426] RDX: 0000562d93d44ab0 RSI: 0000562d93d45e60 RDI: 0000000000000003
-[10480.363367] RBP: 0000000000000001 R08: 0000000000000000 R09: 00007fa1dc7b2a40
-[10480.365317] R10: 0000562d93d0e366 R11: 0000000000000293 R12: 0000000000000001
-[10480.367299] R13: 0000562d93d45290 R14: 0000562d93d45e40 R15: 0000562d93d45e60
+The fix is to align vbuf to a 16 byte boundary.
 
-Link: https://lore.kernel.org/linux-btrfs/20180713090216.GC575@fnst.localdomain/
-Reported-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-CC: stable@vger.kernel.org # 4.4+
-Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 5080332c2c89 ("powerpc/64s: Add workaround for P9 vector CI load issue")
+Cc: stable@vger.kernel.org # v4.15+
+Signed-off-by: Michael Neuling <mikey@neuling.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201013043741.743413-1-mikey@neuling.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/tree-log.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/powerpc/kernel/traps.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3478,6 +3478,7 @@ static noinline int log_dir_items(struct
- 	 * search and this search we'll not find the key again and can just
- 	 * bail.
- 	 */
-+search:
- 	ret = btrfs_search_slot(NULL, root, &min_key, path, 0, 0);
- 	if (ret != 0)
- 		goto done;
-@@ -3497,6 +3498,13 @@ static noinline int log_dir_items(struct
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -794,7 +794,7 @@ static void p9_hmi_special_emu(struct pt
+ {
+ 	unsigned int ra, rb, t, i, sel, instr, rc;
+ 	const void __user *addr;
+-	u8 vbuf[16], *vdst;
++	u8 vbuf[16] __aligned(16), *vdst;
+ 	unsigned long ea, msr, msr_mask;
+ 	bool swap;
  
- 			if (min_key.objectid != ino || min_key.type != key_type)
- 				goto done;
-+
-+			if (need_resched()) {
-+				btrfs_release_path(path);
-+				cond_resched();
-+				goto search;
-+			}
-+
- 			ret = overwrite_item(trans, log, dst_path, src, i,
- 					     &min_key);
- 			if (ret) {
 
 
