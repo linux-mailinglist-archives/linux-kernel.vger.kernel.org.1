@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71B52A5940
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4192A5942
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgKCUl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:41:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53764 "EHLO mail.kernel.org"
+        id S1731000AbgKCWGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:06:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730421AbgKCUlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:51 -0500
+        id S1730455AbgKCUmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:42:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4979223AB;
-        Tue,  3 Nov 2020 20:41:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C078C223AB;
+        Tue,  3 Nov 2020 20:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436110;
-        bh=b+EUa/HZZerOFZhY3a4qiUmM1E6DUp3dYuXsys0e0qM=;
+        s=default; t=1604436119;
+        bh=nWUEqFc857IS9ctLcEibWaH87KK/+kCD26kt7n/jqR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FmfTg/8AvrvWbk2HiwwunN8W06dgryk42kh4bWC33aiaj3lx/6r1kHThC45Xlk1wT
-         3swl/1CqtXwR1OUvzmnIwf141l2RLkEe4BP6Sw+1m+TqmvRb5RWtPq3sY4bgBQoXGS
-         3jWd4fyVCaDxRrhaNXt765nLocAYNHsHtmP5q944=
+        b=onqPDt2j1Wd3MfrZUzsbAlG0GnNWMpwJHR11XbCC6cdaN/wEqox7yzRmPti5Y/nDj
+         IhnSRM95GBGBdn7Y9EPpQRRFHG78TQ9lPcF88KUdveiLM4CzLNQWP/1tpgZnRtbStf
+         Il/mT4DiinUbIZ5D7TaoXwSenhkYYO9MdFfXOVxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Alain Volmat <avolmat@me.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 108/391] selinux: access policycaps with READ_ONCE/WRITE_ONCE
-Date:   Tue,  3 Nov 2020 21:32:39 +0100
-Message-Id: <20201103203354.109057343@linuxfoundation.org>
+Subject: [PATCH 5.9 112/391] cpufreq: sti-cpufreq: add stih418 support
+Date:   Tue,  3 Nov 2020 21:32:43 +0100
+Message-Id: <20201103203354.379736488@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,97 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Smalley <stephen.smalley.work@gmail.com>
+From: Alain Volmat <avolmat@me.com>
 
-[ Upstream commit e8ba53d0023a76ba0f50e6ee3e6288c5442f9d33 ]
+[ Upstream commit 01a163c52039e9426c7d3d3ab16ca261ad622597 ]
 
-Use READ_ONCE/WRITE_ONCE for all accesses to the
-selinux_state.policycaps booleans to prevent compiler
-mischief.
+The STiH418 can be controlled the same way as STiH407 &
+STiH410 regarding cpufreq.
 
-Signed-off-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Alain Volmat <avolmat@me.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/include/security.h | 14 +++++++-------
- security/selinux/ss/services.c      |  3 ++-
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/cpufreq/sti-cpufreq.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index b0e02cfe3ce14..8a432f646967e 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -177,49 +177,49 @@ static inline bool selinux_policycap_netpeer(void)
+diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
+index a5ad96d29adca..4ac6fb23792a0 100644
+--- a/drivers/cpufreq/sti-cpufreq.c
++++ b/drivers/cpufreq/sti-cpufreq.c
+@@ -141,7 +141,8 @@ static const struct reg_field sti_stih407_dvfs_regfields[DVFS_MAX_REGFIELDS] = {
+ static const struct reg_field *sti_cpufreq_match(void)
  {
- 	struct selinux_state *state = &selinux_state;
+ 	if (of_machine_is_compatible("st,stih407") ||
+-	    of_machine_is_compatible("st,stih410"))
++	    of_machine_is_compatible("st,stih410") ||
++	    of_machine_is_compatible("st,stih418"))
+ 		return sti_stih407_dvfs_regfields;
  
--	return state->policycap[POLICYDB_CAPABILITY_NETPEER];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NETPEER]);
- }
+ 	return NULL;
+@@ -258,7 +259,8 @@ static int sti_cpufreq_init(void)
+ 	int ret;
  
- static inline bool selinux_policycap_openperm(void)
- {
- 	struct selinux_state *state = &selinux_state;
+ 	if ((!of_machine_is_compatible("st,stih407")) &&
+-		(!of_machine_is_compatible("st,stih410")))
++		(!of_machine_is_compatible("st,stih410")) &&
++		(!of_machine_is_compatible("st,stih418")))
+ 		return -ENODEV;
  
--	return state->policycap[POLICYDB_CAPABILITY_OPENPERM];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_OPENPERM]);
- }
- 
- static inline bool selinux_policycap_extsockclass(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS]);
- }
- 
- static inline bool selinux_policycap_alwaysnetwork(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK]);
- }
- 
- static inline bool selinux_policycap_cgroupseclabel(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL]);
- }
- 
- static inline bool selinux_policycap_nnp_nosuid_transition(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION]);
- }
- 
- static inline bool selinux_policycap_genfs_seclabel_symlinks(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS]);
- }
- 
- int security_mls_enabled(struct selinux_state *state);
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index 1caf4e6033096..c55b3063753ab 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -2103,7 +2103,8 @@ static void security_load_policycaps(struct selinux_state *state)
- 	struct ebitmap_node *node;
- 
- 	for (i = 0; i < ARRAY_SIZE(state->policycap); i++)
--		state->policycap[i] = ebitmap_get_bit(&p->policycaps, i);
-+		WRITE_ONCE(state->policycap[i],
-+			ebitmap_get_bit(&p->policycaps, i));
- 
- 	for (i = 0; i < ARRAY_SIZE(selinux_policycap_names); i++)
- 		pr_info("SELinux:  policy capability %s=%d\n",
+ 	ddata.cpu = get_cpu_device(0);
 -- 
 2.27.0
 
