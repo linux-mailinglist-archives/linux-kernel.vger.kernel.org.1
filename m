@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190DB2A3FC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EADD2A3FC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgKCJOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:14:40 -0500
-Received: from mga01.intel.com ([192.55.52.88]:30837 "EHLO mga01.intel.com"
+        id S1727165AbgKCJOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:14:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgKCJOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:14:39 -0500
-IronPort-SDR: unqTT/uaTmYCcnDjf+//gpUIqNDwggZD00RwFbl6BtwViO7CBjzG0G0bL0EjVSj+uAHrkmv+og
- IXf9xh3KBLCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="186867497"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="186867497"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 01:14:39 -0800
-IronPort-SDR: eFTHNZBxqYN5dcGuDSmldVZPzDXE44+XDO/whjJgYBwHJ7nuOWNzglzewY25fZHYRAKFkkk21v
- lfzYIUGSFTkg==
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="538418690"
-Received: from vfarcas-mobl.ger.corp.intel.com (HELO [10.214.241.76]) ([10.214.241.76])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 01:14:35 -0800
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
- api
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>, Intel-gfx@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
- <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
- <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
- <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
- <3f5694f3-62f9-cc2b-1c2b-f9e99a4788c1@linux.intel.com>
- <1ce5b94a-38b3-548e-3b1a-a68390b93953@linux.intel.com>
- <82dab98e-0761-8946-c31c-92f19a0615b4@linux.intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <99a0d1eb-7fde-dff4-225f-92b68fbf7620@linux.intel.com>
-Date:   Tue, 3 Nov 2020 09:14:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726734AbgKCJOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:14:47 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CB8020756;
+        Tue,  3 Nov 2020 09:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604394885;
+        bh=ZHBZOejCjX5l8sZRwuQR75aiAkvpCacnS9a7dm3ZHWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qln8MdI6DivkRV8z0NNzzjlNCxVzjVdA/Fv1NgjVip/n/1gFGnqFFvPb71GuAnUIO
+         /2eNbcs3wGdBPupCY+nPbaFzvLuxEUzYibz1rSSFzK875xRQ0sASb7T2390zB6JrJ9
+         /8V+j5a9jQGnLDsnL73G32hmgIebDkvEIp3AO60Y=
+Date:   Tue, 3 Nov 2020 10:15:38 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
+Message-ID: <20201103091538.GA2663113@kroah.com>
+References: <20201030181822.570402-1-lee.jones@linaro.org>
+ <20201102183242.2031659-1-yepeilin.cs@gmail.com>
+ <20201103085324.GL4488@dell>
+ <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <82dab98e-0761-8946-c31c-92f19a0615b4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03/11/2020 02:53, Lu Baolu wrote:
-> On 11/2/20 7:52 PM, Tvrtko Ursulin wrote:
->>
->> On 02/11/2020 02:00, Lu Baolu wrote:
->>> Hi Tvrtko,
->>> On 10/12/20 4:44 PM, Tvrtko Ursulin wrote:
->>>>
->>>> On 29/09/2020 01:11, Lu Baolu wrote:
->>>>> Hi Tvrtko,
->>>>>
->>>>> On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
->>>>>>
->>>>>> On 27/09/2020 07:34, Lu Baolu wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> The previous post of this series could be found here.
->>>>>>>
->>>>>>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
->>>>>>>
->>>>>>>
->>>>>>> This version introduce a new patch [4/7] to fix an issue reported 
->>>>>>> here.
->>>>>>>
->>>>>>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
->>>>>>>
->>>>>>>
->>>>>>> There aren't any other changes.
->>>>>>>
->>>>>>> Please help to test and review.
->>>>>>>
->>>>>>> Best regards,
->>>>>>> baolu
->>>>>>>
->>>>>>> Lu Baolu (3):
->>>>>>>    iommu: Add quirk for Intel graphic devices in map_sg
->>>>>>
->>>>>> Since I do have patches to fix i915 to handle this, do we want to 
->>>>>> co-ordinate the two and avoid having to add this quirk and then 
->>>>>> later remove it? Or you want to go the staged approach?
->>>>>
->>>>> I have no preference. It depends on which patch goes first. Let the
->>>>> maintainers help here.
->>>>
->>>> FYI we have merged the required i915 patches to out tree last week 
->>>> or so. I *think* this means they will go into 5.11. So the i915 
->>>> specific workaround patch will not be needed in Intel IOMMU.
->>>
->>> Do you mind telling me what's the status of this fix patch? I tried this
->>> series on v5.10-rc1 with the graphic quirk patch dropped. I am still
->>> seeing dma faults from graphic device.
->>
->> Hmm back then I thought i915 fixes for this would land in 5.11 so I 
->> will stick with that. :) (See my quoted text a paragraph above yours.)
+On Tue, Nov 03, 2020 at 09:58:18AM +0100, Daniel Vetter wrote:
+> On Tue, Nov 3, 2020 at 9:53 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 02 Nov 2020, Peilin Ye wrote:
+> >
+> > > From: Lee Jones <lee.jones@linaro.org>
+> > >
+> > > Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
+> > > fonts") introduced the following error when building rpc_defconfig (only
+> > > this build appears to be affected):
+> > >
+> > >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+> > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+> > >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> > >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+> > >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+> > >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+> > >
+> > > The .data section is discarded at link time.  Reinstating acorndata_8x8 as
+> > > const ensures it is still available after linking.  Do the same for the
+> > > other 12 built-in fonts as well, for consistency purposes.
+> > >
+> > > Cc: <stable@vger.kernel.org>
+> > > Cc: Russell King <linux@armlinux.org.uk>
+> > > Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > ---
+> > > Changes in v2:
+> > >   - Fix commit ID to 6735b4632def in commit message (Russell King
+> > >     <linux@armlinux.org.uk>)
+> > >   - Add `const` back for all 13 built-in fonts (Daniel Vetter
+> > >     <daniel.vetter@ffwll.ch>)
+> > >   - Add a Fixes: tag
+> > >
+> > >  lib/fonts/font_10x18.c     | 2 +-
+> > >  lib/fonts/font_6x10.c      | 2 +-
+> > >  lib/fonts/font_6x11.c      | 2 +-
+> > >  lib/fonts/font_6x8.c       | 2 +-
+> > >  lib/fonts/font_7x14.c      | 2 +-
+> > >  lib/fonts/font_8x16.c      | 2 +-
+> > >  lib/fonts/font_8x8.c       | 2 +-
+> > >  lib/fonts/font_acorn_8x8.c | 2 +-
+> > >  lib/fonts/font_mini_4x6.c  | 2 +-
+> > >  lib/fonts/font_pearl_8x8.c | 2 +-
+> > >  lib/fonts/font_sun12x22.c  | 2 +-
+> > >  lib/fonts/font_sun8x16.c   | 2 +-
+> > >  lib/fonts/font_ter16x32.c  | 2 +-
+> > >  13 files changed, 13 insertions(+), 13 deletions(-)
+> >
+> > LGTM.
+> >
+> > Thanks for keeping my authorship.  Much appreciated.
 > 
-> What size are those fixes? I am considering pushing this series for
-> v5.11. Is it possible to get some acks for those patches and let them
-> go to Linus through iommu tree?
+> Should I stuff this into drm-misc-fixes? Or will someone else pick
+> this up? Greg?
+> 
+> I guess drm-misc-fixes might be easiest since there's a bunch of other
+> fbcon/font stuff in the queue in drm-misc from Peilin.
 
-For 5.10 you mean? They feel a bit too large for comfort to go via a 
-non-i915/drm tree. These are the two patches required:
+You can take it:
 
-https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-gt-next&id=8a473dbadccfc6206150de3db3223c40785da348
-https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-gt-next&id=934941ed5a3070a7833c688c9b1d71484fc01a68
-
-I'll copy Joonas as our maintainer - how does the idea of taking the 
-above two patches through the iommu tree sound to you?
-
-Regards,
-
-Tvrtko
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
