@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3649D2A41EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BC42A429F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgKCKbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:31:21 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37172 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbgKCKbT (ORCPT
+        id S1728361AbgKCKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728285AbgKCKdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:31:19 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604399477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4YPfyThdfqh+Ek0aAZOjucScX+kZFKAkhTa4zTnlBMU=;
-        b=cJmsOmPV8GxzrObsOJzXJvTYMLL9xzFykDdEjxeqVusW8aVOVPJKjwbe7RH/Qi4KGazgb6
-        EXRzP0xXM42TRoQIjBOjqlb6E6IJNMg5Uj8mAc5cqfbHJfnhvPpar3uOMOKW8ezN121T8a
-        SZhNsRibqapisx5f/5weainDJpjip7on3mdg+F9fcAxJ8oPkKlaYWreRU8WbB5JD6pr4qJ
-        F07XA3El6TMzHtEVCrcFtl5Mfsj+eyD8kEiVd6Zd3AuGeEJN8dVA/THmr8KCllF2pe5+Dw
-        I2o5pQOvke7qTwY4QNIw/OC1C03cMdbGZqpZ5ly8lJw41X8M2mgMCZ2GC3DoNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604399477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4YPfyThdfqh+Ek0aAZOjucScX+kZFKAkhTa4zTnlBMU=;
-        b=k7tiSTzpqGHQ8uDde18bylPddN7ucdzaebd1+q9xcVIWj2XjHe6Ebn2vilYBp7//HFtXyS
-        9Q9mwA+dO8xE2cDA==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Aw: Re: [PATCH] pci: mediatek: fix warning in msi.h
-In-Reply-To: <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
-References: <20201031140330.83768-1-linux@fw-web.de> <878sbm9icl.fsf@nanos.tec.linutronix.de> <EC02022C-64CF-4F4B-A0A2-215A0A49E826@public-files.de> <87lfflti8q.wl-maz@kernel.org> <1604253261.22363.0.camel@mtkswgap22> <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08> <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de> <df5565a2f1e821041c7c531ad52a3344@kernel.org> <87h7q791j8.fsf@nanos.tec.linutronix.de> <877dr38kt8.fsf@nanos.tec.linutronix.de> <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
-Date:   Tue, 03 Nov 2020 11:31:17 +0100
-Message-ID: <87k0v27mve.fsf@nanos.tec.linutronix.de>
+        Tue, 3 Nov 2020 05:33:33 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B5AC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:33:32 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id f38so13357863pgm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 02:33:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MZVixt3bJyBbHov5aMt9uShWeZEKD4hMZGn5JRPvjGI=;
+        b=CH26fav4EiFBNQLGJlILxppem54CB0ajkcpfJiQokiKF8w2ciRqHiM5Vn7qWl986Wh
+         nr31g4d3lCaRE4OjZDV4rLR9lblTO8dmp4YZ7nn4otbne7JfsqwQ+muFLcUXGkeD7xcu
+         B6shll/g+kanR5s80BNcRLr2N4jDdo8uKJb+YZ56coqpHzHq8FbMbw5i7WKuIu/8W7OT
+         IJsYqSfo+ZMRJa8RmXoaR7+CodqFlb9qTV6+SQo3SIG57qhdJhIxYKXRlaY+x7oLnYRQ
+         9nnBsQ+LPkK4v1iI1JOuLhECgSruym+taGG4SZSxF/5yKHufHBXUvKEZ5uxiiObFnvT5
+         uKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MZVixt3bJyBbHov5aMt9uShWeZEKD4hMZGn5JRPvjGI=;
+        b=l9cN7PRRPLtdCjLDHdAwGmWBBt+0UrBDVX7yPibY9EAH5GNa37Tvw5Gni1ADkjHaPH
+         zF620GecF93Kf9FvratqlNAl+AQNAnBW6/VvE8bP4rcXSPT1FfmDpDzuPO8d/in9KCPL
+         Tjrmdlr4gVGXyE/vidzNhjzYF57wTbWlE9HQXyRBdepctgRHpxIrAQdAt8WJ+g5Tl617
+         VeniR1cnkU43nk1OzF3enCgUmYfYtkgmGzNUe7UPB8hRjLgl0P5TzpVD938b5uCuDcgv
+         JRwJ23Wiaj84z7tg2aMfBoQqrFH3D7wkpr1qrQVMlZiqBOETzFTp9zUmiIUwH5A1k4ms
+         bveg==
+X-Gm-Message-State: AOAM533sFDhiuoyXILidyYT5NvwHFSMkF2TtMWEGdne4S2XBRgZKcz39
+        wYBPOTgans0i1o4dd1A7uoQtHQ9R9eykzsMESYk=
+X-Google-Smtp-Source: ABdhPJwl3L9RBgprLZouaOiIYJ3YcKEX3m/JWYT5+6JobmNGSf2xUCiX9/4D/Oo2O6SjeoZ3Kgdlmg==
+X-Received: by 2002:a17:90a:6501:: with SMTP id i1mr3150107pjj.30.1604399611905;
+        Tue, 03 Nov 2020 02:33:31 -0800 (PST)
+Received: from localhost.localdomain (80.251.221.29.16clouds.com. [80.251.221.29])
+        by smtp.gmail.com with ESMTPSA id y4sm3041866pjc.53.2020.11.03.02.33.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 02:33:31 -0800 (PST)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     perex@perex.cz
+Cc:     tiwai@suse.com, davem@davemloft.net, gregkh@linuxfoundation.org,
+        alexander@tsoy.me, jesus-ramos@live.com,
+        joakim.tjernlund@infinera.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com
+Subject: [PATCH] ALSA: usb-audio: add usb vendor id as DSD-capable for Khadas devices
+Date:   Tue,  3 Nov 2020 18:33:11 +0800
+Message-Id: <20201103103311.5435-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03 2020 at 09:54, Marc Zyngier wrote:
-> On 2020-11-02 22:18, Thomas Gleixner wrote:
->> So we really need some other solution and removing the warning is not 
->> an option. If MSI is enabled then we want to get a warning when a PCI
->> device has no MSI domain associated. Explicitly expressing the PCIE
->> brigde misfeature of not supporting MSI is way better than silently
->> returning an error code which is swallowed anyway.
->
-> I don't disagree here, though the PCI_MSI_ARCH_FALLBACKS mechanism
-> makes it more difficult to establish.
+Khadas audio devices ( USB_ID_VENDOR 0x3353 )
+have DSD-capable implementations from XMOS
+need add new usb vendor id for recognition
 
-Only for the few leftovers which implement msi_controller, i.e.
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-drivers/pci/controller/pci-hyperv.c
-drivers/pci/controller/pci-tegra.c
-drivers/pci/controller/pcie-rcar-host.c
-drivers/pci/controller/pcie-xilinx.c
-
-The architectures which select PCI_MSI_ARCH_FALLBACKS are:
-
-arch/ia64/Kconfig:      select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
-arch/mips/Kconfig:      select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
-arch/powerpc/Kconfig:   select PCI_MSI_ARCH_FALLBACKS           if PCI_MSI
-arch/s390/Kconfig:      select PCI_MSI_ARCH_FALLBACKS   if PCI_MSI
-arch/sparc/Kconfig:     select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
-
-implement arch_setup_msi_irq() which makes it magically work :)
-
->> Whatever the preferred way is via flags at host probe time or flagging
->> it post probe I don't care much as long as it is consistent.
->
-> Host probe time is going to require some changes in the core PCI api,
-> as everything that checks for a MSI domain is based on the pci_bus
-> structure, which is only allocated much later.
-
-Yeah, it's nasty. One possible solution is to add flags or a callback to
-pci_ops, but it's not pretty either.
-
-I think we should go with the 'mark it after pci_host_probe()' hack for
-5.10-rc. The real fix will be larger and go into 5.11.
-
-Thoughts?
-
-Thanks,
-
-        tglx
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index b4fa80ef730..c989ad8052a 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1800,6 +1800,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	case 0x278b:  /* Rotel? */
+ 	case 0x292b:  /* Gustard/Ess based devices */
+ 	case 0x2ab6:  /* T+A devices */
++	case 0x3353:  /* Khadas devices */
+ 	case 0x3842:  /* EVGA */
+ 	case 0xc502:  /* HiBy devices */
+ 		if (fp->dsd_raw)
+-- 
+2.25.1
 
