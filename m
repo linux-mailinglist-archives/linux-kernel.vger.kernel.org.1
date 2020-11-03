@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0BE2A528C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B73202A5294
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731880AbgKCUuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:50:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45326 "EHLO mail.kernel.org"
+        id S1731926AbgKCUvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731861AbgKCUuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:50:51 -0500
+        id S1731362AbgKCUvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9B5C20719;
-        Tue,  3 Nov 2020 20:50:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9114220719;
+        Tue,  3 Nov 2020 20:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436651;
-        bh=vLpUuXDYQpnWLZoBKjvG/J6ILa7TA2aLVD0Lq/SKsGc=;
+        s=default; t=1604436667;
+        bh=wiBx9A2lhebuSmXPGder/2NCRifMq+OyrZyXrFNON5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QjUBWYskdq+GHrU0mD5FnGTGfvhN6vjLpuNpUgnqCL6on55ZMNzOibVeCWJL1M+pW
-         hQIP9F9CMI2tx36x78JvgcFkweL9uHJVVNKn/ZCPH8lGY2+fjJ9dol8Ud3n+MjxN5F
-         xIrL4imnrYDv0peYVi9g5Xy5C8wBaaHohgSqBVKo=
+        b=ovYslY7wGskhWaY6Byltkuq53kKV93KZJpIo9Cpck53SBj5wTDr9pyqMioIrUhT7X
+         5M2PH+S5sXwc4/sMLUQ8Amr+sjq6yJbi5Vnu/Q6dn210JVVUGHxk3LmJzf39ebYvnb
+         jVt8psHTZ89+b0/cF0u71+c7/0aEBXpLP3T6pE58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Andreas Dilger <adilger@dilger.ca>,
+        Luo Meng <luomeng12@huawei.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.9 341/391] ext4: fix error handling code in add_new_gdb
-Date:   Tue,  3 Nov 2020 21:36:32 +0100
-Message-Id: <20201103203410.145751791@linuxfoundation.org>
+Subject: [PATCH 5.9 343/391] ext4: fix invalid inode checksum
+Date:   Tue,  3 Nov 2020 21:36:34 +0100
+Message-Id: <20201103203410.282363210@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,38 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Luo Meng <luomeng12@huawei.com>
 
-commit c9e87161cc621cbdcfc472fa0b2d81c63780c8f5 upstream.
+commit 1322181170bb01bce3c228b82ae3d5c6b793164f upstream.
 
-When ext4_journal_get_write_access() fails, we should
-terminate the execution flow and release n_group_desc,
-iloc.bh, dind and gdb_bh.
+During the stability test, there are some errors:
+  ext4_lookup:1590: inode #6967: comm fsstress: iget: checksum invalid.
+
+If the inode->i_iblocks too big and doesn't set huge file flag, checksum
+will not be recalculated when update the inode information to it's buffer.
+If other inode marks the buffer dirty, then the inconsistent inode will
+be flushed to disk.
+
+Fix this problem by checking i_blocks in advance.
 
 Cc: stable@kernel.org
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/20200829025403.3139-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lore.kernel.org/r/20201020013631.3796673-1-luomeng12@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/resize.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext4/inode.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -843,8 +843,10 @@ static int add_new_gdb(handle_t *handle,
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4982,6 +4982,12 @@ static int ext4_do_update_inode(handle_t
+ 	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
+ 		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
  
- 	BUFFER_TRACE(dind, "get_write_access");
- 	err = ext4_journal_get_write_access(handle, dind);
--	if (unlikely(err))
-+	if (unlikely(err)) {
- 		ext4_std_error(sb, err);
-+		goto errout;
++	err = ext4_inode_blocks_set(handle, raw_inode, ei);
++	if (err) {
++		spin_unlock(&ei->i_raw_lock);
++		goto out_brelse;
 +	}
++
+ 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
+ 	i_uid = i_uid_read(inode);
+ 	i_gid = i_gid_read(inode);
+@@ -5015,11 +5021,6 @@ static int ext4_do_update_inode(handle_t
+ 	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
+ 	EXT4_EINODE_SET_XTIME(i_crtime, ei, raw_inode);
  
- 	/* ext4_reserve_inode_write() gets a reference on the iloc */
- 	err = ext4_reserve_inode_write(handle, inode, &iloc);
+-	err = ext4_inode_blocks_set(handle, raw_inode, ei);
+-	if (err) {
+-		spin_unlock(&ei->i_raw_lock);
+-		goto out_brelse;
+-	}
+ 	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
+ 	raw_inode->i_flags = cpu_to_le32(ei->i_flags & 0xFFFFFFFF);
+ 	if (likely(!test_opt2(inode->i_sb, HURD_COMPAT)))
 
 
