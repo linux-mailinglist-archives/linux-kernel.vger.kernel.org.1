@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CA22A4103
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFA22A4108
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgKCJ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728114AbgKCJ64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:58:56 -0500
-Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2B3C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 01:58:56 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id 338D923F511;
-        Tue,  3 Nov 2020 10:58:55 +0100 (CET)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.943
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.943 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.043, BAYES_00=-1.9] autolearn=ham
-Received: from smtp3.goneo.de ([127.0.0.1])
-        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ud_mFIkgAJRr; Tue,  3 Nov 2020 10:58:52 +0100 (CET)
-Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp3.goneo.de (Postfix) with ESMTPA id 91FE123FB28;
-        Tue,  3 Nov 2020 10:58:52 +0100 (CET)
-From:   poeschel@lemonage.de
-To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH v6 13/25] auxdisplay: Make use of enum for backlight on / off
-Date:   Tue,  3 Nov 2020 10:58:16 +0100
-Message-Id: <20201103095828.515831-14-poeschel@lemonage.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201103095828.515831-1-poeschel@lemonage.de>
-References: <20201103095828.515831-1-poeschel@lemonage.de>
+        id S1728273AbgKCKA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:00:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726109AbgKCKA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:00:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3456BABDE;
+        Tue,  3 Nov 2020 10:00:25 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 11:00:12 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/seves fixes for v5.10-rc3
+Message-ID: <20201103100012.GA7825@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Poeschel <poeschel@lemonage.de>
+Hi Linus,
 
-To turn the backlight on or off use our new enum CHARLCD_ON /
-CHARLCD_OFF.
+please pull a couple of SEV-ES hardening fixes against a malicious
+hypervisor.
 
-Reviewed-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+Thx.
+
 ---
- drivers/auxdisplay/charlcd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index 154419513186..9631f70e8128 100644
---- a/drivers/auxdisplay/charlcd.c
-+++ b/drivers/auxdisplay/charlcd.c
-@@ -115,7 +115,7 @@ static void charlcd_bl_off(struct work_struct *work)
- 	if (priv->bl_tempo) {
- 		priv->bl_tempo = false;
- 		if (!(priv->flags & LCD_FLAG_L))
--			priv->lcd.ops->backlight(&priv->lcd, 0);
-+			priv->lcd.ops->backlight(&priv->lcd, CHARLCD_OFF);
- 	}
- 	mutex_unlock(&priv->bl_tempo_lock);
- }
-@@ -132,7 +132,7 @@ void charlcd_poke(struct charlcd *lcd)
- 
- 	mutex_lock(&priv->bl_tempo_lock);
- 	if (!priv->bl_tempo && !(priv->flags & LCD_FLAG_L))
--		lcd->ops->backlight(lcd, 1);
-+		lcd->ops->backlight(lcd, CHARLCD_ON);
- 	priv->bl_tempo = true;
- 	schedule_delayed_work(&priv->bl_work, LCD_BL_TEMPO_PERIOD * HZ);
- 	mutex_unlock(&priv->bl_tempo_lock);
-@@ -829,7 +829,7 @@ int charlcd_unregister(struct charlcd *lcd)
- 	the_charlcd = NULL;
- 	if (lcd->ops->backlight) {
- 		cancel_delayed_work_sync(&priv->bl_work);
--		priv->lcd.ops->backlight(&priv->lcd, 0);
-+		priv->lcd.ops->backlight(&priv->lcd, CHARLCD_OFF);
- 	}
- 
- 	return 0;
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_seves_for_v5.10_rc3
+
+for you to fetch changes up to 2411cd82112397bfb9d8f0f19cd46c3d71e0ce67:
+
+  x86/sev-es: Do not support MMIO to/from encrypted memory (2020-10-29 19:27:42 +0100)
+
+----------------------------------------------------------------
+A couple of changes to the SEV-ES code to perform more stringent
+hypervisor checks before enabling encryption. (Joerg Roedel)
+
+----------------------------------------------------------------
+Joerg Roedel (5):
+      x86/boot/compressed/64: Introduce sev_status
+      x86/boot/compressed/64: Sanity-check CPUID results in the early #VC handler
+      x86/boot/compressed/64: Check SEV encryption in 64-bit boot-path
+      x86/head/64: Check SEV encryption before switching to kernel page-table
+      x86/sev-es: Do not support MMIO to/from encrypted memory
+
+ arch/x86/boot/compressed/ident_map_64.c |  1 +
+ arch/x86/boot/compressed/mem_encrypt.S  | 20 +++++++-
+ arch/x86/boot/compressed/misc.h         |  2 +
+ arch/x86/kernel/head_64.S               | 16 ++++++
+ arch/x86/kernel/sev-es-shared.c         | 26 ++++++++++
+ arch/x86/kernel/sev-es.c                | 20 +++++---
+ arch/x86/kernel/sev_verify_cbit.S       | 89 +++++++++++++++++++++++++++++++++
+ arch/x86/mm/mem_encrypt.c               |  1 +
+ 8 files changed, 167 insertions(+), 8 deletions(-)
+ create mode 100644 arch/x86/kernel/sev_verify_cbit.S
+
 -- 
-2.28.0
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
