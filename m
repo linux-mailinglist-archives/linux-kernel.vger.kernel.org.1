@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2673D2A4D9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA172A4D99
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgKCR5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:57:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCR5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:57:08 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E47FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:57:08 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id d125so3893535vkh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:57:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cmd/vHU2XpWN9RrkikP/uwzcHGztQHriQenbhifoFws=;
-        b=W0iZ2ViLtWiGtTh4tYyeDJSlRjuWrEiPeo9pyaiaeroAkDmBc1BIpf8HUF6uOc3PEv
-         L80UWx65jnFxKYYMS2SWdtr5iLvO3OjvhUduWd0TrBSB93wqKTMdoZBBIoBmcoTurlUa
-         uyLfEY5nW5an1PxqHpGCXvwavubfMieQmbi19LkWDEwqY9B39nMXnUxASOljucw3uQH4
-         VUdDQGs4YMuI/aI2731nXHL7al3f4uWSCy2/uy+j5yxVMnkDw/sJSmOR6SINVeOjQTWN
-         5wQKJy6ogYLCsidNhzl2MTBYahMH+niyTiYdeerSnzuOvXOEcI9bICh6HvlEI9hIpY3R
-         pErA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cmd/vHU2XpWN9RrkikP/uwzcHGztQHriQenbhifoFws=;
-        b=nMuEbmvzT1FVPn6uo7b/k3UCCVZBo7e4PjaUVL50d5BiweG8Vpn6aDpcLx2egaUUBR
-         WHL/kgoG/RXQH1/aIlDbbAI2vtv2KNGa7+dMSpQrQ1qlx2Cytyqc3by27Yk7vnaVuHh3
-         2kO3o+dX291U78PWAkdni1u60qJ84Wn2LqtkBHuV35fo+khPwXP/vNs0R03NduSCxF6u
-         /UupXpFB5NYjOilRw2laPiKqt+Ng0rFfVI4cB2xW2nh+Yo9L4pRwiIi7A/tVNEQ8Tglh
-         xKtW5S2rbAPVKt4XI1wQilKdv8IsQDFrVUWUOK0LXdcYvNXux9pNJNPVqkwBIwGEoIlx
-         zuQA==
-X-Gm-Message-State: AOAM531nESSMgrzHDaU3WeY3CWSJtlR9qFAgtlLMD3iHOyB4l6fFIWyE
-        kHpLNl7PhF71EUxvJaedc4K10tODOx0=
-X-Google-Smtp-Source: ABdhPJzcU9Bi4xq+LAmfqZEujvopElG4dTVi+c8OS7zSueMNWL1iAQhUdj0hYL1IrgspPCPSw+GOcg==
-X-Received: by 2002:a1f:5682:: with SMTP id k124mr1885265vkb.24.1604426226829;
-        Tue, 03 Nov 2020 09:57:06 -0800 (PST)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id v26sm1057691vsq.20.2020.11.03.09.57.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 09:57:03 -0800 (PST)
-Received: by mail-vs1-f48.google.com with SMTP id z123so5231965vsb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:57:02 -0800 (PST)
-X-Received: by 2002:a67:c981:: with SMTP id y1mr17877861vsk.14.1604426222523;
- Tue, 03 Nov 2020 09:57:02 -0800 (PST)
+        id S1728471AbgKCR4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:56:48 -0500
+Received: from lhrrgout.huawei.com ([185.176.76.210]:3037 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725957AbgKCR4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:56:47 -0500
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id B50EB525C26A7AD26979;
+        Tue,  3 Nov 2020 17:56:45 +0000 (GMT)
+Received: from [10.47.5.37] (10.47.5.37) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 3 Nov 2020
+ 17:56:44 +0000
+Subject: Re: [PATCH v2 3/4] iommu/iova: Flush CPU rcache for when a depot
+ fills
+To:     Robin Murphy <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>
+CC:     "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+References: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
+ <1603733501-211004-4-git-send-email-john.garry@huawei.com>
+ <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d36fc7ec-cefa-0805-8036-3aea1c44fba2@huawei.com>
+Date:   Tue, 3 Nov 2020 17:56:42 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <BYAPR18MB2679A2F3A2CE18CFA2427EEDC5110@BYAPR18MB2679.namprd18.prod.outlook.com>
-In-Reply-To: <BYAPR18MB2679A2F3A2CE18CFA2427EEDC5110@BYAPR18MB2679.namprd18.prod.outlook.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 3 Nov 2020 12:56:25 -0500
-X-Gmail-Original-Message-ID: <CA+FuTScwuWvbdZgAyVSzGnqsF=EzOMYwj4RbwjxCFoAQKG19OQ@mail.gmail.com>
-Message-ID: <CA+FuTScwuWvbdZgAyVSzGnqsF=EzOMYwj4RbwjxCFoAQKG19OQ@mail.gmail.com>
-Subject: Re: [net-next PATCH 2/3] octeontx2-af: Add devlink health reporters
- for NPA
-To:     George Cherian <gcherian@marvell.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.5.37]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 12:43 PM George Cherian <gcherian@marvell.com> wrote:
->
-> Hi Willem,
->
->
-> > -----Original Message-----
-> > From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> > Sent: Tuesday, November 3, 2020 7:21 PM
-> > To: George Cherian <gcherian@marvell.com>
-> > Cc: Network Development <netdev@vger.kernel.org>; linux-kernel <linux-
-> > kernel@vger.kernel.org>; Jakub Kicinski <kuba@kernel.org>; David Miller
-> > <davem@davemloft.net>; Sunil Kovvuri Goutham
-> > <sgoutham@marvell.com>; Linu Cherian <lcherian@marvell.com>;
-> > Geethasowjanya Akula <gakula@marvell.com>; masahiroy@kernel.org
-> > Subject: [EXT] Re: [net-next PATCH 2/3] octeontx2-af: Add devlink health
-> > reporters for NPA
-> >
-> > External Email
-> >
-> > ----------------------------------------------------------------------
-> > > > >  static int rvu_devlink_info_get(struct devlink *devlink, struct
-> > > > devlink_info_req *req,
-> > > > >                                 struct netlink_ext_ack *extack)  { @@
-> > > > > -53,7 +483,8 @@ int rvu_register_dl(struct rvu *rvu)
-> > > > >         rvu_dl->dl = dl;
-> > > > >         rvu_dl->rvu = rvu;
-> > > > >         rvu->rvu_dl = rvu_dl;
-> > > > > -       return 0;
-> > > > > +
-> > > > > +       return rvu_health_reporters_create(rvu);
-> > > >
-> > > > when would this be called with rvu->rvu_dl == NULL?
-> > >
-> > > During initialization.
-> >
-> > This is the only caller, and it is only reached if rvu_dl is non-zero.
->
-> Did you mean to ask, where is it de-initialized?
-> If so, it should be done in rvu_unregister_dl() after freeing rvu_dl.
+>> To summarize, the issue is that as time goes by, the CPU rcache and depot
+>> rcache continue to grow. As such, IOVA RB tree access time also continues
+>> to grow.
+> 
 
-No, I meant that rvu_health_reporters_create does not need an
-!rvu->rvu_dl precondition test, as the only callers calls with with a
-non-zero rvu_dl.
+Hi Robin,
+
+> I'm struggling to see how this is not simply indicative of a leak
+> originating elsewhere. 
+
+It sounds like one, but I don't think it is.
+
+> For the number of magazines to continually grow,
+> it means IOVAs *of a particular size* are being freed faster than they
+> are being allocated, while the only place that ongoing allocations
+> should be coming from is those same magazines!
+
+But that is not the nature of how the IOVA caching works. The cache size 
+is not defined by how DMA mappings we may have at a given moment in time 
+or maximum which we did have at a point earlier. It just grows to a 
+limit to where all CPU and global depot rcaches fill.
+
+Here's an artificial example of how the rcache can grow, but I hope can 
+help illustrate:
+- consider a process which wants many DMA mapping active at a given 
+point in time
+- if we tie to cpu0, cpu0 rcache will grow to 128 * 2
+- then tie to cpu1, cpu1 rcache will grow to 128 * 2, so total CPU 
+rcache = 2 * 128 * 2. CPU rcache for cpu0 is not flushed - there is no 
+maintenance for this.
+- then tie to cpu2, cpu2 rcache will grow to 128 * 2, so total CPU 
+rcache = 3 * 128 * 2
+- then cpu3, cpu4, and so on.
+- We can do this for all CPUs in the system, so total CPU rcache grows 
+from zero -> #CPUs * 128 * 2. Yet no DMA mapping leaks.
+
+Something similar can happen in normal use, where the scheduler 
+relocates processes all over the CPUs in the system as time goes by, 
+which causes the total rcache size to continue to grow. And in addition 
+to this, the global depot continues to grow very slowly as well. But 
+when it does fill (the global depot, that is), and we start to free 
+magazines to make space – as is current policy - that's very slow and 
+causes the performance drop.
+
+> 
+> Now indeed that could happen over the short term if IOVAs are allocated
+> and freed again in giant batches larger than the total global cache
+> capacity, but that would show a cyclic behaviour - when activity starts,
+> everything is first allocated straight from the tree, then when it ends
+> the caches would get overwhelmed by the large burst of freeing and start
+> having to release things back to the tree, but eventually that would
+> stop once everything *is* freed, then when activity begins again the
+> next round of allocating would inherently clear out all the caches
+> before going anywhere near the tree. 
+
+But there is no clearing. A CPU will keep the IOVA cached indefinitely, 
+even when there is no active DMA mapping present at all.
+
+> To me the "steady decline"
+> behaviour suggests that someone somewhere is making DMA unmap calls with
+> a smaller size than they were mapped with (you tend to notice it quicker
+> the other way round due to all the device errors and random memory
+> corruption) - in many cases that would appear to work out fine from the
+> driver's point of view, but would provoke exactly this behaviour in the
+> IOVA allocator.
+> 
+
+Thanks,
+John
