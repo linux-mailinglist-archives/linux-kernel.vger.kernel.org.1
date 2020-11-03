@@ -2,71 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34DE2A483F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFCC2A4868
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgKCOeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 09:34:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727709AbgKCOd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 09:33:56 -0500
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34713223BF;
-        Tue,  3 Nov 2020 14:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604414036;
-        bh=AI3MJKi+8NlG0NUnKfyZPXn/M3c91EUFPcLsQs6i8tg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=d0xeM5Ek6s5llXN0wLXs70r3pogcIHz2aoRJCG66YjkcXuoMBpDzlNTd3lXugHoj/
-         EfzXrhtba2r55D6tfv8rsKGYxOcuBDYGaDXacTCyVG/coPkEzcUNUMADOoeMCy2d1m
-         Dvj6sNVeQOoslVrH0fpPYBrbxkUXe5n/pzBNOTm8=
-Received: by mail-ot1-f45.google.com with SMTP id m26so16095870otk.11;
-        Tue, 03 Nov 2020 06:33:56 -0800 (PST)
-X-Gm-Message-State: AOAM532vK5ruut7t2pzGIPfGYJk1FSl0kKTjhynNCshjyxWQTOISEQ+B
-        Fu58+4wNeti5lJzSpMKozn47wzOHdpNdNfQs9w==
-X-Google-Smtp-Source: ABdhPJy8vWxRn5WQaaoYci6+TPtyTE4+D6JKCjszw14qRN1DVkE0IhqL+Sc70WUTd9LPSglJzuWO3dH3H+FuH/6onDQ=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr14673770oti.107.1604414035551;
- Tue, 03 Nov 2020 06:33:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103135004.2363-1-peter.ujfalusi@ti.com>
-In-Reply-To: <20201103135004.2363-1-peter.ujfalusi@ti.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 3 Nov 2020 08:33:44 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKjhfT1-hb211uQXUVnM6fi44KiDaTtWmNuN0GTCyz8YA@mail.gmail.com>
-Message-ID: <CAL_JsqKjhfT1-hb211uQXUVnM6fi44KiDaTtWmNuN0GTCyz8YA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: irqchip: ti, sci-inta: Fix diagram
- indentation for unmapped events
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
+        id S1728015AbgKCOjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:39:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgKCOjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:39:18 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F99C061A48
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:39:17 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id k25so19285687lji.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 06:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M/CcLnAggfPJTPHCvJqAFAyQXrrFbGX8RqEWGTOIlRk=;
+        b=tYRtCsCJ97u7yAlrOFN203Mpt9jz/EvbuW4V+3hipSUNsR5M8ZDqWsq7efoMiN9R5c
+         nhVCnARjFr5alomHWUrG2S/QRxbOVwaEaiSQTgeF0uEgCJ7a2rbupEC/g2AUeshC9i6C
+         wIKR126viYncqhHiZROMnSmO9imaid0rNJepyxM6rr8Apn+RPbJ3qWs7P+ZnHrSgvOWA
+         QcXHZrEHzXM4SVCDzBK7zqXcUTu3T+G1dUvHRbLGUKs/I2DIfrL0bitkL+B4SCLYpFfX
+         lHpCGqsodauH4LxSQSOtDBLKGW1a7DHfcCp5nbfeol5ZCBBoivuqpYvLjRQisIJ68BoF
+         UMSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M/CcLnAggfPJTPHCvJqAFAyQXrrFbGX8RqEWGTOIlRk=;
+        b=Di9m5BomDT/Fh+OzSOYrPpXOkKU1iVubdPTYElAkp+FkZx5+upAJTYUD8fqfoIt7V3
+         S8keRC7rnlueoY6ALHy+jfSv/5cNimw/kkSuX9icu4hdS6+dsbM0QJpHznahXni2MwKe
+         VZKNYScTbqc4I4jL5Ve/8Dtr5bmx3zvr+Yf6pbgTn5rf3HdFatFZY3nueetD+PJ7+qZJ
+         PUnTOWHlhDq2zRqMBzpXtN/4twU2ty9tIXZVew9pOUTPZUCSr15ZU/+ynnP52/3+bk4s
+         SRsWwGpqPb8wmzUm+qGJPkMEmDPvc3FYL4bIPFo3VE7+zWElKF5wEM719CmzkFOFo9pg
+         1noQ==
+X-Gm-Message-State: AOAM531tRuyc9CiNIgXRIdc8mSCq8c0wD7AYlR4VvxixSpAA4o99OuSn
+        EBikKzY48ZIWTMIxXOsYRf72Xg==
+X-Google-Smtp-Source: ABdhPJz+L8qrHCJkzOuQS8/wvO1dQM/ksNE/UzgTA6Cx0Ac2GRFSZ5fX6eoakfcdH0CZnI4/h7s3ng==
+X-Received: by 2002:a2e:879a:: with SMTP id n26mr9115208lji.347.1604414356208;
+        Tue, 03 Nov 2020 06:39:16 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id g27sm4334360ljl.91.2020.11.03.06.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 06:39:15 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 65F1510231C; Tue,  3 Nov 2020 17:39:16 +0300 (+03)
+Date:   Tue, 3 Nov 2020 17:39:16 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v3 2/4] PM: hibernate: make direct map manipulations more
+ explicit
+Message-ID: <20201103143916.otz2o4h2dlmewn3h@box>
+References: <20201101170815.9795-1-rppt@kernel.org>
+ <20201101170815.9795-3-rppt@kernel.org>
+ <20201103110816.t6a3ebtgcm7mfogy@box>
+ <20201103121350.GI4879@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103121350.GI4879@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:49 AM Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
->
-> One space has been missing by the diagram update.
->
-> Fixes: bb2bd7c7f3d0 ("dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling")
-> Reported-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-> Hi,
->
-> I'm very sorry, I did not realized the missing whitespace in the original patch
-> and obviously I failed to run the check.
+On Tue, Nov 03, 2020 at 02:13:50PM +0200, Mike Rapoport wrote:
+> On Tue, Nov 03, 2020 at 02:08:16PM +0300, Kirill A. Shutemov wrote:
+> > On Sun, Nov 01, 2020 at 07:08:13PM +0200, Mike Rapoport wrote:
+> > > diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> > > index 46b1804c1ddf..054c8cce4236 100644
+> > > --- a/kernel/power/snapshot.c
+> > > +++ b/kernel/power/snapshot.c
+> > > @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
+> > >  static inline void hibernate_restore_unprotect_page(void *page_address) {}
+> > >  #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+> > >  
+> > > +static inline void hibernate_map_page(struct page *page, int enable)
+> > > +{
+> > > +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
+> > > +		unsigned long addr = (unsigned long)page_address(page);
+> > > +		int ret;
+> > > +
+> > > +		/*
+> > > +		 * This should not fail because remapping a page here means
+> > > +		 * that we only update protection bits in an existing PTE.
+> > > +		 * It is still worth to have WARN_ON() here if something
+> > > +		 * changes and this will no longer be the case.
+> > > +		 */
+> > > +		if (enable)
+> > > +			ret = set_direct_map_default_noflush(page);
+> > > +		else
+> > > +			ret = set_direct_map_invalid_noflush(page);
+> > > +
+> > > +		if (WARN_ON(ret))
+> > 
+> > _ONCE?
+> 
+> I've changed it to pr_warn() after David said people enable panic on
+> warn in production kernels.
 
-I'm assuming that has been done now...
+pr_warn_once()? :P
 
-Acked-by: Rob Herring <robh@kernel.org>
+-- 
+ Kirill A. Shutemov
