@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEFA2A46A8
+	by mail.lfdr.de (Postfix) with ESMTP id 1145A2A46A7
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgKCNfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:35:54 -0500
-Received: from 8bytes.org ([81.169.241.247]:39136 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgKCNfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728232AbgKCNfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 3 Nov 2020 08:35:52 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 7FD9A433; Tue,  3 Nov 2020 14:35:51 +0100 (CET)
-Date:   Tue, 3 Nov 2020 14:35:50 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jon.Grimm@amd.com, brijesh.singh@amd.com
-Subject: Re: [PATCH] iommu/amd: Enforce 4k mapping for certain IOMMU data
- structures
-Message-ID: <20201103133549.GI22888@8bytes.org>
-References: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
+Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726312AbgKCNfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:35:52 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7CED20870;
+        Tue,  3 Nov 2020 13:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604410551;
+        bh=DRmFPUWjCfp3zN1gWNkKl/K4qOKyHQ0IjaPt1cmlPRk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lhCnHxg83jmBln9f27kSqXipTeJ/ou+ZzfQFAfbfu2GPuMce+JI5foxOO7Q7Fb+IE
+         iXq9NlxTjUfP6peKfakQ6qPufulPWYmQmc6okWQZrqEChtUwOcHLSIEA4vzhXCoQGp
+         bESwWvaaBl7x1NAtBUhbyMDsS0/zkiv8v5NDQ12s=
+Date:   Tue, 3 Nov 2020 14:36:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org,
+        martin.petersen@oracle.com, john.garry@huawei.com,
+        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
+        uma.shankar@intel.com, anshuman.gupta@intel.com,
+        animesh.manna@intel.com, linux-usb@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH v3 0/5] Introduce a new helper marco
+ DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
+Message-ID: <20201103133644.GA2067567@kroah.com>
+References: <1604406584-53926-1-git-send-email-luojiaxing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1604406584-53926-1-git-send-email-luojiaxing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suravee,
-
-On Wed, Oct 28, 2020 at 11:18:24PM +0000, Suravee Suthikulpanit wrote:
-> AMD IOMMU requires 4k-aligned pages for the event log, the PPR log,
-> and the completion wait write-back regions. However, when allocating
-> the pages, they could be part of large mapping (e.g. 2M) page.
-> This causes #PF due to the SNP RMP hardware enforces the check based
-> on the page level for these data structures.
+On Tue, Nov 03, 2020 at 08:29:39PM +0800, Luo Jiaxing wrote:
+> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
+> for read-only file, but we found many of drivers also want a helper macro
+> for read-write file too.
 > 
-> So, fix by calling set_memory_4k() on the allocated pages.
+> So we add this macro to help decrease code duplication.
 > 
-> Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion wait write-back semaphore")
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 > ---
->  drivers/iommu/amd/init.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 82e4af8f09bb..75dc30226a7c 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -29,6 +29,7 @@
->  #include <asm/iommu_table.h>
->  #include <asm/io_apic.h>
->  #include <asm/irq_remapping.h>
-> +#include <asm/set_memory.h>
->  
->  #include <linux/crash_dump.h>
->  
-> @@ -672,11 +673,22 @@ static void __init free_command_buffer(struct amd_iommu *iommu)
->  	free_pages((unsigned long)iommu->cmd_buf, get_order(CMD_BUFFER_SIZE));
->  }
->  
-> +static void *__init iommu_alloc_4k_pages(gfp_t gfp, size_t size)
-> +{
-> +	void *buf;
-> +	int order = get_order(size);
-> +
-> +	buf = (void *)__get_free_pages(gfp, order);
-> +	if (!buf)
-> +		return buf;
-> +	return set_memory_4k((unsigned long)buf, (1 << order)) ? NULL : buf;
-> +}
-> +
+>  v1->v2:
+>         1.Rename DEFINE_STORE_ATTRIBUTE() to DEFINE_SHOW_STORE_ATTRIBUTE().
+>  v2->v3:
+>         1.Fixed some spelling mistakes in commit.
+>         2.Revised resumes are added for easy tracing.
 
-Please make the 4k split only if SNP is actually enabled in the system.
+You forgot to address Al Viro's review comments :(
 
-Regards,
-
-	Joerg
