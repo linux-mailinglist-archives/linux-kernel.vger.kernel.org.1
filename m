@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304832A58B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6475C2A58AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731389AbgKCVyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:54:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
+        id S1731076AbgKCUpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731047AbgKCUpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:33 -0500
+        id S1730347AbgKCUpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1782D22409;
-        Tue,  3 Nov 2020 20:45:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6949E223EA;
+        Tue,  3 Nov 2020 20:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436332;
-        bh=4IzX0AmbdJrqIjma/xtfUvtpl5nJcVe7Sv6UL/DIjNA=;
+        s=default; t=1604436343;
+        bh=8j5mIUeeh+/Ht8IxSj+qejBWsjbhAdl1/vWR7neJbSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPVvZYTe/YUqX9GjZz/tHqSSqrU6Bs1sD7SENe/dpVmWSJ8qH93ryQOMqNFpgvo3L
-         SyuN+kpTFu3U+92fPv1JvJ91qYRG71yY7U0dXsUimm6SHSweR2NVwqa3nx3DXerfuC
-         10gome8XvlhlRPhzulPBP/UpQxYsxWp1LczaTejk=
+        b=UXcrvxYPmPG3l1F6G4W2XvaRLEiDzo1U74WLiyTXy3XRdfijAApnMoxH9wio8ybhf
+         E5dj5Dc+Ih0dx74VS9qmp8kV3TDVLHibR8GLxrXQ1+q93JZi5rbhyIU3D9iJRmH3Mu
+         hfZPsbf/142gJ8Rw6+sqgEOCl4ztfitbayXlQwo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ashish Sangwan <ashishsangwan2@gmail.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>
-Subject: [PATCH 5.9 204/391] NFS: fix nfs_path in case of a rename retry
-Date:   Tue,  3 Nov 2020 21:34:15 +0100
-Message-Id: <20201103203400.660469300@linuxfoundation.org>
+        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
+        Jamie Iles <jamie@nuviainc.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.9 208/391] ACPI: debug: dont allow debugging when ACPI is disabled
+Date:   Tue,  3 Nov 2020 21:34:19 +0100
+Message-Id: <20201103203400.935433171@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,58 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Sangwan <ashishsangwan2@gmail.com>
+From: Jamie Iles <jamie@nuviainc.com>
 
-commit 247db73560bc3e5aef6db50c443c3c0db115bc93 upstream.
+commit 0fada277147ffc6d694aa32162f51198d4f10d94 upstream.
 
-We are generating incorrect path in case of rename retry because
-we are restarting from wrong dentry. We should restart from the
-dentry which was received in the call to nfs_path.
+If ACPI is disabled then loading the acpi_dbg module will result in the
+following splat when lock debugging is enabled.
 
-CC: stable@vger.kernel.org
-Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+  DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+  WARNING: CPU: 0 PID: 1 at kernel/locking/mutex.c:938 __mutex_lock+0xa10/0x1290
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8+ #103
+  Hardware name: linux,dummy-virt (DT)
+  Call trace:
+   dump_backtrace+0x0/0x4d8
+   show_stack+0x34/0x48
+   dump_stack+0x174/0x1f8
+   panic+0x360/0x7a0
+   __warn+0x244/0x2ec
+   report_bug+0x240/0x398
+   bug_handler+0x50/0xc0
+   call_break_hook+0x160/0x1d8
+   brk_handler+0x30/0xc0
+   do_debug_exception+0x184/0x340
+   el1_dbg+0x48/0xb0
+   el1_sync_handler+0x170/0x1c8
+   el1_sync+0x80/0x100
+   __mutex_lock+0xa10/0x1290
+   mutex_lock_nested+0x6c/0xc0
+   acpi_register_debugger+0x40/0x88
+   acpi_aml_init+0xc4/0x114
+   do_one_initcall+0x24c/0xb10
+   kernel_init_freeable+0x690/0x728
+   kernel_init+0x20/0x1e8
+   ret_from_fork+0x10/0x18
+
+This is because acpi_debugger.lock has not been initialized as
+acpi_debugger_init() is not called when ACPI is disabled.  Fail module
+loading to avoid this and any subsequent problems that might arise by
+trying to debug AML when ACPI is disabled.
+
+Fixes: 8cfb0cdf07e2 ("ACPI / debugger: Add IO interface to access debugger functionalities")
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Signed-off-by: Jamie Iles <jamie@nuviainc.com>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/namespace.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/acpi/acpi_dbg.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/nfs/namespace.c
-+++ b/fs/nfs/namespace.c
-@@ -32,9 +32,9 @@ int nfs_mountpoint_expiry_timeout = 500
- /*
-  * nfs_path - reconstruct the path given an arbitrary dentry
-  * @base - used to return pointer to the end of devname part of path
-- * @dentry - pointer to dentry
-+ * @dentry_in - pointer to dentry
-  * @buffer - result buffer
-- * @buflen - length of buffer
-+ * @buflen_in - length of buffer
-  * @flags - options (see below)
-  *
-  * Helper function for constructing the server pathname
-@@ -49,15 +49,19 @@ int nfs_mountpoint_expiry_timeout = 500
-  *		       the original device (export) name
-  *		       (if unset, the original name is returned verbatim)
-  */
--char *nfs_path(char **p, struct dentry *dentry, char *buffer, ssize_t buflen,
--	       unsigned flags)
-+char *nfs_path(char **p, struct dentry *dentry_in, char *buffer,
-+	       ssize_t buflen_in, unsigned flags)
+--- a/drivers/acpi/acpi_dbg.c
++++ b/drivers/acpi/acpi_dbg.c
+@@ -749,6 +749,9 @@ static int __init acpi_aml_init(void)
  {
- 	char *end;
- 	int namelen;
- 	unsigned seq;
- 	const char *base;
-+	struct dentry *dentry;
-+	ssize_t buflen;
+ 	int ret;
  
- rename_retry:
-+	buflen = buflen_in;
-+	dentry = dentry_in;
- 	end = buffer+buflen;
- 	*--end = '\0';
- 	buflen--;
++	if (acpi_disabled)
++		return -ENODEV;
++
+ 	/* Initialize AML IO interface */
+ 	mutex_init(&acpi_aml_io.lock);
+ 	init_waitqueue_head(&acpi_aml_io.wait);
 
 
