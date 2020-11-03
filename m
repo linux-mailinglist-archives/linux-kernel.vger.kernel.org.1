@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422292A5254
+	by mail.lfdr.de (Postfix) with ESMTP id AFF392A5255
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730748AbgKCUs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41068 "EHLO mail.kernel.org"
+        id S1731690AbgKCUtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:49:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731594AbgKCUsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:53 -0500
+        id S1731673AbgKCUsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 718F322409;
-        Tue,  3 Nov 2020 20:48:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF9D520719;
+        Tue,  3 Nov 2020 20:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436532;
-        bh=yCHJ2wCfg0fl/GyJZ30URcZuVDSb5TIPEQWdwDfpm0w=;
+        s=default; t=1604436535;
+        bh=ahjbn9H70hPUckCaDcElCvVnZe3GnTqMRqR5U/J3N8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LcwQluVjV7HGj/NwxLaB9ubDpRSj727bXvvHLDDHASXzQu4G4GkekW2+45bC4IE8P
-         QbqJ4t2ydSZ55q0IOYBffId4kXLqP1g1UfoDNUyjOPpbwux+31U161wOcUZEQhfuzb
-         s54dhtBq1OD/loqlfE5Z7ekyzlzFSKKcc8mnQ3iU=
+        b=JBcNyaTtUVGIQGV0RbKxP9qEmIjNrIalwr+NET8NMgDi6k/NNBrq3unC+4jGEZKxN
+         b//WZZtCpoeZ/n6hGsjeb9Vtfgc3w6e4Xx//Z6YBH+4VKozj0RgVPvzokh3MBhaGuS
+         JiHYZeT9jpLw9DDgvQsP+ql3804jngXwDtyn1mDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        stable@vger.kernel.org, Ganesh Goudar <ganeshgr@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 290/391] powerpc/powermac: Fix low_sleep_handler with KUAP and KUEP
-Date:   Tue,  3 Nov 2020 21:35:41 +0100
-Message-Id: <20201103203406.620753101@linuxfoundation.org>
+Subject: [PATCH 5.9 291/391] powerpc/mce: Avoid nmi_enter/exit in real mode on pseries hash
+Date:   Tue,  3 Nov 2020 21:35:42 +0100
+Message-Id: <20201103203406.705455782@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,56 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Ganesh Goudar <ganeshgr@linux.ibm.com>
 
-commit 2c637d2df4ee4830e9d3eb2bd5412250522ce96e upstream.
+commit 8d0e2101274358d9b6b1f27232b40253ca48bab5 upstream.
 
-low_sleep_handler() has an hardcoded restore of segment registers
-that doesn't take KUAP and KUEP into account.
+Use of nmi_enter/exit in real mode handler causes the kernel to panic
+and reboot on injecting SLB mutihit on pseries machine running in hash
+MMU mode, because these calls try to accesses memory outside RMO
+region in real mode handler where translation is disabled.
 
-Use head_32's load_segment_registers() routine instead.
+Add check to not to use these calls on pseries machine running in hash
+MMU mode.
 
-Fixes: a68c31fc01ef ("powerpc/32s: Implement Kernel Userspace Access Protection")
-Fixes: 31ed2b13c48d ("powerpc/32s: Implement Kernel Userspace Execution Prevention.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: 116ac378bb3f ("powerpc/64s: machine check interrupt update NMI accounting")
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Ganesh Goudar <ganeshgr@linux.ibm.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/21b05f7298c1b18f73e6e5b4cd5005aafa24b6da.1599820109.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/20201009064005.19777-2-ganeshgr@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/head_32.S           |    2 +-
- arch/powerpc/platforms/powermac/sleep.S |    9 +--------
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ arch/powerpc/kernel/mce.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/powerpc/kernel/head_32.S
-+++ b/arch/powerpc/kernel/head_32.S
-@@ -1002,7 +1002,7 @@ BEGIN_MMU_FTR_SECTION
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	blr
+--- a/arch/powerpc/kernel/mce.c
++++ b/arch/powerpc/kernel/mce.c
+@@ -591,12 +591,11 @@ EXPORT_SYMBOL_GPL(machine_check_print_ev
+ long notrace machine_check_early(struct pt_regs *regs)
+ {
+ 	long handled = 0;
+-	bool nested = in_nmi();
+ 	u8 ftrace_enabled = this_cpu_get_ftrace_enabled();
  
--load_segment_registers:
-+_GLOBAL(load_segment_registers)
- 	li	r0, NUM_USER_SEGMENTS /* load up user segment register values */
- 	mtctr	r0		/* for context 0 */
- 	li	r3, 0		/* Kp = 0, Ks = 0, VSID = 0 */
---- a/arch/powerpc/platforms/powermac/sleep.S
-+++ b/arch/powerpc/platforms/powermac/sleep.S
-@@ -294,14 +294,7 @@ grackle_wake_up:
- 	 * we do any r1 memory access as we are not sure they
- 	 * are in a sane state above the first 256Mb region
- 	 */
--	li	r0,16		/* load up segment register values */
--	mtctr	r0		/* for context 0 */
--	lis	r3,0x2000	/* Ku = 1, VSID = 0 */
--	li	r4,0
--3:	mtsrin	r3,r4
--	addi	r3,r3,0x111	/* increment VSID */
--	addis	r4,r4,0x1000	/* address of next segment */
--	bdnz	3b
-+	bl	load_segment_registers
- 	sync
- 	isync
+ 	this_cpu_set_ftrace_enabled(0);
+-
+-	if (!nested)
++	/* Do not use nmi_enter/exit for pseries hpte guest */
++	if (radix_enabled() || !firmware_has_feature(FW_FEATURE_LPAR))
+ 		nmi_enter();
  
+ 	hv_nmi_check_nonrecoverable(regs);
+@@ -607,7 +606,7 @@ long notrace machine_check_early(struct
+ 	if (ppc_md.machine_check_early)
+ 		handled = ppc_md.machine_check_early(regs);
+ 
+-	if (!nested)
++	if (radix_enabled() || !firmware_has_feature(FW_FEATURE_LPAR))
+ 		nmi_exit();
+ 
+ 	this_cpu_set_ftrace_enabled(ftrace_enabled);
 
 
