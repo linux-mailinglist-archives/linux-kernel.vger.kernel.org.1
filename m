@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25382A50FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F12A82A52A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbgKCUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:37:08 -0500
-Received: from mga14.intel.com ([192.55.52.115]:43072 "EHLO mga14.intel.com"
+        id S1730934AbgKCUvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729585AbgKCUhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:02 -0500
-IronPort-SDR: 94Kk2mYrv18X6qDMOqRq2i2n5qi6U+pVocgGW8Je74GJrY/ooNaNOLX8kQijBJlj+xhgw9LW6Z
- GlVwKVooFYtw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="168335730"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="168335730"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:37:01 -0800
-IronPort-SDR: EHvYHLukS0D03UUpC/qD2N7PKwqkcpo49siycse5WSH9eerqoxyJ074+xbRnzMh3YCPEGRMeHJ
- Qj/ws4DxzFdA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="320565288"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 12:36:59 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1A46A89F; Tue,  3 Nov 2020 22:36:56 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v5 6/7] PCI/ACPI: Replace open coded variant of resource_union()
-Date:   Tue,  3 Nov 2020 22:36:54 +0200
-Message-Id: <20201103203655.17701-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
-References: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
+        id S1731192AbgKCUvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:37 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 834D32053B;
+        Tue,  3 Nov 2020 20:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604436697;
+        bh=T9a+mzwIToS8WQYW0JKBfSH6DNDxsqYF2AMibSJN4tE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NKF8q2HvLTgiaMOiGNqoUYlFqVW3lktQQuhiTsDj1QPJWjjtySh16eb0lueztdwog
+         MbSmlcGonyvinvPkoQ9rbn3/MjW1/hYKyVuQIwPq3rRpVAyBvjkB9RdSMqBSJjmQWw
+         gZ+r5KCMhaeDy7vgg4lUynYxsGA/wSe+h2QXt4PE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 5.9 363/391] arm64: berlin: Select DW_APB_TIMER_OF
+Date:   Tue,  3 Nov 2020 21:36:54 +0100
+Message-Id: <20201103203411.637534300@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have resource_union() helper, let's utilize it here.
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+commit b0fc70ce1f028e14a37c186d9f7a55e51439b83a upstream.
+
+Berlin SoCs always contain some DW APB timers which can be used as an
+always-on broadcast timer.
+
+Link: https://lore.kernel.org/r/20201009150536.214181fb@xhacker.debian
+Cc: <stable@vger.kernel.org> # v3.14+
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/acpi/pci_root.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/arm64/Kconfig.platforms |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index c12b5fb3e8fb..0bf072cef6cf 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -722,9 +722,7 @@ static void acpi_pci_root_validate_resources(struct device *dev,
- 			 * our resources no longer match the ACPI _CRS, but
- 			 * the kernel resource tree doesn't allow overlaps.
- 			 */
--			if (resource_overlaps(res1, res2)) {
--				res2->start = min(res1->start, res2->start);
--				res2->end = max(res1->end, res2->end);
-+			if (resource_union(res1, res2, res2)) {
- 				dev_info(dev, "host bridge window expanded to %pR; %pR ignored\n",
- 					 res2, res1);
- 				free = true;
--- 
-2.28.0
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -54,6 +54,7 @@ config ARCH_BCM_IPROC
+ config ARCH_BERLIN
+ 	bool "Marvell Berlin SoC Family"
+ 	select DW_APB_ICTL
++	select DW_APB_TIMER_OF
+ 	select GPIOLIB
+ 	select PINCTRL
+ 	help
+
 
