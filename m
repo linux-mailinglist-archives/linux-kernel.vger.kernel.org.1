@@ -2,307 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E46B2A4BEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEA92A4BF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgKCQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728612AbgKCQuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgKCQuW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Nov 2020 11:50:22 -0500
-Received: from mail-dm6nam12on2040.outbound.protection.outlook.com ([40.107.243.40]:65409
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725997AbgKCQuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:50:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aOouscY+pjfzw5xEZ0pweaZibXOcJL70Mzvby+hUtWVuwKkX3vUsNgGNUJU8zu5aDRvWq8Q+O3OpJW3iIW/LmBhGs2IP+U8ClPf76Gm9zhXfWlJy8hzxg1yMQv+djYDQMUoKNUMks3AYfP2y/tdo7jGqb4krklb0uAwLAmuFpZ8GAabjwkCGUBAfZmtmWMpCYa/VqcHbz9yaumCgbRWihZHAgEj4bHXjZAZinTvxdwjIIZrKNc+S4Yjy42jhySfCIzgQvFe0moRIlTgtStXzr9DgEKjPcmLhf3tO9lqFQrX68JAnASmsUSloFgBwHgw6WzxSTmLnQpsByUvENzLndw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2mELxmdT19qZnIlROXuKKaCnwwdwsikED+QyiVqvW18=;
- b=VmeVfv+GXFB9h3kIQAciLc1SuwFlEA/wDirP+NLrO1Qrp7+7rC+27khxTmN7BzEoDgvBOM/UX69Y6/aumHegUnyrGLxpqjjrpOL/PiNR7d44XwdVjyDNr0sTWjju3Gr1fiUIqU/kC/TooTeAZvzOh9Nn5+zeilUoSwgd/KSytCBffEYgKc7twlQzOU7Iyadg4q4WMRnpvwcChUJb3asfnpiPl1jiiPqdOGEqSEflm80DsurCq+eAd+MPbvDiyrte6e7U2BD/EE9oNIrIHGQAkXnSOWtOTFlIx4IWLw61mBqBHLdAFsTyFQ7bd80+ajjnynwxFuFzVFJibaPIy1tzEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60807C0613D1;
+        Tue,  3 Nov 2020 08:50:22 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id k9so15267027qki.6;
+        Tue, 03 Nov 2020 08:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2mELxmdT19qZnIlROXuKKaCnwwdwsikED+QyiVqvW18=;
- b=VAAdQrtx4w8PycthfUdIPFtkOBOx7UMdDRkfSd53p5NHCaO8AiXNSIRJ0VWC+w7ARzJINd/UVl6dgbcGAajsQZeWbtULkMDDymF3zNb4adpePV2aN1jV8456OK5XXwahOWXZdiAeWLOu7kQQwRkEcEFfPsj9068jYGVTlA3Nw/4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
- by SA0PR12MB4413.namprd12.prod.outlook.com (2603:10b6:806:9e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
- 2020 16:50:18 +0000
-Received: from SN6PR12MB2685.namprd12.prod.outlook.com
- ([fe80::a160:c63e:b49a:8f9a]) by SN6PR12MB2685.namprd12.prod.outlook.com
- ([fe80::a160:c63e:b49a:8f9a%3]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
- 16:50:18 +0000
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc:     Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: [PATCH v5] cper, apei, mce: Pass x86 CPER through the MCA handling chain
-Date:   Tue,  3 Nov 2020 10:49:52 -0600
-Message-Id: <20201103164952.5126-1-Smita.KoralahalliChannabasappa@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SA0PR11CA0028.namprd11.prod.outlook.com
- (2603:10b6:806:d3::33) To SN6PR12MB2685.namprd12.prod.outlook.com
- (2603:10b6:805:67::33)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bLxArigo/vAFHtRBezBTG6zXcEDbTSwmKkVCAjH9nhY=;
+        b=UUvPJ5fGE/KE4WisAzaWRrv2QGwS0xTYFbSs3cObE1+MFKNRaneyanvIkHmzcW7Ugz
+         J4W2xAp8L+hYdDzVw1CT/QVbDN7xu+uYF7vOjh28y0V/KwY3t7mjrODjhq11NqZOCmtN
+         FjwSBU3r2pw60PPfPbbTi8fgpKcWPRy3K2mvQNqlqsHbbQKZhJ2ENAjZWBffmnoRi5Qi
+         wy6LQJWS+PVOotn6KObscfUQBobTzQX61abnthvhqOj9+oDGz/VLlrgAAOlUf6ROjIfv
+         bp2nnE4NRoxXxRVl4RAVUjAt2+Zmfqtun0rHeuZLcrQyIOum7UmfVehdiu3tSGPh2VOU
+         gpkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bLxArigo/vAFHtRBezBTG6zXcEDbTSwmKkVCAjH9nhY=;
+        b=MSkKo+7ZXVu6u6y1nCzL0iRzatj3YYtLF5JKX6KTPUKSoUNvdnnaW0RmRu8NB4BiWH
+         CVb3op7YVU6NaXx8OPaCDlSOhSSO/CJ2/E9JbdYLGQjGkPHuPRdyu9kiAJxZZj41OkcN
+         fOemXQ7yEojFk0GpYO+SbnbolvqxJL95M1iCoLn1GSHO75BxehTjcvHvwcqd4GqkKSDR
+         1zufjblkg+cJbbEWDxc6S0ovTNfqeu5Irnb4nijWBMY7ZHCh1+3TOqhKESVU5vtQm7uN
+         za0V61v11qvpsMDGVJF/tjQnVs20gmcchLwMB9lA5jCW/sdFsGktts0ifmMJ6QDMlsBT
+         yVjA==
+X-Gm-Message-State: AOAM532SW0PNMWGO3kvhMX0jOdrea07CUHiU070ArZtlDewcPfSWiSRw
+        oSJM8WDFbU1/uA25ynIKYm+xWflXU7PHM16G4W0=
+X-Google-Smtp-Source: ABdhPJyVW2rVtqO6Z46y19qhhUOixlYdNIfwnLNkfE0+nGAPvQnEG0zJo1YnyVZWXPCTUab/vvarxdWL8XJ90XaoTq8=
+X-Received: by 2002:ae9:f444:: with SMTP id z4mr20261842qkl.338.1604422221471;
+ Tue, 03 Nov 2020 08:50:21 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx50f7host.amd.com (165.204.78.2) by SA0PR11CA0028.namprd11.prod.outlook.com (2603:10b6:806:d3::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 3 Nov 2020 16:50:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6f330c0b-e748-4ddb-3976-08d880188bb6
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4413:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4413B1593B0C4070BF57F8EC90110@SA0PR12MB4413.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gJtnAho1AXUvboqRziC4lhVhgufmLBzyhz9ZtnDXynelRGnay3Fswcj+ay2wzWRkXLslD66BX3dMg12RzXFCAThVquDA5DfHkz1X85CWRZdRNf+jWaAc10PIXjPjpqSU0hIi6x2o7MjKPH4dLqD1ZYKMefh49xlLeo58VqO70Jy68DwiJLgfoZJA/1r+N+KmTMzUryWutTqJfYtsfw+u1uOTVbhUKlr1Hcv7wi+sY3aq6Ykclu0MDAXtzu0tNyx2rnkEoFck1FHIRTvg7aShNtpA8rVDL85j/dESWILoWXTIfrhr97Adau2CVvO0MsfzrJGPObwT/b1tX9LI8/kznuLuylg93cpAYR3UAE1WJ3sOvnS8v2si0gqIWRL/PQAUgvAdB87KBKrr87lehSx/hA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(376002)(39860400002)(2616005)(54906003)(8676002)(66946007)(956004)(7416002)(4326008)(83380400001)(86362001)(26005)(5660300002)(316002)(52116002)(7696005)(966005)(16526019)(66476007)(36756003)(66556008)(186003)(6486002)(8936002)(1076003)(478600001)(2906002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 5JVW8r2pnrNDav4BpLMfrBxnVUctZ0UxyJnZf7zh7hekl0qK721hnXBipBpghMuA9OEtW/e/D3C5Vh1HMCfJgLjLVBdPK5RLPUK9sKqmcWPjBUyGtLYqaZtaf6bcTZuISkU8PdwUgtCx5e6sKLIit2KlWIPVEvb5CM15lnhhVTNkecp4unr/lQAg9xaasO3wDiU8j6HpNQJ34xLBV6tTt0angTwW+I+1J+eOQpg6JFV+BrgilR7wzhN/JmG62s1lExlZf2iKESASYycCwWw7ubmDsOLKZIzFaLbWWaQNGDMCUiP7l2Y9iTZTt75o+cBFX1M1JUomdDTGT3xjPQeL8f9irDcIbVCPedRiElBelNU4Sb2XYZpe9mtV7A+/wM2YaGBy3QX8htqCfJipAF/3cZQEam0+WMquJX37kY64AhliEAOShLEkRfDNi7oCMvY1OmKxLIXfpqzz1em11LKZz+AZHiT7tziZOgqrbTEGH3cF7QjfVyehnxgJf8xNUiCP3zoW54q5NbnCLr///sO0pHQPM7r2lwHe+3mlVrH2nGoESP8zTRymnmQOZyTHYooq8lNjsY+SY913C0hoABc8in9BobSQK7f6O7qG5iNwu/StT69YS/md+b79SRiybY2Bq5TNQ7LV7RGqjQGlHn9VtQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f330c0b-e748-4ddb-3976-08d880188bb6
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 16:50:18.5990
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hqp/VJn3WwbV1VPkYwakEbN4mvK6s9DOJjA5tUVKS4m7qpxXspbTcFoGbIkvmM1jOqyWaj+y1D/hGUEXRFNngQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4413
+References: <20201012020958.229288-8-robdclark@gmail.com> <20201012143555.GA438822@phenom.ffwll.local>
+ <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
+ <20201020090729.qgqish5kqamhvatj@vireshk-i7> <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
+ <20201020112413.xbk2vow2kgjky3pb@vireshk-i7> <CAF6AEGsCj-AtFozn8d1xiNNFNbuMJ0UxS-eMhBVXiQ7rKahKnQ@mail.gmail.com>
+ <20201022080644.2ck4okrxygmkuatn@vireshk-i7> <CAF6AEGv6RMCsK4yp-W2d1mVTMcEiiwFGAb+V8rYLhDdMhqP80Q@mail.gmail.com>
+ <20201027113532.nriqqws7gdcu5su6@vireshk-i7> <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
+In-Reply-To: <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 3 Nov 2020 08:50:08 -0800
+Message-ID: <CAF6AEGtgUVXm6Wwod0FC38g91Q8CotLFSoC4NmXx7GzcA=1mOA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Menon, Nishanth" <nm@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
-errors that occurred in a previous boot. The MCA errors in the BERT are
-reported using the x86 Processor Error Common Platform Error Record (CPER)
-format. Currently, the record prints out the raw MSR values and AMD relies
-on the raw record to provide MCA information.
+On Mon, Nov 2, 2020 at 9:47 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 27-10-20, 17:05, Viresh Kumar wrote:
+> > It isn't that straight forward unfortunately, we need to make sure the
+> > table doesn't get allocated for the same device twice, so
+> > find+allocate needs to happen within a locked region.
+> >
+> > I have taken, not so straight forward, approach to fixing this issue,
+> > lets see if this fixes it or not.
+> >
+> > -------------------------8<-------------------------
+> >
+> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> > index 4ac4e7ce6b8b..6f4a73a6391f 100644
+> > --- a/drivers/opp/core.c
+> > +++ b/drivers/opp/core.c
+> > @@ -29,6 +29,8 @@
+> >  LIST_HEAD(opp_tables);
+> >  /* Lock to allow exclusive modification to the device and opp lists */
+> >  DEFINE_MUTEX(opp_table_lock);
+> > +/* Flag indicating that opp_tables list is being updated at the moment */
+> > +static bool opp_tables_busy;
+> >
+> >  static struct opp_device *_find_opp_dev(const struct device *dev,
+> >                                       struct opp_table *opp_table)
+> > @@ -1036,8 +1038,8 @@ static void _remove_opp_dev(struct opp_device *opp_dev,
+> >       kfree(opp_dev);
+> >  }
+> >
+> > -static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
+> > -                                             struct opp_table *opp_table)
+> > +struct opp_device *_add_opp_dev(const struct device *dev,
+> > +                             struct opp_table *opp_table)
+> >  {
+> >       struct opp_device *opp_dev;
+> >
+> > @@ -1048,7 +1050,9 @@ static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
+> >       /* Initialize opp-dev */
+> >       opp_dev->dev = dev;
+> >
+> > +     mutex_lock(&opp_table->lock);
+> >       list_add(&opp_dev->node, &opp_table->dev_list);
+> > +     mutex_unlock(&opp_table->lock);
+> >
+> >       /* Create debugfs entries for the opp_table */
+> >       opp_debug_register(opp_dev, opp_table);
+> > @@ -1056,18 +1060,6 @@ static struct opp_device *_add_opp_dev_unlocked(const struct device *dev,
+> >       return opp_dev;
+> >  }
+> >
+> > -struct opp_device *_add_opp_dev(const struct device *dev,
+> > -                             struct opp_table *opp_table)
+> > -{
+> > -     struct opp_device *opp_dev;
+> > -
+> > -     mutex_lock(&opp_table->lock);
+> > -     opp_dev = _add_opp_dev_unlocked(dev, opp_table);
+> > -     mutex_unlock(&opp_table->lock);
+> > -
+> > -     return opp_dev;
+> > -}
+> > -
+> >  static struct opp_table *_allocate_opp_table(struct device *dev, int index)
+> >  {
+> >       struct opp_table *opp_table;
+> > @@ -1121,8 +1113,6 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
+> >       INIT_LIST_HEAD(&opp_table->opp_list);
+> >       kref_init(&opp_table->kref);
+> >
+> > -     /* Secure the device table modification */
+> > -     list_add(&opp_table->node, &opp_tables);
+> >       return opp_table;
+> >
+> >  err:
+> > @@ -1135,27 +1125,64 @@ void _get_opp_table_kref(struct opp_table *opp_table)
+> >       kref_get(&opp_table->kref);
+> >  }
+> >
+> > +/*
+> > + * We need to make sure that the OPP table for a device doesn't get added twice,
+> > + * if this routine gets called in parallel with the same device pointer.
+> > + *
+> > + * The simplest way to enforce that is to perform everything (find existing
+> > + * table and if not found, create a new one) under the opp_table_lock, so only
+> > + * one creator gets access to the same. But that expands the critical section
+> > + * under the lock and may end up causing circular dependencies with frameworks
+> > + * like debugfs, interconnect or clock framework as they may be direct or
+> > + * indirect users of OPP core.
+> > + *
+> > + * And for that reason we have to go for a bit tricky implementation here, which
+> > + * uses the opp_tables_busy flag to indicate if another creator is in the middle
+> > + * of adding an OPP table and others should wait for it to finish.
+> > + */
+> >  static struct opp_table *_opp_get_opp_table(struct device *dev, int index)
+> >  {
+> >       struct opp_table *opp_table;
+> >
+> > -     /* Hold our table modification lock here */
+> > +again:
+> >       mutex_lock(&opp_table_lock);
+> >
+> >       opp_table = _find_opp_table_unlocked(dev);
+> >       if (!IS_ERR(opp_table))
+> >               goto unlock;
+> >
+> > +     /*
+> > +      * The opp_tables list or an OPP table's dev_list is getting updated by
+> > +      * another user, wait for it to finish.
+> > +      */
+> > +     if (unlikely(opp_tables_busy)) {
+> > +             mutex_unlock(&opp_table_lock);
+> > +             cpu_relax();
+> > +             goto again;
+> > +     }
+> > +
+> > +     opp_tables_busy = true;
+> >       opp_table = _managed_opp(dev, index);
+> > +
+> > +     /* Drop the lock to reduce the size of critical section */
+> > +     mutex_unlock(&opp_table_lock);
+> > +
+> >       if (opp_table) {
+> > -             if (!_add_opp_dev_unlocked(dev, opp_table)) {
+> > +             if (!_add_opp_dev(dev, opp_table)) {
+> >                       dev_pm_opp_put_opp_table(opp_table);
+> >                       opp_table = ERR_PTR(-ENOMEM);
+> >               }
+> > -             goto unlock;
+> > +
+> > +             mutex_lock(&opp_table_lock);
+> > +     } else {
+> > +             opp_table = _allocate_opp_table(dev, index);
+> > +
+> > +             mutex_lock(&opp_table_lock);
+> > +             if (!IS_ERR(opp_table))
+> > +                     list_add(&opp_table->node, &opp_tables);
+> >       }
+> >
+> > -     opp_table = _allocate_opp_table(dev, index);
+> > +     opp_tables_busy = false;
+> >
+> >  unlock:
+> >       mutex_unlock(&opp_table_lock);
+> > @@ -1181,6 +1208,10 @@ static void _opp_table_kref_release(struct kref *kref)
+> >       struct opp_device *opp_dev, *temp;
+> >       int i;
+> >
+> > +     /* Drop the lock as soon as we can */
+> > +     list_del(&opp_table->node);
+> > +     mutex_unlock(&opp_table_lock);
+> > +
+> >       _of_clear_opp_table(opp_table);
+> >
+> >       /* Release clk */
+> > @@ -1208,10 +1239,7 @@ static void _opp_table_kref_release(struct kref *kref)
+> >
+> >       mutex_destroy(&opp_table->genpd_virt_dev_lock);
+> >       mutex_destroy(&opp_table->lock);
+> > -     list_del(&opp_table->node);
+> >       kfree(opp_table);
+> > -
+> > -     mutex_unlock(&opp_table_lock);
+> >  }
+> >
+> >  void dev_pm_opp_put_opp_table(struct opp_table *opp_table)
+>
+> Rob, Ping.
+>
 
-Extract the raw MSR values of MCA registers from the BERT and feed it into
-the standard mce_log() function through the existing x86/MCA RAS
-infrastructure. This will result in better decoding from the EDAC MCE
-decoder or the default notifier.
+sorry, it didn't apply cleanly (which I guess is due to some other
+dependencies that need to be picked back to v5.4 product kernel), and
+due to some other things I'm in middle of debugging I didn't have time
+yet to switch to v5.10-rc or look at what else needs to
+cherry-picked..
 
-The implementation is SMCA specific as the raw MCA register values are
-given in the register offset order of the MCAX address space.
+If you could, pushing a branch with this patch somewhere would be a
+bit easier to work with (ie. fetch && cherry-pick is easier to deal
+with than picking things from list)
 
-[ Fix a build breakage in patch v1. ]
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
----
-Link:
-https://lkml.kernel.org/r/20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com
-
-v5:
-	Included check to determine if register array size is large
-	enough to hold all the registers which we want to extract.
-	Used already defined MSR_AMD64_SMCA_MC0_STATUS.
-v4:
-	Included what kernel test robot reported.
-	Changed function name from apei_mce_report_x86_error ->
-	apei_smca_report_x86_error.
-	Added comment for MASK_MCA_STATUS definition.
-	Wrapped apei_smca_report_x86_error() with CONFIG_X86_MCE in
-	arch/x86/include/asm/mce.h
-v3:
-	Moved arch specific declarations from generic headers to arch
-	specific headers.
-	Cleaned additional declarations which are unnecessary.
-	Included the check for context type.
-	Added additional check to verify for appropriate MSR address in
-	the register layout.
-v2:
-	Fixed build error reported by kernel test robot.
-	Passed struct variable as function argument instead of entire struct.
----
- arch/x86/include/asm/acpi.h     | 11 +++++++
- arch/x86/include/asm/mce.h      |  6 ++++
- arch/x86/kernel/acpi/apei.c     |  5 +++
- arch/x86/kernel/cpu/mce/apei.c  | 56 +++++++++++++++++++++++++++++++++
- drivers/firmware/efi/cper-x86.c | 11 +++++--
- 5 files changed, 86 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-index 6d2df1ee427b..65064d9f7fa6 100644
---- a/arch/x86/include/asm/acpi.h
-+++ b/arch/x86/include/asm/acpi.h
-@@ -159,6 +159,8 @@ static inline u64 x86_default_get_root_pointer(void)
- extern int x86_acpi_numa_init(void);
- #endif /* CONFIG_ACPI_NUMA */
- 
-+struct cper_ia_proc_ctx;
-+
- #ifdef CONFIG_ACPI_APEI
- static inline pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
- {
-@@ -177,6 +179,15 @@ static inline pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
- 	 */
- 	return PAGE_KERNEL_NOENC;
- }
-+
-+int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-+			       u64 lapic_id);
-+#else
-+static inline int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-+					     u64 lapic_id)
-+{
-+	return -EINVAL;
-+}
- #endif
- 
- #define ACPI_TABLE_UPGRADE_MAX_PHYS (max_low_pfn_mapped << PAGE_SHIFT)
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index a0f147893a04..07eedfd6ec38 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -198,16 +198,22 @@ static inline void enable_copy_mc_fragile(void)
- }
- #endif
- 
-+struct cper_ia_proc_ctx;
-+
- #ifdef CONFIG_X86_MCE
- int mcheck_init(void);
- void mcheck_cpu_init(struct cpuinfo_x86 *c);
- void mcheck_cpu_clear(struct cpuinfo_x86 *c);
- void mcheck_vendor_init_severity(void);
-+int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-+			       u64 lapic_id);
- #else
- static inline int mcheck_init(void) { return 0; }
- static inline void mcheck_cpu_init(struct cpuinfo_x86 *c) {}
- static inline void mcheck_cpu_clear(struct cpuinfo_x86 *c) {}
- static inline void mcheck_vendor_init_severity(void) {}
-+static inline int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-+					     u64 lapic_id) { return -EINVAL; }
- #endif
- 
- #ifdef CONFIG_X86_ANCIENT_MCE
-diff --git a/arch/x86/kernel/acpi/apei.c b/arch/x86/kernel/acpi/apei.c
-index c22fb55abcfd..0916f00a992e 100644
---- a/arch/x86/kernel/acpi/apei.c
-+++ b/arch/x86/kernel/acpi/apei.c
-@@ -43,3 +43,8 @@ void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
- 	apei_mce_report_mem_error(sev, mem_err);
- #endif
- }
-+
-+int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
-+{
-+	return apei_smca_report_x86_error(ctx_info, lapic_id);
-+}
-diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index af8d37962586..f56f0bc147e2 100644
---- a/arch/x86/kernel/cpu/mce/apei.c
-+++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -51,6 +51,62 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
- }
- EXPORT_SYMBOL_GPL(apei_mce_report_mem_error);
- 
-+int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
-+{
-+	const u64 *i_mce = ((const u64 *) (ctx_info + 1));
-+	unsigned int cpu;
-+	struct mce m;
-+
-+	if (!boot_cpu_has(X86_FEATURE_SMCA))
-+		return -EINVAL;
-+
-+	/*
-+	 * The starting address of the Register Array extracted from BERT
-+	 * must match with the first expected register in the register
-+	 * layout of MCAX address space. In SMCA systems this address
-+	 * corresponds to banks's MCA_STATUS register.
-+	 *
-+	 * The Register array size must be large enough to include all
-+	 * the SMCA registers which we want to extract.
-+	 *
-+	 * The number of registers in the Register Array is determined
-+	 * by Register Array Size/8 as defined in UEFI spec v2.8, sec
-+	 * N.2.4.2.2. The register layout is fixed and currently the raw
-+	 * data in the register array includes 6 SMCA registers which the
-+	 * kernel can extract.
-+	 */
-+
-+	if ((ctx_info->msr_addr & MSR_AMD64_SMCA_MC0_STATUS) !=
-+	    MSR_AMD64_SMCA_MC0_STATUS || ctx_info->reg_arr_size < 48)
-+		return -EINVAL;
-+
-+	mce_setup(&m);
-+
-+	m.extcpu = -1;
-+	m.socketid = -1;
-+
-+	for_each_possible_cpu(cpu) {
-+		if (cpu_data(cpu).initial_apicid == lapic_id) {
-+			m.extcpu = cpu;
-+			m.socketid = cpu_data(m.extcpu).phys_proc_id;
-+			break;
-+		}
-+	}
-+
-+	m.apicid = lapic_id;
-+	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
-+	m.status = *i_mce;
-+	m.addr = *(i_mce + 1);
-+	m.misc = *(i_mce + 2);
-+	/* Skipping MCA_CONFIG */
-+	m.ipid = *(i_mce + 4);
-+	m.synd = *(i_mce + 5);
-+
-+	mce_log(&m);
-+
-+	return 0;
-+}
-+
- #define CPER_CREATOR_MCE						\
- 	GUID_INIT(0x75a574e3, 0x5052, 0x4b29, 0x8a, 0x8e, 0xbe, 0x2c,	\
- 		  0x64, 0x90, 0xb8, 0x9d)
-diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
-index 2531de49f56c..438ed9eff6d0 100644
---- a/drivers/firmware/efi/cper-x86.c
-+++ b/drivers/firmware/efi/cper-x86.c
-@@ -2,6 +2,7 @@
- // Copyright (C) 2018, Advanced Micro Devices, Inc.
- 
- #include <linux/cper.h>
-+#include <linux/acpi.h>
- 
- /*
-  * We don't need a "CPER_IA" prefix since these are all locally defined.
-@@ -347,9 +348,13 @@ void cper_print_proc_ia(const char *pfx, const struct cper_sec_proc_ia *proc)
- 			       ctx_info->mm_reg_addr);
- 		}
- 
--		printk("%sRegister Array:\n", newpfx);
--		print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
--			       (ctx_info + 1), ctx_info->reg_arr_size, 0);
-+		if (ctx_info->reg_ctx_type != CTX_TYPE_MSR ||
-+		    arch_apei_report_x86_error(ctx_info, proc->lapic_id)) {
-+			printk("%sRegister Array:\n", newpfx);
-+			print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16,
-+				       groupsize, (ctx_info + 1),
-+				       ctx_info->reg_arr_size, 0);
-+		}
- 
- 		ctx_info = (struct cper_ia_proc_ctx *)((long)ctx_info + size);
- 	}
--- 
-2.17.1
-
+BR,
+-R
