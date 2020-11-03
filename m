@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E49F2A4FBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9639E2A4FBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729591AbgKCTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:08:43 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38050 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727688AbgKCTIn (ORCPT
+        id S1729223AbgKCTJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:09:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44122 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727688AbgKCTJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:08:43 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3J8QjF108527;
-        Tue, 3 Nov 2020 13:08:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604430506;
-        bh=bycp6Kyb+J58jf9XxZdfTl9Z6ZQgf5Ww+4UQt3jG69Q=;
-        h=From:To:CC:Subject:Date;
-        b=iXwsYBBHs1cmN3zM1lyag0JZfh24F+ymY7Znwo3uUqvLwez77XHtaHDFmU2BRjx2y
-         foGeq44DhPNKzHUygMa8hIqrWEegVv5bSm4TVuEzRN2GU74RYvdSdxgycdQEgWy+0V
-         B3LmOklg0fjCXAtmsF7fQjMw1Mxif3ViKM7Wz3L0=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3J8QBd091465
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 13:08:26 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 13:08:26 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 13:08:25 -0600
-Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3J8MpI037680;
-        Tue, 3 Nov 2020 13:08:23 -0600
-From:   Faiz Abbas <faiz_abbas@ti.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>,
-        <t-kristo@ti.com>, <faiz_abbas@ti.com>
-Subject: [PATCH v3] arm64: defconfig: Enable GPIO and I2C configs for TI's J721e platform
-Date:   Wed, 4 Nov 2020 00:38:21 +0530
-Message-ID: <20201103190821.30937-1-faiz_abbas@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 3 Nov 2020 14:09:41 -0500
+Date:   Tue, 3 Nov 2020 20:09:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604430579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=4J2Ki7wxdqW2uIe5cozOirDfYxIm6YWmlpCr6285YJc=;
+        b=n28vLhlucvkeeh1vwyQe0Mc/DMOWLh/veJCIkps9ig6nRXl1AD0aoI8ZKcX7Iv41n7OsdX
+        F+wOLMB/ihOTIzC5yNE1N2YnrGXdySMAGkzmvppxEaGk2XzRDvPJmjkkf3DW2pD///UyNp
+        zBJ5UC0F5vRocFVdWy7mwWDGT1HXV0Y3HtBqwAoOh1h7BVU4Act2XR1sBSyfF84YOkHHIf
+        AZ5c8CV2716Nm+EphEuzDoTx/8siRCs7tHX9LgxXO+/+CYkVeUnBIN2AECTD6bXrSV5w9k
+        YtDxXMOqZvasTlXLWX/JpwjmEpqWhuPNX03VzBjrtrJaZ3/0vtWoS2XY5Cy3xw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604430579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=4J2Ki7wxdqW2uIe5cozOirDfYxIm6YWmlpCr6285YJc=;
+        b=wOmI2xmKrBP/oeqhMrfQP/AwFvO2wq0zeesWiY6WeL9eLavv3ECyrNVna3mY9Gs3W0lZD/
+        tVfe899ChWnjWaCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Mike Galbraith <efault@gmx.de>
+Subject: [PATCH] timers: Don't block on ->expiry_lock for TIMER_IRQSAFE
+Message-ID: <20201103190937.hga67rqhvknki3tp@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configs to enable regulators that supply power to the SD card
-on TI's J721e platform. These regulators are controlled by either
-SoC gpios or gpios over i2c expander.
+PREEMPT_RT does not spin and wait until a running timer completes its
+callback but instead it blocks on a sleeping lock to prevent a deadlock.
 
-Changes to vmlinux size:
-Before:
-   text	    data     bss       dec       hex	  filename
-20219067  10875634  523924   31618625   1e27641	  vmlinux
+This blocking can not be done for workqueue's IRQ_SAFE timer which will
+be canceled in an IRQ-off region. It has to happen to in IRQ-off region
+because changing the PENDING bit and clearing the timer must not be
+interrupted to avoid a busy-loop.
 
-After:
-   text     data     bss	dec	 hex	  filename
-20228755  10880422  524628   31633805	1e2b18d   vmlinux
+The callback invocation of IRQSAFE timer is not preempted on PREEMPT_RT
+so there is no need to synchronize on timer_base::expiry_lock.
 
-delta: 15180 (dec)
+Don't acquire the timer_base::expiry_lock for TIMER_IRQSAFE flagged
+timer.
+Add a lockdep annotation to ensure that this function is always invoked
+in preemptible context on PREEMPT_RT.
 
-Acked-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Reported-by: Mike Galbraith <efault@gmx.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
+ kernel/time/timer.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Changes in v3: Added changes to vmlinux size in commit message
-
-Changes in v2: Squashed changes into a single patch
-
-v2:
-https://lore.kernel.org/linux-arm-kernel/20201102183005.14174-1-faiz_abbas@ti.com/
-
-v1:
-https://lore.kernel.org/linux-arm-kernel/20201002164535.9920-1-faiz_abbas@ti.com/
-
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5cfe3cf6f2ac..bbf42faaddfe 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -438,6 +438,7 @@ CONFIG_I2C_IMX=y
- CONFIG_I2C_IMX_LPI2C=y
- CONFIG_I2C_MESON=y
- CONFIG_I2C_MV64XXX=y
-+CONFIG_I2C_OMAP=y
- CONFIG_I2C_OWL=y
- CONFIG_I2C_PXA=y
- CONFIG_I2C_QCOM_CCI=m
-@@ -497,6 +498,7 @@ CONFIG_PINCTRL_SDM845=y
- CONFIG_PINCTRL_SM8150=y
- CONFIG_PINCTRL_SM8250=y
- CONFIG_GPIO_ALTERA=m
-+CONFIG_GPIO_DAVINCI=y
- CONFIG_GPIO_DWAPB=y
- CONFIG_GPIO_MB86S7X=y
- CONFIG_GPIO_MPC8XXX=y
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 7edc9fba34bbd..1e2403126ccfe 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1288,7 +1288,7 @@ static void del_timer_wait_running(struct timer_list *timer)
+ 	u32 tf;
+ 
+ 	tf = READ_ONCE(timer->flags);
+-	if (!(tf & TIMER_MIGRATING)) {
++	if (!(tf & (TIMER_MIGRATING | TIMER_IRQSAFE))) {
+ 		struct timer_base *base = get_timer_base(tf);
+ 
+ 		/*
+@@ -1372,6 +1372,13 @@ int del_timer_sync(struct timer_list *timer)
+ 	 */
+ 	WARN_ON(in_irq() && !(timer->flags & TIMER_IRQSAFE));
+ 
++	/*
++	 * Must be able to sleep on PREEMPT_RT because of the slowpath in
++	 * del_timer_wait_running().
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !(timer->flags & TIMER_IRQSAFE))
++		lockdep_assert_preemption_enabled();
++
+ 	do {
+ 		ret = try_to_del_timer_sync(timer);
+ 
 -- 
-2.17.1
+2.29.1
 
