@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6F52A522F
+	by mail.lfdr.de (Postfix) with ESMTP id CA1452A5230
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731357AbgKCUrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:47:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37838 "EHLO mail.kernel.org"
+        id S1731355AbgKCUre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:47:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731341AbgKCUr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:28 -0500
+        id S1731354AbgKCUra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2D8B22409;
-        Tue,  3 Nov 2020 20:47:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1661822404;
+        Tue,  3 Nov 2020 20:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436447;
-        bh=t+tE0BjnMmEBd4y6LbwGhZqF/6zBkpZsFq0hol1C1hY=;
+        s=default; t=1604436449;
+        bh=nH+Hai5haiaq1AHiyM7qvEhL+2pWHuukL45l/ygcukw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNjXRl/vExgfvdrl4Jy4MnJygwGldl3xPuXw88fLOSk2IoCu5H5VkQjOcStoGm27R
-         8u6vmGQoVX3e0n1lP19KYAX/Rt4TVnh5rc5bRT1MX2k0/Typ5EiHFvRipgpMw7+AhD
-         eTAW+apQY2LEFUAh/xw98+I6io+I/Cdc9MoJrFK4=
+        b=jy4ND1Pqp90bm7Hpj27Z2TzcCs+9Y5f2S0UrKMdp0u6SUju1k85YWsBK10rLvfX4S
+         bzglcYDTWp2EVueEqX+i9tf5WXgE7CV/yxNNNyDigReRmUgUi7mSzxwlyyNs8rPGRb
+         tygNTKEYDUFnj4GBAxi7lKTQrrLkgy35lDDmT9+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Fritsch <sf@sfritsch.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.9 253/391] drm/i915: Force VTd workarounds when running as a guest OS
-Date:   Tue,  3 Nov 2020 21:35:04 +0100
-Message-Id: <20201103203404.092214029@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 5.9 254/391] vt: keyboard, simplify vt_kdgkbsent
+Date:   Tue,  3 Nov 2020 21:35:05 +0100
+Message-Id: <20201103203404.161112322@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -45,55 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Jiri Slaby <jslaby@suse.cz>
 
-commit 8195400f7ea95399f721ad21f4d663a62c65036f upstream.
+commit 6ca03f90527e499dd5e32d6522909e2ad390896b upstream.
 
-If i915.ko is being used as a passthrough device, it does not know if
-the host is using intel_iommu. Mixing the iommu and gfx causes a few
-issues (such as scanout overfetch) which we need to workaround inside
-the driver, so if we detect we are running under a hypervisor, also
-assume the device access is being virtualised.
+Use 'strlen' of the string, add one for NUL terminator and simply do
+'copy_to_user' instead of the explicit 'for' loop. This makes the
+KDGKBSENT case more compact.
 
-Reported-by: Stefan Fritsch <sf@sfritsch.de>
-Suggested-by: Stefan Fritsch <sf@sfritsch.de>
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Stefan Fritsch <sf@sfritsch.de>
-Cc: stable@vger.kernel.org
-Tested-by: Stefan Fritsch <sf@sfritsch.de>
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201019101523.4145-1-chris@chris-wilson.co.uk
-(cherry picked from commit f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+The only thing we need to take care about is NULL 'func_table[i]'. Use
+an empty string in that case.
+
+The original check for overflow could never trigger as the func_buf
+strings are always shorter or equal to 'struct kbsentry's.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20201019085517.10176-1-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/i915_drv.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/tty/vt/keyboard.c |   28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -33,6 +33,8 @@
- #include <uapi/drm/i915_drm.h>
- #include <uapi/drm/drm_fourcc.h>
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1995,9 +1995,7 @@ out:
+ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ {
+ 	struct kbsentry *kbs;
+-	char *p;
+ 	u_char *q;
+-	u_char __user *up;
+ 	int sz, fnw_sz;
+ 	int delta;
+ 	char *first_free, *fj, *fnw;
+@@ -2023,23 +2021,15 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
+ 	i = array_index_nospec(kbs->kb_func, MAX_NR_FUNC);
  
-+#include <asm/hypervisor.h>
+ 	switch (cmd) {
+-	case KDGKBSENT:
+-		sz = sizeof(kbs->kb_string) - 1; /* sz should have been
+-						  a struct member */
+-		up = user_kdgkb->kb_string;
+-		p = func_table[i];
+-		if(p)
+-			for ( ; *p && sz; p++, sz--)
+-				if (put_user(*p, up++)) {
+-					ret = -EFAULT;
+-					goto reterr;
+-				}
+-		if (put_user('\0', up)) {
+-			ret = -EFAULT;
+-			goto reterr;
+-		}
+-		kfree(kbs);
+-		return ((p && *p) ? -EOVERFLOW : 0);
++	case KDGKBSENT: {
++		/* size should have been a struct member */
++		unsigned char *from = func_table[i] ? : "";
 +
- #include <linux/io-mapping.h>
- #include <linux/i2c.h>
- #include <linux/i2c-algo-bit.h>
-@@ -1716,7 +1718,9 @@ static inline bool intel_vtd_active(void
- 	if (intel_iommu_gfx_mapped)
- 		return true;
- #endif
--	return false;
++		ret = copy_to_user(user_kdgkb->kb_string, from,
++				strlen(from) + 1) ? -EFAULT : 0;
 +
-+	/* Running as a guest, we assume the host is enforcing VT'd */
-+	return !hypervisor_is_type(X86_HYPER_NATIVE);
- }
- 
- static inline bool intel_scanout_needs_vtd_wa(struct drm_i915_private *dev_priv)
++		goto reterr;
++	}
+ 	case KDSKBSENT:
+ 		if (!perm) {
+ 			ret = -EPERM;
 
 
