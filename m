@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8842A2A5A24
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538942A5A25
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbgKCWdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729342AbgKCWdE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:33:04 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25038C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:33:04 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id k1so17592839ilc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ejsEMZE12ZMPeUEYM3BbICPMz6/9Ge4yZTeoTKcT3Rk=;
-        b=IV/gRBHXrqJXaXaox/aCL1f+pls6tDlZEklt8SD5gHSq2zuWQFyP/pv15b2TO2j92m
-         +C49p2bf0p3LVE7wNein8NODT4AT1y51Pgab7f9ilpq5jRecJNxriAhfnLA+PTZp1QXr
-         G3kCf8xEcvQisR8P4Xo04LE99gXTRYH9IVZx705rOJADL0hRkO3fZZb4loNeKDPQ5O8M
-         Vxc+QIssU6ohhYPgwTBiiGd9T7OXqkWUjA2aBldTuoWeIbohR88nkEef7L+/LoWS/Vxp
-         I0zBhYy6S3R2ziTaoZRTAjQCVe/Ou+aCu3c7NBKhbD714Enp2DmVnJeiBeYYAwAamnum
-         AuAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ejsEMZE12ZMPeUEYM3BbICPMz6/9Ge4yZTeoTKcT3Rk=;
-        b=isExXWkw47E4aBU5ncnpFAMlQzYfYNK9RhjK0+VMz7V6I7e5nEHn99ai0mSocONZ4O
-         ZBYtBVWMr3m1I5f7HxKJYDdNi6lSSGv8YLCYj11ifGHRElsnWIWh8oHofwiCt1cZZ3+m
-         /U/EuDlN/jdXqoSAupBWBmLMkvT58KOznui8/lANlaqbgw83l3ZvJWQjFg/CtckOtQkW
-         +UpGASVp1i6foepJqWKMD46CG76fzIyB6Tj9d9M9SlxDq8gnpkgNltC7HT0EwuQ/PKG0
-         15/8wXgznj6DVycCN2YiLdqK8+pBazp/y5mGuxxsTaNKg+EMr4pV6xtFMGRn0cMOrTt7
-         0NEg==
-X-Gm-Message-State: AOAM530pXcsKss/XSfUst0af3cPYc7ruYkCwGBhx5at71r1dshuH2HEL
-        IoRs/coyLRDnjSDr/gd6RNxsvTAWQUGNC/dMAWgE4u2F4PQ=
-X-Google-Smtp-Source: ABdhPJxC6y9Lzomv24at2SUfWug80wRVJLiV0NOi0X/m/b1Dq9MortEGt/vxT+L9uhCUukULBx89zHSTrc+DKUx3BNU=
-X-Received: by 2002:a92:8541:: with SMTP id f62mr4081248ilh.9.1604442783479;
- Tue, 03 Nov 2020 14:33:03 -0800 (PST)
-MIME-Version: 1.0
-References: <e457351a04e04aa084902fd5138d4cae@AcuMS.aculab.com>
- <20201102231420.1833852-1-ztong0001@gmail.com> <7d978bf40c5845e8b89a740250ba958a@AcuMS.aculab.com>
- <CAA5qM4C+UGB_SXW5OeWKPtNkXyVCfwwB_ct9wps0Lj6VhvTawg@mail.gmail.com> <2e1ec234135349c58993097b84ea10b2@AcuMS.aculab.com>
-In-Reply-To: <2e1ec234135349c58993097b84ea10b2@AcuMS.aculab.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Tue, 3 Nov 2020 17:32:52 -0500
-Message-ID: <CAA5qM4DnB+K4ESxeFrCtDRrpbCojngr0hcsdb_OSXKuChtN5Xg@mail.gmail.com>
-Subject: Re: [PATCH v3] qnx4: qnx4_block_map error handling
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Anders Larsen <al@alarsen.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730503AbgKCWdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:33:39 -0500
+Received: from zerg.cs.ucr.edu ([169.235.26.103]:34686 "EHLO zerg.cs.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729715AbgKCWdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:33:38 -0500
+Received: by zerg.cs.ucr.edu (Postfix, from userid 69049)
+        id A8C121C20852; Tue,  3 Nov 2020 14:33:37 -0800 (PST)
+From:   Yu Hao <yuhaobehappy@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     yuhaobehappy@gmail.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] sound/core/seq: remove useless function
+Date:   Tue,  3 Nov 2020 14:33:35 -0800
+Message-Id: <20201103223335.21831-1-yuhaobehappy@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 4:57 PM David Laight <David.Laight@aculab.com> wrote:
-> You've put your hand into a bag of worms...
-That's why I'd prefer minimal changes if possible at all.
+The function snd_seq_queue_client_termination() is only called from
+the function seq_free_client1(). The function seq_free_client1() calls
+the function snd_seq_queue_client_leave() and the function
+snd_seq_queue_client_termination() together. Because the function
+snd_seq_queue_client_leave() does all things, so the function
+snd_seq_queue_client_termination() is a useless function.
+
+Signed-off-by: Yu Hao <yuhaobehappy@gmail.com>
+---
+ sound/core/seq/seq_clientmgr.c |  1 -
+ sound/core/seq/seq_queue.c     | 27 ---------------------------
+ sound/core/seq/seq_queue.h     |  3 ---
+ 3 files changed, 31 deletions(-)
+
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index cc93157fa950..f9f2fea58b32 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -279,7 +279,6 @@ static int seq_free_client1(struct snd_seq_client *client)
+ 	snd_seq_delete_all_ports(client);
+ 	snd_seq_queue_client_leave(client->number);
+ 	snd_use_lock_sync(&client->use_lock);
+-	snd_seq_queue_client_termination(client->number);
+ 	if (client->pool)
+ 		snd_seq_pool_delete(&client->pool);
+ 	spin_lock_irq(&clients_lock);
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index 71a6ea62c3be..13cfc2d47fa7 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -537,33 +537,6 @@ int snd_seq_queue_is_used(int queueid, int client)
+ 
+ /*----------------------------------------------------------------*/
+ 
+-/* notification that client has left the system -
+- * stop the timer on all queues owned by this client
+- */
+-void snd_seq_queue_client_termination(int client)
+-{
+-	unsigned long flags;
+-	int i;
+-	struct snd_seq_queue *q;
+-	bool matched;
+-
+-	for (i = 0; i < SNDRV_SEQ_MAX_QUEUES; i++) {
+-		if ((q = queueptr(i)) == NULL)
+-			continue;
+-		spin_lock_irqsave(&q->owner_lock, flags);
+-		matched = (q->owner == client);
+-		if (matched)
+-			q->klocked = 1;
+-		spin_unlock_irqrestore(&q->owner_lock, flags);
+-		if (matched) {
+-			if (q->timer->running)
+-				snd_seq_timer_stop(q->timer);
+-			snd_seq_timer_reset(q->timer);
+-		}
+-		queuefree(q);
+-	}
+-}
+-
+ /* final stage notification -
+  * remove cells for no longer exist client (for non-owned queue)
+  * or delete this queue (for owned queue)
+diff --git a/sound/core/seq/seq_queue.h b/sound/core/seq/seq_queue.h
+index 9254c8dbe5e3..1c3a8d3254d9 100644
+--- a/sound/core/seq/seq_queue.h
++++ b/sound/core/seq/seq_queue.h
+@@ -59,9 +59,6 @@ struct snd_seq_queue *snd_seq_queue_alloc(int client, int locked, unsigned int f
+ /* delete queue (destructor) */
+ int snd_seq_queue_delete(int client, int queueid);
+ 
+-/* notification that client has left the system */
+-void snd_seq_queue_client_termination(int client);
+-
+ /* final stage */
+ void snd_seq_queue_client_leave(int client);
+ 
+-- 
+2.17.1
+
