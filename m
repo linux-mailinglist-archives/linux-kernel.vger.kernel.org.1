@@ -2,163 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD382A541D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7192A5554
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388390AbgKCVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:08:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387894AbgKCVH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:07:56 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 164C5205ED;
-        Tue,  3 Nov 2020 21:07:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437675;
-        bh=kNkkSf7GPZiZAoqJ4K7JDQg+4mkspW6utqW9bsMXaRU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DBZAyCEzm0RNhkKpX+AaNvGVOqS0tWxzITpV2mfMXesSYXmDA3qzmQzZtjy0RoAKs
-         VQMnfwlCsfbxQrO7ISxXza9qO5LEIQJ5AUVtAkJGs/MxcvS3VXYimKr5744Y5WlSES
-         qZY5aZFyJYD09m4QBV9cj1Ua/WwKyvophPASsMnU=
-Date:   Tue, 3 Nov 2020 15:07:53 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        amurray@thegoodpenguin.co.uk, robh@kernel.org, treding@nvidia.com,
-        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-Message-ID: <20201103210753.GA264744@bjorn-Precision-5520>
+        id S2388647AbgKCVIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388624AbgKCVIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:49 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EFFC0613D1;
+        Tue,  3 Nov 2020 13:08:48 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 13so611546wmf.0;
+        Tue, 03 Nov 2020 13:08:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jb4L9Y0z8nLo50iZlILjChqFx1sExeynBE0hY/3lq9A=;
+        b=e1HtMVuchX9lW5ljiK0edzPzBVkUdZTnodYqjYdH2t8sqrrkvoNp0OuEhyf0wRTGGy
+         70A/XvZauAfK4hEpzB6ZExqq0EzxQeuisU9fTSJytV+6YZ3ftOxx0CIGtbJC52N+aNB5
+         XNAt++eOZHiRnkNIN9Ny8pqLbmWXgrg+pJTfUbvFzC0q/EzNIl9j4AitmbhQNGqihUgh
+         o1bvxEWxO/7wObJvyxE99kJyaXQ5gTXfHXOglbeqBKhbUjUsif5l/NsfwzSCXK18r5Wj
+         EeOen8wgWfZiNvahyIQ8OPleJeCq8WD/APsMECg03Kk61UD0LDTBZQ0MQPUtlZZEh7Dh
+         ZeTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jb4L9Y0z8nLo50iZlILjChqFx1sExeynBE0hY/3lq9A=;
+        b=Pf8saqw70LIztoMSUwGVFatqezuUBfIAtMwxZzrY5HW758iZKiPgMy2cWHeC9eCqa6
+         8FgECnwd7VUQNGIh2cf5gDzUv/9YQgFSlahTWsa2BgD+oTP6vnG8L5Mgg+1i/dbZKXvd
+         BTTWtdTLDK/KDDyT0huAMH9oEvwJrZbymirYadgddGW/rQkU18T6Bje06OkwzkPO5Nh0
+         TMC/E9B89kLqgzE4uwJw1YCTiOpEGObnS0cFGxgh+4k+11KT984kSLm0pehtTW2A3WdG
+         BRasylM9+Ydnjym2+DdXPIWLw6AP9P/F4DpQRlscStXjhNcQSbzq9OPz1Z23Dw1B6Bwb
+         r5LQ==
+X-Gm-Message-State: AOAM533Tj4ePfd52Ngn9Z/7KFoQtwp2leWkYYW6DeWeKt7olkykM3qIv
+        hVONJ5na6XqyIGvjVxElAIk=
+X-Google-Smtp-Source: ABdhPJw+AQf6Xpm9J1SSsCBbcQyWzCWO0a+i1Eid/o/iRToCXeerTMSeRckyKfp4bAROQf3wBrNRDw==
+X-Received: by 2002:a1c:4b04:: with SMTP id y4mr1080469wma.93.1604437727422;
+        Tue, 03 Nov 2020 13:08:47 -0800 (PST)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id y10sm26483889wru.94.2020.11.03.13.08.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 13:08:46 -0800 (PST)
+Subject: Re: [PATCH] x86/mpx: fix recursive munmap() corruption
+To:     Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, mhocko@suse.com,
+        rguenther@suse.de, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        luto@amacapital.net, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, vbabka@suse.cz
+References: <20190401141549.3F4721FE@viggo.jf.intel.com>
+ <alpine.DEB.2.21.1904191248090.3174@nanos.tec.linutronix.de>
+ <87d0lht1c0.fsf@concordia.ellerman.id.au>
+ <6718ede2-1fcb-1a8f-a116-250eef6416c7@linux.vnet.ibm.com>
+ <4f43d4d4-832d-37bc-be7f-da0da735bbec@intel.com>
+ <4e1bbb14-e14f-8643-2072-17b4cdef5326@linux.vnet.ibm.com>
+ <87k1faa2i0.fsf@concordia.ellerman.id.au>
+ <9c2b2826-4083-fc9c-5a4d-c101858dd560@linux.vnet.ibm.com>
+ <12313ba8-75b5-d44d-dbc0-0bf2c87dfb59@csgroup.eu>
+ <452b347c-0a86-c710-16ba-5a98c12a47e3@linux.vnet.ibm.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <02389b9c-141c-f5b7-756a-516599063766@gmail.com>
+Date:   Tue, 3 Nov 2020 21:08:45 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad86fd8c-ea49-fa87-b491-348503d0bd52@nvidia.com>
+In-Reply-To: <452b347c-0a86-c710-16ba-5a98c12a47e3@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 08:57:01AM +0530, Vidya Sagar wrote:
-> On 11/3/2020 4:32 AM, Bjorn Helgaas wrote:
-> > On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
-> > > DesignWare core has a TLP digest (TD) override bit in one of the control
-> > > registers of ATU. This bit also needs to be programmed for proper ECRC
-> > > functionality. This is currently identified as an issue with DesignWare
-> > > IP version 4.90a. This patch does the required programming in ATU upon
-> > > querying the system policy for ECRC.
-> > 
-> > I guess this is a hardware defect, right?
-> Yes. This is common across all DWC implementations (version 4.90 precisely)
+Hi Laurent, Christophe, Michael, all,
+
+On 11/3/20 5:11 PM, Laurent Dufour wrote:
+> Le 23/10/2020 à 14:28, Christophe Leroy a écrit :
+[..]
+>>>> That seems like it would work for CRIU and make sense in general?
+>>>
+>>> Sorry for the late answer, yes this would make more sense.
+>>>
+>>> Here is a patch doing that.
+>>>
+>>
+>> In your patch, the test seems overkill:
+>>
+>> +    if ((start <= vdso_base && vdso_end <= end) ||  /* 1   */
+>> +        (vdso_base <= start && start < vdso_end) || /* 3,4 */
+>> +        (vdso_base < end && end <= vdso_end))       /* 2,3 */
+>> +        mm->context.vdso_base = mm->context.vdso_end = 0;
+>>
+>> What about
+>>
+>>      if (start < vdso_end && vdso_start < end)
+>>          mm->context.vdso_base = mm->context.vdso_end = 0;
+>>
+>> This should cover all cases, or am I missing something ?
+>>
+>>
+>> And do we really need to store vdso_end in the context ?
+>> I think it should be possible to re-calculate it: the size of the VDSO
+>> should be (&vdso32_end - &vdso32_start) + PAGE_SIZE for 32 bits VDSO,
+>> and (&vdso64_end - &vdso64_start) + PAGE_SIZE for the 64 bits VDSO.
 > 
-> > How much of a problem would it be if we instead added a "no_ecrc"
-> > quirk for this hardware so we never enabled ECRC?
-> Well, on Tegra for some of the high fidelity use cases, ECRC is required to
-> be turned on and if it can be done safely with these patches, why shouldn't
-> we not enable ECRC at all?
+> Thanks Christophe for the advise.
 > 
-> > IIUC, the current Linux support of ECRC is a single choice at
-> > boot-time: by default ECRC is not enabled, but if you boot with
-> > "pci=ecrc=on", we turn on ECRC for every device.
-> > 
-> > That seems like the minimal support, but I think the spec allows ECRC
-> > to be enabled selectively, on individual devices.  I can imagine a
-> > sysfs knob that would allow us to enable/disable ECRC per-device at
-> > run-time.
-> > 
-> > If we had such a sysfs knob, it would be pretty ugly and maybe
-> > impractical to work around this hardware issue.  So I'm a little bit
-> > hesitant to add functionality that might have to be removed in the
-> > future.
->
-> Agree with this. But since it is a boot-time choice at this point, I think
-> we can still go ahead with this approach to have a working ECRC mechanism
-> right? I don't see any sysfs knob for AER controlling at this point.
+> That is covering all the cases, and indeed is similar to the Michael's
+> proposal I missed last year.
+> 
+> I'll send a patch fixing this issue following your proposal.
 
-I don't want to do anything that will prevent us from adding
-per-device ECRC control in the future.
+It's probably not necessary anymore. I've sent patches [1], currently in
+akpm, the last one forbids splitting of vm_special_mapping.
+So, a user is able munmap() or mremap() vdso as a whole, but not partly.
 
-My concern is that if we add a run-time sysfs knob in the future, the
-user experience on this hardware will be poor because there's no
-convenient path to twiddle the PCIE_ATU_TD bit when the generic code
-changes the AER Control bit.
+[1]:
+https://lore.kernel.org/linux-mm/20201013013416.390574-1-dima@arista.com/
 
-What is the failure mode in these scenarios:
-
-  - User boots with defaults, ECRC is disabled.
-  - User enables ECRC via sysfs.
-  - What happens here?  ECRC is enabled via AER Control but not via
-    DWC TD bit.  I assume ECRC doesn't work.  Does it cause PCIe
-    errors (malformed TLP, etc)?
-
-Or this one:
-
-  - User boots with "pci=ecrc=on", ECRC is enabled.
-  - ECRC works fine.
-  - User disables ECRC via sysfs.
-  - What happens here?  ECRC is disabled via AER Control, but DWC TD
-    bit thinks it's still enabled.
-
-If you enabled ECRC unconditionally on DWC and the sysfs knob had no
-effect, I'd be OK with that.  I'm more worried about what happens when
-the AER bit and the DWC TD bit are set so they don't match.  What is
-the failure mode there?
-
-> > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > > Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
-> > > ---
-> > > V3:
-> > > * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
-> > > 
-> > > V2:
-> > > * Addressed Jingoo's review comment
-> > > * Removed saving 'td' bit information in 'dw_pcie' structure
-> > > 
-> > >   drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
-> > >   drivers/pci/controller/dwc/pcie-designware.h | 1 +
-> > >   2 files changed, 7 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > > index b5e438b70cd5..cbd651b219d2 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > > @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
-> > >        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
-> > >                                 upper_32_bits(pci_addr));
-> > >        val = type | PCIE_ATU_FUNC_NUM(func_no);
-> > > +     if (pci->version == 0x490A)
-> > > +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
-> > >        val = upper_32_bits(size - 1) ?
-> > >                val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-> > >        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
-> > > @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
-> > >                           lower_32_bits(pci_addr));
-> > >        dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
-> > >                           upper_32_bits(pci_addr));
-> > > -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> > > -                        PCIE_ATU_FUNC_NUM(func_no));
-> > > +     val = type | PCIE_ATU_FUNC_NUM(func_no);
-> > > +     if (pci->version == 0x490A)
-> > > +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
-> > > +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
-> > >        dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
-> > > 
-> > >        /*
-> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> > > index e7f441441db2..b01ef407fd52 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-designware.h
-> > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> > > @@ -89,6 +89,7 @@
-> > >   #define PCIE_ATU_TYPE_IO             0x2
-> > >   #define PCIE_ATU_TYPE_CFG0           0x4
-> > >   #define PCIE_ATU_TYPE_CFG1           0x5
-> > > +#define PCIE_ATU_TD_SHIFT            8
-> > >   #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
-> > >   #define PCIE_ATU_CR2                 0x908
-> > >   #define PCIE_ATU_ENABLE                      BIT(31)
-> > > --
-> > > 2.17.1
-> > > 
+Thanks,
+          Dmitry
