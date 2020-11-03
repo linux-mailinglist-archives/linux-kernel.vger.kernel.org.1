@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F7E2A51E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35F62A5200
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730962AbgKCUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
+        id S1731086AbgKCUpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730951AbgKCUow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:44:52 -0500
+        id S1729973AbgKCUpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97821223BF;
-        Tue,  3 Nov 2020 20:44:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DE64223FD;
+        Tue,  3 Nov 2020 20:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436292;
-        bh=bnFbbM/iTF0EpzIJJWqApOMmpoKGyKiVkoOqqqvnD94=;
+        s=default; t=1604436341;
+        bh=4eqaCNWAXinj88UvzXO+z54FicSQ+oiAoGRxMzJkO1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXE28Z8wkSHezEAz9ACLkvaZ06zdk3rP9tuFcdD7ylSQRlk5fy+SScje6LP/EQzBy
-         wdme7yW08xkrOUEW7c2ySaOq2xn2up8sx5mW8pIuCRzTRchoVAWb9xcsB/DOQVCP9f
-         Y62a/Z6Aul69Yf3wiaSBqx0D2DmksyZSqJfrWRq0=
+        b=cbaVSC7T6rEye9X7H/RHDedkZYh36w/DbIz/qndVsDbw3DiEZmSZ7y8JsXUrdquFI
+         U5Ka4GnbVeMRCZePKE4RaZpwTY6f1c4qsk0H3XuRgbCGXgfCBjtHxJ/Mmfu5dkEllb
+         w8ksv4ZFCXoApNC25L7vQJFTlV0/fYDKbHiqZTLI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 179/391] nbd: make the config put is called before the notifying the waiter
-Date:   Tue,  3 Nov 2020 21:33:50 +0100
-Message-Id: <20201103203358.951326537@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 181/391] nvme-rdma: fix crash when connect rejected
+Date:   Tue,  3 Nov 2020 21:33:52 +0100
+Message-Id: <20201103203359.100957791@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,41 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
+From: Chao Leng <lengchao@huawei.com>
 
-[ Upstream commit 87aac3a80af5cbad93e63250e8a1e19095ba0d30 ]
+[ Upstream commit 43efdb8e870ee0f58633fd579aa5b5185bf5d39e ]
 
-There has one race case for ceph's rbd-nbd tool. When do mapping
-it may fail with EBUSY from ioctl(nbd, NBD_DO_IT), but actually
-the nbd device has already unmaped.
+A crash can happened when a connect is rejected.   The host establishes
+the connection after received ConnectReply, and then continues to send
+the fabrics Connect command.  If the controller does not receive the
+ReadyToUse capsule, host may receive a ConnectReject reply.
 
-It dues to if just after the wake_up(), the recv_work() is scheduled
-out and defers calling the nbd_config_put(), though the map process
-has exited the "nbd->recv_task" is not cleared.
+Call nvme_rdma_destroy_queue_ib after the host received the
+RDMA_CM_EVENT_REJECTED event.  Then when the fabrics Connect command
+times out, nvme_rdma_timeout calls nvme_rdma_complete_rq to fail the
+request.  A crash happenes due to use after free in
+nvme_rdma_complete_rq.
 
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+nvme_rdma_destroy_queue_ib is redundant when handling the
+RDMA_CM_EVENT_REJECTED event as nvme_rdma_destroy_queue_ib is already
+called in connection failure handler.
+
+Signed-off-by: Chao Leng <lengchao@huawei.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index edf8b632e3d27..f46e26c9d9b3c 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -801,9 +801,9 @@ static void recv_work(struct work_struct *work)
- 		if (likely(!blk_should_fake_timeout(rq->q)))
- 			blk_mq_complete_request(rq);
- 	}
-+	nbd_config_put(nbd);
- 	atomic_dec(&config->recv_threads);
- 	wake_up(&config->recv_wq);
--	nbd_config_put(nbd);
- 	kfree(args);
- }
- 
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 9e378d0a0c01c..116902b1b2c34 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -1926,7 +1926,6 @@ static int nvme_rdma_cm_handler(struct rdma_cm_id *cm_id,
+ 		complete(&queue->cm_done);
+ 		return 0;
+ 	case RDMA_CM_EVENT_REJECTED:
+-		nvme_rdma_destroy_queue_ib(queue);
+ 		cm_error = nvme_rdma_conn_rejected(queue, ev);
+ 		break;
+ 	case RDMA_CM_EVENT_ROUTE_ERROR:
 -- 
 2.27.0
 
