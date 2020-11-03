@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9B42A3D0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8070C2A3D22
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgKCGxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:53:07 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:13430 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgKCGxF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:53:05 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201103065303epoutp03c964e426508c96d43b6e21d38189dac5~D7Oo-C80u0544905449epoutp03b
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 06:53:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201103065303epoutp03c964e426508c96d43b6e21d38189dac5~D7Oo-C80u0544905449epoutp03b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604386383;
-        bh=qDYMOrFOTz+ymAOrSh1pm/ZDNncI1MtDIPapENGjask=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=baIqBuCEgkoylISixSkP2wuTdTaBeZJrNGnTg2pOqnvFBpKj3XzcWIYiHT9rRLSDl
-         S9zzw/HwZR7SBptPyVfWW+7mM0lP+j7eEwvsoWN8LBLXERY6Mk7DSXnnI6hzPu9oOO
-         4oc+85CS3y5/c1a3dOCXyKoTS11eFAFrrihJCbDk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201103065302epcas1p1c4d59162fca6a746d379f320791c13e8~D7Oobs95d2671126711epcas1p1l;
-        Tue,  3 Nov 2020 06:53:02 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4CQL8C3TgkzMqYkh; Tue,  3 Nov
-        2020 06:52:59 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.D2.02418.34EF0AF5; Tue,  3 Nov 2020 15:52:51 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201103065250epcas1p4421332566646a4464d7871429aabafd9~D7OdrZBi63229732297epcas1p4u;
-        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201103065250epsmtrp12d27d340bb49b1148cdb2df1ee17688a~D7Odqu_Xn2631926319epsmtrp1L;
-        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-98-5fa0fe436747
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        27.63.08745.24EF0AF5; Tue,  3 Nov 2020 15:52:50 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103065250epsmtip1dcf9d0ead76d05133d25442a62a0ad06~D7Odb6axo1509215092epsmtip1b;
-        Tue,  3 Nov 2020 06:52:50 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-Subject: [PATCH] PM / devfreq: passive: Update frequency when start governor
-Date:   Tue,  3 Nov 2020 16:06:46 +0900
-Message-Id: <20201103070646.18687-1-cw00.choi@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIKsWRmVeSWpSXmKPExsWy7bCmvq7zvwXxBltbFC0m3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsDmwem1Z1snn0bVnF6PF5k1wAc1S2TUZqYkpqkUJqXnJ+
-        SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QXiWFssScUqBQQGJxsZK+nU1R
-        fmlJqkJGfnGJrVJqQUpOgWWBXnFibnFpXrpecn6ulaGBgZEpUGFCdsaVJX4FTbwVS94tZ2xg
-        vMLVxcjJISFgIvFoTidbFyMXh5DADkaJxp5d7BDOJ0aJ9i23oZzPjBJ7ux6wwbTMvtDLBJHY
-        xSixavkaqKovjBLb9/xhAaliE9CS2P/iBliHiICVxOn/HcwgNrNAikT/7zNgNcICPhKbX71i
-        BbFZBFQl1vyZywRi8wLVvz2yhQlim7zE6g0HmEEWSAjMY5dYdOkqO0TCReLkuWZmCFtY4tXx
-        LVBxKYmX/W1QdrXEypNH2CCaOxgltuy/wAqRMJbYv3Qy0AYOoIs0Jdbv0ocIK0rs/D2XEeJQ
-        Pol3X3tYQUokBHglOtqEIEqUJS4/uAt1m6TE4vZOaKh4SNxpmQzWKiQQK7Hy/V22CYyysxAW
-        LGBkXMUollpQnJueWmxYYIgcS5sYwWlJy3QH48S3H/QOMTJxMB5ilOBgVhLhrYmcFy/Em5JY
-        WZValB9fVJqTWnyI0RQYYBOZpUST84GJMa8k3tDUyNjY2MLE0MzU0FBJnPePdke8kEB6Yklq
-        dmpqQWoRTB8TB6dUA9Oz+TfSCzk2N549s/CW+mzbEyKHgp91aTrGb67ribqf80VHOdclLFLx
-        7/+L6/+ZRf4xOsv44KeZR+DDL8edtlw1TPF1XXjNa0ZoyOepYlFlsrMVvlU/c98mEil5aX2f
-        5ha5XLcpnyY9P5G9LIptlcOx6cUfO5NCeK/UXp1v1OtyQHvvi82BF4xvxTjYRddu09sUrLxB
-        8KHcdZ6gSXN5FnhbXviw3XNKdxHHYeu3aifqk259TQo3S7z4zOHVigMX4qYmy2YW9CTc/3ln
-        mcPSuqky8s7bJSzOdB3uzKzVPH6g5IOukXSIx/zoOKdbfVn/hawuFUxxmVWidCVy4ca+v+9T
-        lvv5nbhZNPeCu9hLz19KLMUZiYZazEXFiQCglcRi1AMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLJMWRmVeSWpSXmKPExsWy7bCSnK7TvwXxBrc7jCwm3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsDmwem1Z1snn0bVnF6PF5k1wAcxSXTUpqTmZZapG+XQJX
-        xpUlfgVNvBVL3i1nbGC8wtXFyMkhIWAiMftCL1MXIxeHkMAORonG7lmMEAlJiWkXjzJ3MXIA
-        2cIShw8XQ9R8YpR49qqFBaSGTUBLYv+LG2wgtoiAjcTdxddYQOqZBTIk/i9XAgkLC/hIbH71
-        ihXEZhFQlVjzZy4TiM0rYCXx9sgWJohV8hKrNxxgnsDIs4CRYRWjZGpBcW56brFhgVFearle
-        cWJucWleul5yfu4mRnCIaGntYNyz6oPeIUYmDsZDjBIczEoivDWR8+KFeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ836dtTBOSCA9sSQ1OzW1ILUIJsvEwSnVwBR7zenXkoNuiezrPmdbbfXQNbLy
-        qZNY4Sz+99NJV6EvFt9Pls14fHdjBUdXtKV+SoqcVFTU5mLd9LiIHRFb1LvNr/Jd/d07/WjT
-        DL4rrSfs56So8dsJTVX0DVqVLr0wcu2xXV6O9WY6nz737X/l5D53rXJQ4+tlp/PWnK1n/dkR
-        dXkz6+7eQ/sstx0qi1ifsLJWVjvxr3ePyOxPbzXNK0vlu9l//Jv1zi6kZNaX149X8ilP+F1/
-        ZHE2y8USse0WZy6GuqU1zln2q5uF4+NiGwOupaeEjpz07uuatnqB4l2537qrq09HPjNTE6/8
-        N6dg/8mAs69nKtnruW3Zdqxj57wk3Z1z/76+HCD4asNNlu9KLMUZiYZazEXFiQB/jnvkgAIA
-        AA==
-X-CMS-MailID: 20201103065250epcas1p4421332566646a4464d7871429aabafd9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201103065250epcas1p4421332566646a4464d7871429aabafd9
-References: <CGME20201103065250epcas1p4421332566646a4464d7871429aabafd9@epcas1p4.samsung.com>
+        id S1726727AbgKCHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:06:07 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:2565 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgKCHGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:06:06 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CQLRF59cFz9vCyQ;
+        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dy9O089jaZQ3; Tue,  3 Nov 2020 08:06:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CQLRF3rlfz9vCyP;
+        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 458018B783;
+        Tue,  3 Nov 2020 08:06:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id UlvOiLioe_Vf; Tue,  3 Nov 2020 08:06:02 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D42E8B77E;
+        Tue,  3 Nov 2020 08:06:01 +0100 (CET)
+Subject: Re: [PATCH -next v2 1/2] watchdog: Clean up error handlings of
+ __watchdog_register_device
+To:     Wang Wensheng <wangwensheng4@huawei.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rui.xiang@huawei.com, guohanjun@huawei.com
+References: <20201103065217.67876-1-wangwensheng4@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <11e45cab-108f-db0e-6350-82ae49ed6b23@csgroup.eu>
+Date:   Tue, 3 Nov 2020 08:05:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20201103065217.67876-1-wangwensheng4@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the parent device changes the their frequency before registering
-the passive device, the passive device cannot receive the notification
-from parent device and then the passive device cannot be able to
-set the proper frequency according to the frequency of parent device.
+Hi,
 
-So, when start the passive governor, update the frequency
-according to the frequency of parent device.
+Can you provide in the commit a description of what you are doing and why ?
 
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
----
- drivers/devfreq/governor_passive.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Christophe
 
-diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
-index 63332e4a65ae..375aa636027c 100644
---- a/drivers/devfreq/governor_passive.c
-+++ b/drivers/devfreq/governor_passive.c
-@@ -141,6 +141,21 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
- 		if (!p_data->this)
- 			p_data->this = devfreq;
- 
-+		/*
-+		 * If the parent device changes the their frequency before
-+		 * registering the passive device, the passive device cannot
-+		 * receive the notification from parent device and then the
-+		 * passive device cannot be able to set the proper frequency
-+		 * according to the frequency of parent device.
-+		 *
-+		 * When start the passive governor, update the frequency
-+		 * according to the frequency of parent device.
-+		 */
-+		ret = devfreq_update_target(devfreq, parent->previous_freq);
-+		if (ret < 0)
-+			dev_warn(&devfreq->dev,
-+			"failed to update devfreq using passive governor\n");
-+
- 		nb->notifier_call = devfreq_passive_notifier_call;
- 		ret = devfreq_register_notifier(parent, nb,
- 					DEVFREQ_TRANSITION_NOTIFIER);
--- 
-2.17.1
-
+Le 03/11/2020 à 07:52, Wang Wensheng a écrit :
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> ---
+>   drivers/watchdog/watchdog_core.c | 17 ++++++++++-------
+>   1 file changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 423844757812..c73871f41142 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -252,10 +252,8 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>   		wdd->id = id;
+>   
+>   		ret = watchdog_dev_register(wdd);
+> -		if (ret) {
+> -			ida_simple_remove(&watchdog_ida, id);
+> -			return ret;
+> -		}
+> +		if (ret)
+> +			goto id_remove;
+>   	}
+>   
+>   	/* Module parameter to force watchdog policy on reboot. */
+> @@ -273,9 +271,7 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>   		if (ret) {
+>   			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+>   			       wdd->id, ret);
+> -			watchdog_dev_unregister(wdd);
+> -			ida_simple_remove(&watchdog_ida, id);
+> -			return ret;
+> +			goto dev_unregister;
+>   		}
+>   	}
+>   
+> @@ -289,6 +285,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>   	}
+>   
+>   	return 0;
+> +
+> +dev_unregister:
+> +	watchdog_dev_unregister(wdd);
+> +id_remove:
+> +	ida_simple_remove(&watchdog_ida, id);
+> +
+> +	return ret;
+>   }
+>   
+>   /**
+> 
