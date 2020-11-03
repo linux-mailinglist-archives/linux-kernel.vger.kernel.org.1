@@ -2,827 +2,766 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDA22A3D71
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0890C2A3D73
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgKCHTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:19:33 -0500
-Received: from mga07.intel.com ([134.134.136.100]:4884 "EHLO mga07.intel.com"
+        id S1727784AbgKCHTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:19:39 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49341 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgKCHTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:19:33 -0500
-IronPort-SDR: Ux9dXRpV6kA0E/iEDJxsyW+9LY+hP54rUvUld1jBQIHxvW/ZgQprlGnmWF0rdDXn9mDxMjsAoK
- QzhbHFwWI3Rg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="233180254"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="gz'50?scan'50,208,50";a="233180254"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 23:19:29 -0800
-IronPort-SDR: oS6FEtRQJN0nyMqkZ+eyLfNuKp3wIfB0U1N21ORcTaP78y1DCCbV679GP8/PrrPUUj9lmjKwu+
- jJCYN1a7cEZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="gz'50?scan'50,208,50";a="526960846"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Nov 2020 23:19:27 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZqbG-00004W-LC; Tue, 03 Nov 2020 07:19:26 +0000
-Date:   Tue, 3 Nov 2020 15:19:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Khalil Blaiech <kblaiech@mellanox.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa-dev@sang-engineering.com>,
-        Vadim Pasternak <vadimp@mellanox.com>
-Subject: drivers/i2c/busses/i2c-mlxbf.c:2296:8: error: implicit declaration
- of function 'acpi_device_uid'
-Message-ID: <202011031504.wTBSQy8F-lkp@intel.com>
+        id S1725958AbgKCHTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:19:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CQLkq6yv8z9sT6;
+        Tue,  3 Nov 2020 18:19:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604387972;
+        bh=WxrFPAjKSOxefXxlXnvWvvEEFVesRxEXVNzk026uB8s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VuzuePwb/4h/DU5ciJD1cDJCLSwlT0agNP8ZBHAKdfEtCvhZauT4t0TK3G/fjJY3C
+         VdTFnKJ2NiIwNcBZ6vBFm+sf0+CsmCfpBfeJXNDEp4y/DYaNhErpDc5pWgpODjcds/
+         r0zYnL+rYGWxrxYVRxUA/fMhXs+LdG42DQkNzTcvIX/zJXsgWAtBpYeEdbeLy+mEnr
+         Ms0PLQyrIrL8svy7WYsQpXmQ3aAw+O8TGCsHdybWeKjuMNFd/yHa7iYny6n28JTu3w
+         sETnMsORGX/Zy5IJStroNbkicCCNt3NhGdOAR9oC8ruQ5sucO83iqowaqCvIBLhbUm
+         Z5YilSGJdqBaA==
+Date:   Tue, 3 Nov 2020 18:19:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Nov 3
+Message-ID: <20201103181931.0ea86551@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/VpYFItkmT9J39AznRU2GoyZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/VpYFItkmT9J39AznRU2GoyZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi all,
 
-Hi Khalil,
+Changes since 20201102:
 
-FYI, the error/warning still remains.
+The imx-mxs tree gained a build failure for which I reverted a commit.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b7cbaf59f62f8ab8f157698f9e31642bff525bd0
-commit: b5b5b32081cd206baa6e58cca7f112d9723785d6 i2c: mlxbf: I2C SMBus driver for Mellanox BlueField SoC
-date:   5 weeks ago
-config: arm64-randconfig-r011-20201103 (attached as .config)
-compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1fcd5d5655e29f85e12b402e32974f207cfedf32)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b5b5b32081cd206baa6e58cca7f112d9723785d6
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout b5b5b32081cd206baa6e58cca7f112d9723785d6
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+The f2fs tree gained a build failure so I used the version from
+next-20201102.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+The amdgpu tree gained a conflict against Linus' tree.
 
-All errors (new ones prefixed by >>):
+The drm-misc tree gained a conflict against the amdgpu tree.
 
->> drivers/i2c/busses/i2c-mlxbf.c:2296:8: error: implicit declaration of function 'acpi_device_uid' [-Werror,-Wimplicit-function-declaration]
-           uid = acpi_device_uid(adev);
-                 ^
-   drivers/i2c/busses/i2c-mlxbf.c:2296:8: note: did you mean 'cpu_device_up'?
-   include/linux/cpu.h:93:5: note: 'cpu_device_up' declared here
-   int cpu_device_up(struct device *dev);
-       ^
-   drivers/i2c/busses/i2c-mlxbf.c:2296:6: warning: incompatible integer to pointer conversion assigning to 'const char *' from 'int' [-Wint-conversion]
-           uid = acpi_device_uid(adev);
-               ^ ~~~~~~~~~~~~~~~~~~~~~
-   1 warning and 1 error generated.
+The pinctrl tree still had its build failure.
 
-vim +/acpi_device_uid +2296 drivers/i2c/busses/i2c-mlxbf.c
+Non-merge commits (relative to Linus' tree): 2680
+ 3072 files changed, 350481 insertions(+), 36125 deletions(-)
 
-  2274	
-  2275	static int mlxbf_i2c_acpi_probe(struct device *dev, struct mlxbf_i2c_priv *priv)
-  2276	{
-  2277		const struct acpi_device_id *aid;
-  2278		struct acpi_device *adev;
-  2279		unsigned long bus_id = 0;
-  2280		const char *uid;
-  2281		int ret;
-  2282	
-  2283		if (acpi_disabled)
-  2284			return -ENOENT;
-  2285	
-  2286		adev = ACPI_COMPANION(dev);
-  2287		if (!adev)
-  2288			return -ENXIO;
-  2289	
-  2290		aid = acpi_match_device(mlxbf_i2c_acpi_ids, dev);
-  2291		if (!aid)
-  2292			return -ENODEV;
-  2293	
-  2294		priv->chip = (struct mlxbf_i2c_chip_info *)aid->driver_data;
-  2295	
-> 2296		uid = acpi_device_uid(adev);
-  2297		if (!uid || !(*uid)) {
-  2298			dev_err(dev, "Cannot retrieve UID\n");
-  2299			return -ENODEV;
-  2300		}
-  2301	
-  2302		ret = kstrtoul(uid, 0, &bus_id);
-  2303		if (!ret)
-  2304			priv->bus = bus_id;
-  2305	
-  2306		return ret;
-  2307	}
-  2308	
+----------------------------------------------------------------------------
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
 
---ibTvN161/egqYuK8
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+and sparc64 defconfig and htmldocs. And finally, a simple boot test
+of the powerpc pseries_le_defconfig kernel in qemu (with and without
+kvm enabled).
 
-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
+Below is a summary of the state of the merge.
 
---ibTvN161/egqYuK8--
+I am currently merging 327 trees (counting Linus' and 85 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+$ git checkout master
+$ git reset --hard stable
+Merging origin/master (b7cbaf59f62f Merge branch 'akpm' (patches from Andre=
+w))
+Merging fixes/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging kbuild-current/fixes (d1889589a4f5 builddeb: Fix rootless build in =
+setuid/setgid directory)
+Merging arc-current/for-curr (3b57533b460c ARC: [plat-hsdk] Remap CCMs supe=
+r early in asm boot trampoline)
+Merging arm-current/fixes (9fa2e7af3d53 ARM: 9019/1: kprobes: Avoid fortify=
+_panic() when copying optprobe template)
+Merging arm64-fixes/for-next/fixes (ec9d78070de9 arm64: Change .weak to SYM=
+_FUNC_START_WEAK_PI for arch/arm64/lib/mem*.S)
+Merging arm-soc-fixes/arm/fixes (3d696f42c7f4 soc: ti: ti_sci_pm_domains: c=
+heck for proper args count in xlate)
+Merging drivers-memory-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging m68k-current/for-linus (50c5feeea0af ide/macide: Convert Mac IDE dr=
+iver to platform driver)
+Merging powerpc-fixes/fixes (99f070b62322 powerpc/smp: Call rcu_cpu_startin=
+g() earlier)
+Merging s390-fixes/fixes (8e90b4b1305a s390: correct __bootdata / __bootdat=
+a_preserved macros)
+Merging sparc/master (0a95a6d1a4cd sparc: use for_each_child_of_node() macr=
+o)
+Merging fscrypt-current/for-stable (2b4eae95c736 fscrypt: don't evict dirty=
+ inodes after removing key)
+Merging net/master (99cab7107d91 net: dsa: qca8k: Fix port MTU setting)
+Merging bpf/master (7a078d2d1880 libbpf, hashmap: Fix undefined behavior in=
+ hash_bits)
+Merging ipsec/master (a779d91314ca net: xfrm: fix a race condition during a=
+llocing spi)
+Merging netfilter/master (859191b234f8 Merge git://git.kernel.org/pub/scm/l=
+inux/kernel/git/pablo/nf)
+Merging ipvs/master (c77761c8a594 netfilter: nf_fwd_netdev: clear timestamp=
+ in forwarding path)
+Merging wireless-drivers/master (04516706bb99 iwlwifi: pcie: limit memory r=
+ead spin time)
+Merging mac80211/master (c2f468145211 mac80211: don't require VHT elements =
+for HE on 2.4 GHz)
+Merging rdma-fixes/for-rc (00469c97ef64 RDMA/vmw_pvrdma: Fix the active_spe=
+ed and phys_state value)
+Merging sound-current/for-linus (9fc149c3bce7 ALSA: hda: Reinstate runtime_=
+allow() for all hda controllers)
+Merging sound-asoc-fixes/for-linus (47568405ff83 Merge remote-tracking bran=
+ch 'asoc/for-5.10' into asoc-linus)
+Merging regmap-fixes/for-linus (780f88b04704 Merge remote-tracking branch '=
+regmap/for-5.10' into regmap-linus)
+Merging regulator-fixes/for-linus (c432bf3e3d82 Merge remote-tracking branc=
+h 'regulator/for-5.10' into regulator-linus)
+Merging spi-fixes/for-linus (21d3055d1ac7 Merge remote-tracking branch 'spi=
+/for-5.10' into spi-linus)
+Merging pci-current/for-linus (af0dd809f3d3 PCI: Add Designated Vendor-Spec=
+ific Extended Capability #defines)
+Merging driver-core.current/driver-core-linus (9d4fdda33446 scripts: get_ap=
+i.pl: Add sub-titles to ABI output)
+Merging tty.current/tty-linus (d54654790302 vt_ioctl: fix GIO_UNIMAP regres=
+sion)
+Merging usb.current/usb-linus (58d51f330e76 Merge tag 'fixes-for-v5.10-rc2'=
+ of git://git.kernel.org/pub/scm/linux/kernel/git/balbi/usb into usb-linus)
+Merging usb-gadget-fixes/fixes (129aa9734559 usb: raw-gadget: fix memory le=
+ak in gadget_setup)
+Merging usb-serial-fixes/usb-linus (a46b973bced1 USB: serial: option: add Q=
+uectel EC200T module support)
+Merging usb-chipidea-fixes/for-usb-fixes (e11d2bf27158 usb: cdns3: gadget: =
+own the lock wrongly at the suspend routine)
+Merging phy/fixes (25d76fed7ffe phy: cpcap-usb: Use IRQF_ONESHOT)
+Merging staging.current/staging-linus (3cea11cd5e3b Linux 5.10-rc2)
+Merging char-misc.current/char-misc-linus (3cea11cd5e3b Linux 5.10-rc2)
+Merging soundwire-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging thunderbolt-fixes/fixes (7342ca34d931 thunderbolt: Add the missed i=
+da_simple_remove() in ring_request_msix())
+Merging input-current/for-linus (b1884583fcd1 Input: i8042 - allow insmod t=
+o succeed on devices without an i8042 controller)
+Merging crypto-current/master (c3a98c3ad5c0 crypto: x86/poly1305 - add back=
+ a needed assignment)
+Merging ide/master (6800cd8cbc6e ide-acpi: use %*ph to print small buffer)
+Merging vfio-fixes/for-linus (aae7a75a821a vfio/type1: Add proper error unw=
+ind for vfio_iommu_replay())
+Merging kselftest-fixes/fixes (1488472e712d selftests: binderfs: use SKIP i=
+nstead of XFAIL)
+Merging modules-fixes/modules-linus (57baec7b1b04 scripts/nsdeps: make sure=
+ to pass all module source files to spatch)
+Merging dmaengine-fixes/fixes (768664114b1a dmaengine: ti: k3-udma: fix -We=
+num-conversion warning)
+Merging backlight-fixes/for-backlight-fixes (219d54332a09 Linux 5.4)
+Merging mtd-fixes/mtd/fixes (9efac6ce7f62 mtd: rawnand: stm32_fmc2: fix bro=
+ken ECC)
+Merging mfd-fixes/for-mfd-fixes (22380b65dc70 mfd: mfd-core: Ensure disable=
+d devices are ignored without error)
+Merging v4l-dvb-fixes/fixes (d0254f82d702 media: dt-bindings: media: imx274=
+: Convert to json-schema)
+Merging reset-fixes/reset/fixes (b460e0a9e240 reset: intel: add unspecified=
+ HAS_IOMEM dependency)
+Merging mips-fixes/mips-fixes (31b4d8e172f6 MIPS: export has_transparent_hu=
+gepage() for modules)
+Merging at91-fixes/at91-fixes (54ecb8f7028c Linux 5.4-rc1)
+Merging omap-fixes/fixes (8f04aea048d5 ARM: OMAP2+: Restore MPU power domai=
+n if cpu_cluster_pm_enter() fails)
+Merging kvm-fixes/master (9478dec3b5e7 KVM: vmx: remove unused variable)
+Merging kvms390-fixes/master (f20d4e924b44 docs: kvm: add documentation for=
+ KVM_CAP_S390_DIAG318)
+Merging hwmon-fixes/hwmon (402dab548d0d hwmon: (pmbus/max20730) use scnprin=
+tf() instead of snprintf())
+Merging nvdimm-fixes/libnvdimm-fixes (88b67edd7247 dax: Fix compilation for=
+ CONFIG_DAX && !CONFIG_FS_DAX)
+Merging btrfs-fixes/next-fixes (45d8f990a77f Merge branch 'misc-5.10' into =
+next-fixes)
+Merging vfs-fixes/fixes (77f6ab8b7768 don't dump the threads that had been =
+already exiting when zapped.)
+Merging dma-mapping-fixes/for-linus (892fc9f6835e dma-pool: Fix an uninitia=
+lized variable bug in atomic_pool_expand())
+Merging i3c-fixes/master (6fbc7275c7a9 Linux 5.2-rc7)
+Merging drivers-x86-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging samsung-krzk-fixes/fixes (cd12e4f14f7c CREDITS: remove trailing whi=
+te spaces)
+CONFLICT (content): Merge conflict in MAINTAINERS
+Merging pinctrl-samsung-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging devicetree-fixes/dt/linus (f84e2c5c528d dt-bindings: Another round =
+of adding missing 'additionalProperties/unevalutatedProperties')
+Merging scsi-fixes/fixes (af61bc1e33d2 scsi: hpsa: Fix memory leak in hpsa_=
+init_one())
+Merging drm-fixes/drm-fixes (7babd126327b Merge tag 'drm-intel-fixes-2020-1=
+0-29' of git://anongit.freedesktop.org/drm/drm-intel into drm-fixes)
+Merging amdgpu-fixes/drm-fixes (2c409ba81be2 drm/radeon: fix si_enable_smc_=
+cac() failed issue)
+Merging drm-intel-fixes/for-linux-next-fixes (854b32440144 drm/i915/gvt: Fi=
+x mmio handler break on BXT/APL.)
+Merging mmc-fixes/fixes (011fde48394b mmc: sdhci-of-esdhc: make sure delay =
+chain locked for HS400)
+Merging rtc-fixes/rtc-fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging gnss-fixes/gnss-linus (48778464bb7d Linux 5.8-rc2)
+Merging hyperv-fixes/hyperv-fixes (dbf563eee0b8 x86/hyperv: Clarify comment=
+ on x2apic mode)
+Merging soc-fsl-fixes/fix (fe8fe7723a3a soc: fsl: dpio: register dpio irq h=
+andlers after dpio create)
+Merging risc-v-fixes/fixes (84814460eef9 riscv: Fixup bootup failure with H=
+ARDENED_USERCOPY)
+Merging pidfd-fixes/fixes (bda4c60d02e9 sys: Convert to the new fallthrough=
+ notation)
+Merging fpga-fixes/fixes (8614afd689df fpga: dfl: fix bug in port reset han=
+dshake)
+Merging spdx/spdx-linus (3cea11cd5e3b Linux 5.10-rc2)
+Merging gpio-intel-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging pinctrl-intel-fixes/fixes (3650b228f83a Linux 5.10-rc1)
+Merging erofs-fixes/fixes (9ebcfadb0610 Linux 5.8-rc3)
+Merging integrity-fixes/fixes (843385694721 evm: Fix a small race in init_d=
+esc())
+Merging kunit-fixes/kunit-fixes (0d0d245104a4 kunit: tools: fix kunit_tool =
+tests for parsing test plans)
+Merging ubifs-fixes/fixes (78c7d49f55d8 ubifs: journal: Make sure to not di=
+rty twice for auth nodes)
+Merging memblock-fixes/fixes (5f7b81c18366 ia64: fix min_low_pfn/max_low_pf=
+n build errors)
+Merging drm-misc-fixes/for-linux-next-fixes (dcda7c28bff2 drm/vc4: kms: Add=
+ functions to create the state objects)
+Merging kspp-gustavo/for-next/kspp (3650b228f83a Linux 5.10-rc1)
+Merging kbuild/for-next (729e39a558eb kconfig: qconf: convert to Qt5 new si=
+gnal/slot connection syntax)
+Merging compiler-attributes/compiler-attributes (bbf5c979011a Linux 5.9)
+Merging dma-mapping/for-next (48ab6d5d1f09 dma-mapping: fix 32-bit overflow=
+ with CONFIG_ARM_LPAE=3Dn)
+Merging asm-generic/master (78d127fd6892 Merge branch 'asm-generic-timers' =
+into asm-generic)
+Merging arc/for-next (def9d2780727 Linux 5.5-rc7)
+Merging arm/for-next (20f96e606509 Merge branches 'fixes' and 'misc' into f=
+or-next)
+Merging arm64/for-next/core (66dd3474702a arm64: proton-pack: Update commen=
+t to reflect new function name)
+Merging arm-perf/for-next/perf (887e2cff0f8d perf: arm-cmn: Fix conversion =
+specifiers for node type)
+Merging arm-soc/for-next (36ab3c32cafc ARM: SoC: document merges)
+Merging amlogic/for-next (4393916840fc Merge branch 'v5.11/soc' into tmp/am=
+l-rebuild)
+Merging aspeed/for-next (93db293b2aba Merge branch 'soc-for-v5.11' into for=
+-next)
+Merging at91/at91-next (0698efbb33ef Merge branches 'at91-soc', 'at91-dt' a=
+nd 'at91-defconfig' into at91-next)
+Merging drivers-memory/for-next (5ddebb22417b Merge branch 'for-v5.11/tegra=
+-mc' into for-next)
+Merging imx-mxs/for-next (cfaf0f4a7297 Merge branch 'imx/defconfig' into fo=
+r-next)
+Applying: Revert "ARM: imx: add missing clk_disable_unprepare() when remove=
+ imx_mmdc"
+Merging keystone/next (a5e886fb26f2 Merge branch 'for_5.11/drivers-soc' int=
+o next)
+Merging mediatek/for-next (9c6658a0dd4f Merge branch 'v5.10-next/soc' into =
+for-next)
+Merging mvebu/for-next (f89c9685f6a1 Merge branch 'mvebu/dt64' into mvebu/f=
+or-next)
+Merging omap/for-next (7a159a1ad494 Merge branch 'fixes' into for-next)
+Merging qcom/for-next (923bb4f70ceb Merge branches 'arm64-for-5.11', 'drive=
+rs-for-5.11' and 'dts-for-5.11' into for-next)
+Merging raspberrypi/for-next (4564363351e2 ARM: dts: bcm2711: Enable the di=
+splay pipeline)
+Merging realtek/for-next (486f29df6941 Merge branch 'v5.8/dt' into next)
+Merging renesas/next (b860052992d7 Merge branch 'renesas-dt-bindings-for-v5=
+.11' into renesas-next)
+Merging reset/reset/next (da8c0e4ee95a reset: meson: make it possible to bu=
+ild as a module)
+Merging rockchip/for-next (1fdc65a3eb82 Merge branch 'v5.11-armsoc/dts64' i=
+nto for-next)
+Merging samsung-krzk/for-next (f76fe8d86291 Merge branch 'next/drivers' int=
+o for-next)
+Merging scmi/for-linux-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging sunxi/sunxi/for-next (2f098e04ce16 Merge branch 'sunxi/fixes-for-5.=
+10' into sunxi/for-next)
+Merging tegra/for-next (9ea55312ba10 Merge branch for-5.10/arm64/defconfig =
+into for-next)
+Merging ti-k3/ti-k3-next (1e3d655fe7b4 Merge branch 'ti-k3-config-next' int=
+o ti-k3-next)
+Merging ti-k3-new/ti-k3-next (9dcd17be61e4 arm64: dts: ti: k3-am65: ringacc=
+: drop ti, dma-ring-reset-quirk)
+Merging clk/clk-next (3650b228f83a Linux 5.10-rc1)
+Merging clk-samsung/for-next (ff8e0ff9b996 clk: samsung: Use cached clk_hws=
+ instead of __clk_lookup() calls)
+Merging csky/linux-next (7c2c8f7beeb7 csky: Fixup show_regs doesn't contain=
+ regs->usp)
+Merging h8300/h8300-next (8808515be0ed h8300: Replace <linux/clk-provider.h=
+> by <linux/of_clk.h>)
+Merging ia64/next (c331649e6371 ia64: Use libata instead of the legacy ide =
+driver in defconfigs)
+Merging m68k/for-next (1fe9bacab2ac m68k: Remove unused mach_max_dma_addres=
+s)
+Merging m68knommu/for-next (ce93d1c29c02 m68k: m68328: remove duplicate cod=
+e)
+Merging microblaze/next (4a17e8513376 microblaze: fix kbuild redundant file=
+ warning)
+Merging mips/mips-next (ab7cffb8d236 MIPS: ingenic: remove unused platform_=
+data header file)
+Merging nds32/next (54bde873682b nds32: Fix bogus reference to <asm/procinf=
+o.h>)
+Merging nios2/for-next (6b57fa4d374b nios2: signal: Mark expected switch fa=
+ll-through)
+Merging openrisc/for-next (55b2662ec665 openrisc: uaccess: Add user address=
+ space check to access_ok)
+Merging parisc-hd/for-next (3b7ab4a74a2d parisc: Switch to clockevent based=
+ timers)
+CONFLICT (content): Merge conflict in arch/parisc/kernel/time.c
+Applying: revert the rest of "parisc: use legacy_timer_tick"
+Merging powerpc/next (3cea11cd5e3b Linux 5.10-rc2)
+Merging fsl/next (a76bea0287ce powerpc/kmcent2: add ranges to the pci bridg=
+es)
+Merging soc-fsl/next (d97b957e32b1 soc: fsl: qe: Remove unnessesary check i=
+n ucc_set_tdm_rxtx_clk)
+Merging risc-v/for-next (f69e1c7418b1 RISC-V: Fix the VDSO symbol generaton=
+ for binutils-2.35+)
+CONFLICT (content): Merge conflict in arch/riscv/kernel/vdso/Makefile
+Merging s390/for-next (00be34947616 Merge branch 'fixes' into for-next)
+Merging sh/for-next (b0cfc315ff38 sh: fix syscall tracing)
+Merging sparc-next/master (dd0d718152e4 Merge tag 'spi-fix-v5.8-rc2' of git=
+://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi)
+Merging uml/linux-next (f06885b3f3e3 um: vector: Add dynamic tap interfaces=
+ and scripting)
+Merging xtensa/xtensa-for-next (4ca4c562efb6 xtensa: uaccess: Add missing _=
+_user to strncpy_from_user() prototype)
+Merging fscrypt/master (5b2a828b98ec fscrypt: export fscrypt_d_revalidate())
+Merging afs/afs-next (8409f67b6437 afs: Adjust the fileserver rotation algo=
+rithm to reprobe/retry more quickly)
+Merging btrfs/for-next (89956069c9d6 Merge branch 'for-next-next-v5.10-2020=
+1102' into for-next-20201102)
+Merging ceph/master (28e1581c3b4e libceph: clear con->out_msg on Policy::st=
+ateful_server faults)
+Merging cifs/for-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging configfs/for-next (76ecfcb0852e samples: configfs: prefer pr_err() =
+over bare printk(KERN_ERR)
+Merging ecryptfs/next (8b614cb8f1dc Merge tag '5.6-rc4-smb3-fixes' of git:/=
+/git.samba.org/sfrench/cifs-2.6)
+Merging erofs/dev (915f4c9358db erofs: remove unnecessary enum entries)
+Merging exfat/dev (f9893351acae Merge tag 'kconfig-v5.10' of git://git.kern=
+el.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild)
+Merging ext3/for_next (e44b86917b3f Pull direct IO fix from Gabriel Krisman=
+.)
+Merging ext4/dev (00c69f98e83d ext4: use IS_ERR() for error checking of pat=
+h)
+Merging f2fs/dev (3281ed2c116e f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl)
+$ git reset --hard HEAD^
+Merging next-20201102 version of f2fs
+Merging fsverity/fsverity (f3db0bed4583 fs-verity: use smp_load_acquire() f=
+or ->i_verity_info)
+Merging fuse/for-next (42d3e2d041f0 virtiofs: calculate number of scatter-g=
+ather elements accurately)
+Merging jfs/jfs-next (7aba5dcc2346 jfs: Replace zero-length array with flex=
+ible-array member)
+Merging nfs/linux-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging nfs-anna/linux-next (8c39076c276b NFSv4.2: support EXCHGID4_FLAG_SU=
+PP_FENCE_OPS 4.2 EXCHANGE_ID flag)
+Merging nfsd/nfsd-next (856deb866d16 Linux 5.9-rc5)
+Merging cel/cel-next (a826e2b2dd61 NFSD: A semicolon is not needed after a =
+switch statement.)
+Merging orangefs/for-next (e848643b524b orangefs: remove unnecessary assign=
+ment to variable ret)
+Merging overlayfs/overlayfs-next (be4df0cea08a ovl: use generic vfs_ioc_set=
+flags_prepare() helper)
+Merging ubifs/next (e2a05cc7f822 ubifs: mount_ubifs: Release authentication=
+ resource in error handling path)
+Merging v9fs/9p-next (7ca1db21ef8e net: 9p: initialize sun_server.sun_path =
+to have addr's value only when addr is valid)
+Merging xfs/for-next (2c334e12f957 xfs: set xefi_discard when creating a de=
+ferred agfl free log intent item)
+Merging zonefs/for-next (48bfd5c6fac1 zonefs: document the explicit-open mo=
+unt option)
+Merging iomap/iomap-for-next (1a31182edd00 iomap: Call inode_dio_end() befo=
+re generic_write_sync())
+Merging djw-vfs/vfs-for-next (407e9c63ee57 vfs: move the generic write and =
+copy checks out of mm)
+Merging file-locks/locks-next (529adfe8f131 locks: fix a typo at a kernel-d=
+oc markup)
+Merging vfs/for-next (8853bf827ca8 Merge branches 'work.sparc', 'work.epoll=
+', 'work.sparc32' and 'regset.followup' into for-next)
+Applying: fix up for merge of arch/sparc/lib/memset.S
+Merging printk/for-next (17ab0541542f Merge branch 'for-5.10-trivial' into =
+for-next)
+Merging pci/next (3650b228f83a Linux 5.10-rc1)
+Merging pstore/for-next/pstore (137c6236aeec mailmap: Add WeiXiong Liao)
+CONFLICT (content): Merge conflict in .mailmap
+Merging hid/for-next (2039112f7c1c Merge branch 'for-5.11/core' into for-ne=
+xt)
+Merging i2c/i2c/for-next (3650b228f83a Linux 5.10-rc1)
+Merging i3c/i3c/next (abea14bfdebb i3c: master: Fix error return in cdns_i3=
+c_master_probe())
+Merging dmi/dmi-for-next (3cb4d29a2633 MAINTAINERS: The DMI/SMBIOS tree has=
+ moved)
+Merging hwmon-staging/hwmon-next (eb3f6f77d58c hwmon: (pmbus) shrink code a=
+nd remove pmbus_do_remove())
+Merging jc_docs/docs-next (6fee9372e0af Merge branch 'mauro-warnings' into =
+docs-next)
+Merging v4l-dvb/master (dfe3d19bd092 Merge tag 'v5.10-rc1' into patchwork)
+Merging v4l-dvb-next/master (d0a9fffedca1 docs: fs: api-summary.rst: get ri=
+d of kernel-doc include)
+Merging fbdev/fbdev-for-next (732146a3f1dc video: fbdev: imxfb: fix a typo =
+in imxfb_probe())
+Merging pm/linux-next (bb88d1f9b431 Merge branch 'pm-opp' into linux-next)
+Merging cpufreq-arm/cpufreq/arm/linux-next (a43128837003 cpufreq: mediatek:=
+ add missing platform_driver_unregister() on error in mtk_cpufreq_driver_in=
+it)
+Merging cpupower/cpupower (748f0d70087c cpupower: Provide online and offlin=
+e CPU information)
+Merging devfreq/devfreq-next (09d56d92ad25 PM / devfreq: tegra30: Silence d=
+eferred probe error)
+Merging opp/opp/linux-next (b0756034202a opp: Don't return opp_dev from _fi=
+nd_opp_dev())
+Merging thermal/thermal/linux-next (345a8af7ea63 thermal: core: Move power_=
+actor_set_power into IPA)
+Merging thermal-rzhang/next (54ecb8f7028c Linux 5.4-rc1)
+Merging thermal-soc/next (6c375eccded4 thermal: db8500: Rewrite to be a pur=
+e OF sensor)
+Merging ieee1394/for-next (67f8e65e4fc1 firewire: net: remove set but not u=
+sed variable 'guid')
+Merging dlm/next (4f2b30fd9b4b fs: dlm: fix race in nodeid2con)
+Merging swiotlb/linux-next (fc0021aa340a swiotlb: remove the tbl_dma_addr a=
+rgument to swiotlb_tbl_map_single)
+Merging rdma/for-next (32053e584e4a RDMA/hns: Add support for filling GMV t=
+able)
+Merging net-next/master (0e8c266c59b5 net: dsa: mt7530: remove unneeded sem=
+icolon)
+Merging bpf-next/for-next (f4c3881edbcc Merge branch 'bpf-migrate-tcp-bpf')
+Merging ipsec-next/master (68bb4665a2ce Merge branch 'l2-multicast-forwardi=
+ng-for-ocelot-switch')
+Merging mlx5-next/mlx5-next (3650b228f83a Linux 5.10-rc1)
+Merging netfilter-next/master (35b7ee34abdb netfilter: nftables: Add __prin=
+tf() attribute)
+Merging ipvs-next/master (3cb12d27ff65 Merge tag 'net-5.10-rc1' of git://gi=
+t.kernel.org/pub/scm/linux/kernel/git/netdev/net)
+Merging wireless-drivers-next/master (3650b228f83a Linux 5.10-rc1)
+Merging bluetooth/master (44d59235ace5 Bluetooth: hci_h5: close serdev devi=
+ce and free hu in h5_close)
+Merging mac80211-next/master (3cb12d27ff65 Merge tag 'net-5.10-rc1' of git:=
+//git.kernel.org/pub/scm/linux/kernel/git/netdev/net)
+Merging gfs2/for-next (6bd1c7bd4ee7 gfs2: Don't call cancel_delayed_work_sy=
+nc from within delete work function)
+Merging mtd/mtd/next (232b67c39942 mtd: remove unneeded break)
+Merging nand/nand/next (3ebbdef13f82 mtd: rawnand: sunxi: Add MDMA support)
+Merging spi-nor/spi-nor/next (3650b228f83a Linux 5.10-rc1)
+Merging crypto/master (18d05ca4486f crypto: lib/sha256 - Unroll LOAD and BL=
+END loops)
+Merging drm/drm-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging amdgpu/drm-next (18128bd7c292 drm/amdgpu/display: FP fixes for DCN3=
+.x)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/pm/swsmu/amdgpu_s=
+mu.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/dc/dcn10/=
+dcn10_optc.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/nv.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/amdgpu_ttm=
+.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/amdgpu_dev=
+ice.c
+Merging drm-intel/for-linux-next (24cb4f312697 drm/i915: Reduce severity fo=
+r fixing up mistaken VBT tc->legacy_port)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/display/intel_di=
+splay.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/display/intel_dd=
+i.c
+Merging drm-tegra/drm/tegra/for-next (d9f980ebcd01 drm/tegra: output: rgb: =
+Wrap directly-connected panel into DRM bridge)
+Merging drm-misc/for-linux-next (7a60c2dd0f57 drm: Remove SCATTERLIST_MAX_S=
+EGMENT)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/amdgpu_dm=
+/amdgpu_dm.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/amdgpu_gem=
+.c
+Applying: merge fix up for "drm/amdgpu: Add debugfs entry for printing VM i=
+nfo"
+Applying: swiotlb: using SIZE_MAX needs limits.h included
+Merging drm-msm/msm-next (d1ea91492585 drm/msm/dp: fix incorrect function p=
+rototype of dp_debug_get())
+Merging mali-dp/for-upstream/mali-dp (f634c6a80287 dt/bindings: display: Ad=
+d optional property node define for Mali DP500)
+Merging imx-drm/imx-drm/next (36fba366cf9f drm/imx: tve remove extraneous t=
+ype qualifier)
+Merging etnaviv/etnaviv/next (4612bad5701e drm/etnaviv: Add lockdep annotat=
+ions for context lock)
+Merging regmap/for-next (f243af4d473b Merge remote-tracking branch 'regmap/=
+for-5.11' into regmap-next)
+Merging sound/for-next (ad26098970b6 ALSA: remove unneeded break)
+Merging sound-asoc/for-next (47dcdb79bc7c Merge remote-tracking branch 'aso=
+c/for-5.11' into asoc-next)
+Merging modules/modules-next (5e8ed280dab9 module: set MODULE_STATE_GOING s=
+tate when a module fails to load)
+Merging input/next (8a30c6eb29e0 Input: Add MAINTAINERS entry for SiS i2c t=
+ouch input driver)
+Merging block/for-next (5af8cdb023c6 Merge branch 'tif-task_work.arch' into=
+ for-next)
+Merging device-mapper/for-next (681cc5e8667e dm: fix request-based DM to no=
+t bounce through indirect dm_submit_bio)
+Merging pcmcia/pcmcia-next (46d079790663 pcmcia: make pccard_loop_tuple() s=
+tatic)
+Merging mmc/next (cc85a5ef3c83 mmc: rtsx_pci: Add SD Express mode support f=
+or RTS5261)
+Merging mfd/for-mfd-next (6d81dc3c79d4 mfd: kempld-core: Fix unused variabl=
+e 'kempld_acpi_table' when !ACPI)
+Merging backlight/for-backlight-next (97ecfda1a8ff backlight: tosa_bl: Incl=
+ude the right header)
+Merging battery/for-next (7007fab4ae82 power: reset: POWER_RESET_OCELOT_RES=
+ET should depend on Ocelot or Sparx5)
+Merging regulator/for-next (62966abe7834 Merge remote-tracking branch 'regu=
+lator/for-5.11' into regulator-next)
+Merging security/next-testing (bc62d68e2a0a device_cgroup: Fix RCU list deb=
+ugging warning)
+Merging apparmor/apparmor-next (e37986097ba6 apparmor: Use true and false f=
+or bool variable)
+Merging integrity/next-integrity (aa662fc04f5b ima: Fix NULL pointer derefe=
+rence in ima_file_hash)
+Merging keys/keys-next (b6f61c314649 keys: Implement update for the big_key=
+ type)
+Merging safesetid/safesetid-next (03ca0ec13892 LSM: SafeSetID: Fix warnings=
+ reported by test bot)
+Merging selinux/next (44141f58e143 selinux: allow dontauditx and auditallow=
+x rules to take effect without allowx)
+Merging smack/next (edd615371b66 Smack: Remove unnecessary variable initial=
+ization)
+Merging tomoyo/master (d9594e040965 tomoyo: fix clang pointer arithmetic wa=
+rning)
+Merging tpmdd/next (bbd521ce63ab tpm: efi: Don't create binary_bios_measure=
+ments file for an empty log)
+Merging watchdog/master (3650b228f83a Linux 5.10-rc1)
+Merging iommu/next (7e3c3883c381 Merge branches 'arm/allwinner', 'arm/media=
+tek', 'arm/renesas', 'arm/tegra', 'arm/qcom', 'arm/smmu', 'ppc/pamu', 'x86/=
+amd', 'x86/vt-d' and 'core' into next)
+Merging audit/next (6d915476e67d audit: trigger accompanying records when n=
+o rules present)
+Merging devicetree/for-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging mailbox/mailbox-for-next (c7dacf5b0f32 mailbox: avoid timer start f=
+rom callback)
+Merging spi/for-next (d51bba5fb892 Merge remote-tracking branch 'spi/for-5.=
+11' into spi-next)
+Merging tip/auto-latest (6f72faf4a323 Merge branch 'locking/urgent')
+Merging clockevents/timers/drivers/next (f087e452f27e clocksource: sp804: e=
+nable Hisilicon sp804 timer 64bit mode)
+Merging edac/edac-for-next (24269999027e EDAC: Fix some kernel-doc markups)
+Merging irqchip/irq/irqchip-next (d95bdca75b3f irqchip/ti-sci-inta: Add sup=
+port for unmapped event handling)
+Merging ftrace/for-next (e1981f75d398 ring-buffer: Update the description f=
+or ring_buffer_wait)
+Merging rcu/rcu/next (76b43ef30dc3 kcsan: Fix encoding masks and regain add=
+ress bit)
+Merging kvm/linux-next (e792415c5d3e KVM: MIPS/VZ: Fix build error caused b=
+y 'kvm_run' cleanup)
+Merging kvm-arm/next (22f553842b14 KVM: arm64: Handle Asymmetric AArch32 sy=
+stems)
+Merging kvm-ppc/kvm-ppc-next (cf59eb13e151 KVM: PPC: Book3S: Fix symbol und=
+eclared warnings)
+Merging kvms390/next (23a60f834406 s390/kvm: diagnose 0x318 sync and reset)
+Merging xen-tip/linux-next (1a89c1dc9520 Documentation: add xen.fifo_events=
+ kernel parameter description)
+Merging percpu/for-next (eb4c8d15efda Merge branch 'for-5.11' into for-next)
+Merging workqueues/for-next (10cdb1575954 workqueue: use BUILD_BUG_ON() for=
+ compile time test instead of WARN_ON())
+Merging drivers-x86/for-next (e8a60aa7404b platform/x86: Introduce support =
+for Systems Management Driver over WMI for Dell Systems)
+Merging chrome-platform/for-next (3650b228f83a Linux 5.10-rc1)
+Merging hsi/for-next (bb6d3fb354c5 Linux 5.6-rc1)
+Merging leds/for-next (6c3e42616bf2 leds: various: add missing put_device()=
+ call in netxbig_leds_get_of_pdata())
+Merging ipmi/for-next (0df7b988d9df char: ipmi: remove unneeded break)
+Merging driver-core/driver-core-next (3cea11cd5e3b Linux 5.10-rc2)
+Merging usb/usb-next (8fba56b4cd53 Merge 5.10-rc2 into usb-next)
+Merging usb-gadget/next (b2c586eb07ef usb: dwc2: Fix INTR OUT transfers in =
+DDMA mode.)
+Merging usb-serial/usb-next (d1849b9ff9f4 USB: serial: iuu_phoenix: remove =
+unneeded break)
+Merging usb-chipidea-next/for-usb-next (eba158772841 usb: cdns3: Rids of du=
+plicate error message)
+Merging phy-next/next (c36f74566cef MAINTAINERS: Add entry for Qualcomm IPQ=
+4019 USB PHY)
+CONFLICT (content): Merge conflict in MAINTAINERS
+Merging tty/tty-next (da31de35cd2f tty: goldfish: use __raw_writel()/__raw_=
+readl())
+Merging char-misc/char-misc-next (48a3d90adafc Merge 5.10-rc2 into char-mis=
+c-next)
+Merging extcon/extcon-next (ca26071da1bb dt-bindings: extcon: add binding f=
+or TUSB320)
+Merging soundwire/next (3650b228f83a Linux 5.10-rc1)
+Merging thunderbolt/next (3cea11cd5e3b Linux 5.10-rc2)
+Merging vfio/next (2e6cfd496f5b vfio iommu type1: Fix memory leak in vfio_i=
+ommu_type1_pin_pages)
+Merging staging/staging-next (83e63b2cc416 Merge 5.10-rc2 into staging-next)
+CONFLICT (modify/delete): tools/testing/selftests/android/ion/ipcsocket.h d=
+eleted in staging/staging-next and modified in HEAD. Version HEAD of tools/=
+testing/selftests/android/ion/ipcsocket.h left in tree.
+CONFLICT (modify/delete): tools/testing/selftests/android/ion/ipcsocket.c d=
+eleted in staging/staging-next and modified in HEAD. Version HEAD of tools/=
+testing/selftests/android/ion/ipcsocket.c left in tree.
+$ git rm -f tools/testing/selftests/android/ion/ipcsocket.c tools/testing/s=
+elftests/android/ion/ipcsocket.h
+Merging mux/for-next (05f19f7f8944 mux: adgs1408: Add mod_devicetable.h and=
+ remove of_match_ptr)
+Merging icc/icc-next (fce52ad34832 interconnect: qcom: use icc_sync state f=
+or sm8[12]50)
+Merging dmaengine/next (4749f51ddd8a dmaengine: idxd: Add ABI documentation=
+ for shared wq)
+CONFLICT (content): Merge conflict in drivers/dma/idxd/registers.h
+CONFLICT (content): Merge conflict in drivers/dma/idxd/device.c
+Merging cgroup/for-next (65026da59cda cgroup: Zero sized write should be no=
+-op)
+Merging scsi/for-next (af61bc1e33d2 scsi: hpsa: Fix memory leak in hpsa_ini=
+t_one())
+Merging scsi-mkp/for-next (d90196317484 scsi: zfcp: Handle event-lost notif=
+ication for Version Change events)
+Merging vhost/linux-next (29ea7644edd2 swiotlb: using SIZE_MAX needs limits=
+.h included)
+Merging rpmsg/for-next (3e53119a2521 Merge branches 'hwspinlock-next', 'rpm=
+sg-next' and 'rproc-next' into for-next)
+Merging gpio/for-next (50afb29ae413 Merge branch 'devel' into for-next)
+Merging gpio-brgl/gpio/for-next (183245c4f204 gpio: rcar: Implement gpio_ch=
+ip.get_multiple())
+Merging gpio-intel/for-next (3650b228f83a Linux 5.10-rc1)
+Merging pinctrl/for-next (03dec17c36a7 Merge branch 'devel' into for-next)
+Applying: Revert "pinctrl: rockchip: make driver be tristate module"
+Merging pinctrl-intel/for-next (4670abbb298e pinctrl: intel: Add blank line=
+ before endif in Kconfig)
+Merging pinctrl-samsung/for-next (c5564a50d990 pinctrl: samsung: s3c24xx: r=
+emove unneeded break)
+Merging pwm/for-next (3b1954cd57bf dt-bindings: pwm: renesas,pwm-rcar: Add =
+r8a7742 support)
+Merging userns/for-next (7fce69dff8db Implement kernel_execve)
+Merging ktest/for-next (ff131efff141 ktest.pl: Fix spelling mistake "Cant" =
+-> "Can't")
+Merging random/dev (ab9a7e27044b random: avoid warnings for !CONFIG_NUMA bu=
+ilds)
+Merging kselftest/next (b2f1c3db2887 kselftest: Extend vdso correctness tes=
+t to clock_gettime64)
+Merging y2038/y2038 (c4e71212a245 Revert "drm/etnaviv: reject timeouts with=
+ tv_nsec >=3D NSEC_PER_SEC")
+Merging livepatching/for-next (59fc1e476962 Merge branch 'for-5.10/flive-pa=
+tching' into for-next)
+Merging coresight/next (7aef456716dc coresight: etm4x: Handle TRCVIPCSSCTLR=
+ accesses)
+Merging rtc/rtc-next (28d211919e42 rtc: sun6i: Fix memleak in sun6i_rtc_clk=
+_init)
+Merging nvdimm/libnvdimm-for-next (a1b8638ba132 Linux 5.9-rc7)
+Merging at24/at24/for-next (3650b228f83a Linux 5.10-rc1)
+Merging ntb/ntb-next (3650b228f83a Linux 5.10-rc1)
+Merging seccomp/for-next/seccomp (38c37e8fd3d2 arm: Enable seccomp architec=
+ture tracking)
+Merging kspp/for-next/kspp (9b80e4c4ddac overflow: Add __must_check attribu=
+te to check_*() helpers)
+Merging gnss/gnss-next (48778464bb7d Linux 5.8-rc2)
+Merging fsi/next (4a851d714ead fsi: aspeed: Support CFAM reset GPIO)
+Merging slimbus/for-next (c3e02abdf9af slimbus: fix a kernel-doc markup)
+Merging nvmem/for-next (436d15fbeaee nvmem: qfprom: Don't touch certain fus=
+es)
+Merging xarray/main (fb11305101c2 XArray: Fix split documentation)
+Merging hyperv/hyperv-next (626b901f6044 Drivers: hv: vmbus: Add parsing of=
+ VMbus interrupt in ACPI DSDT)
+Merging auxdisplay/auxdisplay (bbf5c979011a Linux 5.9)
+Merging kgdb/kgdb/for-next (d081a6e35316 kdb: Fix pager search for multi-li=
+ne strings)
+Merging pidfd/for-next (e06ce5515b74 Merge branch 'pidfd_o_nonblock' into f=
+or-next)
+Merging hmm/hmm (3650b228f83a Linux 5.10-rc1)
+Merging fpga/for-next (cbadbf5a53b5 Merge branch 'dfl_modularization' into =
+for-next)
+Merging kunit/test (3650b228f83a Linux 5.10-rc1)
+Merging generic-ioremap/for-next (4bdc0d676a64 remove ioremap_nocache and d=
+evm_ioremap_nocache)
+Merging cfi/cfi/next (5de15b610f78 mtd: hyperbus: add Renesas RPC-IF driver)
+Merging kunit-next/kunit (3650b228f83a Linux 5.10-rc1)
+Merging trivial/for-next (9ff9b0d392ea Merge tag 'net-next-5.10' of git://g=
+it.kernel.org/pub/scm/linux/kernel/git/netdev/net-next)
+Merging zx2c4/for-next (16fbf79b0f83 Linux 5.6-rc7)
+Merging mhi/mhi-next (3650b228f83a Linux 5.10-rc1)
+Merging notifications/notifications-pipe-core (841a0dfa5113 watch_queue: sa=
+mple: Display mount tree change notifications)
+CONFLICT (content): Merge conflict in include/uapi/asm-generic/unistd.h
+CONFLICT (content): Merge conflict in arch/xtensa/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_64.tbl
+CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_32.tbl
+CONFLICT (content): Merge conflict in arch/sparc/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/sh/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/s390/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/powerpc/kernel/syscalls/syscall.=
+tbl
+CONFLICT (content): Merge conflict in arch/parisc/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_o32=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n64=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n32=
+.tbl
+CONFLICT (content): Merge conflict in arch/microblaze/kernel/syscalls/sysca=
+ll.tbl
+CONFLICT (content): Merge conflict in arch/m68k/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/ia64/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd32.h
+CONFLICT (content): Merge conflict in arch/arm/tools/syscall.tbl
+CONFLICT (content): Merge conflict in arch/alpha/kernel/syscalls/syscall.tbl
+Applying: rest of merge fix up for syscall conflict
+Merging memblock/for-next (762d4d1a174c arch/ia64: Restore arch-specific pg=
+d_offset_k implementation)
+Merging init/init-user-pointers (38b082236e77 initramfs: use vfs_utimes in =
+do_copy)
+Merging counters/counters (3650b228f83a Linux 5.10-rc1)
+Merging akpm-current/current (a1f9165f0d93 lib/lzo/lzo1x_compress.c: make l=
+zogeneric1x_1_compress() static)
+CONFLICT (content): Merge conflict in include/linux/sched.h
+$ git checkout -b akpm remotes/origin/akpm/master
+$ git rebase --onto master remotes/origin/akpm/master-base
+Merging akpm/master (55f4bff8073f mm/gup: assert that the mmap lock is held=
+ in __get_user_pages())
+
+--Sig_/VpYFItkmT9J39AznRU2GoyZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+hBIMACgkQAVBC80lX
+0GzQcwf/Sn9+nJxm1T6FgTN/qirGzezvqxaM6czdDJiQ+IY9mrqPMRRuiQt9GisF
+3+6oBajqC+42apjMPIeZbqwrWdokV9WcKC9Gdq1lovlMGgKppYQYRi+EVFE6Hj1Y
+E3bZJ1DfzQMGmqsN7zm69WkL0JrrB8MvPcjyIvgX3juzwMdOpgW2fwG9h5EsUHod
+HWsbuK6/WSZ2/DPTQQSRziR+9MOTk8sGuHHiNhSRPdRS6qW6vwLUAjRTVEZzOQeU
+LedrJ2R/iPAw09L8cTmY+YioB3xQXdQ439CqNPm/f4dNH5Rxlo6fIF3WjbeQIZ4L
+X+s0jNa9t8oUrp7JYJUdsfKP5+G/Ew==
+=fVRY
+-----END PGP SIGNATURE-----
+
+--Sig_/VpYFItkmT9J39AznRU2GoyZ--
