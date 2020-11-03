@@ -2,62 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DFA2A4482
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829D92A4488
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbgKCLri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:47:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7582 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727665AbgKCLrh (ORCPT
+        id S1728850AbgKCLsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:48:43 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56880 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728806AbgKCLsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:47:37 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQSh40ZV9zLt6T;
-        Tue,  3 Nov 2020 19:47:32 +0800 (CST)
-Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.101.108) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 19:47:34 +0800
-From:   Chengsong Ke <kechengsong@huawei.com>
-To:     <richard@nod.at>, <s.hauer@pengutronix.de>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubifs: Remove useless code in bytes_str_to_int
-Date:   Tue, 3 Nov 2020 19:47:33 +0800
-Message-ID: <20201103114733.16424-1-kechengsong@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Tue, 3 Nov 2020 06:48:43 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3BmM8u074461;
+        Tue, 3 Nov 2020 05:48:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604404102;
+        bh=IZa5WQc/rpESZXfuIe4RXI1Md5tFfA37aiQeWFMk2EQ=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=o0Ug5DF1aIFS93loCiRQlMiaqfdqEubpibLn2Qssa8nE9gh9nT8FCfV+YDzWs7ElN
+         7d7axnXwd4LtsyIWw9BOCBVM7dZvnPnycAnZIA3AgjKWWD3sAEDa9Vx2uS2AIsuArf
+         11r7kfne0brpCU2d36vS5NuxvPtl3yBJWV9A1otM=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3BmMKZ063138
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 05:48:22 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 05:48:21 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 05:48:21 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3BmJW0056886;
+        Tue, 3 Nov 2020 05:48:20 -0600
+Subject: Re: [PATCH 2/3] UBI: Do not zero out EC and VID when multi-pass
+ writes are not supported
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20201012180404.6476-1-p.yadav@ti.com>
+ <20201012180404.6476-3-p.yadav@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
+Date:   Tue, 3 Nov 2020 17:18:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.108]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201012180404.6476-3-p.yadav@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: k00524021 <kechengsong@huawei.com>
 
-As a local variable, "endp" is neither refered nor returned
-after this line "endp += 2", it looks like a useless code,
-suggest to remove it.
 
-Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
----
- drivers/mtd/ubi/build.c | 2 --
- 1 file changed, 2 deletions(-)
+On 10/12/20 11:34 PM, Pratyush Yadav wrote:
+> For NOR flashes EC and VID are zeroed out before an erase is issued to
+> make sure UBI does not mistakenly treat the PEB as used and associate it
+> with an LEB.
+> 
+> But on some flashes, like the Cypress Semper S28 SPI NOR flash family,
+> multi-pass page programming is not allowed on the default ECC scheme.
+> This means zeroing out these magic numbers will result in the flash
+> throwing a page programming error.
+> 
+> Do not zero out EC and VID when multi-pass writes are not supported.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>  drivers/mtd/ubi/io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> index 14d890b00d2c..4023fc4886e3 100644
+> --- a/drivers/mtd/ubi/io.c
+> +++ b/drivers/mtd/ubi/io.c
+> @@ -535,7 +535,7 @@ int ubi_io_sync_erase(struct ubi_device *ubi, int pnum, int torture)
+>  		return -EROFS;
+>  	}
+>  
+> -	if (ubi->nor_flash) {
+> +	if (ubi->nor_flash && !(ubi->mtd->flags & MTD_NO_MULTI_PASS_WRITE)) {
+>  		err = nor_erase_prepare(ubi, pnum);
+>  		if (err)
+>  			return err;
+> 
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index e85b04e9716b..46a6dd75e533 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1351,8 +1351,6 @@ static int bytes_str_to_int(const char *str)
- 		fallthrough;
- 	case 'K':
- 		result *= 1024;
--		if (endp[1] == 'i' && endp[2] == 'B')
--			endp += 2;
- 	case '\0':
- 		break;
- 	default:
--- 
-2.12.3
+You may want to get rid of assertion for mtd->writesize != 1 in case of
+MTD_NORFLASH.
 
+See drivers/mtd/ubi/build.c::631
+
+        if (ubi->mtd->type == MTD_NORFLASH) {
+                ubi_assert(ubi->mtd->writesize == 1);
+                ubi->nor_flash = 1;
+        }
+
+Regards
+Vignesh
