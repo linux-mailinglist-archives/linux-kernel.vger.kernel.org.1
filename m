@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17122A59F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 995402A5A05
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgKCWUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S1730297AbgKCWVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729466AbgKCWUR (ORCPT
+        with ESMTP id S1730264AbgKCWVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:20:17 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA5DC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:20:17 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id e27so1545788lfn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:20:17 -0800 (PST)
+        Tue, 3 Nov 2020 17:21:34 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A147C061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:21:34 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 10so15564669pfp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:21:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QGOEhKsA2OwG13b5gtkFmoIkhKN0Tzb9Yz1d9AT63nE=;
-        b=K1bjUKfX51b5qotZAiYNouvyUDtkH7cr0GZdA9qNvLxnxk0L95HdWtEl4yID/8o5ew
-         T3cOoBhbIgYJiILZSN1Gkm6ujI/dJvD646mMVFkHQTe+FXEtf56MJl63OFZVE0HgAo+C
-         THbItY64tC1LOig9tvos2ldGnH5k9hJgJyjTDn6okS2HvL5MnpeLV212jQcBuFLWpA7E
-         vOBc9Ip7M5kKzR3yMVQ/AIGzLN0OYO96I5bqwTMcX3Rrt64kA2xf3/s70Hl8EPeZX4RW
-         qKDjdLro3yz/JG3KXODfBo9EqPCkpwkWwZ1eAMjCDcrpY+J5h1ESvJjKNPMqEub0pwr8
-         Ho9A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t/8gNKrqVbgeWIKJqFS6oCAzempsVueUa9v+XEgt+p4=;
+        b=csXlt7v0/moo9v9ILRwAZYxMof8y+D7baLlBSkK8Jlm/0wJFuTqmB+9NxNWDoE6sJ2
+         yjtUqFnz1TmMTPiOg9/+a9VOS3+9XslH30wI2lAgW8gzYPZdZr7cFFaMaXudtzRiHcnQ
+         dFMQywooaQM8HFoZ5S3igHBkVvbAnQrH3GeS66/OwLyHMXfNsDeCLD1hrhFdm1+UD/w/
+         LlIsLuf/9iMgGqpLiZd3mDGwJ3l93NYpBLm4GLAiG8anGeoh6o2+9nEpxeBl4qfsD/qL
+         8u7cxodm26r3wp/jBnzR5rgm9l6+mUU20Vy2JIZs83UfAc/DxXj3QnXNCbQ9JZGafuff
+         m5KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QGOEhKsA2OwG13b5gtkFmoIkhKN0Tzb9Yz1d9AT63nE=;
-        b=M1X4UOSX9HjsWt6K+gaB4Bxm2WKsP0cny81UzqIMaGS25c4GwA7gOyyMGvIEPiX3ce
-         d2Ipw81PketXOfP5kIAFECY9+PRO7kV0h4g0k72tnJB2akc9J2NxhjwHgsybsc67/uqx
-         djd0EKrUAtKQZnFyrgtB8+3/cqM633ZmrlafULe9W/WwwmvQKpwb8rDH20kZhf0ThMSz
-         PeQeQhNz5suWcmsSUXtbmtfRZItJRlwdKpOsPTbmx5qd7ATNNGvzVJyi5hX/Ep9KylQD
-         dnqz2Lk7cdXsH8WEXiFAf/nh2ONvtTtZzK3iO4MRXOrUPbsqxwLk6xfvBCyOOxiRJ0Ha
-         tk9g==
-X-Gm-Message-State: AOAM532cMP5D9T7SP4aZI27k9nI2htGuEoLJ8+CyMVDfO7qOhIIGgOci
-        AJOtTXEXSa3gDlhIjnKboUNOHg==
-X-Google-Smtp-Source: ABdhPJxRFm8qsXfpAv3oTL3woMRlKjMmcXF45qhzM91T8QG4fQEQSZWh7OW4c9/IsFKaaVMgS6bfEg==
-X-Received: by 2002:ac2:59d1:: with SMTP id x17mr8553159lfn.142.1604442015603;
-        Tue, 03 Nov 2020 14:20:15 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id q5sm3728627lfe.262.2020.11.03.14.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 14:20:15 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E18A7101FC2; Wed,  4 Nov 2020 01:20:13 +0300 (+03)
-Date:   Wed, 4 Nov 2020 01:20:13 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Dave Airlie <airlied@gmail.com>, Lyude Paul <lyude@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [git pull] drm next pull for 5.10-rc1
-Message-ID: <20201103222013.hypmzlq7uuqufe76@box>
-References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t/8gNKrqVbgeWIKJqFS6oCAzempsVueUa9v+XEgt+p4=;
+        b=QBs4/kpi23amBXOMUnQ615LwEfaZBmo6Z+Ny7E8XCuuLAe0a1zn+dwQwOlpxoMKIMa
+         +DnFClwDuTmSNlYHnVUqdtvSjEMUdEBdgw25OeXdfjbv7u8ToL4eOhJhzgmoQLHMpOqn
+         nctcDLWQJm/8s1vm0x3NVPkIuXNfyNQnNc9ZG8K4vcAGMyq8+x9RlsJZ9ie6W7STcky3
+         hiJYHcIByG6X3uhEHHI1GubQrsxflwixYY8MDRFxKhBCzu4aCIx7II2L6Cc9fqimtuiA
+         bP13DR3cKP5czMSg4SjZWu36Jaa97OO5xEF7pBSNsq5T6QHqUFnNHt4pq+qL8YRh+pyN
+         PeVQ==
+X-Gm-Message-State: AOAM531U3RAiUJirdjioYwGE1yMGKQjgVVPgiKrzBRDJ5uH17g065icA
+        dF6p0cHkmHsSmlgl/2uiTetIqvCb/RUsWQpm+4hJJQ==
+X-Google-Smtp-Source: ABdhPJzLhpQ56mQUjlg+DLC4s5L3h3/ev//e6DmikL2Vi/E+7ZV+hr0SGrtPFodUMt/haOC+BYhJbRFxcdR3kEPHCag=
+X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr1311215pjb.25.1604442093720;
+ Tue, 03 Nov 2020 14:21:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+References: <20201022012106.1875129-1-ndesaulniers@google.com>
+ <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com> <20201102081810.GB3788@tucnak>
+In-Reply-To: <20201102081810.GB3788@tucnak>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 3 Nov 2020 14:21:22 -0800
+Message-ID: <CAKwvOd=ez9nXCdQu6QRbNk5tfUAsSj9RLhopZtNE4RhDupg7+w@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+To:     Jakub Jelinek <jakub@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Nick Clifton <nickc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:33:08AM +1000, Dave Airlie wrote:
->       drm/nouveau/kms: Search for encoders' connectors properly
+On Mon, Nov 2, 2020 at 12:18 AM Jakub Jelinek <jakub@redhat.com> wrote:
+>
+> On Mon, Nov 02, 2020 at 11:20:41AM +0900, Masahiro Yamada wrote:
+> > > --- /dev/null
+> > > +++ b/scripts/test_dwarf5_support.sh
+> > > @@ -0,0 +1,4 @@
+> > > +#!/bin/sh
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +set -eu
+> > > +echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+> >
+> >
+> >
+> > Please tell me how this script detects the dwarf-5 capability.
+> >
+> >
+> > This script fails for GCC 10.
+>
+> One thing is GCC DWARF-5 support, that is whether the compiler
+> will support -gdwarf-5 flag, and that support should be there from
+> GCC 7 onwards.
 
-This commit (09838c4efe9a) broke boot for me. These two hunks in
-particular:
+I should improve my Kconfig check; I don't actually have a test for
+-gdwarf-5 for the compiler.  In godbolt, it looks like -gdwarf-5
+produces an error from GCC up until GCC 5.1.  Does (5.1 < GCC < 7) not
+produce DWARF5?  Maybe there's a more specific test you had in mind?
 
-@ -2066,7 +2120,7 @@ nv50_disp_atomic_commit_tail(struct drm_atomic_state *state)
-                          outp->clr.mask, outp->set.mask);
+>
+> Another separate thing is whether the assembler does support
+> the -gdwarf-5 option (i.e. if you can compile assembler files
+> with -Wa,-gdwarf-5) for GNU as I think that is binutils 35.1,
+> i.e. very new); but only if you want to pass the -Wa,-gdwarf-5
+> only when compiling *.s and *.S files.  That option is about whether
+> the assembler will emit DWARF5 or DWARF2 .debug_line.
+> It is fine to compile C sources with -gdwarf-5 and use DWARF2
+> .debug_line for assembler files if as doesn't support it.
+>
+> Yet another thing is if you can pass -Wa,-gdwarf-5 even when
+> compiling C files.  There are several bugs in that category that have been
+> fixed only in the last few days on binutils trunk, I'd suggest
+> just not to bother, GCC 11 will have proper test for fixed assembler
+> and will pass -gdwarf-5 to as when compiling even C sources with -gdwarf-5.
 
-                if (outp->clr.mask) {
--                       help->disable(encoder);
-+                       help->atomic_disable(encoder, state);
-                        interlock[NV50_DISP_INTERLOCK_CORE] |= 1;
-                        if (outp->flush_disable) {
-                                nv50_disp_atomic_commit_wndw(state, interlock);
-@@ -2105,7 +2159,7 @@ nv50_disp_atomic_commit_tail(struct drm_atomic_state *state)
-                          outp->set.mask, outp->clr.mask);
-
-                if (outp->set.mask) {
--                       help->enable(encoder);
-+                       help->atomic_enable(encoder, state);
-                        interlock[NV50_DISP_INTERLOCK_CORE] = 1;
-                }
-
-
-I hacked up patch to use help->disable/help->enable if atomic_ versions
-are NULL. It worked.
-
-In my setup I stepped onto nv50_msto_help->atomic_enable == NULL. But
-there are two more drm_encoder_helper_funcs in dispnv50/disp.c that don't
-have atomic_enable/disable set: nv50_dac_help, nv50_pior_help.
-
+Do you have links?  I would prefer to do feature detection rather than
+version detection when possible.  If the bug is so severe that we
+think we should scuttle support for old versions, I'm ok with that,
+but I want to be able to link to hard proof in a commit message so
+that in 6 months when I forget why we made a certain decision, we have
+historical record in the commit message/git blame.
 -- 
- Kirill A. Shutemov
+Thanks,
+~Nick Desaulniers
