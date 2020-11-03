@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274BE2A5994
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E716D2A594B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgKCWIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:08:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        id S1730451AbgKCWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:06:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730228AbgKCUkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:37 -0500
+        id S1729779AbgKCUl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2A3B22277;
-        Tue,  3 Nov 2020 20:40:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94B3B2224E;
+        Tue,  3 Nov 2020 20:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436036;
-        bh=cEpNnaH/nDf+efrSxyf9TT0x/09UVkRxKjjbqevlR7Q=;
+        s=default; t=1604436087;
+        bh=y6dWLgr/k78WEXsGzpf5VMOpXSUhgcaF1CjkWV47f08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N+EsdSzEUEUP4smdMzppMCMRplVAd3nYTM8QSK92s3g8xfkHeuVTSjcLewlTysNcE
-         X2g4litnBPeN8jWRIWgdfg/hyIH1uHmdY6hTqZk8wMzge7qWsssd4IB9bkjOzqB+IR
-         55xXxlQDPYiUbqvMHJTLY7ovSiAy2mhch3bCt6MI=
+        b=doRpevBjmi+Htn/NwNf0U2deAzmcDPy2kOAHLrTxi2SAoSs1sExrtlZmt1Tu7HAZN
+         TH2QEXekb791v4FUEIyE27bhCxkRrAW1g+H4YhSe3ICSmCaqnMPHPtofCAJOrccWzh
+         Bwh6Acmh4hmzLa+7bvyI+9JfOEdVGTZ6oUMhW33A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 058/391] um: change sigio_spinlock to a mutex
-Date:   Tue,  3 Nov 2020 21:31:49 +0100
-Message-Id: <20201103203351.319717533@linuxfoundation.org>
+Subject: [PATCH 5.9 060/391] afs: Dont assert on unpurgeable server records
+Date:   Tue,  3 Nov 2020 21:31:51 +0100
+Message-Id: <20201103203351.427774628@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,76 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
+[ Upstream commit 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8 ]
 
-Lockdep complains at boot:
+Don't give an assertion failure on unpurgeable afs_server records - which
+kills the thread - but rather emit a trace line when we are purging a
+record (which only happens during network namespace removal or rmmod) and
+print a notice of the problem.
 
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
-
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
-
-Change the spinlock to a mutex to avoid that.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/afs/server.c            | 7 ++++++-
+ include/trace/events/afs.h | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 10c99e058fcae..d1cffc2a7f212 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
- }
+diff --git a/fs/afs/server.c b/fs/afs/server.c
+index e82e452e26124..684a2b02b9ff7 100644
+--- a/fs/afs/server.c
++++ b/fs/afs/server.c
+@@ -550,7 +550,12 @@ void afs_manage_servers(struct work_struct *work)
  
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
+ 		_debug("manage %pU %u", &server->uuid, active);
  
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
+-		ASSERTIFCMP(purging, active, ==, 0);
++		if (purging) {
++			trace_afs_server(server, atomic_read(&server->ref),
++					 active, afs_server_trace_purging);
++			if (active != 0)
++				pr_notice("Can't purge s=%08x\n", server->debug_id);
++		}
  
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
+ 		if (active == 0) {
+ 			time64_t expire_at = server->unuse_time;
+diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+index 13c05e28c0b6c..342b35fc33c59 100644
+--- a/include/trace/events/afs.h
++++ b/include/trace/events/afs.h
+@@ -40,6 +40,7 @@ enum afs_server_trace {
+ 	afs_server_trace_get_new_cbi,
+ 	afs_server_trace_get_probe,
+ 	afs_server_trace_give_up_cb,
++	afs_server_trace_purging,
+ 	afs_server_trace_put_call,
+ 	afs_server_trace_put_cbi,
+ 	afs_server_trace_put_find_rsq,
+@@ -270,6 +271,7 @@ enum afs_cb_break_reason {
+ 	EM(afs_server_trace_get_new_cbi,	"GET cbi  ") \
+ 	EM(afs_server_trace_get_probe,		"GET probe") \
+ 	EM(afs_server_trace_give_up_cb,		"giveup-cb") \
++	EM(afs_server_trace_purging,		"PURGE    ") \
+ 	EM(afs_server_trace_put_call,		"PUT call ") \
+ 	EM(afs_server_trace_put_cbi,		"PUT cbi  ") \
+ 	EM(afs_server_trace_put_find_rsq,	"PUT f-rsq") \
 -- 
 2.27.0
 
