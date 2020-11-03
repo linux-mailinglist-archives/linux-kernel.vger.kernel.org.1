@@ -2,79 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33F22A4DEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4401B2A4E0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgKCSLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:11:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725892AbgKCSLX (ORCPT
+        id S1729120AbgKCSNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgKCSNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:11:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604427082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nFesghkP08Z42FKyu9BtT7BVRb53GykVY3//gLTQhfY=;
-        b=OwXZwIHJBpgIawj+68iWRHuPYIkDBd45OnOYpWALcOETe0E1xrCd7Xwt79LSVIUZLjClmG
-        NPKST/ezytZE2rU+0ivNUZtMQb7yl0p8bkNa24IxQrOQ7t/v5BtaJsLUCaMPdVaMqNOweq
-        WfKiy9zXa8rmG1YuLN2fQ2c6OBDkMBg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-3XlsnigaN2yJ3PQXbZX9sw-1; Tue, 03 Nov 2020 13:11:20 -0500
-X-MC-Unique: 3XlsnigaN2yJ3PQXbZX9sw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B643D18BA282;
-        Tue,  3 Nov 2020 18:11:18 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 582246EF4B;
-        Tue,  3 Nov 2020 18:11:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  3 Nov 2020 19:11:18 +0100 (CET)
-Date:   Tue, 3 Nov 2020 19:11:15 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Mark Mossberg <mark.mossberg@gmail.com>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        hpa@zytor.com, jannh@google.com, kyin@redhat.com
-Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
- error message
-Message-ID: <20201103181114.GC23992@redhat.com>
-References: <20201002042915.403558-1-mark.mossberg@gmail.com>
- <20201103125034.GA30391@redhat.com>
- <20201103171537.GC4111@zn.tnic>
- <20201103174744.GB23992@redhat.com>
- <20201103175237.GD4111@zn.tnic>
+        Tue, 3 Nov 2020 13:13:04 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50200C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:13:04 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id s21so19348057oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gR/SlmlCtWaTEuhJ75HH1ougxe6tbAau9fplmY1Gd1c=;
+        b=IDtCg9rskaSN2GRu9GYPUrlAigWfkkKXdz55Esi6x09u3Nz0r64d4Fw9IsXDmga/XN
+         GgDQfpQzJkFyCDSKyUpA0GAoKY1SEr5B7jIxLFrvjg3531Qx9jb49Wx7l2KZDPC5qG4X
+         joRv5XuwsCZbv1u4xmQ6yLpmTNrCZHtzMugF+dmyIIUPMvlbuqryIz99kidhenUsYvxg
+         +DbU2TIV9EXBwbtKsGBcSC0RboDX+NRK/vZNOc5D3FiPiUjb0JG2Fq0G/ypVWi9IUE2w
+         5d7iOfhaaH6qyc7Aw8JaLq5Rvgvn8/LxsH2VkBjKvwVtud/VXvr4zr5LefWLmUAw8S4M
+         LR5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gR/SlmlCtWaTEuhJ75HH1ougxe6tbAau9fplmY1Gd1c=;
+        b=nLpP7CC4OQEEhH9EtWNwfIj47EmtBsBjoIQ893Wp9FdVNyz+lmNCrtMQD9Bybr3GFF
+         sisyPhlIwyGX8dqJUwQVbjnwt9vQpBekKzPoFLWtaWrqfyMsGN5tDLbChFdY71+Kp9kR
+         e2R9eSYRNFHZaTzlTAwTyOGhcHBLvNv+3shSoDnA7gr25gy91v7mOS6Ik0dalOIkNUG9
+         hMwayqzDDe76wIYFpESI3DYVXeMNU/rsQzBBHe2777XMxK8VVWWbwuxsbgPGjpNb5wl3
+         sCCQI3Ek1bZa3tvIFr2IidkkcUS8WOSyykSuq6n6jnzjtI+pIVXUgZYn/p3iQ2bzaX9a
+         3mmA==
+X-Gm-Message-State: AOAM5327gUjmAqSOm5z6jipcV7ucdWjDlz3JmSPH71P9shgE7Kh2QXgT
+        uCeMrYA7J+6l46y8WMAcXD5M5g==
+X-Google-Smtp-Source: ABdhPJxRsv4PojQL36+xDxGkDTX6Y1faXi/IayqSpIVC+vvP+rkjhV+Cd07S7O92ZiBj/F10ccQT4A==
+X-Received: by 2002:aca:3387:: with SMTP id z129mr221653oiz.123.1604427183670;
+        Tue, 03 Nov 2020 10:13:03 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e47sm2643616ote.50.2020.11.03.10.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 10:13:03 -0800 (PST)
+Date:   Tue, 3 Nov 2020 12:13:01 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v18 2/4] iommu/arm-smmu: Add a way for implementations to
+ influence SCTLR
+Message-ID: <20201103181301.GR3151@builder.lan>
+References: <20201102171416.654337-1-jcrouse@codeaurora.org>
+ <20201102171416.654337-3-jcrouse@codeaurora.org>
+ <0a00c162-ad77-46b7-85ad-e11229b57a3d@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103175237.GD4111@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <0a00c162-ad77-46b7-85ad-e11229b57a3d@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03, Borislav Petkov wrote:
->
-> On Tue, Nov 03, 2020 at 06:47:44PM +0100, Oleg Nesterov wrote:
-> > > I'm thinking this should not use the atomic variant if it can get called
-> > > in !atomic context too.
-> >
-> > For what?
->
-> I'm thinking copy_code() should not use copy_from_user_nmi() if former
-> can be called in non-atomic context too.
+On Mon 02 Nov 12:18 CST 2020, Robin Murphy wrote:
 
-I understand, but why do you think this makes sense?
+> On 2020-11-02 17:14, Jordan Crouse wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> > 
+> > For the Adreno GPU's SMMU, we want SCTLR.HUPCF set to ensure that
+> > pending translations are not terminated on iova fault.  Otherwise
+> > a terminated CP read could hang the GPU by returning invalid
+> > command-stream data.
+> > 
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > ---
+> > 
+> >   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 6 ++++++
+> >   drivers/iommu/arm/arm-smmu/arm-smmu.c      | 3 +++
+> >   drivers/iommu/arm/arm-smmu/arm-smmu.h      | 3 +++
+> >   3 files changed, 12 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > index 1e942eed2dfc..0663d7d26908 100644
+> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > @@ -129,6 +129,12 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+> >   	    (smmu_domain->cfg.fmt == ARM_SMMU_CTX_FMT_AARCH64))
+> >   		pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_ARM_TTBR1;
+> > +	/*
+> > +	 * On the GPU device we want to process subsequent transactions after a
+> > +	 * fault to keep the GPU from hanging
+> > +	 */
+> > +	smmu_domain->cfg.sctlr_set |= ARM_SMMU_SCTLR_HUPCF;
+> > +
+> >   	/*
+> >   	 * Initialize private interface with GPU:
+> >   	 */
+> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > index dad7fa86fbd4..1f06ab219819 100644
+> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > @@ -617,6 +617,9 @@ void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+> >   	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
+> >   		reg |= ARM_SMMU_SCTLR_E;
+> > +	reg |= cfg->sctlr_set;
+> > +	reg &= ~cfg->sctlr_clr;
+> 
+> Since we now have a write_s2cr hook, I'm inclined to think that the
+> consistency of a write_sctlr hook that could similarly apply its own
+> arbitrary tweaks would make sense for this. Does anyone have any strong
+> opinions?
+> 
 
-Say, do you think it is fine to block in fuse_readpage() ?
+I like it.
 
-Anyway, this is off-topic and I won't argue.
+Regards,
+Bjorn
 
-Oleg.
-
+> Robin.
+> 
+> > +
+> >   	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
+> >   }
+> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> > index 6c5ff9999eae..ddf2ca4c923d 100644
+> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> > @@ -144,6 +144,7 @@ enum arm_smmu_cbar_type {
+> >   #define ARM_SMMU_CB_SCTLR		0x0
+> >   #define ARM_SMMU_SCTLR_S1_ASIDPNE	BIT(12)
+> >   #define ARM_SMMU_SCTLR_CFCFG		BIT(7)
+> > +#define ARM_SMMU_SCTLR_HUPCF		BIT(8)
+> >   #define ARM_SMMU_SCTLR_CFIE		BIT(6)
+> >   #define ARM_SMMU_SCTLR_CFRE		BIT(5)
+> >   #define ARM_SMMU_SCTLR_E		BIT(4)
+> > @@ -341,6 +342,8 @@ struct arm_smmu_cfg {
+> >   		u16			asid;
+> >   		u16			vmid;
+> >   	};
+> > +	u32				sctlr_set;    /* extra bits to set in SCTLR */
+> > +	u32				sctlr_clr;    /* bits to mask in SCTLR */
+> >   	enum arm_smmu_cbar_type		cbar;
+> >   	enum arm_smmu_context_fmt	fmt;
+> >   };
+> > 
