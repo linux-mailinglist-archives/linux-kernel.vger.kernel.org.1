@@ -2,935 +2,9337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6B62A3C98
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB8B2A3C99
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgKCGHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:07:24 -0500
-Received: from mga17.intel.com ([192.55.52.151]:55613 "EHLO mga17.intel.com"
+        id S1727676AbgKCGHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:07:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727246AbgKCGHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:07:21 -0500
-IronPort-SDR: AaKwSqsL/UDDN0YV78S/WPQzq71pTDyDSMeauvOX8LB+3QwYSF2hvJmwL45+QyIx5CKozSIlTa
- z4UkujFcEtFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="148859636"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="gz'50?scan'50,208,50";a="148859636"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 22:07:19 -0800
-IronPort-SDR: BQ7B6S/BMiQjNzgiWXZ5utdnhPAwBCwAgOSZQfTJQTD2Ujg9vzLLxdfKYLWp5HeD0lI++8IT05
- j9lj9QfrRMYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="gz'50?scan'50,208,50";a="357575689"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2020 22:07:17 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZpTQ-00003P-Tj; Tue, 03 Nov 2020 06:07:16 +0000
-Date:   Tue, 3 Nov 2020 14:06:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: mtk_vcodec_fw.c:undefined reference to `scp_ipi_send'
-Message-ID: <202011031454.Py58mDGE-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="bp/iNruPH9dso1Pn"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725958AbgKCGH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:07:27 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2E5C2227F;
+        Tue,  3 Nov 2020 06:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604383631;
+        bh=QqUw6eGdD6erdCZqwY4+Eh55ruPwsDnjkdCJpdCsbz8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1O9c88ynUWwVVnqgUDnYjuoCaLHotWdhms74nFxJatdMifBa2NxIPXAu5tt5Oe5k1
+         24ApH7u7GLv2DqK32MUn3RY3HbEY6yCTu1gFcIHg8tA/kP1Ck+fMwDBIT6Lbr9I0ut
+         8AJEwiSuQ/VGZzFIjQjP9oVNtxtgNR1y/dIEo9bc=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     SW_Drivers@habana.ai, Omer Shpigelman <oshpigelman@habana.ai>
+Subject: [PATCH 1/4] habanalabs/gaudi: add NIC QMAN H/W and registers definitions
+Date:   Tue,  3 Nov 2020 08:06:58 +0200
+Message-Id: <20201103060701.25852-2-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201103060701.25852-1-ogabbay@kernel.org>
+References: <20201103060701.25852-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add auto-generated header files that describe the NIC QMANs registers
+used by the driver.
 
---bp/iNruPH9dso1Pn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Yunfei,
-
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b7cbaf59f62f8ab8f157698f9e31642bff525bd0
-commit: c7244811b1c951dca812079d16b17cb241882a80 media: mtk-vcodec: add SCP firmware ops
-date:   5 weeks ago
-config: i386-randconfig-a012-20201103 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7244811b1c951dca812079d16b17cb241882a80
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout c7244811b1c951dca812079d16b17cb241882a80
-        # save the attached .config to linux build tree
-        make W=1 ARCH=i386 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_scp_ipi_send':
->> mtk_vcodec_fw.c:(.text+0x80): undefined reference to `scp_ipi_send'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_scp_set_ipi_register':
->> mtk_vcodec_fw.c:(.text+0x90): undefined reference to `scp_ipi_register'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_vpu_scp_dm_addr':
->> mtk_vcodec_fw.c:(.text+0x9d): undefined reference to `scp_mapping_dm_addr'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_scp_get_venc_capa':
->> mtk_vcodec_fw.c:(.text+0xaa): undefined reference to `scp_get_venc_hw_capa'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_scp_get_vdec_capa':
->> mtk_vcodec_fw.c:(.text+0xb7): undefined reference to `scp_get_vdec_hw_capa'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_scp_load_firmware':
->> mtk_vcodec_fw.c:(.text+0xc4): undefined reference to `scp_get_rproc'
->> ld: mtk_vcodec_fw.c:(.text+0xc9): undefined reference to `rproc_boot'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_fw_select':
-   mtk_vcodec_fw.c:(.text+0x183): undefined reference to `scp_get'
-   ld: drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.o: in function `mtk_vcodec_fw_release':
-   mtk_vcodec_fw.c:(.text+0x217): undefined reference to `scp_put'
-
+Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ .../include/gaudi/asic_reg/gaudi_regs.h       |  14 +-
+ .../include/gaudi/asic_reg/nic0_qm0_masks.h   | 800 +++++++++++++++++
+ .../include/gaudi/asic_reg/nic0_qm0_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic0_qm1_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic1_qm0_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic1_qm1_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic2_qm0_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic2_qm1_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic3_qm0_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic3_qm1_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic4_qm0_regs.h    | 834 ++++++++++++++++++
+ .../include/gaudi/asic_reg/nic4_qm1_regs.h    | 834 ++++++++++++++++++
+ .../habanalabs/include/gaudi/gaudi_masks.h    |  15 +
+ 13 files changed, 9168 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h
 
---bp/iNruPH9dso1Pn
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
+index f92dc53af074..df21a40691e5 100644
+--- a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
+@@ -89,7 +89,19 @@
+ #include "tpc0_cfg_masks.h"
+ #include "psoc_global_conf_masks.h"
+ 
+-#include "psoc_pci_pll_regs.h"
++#include "nic0_qm0_regs.h"
++#include "nic1_qm0_regs.h"
++#include "nic2_qm0_regs.h"
++#include "nic3_qm0_regs.h"
++#include "nic4_qm0_regs.h"
++#include "nic0_qm1_regs.h"
++#include "nic1_qm1_regs.h"
++#include "nic2_qm1_regs.h"
++#include "nic3_qm1_regs.h"
++#include "nic4_qm1_regs.h"
++
++#include "nic0_qm0_masks.h"
++
+ #include "psoc_hbm_pll_regs.h"
+ #include "psoc_cpu_pll_regs.h"
+ 
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h
+new file mode 100644
+index 000000000000..bd37b6452133
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h
+@@ -0,0 +1,800 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC0_QM0_MASKS_H_
++#define ASIC_REG_NIC0_QM0_MASKS_H_
++
++/*
++ *****************************************
++ *   NIC0_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++/* NIC0_QM0_GLBL_CFG0 */
++#define NIC0_QM0_GLBL_CFG0_PQF_EN_SHIFT                              0
++#define NIC0_QM0_GLBL_CFG0_PQF_EN_MASK                               0xF
++#define NIC0_QM0_GLBL_CFG0_CQF_EN_SHIFT                              4
++#define NIC0_QM0_GLBL_CFG0_CQF_EN_MASK                               0x1F0
++#define NIC0_QM0_GLBL_CFG0_CP_EN_SHIFT                               9
++#define NIC0_QM0_GLBL_CFG0_CP_EN_MASK                                0x3E00
++
++/* NIC0_QM0_GLBL_CFG1 */
++#define NIC0_QM0_GLBL_CFG1_PQF_STOP_SHIFT                            0
++#define NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK                             0xF
++#define NIC0_QM0_GLBL_CFG1_CQF_STOP_SHIFT                            4
++#define NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK                             0x1F0
++#define NIC0_QM0_GLBL_CFG1_CP_STOP_SHIFT                             9
++#define NIC0_QM0_GLBL_CFG1_CP_STOP_MASK                              0x3E00
++#define NIC0_QM0_GLBL_CFG1_PQF_FLUSH_SHIFT                           16
++#define NIC0_QM0_GLBL_CFG1_PQF_FLUSH_MASK                            0xF0000
++#define NIC0_QM0_GLBL_CFG1_CQF_FLUSH_SHIFT                           20
++#define NIC0_QM0_GLBL_CFG1_CQF_FLUSH_MASK                            0x1F00000
++#define NIC0_QM0_GLBL_CFG1_CP_FLUSH_SHIFT                            25
++#define NIC0_QM0_GLBL_CFG1_CP_FLUSH_MASK                             0x3E000000
++
++/* NIC0_QM0_GLBL_PROT */
++#define NIC0_QM0_GLBL_PROT_PQF_SHIFT                                 0
++#define NIC0_QM0_GLBL_PROT_PQF_MASK                                  0xF
++#define NIC0_QM0_GLBL_PROT_CQF_SHIFT                                 4
++#define NIC0_QM0_GLBL_PROT_CQF_MASK                                  0x1F0
++#define NIC0_QM0_GLBL_PROT_CP_SHIFT                                  9
++#define NIC0_QM0_GLBL_PROT_CP_MASK                                   0x3E00
++#define NIC0_QM0_GLBL_PROT_ERR_SHIFT                                 14
++#define NIC0_QM0_GLBL_PROT_ERR_MASK                                  0x4000
++#define NIC0_QM0_GLBL_PROT_ARB_SHIFT                                 15
++#define NIC0_QM0_GLBL_PROT_ARB_MASK                                  0x8000
++
++/* NIC0_QM0_GLBL_ERR_CFG */
++#define NIC0_QM0_GLBL_ERR_CFG_PQF_ERR_MSG_EN_SHIFT                   0
++#define NIC0_QM0_GLBL_ERR_CFG_PQF_ERR_MSG_EN_MASK                    0xF
++#define NIC0_QM0_GLBL_ERR_CFG_CQF_ERR_MSG_EN_SHIFT                   4
++#define NIC0_QM0_GLBL_ERR_CFG_CQF_ERR_MSG_EN_MASK                    0x1F0
++#define NIC0_QM0_GLBL_ERR_CFG_CP_ERR_MSG_EN_SHIFT                    9
++#define NIC0_QM0_GLBL_ERR_CFG_CP_ERR_MSG_EN_MASK                     0x3E00
++#define NIC0_QM0_GLBL_ERR_CFG_PQF_STOP_ON_ERR_SHIFT                  16
++#define NIC0_QM0_GLBL_ERR_CFG_PQF_STOP_ON_ERR_MASK                   0xF0000
++#define NIC0_QM0_GLBL_ERR_CFG_CQF_STOP_ON_ERR_SHIFT                  20
++#define NIC0_QM0_GLBL_ERR_CFG_CQF_STOP_ON_ERR_MASK                   0x1F00000
++#define NIC0_QM0_GLBL_ERR_CFG_CP_STOP_ON_ERR_SHIFT                   25
++#define NIC0_QM0_GLBL_ERR_CFG_CP_STOP_ON_ERR_MASK                    0x3E000000
++#define NIC0_QM0_GLBL_ERR_CFG_ARB_STOP_ON_ERR_SHIFT                  31
++#define NIC0_QM0_GLBL_ERR_CFG_ARB_STOP_ON_ERR_MASK                   0x80000000
++
++/* NIC0_QM0_GLBL_SECURE_PROPS */
++#define NIC0_QM0_GLBL_SECURE_PROPS_0_ASID_SHIFT                      0
++#define NIC0_QM0_GLBL_SECURE_PROPS_0_ASID_MASK                       0x3FF
++#define NIC0_QM0_GLBL_SECURE_PROPS_1_ASID_SHIFT                      0
++#define NIC0_QM0_GLBL_SECURE_PROPS_1_ASID_MASK                       0x3FF
++#define NIC0_QM0_GLBL_SECURE_PROPS_2_ASID_SHIFT                      0
++#define NIC0_QM0_GLBL_SECURE_PROPS_2_ASID_MASK                       0x3FF
++#define NIC0_QM0_GLBL_SECURE_PROPS_3_ASID_SHIFT                      0
++#define NIC0_QM0_GLBL_SECURE_PROPS_3_ASID_MASK                       0x3FF
++#define NIC0_QM0_GLBL_SECURE_PROPS_4_ASID_SHIFT                      0
++#define NIC0_QM0_GLBL_SECURE_PROPS_4_ASID_MASK                       0x3FF
++#define NIC0_QM0_GLBL_SECURE_PROPS_0_MMBP_SHIFT                      10
++#define NIC0_QM0_GLBL_SECURE_PROPS_0_MMBP_MASK                       0x400
++#define NIC0_QM0_GLBL_SECURE_PROPS_1_MMBP_SHIFT                      10
++#define NIC0_QM0_GLBL_SECURE_PROPS_1_MMBP_MASK                       0x400
++#define NIC0_QM0_GLBL_SECURE_PROPS_2_MMBP_SHIFT                      10
++#define NIC0_QM0_GLBL_SECURE_PROPS_2_MMBP_MASK                       0x400
++#define NIC0_QM0_GLBL_SECURE_PROPS_3_MMBP_SHIFT                      10
++#define NIC0_QM0_GLBL_SECURE_PROPS_3_MMBP_MASK                       0x400
++#define NIC0_QM0_GLBL_SECURE_PROPS_4_MMBP_SHIFT                      10
++#define NIC0_QM0_GLBL_SECURE_PROPS_4_MMBP_MASK                       0x400
++
++/* NIC0_QM0_GLBL_NON_SECURE_PROPS */
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_0_ASID_SHIFT                  0
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_0_ASID_MASK                   0x3FF
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_1_ASID_SHIFT                  0
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_1_ASID_MASK                   0x3FF
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_2_ASID_SHIFT                  0
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_2_ASID_MASK                   0x3FF
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_3_ASID_SHIFT                  0
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_3_ASID_MASK                   0x3FF
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_4_ASID_SHIFT                  0
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_4_ASID_MASK                   0x3FF
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_0_MMBP_SHIFT                  10
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_0_MMBP_MASK                   0x400
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_1_MMBP_SHIFT                  10
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_1_MMBP_MASK                   0x400
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_2_MMBP_SHIFT                  10
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_2_MMBP_MASK                   0x400
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_3_MMBP_SHIFT                  10
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_3_MMBP_MASK                   0x400
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_4_MMBP_SHIFT                  10
++#define NIC0_QM0_GLBL_NON_SECURE_PROPS_4_MMBP_MASK                   0x400
++
++/* NIC0_QM0_GLBL_STS0 */
++#define NIC0_QM0_GLBL_STS0_PQF_IDLE_SHIFT                            0
++#define NIC0_QM0_GLBL_STS0_PQF_IDLE_MASK                             0xF
++#define NIC0_QM0_GLBL_STS0_CQF_IDLE_SHIFT                            4
++#define NIC0_QM0_GLBL_STS0_CQF_IDLE_MASK                             0x1F0
++#define NIC0_QM0_GLBL_STS0_CP_IDLE_SHIFT                             9
++#define NIC0_QM0_GLBL_STS0_CP_IDLE_MASK                              0x3E00
++#define NIC0_QM0_GLBL_STS0_PQF_IS_STOP_SHIFT                         16
++#define NIC0_QM0_GLBL_STS0_PQF_IS_STOP_MASK                          0xF0000
++#define NIC0_QM0_GLBL_STS0_CQF_IS_STOP_SHIFT                         20
++#define NIC0_QM0_GLBL_STS0_CQF_IS_STOP_MASK                          0x1F00000
++#define NIC0_QM0_GLBL_STS0_CP_IS_STOP_SHIFT                          25
++#define NIC0_QM0_GLBL_STS0_CP_IS_STOP_MASK                           0x3E000000
++#define NIC0_QM0_GLBL_STS0_ARB_IS_STOP_SHIFT                         31
++#define NIC0_QM0_GLBL_STS0_ARB_IS_STOP_MASK                          0x80000000
++
++/* NIC0_QM0_GLBL_STS1 */
++#define NIC0_QM0_GLBL_STS1_PQF_RD_ERR_SHIFT                          0
++#define NIC0_QM0_GLBL_STS1_PQF_RD_ERR_MASK                           0x1
++#define NIC0_QM0_GLBL_STS1_CQF_RD_ERR_SHIFT                          1
++#define NIC0_QM0_GLBL_STS1_CQF_RD_ERR_MASK                           0x2
++#define NIC0_QM0_GLBL_STS1_CP_RD_ERR_SHIFT                           2
++#define NIC0_QM0_GLBL_STS1_CP_RD_ERR_MASK                            0x4
++#define NIC0_QM0_GLBL_STS1_CP_UNDEF_CMD_ERR_SHIFT                    3
++#define NIC0_QM0_GLBL_STS1_CP_UNDEF_CMD_ERR_MASK                     0x8
++#define NIC0_QM0_GLBL_STS1_CP_STOP_OP_SHIFT                          4
++#define NIC0_QM0_GLBL_STS1_CP_STOP_OP_MASK                           0x10
++#define NIC0_QM0_GLBL_STS1_CP_MSG_WR_ERR_SHIFT                       5
++#define NIC0_QM0_GLBL_STS1_CP_MSG_WR_ERR_MASK                        0x20
++#define NIC0_QM0_GLBL_STS1_CP_WREG_ERR_SHIFT                         6
++#define NIC0_QM0_GLBL_STS1_CP_WREG_ERR_MASK                          0x40
++#define NIC0_QM0_GLBL_STS1_CP_FENCE0_OVF_ERR_SHIFT                   8
++#define NIC0_QM0_GLBL_STS1_CP_FENCE0_OVF_ERR_MASK                    0x100
++#define NIC0_QM0_GLBL_STS1_CP_FENCE1_OVF_ERR_SHIFT                   9
++#define NIC0_QM0_GLBL_STS1_CP_FENCE1_OVF_ERR_MASK                    0x200
++#define NIC0_QM0_GLBL_STS1_CP_FENCE2_OVF_ERR_SHIFT                   10
++#define NIC0_QM0_GLBL_STS1_CP_FENCE2_OVF_ERR_MASK                    0x400
++#define NIC0_QM0_GLBL_STS1_CP_FENCE3_OVF_ERR_SHIFT                   11
++#define NIC0_QM0_GLBL_STS1_CP_FENCE3_OVF_ERR_MASK                    0x800
++#define NIC0_QM0_GLBL_STS1_CP_FENCE0_UDF_ERR_SHIFT                   12
++#define NIC0_QM0_GLBL_STS1_CP_FENCE0_UDF_ERR_MASK                    0x1000
++#define NIC0_QM0_GLBL_STS1_CP_FENCE1_UDF_ERR_SHIFT                   13
++#define NIC0_QM0_GLBL_STS1_CP_FENCE1_UDF_ERR_MASK                    0x2000
++#define NIC0_QM0_GLBL_STS1_CP_FENCE2_UDF_ERR_SHIFT                   14
++#define NIC0_QM0_GLBL_STS1_CP_FENCE2_UDF_ERR_MASK                    0x4000
++#define NIC0_QM0_GLBL_STS1_CP_FENCE3_UDF_ERR_SHIFT                   15
++#define NIC0_QM0_GLBL_STS1_CP_FENCE3_UDF_ERR_MASK                    0x8000
++
++/* NIC0_QM0_GLBL_STS1_4 */
++#define NIC0_QM0_GLBL_STS1_4_CQF_RD_ERR_SHIFT                        1
++#define NIC0_QM0_GLBL_STS1_4_CQF_RD_ERR_MASK                         0x2
++#define NIC0_QM0_GLBL_STS1_4_CP_RD_ERR_SHIFT                         2
++#define NIC0_QM0_GLBL_STS1_4_CP_RD_ERR_MASK                          0x4
++#define NIC0_QM0_GLBL_STS1_4_CP_UNDEF_CMD_ERR_SHIFT                  3
++#define NIC0_QM0_GLBL_STS1_4_CP_UNDEF_CMD_ERR_MASK                   0x8
++#define NIC0_QM0_GLBL_STS1_4_CP_STOP_OP_SHIFT                        4
++#define NIC0_QM0_GLBL_STS1_4_CP_STOP_OP_MASK                         0x10
++#define NIC0_QM0_GLBL_STS1_4_CP_MSG_WR_ERR_SHIFT                     5
++#define NIC0_QM0_GLBL_STS1_4_CP_MSG_WR_ERR_MASK                      0x20
++#define NIC0_QM0_GLBL_STS1_4_CP_WREG_ERR_SHIFT                       6
++#define NIC0_QM0_GLBL_STS1_4_CP_WREG_ERR_MASK                        0x40
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE0_OVF_ERR_SHIFT                 8
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE0_OVF_ERR_MASK                  0x100
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE1_OVF_ERR_SHIFT                 9
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE1_OVF_ERR_MASK                  0x200
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE2_OVF_ERR_SHIFT                 10
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE2_OVF_ERR_MASK                  0x400
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE3_OVF_ERR_SHIFT                 11
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE3_OVF_ERR_MASK                  0x800
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE0_UDF_ERR_SHIFT                 12
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE0_UDF_ERR_MASK                  0x1000
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE1_UDF_ERR_SHIFT                 13
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE1_UDF_ERR_MASK                  0x2000
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE2_UDF_ERR_SHIFT                 14
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE2_UDF_ERR_MASK                  0x4000
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE3_UDF_ERR_SHIFT                 15
++#define NIC0_QM0_GLBL_STS1_4_CP_FENCE3_UDF_ERR_MASK                  0x8000
++
++/* NIC0_QM0_GLBL_MSG_EN */
++#define NIC0_QM0_GLBL_MSG_EN_PQF_RD_ERR_SHIFT                        0
++#define NIC0_QM0_GLBL_MSG_EN_PQF_RD_ERR_MASK                         0x1
++#define NIC0_QM0_GLBL_MSG_EN_CQF_RD_ERR_SHIFT                        1
++#define NIC0_QM0_GLBL_MSG_EN_CQF_RD_ERR_MASK                         0x2
++#define NIC0_QM0_GLBL_MSG_EN_CP_RD_ERR_SHIFT                         2
++#define NIC0_QM0_GLBL_MSG_EN_CP_RD_ERR_MASK                          0x4
++#define NIC0_QM0_GLBL_MSG_EN_CP_UNDEF_CMD_ERR_SHIFT                  3
++#define NIC0_QM0_GLBL_MSG_EN_CP_UNDEF_CMD_ERR_MASK                   0x8
++#define NIC0_QM0_GLBL_MSG_EN_CP_STOP_OP_SHIFT                        4
++#define NIC0_QM0_GLBL_MSG_EN_CP_STOP_OP_MASK                         0x10
++#define NIC0_QM0_GLBL_MSG_EN_CP_MSG_WR_ERR_SHIFT                     5
++#define NIC0_QM0_GLBL_MSG_EN_CP_MSG_WR_ERR_MASK                      0x20
++#define NIC0_QM0_GLBL_MSG_EN_CP_WREG_ERR_SHIFT                       6
++#define NIC0_QM0_GLBL_MSG_EN_CP_WREG_ERR_MASK                        0x40
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE0_OVF_ERR_SHIFT                 8
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE0_OVF_ERR_MASK                  0x100
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE1_OVF_ERR_SHIFT                 9
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE1_OVF_ERR_MASK                  0x200
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE2_OVF_ERR_SHIFT                 10
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE2_OVF_ERR_MASK                  0x400
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE3_OVF_ERR_SHIFT                 11
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE3_OVF_ERR_MASK                  0x800
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE0_UDF_ERR_SHIFT                 12
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE0_UDF_ERR_MASK                  0x1000
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE1_UDF_ERR_SHIFT                 13
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE1_UDF_ERR_MASK                  0x2000
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE2_UDF_ERR_SHIFT                 14
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE2_UDF_ERR_MASK                  0x4000
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE3_UDF_ERR_SHIFT                 15
++#define NIC0_QM0_GLBL_MSG_EN_CP_FENCE3_UDF_ERR_MASK                  0x8000
++
++/* NIC0_QM0_GLBL_MSG_EN_4 */
++#define NIC0_QM0_GLBL_MSG_EN_4_CQF_RD_ERR_SHIFT                      1
++#define NIC0_QM0_GLBL_MSG_EN_4_CQF_RD_ERR_MASK                       0x2
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_RD_ERR_SHIFT                       2
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_RD_ERR_MASK                        0x4
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_UNDEF_CMD_ERR_SHIFT                3
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_UNDEF_CMD_ERR_MASK                 0x8
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_STOP_OP_SHIFT                      4
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_STOP_OP_MASK                       0x10
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_MSG_WR_ERR_SHIFT                   5
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_MSG_WR_ERR_MASK                    0x20
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_WREG_ERR_SHIFT                     6
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_WREG_ERR_MASK                      0x40
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE0_OVF_ERR_SHIFT               8
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE0_OVF_ERR_MASK                0x100
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE1_OVF_ERR_SHIFT               9
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE1_OVF_ERR_MASK                0x200
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE2_OVF_ERR_SHIFT               10
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE2_OVF_ERR_MASK                0x400
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE3_OVF_ERR_SHIFT               11
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE3_OVF_ERR_MASK                0x800
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE0_UDF_ERR_SHIFT               12
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE0_UDF_ERR_MASK                0x1000
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE1_UDF_ERR_SHIFT               13
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE1_UDF_ERR_MASK                0x2000
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE2_UDF_ERR_SHIFT               14
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE2_UDF_ERR_MASK                0x4000
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE3_UDF_ERR_SHIFT               15
++#define NIC0_QM0_GLBL_MSG_EN_4_CP_FENCE3_UDF_ERR_MASK                0x8000
++
++/* NIC0_QM0_PQ_BASE_LO */
++#define NIC0_QM0_PQ_BASE_LO_VAL_SHIFT                                0
++#define NIC0_QM0_PQ_BASE_LO_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_PQ_BASE_HI */
++#define NIC0_QM0_PQ_BASE_HI_VAL_SHIFT                                0
++#define NIC0_QM0_PQ_BASE_HI_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_PQ_SIZE */
++#define NIC0_QM0_PQ_SIZE_VAL_SHIFT                                   0
++#define NIC0_QM0_PQ_SIZE_VAL_MASK                                    0xFFFFFFFF
++
++/* NIC0_QM0_PQ_PI */
++#define NIC0_QM0_PQ_PI_VAL_SHIFT                                     0
++#define NIC0_QM0_PQ_PI_VAL_MASK                                      0xFFFFFFFF
++
++/* NIC0_QM0_PQ_CI */
++#define NIC0_QM0_PQ_CI_VAL_SHIFT                                     0
++#define NIC0_QM0_PQ_CI_VAL_MASK                                      0xFFFFFFFF
++
++/* NIC0_QM0_PQ_CFG0 */
++#define NIC0_QM0_PQ_CFG0_RESERVED_SHIFT                              0
++#define NIC0_QM0_PQ_CFG0_RESERVED_MASK                               0x1
++
++/* NIC0_QM0_PQ_CFG1 */
++#define NIC0_QM0_PQ_CFG1_CREDIT_LIM_SHIFT                            0
++#define NIC0_QM0_PQ_CFG1_CREDIT_LIM_MASK                             0xFFFF
++#define NIC0_QM0_PQ_CFG1_MAX_INFLIGHT_SHIFT                          16
++#define NIC0_QM0_PQ_CFG1_MAX_INFLIGHT_MASK                           0xFFFF0000
++
++/* NIC0_QM0_PQ_ARUSER_31_11 */
++#define NIC0_QM0_PQ_ARUSER_31_11_VAL_SHIFT                           0
++#define NIC0_QM0_PQ_ARUSER_31_11_VAL_MASK                            0x1FFFFF
++
++/* NIC0_QM0_PQ_STS0 */
++#define NIC0_QM0_PQ_STS0_PQ_CREDIT_CNT_SHIFT                         0
++#define NIC0_QM0_PQ_STS0_PQ_CREDIT_CNT_MASK                          0xFFFF
++#define NIC0_QM0_PQ_STS0_PQ_FREE_CNT_SHIFT                           16
++#define NIC0_QM0_PQ_STS0_PQ_FREE_CNT_MASK                            0xFFFF0000
++
++/* NIC0_QM0_PQ_STS1 */
++#define NIC0_QM0_PQ_STS1_PQ_INFLIGHT_CNT_SHIFT                       0
++#define NIC0_QM0_PQ_STS1_PQ_INFLIGHT_CNT_MASK                        0xFFFF
++#define NIC0_QM0_PQ_STS1_PQ_BUF_EMPTY_SHIFT                          30
++#define NIC0_QM0_PQ_STS1_PQ_BUF_EMPTY_MASK                           0x40000000
++#define NIC0_QM0_PQ_STS1_PQ_BUSY_SHIFT                               31
++#define NIC0_QM0_PQ_STS1_PQ_BUSY_MASK                                0x80000000
++
++/* NIC0_QM0_CQ_CFG0 */
++#define NIC0_QM0_CQ_CFG0_RESERVED_SHIFT                              0
++#define NIC0_QM0_CQ_CFG0_RESERVED_MASK                               0x1
++
++/* NIC0_QM0_CQ_CFG1 */
++#define NIC0_QM0_CQ_CFG1_CREDIT_LIM_SHIFT                            0
++#define NIC0_QM0_CQ_CFG1_CREDIT_LIM_MASK                             0xFFFF
++#define NIC0_QM0_CQ_CFG1_MAX_INFLIGHT_SHIFT                          16
++#define NIC0_QM0_CQ_CFG1_MAX_INFLIGHT_MASK                           0xFFFF0000
++
++/* NIC0_QM0_CQ_ARUSER_31_11 */
++#define NIC0_QM0_CQ_ARUSER_31_11_VAL_SHIFT                           0
++#define NIC0_QM0_CQ_ARUSER_31_11_VAL_MASK                            0x1FFFFF
++
++/* NIC0_QM0_CQ_STS0 */
++#define NIC0_QM0_CQ_STS0_CQ_CREDIT_CNT_SHIFT                         0
++#define NIC0_QM0_CQ_STS0_CQ_CREDIT_CNT_MASK                          0xFFFF
++#define NIC0_QM0_CQ_STS0_CQ_FREE_CNT_SHIFT                           16
++#define NIC0_QM0_CQ_STS0_CQ_FREE_CNT_MASK                            0xFFFF0000
++
++/* NIC0_QM0_CQ_STS1 */
++#define NIC0_QM0_CQ_STS1_CQ_INFLIGHT_CNT_SHIFT                       0
++#define NIC0_QM0_CQ_STS1_CQ_INFLIGHT_CNT_MASK                        0xFFFF
++#define NIC0_QM0_CQ_STS1_CQ_BUF_EMPTY_SHIFT                          30
++#define NIC0_QM0_CQ_STS1_CQ_BUF_EMPTY_MASK                           0x40000000
++#define NIC0_QM0_CQ_STS1_CQ_BUSY_SHIFT                               31
++#define NIC0_QM0_CQ_STS1_CQ_BUSY_MASK                                0x80000000
++
++/* NIC0_QM0_CQ_PTR_LO_0 */
++#define NIC0_QM0_CQ_PTR_LO_0_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_LO_0_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_0 */
++#define NIC0_QM0_CQ_PTR_HI_0_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_HI_0_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_0 */
++#define NIC0_QM0_CQ_TSIZE_0_VAL_SHIFT                                0
++#define NIC0_QM0_CQ_TSIZE_0_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_0 */
++#define NIC0_QM0_CQ_CTL_0_RPT_SHIFT                                  0
++#define NIC0_QM0_CQ_CTL_0_RPT_MASK                                   0xFFFF
++#define NIC0_QM0_CQ_CTL_0_CTL_SHIFT                                  16
++#define NIC0_QM0_CQ_CTL_0_CTL_MASK                                   0xFFFF0000
++
++/* NIC0_QM0_CQ_PTR_LO_1 */
++#define NIC0_QM0_CQ_PTR_LO_1_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_LO_1_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_1 */
++#define NIC0_QM0_CQ_PTR_HI_1_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_HI_1_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_1 */
++#define NIC0_QM0_CQ_TSIZE_1_VAL_SHIFT                                0
++#define NIC0_QM0_CQ_TSIZE_1_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_1 */
++#define NIC0_QM0_CQ_CTL_1_RPT_SHIFT                                  0
++#define NIC0_QM0_CQ_CTL_1_RPT_MASK                                   0xFFFF
++#define NIC0_QM0_CQ_CTL_1_CTL_SHIFT                                  16
++#define NIC0_QM0_CQ_CTL_1_CTL_MASK                                   0xFFFF0000
++
++/* NIC0_QM0_CQ_PTR_LO_2 */
++#define NIC0_QM0_CQ_PTR_LO_2_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_LO_2_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_2 */
++#define NIC0_QM0_CQ_PTR_HI_2_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_HI_2_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_2 */
++#define NIC0_QM0_CQ_TSIZE_2_VAL_SHIFT                                0
++#define NIC0_QM0_CQ_TSIZE_2_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_2 */
++#define NIC0_QM0_CQ_CTL_2_RPT_SHIFT                                  0
++#define NIC0_QM0_CQ_CTL_2_RPT_MASK                                   0xFFFF
++#define NIC0_QM0_CQ_CTL_2_CTL_SHIFT                                  16
++#define NIC0_QM0_CQ_CTL_2_CTL_MASK                                   0xFFFF0000
++
++/* NIC0_QM0_CQ_PTR_LO_3 */
++#define NIC0_QM0_CQ_PTR_LO_3_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_LO_3_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_3 */
++#define NIC0_QM0_CQ_PTR_HI_3_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_HI_3_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_3 */
++#define NIC0_QM0_CQ_TSIZE_3_VAL_SHIFT                                0
++#define NIC0_QM0_CQ_TSIZE_3_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_3 */
++#define NIC0_QM0_CQ_CTL_3_RPT_SHIFT                                  0
++#define NIC0_QM0_CQ_CTL_3_RPT_MASK                                   0xFFFF
++#define NIC0_QM0_CQ_CTL_3_CTL_SHIFT                                  16
++#define NIC0_QM0_CQ_CTL_3_CTL_MASK                                   0xFFFF0000
++
++/* NIC0_QM0_CQ_PTR_LO_4 */
++#define NIC0_QM0_CQ_PTR_LO_4_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_LO_4_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_4 */
++#define NIC0_QM0_CQ_PTR_HI_4_VAL_SHIFT                               0
++#define NIC0_QM0_CQ_PTR_HI_4_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_4 */
++#define NIC0_QM0_CQ_TSIZE_4_VAL_SHIFT                                0
++#define NIC0_QM0_CQ_TSIZE_4_VAL_MASK                                 0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_4 */
++#define NIC0_QM0_CQ_CTL_4_RPT_SHIFT                                  0
++#define NIC0_QM0_CQ_CTL_4_RPT_MASK                                   0xFFFF
++#define NIC0_QM0_CQ_CTL_4_CTL_SHIFT                                  16
++#define NIC0_QM0_CQ_CTL_4_CTL_MASK                                   0xFFFF0000
++
++/* NIC0_QM0_CQ_PTR_LO_STS */
++#define NIC0_QM0_CQ_PTR_LO_STS_VAL_SHIFT                             0
++#define NIC0_QM0_CQ_PTR_LO_STS_VAL_MASK                              0xFFFFFFFF
++
++/* NIC0_QM0_CQ_PTR_HI_STS */
++#define NIC0_QM0_CQ_PTR_HI_STS_VAL_SHIFT                             0
++#define NIC0_QM0_CQ_PTR_HI_STS_VAL_MASK                              0xFFFFFFFF
++
++/* NIC0_QM0_CQ_TSIZE_STS */
++#define NIC0_QM0_CQ_TSIZE_STS_VAL_SHIFT                              0
++#define NIC0_QM0_CQ_TSIZE_STS_VAL_MASK                               0xFFFFFFFF
++
++/* NIC0_QM0_CQ_CTL_STS */
++#define NIC0_QM0_CQ_CTL_STS_RPT_SHIFT                                0
++#define NIC0_QM0_CQ_CTL_STS_RPT_MASK                                 0xFFFF
++#define NIC0_QM0_CQ_CTL_STS_CTL_SHIFT                                16
++#define NIC0_QM0_CQ_CTL_STS_CTL_MASK                                 0xFFFF0000
++
++/* NIC0_QM0_CQ_IFIFO_CNT */
++#define NIC0_QM0_CQ_IFIFO_CNT_VAL_SHIFT                              0
++#define NIC0_QM0_CQ_IFIFO_CNT_VAL_MASK                               0x3
++
++/* NIC0_QM0_CP_MSG_BASE0_ADDR_LO */
++#define NIC0_QM0_CP_MSG_BASE0_ADDR_LO_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE0_ADDR_LO_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE0_ADDR_HI */
++#define NIC0_QM0_CP_MSG_BASE0_ADDR_HI_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE0_ADDR_HI_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE1_ADDR_LO */
++#define NIC0_QM0_CP_MSG_BASE1_ADDR_LO_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE1_ADDR_LO_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE1_ADDR_HI */
++#define NIC0_QM0_CP_MSG_BASE1_ADDR_HI_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE1_ADDR_HI_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE2_ADDR_LO */
++#define NIC0_QM0_CP_MSG_BASE2_ADDR_LO_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE2_ADDR_LO_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE2_ADDR_HI */
++#define NIC0_QM0_CP_MSG_BASE2_ADDR_HI_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE2_ADDR_HI_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE3_ADDR_LO */
++#define NIC0_QM0_CP_MSG_BASE3_ADDR_LO_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE3_ADDR_LO_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_MSG_BASE3_ADDR_HI */
++#define NIC0_QM0_CP_MSG_BASE3_ADDR_HI_VAL_SHIFT                      0
++#define NIC0_QM0_CP_MSG_BASE3_ADDR_HI_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_LDMA_TSIZE_OFFSET */
++#define NIC0_QM0_CP_LDMA_TSIZE_OFFSET_VAL_SHIFT                      0
++#define NIC0_QM0_CP_LDMA_TSIZE_OFFSET_VAL_MASK                       0xFFFFFFFF
++
++/* NIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET */
++#define NIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_VAL_SHIFT                0
++#define NIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_VAL_MASK                 0xFFFFFFFF
++
++/* NIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET */
++#define NIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_VAL_SHIFT                0
++#define NIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_VAL_MASK                 0xFFFFFFFF
++
++/* NIC0_QM0_CP_FENCE0_RDATA */
++#define NIC0_QM0_CP_FENCE0_RDATA_INC_VAL_SHIFT                       0
++#define NIC0_QM0_CP_FENCE0_RDATA_INC_VAL_MASK                        0xF
++
++/* NIC0_QM0_CP_FENCE1_RDATA */
++#define NIC0_QM0_CP_FENCE1_RDATA_INC_VAL_SHIFT                       0
++#define NIC0_QM0_CP_FENCE1_RDATA_INC_VAL_MASK                        0xF
++
++/* NIC0_QM0_CP_FENCE2_RDATA */
++#define NIC0_QM0_CP_FENCE2_RDATA_INC_VAL_SHIFT                       0
++#define NIC0_QM0_CP_FENCE2_RDATA_INC_VAL_MASK                        0xF
++
++/* NIC0_QM0_CP_FENCE3_RDATA */
++#define NIC0_QM0_CP_FENCE3_RDATA_INC_VAL_SHIFT                       0
++#define NIC0_QM0_CP_FENCE3_RDATA_INC_VAL_MASK                        0xF
++
++/* NIC0_QM0_CP_FENCE0_CNT */
++#define NIC0_QM0_CP_FENCE0_CNT_VAL_SHIFT                             0
++#define NIC0_QM0_CP_FENCE0_CNT_VAL_MASK                              0x3FFF
++
++/* NIC0_QM0_CP_FENCE1_CNT */
++#define NIC0_QM0_CP_FENCE1_CNT_VAL_SHIFT                             0
++#define NIC0_QM0_CP_FENCE1_CNT_VAL_MASK                              0x3FFF
++
++/* NIC0_QM0_CP_FENCE2_CNT */
++#define NIC0_QM0_CP_FENCE2_CNT_VAL_SHIFT                             0
++#define NIC0_QM0_CP_FENCE2_CNT_VAL_MASK                              0x3FFF
++
++/* NIC0_QM0_CP_FENCE3_CNT */
++#define NIC0_QM0_CP_FENCE3_CNT_VAL_SHIFT                             0
++#define NIC0_QM0_CP_FENCE3_CNT_VAL_MASK                              0x3FFF
++
++/* NIC0_QM0_CP_STS */
++#define NIC0_QM0_CP_STS_MSG_INFLIGHT_CNT_SHIFT                       0
++#define NIC0_QM0_CP_STS_MSG_INFLIGHT_CNT_MASK                        0xFFFF
++#define NIC0_QM0_CP_STS_ERDY_SHIFT                                   16
++#define NIC0_QM0_CP_STS_ERDY_MASK                                    0x10000
++#define NIC0_QM0_CP_STS_RRDY_SHIFT                                   17
++#define NIC0_QM0_CP_STS_RRDY_MASK                                    0x20000
++#define NIC0_QM0_CP_STS_MRDY_SHIFT                                   18
++#define NIC0_QM0_CP_STS_MRDY_MASK                                    0x40000
++#define NIC0_QM0_CP_STS_SW_STOP_SHIFT                                19
++#define NIC0_QM0_CP_STS_SW_STOP_MASK                                 0x80000
++#define NIC0_QM0_CP_STS_FENCE_ID_SHIFT                               20
++#define NIC0_QM0_CP_STS_FENCE_ID_MASK                                0x300000
++#define NIC0_QM0_CP_STS_FENCE_IN_PROGRESS_SHIFT                      22
++#define NIC0_QM0_CP_STS_FENCE_IN_PROGRESS_MASK                       0x400000
++
++/* NIC0_QM0_CP_CURRENT_INST_LO */
++#define NIC0_QM0_CP_CURRENT_INST_LO_VAL_SHIFT                        0
++#define NIC0_QM0_CP_CURRENT_INST_LO_VAL_MASK                         0xFFFFFFFF
++
++/* NIC0_QM0_CP_CURRENT_INST_HI */
++#define NIC0_QM0_CP_CURRENT_INST_HI_VAL_SHIFT                        0
++#define NIC0_QM0_CP_CURRENT_INST_HI_VAL_MASK                         0xFFFFFFFF
++
++/* NIC0_QM0_CP_BARRIER_CFG */
++#define NIC0_QM0_CP_BARRIER_CFG_EBGUARD_SHIFT                        0
++#define NIC0_QM0_CP_BARRIER_CFG_EBGUARD_MASK                         0xFFF
++#define NIC0_QM0_CP_BARRIER_CFG_RBGUARD_SHIFT                        16
++#define NIC0_QM0_CP_BARRIER_CFG_RBGUARD_MASK                         0xF0000
++
++/* NIC0_QM0_CP_DBG_0 */
++#define NIC0_QM0_CP_DBG_0_CS_SHIFT                                   0
++#define NIC0_QM0_CP_DBG_0_CS_MASK                                    0xF
++#define NIC0_QM0_CP_DBG_0_EB_CNT_NOT_ZERO_SHIFT                      4
++#define NIC0_QM0_CP_DBG_0_EB_CNT_NOT_ZERO_MASK                       0x10
++#define NIC0_QM0_CP_DBG_0_BULK_CNT_NOT_ZERO_SHIFT                    5
++#define NIC0_QM0_CP_DBG_0_BULK_CNT_NOT_ZERO_MASK                     0x20
++#define NIC0_QM0_CP_DBG_0_MREB_STALL_SHIFT                           6
++#define NIC0_QM0_CP_DBG_0_MREB_STALL_MASK                            0x40
++#define NIC0_QM0_CP_DBG_0_STALL_SHIFT                                7
++#define NIC0_QM0_CP_DBG_0_STALL_MASK                                 0x80
++
++/* NIC0_QM0_CP_ARUSER_31_11 */
++#define NIC0_QM0_CP_ARUSER_31_11_VAL_SHIFT                           0
++#define NIC0_QM0_CP_ARUSER_31_11_VAL_MASK                            0x1FFFFF
++
++/* NIC0_QM0_CP_AWUSER_31_11 */
++#define NIC0_QM0_CP_AWUSER_31_11_VAL_SHIFT                           0
++#define NIC0_QM0_CP_AWUSER_31_11_VAL_MASK                            0x1FFFFF
++
++/* NIC0_QM0_ARB_CFG_0 */
++#define NIC0_QM0_ARB_CFG_0_TYPE_SHIFT                                0
++#define NIC0_QM0_ARB_CFG_0_TYPE_MASK                                 0x1
++#define NIC0_QM0_ARB_CFG_0_IS_MASTER_SHIFT                           4
++#define NIC0_QM0_ARB_CFG_0_IS_MASTER_MASK                            0x10
++#define NIC0_QM0_ARB_CFG_0_EN_SHIFT                                  8
++#define NIC0_QM0_ARB_CFG_0_EN_MASK                                   0x100
++#define NIC0_QM0_ARB_CFG_0_MASK_SHIFT                                12
++#define NIC0_QM0_ARB_CFG_0_MASK_MASK                                 0xF000
++#define NIC0_QM0_ARB_CFG_0_MST_MSG_NOSTALL_SHIFT                     16
++#define NIC0_QM0_ARB_CFG_0_MST_MSG_NOSTALL_MASK                      0x10000
++
++/* NIC0_QM0_ARB_CHOISE_Q_PUSH */
++#define NIC0_QM0_ARB_CHOISE_Q_PUSH_VAL_SHIFT                         0
++#define NIC0_QM0_ARB_CHOISE_Q_PUSH_VAL_MASK                          0x3
++
++/* NIC0_QM0_ARB_WRR_WEIGHT */
++#define NIC0_QM0_ARB_WRR_WEIGHT_VAL_SHIFT                            0
++#define NIC0_QM0_ARB_WRR_WEIGHT_VAL_MASK                             0xFFFFFFFF
++
++/* NIC0_QM0_ARB_CFG_1 */
++#define NIC0_QM0_ARB_CFG_1_CLR_SHIFT                                 0
++#define NIC0_QM0_ARB_CFG_1_CLR_MASK                                  0x1
++
++/* NIC0_QM0_ARB_MST_AVAIL_CRED */
++#define NIC0_QM0_ARB_MST_AVAIL_CRED_VAL_SHIFT                        0
++#define NIC0_QM0_ARB_MST_AVAIL_CRED_VAL_MASK                         0x7F
++
++/* NIC0_QM0_ARB_MST_CRED_INC */
++#define NIC0_QM0_ARB_MST_CRED_INC_VAL_SHIFT                          0
++#define NIC0_QM0_ARB_MST_CRED_INC_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_ARB_MST_CHOISE_PUSH_OFST */
++#define NIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_VAL_SHIFT                  0
++#define NIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_VAL_MASK                   0xFFFFFFFF
++
++/* NIC0_QM0_ARB_SLV_MASTER_INC_CRED_OFST */
++#define NIC0_QM0_ARB_SLV_MASTER_INC_CRED_OFST_VAL_SHIFT              0
++#define NIC0_QM0_ARB_SLV_MASTER_INC_CRED_OFST_VAL_MASK               0xFFFFFFFF
++
++/* NIC0_QM0_ARB_MST_SLAVE_EN */
++#define NIC0_QM0_ARB_MST_SLAVE_EN_VAL_SHIFT                          0
++#define NIC0_QM0_ARB_MST_SLAVE_EN_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_ARB_MST_QUIET_PER */
++#define NIC0_QM0_ARB_MST_QUIET_PER_VAL_SHIFT                         0
++#define NIC0_QM0_ARB_MST_QUIET_PER_VAL_MASK                          0xFFFFFFFF
++
++/* NIC0_QM0_ARB_SLV_CHOISE_WDT */
++#define NIC0_QM0_ARB_SLV_CHOISE_WDT_VAL_SHIFT                        0
++#define NIC0_QM0_ARB_SLV_CHOISE_WDT_VAL_MASK                         0xFFFFFFFF
++
++/* NIC0_QM0_ARB_SLV_ID */
++#define NIC0_QM0_ARB_SLV_ID_VAL_SHIFT                                0
++#define NIC0_QM0_ARB_SLV_ID_VAL_MASK                                 0x1F
++
++/* NIC0_QM0_ARB_MSG_MAX_INFLIGHT */
++#define NIC0_QM0_ARB_MSG_MAX_INFLIGHT_VAL_SHIFT                      0
++#define NIC0_QM0_ARB_MSG_MAX_INFLIGHT_VAL_MASK                       0x3F
++
++/* NIC0_QM0_ARB_MSG_AWUSER_31_11 */
++#define NIC0_QM0_ARB_MSG_AWUSER_31_11_VAL_SHIFT                      0
++#define NIC0_QM0_ARB_MSG_AWUSER_31_11_VAL_MASK                       0x1FFFFF
++
++/* NIC0_QM0_ARB_MSG_AWUSER_SEC_PROP */
++#define NIC0_QM0_ARB_MSG_AWUSER_SEC_PROP_ASID_SHIFT                  0
++#define NIC0_QM0_ARB_MSG_AWUSER_SEC_PROP_ASID_MASK                   0x3FF
++#define NIC0_QM0_ARB_MSG_AWUSER_SEC_PROP_MMBP_SHIFT                  10
++#define NIC0_QM0_ARB_MSG_AWUSER_SEC_PROP_MMBP_MASK                   0x400
++
++/* NIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP */
++#define NIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP_ASID_SHIFT              0
++#define NIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP_ASID_MASK               0x3FF
++#define NIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP_MMBP_SHIFT              10
++#define NIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP_MMBP_MASK               0x400
++
++/* NIC0_QM0_ARB_BASE_LO */
++#define NIC0_QM0_ARB_BASE_LO_VAL_SHIFT                               0
++#define NIC0_QM0_ARB_BASE_LO_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_ARB_BASE_HI */
++#define NIC0_QM0_ARB_BASE_HI_VAL_SHIFT                               0
++#define NIC0_QM0_ARB_BASE_HI_VAL_MASK                                0xFFFFFFFF
++
++/* NIC0_QM0_ARB_STATE_STS */
++#define NIC0_QM0_ARB_STATE_STS_VAL_SHIFT                             0
++#define NIC0_QM0_ARB_STATE_STS_VAL_MASK                              0xFFFFFFFF
++
++/* NIC0_QM0_ARB_CHOISE_FULLNESS_STS */
++#define NIC0_QM0_ARB_CHOISE_FULLNESS_STS_VAL_SHIFT                   0
++#define NIC0_QM0_ARB_CHOISE_FULLNESS_STS_VAL_MASK                    0x7F
++
++/* NIC0_QM0_ARB_MSG_STS */
++#define NIC0_QM0_ARB_MSG_STS_FULL_SHIFT                              0
++#define NIC0_QM0_ARB_MSG_STS_FULL_MASK                               0x1
++#define NIC0_QM0_ARB_MSG_STS_NO_INFLIGHT_SHIFT                       1
++#define NIC0_QM0_ARB_MSG_STS_NO_INFLIGHT_MASK                        0x2
++
++/* NIC0_QM0_ARB_SLV_CHOISE_Q_HEAD */
++#define NIC0_QM0_ARB_SLV_CHOISE_Q_HEAD_VAL_SHIFT                     0
++#define NIC0_QM0_ARB_SLV_CHOISE_Q_HEAD_VAL_MASK                      0x3
++
++/* NIC0_QM0_ARB_ERR_CAUSE */
++#define NIC0_QM0_ARB_ERR_CAUSE_CHOISE_OVF_SHIFT                      0
++#define NIC0_QM0_ARB_ERR_CAUSE_CHOISE_OVF_MASK                       0x1
++#define NIC0_QM0_ARB_ERR_CAUSE_CHOISE_WDT_SHIFT                      1
++#define NIC0_QM0_ARB_ERR_CAUSE_CHOISE_WDT_MASK                       0x2
++#define NIC0_QM0_ARB_ERR_CAUSE_AXI_LBW_ERR_SHIFT                     2
++#define NIC0_QM0_ARB_ERR_CAUSE_AXI_LBW_ERR_MASK                      0x4
++
++/* NIC0_QM0_ARB_ERR_MSG_EN */
++#define NIC0_QM0_ARB_ERR_MSG_EN_CHOISE_OVF_SHIFT                     0
++#define NIC0_QM0_ARB_ERR_MSG_EN_CHOISE_OVF_MASK                      0x1
++#define NIC0_QM0_ARB_ERR_MSG_EN_CHOISE_WDT_SHIFT                     1
++#define NIC0_QM0_ARB_ERR_MSG_EN_CHOISE_WDT_MASK                      0x2
++#define NIC0_QM0_ARB_ERR_MSG_EN_AXI_LBW_ERR_SHIFT                    2
++#define NIC0_QM0_ARB_ERR_MSG_EN_AXI_LBW_ERR_MASK                     0x4
++
++/* NIC0_QM0_ARB_ERR_STS_DRP */
++#define NIC0_QM0_ARB_ERR_STS_DRP_VAL_SHIFT                           0
++#define NIC0_QM0_ARB_ERR_STS_DRP_VAL_MASK                            0x3
++
++/* NIC0_QM0_ARB_MST_CRED_STS */
++#define NIC0_QM0_ARB_MST_CRED_STS_VAL_SHIFT                          0
++#define NIC0_QM0_ARB_MST_CRED_STS_VAL_MASK                           0x7F
++
++/* NIC0_QM0_CGM_CFG */
++#define NIC0_QM0_CGM_CFG_IDLE_TH_SHIFT                               0
++#define NIC0_QM0_CGM_CFG_IDLE_TH_MASK                                0xFFF
++#define NIC0_QM0_CGM_CFG_G2F_TH_SHIFT                                16
++#define NIC0_QM0_CGM_CFG_G2F_TH_MASK                                 0xFF0000
++#define NIC0_QM0_CGM_CFG_CP_IDLE_MASK_SHIFT                          24
++#define NIC0_QM0_CGM_CFG_CP_IDLE_MASK_MASK                           0x1F000000
++#define NIC0_QM0_CGM_CFG_EN_SHIFT                                    31
++#define NIC0_QM0_CGM_CFG_EN_MASK                                     0x80000000
++
++/* NIC0_QM0_CGM_STS */
++#define NIC0_QM0_CGM_STS_ST_SHIFT                                    0
++#define NIC0_QM0_CGM_STS_ST_MASK                                     0x3
++#define NIC0_QM0_CGM_STS_CG_SHIFT                                    4
++#define NIC0_QM0_CGM_STS_CG_MASK                                     0x10
++#define NIC0_QM0_CGM_STS_AGENT_IDLE_SHIFT                            8
++#define NIC0_QM0_CGM_STS_AGENT_IDLE_MASK                             0x100
++#define NIC0_QM0_CGM_STS_AXI_IDLE_SHIFT                              9
++#define NIC0_QM0_CGM_STS_AXI_IDLE_MASK                               0x200
++#define NIC0_QM0_CGM_STS_CP_IDLE_SHIFT                               10
++#define NIC0_QM0_CGM_STS_CP_IDLE_MASK                                0x400
++
++/* NIC0_QM0_CGM_CFG1 */
++#define NIC0_QM0_CGM_CFG1_MASK_TH_SHIFT                              0
++#define NIC0_QM0_CGM_CFG1_MASK_TH_MASK                               0xFF
++
++/* NIC0_QM0_LOCAL_RANGE_BASE */
++#define NIC0_QM0_LOCAL_RANGE_BASE_VAL_SHIFT                          0
++#define NIC0_QM0_LOCAL_RANGE_BASE_VAL_MASK                           0xFFFF
++
++/* NIC0_QM0_LOCAL_RANGE_SIZE */
++#define NIC0_QM0_LOCAL_RANGE_SIZE_VAL_SHIFT                          0
++#define NIC0_QM0_LOCAL_RANGE_SIZE_VAL_MASK                           0xFFFF
++
++/* NIC0_QM0_CSMR_STRICT_PRIO_CFG */
++#define NIC0_QM0_CSMR_STRICT_PRIO_CFG_TYPE_SHIFT                     0
++#define NIC0_QM0_CSMR_STRICT_PRIO_CFG_TYPE_MASK                      0x1
++
++/* NIC0_QM0_HBW_RD_RATE_LIM_CFG_1 */
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_1_TOUT_SHIFT                    0
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_1_TOUT_MASK                     0xFF
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_1_EN_SHIFT                      31
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_1_EN_MASK                       0x80000000
++
++/* NIC0_QM0_LBW_WR_RATE_LIM_CFG_0 */
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_0_RST_TOKEN_SHIFT               0
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_0_RST_TOKEN_MASK                0xFF
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_0_SAT_SHIFT                     16
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_0_SAT_MASK                      0xFF0000
++
++/* NIC0_QM0_LBW_WR_RATE_LIM_CFG_1 */
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_1_TOUT_SHIFT                    0
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_1_TOUT_MASK                     0xFF
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_1_EN_SHIFT                      31
++#define NIC0_QM0_LBW_WR_RATE_LIM_CFG_1_EN_MASK                       0x80000000
++
++/* NIC0_QM0_HBW_RD_RATE_LIM_CFG_0 */
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_0_RST_TOKEN_SHIFT               0
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_0_RST_TOKEN_MASK                0xFF
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_0_SAT_SHIFT                     16
++#define NIC0_QM0_HBW_RD_RATE_LIM_CFG_0_SAT_MASK                      0xFF0000
++
++/* NIC0_QM0_GLBL_AXCACHE */
++#define NIC0_QM0_GLBL_AXCACHE_AR_SHIFT                               0
++#define NIC0_QM0_GLBL_AXCACHE_AR_MASK                                0xF
++#define NIC0_QM0_GLBL_AXCACHE_AW_SHIFT                               16
++#define NIC0_QM0_GLBL_AXCACHE_AW_MASK                                0xF0000
++
++/* NIC0_QM0_IND_GW_APB_CFG */
++#define NIC0_QM0_IND_GW_APB_CFG_ADDR_SHIFT                           0
++#define NIC0_QM0_IND_GW_APB_CFG_ADDR_MASK                            0x7FFFFFFF
++#define NIC0_QM0_IND_GW_APB_CFG_CMD_SHIFT                            31
++#define NIC0_QM0_IND_GW_APB_CFG_CMD_MASK                             0x80000000
++
++/* NIC0_QM0_IND_GW_APB_WDATA */
++#define NIC0_QM0_IND_GW_APB_WDATA_VAL_SHIFT                          0
++#define NIC0_QM0_IND_GW_APB_WDATA_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_IND_GW_APB_RDATA */
++#define NIC0_QM0_IND_GW_APB_RDATA_VAL_SHIFT                          0
++#define NIC0_QM0_IND_GW_APB_RDATA_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_IND_GW_APB_STATUS */
++#define NIC0_QM0_IND_GW_APB_STATUS_RDY_SHIFT                         0
++#define NIC0_QM0_IND_GW_APB_STATUS_RDY_MASK                          0x1
++#define NIC0_QM0_IND_GW_APB_STATUS_ERR_SHIFT                         1
++#define NIC0_QM0_IND_GW_APB_STATUS_ERR_MASK                          0x2
++
++/* NIC0_QM0_GLBL_ERR_ADDR_LO */
++#define NIC0_QM0_GLBL_ERR_ADDR_LO_VAL_SHIFT                          0
++#define NIC0_QM0_GLBL_ERR_ADDR_LO_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_GLBL_ERR_ADDR_HI */
++#define NIC0_QM0_GLBL_ERR_ADDR_HI_VAL_SHIFT                          0
++#define NIC0_QM0_GLBL_ERR_ADDR_HI_VAL_MASK                           0xFFFFFFFF
++
++/* NIC0_QM0_GLBL_ERR_WDATA */
++#define NIC0_QM0_GLBL_ERR_WDATA_VAL_SHIFT                            0
++#define NIC0_QM0_GLBL_ERR_WDATA_VAL_MASK                             0xFFFFFFFF
++
++/* NIC0_QM0_GLBL_MEM_INIT_BUSY */
++#define NIC0_QM0_GLBL_MEM_INIT_BUSY_RBUF_SHIFT                       0
++#define NIC0_QM0_GLBL_MEM_INIT_BUSY_RBUF_MASK                        0xF
++
++#endif /* ASIC_REG_NIC0_QM0_MASKS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h
+new file mode 100644
+index 000000000000..7c97f4041b8e
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC0_QM0_REGS_H_
++#define ASIC_REG_NIC0_QM0_REGS_H_
++
++/*
++ *****************************************
++ *   NIC0_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC0_QM0_GLBL_CFG0                                         0xCE0000
++
++#define mmNIC0_QM0_GLBL_CFG1                                         0xCE0004
++
++#define mmNIC0_QM0_GLBL_PROT                                         0xCE0008
++
++#define mmNIC0_QM0_GLBL_ERR_CFG                                      0xCE000C
++
++#define mmNIC0_QM0_GLBL_SECURE_PROPS_0                               0xCE0010
++
++#define mmNIC0_QM0_GLBL_SECURE_PROPS_1                               0xCE0014
++
++#define mmNIC0_QM0_GLBL_SECURE_PROPS_2                               0xCE0018
++
++#define mmNIC0_QM0_GLBL_SECURE_PROPS_3                               0xCE001C
++
++#define mmNIC0_QM0_GLBL_SECURE_PROPS_4                               0xCE0020
++
++#define mmNIC0_QM0_GLBL_NON_SECURE_PROPS_0                           0xCE0024
++
++#define mmNIC0_QM0_GLBL_NON_SECURE_PROPS_1                           0xCE0028
++
++#define mmNIC0_QM0_GLBL_NON_SECURE_PROPS_2                           0xCE002C
++
++#define mmNIC0_QM0_GLBL_NON_SECURE_PROPS_3                           0xCE0030
++
++#define mmNIC0_QM0_GLBL_NON_SECURE_PROPS_4                           0xCE0034
++
++#define mmNIC0_QM0_GLBL_STS0                                         0xCE0038
++
++#define mmNIC0_QM0_GLBL_STS1_0                                       0xCE0040
++
++#define mmNIC0_QM0_GLBL_STS1_1                                       0xCE0044
++
++#define mmNIC0_QM0_GLBL_STS1_2                                       0xCE0048
++
++#define mmNIC0_QM0_GLBL_STS1_3                                       0xCE004C
++
++#define mmNIC0_QM0_GLBL_STS1_4                                       0xCE0050
++
++#define mmNIC0_QM0_GLBL_MSG_EN_0                                     0xCE0054
++
++#define mmNIC0_QM0_GLBL_MSG_EN_1                                     0xCE0058
++
++#define mmNIC0_QM0_GLBL_MSG_EN_2                                     0xCE005C
++
++#define mmNIC0_QM0_GLBL_MSG_EN_3                                     0xCE0060
++
++#define mmNIC0_QM0_GLBL_MSG_EN_4                                     0xCE0068
++
++#define mmNIC0_QM0_PQ_BASE_LO_0                                      0xCE0070
++
++#define mmNIC0_QM0_PQ_BASE_LO_1                                      0xCE0074
++
++#define mmNIC0_QM0_PQ_BASE_LO_2                                      0xCE0078
++
++#define mmNIC0_QM0_PQ_BASE_LO_3                                      0xCE007C
++
++#define mmNIC0_QM0_PQ_BASE_HI_0                                      0xCE0080
++
++#define mmNIC0_QM0_PQ_BASE_HI_1                                      0xCE0084
++
++#define mmNIC0_QM0_PQ_BASE_HI_2                                      0xCE0088
++
++#define mmNIC0_QM0_PQ_BASE_HI_3                                      0xCE008C
++
++#define mmNIC0_QM0_PQ_SIZE_0                                         0xCE0090
++
++#define mmNIC0_QM0_PQ_SIZE_1                                         0xCE0094
++
++#define mmNIC0_QM0_PQ_SIZE_2                                         0xCE0098
++
++#define mmNIC0_QM0_PQ_SIZE_3                                         0xCE009C
++
++#define mmNIC0_QM0_PQ_PI_0                                           0xCE00A0
++
++#define mmNIC0_QM0_PQ_PI_1                                           0xCE00A4
++
++#define mmNIC0_QM0_PQ_PI_2                                           0xCE00A8
++
++#define mmNIC0_QM0_PQ_PI_3                                           0xCE00AC
++
++#define mmNIC0_QM0_PQ_CI_0                                           0xCE00B0
++
++#define mmNIC0_QM0_PQ_CI_1                                           0xCE00B4
++
++#define mmNIC0_QM0_PQ_CI_2                                           0xCE00B8
++
++#define mmNIC0_QM0_PQ_CI_3                                           0xCE00BC
++
++#define mmNIC0_QM0_PQ_CFG0_0                                         0xCE00C0
++
++#define mmNIC0_QM0_PQ_CFG0_1                                         0xCE00C4
++
++#define mmNIC0_QM0_PQ_CFG0_2                                         0xCE00C8
++
++#define mmNIC0_QM0_PQ_CFG0_3                                         0xCE00CC
++
++#define mmNIC0_QM0_PQ_CFG1_0                                         0xCE00D0
++
++#define mmNIC0_QM0_PQ_CFG1_1                                         0xCE00D4
++
++#define mmNIC0_QM0_PQ_CFG1_2                                         0xCE00D8
++
++#define mmNIC0_QM0_PQ_CFG1_3                                         0xCE00DC
++
++#define mmNIC0_QM0_PQ_ARUSER_31_11_0                                 0xCE00E0
++
++#define mmNIC0_QM0_PQ_ARUSER_31_11_1                                 0xCE00E4
++
++#define mmNIC0_QM0_PQ_ARUSER_31_11_2                                 0xCE00E8
++
++#define mmNIC0_QM0_PQ_ARUSER_31_11_3                                 0xCE00EC
++
++#define mmNIC0_QM0_PQ_STS0_0                                         0xCE00F0
++
++#define mmNIC0_QM0_PQ_STS0_1                                         0xCE00F4
++
++#define mmNIC0_QM0_PQ_STS0_2                                         0xCE00F8
++
++#define mmNIC0_QM0_PQ_STS0_3                                         0xCE00FC
++
++#define mmNIC0_QM0_PQ_STS1_0                                         0xCE0100
++
++#define mmNIC0_QM0_PQ_STS1_1                                         0xCE0104
++
++#define mmNIC0_QM0_PQ_STS1_2                                         0xCE0108
++
++#define mmNIC0_QM0_PQ_STS1_3                                         0xCE010C
++
++#define mmNIC0_QM0_CQ_CFG0_0                                         0xCE0110
++
++#define mmNIC0_QM0_CQ_CFG0_1                                         0xCE0114
++
++#define mmNIC0_QM0_CQ_CFG0_2                                         0xCE0118
++
++#define mmNIC0_QM0_CQ_CFG0_3                                         0xCE011C
++
++#define mmNIC0_QM0_CQ_CFG0_4                                         0xCE0120
++
++#define mmNIC0_QM0_CQ_CFG1_0                                         0xCE0124
++
++#define mmNIC0_QM0_CQ_CFG1_1                                         0xCE0128
++
++#define mmNIC0_QM0_CQ_CFG1_2                                         0xCE012C
++
++#define mmNIC0_QM0_CQ_CFG1_3                                         0xCE0130
++
++#define mmNIC0_QM0_CQ_CFG1_4                                         0xCE0134
++
++#define mmNIC0_QM0_CQ_ARUSER_31_11_0                                 0xCE0138
++
++#define mmNIC0_QM0_CQ_ARUSER_31_11_1                                 0xCE013C
++
++#define mmNIC0_QM0_CQ_ARUSER_31_11_2                                 0xCE0140
++
++#define mmNIC0_QM0_CQ_ARUSER_31_11_3                                 0xCE0144
++
++#define mmNIC0_QM0_CQ_ARUSER_31_11_4                                 0xCE0148
++
++#define mmNIC0_QM0_CQ_STS0_0                                         0xCE014C
++
++#define mmNIC0_QM0_CQ_STS0_1                                         0xCE0150
++
++#define mmNIC0_QM0_CQ_STS0_2                                         0xCE0154
++
++#define mmNIC0_QM0_CQ_STS0_3                                         0xCE0158
++
++#define mmNIC0_QM0_CQ_STS0_4                                         0xCE015C
++
++#define mmNIC0_QM0_CQ_STS1_0                                         0xCE0160
++
++#define mmNIC0_QM0_CQ_STS1_1                                         0xCE0164
++
++#define mmNIC0_QM0_CQ_STS1_2                                         0xCE0168
++
++#define mmNIC0_QM0_CQ_STS1_3                                         0xCE016C
++
++#define mmNIC0_QM0_CQ_STS1_4                                         0xCE0170
++
++#define mmNIC0_QM0_CQ_PTR_LO_0                                       0xCE0174
++
++#define mmNIC0_QM0_CQ_PTR_HI_0                                       0xCE0178
++
++#define mmNIC0_QM0_CQ_TSIZE_0                                        0xCE017C
++
++#define mmNIC0_QM0_CQ_CTL_0                                          0xCE0180
++
++#define mmNIC0_QM0_CQ_PTR_LO_1                                       0xCE0184
++
++#define mmNIC0_QM0_CQ_PTR_HI_1                                       0xCE0188
++
++#define mmNIC0_QM0_CQ_TSIZE_1                                        0xCE018C
++
++#define mmNIC0_QM0_CQ_CTL_1                                          0xCE0190
++
++#define mmNIC0_QM0_CQ_PTR_LO_2                                       0xCE0194
++
++#define mmNIC0_QM0_CQ_PTR_HI_2                                       0xCE0198
++
++#define mmNIC0_QM0_CQ_TSIZE_2                                        0xCE019C
++
++#define mmNIC0_QM0_CQ_CTL_2                                          0xCE01A0
++
++#define mmNIC0_QM0_CQ_PTR_LO_3                                       0xCE01A4
++
++#define mmNIC0_QM0_CQ_PTR_HI_3                                       0xCE01A8
++
++#define mmNIC0_QM0_CQ_TSIZE_3                                        0xCE01AC
++
++#define mmNIC0_QM0_CQ_CTL_3                                          0xCE01B0
++
++#define mmNIC0_QM0_CQ_PTR_LO_4                                       0xCE01B4
++
++#define mmNIC0_QM0_CQ_PTR_HI_4                                       0xCE01B8
++
++#define mmNIC0_QM0_CQ_TSIZE_4                                        0xCE01BC
++
++#define mmNIC0_QM0_CQ_CTL_4                                          0xCE01C0
++
++#define mmNIC0_QM0_CQ_PTR_LO_STS_0                                   0xCE01C4
++
++#define mmNIC0_QM0_CQ_PTR_LO_STS_1                                   0xCE01C8
++
++#define mmNIC0_QM0_CQ_PTR_LO_STS_2                                   0xCE01CC
++
++#define mmNIC0_QM0_CQ_PTR_LO_STS_3                                   0xCE01D0
++
++#define mmNIC0_QM0_CQ_PTR_LO_STS_4                                   0xCE01D4
++
++#define mmNIC0_QM0_CQ_PTR_HI_STS_0                                   0xCE01D8
++
++#define mmNIC0_QM0_CQ_PTR_HI_STS_1                                   0xCE01DC
++
++#define mmNIC0_QM0_CQ_PTR_HI_STS_2                                   0xCE01E0
++
++#define mmNIC0_QM0_CQ_PTR_HI_STS_3                                   0xCE01E4
++
++#define mmNIC0_QM0_CQ_PTR_HI_STS_4                                   0xCE01E8
++
++#define mmNIC0_QM0_CQ_TSIZE_STS_0                                    0xCE01EC
++
++#define mmNIC0_QM0_CQ_TSIZE_STS_1                                    0xCE01F0
++
++#define mmNIC0_QM0_CQ_TSIZE_STS_2                                    0xCE01F4
++
++#define mmNIC0_QM0_CQ_TSIZE_STS_3                                    0xCE01F8
++
++#define mmNIC0_QM0_CQ_TSIZE_STS_4                                    0xCE01FC
++
++#define mmNIC0_QM0_CQ_CTL_STS_0                                      0xCE0200
++
++#define mmNIC0_QM0_CQ_CTL_STS_1                                      0xCE0204
++
++#define mmNIC0_QM0_CQ_CTL_STS_2                                      0xCE0208
++
++#define mmNIC0_QM0_CQ_CTL_STS_3                                      0xCE020C
++
++#define mmNIC0_QM0_CQ_CTL_STS_4                                      0xCE0210
++
++#define mmNIC0_QM0_CQ_IFIFO_CNT_0                                    0xCE0214
++
++#define mmNIC0_QM0_CQ_IFIFO_CNT_1                                    0xCE0218
++
++#define mmNIC0_QM0_CQ_IFIFO_CNT_2                                    0xCE021C
++
++#define mmNIC0_QM0_CQ_IFIFO_CNT_3                                    0xCE0220
++
++#define mmNIC0_QM0_CQ_IFIFO_CNT_4                                    0xCE0224
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_0                            0xCE0228
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_1                            0xCE022C
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_2                            0xCE0230
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_3                            0xCE0234
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_4                            0xCE0238
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_0                            0xCE023C
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_1                            0xCE0240
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_2                            0xCE0244
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_3                            0xCE0248
++
++#define mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_4                            0xCE024C
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_0                            0xCE0250
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_1                            0xCE0254
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_2                            0xCE0258
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_3                            0xCE025C
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_4                            0xCE0260
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_0                            0xCE0264
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_1                            0xCE0268
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_2                            0xCE026C
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_3                            0xCE0270
++
++#define mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_4                            0xCE0274
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_LO_0                            0xCE0278
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_LO_1                            0xCE027C
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_LO_2                            0xCE0280
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_LO_3                            0xCE0284
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_LO_4                            0xCE0288
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_HI_0                            0xCE028C
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_HI_1                            0xCE0290
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_HI_2                            0xCE0294
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_HI_3                            0xCE0298
++
++#define mmNIC0_QM0_CP_MSG_BASE2_ADDR_HI_4                            0xCE029C
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_LO_0                            0xCE02A0
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_LO_1                            0xCE02A4
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_LO_2                            0xCE02A8
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_LO_3                            0xCE02AC
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_LO_4                            0xCE02B0
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_HI_0                            0xCE02B4
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_HI_1                            0xCE02B8
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_HI_2                            0xCE02BC
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_HI_3                            0xCE02C0
++
++#define mmNIC0_QM0_CP_MSG_BASE3_ADDR_HI_4                            0xCE02C4
++
++#define mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_0                            0xCE02C8
++
++#define mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_1                            0xCE02CC
++
++#define mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_2                            0xCE02D0
++
++#define mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_3                            0xCE02D4
++
++#define mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_4                            0xCE02D8
++
++#define mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xCE02E0
++
++#define mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xCE02E4
++
++#define mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xCE02E8
++
++#define mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xCE02EC
++
++#define mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xCE02F0
++
++#define mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xCE02F4
++
++#define mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xCE02F8
++
++#define mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xCE02FC
++
++#define mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xCE0300
++
++#define mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xCE0304
++
++#define mmNIC0_QM0_CP_FENCE0_RDATA_0                                 0xCE0308
++
++#define mmNIC0_QM0_CP_FENCE0_RDATA_1                                 0xCE030C
++
++#define mmNIC0_QM0_CP_FENCE0_RDATA_2                                 0xCE0310
++
++#define mmNIC0_QM0_CP_FENCE0_RDATA_3                                 0xCE0314
++
++#define mmNIC0_QM0_CP_FENCE0_RDATA_4                                 0xCE0318
++
++#define mmNIC0_QM0_CP_FENCE1_RDATA_0                                 0xCE031C
++
++#define mmNIC0_QM0_CP_FENCE1_RDATA_1                                 0xCE0320
++
++#define mmNIC0_QM0_CP_FENCE1_RDATA_2                                 0xCE0324
++
++#define mmNIC0_QM0_CP_FENCE1_RDATA_3                                 0xCE0328
++
++#define mmNIC0_QM0_CP_FENCE1_RDATA_4                                 0xCE032C
++
++#define mmNIC0_QM0_CP_FENCE2_RDATA_0                                 0xCE0330
++
++#define mmNIC0_QM0_CP_FENCE2_RDATA_1                                 0xCE0334
++
++#define mmNIC0_QM0_CP_FENCE2_RDATA_2                                 0xCE0338
++
++#define mmNIC0_QM0_CP_FENCE2_RDATA_3                                 0xCE033C
++
++#define mmNIC0_QM0_CP_FENCE2_RDATA_4                                 0xCE0340
++
++#define mmNIC0_QM0_CP_FENCE3_RDATA_0                                 0xCE0344
++
++#define mmNIC0_QM0_CP_FENCE3_RDATA_1                                 0xCE0348
++
++#define mmNIC0_QM0_CP_FENCE3_RDATA_2                                 0xCE034C
++
++#define mmNIC0_QM0_CP_FENCE3_RDATA_3                                 0xCE0350
++
++#define mmNIC0_QM0_CP_FENCE3_RDATA_4                                 0xCE0354
++
++#define mmNIC0_QM0_CP_FENCE0_CNT_0                                   0xCE0358
++
++#define mmNIC0_QM0_CP_FENCE0_CNT_1                                   0xCE035C
++
++#define mmNIC0_QM0_CP_FENCE0_CNT_2                                   0xCE0360
++
++#define mmNIC0_QM0_CP_FENCE0_CNT_3                                   0xCE0364
++
++#define mmNIC0_QM0_CP_FENCE0_CNT_4                                   0xCE0368
++
++#define mmNIC0_QM0_CP_FENCE1_CNT_0                                   0xCE036C
++
++#define mmNIC0_QM0_CP_FENCE1_CNT_1                                   0xCE0370
++
++#define mmNIC0_QM0_CP_FENCE1_CNT_2                                   0xCE0374
++
++#define mmNIC0_QM0_CP_FENCE1_CNT_3                                   0xCE0378
++
++#define mmNIC0_QM0_CP_FENCE1_CNT_4                                   0xCE037C
++
++#define mmNIC0_QM0_CP_FENCE2_CNT_0                                   0xCE0380
++
++#define mmNIC0_QM0_CP_FENCE2_CNT_1                                   0xCE0384
++
++#define mmNIC0_QM0_CP_FENCE2_CNT_2                                   0xCE0388
++
++#define mmNIC0_QM0_CP_FENCE2_CNT_3                                   0xCE038C
++
++#define mmNIC0_QM0_CP_FENCE2_CNT_4                                   0xCE0390
++
++#define mmNIC0_QM0_CP_FENCE3_CNT_0                                   0xCE0394
++
++#define mmNIC0_QM0_CP_FENCE3_CNT_1                                   0xCE0398
++
++#define mmNIC0_QM0_CP_FENCE3_CNT_2                                   0xCE039C
++
++#define mmNIC0_QM0_CP_FENCE3_CNT_3                                   0xCE03A0
++
++#define mmNIC0_QM0_CP_FENCE3_CNT_4                                   0xCE03A4
++
++#define mmNIC0_QM0_CP_STS_0                                          0xCE03A8
++
++#define mmNIC0_QM0_CP_STS_1                                          0xCE03AC
++
++#define mmNIC0_QM0_CP_STS_2                                          0xCE03B0
++
++#define mmNIC0_QM0_CP_STS_3                                          0xCE03B4
++
++#define mmNIC0_QM0_CP_STS_4                                          0xCE03B8
++
++#define mmNIC0_QM0_CP_CURRENT_INST_LO_0                              0xCE03BC
++
++#define mmNIC0_QM0_CP_CURRENT_INST_LO_1                              0xCE03C0
++
++#define mmNIC0_QM0_CP_CURRENT_INST_LO_2                              0xCE03C4
++
++#define mmNIC0_QM0_CP_CURRENT_INST_LO_3                              0xCE03C8
++
++#define mmNIC0_QM0_CP_CURRENT_INST_LO_4                              0xCE03CC
++
++#define mmNIC0_QM0_CP_CURRENT_INST_HI_0                              0xCE03D0
++
++#define mmNIC0_QM0_CP_CURRENT_INST_HI_1                              0xCE03D4
++
++#define mmNIC0_QM0_CP_CURRENT_INST_HI_2                              0xCE03D8
++
++#define mmNIC0_QM0_CP_CURRENT_INST_HI_3                              0xCE03DC
++
++#define mmNIC0_QM0_CP_CURRENT_INST_HI_4                              0xCE03E0
++
++#define mmNIC0_QM0_CP_BARRIER_CFG_0                                  0xCE03F4
++
++#define mmNIC0_QM0_CP_BARRIER_CFG_1                                  0xCE03F8
++
++#define mmNIC0_QM0_CP_BARRIER_CFG_2                                  0xCE03FC
++
++#define mmNIC0_QM0_CP_BARRIER_CFG_3                                  0xCE0400
++
++#define mmNIC0_QM0_CP_BARRIER_CFG_4                                  0xCE0404
++
++#define mmNIC0_QM0_CP_DBG_0_0                                        0xCE0408
++
++#define mmNIC0_QM0_CP_DBG_0_1                                        0xCE040C
++
++#define mmNIC0_QM0_CP_DBG_0_2                                        0xCE0410
++
++#define mmNIC0_QM0_CP_DBG_0_3                                        0xCE0414
++
++#define mmNIC0_QM0_CP_DBG_0_4                                        0xCE0418
++
++#define mmNIC0_QM0_CP_ARUSER_31_11_0                                 0xCE041C
++
++#define mmNIC0_QM0_CP_ARUSER_31_11_1                                 0xCE0420
++
++#define mmNIC0_QM0_CP_ARUSER_31_11_2                                 0xCE0424
++
++#define mmNIC0_QM0_CP_ARUSER_31_11_3                                 0xCE0428
++
++#define mmNIC0_QM0_CP_ARUSER_31_11_4                                 0xCE042C
++
++#define mmNIC0_QM0_CP_AWUSER_31_11_0                                 0xCE0430
++
++#define mmNIC0_QM0_CP_AWUSER_31_11_1                                 0xCE0434
++
++#define mmNIC0_QM0_CP_AWUSER_31_11_2                                 0xCE0438
++
++#define mmNIC0_QM0_CP_AWUSER_31_11_3                                 0xCE043C
++
++#define mmNIC0_QM0_CP_AWUSER_31_11_4                                 0xCE0440
++
++#define mmNIC0_QM0_ARB_CFG_0                                         0xCE0A00
++
++#define mmNIC0_QM0_ARB_CHOISE_Q_PUSH                                 0xCE0A04
++
++#define mmNIC0_QM0_ARB_WRR_WEIGHT_0                                  0xCE0A08
++
++#define mmNIC0_QM0_ARB_WRR_WEIGHT_1                                  0xCE0A0C
++
++#define mmNIC0_QM0_ARB_WRR_WEIGHT_2                                  0xCE0A10
++
++#define mmNIC0_QM0_ARB_WRR_WEIGHT_3                                  0xCE0A14
++
++#define mmNIC0_QM0_ARB_CFG_1                                         0xCE0A18
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_0                              0xCE0A20
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_1                              0xCE0A24
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_2                              0xCE0A28
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_3                              0xCE0A2C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_4                              0xCE0A30
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_5                              0xCE0A34
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_6                              0xCE0A38
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_7                              0xCE0A3C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_8                              0xCE0A40
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_9                              0xCE0A44
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_10                             0xCE0A48
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_11                             0xCE0A4C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_12                             0xCE0A50
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_13                             0xCE0A54
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_14                             0xCE0A58
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_15                             0xCE0A5C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_16                             0xCE0A60
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_17                             0xCE0A64
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_18                             0xCE0A68
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_19                             0xCE0A6C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_20                             0xCE0A70
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_21                             0xCE0A74
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_22                             0xCE0A78
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_23                             0xCE0A7C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_24                             0xCE0A80
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_25                             0xCE0A84
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_26                             0xCE0A88
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_27                             0xCE0A8C
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_28                             0xCE0A90
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_29                             0xCE0A94
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_30                             0xCE0A98
++
++#define mmNIC0_QM0_ARB_MST_AVAIL_CRED_31                             0xCE0A9C
++
++#define mmNIC0_QM0_ARB_MST_CRED_INC                                  0xCE0AA0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_0                        0xCE0AA4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_1                        0xCE0AA8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_2                        0xCE0AAC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_3                        0xCE0AB0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_4                        0xCE0AB4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_5                        0xCE0AB8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_6                        0xCE0ABC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_7                        0xCE0AC0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_8                        0xCE0AC4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_9                        0xCE0AC8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_10                       0xCE0ACC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_11                       0xCE0AD0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_12                       0xCE0AD4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_13                       0xCE0AD8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_14                       0xCE0ADC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_15                       0xCE0AE0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_16                       0xCE0AE4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_17                       0xCE0AE8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_18                       0xCE0AEC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_19                       0xCE0AF0
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_20                       0xCE0AF4
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_21                       0xCE0AF8
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_22                       0xCE0AFC
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_23                       0xCE0B00
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_24                       0xCE0B04
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_25                       0xCE0B08
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_26                       0xCE0B0C
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_27                       0xCE0B10
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_28                       0xCE0B14
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_29                       0xCE0B18
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_30                       0xCE0B1C
++
++#define mmNIC0_QM0_ARB_MST_CHOISE_PUSH_OFST_31                       0xCE0B20
++
++#define mmNIC0_QM0_ARB_SLV_MASTER_INC_CRED_OFST                      0xCE0B28
++
++#define mmNIC0_QM0_ARB_MST_SLAVE_EN                                  0xCE0B2C
++
++#define mmNIC0_QM0_ARB_MST_QUIET_PER                                 0xCE0B34
++
++#define mmNIC0_QM0_ARB_SLV_CHOISE_WDT                                0xCE0B38
++
++#define mmNIC0_QM0_ARB_SLV_ID                                        0xCE0B3C
++
++#define mmNIC0_QM0_ARB_MSG_MAX_INFLIGHT                              0xCE0B44
++
++#define mmNIC0_QM0_ARB_MSG_AWUSER_31_11                              0xCE0B48
++
++#define mmNIC0_QM0_ARB_MSG_AWUSER_SEC_PROP                           0xCE0B4C
++
++#define mmNIC0_QM0_ARB_MSG_AWUSER_NON_SEC_PROP                       0xCE0B50
++
++#define mmNIC0_QM0_ARB_BASE_LO                                       0xCE0B54
++
++#define mmNIC0_QM0_ARB_BASE_HI                                       0xCE0B58
++
++#define mmNIC0_QM0_ARB_STATE_STS                                     0xCE0B80
++
++#define mmNIC0_QM0_ARB_CHOISE_FULLNESS_STS                           0xCE0B84
++
++#define mmNIC0_QM0_ARB_MSG_STS                                       0xCE0B88
++
++#define mmNIC0_QM0_ARB_SLV_CHOISE_Q_HEAD                             0xCE0B8C
++
++#define mmNIC0_QM0_ARB_ERR_CAUSE                                     0xCE0B9C
++
++#define mmNIC0_QM0_ARB_ERR_MSG_EN                                    0xCE0BA0
++
++#define mmNIC0_QM0_ARB_ERR_STS_DRP                                   0xCE0BA8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_0                                0xCE0BB0
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_1                                0xCE0BB4
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_2                                0xCE0BB8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_3                                0xCE0BBC
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_4                                0xCE0BC0
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_5                                0xCE0BC4
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_6                                0xCE0BC8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_7                                0xCE0BCC
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_8                                0xCE0BD0
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_9                                0xCE0BD4
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_10                               0xCE0BD8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_11                               0xCE0BDC
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_12                               0xCE0BE0
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_13                               0xCE0BE4
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_14                               0xCE0BE8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_15                               0xCE0BEC
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_16                               0xCE0BF0
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_17                               0xCE0BF4
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_18                               0xCE0BF8
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_19                               0xCE0BFC
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_20                               0xCE0C00
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_21                               0xCE0C04
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_22                               0xCE0C08
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_23                               0xCE0C0C
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_24                               0xCE0C10
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_25                               0xCE0C14
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_26                               0xCE0C18
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_27                               0xCE0C1C
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_28                               0xCE0C20
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_29                               0xCE0C24
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_30                               0xCE0C28
++
++#define mmNIC0_QM0_ARB_MST_CRED_STS_31                               0xCE0C2C
++
++#define mmNIC0_QM0_CGM_CFG                                           0xCE0C70
++
++#define mmNIC0_QM0_CGM_STS                                           0xCE0C74
++
++#define mmNIC0_QM0_CGM_CFG1                                          0xCE0C78
++
++#define mmNIC0_QM0_LOCAL_RANGE_BASE                                  0xCE0C80
++
++#define mmNIC0_QM0_LOCAL_RANGE_SIZE                                  0xCE0C84
++
++#define mmNIC0_QM0_CSMR_STRICT_PRIO_CFG                              0xCE0C90
++
++#define mmNIC0_QM0_HBW_RD_RATE_LIM_CFG_1                             0xCE0C94
++
++#define mmNIC0_QM0_LBW_WR_RATE_LIM_CFG_0                             0xCE0C98
++
++#define mmNIC0_QM0_LBW_WR_RATE_LIM_CFG_1                             0xCE0C9C
++
++#define mmNIC0_QM0_HBW_RD_RATE_LIM_CFG_0                             0xCE0CA0
++
++#define mmNIC0_QM0_GLBL_AXCACHE                                      0xCE0CA4
++
++#define mmNIC0_QM0_IND_GW_APB_CFG                                    0xCE0CB0
++
++#define mmNIC0_QM0_IND_GW_APB_WDATA                                  0xCE0CB4
++
++#define mmNIC0_QM0_IND_GW_APB_RDATA                                  0xCE0CB8
++
++#define mmNIC0_QM0_IND_GW_APB_STATUS                                 0xCE0CBC
++
++#define mmNIC0_QM0_GLBL_ERR_ADDR_LO                                  0xCE0CD0
++
++#define mmNIC0_QM0_GLBL_ERR_ADDR_HI                                  0xCE0CD4
++
++#define mmNIC0_QM0_GLBL_ERR_WDATA                                    0xCE0CD8
++
++#define mmNIC0_QM0_GLBL_MEM_INIT_BUSY                                0xCE0D00
++
++#endif /* ASIC_REG_NIC0_QM0_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h
+new file mode 100644
+index 000000000000..fe96c575b5c6
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC0_QM1_REGS_H_
++#define ASIC_REG_NIC0_QM1_REGS_H_
++
++/*
++ *****************************************
++ *   NIC0_QM1 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC0_QM1_GLBL_CFG0                                         0xCE2000
++
++#define mmNIC0_QM1_GLBL_CFG1                                         0xCE2004
++
++#define mmNIC0_QM1_GLBL_PROT                                         0xCE2008
++
++#define mmNIC0_QM1_GLBL_ERR_CFG                                      0xCE200C
++
++#define mmNIC0_QM1_GLBL_SECURE_PROPS_0                               0xCE2010
++
++#define mmNIC0_QM1_GLBL_SECURE_PROPS_1                               0xCE2014
++
++#define mmNIC0_QM1_GLBL_SECURE_PROPS_2                               0xCE2018
++
++#define mmNIC0_QM1_GLBL_SECURE_PROPS_3                               0xCE201C
++
++#define mmNIC0_QM1_GLBL_SECURE_PROPS_4                               0xCE2020
++
++#define mmNIC0_QM1_GLBL_NON_SECURE_PROPS_0                           0xCE2024
++
++#define mmNIC0_QM1_GLBL_NON_SECURE_PROPS_1                           0xCE2028
++
++#define mmNIC0_QM1_GLBL_NON_SECURE_PROPS_2                           0xCE202C
++
++#define mmNIC0_QM1_GLBL_NON_SECURE_PROPS_3                           0xCE2030
++
++#define mmNIC0_QM1_GLBL_NON_SECURE_PROPS_4                           0xCE2034
++
++#define mmNIC0_QM1_GLBL_STS0                                         0xCE2038
++
++#define mmNIC0_QM1_GLBL_STS1_0                                       0xCE2040
++
++#define mmNIC0_QM1_GLBL_STS1_1                                       0xCE2044
++
++#define mmNIC0_QM1_GLBL_STS1_2                                       0xCE2048
++
++#define mmNIC0_QM1_GLBL_STS1_3                                       0xCE204C
++
++#define mmNIC0_QM1_GLBL_STS1_4                                       0xCE2050
++
++#define mmNIC0_QM1_GLBL_MSG_EN_0                                     0xCE2054
++
++#define mmNIC0_QM1_GLBL_MSG_EN_1                                     0xCE2058
++
++#define mmNIC0_QM1_GLBL_MSG_EN_2                                     0xCE205C
++
++#define mmNIC0_QM1_GLBL_MSG_EN_3                                     0xCE2060
++
++#define mmNIC0_QM1_GLBL_MSG_EN_4                                     0xCE2068
++
++#define mmNIC0_QM1_PQ_BASE_LO_0                                      0xCE2070
++
++#define mmNIC0_QM1_PQ_BASE_LO_1                                      0xCE2074
++
++#define mmNIC0_QM1_PQ_BASE_LO_2                                      0xCE2078
++
++#define mmNIC0_QM1_PQ_BASE_LO_3                                      0xCE207C
++
++#define mmNIC0_QM1_PQ_BASE_HI_0                                      0xCE2080
++
++#define mmNIC0_QM1_PQ_BASE_HI_1                                      0xCE2084
++
++#define mmNIC0_QM1_PQ_BASE_HI_2                                      0xCE2088
++
++#define mmNIC0_QM1_PQ_BASE_HI_3                                      0xCE208C
++
++#define mmNIC0_QM1_PQ_SIZE_0                                         0xCE2090
++
++#define mmNIC0_QM1_PQ_SIZE_1                                         0xCE2094
++
++#define mmNIC0_QM1_PQ_SIZE_2                                         0xCE2098
++
++#define mmNIC0_QM1_PQ_SIZE_3                                         0xCE209C
++
++#define mmNIC0_QM1_PQ_PI_0                                           0xCE20A0
++
++#define mmNIC0_QM1_PQ_PI_1                                           0xCE20A4
++
++#define mmNIC0_QM1_PQ_PI_2                                           0xCE20A8
++
++#define mmNIC0_QM1_PQ_PI_3                                           0xCE20AC
++
++#define mmNIC0_QM1_PQ_CI_0                                           0xCE20B0
++
++#define mmNIC0_QM1_PQ_CI_1                                           0xCE20B4
++
++#define mmNIC0_QM1_PQ_CI_2                                           0xCE20B8
++
++#define mmNIC0_QM1_PQ_CI_3                                           0xCE20BC
++
++#define mmNIC0_QM1_PQ_CFG0_0                                         0xCE20C0
++
++#define mmNIC0_QM1_PQ_CFG0_1                                         0xCE20C4
++
++#define mmNIC0_QM1_PQ_CFG0_2                                         0xCE20C8
++
++#define mmNIC0_QM1_PQ_CFG0_3                                         0xCE20CC
++
++#define mmNIC0_QM1_PQ_CFG1_0                                         0xCE20D0
++
++#define mmNIC0_QM1_PQ_CFG1_1                                         0xCE20D4
++
++#define mmNIC0_QM1_PQ_CFG1_2                                         0xCE20D8
++
++#define mmNIC0_QM1_PQ_CFG1_3                                         0xCE20DC
++
++#define mmNIC0_QM1_PQ_ARUSER_31_11_0                                 0xCE20E0
++
++#define mmNIC0_QM1_PQ_ARUSER_31_11_1                                 0xCE20E4
++
++#define mmNIC0_QM1_PQ_ARUSER_31_11_2                                 0xCE20E8
++
++#define mmNIC0_QM1_PQ_ARUSER_31_11_3                                 0xCE20EC
++
++#define mmNIC0_QM1_PQ_STS0_0                                         0xCE20F0
++
++#define mmNIC0_QM1_PQ_STS0_1                                         0xCE20F4
++
++#define mmNIC0_QM1_PQ_STS0_2                                         0xCE20F8
++
++#define mmNIC0_QM1_PQ_STS0_3                                         0xCE20FC
++
++#define mmNIC0_QM1_PQ_STS1_0                                         0xCE2100
++
++#define mmNIC0_QM1_PQ_STS1_1                                         0xCE2104
++
++#define mmNIC0_QM1_PQ_STS1_2                                         0xCE2108
++
++#define mmNIC0_QM1_PQ_STS1_3                                         0xCE210C
++
++#define mmNIC0_QM1_CQ_CFG0_0                                         0xCE2110
++
++#define mmNIC0_QM1_CQ_CFG0_1                                         0xCE2114
++
++#define mmNIC0_QM1_CQ_CFG0_2                                         0xCE2118
++
++#define mmNIC0_QM1_CQ_CFG0_3                                         0xCE211C
++
++#define mmNIC0_QM1_CQ_CFG0_4                                         0xCE2120
++
++#define mmNIC0_QM1_CQ_CFG1_0                                         0xCE2124
++
++#define mmNIC0_QM1_CQ_CFG1_1                                         0xCE2128
++
++#define mmNIC0_QM1_CQ_CFG1_2                                         0xCE212C
++
++#define mmNIC0_QM1_CQ_CFG1_3                                         0xCE2130
++
++#define mmNIC0_QM1_CQ_CFG1_4                                         0xCE2134
++
++#define mmNIC0_QM1_CQ_ARUSER_31_11_0                                 0xCE2138
++
++#define mmNIC0_QM1_CQ_ARUSER_31_11_1                                 0xCE213C
++
++#define mmNIC0_QM1_CQ_ARUSER_31_11_2                                 0xCE2140
++
++#define mmNIC0_QM1_CQ_ARUSER_31_11_3                                 0xCE2144
++
++#define mmNIC0_QM1_CQ_ARUSER_31_11_4                                 0xCE2148
++
++#define mmNIC0_QM1_CQ_STS0_0                                         0xCE214C
++
++#define mmNIC0_QM1_CQ_STS0_1                                         0xCE2150
++
++#define mmNIC0_QM1_CQ_STS0_2                                         0xCE2154
++
++#define mmNIC0_QM1_CQ_STS0_3                                         0xCE2158
++
++#define mmNIC0_QM1_CQ_STS0_4                                         0xCE215C
++
++#define mmNIC0_QM1_CQ_STS1_0                                         0xCE2160
++
++#define mmNIC0_QM1_CQ_STS1_1                                         0xCE2164
++
++#define mmNIC0_QM1_CQ_STS1_2                                         0xCE2168
++
++#define mmNIC0_QM1_CQ_STS1_3                                         0xCE216C
++
++#define mmNIC0_QM1_CQ_STS1_4                                         0xCE2170
++
++#define mmNIC0_QM1_CQ_PTR_LO_0                                       0xCE2174
++
++#define mmNIC0_QM1_CQ_PTR_HI_0                                       0xCE2178
++
++#define mmNIC0_QM1_CQ_TSIZE_0                                        0xCE217C
++
++#define mmNIC0_QM1_CQ_CTL_0                                          0xCE2180
++
++#define mmNIC0_QM1_CQ_PTR_LO_1                                       0xCE2184
++
++#define mmNIC0_QM1_CQ_PTR_HI_1                                       0xCE2188
++
++#define mmNIC0_QM1_CQ_TSIZE_1                                        0xCE218C
++
++#define mmNIC0_QM1_CQ_CTL_1                                          0xCE2190
++
++#define mmNIC0_QM1_CQ_PTR_LO_2                                       0xCE2194
++
++#define mmNIC0_QM1_CQ_PTR_HI_2                                       0xCE2198
++
++#define mmNIC0_QM1_CQ_TSIZE_2                                        0xCE219C
++
++#define mmNIC0_QM1_CQ_CTL_2                                          0xCE21A0
++
++#define mmNIC0_QM1_CQ_PTR_LO_3                                       0xCE21A4
++
++#define mmNIC0_QM1_CQ_PTR_HI_3                                       0xCE21A8
++
++#define mmNIC0_QM1_CQ_TSIZE_3                                        0xCE21AC
++
++#define mmNIC0_QM1_CQ_CTL_3                                          0xCE21B0
++
++#define mmNIC0_QM1_CQ_PTR_LO_4                                       0xCE21B4
++
++#define mmNIC0_QM1_CQ_PTR_HI_4                                       0xCE21B8
++
++#define mmNIC0_QM1_CQ_TSIZE_4                                        0xCE21BC
++
++#define mmNIC0_QM1_CQ_CTL_4                                          0xCE21C0
++
++#define mmNIC0_QM1_CQ_PTR_LO_STS_0                                   0xCE21C4
++
++#define mmNIC0_QM1_CQ_PTR_LO_STS_1                                   0xCE21C8
++
++#define mmNIC0_QM1_CQ_PTR_LO_STS_2                                   0xCE21CC
++
++#define mmNIC0_QM1_CQ_PTR_LO_STS_3                                   0xCE21D0
++
++#define mmNIC0_QM1_CQ_PTR_LO_STS_4                                   0xCE21D4
++
++#define mmNIC0_QM1_CQ_PTR_HI_STS_0                                   0xCE21D8
++
++#define mmNIC0_QM1_CQ_PTR_HI_STS_1                                   0xCE21DC
++
++#define mmNIC0_QM1_CQ_PTR_HI_STS_2                                   0xCE21E0
++
++#define mmNIC0_QM1_CQ_PTR_HI_STS_3                                   0xCE21E4
++
++#define mmNIC0_QM1_CQ_PTR_HI_STS_4                                   0xCE21E8
++
++#define mmNIC0_QM1_CQ_TSIZE_STS_0                                    0xCE21EC
++
++#define mmNIC0_QM1_CQ_TSIZE_STS_1                                    0xCE21F0
++
++#define mmNIC0_QM1_CQ_TSIZE_STS_2                                    0xCE21F4
++
++#define mmNIC0_QM1_CQ_TSIZE_STS_3                                    0xCE21F8
++
++#define mmNIC0_QM1_CQ_TSIZE_STS_4                                    0xCE21FC
++
++#define mmNIC0_QM1_CQ_CTL_STS_0                                      0xCE2200
++
++#define mmNIC0_QM1_CQ_CTL_STS_1                                      0xCE2204
++
++#define mmNIC0_QM1_CQ_CTL_STS_2                                      0xCE2208
++
++#define mmNIC0_QM1_CQ_CTL_STS_3                                      0xCE220C
++
++#define mmNIC0_QM1_CQ_CTL_STS_4                                      0xCE2210
++
++#define mmNIC0_QM1_CQ_IFIFO_CNT_0                                    0xCE2214
++
++#define mmNIC0_QM1_CQ_IFIFO_CNT_1                                    0xCE2218
++
++#define mmNIC0_QM1_CQ_IFIFO_CNT_2                                    0xCE221C
++
++#define mmNIC0_QM1_CQ_IFIFO_CNT_3                                    0xCE2220
++
++#define mmNIC0_QM1_CQ_IFIFO_CNT_4                                    0xCE2224
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_LO_0                            0xCE2228
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_LO_1                            0xCE222C
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_LO_2                            0xCE2230
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_LO_3                            0xCE2234
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_LO_4                            0xCE2238
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_HI_0                            0xCE223C
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_HI_1                            0xCE2240
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_HI_2                            0xCE2244
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_HI_3                            0xCE2248
++
++#define mmNIC0_QM1_CP_MSG_BASE0_ADDR_HI_4                            0xCE224C
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_LO_0                            0xCE2250
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_LO_1                            0xCE2254
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_LO_2                            0xCE2258
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_LO_3                            0xCE225C
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_LO_4                            0xCE2260
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_HI_0                            0xCE2264
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_HI_1                            0xCE2268
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_HI_2                            0xCE226C
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_HI_3                            0xCE2270
++
++#define mmNIC0_QM1_CP_MSG_BASE1_ADDR_HI_4                            0xCE2274
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_LO_0                            0xCE2278
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_LO_1                            0xCE227C
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_LO_2                            0xCE2280
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_LO_3                            0xCE2284
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_LO_4                            0xCE2288
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_HI_0                            0xCE228C
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_HI_1                            0xCE2290
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_HI_2                            0xCE2294
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_HI_3                            0xCE2298
++
++#define mmNIC0_QM1_CP_MSG_BASE2_ADDR_HI_4                            0xCE229C
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_LO_0                            0xCE22A0
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_LO_1                            0xCE22A4
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_LO_2                            0xCE22A8
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_LO_3                            0xCE22AC
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_LO_4                            0xCE22B0
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_HI_0                            0xCE22B4
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_HI_1                            0xCE22B8
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_HI_2                            0xCE22BC
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_HI_3                            0xCE22C0
++
++#define mmNIC0_QM1_CP_MSG_BASE3_ADDR_HI_4                            0xCE22C4
++
++#define mmNIC0_QM1_CP_LDMA_TSIZE_OFFSET_0                            0xCE22C8
++
++#define mmNIC0_QM1_CP_LDMA_TSIZE_OFFSET_1                            0xCE22CC
++
++#define mmNIC0_QM1_CP_LDMA_TSIZE_OFFSET_2                            0xCE22D0
++
++#define mmNIC0_QM1_CP_LDMA_TSIZE_OFFSET_3                            0xCE22D4
++
++#define mmNIC0_QM1_CP_LDMA_TSIZE_OFFSET_4                            0xCE22D8
++
++#define mmNIC0_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xCE22E0
++
++#define mmNIC0_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xCE22E4
++
++#define mmNIC0_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xCE22E8
++
++#define mmNIC0_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xCE22EC
++
++#define mmNIC0_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xCE22F0
++
++#define mmNIC0_QM1_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xCE22F4
++
++#define mmNIC0_QM1_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xCE22F8
++
++#define mmNIC0_QM1_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xCE22FC
++
++#define mmNIC0_QM1_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xCE2300
++
++#define mmNIC0_QM1_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xCE2304
++
++#define mmNIC0_QM1_CP_FENCE0_RDATA_0                                 0xCE2308
++
++#define mmNIC0_QM1_CP_FENCE0_RDATA_1                                 0xCE230C
++
++#define mmNIC0_QM1_CP_FENCE0_RDATA_2                                 0xCE2310
++
++#define mmNIC0_QM1_CP_FENCE0_RDATA_3                                 0xCE2314
++
++#define mmNIC0_QM1_CP_FENCE0_RDATA_4                                 0xCE2318
++
++#define mmNIC0_QM1_CP_FENCE1_RDATA_0                                 0xCE231C
++
++#define mmNIC0_QM1_CP_FENCE1_RDATA_1                                 0xCE2320
++
++#define mmNIC0_QM1_CP_FENCE1_RDATA_2                                 0xCE2324
++
++#define mmNIC0_QM1_CP_FENCE1_RDATA_3                                 0xCE2328
++
++#define mmNIC0_QM1_CP_FENCE1_RDATA_4                                 0xCE232C
++
++#define mmNIC0_QM1_CP_FENCE2_RDATA_0                                 0xCE2330
++
++#define mmNIC0_QM1_CP_FENCE2_RDATA_1                                 0xCE2334
++
++#define mmNIC0_QM1_CP_FENCE2_RDATA_2                                 0xCE2338
++
++#define mmNIC0_QM1_CP_FENCE2_RDATA_3                                 0xCE233C
++
++#define mmNIC0_QM1_CP_FENCE2_RDATA_4                                 0xCE2340
++
++#define mmNIC0_QM1_CP_FENCE3_RDATA_0                                 0xCE2344
++
++#define mmNIC0_QM1_CP_FENCE3_RDATA_1                                 0xCE2348
++
++#define mmNIC0_QM1_CP_FENCE3_RDATA_2                                 0xCE234C
++
++#define mmNIC0_QM1_CP_FENCE3_RDATA_3                                 0xCE2350
++
++#define mmNIC0_QM1_CP_FENCE3_RDATA_4                                 0xCE2354
++
++#define mmNIC0_QM1_CP_FENCE0_CNT_0                                   0xCE2358
++
++#define mmNIC0_QM1_CP_FENCE0_CNT_1                                   0xCE235C
++
++#define mmNIC0_QM1_CP_FENCE0_CNT_2                                   0xCE2360
++
++#define mmNIC0_QM1_CP_FENCE0_CNT_3                                   0xCE2364
++
++#define mmNIC0_QM1_CP_FENCE0_CNT_4                                   0xCE2368
++
++#define mmNIC0_QM1_CP_FENCE1_CNT_0                                   0xCE236C
++
++#define mmNIC0_QM1_CP_FENCE1_CNT_1                                   0xCE2370
++
++#define mmNIC0_QM1_CP_FENCE1_CNT_2                                   0xCE2374
++
++#define mmNIC0_QM1_CP_FENCE1_CNT_3                                   0xCE2378
++
++#define mmNIC0_QM1_CP_FENCE1_CNT_4                                   0xCE237C
++
++#define mmNIC0_QM1_CP_FENCE2_CNT_0                                   0xCE2380
++
++#define mmNIC0_QM1_CP_FENCE2_CNT_1                                   0xCE2384
++
++#define mmNIC0_QM1_CP_FENCE2_CNT_2                                   0xCE2388
++
++#define mmNIC0_QM1_CP_FENCE2_CNT_3                                   0xCE238C
++
++#define mmNIC0_QM1_CP_FENCE2_CNT_4                                   0xCE2390
++
++#define mmNIC0_QM1_CP_FENCE3_CNT_0                                   0xCE2394
++
++#define mmNIC0_QM1_CP_FENCE3_CNT_1                                   0xCE2398
++
++#define mmNIC0_QM1_CP_FENCE3_CNT_2                                   0xCE239C
++
++#define mmNIC0_QM1_CP_FENCE3_CNT_3                                   0xCE23A0
++
++#define mmNIC0_QM1_CP_FENCE3_CNT_4                                   0xCE23A4
++
++#define mmNIC0_QM1_CP_STS_0                                          0xCE23A8
++
++#define mmNIC0_QM1_CP_STS_1                                          0xCE23AC
++
++#define mmNIC0_QM1_CP_STS_2                                          0xCE23B0
++
++#define mmNIC0_QM1_CP_STS_3                                          0xCE23B4
++
++#define mmNIC0_QM1_CP_STS_4                                          0xCE23B8
++
++#define mmNIC0_QM1_CP_CURRENT_INST_LO_0                              0xCE23BC
++
++#define mmNIC0_QM1_CP_CURRENT_INST_LO_1                              0xCE23C0
++
++#define mmNIC0_QM1_CP_CURRENT_INST_LO_2                              0xCE23C4
++
++#define mmNIC0_QM1_CP_CURRENT_INST_LO_3                              0xCE23C8
++
++#define mmNIC0_QM1_CP_CURRENT_INST_LO_4                              0xCE23CC
++
++#define mmNIC0_QM1_CP_CURRENT_INST_HI_0                              0xCE23D0
++
++#define mmNIC0_QM1_CP_CURRENT_INST_HI_1                              0xCE23D4
++
++#define mmNIC0_QM1_CP_CURRENT_INST_HI_2                              0xCE23D8
++
++#define mmNIC0_QM1_CP_CURRENT_INST_HI_3                              0xCE23DC
++
++#define mmNIC0_QM1_CP_CURRENT_INST_HI_4                              0xCE23E0
++
++#define mmNIC0_QM1_CP_BARRIER_CFG_0                                  0xCE23F4
++
++#define mmNIC0_QM1_CP_BARRIER_CFG_1                                  0xCE23F8
++
++#define mmNIC0_QM1_CP_BARRIER_CFG_2                                  0xCE23FC
++
++#define mmNIC0_QM1_CP_BARRIER_CFG_3                                  0xCE2400
++
++#define mmNIC0_QM1_CP_BARRIER_CFG_4                                  0xCE2404
++
++#define mmNIC0_QM1_CP_DBG_0_0                                        0xCE2408
++
++#define mmNIC0_QM1_CP_DBG_0_1                                        0xCE240C
++
++#define mmNIC0_QM1_CP_DBG_0_2                                        0xCE2410
++
++#define mmNIC0_QM1_CP_DBG_0_3                                        0xCE2414
++
++#define mmNIC0_QM1_CP_DBG_0_4                                        0xCE2418
++
++#define mmNIC0_QM1_CP_ARUSER_31_11_0                                 0xCE241C
++
++#define mmNIC0_QM1_CP_ARUSER_31_11_1                                 0xCE2420
++
++#define mmNIC0_QM1_CP_ARUSER_31_11_2                                 0xCE2424
++
++#define mmNIC0_QM1_CP_ARUSER_31_11_3                                 0xCE2428
++
++#define mmNIC0_QM1_CP_ARUSER_31_11_4                                 0xCE242C
++
++#define mmNIC0_QM1_CP_AWUSER_31_11_0                                 0xCE2430
++
++#define mmNIC0_QM1_CP_AWUSER_31_11_1                                 0xCE2434
++
++#define mmNIC0_QM1_CP_AWUSER_31_11_2                                 0xCE2438
++
++#define mmNIC0_QM1_CP_AWUSER_31_11_3                                 0xCE243C
++
++#define mmNIC0_QM1_CP_AWUSER_31_11_4                                 0xCE2440
++
++#define mmNIC0_QM1_ARB_CFG_0                                         0xCE2A00
++
++#define mmNIC0_QM1_ARB_CHOISE_Q_PUSH                                 0xCE2A04
++
++#define mmNIC0_QM1_ARB_WRR_WEIGHT_0                                  0xCE2A08
++
++#define mmNIC0_QM1_ARB_WRR_WEIGHT_1                                  0xCE2A0C
++
++#define mmNIC0_QM1_ARB_WRR_WEIGHT_2                                  0xCE2A10
++
++#define mmNIC0_QM1_ARB_WRR_WEIGHT_3                                  0xCE2A14
++
++#define mmNIC0_QM1_ARB_CFG_1                                         0xCE2A18
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_0                              0xCE2A20
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_1                              0xCE2A24
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_2                              0xCE2A28
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_3                              0xCE2A2C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_4                              0xCE2A30
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_5                              0xCE2A34
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_6                              0xCE2A38
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_7                              0xCE2A3C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_8                              0xCE2A40
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_9                              0xCE2A44
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_10                             0xCE2A48
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_11                             0xCE2A4C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_12                             0xCE2A50
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_13                             0xCE2A54
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_14                             0xCE2A58
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_15                             0xCE2A5C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_16                             0xCE2A60
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_17                             0xCE2A64
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_18                             0xCE2A68
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_19                             0xCE2A6C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_20                             0xCE2A70
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_21                             0xCE2A74
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_22                             0xCE2A78
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_23                             0xCE2A7C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_24                             0xCE2A80
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_25                             0xCE2A84
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_26                             0xCE2A88
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_27                             0xCE2A8C
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_28                             0xCE2A90
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_29                             0xCE2A94
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_30                             0xCE2A98
++
++#define mmNIC0_QM1_ARB_MST_AVAIL_CRED_31                             0xCE2A9C
++
++#define mmNIC0_QM1_ARB_MST_CRED_INC                                  0xCE2AA0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_0                        0xCE2AA4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_1                        0xCE2AA8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_2                        0xCE2AAC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_3                        0xCE2AB0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_4                        0xCE2AB4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_5                        0xCE2AB8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_6                        0xCE2ABC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_7                        0xCE2AC0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_8                        0xCE2AC4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_9                        0xCE2AC8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_10                       0xCE2ACC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_11                       0xCE2AD0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_12                       0xCE2AD4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_13                       0xCE2AD8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_14                       0xCE2ADC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_15                       0xCE2AE0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_16                       0xCE2AE4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_17                       0xCE2AE8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_18                       0xCE2AEC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_19                       0xCE2AF0
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_20                       0xCE2AF4
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_21                       0xCE2AF8
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_22                       0xCE2AFC
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_23                       0xCE2B00
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_24                       0xCE2B04
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_25                       0xCE2B08
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_26                       0xCE2B0C
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_27                       0xCE2B10
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_28                       0xCE2B14
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_29                       0xCE2B18
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_30                       0xCE2B1C
++
++#define mmNIC0_QM1_ARB_MST_CHOISE_PUSH_OFST_31                       0xCE2B20
++
++#define mmNIC0_QM1_ARB_SLV_MASTER_INC_CRED_OFST                      0xCE2B28
++
++#define mmNIC0_QM1_ARB_MST_SLAVE_EN                                  0xCE2B2C
++
++#define mmNIC0_QM1_ARB_MST_QUIET_PER                                 0xCE2B34
++
++#define mmNIC0_QM1_ARB_SLV_CHOISE_WDT                                0xCE2B38
++
++#define mmNIC0_QM1_ARB_SLV_ID                                        0xCE2B3C
++
++#define mmNIC0_QM1_ARB_MSG_MAX_INFLIGHT                              0xCE2B44
++
++#define mmNIC0_QM1_ARB_MSG_AWUSER_31_11                              0xCE2B48
++
++#define mmNIC0_QM1_ARB_MSG_AWUSER_SEC_PROP                           0xCE2B4C
++
++#define mmNIC0_QM1_ARB_MSG_AWUSER_NON_SEC_PROP                       0xCE2B50
++
++#define mmNIC0_QM1_ARB_BASE_LO                                       0xCE2B54
++
++#define mmNIC0_QM1_ARB_BASE_HI                                       0xCE2B58
++
++#define mmNIC0_QM1_ARB_STATE_STS                                     0xCE2B80
++
++#define mmNIC0_QM1_ARB_CHOISE_FULLNESS_STS                           0xCE2B84
++
++#define mmNIC0_QM1_ARB_MSG_STS                                       0xCE2B88
++
++#define mmNIC0_QM1_ARB_SLV_CHOISE_Q_HEAD                             0xCE2B8C
++
++#define mmNIC0_QM1_ARB_ERR_CAUSE                                     0xCE2B9C
++
++#define mmNIC0_QM1_ARB_ERR_MSG_EN                                    0xCE2BA0
++
++#define mmNIC0_QM1_ARB_ERR_STS_DRP                                   0xCE2BA8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_0                                0xCE2BB0
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_1                                0xCE2BB4
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_2                                0xCE2BB8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_3                                0xCE2BBC
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_4                                0xCE2BC0
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_5                                0xCE2BC4
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_6                                0xCE2BC8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_7                                0xCE2BCC
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_8                                0xCE2BD0
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_9                                0xCE2BD4
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_10                               0xCE2BD8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_11                               0xCE2BDC
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_12                               0xCE2BE0
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_13                               0xCE2BE4
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_14                               0xCE2BE8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_15                               0xCE2BEC
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_16                               0xCE2BF0
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_17                               0xCE2BF4
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_18                               0xCE2BF8
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_19                               0xCE2BFC
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_20                               0xCE2C00
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_21                               0xCE2C04
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_22                               0xCE2C08
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_23                               0xCE2C0C
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_24                               0xCE2C10
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_25                               0xCE2C14
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_26                               0xCE2C18
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_27                               0xCE2C1C
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_28                               0xCE2C20
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_29                               0xCE2C24
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_30                               0xCE2C28
++
++#define mmNIC0_QM1_ARB_MST_CRED_STS_31                               0xCE2C2C
++
++#define mmNIC0_QM1_CGM_CFG                                           0xCE2C70
++
++#define mmNIC0_QM1_CGM_STS                                           0xCE2C74
++
++#define mmNIC0_QM1_CGM_CFG1                                          0xCE2C78
++
++#define mmNIC0_QM1_LOCAL_RANGE_BASE                                  0xCE2C80
++
++#define mmNIC0_QM1_LOCAL_RANGE_SIZE                                  0xCE2C84
++
++#define mmNIC0_QM1_CSMR_STRICT_PRIO_CFG                              0xCE2C90
++
++#define mmNIC0_QM1_HBW_RD_RATE_LIM_CFG_1                             0xCE2C94
++
++#define mmNIC0_QM1_LBW_WR_RATE_LIM_CFG_0                             0xCE2C98
++
++#define mmNIC0_QM1_LBW_WR_RATE_LIM_CFG_1                             0xCE2C9C
++
++#define mmNIC0_QM1_HBW_RD_RATE_LIM_CFG_0                             0xCE2CA0
++
++#define mmNIC0_QM1_GLBL_AXCACHE                                      0xCE2CA4
++
++#define mmNIC0_QM1_IND_GW_APB_CFG                                    0xCE2CB0
++
++#define mmNIC0_QM1_IND_GW_APB_WDATA                                  0xCE2CB4
++
++#define mmNIC0_QM1_IND_GW_APB_RDATA                                  0xCE2CB8
++
++#define mmNIC0_QM1_IND_GW_APB_STATUS                                 0xCE2CBC
++
++#define mmNIC0_QM1_GLBL_ERR_ADDR_LO                                  0xCE2CD0
++
++#define mmNIC0_QM1_GLBL_ERR_ADDR_HI                                  0xCE2CD4
++
++#define mmNIC0_QM1_GLBL_ERR_WDATA                                    0xCE2CD8
++
++#define mmNIC0_QM1_GLBL_MEM_INIT_BUSY                                0xCE2D00
++
++#endif /* ASIC_REG_NIC0_QM1_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h
+new file mode 100644
+index 000000000000..0d1caf057ad0
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC1_QM0_REGS_H_
++#define ASIC_REG_NIC1_QM0_REGS_H_
++
++/*
++ *****************************************
++ *   NIC1_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC1_QM0_GLBL_CFG0                                         0xD20000
++
++#define mmNIC1_QM0_GLBL_CFG1                                         0xD20004
++
++#define mmNIC1_QM0_GLBL_PROT                                         0xD20008
++
++#define mmNIC1_QM0_GLBL_ERR_CFG                                      0xD2000C
++
++#define mmNIC1_QM0_GLBL_SECURE_PROPS_0                               0xD20010
++
++#define mmNIC1_QM0_GLBL_SECURE_PROPS_1                               0xD20014
++
++#define mmNIC1_QM0_GLBL_SECURE_PROPS_2                               0xD20018
++
++#define mmNIC1_QM0_GLBL_SECURE_PROPS_3                               0xD2001C
++
++#define mmNIC1_QM0_GLBL_SECURE_PROPS_4                               0xD20020
++
++#define mmNIC1_QM0_GLBL_NON_SECURE_PROPS_0                           0xD20024
++
++#define mmNIC1_QM0_GLBL_NON_SECURE_PROPS_1                           0xD20028
++
++#define mmNIC1_QM0_GLBL_NON_SECURE_PROPS_2                           0xD2002C
++
++#define mmNIC1_QM0_GLBL_NON_SECURE_PROPS_3                           0xD20030
++
++#define mmNIC1_QM0_GLBL_NON_SECURE_PROPS_4                           0xD20034
++
++#define mmNIC1_QM0_GLBL_STS0                                         0xD20038
++
++#define mmNIC1_QM0_GLBL_STS1_0                                       0xD20040
++
++#define mmNIC1_QM0_GLBL_STS1_1                                       0xD20044
++
++#define mmNIC1_QM0_GLBL_STS1_2                                       0xD20048
++
++#define mmNIC1_QM0_GLBL_STS1_3                                       0xD2004C
++
++#define mmNIC1_QM0_GLBL_STS1_4                                       0xD20050
++
++#define mmNIC1_QM0_GLBL_MSG_EN_0                                     0xD20054
++
++#define mmNIC1_QM0_GLBL_MSG_EN_1                                     0xD20058
++
++#define mmNIC1_QM0_GLBL_MSG_EN_2                                     0xD2005C
++
++#define mmNIC1_QM0_GLBL_MSG_EN_3                                     0xD20060
++
++#define mmNIC1_QM0_GLBL_MSG_EN_4                                     0xD20068
++
++#define mmNIC1_QM0_PQ_BASE_LO_0                                      0xD20070
++
++#define mmNIC1_QM0_PQ_BASE_LO_1                                      0xD20074
++
++#define mmNIC1_QM0_PQ_BASE_LO_2                                      0xD20078
++
++#define mmNIC1_QM0_PQ_BASE_LO_3                                      0xD2007C
++
++#define mmNIC1_QM0_PQ_BASE_HI_0                                      0xD20080
++
++#define mmNIC1_QM0_PQ_BASE_HI_1                                      0xD20084
++
++#define mmNIC1_QM0_PQ_BASE_HI_2                                      0xD20088
++
++#define mmNIC1_QM0_PQ_BASE_HI_3                                      0xD2008C
++
++#define mmNIC1_QM0_PQ_SIZE_0                                         0xD20090
++
++#define mmNIC1_QM0_PQ_SIZE_1                                         0xD20094
++
++#define mmNIC1_QM0_PQ_SIZE_2                                         0xD20098
++
++#define mmNIC1_QM0_PQ_SIZE_3                                         0xD2009C
++
++#define mmNIC1_QM0_PQ_PI_0                                           0xD200A0
++
++#define mmNIC1_QM0_PQ_PI_1                                           0xD200A4
++
++#define mmNIC1_QM0_PQ_PI_2                                           0xD200A8
++
++#define mmNIC1_QM0_PQ_PI_3                                           0xD200AC
++
++#define mmNIC1_QM0_PQ_CI_0                                           0xD200B0
++
++#define mmNIC1_QM0_PQ_CI_1                                           0xD200B4
++
++#define mmNIC1_QM0_PQ_CI_2                                           0xD200B8
++
++#define mmNIC1_QM0_PQ_CI_3                                           0xD200BC
++
++#define mmNIC1_QM0_PQ_CFG0_0                                         0xD200C0
++
++#define mmNIC1_QM0_PQ_CFG0_1                                         0xD200C4
++
++#define mmNIC1_QM0_PQ_CFG0_2                                         0xD200C8
++
++#define mmNIC1_QM0_PQ_CFG0_3                                         0xD200CC
++
++#define mmNIC1_QM0_PQ_CFG1_0                                         0xD200D0
++
++#define mmNIC1_QM0_PQ_CFG1_1                                         0xD200D4
++
++#define mmNIC1_QM0_PQ_CFG1_2                                         0xD200D8
++
++#define mmNIC1_QM0_PQ_CFG1_3                                         0xD200DC
++
++#define mmNIC1_QM0_PQ_ARUSER_31_11_0                                 0xD200E0
++
++#define mmNIC1_QM0_PQ_ARUSER_31_11_1                                 0xD200E4
++
++#define mmNIC1_QM0_PQ_ARUSER_31_11_2                                 0xD200E8
++
++#define mmNIC1_QM0_PQ_ARUSER_31_11_3                                 0xD200EC
++
++#define mmNIC1_QM0_PQ_STS0_0                                         0xD200F0
++
++#define mmNIC1_QM0_PQ_STS0_1                                         0xD200F4
++
++#define mmNIC1_QM0_PQ_STS0_2                                         0xD200F8
++
++#define mmNIC1_QM0_PQ_STS0_3                                         0xD200FC
++
++#define mmNIC1_QM0_PQ_STS1_0                                         0xD20100
++
++#define mmNIC1_QM0_PQ_STS1_1                                         0xD20104
++
++#define mmNIC1_QM0_PQ_STS1_2                                         0xD20108
++
++#define mmNIC1_QM0_PQ_STS1_3                                         0xD2010C
++
++#define mmNIC1_QM0_CQ_CFG0_0                                         0xD20110
++
++#define mmNIC1_QM0_CQ_CFG0_1                                         0xD20114
++
++#define mmNIC1_QM0_CQ_CFG0_2                                         0xD20118
++
++#define mmNIC1_QM0_CQ_CFG0_3                                         0xD2011C
++
++#define mmNIC1_QM0_CQ_CFG0_4                                         0xD20120
++
++#define mmNIC1_QM0_CQ_CFG1_0                                         0xD20124
++
++#define mmNIC1_QM0_CQ_CFG1_1                                         0xD20128
++
++#define mmNIC1_QM0_CQ_CFG1_2                                         0xD2012C
++
++#define mmNIC1_QM0_CQ_CFG1_3                                         0xD20130
++
++#define mmNIC1_QM0_CQ_CFG1_4                                         0xD20134
++
++#define mmNIC1_QM0_CQ_ARUSER_31_11_0                                 0xD20138
++
++#define mmNIC1_QM0_CQ_ARUSER_31_11_1                                 0xD2013C
++
++#define mmNIC1_QM0_CQ_ARUSER_31_11_2                                 0xD20140
++
++#define mmNIC1_QM0_CQ_ARUSER_31_11_3                                 0xD20144
++
++#define mmNIC1_QM0_CQ_ARUSER_31_11_4                                 0xD20148
++
++#define mmNIC1_QM0_CQ_STS0_0                                         0xD2014C
++
++#define mmNIC1_QM0_CQ_STS0_1                                         0xD20150
++
++#define mmNIC1_QM0_CQ_STS0_2                                         0xD20154
++
++#define mmNIC1_QM0_CQ_STS0_3                                         0xD20158
++
++#define mmNIC1_QM0_CQ_STS0_4                                         0xD2015C
++
++#define mmNIC1_QM0_CQ_STS1_0                                         0xD20160
++
++#define mmNIC1_QM0_CQ_STS1_1                                         0xD20164
++
++#define mmNIC1_QM0_CQ_STS1_2                                         0xD20168
++
++#define mmNIC1_QM0_CQ_STS1_3                                         0xD2016C
++
++#define mmNIC1_QM0_CQ_STS1_4                                         0xD20170
++
++#define mmNIC1_QM0_CQ_PTR_LO_0                                       0xD20174
++
++#define mmNIC1_QM0_CQ_PTR_HI_0                                       0xD20178
++
++#define mmNIC1_QM0_CQ_TSIZE_0                                        0xD2017C
++
++#define mmNIC1_QM0_CQ_CTL_0                                          0xD20180
++
++#define mmNIC1_QM0_CQ_PTR_LO_1                                       0xD20184
++
++#define mmNIC1_QM0_CQ_PTR_HI_1                                       0xD20188
++
++#define mmNIC1_QM0_CQ_TSIZE_1                                        0xD2018C
++
++#define mmNIC1_QM0_CQ_CTL_1                                          0xD20190
++
++#define mmNIC1_QM0_CQ_PTR_LO_2                                       0xD20194
++
++#define mmNIC1_QM0_CQ_PTR_HI_2                                       0xD20198
++
++#define mmNIC1_QM0_CQ_TSIZE_2                                        0xD2019C
++
++#define mmNIC1_QM0_CQ_CTL_2                                          0xD201A0
++
++#define mmNIC1_QM0_CQ_PTR_LO_3                                       0xD201A4
++
++#define mmNIC1_QM0_CQ_PTR_HI_3                                       0xD201A8
++
++#define mmNIC1_QM0_CQ_TSIZE_3                                        0xD201AC
++
++#define mmNIC1_QM0_CQ_CTL_3                                          0xD201B0
++
++#define mmNIC1_QM0_CQ_PTR_LO_4                                       0xD201B4
++
++#define mmNIC1_QM0_CQ_PTR_HI_4                                       0xD201B8
++
++#define mmNIC1_QM0_CQ_TSIZE_4                                        0xD201BC
++
++#define mmNIC1_QM0_CQ_CTL_4                                          0xD201C0
++
++#define mmNIC1_QM0_CQ_PTR_LO_STS_0                                   0xD201C4
++
++#define mmNIC1_QM0_CQ_PTR_LO_STS_1                                   0xD201C8
++
++#define mmNIC1_QM0_CQ_PTR_LO_STS_2                                   0xD201CC
++
++#define mmNIC1_QM0_CQ_PTR_LO_STS_3                                   0xD201D0
++
++#define mmNIC1_QM0_CQ_PTR_LO_STS_4                                   0xD201D4
++
++#define mmNIC1_QM0_CQ_PTR_HI_STS_0                                   0xD201D8
++
++#define mmNIC1_QM0_CQ_PTR_HI_STS_1                                   0xD201DC
++
++#define mmNIC1_QM0_CQ_PTR_HI_STS_2                                   0xD201E0
++
++#define mmNIC1_QM0_CQ_PTR_HI_STS_3                                   0xD201E4
++
++#define mmNIC1_QM0_CQ_PTR_HI_STS_4                                   0xD201E8
++
++#define mmNIC1_QM0_CQ_TSIZE_STS_0                                    0xD201EC
++
++#define mmNIC1_QM0_CQ_TSIZE_STS_1                                    0xD201F0
++
++#define mmNIC1_QM0_CQ_TSIZE_STS_2                                    0xD201F4
++
++#define mmNIC1_QM0_CQ_TSIZE_STS_3                                    0xD201F8
++
++#define mmNIC1_QM0_CQ_TSIZE_STS_4                                    0xD201FC
++
++#define mmNIC1_QM0_CQ_CTL_STS_0                                      0xD20200
++
++#define mmNIC1_QM0_CQ_CTL_STS_1                                      0xD20204
++
++#define mmNIC1_QM0_CQ_CTL_STS_2                                      0xD20208
++
++#define mmNIC1_QM0_CQ_CTL_STS_3                                      0xD2020C
++
++#define mmNIC1_QM0_CQ_CTL_STS_4                                      0xD20210
++
++#define mmNIC1_QM0_CQ_IFIFO_CNT_0                                    0xD20214
++
++#define mmNIC1_QM0_CQ_IFIFO_CNT_1                                    0xD20218
++
++#define mmNIC1_QM0_CQ_IFIFO_CNT_2                                    0xD2021C
++
++#define mmNIC1_QM0_CQ_IFIFO_CNT_3                                    0xD20220
++
++#define mmNIC1_QM0_CQ_IFIFO_CNT_4                                    0xD20224
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_LO_0                            0xD20228
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_LO_1                            0xD2022C
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_LO_2                            0xD20230
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_LO_3                            0xD20234
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_LO_4                            0xD20238
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_HI_0                            0xD2023C
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_HI_1                            0xD20240
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_HI_2                            0xD20244
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_HI_3                            0xD20248
++
++#define mmNIC1_QM0_CP_MSG_BASE0_ADDR_HI_4                            0xD2024C
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_LO_0                            0xD20250
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_LO_1                            0xD20254
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_LO_2                            0xD20258
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_LO_3                            0xD2025C
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_LO_4                            0xD20260
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_HI_0                            0xD20264
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_HI_1                            0xD20268
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_HI_2                            0xD2026C
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_HI_3                            0xD20270
++
++#define mmNIC1_QM0_CP_MSG_BASE1_ADDR_HI_4                            0xD20274
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_LO_0                            0xD20278
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_LO_1                            0xD2027C
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_LO_2                            0xD20280
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_LO_3                            0xD20284
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_LO_4                            0xD20288
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_HI_0                            0xD2028C
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_HI_1                            0xD20290
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_HI_2                            0xD20294
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_HI_3                            0xD20298
++
++#define mmNIC1_QM0_CP_MSG_BASE2_ADDR_HI_4                            0xD2029C
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_LO_0                            0xD202A0
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_LO_1                            0xD202A4
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_LO_2                            0xD202A8
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_LO_3                            0xD202AC
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_LO_4                            0xD202B0
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_HI_0                            0xD202B4
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_HI_1                            0xD202B8
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_HI_2                            0xD202BC
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_HI_3                            0xD202C0
++
++#define mmNIC1_QM0_CP_MSG_BASE3_ADDR_HI_4                            0xD202C4
++
++#define mmNIC1_QM0_CP_LDMA_TSIZE_OFFSET_0                            0xD202C8
++
++#define mmNIC1_QM0_CP_LDMA_TSIZE_OFFSET_1                            0xD202CC
++
++#define mmNIC1_QM0_CP_LDMA_TSIZE_OFFSET_2                            0xD202D0
++
++#define mmNIC1_QM0_CP_LDMA_TSIZE_OFFSET_3                            0xD202D4
++
++#define mmNIC1_QM0_CP_LDMA_TSIZE_OFFSET_4                            0xD202D8
++
++#define mmNIC1_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xD202E0
++
++#define mmNIC1_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xD202E4
++
++#define mmNIC1_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xD202E8
++
++#define mmNIC1_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xD202EC
++
++#define mmNIC1_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xD202F0
++
++#define mmNIC1_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xD202F4
++
++#define mmNIC1_QM0_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xD202F8
++
++#define mmNIC1_QM0_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xD202FC
++
++#define mmNIC1_QM0_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xD20300
++
++#define mmNIC1_QM0_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xD20304
++
++#define mmNIC1_QM0_CP_FENCE0_RDATA_0                                 0xD20308
++
++#define mmNIC1_QM0_CP_FENCE0_RDATA_1                                 0xD2030C
++
++#define mmNIC1_QM0_CP_FENCE0_RDATA_2                                 0xD20310
++
++#define mmNIC1_QM0_CP_FENCE0_RDATA_3                                 0xD20314
++
++#define mmNIC1_QM0_CP_FENCE0_RDATA_4                                 0xD20318
++
++#define mmNIC1_QM0_CP_FENCE1_RDATA_0                                 0xD2031C
++
++#define mmNIC1_QM0_CP_FENCE1_RDATA_1                                 0xD20320
++
++#define mmNIC1_QM0_CP_FENCE1_RDATA_2                                 0xD20324
++
++#define mmNIC1_QM0_CP_FENCE1_RDATA_3                                 0xD20328
++
++#define mmNIC1_QM0_CP_FENCE1_RDATA_4                                 0xD2032C
++
++#define mmNIC1_QM0_CP_FENCE2_RDATA_0                                 0xD20330
++
++#define mmNIC1_QM0_CP_FENCE2_RDATA_1                                 0xD20334
++
++#define mmNIC1_QM0_CP_FENCE2_RDATA_2                                 0xD20338
++
++#define mmNIC1_QM0_CP_FENCE2_RDATA_3                                 0xD2033C
++
++#define mmNIC1_QM0_CP_FENCE2_RDATA_4                                 0xD20340
++
++#define mmNIC1_QM0_CP_FENCE3_RDATA_0                                 0xD20344
++
++#define mmNIC1_QM0_CP_FENCE3_RDATA_1                                 0xD20348
++
++#define mmNIC1_QM0_CP_FENCE3_RDATA_2                                 0xD2034C
++
++#define mmNIC1_QM0_CP_FENCE3_RDATA_3                                 0xD20350
++
++#define mmNIC1_QM0_CP_FENCE3_RDATA_4                                 0xD20354
++
++#define mmNIC1_QM0_CP_FENCE0_CNT_0                                   0xD20358
++
++#define mmNIC1_QM0_CP_FENCE0_CNT_1                                   0xD2035C
++
++#define mmNIC1_QM0_CP_FENCE0_CNT_2                                   0xD20360
++
++#define mmNIC1_QM0_CP_FENCE0_CNT_3                                   0xD20364
++
++#define mmNIC1_QM0_CP_FENCE0_CNT_4                                   0xD20368
++
++#define mmNIC1_QM0_CP_FENCE1_CNT_0                                   0xD2036C
++
++#define mmNIC1_QM0_CP_FENCE1_CNT_1                                   0xD20370
++
++#define mmNIC1_QM0_CP_FENCE1_CNT_2                                   0xD20374
++
++#define mmNIC1_QM0_CP_FENCE1_CNT_3                                   0xD20378
++
++#define mmNIC1_QM0_CP_FENCE1_CNT_4                                   0xD2037C
++
++#define mmNIC1_QM0_CP_FENCE2_CNT_0                                   0xD20380
++
++#define mmNIC1_QM0_CP_FENCE2_CNT_1                                   0xD20384
++
++#define mmNIC1_QM0_CP_FENCE2_CNT_2                                   0xD20388
++
++#define mmNIC1_QM0_CP_FENCE2_CNT_3                                   0xD2038C
++
++#define mmNIC1_QM0_CP_FENCE2_CNT_4                                   0xD20390
++
++#define mmNIC1_QM0_CP_FENCE3_CNT_0                                   0xD20394
++
++#define mmNIC1_QM0_CP_FENCE3_CNT_1                                   0xD20398
++
++#define mmNIC1_QM0_CP_FENCE3_CNT_2                                   0xD2039C
++
++#define mmNIC1_QM0_CP_FENCE3_CNT_3                                   0xD203A0
++
++#define mmNIC1_QM0_CP_FENCE3_CNT_4                                   0xD203A4
++
++#define mmNIC1_QM0_CP_STS_0                                          0xD203A8
++
++#define mmNIC1_QM0_CP_STS_1                                          0xD203AC
++
++#define mmNIC1_QM0_CP_STS_2                                          0xD203B0
++
++#define mmNIC1_QM0_CP_STS_3                                          0xD203B4
++
++#define mmNIC1_QM0_CP_STS_4                                          0xD203B8
++
++#define mmNIC1_QM0_CP_CURRENT_INST_LO_0                              0xD203BC
++
++#define mmNIC1_QM0_CP_CURRENT_INST_LO_1                              0xD203C0
++
++#define mmNIC1_QM0_CP_CURRENT_INST_LO_2                              0xD203C4
++
++#define mmNIC1_QM0_CP_CURRENT_INST_LO_3                              0xD203C8
++
++#define mmNIC1_QM0_CP_CURRENT_INST_LO_4                              0xD203CC
++
++#define mmNIC1_QM0_CP_CURRENT_INST_HI_0                              0xD203D0
++
++#define mmNIC1_QM0_CP_CURRENT_INST_HI_1                              0xD203D4
++
++#define mmNIC1_QM0_CP_CURRENT_INST_HI_2                              0xD203D8
++
++#define mmNIC1_QM0_CP_CURRENT_INST_HI_3                              0xD203DC
++
++#define mmNIC1_QM0_CP_CURRENT_INST_HI_4                              0xD203E0
++
++#define mmNIC1_QM0_CP_BARRIER_CFG_0                                  0xD203F4
++
++#define mmNIC1_QM0_CP_BARRIER_CFG_1                                  0xD203F8
++
++#define mmNIC1_QM0_CP_BARRIER_CFG_2                                  0xD203FC
++
++#define mmNIC1_QM0_CP_BARRIER_CFG_3                                  0xD20400
++
++#define mmNIC1_QM0_CP_BARRIER_CFG_4                                  0xD20404
++
++#define mmNIC1_QM0_CP_DBG_0_0                                        0xD20408
++
++#define mmNIC1_QM0_CP_DBG_0_1                                        0xD2040C
++
++#define mmNIC1_QM0_CP_DBG_0_2                                        0xD20410
++
++#define mmNIC1_QM0_CP_DBG_0_3                                        0xD20414
++
++#define mmNIC1_QM0_CP_DBG_0_4                                        0xD20418
++
++#define mmNIC1_QM0_CP_ARUSER_31_11_0                                 0xD2041C
++
++#define mmNIC1_QM0_CP_ARUSER_31_11_1                                 0xD20420
++
++#define mmNIC1_QM0_CP_ARUSER_31_11_2                                 0xD20424
++
++#define mmNIC1_QM0_CP_ARUSER_31_11_3                                 0xD20428
++
++#define mmNIC1_QM0_CP_ARUSER_31_11_4                                 0xD2042C
++
++#define mmNIC1_QM0_CP_AWUSER_31_11_0                                 0xD20430
++
++#define mmNIC1_QM0_CP_AWUSER_31_11_1                                 0xD20434
++
++#define mmNIC1_QM0_CP_AWUSER_31_11_2                                 0xD20438
++
++#define mmNIC1_QM0_CP_AWUSER_31_11_3                                 0xD2043C
++
++#define mmNIC1_QM0_CP_AWUSER_31_11_4                                 0xD20440
++
++#define mmNIC1_QM0_ARB_CFG_0                                         0xD20A00
++
++#define mmNIC1_QM0_ARB_CHOISE_Q_PUSH                                 0xD20A04
++
++#define mmNIC1_QM0_ARB_WRR_WEIGHT_0                                  0xD20A08
++
++#define mmNIC1_QM0_ARB_WRR_WEIGHT_1                                  0xD20A0C
++
++#define mmNIC1_QM0_ARB_WRR_WEIGHT_2                                  0xD20A10
++
++#define mmNIC1_QM0_ARB_WRR_WEIGHT_3                                  0xD20A14
++
++#define mmNIC1_QM0_ARB_CFG_1                                         0xD20A18
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_0                              0xD20A20
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_1                              0xD20A24
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_2                              0xD20A28
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_3                              0xD20A2C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_4                              0xD20A30
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_5                              0xD20A34
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_6                              0xD20A38
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_7                              0xD20A3C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_8                              0xD20A40
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_9                              0xD20A44
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_10                             0xD20A48
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_11                             0xD20A4C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_12                             0xD20A50
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_13                             0xD20A54
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_14                             0xD20A58
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_15                             0xD20A5C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_16                             0xD20A60
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_17                             0xD20A64
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_18                             0xD20A68
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_19                             0xD20A6C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_20                             0xD20A70
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_21                             0xD20A74
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_22                             0xD20A78
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_23                             0xD20A7C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_24                             0xD20A80
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_25                             0xD20A84
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_26                             0xD20A88
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_27                             0xD20A8C
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_28                             0xD20A90
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_29                             0xD20A94
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_30                             0xD20A98
++
++#define mmNIC1_QM0_ARB_MST_AVAIL_CRED_31                             0xD20A9C
++
++#define mmNIC1_QM0_ARB_MST_CRED_INC                                  0xD20AA0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_0                        0xD20AA4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_1                        0xD20AA8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_2                        0xD20AAC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_3                        0xD20AB0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_4                        0xD20AB4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_5                        0xD20AB8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_6                        0xD20ABC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_7                        0xD20AC0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_8                        0xD20AC4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_9                        0xD20AC8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_10                       0xD20ACC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_11                       0xD20AD0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_12                       0xD20AD4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_13                       0xD20AD8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_14                       0xD20ADC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_15                       0xD20AE0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_16                       0xD20AE4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_17                       0xD20AE8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_18                       0xD20AEC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_19                       0xD20AF0
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_20                       0xD20AF4
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_21                       0xD20AF8
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_22                       0xD20AFC
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_23                       0xD20B00
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_24                       0xD20B04
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_25                       0xD20B08
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_26                       0xD20B0C
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_27                       0xD20B10
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_28                       0xD20B14
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_29                       0xD20B18
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_30                       0xD20B1C
++
++#define mmNIC1_QM0_ARB_MST_CHOISE_PUSH_OFST_31                       0xD20B20
++
++#define mmNIC1_QM0_ARB_SLV_MASTER_INC_CRED_OFST                      0xD20B28
++
++#define mmNIC1_QM0_ARB_MST_SLAVE_EN                                  0xD20B2C
++
++#define mmNIC1_QM0_ARB_MST_QUIET_PER                                 0xD20B34
++
++#define mmNIC1_QM0_ARB_SLV_CHOISE_WDT                                0xD20B38
++
++#define mmNIC1_QM0_ARB_SLV_ID                                        0xD20B3C
++
++#define mmNIC1_QM0_ARB_MSG_MAX_INFLIGHT                              0xD20B44
++
++#define mmNIC1_QM0_ARB_MSG_AWUSER_31_11                              0xD20B48
++
++#define mmNIC1_QM0_ARB_MSG_AWUSER_SEC_PROP                           0xD20B4C
++
++#define mmNIC1_QM0_ARB_MSG_AWUSER_NON_SEC_PROP                       0xD20B50
++
++#define mmNIC1_QM0_ARB_BASE_LO                                       0xD20B54
++
++#define mmNIC1_QM0_ARB_BASE_HI                                       0xD20B58
++
++#define mmNIC1_QM0_ARB_STATE_STS                                     0xD20B80
++
++#define mmNIC1_QM0_ARB_CHOISE_FULLNESS_STS                           0xD20B84
++
++#define mmNIC1_QM0_ARB_MSG_STS                                       0xD20B88
++
++#define mmNIC1_QM0_ARB_SLV_CHOISE_Q_HEAD                             0xD20B8C
++
++#define mmNIC1_QM0_ARB_ERR_CAUSE                                     0xD20B9C
++
++#define mmNIC1_QM0_ARB_ERR_MSG_EN                                    0xD20BA0
++
++#define mmNIC1_QM0_ARB_ERR_STS_DRP                                   0xD20BA8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_0                                0xD20BB0
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_1                                0xD20BB4
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_2                                0xD20BB8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_3                                0xD20BBC
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_4                                0xD20BC0
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_5                                0xD20BC4
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_6                                0xD20BC8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_7                                0xD20BCC
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_8                                0xD20BD0
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_9                                0xD20BD4
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_10                               0xD20BD8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_11                               0xD20BDC
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_12                               0xD20BE0
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_13                               0xD20BE4
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_14                               0xD20BE8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_15                               0xD20BEC
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_16                               0xD20BF0
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_17                               0xD20BF4
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_18                               0xD20BF8
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_19                               0xD20BFC
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_20                               0xD20C00
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_21                               0xD20C04
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_22                               0xD20C08
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_23                               0xD20C0C
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_24                               0xD20C10
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_25                               0xD20C14
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_26                               0xD20C18
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_27                               0xD20C1C
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_28                               0xD20C20
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_29                               0xD20C24
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_30                               0xD20C28
++
++#define mmNIC1_QM0_ARB_MST_CRED_STS_31                               0xD20C2C
++
++#define mmNIC1_QM0_CGM_CFG                                           0xD20C70
++
++#define mmNIC1_QM0_CGM_STS                                           0xD20C74
++
++#define mmNIC1_QM0_CGM_CFG1                                          0xD20C78
++
++#define mmNIC1_QM0_LOCAL_RANGE_BASE                                  0xD20C80
++
++#define mmNIC1_QM0_LOCAL_RANGE_SIZE                                  0xD20C84
++
++#define mmNIC1_QM0_CSMR_STRICT_PRIO_CFG                              0xD20C90
++
++#define mmNIC1_QM0_HBW_RD_RATE_LIM_CFG_1                             0xD20C94
++
++#define mmNIC1_QM0_LBW_WR_RATE_LIM_CFG_0                             0xD20C98
++
++#define mmNIC1_QM0_LBW_WR_RATE_LIM_CFG_1                             0xD20C9C
++
++#define mmNIC1_QM0_HBW_RD_RATE_LIM_CFG_0                             0xD20CA0
++
++#define mmNIC1_QM0_GLBL_AXCACHE                                      0xD20CA4
++
++#define mmNIC1_QM0_IND_GW_APB_CFG                                    0xD20CB0
++
++#define mmNIC1_QM0_IND_GW_APB_WDATA                                  0xD20CB4
++
++#define mmNIC1_QM0_IND_GW_APB_RDATA                                  0xD20CB8
++
++#define mmNIC1_QM0_IND_GW_APB_STATUS                                 0xD20CBC
++
++#define mmNIC1_QM0_GLBL_ERR_ADDR_LO                                  0xD20CD0
++
++#define mmNIC1_QM0_GLBL_ERR_ADDR_HI                                  0xD20CD4
++
++#define mmNIC1_QM0_GLBL_ERR_WDATA                                    0xD20CD8
++
++#define mmNIC1_QM0_GLBL_MEM_INIT_BUSY                                0xD20D00
++
++#endif /* ASIC_REG_NIC1_QM0_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h
+new file mode 100644
+index 000000000000..1b115ee6d6f0
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC1_QM1_REGS_H_
++#define ASIC_REG_NIC1_QM1_REGS_H_
++
++/*
++ *****************************************
++ *   NIC1_QM1 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC1_QM1_GLBL_CFG0                                         0xD22000
++
++#define mmNIC1_QM1_GLBL_CFG1                                         0xD22004
++
++#define mmNIC1_QM1_GLBL_PROT                                         0xD22008
++
++#define mmNIC1_QM1_GLBL_ERR_CFG                                      0xD2200C
++
++#define mmNIC1_QM1_GLBL_SECURE_PROPS_0                               0xD22010
++
++#define mmNIC1_QM1_GLBL_SECURE_PROPS_1                               0xD22014
++
++#define mmNIC1_QM1_GLBL_SECURE_PROPS_2                               0xD22018
++
++#define mmNIC1_QM1_GLBL_SECURE_PROPS_3                               0xD2201C
++
++#define mmNIC1_QM1_GLBL_SECURE_PROPS_4                               0xD22020
++
++#define mmNIC1_QM1_GLBL_NON_SECURE_PROPS_0                           0xD22024
++
++#define mmNIC1_QM1_GLBL_NON_SECURE_PROPS_1                           0xD22028
++
++#define mmNIC1_QM1_GLBL_NON_SECURE_PROPS_2                           0xD2202C
++
++#define mmNIC1_QM1_GLBL_NON_SECURE_PROPS_3                           0xD22030
++
++#define mmNIC1_QM1_GLBL_NON_SECURE_PROPS_4                           0xD22034
++
++#define mmNIC1_QM1_GLBL_STS0                                         0xD22038
++
++#define mmNIC1_QM1_GLBL_STS1_0                                       0xD22040
++
++#define mmNIC1_QM1_GLBL_STS1_1                                       0xD22044
++
++#define mmNIC1_QM1_GLBL_STS1_2                                       0xD22048
++
++#define mmNIC1_QM1_GLBL_STS1_3                                       0xD2204C
++
++#define mmNIC1_QM1_GLBL_STS1_4                                       0xD22050
++
++#define mmNIC1_QM1_GLBL_MSG_EN_0                                     0xD22054
++
++#define mmNIC1_QM1_GLBL_MSG_EN_1                                     0xD22058
++
++#define mmNIC1_QM1_GLBL_MSG_EN_2                                     0xD2205C
++
++#define mmNIC1_QM1_GLBL_MSG_EN_3                                     0xD22060
++
++#define mmNIC1_QM1_GLBL_MSG_EN_4                                     0xD22068
++
++#define mmNIC1_QM1_PQ_BASE_LO_0                                      0xD22070
++
++#define mmNIC1_QM1_PQ_BASE_LO_1                                      0xD22074
++
++#define mmNIC1_QM1_PQ_BASE_LO_2                                      0xD22078
++
++#define mmNIC1_QM1_PQ_BASE_LO_3                                      0xD2207C
++
++#define mmNIC1_QM1_PQ_BASE_HI_0                                      0xD22080
++
++#define mmNIC1_QM1_PQ_BASE_HI_1                                      0xD22084
++
++#define mmNIC1_QM1_PQ_BASE_HI_2                                      0xD22088
++
++#define mmNIC1_QM1_PQ_BASE_HI_3                                      0xD2208C
++
++#define mmNIC1_QM1_PQ_SIZE_0                                         0xD22090
++
++#define mmNIC1_QM1_PQ_SIZE_1                                         0xD22094
++
++#define mmNIC1_QM1_PQ_SIZE_2                                         0xD22098
++
++#define mmNIC1_QM1_PQ_SIZE_3                                         0xD2209C
++
++#define mmNIC1_QM1_PQ_PI_0                                           0xD220A0
++
++#define mmNIC1_QM1_PQ_PI_1                                           0xD220A4
++
++#define mmNIC1_QM1_PQ_PI_2                                           0xD220A8
++
++#define mmNIC1_QM1_PQ_PI_3                                           0xD220AC
++
++#define mmNIC1_QM1_PQ_CI_0                                           0xD220B0
++
++#define mmNIC1_QM1_PQ_CI_1                                           0xD220B4
++
++#define mmNIC1_QM1_PQ_CI_2                                           0xD220B8
++
++#define mmNIC1_QM1_PQ_CI_3                                           0xD220BC
++
++#define mmNIC1_QM1_PQ_CFG0_0                                         0xD220C0
++
++#define mmNIC1_QM1_PQ_CFG0_1                                         0xD220C4
++
++#define mmNIC1_QM1_PQ_CFG0_2                                         0xD220C8
++
++#define mmNIC1_QM1_PQ_CFG0_3                                         0xD220CC
++
++#define mmNIC1_QM1_PQ_CFG1_0                                         0xD220D0
++
++#define mmNIC1_QM1_PQ_CFG1_1                                         0xD220D4
++
++#define mmNIC1_QM1_PQ_CFG1_2                                         0xD220D8
++
++#define mmNIC1_QM1_PQ_CFG1_3                                         0xD220DC
++
++#define mmNIC1_QM1_PQ_ARUSER_31_11_0                                 0xD220E0
++
++#define mmNIC1_QM1_PQ_ARUSER_31_11_1                                 0xD220E4
++
++#define mmNIC1_QM1_PQ_ARUSER_31_11_2                                 0xD220E8
++
++#define mmNIC1_QM1_PQ_ARUSER_31_11_3                                 0xD220EC
++
++#define mmNIC1_QM1_PQ_STS0_0                                         0xD220F0
++
++#define mmNIC1_QM1_PQ_STS0_1                                         0xD220F4
++
++#define mmNIC1_QM1_PQ_STS0_2                                         0xD220F8
++
++#define mmNIC1_QM1_PQ_STS0_3                                         0xD220FC
++
++#define mmNIC1_QM1_PQ_STS1_0                                         0xD22100
++
++#define mmNIC1_QM1_PQ_STS1_1                                         0xD22104
++
++#define mmNIC1_QM1_PQ_STS1_2                                         0xD22108
++
++#define mmNIC1_QM1_PQ_STS1_3                                         0xD2210C
++
++#define mmNIC1_QM1_CQ_CFG0_0                                         0xD22110
++
++#define mmNIC1_QM1_CQ_CFG0_1                                         0xD22114
++
++#define mmNIC1_QM1_CQ_CFG0_2                                         0xD22118
++
++#define mmNIC1_QM1_CQ_CFG0_3                                         0xD2211C
++
++#define mmNIC1_QM1_CQ_CFG0_4                                         0xD22120
++
++#define mmNIC1_QM1_CQ_CFG1_0                                         0xD22124
++
++#define mmNIC1_QM1_CQ_CFG1_1                                         0xD22128
++
++#define mmNIC1_QM1_CQ_CFG1_2                                         0xD2212C
++
++#define mmNIC1_QM1_CQ_CFG1_3                                         0xD22130
++
++#define mmNIC1_QM1_CQ_CFG1_4                                         0xD22134
++
++#define mmNIC1_QM1_CQ_ARUSER_31_11_0                                 0xD22138
++
++#define mmNIC1_QM1_CQ_ARUSER_31_11_1                                 0xD2213C
++
++#define mmNIC1_QM1_CQ_ARUSER_31_11_2                                 0xD22140
++
++#define mmNIC1_QM1_CQ_ARUSER_31_11_3                                 0xD22144
++
++#define mmNIC1_QM1_CQ_ARUSER_31_11_4                                 0xD22148
++
++#define mmNIC1_QM1_CQ_STS0_0                                         0xD2214C
++
++#define mmNIC1_QM1_CQ_STS0_1                                         0xD22150
++
++#define mmNIC1_QM1_CQ_STS0_2                                         0xD22154
++
++#define mmNIC1_QM1_CQ_STS0_3                                         0xD22158
++
++#define mmNIC1_QM1_CQ_STS0_4                                         0xD2215C
++
++#define mmNIC1_QM1_CQ_STS1_0                                         0xD22160
++
++#define mmNIC1_QM1_CQ_STS1_1                                         0xD22164
++
++#define mmNIC1_QM1_CQ_STS1_2                                         0xD22168
++
++#define mmNIC1_QM1_CQ_STS1_3                                         0xD2216C
++
++#define mmNIC1_QM1_CQ_STS1_4                                         0xD22170
++
++#define mmNIC1_QM1_CQ_PTR_LO_0                                       0xD22174
++
++#define mmNIC1_QM1_CQ_PTR_HI_0                                       0xD22178
++
++#define mmNIC1_QM1_CQ_TSIZE_0                                        0xD2217C
++
++#define mmNIC1_QM1_CQ_CTL_0                                          0xD22180
++
++#define mmNIC1_QM1_CQ_PTR_LO_1                                       0xD22184
++
++#define mmNIC1_QM1_CQ_PTR_HI_1                                       0xD22188
++
++#define mmNIC1_QM1_CQ_TSIZE_1                                        0xD2218C
++
++#define mmNIC1_QM1_CQ_CTL_1                                          0xD22190
++
++#define mmNIC1_QM1_CQ_PTR_LO_2                                       0xD22194
++
++#define mmNIC1_QM1_CQ_PTR_HI_2                                       0xD22198
++
++#define mmNIC1_QM1_CQ_TSIZE_2                                        0xD2219C
++
++#define mmNIC1_QM1_CQ_CTL_2                                          0xD221A0
++
++#define mmNIC1_QM1_CQ_PTR_LO_3                                       0xD221A4
++
++#define mmNIC1_QM1_CQ_PTR_HI_3                                       0xD221A8
++
++#define mmNIC1_QM1_CQ_TSIZE_3                                        0xD221AC
++
++#define mmNIC1_QM1_CQ_CTL_3                                          0xD221B0
++
++#define mmNIC1_QM1_CQ_PTR_LO_4                                       0xD221B4
++
++#define mmNIC1_QM1_CQ_PTR_HI_4                                       0xD221B8
++
++#define mmNIC1_QM1_CQ_TSIZE_4                                        0xD221BC
++
++#define mmNIC1_QM1_CQ_CTL_4                                          0xD221C0
++
++#define mmNIC1_QM1_CQ_PTR_LO_STS_0                                   0xD221C4
++
++#define mmNIC1_QM1_CQ_PTR_LO_STS_1                                   0xD221C8
++
++#define mmNIC1_QM1_CQ_PTR_LO_STS_2                                   0xD221CC
++
++#define mmNIC1_QM1_CQ_PTR_LO_STS_3                                   0xD221D0
++
++#define mmNIC1_QM1_CQ_PTR_LO_STS_4                                   0xD221D4
++
++#define mmNIC1_QM1_CQ_PTR_HI_STS_0                                   0xD221D8
++
++#define mmNIC1_QM1_CQ_PTR_HI_STS_1                                   0xD221DC
++
++#define mmNIC1_QM1_CQ_PTR_HI_STS_2                                   0xD221E0
++
++#define mmNIC1_QM1_CQ_PTR_HI_STS_3                                   0xD221E4
++
++#define mmNIC1_QM1_CQ_PTR_HI_STS_4                                   0xD221E8
++
++#define mmNIC1_QM1_CQ_TSIZE_STS_0                                    0xD221EC
++
++#define mmNIC1_QM1_CQ_TSIZE_STS_1                                    0xD221F0
++
++#define mmNIC1_QM1_CQ_TSIZE_STS_2                                    0xD221F4
++
++#define mmNIC1_QM1_CQ_TSIZE_STS_3                                    0xD221F8
++
++#define mmNIC1_QM1_CQ_TSIZE_STS_4                                    0xD221FC
++
++#define mmNIC1_QM1_CQ_CTL_STS_0                                      0xD22200
++
++#define mmNIC1_QM1_CQ_CTL_STS_1                                      0xD22204
++
++#define mmNIC1_QM1_CQ_CTL_STS_2                                      0xD22208
++
++#define mmNIC1_QM1_CQ_CTL_STS_3                                      0xD2220C
++
++#define mmNIC1_QM1_CQ_CTL_STS_4                                      0xD22210
++
++#define mmNIC1_QM1_CQ_IFIFO_CNT_0                                    0xD22214
++
++#define mmNIC1_QM1_CQ_IFIFO_CNT_1                                    0xD22218
++
++#define mmNIC1_QM1_CQ_IFIFO_CNT_2                                    0xD2221C
++
++#define mmNIC1_QM1_CQ_IFIFO_CNT_3                                    0xD22220
++
++#define mmNIC1_QM1_CQ_IFIFO_CNT_4                                    0xD22224
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_LO_0                            0xD22228
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_LO_1                            0xD2222C
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_LO_2                            0xD22230
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_LO_3                            0xD22234
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_LO_4                            0xD22238
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_HI_0                            0xD2223C
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_HI_1                            0xD22240
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_HI_2                            0xD22244
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_HI_3                            0xD22248
++
++#define mmNIC1_QM1_CP_MSG_BASE0_ADDR_HI_4                            0xD2224C
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_LO_0                            0xD22250
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_LO_1                            0xD22254
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_LO_2                            0xD22258
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_LO_3                            0xD2225C
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_LO_4                            0xD22260
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_HI_0                            0xD22264
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_HI_1                            0xD22268
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_HI_2                            0xD2226C
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_HI_3                            0xD22270
++
++#define mmNIC1_QM1_CP_MSG_BASE1_ADDR_HI_4                            0xD22274
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_LO_0                            0xD22278
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_LO_1                            0xD2227C
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_LO_2                            0xD22280
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_LO_3                            0xD22284
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_LO_4                            0xD22288
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_HI_0                            0xD2228C
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_HI_1                            0xD22290
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_HI_2                            0xD22294
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_HI_3                            0xD22298
++
++#define mmNIC1_QM1_CP_MSG_BASE2_ADDR_HI_4                            0xD2229C
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_LO_0                            0xD222A0
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_LO_1                            0xD222A4
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_LO_2                            0xD222A8
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_LO_3                            0xD222AC
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_LO_4                            0xD222B0
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_HI_0                            0xD222B4
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_HI_1                            0xD222B8
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_HI_2                            0xD222BC
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_HI_3                            0xD222C0
++
++#define mmNIC1_QM1_CP_MSG_BASE3_ADDR_HI_4                            0xD222C4
++
++#define mmNIC1_QM1_CP_LDMA_TSIZE_OFFSET_0                            0xD222C8
++
++#define mmNIC1_QM1_CP_LDMA_TSIZE_OFFSET_1                            0xD222CC
++
++#define mmNIC1_QM1_CP_LDMA_TSIZE_OFFSET_2                            0xD222D0
++
++#define mmNIC1_QM1_CP_LDMA_TSIZE_OFFSET_3                            0xD222D4
++
++#define mmNIC1_QM1_CP_LDMA_TSIZE_OFFSET_4                            0xD222D8
++
++#define mmNIC1_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xD222E0
++
++#define mmNIC1_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xD222E4
++
++#define mmNIC1_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xD222E8
++
++#define mmNIC1_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xD222EC
++
++#define mmNIC1_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xD222F0
++
++#define mmNIC1_QM1_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xD222F4
++
++#define mmNIC1_QM1_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xD222F8
++
++#define mmNIC1_QM1_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xD222FC
++
++#define mmNIC1_QM1_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xD22300
++
++#define mmNIC1_QM1_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xD22304
++
++#define mmNIC1_QM1_CP_FENCE0_RDATA_0                                 0xD22308
++
++#define mmNIC1_QM1_CP_FENCE0_RDATA_1                                 0xD2230C
++
++#define mmNIC1_QM1_CP_FENCE0_RDATA_2                                 0xD22310
++
++#define mmNIC1_QM1_CP_FENCE0_RDATA_3                                 0xD22314
++
++#define mmNIC1_QM1_CP_FENCE0_RDATA_4                                 0xD22318
++
++#define mmNIC1_QM1_CP_FENCE1_RDATA_0                                 0xD2231C
++
++#define mmNIC1_QM1_CP_FENCE1_RDATA_1                                 0xD22320
++
++#define mmNIC1_QM1_CP_FENCE1_RDATA_2                                 0xD22324
++
++#define mmNIC1_QM1_CP_FENCE1_RDATA_3                                 0xD22328
++
++#define mmNIC1_QM1_CP_FENCE1_RDATA_4                                 0xD2232C
++
++#define mmNIC1_QM1_CP_FENCE2_RDATA_0                                 0xD22330
++
++#define mmNIC1_QM1_CP_FENCE2_RDATA_1                                 0xD22334
++
++#define mmNIC1_QM1_CP_FENCE2_RDATA_2                                 0xD22338
++
++#define mmNIC1_QM1_CP_FENCE2_RDATA_3                                 0xD2233C
++
++#define mmNIC1_QM1_CP_FENCE2_RDATA_4                                 0xD22340
++
++#define mmNIC1_QM1_CP_FENCE3_RDATA_0                                 0xD22344
++
++#define mmNIC1_QM1_CP_FENCE3_RDATA_1                                 0xD22348
++
++#define mmNIC1_QM1_CP_FENCE3_RDATA_2                                 0xD2234C
++
++#define mmNIC1_QM1_CP_FENCE3_RDATA_3                                 0xD22350
++
++#define mmNIC1_QM1_CP_FENCE3_RDATA_4                                 0xD22354
++
++#define mmNIC1_QM1_CP_FENCE0_CNT_0                                   0xD22358
++
++#define mmNIC1_QM1_CP_FENCE0_CNT_1                                   0xD2235C
++
++#define mmNIC1_QM1_CP_FENCE0_CNT_2                                   0xD22360
++
++#define mmNIC1_QM1_CP_FENCE0_CNT_3                                   0xD22364
++
++#define mmNIC1_QM1_CP_FENCE0_CNT_4                                   0xD22368
++
++#define mmNIC1_QM1_CP_FENCE1_CNT_0                                   0xD2236C
++
++#define mmNIC1_QM1_CP_FENCE1_CNT_1                                   0xD22370
++
++#define mmNIC1_QM1_CP_FENCE1_CNT_2                                   0xD22374
++
++#define mmNIC1_QM1_CP_FENCE1_CNT_3                                   0xD22378
++
++#define mmNIC1_QM1_CP_FENCE1_CNT_4                                   0xD2237C
++
++#define mmNIC1_QM1_CP_FENCE2_CNT_0                                   0xD22380
++
++#define mmNIC1_QM1_CP_FENCE2_CNT_1                                   0xD22384
++
++#define mmNIC1_QM1_CP_FENCE2_CNT_2                                   0xD22388
++
++#define mmNIC1_QM1_CP_FENCE2_CNT_3                                   0xD2238C
++
++#define mmNIC1_QM1_CP_FENCE2_CNT_4                                   0xD22390
++
++#define mmNIC1_QM1_CP_FENCE3_CNT_0                                   0xD22394
++
++#define mmNIC1_QM1_CP_FENCE3_CNT_1                                   0xD22398
++
++#define mmNIC1_QM1_CP_FENCE3_CNT_2                                   0xD2239C
++
++#define mmNIC1_QM1_CP_FENCE3_CNT_3                                   0xD223A0
++
++#define mmNIC1_QM1_CP_FENCE3_CNT_4                                   0xD223A4
++
++#define mmNIC1_QM1_CP_STS_0                                          0xD223A8
++
++#define mmNIC1_QM1_CP_STS_1                                          0xD223AC
++
++#define mmNIC1_QM1_CP_STS_2                                          0xD223B0
++
++#define mmNIC1_QM1_CP_STS_3                                          0xD223B4
++
++#define mmNIC1_QM1_CP_STS_4                                          0xD223B8
++
++#define mmNIC1_QM1_CP_CURRENT_INST_LO_0                              0xD223BC
++
++#define mmNIC1_QM1_CP_CURRENT_INST_LO_1                              0xD223C0
++
++#define mmNIC1_QM1_CP_CURRENT_INST_LO_2                              0xD223C4
++
++#define mmNIC1_QM1_CP_CURRENT_INST_LO_3                              0xD223C8
++
++#define mmNIC1_QM1_CP_CURRENT_INST_LO_4                              0xD223CC
++
++#define mmNIC1_QM1_CP_CURRENT_INST_HI_0                              0xD223D0
++
++#define mmNIC1_QM1_CP_CURRENT_INST_HI_1                              0xD223D4
++
++#define mmNIC1_QM1_CP_CURRENT_INST_HI_2                              0xD223D8
++
++#define mmNIC1_QM1_CP_CURRENT_INST_HI_3                              0xD223DC
++
++#define mmNIC1_QM1_CP_CURRENT_INST_HI_4                              0xD223E0
++
++#define mmNIC1_QM1_CP_BARRIER_CFG_0                                  0xD223F4
++
++#define mmNIC1_QM1_CP_BARRIER_CFG_1                                  0xD223F8
++
++#define mmNIC1_QM1_CP_BARRIER_CFG_2                                  0xD223FC
++
++#define mmNIC1_QM1_CP_BARRIER_CFG_3                                  0xD22400
++
++#define mmNIC1_QM1_CP_BARRIER_CFG_4                                  0xD22404
++
++#define mmNIC1_QM1_CP_DBG_0_0                                        0xD22408
++
++#define mmNIC1_QM1_CP_DBG_0_1                                        0xD2240C
++
++#define mmNIC1_QM1_CP_DBG_0_2                                        0xD22410
++
++#define mmNIC1_QM1_CP_DBG_0_3                                        0xD22414
++
++#define mmNIC1_QM1_CP_DBG_0_4                                        0xD22418
++
++#define mmNIC1_QM1_CP_ARUSER_31_11_0                                 0xD2241C
++
++#define mmNIC1_QM1_CP_ARUSER_31_11_1                                 0xD22420
++
++#define mmNIC1_QM1_CP_ARUSER_31_11_2                                 0xD22424
++
++#define mmNIC1_QM1_CP_ARUSER_31_11_3                                 0xD22428
++
++#define mmNIC1_QM1_CP_ARUSER_31_11_4                                 0xD2242C
++
++#define mmNIC1_QM1_CP_AWUSER_31_11_0                                 0xD22430
++
++#define mmNIC1_QM1_CP_AWUSER_31_11_1                                 0xD22434
++
++#define mmNIC1_QM1_CP_AWUSER_31_11_2                                 0xD22438
++
++#define mmNIC1_QM1_CP_AWUSER_31_11_3                                 0xD2243C
++
++#define mmNIC1_QM1_CP_AWUSER_31_11_4                                 0xD22440
++
++#define mmNIC1_QM1_ARB_CFG_0                                         0xD22A00
++
++#define mmNIC1_QM1_ARB_CHOISE_Q_PUSH                                 0xD22A04
++
++#define mmNIC1_QM1_ARB_WRR_WEIGHT_0                                  0xD22A08
++
++#define mmNIC1_QM1_ARB_WRR_WEIGHT_1                                  0xD22A0C
++
++#define mmNIC1_QM1_ARB_WRR_WEIGHT_2                                  0xD22A10
++
++#define mmNIC1_QM1_ARB_WRR_WEIGHT_3                                  0xD22A14
++
++#define mmNIC1_QM1_ARB_CFG_1                                         0xD22A18
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_0                              0xD22A20
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_1                              0xD22A24
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_2                              0xD22A28
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_3                              0xD22A2C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_4                              0xD22A30
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_5                              0xD22A34
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_6                              0xD22A38
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_7                              0xD22A3C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_8                              0xD22A40
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_9                              0xD22A44
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_10                             0xD22A48
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_11                             0xD22A4C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_12                             0xD22A50
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_13                             0xD22A54
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_14                             0xD22A58
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_15                             0xD22A5C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_16                             0xD22A60
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_17                             0xD22A64
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_18                             0xD22A68
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_19                             0xD22A6C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_20                             0xD22A70
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_21                             0xD22A74
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_22                             0xD22A78
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_23                             0xD22A7C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_24                             0xD22A80
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_25                             0xD22A84
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_26                             0xD22A88
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_27                             0xD22A8C
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_28                             0xD22A90
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_29                             0xD22A94
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_30                             0xD22A98
++
++#define mmNIC1_QM1_ARB_MST_AVAIL_CRED_31                             0xD22A9C
++
++#define mmNIC1_QM1_ARB_MST_CRED_INC                                  0xD22AA0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_0                        0xD22AA4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_1                        0xD22AA8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_2                        0xD22AAC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_3                        0xD22AB0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_4                        0xD22AB4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_5                        0xD22AB8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_6                        0xD22ABC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_7                        0xD22AC0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_8                        0xD22AC4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_9                        0xD22AC8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_10                       0xD22ACC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_11                       0xD22AD0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_12                       0xD22AD4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_13                       0xD22AD8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_14                       0xD22ADC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_15                       0xD22AE0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_16                       0xD22AE4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_17                       0xD22AE8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_18                       0xD22AEC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_19                       0xD22AF0
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_20                       0xD22AF4
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_21                       0xD22AF8
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_22                       0xD22AFC
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_23                       0xD22B00
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_24                       0xD22B04
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_25                       0xD22B08
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_26                       0xD22B0C
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_27                       0xD22B10
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_28                       0xD22B14
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_29                       0xD22B18
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_30                       0xD22B1C
++
++#define mmNIC1_QM1_ARB_MST_CHOISE_PUSH_OFST_31                       0xD22B20
++
++#define mmNIC1_QM1_ARB_SLV_MASTER_INC_CRED_OFST                      0xD22B28
++
++#define mmNIC1_QM1_ARB_MST_SLAVE_EN                                  0xD22B2C
++
++#define mmNIC1_QM1_ARB_MST_QUIET_PER                                 0xD22B34
++
++#define mmNIC1_QM1_ARB_SLV_CHOISE_WDT                                0xD22B38
++
++#define mmNIC1_QM1_ARB_SLV_ID                                        0xD22B3C
++
++#define mmNIC1_QM1_ARB_MSG_MAX_INFLIGHT                              0xD22B44
++
++#define mmNIC1_QM1_ARB_MSG_AWUSER_31_11                              0xD22B48
++
++#define mmNIC1_QM1_ARB_MSG_AWUSER_SEC_PROP                           0xD22B4C
++
++#define mmNIC1_QM1_ARB_MSG_AWUSER_NON_SEC_PROP                       0xD22B50
++
++#define mmNIC1_QM1_ARB_BASE_LO                                       0xD22B54
++
++#define mmNIC1_QM1_ARB_BASE_HI                                       0xD22B58
++
++#define mmNIC1_QM1_ARB_STATE_STS                                     0xD22B80
++
++#define mmNIC1_QM1_ARB_CHOISE_FULLNESS_STS                           0xD22B84
++
++#define mmNIC1_QM1_ARB_MSG_STS                                       0xD22B88
++
++#define mmNIC1_QM1_ARB_SLV_CHOISE_Q_HEAD                             0xD22B8C
++
++#define mmNIC1_QM1_ARB_ERR_CAUSE                                     0xD22B9C
++
++#define mmNIC1_QM1_ARB_ERR_MSG_EN                                    0xD22BA0
++
++#define mmNIC1_QM1_ARB_ERR_STS_DRP                                   0xD22BA8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_0                                0xD22BB0
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_1                                0xD22BB4
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_2                                0xD22BB8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_3                                0xD22BBC
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_4                                0xD22BC0
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_5                                0xD22BC4
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_6                                0xD22BC8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_7                                0xD22BCC
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_8                                0xD22BD0
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_9                                0xD22BD4
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_10                               0xD22BD8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_11                               0xD22BDC
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_12                               0xD22BE0
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_13                               0xD22BE4
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_14                               0xD22BE8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_15                               0xD22BEC
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_16                               0xD22BF0
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_17                               0xD22BF4
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_18                               0xD22BF8
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_19                               0xD22BFC
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_20                               0xD22C00
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_21                               0xD22C04
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_22                               0xD22C08
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_23                               0xD22C0C
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_24                               0xD22C10
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_25                               0xD22C14
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_26                               0xD22C18
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_27                               0xD22C1C
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_28                               0xD22C20
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_29                               0xD22C24
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_30                               0xD22C28
++
++#define mmNIC1_QM1_ARB_MST_CRED_STS_31                               0xD22C2C
++
++#define mmNIC1_QM1_CGM_CFG                                           0xD22C70
++
++#define mmNIC1_QM1_CGM_STS                                           0xD22C74
++
++#define mmNIC1_QM1_CGM_CFG1                                          0xD22C78
++
++#define mmNIC1_QM1_LOCAL_RANGE_BASE                                  0xD22C80
++
++#define mmNIC1_QM1_LOCAL_RANGE_SIZE                                  0xD22C84
++
++#define mmNIC1_QM1_CSMR_STRICT_PRIO_CFG                              0xD22C90
++
++#define mmNIC1_QM1_HBW_RD_RATE_LIM_CFG_1                             0xD22C94
++
++#define mmNIC1_QM1_LBW_WR_RATE_LIM_CFG_0                             0xD22C98
++
++#define mmNIC1_QM1_LBW_WR_RATE_LIM_CFG_1                             0xD22C9C
++
++#define mmNIC1_QM1_HBW_RD_RATE_LIM_CFG_0                             0xD22CA0
++
++#define mmNIC1_QM1_GLBL_AXCACHE                                      0xD22CA4
++
++#define mmNIC1_QM1_IND_GW_APB_CFG                                    0xD22CB0
++
++#define mmNIC1_QM1_IND_GW_APB_WDATA                                  0xD22CB4
++
++#define mmNIC1_QM1_IND_GW_APB_RDATA                                  0xD22CB8
++
++#define mmNIC1_QM1_IND_GW_APB_STATUS                                 0xD22CBC
++
++#define mmNIC1_QM1_GLBL_ERR_ADDR_LO                                  0xD22CD0
++
++#define mmNIC1_QM1_GLBL_ERR_ADDR_HI                                  0xD22CD4
++
++#define mmNIC1_QM1_GLBL_ERR_WDATA                                    0xD22CD8
++
++#define mmNIC1_QM1_GLBL_MEM_INIT_BUSY                                0xD22D00
++
++#endif /* ASIC_REG_NIC1_QM1_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h
+new file mode 100644
+index 000000000000..a89116a4586f
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC2_QM0_REGS_H_
++#define ASIC_REG_NIC2_QM0_REGS_H_
++
++/*
++ *****************************************
++ *   NIC2_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC2_QM0_GLBL_CFG0                                         0xD60000
++
++#define mmNIC2_QM0_GLBL_CFG1                                         0xD60004
++
++#define mmNIC2_QM0_GLBL_PROT                                         0xD60008
++
++#define mmNIC2_QM0_GLBL_ERR_CFG                                      0xD6000C
++
++#define mmNIC2_QM0_GLBL_SECURE_PROPS_0                               0xD60010
++
++#define mmNIC2_QM0_GLBL_SECURE_PROPS_1                               0xD60014
++
++#define mmNIC2_QM0_GLBL_SECURE_PROPS_2                               0xD60018
++
++#define mmNIC2_QM0_GLBL_SECURE_PROPS_3                               0xD6001C
++
++#define mmNIC2_QM0_GLBL_SECURE_PROPS_4                               0xD60020
++
++#define mmNIC2_QM0_GLBL_NON_SECURE_PROPS_0                           0xD60024
++
++#define mmNIC2_QM0_GLBL_NON_SECURE_PROPS_1                           0xD60028
++
++#define mmNIC2_QM0_GLBL_NON_SECURE_PROPS_2                           0xD6002C
++
++#define mmNIC2_QM0_GLBL_NON_SECURE_PROPS_3                           0xD60030
++
++#define mmNIC2_QM0_GLBL_NON_SECURE_PROPS_4                           0xD60034
++
++#define mmNIC2_QM0_GLBL_STS0                                         0xD60038
++
++#define mmNIC2_QM0_GLBL_STS1_0                                       0xD60040
++
++#define mmNIC2_QM0_GLBL_STS1_1                                       0xD60044
++
++#define mmNIC2_QM0_GLBL_STS1_2                                       0xD60048
++
++#define mmNIC2_QM0_GLBL_STS1_3                                       0xD6004C
++
++#define mmNIC2_QM0_GLBL_STS1_4                                       0xD60050
++
++#define mmNIC2_QM0_GLBL_MSG_EN_0                                     0xD60054
++
++#define mmNIC2_QM0_GLBL_MSG_EN_1                                     0xD60058
++
++#define mmNIC2_QM0_GLBL_MSG_EN_2                                     0xD6005C
++
++#define mmNIC2_QM0_GLBL_MSG_EN_3                                     0xD60060
++
++#define mmNIC2_QM0_GLBL_MSG_EN_4                                     0xD60068
++
++#define mmNIC2_QM0_PQ_BASE_LO_0                                      0xD60070
++
++#define mmNIC2_QM0_PQ_BASE_LO_1                                      0xD60074
++
++#define mmNIC2_QM0_PQ_BASE_LO_2                                      0xD60078
++
++#define mmNIC2_QM0_PQ_BASE_LO_3                                      0xD6007C
++
++#define mmNIC2_QM0_PQ_BASE_HI_0                                      0xD60080
++
++#define mmNIC2_QM0_PQ_BASE_HI_1                                      0xD60084
++
++#define mmNIC2_QM0_PQ_BASE_HI_2                                      0xD60088
++
++#define mmNIC2_QM0_PQ_BASE_HI_3                                      0xD6008C
++
++#define mmNIC2_QM0_PQ_SIZE_0                                         0xD60090
++
++#define mmNIC2_QM0_PQ_SIZE_1                                         0xD60094
++
++#define mmNIC2_QM0_PQ_SIZE_2                                         0xD60098
++
++#define mmNIC2_QM0_PQ_SIZE_3                                         0xD6009C
++
++#define mmNIC2_QM0_PQ_PI_0                                           0xD600A0
++
++#define mmNIC2_QM0_PQ_PI_1                                           0xD600A4
++
++#define mmNIC2_QM0_PQ_PI_2                                           0xD600A8
++
++#define mmNIC2_QM0_PQ_PI_3                                           0xD600AC
++
++#define mmNIC2_QM0_PQ_CI_0                                           0xD600B0
++
++#define mmNIC2_QM0_PQ_CI_1                                           0xD600B4
++
++#define mmNIC2_QM0_PQ_CI_2                                           0xD600B8
++
++#define mmNIC2_QM0_PQ_CI_3                                           0xD600BC
++
++#define mmNIC2_QM0_PQ_CFG0_0                                         0xD600C0
++
++#define mmNIC2_QM0_PQ_CFG0_1                                         0xD600C4
++
++#define mmNIC2_QM0_PQ_CFG0_2                                         0xD600C8
++
++#define mmNIC2_QM0_PQ_CFG0_3                                         0xD600CC
++
++#define mmNIC2_QM0_PQ_CFG1_0                                         0xD600D0
++
++#define mmNIC2_QM0_PQ_CFG1_1                                         0xD600D4
++
++#define mmNIC2_QM0_PQ_CFG1_2                                         0xD600D8
++
++#define mmNIC2_QM0_PQ_CFG1_3                                         0xD600DC
++
++#define mmNIC2_QM0_PQ_ARUSER_31_11_0                                 0xD600E0
++
++#define mmNIC2_QM0_PQ_ARUSER_31_11_1                                 0xD600E4
++
++#define mmNIC2_QM0_PQ_ARUSER_31_11_2                                 0xD600E8
++
++#define mmNIC2_QM0_PQ_ARUSER_31_11_3                                 0xD600EC
++
++#define mmNIC2_QM0_PQ_STS0_0                                         0xD600F0
++
++#define mmNIC2_QM0_PQ_STS0_1                                         0xD600F4
++
++#define mmNIC2_QM0_PQ_STS0_2                                         0xD600F8
++
++#define mmNIC2_QM0_PQ_STS0_3                                         0xD600FC
++
++#define mmNIC2_QM0_PQ_STS1_0                                         0xD60100
++
++#define mmNIC2_QM0_PQ_STS1_1                                         0xD60104
++
++#define mmNIC2_QM0_PQ_STS1_2                                         0xD60108
++
++#define mmNIC2_QM0_PQ_STS1_3                                         0xD6010C
++
++#define mmNIC2_QM0_CQ_CFG0_0                                         0xD60110
++
++#define mmNIC2_QM0_CQ_CFG0_1                                         0xD60114
++
++#define mmNIC2_QM0_CQ_CFG0_2                                         0xD60118
++
++#define mmNIC2_QM0_CQ_CFG0_3                                         0xD6011C
++
++#define mmNIC2_QM0_CQ_CFG0_4                                         0xD60120
++
++#define mmNIC2_QM0_CQ_CFG1_0                                         0xD60124
++
++#define mmNIC2_QM0_CQ_CFG1_1                                         0xD60128
++
++#define mmNIC2_QM0_CQ_CFG1_2                                         0xD6012C
++
++#define mmNIC2_QM0_CQ_CFG1_3                                         0xD60130
++
++#define mmNIC2_QM0_CQ_CFG1_4                                         0xD60134
++
++#define mmNIC2_QM0_CQ_ARUSER_31_11_0                                 0xD60138
++
++#define mmNIC2_QM0_CQ_ARUSER_31_11_1                                 0xD6013C
++
++#define mmNIC2_QM0_CQ_ARUSER_31_11_2                                 0xD60140
++
++#define mmNIC2_QM0_CQ_ARUSER_31_11_3                                 0xD60144
++
++#define mmNIC2_QM0_CQ_ARUSER_31_11_4                                 0xD60148
++
++#define mmNIC2_QM0_CQ_STS0_0                                         0xD6014C
++
++#define mmNIC2_QM0_CQ_STS0_1                                         0xD60150
++
++#define mmNIC2_QM0_CQ_STS0_2                                         0xD60154
++
++#define mmNIC2_QM0_CQ_STS0_3                                         0xD60158
++
++#define mmNIC2_QM0_CQ_STS0_4                                         0xD6015C
++
++#define mmNIC2_QM0_CQ_STS1_0                                         0xD60160
++
++#define mmNIC2_QM0_CQ_STS1_1                                         0xD60164
++
++#define mmNIC2_QM0_CQ_STS1_2                                         0xD60168
++
++#define mmNIC2_QM0_CQ_STS1_3                                         0xD6016C
++
++#define mmNIC2_QM0_CQ_STS1_4                                         0xD60170
++
++#define mmNIC2_QM0_CQ_PTR_LO_0                                       0xD60174
++
++#define mmNIC2_QM0_CQ_PTR_HI_0                                       0xD60178
++
++#define mmNIC2_QM0_CQ_TSIZE_0                                        0xD6017C
++
++#define mmNIC2_QM0_CQ_CTL_0                                          0xD60180
++
++#define mmNIC2_QM0_CQ_PTR_LO_1                                       0xD60184
++
++#define mmNIC2_QM0_CQ_PTR_HI_1                                       0xD60188
++
++#define mmNIC2_QM0_CQ_TSIZE_1                                        0xD6018C
++
++#define mmNIC2_QM0_CQ_CTL_1                                          0xD60190
++
++#define mmNIC2_QM0_CQ_PTR_LO_2                                       0xD60194
++
++#define mmNIC2_QM0_CQ_PTR_HI_2                                       0xD60198
++
++#define mmNIC2_QM0_CQ_TSIZE_2                                        0xD6019C
++
++#define mmNIC2_QM0_CQ_CTL_2                                          0xD601A0
++
++#define mmNIC2_QM0_CQ_PTR_LO_3                                       0xD601A4
++
++#define mmNIC2_QM0_CQ_PTR_HI_3                                       0xD601A8
++
++#define mmNIC2_QM0_CQ_TSIZE_3                                        0xD601AC
++
++#define mmNIC2_QM0_CQ_CTL_3                                          0xD601B0
++
++#define mmNIC2_QM0_CQ_PTR_LO_4                                       0xD601B4
++
++#define mmNIC2_QM0_CQ_PTR_HI_4                                       0xD601B8
++
++#define mmNIC2_QM0_CQ_TSIZE_4                                        0xD601BC
++
++#define mmNIC2_QM0_CQ_CTL_4                                          0xD601C0
++
++#define mmNIC2_QM0_CQ_PTR_LO_STS_0                                   0xD601C4
++
++#define mmNIC2_QM0_CQ_PTR_LO_STS_1                                   0xD601C8
++
++#define mmNIC2_QM0_CQ_PTR_LO_STS_2                                   0xD601CC
++
++#define mmNIC2_QM0_CQ_PTR_LO_STS_3                                   0xD601D0
++
++#define mmNIC2_QM0_CQ_PTR_LO_STS_4                                   0xD601D4
++
++#define mmNIC2_QM0_CQ_PTR_HI_STS_0                                   0xD601D8
++
++#define mmNIC2_QM0_CQ_PTR_HI_STS_1                                   0xD601DC
++
++#define mmNIC2_QM0_CQ_PTR_HI_STS_2                                   0xD601E0
++
++#define mmNIC2_QM0_CQ_PTR_HI_STS_3                                   0xD601E4
++
++#define mmNIC2_QM0_CQ_PTR_HI_STS_4                                   0xD601E8
++
++#define mmNIC2_QM0_CQ_TSIZE_STS_0                                    0xD601EC
++
++#define mmNIC2_QM0_CQ_TSIZE_STS_1                                    0xD601F0
++
++#define mmNIC2_QM0_CQ_TSIZE_STS_2                                    0xD601F4
++
++#define mmNIC2_QM0_CQ_TSIZE_STS_3                                    0xD601F8
++
++#define mmNIC2_QM0_CQ_TSIZE_STS_4                                    0xD601FC
++
++#define mmNIC2_QM0_CQ_CTL_STS_0                                      0xD60200
++
++#define mmNIC2_QM0_CQ_CTL_STS_1                                      0xD60204
++
++#define mmNIC2_QM0_CQ_CTL_STS_2                                      0xD60208
++
++#define mmNIC2_QM0_CQ_CTL_STS_3                                      0xD6020C
++
++#define mmNIC2_QM0_CQ_CTL_STS_4                                      0xD60210
++
++#define mmNIC2_QM0_CQ_IFIFO_CNT_0                                    0xD60214
++
++#define mmNIC2_QM0_CQ_IFIFO_CNT_1                                    0xD60218
++
++#define mmNIC2_QM0_CQ_IFIFO_CNT_2                                    0xD6021C
++
++#define mmNIC2_QM0_CQ_IFIFO_CNT_3                                    0xD60220
++
++#define mmNIC2_QM0_CQ_IFIFO_CNT_4                                    0xD60224
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_LO_0                            0xD60228
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_LO_1                            0xD6022C
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_LO_2                            0xD60230
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_LO_3                            0xD60234
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_LO_4                            0xD60238
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_HI_0                            0xD6023C
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_HI_1                            0xD60240
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_HI_2                            0xD60244
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_HI_3                            0xD60248
++
++#define mmNIC2_QM0_CP_MSG_BASE0_ADDR_HI_4                            0xD6024C
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_LO_0                            0xD60250
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_LO_1                            0xD60254
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_LO_2                            0xD60258
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_LO_3                            0xD6025C
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_LO_4                            0xD60260
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_HI_0                            0xD60264
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_HI_1                            0xD60268
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_HI_2                            0xD6026C
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_HI_3                            0xD60270
++
++#define mmNIC2_QM0_CP_MSG_BASE1_ADDR_HI_4                            0xD60274
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_LO_0                            0xD60278
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_LO_1                            0xD6027C
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_LO_2                            0xD60280
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_LO_3                            0xD60284
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_LO_4                            0xD60288
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_HI_0                            0xD6028C
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_HI_1                            0xD60290
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_HI_2                            0xD60294
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_HI_3                            0xD60298
++
++#define mmNIC2_QM0_CP_MSG_BASE2_ADDR_HI_4                            0xD6029C
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_LO_0                            0xD602A0
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_LO_1                            0xD602A4
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_LO_2                            0xD602A8
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_LO_3                            0xD602AC
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_LO_4                            0xD602B0
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_HI_0                            0xD602B4
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_HI_1                            0xD602B8
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_HI_2                            0xD602BC
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_HI_3                            0xD602C0
++
++#define mmNIC2_QM0_CP_MSG_BASE3_ADDR_HI_4                            0xD602C4
++
++#define mmNIC2_QM0_CP_LDMA_TSIZE_OFFSET_0                            0xD602C8
++
++#define mmNIC2_QM0_CP_LDMA_TSIZE_OFFSET_1                            0xD602CC
++
++#define mmNIC2_QM0_CP_LDMA_TSIZE_OFFSET_2                            0xD602D0
++
++#define mmNIC2_QM0_CP_LDMA_TSIZE_OFFSET_3                            0xD602D4
++
++#define mmNIC2_QM0_CP_LDMA_TSIZE_OFFSET_4                            0xD602D8
++
++#define mmNIC2_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xD602E0
++
++#define mmNIC2_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xD602E4
++
++#define mmNIC2_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xD602E8
++
++#define mmNIC2_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xD602EC
++
++#define mmNIC2_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xD602F0
++
++#define mmNIC2_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xD602F4
++
++#define mmNIC2_QM0_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xD602F8
++
++#define mmNIC2_QM0_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xD602FC
++
++#define mmNIC2_QM0_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xD60300
++
++#define mmNIC2_QM0_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xD60304
++
++#define mmNIC2_QM0_CP_FENCE0_RDATA_0                                 0xD60308
++
++#define mmNIC2_QM0_CP_FENCE0_RDATA_1                                 0xD6030C
++
++#define mmNIC2_QM0_CP_FENCE0_RDATA_2                                 0xD60310
++
++#define mmNIC2_QM0_CP_FENCE0_RDATA_3                                 0xD60314
++
++#define mmNIC2_QM0_CP_FENCE0_RDATA_4                                 0xD60318
++
++#define mmNIC2_QM0_CP_FENCE1_RDATA_0                                 0xD6031C
++
++#define mmNIC2_QM0_CP_FENCE1_RDATA_1                                 0xD60320
++
++#define mmNIC2_QM0_CP_FENCE1_RDATA_2                                 0xD60324
++
++#define mmNIC2_QM0_CP_FENCE1_RDATA_3                                 0xD60328
++
++#define mmNIC2_QM0_CP_FENCE1_RDATA_4                                 0xD6032C
++
++#define mmNIC2_QM0_CP_FENCE2_RDATA_0                                 0xD60330
++
++#define mmNIC2_QM0_CP_FENCE2_RDATA_1                                 0xD60334
++
++#define mmNIC2_QM0_CP_FENCE2_RDATA_2                                 0xD60338
++
++#define mmNIC2_QM0_CP_FENCE2_RDATA_3                                 0xD6033C
++
++#define mmNIC2_QM0_CP_FENCE2_RDATA_4                                 0xD60340
++
++#define mmNIC2_QM0_CP_FENCE3_RDATA_0                                 0xD60344
++
++#define mmNIC2_QM0_CP_FENCE3_RDATA_1                                 0xD60348
++
++#define mmNIC2_QM0_CP_FENCE3_RDATA_2                                 0xD6034C
++
++#define mmNIC2_QM0_CP_FENCE3_RDATA_3                                 0xD60350
++
++#define mmNIC2_QM0_CP_FENCE3_RDATA_4                                 0xD60354
++
++#define mmNIC2_QM0_CP_FENCE0_CNT_0                                   0xD60358
++
++#define mmNIC2_QM0_CP_FENCE0_CNT_1                                   0xD6035C
++
++#define mmNIC2_QM0_CP_FENCE0_CNT_2                                   0xD60360
++
++#define mmNIC2_QM0_CP_FENCE0_CNT_3                                   0xD60364
++
++#define mmNIC2_QM0_CP_FENCE0_CNT_4                                   0xD60368
++
++#define mmNIC2_QM0_CP_FENCE1_CNT_0                                   0xD6036C
++
++#define mmNIC2_QM0_CP_FENCE1_CNT_1                                   0xD60370
++
++#define mmNIC2_QM0_CP_FENCE1_CNT_2                                   0xD60374
++
++#define mmNIC2_QM0_CP_FENCE1_CNT_3                                   0xD60378
++
++#define mmNIC2_QM0_CP_FENCE1_CNT_4                                   0xD6037C
++
++#define mmNIC2_QM0_CP_FENCE2_CNT_0                                   0xD60380
++
++#define mmNIC2_QM0_CP_FENCE2_CNT_1                                   0xD60384
++
++#define mmNIC2_QM0_CP_FENCE2_CNT_2                                   0xD60388
++
++#define mmNIC2_QM0_CP_FENCE2_CNT_3                                   0xD6038C
++
++#define mmNIC2_QM0_CP_FENCE2_CNT_4                                   0xD60390
++
++#define mmNIC2_QM0_CP_FENCE3_CNT_0                                   0xD60394
++
++#define mmNIC2_QM0_CP_FENCE3_CNT_1                                   0xD60398
++
++#define mmNIC2_QM0_CP_FENCE3_CNT_2                                   0xD6039C
++
++#define mmNIC2_QM0_CP_FENCE3_CNT_3                                   0xD603A0
++
++#define mmNIC2_QM0_CP_FENCE3_CNT_4                                   0xD603A4
++
++#define mmNIC2_QM0_CP_STS_0                                          0xD603A8
++
++#define mmNIC2_QM0_CP_STS_1                                          0xD603AC
++
++#define mmNIC2_QM0_CP_STS_2                                          0xD603B0
++
++#define mmNIC2_QM0_CP_STS_3                                          0xD603B4
++
++#define mmNIC2_QM0_CP_STS_4                                          0xD603B8
++
++#define mmNIC2_QM0_CP_CURRENT_INST_LO_0                              0xD603BC
++
++#define mmNIC2_QM0_CP_CURRENT_INST_LO_1                              0xD603C0
++
++#define mmNIC2_QM0_CP_CURRENT_INST_LO_2                              0xD603C4
++
++#define mmNIC2_QM0_CP_CURRENT_INST_LO_3                              0xD603C8
++
++#define mmNIC2_QM0_CP_CURRENT_INST_LO_4                              0xD603CC
++
++#define mmNIC2_QM0_CP_CURRENT_INST_HI_0                              0xD603D0
++
++#define mmNIC2_QM0_CP_CURRENT_INST_HI_1                              0xD603D4
++
++#define mmNIC2_QM0_CP_CURRENT_INST_HI_2                              0xD603D8
++
++#define mmNIC2_QM0_CP_CURRENT_INST_HI_3                              0xD603DC
++
++#define mmNIC2_QM0_CP_CURRENT_INST_HI_4                              0xD603E0
++
++#define mmNIC2_QM0_CP_BARRIER_CFG_0                                  0xD603F4
++
++#define mmNIC2_QM0_CP_BARRIER_CFG_1                                  0xD603F8
++
++#define mmNIC2_QM0_CP_BARRIER_CFG_2                                  0xD603FC
++
++#define mmNIC2_QM0_CP_BARRIER_CFG_3                                  0xD60400
++
++#define mmNIC2_QM0_CP_BARRIER_CFG_4                                  0xD60404
++
++#define mmNIC2_QM0_CP_DBG_0_0                                        0xD60408
++
++#define mmNIC2_QM0_CP_DBG_0_1                                        0xD6040C
++
++#define mmNIC2_QM0_CP_DBG_0_2                                        0xD60410
++
++#define mmNIC2_QM0_CP_DBG_0_3                                        0xD60414
++
++#define mmNIC2_QM0_CP_DBG_0_4                                        0xD60418
++
++#define mmNIC2_QM0_CP_ARUSER_31_11_0                                 0xD6041C
++
++#define mmNIC2_QM0_CP_ARUSER_31_11_1                                 0xD60420
++
++#define mmNIC2_QM0_CP_ARUSER_31_11_2                                 0xD60424
++
++#define mmNIC2_QM0_CP_ARUSER_31_11_3                                 0xD60428
++
++#define mmNIC2_QM0_CP_ARUSER_31_11_4                                 0xD6042C
++
++#define mmNIC2_QM0_CP_AWUSER_31_11_0                                 0xD60430
++
++#define mmNIC2_QM0_CP_AWUSER_31_11_1                                 0xD60434
++
++#define mmNIC2_QM0_CP_AWUSER_31_11_2                                 0xD60438
++
++#define mmNIC2_QM0_CP_AWUSER_31_11_3                                 0xD6043C
++
++#define mmNIC2_QM0_CP_AWUSER_31_11_4                                 0xD60440
++
++#define mmNIC2_QM0_ARB_CFG_0                                         0xD60A00
++
++#define mmNIC2_QM0_ARB_CHOISE_Q_PUSH                                 0xD60A04
++
++#define mmNIC2_QM0_ARB_WRR_WEIGHT_0                                  0xD60A08
++
++#define mmNIC2_QM0_ARB_WRR_WEIGHT_1                                  0xD60A0C
++
++#define mmNIC2_QM0_ARB_WRR_WEIGHT_2                                  0xD60A10
++
++#define mmNIC2_QM0_ARB_WRR_WEIGHT_3                                  0xD60A14
++
++#define mmNIC2_QM0_ARB_CFG_1                                         0xD60A18
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_0                              0xD60A20
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_1                              0xD60A24
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_2                              0xD60A28
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_3                              0xD60A2C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_4                              0xD60A30
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_5                              0xD60A34
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_6                              0xD60A38
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_7                              0xD60A3C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_8                              0xD60A40
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_9                              0xD60A44
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_10                             0xD60A48
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_11                             0xD60A4C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_12                             0xD60A50
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_13                             0xD60A54
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_14                             0xD60A58
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_15                             0xD60A5C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_16                             0xD60A60
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_17                             0xD60A64
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_18                             0xD60A68
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_19                             0xD60A6C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_20                             0xD60A70
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_21                             0xD60A74
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_22                             0xD60A78
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_23                             0xD60A7C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_24                             0xD60A80
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_25                             0xD60A84
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_26                             0xD60A88
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_27                             0xD60A8C
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_28                             0xD60A90
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_29                             0xD60A94
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_30                             0xD60A98
++
++#define mmNIC2_QM0_ARB_MST_AVAIL_CRED_31                             0xD60A9C
++
++#define mmNIC2_QM0_ARB_MST_CRED_INC                                  0xD60AA0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_0                        0xD60AA4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_1                        0xD60AA8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_2                        0xD60AAC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_3                        0xD60AB0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_4                        0xD60AB4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_5                        0xD60AB8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_6                        0xD60ABC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_7                        0xD60AC0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_8                        0xD60AC4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_9                        0xD60AC8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_10                       0xD60ACC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_11                       0xD60AD0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_12                       0xD60AD4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_13                       0xD60AD8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_14                       0xD60ADC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_15                       0xD60AE0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_16                       0xD60AE4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_17                       0xD60AE8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_18                       0xD60AEC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_19                       0xD60AF0
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_20                       0xD60AF4
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_21                       0xD60AF8
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_22                       0xD60AFC
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_23                       0xD60B00
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_24                       0xD60B04
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_25                       0xD60B08
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_26                       0xD60B0C
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_27                       0xD60B10
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_28                       0xD60B14
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_29                       0xD60B18
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_30                       0xD60B1C
++
++#define mmNIC2_QM0_ARB_MST_CHOISE_PUSH_OFST_31                       0xD60B20
++
++#define mmNIC2_QM0_ARB_SLV_MASTER_INC_CRED_OFST                      0xD60B28
++
++#define mmNIC2_QM0_ARB_MST_SLAVE_EN                                  0xD60B2C
++
++#define mmNIC2_QM0_ARB_MST_QUIET_PER                                 0xD60B34
++
++#define mmNIC2_QM0_ARB_SLV_CHOISE_WDT                                0xD60B38
++
++#define mmNIC2_QM0_ARB_SLV_ID                                        0xD60B3C
++
++#define mmNIC2_QM0_ARB_MSG_MAX_INFLIGHT                              0xD60B44
++
++#define mmNIC2_QM0_ARB_MSG_AWUSER_31_11                              0xD60B48
++
++#define mmNIC2_QM0_ARB_MSG_AWUSER_SEC_PROP                           0xD60B4C
++
++#define mmNIC2_QM0_ARB_MSG_AWUSER_NON_SEC_PROP                       0xD60B50
++
++#define mmNIC2_QM0_ARB_BASE_LO                                       0xD60B54
++
++#define mmNIC2_QM0_ARB_BASE_HI                                       0xD60B58
++
++#define mmNIC2_QM0_ARB_STATE_STS                                     0xD60B80
++
++#define mmNIC2_QM0_ARB_CHOISE_FULLNESS_STS                           0xD60B84
++
++#define mmNIC2_QM0_ARB_MSG_STS                                       0xD60B88
++
++#define mmNIC2_QM0_ARB_SLV_CHOISE_Q_HEAD                             0xD60B8C
++
++#define mmNIC2_QM0_ARB_ERR_CAUSE                                     0xD60B9C
++
++#define mmNIC2_QM0_ARB_ERR_MSG_EN                                    0xD60BA0
++
++#define mmNIC2_QM0_ARB_ERR_STS_DRP                                   0xD60BA8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_0                                0xD60BB0
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_1                                0xD60BB4
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_2                                0xD60BB8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_3                                0xD60BBC
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_4                                0xD60BC0
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_5                                0xD60BC4
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_6                                0xD60BC8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_7                                0xD60BCC
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_8                                0xD60BD0
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_9                                0xD60BD4
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_10                               0xD60BD8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_11                               0xD60BDC
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_12                               0xD60BE0
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_13                               0xD60BE4
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_14                               0xD60BE8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_15                               0xD60BEC
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_16                               0xD60BF0
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_17                               0xD60BF4
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_18                               0xD60BF8
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_19                               0xD60BFC
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_20                               0xD60C00
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_21                               0xD60C04
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_22                               0xD60C08
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_23                               0xD60C0C
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_24                               0xD60C10
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_25                               0xD60C14
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_26                               0xD60C18
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_27                               0xD60C1C
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_28                               0xD60C20
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_29                               0xD60C24
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_30                               0xD60C28
++
++#define mmNIC2_QM0_ARB_MST_CRED_STS_31                               0xD60C2C
++
++#define mmNIC2_QM0_CGM_CFG                                           0xD60C70
++
++#define mmNIC2_QM0_CGM_STS                                           0xD60C74
++
++#define mmNIC2_QM0_CGM_CFG1                                          0xD60C78
++
++#define mmNIC2_QM0_LOCAL_RANGE_BASE                                  0xD60C80
++
++#define mmNIC2_QM0_LOCAL_RANGE_SIZE                                  0xD60C84
++
++#define mmNIC2_QM0_CSMR_STRICT_PRIO_CFG                              0xD60C90
++
++#define mmNIC2_QM0_HBW_RD_RATE_LIM_CFG_1                             0xD60C94
++
++#define mmNIC2_QM0_LBW_WR_RATE_LIM_CFG_0                             0xD60C98
++
++#define mmNIC2_QM0_LBW_WR_RATE_LIM_CFG_1                             0xD60C9C
++
++#define mmNIC2_QM0_HBW_RD_RATE_LIM_CFG_0                             0xD60CA0
++
++#define mmNIC2_QM0_GLBL_AXCACHE                                      0xD60CA4
++
++#define mmNIC2_QM0_IND_GW_APB_CFG                                    0xD60CB0
++
++#define mmNIC2_QM0_IND_GW_APB_WDATA                                  0xD60CB4
++
++#define mmNIC2_QM0_IND_GW_APB_RDATA                                  0xD60CB8
++
++#define mmNIC2_QM0_IND_GW_APB_STATUS                                 0xD60CBC
++
++#define mmNIC2_QM0_GLBL_ERR_ADDR_LO                                  0xD60CD0
++
++#define mmNIC2_QM0_GLBL_ERR_ADDR_HI                                  0xD60CD4
++
++#define mmNIC2_QM0_GLBL_ERR_WDATA                                    0xD60CD8
++
++#define mmNIC2_QM0_GLBL_MEM_INIT_BUSY                                0xD60D00
++
++#endif /* ASIC_REG_NIC2_QM0_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h
+new file mode 100644
+index 000000000000..b7f091ddc89c
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC2_QM1_REGS_H_
++#define ASIC_REG_NIC2_QM1_REGS_H_
++
++/*
++ *****************************************
++ *   NIC2_QM1 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC2_QM1_GLBL_CFG0                                         0xD62000
++
++#define mmNIC2_QM1_GLBL_CFG1                                         0xD62004
++
++#define mmNIC2_QM1_GLBL_PROT                                         0xD62008
++
++#define mmNIC2_QM1_GLBL_ERR_CFG                                      0xD6200C
++
++#define mmNIC2_QM1_GLBL_SECURE_PROPS_0                               0xD62010
++
++#define mmNIC2_QM1_GLBL_SECURE_PROPS_1                               0xD62014
++
++#define mmNIC2_QM1_GLBL_SECURE_PROPS_2                               0xD62018
++
++#define mmNIC2_QM1_GLBL_SECURE_PROPS_3                               0xD6201C
++
++#define mmNIC2_QM1_GLBL_SECURE_PROPS_4                               0xD62020
++
++#define mmNIC2_QM1_GLBL_NON_SECURE_PROPS_0                           0xD62024
++
++#define mmNIC2_QM1_GLBL_NON_SECURE_PROPS_1                           0xD62028
++
++#define mmNIC2_QM1_GLBL_NON_SECURE_PROPS_2                           0xD6202C
++
++#define mmNIC2_QM1_GLBL_NON_SECURE_PROPS_3                           0xD62030
++
++#define mmNIC2_QM1_GLBL_NON_SECURE_PROPS_4                           0xD62034
++
++#define mmNIC2_QM1_GLBL_STS0                                         0xD62038
++
++#define mmNIC2_QM1_GLBL_STS1_0                                       0xD62040
++
++#define mmNIC2_QM1_GLBL_STS1_1                                       0xD62044
++
++#define mmNIC2_QM1_GLBL_STS1_2                                       0xD62048
++
++#define mmNIC2_QM1_GLBL_STS1_3                                       0xD6204C
++
++#define mmNIC2_QM1_GLBL_STS1_4                                       0xD62050
++
++#define mmNIC2_QM1_GLBL_MSG_EN_0                                     0xD62054
++
++#define mmNIC2_QM1_GLBL_MSG_EN_1                                     0xD62058
++
++#define mmNIC2_QM1_GLBL_MSG_EN_2                                     0xD6205C
++
++#define mmNIC2_QM1_GLBL_MSG_EN_3                                     0xD62060
++
++#define mmNIC2_QM1_GLBL_MSG_EN_4                                     0xD62068
++
++#define mmNIC2_QM1_PQ_BASE_LO_0                                      0xD62070
++
++#define mmNIC2_QM1_PQ_BASE_LO_1                                      0xD62074
++
++#define mmNIC2_QM1_PQ_BASE_LO_2                                      0xD62078
++
++#define mmNIC2_QM1_PQ_BASE_LO_3                                      0xD6207C
++
++#define mmNIC2_QM1_PQ_BASE_HI_0                                      0xD62080
++
++#define mmNIC2_QM1_PQ_BASE_HI_1                                      0xD62084
++
++#define mmNIC2_QM1_PQ_BASE_HI_2                                      0xD62088
++
++#define mmNIC2_QM1_PQ_BASE_HI_3                                      0xD6208C
++
++#define mmNIC2_QM1_PQ_SIZE_0                                         0xD62090
++
++#define mmNIC2_QM1_PQ_SIZE_1                                         0xD62094
++
++#define mmNIC2_QM1_PQ_SIZE_2                                         0xD62098
++
++#define mmNIC2_QM1_PQ_SIZE_3                                         0xD6209C
++
++#define mmNIC2_QM1_PQ_PI_0                                           0xD620A0
++
++#define mmNIC2_QM1_PQ_PI_1                                           0xD620A4
++
++#define mmNIC2_QM1_PQ_PI_2                                           0xD620A8
++
++#define mmNIC2_QM1_PQ_PI_3                                           0xD620AC
++
++#define mmNIC2_QM1_PQ_CI_0                                           0xD620B0
++
++#define mmNIC2_QM1_PQ_CI_1                                           0xD620B4
++
++#define mmNIC2_QM1_PQ_CI_2                                           0xD620B8
++
++#define mmNIC2_QM1_PQ_CI_3                                           0xD620BC
++
++#define mmNIC2_QM1_PQ_CFG0_0                                         0xD620C0
++
++#define mmNIC2_QM1_PQ_CFG0_1                                         0xD620C4
++
++#define mmNIC2_QM1_PQ_CFG0_2                                         0xD620C8
++
++#define mmNIC2_QM1_PQ_CFG0_3                                         0xD620CC
++
++#define mmNIC2_QM1_PQ_CFG1_0                                         0xD620D0
++
++#define mmNIC2_QM1_PQ_CFG1_1                                         0xD620D4
++
++#define mmNIC2_QM1_PQ_CFG1_2                                         0xD620D8
++
++#define mmNIC2_QM1_PQ_CFG1_3                                         0xD620DC
++
++#define mmNIC2_QM1_PQ_ARUSER_31_11_0                                 0xD620E0
++
++#define mmNIC2_QM1_PQ_ARUSER_31_11_1                                 0xD620E4
++
++#define mmNIC2_QM1_PQ_ARUSER_31_11_2                                 0xD620E8
++
++#define mmNIC2_QM1_PQ_ARUSER_31_11_3                                 0xD620EC
++
++#define mmNIC2_QM1_PQ_STS0_0                                         0xD620F0
++
++#define mmNIC2_QM1_PQ_STS0_1                                         0xD620F4
++
++#define mmNIC2_QM1_PQ_STS0_2                                         0xD620F8
++
++#define mmNIC2_QM1_PQ_STS0_3                                         0xD620FC
++
++#define mmNIC2_QM1_PQ_STS1_0                                         0xD62100
++
++#define mmNIC2_QM1_PQ_STS1_1                                         0xD62104
++
++#define mmNIC2_QM1_PQ_STS1_2                                         0xD62108
++
++#define mmNIC2_QM1_PQ_STS1_3                                         0xD6210C
++
++#define mmNIC2_QM1_CQ_CFG0_0                                         0xD62110
++
++#define mmNIC2_QM1_CQ_CFG0_1                                         0xD62114
++
++#define mmNIC2_QM1_CQ_CFG0_2                                         0xD62118
++
++#define mmNIC2_QM1_CQ_CFG0_3                                         0xD6211C
++
++#define mmNIC2_QM1_CQ_CFG0_4                                         0xD62120
++
++#define mmNIC2_QM1_CQ_CFG1_0                                         0xD62124
++
++#define mmNIC2_QM1_CQ_CFG1_1                                         0xD62128
++
++#define mmNIC2_QM1_CQ_CFG1_2                                         0xD6212C
++
++#define mmNIC2_QM1_CQ_CFG1_3                                         0xD62130
++
++#define mmNIC2_QM1_CQ_CFG1_4                                         0xD62134
++
++#define mmNIC2_QM1_CQ_ARUSER_31_11_0                                 0xD62138
++
++#define mmNIC2_QM1_CQ_ARUSER_31_11_1                                 0xD6213C
++
++#define mmNIC2_QM1_CQ_ARUSER_31_11_2                                 0xD62140
++
++#define mmNIC2_QM1_CQ_ARUSER_31_11_3                                 0xD62144
++
++#define mmNIC2_QM1_CQ_ARUSER_31_11_4                                 0xD62148
++
++#define mmNIC2_QM1_CQ_STS0_0                                         0xD6214C
++
++#define mmNIC2_QM1_CQ_STS0_1                                         0xD62150
++
++#define mmNIC2_QM1_CQ_STS0_2                                         0xD62154
++
++#define mmNIC2_QM1_CQ_STS0_3                                         0xD62158
++
++#define mmNIC2_QM1_CQ_STS0_4                                         0xD6215C
++
++#define mmNIC2_QM1_CQ_STS1_0                                         0xD62160
++
++#define mmNIC2_QM1_CQ_STS1_1                                         0xD62164
++
++#define mmNIC2_QM1_CQ_STS1_2                                         0xD62168
++
++#define mmNIC2_QM1_CQ_STS1_3                                         0xD6216C
++
++#define mmNIC2_QM1_CQ_STS1_4                                         0xD62170
++
++#define mmNIC2_QM1_CQ_PTR_LO_0                                       0xD62174
++
++#define mmNIC2_QM1_CQ_PTR_HI_0                                       0xD62178
++
++#define mmNIC2_QM1_CQ_TSIZE_0                                        0xD6217C
++
++#define mmNIC2_QM1_CQ_CTL_0                                          0xD62180
++
++#define mmNIC2_QM1_CQ_PTR_LO_1                                       0xD62184
++
++#define mmNIC2_QM1_CQ_PTR_HI_1                                       0xD62188
++
++#define mmNIC2_QM1_CQ_TSIZE_1                                        0xD6218C
++
++#define mmNIC2_QM1_CQ_CTL_1                                          0xD62190
++
++#define mmNIC2_QM1_CQ_PTR_LO_2                                       0xD62194
++
++#define mmNIC2_QM1_CQ_PTR_HI_2                                       0xD62198
++
++#define mmNIC2_QM1_CQ_TSIZE_2                                        0xD6219C
++
++#define mmNIC2_QM1_CQ_CTL_2                                          0xD621A0
++
++#define mmNIC2_QM1_CQ_PTR_LO_3                                       0xD621A4
++
++#define mmNIC2_QM1_CQ_PTR_HI_3                                       0xD621A8
++
++#define mmNIC2_QM1_CQ_TSIZE_3                                        0xD621AC
++
++#define mmNIC2_QM1_CQ_CTL_3                                          0xD621B0
++
++#define mmNIC2_QM1_CQ_PTR_LO_4                                       0xD621B4
++
++#define mmNIC2_QM1_CQ_PTR_HI_4                                       0xD621B8
++
++#define mmNIC2_QM1_CQ_TSIZE_4                                        0xD621BC
++
++#define mmNIC2_QM1_CQ_CTL_4                                          0xD621C0
++
++#define mmNIC2_QM1_CQ_PTR_LO_STS_0                                   0xD621C4
++
++#define mmNIC2_QM1_CQ_PTR_LO_STS_1                                   0xD621C8
++
++#define mmNIC2_QM1_CQ_PTR_LO_STS_2                                   0xD621CC
++
++#define mmNIC2_QM1_CQ_PTR_LO_STS_3                                   0xD621D0
++
++#define mmNIC2_QM1_CQ_PTR_LO_STS_4                                   0xD621D4
++
++#define mmNIC2_QM1_CQ_PTR_HI_STS_0                                   0xD621D8
++
++#define mmNIC2_QM1_CQ_PTR_HI_STS_1                                   0xD621DC
++
++#define mmNIC2_QM1_CQ_PTR_HI_STS_2                                   0xD621E0
++
++#define mmNIC2_QM1_CQ_PTR_HI_STS_3                                   0xD621E4
++
++#define mmNIC2_QM1_CQ_PTR_HI_STS_4                                   0xD621E8
++
++#define mmNIC2_QM1_CQ_TSIZE_STS_0                                    0xD621EC
++
++#define mmNIC2_QM1_CQ_TSIZE_STS_1                                    0xD621F0
++
++#define mmNIC2_QM1_CQ_TSIZE_STS_2                                    0xD621F4
++
++#define mmNIC2_QM1_CQ_TSIZE_STS_3                                    0xD621F8
++
++#define mmNIC2_QM1_CQ_TSIZE_STS_4                                    0xD621FC
++
++#define mmNIC2_QM1_CQ_CTL_STS_0                                      0xD62200
++
++#define mmNIC2_QM1_CQ_CTL_STS_1                                      0xD62204
++
++#define mmNIC2_QM1_CQ_CTL_STS_2                                      0xD62208
++
++#define mmNIC2_QM1_CQ_CTL_STS_3                                      0xD6220C
++
++#define mmNIC2_QM1_CQ_CTL_STS_4                                      0xD62210
++
++#define mmNIC2_QM1_CQ_IFIFO_CNT_0                                    0xD62214
++
++#define mmNIC2_QM1_CQ_IFIFO_CNT_1                                    0xD62218
++
++#define mmNIC2_QM1_CQ_IFIFO_CNT_2                                    0xD6221C
++
++#define mmNIC2_QM1_CQ_IFIFO_CNT_3                                    0xD62220
++
++#define mmNIC2_QM1_CQ_IFIFO_CNT_4                                    0xD62224
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_LO_0                            0xD62228
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_LO_1                            0xD6222C
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_LO_2                            0xD62230
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_LO_3                            0xD62234
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_LO_4                            0xD62238
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_HI_0                            0xD6223C
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_HI_1                            0xD62240
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_HI_2                            0xD62244
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_HI_3                            0xD62248
++
++#define mmNIC2_QM1_CP_MSG_BASE0_ADDR_HI_4                            0xD6224C
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_LO_0                            0xD62250
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_LO_1                            0xD62254
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_LO_2                            0xD62258
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_LO_3                            0xD6225C
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_LO_4                            0xD62260
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_HI_0                            0xD62264
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_HI_1                            0xD62268
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_HI_2                            0xD6226C
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_HI_3                            0xD62270
++
++#define mmNIC2_QM1_CP_MSG_BASE1_ADDR_HI_4                            0xD62274
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_LO_0                            0xD62278
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_LO_1                            0xD6227C
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_LO_2                            0xD62280
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_LO_3                            0xD62284
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_LO_4                            0xD62288
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_HI_0                            0xD6228C
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_HI_1                            0xD62290
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_HI_2                            0xD62294
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_HI_3                            0xD62298
++
++#define mmNIC2_QM1_CP_MSG_BASE2_ADDR_HI_4                            0xD6229C
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_LO_0                            0xD622A0
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_LO_1                            0xD622A4
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_LO_2                            0xD622A8
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_LO_3                            0xD622AC
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_LO_4                            0xD622B0
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_HI_0                            0xD622B4
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_HI_1                            0xD622B8
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_HI_2                            0xD622BC
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_HI_3                            0xD622C0
++
++#define mmNIC2_QM1_CP_MSG_BASE3_ADDR_HI_4                            0xD622C4
++
++#define mmNIC2_QM1_CP_LDMA_TSIZE_OFFSET_0                            0xD622C8
++
++#define mmNIC2_QM1_CP_LDMA_TSIZE_OFFSET_1                            0xD622CC
++
++#define mmNIC2_QM1_CP_LDMA_TSIZE_OFFSET_2                            0xD622D0
++
++#define mmNIC2_QM1_CP_LDMA_TSIZE_OFFSET_3                            0xD622D4
++
++#define mmNIC2_QM1_CP_LDMA_TSIZE_OFFSET_4                            0xD622D8
++
++#define mmNIC2_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xD622E0
++
++#define mmNIC2_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xD622E4
++
++#define mmNIC2_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xD622E8
++
++#define mmNIC2_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xD622EC
++
++#define mmNIC2_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xD622F0
++
++#define mmNIC2_QM1_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xD622F4
++
++#define mmNIC2_QM1_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xD622F8
++
++#define mmNIC2_QM1_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xD622FC
++
++#define mmNIC2_QM1_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xD62300
++
++#define mmNIC2_QM1_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xD62304
++
++#define mmNIC2_QM1_CP_FENCE0_RDATA_0                                 0xD62308
++
++#define mmNIC2_QM1_CP_FENCE0_RDATA_1                                 0xD6230C
++
++#define mmNIC2_QM1_CP_FENCE0_RDATA_2                                 0xD62310
++
++#define mmNIC2_QM1_CP_FENCE0_RDATA_3                                 0xD62314
++
++#define mmNIC2_QM1_CP_FENCE0_RDATA_4                                 0xD62318
++
++#define mmNIC2_QM1_CP_FENCE1_RDATA_0                                 0xD6231C
++
++#define mmNIC2_QM1_CP_FENCE1_RDATA_1                                 0xD62320
++
++#define mmNIC2_QM1_CP_FENCE1_RDATA_2                                 0xD62324
++
++#define mmNIC2_QM1_CP_FENCE1_RDATA_3                                 0xD62328
++
++#define mmNIC2_QM1_CP_FENCE1_RDATA_4                                 0xD6232C
++
++#define mmNIC2_QM1_CP_FENCE2_RDATA_0                                 0xD62330
++
++#define mmNIC2_QM1_CP_FENCE2_RDATA_1                                 0xD62334
++
++#define mmNIC2_QM1_CP_FENCE2_RDATA_2                                 0xD62338
++
++#define mmNIC2_QM1_CP_FENCE2_RDATA_3                                 0xD6233C
++
++#define mmNIC2_QM1_CP_FENCE2_RDATA_4                                 0xD62340
++
++#define mmNIC2_QM1_CP_FENCE3_RDATA_0                                 0xD62344
++
++#define mmNIC2_QM1_CP_FENCE3_RDATA_1                                 0xD62348
++
++#define mmNIC2_QM1_CP_FENCE3_RDATA_2                                 0xD6234C
++
++#define mmNIC2_QM1_CP_FENCE3_RDATA_3                                 0xD62350
++
++#define mmNIC2_QM1_CP_FENCE3_RDATA_4                                 0xD62354
++
++#define mmNIC2_QM1_CP_FENCE0_CNT_0                                   0xD62358
++
++#define mmNIC2_QM1_CP_FENCE0_CNT_1                                   0xD6235C
++
++#define mmNIC2_QM1_CP_FENCE0_CNT_2                                   0xD62360
++
++#define mmNIC2_QM1_CP_FENCE0_CNT_3                                   0xD62364
++
++#define mmNIC2_QM1_CP_FENCE0_CNT_4                                   0xD62368
++
++#define mmNIC2_QM1_CP_FENCE1_CNT_0                                   0xD6236C
++
++#define mmNIC2_QM1_CP_FENCE1_CNT_1                                   0xD62370
++
++#define mmNIC2_QM1_CP_FENCE1_CNT_2                                   0xD62374
++
++#define mmNIC2_QM1_CP_FENCE1_CNT_3                                   0xD62378
++
++#define mmNIC2_QM1_CP_FENCE1_CNT_4                                   0xD6237C
++
++#define mmNIC2_QM1_CP_FENCE2_CNT_0                                   0xD62380
++
++#define mmNIC2_QM1_CP_FENCE2_CNT_1                                   0xD62384
++
++#define mmNIC2_QM1_CP_FENCE2_CNT_2                                   0xD62388
++
++#define mmNIC2_QM1_CP_FENCE2_CNT_3                                   0xD6238C
++
++#define mmNIC2_QM1_CP_FENCE2_CNT_4                                   0xD62390
++
++#define mmNIC2_QM1_CP_FENCE3_CNT_0                                   0xD62394
++
++#define mmNIC2_QM1_CP_FENCE3_CNT_1                                   0xD62398
++
++#define mmNIC2_QM1_CP_FENCE3_CNT_2                                   0xD6239C
++
++#define mmNIC2_QM1_CP_FENCE3_CNT_3                                   0xD623A0
++
++#define mmNIC2_QM1_CP_FENCE3_CNT_4                                   0xD623A4
++
++#define mmNIC2_QM1_CP_STS_0                                          0xD623A8
++
++#define mmNIC2_QM1_CP_STS_1                                          0xD623AC
++
++#define mmNIC2_QM1_CP_STS_2                                          0xD623B0
++
++#define mmNIC2_QM1_CP_STS_3                                          0xD623B4
++
++#define mmNIC2_QM1_CP_STS_4                                          0xD623B8
++
++#define mmNIC2_QM1_CP_CURRENT_INST_LO_0                              0xD623BC
++
++#define mmNIC2_QM1_CP_CURRENT_INST_LO_1                              0xD623C0
++
++#define mmNIC2_QM1_CP_CURRENT_INST_LO_2                              0xD623C4
++
++#define mmNIC2_QM1_CP_CURRENT_INST_LO_3                              0xD623C8
++
++#define mmNIC2_QM1_CP_CURRENT_INST_LO_4                              0xD623CC
++
++#define mmNIC2_QM1_CP_CURRENT_INST_HI_0                              0xD623D0
++
++#define mmNIC2_QM1_CP_CURRENT_INST_HI_1                              0xD623D4
++
++#define mmNIC2_QM1_CP_CURRENT_INST_HI_2                              0xD623D8
++
++#define mmNIC2_QM1_CP_CURRENT_INST_HI_3                              0xD623DC
++
++#define mmNIC2_QM1_CP_CURRENT_INST_HI_4                              0xD623E0
++
++#define mmNIC2_QM1_CP_BARRIER_CFG_0                                  0xD623F4
++
++#define mmNIC2_QM1_CP_BARRIER_CFG_1                                  0xD623F8
++
++#define mmNIC2_QM1_CP_BARRIER_CFG_2                                  0xD623FC
++
++#define mmNIC2_QM1_CP_BARRIER_CFG_3                                  0xD62400
++
++#define mmNIC2_QM1_CP_BARRIER_CFG_4                                  0xD62404
++
++#define mmNIC2_QM1_CP_DBG_0_0                                        0xD62408
++
++#define mmNIC2_QM1_CP_DBG_0_1                                        0xD6240C
++
++#define mmNIC2_QM1_CP_DBG_0_2                                        0xD62410
++
++#define mmNIC2_QM1_CP_DBG_0_3                                        0xD62414
++
++#define mmNIC2_QM1_CP_DBG_0_4                                        0xD62418
++
++#define mmNIC2_QM1_CP_ARUSER_31_11_0                                 0xD6241C
++
++#define mmNIC2_QM1_CP_ARUSER_31_11_1                                 0xD62420
++
++#define mmNIC2_QM1_CP_ARUSER_31_11_2                                 0xD62424
++
++#define mmNIC2_QM1_CP_ARUSER_31_11_3                                 0xD62428
++
++#define mmNIC2_QM1_CP_ARUSER_31_11_4                                 0xD6242C
++
++#define mmNIC2_QM1_CP_AWUSER_31_11_0                                 0xD62430
++
++#define mmNIC2_QM1_CP_AWUSER_31_11_1                                 0xD62434
++
++#define mmNIC2_QM1_CP_AWUSER_31_11_2                                 0xD62438
++
++#define mmNIC2_QM1_CP_AWUSER_31_11_3                                 0xD6243C
++
++#define mmNIC2_QM1_CP_AWUSER_31_11_4                                 0xD62440
++
++#define mmNIC2_QM1_ARB_CFG_0                                         0xD62A00
++
++#define mmNIC2_QM1_ARB_CHOISE_Q_PUSH                                 0xD62A04
++
++#define mmNIC2_QM1_ARB_WRR_WEIGHT_0                                  0xD62A08
++
++#define mmNIC2_QM1_ARB_WRR_WEIGHT_1                                  0xD62A0C
++
++#define mmNIC2_QM1_ARB_WRR_WEIGHT_2                                  0xD62A10
++
++#define mmNIC2_QM1_ARB_WRR_WEIGHT_3                                  0xD62A14
++
++#define mmNIC2_QM1_ARB_CFG_1                                         0xD62A18
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_0                              0xD62A20
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_1                              0xD62A24
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_2                              0xD62A28
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_3                              0xD62A2C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_4                              0xD62A30
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_5                              0xD62A34
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_6                              0xD62A38
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_7                              0xD62A3C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_8                              0xD62A40
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_9                              0xD62A44
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_10                             0xD62A48
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_11                             0xD62A4C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_12                             0xD62A50
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_13                             0xD62A54
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_14                             0xD62A58
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_15                             0xD62A5C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_16                             0xD62A60
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_17                             0xD62A64
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_18                             0xD62A68
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_19                             0xD62A6C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_20                             0xD62A70
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_21                             0xD62A74
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_22                             0xD62A78
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_23                             0xD62A7C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_24                             0xD62A80
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_25                             0xD62A84
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_26                             0xD62A88
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_27                             0xD62A8C
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_28                             0xD62A90
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_29                             0xD62A94
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_30                             0xD62A98
++
++#define mmNIC2_QM1_ARB_MST_AVAIL_CRED_31                             0xD62A9C
++
++#define mmNIC2_QM1_ARB_MST_CRED_INC                                  0xD62AA0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_0                        0xD62AA4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_1                        0xD62AA8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_2                        0xD62AAC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_3                        0xD62AB0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_4                        0xD62AB4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_5                        0xD62AB8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_6                        0xD62ABC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_7                        0xD62AC0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_8                        0xD62AC4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_9                        0xD62AC8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_10                       0xD62ACC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_11                       0xD62AD0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_12                       0xD62AD4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_13                       0xD62AD8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_14                       0xD62ADC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_15                       0xD62AE0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_16                       0xD62AE4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_17                       0xD62AE8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_18                       0xD62AEC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_19                       0xD62AF0
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_20                       0xD62AF4
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_21                       0xD62AF8
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_22                       0xD62AFC
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_23                       0xD62B00
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_24                       0xD62B04
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_25                       0xD62B08
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_26                       0xD62B0C
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_27                       0xD62B10
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_28                       0xD62B14
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_29                       0xD62B18
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_30                       0xD62B1C
++
++#define mmNIC2_QM1_ARB_MST_CHOISE_PUSH_OFST_31                       0xD62B20
++
++#define mmNIC2_QM1_ARB_SLV_MASTER_INC_CRED_OFST                      0xD62B28
++
++#define mmNIC2_QM1_ARB_MST_SLAVE_EN                                  0xD62B2C
++
++#define mmNIC2_QM1_ARB_MST_QUIET_PER                                 0xD62B34
++
++#define mmNIC2_QM1_ARB_SLV_CHOISE_WDT                                0xD62B38
++
++#define mmNIC2_QM1_ARB_SLV_ID                                        0xD62B3C
++
++#define mmNIC2_QM1_ARB_MSG_MAX_INFLIGHT                              0xD62B44
++
++#define mmNIC2_QM1_ARB_MSG_AWUSER_31_11                              0xD62B48
++
++#define mmNIC2_QM1_ARB_MSG_AWUSER_SEC_PROP                           0xD62B4C
++
++#define mmNIC2_QM1_ARB_MSG_AWUSER_NON_SEC_PROP                       0xD62B50
++
++#define mmNIC2_QM1_ARB_BASE_LO                                       0xD62B54
++
++#define mmNIC2_QM1_ARB_BASE_HI                                       0xD62B58
++
++#define mmNIC2_QM1_ARB_STATE_STS                                     0xD62B80
++
++#define mmNIC2_QM1_ARB_CHOISE_FULLNESS_STS                           0xD62B84
++
++#define mmNIC2_QM1_ARB_MSG_STS                                       0xD62B88
++
++#define mmNIC2_QM1_ARB_SLV_CHOISE_Q_HEAD                             0xD62B8C
++
++#define mmNIC2_QM1_ARB_ERR_CAUSE                                     0xD62B9C
++
++#define mmNIC2_QM1_ARB_ERR_MSG_EN                                    0xD62BA0
++
++#define mmNIC2_QM1_ARB_ERR_STS_DRP                                   0xD62BA8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_0                                0xD62BB0
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_1                                0xD62BB4
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_2                                0xD62BB8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_3                                0xD62BBC
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_4                                0xD62BC0
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_5                                0xD62BC4
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_6                                0xD62BC8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_7                                0xD62BCC
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_8                                0xD62BD0
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_9                                0xD62BD4
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_10                               0xD62BD8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_11                               0xD62BDC
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_12                               0xD62BE0
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_13                               0xD62BE4
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_14                               0xD62BE8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_15                               0xD62BEC
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_16                               0xD62BF0
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_17                               0xD62BF4
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_18                               0xD62BF8
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_19                               0xD62BFC
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_20                               0xD62C00
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_21                               0xD62C04
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_22                               0xD62C08
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_23                               0xD62C0C
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_24                               0xD62C10
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_25                               0xD62C14
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_26                               0xD62C18
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_27                               0xD62C1C
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_28                               0xD62C20
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_29                               0xD62C24
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_30                               0xD62C28
++
++#define mmNIC2_QM1_ARB_MST_CRED_STS_31                               0xD62C2C
++
++#define mmNIC2_QM1_CGM_CFG                                           0xD62C70
++
++#define mmNIC2_QM1_CGM_STS                                           0xD62C74
++
++#define mmNIC2_QM1_CGM_CFG1                                          0xD62C78
++
++#define mmNIC2_QM1_LOCAL_RANGE_BASE                                  0xD62C80
++
++#define mmNIC2_QM1_LOCAL_RANGE_SIZE                                  0xD62C84
++
++#define mmNIC2_QM1_CSMR_STRICT_PRIO_CFG                              0xD62C90
++
++#define mmNIC2_QM1_HBW_RD_RATE_LIM_CFG_1                             0xD62C94
++
++#define mmNIC2_QM1_LBW_WR_RATE_LIM_CFG_0                             0xD62C98
++
++#define mmNIC2_QM1_LBW_WR_RATE_LIM_CFG_1                             0xD62C9C
++
++#define mmNIC2_QM1_HBW_RD_RATE_LIM_CFG_0                             0xD62CA0
++
++#define mmNIC2_QM1_GLBL_AXCACHE                                      0xD62CA4
++
++#define mmNIC2_QM1_IND_GW_APB_CFG                                    0xD62CB0
++
++#define mmNIC2_QM1_IND_GW_APB_WDATA                                  0xD62CB4
++
++#define mmNIC2_QM1_IND_GW_APB_RDATA                                  0xD62CB8
++
++#define mmNIC2_QM1_IND_GW_APB_STATUS                                 0xD62CBC
++
++#define mmNIC2_QM1_GLBL_ERR_ADDR_LO                                  0xD62CD0
++
++#define mmNIC2_QM1_GLBL_ERR_ADDR_HI                                  0xD62CD4
++
++#define mmNIC2_QM1_GLBL_ERR_WDATA                                    0xD62CD8
++
++#define mmNIC2_QM1_GLBL_MEM_INIT_BUSY                                0xD62D00
++
++#endif /* ASIC_REG_NIC2_QM1_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h
+new file mode 100644
+index 000000000000..4712cc62b009
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC3_QM0_REGS_H_
++#define ASIC_REG_NIC3_QM0_REGS_H_
++
++/*
++ *****************************************
++ *   NIC3_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC3_QM0_GLBL_CFG0                                         0xDA0000
++
++#define mmNIC3_QM0_GLBL_CFG1                                         0xDA0004
++
++#define mmNIC3_QM0_GLBL_PROT                                         0xDA0008
++
++#define mmNIC3_QM0_GLBL_ERR_CFG                                      0xDA000C
++
++#define mmNIC3_QM0_GLBL_SECURE_PROPS_0                               0xDA0010
++
++#define mmNIC3_QM0_GLBL_SECURE_PROPS_1                               0xDA0014
++
++#define mmNIC3_QM0_GLBL_SECURE_PROPS_2                               0xDA0018
++
++#define mmNIC3_QM0_GLBL_SECURE_PROPS_3                               0xDA001C
++
++#define mmNIC3_QM0_GLBL_SECURE_PROPS_4                               0xDA0020
++
++#define mmNIC3_QM0_GLBL_NON_SECURE_PROPS_0                           0xDA0024
++
++#define mmNIC3_QM0_GLBL_NON_SECURE_PROPS_1                           0xDA0028
++
++#define mmNIC3_QM0_GLBL_NON_SECURE_PROPS_2                           0xDA002C
++
++#define mmNIC3_QM0_GLBL_NON_SECURE_PROPS_3                           0xDA0030
++
++#define mmNIC3_QM0_GLBL_NON_SECURE_PROPS_4                           0xDA0034
++
++#define mmNIC3_QM0_GLBL_STS0                                         0xDA0038
++
++#define mmNIC3_QM0_GLBL_STS1_0                                       0xDA0040
++
++#define mmNIC3_QM0_GLBL_STS1_1                                       0xDA0044
++
++#define mmNIC3_QM0_GLBL_STS1_2                                       0xDA0048
++
++#define mmNIC3_QM0_GLBL_STS1_3                                       0xDA004C
++
++#define mmNIC3_QM0_GLBL_STS1_4                                       0xDA0050
++
++#define mmNIC3_QM0_GLBL_MSG_EN_0                                     0xDA0054
++
++#define mmNIC3_QM0_GLBL_MSG_EN_1                                     0xDA0058
++
++#define mmNIC3_QM0_GLBL_MSG_EN_2                                     0xDA005C
++
++#define mmNIC3_QM0_GLBL_MSG_EN_3                                     0xDA0060
++
++#define mmNIC3_QM0_GLBL_MSG_EN_4                                     0xDA0068
++
++#define mmNIC3_QM0_PQ_BASE_LO_0                                      0xDA0070
++
++#define mmNIC3_QM0_PQ_BASE_LO_1                                      0xDA0074
++
++#define mmNIC3_QM0_PQ_BASE_LO_2                                      0xDA0078
++
++#define mmNIC3_QM0_PQ_BASE_LO_3                                      0xDA007C
++
++#define mmNIC3_QM0_PQ_BASE_HI_0                                      0xDA0080
++
++#define mmNIC3_QM0_PQ_BASE_HI_1                                      0xDA0084
++
++#define mmNIC3_QM0_PQ_BASE_HI_2                                      0xDA0088
++
++#define mmNIC3_QM0_PQ_BASE_HI_3                                      0xDA008C
++
++#define mmNIC3_QM0_PQ_SIZE_0                                         0xDA0090
++
++#define mmNIC3_QM0_PQ_SIZE_1                                         0xDA0094
++
++#define mmNIC3_QM0_PQ_SIZE_2                                         0xDA0098
++
++#define mmNIC3_QM0_PQ_SIZE_3                                         0xDA009C
++
++#define mmNIC3_QM0_PQ_PI_0                                           0xDA00A0
++
++#define mmNIC3_QM0_PQ_PI_1                                           0xDA00A4
++
++#define mmNIC3_QM0_PQ_PI_2                                           0xDA00A8
++
++#define mmNIC3_QM0_PQ_PI_3                                           0xDA00AC
++
++#define mmNIC3_QM0_PQ_CI_0                                           0xDA00B0
++
++#define mmNIC3_QM0_PQ_CI_1                                           0xDA00B4
++
++#define mmNIC3_QM0_PQ_CI_2                                           0xDA00B8
++
++#define mmNIC3_QM0_PQ_CI_3                                           0xDA00BC
++
++#define mmNIC3_QM0_PQ_CFG0_0                                         0xDA00C0
++
++#define mmNIC3_QM0_PQ_CFG0_1                                         0xDA00C4
++
++#define mmNIC3_QM0_PQ_CFG0_2                                         0xDA00C8
++
++#define mmNIC3_QM0_PQ_CFG0_3                                         0xDA00CC
++
++#define mmNIC3_QM0_PQ_CFG1_0                                         0xDA00D0
++
++#define mmNIC3_QM0_PQ_CFG1_1                                         0xDA00D4
++
++#define mmNIC3_QM0_PQ_CFG1_2                                         0xDA00D8
++
++#define mmNIC3_QM0_PQ_CFG1_3                                         0xDA00DC
++
++#define mmNIC3_QM0_PQ_ARUSER_31_11_0                                 0xDA00E0
++
++#define mmNIC3_QM0_PQ_ARUSER_31_11_1                                 0xDA00E4
++
++#define mmNIC3_QM0_PQ_ARUSER_31_11_2                                 0xDA00E8
++
++#define mmNIC3_QM0_PQ_ARUSER_31_11_3                                 0xDA00EC
++
++#define mmNIC3_QM0_PQ_STS0_0                                         0xDA00F0
++
++#define mmNIC3_QM0_PQ_STS0_1                                         0xDA00F4
++
++#define mmNIC3_QM0_PQ_STS0_2                                         0xDA00F8
++
++#define mmNIC3_QM0_PQ_STS0_3                                         0xDA00FC
++
++#define mmNIC3_QM0_PQ_STS1_0                                         0xDA0100
++
++#define mmNIC3_QM0_PQ_STS1_1                                         0xDA0104
++
++#define mmNIC3_QM0_PQ_STS1_2                                         0xDA0108
++
++#define mmNIC3_QM0_PQ_STS1_3                                         0xDA010C
++
++#define mmNIC3_QM0_CQ_CFG0_0                                         0xDA0110
++
++#define mmNIC3_QM0_CQ_CFG0_1                                         0xDA0114
++
++#define mmNIC3_QM0_CQ_CFG0_2                                         0xDA0118
++
++#define mmNIC3_QM0_CQ_CFG0_3                                         0xDA011C
++
++#define mmNIC3_QM0_CQ_CFG0_4                                         0xDA0120
++
++#define mmNIC3_QM0_CQ_CFG1_0                                         0xDA0124
++
++#define mmNIC3_QM0_CQ_CFG1_1                                         0xDA0128
++
++#define mmNIC3_QM0_CQ_CFG1_2                                         0xDA012C
++
++#define mmNIC3_QM0_CQ_CFG1_3                                         0xDA0130
++
++#define mmNIC3_QM0_CQ_CFG1_4                                         0xDA0134
++
++#define mmNIC3_QM0_CQ_ARUSER_31_11_0                                 0xDA0138
++
++#define mmNIC3_QM0_CQ_ARUSER_31_11_1                                 0xDA013C
++
++#define mmNIC3_QM0_CQ_ARUSER_31_11_2                                 0xDA0140
++
++#define mmNIC3_QM0_CQ_ARUSER_31_11_3                                 0xDA0144
++
++#define mmNIC3_QM0_CQ_ARUSER_31_11_4                                 0xDA0148
++
++#define mmNIC3_QM0_CQ_STS0_0                                         0xDA014C
++
++#define mmNIC3_QM0_CQ_STS0_1                                         0xDA0150
++
++#define mmNIC3_QM0_CQ_STS0_2                                         0xDA0154
++
++#define mmNIC3_QM0_CQ_STS0_3                                         0xDA0158
++
++#define mmNIC3_QM0_CQ_STS0_4                                         0xDA015C
++
++#define mmNIC3_QM0_CQ_STS1_0                                         0xDA0160
++
++#define mmNIC3_QM0_CQ_STS1_1                                         0xDA0164
++
++#define mmNIC3_QM0_CQ_STS1_2                                         0xDA0168
++
++#define mmNIC3_QM0_CQ_STS1_3                                         0xDA016C
++
++#define mmNIC3_QM0_CQ_STS1_4                                         0xDA0170
++
++#define mmNIC3_QM0_CQ_PTR_LO_0                                       0xDA0174
++
++#define mmNIC3_QM0_CQ_PTR_HI_0                                       0xDA0178
++
++#define mmNIC3_QM0_CQ_TSIZE_0                                        0xDA017C
++
++#define mmNIC3_QM0_CQ_CTL_0                                          0xDA0180
++
++#define mmNIC3_QM0_CQ_PTR_LO_1                                       0xDA0184
++
++#define mmNIC3_QM0_CQ_PTR_HI_1                                       0xDA0188
++
++#define mmNIC3_QM0_CQ_TSIZE_1                                        0xDA018C
++
++#define mmNIC3_QM0_CQ_CTL_1                                          0xDA0190
++
++#define mmNIC3_QM0_CQ_PTR_LO_2                                       0xDA0194
++
++#define mmNIC3_QM0_CQ_PTR_HI_2                                       0xDA0198
++
++#define mmNIC3_QM0_CQ_TSIZE_2                                        0xDA019C
++
++#define mmNIC3_QM0_CQ_CTL_2                                          0xDA01A0
++
++#define mmNIC3_QM0_CQ_PTR_LO_3                                       0xDA01A4
++
++#define mmNIC3_QM0_CQ_PTR_HI_3                                       0xDA01A8
++
++#define mmNIC3_QM0_CQ_TSIZE_3                                        0xDA01AC
++
++#define mmNIC3_QM0_CQ_CTL_3                                          0xDA01B0
++
++#define mmNIC3_QM0_CQ_PTR_LO_4                                       0xDA01B4
++
++#define mmNIC3_QM0_CQ_PTR_HI_4                                       0xDA01B8
++
++#define mmNIC3_QM0_CQ_TSIZE_4                                        0xDA01BC
++
++#define mmNIC3_QM0_CQ_CTL_4                                          0xDA01C0
++
++#define mmNIC3_QM0_CQ_PTR_LO_STS_0                                   0xDA01C4
++
++#define mmNIC3_QM0_CQ_PTR_LO_STS_1                                   0xDA01C8
++
++#define mmNIC3_QM0_CQ_PTR_LO_STS_2                                   0xDA01CC
++
++#define mmNIC3_QM0_CQ_PTR_LO_STS_3                                   0xDA01D0
++
++#define mmNIC3_QM0_CQ_PTR_LO_STS_4                                   0xDA01D4
++
++#define mmNIC3_QM0_CQ_PTR_HI_STS_0                                   0xDA01D8
++
++#define mmNIC3_QM0_CQ_PTR_HI_STS_1                                   0xDA01DC
++
++#define mmNIC3_QM0_CQ_PTR_HI_STS_2                                   0xDA01E0
++
++#define mmNIC3_QM0_CQ_PTR_HI_STS_3                                   0xDA01E4
++
++#define mmNIC3_QM0_CQ_PTR_HI_STS_4                                   0xDA01E8
++
++#define mmNIC3_QM0_CQ_TSIZE_STS_0                                    0xDA01EC
++
++#define mmNIC3_QM0_CQ_TSIZE_STS_1                                    0xDA01F0
++
++#define mmNIC3_QM0_CQ_TSIZE_STS_2                                    0xDA01F4
++
++#define mmNIC3_QM0_CQ_TSIZE_STS_3                                    0xDA01F8
++
++#define mmNIC3_QM0_CQ_TSIZE_STS_4                                    0xDA01FC
++
++#define mmNIC3_QM0_CQ_CTL_STS_0                                      0xDA0200
++
++#define mmNIC3_QM0_CQ_CTL_STS_1                                      0xDA0204
++
++#define mmNIC3_QM0_CQ_CTL_STS_2                                      0xDA0208
++
++#define mmNIC3_QM0_CQ_CTL_STS_3                                      0xDA020C
++
++#define mmNIC3_QM0_CQ_CTL_STS_4                                      0xDA0210
++
++#define mmNIC3_QM0_CQ_IFIFO_CNT_0                                    0xDA0214
++
++#define mmNIC3_QM0_CQ_IFIFO_CNT_1                                    0xDA0218
++
++#define mmNIC3_QM0_CQ_IFIFO_CNT_2                                    0xDA021C
++
++#define mmNIC3_QM0_CQ_IFIFO_CNT_3                                    0xDA0220
++
++#define mmNIC3_QM0_CQ_IFIFO_CNT_4                                    0xDA0224
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_LO_0                            0xDA0228
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_LO_1                            0xDA022C
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_LO_2                            0xDA0230
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_LO_3                            0xDA0234
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_LO_4                            0xDA0238
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_HI_0                            0xDA023C
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_HI_1                            0xDA0240
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_HI_2                            0xDA0244
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_HI_3                            0xDA0248
++
++#define mmNIC3_QM0_CP_MSG_BASE0_ADDR_HI_4                            0xDA024C
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_LO_0                            0xDA0250
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_LO_1                            0xDA0254
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_LO_2                            0xDA0258
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_LO_3                            0xDA025C
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_LO_4                            0xDA0260
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_HI_0                            0xDA0264
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_HI_1                            0xDA0268
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_HI_2                            0xDA026C
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_HI_3                            0xDA0270
++
++#define mmNIC3_QM0_CP_MSG_BASE1_ADDR_HI_4                            0xDA0274
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_LO_0                            0xDA0278
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_LO_1                            0xDA027C
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_LO_2                            0xDA0280
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_LO_3                            0xDA0284
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_LO_4                            0xDA0288
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_HI_0                            0xDA028C
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_HI_1                            0xDA0290
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_HI_2                            0xDA0294
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_HI_3                            0xDA0298
++
++#define mmNIC3_QM0_CP_MSG_BASE2_ADDR_HI_4                            0xDA029C
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_LO_0                            0xDA02A0
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_LO_1                            0xDA02A4
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_LO_2                            0xDA02A8
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_LO_3                            0xDA02AC
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_LO_4                            0xDA02B0
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_HI_0                            0xDA02B4
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_HI_1                            0xDA02B8
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_HI_2                            0xDA02BC
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_HI_3                            0xDA02C0
++
++#define mmNIC3_QM0_CP_MSG_BASE3_ADDR_HI_4                            0xDA02C4
++
++#define mmNIC3_QM0_CP_LDMA_TSIZE_OFFSET_0                            0xDA02C8
++
++#define mmNIC3_QM0_CP_LDMA_TSIZE_OFFSET_1                            0xDA02CC
++
++#define mmNIC3_QM0_CP_LDMA_TSIZE_OFFSET_2                            0xDA02D0
++
++#define mmNIC3_QM0_CP_LDMA_TSIZE_OFFSET_3                            0xDA02D4
++
++#define mmNIC3_QM0_CP_LDMA_TSIZE_OFFSET_4                            0xDA02D8
++
++#define mmNIC3_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xDA02E0
++
++#define mmNIC3_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xDA02E4
++
++#define mmNIC3_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xDA02E8
++
++#define mmNIC3_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xDA02EC
++
++#define mmNIC3_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xDA02F0
++
++#define mmNIC3_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xDA02F4
++
++#define mmNIC3_QM0_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xDA02F8
++
++#define mmNIC3_QM0_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xDA02FC
++
++#define mmNIC3_QM0_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xDA0300
++
++#define mmNIC3_QM0_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xDA0304
++
++#define mmNIC3_QM0_CP_FENCE0_RDATA_0                                 0xDA0308
++
++#define mmNIC3_QM0_CP_FENCE0_RDATA_1                                 0xDA030C
++
++#define mmNIC3_QM0_CP_FENCE0_RDATA_2                                 0xDA0310
++
++#define mmNIC3_QM0_CP_FENCE0_RDATA_3                                 0xDA0314
++
++#define mmNIC3_QM0_CP_FENCE0_RDATA_4                                 0xDA0318
++
++#define mmNIC3_QM0_CP_FENCE1_RDATA_0                                 0xDA031C
++
++#define mmNIC3_QM0_CP_FENCE1_RDATA_1                                 0xDA0320
++
++#define mmNIC3_QM0_CP_FENCE1_RDATA_2                                 0xDA0324
++
++#define mmNIC3_QM0_CP_FENCE1_RDATA_3                                 0xDA0328
++
++#define mmNIC3_QM0_CP_FENCE1_RDATA_4                                 0xDA032C
++
++#define mmNIC3_QM0_CP_FENCE2_RDATA_0                                 0xDA0330
++
++#define mmNIC3_QM0_CP_FENCE2_RDATA_1                                 0xDA0334
++
++#define mmNIC3_QM0_CP_FENCE2_RDATA_2                                 0xDA0338
++
++#define mmNIC3_QM0_CP_FENCE2_RDATA_3                                 0xDA033C
++
++#define mmNIC3_QM0_CP_FENCE2_RDATA_4                                 0xDA0340
++
++#define mmNIC3_QM0_CP_FENCE3_RDATA_0                                 0xDA0344
++
++#define mmNIC3_QM0_CP_FENCE3_RDATA_1                                 0xDA0348
++
++#define mmNIC3_QM0_CP_FENCE3_RDATA_2                                 0xDA034C
++
++#define mmNIC3_QM0_CP_FENCE3_RDATA_3                                 0xDA0350
++
++#define mmNIC3_QM0_CP_FENCE3_RDATA_4                                 0xDA0354
++
++#define mmNIC3_QM0_CP_FENCE0_CNT_0                                   0xDA0358
++
++#define mmNIC3_QM0_CP_FENCE0_CNT_1                                   0xDA035C
++
++#define mmNIC3_QM0_CP_FENCE0_CNT_2                                   0xDA0360
++
++#define mmNIC3_QM0_CP_FENCE0_CNT_3                                   0xDA0364
++
++#define mmNIC3_QM0_CP_FENCE0_CNT_4                                   0xDA0368
++
++#define mmNIC3_QM0_CP_FENCE1_CNT_0                                   0xDA036C
++
++#define mmNIC3_QM0_CP_FENCE1_CNT_1                                   0xDA0370
++
++#define mmNIC3_QM0_CP_FENCE1_CNT_2                                   0xDA0374
++
++#define mmNIC3_QM0_CP_FENCE1_CNT_3                                   0xDA0378
++
++#define mmNIC3_QM0_CP_FENCE1_CNT_4                                   0xDA037C
++
++#define mmNIC3_QM0_CP_FENCE2_CNT_0                                   0xDA0380
++
++#define mmNIC3_QM0_CP_FENCE2_CNT_1                                   0xDA0384
++
++#define mmNIC3_QM0_CP_FENCE2_CNT_2                                   0xDA0388
++
++#define mmNIC3_QM0_CP_FENCE2_CNT_3                                   0xDA038C
++
++#define mmNIC3_QM0_CP_FENCE2_CNT_4                                   0xDA0390
++
++#define mmNIC3_QM0_CP_FENCE3_CNT_0                                   0xDA0394
++
++#define mmNIC3_QM0_CP_FENCE3_CNT_1                                   0xDA0398
++
++#define mmNIC3_QM0_CP_FENCE3_CNT_2                                   0xDA039C
++
++#define mmNIC3_QM0_CP_FENCE3_CNT_3                                   0xDA03A0
++
++#define mmNIC3_QM0_CP_FENCE3_CNT_4                                   0xDA03A4
++
++#define mmNIC3_QM0_CP_STS_0                                          0xDA03A8
++
++#define mmNIC3_QM0_CP_STS_1                                          0xDA03AC
++
++#define mmNIC3_QM0_CP_STS_2                                          0xDA03B0
++
++#define mmNIC3_QM0_CP_STS_3                                          0xDA03B4
++
++#define mmNIC3_QM0_CP_STS_4                                          0xDA03B8
++
++#define mmNIC3_QM0_CP_CURRENT_INST_LO_0                              0xDA03BC
++
++#define mmNIC3_QM0_CP_CURRENT_INST_LO_1                              0xDA03C0
++
++#define mmNIC3_QM0_CP_CURRENT_INST_LO_2                              0xDA03C4
++
++#define mmNIC3_QM0_CP_CURRENT_INST_LO_3                              0xDA03C8
++
++#define mmNIC3_QM0_CP_CURRENT_INST_LO_4                              0xDA03CC
++
++#define mmNIC3_QM0_CP_CURRENT_INST_HI_0                              0xDA03D0
++
++#define mmNIC3_QM0_CP_CURRENT_INST_HI_1                              0xDA03D4
++
++#define mmNIC3_QM0_CP_CURRENT_INST_HI_2                              0xDA03D8
++
++#define mmNIC3_QM0_CP_CURRENT_INST_HI_3                              0xDA03DC
++
++#define mmNIC3_QM0_CP_CURRENT_INST_HI_4                              0xDA03E0
++
++#define mmNIC3_QM0_CP_BARRIER_CFG_0                                  0xDA03F4
++
++#define mmNIC3_QM0_CP_BARRIER_CFG_1                                  0xDA03F8
++
++#define mmNIC3_QM0_CP_BARRIER_CFG_2                                  0xDA03FC
++
++#define mmNIC3_QM0_CP_BARRIER_CFG_3                                  0xDA0400
++
++#define mmNIC3_QM0_CP_BARRIER_CFG_4                                  0xDA0404
++
++#define mmNIC3_QM0_CP_DBG_0_0                                        0xDA0408
++
++#define mmNIC3_QM0_CP_DBG_0_1                                        0xDA040C
++
++#define mmNIC3_QM0_CP_DBG_0_2                                        0xDA0410
++
++#define mmNIC3_QM0_CP_DBG_0_3                                        0xDA0414
++
++#define mmNIC3_QM0_CP_DBG_0_4                                        0xDA0418
++
++#define mmNIC3_QM0_CP_ARUSER_31_11_0                                 0xDA041C
++
++#define mmNIC3_QM0_CP_ARUSER_31_11_1                                 0xDA0420
++
++#define mmNIC3_QM0_CP_ARUSER_31_11_2                                 0xDA0424
++
++#define mmNIC3_QM0_CP_ARUSER_31_11_3                                 0xDA0428
++
++#define mmNIC3_QM0_CP_ARUSER_31_11_4                                 0xDA042C
++
++#define mmNIC3_QM0_CP_AWUSER_31_11_0                                 0xDA0430
++
++#define mmNIC3_QM0_CP_AWUSER_31_11_1                                 0xDA0434
++
++#define mmNIC3_QM0_CP_AWUSER_31_11_2                                 0xDA0438
++
++#define mmNIC3_QM0_CP_AWUSER_31_11_3                                 0xDA043C
++
++#define mmNIC3_QM0_CP_AWUSER_31_11_4                                 0xDA0440
++
++#define mmNIC3_QM0_ARB_CFG_0                                         0xDA0A00
++
++#define mmNIC3_QM0_ARB_CHOISE_Q_PUSH                                 0xDA0A04
++
++#define mmNIC3_QM0_ARB_WRR_WEIGHT_0                                  0xDA0A08
++
++#define mmNIC3_QM0_ARB_WRR_WEIGHT_1                                  0xDA0A0C
++
++#define mmNIC3_QM0_ARB_WRR_WEIGHT_2                                  0xDA0A10
++
++#define mmNIC3_QM0_ARB_WRR_WEIGHT_3                                  0xDA0A14
++
++#define mmNIC3_QM0_ARB_CFG_1                                         0xDA0A18
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_0                              0xDA0A20
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_1                              0xDA0A24
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_2                              0xDA0A28
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_3                              0xDA0A2C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_4                              0xDA0A30
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_5                              0xDA0A34
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_6                              0xDA0A38
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_7                              0xDA0A3C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_8                              0xDA0A40
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_9                              0xDA0A44
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_10                             0xDA0A48
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_11                             0xDA0A4C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_12                             0xDA0A50
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_13                             0xDA0A54
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_14                             0xDA0A58
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_15                             0xDA0A5C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_16                             0xDA0A60
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_17                             0xDA0A64
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_18                             0xDA0A68
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_19                             0xDA0A6C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_20                             0xDA0A70
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_21                             0xDA0A74
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_22                             0xDA0A78
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_23                             0xDA0A7C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_24                             0xDA0A80
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_25                             0xDA0A84
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_26                             0xDA0A88
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_27                             0xDA0A8C
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_28                             0xDA0A90
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_29                             0xDA0A94
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_30                             0xDA0A98
++
++#define mmNIC3_QM0_ARB_MST_AVAIL_CRED_31                             0xDA0A9C
++
++#define mmNIC3_QM0_ARB_MST_CRED_INC                                  0xDA0AA0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_0                        0xDA0AA4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_1                        0xDA0AA8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_2                        0xDA0AAC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_3                        0xDA0AB0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_4                        0xDA0AB4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_5                        0xDA0AB8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_6                        0xDA0ABC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_7                        0xDA0AC0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_8                        0xDA0AC4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_9                        0xDA0AC8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_10                       0xDA0ACC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_11                       0xDA0AD0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_12                       0xDA0AD4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_13                       0xDA0AD8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_14                       0xDA0ADC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_15                       0xDA0AE0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_16                       0xDA0AE4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_17                       0xDA0AE8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_18                       0xDA0AEC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_19                       0xDA0AF0
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_20                       0xDA0AF4
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_21                       0xDA0AF8
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_22                       0xDA0AFC
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_23                       0xDA0B00
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_24                       0xDA0B04
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_25                       0xDA0B08
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_26                       0xDA0B0C
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_27                       0xDA0B10
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_28                       0xDA0B14
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_29                       0xDA0B18
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_30                       0xDA0B1C
++
++#define mmNIC3_QM0_ARB_MST_CHOISE_PUSH_OFST_31                       0xDA0B20
++
++#define mmNIC3_QM0_ARB_SLV_MASTER_INC_CRED_OFST                      0xDA0B28
++
++#define mmNIC3_QM0_ARB_MST_SLAVE_EN                                  0xDA0B2C
++
++#define mmNIC3_QM0_ARB_MST_QUIET_PER                                 0xDA0B34
++
++#define mmNIC3_QM0_ARB_SLV_CHOISE_WDT                                0xDA0B38
++
++#define mmNIC3_QM0_ARB_SLV_ID                                        0xDA0B3C
++
++#define mmNIC3_QM0_ARB_MSG_MAX_INFLIGHT                              0xDA0B44
++
++#define mmNIC3_QM0_ARB_MSG_AWUSER_31_11                              0xDA0B48
++
++#define mmNIC3_QM0_ARB_MSG_AWUSER_SEC_PROP                           0xDA0B4C
++
++#define mmNIC3_QM0_ARB_MSG_AWUSER_NON_SEC_PROP                       0xDA0B50
++
++#define mmNIC3_QM0_ARB_BASE_LO                                       0xDA0B54
++
++#define mmNIC3_QM0_ARB_BASE_HI                                       0xDA0B58
++
++#define mmNIC3_QM0_ARB_STATE_STS                                     0xDA0B80
++
++#define mmNIC3_QM0_ARB_CHOISE_FULLNESS_STS                           0xDA0B84
++
++#define mmNIC3_QM0_ARB_MSG_STS                                       0xDA0B88
++
++#define mmNIC3_QM0_ARB_SLV_CHOISE_Q_HEAD                             0xDA0B8C
++
++#define mmNIC3_QM0_ARB_ERR_CAUSE                                     0xDA0B9C
++
++#define mmNIC3_QM0_ARB_ERR_MSG_EN                                    0xDA0BA0
++
++#define mmNIC3_QM0_ARB_ERR_STS_DRP                                   0xDA0BA8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_0                                0xDA0BB0
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_1                                0xDA0BB4
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_2                                0xDA0BB8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_3                                0xDA0BBC
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_4                                0xDA0BC0
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_5                                0xDA0BC4
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_6                                0xDA0BC8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_7                                0xDA0BCC
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_8                                0xDA0BD0
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_9                                0xDA0BD4
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_10                               0xDA0BD8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_11                               0xDA0BDC
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_12                               0xDA0BE0
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_13                               0xDA0BE4
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_14                               0xDA0BE8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_15                               0xDA0BEC
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_16                               0xDA0BF0
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_17                               0xDA0BF4
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_18                               0xDA0BF8
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_19                               0xDA0BFC
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_20                               0xDA0C00
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_21                               0xDA0C04
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_22                               0xDA0C08
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_23                               0xDA0C0C
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_24                               0xDA0C10
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_25                               0xDA0C14
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_26                               0xDA0C18
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_27                               0xDA0C1C
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_28                               0xDA0C20
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_29                               0xDA0C24
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_30                               0xDA0C28
++
++#define mmNIC3_QM0_ARB_MST_CRED_STS_31                               0xDA0C2C
++
++#define mmNIC3_QM0_CGM_CFG                                           0xDA0C70
++
++#define mmNIC3_QM0_CGM_STS                                           0xDA0C74
++
++#define mmNIC3_QM0_CGM_CFG1                                          0xDA0C78
++
++#define mmNIC3_QM0_LOCAL_RANGE_BASE                                  0xDA0C80
++
++#define mmNIC3_QM0_LOCAL_RANGE_SIZE                                  0xDA0C84
++
++#define mmNIC3_QM0_CSMR_STRICT_PRIO_CFG                              0xDA0C90
++
++#define mmNIC3_QM0_HBW_RD_RATE_LIM_CFG_1                             0xDA0C94
++
++#define mmNIC3_QM0_LBW_WR_RATE_LIM_CFG_0                             0xDA0C98
++
++#define mmNIC3_QM0_LBW_WR_RATE_LIM_CFG_1                             0xDA0C9C
++
++#define mmNIC3_QM0_HBW_RD_RATE_LIM_CFG_0                             0xDA0CA0
++
++#define mmNIC3_QM0_GLBL_AXCACHE                                      0xDA0CA4
++
++#define mmNIC3_QM0_IND_GW_APB_CFG                                    0xDA0CB0
++
++#define mmNIC3_QM0_IND_GW_APB_WDATA                                  0xDA0CB4
++
++#define mmNIC3_QM0_IND_GW_APB_RDATA                                  0xDA0CB8
++
++#define mmNIC3_QM0_IND_GW_APB_STATUS                                 0xDA0CBC
++
++#define mmNIC3_QM0_GLBL_ERR_ADDR_LO                                  0xDA0CD0
++
++#define mmNIC3_QM0_GLBL_ERR_ADDR_HI                                  0xDA0CD4
++
++#define mmNIC3_QM0_GLBL_ERR_WDATA                                    0xDA0CD8
++
++#define mmNIC3_QM0_GLBL_MEM_INIT_BUSY                                0xDA0D00
++
++#endif /* ASIC_REG_NIC3_QM0_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h
+new file mode 100644
+index 000000000000..7fa040f65004
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC3_QM1_REGS_H_
++#define ASIC_REG_NIC3_QM1_REGS_H_
++
++/*
++ *****************************************
++ *   NIC3_QM1 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC3_QM1_GLBL_CFG0                                         0xDA2000
++
++#define mmNIC3_QM1_GLBL_CFG1                                         0xDA2004
++
++#define mmNIC3_QM1_GLBL_PROT                                         0xDA2008
++
++#define mmNIC3_QM1_GLBL_ERR_CFG                                      0xDA200C
++
++#define mmNIC3_QM1_GLBL_SECURE_PROPS_0                               0xDA2010
++
++#define mmNIC3_QM1_GLBL_SECURE_PROPS_1                               0xDA2014
++
++#define mmNIC3_QM1_GLBL_SECURE_PROPS_2                               0xDA2018
++
++#define mmNIC3_QM1_GLBL_SECURE_PROPS_3                               0xDA201C
++
++#define mmNIC3_QM1_GLBL_SECURE_PROPS_4                               0xDA2020
++
++#define mmNIC3_QM1_GLBL_NON_SECURE_PROPS_0                           0xDA2024
++
++#define mmNIC3_QM1_GLBL_NON_SECURE_PROPS_1                           0xDA2028
++
++#define mmNIC3_QM1_GLBL_NON_SECURE_PROPS_2                           0xDA202C
++
++#define mmNIC3_QM1_GLBL_NON_SECURE_PROPS_3                           0xDA2030
++
++#define mmNIC3_QM1_GLBL_NON_SECURE_PROPS_4                           0xDA2034
++
++#define mmNIC3_QM1_GLBL_STS0                                         0xDA2038
++
++#define mmNIC3_QM1_GLBL_STS1_0                                       0xDA2040
++
++#define mmNIC3_QM1_GLBL_STS1_1                                       0xDA2044
++
++#define mmNIC3_QM1_GLBL_STS1_2                                       0xDA2048
++
++#define mmNIC3_QM1_GLBL_STS1_3                                       0xDA204C
++
++#define mmNIC3_QM1_GLBL_STS1_4                                       0xDA2050
++
++#define mmNIC3_QM1_GLBL_MSG_EN_0                                     0xDA2054
++
++#define mmNIC3_QM1_GLBL_MSG_EN_1                                     0xDA2058
++
++#define mmNIC3_QM1_GLBL_MSG_EN_2                                     0xDA205C
++
++#define mmNIC3_QM1_GLBL_MSG_EN_3                                     0xDA2060
++
++#define mmNIC3_QM1_GLBL_MSG_EN_4                                     0xDA2068
++
++#define mmNIC3_QM1_PQ_BASE_LO_0                                      0xDA2070
++
++#define mmNIC3_QM1_PQ_BASE_LO_1                                      0xDA2074
++
++#define mmNIC3_QM1_PQ_BASE_LO_2                                      0xDA2078
++
++#define mmNIC3_QM1_PQ_BASE_LO_3                                      0xDA207C
++
++#define mmNIC3_QM1_PQ_BASE_HI_0                                      0xDA2080
++
++#define mmNIC3_QM1_PQ_BASE_HI_1                                      0xDA2084
++
++#define mmNIC3_QM1_PQ_BASE_HI_2                                      0xDA2088
++
++#define mmNIC3_QM1_PQ_BASE_HI_3                                      0xDA208C
++
++#define mmNIC3_QM1_PQ_SIZE_0                                         0xDA2090
++
++#define mmNIC3_QM1_PQ_SIZE_1                                         0xDA2094
++
++#define mmNIC3_QM1_PQ_SIZE_2                                         0xDA2098
++
++#define mmNIC3_QM1_PQ_SIZE_3                                         0xDA209C
++
++#define mmNIC3_QM1_PQ_PI_0                                           0xDA20A0
++
++#define mmNIC3_QM1_PQ_PI_1                                           0xDA20A4
++
++#define mmNIC3_QM1_PQ_PI_2                                           0xDA20A8
++
++#define mmNIC3_QM1_PQ_PI_3                                           0xDA20AC
++
++#define mmNIC3_QM1_PQ_CI_0                                           0xDA20B0
++
++#define mmNIC3_QM1_PQ_CI_1                                           0xDA20B4
++
++#define mmNIC3_QM1_PQ_CI_2                                           0xDA20B8
++
++#define mmNIC3_QM1_PQ_CI_3                                           0xDA20BC
++
++#define mmNIC3_QM1_PQ_CFG0_0                                         0xDA20C0
++
++#define mmNIC3_QM1_PQ_CFG0_1                                         0xDA20C4
++
++#define mmNIC3_QM1_PQ_CFG0_2                                         0xDA20C8
++
++#define mmNIC3_QM1_PQ_CFG0_3                                         0xDA20CC
++
++#define mmNIC3_QM1_PQ_CFG1_0                                         0xDA20D0
++
++#define mmNIC3_QM1_PQ_CFG1_1                                         0xDA20D4
++
++#define mmNIC3_QM1_PQ_CFG1_2                                         0xDA20D8
++
++#define mmNIC3_QM1_PQ_CFG1_3                                         0xDA20DC
++
++#define mmNIC3_QM1_PQ_ARUSER_31_11_0                                 0xDA20E0
++
++#define mmNIC3_QM1_PQ_ARUSER_31_11_1                                 0xDA20E4
++
++#define mmNIC3_QM1_PQ_ARUSER_31_11_2                                 0xDA20E8
++
++#define mmNIC3_QM1_PQ_ARUSER_31_11_3                                 0xDA20EC
++
++#define mmNIC3_QM1_PQ_STS0_0                                         0xDA20F0
++
++#define mmNIC3_QM1_PQ_STS0_1                                         0xDA20F4
++
++#define mmNIC3_QM1_PQ_STS0_2                                         0xDA20F8
++
++#define mmNIC3_QM1_PQ_STS0_3                                         0xDA20FC
++
++#define mmNIC3_QM1_PQ_STS1_0                                         0xDA2100
++
++#define mmNIC3_QM1_PQ_STS1_1                                         0xDA2104
++
++#define mmNIC3_QM1_PQ_STS1_2                                         0xDA2108
++
++#define mmNIC3_QM1_PQ_STS1_3                                         0xDA210C
++
++#define mmNIC3_QM1_CQ_CFG0_0                                         0xDA2110
++
++#define mmNIC3_QM1_CQ_CFG0_1                                         0xDA2114
++
++#define mmNIC3_QM1_CQ_CFG0_2                                         0xDA2118
++
++#define mmNIC3_QM1_CQ_CFG0_3                                         0xDA211C
++
++#define mmNIC3_QM1_CQ_CFG0_4                                         0xDA2120
++
++#define mmNIC3_QM1_CQ_CFG1_0                                         0xDA2124
++
++#define mmNIC3_QM1_CQ_CFG1_1                                         0xDA2128
++
++#define mmNIC3_QM1_CQ_CFG1_2                                         0xDA212C
++
++#define mmNIC3_QM1_CQ_CFG1_3                                         0xDA2130
++
++#define mmNIC3_QM1_CQ_CFG1_4                                         0xDA2134
++
++#define mmNIC3_QM1_CQ_ARUSER_31_11_0                                 0xDA2138
++
++#define mmNIC3_QM1_CQ_ARUSER_31_11_1                                 0xDA213C
++
++#define mmNIC3_QM1_CQ_ARUSER_31_11_2                                 0xDA2140
++
++#define mmNIC3_QM1_CQ_ARUSER_31_11_3                                 0xDA2144
++
++#define mmNIC3_QM1_CQ_ARUSER_31_11_4                                 0xDA2148
++
++#define mmNIC3_QM1_CQ_STS0_0                                         0xDA214C
++
++#define mmNIC3_QM1_CQ_STS0_1                                         0xDA2150
++
++#define mmNIC3_QM1_CQ_STS0_2                                         0xDA2154
++
++#define mmNIC3_QM1_CQ_STS0_3                                         0xDA2158
++
++#define mmNIC3_QM1_CQ_STS0_4                                         0xDA215C
++
++#define mmNIC3_QM1_CQ_STS1_0                                         0xDA2160
++
++#define mmNIC3_QM1_CQ_STS1_1                                         0xDA2164
++
++#define mmNIC3_QM1_CQ_STS1_2                                         0xDA2168
++
++#define mmNIC3_QM1_CQ_STS1_3                                         0xDA216C
++
++#define mmNIC3_QM1_CQ_STS1_4                                         0xDA2170
++
++#define mmNIC3_QM1_CQ_PTR_LO_0                                       0xDA2174
++
++#define mmNIC3_QM1_CQ_PTR_HI_0                                       0xDA2178
++
++#define mmNIC3_QM1_CQ_TSIZE_0                                        0xDA217C
++
++#define mmNIC3_QM1_CQ_CTL_0                                          0xDA2180
++
++#define mmNIC3_QM1_CQ_PTR_LO_1                                       0xDA2184
++
++#define mmNIC3_QM1_CQ_PTR_HI_1                                       0xDA2188
++
++#define mmNIC3_QM1_CQ_TSIZE_1                                        0xDA218C
++
++#define mmNIC3_QM1_CQ_CTL_1                                          0xDA2190
++
++#define mmNIC3_QM1_CQ_PTR_LO_2                                       0xDA2194
++
++#define mmNIC3_QM1_CQ_PTR_HI_2                                       0xDA2198
++
++#define mmNIC3_QM1_CQ_TSIZE_2                                        0xDA219C
++
++#define mmNIC3_QM1_CQ_CTL_2                                          0xDA21A0
++
++#define mmNIC3_QM1_CQ_PTR_LO_3                                       0xDA21A4
++
++#define mmNIC3_QM1_CQ_PTR_HI_3                                       0xDA21A8
++
++#define mmNIC3_QM1_CQ_TSIZE_3                                        0xDA21AC
++
++#define mmNIC3_QM1_CQ_CTL_3                                          0xDA21B0
++
++#define mmNIC3_QM1_CQ_PTR_LO_4                                       0xDA21B4
++
++#define mmNIC3_QM1_CQ_PTR_HI_4                                       0xDA21B8
++
++#define mmNIC3_QM1_CQ_TSIZE_4                                        0xDA21BC
++
++#define mmNIC3_QM1_CQ_CTL_4                                          0xDA21C0
++
++#define mmNIC3_QM1_CQ_PTR_LO_STS_0                                   0xDA21C4
++
++#define mmNIC3_QM1_CQ_PTR_LO_STS_1                                   0xDA21C8
++
++#define mmNIC3_QM1_CQ_PTR_LO_STS_2                                   0xDA21CC
++
++#define mmNIC3_QM1_CQ_PTR_LO_STS_3                                   0xDA21D0
++
++#define mmNIC3_QM1_CQ_PTR_LO_STS_4                                   0xDA21D4
++
++#define mmNIC3_QM1_CQ_PTR_HI_STS_0                                   0xDA21D8
++
++#define mmNIC3_QM1_CQ_PTR_HI_STS_1                                   0xDA21DC
++
++#define mmNIC3_QM1_CQ_PTR_HI_STS_2                                   0xDA21E0
++
++#define mmNIC3_QM1_CQ_PTR_HI_STS_3                                   0xDA21E4
++
++#define mmNIC3_QM1_CQ_PTR_HI_STS_4                                   0xDA21E8
++
++#define mmNIC3_QM1_CQ_TSIZE_STS_0                                    0xDA21EC
++
++#define mmNIC3_QM1_CQ_TSIZE_STS_1                                    0xDA21F0
++
++#define mmNIC3_QM1_CQ_TSIZE_STS_2                                    0xDA21F4
++
++#define mmNIC3_QM1_CQ_TSIZE_STS_3                                    0xDA21F8
++
++#define mmNIC3_QM1_CQ_TSIZE_STS_4                                    0xDA21FC
++
++#define mmNIC3_QM1_CQ_CTL_STS_0                                      0xDA2200
++
++#define mmNIC3_QM1_CQ_CTL_STS_1                                      0xDA2204
++
++#define mmNIC3_QM1_CQ_CTL_STS_2                                      0xDA2208
++
++#define mmNIC3_QM1_CQ_CTL_STS_3                                      0xDA220C
++
++#define mmNIC3_QM1_CQ_CTL_STS_4                                      0xDA2210
++
++#define mmNIC3_QM1_CQ_IFIFO_CNT_0                                    0xDA2214
++
++#define mmNIC3_QM1_CQ_IFIFO_CNT_1                                    0xDA2218
++
++#define mmNIC3_QM1_CQ_IFIFO_CNT_2                                    0xDA221C
++
++#define mmNIC3_QM1_CQ_IFIFO_CNT_3                                    0xDA2220
++
++#define mmNIC3_QM1_CQ_IFIFO_CNT_4                                    0xDA2224
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_LO_0                            0xDA2228
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_LO_1                            0xDA222C
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_LO_2                            0xDA2230
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_LO_3                            0xDA2234
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_LO_4                            0xDA2238
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_HI_0                            0xDA223C
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_HI_1                            0xDA2240
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_HI_2                            0xDA2244
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_HI_3                            0xDA2248
++
++#define mmNIC3_QM1_CP_MSG_BASE0_ADDR_HI_4                            0xDA224C
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_LO_0                            0xDA2250
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_LO_1                            0xDA2254
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_LO_2                            0xDA2258
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_LO_3                            0xDA225C
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_LO_4                            0xDA2260
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_HI_0                            0xDA2264
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_HI_1                            0xDA2268
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_HI_2                            0xDA226C
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_HI_3                            0xDA2270
++
++#define mmNIC3_QM1_CP_MSG_BASE1_ADDR_HI_4                            0xDA2274
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_LO_0                            0xDA2278
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_LO_1                            0xDA227C
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_LO_2                            0xDA2280
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_LO_3                            0xDA2284
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_LO_4                            0xDA2288
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_HI_0                            0xDA228C
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_HI_1                            0xDA2290
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_HI_2                            0xDA2294
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_HI_3                            0xDA2298
++
++#define mmNIC3_QM1_CP_MSG_BASE2_ADDR_HI_4                            0xDA229C
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_LO_0                            0xDA22A0
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_LO_1                            0xDA22A4
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_LO_2                            0xDA22A8
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_LO_3                            0xDA22AC
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_LO_4                            0xDA22B0
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_HI_0                            0xDA22B4
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_HI_1                            0xDA22B8
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_HI_2                            0xDA22BC
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_HI_3                            0xDA22C0
++
++#define mmNIC3_QM1_CP_MSG_BASE3_ADDR_HI_4                            0xDA22C4
++
++#define mmNIC3_QM1_CP_LDMA_TSIZE_OFFSET_0                            0xDA22C8
++
++#define mmNIC3_QM1_CP_LDMA_TSIZE_OFFSET_1                            0xDA22CC
++
++#define mmNIC3_QM1_CP_LDMA_TSIZE_OFFSET_2                            0xDA22D0
++
++#define mmNIC3_QM1_CP_LDMA_TSIZE_OFFSET_3                            0xDA22D4
++
++#define mmNIC3_QM1_CP_LDMA_TSIZE_OFFSET_4                            0xDA22D8
++
++#define mmNIC3_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xDA22E0
++
++#define mmNIC3_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xDA22E4
++
++#define mmNIC3_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xDA22E8
++
++#define mmNIC3_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xDA22EC
++
++#define mmNIC3_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xDA22F0
++
++#define mmNIC3_QM1_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xDA22F4
++
++#define mmNIC3_QM1_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xDA22F8
++
++#define mmNIC3_QM1_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xDA22FC
++
++#define mmNIC3_QM1_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xDA2300
++
++#define mmNIC3_QM1_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xDA2304
++
++#define mmNIC3_QM1_CP_FENCE0_RDATA_0                                 0xDA2308
++
++#define mmNIC3_QM1_CP_FENCE0_RDATA_1                                 0xDA230C
++
++#define mmNIC3_QM1_CP_FENCE0_RDATA_2                                 0xDA2310
++
++#define mmNIC3_QM1_CP_FENCE0_RDATA_3                                 0xDA2314
++
++#define mmNIC3_QM1_CP_FENCE0_RDATA_4                                 0xDA2318
++
++#define mmNIC3_QM1_CP_FENCE1_RDATA_0                                 0xDA231C
++
++#define mmNIC3_QM1_CP_FENCE1_RDATA_1                                 0xDA2320
++
++#define mmNIC3_QM1_CP_FENCE1_RDATA_2                                 0xDA2324
++
++#define mmNIC3_QM1_CP_FENCE1_RDATA_3                                 0xDA2328
++
++#define mmNIC3_QM1_CP_FENCE1_RDATA_4                                 0xDA232C
++
++#define mmNIC3_QM1_CP_FENCE2_RDATA_0                                 0xDA2330
++
++#define mmNIC3_QM1_CP_FENCE2_RDATA_1                                 0xDA2334
++
++#define mmNIC3_QM1_CP_FENCE2_RDATA_2                                 0xDA2338
++
++#define mmNIC3_QM1_CP_FENCE2_RDATA_3                                 0xDA233C
++
++#define mmNIC3_QM1_CP_FENCE2_RDATA_4                                 0xDA2340
++
++#define mmNIC3_QM1_CP_FENCE3_RDATA_0                                 0xDA2344
++
++#define mmNIC3_QM1_CP_FENCE3_RDATA_1                                 0xDA2348
++
++#define mmNIC3_QM1_CP_FENCE3_RDATA_2                                 0xDA234C
++
++#define mmNIC3_QM1_CP_FENCE3_RDATA_3                                 0xDA2350
++
++#define mmNIC3_QM1_CP_FENCE3_RDATA_4                                 0xDA2354
++
++#define mmNIC3_QM1_CP_FENCE0_CNT_0                                   0xDA2358
++
++#define mmNIC3_QM1_CP_FENCE0_CNT_1                                   0xDA235C
++
++#define mmNIC3_QM1_CP_FENCE0_CNT_2                                   0xDA2360
++
++#define mmNIC3_QM1_CP_FENCE0_CNT_3                                   0xDA2364
++
++#define mmNIC3_QM1_CP_FENCE0_CNT_4                                   0xDA2368
++
++#define mmNIC3_QM1_CP_FENCE1_CNT_0                                   0xDA236C
++
++#define mmNIC3_QM1_CP_FENCE1_CNT_1                                   0xDA2370
++
++#define mmNIC3_QM1_CP_FENCE1_CNT_2                                   0xDA2374
++
++#define mmNIC3_QM1_CP_FENCE1_CNT_3                                   0xDA2378
++
++#define mmNIC3_QM1_CP_FENCE1_CNT_4                                   0xDA237C
++
++#define mmNIC3_QM1_CP_FENCE2_CNT_0                                   0xDA2380
++
++#define mmNIC3_QM1_CP_FENCE2_CNT_1                                   0xDA2384
++
++#define mmNIC3_QM1_CP_FENCE2_CNT_2                                   0xDA2388
++
++#define mmNIC3_QM1_CP_FENCE2_CNT_3                                   0xDA238C
++
++#define mmNIC3_QM1_CP_FENCE2_CNT_4                                   0xDA2390
++
++#define mmNIC3_QM1_CP_FENCE3_CNT_0                                   0xDA2394
++
++#define mmNIC3_QM1_CP_FENCE3_CNT_1                                   0xDA2398
++
++#define mmNIC3_QM1_CP_FENCE3_CNT_2                                   0xDA239C
++
++#define mmNIC3_QM1_CP_FENCE3_CNT_3                                   0xDA23A0
++
++#define mmNIC3_QM1_CP_FENCE3_CNT_4                                   0xDA23A4
++
++#define mmNIC3_QM1_CP_STS_0                                          0xDA23A8
++
++#define mmNIC3_QM1_CP_STS_1                                          0xDA23AC
++
++#define mmNIC3_QM1_CP_STS_2                                          0xDA23B0
++
++#define mmNIC3_QM1_CP_STS_3                                          0xDA23B4
++
++#define mmNIC3_QM1_CP_STS_4                                          0xDA23B8
++
++#define mmNIC3_QM1_CP_CURRENT_INST_LO_0                              0xDA23BC
++
++#define mmNIC3_QM1_CP_CURRENT_INST_LO_1                              0xDA23C0
++
++#define mmNIC3_QM1_CP_CURRENT_INST_LO_2                              0xDA23C4
++
++#define mmNIC3_QM1_CP_CURRENT_INST_LO_3                              0xDA23C8
++
++#define mmNIC3_QM1_CP_CURRENT_INST_LO_4                              0xDA23CC
++
++#define mmNIC3_QM1_CP_CURRENT_INST_HI_0                              0xDA23D0
++
++#define mmNIC3_QM1_CP_CURRENT_INST_HI_1                              0xDA23D4
++
++#define mmNIC3_QM1_CP_CURRENT_INST_HI_2                              0xDA23D8
++
++#define mmNIC3_QM1_CP_CURRENT_INST_HI_3                              0xDA23DC
++
++#define mmNIC3_QM1_CP_CURRENT_INST_HI_4                              0xDA23E0
++
++#define mmNIC3_QM1_CP_BARRIER_CFG_0                                  0xDA23F4
++
++#define mmNIC3_QM1_CP_BARRIER_CFG_1                                  0xDA23F8
++
++#define mmNIC3_QM1_CP_BARRIER_CFG_2                                  0xDA23FC
++
++#define mmNIC3_QM1_CP_BARRIER_CFG_3                                  0xDA2400
++
++#define mmNIC3_QM1_CP_BARRIER_CFG_4                                  0xDA2404
++
++#define mmNIC3_QM1_CP_DBG_0_0                                        0xDA2408
++
++#define mmNIC3_QM1_CP_DBG_0_1                                        0xDA240C
++
++#define mmNIC3_QM1_CP_DBG_0_2                                        0xDA2410
++
++#define mmNIC3_QM1_CP_DBG_0_3                                        0xDA2414
++
++#define mmNIC3_QM1_CP_DBG_0_4                                        0xDA2418
++
++#define mmNIC3_QM1_CP_ARUSER_31_11_0                                 0xDA241C
++
++#define mmNIC3_QM1_CP_ARUSER_31_11_1                                 0xDA2420
++
++#define mmNIC3_QM1_CP_ARUSER_31_11_2                                 0xDA2424
++
++#define mmNIC3_QM1_CP_ARUSER_31_11_3                                 0xDA2428
++
++#define mmNIC3_QM1_CP_ARUSER_31_11_4                                 0xDA242C
++
++#define mmNIC3_QM1_CP_AWUSER_31_11_0                                 0xDA2430
++
++#define mmNIC3_QM1_CP_AWUSER_31_11_1                                 0xDA2434
++
++#define mmNIC3_QM1_CP_AWUSER_31_11_2                                 0xDA2438
++
++#define mmNIC3_QM1_CP_AWUSER_31_11_3                                 0xDA243C
++
++#define mmNIC3_QM1_CP_AWUSER_31_11_4                                 0xDA2440
++
++#define mmNIC3_QM1_ARB_CFG_0                                         0xDA2A00
++
++#define mmNIC3_QM1_ARB_CHOISE_Q_PUSH                                 0xDA2A04
++
++#define mmNIC3_QM1_ARB_WRR_WEIGHT_0                                  0xDA2A08
++
++#define mmNIC3_QM1_ARB_WRR_WEIGHT_1                                  0xDA2A0C
++
++#define mmNIC3_QM1_ARB_WRR_WEIGHT_2                                  0xDA2A10
++
++#define mmNIC3_QM1_ARB_WRR_WEIGHT_3                                  0xDA2A14
++
++#define mmNIC3_QM1_ARB_CFG_1                                         0xDA2A18
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_0                              0xDA2A20
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_1                              0xDA2A24
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_2                              0xDA2A28
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_3                              0xDA2A2C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_4                              0xDA2A30
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_5                              0xDA2A34
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_6                              0xDA2A38
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_7                              0xDA2A3C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_8                              0xDA2A40
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_9                              0xDA2A44
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_10                             0xDA2A48
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_11                             0xDA2A4C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_12                             0xDA2A50
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_13                             0xDA2A54
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_14                             0xDA2A58
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_15                             0xDA2A5C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_16                             0xDA2A60
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_17                             0xDA2A64
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_18                             0xDA2A68
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_19                             0xDA2A6C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_20                             0xDA2A70
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_21                             0xDA2A74
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_22                             0xDA2A78
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_23                             0xDA2A7C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_24                             0xDA2A80
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_25                             0xDA2A84
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_26                             0xDA2A88
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_27                             0xDA2A8C
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_28                             0xDA2A90
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_29                             0xDA2A94
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_30                             0xDA2A98
++
++#define mmNIC3_QM1_ARB_MST_AVAIL_CRED_31                             0xDA2A9C
++
++#define mmNIC3_QM1_ARB_MST_CRED_INC                                  0xDA2AA0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_0                        0xDA2AA4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_1                        0xDA2AA8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_2                        0xDA2AAC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_3                        0xDA2AB0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_4                        0xDA2AB4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_5                        0xDA2AB8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_6                        0xDA2ABC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_7                        0xDA2AC0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_8                        0xDA2AC4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_9                        0xDA2AC8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_10                       0xDA2ACC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_11                       0xDA2AD0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_12                       0xDA2AD4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_13                       0xDA2AD8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_14                       0xDA2ADC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_15                       0xDA2AE0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_16                       0xDA2AE4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_17                       0xDA2AE8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_18                       0xDA2AEC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_19                       0xDA2AF0
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_20                       0xDA2AF4
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_21                       0xDA2AF8
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_22                       0xDA2AFC
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_23                       0xDA2B00
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_24                       0xDA2B04
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_25                       0xDA2B08
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_26                       0xDA2B0C
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_27                       0xDA2B10
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_28                       0xDA2B14
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_29                       0xDA2B18
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_30                       0xDA2B1C
++
++#define mmNIC3_QM1_ARB_MST_CHOISE_PUSH_OFST_31                       0xDA2B20
++
++#define mmNIC3_QM1_ARB_SLV_MASTER_INC_CRED_OFST                      0xDA2B28
++
++#define mmNIC3_QM1_ARB_MST_SLAVE_EN                                  0xDA2B2C
++
++#define mmNIC3_QM1_ARB_MST_QUIET_PER                                 0xDA2B34
++
++#define mmNIC3_QM1_ARB_SLV_CHOISE_WDT                                0xDA2B38
++
++#define mmNIC3_QM1_ARB_SLV_ID                                        0xDA2B3C
++
++#define mmNIC3_QM1_ARB_MSG_MAX_INFLIGHT                              0xDA2B44
++
++#define mmNIC3_QM1_ARB_MSG_AWUSER_31_11                              0xDA2B48
++
++#define mmNIC3_QM1_ARB_MSG_AWUSER_SEC_PROP                           0xDA2B4C
++
++#define mmNIC3_QM1_ARB_MSG_AWUSER_NON_SEC_PROP                       0xDA2B50
++
++#define mmNIC3_QM1_ARB_BASE_LO                                       0xDA2B54
++
++#define mmNIC3_QM1_ARB_BASE_HI                                       0xDA2B58
++
++#define mmNIC3_QM1_ARB_STATE_STS                                     0xDA2B80
++
++#define mmNIC3_QM1_ARB_CHOISE_FULLNESS_STS                           0xDA2B84
++
++#define mmNIC3_QM1_ARB_MSG_STS                                       0xDA2B88
++
++#define mmNIC3_QM1_ARB_SLV_CHOISE_Q_HEAD                             0xDA2B8C
++
++#define mmNIC3_QM1_ARB_ERR_CAUSE                                     0xDA2B9C
++
++#define mmNIC3_QM1_ARB_ERR_MSG_EN                                    0xDA2BA0
++
++#define mmNIC3_QM1_ARB_ERR_STS_DRP                                   0xDA2BA8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_0                                0xDA2BB0
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_1                                0xDA2BB4
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_2                                0xDA2BB8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_3                                0xDA2BBC
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_4                                0xDA2BC0
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_5                                0xDA2BC4
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_6                                0xDA2BC8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_7                                0xDA2BCC
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_8                                0xDA2BD0
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_9                                0xDA2BD4
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_10                               0xDA2BD8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_11                               0xDA2BDC
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_12                               0xDA2BE0
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_13                               0xDA2BE4
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_14                               0xDA2BE8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_15                               0xDA2BEC
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_16                               0xDA2BF0
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_17                               0xDA2BF4
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_18                               0xDA2BF8
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_19                               0xDA2BFC
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_20                               0xDA2C00
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_21                               0xDA2C04
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_22                               0xDA2C08
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_23                               0xDA2C0C
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_24                               0xDA2C10
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_25                               0xDA2C14
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_26                               0xDA2C18
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_27                               0xDA2C1C
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_28                               0xDA2C20
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_29                               0xDA2C24
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_30                               0xDA2C28
++
++#define mmNIC3_QM1_ARB_MST_CRED_STS_31                               0xDA2C2C
++
++#define mmNIC3_QM1_CGM_CFG                                           0xDA2C70
++
++#define mmNIC3_QM1_CGM_STS                                           0xDA2C74
++
++#define mmNIC3_QM1_CGM_CFG1                                          0xDA2C78
++
++#define mmNIC3_QM1_LOCAL_RANGE_BASE                                  0xDA2C80
++
++#define mmNIC3_QM1_LOCAL_RANGE_SIZE                                  0xDA2C84
++
++#define mmNIC3_QM1_CSMR_STRICT_PRIO_CFG                              0xDA2C90
++
++#define mmNIC3_QM1_HBW_RD_RATE_LIM_CFG_1                             0xDA2C94
++
++#define mmNIC3_QM1_LBW_WR_RATE_LIM_CFG_0                             0xDA2C98
++
++#define mmNIC3_QM1_LBW_WR_RATE_LIM_CFG_1                             0xDA2C9C
++
++#define mmNIC3_QM1_HBW_RD_RATE_LIM_CFG_0                             0xDA2CA0
++
++#define mmNIC3_QM1_GLBL_AXCACHE                                      0xDA2CA4
++
++#define mmNIC3_QM1_IND_GW_APB_CFG                                    0xDA2CB0
++
++#define mmNIC3_QM1_IND_GW_APB_WDATA                                  0xDA2CB4
++
++#define mmNIC3_QM1_IND_GW_APB_RDATA                                  0xDA2CB8
++
++#define mmNIC3_QM1_IND_GW_APB_STATUS                                 0xDA2CBC
++
++#define mmNIC3_QM1_GLBL_ERR_ADDR_LO                                  0xDA2CD0
++
++#define mmNIC3_QM1_GLBL_ERR_ADDR_HI                                  0xDA2CD4
++
++#define mmNIC3_QM1_GLBL_ERR_WDATA                                    0xDA2CD8
++
++#define mmNIC3_QM1_GLBL_MEM_INIT_BUSY                                0xDA2D00
++
++#endif /* ASIC_REG_NIC3_QM1_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h
+new file mode 100644
+index 000000000000..99d5319672dd
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC4_QM0_REGS_H_
++#define ASIC_REG_NIC4_QM0_REGS_H_
++
++/*
++ *****************************************
++ *   NIC4_QM0 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC4_QM0_GLBL_CFG0                                         0xDE0000
++
++#define mmNIC4_QM0_GLBL_CFG1                                         0xDE0004
++
++#define mmNIC4_QM0_GLBL_PROT                                         0xDE0008
++
++#define mmNIC4_QM0_GLBL_ERR_CFG                                      0xDE000C
++
++#define mmNIC4_QM0_GLBL_SECURE_PROPS_0                               0xDE0010
++
++#define mmNIC4_QM0_GLBL_SECURE_PROPS_1                               0xDE0014
++
++#define mmNIC4_QM0_GLBL_SECURE_PROPS_2                               0xDE0018
++
++#define mmNIC4_QM0_GLBL_SECURE_PROPS_3                               0xDE001C
++
++#define mmNIC4_QM0_GLBL_SECURE_PROPS_4                               0xDE0020
++
++#define mmNIC4_QM0_GLBL_NON_SECURE_PROPS_0                           0xDE0024
++
++#define mmNIC4_QM0_GLBL_NON_SECURE_PROPS_1                           0xDE0028
++
++#define mmNIC4_QM0_GLBL_NON_SECURE_PROPS_2                           0xDE002C
++
++#define mmNIC4_QM0_GLBL_NON_SECURE_PROPS_3                           0xDE0030
++
++#define mmNIC4_QM0_GLBL_NON_SECURE_PROPS_4                           0xDE0034
++
++#define mmNIC4_QM0_GLBL_STS0                                         0xDE0038
++
++#define mmNIC4_QM0_GLBL_STS1_0                                       0xDE0040
++
++#define mmNIC4_QM0_GLBL_STS1_1                                       0xDE0044
++
++#define mmNIC4_QM0_GLBL_STS1_2                                       0xDE0048
++
++#define mmNIC4_QM0_GLBL_STS1_3                                       0xDE004C
++
++#define mmNIC4_QM0_GLBL_STS1_4                                       0xDE0050
++
++#define mmNIC4_QM0_GLBL_MSG_EN_0                                     0xDE0054
++
++#define mmNIC4_QM0_GLBL_MSG_EN_1                                     0xDE0058
++
++#define mmNIC4_QM0_GLBL_MSG_EN_2                                     0xDE005C
++
++#define mmNIC4_QM0_GLBL_MSG_EN_3                                     0xDE0060
++
++#define mmNIC4_QM0_GLBL_MSG_EN_4                                     0xDE0068
++
++#define mmNIC4_QM0_PQ_BASE_LO_0                                      0xDE0070
++
++#define mmNIC4_QM0_PQ_BASE_LO_1                                      0xDE0074
++
++#define mmNIC4_QM0_PQ_BASE_LO_2                                      0xDE0078
++
++#define mmNIC4_QM0_PQ_BASE_LO_3                                      0xDE007C
++
++#define mmNIC4_QM0_PQ_BASE_HI_0                                      0xDE0080
++
++#define mmNIC4_QM0_PQ_BASE_HI_1                                      0xDE0084
++
++#define mmNIC4_QM0_PQ_BASE_HI_2                                      0xDE0088
++
++#define mmNIC4_QM0_PQ_BASE_HI_3                                      0xDE008C
++
++#define mmNIC4_QM0_PQ_SIZE_0                                         0xDE0090
++
++#define mmNIC4_QM0_PQ_SIZE_1                                         0xDE0094
++
++#define mmNIC4_QM0_PQ_SIZE_2                                         0xDE0098
++
++#define mmNIC4_QM0_PQ_SIZE_3                                         0xDE009C
++
++#define mmNIC4_QM0_PQ_PI_0                                           0xDE00A0
++
++#define mmNIC4_QM0_PQ_PI_1                                           0xDE00A4
++
++#define mmNIC4_QM0_PQ_PI_2                                           0xDE00A8
++
++#define mmNIC4_QM0_PQ_PI_3                                           0xDE00AC
++
++#define mmNIC4_QM0_PQ_CI_0                                           0xDE00B0
++
++#define mmNIC4_QM0_PQ_CI_1                                           0xDE00B4
++
++#define mmNIC4_QM0_PQ_CI_2                                           0xDE00B8
++
++#define mmNIC4_QM0_PQ_CI_3                                           0xDE00BC
++
++#define mmNIC4_QM0_PQ_CFG0_0                                         0xDE00C0
++
++#define mmNIC4_QM0_PQ_CFG0_1                                         0xDE00C4
++
++#define mmNIC4_QM0_PQ_CFG0_2                                         0xDE00C8
++
++#define mmNIC4_QM0_PQ_CFG0_3                                         0xDE00CC
++
++#define mmNIC4_QM0_PQ_CFG1_0                                         0xDE00D0
++
++#define mmNIC4_QM0_PQ_CFG1_1                                         0xDE00D4
++
++#define mmNIC4_QM0_PQ_CFG1_2                                         0xDE00D8
++
++#define mmNIC4_QM0_PQ_CFG1_3                                         0xDE00DC
++
++#define mmNIC4_QM0_PQ_ARUSER_31_11_0                                 0xDE00E0
++
++#define mmNIC4_QM0_PQ_ARUSER_31_11_1                                 0xDE00E4
++
++#define mmNIC4_QM0_PQ_ARUSER_31_11_2                                 0xDE00E8
++
++#define mmNIC4_QM0_PQ_ARUSER_31_11_3                                 0xDE00EC
++
++#define mmNIC4_QM0_PQ_STS0_0                                         0xDE00F0
++
++#define mmNIC4_QM0_PQ_STS0_1                                         0xDE00F4
++
++#define mmNIC4_QM0_PQ_STS0_2                                         0xDE00F8
++
++#define mmNIC4_QM0_PQ_STS0_3                                         0xDE00FC
++
++#define mmNIC4_QM0_PQ_STS1_0                                         0xDE0100
++
++#define mmNIC4_QM0_PQ_STS1_1                                         0xDE0104
++
++#define mmNIC4_QM0_PQ_STS1_2                                         0xDE0108
++
++#define mmNIC4_QM0_PQ_STS1_3                                         0xDE010C
++
++#define mmNIC4_QM0_CQ_CFG0_0                                         0xDE0110
++
++#define mmNIC4_QM0_CQ_CFG0_1                                         0xDE0114
++
++#define mmNIC4_QM0_CQ_CFG0_2                                         0xDE0118
++
++#define mmNIC4_QM0_CQ_CFG0_3                                         0xDE011C
++
++#define mmNIC4_QM0_CQ_CFG0_4                                         0xDE0120
++
++#define mmNIC4_QM0_CQ_CFG1_0                                         0xDE0124
++
++#define mmNIC4_QM0_CQ_CFG1_1                                         0xDE0128
++
++#define mmNIC4_QM0_CQ_CFG1_2                                         0xDE012C
++
++#define mmNIC4_QM0_CQ_CFG1_3                                         0xDE0130
++
++#define mmNIC4_QM0_CQ_CFG1_4                                         0xDE0134
++
++#define mmNIC4_QM0_CQ_ARUSER_31_11_0                                 0xDE0138
++
++#define mmNIC4_QM0_CQ_ARUSER_31_11_1                                 0xDE013C
++
++#define mmNIC4_QM0_CQ_ARUSER_31_11_2                                 0xDE0140
++
++#define mmNIC4_QM0_CQ_ARUSER_31_11_3                                 0xDE0144
++
++#define mmNIC4_QM0_CQ_ARUSER_31_11_4                                 0xDE0148
++
++#define mmNIC4_QM0_CQ_STS0_0                                         0xDE014C
++
++#define mmNIC4_QM0_CQ_STS0_1                                         0xDE0150
++
++#define mmNIC4_QM0_CQ_STS0_2                                         0xDE0154
++
++#define mmNIC4_QM0_CQ_STS0_3                                         0xDE0158
++
++#define mmNIC4_QM0_CQ_STS0_4                                         0xDE015C
++
++#define mmNIC4_QM0_CQ_STS1_0                                         0xDE0160
++
++#define mmNIC4_QM0_CQ_STS1_1                                         0xDE0164
++
++#define mmNIC4_QM0_CQ_STS1_2                                         0xDE0168
++
++#define mmNIC4_QM0_CQ_STS1_3                                         0xDE016C
++
++#define mmNIC4_QM0_CQ_STS1_4                                         0xDE0170
++
++#define mmNIC4_QM0_CQ_PTR_LO_0                                       0xDE0174
++
++#define mmNIC4_QM0_CQ_PTR_HI_0                                       0xDE0178
++
++#define mmNIC4_QM0_CQ_TSIZE_0                                        0xDE017C
++
++#define mmNIC4_QM0_CQ_CTL_0                                          0xDE0180
++
++#define mmNIC4_QM0_CQ_PTR_LO_1                                       0xDE0184
++
++#define mmNIC4_QM0_CQ_PTR_HI_1                                       0xDE0188
++
++#define mmNIC4_QM0_CQ_TSIZE_1                                        0xDE018C
++
++#define mmNIC4_QM0_CQ_CTL_1                                          0xDE0190
++
++#define mmNIC4_QM0_CQ_PTR_LO_2                                       0xDE0194
++
++#define mmNIC4_QM0_CQ_PTR_HI_2                                       0xDE0198
++
++#define mmNIC4_QM0_CQ_TSIZE_2                                        0xDE019C
++
++#define mmNIC4_QM0_CQ_CTL_2                                          0xDE01A0
++
++#define mmNIC4_QM0_CQ_PTR_LO_3                                       0xDE01A4
++
++#define mmNIC4_QM0_CQ_PTR_HI_3                                       0xDE01A8
++
++#define mmNIC4_QM0_CQ_TSIZE_3                                        0xDE01AC
++
++#define mmNIC4_QM0_CQ_CTL_3                                          0xDE01B0
++
++#define mmNIC4_QM0_CQ_PTR_LO_4                                       0xDE01B4
++
++#define mmNIC4_QM0_CQ_PTR_HI_4                                       0xDE01B8
++
++#define mmNIC4_QM0_CQ_TSIZE_4                                        0xDE01BC
++
++#define mmNIC4_QM0_CQ_CTL_4                                          0xDE01C0
++
++#define mmNIC4_QM0_CQ_PTR_LO_STS_0                                   0xDE01C4
++
++#define mmNIC4_QM0_CQ_PTR_LO_STS_1                                   0xDE01C8
++
++#define mmNIC4_QM0_CQ_PTR_LO_STS_2                                   0xDE01CC
++
++#define mmNIC4_QM0_CQ_PTR_LO_STS_3                                   0xDE01D0
++
++#define mmNIC4_QM0_CQ_PTR_LO_STS_4                                   0xDE01D4
++
++#define mmNIC4_QM0_CQ_PTR_HI_STS_0                                   0xDE01D8
++
++#define mmNIC4_QM0_CQ_PTR_HI_STS_1                                   0xDE01DC
++
++#define mmNIC4_QM0_CQ_PTR_HI_STS_2                                   0xDE01E0
++
++#define mmNIC4_QM0_CQ_PTR_HI_STS_3                                   0xDE01E4
++
++#define mmNIC4_QM0_CQ_PTR_HI_STS_4                                   0xDE01E8
++
++#define mmNIC4_QM0_CQ_TSIZE_STS_0                                    0xDE01EC
++
++#define mmNIC4_QM0_CQ_TSIZE_STS_1                                    0xDE01F0
++
++#define mmNIC4_QM0_CQ_TSIZE_STS_2                                    0xDE01F4
++
++#define mmNIC4_QM0_CQ_TSIZE_STS_3                                    0xDE01F8
++
++#define mmNIC4_QM0_CQ_TSIZE_STS_4                                    0xDE01FC
++
++#define mmNIC4_QM0_CQ_CTL_STS_0                                      0xDE0200
++
++#define mmNIC4_QM0_CQ_CTL_STS_1                                      0xDE0204
++
++#define mmNIC4_QM0_CQ_CTL_STS_2                                      0xDE0208
++
++#define mmNIC4_QM0_CQ_CTL_STS_3                                      0xDE020C
++
++#define mmNIC4_QM0_CQ_CTL_STS_4                                      0xDE0210
++
++#define mmNIC4_QM0_CQ_IFIFO_CNT_0                                    0xDE0214
++
++#define mmNIC4_QM0_CQ_IFIFO_CNT_1                                    0xDE0218
++
++#define mmNIC4_QM0_CQ_IFIFO_CNT_2                                    0xDE021C
++
++#define mmNIC4_QM0_CQ_IFIFO_CNT_3                                    0xDE0220
++
++#define mmNIC4_QM0_CQ_IFIFO_CNT_4                                    0xDE0224
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_LO_0                            0xDE0228
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_LO_1                            0xDE022C
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_LO_2                            0xDE0230
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_LO_3                            0xDE0234
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_LO_4                            0xDE0238
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_HI_0                            0xDE023C
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_HI_1                            0xDE0240
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_HI_2                            0xDE0244
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_HI_3                            0xDE0248
++
++#define mmNIC4_QM0_CP_MSG_BASE0_ADDR_HI_4                            0xDE024C
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_LO_0                            0xDE0250
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_LO_1                            0xDE0254
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_LO_2                            0xDE0258
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_LO_3                            0xDE025C
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_LO_4                            0xDE0260
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_HI_0                            0xDE0264
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_HI_1                            0xDE0268
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_HI_2                            0xDE026C
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_HI_3                            0xDE0270
++
++#define mmNIC4_QM0_CP_MSG_BASE1_ADDR_HI_4                            0xDE0274
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_LO_0                            0xDE0278
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_LO_1                            0xDE027C
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_LO_2                            0xDE0280
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_LO_3                            0xDE0284
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_LO_4                            0xDE0288
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_HI_0                            0xDE028C
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_HI_1                            0xDE0290
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_HI_2                            0xDE0294
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_HI_3                            0xDE0298
++
++#define mmNIC4_QM0_CP_MSG_BASE2_ADDR_HI_4                            0xDE029C
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_LO_0                            0xDE02A0
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_LO_1                            0xDE02A4
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_LO_2                            0xDE02A8
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_LO_3                            0xDE02AC
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_LO_4                            0xDE02B0
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_HI_0                            0xDE02B4
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_HI_1                            0xDE02B8
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_HI_2                            0xDE02BC
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_HI_3                            0xDE02C0
++
++#define mmNIC4_QM0_CP_MSG_BASE3_ADDR_HI_4                            0xDE02C4
++
++#define mmNIC4_QM0_CP_LDMA_TSIZE_OFFSET_0                            0xDE02C8
++
++#define mmNIC4_QM0_CP_LDMA_TSIZE_OFFSET_1                            0xDE02CC
++
++#define mmNIC4_QM0_CP_LDMA_TSIZE_OFFSET_2                            0xDE02D0
++
++#define mmNIC4_QM0_CP_LDMA_TSIZE_OFFSET_3                            0xDE02D4
++
++#define mmNIC4_QM0_CP_LDMA_TSIZE_OFFSET_4                            0xDE02D8
++
++#define mmNIC4_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xDE02E0
++
++#define mmNIC4_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xDE02E4
++
++#define mmNIC4_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xDE02E8
++
++#define mmNIC4_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xDE02EC
++
++#define mmNIC4_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xDE02F0
++
++#define mmNIC4_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xDE02F4
++
++#define mmNIC4_QM0_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xDE02F8
++
++#define mmNIC4_QM0_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xDE02FC
++
++#define mmNIC4_QM0_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xDE0300
++
++#define mmNIC4_QM0_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xDE0304
++
++#define mmNIC4_QM0_CP_FENCE0_RDATA_0                                 0xDE0308
++
++#define mmNIC4_QM0_CP_FENCE0_RDATA_1                                 0xDE030C
++
++#define mmNIC4_QM0_CP_FENCE0_RDATA_2                                 0xDE0310
++
++#define mmNIC4_QM0_CP_FENCE0_RDATA_3                                 0xDE0314
++
++#define mmNIC4_QM0_CP_FENCE0_RDATA_4                                 0xDE0318
++
++#define mmNIC4_QM0_CP_FENCE1_RDATA_0                                 0xDE031C
++
++#define mmNIC4_QM0_CP_FENCE1_RDATA_1                                 0xDE0320
++
++#define mmNIC4_QM0_CP_FENCE1_RDATA_2                                 0xDE0324
++
++#define mmNIC4_QM0_CP_FENCE1_RDATA_3                                 0xDE0328
++
++#define mmNIC4_QM0_CP_FENCE1_RDATA_4                                 0xDE032C
++
++#define mmNIC4_QM0_CP_FENCE2_RDATA_0                                 0xDE0330
++
++#define mmNIC4_QM0_CP_FENCE2_RDATA_1                                 0xDE0334
++
++#define mmNIC4_QM0_CP_FENCE2_RDATA_2                                 0xDE0338
++
++#define mmNIC4_QM0_CP_FENCE2_RDATA_3                                 0xDE033C
++
++#define mmNIC4_QM0_CP_FENCE2_RDATA_4                                 0xDE0340
++
++#define mmNIC4_QM0_CP_FENCE3_RDATA_0                                 0xDE0344
++
++#define mmNIC4_QM0_CP_FENCE3_RDATA_1                                 0xDE0348
++
++#define mmNIC4_QM0_CP_FENCE3_RDATA_2                                 0xDE034C
++
++#define mmNIC4_QM0_CP_FENCE3_RDATA_3                                 0xDE0350
++
++#define mmNIC4_QM0_CP_FENCE3_RDATA_4                                 0xDE0354
++
++#define mmNIC4_QM0_CP_FENCE0_CNT_0                                   0xDE0358
++
++#define mmNIC4_QM0_CP_FENCE0_CNT_1                                   0xDE035C
++
++#define mmNIC4_QM0_CP_FENCE0_CNT_2                                   0xDE0360
++
++#define mmNIC4_QM0_CP_FENCE0_CNT_3                                   0xDE0364
++
++#define mmNIC4_QM0_CP_FENCE0_CNT_4                                   0xDE0368
++
++#define mmNIC4_QM0_CP_FENCE1_CNT_0                                   0xDE036C
++
++#define mmNIC4_QM0_CP_FENCE1_CNT_1                                   0xDE0370
++
++#define mmNIC4_QM0_CP_FENCE1_CNT_2                                   0xDE0374
++
++#define mmNIC4_QM0_CP_FENCE1_CNT_3                                   0xDE0378
++
++#define mmNIC4_QM0_CP_FENCE1_CNT_4                                   0xDE037C
++
++#define mmNIC4_QM0_CP_FENCE2_CNT_0                                   0xDE0380
++
++#define mmNIC4_QM0_CP_FENCE2_CNT_1                                   0xDE0384
++
++#define mmNIC4_QM0_CP_FENCE2_CNT_2                                   0xDE0388
++
++#define mmNIC4_QM0_CP_FENCE2_CNT_3                                   0xDE038C
++
++#define mmNIC4_QM0_CP_FENCE2_CNT_4                                   0xDE0390
++
++#define mmNIC4_QM0_CP_FENCE3_CNT_0                                   0xDE0394
++
++#define mmNIC4_QM0_CP_FENCE3_CNT_1                                   0xDE0398
++
++#define mmNIC4_QM0_CP_FENCE3_CNT_2                                   0xDE039C
++
++#define mmNIC4_QM0_CP_FENCE3_CNT_3                                   0xDE03A0
++
++#define mmNIC4_QM0_CP_FENCE3_CNT_4                                   0xDE03A4
++
++#define mmNIC4_QM0_CP_STS_0                                          0xDE03A8
++
++#define mmNIC4_QM0_CP_STS_1                                          0xDE03AC
++
++#define mmNIC4_QM0_CP_STS_2                                          0xDE03B0
++
++#define mmNIC4_QM0_CP_STS_3                                          0xDE03B4
++
++#define mmNIC4_QM0_CP_STS_4                                          0xDE03B8
++
++#define mmNIC4_QM0_CP_CURRENT_INST_LO_0                              0xDE03BC
++
++#define mmNIC4_QM0_CP_CURRENT_INST_LO_1                              0xDE03C0
++
++#define mmNIC4_QM0_CP_CURRENT_INST_LO_2                              0xDE03C4
++
++#define mmNIC4_QM0_CP_CURRENT_INST_LO_3                              0xDE03C8
++
++#define mmNIC4_QM0_CP_CURRENT_INST_LO_4                              0xDE03CC
++
++#define mmNIC4_QM0_CP_CURRENT_INST_HI_0                              0xDE03D0
++
++#define mmNIC4_QM0_CP_CURRENT_INST_HI_1                              0xDE03D4
++
++#define mmNIC4_QM0_CP_CURRENT_INST_HI_2                              0xDE03D8
++
++#define mmNIC4_QM0_CP_CURRENT_INST_HI_3                              0xDE03DC
++
++#define mmNIC4_QM0_CP_CURRENT_INST_HI_4                              0xDE03E0
++
++#define mmNIC4_QM0_CP_BARRIER_CFG_0                                  0xDE03F4
++
++#define mmNIC4_QM0_CP_BARRIER_CFG_1                                  0xDE03F8
++
++#define mmNIC4_QM0_CP_BARRIER_CFG_2                                  0xDE03FC
++
++#define mmNIC4_QM0_CP_BARRIER_CFG_3                                  0xDE0400
++
++#define mmNIC4_QM0_CP_BARRIER_CFG_4                                  0xDE0404
++
++#define mmNIC4_QM0_CP_DBG_0_0                                        0xDE0408
++
++#define mmNIC4_QM0_CP_DBG_0_1                                        0xDE040C
++
++#define mmNIC4_QM0_CP_DBG_0_2                                        0xDE0410
++
++#define mmNIC4_QM0_CP_DBG_0_3                                        0xDE0414
++
++#define mmNIC4_QM0_CP_DBG_0_4                                        0xDE0418
++
++#define mmNIC4_QM0_CP_ARUSER_31_11_0                                 0xDE041C
++
++#define mmNIC4_QM0_CP_ARUSER_31_11_1                                 0xDE0420
++
++#define mmNIC4_QM0_CP_ARUSER_31_11_2                                 0xDE0424
++
++#define mmNIC4_QM0_CP_ARUSER_31_11_3                                 0xDE0428
++
++#define mmNIC4_QM0_CP_ARUSER_31_11_4                                 0xDE042C
++
++#define mmNIC4_QM0_CP_AWUSER_31_11_0                                 0xDE0430
++
++#define mmNIC4_QM0_CP_AWUSER_31_11_1                                 0xDE0434
++
++#define mmNIC4_QM0_CP_AWUSER_31_11_2                                 0xDE0438
++
++#define mmNIC4_QM0_CP_AWUSER_31_11_3                                 0xDE043C
++
++#define mmNIC4_QM0_CP_AWUSER_31_11_4                                 0xDE0440
++
++#define mmNIC4_QM0_ARB_CFG_0                                         0xDE0A00
++
++#define mmNIC4_QM0_ARB_CHOISE_Q_PUSH                                 0xDE0A04
++
++#define mmNIC4_QM0_ARB_WRR_WEIGHT_0                                  0xDE0A08
++
++#define mmNIC4_QM0_ARB_WRR_WEIGHT_1                                  0xDE0A0C
++
++#define mmNIC4_QM0_ARB_WRR_WEIGHT_2                                  0xDE0A10
++
++#define mmNIC4_QM0_ARB_WRR_WEIGHT_3                                  0xDE0A14
++
++#define mmNIC4_QM0_ARB_CFG_1                                         0xDE0A18
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_0                              0xDE0A20
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_1                              0xDE0A24
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_2                              0xDE0A28
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_3                              0xDE0A2C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_4                              0xDE0A30
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_5                              0xDE0A34
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_6                              0xDE0A38
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_7                              0xDE0A3C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_8                              0xDE0A40
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_9                              0xDE0A44
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_10                             0xDE0A48
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_11                             0xDE0A4C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_12                             0xDE0A50
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_13                             0xDE0A54
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_14                             0xDE0A58
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_15                             0xDE0A5C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_16                             0xDE0A60
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_17                             0xDE0A64
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_18                             0xDE0A68
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_19                             0xDE0A6C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_20                             0xDE0A70
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_21                             0xDE0A74
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_22                             0xDE0A78
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_23                             0xDE0A7C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_24                             0xDE0A80
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_25                             0xDE0A84
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_26                             0xDE0A88
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_27                             0xDE0A8C
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_28                             0xDE0A90
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_29                             0xDE0A94
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_30                             0xDE0A98
++
++#define mmNIC4_QM0_ARB_MST_AVAIL_CRED_31                             0xDE0A9C
++
++#define mmNIC4_QM0_ARB_MST_CRED_INC                                  0xDE0AA0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_0                        0xDE0AA4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_1                        0xDE0AA8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_2                        0xDE0AAC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_3                        0xDE0AB0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_4                        0xDE0AB4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_5                        0xDE0AB8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_6                        0xDE0ABC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_7                        0xDE0AC0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_8                        0xDE0AC4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_9                        0xDE0AC8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_10                       0xDE0ACC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_11                       0xDE0AD0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_12                       0xDE0AD4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_13                       0xDE0AD8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_14                       0xDE0ADC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_15                       0xDE0AE0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_16                       0xDE0AE4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_17                       0xDE0AE8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_18                       0xDE0AEC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_19                       0xDE0AF0
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_20                       0xDE0AF4
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_21                       0xDE0AF8
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_22                       0xDE0AFC
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_23                       0xDE0B00
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_24                       0xDE0B04
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_25                       0xDE0B08
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_26                       0xDE0B0C
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_27                       0xDE0B10
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_28                       0xDE0B14
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_29                       0xDE0B18
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_30                       0xDE0B1C
++
++#define mmNIC4_QM0_ARB_MST_CHOISE_PUSH_OFST_31                       0xDE0B20
++
++#define mmNIC4_QM0_ARB_SLV_MASTER_INC_CRED_OFST                      0xDE0B28
++
++#define mmNIC4_QM0_ARB_MST_SLAVE_EN                                  0xDE0B2C
++
++#define mmNIC4_QM0_ARB_MST_QUIET_PER                                 0xDE0B34
++
++#define mmNIC4_QM0_ARB_SLV_CHOISE_WDT                                0xDE0B38
++
++#define mmNIC4_QM0_ARB_SLV_ID                                        0xDE0B3C
++
++#define mmNIC4_QM0_ARB_MSG_MAX_INFLIGHT                              0xDE0B44
++
++#define mmNIC4_QM0_ARB_MSG_AWUSER_31_11                              0xDE0B48
++
++#define mmNIC4_QM0_ARB_MSG_AWUSER_SEC_PROP                           0xDE0B4C
++
++#define mmNIC4_QM0_ARB_MSG_AWUSER_NON_SEC_PROP                       0xDE0B50
++
++#define mmNIC4_QM0_ARB_BASE_LO                                       0xDE0B54
++
++#define mmNIC4_QM0_ARB_BASE_HI                                       0xDE0B58
++
++#define mmNIC4_QM0_ARB_STATE_STS                                     0xDE0B80
++
++#define mmNIC4_QM0_ARB_CHOISE_FULLNESS_STS                           0xDE0B84
++
++#define mmNIC4_QM0_ARB_MSG_STS                                       0xDE0B88
++
++#define mmNIC4_QM0_ARB_SLV_CHOISE_Q_HEAD                             0xDE0B8C
++
++#define mmNIC4_QM0_ARB_ERR_CAUSE                                     0xDE0B9C
++
++#define mmNIC4_QM0_ARB_ERR_MSG_EN                                    0xDE0BA0
++
++#define mmNIC4_QM0_ARB_ERR_STS_DRP                                   0xDE0BA8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_0                                0xDE0BB0
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_1                                0xDE0BB4
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_2                                0xDE0BB8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_3                                0xDE0BBC
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_4                                0xDE0BC0
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_5                                0xDE0BC4
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_6                                0xDE0BC8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_7                                0xDE0BCC
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_8                                0xDE0BD0
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_9                                0xDE0BD4
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_10                               0xDE0BD8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_11                               0xDE0BDC
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_12                               0xDE0BE0
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_13                               0xDE0BE4
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_14                               0xDE0BE8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_15                               0xDE0BEC
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_16                               0xDE0BF0
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_17                               0xDE0BF4
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_18                               0xDE0BF8
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_19                               0xDE0BFC
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_20                               0xDE0C00
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_21                               0xDE0C04
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_22                               0xDE0C08
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_23                               0xDE0C0C
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_24                               0xDE0C10
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_25                               0xDE0C14
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_26                               0xDE0C18
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_27                               0xDE0C1C
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_28                               0xDE0C20
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_29                               0xDE0C24
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_30                               0xDE0C28
++
++#define mmNIC4_QM0_ARB_MST_CRED_STS_31                               0xDE0C2C
++
++#define mmNIC4_QM0_CGM_CFG                                           0xDE0C70
++
++#define mmNIC4_QM0_CGM_STS                                           0xDE0C74
++
++#define mmNIC4_QM0_CGM_CFG1                                          0xDE0C78
++
++#define mmNIC4_QM0_LOCAL_RANGE_BASE                                  0xDE0C80
++
++#define mmNIC4_QM0_LOCAL_RANGE_SIZE                                  0xDE0C84
++
++#define mmNIC4_QM0_CSMR_STRICT_PRIO_CFG                              0xDE0C90
++
++#define mmNIC4_QM0_HBW_RD_RATE_LIM_CFG_1                             0xDE0C94
++
++#define mmNIC4_QM0_LBW_WR_RATE_LIM_CFG_0                             0xDE0C98
++
++#define mmNIC4_QM0_LBW_WR_RATE_LIM_CFG_1                             0xDE0C9C
++
++#define mmNIC4_QM0_HBW_RD_RATE_LIM_CFG_0                             0xDE0CA0
++
++#define mmNIC4_QM0_GLBL_AXCACHE                                      0xDE0CA4
++
++#define mmNIC4_QM0_IND_GW_APB_CFG                                    0xDE0CB0
++
++#define mmNIC4_QM0_IND_GW_APB_WDATA                                  0xDE0CB4
++
++#define mmNIC4_QM0_IND_GW_APB_RDATA                                  0xDE0CB8
++
++#define mmNIC4_QM0_IND_GW_APB_STATUS                                 0xDE0CBC
++
++#define mmNIC4_QM0_GLBL_ERR_ADDR_LO                                  0xDE0CD0
++
++#define mmNIC4_QM0_GLBL_ERR_ADDR_HI                                  0xDE0CD4
++
++#define mmNIC4_QM0_GLBL_ERR_WDATA                                    0xDE0CD8
++
++#define mmNIC4_QM0_GLBL_MEM_INIT_BUSY                                0xDE0D00
++
++#endif /* ASIC_REG_NIC4_QM0_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h
+new file mode 100644
+index 000000000000..34b21b21da52
+--- /dev/null
++++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h
+@@ -0,0 +1,834 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright 2016-2018 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ *
++ */
++
++/************************************
++ ** This is an auto-generated file **
++ **       DO NOT EDIT BELOW        **
++ ************************************/
++
++#ifndef ASIC_REG_NIC4_QM1_REGS_H_
++#define ASIC_REG_NIC4_QM1_REGS_H_
++
++/*
++ *****************************************
++ *   NIC4_QM1 (Prototype: QMAN)
++ *****************************************
++ */
++
++#define mmNIC4_QM1_GLBL_CFG0                                         0xDE2000
++
++#define mmNIC4_QM1_GLBL_CFG1                                         0xDE2004
++
++#define mmNIC4_QM1_GLBL_PROT                                         0xDE2008
++
++#define mmNIC4_QM1_GLBL_ERR_CFG                                      0xDE200C
++
++#define mmNIC4_QM1_GLBL_SECURE_PROPS_0                               0xDE2010
++
++#define mmNIC4_QM1_GLBL_SECURE_PROPS_1                               0xDE2014
++
++#define mmNIC4_QM1_GLBL_SECURE_PROPS_2                               0xDE2018
++
++#define mmNIC4_QM1_GLBL_SECURE_PROPS_3                               0xDE201C
++
++#define mmNIC4_QM1_GLBL_SECURE_PROPS_4                               0xDE2020
++
++#define mmNIC4_QM1_GLBL_NON_SECURE_PROPS_0                           0xDE2024
++
++#define mmNIC4_QM1_GLBL_NON_SECURE_PROPS_1                           0xDE2028
++
++#define mmNIC4_QM1_GLBL_NON_SECURE_PROPS_2                           0xDE202C
++
++#define mmNIC4_QM1_GLBL_NON_SECURE_PROPS_3                           0xDE2030
++
++#define mmNIC4_QM1_GLBL_NON_SECURE_PROPS_4                           0xDE2034
++
++#define mmNIC4_QM1_GLBL_STS0                                         0xDE2038
++
++#define mmNIC4_QM1_GLBL_STS1_0                                       0xDE2040
++
++#define mmNIC4_QM1_GLBL_STS1_1                                       0xDE2044
++
++#define mmNIC4_QM1_GLBL_STS1_2                                       0xDE2048
++
++#define mmNIC4_QM1_GLBL_STS1_3                                       0xDE204C
++
++#define mmNIC4_QM1_GLBL_STS1_4                                       0xDE2050
++
++#define mmNIC4_QM1_GLBL_MSG_EN_0                                     0xDE2054
++
++#define mmNIC4_QM1_GLBL_MSG_EN_1                                     0xDE2058
++
++#define mmNIC4_QM1_GLBL_MSG_EN_2                                     0xDE205C
++
++#define mmNIC4_QM1_GLBL_MSG_EN_3                                     0xDE2060
++
++#define mmNIC4_QM1_GLBL_MSG_EN_4                                     0xDE2068
++
++#define mmNIC4_QM1_PQ_BASE_LO_0                                      0xDE2070
++
++#define mmNIC4_QM1_PQ_BASE_LO_1                                      0xDE2074
++
++#define mmNIC4_QM1_PQ_BASE_LO_2                                      0xDE2078
++
++#define mmNIC4_QM1_PQ_BASE_LO_3                                      0xDE207C
++
++#define mmNIC4_QM1_PQ_BASE_HI_0                                      0xDE2080
++
++#define mmNIC4_QM1_PQ_BASE_HI_1                                      0xDE2084
++
++#define mmNIC4_QM1_PQ_BASE_HI_2                                      0xDE2088
++
++#define mmNIC4_QM1_PQ_BASE_HI_3                                      0xDE208C
++
++#define mmNIC4_QM1_PQ_SIZE_0                                         0xDE2090
++
++#define mmNIC4_QM1_PQ_SIZE_1                                         0xDE2094
++
++#define mmNIC4_QM1_PQ_SIZE_2                                         0xDE2098
++
++#define mmNIC4_QM1_PQ_SIZE_3                                         0xDE209C
++
++#define mmNIC4_QM1_PQ_PI_0                                           0xDE20A0
++
++#define mmNIC4_QM1_PQ_PI_1                                           0xDE20A4
++
++#define mmNIC4_QM1_PQ_PI_2                                           0xDE20A8
++
++#define mmNIC4_QM1_PQ_PI_3                                           0xDE20AC
++
++#define mmNIC4_QM1_PQ_CI_0                                           0xDE20B0
++
++#define mmNIC4_QM1_PQ_CI_1                                           0xDE20B4
++
++#define mmNIC4_QM1_PQ_CI_2                                           0xDE20B8
++
++#define mmNIC4_QM1_PQ_CI_3                                           0xDE20BC
++
++#define mmNIC4_QM1_PQ_CFG0_0                                         0xDE20C0
++
++#define mmNIC4_QM1_PQ_CFG0_1                                         0xDE20C4
++
++#define mmNIC4_QM1_PQ_CFG0_2                                         0xDE20C8
++
++#define mmNIC4_QM1_PQ_CFG0_3                                         0xDE20CC
++
++#define mmNIC4_QM1_PQ_CFG1_0                                         0xDE20D0
++
++#define mmNIC4_QM1_PQ_CFG1_1                                         0xDE20D4
++
++#define mmNIC4_QM1_PQ_CFG1_2                                         0xDE20D8
++
++#define mmNIC4_QM1_PQ_CFG1_3                                         0xDE20DC
++
++#define mmNIC4_QM1_PQ_ARUSER_31_11_0                                 0xDE20E0
++
++#define mmNIC4_QM1_PQ_ARUSER_31_11_1                                 0xDE20E4
++
++#define mmNIC4_QM1_PQ_ARUSER_31_11_2                                 0xDE20E8
++
++#define mmNIC4_QM1_PQ_ARUSER_31_11_3                                 0xDE20EC
++
++#define mmNIC4_QM1_PQ_STS0_0                                         0xDE20F0
++
++#define mmNIC4_QM1_PQ_STS0_1                                         0xDE20F4
++
++#define mmNIC4_QM1_PQ_STS0_2                                         0xDE20F8
++
++#define mmNIC4_QM1_PQ_STS0_3                                         0xDE20FC
++
++#define mmNIC4_QM1_PQ_STS1_0                                         0xDE2100
++
++#define mmNIC4_QM1_PQ_STS1_1                                         0xDE2104
++
++#define mmNIC4_QM1_PQ_STS1_2                                         0xDE2108
++
++#define mmNIC4_QM1_PQ_STS1_3                                         0xDE210C
++
++#define mmNIC4_QM1_CQ_CFG0_0                                         0xDE2110
++
++#define mmNIC4_QM1_CQ_CFG0_1                                         0xDE2114
++
++#define mmNIC4_QM1_CQ_CFG0_2                                         0xDE2118
++
++#define mmNIC4_QM1_CQ_CFG0_3                                         0xDE211C
++
++#define mmNIC4_QM1_CQ_CFG0_4                                         0xDE2120
++
++#define mmNIC4_QM1_CQ_CFG1_0                                         0xDE2124
++
++#define mmNIC4_QM1_CQ_CFG1_1                                         0xDE2128
++
++#define mmNIC4_QM1_CQ_CFG1_2                                         0xDE212C
++
++#define mmNIC4_QM1_CQ_CFG1_3                                         0xDE2130
++
++#define mmNIC4_QM1_CQ_CFG1_4                                         0xDE2134
++
++#define mmNIC4_QM1_CQ_ARUSER_31_11_0                                 0xDE2138
++
++#define mmNIC4_QM1_CQ_ARUSER_31_11_1                                 0xDE213C
++
++#define mmNIC4_QM1_CQ_ARUSER_31_11_2                                 0xDE2140
++
++#define mmNIC4_QM1_CQ_ARUSER_31_11_3                                 0xDE2144
++
++#define mmNIC4_QM1_CQ_ARUSER_31_11_4                                 0xDE2148
++
++#define mmNIC4_QM1_CQ_STS0_0                                         0xDE214C
++
++#define mmNIC4_QM1_CQ_STS0_1                                         0xDE2150
++
++#define mmNIC4_QM1_CQ_STS0_2                                         0xDE2154
++
++#define mmNIC4_QM1_CQ_STS0_3                                         0xDE2158
++
++#define mmNIC4_QM1_CQ_STS0_4                                         0xDE215C
++
++#define mmNIC4_QM1_CQ_STS1_0                                         0xDE2160
++
++#define mmNIC4_QM1_CQ_STS1_1                                         0xDE2164
++
++#define mmNIC4_QM1_CQ_STS1_2                                         0xDE2168
++
++#define mmNIC4_QM1_CQ_STS1_3                                         0xDE216C
++
++#define mmNIC4_QM1_CQ_STS1_4                                         0xDE2170
++
++#define mmNIC4_QM1_CQ_PTR_LO_0                                       0xDE2174
++
++#define mmNIC4_QM1_CQ_PTR_HI_0                                       0xDE2178
++
++#define mmNIC4_QM1_CQ_TSIZE_0                                        0xDE217C
++
++#define mmNIC4_QM1_CQ_CTL_0                                          0xDE2180
++
++#define mmNIC4_QM1_CQ_PTR_LO_1                                       0xDE2184
++
++#define mmNIC4_QM1_CQ_PTR_HI_1                                       0xDE2188
++
++#define mmNIC4_QM1_CQ_TSIZE_1                                        0xDE218C
++
++#define mmNIC4_QM1_CQ_CTL_1                                          0xDE2190
++
++#define mmNIC4_QM1_CQ_PTR_LO_2                                       0xDE2194
++
++#define mmNIC4_QM1_CQ_PTR_HI_2                                       0xDE2198
++
++#define mmNIC4_QM1_CQ_TSIZE_2                                        0xDE219C
++
++#define mmNIC4_QM1_CQ_CTL_2                                          0xDE21A0
++
++#define mmNIC4_QM1_CQ_PTR_LO_3                                       0xDE21A4
++
++#define mmNIC4_QM1_CQ_PTR_HI_3                                       0xDE21A8
++
++#define mmNIC4_QM1_CQ_TSIZE_3                                        0xDE21AC
++
++#define mmNIC4_QM1_CQ_CTL_3                                          0xDE21B0
++
++#define mmNIC4_QM1_CQ_PTR_LO_4                                       0xDE21B4
++
++#define mmNIC4_QM1_CQ_PTR_HI_4                                       0xDE21B8
++
++#define mmNIC4_QM1_CQ_TSIZE_4                                        0xDE21BC
++
++#define mmNIC4_QM1_CQ_CTL_4                                          0xDE21C0
++
++#define mmNIC4_QM1_CQ_PTR_LO_STS_0                                   0xDE21C4
++
++#define mmNIC4_QM1_CQ_PTR_LO_STS_1                                   0xDE21C8
++
++#define mmNIC4_QM1_CQ_PTR_LO_STS_2                                   0xDE21CC
++
++#define mmNIC4_QM1_CQ_PTR_LO_STS_3                                   0xDE21D0
++
++#define mmNIC4_QM1_CQ_PTR_LO_STS_4                                   0xDE21D4
++
++#define mmNIC4_QM1_CQ_PTR_HI_STS_0                                   0xDE21D8
++
++#define mmNIC4_QM1_CQ_PTR_HI_STS_1                                   0xDE21DC
++
++#define mmNIC4_QM1_CQ_PTR_HI_STS_2                                   0xDE21E0
++
++#define mmNIC4_QM1_CQ_PTR_HI_STS_3                                   0xDE21E4
++
++#define mmNIC4_QM1_CQ_PTR_HI_STS_4                                   0xDE21E8
++
++#define mmNIC4_QM1_CQ_TSIZE_STS_0                                    0xDE21EC
++
++#define mmNIC4_QM1_CQ_TSIZE_STS_1                                    0xDE21F0
++
++#define mmNIC4_QM1_CQ_TSIZE_STS_2                                    0xDE21F4
++
++#define mmNIC4_QM1_CQ_TSIZE_STS_3                                    0xDE21F8
++
++#define mmNIC4_QM1_CQ_TSIZE_STS_4                                    0xDE21FC
++
++#define mmNIC4_QM1_CQ_CTL_STS_0                                      0xDE2200
++
++#define mmNIC4_QM1_CQ_CTL_STS_1                                      0xDE2204
++
++#define mmNIC4_QM1_CQ_CTL_STS_2                                      0xDE2208
++
++#define mmNIC4_QM1_CQ_CTL_STS_3                                      0xDE220C
++
++#define mmNIC4_QM1_CQ_CTL_STS_4                                      0xDE2210
++
++#define mmNIC4_QM1_CQ_IFIFO_CNT_0                                    0xDE2214
++
++#define mmNIC4_QM1_CQ_IFIFO_CNT_1                                    0xDE2218
++
++#define mmNIC4_QM1_CQ_IFIFO_CNT_2                                    0xDE221C
++
++#define mmNIC4_QM1_CQ_IFIFO_CNT_3                                    0xDE2220
++
++#define mmNIC4_QM1_CQ_IFIFO_CNT_4                                    0xDE2224
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_LO_0                            0xDE2228
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_LO_1                            0xDE222C
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_LO_2                            0xDE2230
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_LO_3                            0xDE2234
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_LO_4                            0xDE2238
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_HI_0                            0xDE223C
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_HI_1                            0xDE2240
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_HI_2                            0xDE2244
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_HI_3                            0xDE2248
++
++#define mmNIC4_QM1_CP_MSG_BASE0_ADDR_HI_4                            0xDE224C
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_LO_0                            0xDE2250
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_LO_1                            0xDE2254
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_LO_2                            0xDE2258
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_LO_3                            0xDE225C
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_LO_4                            0xDE2260
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_HI_0                            0xDE2264
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_HI_1                            0xDE2268
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_HI_2                            0xDE226C
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_HI_3                            0xDE2270
++
++#define mmNIC4_QM1_CP_MSG_BASE1_ADDR_HI_4                            0xDE2274
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_LO_0                            0xDE2278
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_LO_1                            0xDE227C
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_LO_2                            0xDE2280
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_LO_3                            0xDE2284
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_LO_4                            0xDE2288
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_HI_0                            0xDE228C
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_HI_1                            0xDE2290
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_HI_2                            0xDE2294
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_HI_3                            0xDE2298
++
++#define mmNIC4_QM1_CP_MSG_BASE2_ADDR_HI_4                            0xDE229C
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_LO_0                            0xDE22A0
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_LO_1                            0xDE22A4
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_LO_2                            0xDE22A8
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_LO_3                            0xDE22AC
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_LO_4                            0xDE22B0
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_HI_0                            0xDE22B4
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_HI_1                            0xDE22B8
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_HI_2                            0xDE22BC
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_HI_3                            0xDE22C0
++
++#define mmNIC4_QM1_CP_MSG_BASE3_ADDR_HI_4                            0xDE22C4
++
++#define mmNIC4_QM1_CP_LDMA_TSIZE_OFFSET_0                            0xDE22C8
++
++#define mmNIC4_QM1_CP_LDMA_TSIZE_OFFSET_1                            0xDE22CC
++
++#define mmNIC4_QM1_CP_LDMA_TSIZE_OFFSET_2                            0xDE22D0
++
++#define mmNIC4_QM1_CP_LDMA_TSIZE_OFFSET_3                            0xDE22D4
++
++#define mmNIC4_QM1_CP_LDMA_TSIZE_OFFSET_4                            0xDE22D8
++
++#define mmNIC4_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_0                      0xDE22E0
++
++#define mmNIC4_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_1                      0xDE22E4
++
++#define mmNIC4_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_2                      0xDE22E8
++
++#define mmNIC4_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_3                      0xDE22EC
++
++#define mmNIC4_QM1_CP_LDMA_SRC_BASE_LO_OFFSET_4                      0xDE22F0
++
++#define mmNIC4_QM1_CP_LDMA_DST_BASE_LO_OFFSET_0                      0xDE22F4
++
++#define mmNIC4_QM1_CP_LDMA_DST_BASE_LO_OFFSET_1                      0xDE22F8
++
++#define mmNIC4_QM1_CP_LDMA_DST_BASE_LO_OFFSET_2                      0xDE22FC
++
++#define mmNIC4_QM1_CP_LDMA_DST_BASE_LO_OFFSET_3                      0xDE2300
++
++#define mmNIC4_QM1_CP_LDMA_DST_BASE_LO_OFFSET_4                      0xDE2304
++
++#define mmNIC4_QM1_CP_FENCE0_RDATA_0                                 0xDE2308
++
++#define mmNIC4_QM1_CP_FENCE0_RDATA_1                                 0xDE230C
++
++#define mmNIC4_QM1_CP_FENCE0_RDATA_2                                 0xDE2310
++
++#define mmNIC4_QM1_CP_FENCE0_RDATA_3                                 0xDE2314
++
++#define mmNIC4_QM1_CP_FENCE0_RDATA_4                                 0xDE2318
++
++#define mmNIC4_QM1_CP_FENCE1_RDATA_0                                 0xDE231C
++
++#define mmNIC4_QM1_CP_FENCE1_RDATA_1                                 0xDE2320
++
++#define mmNIC4_QM1_CP_FENCE1_RDATA_2                                 0xDE2324
++
++#define mmNIC4_QM1_CP_FENCE1_RDATA_3                                 0xDE2328
++
++#define mmNIC4_QM1_CP_FENCE1_RDATA_4                                 0xDE232C
++
++#define mmNIC4_QM1_CP_FENCE2_RDATA_0                                 0xDE2330
++
++#define mmNIC4_QM1_CP_FENCE2_RDATA_1                                 0xDE2334
++
++#define mmNIC4_QM1_CP_FENCE2_RDATA_2                                 0xDE2338
++
++#define mmNIC4_QM1_CP_FENCE2_RDATA_3                                 0xDE233C
++
++#define mmNIC4_QM1_CP_FENCE2_RDATA_4                                 0xDE2340
++
++#define mmNIC4_QM1_CP_FENCE3_RDATA_0                                 0xDE2344
++
++#define mmNIC4_QM1_CP_FENCE3_RDATA_1                                 0xDE2348
++
++#define mmNIC4_QM1_CP_FENCE3_RDATA_2                                 0xDE234C
++
++#define mmNIC4_QM1_CP_FENCE3_RDATA_3                                 0xDE2350
++
++#define mmNIC4_QM1_CP_FENCE3_RDATA_4                                 0xDE2354
++
++#define mmNIC4_QM1_CP_FENCE0_CNT_0                                   0xDE2358
++
++#define mmNIC4_QM1_CP_FENCE0_CNT_1                                   0xDE235C
++
++#define mmNIC4_QM1_CP_FENCE0_CNT_2                                   0xDE2360
++
++#define mmNIC4_QM1_CP_FENCE0_CNT_3                                   0xDE2364
++
++#define mmNIC4_QM1_CP_FENCE0_CNT_4                                   0xDE2368
++
++#define mmNIC4_QM1_CP_FENCE1_CNT_0                                   0xDE236C
++
++#define mmNIC4_QM1_CP_FENCE1_CNT_1                                   0xDE2370
++
++#define mmNIC4_QM1_CP_FENCE1_CNT_2                                   0xDE2374
++
++#define mmNIC4_QM1_CP_FENCE1_CNT_3                                   0xDE2378
++
++#define mmNIC4_QM1_CP_FENCE1_CNT_4                                   0xDE237C
++
++#define mmNIC4_QM1_CP_FENCE2_CNT_0                                   0xDE2380
++
++#define mmNIC4_QM1_CP_FENCE2_CNT_1                                   0xDE2384
++
++#define mmNIC4_QM1_CP_FENCE2_CNT_2                                   0xDE2388
++
++#define mmNIC4_QM1_CP_FENCE2_CNT_3                                   0xDE238C
++
++#define mmNIC4_QM1_CP_FENCE2_CNT_4                                   0xDE2390
++
++#define mmNIC4_QM1_CP_FENCE3_CNT_0                                   0xDE2394
++
++#define mmNIC4_QM1_CP_FENCE3_CNT_1                                   0xDE2398
++
++#define mmNIC4_QM1_CP_FENCE3_CNT_2                                   0xDE239C
++
++#define mmNIC4_QM1_CP_FENCE3_CNT_3                                   0xDE23A0
++
++#define mmNIC4_QM1_CP_FENCE3_CNT_4                                   0xDE23A4
++
++#define mmNIC4_QM1_CP_STS_0                                          0xDE23A8
++
++#define mmNIC4_QM1_CP_STS_1                                          0xDE23AC
++
++#define mmNIC4_QM1_CP_STS_2                                          0xDE23B0
++
++#define mmNIC4_QM1_CP_STS_3                                          0xDE23B4
++
++#define mmNIC4_QM1_CP_STS_4                                          0xDE23B8
++
++#define mmNIC4_QM1_CP_CURRENT_INST_LO_0                              0xDE23BC
++
++#define mmNIC4_QM1_CP_CURRENT_INST_LO_1                              0xDE23C0
++
++#define mmNIC4_QM1_CP_CURRENT_INST_LO_2                              0xDE23C4
++
++#define mmNIC4_QM1_CP_CURRENT_INST_LO_3                              0xDE23C8
++
++#define mmNIC4_QM1_CP_CURRENT_INST_LO_4                              0xDE23CC
++
++#define mmNIC4_QM1_CP_CURRENT_INST_HI_0                              0xDE23D0
++
++#define mmNIC4_QM1_CP_CURRENT_INST_HI_1                              0xDE23D4
++
++#define mmNIC4_QM1_CP_CURRENT_INST_HI_2                              0xDE23D8
++
++#define mmNIC4_QM1_CP_CURRENT_INST_HI_3                              0xDE23DC
++
++#define mmNIC4_QM1_CP_CURRENT_INST_HI_4                              0xDE23E0
++
++#define mmNIC4_QM1_CP_BARRIER_CFG_0                                  0xDE23F4
++
++#define mmNIC4_QM1_CP_BARRIER_CFG_1                                  0xDE23F8
++
++#define mmNIC4_QM1_CP_BARRIER_CFG_2                                  0xDE23FC
++
++#define mmNIC4_QM1_CP_BARRIER_CFG_3                                  0xDE2400
++
++#define mmNIC4_QM1_CP_BARRIER_CFG_4                                  0xDE2404
++
++#define mmNIC4_QM1_CP_DBG_0_0                                        0xDE2408
++
++#define mmNIC4_QM1_CP_DBG_0_1                                        0xDE240C
++
++#define mmNIC4_QM1_CP_DBG_0_2                                        0xDE2410
++
++#define mmNIC4_QM1_CP_DBG_0_3                                        0xDE2414
++
++#define mmNIC4_QM1_CP_DBG_0_4                                        0xDE2418
++
++#define mmNIC4_QM1_CP_ARUSER_31_11_0                                 0xDE241C
++
++#define mmNIC4_QM1_CP_ARUSER_31_11_1                                 0xDE2420
++
++#define mmNIC4_QM1_CP_ARUSER_31_11_2                                 0xDE2424
++
++#define mmNIC4_QM1_CP_ARUSER_31_11_3                                 0xDE2428
++
++#define mmNIC4_QM1_CP_ARUSER_31_11_4                                 0xDE242C
++
++#define mmNIC4_QM1_CP_AWUSER_31_11_0                                 0xDE2430
++
++#define mmNIC4_QM1_CP_AWUSER_31_11_1                                 0xDE2434
++
++#define mmNIC4_QM1_CP_AWUSER_31_11_2                                 0xDE2438
++
++#define mmNIC4_QM1_CP_AWUSER_31_11_3                                 0xDE243C
++
++#define mmNIC4_QM1_CP_AWUSER_31_11_4                                 0xDE2440
++
++#define mmNIC4_QM1_ARB_CFG_0                                         0xDE2A00
++
++#define mmNIC4_QM1_ARB_CHOISE_Q_PUSH                                 0xDE2A04
++
++#define mmNIC4_QM1_ARB_WRR_WEIGHT_0                                  0xDE2A08
++
++#define mmNIC4_QM1_ARB_WRR_WEIGHT_1                                  0xDE2A0C
++
++#define mmNIC4_QM1_ARB_WRR_WEIGHT_2                                  0xDE2A10
++
++#define mmNIC4_QM1_ARB_WRR_WEIGHT_3                                  0xDE2A14
++
++#define mmNIC4_QM1_ARB_CFG_1                                         0xDE2A18
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_0                              0xDE2A20
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_1                              0xDE2A24
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_2                              0xDE2A28
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_3                              0xDE2A2C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_4                              0xDE2A30
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_5                              0xDE2A34
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_6                              0xDE2A38
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_7                              0xDE2A3C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_8                              0xDE2A40
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_9                              0xDE2A44
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_10                             0xDE2A48
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_11                             0xDE2A4C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_12                             0xDE2A50
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_13                             0xDE2A54
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_14                             0xDE2A58
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_15                             0xDE2A5C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_16                             0xDE2A60
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_17                             0xDE2A64
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_18                             0xDE2A68
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_19                             0xDE2A6C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_20                             0xDE2A70
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_21                             0xDE2A74
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_22                             0xDE2A78
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_23                             0xDE2A7C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_24                             0xDE2A80
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_25                             0xDE2A84
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_26                             0xDE2A88
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_27                             0xDE2A8C
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_28                             0xDE2A90
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_29                             0xDE2A94
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_30                             0xDE2A98
++
++#define mmNIC4_QM1_ARB_MST_AVAIL_CRED_31                             0xDE2A9C
++
++#define mmNIC4_QM1_ARB_MST_CRED_INC                                  0xDE2AA0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_0                        0xDE2AA4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_1                        0xDE2AA8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_2                        0xDE2AAC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_3                        0xDE2AB0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_4                        0xDE2AB4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_5                        0xDE2AB8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_6                        0xDE2ABC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_7                        0xDE2AC0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_8                        0xDE2AC4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_9                        0xDE2AC8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_10                       0xDE2ACC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_11                       0xDE2AD0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_12                       0xDE2AD4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_13                       0xDE2AD8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_14                       0xDE2ADC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_15                       0xDE2AE0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_16                       0xDE2AE4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_17                       0xDE2AE8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_18                       0xDE2AEC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_19                       0xDE2AF0
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_20                       0xDE2AF4
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_21                       0xDE2AF8
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_22                       0xDE2AFC
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_23                       0xDE2B00
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_24                       0xDE2B04
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_25                       0xDE2B08
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_26                       0xDE2B0C
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_27                       0xDE2B10
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_28                       0xDE2B14
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_29                       0xDE2B18
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_30                       0xDE2B1C
++
++#define mmNIC4_QM1_ARB_MST_CHOISE_PUSH_OFST_31                       0xDE2B20
++
++#define mmNIC4_QM1_ARB_SLV_MASTER_INC_CRED_OFST                      0xDE2B28
++
++#define mmNIC4_QM1_ARB_MST_SLAVE_EN                                  0xDE2B2C
++
++#define mmNIC4_QM1_ARB_MST_QUIET_PER                                 0xDE2B34
++
++#define mmNIC4_QM1_ARB_SLV_CHOISE_WDT                                0xDE2B38
++
++#define mmNIC4_QM1_ARB_SLV_ID                                        0xDE2B3C
++
++#define mmNIC4_QM1_ARB_MSG_MAX_INFLIGHT                              0xDE2B44
++
++#define mmNIC4_QM1_ARB_MSG_AWUSER_31_11                              0xDE2B48
++
++#define mmNIC4_QM1_ARB_MSG_AWUSER_SEC_PROP                           0xDE2B4C
++
++#define mmNIC4_QM1_ARB_MSG_AWUSER_NON_SEC_PROP                       0xDE2B50
++
++#define mmNIC4_QM1_ARB_BASE_LO                                       0xDE2B54
++
++#define mmNIC4_QM1_ARB_BASE_HI                                       0xDE2B58
++
++#define mmNIC4_QM1_ARB_STATE_STS                                     0xDE2B80
++
++#define mmNIC4_QM1_ARB_CHOISE_FULLNESS_STS                           0xDE2B84
++
++#define mmNIC4_QM1_ARB_MSG_STS                                       0xDE2B88
++
++#define mmNIC4_QM1_ARB_SLV_CHOISE_Q_HEAD                             0xDE2B8C
++
++#define mmNIC4_QM1_ARB_ERR_CAUSE                                     0xDE2B9C
++
++#define mmNIC4_QM1_ARB_ERR_MSG_EN                                    0xDE2BA0
++
++#define mmNIC4_QM1_ARB_ERR_STS_DRP                                   0xDE2BA8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_0                                0xDE2BB0
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_1                                0xDE2BB4
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_2                                0xDE2BB8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_3                                0xDE2BBC
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_4                                0xDE2BC0
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_5                                0xDE2BC4
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_6                                0xDE2BC8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_7                                0xDE2BCC
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_8                                0xDE2BD0
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_9                                0xDE2BD4
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_10                               0xDE2BD8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_11                               0xDE2BDC
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_12                               0xDE2BE0
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_13                               0xDE2BE4
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_14                               0xDE2BE8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_15                               0xDE2BEC
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_16                               0xDE2BF0
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_17                               0xDE2BF4
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_18                               0xDE2BF8
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_19                               0xDE2BFC
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_20                               0xDE2C00
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_21                               0xDE2C04
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_22                               0xDE2C08
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_23                               0xDE2C0C
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_24                               0xDE2C10
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_25                               0xDE2C14
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_26                               0xDE2C18
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_27                               0xDE2C1C
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_28                               0xDE2C20
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_29                               0xDE2C24
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_30                               0xDE2C28
++
++#define mmNIC4_QM1_ARB_MST_CRED_STS_31                               0xDE2C2C
++
++#define mmNIC4_QM1_CGM_CFG                                           0xDE2C70
++
++#define mmNIC4_QM1_CGM_STS                                           0xDE2C74
++
++#define mmNIC4_QM1_CGM_CFG1                                          0xDE2C78
++
++#define mmNIC4_QM1_LOCAL_RANGE_BASE                                  0xDE2C80
++
++#define mmNIC4_QM1_LOCAL_RANGE_SIZE                                  0xDE2C84
++
++#define mmNIC4_QM1_CSMR_STRICT_PRIO_CFG                              0xDE2C90
++
++#define mmNIC4_QM1_HBW_RD_RATE_LIM_CFG_1                             0xDE2C94
++
++#define mmNIC4_QM1_LBW_WR_RATE_LIM_CFG_0                             0xDE2C98
++
++#define mmNIC4_QM1_LBW_WR_RATE_LIM_CFG_1                             0xDE2C9C
++
++#define mmNIC4_QM1_HBW_RD_RATE_LIM_CFG_0                             0xDE2CA0
++
++#define mmNIC4_QM1_GLBL_AXCACHE                                      0xDE2CA4
++
++#define mmNIC4_QM1_IND_GW_APB_CFG                                    0xDE2CB0
++
++#define mmNIC4_QM1_IND_GW_APB_WDATA                                  0xDE2CB4
++
++#define mmNIC4_QM1_IND_GW_APB_RDATA                                  0xDE2CB8
++
++#define mmNIC4_QM1_IND_GW_APB_STATUS                                 0xDE2CBC
++
++#define mmNIC4_QM1_GLBL_ERR_ADDR_LO                                  0xDE2CD0
++
++#define mmNIC4_QM1_GLBL_ERR_ADDR_HI                                  0xDE2CD4
++
++#define mmNIC4_QM1_GLBL_ERR_WDATA                                    0xDE2CD8
++
++#define mmNIC4_QM1_GLBL_MEM_INIT_BUSY                                0xDE2D00
++
++#endif /* ASIC_REG_NIC4_QM1_REGS_H_ */
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
+index f395721060bd..67540be99e7a 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
+@@ -41,6 +41,11 @@
+ 	(FIELD_PREP(TPC0_QM_GLBL_CFG0_CQF_EN_MASK, 0x1F)) | \
+ 	(FIELD_PREP(TPC0_QM_GLBL_CFG0_CP_EN_MASK, 0x1F)))
+ 
++#define NIC_QMAN_ENABLE		(\
++	(FIELD_PREP(NIC0_QM0_GLBL_CFG0_PQF_EN_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_CFG0_CQF_EN_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_CFG0_CP_EN_MASK, 0xF)))
++
+ #define QMAN_UPPER_CP_CGM_PWR_GATE_EN	(\
+ 	(FIELD_PREP(DMA0_QM_CGM_CFG_IDLE_TH_MASK, 0x20)) | \
+ 	(FIELD_PREP(DMA0_QM_CGM_CFG_G2F_TH_MASK, 0xA)) | \
+@@ -93,6 +98,16 @@
+ 	(FIELD_PREP(MME0_QM_GLBL_ERR_CFG_CQF_STOP_ON_ERR_MASK, 0x1F)) | \
+ 	(FIELD_PREP(MME0_QM_GLBL_ERR_CFG_CP_STOP_ON_ERR_MASK, 0x1F)))
+ 
++#define NIC_QMAN_GLBL_ERR_CFG_MSG_EN_MASK	(\
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_PQF_ERR_MSG_EN_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_CQF_ERR_MSG_EN_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_CP_ERR_MSG_EN_MASK, 0xF)))
++
++#define NIC_QMAN_GLBL_ERR_CFG_STOP_ON_ERR_EN_MASK	(\
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_PQF_STOP_ON_ERR_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_CQF_STOP_ON_ERR_MASK, 0xF)) | \
++	(FIELD_PREP(NIC0_QM0_GLBL_ERR_CFG_CP_STOP_ON_ERR_MASK, 0xF)))
++
+ #define QMAN_CGM1_PWR_GATE_EN	(FIELD_PREP(DMA0_QM_CGM_CFG1_MASK_TH_MASK, 0xA))
+ 
+ /* RESET registers configuration */
+-- 
+2.17.1
 
-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
-
---bp/iNruPH9dso1Pn--
