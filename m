@@ -2,231 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D6B2A50CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1B32A50D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgKCUUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:20:19 -0500
-Received: from mga09.intel.com ([134.134.136.24]:4526 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbgKCUUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:20:19 -0500
-IronPort-SDR: OuJhY0cPXQQW/CJKe4EW7Wnq70W8IIIU+gW8fNm8SyGM0LEljv96cL2Ea0zfkEfSru+XJW4QND
- hE+E8OfHZ7ag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="169257288"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="169257288"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:20:18 -0800
-IronPort-SDR: b5diCJNNbaxXaJzHswTs2pEj5Pjq4JUrAEj/555vRSl6QD+3nfJu/x3NvhcthQ/3fabwG41COh
- iYWLbE26thJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="320562243"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 12:20:16 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ka2mt-0000V4-Vh; Tue, 03 Nov 2020 20:20:15 +0000
-Date:   Wed, 04 Nov 2020 04:19:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- af2abc92c5ddf5fc5a2036bc106c4d9a80a4d5f7
-Message-ID: <5fa1bb6d.TOkMhMI2ArySvrV6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729348AbgKCUWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:22:02 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42325 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727688AbgKCUWB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:22:01 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9C77E5C0120;
+        Tue,  3 Nov 2020 15:22:00 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 03 Nov 2020 15:22:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=mfz/RQI+EEqHmxY6j4//GMrCh8U
+        8faBjBrtKjmFkdpI=; b=4L8VE7YImAo3QwkBLKyjyNKz4JCfwCzntZV5F9lsFLa
+        yrBAMPYsxkmhmjD5QcfO53DF8Ezav21f9ZlcL0Tx4MQCRCCn55MI+l5xbiJWi6Q7
+        IDgqE3hP+tlivN1eWfqY1bTFCmlTCT8qokwOEtw2Y0yNbpNyb7QfjhvSeJp+MiSP
+        +BYs6x0eu87QayHEWjTBU0QqofrfpzchpzFc18cDTfeY9Wt45iWfZQj/u275m/I7
+        sIi2oKQWQt8JKuC//8K3Bg7eRlw8PavtCsLVmlRRl/3A40dRi/9yvdOaxWQfcf2N
+        3Hodd9ntC88ePClesr2jxfK67X8izN5uhWN126rUqmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=mfz/RQ
+        I+EEqHmxY6j4//GMrCh8U8faBjBrtKjmFkdpI=; b=FSCOkH9sOXKycxfNoBHbX6
+        jZsoVqICI5jSKkp6kC8XzHKgEmCgROqeJ0BnPWsr7ouwRJGNl7XJdo1Xe5oF4h0w
+        J1Y1teXoQKwXSll7eauOmNZ+8mr71uj9o5t5z9tqO7pqw/h2N0CCOCn2scX7igpg
+        7w2d5qp43lPzBjbT37UXe0KUQaamgtJHm/nlucrcuGzlq1kR9FSSziYtDczJY66G
+        paI5VR7xLCfvRknvICjlOlNTolFkEet8AgF7jI6z1GMbuZKtVBXkVJA23bhwEtWe
+        31uw6VY4Kxu7hRbPfYT632TsN78K3tK0n9VhVl8O31tyCgtVxmlvGYTRN3Fr3Tyw
+        ==
+X-ME-Sender: <xms:6LuhX93n3_keexrOfPopWh8MZJZBo1H-16ZuUE4TTz5CAJ2BPftCVg>
+    <xme:6LuhX0FjWDxYsrQCgA2IUVraPkIZZ8T_b8DRqh8wuPx0vs_b0bFhM7YsiezN-z4lJ
+    2NWiKfOqDCy5w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeeihf
+    elffejffekteetudegfeeihffftefhveeuffffjeehvefhveegjeetuddunecuffhomhgr
+    ihhnpegrrhhmrdgtohhmpdhkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrd
+    eigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehg
+    rhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:6LuhX94AG_C4tgywLcBCaF_sbHEhwwuUh2d5ysStdYH3u-PFqcDwLA>
+    <xmx:6LuhX60-0hPeLE8MNVnReosj2emo5I8FEkrYb9VHfyrUmOpxSAuWuw>
+    <xmx:6LuhXwHik16ks3okoIR_Fvcrp4M7C-A-H7XWRPxGrHdRdxz0937xRQ>
+    <xmx:6LuhX8j5cX74jNShJuBiUvZHD-uRvYdvtUrQVKj2nM6sgpTfJDoHLA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E30F332800DB;
+        Tue,  3 Nov 2020 15:21:59 -0500 (EST)
+Date:   Tue, 3 Nov 2020 21:21:57 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH stable 5.9] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1
+ doesn't return SMCCC_RET_NOT_REQUIRED
+Message-ID: <20201103202157.GA470743@kroah.com>
+References: <20201103201526.372590-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201103201526.372590-1-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
-branch HEAD: af2abc92c5ddf5fc5a2036bc106c4d9a80a4d5f7  x86/hyperv: Enable 15-bit APIC ID if the hypervisor supports it
+On Tue, Nov 03, 2020 at 12:15:26PM -0800, Stephen Boyd wrote:
+> commit 1de111b51b829bcf01d2e57971f8fd07a665fa3f upstream.
+> 
+> According to the SMCCC spec[1](7.5.2 Discovery) the
+> ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+> SMCCC_RET_NOT_SUPPORTED.
+> 
+>  0 is "workaround required and safe to call this function"
+>  1 is "workaround not required but safe to call this function"
+>  SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
+> 
+> SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
+> calling this function may not work because it isn't implemented in some
+> cases". Wonderful. We map this SMC call to
+> 
+>  0 is SPECTRE_MITIGATED
+>  1 is SPECTRE_UNAFFECTED
+>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
+> 
+> For KVM hypercalls (hvc), we've implemented this function id to return
+> SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
+> isn't supposed to be there. Per the code we call
+> arm64_get_spectre_v2_state() to figure out what to return for this
+> feature discovery call.
+> 
+>  0 is SPECTRE_MITIGATED
+>  SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
+>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
+> 
+> Let's clean this up so that KVM tells the guest this mapping:
+> 
+>  0 is SPECTRE_MITIGATED
+>  1 is SPECTRE_UNAFFECTED
+>  SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
+> 
+> Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
+> 
+> Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> Acked-by: Marc Zyngier <maz@kernel.org>
+> Acked-by: Will Deacon <will@kernel.org>
+> Cc: Andre Przywara <andre.przywara@arm.com>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: stable@vger.kernel.org
+> Link: https://developer.arm.com/documentation/den0028/latest [1]
+> Link: https://lore.kernel.org/r/20201023154751.1973872-1-swboyd@chromium.org
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  arch/arm64/kvm/hypercalls.c | 2 +-
+>  include/linux/arm-smccc.h   | 2 ++
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 
-elapsed time: 722m
+Thanks for both of these, now queued up.
 
-configs tested: 167
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       aspeed_g4_defconfig
-sh                               alldefconfig
-arm                         s3c6400_defconfig
-powerpc                      cm5200_defconfig
-arc                           tb10x_defconfig
-m68k                         amcore_defconfig
-sh                           sh2007_defconfig
-powerpc                     skiroot_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                     kilauea_defconfig
-mips                        nlm_xlp_defconfig
-mips                  cavium_octeon_defconfig
-mips                     loongson1b_defconfig
-arm                           h3600_defconfig
-powerpc                     sequoia_defconfig
-sh                        sh7757lcr_defconfig
-arm                        spear3xx_defconfig
-arm                          moxart_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                       aspeed_g5_defconfig
-mips                        jmr3927_defconfig
-powerpc                  storcenter_defconfig
-sh                            shmin_defconfig
-mips                       rbtx49xx_defconfig
-arm                          exynos_defconfig
-arm                        neponset_defconfig
-arm                        oxnas_v6_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                    sam440ep_defconfig
-openrisc                         alldefconfig
-sh                             espt_defconfig
-arm                            xcep_defconfig
-sh                          rsk7269_defconfig
-powerpc                      obs600_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                             alldefconfig
-m68k                          atari_defconfig
-powerpc                     taishan_defconfig
-arm                         palmz72_defconfig
-powerpc                 mpc85xx_cds_defconfig
-riscv                            alldefconfig
-powerpc                      arches_defconfig
-powerpc                    gamecube_defconfig
-arm                          pxa3xx_defconfig
-mips                     cu1830-neo_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      katmai_defconfig
-arm                           spitz_defconfig
-powerpc                   currituck_defconfig
-powerpc                     redwood_defconfig
-arm                        shmobile_defconfig
-arm                         lubbock_defconfig
-arm                        vexpress_defconfig
-powerpc                     mpc512x_defconfig
-mips                          rm200_defconfig
-powerpc                    mvme5100_defconfig
-mips                             allmodconfig
-powerpc                        cell_defconfig
-arc                          axs103_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7264_defconfig
-powerpc                     asp8347_defconfig
-powerpc                        fsp2_defconfig
-arm                          ep93xx_defconfig
-powerpc                  iss476-smp_defconfig
-nios2                            alldefconfig
-arm                            mmp2_defconfig
-xtensa                    smp_lx200_defconfig
-arm                        cerfcube_defconfig
-mips                      maltaaprp_defconfig
-arm                          imote2_defconfig
-arm                            zeus_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      ep88xc_defconfig
-mips                     cu1000-neo_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                      acadia_defconfig
-powerpc                     ppa8548_defconfig
-nds32                               defconfig
-arm                       spear13xx_defconfig
-arm                          pxa168_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                        qi_lb60_defconfig
-arm                       versatile_defconfig
-powerpc                 canyonlands_defconfig
-arc                          axs101_defconfig
-powerpc                   motionpro_defconfig
-h8300                            alldefconfig
-m68k                        stmark2_defconfig
-sh                     magicpanelr2_defconfig
-arm                         lpc18xx_defconfig
-nds32                             allnoconfig
-ia64                                defconfig
-xtensa                           allyesconfig
-nios2                         3c120_defconfig
-m68k                       m5475evb_defconfig
-sh                           se7751_defconfig
-powerpc                          g5_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201103
-x86_64               randconfig-a005-20201103
-x86_64               randconfig-a003-20201103
-x86_64               randconfig-a002-20201103
-x86_64               randconfig-a006-20201103
-x86_64               randconfig-a001-20201103
-i386                 randconfig-a004-20201103
-i386                 randconfig-a006-20201103
-i386                 randconfig-a005-20201103
-i386                 randconfig-a001-20201103
-i386                 randconfig-a002-20201103
-i386                 randconfig-a003-20201103
-i386                 randconfig-a013-20201103
-i386                 randconfig-a015-20201103
-i386                 randconfig-a014-20201103
-i386                 randconfig-a016-20201103
-i386                 randconfig-a011-20201103
-i386                 randconfig-a012-20201103
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20201103
-x86_64               randconfig-a015-20201103
-x86_64               randconfig-a011-20201103
-x86_64               randconfig-a013-20201103
-x86_64               randconfig-a014-20201103
-x86_64               randconfig-a016-20201103
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
