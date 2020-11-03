@@ -2,222 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03BA2A3F55
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9562A3F13
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgKCIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCIwm (ORCPT
+        id S1727709AbgKCIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:39:23 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:64723 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726473AbgKCIjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:52:42 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD001C0613D1;
-        Tue,  3 Nov 2020 00:52:41 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i7so11214671pgh.6;
-        Tue, 03 Nov 2020 00:52:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0V9Eqsw0P/c1uqnmbZIL7sQkwkXO9ZRETLMblzJ8gw=;
-        b=mmHGeeOfpKkGy9BXLSA5CXBvj1YkjRIcKTdmituqmoxcsQkc/MaSlOf2gMGlU/PADh
-         z0P4HpgvC3s9CIiP3T8sJuahEWTNB3j9eogiQo+kqAMCK58eQDF80XcGc0o3vY3Jj3y+
-         cuBt8QUScSQu1vfWOef6m8SDoDvgfh7WbsKKIY01sRy56WhFWXMHqMjtIPeV88DCUHiU
-         ky5y36SyCraqGgjwSfb+c4mhqWQPOJsGNLzV30NYpqON3PeK9eSuDZKPkoWK+4bXmFUF
-         sF4GIKawTEPZ/wik8JHK/wxWqBJGVGa5SnHu0D7MzPKtJJVU4rj4O76awq5f5ZxTB0wG
-         6o2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0V9Eqsw0P/c1uqnmbZIL7sQkwkXO9ZRETLMblzJ8gw=;
-        b=eBRFSecLlF0uA8qKiuRvuBjed0gcev6/bnb62WQuR7jWHWIcAJbHaDbK9ey8fxAQ8r
-         OF5IcYcLrarvZ1B5M+H9f44CDMn2MeAL6mAxKCkqqEYvjjnv5XqX7JZllBXSMOeiYgpY
-         o7HfTIotObCaxudTjJPtm3+XJY2RYiHDPNELC1n9m3+oCfnkyX5gkLkqIUurZ/K2a6qk
-         Z/5bAVgWJYW63IFRATqQAHdlUiyTvJQ7ba+b7ODzns2XyDIGqqDMWP1rGV8zrMYYxs5i
-         pAdne5sYkZHfo4RMxE3O68TZwBsE83/gg5PnqBQ5xDN3zVx9MYOQs6KynOeFZJkEZUhT
-         ahvQ==
-X-Gm-Message-State: AOAM533bEsYdmlL8gA+bV002B8IE+L+jgXoYZV1ZvPM3MnqwxahjVl1O
-        LIbzRRsbERvkn6iF6FWj8gHDQlKHsanFN8s=
-X-Google-Smtp-Source: ABdhPJxcq5b+6l9ITRsWB1Ya1KrxYn9ZW+9/FYoZ0RkoB4msCHH1juevPLTgR45sRW2PGWSk75YCkg==
-X-Received: by 2002:a17:90b:384b:: with SMTP id nl11mr2799496pjb.126.1604393560956;
-        Tue, 03 Nov 2020 00:52:40 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id q13sm15978340pfg.3.2020.11.03.00.52.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Nov 2020 00:52:40 -0800 (PST)
-From:   lihaiwei.kernel@gmail.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH v5] KVM: Check the allocation of pv cpu mask
-Date:   Tue,  3 Nov 2020 16:52:27 +0800
-Message-Id: <20201103085227.25098-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 3 Nov 2020 03:39:23 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201103083917epoutp011c181c479aece8db30e711d18dfe89be~D8rZnbR2Q1604116041epoutp01V
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:39:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201103083917epoutp011c181c479aece8db30e711d18dfe89be~D8rZnbR2Q1604116041epoutp01V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604392757;
+        bh=TCglbtrz9ylc1A1k4fQu6XkccEIYziLd2hbXm0siW8M=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=aVJxIqZGfyPEkrIZi7wclFbCk+pOpskDODt3YD/Brejnd/58ZjKsM97QJglG0G6Gr
+         d2/z7LxtVmw3Zli+nXuctYC1fstI+631wgjz1UVDnwQAfzi7UJDPC2nnYVAfiMEFeb
+         zEejPBnpCIvQJ6VxYsBHkepkm5jev6Ly57vQlacA=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201103083917epcas1p3b7dab39a99f37907acf8dc0f9c844cbc~D8rZK-bM12788827888epcas1p3T;
+        Tue,  3 Nov 2020 08:39:17 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CQNVn2VjszMqYkl; Tue,  3 Nov
+        2020 08:39:13 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1D.A6.09577.13711AF5; Tue,  3 Nov 2020 17:39:13 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201103083912epcas1p45295a663daa3b70c7d3b3bad96fe1765~D8rVFgLxf2279722797epcas1p4H;
+        Tue,  3 Nov 2020 08:39:12 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201103083912epsmtrp1ba81ef1ab61f4c480e51b755f00af3d8~D8rVEk8ti1706017060epsmtrp1F;
+        Tue,  3 Nov 2020 08:39:12 +0000 (GMT)
+X-AuditID: b6c32a39-c13ff70000002569-1e-5fa11731c11a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E8.AD.13470.03711AF5; Tue,  3 Nov 2020 17:39:12 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103083912epsmtip11397afa1b3b125b491cf6e88a0d09db2~D8rUtGTFL0602506025epsmtip1G;
+        Tue,  3 Nov 2020 08:39:12 +0000 (GMT)
+Subject: Re: [PATCH v7 0/6] Exynos: Simple QoS for exynos-bus using
+ interconnect
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     krzk@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <3e3038da-d5de-7ea9-9cb9-082ce63af91d@samsung.com>
+Date:   Tue, 3 Nov 2020 17:53:10 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9285e2d4-f2fa-92f2-ba25-832f32f77d78@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHJsWRmVeSWpSXmKPExsWy7bCmrq6h+MJ4g5dtAhb357UyWmycsZ7V
+        Yv6Rc6wWV76+Z7OYvncTm8Wk+xNYLM6f38BucXnXHDaLz71HGC1mnN/HZLH2yF12i9uNK9gs
+        WvceYbc4/Kad1WLG5JdsDvwem1Z1snncubaHzeN+93Emj74tqxg9Pm+SC2CNyrbJSE1MSS1S
+        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMATpXSaEsMacUKBSQWFys
+        pG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCd8e3rY5aC39EV
+        1/+vZ21gXGXSxcjJISFgInF+Ww9rFyMXh5DADkaJ9zvvsoEkhAQ+MUrM70+BSHxjlFh3aT0r
+        TMf+h6eZIBJ7GSX2vt0B1f6eUeLThplgVcICQRJrJ7YzdjFycIgIREucO6MDUsMscJNJ4tGq
+        e2Ar2AS0JPa/uAFm8wsoSlz98ZgRxOYVsJO4c3cRmM0ioCLx4v5RsBpRgTCJk9taoGoEJU7O
+        fMICMp8TqP7gyWKQMLOAuMStJ/OZIGx5ie1v5zBDHH2BQ+LtBFUI20Vi95//UM8IS7w6voUd
+        wpaSeNnfBmVXS6w8eYQN5GYJgQ5GiS37L0A1GEvsXzqZCWQvs4CmxPpd+hBhRYmdv+cyQuzl
+        k3j3FRSkHEBxXomONiGIEmWJyw/uMkHYkhKL2zvZJjAqzULyzCwkH8xC8sEshGULGFlWMYql
+        FhTnpqcWGxaYIsf1JkZwQtay3ME4/e0HvUOMTByMhxglOJiVRHhrIufFC/GmJFZWpRblxxeV
+        5qQWH2I0BQbvRGYp0eR8YE7IK4k3NDUyNja2MDE0MzU0VBLn/aPdES8kkJ5YkpqdmlqQWgTT
+        x8TBKdXAZC768/mOPxqr61sCD/xf43SmmDdN/v30uS848/8tFZGSf/rwRMDLXZvUlIq8xf+t
+        OfioWMaEIWCTnjq3sw3ng1fzDq1VOa6SbFKXr2LDYN52WWRhYobS2+1f0ubI528uKDeUWZ37
+        fVegenVHgmrkytXn9szJMN698155Tb2jnPut3hvB2Z67mK9u8l06vY5p17IXV87sn2BSLdei
+        Pu+Uxf/4if9WRN8/HX9IaJNxf7FNgbCefmNA1Jz37su9xbf5abWIscW2dqcw/xA4lS2RU6nc
+        m9vTvvMi8/ugW/vce7adS95uW54pa7bm0Wd/VvutjGmilZ4zI0SjD+dPmB8p1Ou4/FXuNZW1
+        /PftbyxQYinOSDTUYi4qTgQAOrGY41EEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWy7bCSnK6B+MJ4g+Zrchb357UyWmycsZ7V
+        Yv6Rc6wWV76+Z7OYvncTm8Wk+xNYLM6f38BucXnXHDaLz71HGC1mnN/HZLH2yF12i9uNK9gs
+        WvceYbc4/Kad1WLG5JdsDvwem1Z1snncubaHzeN+93Emj74tqxg9Pm+SC2CN4rJJSc3JLEst
+        0rdL4Mr49vUxS8Hv6Irr/9ezNjCuMuli5OSQEDCR2P/wNFMXIxeHkMBuRolr96cxQSQkJaZd
+        PMrcxcgBZAtLHD5cDFHzllGiYeJNsBphgSCJtRPbGUFsEYFoiX/PzoLZzAI3mSQubvGAaPjO
+        KDH173VWkASbgJbE/hc32EBsfgFFias/HoM18ArYSdy5uwjMZhFQkXhx/yhYjahAmMTOJY+Z
+        IGoEJU7OfMICchAnUP3Bk8UQu9Ql/sy7xAxhi0vcejKfCcKWl9j+dg7zBEbhWUi6ZyFpmYWk
+        ZRaSlgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYKjU0tzB+P2VR/0DjEycTAe
+        YpTgYFYS4a2JnBcvxJuSWFmVWpQfX1Sak1p8iFGag0VJnPdG4cI4IYH0xJLU7NTUgtQimCwT
+        B6dUA9PpbNtDHp/8tRlF6uVmfsm7YSZYsC1MP7zvhPzslp4FNaYrpmf9PHXKXilazZt9Sf3e
+        swvzX9VsO6/Y1bJB22/hIlkf+w1+0pmVDG4+WdMjb7fYr/eOM3ScHnW4dcqy2Jz6PzP9XR/F
+        vSy6Jx65bwnP8V1/z9nNn6dnGGhg4rBQ56TUERnX2Ci7cOf51++v6Aw9taLs/bdi7p1S3ZGd
+        09kkhG0VG/WvpCg+XXHrk17dMofkYKVXf4PXfmK7e+IVu+qbjZ7sq78+fcv/4clWlniJ7JjQ
+        xtDyXwyc+m2GVxifuDIsEfjMlBz4WtK9Z/6/042HA0xnnPnnPfHu5c2bdp3ss0vWiRY9ntDy
+        9w+vqxJLcUaioRZzUXEiAJnPXcA9AwAA
+X-CMS-MailID: 20201103083912epcas1p45295a663daa3b70c7d3b3bad96fe1765
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201030125221eucas1p14e525f75c4b8dadae04144ce7684d776
+References: <CGME20201030125221eucas1p14e525f75c4b8dadae04144ce7684d776@eucas1p1.samsung.com>
+        <20201030125149.8227-1-s.nawrocki@samsung.com>
+        <b586c2b7-9ca1-e641-b70c-27493ffd05e0@samsung.com>
+        <9285e2d4-f2fa-92f2-ba25-832f32f77d78@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+Hi Georgi,
 
-Both 'kvm_send_ipi_mask_allbutself' and 'kvm_flush_tlb_others' are using
-per-cpu __pv_cpu_mask. Init pv ipi ops only if the allocation succeeds and
-check the cpumask in 'kvm_flush_tlb_others'.
+On 11/3/20 5:29 PM, Georgi Djakov wrote:
+> Hi Chanwoo and Sylwester,
+> 
+> On 11/3/20 09:54, Chanwoo Choi wrote:
+>> Hi Sylwester,
+>>
+>> When I tested this patchset on Odroid-U3,
+>> After setting 0 bps by interconnect[1][2],
+>> the frequency of devfreq devs sustain the high frequency
+>> according to the pm qos request.
+>>
+>> So, I try to find the cause of this situation.
+>> In result, it seems that interconnect exynos driver
+>> updates the pm qos request to devfreq device
+>> during the kernel booting. Do you know why the exynos
+>> interconnect driver request the pm qos during probe
+>> without the mixer request?
+> 
+> That's probably because of the sync_state support, that was introduced
+> recently. The icc_sync_state callback needs to be added to the driver
+> (i just left a comment on that patch), and then check again if it works.
+> 
+> The idea of the sync_state is that there could be multiple users of a
+> path and we must wait for all consumers to tell their bandwidth needs.
+> Otherwise the first consumer may lower the bandwidth or disable a path
+> needed for another consumer (driver), which has not probed yet. So we
+> maintain a floor bandwidth until everyone has probed. By default the floor
+> bandwidth is INT_MAX, but can be overridden by implementing the get_bw()
+> callback.
 
-Thanks to Vitaly Kuznetsov's tireless advice.
+Thanks for guide. I tested it with your comment of patch2.
+It is well working without problem as I mentioned previously.
 
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
----
-v1 -> v2:
- * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
-v2 -> v3:
- * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
-v3 -> v4:
- * mov kvm_setup_pv_ipi to kvm_alloc_cpumask and get rid of kvm_apic_init
-v4 -> v5:
- * remove kvm_apic_init as an empty function
- * define pv_ipi_supported() in !CONFIG_SMP case as 'false' to get rid of
- 'alloc' variable
- * move kvm_setup_pv_ipi and define the implementation in CONFIG_SMP
+I caught the reset operation of PM QoS requested from interconnect
+on kernel log. In result, after completed the kernel booting,
+there is no pm qos request if hdmi cable is not connected.
 
- arch/x86/kernel/kvm.c | 75 +++++++++++++++++++++++++------------------
- 1 file changed, 44 insertions(+), 31 deletions(-)
+[Test Result]
+1. Set 622080 Bps with HDMI cable
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 42c6e0deff9e..2f2cc25d5078 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -547,16 +547,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
- 	__send_ipi_mask(local_mask, vector);
- }
- 
--/*
-- * Set the IPI entry points
-- */
--static void kvm_setup_pv_ipi(void)
--{
--	apic->send_IPI_mask = kvm_send_ipi_mask;
--	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
--	pr_info("setup PV IPIs\n");
--}
--
- static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
- {
- 	int cpu;
-@@ -609,7 +599,24 @@ static int kvm_cpu_down_prepare(unsigned int cpu)
- 	local_irq_enable();
- 	return 0;
- }
-+#else
-+static bool pv_ipi_supported(void)
-+{
-+	return false;
-+}
-+#endif
-+
-+/*
-+ * Set the IPI entry points
-+ */
-+static void kvm_setup_pv_ipi(void)
-+{
-+#if defined(CONFIG_SMP)
-+	apic->send_IPI_mask = kvm_send_ipi_mask;
-+	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
-+	pr_info("setup PV IPIs\n");
- #endif
-+}
- 
- static void kvm_flush_tlb_others(const struct cpumask *cpumask,
- 			const struct flush_tlb_info *info)
-@@ -619,6 +626,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
- 	struct kvm_steal_time *src;
- 	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
- 
-+	if (unlikely(!flushmask)) {
-+		native_flush_tlb_others(cpumask, info);
-+		return;
-+	}
-+
- 	cpumask_copy(flushmask, cpumask);
- 	/*
- 	 * We have to call flush only on online vCPUs. And
-@@ -730,18 +742,9 @@ static uint32_t __init kvm_detect(void)
- 	return kvm_cpuid_base();
- }
- 
--static void __init kvm_apic_init(void)
--{
--#if defined(CONFIG_SMP)
--	if (pv_ipi_supported())
--		kvm_setup_pv_ipi();
--#endif
--}
--
- static void __init kvm_init_platform(void)
- {
- 	kvmclock_init();
--	x86_platform.apic_post_init = kvm_apic_init;
- }
- 
- const __initconst struct hypervisor_x86 x86_hyper_kvm = {
-@@ -765,29 +768,39 @@ static __init int activate_jump_labels(void)
- }
- arch_initcall(activate_jump_labels);
- 
-+static void kvm_free_cpumask(void)
-+{
-+	unsigned int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
-+}
-+
- static __init int kvm_alloc_cpumask(void)
- {
- 	int cpu;
--	bool alloc = false;
- 
- 	if (!kvm_para_available() || nopv)
- 		return 0;
- 
--	if (pv_tlb_flush_supported())
--		alloc = true;
--
--#if defined(CONFIG_SMP)
--	if (pv_ipi_supported())
--		alloc = true;
--#endif
--
--	if (alloc)
-+	if (pv_tlb_flush_supported() || pv_ipi_supported()) {
- 		for_each_possible_cpu(cpu) {
--			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
--				GFP_KERNEL, cpu_to_node(cpu));
-+			if (!zalloc_cpumask_var_node(
-+				per_cpu_ptr(&__pv_cpu_mask, cpu),
-+				GFP_KERNEL, cpu_to_node(cpu))) {
-+				goto zalloc_cpumask_fail;
-+			}
- 		}
-+	}
-+
-+	if (pv_ipi_supported())
-+		kvm_setup_pv_ipi();
- 
- 	return 0;
-+
-+zalloc_cpumask_fail:
-+	kvm_free_cpumask();
-+	return -ENOMEM;
- }
- arch_initcall(kvm_alloc_cpumask);
- 
+root@localhost:~# cat /sys/kernel/debug/devfreq/devfreq_summary;
+dev                            parent_dev                     governor        timer      polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
+------------------------------ ------------------------------ --------------- ---------- ---------- ------------ ------------ ------------
+soc:bus_dmc                    null                           simple_ondemand deferrable         50    400000000    155520000    400000000
+soc:bus_acp                    soc:bus_dmc                    passive         null                0    267000000    100000000    267000000
+soc:bus_c2c                    soc:bus_dmc                    passive         null                0    400000000    100000000    400000000
+soc:bus_leftbus                null                           simple_ondemand deferrable         50    200000000    100000000    200000000
+soc:bus_rightbus               soc:bus_leftbus                passive         null                0    200000000    100000000    200000000
+soc:bus_display                soc:bus_leftbus                passive         null                0    200000000    160000000    200000000
+soc:bus_fsys                   soc:bus_leftbus                passive         null                0    134000000    100000000    134000000
+soc:bus_peri                   soc:bus_leftbus                passive         null                0    100000000     50000000    100000000
+soc:bus_mfc                    soc:bus_leftbus                passive         null                0    200000000    100000000    200000000
+root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_graph;
+digraph {
+        rankdir = LR
+        node [shape = record]
+        subgraph cluster_1 {
+                label = "soc:bus_dmc"
+                "2:bus_dmc" [label="2:bus_dmc
+                        |avg_bw=622080kBps
+                        |peak_bw=622080kBps"]
+        }
+        subgraph cluster_2 {
+                label = "soc:bus_leftbus"
+                "3:bus_leftbus" [label="3:bus_leftbus
+                        |avg_bw=622080kBps
+                        |peak_bw=622080kBps"]
+        }
+        subgraph cluster_3 {
+                label = "soc:bus_display"
+                "4:bus_display" [label="4:bus_display
+                        |avg_bw=622080kBps
+                        |peak_bw=622080kBps"]
+        }
+        "3:bus_leftbus" -> "2:bus_dmc"
+        "4:bus_display" -> "3:bus_leftbus"
+}root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_summary;
+ node                                  tag          avg         peak
+--------------------------------------------------------------------
+bus_dmc                                          622080       622080
+  12c10000.mixer                         0       622080       622080
+bus_leftbus                                      622080       622080
+  12c10000.mixer                         0       622080       622080
+bus_display                                      622080       622080
+  12c10000.mixer                         0       622080       622080
+
+
+
+2. Set 0Bps without HDMI cable
+root@localhost:~# cat /sys/kernel/debug/devfreq/devfreq_summary;
+dev                            parent_dev                     governor        timer      polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
+------------------------------ ------------------------------ --------------- ---------- ---------- ------------ ------------ ------------
+soc:bus_dmc                    null                           simple_ondemand deferrable         50    100000000    100000000    400000000
+soc:bus_acp                    soc:bus_dmc                    passive         null                0    100000000    100000000    267000000
+soc:bus_c2c                    soc:bus_dmc                    passive         null                0    100000000    100000000    400000000
+soc:bus_leftbus                null                           simple_ondemand deferrable         50    100000000    100000000    200000000
+soc:bus_rightbus               soc:bus_leftbus                passive         null                0    100000000    100000000    200000000
+soc:bus_display                soc:bus_leftbus                passive         null                0    160000000    160000000    200000000
+soc:bus_fsys                   soc:bus_leftbus                passive         null                0    100000000    100000000    134000000
+soc:bus_peri                   soc:bus_leftbus                passive         null                0     50000000     50000000    100000000
+soc:bus_mfc                    soc:bus_leftbus                passive         null                0    100000000    100000000    200000000
+root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_graph;
+digraph {
+        rankdir = LR
+        node [shape = record]
+        subgraph cluster_1 {
+                label = "soc:bus_dmc"
+                "2:bus_dmc" [label="2:bus_dmc
+                        |avg_bw=0kBps
+                        |peak_bw=0kBps"]
+        }
+        subgraph cluster_2 {
+                label = "soc:bus_leftbus"
+                "3:bus_leftbus" [label="3:bus_leftbus
+                        |avg_bw=0kBps
+                        |peak_bw=0kBps"]
+        }
+        subgraph cluster_3 {
+                label = "soc:bus_display"
+                "4:bus_display" [label="4:bus_display
+                        |avg_bw=0kBps
+                        |peak_bw=0kBps"]
+        }
+        "3:bus_leftbus" -> "2:bus_dmc"
+        "4:bus_display" -> "3:bus_leftbus"
+}root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_summary;
+ node                                  tag          avg         peak
+--------------------------------------------------------------------
+bus_dmc                                               0            0
+  12c10000.mixer                         0            0            0
+bus_leftbus                                           0            0
+  12c10000.mixer                         0            0            0
+bus_display                                           0            0
+  12c10000.mixer                         0            0            0
+
+
+Thanks,
+Chanwoo Choi
+
+> 
+> Thanks,
+> Georgi
+> 
+>>
+>> PS. The passive governor has a bug related to PM_QOS interface.
+>> So, I posted the patch[4].
+>>
+>>
+>> [1] interconnect_graph
+>> root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_graph 
+>> digraph {
+>>         rankdir = LR
+>>         node [shape = record]
+>>         subgraph cluster_1 {
+>>                 label = "soc:bus_dmc"
+>>                 "2:bus_dmc" [label="2:bus_dmc
+>>                         |avg_bw=0kBps
+>>                         |peak_bw=0kBps"]
+>>         }
+>>         subgraph cluster_2 {
+>>                 label = "soc:bus_leftbus"
+>>                 "3:bus_leftbus" [label="3:bus_leftbus
+>>                         |avg_bw=0kBps
+>>                         |peak_bw=0kBps"]
+>>         }
+>>         subgraph cluster_3 {
+>>                 label = "soc:bus_display"
+>>                 "4:bus_display" [label="4:bus_display
+>>                         |avg_bw=0kBps
+>>                         |peak_bw=0kBps"]
+>>         }
+>>         "3:bus_leftbus" -> "2:bus_dmc"
+>>         "4:bus_display" -> "3:bus_leftbus"
+>>
+>>
+>> [2] interconnect_summary
+>> root@localhost:~# cat /sys/kernel/debug/interconnect/interconnect_summary 
+>>  node                                  tag          avg         peak
+>> --------------------------------------------------------------------
+>> bus_dmc                                               0            0
+>>   12c10000.mixer                         0            0            0
+>> bus_leftbus                                           0            0
+>>   12c10000.mixer                         0            0            0
+>> bus_display                                           0            0
+>>   12c10000.mixer                         0            0            0
+>>
+>>
+>> [3] devfreq_summary
+>> root@localhost:~# cat /sys/kernel/debug/devfreq/devfreq_summary 
+>> dev                            parent_dev                     governor        timer      polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
+>> ------------------------------ ------------------------------ --------------- ---------- ---------- ------------ ------------ ------------
+>> soc:bus_dmc                    null                           simple_ondemand deferrable         50    400000000    400000000    400000000
+>> soc:bus_acp                    soc:bus_dmc                    passive         null                0    267000000    100000000    267000000
+>> soc:bus_c2c                    soc:bus_dmc                    passive         null                0    400000000    100000000    400000000
+>> soc:bus_leftbus                null                           simple_ondemand deferrable         50    200000000    200000000    200000000
+>> soc:bus_rightbus               soc:bus_leftbus                passive         null                0    200000000    100000000    200000000
+>> soc:bus_display                soc:bus_leftbus                passive         null                0    200000000    200000000    200000000
+>> soc:bus_fsys                   soc:bus_leftbus                passive         null                0    134000000    100000000    134000000
+>> soc:bus_peri                   soc:bus_leftbus                passive         null                0    100000000     50000000    100000000
+>> soc:bus_mfc                    soc:bus_leftbus                passive         null                0    200000000    100000000    200000000
+>>
+>>
+>> [4] PM / devfreq: passive: Update frequency when start governor
+>> https://patchwork.kernel.org/project/linux-pm/patch/20201103070646.18687-1-cw00.choi@samsung.com/
+>>
+>>
+> 
+> 
+
+
 -- 
-2.18.4
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
