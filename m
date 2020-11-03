@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E34F2A43B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFF92A43C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgKCLIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727709AbgKCLIS (ORCPT
+        id S1728218AbgKCLJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:09:17 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7581 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCLJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:08:18 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B81C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 03:08:18 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id 141so21597864lfn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 03:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0sEXlBoxnDPWC0PSImx6b45EW/XdSxvl0dskuufPCkM=;
-        b=DDGsed/rnR9bezm8l99j+eaiR9Ng8+VD49bJiK1NAcb13ryZua3eiHNJkEUJYM7q4q
-         zCCEua4OxygsHhj1XVYFclEnvfs8dtk8HZUq1aa2fKeCC1ivOtLxqOefmDgSGp9oFlOr
-         hAWnMoFYPcy6/inHtPYp6y+Ll+sbonCF0KjG6nyml+YxQJr6IbSjcrdNbOQkutO8NxkL
-         FEkF/0STPopqzOAi1pVyuF642sMpo4gqoXWfJTZgyjNsKfE0QyHjFu93yXEkV6QK5fCs
-         LXCWy6h56hyXQaKhqHUvZP6L632PtDIPp/Z07qwJ3b4T1YdUnIRaKCRJ/6v0LV3pGdBe
-         QkXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0sEXlBoxnDPWC0PSImx6b45EW/XdSxvl0dskuufPCkM=;
-        b=HPoxe2DgKucJT7MDGdEFeQ9wE2ByiidnP/McAZDTED5sEtu5aOEg1AgggRZWPanJ84
-         24i+lw97CEjbRyV12+i40u/65mwzTECJXJcewShM1pM0Vn4/Y0zciIgcq/hOdhdVs11D
-         SmuhyS8g+SFAE6tZwEYDi0Otyg96SB0AlkM1wd5LcXk3UT3fQaooTnOB1KYFH+9qD7u1
-         FumSta+/9680knTE1Pw36hWWNCqRc1UNx0aCqETIKuPmg+6rig8VWVTlku6ToGIgrxUj
-         86WasSFXJ1qJE1xnA4mzu1rhJuWAc5LGhefkRl2VWB8r0ci1PiS7AI+Ao2uTsXEI3Gqr
-         3OOw==
-X-Gm-Message-State: AOAM531S07BJX/DvReVWwJ/ADOFj5dgaZ0QFzpWS6XZy3ucvTRScVyJs
-        rkiOh8+beYyhwjT3Lo/ybTbR2Q==
-X-Google-Smtp-Source: ABdhPJzAyrukqGQuCxp2/NOEVoOC9ZkivmVdXf94z98OJ3dGsVtTaaSEH+8Z/YJLbxgkwYbzErDtUQ==
-X-Received: by 2002:a19:c187:: with SMTP id r129mr8047701lff.533.1604401696649;
-        Tue, 03 Nov 2020 03:08:16 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id w9sm4094835ljh.95.2020.11.03.03.08.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 03:08:15 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id B845910231C; Tue,  3 Nov 2020 14:08:16 +0300 (+03)
-Date:   Tue, 3 Nov 2020 14:08:16 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v3 2/4] PM: hibernate: make direct map manipulations more
- explicit
-Message-ID: <20201103110816.t6a3ebtgcm7mfogy@box>
-References: <20201101170815.9795-1-rppt@kernel.org>
- <20201101170815.9795-3-rppt@kernel.org>
+        Tue, 3 Nov 2020 06:09:16 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CQRqm0QTfzLqkX;
+        Tue,  3 Nov 2020 19:09:08 +0800 (CST)
+Received: from [10.174.179.62] (10.174.179.62) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 19:09:02 +0800
+Subject: Re: [PATCH] fsl/fman: add missing put_devcie() call in
+ fman_port_probe()
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <madalin.bucur@nxp.com>, <davem@davemloft.net>,
+        <florinel.iordache@nxp.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20201031105418.2304011-1-yukuai3@huawei.com>
+ <20201102173041.7624b7fb@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <cf2e0c7c-ba3e-b04f-488d-4dd0fcb81f7a@huawei.com>
+Date:   Tue, 3 Nov 2020 19:09:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101170815.9795-3-rppt@kernel.org>
+In-Reply-To: <20201102173041.7624b7fb@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.62]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 07:08:13PM +0200, Mike Rapoport wrote:
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index 46b1804c1ddf..054c8cce4236 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -76,6 +76,32 @@ static inline void hibernate_restore_protect_page(void *page_address) {}
->  static inline void hibernate_restore_unprotect_page(void *page_address) {}
->  #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
->  
-> +static inline void hibernate_map_page(struct page *page, int enable)
-> +{
-> +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
-> +		unsigned long addr = (unsigned long)page_address(page);
-> +		int ret;
-> +
-> +		/*
-> +		 * This should not fail because remapping a page here means
-> +		 * that we only update protection bits in an existing PTE.
-> +		 * It is still worth to have WARN_ON() here if something
-> +		 * changes and this will no longer be the case.
-> +		 */
-> +		if (enable)
-> +			ret = set_direct_map_default_noflush(page);
-> +		else
-> +			ret = set_direct_map_invalid_noflush(page);
-> +
-> +		if (WARN_ON(ret))
 
-_ONCE?
-> +			return;
-> +
-> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> +	} else {
-> +		debug_pagealloc_map_pages(page, 1, enable);
-> +	}
-> +}
-> +
->  static int swsusp_page_is_free(struct page *);
->  static void swsusp_set_page_forbidden(struct page *);
->  static void swsusp_unset_page_forbidden(struct page *);
+On 2020/11/03 9:30, Jakub Kicinski wrote:
+> On Sat, 31 Oct 2020 18:54:18 +0800 Yu Kuai wrote:
+>> if of_find_device_by_node() succeed, fman_port_probe() doesn't have a
+>> corresponding put_device(). Thus add jump target to fix the exception
+>> handling for this function implementation.
+>>
+>> Fixes: 0572054617f3 ("fsl/fman: fix dereference null return value")
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+>> diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c b/drivers/net/ethernet/freescale/fman/fman_port.c
+>> index d9baac0dbc7d..576ce6df3fce 100644
+>> --- a/drivers/net/ethernet/freescale/fman/fman_port.c
+>> +++ b/drivers/net/ethernet/freescale/fman/fman_port.c
+>> @@ -1799,13 +1799,13 @@ static int fman_port_probe(struct platform_device *of_dev)
+>>   	of_node_put(fm_node);
+>>   	if (!fm_pdev) {
+>>   		err = -EINVAL;
+>> -		goto return_err;
+>> +		goto put_device;
+>>   	}
+> 
+>> @@ -1898,6 +1898,8 @@ static int fman_port_probe(struct platform_device *of_dev)
+>>   
+>>   return_err:
+>>   	of_node_put(port_node);
+>> +put_device:
+>> +	put_device(&fm_pdev->dev);
+>>   free_port:
+>>   	kfree(port);
+>>   	return err;
+> 
+> This does not look right. You're jumping to put_device() when fm_pdev
+> is NULL?
+> 
+Hi,
 
--- 
- Kirill A. Shutemov
+oops, it's a silly mistake. Will fix it in V2 patch.
+
+Thanks,
+Yu Kuai
+
+> The order of error handling should be the reverse of the order of
+> execution of the function.
+> .
+> 
