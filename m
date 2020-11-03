@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8FD2A4584
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987952A458F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgKCMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:47:13 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37968 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728730AbgKCMrN (ORCPT
+        id S1728730AbgKCMuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:50:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726388AbgKCMuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:47:13 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Cl5BB084289;
-        Tue, 3 Nov 2020 06:47:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604407625;
-        bh=7nU52jDNskuCFoByT3d/IVtGXinvA+e6Q9ImtTKXrqQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=kUrtmRA0ut7UInOUh0yEAfREvbkPL9LcL9ghEVEZVE+ftKEKf77G+XZR+b3jyjZX5
-         klTIjiuCLxfJfAOaAUqkRI75K3Zh8nK0V9UmyzliUDiuGKAHMZVa1SdplMz6wJH6y7
-         rT+7V+tkdRRfi8KcpW1QFIyxkAybCB0hmNuNIwAM=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3Cl5JL061364
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 06:47:05 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 06:47:04 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 06:47:04 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Cl4xG040830;
-        Tue, 3 Nov 2020 06:47:04 -0600
-Date:   Tue, 3 Nov 2020 18:17:03 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Richard Weinberger <richard@nod.at>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] UBI: Do not zero out EC and VID when multi-pass
- writes are not supported
-Message-ID: <20201103124701.xgjomxzemhnczqhw@ti.com>
-References: <20201012180404.6476-1-p.yadav@ti.com>
- <20201012180404.6476-3-p.yadav@ti.com>
- <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
- <782317824.260495.1604404771008.JavaMail.zimbra@nod.at>
+        Tue, 3 Nov 2020 07:50:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604407844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=czYSHEkJZRKBHJc6+H3B9w8RmjDMKNgYyM8LaMqolZw=;
+        b=VMsEE6Y1zplAdZk7YralgLB5F1aOY65et04JnOngvOJSf9ocAandXhEcmmFWSM/68/yzG6
+        G2xGRywXTuWACnzWV20St/YTNkD5I25Rxxf48IhDOorAP0jsbazYlAxdg7bQKCMiSBnq2z
+        qMsNgN2mQWUUwTSoPTSbzNJfhQY6VzE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-8apJzIFdN-egZ6oA7GB6Hw-1; Tue, 03 Nov 2020 07:50:41 -0500
+X-MC-Unique: 8apJzIFdN-egZ6oA7GB6Hw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFC81106C10A;
+        Tue,  3 Nov 2020 12:50:38 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.6])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CF925672C0;
+        Tue,  3 Nov 2020 12:50:35 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  3 Nov 2020 13:50:38 +0100 (CET)
+Date:   Tue, 3 Nov 2020 13:50:34 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Mark Mossberg <mark.mossberg@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com, jannh@google.com,
+        kyin@redhat.com
+Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
+ error message
+Message-ID: <20201103125034.GA30391@redhat.com>
+References: <20201002042915.403558-1-mark.mossberg@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <782317824.260495.1604404771008.JavaMail.zimbra@nod.at>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201002042915.403558-1-mark.mossberg@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/20 12:59PM, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
-> > Von: "Vignesh Raghavendra" <vigneshr@ti.com>
-> >
-> > You may want to get rid of assertion for mtd->writesize != 1 in case of
-> > MTD_NORFLASH.
+On 10/02, Mark Mossberg wrote:
+>
+> Printing "Bad RIP value" if copy_code() fails can be misleading for
+> userspace pointers, since copy_code() can fail if the instruction
+> pointer is valid, but the code is paged out.
+
+Another problem is that show_opcodes() makes no sense if user_mode(regs)
+and tsk is not current. Try "echo t > /proc/sysrq-trigger".
+
+In this case copy_from_user_nmi() will either fail, or (worse) it will
+read the "random" memory from current->mm.
+
+Perhaps we can add something like
+
+	if (user_mode(regs) && regs != task_pt_regs(current))
+		return;
+
+at the start of show_opcodes() ?
+
+> --- a/arch/x86/kernel/dumpstack.c
+> +++ b/arch/x86/kernel/dumpstack.c
+> @@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+>  	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
+>  
+>  	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+> -		printk("%sCode: Bad RIP value.\n", loglvl);
+> +		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
+> +		       loglvl, prologue);
+>  	} else {
+>  		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+>  		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
+> -- 
+> 2.25.1
 > 
-> Agreed. I hope nothing else breaks if NOR has suddenly a writesize >= 1.
 
-Please see my response on the cover letter which explains why I think 
-setting mtd->writesize = nor->page_size is wrong.
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
