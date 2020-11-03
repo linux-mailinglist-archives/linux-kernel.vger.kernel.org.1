@@ -2,137 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A52A2A4346
+	by mail.lfdr.de (Postfix) with ESMTP id 8778E2A4347
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgKCKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:38:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbgKCKiP (ORCPT
+        id S1728243AbgKCKii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:38:38 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41755 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728150AbgKCKii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:38:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604399894;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZK7kTdSBJkhWYXO+It5JpZizMtRKkiDqlX6IiABWQ7I=;
-        b=a2b0PFcFMHydRjAYBRRLKvuAgUExc6OaEVtNniEa4OI23RQYiQs10jO7bq0Z88346+lJoD
-        fhrDweHW2KHYWtwL3BFcBFalfsn7zV087SuJZDu99RoiBv/mNsde5DrPf+iIzvY+sCPcTy
-        cnruR8Yn5EJ1jF0icfcUG+ttjVxbi7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-kGyoSPjNOa2bGC08sRRHMw-1; Tue, 03 Nov 2020 05:38:10 -0500
-X-MC-Unique: kGyoSPjNOa2bGC08sRRHMw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04E471009E3F;
-        Tue,  3 Nov 2020 10:38:08 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B3DD4747C6;
-        Tue,  3 Nov 2020 10:38:04 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, "H.J. Lu" <hjl.tools@gmail.com>
-Subject: Re: [PATCH 2/4] elf: Move note processing after l_phdr is updated
- [BZ #26831]
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
-        <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
-Date:   Tue, 03 Nov 2020 11:38:03 +0100
-In-Reply-To: <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
-        (Szabolcs Nagy's message of "Tue, 3 Nov 2020 10:26:18 +0000")
-Message-ID: <87r1pabu9g.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 3 Nov 2020 05:38:38 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CD78FB58;
+        Tue,  3 Nov 2020 05:38:36 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 03 Nov 2020 05:38:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=MX0g5U1cLJF88fJdoeBP1gFRJoo
+        WD/MUJDmMlQmqW5U=; b=J5GCTTi8WvYIEA706yNjNF4nrkuOrRV+jrSTG0Fy5ik
+        AOHfX3wvvRDXKpbElyk7cYysGU455VWMDQhXbn+20s+tK6H3vJR1wrh+9Hgq6XbA
+        K5YXuaWK34yxh9vDULhkptZwkKtC5dbWZRXMPXJ0hRdi6YA1eaev3zNzI8/mOpvT
+        LZ/UMvgx3K0Q5yJq6wV+Pf9ANtkgqAjzu6v4v8nqU90dM7Y80GoXFb9KV/y9E+6S
+        w9OfMsjSsmc7p/m6Hlow1JYZSofOjK+bkB9CRAIQZux3Wor52+U305PVo2/C/2rN
+        0ao5Un0dgxhTjGBGLz5KCEZQStInnQfWtVV0z0S51aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=MX0g5U
+        1cLJF88fJdoeBP1gFRJooWD/MUJDmMlQmqW5U=; b=cDny/sPlEVLhEnHkenX0io
+        BRLscEMIsxcOGlmvpCJ8IY8ZRbPUN6EQz506awE5vTCwHHvusJBC48TYnTf0vhWm
+        9MtDgT6eeME1MXyFsMI2Wmx4RSlpMvFhEk394Uuu26IIRmq1vsSx9f34AWi9O+kV
+        m8UdoMef4LtaLGkUlTST6qykCqW2xtY3CDmIPDB1OXjXaWa4kMi6XCorqvfsfd6H
+        HgwZZu3p5SJHFtazlQm5a7jgR1fM0H6WDJiDwdmTkXJwF0zG9H58uAuz1VuGI+EL
+        UVtptkatTZ3GUvyXDmfQG4Kosw7N/gErUNG1QFGxfm/mEwPjRr3qNgKIt8v47ZSw
+        ==
+X-ME-Sender: <xms:KjOhX0vKyXsryc8W0g1abrX-DDmMkNatWtSCUXVDHGb4TPLxIY0cWw>
+    <xme:KjOhXxegxM9EmmzdObNDhK-qSxCpOBcbniHrlC0tTKjKNvJ93EkaEzXK6tLWNTn1V
+    a4k9Cx3kPQ2kTeJZXk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtfedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:KjOhX_wrIZ1tV-ddEqp06VH5aDCbk8RwCSh3ET0vdh9ic6auMfNbQg>
+    <xmx:KjOhX3OO1w1zMYxcehamRv7e138gCer8sT_7kRs23sJOPd3vXObXpQ>
+    <xmx:KjOhX0-9Ctc0eY2tstaXvf622zQcggocyLDAzaGW9VbNCa8l5THdyg>
+    <xmx:LDOhX4aaOJ51ffBzpmJH2MKUslIcHldHTGv7EDd7JWgfW7cGQENxrQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7B1BD328005A;
+        Tue,  3 Nov 2020 05:38:34 -0500 (EST)
+Date:   Tue, 3 Nov 2020 11:38:32 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Tian Tao <tiantao6@hisilicon.com>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+Message-ID: <20201103103832.gwjqf4urrn5y7zk5@gilmour.lan>
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+ <20201103095205.ywabphbc2xbop6ae@gilmour.lan>
+ <f89640fb-6994-76dc-7862-a3b26b67dc24@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oeooz33tgxv72ou6"
+Content-Disposition: inline
+In-Reply-To: <f89640fb-6994-76dc-7862-a3b26b67dc24@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Szabolcs Nagy:
 
-> Program headers are processed in two pass: after the first pass
-> load segments are mmapped so in the second pass target specific
-> note processing logic can access the notes.
->
-> The second pass is moved later so various link_map fields are
-> set up that may be useful for note processing such as l_phdr.
-> ---
->  elf/dl-load.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/elf/dl-load.c b/elf/dl-load.c
-> index ceaab7f18e..673cf960a0 100644
-> --- a/elf/dl-load.c
-> +++ b/elf/dl-load.c
-> @@ -1259,21 +1259,6 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
->  				  maplength, has_holes, loader);
->      if (__glibc_unlikely (errstring != NULL))
->        goto call_lose;
-> -
-> -    /* Process program headers again after load segments are mapped in
-> -       case processing requires accessing those segments.  Scan program
-> -       headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
-> -       exits.  */
-> -    for (ph = &phdr[l->l_phnum]; ph != phdr; --ph)
-> -      switch (ph[-1].p_type)
-> -	{
-> -	case PT_NOTE:
-> -	  _dl_process_pt_note (l, fd, &ph[-1]);
-> -	  break;
-> -	case PT_GNU_PROPERTY:
-> -	  _dl_process_pt_gnu_property (l, fd, &ph[-1]);
-> -	  break;
-> -	}
->    }
->  
->    if (l->l_ld == 0)
-> @@ -1481,6 +1466,21 @@ cannot enable executable stack as shared object requires");
->      /* Assign the next available module ID.  */
->      l->l_tls_modid = _dl_next_tls_modid ();
->  
-> +  /* Process program headers again after load segments are mapped in
-> +     case processing requires accessing those segments.  Scan program
-> +     headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
-> +     exits.  */
-> +  for (ph = &l->l_phdr[l->l_phnum]; ph != l->l_phdr; --ph)
-> +    switch (ph[-1].p_type)
-> +      {
-> +      case PT_NOTE:
-> +	_dl_process_pt_note (l, fd, &ph[-1]);
-> +	break;
-> +      case PT_GNU_PROPERTY:
-> +	_dl_process_pt_gnu_property (l, fd, &ph[-1]);
-> +	break;
-> +      }
-> +
->  #ifdef DL_AFTER_LOAD
->    DL_AFTER_LOAD (l);
->  #endif
+--oeooz33tgxv72ou6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is this still compatible with the CET requirements?
+On Tue, Nov 03, 2020 at 11:10:27AM +0100, Thomas Zimmermann wrote:
+> Hi
+>=20
+> Am 03.11.20 um 10:52 schrieb Maxime Ripard:
+> > On Tue, Nov 03, 2020 at 10:10:41AM +0800, Tian Tao wrote:
+> >> Add new api devm_drm_irq_install() to register interrupts,
+> >> no need to call drm_irq_uninstall() when the drm module is removed.
+> >>
+> >> v2:
+> >> fixed the wrong parameter.
+> >>
+> >> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> >> ---
+> >>  drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
+> >>  include/drm/drm_drv.h     |  3 ++-
+> >>  2 files changed, 25 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> >> index cd162d4..0fe5243 100644
+> >> --- a/drivers/gpu/drm/drm_drv.c
+> >> +++ b/drivers/gpu/drm/drm_drv.c
+> >> @@ -39,6 +39,7 @@
+> >>  #include <drm/drm_color_mgmt.h>
+> >>  #include <drm/drm_drv.h>
+> >>  #include <drm/drm_file.h>
+> >> +#include <drm/drm_irq.h>
+> >>  #include <drm/drm_managed.h>
+> >>  #include <drm/drm_mode_object.h>
+> >>  #include <drm/drm_print.h>
+> >> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *paren=
+t,
+> >>  	return ret;
+> >>  }
+> >> =20
+> >> +static void devm_drm_dev_irq_uninstall(void *data)
+> >> +{
+> >> +	drm_irq_uninstall(data);
+> >> +}
+> >> +
+> >> +int devm_drm_irq_install(struct device *parent,
+> >> +			 struct drm_device *dev, int irq)
+> >> +{
+> >> +	int ret;
+> >> +
+> >> +	ret =3D drm_irq_install(dev, irq);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	ret =3D devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
+> >> +	if (ret)
+> >> +		devm_drm_dev_irq_uninstall(dev);
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +EXPORT_SYMBOL(devm_drm_irq_install);
+> >> +
+> >=20
+> > Shouldn't we tie the IRQ to the drm device (so with drmm_add_action)
+> > instead of tying it to the underlying device?
+>=20
+> If the HW device goes away, there won't be any more interrupts. So it's
+> similar to devm_ functions for I/O memory. Why would you use the drmm_
+> interface?
 
-I hope it is because the CET magic happens in _dl_open_check, so after
-the the code in elf/dl-load.c has run.
+drm_irq_install/uninstall do more that just calling request_irq and
+free_irq though, they will also run (among other things) the irq-related
+hooks in the drm driver (irq_preinstall, irq_postinstall irq_uninstall)
+and wake anything waiting for a vblank to occur, so we need the DRM
+device and driver to still be around when we run drm_irq_uninstall.
+That's why (I assume) you have to pass the drm_device as an argument and
+not simply the device.
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+This probably works in most case since you would allocate the drm_device
+with devm_drm_dev_alloc, and then run drm_irq_install, so in the undoing
+phase you would have first drm_irq_uninstall to run, and everything is
+fine.
 
+However, if one doesn't use devm_drm_dev_alloc but would use
+devm_drm_irq_install, you would have first remove being called that
+would free the drm device, and then drm_irq_uninstall which will use a
+free'd pointer.
+
+So yeah, even though the interrupt line itself is tied to the device,
+all the logic we have around the interrupt that is dealt with in
+drm_irq_install is really tied to the drm_device. And since we tie the
+life of drm_device to its underlying device already (either implicitly
+through devm_drm_dev_alloc, or explictly through manual allocation in
+probe and free in remove) we can't end up in a situation where the
+drm_device outlives its device.
+
+Maxime
+
+--oeooz33tgxv72ou6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6EzKAAKCRDj7w1vZxhR
+xYXHAQDK62VGz5kiFX28FD/Ad8gOyU18dwf6P+Kf7ujlHSflhAD7Bgq3u+SyxPLF
+gDMzG4LU5oCFwaNNi3YfaMjC7wAIKQI=
+=rc5S
+-----END PGP SIGNATURE-----
+
+--oeooz33tgxv72ou6--
