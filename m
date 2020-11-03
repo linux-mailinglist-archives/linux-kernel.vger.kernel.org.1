@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42402A5316
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721FF2A5250
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732691AbgKCU4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:56:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
+        id S1730222AbgKCUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732446AbgKCU4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:13 -0500
+        id S1731629AbgKCUsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3962223C7;
-        Tue,  3 Nov 2020 20:56:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F9E4223FD;
+        Tue,  3 Nov 2020 20:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436972;
-        bh=UTEUI9uMVOyIxEKJFKUJFivzWsK5qY0eatTZBYfFeO8=;
+        s=default; t=1604436525;
+        bh=13wYM5hiUOT/GmIzWu4aVniKeTvXXf4/7Fi7zvDYtuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vzg+hRWsmvom55qy8vQRYkZfyUaW8rSrpKMMH+BOaI2eqNmQ3MFfpPHl/OwU9osPk
-         Q43czV2kKluSEO8Io7Z93BdDvDHQ56jcVZeqENAJwmG2DveFj/aQh0sUfqUSxN/qAB
-         77aPzTtMN5tpFckV8bTTRjbOXMaHH7ZW6B8fpepE=
+        b=wg1gxKmLKU5HGemYt7tkNDb6wpPufRpmf0pMtglrWtM9D4ScQe4OLpoBDLWpuP7/w
+         P+dD7Sy4QXa1zamwTDuXLgMl62Cl7luQwKukmhJX1/xZ9X2J5lzQ6ta+PF8yAy10l9
+         HKHcFQWkt6Scqstu7kZqdxrrOVGvzmElzJfYPvdw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/214] ARM: dts: s5pv210: move PMU node out of clock controller
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.9 288/391] powerpc/memhotplug: Make lmb size 64bit
 Date:   Tue,  3 Nov 2020 21:35:39 +0100
-Message-Id: <20201103203258.976302351@linuxfoundation.org>
+Message-Id: <20201103203406.481942387@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit bb98fff84ad1ea321823759edaba573a16fa02bd ]
+commit 301d2ea6572386245c5d2d2dc85c3b5a737b85ac upstream.
 
-The Power Management Unit (PMU) is a separate device which has little
-common with clock controller.  Moving it to one level up (from clock
-controller child to SoC) allows to remove fake simple-bus compatible and
-dtbs_check warnings like:
+Similar to commit 89c140bbaeee ("pseries: Fix 64 bit logical memory block panic")
+make sure different variables tracking lmb_size are updated to be 64 bit.
 
-  clock-controller@e0100000: $nodename:0:
-    'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+This was found by code audit.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Jonathan Bakker <xc-racer2@live.ca>
-Link: https://lore.kernel.org/r/20200907161141.31034-8-krzk@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201007114836.282468-3-aneesh.kumar@linux.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/s5pv210.dtsi | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ arch/powerpc/platforms/pseries/hotplug-memory.c |   43 ++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
-index ec41e46edaced..f10139bd80a53 100644
---- a/arch/arm/boot/dts/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/s5pv210.dtsi
-@@ -92,19 +92,16 @@
- 		};
+--- a/arch/powerpc/platforms/pseries/hotplug-memory.c
++++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+@@ -277,7 +277,7 @@ static int dlpar_offline_lmb(struct drme
+ 	return dlpar_change_lmb_state(lmb, false);
+ }
  
- 		clocks: clock-controller@e0100000 {
--			compatible = "samsung,s5pv210-clock", "simple-bus";
-+			compatible = "samsung,s5pv210-clock";
- 			reg = <0xe0100000 0x10000>;
- 			clock-names = "xxti", "xusbxti";
- 			clocks = <&xxti>, <&xusbxti>;
- 			#clock-cells = <1>;
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges;
-+		};
+-static int pseries_remove_memblock(unsigned long base, unsigned int memblock_size)
++static int pseries_remove_memblock(unsigned long base, unsigned long memblock_size)
+ {
+ 	unsigned long block_sz, start_pfn;
+ 	int sections_per_block;
+@@ -308,10 +308,11 @@ out:
  
--			pmu_syscon: syscon@e0108000 {
--				compatible = "samsung-s5pv210-pmu", "syscon";
--				reg = <0xe0108000 0x8000>;
--			};
-+		pmu_syscon: syscon@e0108000 {
-+			compatible = "samsung-s5pv210-pmu", "syscon";
-+			reg = <0xe0108000 0x8000>;
- 		};
+ static int pseries_remove_mem_node(struct device_node *np)
+ {
+-	const __be32 *regs;
++	const __be32 *prop;
+ 	unsigned long base;
+-	unsigned int lmb_size;
++	unsigned long lmb_size;
+ 	int ret = -EINVAL;
++	int addr_cells, size_cells;
  
- 		pinctrl0: pinctrl@e0200000 {
--- 
-2.27.0
-
+ 	/*
+ 	 * Check to see if we are actually removing memory
+@@ -322,12 +323,19 @@ static int pseries_remove_mem_node(struc
+ 	/*
+ 	 * Find the base address and size of the memblock
+ 	 */
+-	regs = of_get_property(np, "reg", NULL);
+-	if (!regs)
++	prop = of_get_property(np, "reg", NULL);
++	if (!prop)
+ 		return ret;
+ 
+-	base = be64_to_cpu(*(unsigned long *)regs);
+-	lmb_size = be32_to_cpu(regs[3]);
++	addr_cells = of_n_addr_cells(np);
++	size_cells = of_n_size_cells(np);
++
++	/*
++	 * "reg" property represents (addr,size) tuple.
++	 */
++	base = of_read_number(prop, addr_cells);
++	prop += addr_cells;
++	lmb_size = of_read_number(prop, size_cells);
+ 
+ 	pseries_remove_memblock(base, lmb_size);
+ 	return 0;
+@@ -564,7 +572,7 @@ static int dlpar_memory_remove_by_ic(u32
+ 
+ #else
+ static inline int pseries_remove_memblock(unsigned long base,
+-					  unsigned int memblock_size)
++					  unsigned long memblock_size)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -886,10 +894,11 @@ int dlpar_memory(struct pseries_hp_error
+ 
+ static int pseries_add_mem_node(struct device_node *np)
+ {
+-	const __be32 *regs;
++	const __be32 *prop;
+ 	unsigned long base;
+-	unsigned int lmb_size;
++	unsigned long lmb_size;
+ 	int ret = -EINVAL;
++	int addr_cells, size_cells;
+ 
+ 	/*
+ 	 * Check to see if we are actually adding memory
+@@ -900,12 +909,18 @@ static int pseries_add_mem_node(struct d
+ 	/*
+ 	 * Find the base and size of the memblock
+ 	 */
+-	regs = of_get_property(np, "reg", NULL);
+-	if (!regs)
++	prop = of_get_property(np, "reg", NULL);
++	if (!prop)
+ 		return ret;
+ 
+-	base = be64_to_cpu(*(unsigned long *)regs);
+-	lmb_size = be32_to_cpu(regs[3]);
++	addr_cells = of_n_addr_cells(np);
++	size_cells = of_n_size_cells(np);
++	/*
++	 * "reg" property represents (addr,size) tuple.
++	 */
++	base = of_read_number(prop, addr_cells);
++	prop += addr_cells;
++	lmb_size = of_read_number(prop, size_cells);
+ 
+ 	/*
+ 	 * Update memory region to represent the memory add
 
 
