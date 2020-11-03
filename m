@@ -2,116 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FF02A4F11
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6BF2A4F12
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbgKCSjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:39:22 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:49586 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728621AbgKCSjW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:39:22 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.10])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1ka1D4-0001Og-J3; Tue, 03 Nov 2020 18:39:10 +0000
-Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Cyril.Jean@microchip.com, devicetree@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daire McNamara <Daire.McNamara@microchip.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Padmarao Begari <Padmarao.Begari@microchip.com>
-References: <20201028232759.1928479-1-atish.patra@wdc.com>
- <20201028232759.1928479-3-atish.patra@wdc.com>
- <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk>
- <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
- <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk>
- <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
- <fbe404b5-3bb1-dd00-e558-e4a55960b767@microchip.com>
- <fe079b4a-5410-5cc8-3f5e-8a95b573078a@codethink.co.uk>
- <CAOnJCUKH77XDymG+jAUYHP+5TC2aabTR4f8jF6s6FqqQNR=_CQ@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <22800ecc-a91b-ee3c-4717-4ee8802f31a2@codethink.co.uk>
-Date:   Tue, 3 Nov 2020 18:39:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729356AbgKCSjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:39:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728621AbgKCSjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:39:42 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 996752074B;
+        Tue,  3 Nov 2020 18:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604428782;
+        bh=6Xps4bIUFtPepouNBqtps60Iy2leilNlFonhy3YWMkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h248a77653NHUhqb1KV9+o4A1pWMp00jHEw2F/2qy6d8aGuWyFbzs5I/e/VObpLu/
+         GLDn8k/OtOjSLHa+8/BmLvcd2b3BL/X1CPLxzFq2TflJocMmfFZdcyBR4SyeXFxm2C
+         2u5QTZGEIChOwklxepD8Sg/3taUJAVzO3T3lSjkY=
+Date:   Tue, 3 Nov 2020 10:39:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John W Linville <linville@tuxdriver.com>
+Subject: Re: [PATCH 2/2] ethernet: igb: e1000_phy: Check for
+ ops.force_speed_duplex existence
+Message-ID: <20201103103940.2ed27fa2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <36ce1f2e-843c-4995-8bb2-2c2676f01b9d@molgen.mpg.de>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+        <20201102231307.13021-3-pmenzel@molgen.mpg.de>
+        <20201102161943.343586b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <36ce1f2e-843c-4995-8bb2-2c2676f01b9d@molgen.mpg.de>
 MIME-Version: 1.0
-In-Reply-To: <CAOnJCUKH77XDymG+jAUYHP+5TC2aabTR4f8jF6s6FqqQNR=_CQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2020 18:36, Atish Patra wrote:
-> On Tue, Nov 3, 2020 at 10:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->>
->> On 03/11/2020 18:10, Cyril.Jean@microchip.com wrote:
->>> On 11/3/20 3:07 PM, Atish Patra wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> On Fri, Oct 30, 2020 at 2:20 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->>
->> ,snip[
->>
->>>>>> @Cyril : Can we enable both eMMC & sdcard at the same time ?
->>>>> I would put /both/ in but only enable the one in use for the moment.
->>>>> Our boards are booting of eMMC as supplied, so this isn't going to work
->>>>> as well. The eMMC is 8bit wide, and thus is only delivering 11MB/sec
->>>>> instead of 22MB/sec. This performance is still not great, but losing
->>>>> half the data-rate is just not good.
->>>>>
->>>> I am not sure what should be enabled by default. Updating sdcard is much
->>>> easier than eMMC card and we use that approach.
->>>>
->>>> @Cyril: Is there a way that we can enable both ?
->>>>
->>> Yes, we can enable both but this requires a modification to the FPGA
->>> design. One of the guys prototyped this while I was away. We will move
->>> this along. This will require reprogramming the FPGA with a new design
->>> and HSS version.
->>>
->>> Regards,
->>>
->>> Cyril.
->>
->> I either missed or couldn't find a way of forcing the boot mode to be
->> from the SD slot. Have I missed something? At the moment we'd like to
->> have more storage available as the ~7G free on the eMMC is not enough.
->>
-> 
-> I use tftpboot to load the kernel & DT from the network. SD card is
-> enabled in this DT and Linux
-> kernel uses SD slot instead of eMMC.
-> 
-> To summarize, eMMC is used for HSS & U-Boot while SD card is used for
-> Linux which makes
-> more storage available to Linux.
-> 
-> IMO, we should enable the sdcard for Linux DT until updated FPGA
-> design & HSS is available.
+On Tue, 3 Nov 2020 08:35:09 +0100 Paul Menzel wrote:
+> According to *Developer's Certificate of Origin 1.1* [3], it=E2=80=99s my=
+=20
+> understanding, that it is *not* required. The items (a), (b), and (c)=20
+> are connected by an *or*.
+>=20
+> >         (b) The contribution is based upon previous work that, to the b=
+est
+> >             of my knowledge, is covered under an appropriate open source
+> >             license and I have the right under that license to submit t=
+hat
+> >             work with modifications, whether created in whole or in par=
+t=20
+> >             by me, under the same open source license (unless I am
+> >             permitted to submit under a different license), as indicated
+> >             in the file; or =20
 
-Interesting as for me the default is for Linux to use the eMMC as
-well. I can't see any way for forcing the selection lines in the
-DT to say eMMC vs SD.
+Ack, but then you need to put yourself as the author, because it's
+you certifying that the code falls under (b).
 
-If there is a way of controlling the selection lines then it might
-be possible to have both cards enabled with a bus selection MUX in
-software.
-
-
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+At least that's my understanding.
