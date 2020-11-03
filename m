@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626BD2A431D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A222A42CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgKCKgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:36:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbgKCKdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:33:45 -0500
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728576AbgKCKeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:34:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728621AbgKCKef (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:34:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604399674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NeyfLxLqbPXnSVbIXerlFIoWQVVpshnlirjJvDi476c=;
+        b=MXLKW2eqIxXz/kMc4QgmxEJjHXl1yOpHlfTmO0N7cZfXWo3CkvaC8t1xhtF+GKGKJSTDCZ
+        0CsQvIdCI0S3/0X+ONuE+W44rb3pAXz0wovT5m5joLoxRZ7cHWSDqQ3bXvL43Zbl3yxaNJ
+        SV8VQus5Ynhb5e1gWRtoImaDVkSx6kk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-9pmT0jXYPpibXCdCo9ZU8g-1; Tue, 03 Nov 2020 05:34:30 -0500
+X-MC-Unique: 9pmT0jXYPpibXCdCo9ZU8g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2547206F1;
-        Tue,  3 Nov 2020 10:33:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604399624;
-        bh=Eg2L7GMc+D/grmQRd+uDIOy1N1FwECV5+z+rWhgWBGQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=lpRPtrFVwYxL28XMFETMMxsPcUfVkgyNCQIQ8OpGteT5bulqB2GAnBJe7sO4JaVpX
-         0JskbgnRi3JlwQPsrtXdRdaGSk8QE/dRmM6zZuwJkopHgHaFgOMy1Qxf2XX2EnpRGB
-         OvlcPvCdlX4NoR2TrUxlUXgB3ngwvrirPz+DjiXg=
-Date:   Tue, 3 Nov 2020 11:33:39 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     Sandeep Singh <Sandeep.Singh@amd.com>,
-        benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        jic23@kernel.org, linux-iio@vger.kernel.org, hdegoede@redhat.com,
-        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
-        mail@richard-neumann.de, m.felsch@pengutronix.de,
-        rdunlap@infradead.org, Shyam-sundar.S-k@amd.com
-Subject: Re: [PATCH v8 1/4] SFH: Add maintainers and documentation for AMD
- SFH based on HID framework
-In-Reply-To: <alpine.DEB.2.21.2010300902220.16621@felia>
-Message-ID: <nycvar.YFH.7.76.2011031133080.18859@cbobk.fhfr.pm>
-References: <20201009200138.1847317-1-Sandeep.Singh@amd.com> <20201009200138.1847317-2-Sandeep.Singh@amd.com> <alpine.DEB.2.21.2010300902220.16621@felia>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95DB580B72B;
+        Tue,  3 Nov 2020 10:34:27 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAB611C4;
+        Tue,  3 Nov 2020 10:34:23 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 3/4] aarch64: Use mmap to add PROT_BTI instead of
+ mprotect [BZ #26831]
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+        <f5eaa74cb7538382b2fd2439755386ac68f7c8db.1604393169.git.szabolcs.nagy@arm.com>
+Date:   Tue, 03 Nov 2020 11:34:22 +0100
+In-Reply-To: <f5eaa74cb7538382b2fd2439755386ac68f7c8db.1604393169.git.szabolcs.nagy@arm.com>
+        (Szabolcs Nagy's message of "Tue, 3 Nov 2020 10:26:29 +0000")
+Message-ID: <87v9embufl.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Oct 2020, Lukas Bulwahn wrote:
+* Szabolcs Nagy:
 
-> > From: Sandeep Singh <sandeep.singh@amd.com>
-> > 
-> > Add Maintainers for AMD SFH(SENSOR FUSION HUB) Solution and work flow
-> > document.
-> > 
-> > Co-developed-by: Nehal Shah <Nehal-bakulchandra.Shah@amd.com>
-> > Signed-off-by: Nehal Shah <Nehal-bakulchandra.Shah@amd.com>
-> > Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
-> > ---
-> >  Documentation/hid/amd-sfh-hid.rst | 145 ++++++++++++++++++++++++++++++
-> >  Documentation/hid/index.rst       |   1 +
-> >  MAINTAINERS                       |   8 ++
-> >  3 files changed, 154 insertions(+)
-> >  create mode 100644 Documentation/hid/amd-sfh-hid.rst
-> >
-> 
-> I do not know where something went wrong here, but it seems that
-> the git commit 302f0dad8c97 ("SFH: Add maintainers and 
-> documentation for AMD SFH based on HID framework") on next-20201030 
-> dropped the addition of the rst file compared to this patch v8 here.
+> Re-mmap executable segments if possible instead of using mprotect
+> to add PROT_BTI. This allows using BTI protection with security
+> policies that prevent mprotect with PROT_EXEC.
+>
+> If the fd of the ELF module is not available because it was kernel
+> mapped then mprotect is used and failures are ignored.  It is
+> expected that linux kernel will add PROT_BTI when mapping a module
+> (current linux as of version 5.9 does not do this).
+>
+> Computing the mapping parameters follows the logic of
+> _dl_map_object_from_fd more closely now.
 
-Thanks for spotting this, that was me fat-fingering conflict resolution. 
-I've now pushed out a fix.
+What's the performance of this on execve-heavy workloads, such as kernel
+or glibc builds?  Hopefully it's cheap because these mappings have not
+been faulted in yet.
 
+Thanks,
+Florian
 -- 
-Jiri Kosina
-SUSE Labs
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
