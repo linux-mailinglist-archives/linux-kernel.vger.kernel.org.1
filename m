@@ -2,88 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36E82A3D29
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A1B2A3D35
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgKCHHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:07:47 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42291 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725958AbgKCHHr (ORCPT
+        id S1727852AbgKCHLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:11:00 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19738 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbgKCHK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:07:47 -0500
-X-UUID: 0cd27029a24f41bca58df90019b241ea-20201103
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xgZxM4bZdBoYMDGnpcKBnJHgKjg4eO6nDZKJOGIeWdo=;
-        b=PUtkyKF0b3dBSMtd3cT167RsJne4PCUmgNlL025Hyu28j28uMYl/OclqQ41hYONY4kq+3wA2lmY8+3x8wUTSnReKNs5F3a/nMvaxOe0Nm5iDiibf6qNZmuXhmxBCrO8bjfWI67gY1zU3Ip93FM4PoKC03BkETquvzoCe15viT3c=;
-X-UUID: 0cd27029a24f41bca58df90019b241ea-20201103
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 957126120; Tue, 03 Nov 2020 15:07:44 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 3 Nov 2020 15:07:42 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Nov 2020 15:07:42 +0800
-Message-ID: <1604387262.13152.2.camel@mtkswgap22>
-Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
- caused by ufshcd_hold()
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 3 Nov 2020 15:07:42 +0800
-In-Reply-To: <1604384682-15837-2-git-send-email-cang@codeaurora.org>
-References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
-         <1604384682-15837-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 3 Nov 2020 02:10:59 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa102830000>; Mon, 02 Nov 2020 23:10:59 -0800
+Received: from [172.27.13.204] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 07:10:51 +0000
+Subject: Re: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead
+ code
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>
+CC:     Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, <linux-rdma@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, <netdev@vger.kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
+        <broonie@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+        <ranjani.sridharan@linux.intel.com>,
+        <pierre-louis.bossart@linux.intel.com>, <fred.oh@linux.intel.com>,
+        <shiraz.saleem@intel.com>, <dan.j.williams@intel.com>,
+        <kiran.patil@intel.com>, <linux-kernel@vger.kernel.org>
+References: <20201101201542.2027568-1-leon@kernel.org>
+ <20201101201542.2027568-12-leon@kernel.org>
+From:   Roi Dayan <roid@nvidia.com>
+Message-ID: <845b26c8-4dfa-5ef2-67a8-1ae6f556fd71@nvidia.com>
+Date:   Tue, 3 Nov 2020 09:10:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 295080CDDDD8E39A2ADF44384CB5E35A2D4E5055CC367A2FD534E280F511F3EC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201101201542.2027568-12-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604387459; bh=4WUhWdFgickYDSVFf73IeSlsegDSnCyqJHXLcImggck=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Dah3vnxqaguW+nzDWpLeyjsmEMHzddxz/bOE8aJ2quo8SYWhPfZW9duce4clcU2ej
+         GDvO7zRgP2eEzc57IkWZzFs0B8FdA4oKAREzx4GKnuosH6K8N+gYKCzkRksHIwl+BY
+         J/lDEDeZ/jEIpOjtHSLOLEuTrWFl7yRZOjGW0s9jh0zRZFgVXmWM6aWYdZpEf4+sBU
+         py9TwqCM+HnDehlKgL3fsLF3JZPH3K0pmL260bnNDmwfiW9C6vnS4YaXSX/rdNX2uZ
+         ih2ncLS8xu/ZN9QxF8Ygw1/FKacbdTF/cGpwDzDrqYWjFzaJI/phkRuYPZhzRozU3o
+         Z1jQ9+kZh73JA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjAtMTEtMDIgYXQgMjI6MjQgLTA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IFRoZSBzY3NpX2Jsb2NrX3JlcXNfY250IGluY3JlYXNlZCBpbiB1ZnNoY2RfaG9sZCgp
-IGlzIHN1cHBvc2VkIHRvIGJlDQo+IGRlY3JlYXNlZCBiYWNrIGluIHVmc2hjZF91bmdhdGVfd29y
-aygpIGluIGEgcGFpcmVkIHdheS4gSG93ZXZlciwgaWYNCj4gc3BlY2lmaWMgdWZzaGNkX2hvbGQv
-cmVsZWFzZSBzZXF1ZW5jZXMgYXJlIG1ldCwgaXQgaXMgcG9zc2libGUgdGhhdA0KPiBzY3NpX2Js
-b2NrX3JlcXNfY250IGlzIGluY3JlYXNlZCB0d2ljZSBidXQgb25seSBvbmUgdW5nYXRlIHdvcmsg
-aXMNCj4gcXVldWVkLiBUbyBtYWtlIHN1cmUgc2NzaV9ibG9ja19yZXFzX2NudCBpcyBoYW5kbGVk
-IGJ5IHVmc2hjZF9ob2xkKCkgYW5kDQoNCkp1c3QgY3VyaW91cyB0aGF0IGhvdyBjb3VsZCB0aGlz
-IGJlIHBvc3NpYmxlPyBXb3VsZCB5b3UgaGF2ZSBzb21lIGZhaWxlZA0KZXhhbXBsZXM/DQoNCj4g
-dWZzaGNkX3VuZ2F0ZV93b3JrKCkgaW4gYSBwYWlyZWQgd2F5LCBpbmNyZWFzZSBpdCBvbmx5IGlm
-IHF1ZXVlX3dvcmsoKQ0KPiByZXR1cm5zIHRydWUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDYW4g
-R3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiBSZXZpZXdlZC1ieTogSG9uZ3d1IFN1IDxob25n
-d3VzQGNvZGVhdXJvcmEub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMg
-fCA2ICsrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJp
-dmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBpbmRleCA4NDdmMzU1Li5lZmE3ZDg2IDEwMDY0NA0K
-PiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91
-ZnMvdWZzaGNkLmMNCj4gQEAgLTE2MzQsMTIgKzE2MzQsMTIgQEAgaW50IHVmc2hjZF9ob2xkKHN0
-cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgYXN5bmMpDQo+ICAJCSAqLw0KPiAgCQkvKiBmYWxsdGhy
-b3VnaCAqLw0KPiAgCWNhc2UgQ0xLU19PRkY6DQo+IC0JCXVmc2hjZF9zY3NpX2Jsb2NrX3JlcXVl
-c3RzKGhiYSk7DQo+ICAJCWhiYS0+Y2xrX2dhdGluZy5zdGF0ZSA9IFJFUV9DTEtTX09OOw0KPiAg
-CQl0cmFjZV91ZnNoY2RfY2xrX2dhdGluZyhkZXZfbmFtZShoYmEtPmRldiksDQo+ICAJCQkJCWhi
-YS0+Y2xrX2dhdGluZy5zdGF0ZSk7DQo+IC0JCXF1ZXVlX3dvcmsoaGJhLT5jbGtfZ2F0aW5nLmNs
-a19nYXRpbmdfd29ya3EsDQo+IC0JCQkgICAmaGJhLT5jbGtfZ2F0aW5nLnVuZ2F0ZV93b3JrKTsN
-Cj4gKwkJaWYgKHF1ZXVlX3dvcmsoaGJhLT5jbGtfZ2F0aW5nLmNsa19nYXRpbmdfd29ya3EsDQo+
-ICsJCQkgICAgICAgJmhiYS0+Y2xrX2dhdGluZy51bmdhdGVfd29yaykpDQo+ICsJCQl1ZnNoY2Rf
-c2NzaV9ibG9ja19yZXF1ZXN0cyhoYmEpOw0KPiAgCQkvKg0KPiAgCQkgKiBmYWxsIHRocm91Z2gg
-dG8gY2hlY2sgaWYgd2Ugc2hvdWxkIHdhaXQgZm9yIHRoaXMNCj4gIAkJICogd29yayB0byBiZSBk
-b25lIG9yIG5vdC4NCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0K
 
+
+On 2020-11-01 10:15 PM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Delete dead code.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
+>   drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
+>   2 files changed, 7 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
+> index 9810bdd7f3bc..a1a9450ed92c 100644
+> --- a/drivers/infiniband/hw/mlx5/ib_rep.c
+> +++ b/drivers/infiniband/hw/mlx5/ib_rep.c
+> @@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+>   	struct mlx5_ib_dev *ibdev;
+>   	int vport_index;
+> 
+> -	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
+> +	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
+>   	vport_index = rep->vport_index;
+> 
+>   	ibdev->port[vport_index].rep = rep;
+> @@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+>   	return ret;
+>   }
+> 
+> +static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
+> +{
+> +	return rep->rep_data[REP_IB].priv;
+> +}
+> +
+>   static void
+>   mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+>   {
+> @@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
+>   		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
+>   }
+> 
+> -static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
+> -{
+> -	return mlx5_ib_rep_to_dev(rep);
+> -}
+> -
+>   static const struct mlx5_eswitch_rep_ops rep_ops = {
+>   	.load = mlx5_ib_vport_rep_load,
+>   	.unload = mlx5_ib_vport_rep_unload,
+> -	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
+> +	.get_proto_dev = mlx5_ib_rep_to_dev,
+>   };
+> 
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num)
+> -{
+> -	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
+> -}
+> -
+>   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   					  u16 vport_num)
+>   {
+>   	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
+>   }
+> 
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+> -{
+> -	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
+> -}
+> -
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num)
+> -{
+> -	return mlx5_eswitch_vport_rep(esw, vport_num);
+> -}
+> -
+>   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+>   						   struct mlx5_ib_sq *sq,
+>   						   u16 port)
+> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
+> index 93f562735e89..ce1dcb105dbd 100644
+> --- a/drivers/infiniband/hw/mlx5/ib_rep.h
+> +++ b/drivers/infiniband/hw/mlx5/ib_rep.h
+> @@ -12,11 +12,6 @@
+>   extern const struct mlx5_ib_profile raw_eth_profile;
+> 
+>   #ifdef CONFIG_MLX5_ESWITCH
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num);
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num);
+>   int mlx5r_rep_init(void);
+>   void mlx5r_rep_cleanup(void);
+>   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+> @@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
+>   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   					  u16 vport_num);
+>   #else /* CONFIG_MLX5_ESWITCH */
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
+> -					  u16 vport_num)
+> -{
+> -	return NULL;
+> -}
+> -
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
+> -{
+> -	return NULL;
+> -}
+> -
+> -static inline
+> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
+> -					   u16 vport_num)
+> -{
+> -	return NULL;
+> -}
+> -
+>   static inline int mlx5r_rep_init(void) { return 0; }
+>   static inline void mlx5r_rep_cleanup(void) {}
+>   static inline
+> @@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
+>   	return NULL;
+>   }
+>   #endif
+> -
+> -static inline
+> -struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
+> -{
+> -	return rep->rep_data[REP_IB].priv;
+> -}
+>   #endif /* __MLX5_IB_REP_H__ */
+> --
+> 2.28.0
+> 
+
+Reviewed-by: Roi Dayan <roid@nvidia.com>
