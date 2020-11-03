@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45142A568E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7942A559F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgKCV3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:29:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35408 "EHLO mail.kernel.org"
+        id S2388354AbgKCVU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:20:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733167AbgKCU75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:57 -0500
+        id S2388160AbgKCVGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:06:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7A9522226;
-        Tue,  3 Nov 2020 20:59:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD83A20757;
+        Tue,  3 Nov 2020 21:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437197;
-        bh=PhZiF3/f8TONGTYt4osYsdHZsjC/HvsaoqTj5qrAW6M=;
+        s=default; t=1604437594;
+        bh=3KC4q/WKvwirtoZYm5qwm0oGZDlEH+sS+/qPASVN8PI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmI7Q/iE8bfb9GdiuiGJoEIEYf+YZCDx4Euxi8eG1GTghz2+YJLIgST3Go8GhiOfB
-         0l2iD7rSfYQek+csW67Vph8yKqYQblQyJ7+QRDbYvISoQSOc+KnmMlJCDvDousnZxV
-         ppONBEnTRr+1/jbZ5ouqivsTAdfEut4icgGlV8zI=
+        b=atVbYVAD2nGYMk1GsTAvag/If9WrD5feaOI4eiwW20A/RZWrELLcs7nFpd8r+WkSa
+         MGdPr4rPlfVw1DHI+78+Yfjds72TRCTGl8rYv6ltQJrFZvlUBtvORxzRcHnkijo4gO
+         Gz6WSSIVw7xWnsy04WyHN7vSq5KPqv8ipQBDueZk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 5.4 187/214] ceph: promote to unsigned long long before shifting
-Date:   Tue,  3 Nov 2020 21:37:15 +0100
-Message-Id: <20201103203308.219605906@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 4.19 144/191] vt: keyboard, simplify vt_kdgkbsent
+Date:   Tue,  3 Nov 2020 21:37:16 +0100
+Message-Id: <20201103203246.279237404@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Jiri Slaby <jslaby@suse.cz>
 
-commit c403c3a2fbe24d4ed33e10cabad048583ebd4edf upstream.
+commit 6ca03f90527e499dd5e32d6522909e2ad390896b upstream.
 
-On 32-bit systems, this shift will overflow for files larger than 4GB.
+Use 'strlen' of the string, add one for NUL terminator and simply do
+'copy_to_user' instead of the explicit 'for' loop. This makes the
+KDGKBSENT case more compact.
 
-Cc: stable@vger.kernel.org
-Fixes: 61f68816211e ("ceph: check caps in filemap_fault and page_mkwrite")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+The only thing we need to take care about is NULL 'func_table[i]'. Use
+an empty string in that case.
+
+The original check for overflow could never trigger as the func_buf
+strings are always shorter or equal to 'struct kbsentry's.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20201019085517.10176-1-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ceph/addr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/vt/keyboard.c |   28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -1427,7 +1427,7 @@ static vm_fault_t ceph_filemap_fault(str
- 	struct ceph_inode_info *ci = ceph_inode(inode);
- 	struct ceph_file_info *fi = vma->vm_file->private_data;
- 	struct page *pinned_page = NULL;
--	loff_t off = vmf->pgoff << PAGE_SHIFT;
-+	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
- 	int want, got, err;
- 	sigset_t oldset;
- 	vm_fault_t ret = VM_FAULT_SIGBUS;
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1994,9 +1994,7 @@ out:
+ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ {
+ 	struct kbsentry *kbs;
+-	char *p;
+ 	u_char *q;
+-	u_char __user *up;
+ 	int sz, fnw_sz;
+ 	int delta;
+ 	char *first_free, *fj, *fnw;
+@@ -2022,23 +2020,15 @@ int vt_do_kdgkb_ioctl(int cmd, struct kb
+ 	i = kbs->kb_func;
+ 
+ 	switch (cmd) {
+-	case KDGKBSENT:
+-		sz = sizeof(kbs->kb_string) - 1; /* sz should have been
+-						  a struct member */
+-		up = user_kdgkb->kb_string;
+-		p = func_table[i];
+-		if(p)
+-			for ( ; *p && sz; p++, sz--)
+-				if (put_user(*p, up++)) {
+-					ret = -EFAULT;
+-					goto reterr;
+-				}
+-		if (put_user('\0', up)) {
+-			ret = -EFAULT;
+-			goto reterr;
+-		}
+-		kfree(kbs);
+-		return ((p && *p) ? -EOVERFLOW : 0);
++	case KDGKBSENT: {
++		/* size should have been a struct member */
++		unsigned char *from = func_table[i] ? : "";
++
++		ret = copy_to_user(user_kdgkb->kb_string, from,
++				strlen(from) + 1) ? -EFAULT : 0;
++
++		goto reterr;
++	}
+ 	case KDSKBSENT:
+ 		if (!perm) {
+ 			ret = -EPERM;
 
 
