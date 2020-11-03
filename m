@@ -2,162 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F722A5051
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BF82A5057
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgKCTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:46:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28583 "EHLO
+        id S1729713AbgKCTsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:48:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57794 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726660AbgKCTqU (ORCPT
+        by vger.kernel.org with ESMTP id S1727688AbgKCTr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:46:20 -0500
+        Tue, 3 Nov 2020 14:47:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604432778;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1604432877;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hXGHvDYwh9NMkyXNB/mXiydEr8BiB4sd5uCcFnHHQZg=;
-        b=chwpTUtqHwO02E0vi3/Q7iXNI88a/J1qSQNV/ZpXJ8DOipuh0xSFZjIo4qlN9FlCW1PLof
-        P9mmx6hwaluMP2xkOYijiBlxSyka+bF+ZDW60DaeVcnBWPyeOCMlbg1ZjdPcII361h0IW2
-        EyJRna6Q14KM5jGfCYZJuhUGVamgCQ8=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-5g9qYqxiPCivhHTXlBBjuQ-1; Tue, 03 Nov 2020 14:46:16 -0500
-X-MC-Unique: 5g9qYqxiPCivhHTXlBBjuQ-1
-Received: by mail-qk1-f200.google.com with SMTP id u16so11476856qkm.22
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 11:46:16 -0800 (PST)
+        bh=CHQ3/bBc5WxHfN8LaH/bQM7T7VaD4uRFaJUk/wKN6nw=;
+        b=V/53gMnjlQwcfEkf1wAVDNwedSiEa6r9cEf7jBixRKSHZ9+X3uoZU9GO92nWoLQspGLlH/
+        ka8QPcyOIkfO2LeaQgnLkU4tPc2kb28YYwJEikemRlM1jnTrExmk4Ds4x5A7xSArwgWRaE
+        Ab1v5UR+3D3IarMPGBciBzM0iY8xNFQ=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-IXlK0X2uPQ6ojDauTOp93w-1; Tue, 03 Nov 2020 14:47:56 -0500
+X-MC-Unique: IXlK0X2uPQ6ojDauTOp93w-1
+Received: by mail-qv1-f71.google.com with SMTP id t13so11006311qvm.14
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 11:47:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hXGHvDYwh9NMkyXNB/mXiydEr8BiB4sd5uCcFnHHQZg=;
-        b=n2VHDJnk7g497flgUQ2UzygpC9pFTCzBcBEyKADhflSH/epHmtf2Y5F5WP5wgHWfI7
-         CZZzGLyZz8ef6PDAS7ELAPm6TOlAtk9y0XNUWXKFxn6ZxHjGNKcAJ1rgnrYSStTPB3c5
-         Epg4xxwD4+n24/AXM/5SmA2pyxRbLRZCl5FTEdJb6yfwdQ2SyB20UJKIf0TpwbDn8yu9
-         tew0L3IOmSixPaUx7VLRQe5q8G6j96bFRunX3eMk5PBqcy4MuLnpJIzGOWIcVso1pXc3
-         pMWK5pBzD/0omSfdzPA2OLGVhpSVSE2xfALTn4Gz3b5oHJfRzSUzF/osNxf/p+Xhg9PR
-         3fZA==
-X-Gm-Message-State: AOAM530DJCoCow5P+ZermX6N5mEcxwsXvpbpzMTZc0ZnVjWsTwMHTfs+
-        8ONgvNEt6EQfB+tzksiRlEjl04r6lNiP3BbYB0WhAK5Szeo7vLkT1OyoBGMO+jYaEs3ygi+RjVx
-        J8GXWJyRG4IDy9woFV2AmLTEW
-X-Received: by 2002:ae9:f402:: with SMTP id y2mr20621906qkl.459.1604432776434;
-        Tue, 03 Nov 2020 11:46:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyHrx/4K1ur2emSikIwCSW6QoSh0HGIlNgos3cwaHoIzJ12L9uFjx7qLeKQUNbiJ0RTQKVuVA==
-X-Received: by 2002:ae9:f402:: with SMTP id y2mr20621874qkl.459.1604432776110;
-        Tue, 03 Nov 2020 11:46:16 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
-        by smtp.gmail.com with ESMTPSA id i70sm11572985qke.11.2020.11.03.11.46.14
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=CHQ3/bBc5WxHfN8LaH/bQM7T7VaD4uRFaJUk/wKN6nw=;
+        b=Ly/0Ctcls9wrx30WVdSCZhlCC6n44fLjlAf0Amg48T+Yf3ulg6+a9kDf316zLs9Ewv
+         dX8wbKxS/kjsZ3pk2gG6z/QhVDZNGiU6sBCCIW8VJvFIa9zoXfP1ogq3a3uxOXmQiHXz
+         o2mpvVctC7Z0iYmENq+hiizQYUhm/X1k0OQtWs/oUm0KiYvLWoq5iyonwbQ3EQIEO0Fq
+         vTQ0uoPxtTaFLEwhB+ogJghQSWcsrLI3tVPt4acBIoCfM/AN0Kr+80lVeFHb4aeegII6
+         pgmlEG04WV1K8nFbHnBK3UlZOOnjAQo7DmldiKTfWsSMmoP6GIXtkdHl16cWDd0b2wJ0
+         LBfg==
+X-Gm-Message-State: AOAM533Mn7Lami+A/QNvtLRXgOdb3PQsmI8Di6dRbL8WXL3oL/FuZSq2
+        zW1aUR0jfeNeXHLDIoRk5nNKrsLdUYqEWFjZCHJNuwzE2nW+vBWv+WwHqTMUT0cEsV8ujlWwEnX
+        S60cxgEmzqcrp8eCZxkUO/eJ8
+X-Received: by 2002:a37:47c2:: with SMTP id u185mr17010913qka.63.1604432875488;
+        Tue, 03 Nov 2020 11:47:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw0D0CC36lHqdD9IBGL0B2j1EjIRDVnCjR6y7CDfrhuUmcd3BPaRc4m50PeZvW+nAg9DESoqA==
+X-Received: by 2002:a37:47c2:: with SMTP id u185mr17010888qka.63.1604432875262;
+        Tue, 03 Nov 2020 11:47:55 -0800 (PST)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id x75sm11687361qka.59.2020.11.03.11.47.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 11:46:15 -0800 (PST)
-Date:   Tue, 3 Nov 2020 14:46:13 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Stefano Garzarella <sgarzare@redhat.com>, mst@redhat.com,
-        netdev@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
-Message-ID: <20201103194613.GK20600@xz-x1>
-References: <20201029174351.134173-1-sgarzare@redhat.com>
- <751cc074-ae68-72c8-71de-a42458058761@redhat.com>
- <20201030105422.ju2aj2bmwsckdufh@steredhat>
- <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
- <20201102171104.eiovmkj23fle5ioj@steredhat>
- <8648a2e3-1052-3b5b-11ce-87628ac8dd33@redhat.com>
+        Tue, 03 Nov 2020 11:47:54 -0800 (PST)
+Message-ID: <8d15a513bd38a01b3607e5c75b5754cc599fe33c.camel@redhat.com>
+Subject: Re: [PATCH] drm/edid: Fix uninitialized variable in drm_cvt_modes()
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Airlie <airlied@linux.ie>, Chao Yu <chao@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "# 3.9+" <stable@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>
+Date:   Tue, 03 Nov 2020 14:47:53 -0500
+In-Reply-To: <CAKb7UvhfWA6ijoQnq2Mvrx8jfn57EC-P5KBkYR3HmrBUrntJhg@mail.gmail.com>
+References: <20201022165450.682571-1-lyude@redhat.com>
+         <CAKb7UvhfWA6ijoQnq2Mvrx8jfn57EC-P5KBkYR3HmrBUrntJhg@mail.gmail.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8648a2e3-1052-3b5b-11ce-87628ac8dd33@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:04:23PM +0800, Jason Wang wrote:
+Sorry! Thought I had responded to this but apparently not, comments down below
+
+On Thu, 2020-10-22 at 14:04 -0400, Ilia Mirkin wrote:
+> On Thu, Oct 22, 2020 at 12:55 PM Lyude Paul <lyude@redhat.com> wrote:
+> > 
+> > Noticed this when trying to compile with -Wall on a kernel fork. We
+> > potentially
+> > don't set width here, which causes the compiler to complain about width
+> > potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
+> > 
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > 
+> > Cc: <stable@vger.kernel.org> # v5.9+
+> > Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > ---
+> >  drivers/gpu/drm/drm_edid.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > index 631125b46e04..2da158ffed8e 100644
+> > --- a/drivers/gpu/drm/drm_edid.c
+> > +++ b/drivers/gpu/drm/drm_edid.c
+> > @@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector
+> > *connector,
+> > 
+> >         for (i = 0; i < 4; i++) {
+> >                 int width, height;
+> > +               u8 cvt_aspect_ratio;
+> > 
+> >                 cvt = &(timing->data.other_data.data.cvt[i]);
+> > 
+> > @@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector
+> > *connector,
+> >                         continue;
+> > 
+> >                 height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) + 1) *
+> > 2;
+> > -               switch (cvt->code[1] & 0x0c) {
+> > +               cvt_aspect_ratio = cvt->code[1] & 0x0c;
+> > +               switch (cvt_aspect_ratio) {
+> >                 case 0x00:
+> >                         width = height * 4 / 3;
+> >                         break;
+> > @@ -3114,6 +3116,10 @@ static int drm_cvt_modes(struct drm_connector
+> > *connector,
+> >                 case 0x0c:
+> >                         width = height * 15 / 9;
+> >                         break;
+> > +               default:
 > 
-> On 2020/11/3 上午1:11, Stefano Garzarella wrote:
-> > On Fri, Oct 30, 2020 at 07:44:43PM +0800, Jason Wang wrote:
-> > > 
-> > > On 2020/10/30 下午6:54, Stefano Garzarella wrote:
-> > > > On Fri, Oct 30, 2020 at 06:02:18PM +0800, Jason Wang wrote:
-> > > > > 
-> > > > > On 2020/10/30 上午1:43, Stefano Garzarella wrote:
-> > > > > > This patch enables the IOTLB API support for vhost-vsock devices,
-> > > > > > allowing the userspace to emulate an IOMMU for the guest.
-> > > > > > 
-> > > > > > These changes were made following vhost-net, in details this patch:
-> > > > > > - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
-> > > > > >   device if the feature is acked
-> > > > > > - implements VHOST_GET_BACKEND_FEATURES and
-> > > > > >   VHOST_SET_BACKEND_FEATURES ioctls
-> > > > > > - calls vq_meta_prefetch() before vq processing to prefetch vq
-> > > > > >   metadata address in IOTLB
-> > > > > > - provides .read_iter, .write_iter, and .poll callbacks for the
-> > > > > >   chardev; they are used by the userspace to exchange IOTLB messages
-> > > > > > 
-> > > > > > This patch was tested with QEMU and a patch applied [1] to fix a
-> > > > > > simple issue:
-> > > > > >     $ qemu -M q35,accel=kvm,kernel-irqchip=split \
-> > > > > >            -drive file=fedora.qcow2,format=qcow2,if=virtio \
-> > > > > >            -device intel-iommu,intremap=on \
-> > > > > >            -device vhost-vsock-pci,guest-cid=3,iommu_platform=on
-> > > > > 
-> > > > > 
-> > > > > Patch looks good, but a question:
-> > > > > 
-> > > > > It looks to me you don't enable ATS which means vhost won't
-> > > > > get any invalidation request or did I miss anything?
-> > > > > 
-> > > > 
-> > > > You're right, I didn't see invalidation requests, only miss and
-> > > > updates.
-> > > > Now I have tried to enable 'ats' and 'device-iotlb' but I still
-> > > > don't see any invalidation.
-> > > > 
-> > > > How can I test it? (Sorry but I don't have much experience yet
-> > > > with vIOMMU)
-> > > 
-> > > 
-> > > I guess it's because the batched unmap. Maybe you can try to use
-> > > "intel_iommu=strict" in guest kernel command line to see if it
-> > > works.
-> > > 
-> > > Btw, make sure the qemu contains the patch [1]. Otherwise ATS won't
-> > > be enabled for recent Linux Kernel in the guest.
-> > 
-> > The problem was my kernel, it was built with a tiny configuration.
-> > Using fedora stock kernel I can see the 'invalidate' requests, but I
-> > also had the following issues.
-> > 
-> > Do they make you ring any bells?
-> > 
-> > $ ./qemu -m 4G -smp 4 -M q35,accel=kvm,kernel-irqchip=split \
-> >     -drive file=fedora.qcow2,format=qcow2,if=virtio \
-> >     -device intel-iommu,intremap=on,device-iotlb=on \
-> >     -device vhost-vsock-pci,guest-cid=6,iommu_platform=on,ats=on,id=v1
-> > 
-> >     qemu-system-x86_64: vtd_iova_to_slpte: detected IOVA overflow    
-> > (iova=0x1d40000030c0)
+> What value would cvt->code[1] have such that this gets hit?
 > 
+> Or is this a "compiler is broken, so let's add more code" situation?
+> If so, perhaps the code added could just be enough to silence the
+> compiler (unreachable, etc)?
+
+I mean, this information comes from the EDID which inherently means it's coming
+from an untrusted source so the value could be literally anything as long as the
+EDID has a valid checksum. Note (assuming I'm understanding this code
+correctly): 
+
+drm_add_edid_modes() → add_cvt_modes() → drm_for_each_detailed_block() →
+do_cvt_mode() → drm_cvt_modes()
+
+So afaict this isn't a broken compiler but a legitimate uninitialized variable.
 > 
-> It's a hint that IOVA exceeds the AW. It might be worth to check whether the
-> missed IOVA reported from IOTLB is legal.
-
-Yeah.  By default the QEMU vIOMMU should only support 39bits width for guest
-iova address space.  To extend it, we can use:
-
-  -device intel-iommu,aw-bits=48
-
-So we'll enable 4-level iommu pgtable.
-
-Here the iova is obvious longer than this, so it'll be interesting to know why
-that iova is allocated in the guest driver since the driver should know somehow
-that this iova is beyond what's supported (guest iommu driver should be able to
-probe viommu capability on this width information too).
+>   -ilia
+> 
 
 -- 
-Peter Xu
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
