@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6932A543C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DBE2A53D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388477AbgKCVJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:09:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49054 "EHLO mail.kernel.org"
+        id S2387725AbgKCVFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:05:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388415AbgKCVJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:10 -0500
+        id S2387682AbgKCVE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:04:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5797206B5;
-        Tue,  3 Nov 2020 21:09:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A70E20658;
+        Tue,  3 Nov 2020 21:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437749;
-        bh=UIqfSzJMo6WnLq5ulTz553bqwG4I9sZ5qerzitUXoIY=;
+        s=default; t=1604437498;
+        bh=k721Juu+tMq7na9v1YvFmeYLwHIhdFFr7+AYj54quJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m0z+PQLAYK4tp8/28474g9zloF8pjlRHFaQuRVM5MEB60djIPmmJJ8TVU3XP08Cj8
-         eYL5CnC+ydOTPvrYDIeQhw3jlKAaIdAjod24p0GcB62C1tE3ooyyu29gcSw5laoF5h
-         XVXRV2vnV5KD/yhwkrwHHPO465hIXThEcLTtWMjs=
+        b=nAP0xVTfB5IE3XKPF8rjSc0Vx9+wPrx59BGKcX9TZSZh1m7EfQpIg+HM7lkOjyFPC
+         IysFsXDqGcFrp664LlOIK+WTXuObWmaCF2hi9wADic8Ar1icqmche8+JHU71fWZF48
+         ASIbcrcCcdZhGGskR3OxWrhx/NmboIfBiwJ0Z9ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 017/125] powerpc/powernv/smp: Fix spurious DBG() warning
-Date:   Tue,  3 Nov 2020 21:36:34 +0100
-Message-Id: <20201103203159.239202679@linuxfoundation.org>
+Subject: [PATCH 4.19 103/191] arm64: dts: renesas: ulcb: add full-pwr-cycle-in-suspend into eMMC nodes
+Date:   Tue,  3 Nov 2020 21:36:35 +0100
+Message-Id: <20201103203243.299911364@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver O'Halloran <oohall@gmail.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit f6bac19cf65c5be21d14a0c9684c8f560f2096dd ]
+[ Upstream commit 992d7a8b88c83c05664b649fc54501ce58e19132 ]
 
-When building with W=1 we get the following warning:
+Add full-pwr-cycle-in-suspend property to do a graceful shutdown of
+the eMMC device in system suspend.
 
- arch/powerpc/platforms/powernv/smp.c: In function ‘pnv_smp_cpu_kill_self’:
- arch/powerpc/platforms/powernv/smp.c:276:16: error: suggest braces around
- 	empty body in an ‘if’ statement [-Werror=empty-body]
-   276 |      cpu, srr1);
-       |                ^
- cc1: all warnings being treated as errors
-
-The full context is this block:
-
- if (srr1 && !generic_check_cpu_restart(cpu))
- 	DBG("CPU%d Unexpected exit while offline srr1=%lx!\n",
- 			cpu, srr1);
-
-When building with DEBUG undefined DBG() expands to nothing and GCC emits
-the warning due to the lack of braces around an empty statement.
-
-Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200804005410.146094-2-oohall@gmail.com
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1594989201-24228-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/powernv/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/renesas/ulcb.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
-index c17f81e433f7d..11d8fde770c38 100644
---- a/arch/powerpc/platforms/powernv/smp.c
-+++ b/arch/powerpc/platforms/powernv/smp.c
-@@ -44,7 +44,7 @@
- #include <asm/udbg.h>
- #define DBG(fmt...) udbg_printf(fmt)
- #else
--#define DBG(fmt...)
-+#define DBG(fmt...) do { } while (0)
- #endif
+diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+index 0ead552d7eae9..600adc25eaeff 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+@@ -430,6 +430,7 @@
+ 	bus-width = <8>;
+ 	mmc-hs200-1_8v;
+ 	non-removable;
++	full-pwr-cycle-in-suspend;
+ 	status = "okay";
+ };
  
- static void pnv_smp_setup_cpu(int cpu)
 -- 
 2.27.0
 
