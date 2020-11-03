@@ -2,161 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AB92A3A5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F121D2A3A3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgKCCVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:21:22 -0500
-Received: from mail-eopbgr1320044.outbound.protection.outlook.com ([40.107.132.44]:35781
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725982AbgKCCVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:21:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ai5aNnmQ7izoq2DLn2S514xNgQ6KfM4ICyiYhDKmLZKRbHMrVBgEGyGkTKvKhnv1umrV/aHIzQpTapk0TchBhn6gknAK2SBsjFwTxuNr2+zs+mxa9NNSRcrXmQsjtKRYyyOcGtxjMeoYnoR8aVEzSxsY5PxLiN+qJqW1IKI1vi1NcLAlH3mVCCrBuND3843kOXtHXhHH0j/gNcA7Enuj4Yrj61wESzCVUaOSdBveDqB7a01iads17a2cQsYV4RlB+nO9jRgtsCF3lOwN3uPyDbIrzA52lxU3GGWjmbZtBuEdhwx/KF84nhXUtfSZP4APN0zF52dma8ZsNo4iQW+EKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f+PaqPJJgdJrvL2AAnomwxafT7Bdb7Y/TejNPa0PwMo=;
- b=Dlq8uAQxh5uII2XYHzCv043aCSRsDNu8j1mZdeWNAYPpUx8+06PnPCC+Ve42bKUPVzMmZrkT+Ux0y7Y0WFcKegRr4n6vKOM/7QHOK/Z18cNdie5wYhoIvQ3Cr1fr9GyesPGSKk2fMOLbkpJTwHWizHDpPf1A0sylImGZCZ6aEUDNXII9ejSJBf5pZrLK3E8BY6tLS0YD/SfhjoCMLpkJ8yHNDxbYghq1dRU8yzZ5pP3+XkKIh3elM7YWVs8kN4r2JzRvT00ufm0iywNk9OvQZGIRyqzwxG7y+H4MhrJSJ6uyrg2hmJKDxqI26xrO4Vq34JZ8ieXhF1K2x3BvnVHAMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ssstc.com; dmarc=pass action=none header.from=ssstc.com;
- dkim=pass header.d=ssstc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssstc.onmicrosoft.com;
- s=selector1-ssstc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f+PaqPJJgdJrvL2AAnomwxafT7Bdb7Y/TejNPa0PwMo=;
- b=McakartZi1zVoicAvEm+O9aHcHeMMkSuxJZUsdrAjbLTIsxHJv1maZIHrnL4d4aeQx0beiME3yvVnoomv5iPSG0BpxNiGwY3pp8PjJOmFI3rOOgbMBXwXCfkoIQkOcyLO+hkjjAE2lrGqWVwaJa2m705aj/Ekd7dlenC8YtcZjo=
-Received: from HK2PR02MB4004.apcprd02.prod.outlook.com (2603:1096:202:22::15)
- by HK2PR02MB4210.apcprd02.prod.outlook.com (2603:1096:202:3d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Tue, 3 Nov
- 2020 02:21:16 +0000
-Received: from HK2PR02MB4004.apcprd02.prod.outlook.com
- ([fe80::e069:3888:21af:b474]) by HK2PR02MB4004.apcprd02.prod.outlook.com
- ([fe80::e069:3888:21af:b474%7]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
- 02:21:16 +0000
-From:   Gloria Tsai <Gloria.Tsai@ssstc.com>
-To:     Christoph Hellwig <hch@lst.de>, Jongpil Jung <jongpuls@gmail.com>
-CC:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jongpil19.jung@samsung.com" <jongpil19.jung@samsung.com>,
-        "jongheony.kim@samsung.com" <jongheony.kim@samsung.com>,
-        "dj54.sohn@samsung.com" <dj54.sohn@samsung.com>
-Subject: RE: [PATCH V3 1/1] nvme: Add quirk for LiteON CL1 devices running FW
- 220TQ,22001
-Thread-Topic: [PATCH V3 1/1] nvme: Add quirk for LiteON CL1 devices running FW
- 220TQ,22001
-Thread-Index: AQHWrQrF3kKZ6Iwnv0+X+dwLEwfIxqmurP+AgAaAo4CAAIfmsA==
-Date:   Tue, 3 Nov 2020 02:21:16 +0000
-Message-ID: <HK2PR02MB4004EE20977D0B14516B030AEE110@HK2PR02MB4004.apcprd02.prod.outlook.com>
-References: <20201028091421.GA667673@image-900X5T-900X5U>
- <20201029145529.GA19011@lst.de> <20201102181327.GD20182@lst.de>
-In-Reply-To: <20201102181327.GD20182@lst.de>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_Enabled=True;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_SiteId=5715baf5-0afd-4dc3-a35d-166593a054fb;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_Owner=Gloria.Tsai@ssstc.com;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_SetDate=2020-11-03T02:20:45.2940497Z;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_Name=Public;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_ActionId=4ac74212-d2c2-4404-8b67-f60db732fdea;
- MSIP_Label_70000674-648a-490a-aff3-4c9f8463df7a_Extended_MSFT_Method=Manual
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=ssstc.com;
-x-originating-ip: [124.219.110.21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4e752645-e716-4de7-722e-08d87f9f248c
-x-ms-traffictypediagnostic: HK2PR02MB4210:
-x-microsoft-antispam-prvs: <HK2PR02MB42104A08A6629B29451DB80BEE110@HK2PR02MB4210.apcprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Fg+RV8yIAJZiVsFHhxBpv4kI09pUQHeaibmkHaPg3VN4vfEOnrHJnKHNl5rQ5Dg0ruYDEDtkQ8ZrNdfWyo4faGbl4Nbso3BN91PiyOGCvlCYHe+lRWyRj+c9Hj/+WVvhVDZudaOmYMpxFqHaQrjoFwginzmEnG1vx2aWGv1ZvYAmh0QTvz1GyhpuWDmSrh7Hj5b4XsPro52ffdpUsyMojw3cER+0fYyhiS/S4bjKbQk3hJFZGemjDtAwgodvQ7tS6Ow2fsWLcJOIt4vQopQsLWa+9Bti2NWY26u8WXSD/Vcf4qLW1XtcvgXHWBDz5giQsFue4m8ENbAC7qFnDP/Abw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR02MB4004.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(366004)(39840400004)(376002)(478600001)(7416002)(2906002)(33656002)(83380400001)(64756008)(66446008)(66476007)(66556008)(5660300002)(76116006)(66946007)(8676002)(54906003)(52536014)(7696005)(8936002)(316002)(71200400001)(110136005)(9686003)(4326008)(26005)(186003)(55016002)(6506007)(53546011)(55236004)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: rGxJVyLmyGg+o1BEK/RuEaOz8bXSINftZkgQ8GF0EOq6pXz/vY0477nrKmqs1sYu/LuZ/bGYrSZsX7d9r6z9CvXGUwhxeQPRbodwp1lVfEFY9glanCbF8AVbYUACJ9mr0BaClb8JhOh4oLBIZV/dpbpVoPNIdzUFJJkVPFeBxGNkQr7S7jK/2buFNUb7bW4Hadzhtas+chQ7ANwNF2oTGx8eYaCq2wvNSYEYsyQdwKXIQ2GdoRFOf52gsZgGTGbjpxxiik/3l44Xln//7/TwhajG4PQo86atWd+Vuv2OCMCuqsCDSC6C2IJP9tbSGp+HP96HEjHj/TN+9pqK17LoE9ursuRpO+57jH9D4zRnw6O1wbBckvJh65f8BhK6pOzXPBscKDRZcH6lP9lbyzUrqrlovyutq5vsGg5sjD2s77zrUVazrmwhWCQklGUM69Qh4jHI6sBYbXP3VZmIjMfxbA8STignjJBcOH2lDOxrhqTWSjyqSWyzNTxHVF43eopuyQjvElTjn2bFOpwN/ax5i5SQ5ZqE3h3K6WDLdcOn4Ids9ePYNKcduu727XvP/JsU2zSQATj+i6G+sWiWu1LUQdUkpTArAnFqigea3xz340Xy8+3a9UdWYW5ap1BGo3gotLtnFGuTr3kSM1HobMeWyA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726982AbgKCCI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:08:56 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:45956 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbgKCCIz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:08:55 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201103020852epoutp04f226e98f7875157340d3a5b241ff1034~D3Who6Azt1567315673epoutp04O
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:08:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201103020852epoutp04f226e98f7875157340d3a5b241ff1034~D3Who6Azt1567315673epoutp04O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604369332;
+        bh=MFuZlfb/Yn1FfDXGe9nnnS1LaE1d3HqlFqTNLWzKXtQ=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=CJihPDzySQyauHEF3YXWgGmeizM0KrqlnK6pBZ1JsZ4PMUoklju5445YtsFPKNGgi
+         w/edSsEWMNxETNU5LlAZoHxRcg6auV4cRCOwxKolGf24+hbfpSDhwyQdUG9wZeDUs/
+         b9l4U+bV4Pbc4kKqYZ/pacuY03259vVp6YNG1DMw=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201103020852epcas1p29e1f632a9e5f1609e8e29b88e395b492~D3Wg9BiC12965429654epcas1p23;
+        Tue,  3 Nov 2020 02:08:52 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4CQCrK3zz1zMqYmB; Tue,  3 Nov
+        2020 02:08:49 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.20.09582.6ABB0AF5; Tue,  3 Nov 2020 11:08:38 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201103020838epcas1p4496f5796cb600465f05b19c1ebce1098~D3WUBQ4TJ1044310443epcas1p4E;
+        Tue,  3 Nov 2020 02:08:38 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201103020838epsmtrp2f3a72ca2f9749d3e5bfed43c02794da4~D3WUAV_0X2405724057epsmtrp2A;
+        Tue,  3 Nov 2020 02:08:38 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-ff-5fa0bba68383
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FD.C7.08745.5ABB0AF5; Tue,  3 Nov 2020 11:08:38 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103020837epsmtip17f8c1cb8b99ebd7ff1794daf1912910d~D3WTkkBsw2593625936epsmtip1g;
+        Tue,  3 Nov 2020 02:08:37 +0000 (GMT)
+Subject: Re: [PATCH v6 49/52] PM / devfreq: tegra20: Convert to EMC_STAT
+ driver, support interconnect and device-tree
+To:     Dmitry Osipenko <digetx@gmail.com>, cwchoi00@gmail.com
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <7ee7e7bb-6c0d-dfd1-f00d-a718c06d7479@samsung.com>
+Date:   Tue, 3 Nov 2020 11:22:35 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-X-OriginatorOrg: ssstc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR02MB4004.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e752645-e716-4de7-722e-08d87f9f248c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 02:21:16.2087
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5715baf5-0afd-4dc3-a35d-166593a054fb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZRNb30nG74WcyPeG72+4pHfVDv6XOsnukfIF0Xglut+3EnxTSSMyWXyZrXwN9OkoIxce3wfG/kZbBCQo4Y9gNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR02MB4210
+In-Reply-To: <bff3bf4a-8111-7c96-92f6-46343d85be0d@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLJsWRmVeSWpSXmKPExsWy7bCmge6y3QviDWbu1rd4dlTb4t2np6wW
+        84+cY7VY/fExo8WVr+/ZLKbv3cRm0TJrEYvF+fMb2C22Pl3DZHG26Q27xeVdc9gsPvceYbTo
+        /DKLzeLiKVeL240r2CwmrZ3KaHH2mbdF694j7Bb/rm1ksfi5ax6LxeYHx9gcRD3e32hl99g5
+        6y67x6Vzf5g9Nq3qZPO4c20Pm8f97uNMHr3N79g8+rasYvT4vEkugDMq2yYjNTEltUghNS85
+        PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6DslhbLEnFKgUEBicbGSvp1N
+        UX5pSapCRn5xia1SakFKToFlgV5xYm5xaV66XnJ+rpWhgYGRKVBhQnbGlwU5BZM4KzZ+ms3c
+        wLiUvYuRk0NCwERi6tsvbF2MXBxCAjsYJZ5Me8QC4XxilJg3ZwZYlZDAZ0aJCSc0YDpmHDzG
+        ClG0i1Hi6dJt7BDOe0aJiQdXMoFUCQuUS5ybuYURxBYRsJL49QqiiFmgmU1i9ZUtzCAJNgEt
+        if0vbrCB2PwCihJXfzwGa+AVsJN4cO0KkM3BwSKgIrFiZy5IWFQgTOLkthaoEkGJkzOfsIDY
+        nAK2EifXLwG7lFlAXOLWk/lMELa8RPPW2cwQV8/nlDh+2ALCdpF4P+UxC4QtLPHq+BZoWEhJ
+        fH63lw3CrpZYefIIOFwkBDoYJbbsv8AKkTCW2L90MhPIbcwCmhLrd+lDhBUldv6eywixl0/i
+        3dceVpASCQFeiY42IYgSZYnLD+4yQdiSEovbO9kmMCrNQvLNLCQfzELywSyEZQsYWVYxiqUW
+        FOempxYbFhgjx/UmRnC61zLfwTjt7Qe9Q4xMHIyHGCU4mJVEeGsi58UL8aYkVlalFuXHF5Xm
+        pBYfYjQFBu9EZinR5HxgxskriTc0NTI2NrYwMTQzNTRUEuf9o90RLySQnliSmp2aWpBaBNPH
+        xMEp1cB06GqHZUbc528e/v9W1WUdzePrlY+dMDVh69pYtYqQ5O2RyyR2P56R+8RQoDtQ+uTm
+        VruvnFOnLstiXmdiYJXJ6qQmpnebb9/nFR8WPloy71cB8+47u3XUCn1sS0U/dO89abjblfl4
+        kTr3otkZ2voei0qT5+4wfMS/7Y3UhFP/e5sXLLlV4d1v63b0sESP0bTaDVs1T3lLLrn9KusD
+        t87VzO8r18+OW6X38WumJJP21rL1zlWWzsVfz/GeqHmv9pXLXeblhoBEc9PCZUpbM8+3enjL
+        fyh+f91dVWDmGfeblR3P2+SeCQtbef5U/etWfnu1ws+gEHuePhu3E6eZ5xXdtLw/uXphzqRQ
+        eYUbt4KUWIozEg21mIuKEwHlsQPXgAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsWy7bCSnO6y3QviDXZMYbZ4dlTb4t2np6wW
+        84+cY7VY/fExo8WVr+/ZLKbv3cRm0TJrEYvF+fMb2C22Pl3DZHG26Q27xeVdc9gsPvceYbTo
+        /DKLzeLiKVeL240r2CwmrZ3KaHH2mbdF694j7Bb/rm1ksfi5ax6LxeYHx9gcRD3e32hl99g5
+        6y67x6Vzf5g9Nq3qZPO4c20Pm8f97uNMHr3N79g8+rasYvT4vEkugDOKyyYlNSezLLVI3y6B
+        K+PLgpyCSZwVGz/NZm5gXMrexcjJISFgIjHj4DHWLkYuDiGBHYwSixefZoFISEpMu3iUuYuR
+        A8gWljh8uBii5i2jxNmtT5hAaoQFyiXOzdzCCGKLCFhJ/Hq1jR2kiFmgk03i3ooGFoiOh0wS
+        LXc3g61jE9CS2P/iBhuIzS+gKHH1x2Owbl4BO4kH164wgmxjEVCRWLEzFyQsKhAmsXPJYyaI
+        EkGJkzOfgB3HKWArcXL9ErCRzALqEn/mXWKGsMUlbj2ZzwRhy0s0b53NPIFReBaS9llIWmYh
+        aZmFpGUBI8sqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg2NfS2sG4Z9UHvUOMTByM
+        hxglOJiVRHhrIufFC/GmJFZWpRblxxeV5qQWH2KU5mBREuf9OmthnJBAemJJanZqakFqEUyW
+        iYNTqoFJrNssde/O+z2xW4I4o9esXq29aCrj73f/OkMeOopZTw+38G1p/Rob4ungGVdwcsfh
+        BU5H/Q/GMjLeXeAz8//3xxttmDJX/+laKJnnHHL1zpLFnbaCi8Laf9VIXnv6K9Yk5V6x6+nf
+        jKaGJyMVDhZW/NSJ+7+arWXBRqfes3/jOU+9yTJa+XSye0do5mfBpV/SvWbGfJ71+EHb7rrg
+        9Wxac4QkWyxuSK2/YN6Szsd7d2FLo23Vp4aDho9chPKXlLF4x99svc3mMetZa9S95SvfH5HQ
+        sFV6L+Y5uUdq27tp547XP2mc67Tb7dVWo8ZbkUul9mwI9Zp4XMhmoXD2pN97rIJyzreXL1J6
+        d8Pmbj2vEktxRqKhFnNRcSIAXdvuBWwDAAA=
+X-CMS-MailID: 20201103020838epcas1p4496f5796cb600465f05b19c1ebce1098
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201102200839epcas1p30a5235333319f7affbe0f0c814ec3308
+References: <20201025221735.3062-1-digetx@gmail.com>
+        <20201025221735.3062-50-digetx@gmail.com>
+        <CAGTfZH0KxyZYLZ_AgM7Lr+4s35kaWJp1AenpZ-o_FRLCCHC+6A@mail.gmail.com>
+        <0ffa84f6-625e-807c-e9af-7a67f0fe48e7@gmail.com>
+        <CGME20201102200839epcas1p30a5235333319f7affbe0f0c814ec3308@epcas1p3.samsung.com>
+        <bff3bf4a-8111-7c96-92f6-46343d85be0d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rephrased the problem description here,
-When host issue shutdown + D3hot in suspend, NVMe drive might have chance c=
-hoosing wrong pointer which has already been used by GC then cause over pro=
-gram.
-Do GC before shutdown -> delete IO Q -> shutdown from host -> breakup GC ->=
- D3hot -> enter PS4 -> have a chance swap block -> use wrong pointer on dev=
-ice SRAM -> over program
-The issue only happens in simple suspend (shutdown+D3hot) with specific FW =
-on Kahoku board.
+On 11/3/20 5:08 AM, Dmitry Osipenko wrote:
+> 01.11.2020 17:12, Dmitry Osipenko пишет:
+> ...
+>> We will probably move the Tegra20 EMC_STAT devfreq driver into the
+>> memory driver and remove the older IMC_STAT driver in v7, like it was
+>> suggested by Thierry Reding. This will be a much less invasive code change.
+>>
+>>> Also, if you want to get more responsiveness, you could use delayed timer
+>>> instead of deferrable timer by editing the devfreq_dev_profile structure.
+>>
+>> Thanks, I'll try the deferrable timer.
+> 
+> I took a brief look at the delayed timer and I think the deferrable
+> timer should be more a preferred option because this devfreq drive is
+> more an assistance for the optimal bandwidth selection and it will be
+> more preferred to keep system idling whenever possible.
+> 
+> My primary concern is the initial performance lag in a case of
+> multimedia applications. But this will be resolved by hooking up
+> performance voting to all drivers, once we will get around to it.
+
+OK. You can choice the type of timer on both probe
+and via sysfs file on the runtime.
 
 
-Regards,
-Gloria Tsai
-_____________________________________
-
-Sales PM Division
-Solid State Storage Technology Corporation
-TEL: +886-3-612-3888 ext. 2201
-E-Mail: gloria.tsai@ssstc.com
-_____________________________________
-
------Original Message-----
-From: Christoph Hellwig <hch@lst.de>=20
-Sent: Tuesday, November 3, 2020 2:13 AM
-To: Jongpil Jung <jongpuls@gmail.com>
-Cc: Keith Busch <kbusch@kernel.org>; Jens Axboe <axboe@fb.com>; Christoph H=
-ellwig <hch@lst.de>; Sagi Grimberg <sagi@grimberg.me>; linux-nvme@lists.inf=
-radead.org; linux-kernel@vger.kernel.org; Gloria Tsai <Gloria.Tsai@ssstc.co=
-m>; jongpil19.jung@samsung.com; jongheony.kim@samsung.com; dj54.sohn@samsun=
-g.com
-Subject: Re: [PATCH V3 1/1] nvme: Add quirk for LiteON CL1 devices running =
-FW 220TQ,22001
-
-
-
-This message was sent from outside of the company. Please do not click link=
-s or open attachments unless you recognize the source of this email and kno=
-w the content is safe.
-
-
-On Thu, Oct 29, 2020 at 03:55:29PM +0100, Christoph Hellwig wrote:
-> I'm still worried about this.
->
-> If power state based suspend does always work despite a HMB and is=20
-> preferred for the specific Google board we should have purely a DMI=20
-> based quirk for the board independent of the NVMe controller used with=20
-> it.
->
-> But if these LiteON devices can't properly handle nvme_dev_disable=20
-> calls we have much deeper problems, because it can be called in all=20
-> kinds of places, including suspending when not on this specific board.
->
-> That being said, I still really do not understand this sentence and=20
-> thus the problem at all:
->
-> > When NVMe device receive D3hot from host, NVMe firmware will do=20
-> > garbage collection. While NVMe device do Garbage collection,=20
-> > firmware has chance to going incorrect address.
-
-Any progress in describing the problem a little better?
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
