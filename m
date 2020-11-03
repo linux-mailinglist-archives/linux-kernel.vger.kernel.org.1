@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802002A57DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB7B2A57D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732367AbgKCVqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:46:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48722 "EHLO mail.kernel.org"
+        id S1732091AbgKCVqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:46:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732068AbgKCUwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:19 -0500
+        id S1732093AbgKCUwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AA862236F;
-        Tue,  3 Nov 2020 20:52:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134C72071E;
+        Tue,  3 Nov 2020 20:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436738;
-        bh=Me2iG8T7EH6M0qz1inYpkb2a5RQLwzVtJ7yiKOSh94I=;
+        s=default; t=1604436745;
+        bh=R2uupPPjUrCiVXqiZGMwEogBjkihGfr35fgrFP4hGsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0C/NFS1Ic2wC6D5yE3JNQloCgHWNmBnQaQytwjfrGfZL98brD0mrd3ZDlILAPnzI8
-         opF7rt8yrg3KF5YiHGdUcdNxnFG9tTpRHQLkXcaCloFW+FFgdWnrwLTonL17IuMbSm
-         wFP33rBjo0cqKIhDB6J+4f/Xc4Q4vnhoGZKhJpbQ=
+        b=Tm5/DAKLN5s9JpWZv5ofmKhByuCFn76a0tIeuiZQz/SCwL2cuvzXN/z/AcoOepQW5
+         /4sFvheC255YUpeJ4mdi4ySJxbnyiJWoODOYHaWIUwgLgDv7tCyeH9CdxaYnJJUbWf
+         Vg3w1e3ZXZ6Crrw0v1zHXugNzeYhVYMosFwOqVVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zong Li <zong.li@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 5.9 380/391] stop_machine, rcu: Mark functions as notrace
-Date:   Tue,  3 Nov 2020 21:37:11 +0100
-Message-Id: <20201103203412.807084409@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.9 382/391] staging: comedi: cb_pcidas: Allow 2-channel commands for AO subdevice
+Date:   Tue,  3 Nov 2020 21:37:13 +0100
+Message-Id: <20201103203412.941117108@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -46,58 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zong Li <zong.li@sifive.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 4230e2deaa484b385aa01d598b2aea8e7f2660a6 upstream.
+commit 647a6002cb41d358d9ac5de101a8a6dc74748a59 upstream.
 
-Some architectures assume that the stopped CPUs don't make function calls
-to traceable functions when they are in the stopped state. See also commit
-cb9d7fd51d9f ("watchdog: Mark watchdog touch functions as notrace").
+The "cb_pcidas" driver supports asynchronous commands on the analog
+output (AO) subdevice for those boards that have an AO FIFO.  The code
+(in `cb_pcidas_ao_check_chanlist()` and `cb_pcidas_ao_cmd()`) to
+validate and set up the command supports output to a single channel or
+to two channels simultaneously (the boards have two AO channels).
+However, the code in `cb_pcidas_auto_attach()` that initializes the
+subdevices neglects to initialize the AO subdevice's `len_chanlist`
+member, leaving it set to 0, but the Comedi core will "correct" it to 1
+if the driver neglected to set it.  This limits commands to use a single
+channel (either channel 0 or 1), but the limit should be two channels.
+Set the AO subdevice's `len_chanlist` member to be the same value as the
+`n_chan` member, which will be 2.
 
-Violating this assumption causes kernel crashes when switching tracer on
-RISC-V.
-
-Mark rcu_momentary_dyntick_idle() and stop_machine_yield() notrace to
-prevent this.
-
-Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in multi_cpu_stop()")
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Atish Patra <atish.patra@wdc.com>
-Tested-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201021073839.43935-1-zong.li@sifive.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20201021122142.81628-1-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/rcu/tree.c     |    2 +-
- kernel/stop_machine.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/cb_pcidas.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -416,7 +416,7 @@ bool rcu_eqs_special_set(int cpu)
-  *
-  * The caller must have disabled interrupts and must not be idle.
-  */
--void rcu_momentary_dyntick_idle(void)
-+notrace void rcu_momentary_dyntick_idle(void)
- {
- 	int special;
- 
---- a/kernel/stop_machine.c
-+++ b/kernel/stop_machine.c
-@@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_
- 		set_state(msdata, msdata->state + 1);
- }
- 
--void __weak stop_machine_yield(const struct cpumask *cpumask)
-+notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
- {
- 	cpu_relax();
- }
+--- a/drivers/staging/comedi/drivers/cb_pcidas.c
++++ b/drivers/staging/comedi/drivers/cb_pcidas.c
+@@ -1342,6 +1342,7 @@ static int cb_pcidas_auto_attach(struct
+ 		if (dev->irq && board->has_ao_fifo) {
+ 			dev->write_subdev = s;
+ 			s->subdev_flags	|= SDF_CMD_WRITE;
++			s->len_chanlist	= s->n_chan;
+ 			s->do_cmdtest	= cb_pcidas_ao_cmdtest;
+ 			s->do_cmd	= cb_pcidas_ao_cmd;
+ 			s->cancel	= cb_pcidas_ao_cancel;
 
 
