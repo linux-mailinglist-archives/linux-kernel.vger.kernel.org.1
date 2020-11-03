@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289342A3F09
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3682A3F0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgKCIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:37:13 -0500
-Received: from jax4mhob23.registeredsite.com ([64.69.218.111]:43322 "EHLO
-        jax4mhob23.registeredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727468AbgKCIhM (ORCPT
+        id S1726690AbgKCIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgKCIiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:37:12 -0500
-Received: from mailpod.hostingplatform.com ([10.30.71.204])
-        by jax4mhob23.registeredsite.com (8.14.4/8.14.4) with ESMTP id 0A38b9x6004236
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 3 Nov 2020 03:37:09 -0500
-Received: (qmail 20239 invoked by uid 0); 3 Nov 2020 08:37:09 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 3 Nov 2020 08:37:09 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sre@kernel.org, robh+dt@kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v4] dt-bindings: power/supply: Add ltc4162-l-charger
-Date:   Tue,  3 Nov 2020 09:37:06 +0100
-Message-Id: <20201103083706.29380-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        Tue, 3 Nov 2020 03:38:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92E0C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:38:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qN0bHUKAHFEL54H3lvuQSCj9tnCx/ESpYXkr6/VPy1E=; b=pdBoEAt6CB5d3scOUIeQioqtKt
+        7ysFdZ2jQGKsMhyPfcGGZ5wmkjrksdVUVLxJ3jePEVnwYee6uo0DD8bGGQSPHgn+SLMPC+QomEMKr
+        sTwblJDDPD2Od4P76fONdJkUbORtiYRpl2ebO4d+0svUvqRdEDJMrp/0fGn6EHrTkY3NRwRfbZeah
+        0u8kuvZu1YVEVZFBW7mXj150YT9yoAxAtexlzSK2Xx0QiUy+6ETjmIUP/0RvdB8aiX2uNAfDS5D0M
+        W6Wi2wFODAA0qA+jTa1BRmgDecu9jFPKEHlmYu2HjfDgd89PJu17TAi9kHqX6bpDfJZCXqcCAJ29V
+        0/exxXVQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kZrpN-0002k0-0U; Tue, 03 Nov 2020 08:38:05 +0000
+Date:   Tue, 3 Nov 2020 08:38:04 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-kernel@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Pratik Patel <pratikp@codeaurora.org>
+Subject: Re: mm/memblock: export memblock_{start/end}_of_DRAM
+Message-ID: <20201103083804.GE9092@infradead.org>
+References: <d0580051d03df3f3e9f333f6bfe968cf@codeaurora.org>
+ <20201030083842.GA4319@kernel.org>
+ <20201031091846.GA30512@infradead.org>
+ <db82e52c-0159-777d-8fa9-7b5cf93eca7f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db82e52c-0159-777d-8fa9-7b5cf93eca7f@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the LTC4162-L Li-Ion battery charger. The driver allows
-reading back telemetry and to set some charging options like the input
-current limit.
+On Sat, Oct 31, 2020 at 11:05:45AM +0100, David Hildenbrand wrote:
+> On 31.10.20 10:18, Christoph Hellwig wrote:
+> > On Fri, Oct 30, 2020 at 10:38:42AM +0200, Mike Rapoport wrote:
+> > > What do you mean by "system memory block"? There could be a lot of
+> > > interpretations if you take into account memory hotplug, "mem=" option,
+> > > reserved and firmware memory.
+> > > 
+> > > I'd suggest you to describe the entire use case in more detail. Having
+> > > the complete picture would help finding a proper solution.
+> > 
+> > I think we need the code for the driver trying to do this as an RFC
+> > submission.  Everything else is rather pointless.
+> 
+> Sharing RFCs is most probably not what people want when developing advanced
+> hypervisor features :)
 
-This adds the devicetree bindings.
-
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Use microohms, add lltc,cell-count
-v3: Fix example dts to match description
-v4: Update "required" list to include micro-ohms
-
- .../bindings/power/supply/ltc4162-l.yaml      | 69 +++++++++++++++++++
- 1 file changed, 69 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-
-diff --git a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-new file mode 100644
-index 000000000000..1f88c9e013f4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-@@ -0,0 +1,69 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (C) 2020 Topic Embedded Products
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/ltc4162-l.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Linear Technology (Analog Devices) LTC4162-L Charger
-+
-+maintainers:
-+  - Mike Looijmans <mike.looijmans@topic.nl>
-+
-+description: |
-+  The LTC ® 4162-L is an advanced monolithic synchronous step-down switching
-+  battery charger and PowerPath (TM) manager that seamlessly manages power
-+  distribution between input sources such as wall adapters, backplanes, solar
-+  panels, etc., and a rechargeable Lithium-Ion/Polymer battery.
-+
-+  Specifications about the charger can be found at:
-+    https://www.analog.com/en/products/ltc4162-s.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - lltc,ltc4162-l
-+
-+  reg:
-+    maxItems: 1
-+    description: I2C address of the charger.
-+
-+  lltc,rsnsb-micro-ohms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Battery sense resistor in microohm.
-+    minimum: 1000
-+
-+  lltc,rsnsi-micro-ohms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Input current sense resistor in microohm.
-+    minimum: 1000
-+
-+  lltc,cell-count:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Number of battery cells. If not provided, will be obtained from the chip
-+      once the external power is applied. Omit this when the number of cells
-+      is somewhat dynamic. Without it, several measurements will return 0 until
-+      the charger is connected to an external supply.
-+
-+required:
-+  - compatible
-+  - reg
-+  - lltc,rsnsb-micro-ohms
-+  - lltc,rsnsi-micro-ohms
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      charger: battery-charger@68 {
-+              compatible = "lltc,ltc4162-l";
-+              reg = <0x68>;
-+              lltc,rsnsb-micro-ohms = <10000>;
-+              lltc,rsnsi-micro-ohms = <16000>;
-+              lltc,cell-count = <2>;
-+      };
-+    };
--- 
-2.17.1
-
+Well, if they can't even do that it really has no relevance for kernel
+development.
