@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFA22A4108
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6542A410E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgKCKA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:00:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41892 "EHLO mx2.suse.de"
+        id S1728305AbgKCKAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:00:33 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:17889 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgKCKA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:00:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3456BABDE;
-        Tue,  3 Nov 2020 10:00:25 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 11:00:12 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/seves fixes for v5.10-rc3
-Message-ID: <20201103100012.GA7825@zn.tnic>
+        id S1727512AbgKCKAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 05:00:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=805; q=dns/txt; s=axis-central1;
+  t=1604397630; x=1635933630;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RjKhKTGDdy/LlX00sdREDURXzOpCgHn5INCOvYAsuok=;
+  b=UHXlyJ8NPgODxUVpsH8ut2mXRC5EzMNEUPZQEJeQnSZbMnd2GPPNt/Yx
+   ib75ehnkiUtbuvIe+LMxs/hoisMs6qjiCQDSWXS2VPH3a6RpWM3/niCjB
+   mDjC3CY0JZQEKbUTPMfypMngx0Zwvv9b4eq/lFcIHOCn3U9I/q1dEsIs5
+   qvpru/SoppbQTbZNOFh75enmWYh6PvCpZvKmxsdUSnqiNNoXJZrexakmb
+   +eCLM66Xm6d35HWCtSJcpw2Adf64JDnUGrFf1QhoaupjFijJ3UYCVPtvl
+   kZzE7ZYwrgCW9xoMR7wdZyvDi3hzY70ESfMLeyE9LOfXalJruBmbVuhhk
+   g==;
+IronPort-SDR: GJfLfB8+0iiAIqiry2sqhWaJWMGpWZZpjlYGFm9Pgb2s8rXpVtai1RhzSlOveVh4bQJmVW8UER
+ dzhHyK8DZr6E85dQC7JXtu4tcDU11lo6D4mCwUeko0OLwBaDtCwd1viH3FnhQn8RkKaPJhJsn2
+ 6/OWph9VTXMt2ARap3odttkOo6dFMLNBcMsRY7IvbvPrhKfgZbKjtrFxH4xWZWqiwl2MWXx5Po
+ OxcIkvrWwQ+XkxdvYt8tgJzBhs3scf9Lrl8a/Mq4gdRr/lXSSN9+HVSlpv6DDTHmvqB75djEKN
+ NEo=
+X-IronPort-AV: E=Sophos;i="5.77,447,1596492000"; 
+   d="scan'208";a="14164800"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <support.opensource@diasemi.com>
+CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH v2 0/2] DA9121 regulator support
+Date:   Tue, 3 Nov 2020 11:00:19 +0100
+Message-ID: <20201103100021.19603-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This series adds support for the DA9121, a "High-Performance, 10 A, Dual-Phase
+DC-DC Converter".  The datasheet is currently available here:
 
-please pull a couple of SEV-ES hardening fixes against a malicious
-hypervisor.
+ https://www.dialog-semiconductor.com/sites/default/files/da9121_datasheet_2v3.pdf
 
-Thx.
+v2:
+- Let the core get the constraints itself from a subnode in the device tree.
 
----
+Vincent Whitchurch (2):
+  dt-bindings: regulator: Add DA9121
+  regulator: Add support for DA9121 regulator
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_seves_for_v5.10_rc3
-
-for you to fetch changes up to 2411cd82112397bfb9d8f0f19cd46c3d71e0ce67:
-
-  x86/sev-es: Do not support MMIO to/from encrypted memory (2020-10-29 19:27:42 +0100)
-
-----------------------------------------------------------------
-A couple of changes to the SEV-ES code to perform more stringent
-hypervisor checks before enabling encryption. (Joerg Roedel)
-
-----------------------------------------------------------------
-Joerg Roedel (5):
-      x86/boot/compressed/64: Introduce sev_status
-      x86/boot/compressed/64: Sanity-check CPUID results in the early #VC handler
-      x86/boot/compressed/64: Check SEV encryption in 64-bit boot-path
-      x86/head/64: Check SEV encryption before switching to kernel page-table
-      x86/sev-es: Do not support MMIO to/from encrypted memory
-
- arch/x86/boot/compressed/ident_map_64.c |  1 +
- arch/x86/boot/compressed/mem_encrypt.S  | 20 +++++++-
- arch/x86/boot/compressed/misc.h         |  2 +
- arch/x86/kernel/head_64.S               | 16 ++++++
- arch/x86/kernel/sev-es-shared.c         | 26 ++++++++++
- arch/x86/kernel/sev-es.c                | 20 +++++---
- arch/x86/kernel/sev_verify_cbit.S       | 89 +++++++++++++++++++++++++++++++++
- arch/x86/mm/mem_encrypt.c               |  1 +
- 8 files changed, 167 insertions(+), 8 deletions(-)
- create mode 100644 arch/x86/kernel/sev_verify_cbit.S
+ .../bindings/regulator/dlg,da9121.yaml        |  47 ++++++++
+ drivers/regulator/Kconfig                     |  12 ++
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/da9121-regulator.c          | 108 ++++++++++++++++++
+ 4 files changed, 168 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
+ create mode 100644 drivers/regulator/da9121-regulator.c
 
 -- 
-Regards/Gruss,
-    Boris.
+2.28.0
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
