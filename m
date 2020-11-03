@@ -2,105 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3B42A45C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE292A45CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgKCM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:58:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:48582 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727821AbgKCM6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:58:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44276106F;
-        Tue,  3 Nov 2020 04:58:50 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.57.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C3B13F718;
-        Tue,  3 Nov 2020 04:58:48 -0800 (PST)
-Date:   Tue, 3 Nov 2020 12:58:45 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] arm64: lto: Strengthen READ_ONCE() to acquire
- when CONFIG_LTO=y
-Message-ID: <20201103125845.GD40454@C02TD0UTHF1T.local>
-References: <20201103121721.5166-1-will@kernel.org>
- <20201103121721.5166-5-will@kernel.org>
+        id S1729177AbgKCM7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:59:17 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:38090 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728895AbgKCM7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:59:17 -0500
+Received: from pps.filterd (m0170392.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3CsflM013404
+        for <linux-kernel@vger.kernel.org>; Tue, 3 Nov 2020 07:59:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=gXiXEbn51dmWApabI5YJtghO8VjiHbPBfHDnqtSPYug=;
+ b=Du6+RNFQm7y6sBg9rTCWKAytw59tv6joyKSNOUT8usHfQqyL5dlxpGMCELkZdEn7i+dt
+ Jmt1t1B4lL+JmsGfixR8DJMymYPBqEciVsLd9yyr7GxZIbcwSpbSTAt8VGUOUpZISAHm
+ jsCkCNdgXTY8YLKdrVCGiXNnQC6nfoJZSVfgaoBJFnOkLuiHLU4eL4jT/C2EEhD7s3gE
+ E2G5hhHMtNsSG4DkPFP9rYcB4kpxLJa5RI5whoSShWiqTHFhK335TLEpHm0VKnepA24c
+ 5A75UMapeimzA2cZuD+gm1QHBBSOPl9FWMVbLEMWeOOm50fIFz3NfZgQjBG6zQMQ/Xi3 0A== 
+Received: from mx0a-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0a-00154904.pphosted.com with ESMTP id 34h33ca50x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:59:16 -0500
+Received: from pps.filterd (m0089484.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3CwQsW025909
+        for <linux-kernel@vger.kernel.org>; Tue, 3 Nov 2020 07:59:15 -0500
+Received: from ausxipps310.us.dell.com (AUSXIPPS310.us.dell.com [143.166.148.211])
+        by mx0b-00154901.pphosted.com with ESMTP id 34k7jc82wa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 07:59:15 -0500
+X-LoopCount0: from 10.69.132.19
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.77,448,1596517200"; 
+   d="scan'208";a="559511945"
+From:   Perry Yuan <Perry.Yuan@dell.com>
+To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        perry_yuan <Perry.Yuan@dell.com>,
+        Limonciello Mario <Mario.Limonciello@dell.com>
+Subject: [PATCH] ASoC: rt715:add Mic Mute LED control support
+Date:   Tue,  3 Nov 2020 04:58:59 -0800
+Message-Id: <20201103125859.8759-1-Perry_Yuan@Dell.com>
+X-Mailer: git-send-email 2.24.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103121721.5166-5-will@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=763 lowpriorityscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011030087
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=899
+ phishscore=0 suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:17:21PM +0000, Will Deacon wrote:
-> When building with LTO, there is an increased risk of the compiler
-> converting an address dependency headed by a READ_ONCE() invocation
-> into a control dependency and consequently allowing for harmful
-> reordering by the CPU.
-> 
-> Ensure that such transformations are harmless by overriding the generic
-> READ_ONCE() definition with one that provides acquire semantics when
-> building with LTO.
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
+From: perry_yuan <perry_yuan@dell.com>
 
-[...]
+Some new Dell system is going to support audio internal micphone
+privacy setting from hardware level with micmute led state changing
 
-Could we add a note above __READ_ONCE() along the lines of the commit
-message, e.g.
+This patch allow to change micmute led state through this micphone
+led control interface like hda_generic provided.
 
-/*
- * With LTO a compiler might convert an address dependency headed by a
- * READ_ONCE() into a control dependency, allowing for harmful
- * reordering by the CPU.
- *
- * To prevent this, upgrade READ_OONCE() to provide acquire semantics
- * when building with LTO.
- */
+Signed-off-by: Perry Yuan  <perry_yuan@dell.com>
+Signed-off-by: Limonciello Mario <mario_limonciello@dell.com>
+---
+ sound/soc/codecs/rt715.c | 43 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt715.h |  1 +
+ 2 files changed, 44 insertions(+)
 
-Either way:
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index 099c8bd20006..2df2895d0092 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -26,6 +26,7 @@
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_device.h>
++#include <linux/leds.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -213,6 +214,45 @@ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
+ 	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+ 					    xmax, xinvert) }
+ 
++static const char *rt715_micmute_led_mode[] = {
++  "Off", "On"
++};
++
++static const struct soc_enum rt715_micmute_led_mode_enum =
++  SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rt715_micmute_led_mode),
++              rt715_micmute_led_mode);
++
++static int rt715_mic_mute_led_mode_get(struct snd_kcontrol *kcontrol,
++      struct snd_ctl_elem_value *ucontrol)
++{
++    struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++    struct rt715_priv *rt715 = snd_soc_component_get_drvdata(component);
++    int led_mode = rt715->micmute_led;
++
++    ucontrol->value.integer.value[0] = led_mode;
++#if IS_ENABLED(CONFIG_LEDS_TRIGGER_AUDIO)
++    ledtrig_audio_set(LED_AUDIO_MICMUTE,
++            rt715->micmute_led ? LED_ON : LED_OFF);
++#endif
++    return 0;
++}
++
++static int rt715_micmute_led_mode_put(struct snd_kcontrol *kcontrol,
++      struct snd_ctl_elem_value *ucontrol)
++{
++    struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++    struct rt715_priv *rt715 = snd_soc_component_get_drvdata(component);
++    int led_mode = ucontrol->value.integer.value[0];
++
++    rt715->micmute_led = led_mode;
++#if IS_ENABLED(CONFIG_LEDS_TRIGGER_AUDIO)
++    ledtrig_audio_set(LED_AUDIO_MICMUTE,
++               rt715->micmute_led ? LED_ON : LED_OFF);
++#endif
++  return 0;
++}
++
++
+ static const struct snd_kcontrol_new rt715_snd_controls[] = {
+ 	/* Capture switch */
+ 	SOC_DOUBLE_R_EXT("ADC 07 Capture Switch", RT715_SET_GAIN_MIC_ADC_H,
+@@ -277,6 +317,9 @@ static const struct snd_kcontrol_new rt715_snd_controls[] = {
+ 			RT715_SET_GAIN_LINE2_L, RT715_DIR_IN_SFT, 3, 0,
+ 			rt715_set_amp_gain_get, rt715_set_amp_gain_put,
+ 			mic_vol_tlv),
++    /*Micmute Led Control*/
++    SOC_ENUM_EXT("Micmute Led Mode", rt715_micmute_led_mode_enum,
++            rt715_mic_mute_led_mode_get, rt715_micmute_led_mode_put),
+ };
+ 
+ static int rt715_mux_get(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
+index df0f24f9bc0c..32917b7846b4 100644
+--- a/sound/soc/codecs/rt715.h
++++ b/sound/soc/codecs/rt715.h
+@@ -22,6 +22,7 @@ struct rt715_priv {
+ 	struct sdw_bus_params params;
+ 	bool hw_init;
+ 	bool first_hw_init;
++    int micmute_led;
+ };
+ 
+ struct sdw_stream_data {
+-- 
+2.25.1
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark
-
-> +#define __READ_ONCE(x)							\
-> +({									\
-> +	typeof(&(x)) __x = &(x);					\
-> +	int atomic = 1;							\
-> +	union { __unqual_scalar_typeof(*__x) __val; char __c[1]; } __u;	\
-> +	switch (sizeof(x)) {						\
-> +	case 1:								\
-> +		asm volatile(__LOAD_RCPC(b, %w0, %1)			\
-> +			: "=r" (*(__u8 *)__u.__c)			\
-> +			: "Q" (*__x) : "memory");			\
-> +		break;							\
-> +	case 2:								\
-> +		asm volatile(__LOAD_RCPC(h, %w0, %1)			\
-> +			: "=r" (*(__u16 *)__u.__c)			\
-> +			: "Q" (*__x) : "memory");			\
-> +		break;							\
-> +	case 4:								\
-> +		asm volatile(__LOAD_RCPC(, %w0, %1)			\
-> +			: "=r" (*(__u32 *)__u.__c)			\
-> +			: "Q" (*__x) : "memory");			\
-> +		break;							\
-> +	case 8:								\
-> +		asm volatile(__LOAD_RCPC(, %0, %1)			\
-> +			: "=r" (*(__u64 *)__u.__c)			\
-> +			: "Q" (*__x) : "memory");			\
-> +		break;							\
-> +	default:							\
-> +		atomic = 0;						\
-> +	}								\
-> +	atomic ? (typeof(*__x))__u.__val : (*(volatile typeof(__x))__x);\
-> +})
