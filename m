@@ -2,227 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B5F2A4273
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F682A41E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgKCKeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:34:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
+        id S1728080AbgKCKbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgKCKeT (ORCPT
+        with ESMTP id S1727530AbgKCKbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:34:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C1BC0613D1;
-        Tue,  3 Nov 2020 02:34:18 -0800 (PST)
-Message-Id: <20201103095900.367260321@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604399649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XzZnXq40Xta6eAd8+Z4XomSn8j1A2hSECk29QnRRbws=;
-        b=CdqukbVBWMYI/RONrhSGzX6/xMHlDVBTWtfJrQb8BGeECEJqjOAzrpgd/S5gcYhw2K5fbn
-        Eaab3vE9c+BoonfV0tN18iO2mipbe36uJxmY7lt1Q+Y/DUZ/Lt4ranrEwz1e8nCX8rE7ib
-        zUEarU65A2JKzY8kRhVSr0Mov+N333GuC6WgQoQRke1a5GsVBT4qs+q/yyCNm0M0BVOUKi
-        wwWaobx9qhLoUV9tFHktWx+AG8+ArEEhZ4OLWEEinwZC+qMmqYYw2bnvpObjtaVxDm8Ir6
-        h+E3LFBQps2vHJjH1B0mTeQMdmzvDlwqg7xu3fUjiEVpzfRq4Nob09i6lYhuzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604399649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XzZnXq40Xta6eAd8+Z4XomSn8j1A2hSECk29QnRRbws=;
-        b=pfa+TpRfmsyoL3kfRqJUVU2S9UUvIXMBP/3UXjO0TEtWrbhDCiNU865DGow3SSMVJwemxu
-        95CKXmp2zPH8LuBg==
-Date:   Tue, 03 Nov 2020 10:27:49 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        nouveau@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: [patch V3 37/37] io-mapping: Remove io_mapping_map_atomic_wc()
-References: <20201103092712.714480842@linutronix.de>
+        Tue, 3 Nov 2020 05:31:18 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7E5C0613D1;
+        Tue,  3 Nov 2020 02:31:17 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t14so13360674pgg.1;
+        Tue, 03 Nov 2020 02:31:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RwCtdM6b4YnLjvtF8V5rJbVv42DObRc22ofZtbywkoY=;
+        b=UQZvAR/UeA2aq5TkvBMNg5oIDgOrWLrClw42qxh46HFMKXlIpXT3ncoh/MumsJYKvU
+         FgzwtrDYJlyU2fOZjkh/DlO4gUFtIZlHDt76cAdycCpF4q4QiZCUC0uT3K0ENeQan4wZ
+         3lIazIqT09oR/tjrddyUtqirSs5lvwJ8u8pEqP/hv27dtjZFgACeWpdVSxFNDt6eUYNc
+         aBrwYjHWCIsof63x9EU9Q89UIwGGyFCfAejGYIPJQS/XDbniwLgozK0s9NUZjUtaVQx/
+         cUsdbrpsBJoey+4Z+wrz6bDNNU1B049jWI7C/7MML6J8Wn3yo/vY/P0UyA3EgaAW5Y+4
+         3P/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RwCtdM6b4YnLjvtF8V5rJbVv42DObRc22ofZtbywkoY=;
+        b=Dbx/S5VRMljciTw3ejmv7n8+T9OinRRm/ccyHi6O2BmjOY/vF78eBAhzP0+rV3hgTp
+         c/DKnnSxgv0BVhrMTB4/75GIkCMsrgSzO5YGckWGNVSoHyh2wPeuUmejZOkfue1zD5EX
+         O5tK2TnBwVzEubcI1DvXH3YmlKig5PLYWLKD5IUBETCAoeP+1TmcbHzkAR2j95jSoTE3
+         +DIbbc+ixYx+7Y8Cw/YkPqTH5Q4olIW7UGWPpNFDfDnW8uJa+tqxFk3DrNfZZOQ3e4vl
+         TxUw6rkZw9BRap4jGp/rr6b4XcF7ExW63lBn4fIyUquG3OEnT+t9yGR4ft0nEu7twT2i
+         /yzQ==
+X-Gm-Message-State: AOAM5311LOCnt6++mGsiIfywf9mv3tN9s+IruX4hXzq5Zoui3L1JAouz
+        8GPstyucaZusrGc+u7SIh2XrDw7nSYEuKw==
+X-Google-Smtp-Source: ABdhPJxOkMLdjKssOgQo2Tmo6jO227+Icksti352LshSjn6MUs89LphDpnDlbGA2KYYZdcxdzqlbBg==
+X-Received: by 2002:a17:90a:7e0a:: with SMTP id i10mr3144330pjl.89.1604399476622;
+        Tue, 03 Nov 2020 02:31:16 -0800 (PST)
+Received: from localhost (114-34-18-97.HINET-IP.hinet.net. [114.34.18.97])
+        by smtp.gmail.com with ESMTPSA id 6sm9777051pfh.112.2020.11.03.02.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 02:31:16 -0800 (PST)
+From:   Ajye Huang <ajye.huang@gmail.com>
+X-Google-Original-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        srinivas.kandagatla@linaro.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, cychiang@chromium.org,
+        tzungbi@chromium.org, dianders@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Subject: [PATCH v5 0/2] Modify documentation and machine driver for SC7180 sound card
+Date:   Tue,  3 Nov 2020 18:30:49 +0800
+Message-Id: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users. Get rid of it and remove the traces in documentation.
+Note:
+- The patch is made by the collaboration of
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+ Cheng-Yi Chiang <cychiang@chromium.org>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V3: New patch
----
- Documentation/driver-api/io-mapping.rst |   22 +++++-----------
- include/linux/io-mapping.h              |   42 +-------------------------------
- 2 files changed, 9 insertions(+), 55 deletions(-)
+v5:
+- Machine driver:
+  - Fix a format string warning (Reported-by: kernel test robot <lkp@intel.com>).
+    detailed info at https://lore.kernel.org/patchwork/patch/1331087/
 
---- a/Documentation/driver-api/io-mapping.rst
-+++ b/Documentation/driver-api/io-mapping.rst
-@@ -21,19 +21,15 @@ mappable, while 'size' indicates how lar
- enable. Both are in bytes.
- 
- This _wc variant provides a mapping which may only be used with
--io_mapping_map_atomic_wc(), io_mapping_map_local_wc() or
--io_mapping_map_wc().
-+io_mapping_map_local_wc() or io_mapping_map_wc().
- 
- With this mapping object, individual pages can be mapped either temporarily
- or long term, depending on the requirements. Of course, temporary maps are
--more efficient. They come in two flavours::
-+more efficient.
- 
- 	void *io_mapping_map_local_wc(struct io_mapping *mapping,
- 				      unsigned long offset)
- 
--	void *io_mapping_map_atomic_wc(struct io_mapping *mapping,
--				       unsigned long offset)
--
- 'offset' is the offset within the defined mapping region.  Accessing
- addresses beyond the region specified in the creation function yields
- undefined results. Using an offset which is not page aligned yields an
-@@ -50,9 +46,6 @@ io_mapping_map_local_wc() has a side eff
- migration to make the mapping code work. No caller can rely on this side
- effect.
- 
--io_mapping_map_atomic_wc() has the side effect of disabling preemption and
--pagefaults. Don't use in new code. Use io_mapping_map_local_wc() instead.
--
- Nested mappings need to be undone in reverse order because the mapping
- code uses a stack for keeping track of them::
- 
-@@ -65,11 +58,10 @@ Nested mappings need to be undone in rev
- The mappings are released with::
- 
- 	void io_mapping_unmap_local(void *vaddr)
--	void io_mapping_unmap_atomic(void *vaddr)
- 
--'vaddr' must be the value returned by the last io_mapping_map_local_wc() or
--io_mapping_map_atomic_wc() call. This unmaps the specified mapping and
--undoes the side effects of the mapping functions.
-+'vaddr' must be the value returned by the last io_mapping_map_local_wc()
-+call. This unmaps the specified mapping and undoes eventual side effects of
-+the mapping function.
- 
- If you need to sleep while holding a mapping, you can use the regular
- variant, although this may be significantly slower::
-@@ -77,8 +69,8 @@ If you need to sleep while holding a map
- 	void *io_mapping_map_wc(struct io_mapping *mapping,
- 				unsigned long offset)
- 
--This works like io_mapping_map_atomic/local_wc() except it has no side
--effects and the pointer is globaly visible.
-+This works like io_mapping_map_local_wc() except it has no side effects and
-+the pointer is globaly visible.
- 
- The mappings are released with::
- 
---- a/include/linux/io-mapping.h
-+++ b/include/linux/io-mapping.h
-@@ -60,28 +60,7 @@ io_mapping_fini(struct io_mapping *mappi
- 	iomap_free(mapping->base, mapping->size);
- }
- 
--/* Atomic map/unmap */
--static inline void __iomem *
--io_mapping_map_atomic_wc(struct io_mapping *mapping,
--			 unsigned long offset)
--{
--	resource_size_t phys_addr;
--
--	BUG_ON(offset >= mapping->size);
--	phys_addr = mapping->base + offset;
--	preempt_disable();
--	pagefault_disable();
--	return __iomap_local_pfn_prot(PHYS_PFN(phys_addr), mapping->prot);
--}
--
--static inline void
--io_mapping_unmap_atomic(void __iomem *vaddr)
--{
--	kunmap_local_indexed((void __force *)vaddr);
--	pagefault_enable();
--	preempt_enable();
--}
--
-+/* Temporary mappings which are only valid in the current context */
- static inline void __iomem *
- io_mapping_map_local_wc(struct io_mapping *mapping, unsigned long offset)
- {
-@@ -163,24 +142,7 @@ io_mapping_unmap(void __iomem *vaddr)
- {
- }
- 
--/* Atomic map/unmap */
--static inline void __iomem *
--io_mapping_map_atomic_wc(struct io_mapping *mapping,
--			 unsigned long offset)
--{
--	preempt_disable();
--	pagefault_disable();
--	return io_mapping_map_wc(mapping, offset, PAGE_SIZE);
--}
--
--static inline void
--io_mapping_unmap_atomic(void __iomem *vaddr)
--{
--	io_mapping_unmap(vaddr);
--	pagefault_enable();
--	preempt_enable();
--}
--
-+/* Temporary mappings which are only valid in the current context */
- static inline void __iomem *
- io_mapping_map_local_wc(struct io_mapping *mapping, unsigned long offset)
- {
+v4:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - Remove redundant judgments in dmic_set() and dmic_get().
+  - Remove 1 level indent of judgment of IS_ERR(data->dmic_sel).
+
+v3:
+- Machine driver: Addressed suggestions from Tzung-Bi.
+  - move variables "dmic_switch" and "dmic_sel" into struct sc7180_snd_data.
+  - Remove redundant judgments in dmic_set().
+
+v2:
+- Documentation: Modify the dimc-gpios property description and examples.
+- Machine driver: 
+  - Remove "qcom,sc7180-sndcard-rt5682-m98357-2mic" compatible
+  - See gpio property and use anadditional control.
+
+Thanks for the review!
+
+Ajye Huang (2):
+  ASoC: google: dt-bindings: modify machine bindings for two MICs case
+  ASoC: qcom: sc7180: Modify machine driver for 2mic
+
+ .../bindings/sound/google,sc7180-trogdor.yaml | 58 ++++++++++++++++++
+ sound/soc/qcom/sc7180.c                       | 61 +++++++++++++++++++
+ 2 files changed, 119 insertions(+)
+
+-- 
+2.25.1
 
