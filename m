@@ -2,158 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877192A3F75
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3602A3F78
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgKCI41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
+        id S1727186AbgKCI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727917AbgKCI4Z (ORCPT
+        with ESMTP id S1725968AbgKCI5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:56:25 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79077C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:56:24 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id v5so11880274wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:56:24 -0800 (PST)
+        Tue, 3 Nov 2020 03:57:33 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7667BC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:57:33 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id w14so17555448wrs.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:57:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rLDVs90HA1Aa+VugGzlqO4fLN0akysT9yEHAzoqJBD4=;
-        b=SZQ67zdvLAgNLnEVBHfuSAHpiveEkSKRczKIGbpt3wBrWTve25M0Eh/H0+UqKG042b
-         qSWODOktAM/IYQR9xNOtbV/xSzCknBirpktpfU7EM4M7uJRfgQjft4sXp0TOwqm3lkwz
-         EcWHTsqfTrddlouXjbF/5+2aSePLpTDgNfOm0Hw+yO9x/yH+FasQ6DJzabfRqN/8k0nK
-         hpRWiaqzaJUXtAoRrc3vi87SQtQveoQM/ihh8QI8TWmbCFzEmjvT7A8VWTmTCrhqs+h0
-         zySHsWdRiD+vfWP6Wl8pYmI5xeSMkUEnvbKrVh2eSWZ1Mbr5KWUQURH0G8OWE18oRIKg
-         8Hdw==
+        bh=oZmqks2SMn8Tn8FXhrLnAuY1niX2ucfr4oVkuZRXIg8=;
+        b=uI4mZhZskOAeUr3YMa5AjDRjadWqtawqynXbSIH5RZRJfqxjmG9cN6H6/SDLh2xLcG
+         fiaDtwhPNTHRvQfbOpa1mIdOvZmWlHN30qmhsdOtYISYY3dXcv6Z8IWYzTAFDygyWEJJ
+         VJXfeudV5LqHtQ5aXgJH0R7IZ27q0g0dkgg63VaizfdTXbrIW16v2pz/yaMwlPkr5HS1
+         s9I+83COLj0whmVRqajVOcCyd/TVCiZAn44mpZPDCW2WCuziUe7C94iak0nNK44TmRmC
+         45myfaN0cOXliMjk6GY89IF6rjTAejWVlFJCwm8JVjeZH3Vmyzf7hafZndhk0Mmj4JqU
+         SZzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=rLDVs90HA1Aa+VugGzlqO4fLN0akysT9yEHAzoqJBD4=;
-        b=RIhCRWiaqcM0FsrAMdhb7KbblXjGWQCc+YvKTLr9EYa291plZC2+3qEo742aeosfdJ
-         kxbdGcPGn/OfCPShHB5ZalwxB+uXNiqrhs15mgTOSZFqfFwWFQjgkwhhz0lQe8XsWjRE
-         BzsnY38VXe0+6Ph1rhnTs0z7DVugR6ufEINd6eUfuA/xPA1+Tbi6XixoUlZQPa2sqfFR
-         XgglsrkR6nq8tegm3vwnte7ETJ/NWE8CrQ9KaVACmWDpmlW4yP5Z0nApn8zs6yC1PE3K
-         mDBeEeEkbb6g036ca107/N91gUWA2yOdmvIYa/XjQUgJXwqJjtV0kSiwuKrp4UPwNEa2
-         PiMw==
-X-Gm-Message-State: AOAM530NB+ugCFO75RuSdC5OpKgegCOnSLbfyEo0PDLrNv/IGVqfma10
-        BdBhO4T6Z1uAFssHwIh7ZrjYfw==
-X-Google-Smtp-Source: ABdhPJwJNIYTW9tTc+Ezdxe0aES7lJBJWFwUM1pZ4XapbFkcE4vbG0IUDESF5nCL8gmLDVjDSEHgSQ==
-X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr2344738wmt.26.1604393783224;
-        Tue, 03 Nov 2020 00:56:23 -0800 (PST)
+        bh=oZmqks2SMn8Tn8FXhrLnAuY1niX2ucfr4oVkuZRXIg8=;
+        b=T3Bx8GhyQhI17is/gLWtw3EC9bqG0nzzR1ckBzs6DpSOLE8x/D+1PjQ7M0o8SNbfTD
+         esiIzjAdqgjrRYvzaE46rdW5pPVW883WSEM59y2OYJ2jrO2jTlwt9Wf0KsKvIsbT5p//
+         Xm1sPM3zEtaf3LsdWm8x0aAzgwkBLp1f4c8eKeN2FJrJJYRcr2ad/dvsQj+el6HlTkek
+         ZgntTSCW43vQ1GFT8A1em4O9x9kMWlr/D8w68O3S8wvdj3tLkvsWTUcxwcaMSyZwtyQL
+         ztgxMq694X+747JpEhOtD+RZnU4d0U8zKKshZaMMgdNIN3zF2tjD6Sxtw2fgnRWOdFcM
+         v/dQ==
+X-Gm-Message-State: AOAM530nW2gEIHjTD1cmb6KwGtrr/7nzPqUSatwaCxdx8bo6Pj3L5MGE
+        X7DaFSgiPF4GhJGgcdSXxaO/JQ==
+X-Google-Smtp-Source: ABdhPJyZirTwO50YfRXPjwlcNDBvcIBv/e2yCA4c+UXQMNNUpqtQUhtTJqNe03GeFwnzfToyHD3dXw==
+X-Received: by 2002:a5d:5261:: with SMTP id l1mr26778170wrc.105.1604393852157;
+        Tue, 03 Nov 2020 00:57:32 -0800 (PST)
 Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id u195sm2235969wmu.18.2020.11.03.00.56.22
+        by smtp.gmail.com with ESMTPSA id c10sm2112032wmb.20.2020.11.03.00.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 00:56:22 -0800 (PST)
-Date:   Tue, 3 Nov 2020 08:56:20 +0000
+        Tue, 03 Nov 2020 00:57:31 -0800 (PST)
+Date:   Tue, 3 Nov 2020 08:57:26 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Codrin.Ciubotariu@microchip.com
-Cc:     Nicolas.Ferre@microchip.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        richard.genoud@gmail.com, alexandre.belloni@bootlin.com,
-        Ludovic.Desroches@microchip.com
-Subject: Re: [PATCH] ARM: dts: at91: add serial MFD sub-node for usart
-Message-ID: <20201103085620.GM4488@dell>
-References: <20201030110702.886638-1-codrin.ciubotariu@microchip.com>
- <b054ce5c-58fd-dd86-2cb6-1e1f06a0899e@microchip.com>
- <20201102090122.GF4127@dell>
- <780303c7-2c32-f2e1-c9ce-1e2ee6bf0533@microchip.com>
- <20201102122952.GB4488@dell>
- <e2b038f0-81ea-3d2f-cb06-dd02f0b84860@microchip.com>
- <9f99dcf1-239d-b3b3-4b7d-e6d628bb3fed@microchip.com>
+To:     Rodolfo Giometti <giometti@enneenne.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        David Laight <David.Laight@aculab.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
+ more secure
+Message-ID: <20201103085726.GN4488@dell>
+References: <20201102111211.1047972-1-lee.jones@linaro.org>
+ <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
+ <20201102114903.GN4127@dell>
+ <20201102121150.GA663356@kroah.com>
+ <20201102124301.GC4488@dell>
+ <20201102125910.GA1008111@kroah.com>
+ <20201102134729.GD4488@dell>
+ <9f10500a-cfd7-bcbe-7b8e-edd49ab4d43c@enneenne.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9f99dcf1-239d-b3b3-4b7d-e6d628bb3fed@microchip.com>
+In-Reply-To: <9f10500a-cfd7-bcbe-7b8e-edd49ab4d43c@enneenne.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020, Codrin.Ciubotariu@microchip.com wrote:
+On Mon, 02 Nov 2020, Rodolfo Giometti wrote:
 
-> On 02.11.2020 14:55, Codrin.Ciubotariu@microchip.com wrote:
-> > On 02.11.2020 14:29, Lee Jones wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>
-> >> On Mon, 02 Nov 2020, Codrin.Ciubotariu@microchip.com wrote:
-> >>
-> >>> On 02.11.2020 11:01, Lee Jones wrote:
-> >>>> On Fri, 30 Oct 2020, Nicolas Ferre wrote:
-> >>>>
-> >>>>> On 30/10/2020 at 12:07, Codrin Ciubotariu wrote:
-> >>>>>> The "atmel,at91sam9260-usart" driver is a MFD driver, so it needs sub-nodes
-> >>>>>> to match the registered platform device. For this reason, we add a serial
-> >>>>>> subnode to all the "atmel,at91sam9260-usart" serial compatible nods. This
-> >>>>>> will also remove the boot warning:
-> >>>>>> "atmel_usart_serial: Failed to locate of_node [id: -2]"
-> >>>>>
-> >>>>> I don't remember this warning was raised previously even if the MFD driver
-> >>>>> was added a while ago (Sept. 2018).
-> >>>>>
-> >>>>> I would say it's due to 466a62d7642f ("mfd: core: Make a best effort attempt
-> >>>>> to match devices with the correct of_nodes") which was added on mid August
-> >>>>> and corrected with 22380b65dc70 ("mfd: mfd-core: Ensure disabled devices are
-> >>>>> ignored without error") but maybe not covering our case.
-> >>>>>
-> >>>>> So, well, I don't know what's the best option to this change. Moreover, I
-> >>>>> would say that all other USART related properties go into the child not if
-> >>>>> there is a need for one.
-> >>>>>
-> >>>>> Lee, I suspect that we're not the only ones experiencing this ugly warning
-> >>>>> during the boot log: can you point us out how to deal with it for our
-> >>>>> existing atmel_serial.c users?
-> >>>>
-> >>>> You should not be instantiating drivers through Device Tree which are
-> >>>> not described there.  If the correct representation of the H/W already
-> >>>> exists in Device Tree i.e. no SPI and UART IP really exists, use the
-> >>>> MFD core API to register them utilising the platform API instead.
-> >>>>
-> >>>> This should do it:
-> >>>>
-> >>>> diff --git a/drivers/mfd/at91-usart.c b/drivers/mfd/at91-usart.c
-> >>>> index 6a8351a4588e2..939bd2332a4f6 100644
-> >>>> --- a/drivers/mfd/at91-usart.c
-> >>>> +++ b/drivers/mfd/at91-usart.c
-> >>>> @@ -17,12 +17,10 @@
-> >>>>
-> >>>>     static const struct mfd_cell at91_usart_spi_subdev = {
-> >>>>            .name = "at91_usart_spi",
-> >>>> -       .of_compatible = "microchip,at91sam9g45-usart-spi",
-> >>>>     };
-> >>>>
-> >>>>     static const struct mfd_cell at91_usart_serial_subdev = {
-> >>>>            .name = "atmel_usart_serial",
-> >>>> -       .of_compatible = "atmel,at91rm9200-usart-serial",
-> >>>>     };
-> >>>>
-> >>>>     static int at91_usart_mode_probe(struct platform_device *pdev)
-> >>>
-> >>> [snip]
-> >>>
-> >>> Hi Lee, thank you for looking through our usart driver and for sharing
-> >>> your thoughts. Removing the usage of compatible string means that for
-> >>> similar serial/SPI IPs we would need to create new platform drivers.
-> >>
-> >> Why would you need to do that?
+> On 02/11/2020 14:47, Lee Jones wrote:
+> > On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
 > > 
-> > In the case we will have to support another similar IP, but with a
-> > different set of features. Not a new platform driver from scratch, but
-> > at least a new struct platform_driver for each variant.
+> >> On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
+> >>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
+> >>>
+> >>>> On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
+> >>>>> On Mon, 02 Nov 2020, David Laight wrote:
+> >>>>>
+> >>>>>> From: Lee Jones
+> >>>>>>> Sent: 02 November 2020 11:12
+> >>>>>>>
+> >>>>>>> strncpy() may not provide a NUL terminator, which means that a 1-byte
+> >>>>>>> leak would be possible *if* this was ever copied to userspace.  Ensure
+> >>>>>>> the buffer will always be NUL terminated by using the kernel's
+> >>>>>>> strscpy() which a) uses the destination (instead of the source) size
+> >>>>>>> as the bytes to copy and b) is *always* NUL terminated.
+> >>>>>>>
+> >>>>>>> Cc: Rodolfo Giometti <giometti@enneenne.com>
+> >>>>>>> Cc: "Eurotech S.p.A" <info@eurotech.it>
+> >>>>>>> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> >>>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >>>>>>> ---
+> >>>>>>>  drivers/misc/c2port/core.c | 2 +-
+> >>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+> >>>>>>> index 80d87e8a0bea9..b96444ec94c7e 100644
+> >>>>>>> --- a/drivers/misc/c2port/core.c
+> >>>>>>> +++ b/drivers/misc/c2port/core.c
+> >>>>>>> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+> >>>>>>>  	}
+> >>>>>>>  	dev_set_drvdata(c2dev->dev, c2dev);
+> >>>>>>>
+> >>>>>>> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+> >>>>>>> +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+> >>>>>>
+> >>>>>> strscpy() doesn't zero fill so if the memory isn't zeroed
+> >>>>>> and a 'blind' copy to user of the structure is done
+> >>>>>> then more data is leaked.
+> >>>>>>
+> >>>>>> strscpy() may be better, but rational isn't right.
+> >>>>>
+> >>>>> The original patch zeroed the data too, but I was asked to remove that
+> >>>>> part [0].  In your opinion, should it be reinstated?
+> >>>>>
+> >>>>> [0] https://lore.kernel.org/patchwork/patch/1272290/
+> >>>>
+> >>>> Just keep the kzalloc() part of the patch, this portion makes no sense
+> >>>> to me.
+> >>>
+> >>> Can do.
+> >>>
+> >>>> But if you REALLY want to get it correct, call dev_set_name()
+> >>>> instead please, as that is what it is there for.
+> >>>
+> >>> The line above isn't setting the 'struct device' name.  It looks as
+> >>> though 'struct c2port' has it's own member, also called 'name'.  As to
+> >>> how they differ, I'm not currently aware.  Nor do I wish to mess
+> >>> around with the semantics all that much.
+> >>>
+> >>> Going with suggestion #1.
+> >>
+> >> As the "device" already has a name, I suggest just getting rid of this
+> >> name field anyway, no need for duplicates.
+> > 
+> > That definitely goes against the point I made above:
+> > 
+> >  "Nor do I wish to mess around with the semantics all that much."
+> > 
+> > It looks as though the device name 'c2port%d' varies greatly to the
+> > requested name 'uc'.  I don't have enough knowledge of how user-
+> > space expects to use the provided sysfs entries to be able to
+> > competently merge/decide which of these should be kept and which to
+> > discard.
+> > 
+> > Hopefully one of the authors/maintainers are reading this and can come
+> > up with an acceptable solution.
 > 
-> I guess we could use struct mfd_cell.platform_data to select the 
-> features for the serial/SPI. This platform data can be per compatible of 
-> our MFD driver. I will send a patch with the changes you suggested. 
+> User-space usage can change its behavior so, please, consider the best solution
+> from the kernel space point-of-view. :)
 
-Yes, that is what platform data is for.
-
-> Thank you!
-
-NP.
+If you're sure, I can add it to my TODO.
 
 -- 
 Lee Jones [李琼斯]
