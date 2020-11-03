@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8172A5201
+	by mail.lfdr.de (Postfix) with ESMTP id DBDC62A5202
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgKCUpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:45:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
+        id S1731099AbgKCUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:45:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730546AbgKCUpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:45:47 -0500
+        id S1731093AbgKCUpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A92D922404;
-        Tue,  3 Nov 2020 20:45:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38DE122409;
+        Tue,  3 Nov 2020 20:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436346;
-        bh=OF1UzrEkpvQY/H024MBR+tM08Hv99WeM2oKPJDlgaAM=;
+        s=default; t=1604436350;
+        bh=WdwCxymOisvVg8TfyswblyVhpOSOHwB2WgqMZDnYqME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ci/+F+ztzjsTT6Eph4nJx/6juErmCzSabiPaEUDMCCtKN5gait7JcUZApvW7653pm
-         0cr780Odi2p5YKhWSKuwk9GV+Kgsnxy3UcKLlOLUjeTfNtLeANVpxUJxiRCBxz1rUh
-         Ko2V3baBJfPiALVtRZhWJAcs3D71lr+dQNgL3HCA=
+        b=drhfMldm1YeOWPp5rQmtPOP/BFSk9s8iBmqNqEZvk2upNW1a9h3GfSe56NyhGdHMc
+         BK5RAdp+UG+QTeSNIstaj56XNKdIRR+Iz/pKFA6Yi6RFkMXcZmuqzgvnrYLBGzVKxz
+         OOSGZ+gScguhS3qFLyNpcQOIVgXmZjKs5ZhGYUVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Zakhrov <aaron.zakhrov@gmail.com>,
-        Michal Rostecki <mrostecki@suse.com>,
-        Shai Coleman <git@shaicoleman.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Arthur Borsboom <arthurborsboom@gmail.com>,
-        matoro <matoro@airmail.cc>
-Subject: [PATCH 5.9 209/391] PCI/ACPI: Whitelist hotplug ports for D3 if power managed by ACPI
-Date:   Tue,  3 Nov 2020 21:34:20 +0100
-Message-Id: <20201103203401.009760569@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.9 211/391] ACPI: EC: PM: Drop ec_no_wakeup check from acpi_ec_dispatch_gpe()
+Date:   Tue,  3 Nov 2020 21:34:22 +0100
+Message-Id: <20201103203401.151280339@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -48,65 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit c6e331312ebfb52b7186e5d82d517d68b4d2f2d8 upstream.
+commit e0e9ce390d7bc6a705653d4a8aa4ea92c9a65e53 upstream.
 
-Recent laptops with dual AMD GPUs fail to suspend the discrete GPU, thus
-causing lockups on system sleep and high power consumption at runtime.
-The discrete GPU would normally be suspended to D3cold by turning off
-ACPI _PR3 Power Resources of the Root Port above the GPU.
+It turns out that in some cases there are EC events to flush in
+acpi_ec_dispatch_gpe() even though the ec_no_wakeup kernel parameter
+is set and the EC GPE is disabled while sleeping, so drop the
+ec_no_wakeup check that prevents those events from being processed
+from acpi_ec_dispatch_gpe().
 
-However on affected systems, the Root Port is hotplug-capable and
-pci_bridge_d3_possible() only allows hotplug ports to go to D3 if they
-belong to a Thunderbolt device or if the Root Port possesses a
-"HotPlugSupportInD3" ACPI property.  Neither is the case on affected
-laptops.  The reason for whitelisting only specific, known to work
-hotplug ports for D3 is that there have been reports of SkyLake Xeon-SP
-systems raising Hardware Error NMIs upon suspending their hotplug ports:
-https://lore.kernel.org/linux-pci/20170503180426.GA4058@otc-nc-03/
-
-But if a hotplug port is power manageable by ACPI (as can be detected
-through presence of Power Resources and corresponding _PS0 and _PS3
-methods) then it ought to be safe to suspend it to D3.  To this end,
-amend acpi_pci_bridge_d3() to whitelist such ports for D3.
-
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1222
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1252
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1304
-Reported-and-tested-by: Arthur Borsboom <arthurborsboom@gmail.com>
-Reported-and-tested-by: matoro <matoro@airmail.cc>
-Reported-by: Aaron Zakhrov <aaron.zakhrov@gmail.com>
-Reported-by: Michal Rostecki <mrostecki@suse.com>
-Reported-by: Shai Coleman <git@shaicoleman.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: Todd Brandt <todd.e.brandt@linux.intel.com>
 Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/pci-acpi.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/acpi/ec.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -944,6 +944,16 @@ static bool acpi_pci_bridge_d3(struct pc
- 	if (!dev->is_hotplug_bridge)
- 		return false;
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -2011,9 +2011,6 @@ bool acpi_ec_dispatch_gpe(void)
+ 	if (acpi_any_gpe_status_set(first_ec->gpe))
+ 		return true;
  
-+	/* Assume D3 support if the bridge is power-manageable by ACPI. */
-+	adev = ACPI_COMPANION(&dev->dev);
-+	if (!adev && !pci_dev_is_added(dev)) {
-+		adev = acpi_pci_find_companion(&dev->dev);
-+		ACPI_COMPANION_SET(&dev->dev, adev);
-+	}
-+
-+	if (adev && acpi_device_power_manageable(adev))
-+		return true;
-+
+-	if (ec_no_wakeup)
+-		return false;
+-
  	/*
- 	 * Look for a special _DSD property for the root port and if it
- 	 * is set we know the hierarchy behind it supports D3 just fine.
+ 	 * Dispatch the EC GPE in-band, but do not report wakeup in any case
+ 	 * to allow the caller to process events properly after that.
 
 
