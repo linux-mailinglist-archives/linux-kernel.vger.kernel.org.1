@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA86A2A56A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD6E2A569F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388388AbgKCV3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        id S2388365AbgKCV3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387438AbgKCV3H (ORCPT
+        with ESMTP id S2387969AbgKCV3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:29:07 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1FBC0613D1;
-        Tue,  3 Nov 2020 13:29:07 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id o3so14695093pgr.11;
-        Tue, 03 Nov 2020 13:29:07 -0800 (PST)
+        Tue, 3 Nov 2020 16:29:04 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D35C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 13:29:03 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id k18so594165wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 13:29:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ljv1+KvI5hTHcQoof79AZSHu3gwcUWXr8lrxs/yX5Kk=;
-        b=bEVxy2H7uj4F63AnHPagvePAt3sVaVtR2OIFbguAGJ7EePVrcUc5Df23c/kp7ynJUC
-         08rrmUBSbnzZi2s3Z/EvZKEaMNaq/1ZBp80Qn0LwMw9h0RLZvCgy5fS191wad3UdMTSp
-         sj8HE+AuzgIeDvQYB9SAbZLOMW5ImzYT4hUMR3NtyAUl0s+SIubIIRtkMd3U2JHFCroB
-         B6vHfOIq+rfhNoChAXNmO+KUH8OkT6ZBc2fkvvNOSJt+9/G4olmfrmJDAP4CixpLIxZS
-         ILh+9iE0fnPihopFkQHwqlFr7ZBkVwE6ZTtv02RChzRGFvp9opKOl9vmbNXowQq5NQIC
-         3N8w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=coCVSzogN7FhufO26SBDPdyABYAN7DRvbWuTG3U17pI=;
+        b=iugY1zHxj+rcoEypRyKobqPHp2mh1vGfJXqR12Xn7NjuNH1nJWgfMn2R9Vnetqh2gm
+         biK82RCbDxhSsRJqM2JNMXFRHP7Q/f6H5OXNd1LF8QScpPd1dJWuyshd2FRZZyx/vWxM
+         Bik3sNu0e+0j6yAyP+Q6lDYLfE6y8ro4eBGZXSEcQ51LDOTZ/I+6imS3zV10kdZtIW1K
+         GykTfekQlxVHsmHkwb9UW0G80BB06wmmU8mvqe2BxzQECn6D4slUc2M7abwJGMwKKUsx
+         /tsZbgQfH2/MLDidcnifIEMiCMDEQPoOhaYvh8AHffReKHVQEQRY/Wp77I0V3TF6bceH
+         7pdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ljv1+KvI5hTHcQoof79AZSHu3gwcUWXr8lrxs/yX5Kk=;
-        b=B6CeL5GJTeDM3W5xBpoEMQKe1hv3l7E5gN+955Xt6KYIUKVXZotlIJv28l5yVXLqBj
-         sxTaW9Cnnaj3N2yz2nZv8Whf0i7KOrYTHbKwC25tT9jvxd92+FbkqXz4m7ZHuYPzNyhJ
-         c9Rx9Bv5MYdQLJBryVKHHLdgm79niWwtPkBrWq0EGji27bk7HsnZrKqrzVqsrsfTEQFS
-         NIdHL0fyto5sR0R7T59//jhj1rG3zxcCHGDloQxeAOEKcRKAHRqiCs6ajn3B9Szd2cXK
-         aXDf2mGivLcfsx5DYxuFG49SCs6HfYAes2lR26zdGYqgUc4heTqHHxup9MVoYrsHF62O
-         rjJg==
-X-Gm-Message-State: AOAM530j8usol3US6e5R+KUwYQ1aJC7Eym+CaPW9y5c4F3LL1DeOR7Qa
-        rM8eu3yENXXfguWnOO7FiMcCAe/Fb+w=
-X-Google-Smtp-Source: ABdhPJyKloXD4xINSbgF3o5VbXFU1LF8DbROP7U4Z7BqRpP3+EpVjb9iMilSJqvIIGW0IBezf/lpIg==
-X-Received: by 2002:a62:5f83:0:b029:18a:e039:4908 with SMTP id t125-20020a625f830000b029018ae0394908mr12272492pfb.23.1604438946885;
-        Tue, 03 Nov 2020 13:29:06 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id a184sm55618pfa.86.2020.11.03.13.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 13:28:52 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 3 Nov 2020 13:28:47 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Rui Salvaterra <rsalvaterra@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, ngupta@vflare.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] zram: break the strict dependency from lzo
-Message-ID: <20201103212847.GA1631979@google.com>
-References: <20201028115921.848-1-rsalvaterra@gmail.com>
- <20201028185927.GB128655@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=coCVSzogN7FhufO26SBDPdyABYAN7DRvbWuTG3U17pI=;
+        b=kH+W8NYpBoEaWPUdI3/LQKDFbhquewuX/Qg1fkUvtTORy+kXzunOPZvxDvUN4WCZQZ
+         1L18qystlmS+S7Q8I5hvpYc3+3NRkWXZnhQ9jNzn4yG5fBArN+efkAYcOx/drs3+1gDU
+         V0L3RnwRjkadqk80DUmJsCx8G/HQbq1nwhgFx9hsNX9ZC4qjMLdxjmq2FCS6Y81xpqxb
+         0uIr20kj/w1VqPcZOz0iK7BXgEAmjXDq1AvXUTz9vnRYqLZKznEC8CkWJ6Mextu3pxTx
+         qCaRHf7PD+11WV6CPS5KCKEbkAjkxF9xVEO33q+Sb9MYNilGYhEeMoEPT30ZDoqQDJNO
+         bGNQ==
+X-Gm-Message-State: AOAM532TLqaQMxs1ZH8XltFPs/VVnci5EPjdYMy46tfa1/YLm/YSFfzM
+        jkwbm5Yqmrm/T1w8Sxyef1e7W3Q7yJBqiXBwzuAKMg==
+X-Google-Smtp-Source: ABdhPJwjZHXUS+ZXtJZWnGUnzGmYa3rlxOLjOWvm9qm54qf9JdTinBsnwxtE8GcZ/WkZB9KXdiiMVPoCZKZAMvh9tOk=
+X-Received: by 2002:a1c:1b85:: with SMTP id b127mr1167531wmb.163.1604438942285;
+ Tue, 03 Nov 2020 13:29:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028185927.GB128655@google.com>
+References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+ <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
+ <20201014120937.GC4440@dhcp22.suse.cz> <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
+ <20201015092030.GB22589@dhcp22.suse.cz> <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+ <CAJuCfpH9iUt0cs1GBQppgdcD8chojCNXk22S+PeSgQ-bA7iitQ@mail.gmail.com> <20201103093550.GE21990@dhcp22.suse.cz>
+In-Reply-To: <20201103093550.GE21990@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 3 Nov 2020 13:28:51 -0800
+Message-ID: <CAJuCfpH4hdyMTdvSyY9uJgMQz-Gfff-ZgWisgx4TVUpq_F_sAw@mail.gmail.com>
+Subject: Re: [RFC]: userspace memory reaping
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey and Rui,
+On Tue, Nov 3, 2020 at 1:35 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 02-11-20 12:29:24, Suren Baghdasaryan wrote:
+> [...]
+> > To follow up on this. Should I post an RFC implementing SIGKILL_SYNC
+> > which in addition to sending a kill signal would also reap the
+> > victim's mm in the context of the caller? Maybe having some code will
+> > get the discussion moving forward?
+>
+> Yeah, having a code, even preliminary, might help here. This definitely
+> needs a good to go from process management people as that proper is land
+> full of surprises...
 
-On Thu, Oct 29, 2020 at 03:59:27AM +0900, Sergey Senozhatsky wrote:
-> Cc-ing Andrew
-> 
-> message-id: 20201028115921.848-1-rsalvaterra@gmail.com
-> 
-> On (20/10/28 11:59), Rui Salvaterra wrote:
-> > There's nothing special about zram and lzo. It works just fine without it, so
-> > as long as at least one of the other supported compression algorithms is
-> > selected.
-> > 
-> > Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-> > Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+Hmm. Adding a new SIGKILL_SYNC seems to require quite a surgery...
+That will cause a change to SIGRTMIN which is used by glib and also
+would affect RTSIG_MAX which I think is also used by the userspace.
+I'm not sure such a change would be acceptable...
 
-Sorry for the late. I am still looking for the time to look into this
-patch.
+IIUC, Minchan's alternative suggestion was to do mm reaping from
+inside fsync() in cases like these:
 
-I totally agree with the motivation of Rui. Before that, just a
-dumb question.
+pidfd_send_signal(pidfd, SIGKILL); // send SIGKILL as usual
+fsync(pidfd); // causes mm reaping in the context of the caller
 
-Can't we just provide choice/endchoice in Kconfig to select default
-comp algorithm from admin?
+I can prototype this approach quite easily and quickly and post an RFC
+to energize the discussion. Any objections?
 
-> 
-> Minchan, I'm fine with the change.
-> 
-> Two things from my side:
-> 
-> 1) The commit message, probably, can be a bit more informative. Something
-> like this?
-> 
-> 	ZRAM always enables CRYPTO_LZO because lzo-rle is the hardcoded
-> 	fallback compression algorithm, which means that on systems where
-> 	ZRAM always use, for instance, CRYPTO_ZSTD lzo kernel module
-> 	becomes unneeded. This patch removes the hardcoded lzo-lre
-> 	dependency, instead ZRAM picks the first supported CRYPTO
-> 	compression algorithm, should it be ZSTD or LZ4, etc; and only
-> 	forcibly enables CRYPTO_LZO (previous behaviour) if none of the
-> 	alternative algorithms were selected.
-> 
-> 
-> 2) The ZRAM_AUTOSEL_ALGO allows to deselect CRYPTO_LZO only if
-> CRYPTO_LZ4/CRYPTO_LZ4HC/CRYPTO_842/CRYPTO_ZSTD are compiled in (=y).
-> If any of the algorithms is selected as a module (=m) then CRYPTO_LZO
-> is selected as the default algorithm. Apparently depends on !(CONFIG_FOO)
-> means depends on !(CONFIG_FOO=y).
-> 
-> It appears that the below change fixes it, but it looks a bit ugly.
-> 
-> ---
-> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-> index 141ce0ebad06..f2fd34de9200 100644
-> --- a/drivers/block/zram/Kconfig
-> +++ b/drivers/block/zram/Kconfig
-> @@ -15,7 +15,7 @@ config ZRAM
->  
->  config ZRAM_AUTOSEL_ALGO
->  	def_bool y
-> -	depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
-> +	depends on ZRAM && !(CRYPTO_LZ4=m || CRYPTO_LZ4HC=m || CRYPTO_842=m || CRYPTO_ZSTD=m || CRYPTO_LZ4=y || CRYPTO_LZ4HC=y || CRYPTO_842=y || CRYPTO_ZSTD=y)
->  	select CRYPTO_LZO
->  
->  config ZRAM_WRITEBACK
-> ---
-> 
-> 	-ss
+> --
+> Michal Hocko
+> SUSE Labs
