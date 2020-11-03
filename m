@@ -2,176 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08262A3C0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649192A3C12
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 06:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgKCFkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 00:40:37 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:46957 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgKCFkh (ORCPT
+        id S1726489AbgKCFmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 00:42:24 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36758 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725953AbgKCFmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:40:37 -0500
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 170E22008F;
-        Tue,  3 Nov 2020 05:40:34 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 98DBA3EDEC;
-        Tue,  3 Nov 2020 06:40:32 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 7B68E2A7E2;
-        Tue,  3 Nov 2020 06:40:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604382032;
-        bh=SmYDJ/wiXl+xPUKtnENmqp9QdxoljrKsi1wq7af26m8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=B7vq+z+BRYnV+a9tpTFaWH6r5hgAC5JK0bK333gLWb2F/4EbVNhATHZSCgvxXnyDP
-         /TpUztB7KdYriK3YUyonorU7yevdxqtCHpc9qKENtP+/GquyWRzuzIuqIiAUY/flpY
-         v54HkWVBZqciXkoU25rkZKO7S3aM+N9DJx7GoVVE=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ofCepkObmbwk; Tue,  3 Nov 2020 06:40:30 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Tue,  3 Nov 2020 06:40:30 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 9C4A34012A;
-        Tue,  3 Nov 2020 05:40:29 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="StIpVnQm";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 85FCF4012A;
-        Tue,  3 Nov 2020 05:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1604382023;
-        bh=SmYDJ/wiXl+xPUKtnENmqp9QdxoljrKsi1wq7af26m8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=StIpVnQmYuH1lQ2Jh6SlJyoq50KJwOAKvreLZBTHw3IpX/M38YTUo3ykJglOlJEdQ
-         Aii7tJlkpcIT8DnSnXD5dzRq4NdTEJCETUG8BN0WENgAaLZ/ZvVg7gIoispcKMXfMm
-         pjxvQDhbuuGho+1WN28PwugBfQCwHtpQfA5qgvaU=
-Subject: Re: [PATCH RESEND 1/2] MIPS: cacheinfo: Add missing VCache
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20200820004253.3418-1-jiaxun.yang@flygoat.com>
- <20200820004253.3418-2-jiaxun.yang@flygoat.com>
- <20200821165539.GA15948@alpha.franken.de>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <79476b22-04ef-968b-584a-10aa4357ee6b@flygoat.com>
-Date:   Tue, 3 Nov 2020 13:40:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 3 Nov 2020 00:42:23 -0500
+X-UUID: 6b5ec04e2eab43fbbcdebd85e2586f00-20201103
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=WW0Lmah8IaQQ9ZgPn79i+P0KVknepuLmC9kWTei51Yc=;
+        b=unRobiCxA4U4giVNtijjXCMLrUTDa3+b0GCFyEwfpDFKq2y6nQHdqbIsvB4jvilQXHdBbVAt9Jb/6/3Mqlmman5GIkh47fdm/bsOkHOs514Ddhtw1j12NfZ/eOS+GaihhfQ/BVYshDEV0z98xhI+bO6+uxG23GDNGDL+Re7dEUA=;
+X-UUID: 6b5ec04e2eab43fbbcdebd85e2586f00-20201103
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1631611038; Tue, 03 Nov 2020 13:42:20 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Nov 2020 13:42:17 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Nov 2020 13:42:16 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <ming-fan.chen@mediatek.com>
+Subject: [PATCH v5 0/3] MT8192 SMI support
+Date:   Tue, 3 Nov 2020 13:41:57 +0800
+Message-ID: <20201103054200.21386-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20200821165539.GA15948@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9C4A34012A
-X-Spamd-Result: default: False [2.90 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain
+X-TM-SNTS-SMTP: EF9423204EAF833543A28E9D29A571C12114AD1C3BD3F5EA68511EA5BB10A7BA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+VGhpcyBwYXRjaHNldCBtYWlubHkgYWRkcyBTTUkgc3VwcG9ydCBmb3IgbXQ4MTkyLg0KDQpJdCBj
+b21lcyBmcm9tIHRoZSBwYXRjaHNldFsxXS4gSSBzZXBlcmF0ZSB0aGUgc21pIHBhcnQgaW50byB0
+aGlzIHBhdGNoc2V0Lg0KQW5kIHRoZSB0d28gcGFydChJT01NVS9TTUkpIHBhdGNoc2V0IGRvbid0
+IGRlcGVuZCBvbiBlYWNoIG90aGVyLg0KDQpSZWJhc2Ugb24gdjUuMTAtcmMxLg0KDQpjaGFuZ2Vu
+b3RlOg0KIHY1OiBGaXggY29tcGxhaW4gZnJvbSB5YW1sbGludC4NCg0KIHY0OiBodHRwczovL2xv
+cmUua2VybmVsLm9yZy9saW51eC1tZWRpYXRlay8yMDIwMTAzMDA5MTI1NC4yNjM4Mi0xLXlvbmcu
+d3VAbWVkaWF0ZWsuY29tL1QvI21lYjAzYjNmNDAxODg5NGJmNDBjNDdmZWNlNTJmZTliMzg2NDA5
+OTM0IA0KICAgIGFkZCBpZi10aGVuIHNlZ21lbnQgaW4gdGhlIGJpbmRpbmcuDQoNCiB2MzogWzFd
+DQoNClsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1pb21tdS8yMDIwMDkzMDA3MDY0
+Ny4xMDE4OC0xLXlvbmcud3VAbWVkaWF0ZWsuY29tLw0KDQoNCllvbmcgV3UgKDMpOg0KICBkdC1i
+aW5kaW5nczogbWVtb3J5OiBtZWRpYXRlazogQ29udmVydCBTTUkgdG8gRFQgc2NoZW1hDQogIGR0
+LWJpbmRpbmdzOiBtZW1vcnk6IG1lZGlhdGVrOiBBZGQgbXQ4MTkyIHN1cHBvcnQNCiAgbWVtb3J5
+OiBtdGstc21pOiBBZGQgbXQ4MTkyIHN1cHBvcnQNCg0KIC4uLi9tZWRpYXRlayxzbWktY29tbW9u
+LnR4dCAgICAgICAgICAgICAgICAgICB8ICA1MCAtLS0tLS0NCiAuLi4vbWVkaWF0ZWssc21pLWNv
+bW1vbi55YW1sICAgICAgICAgICAgICAgICAgfCAxNDIgKysrKysrKysrKysrKysrKysrDQogLi4u
+L21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktbGFyYi50eHQgIHwgIDUwIC0tLS0tLQ0K
+IC4uLi9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxhcmIueWFtbCB8IDEzMiArKysr
+KysrKysrKysrKysrDQogZHJpdmVycy9tZW1vcnkvbXRrLXNtaS5jICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDE5ICsrKw0KIDUgZmlsZXMgY2hhbmdlZCwgMjkzIGluc2VydGlvbnMoKyksIDEwMCBk
+ZWxldGlvbnMoLSkNCiBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktY29tbW9uLnR4dA0KIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5
+LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24ueWFtbA0KIGRlbGV0ZSBtb2RlIDEwMDY0
+NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21l
+ZGlhdGVrLHNtaS1sYXJiLnR4dA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJiLnlh
+bWwNCg0KLS0gDQoyLjE4LjANCg0K
 
-
-在 2020/8/22 0:55, Thomas Bogendoerfer 写道:
-> On Thu, Aug 20, 2020 at 08:42:49AM +0800, Jiaxun Yang wrote:
->> Victim Cache is defined by Loongson as per-core unified
->> private Cache.
->> Add this into cacheinfo and make cache levels selfincrement
->> instead of hardcode levels.
->>
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> ---
->>   arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
->>   1 file changed, 26 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
->> index 47312c529410..83548331ee94 100644
->> --- a/arch/mips/kernel/cacheinfo.c
->> +++ b/arch/mips/kernel/cacheinfo.c
->> @@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
->>   
->>   	leaves += (c->icache.waysize) ? 2 : 1;
->>   
->> +	if (c->vcache.waysize) {
->> +		levels++;
->> +		leaves++;
->> +	}
->> +
->>   	if (c->scache.waysize) {
->>   		levels++;
->>   		leaves++;
->> @@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
->>   	struct cpuinfo_mips *c = &current_cpu_data;
->>   	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
->>   	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
->> +	int level = 1;
->>   
->>   	if (c->icache.waysize) {
->> -		/* L1 caches are per core */
->> +		/* D/I caches are per core */
->>   		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
->> -		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
->> +		populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
->>   		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
->> -		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
->> +		populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
->> +		level++;
->>   	} else {
->> -		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
->> +		populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
->> +		level++;
->> +	}
->> +
->> +	if (c->vcache.waysize) {
-> why can't we insert vcache as level 4 and leave the rest of the file
-> alone ?
-
-Hi Thomas,
-
-Oops I forgot this patch.
-
-Because  VCache is physicaly placed between Scache and I/D Cache as per
-core chahe, it will confuse userspace program otherwise.
-
-Also I do think the level should be continues.
-
-Thanks
-
-- Jiaxun
-
->
-> Thomas.
->
