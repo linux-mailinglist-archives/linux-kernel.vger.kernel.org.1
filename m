@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4802A53CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B24B2A55DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388019AbgKCVEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:04:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42754 "EHLO mail.kernel.org"
+        id S2388607AbgKCVWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:22:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387998AbgKCVEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:04:37 -0500
+        id S1733309AbgKCVFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CB7A20658;
-        Tue,  3 Nov 2020 21:04:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EBDF20658;
+        Tue,  3 Nov 2020 21:05:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437477;
-        bh=gkPEqAXJN9EPTh7XGZIwCLPEEsQ7pPhdG9e2tiRjWY8=;
+        s=default; t=1604437502;
+        bh=bKFOTbjVA6NiWP2keuxj4jlXt49FXZ0JSbyAGRstkRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SYVD4zPuB/nqY9M6ns8UKt4QePtNsKQw64eSISNRqdky8CPAaegMly6il9YdyTgLv
-         Am7PYSyHLUe0rymG0j49E3cuQdn6vy+nr93jQSkIzsYEyDqgJbUxNIlWiUS074vSla
-         Rrnj47VEePORlM4wK26leINccOj2YxJtaXGCNvpY=
+        b=VIbtFGADG/b0cQovBMlBUW8AkCT2nLRuSnRa79XPtD6gKfddWbqDM6oqYmGpTIbFG
+         sHTeAl5taXYQmID8dkiCaAXrq6H2puyzQpuXtAxtR42W719g4D9w/2kEAs0+dbwH9o
+         aa9IekPqPa2eM79CYKS3E2Ro55rtTNrOzjxu/aJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
-        Gavin Shan <gshan@redhat.com>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 086/191] arm64/mm: return cpu_all_mask when node is NUMA_NO_NODE
-Date:   Tue,  3 Nov 2020 21:36:18 +0100
-Message-Id: <20201103203242.125528550@linuxfoundation.org>
+Subject: [PATCH 4.19 087/191] xfs: dont free rt blocks when were doing a REMAP bunmapi call
+Date:   Tue,  3 Nov 2020 21:36:19 +0100
+Message-Id: <20201103203242.198873703@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -43,59 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit a194c5f2d2b3a05428805146afcabe5140b5d378 ]
+[ Upstream commit 8df0fa39bdd86ca81a8d706a6ed9d33cc65ca625 ]
 
-The @node passed to cpumask_of_node() can be NUMA_NO_NODE, in that
-case it will trigger the following WARN_ON(node >= nr_node_ids) due to
-mismatched data types of @node and @nr_node_ids. Actually we should
-return cpu_all_mask just like most other architectures do if passed
-NUMA_NO_NODE.
+When callers pass XFS_BMAPI_REMAP into xfs_bunmapi, they want the extent
+to be unmapped from the given file fork without the extent being freed.
+We do this for non-rt files, but we forgot to do this for realtime
+files.  So far this isn't a big deal since nobody makes a bunmapi call
+to a rt file with the REMAP flag set, but don't leave a logic bomb.
 
-Also add a similar check to the inline cpumask_of_node() in numa.h.
-
-Signed-off-by: Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Link: https://lore.kernel.org/r/20200921023936.21846-1-liuzhengyuan@tj.kylinos.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/numa.h | 3 +++
- arch/arm64/mm/numa.c          | 6 +++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_bmap.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/include/asm/numa.h b/arch/arm64/include/asm/numa.h
-index 626ad01e83bf0..dd870390d639f 100644
---- a/arch/arm64/include/asm/numa.h
-+++ b/arch/arm64/include/asm/numa.h
-@@ -25,6 +25,9 @@ const struct cpumask *cpumask_of_node(int node);
- /* Returns a pointer to the cpumask of CPUs on Node 'node'. */
- static inline const struct cpumask *cpumask_of_node(int node)
- {
-+	if (node == NUMA_NO_NODE)
-+		return cpu_all_mask;
-+
- 	return node_to_cpumask_map[node];
- }
- #endif
-diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-index 54529b4ed5130..15eaf1e09d0ca 100644
---- a/arch/arm64/mm/numa.c
-+++ b/arch/arm64/mm/numa.c
-@@ -58,7 +58,11 @@ EXPORT_SYMBOL(node_to_cpumask_map);
-  */
- const struct cpumask *cpumask_of_node(int node)
- {
--	if (WARN_ON(node >= nr_node_ids))
-+
-+	if (node == NUMA_NO_NODE)
-+		return cpu_all_mask;
-+
-+	if (WARN_ON(node < 0 || node >= nr_node_ids))
- 		return cpu_none_mask;
+diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
+index f35e1801f1c90..fc9950a505e62 100644
+--- a/fs/xfs/libxfs/xfs_bmap.c
++++ b/fs/xfs/libxfs/xfs_bmap.c
+@@ -4920,20 +4920,25 @@ xfs_bmap_del_extent_real(
  
- 	if (WARN_ON(node_to_cpumask_map[node] == NULL))
+ 	flags = XFS_ILOG_CORE;
+ 	if (whichfork == XFS_DATA_FORK && XFS_IS_REALTIME_INODE(ip)) {
+-		xfs_fsblock_t	bno;
+ 		xfs_filblks_t	len;
+ 		xfs_extlen_t	mod;
+ 
+-		bno = div_u64_rem(del->br_startblock, mp->m_sb.sb_rextsize,
+-				  &mod);
+-		ASSERT(mod == 0);
+ 		len = div_u64_rem(del->br_blockcount, mp->m_sb.sb_rextsize,
+ 				  &mod);
+ 		ASSERT(mod == 0);
+ 
+-		error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
+-		if (error)
+-			goto done;
++		if (!(bflags & XFS_BMAPI_REMAP)) {
++			xfs_fsblock_t	bno;
++
++			bno = div_u64_rem(del->br_startblock,
++					mp->m_sb.sb_rextsize, &mod);
++			ASSERT(mod == 0);
++
++			error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
++			if (error)
++				goto done;
++		}
++
+ 		do_fx = 0;
+ 		nblks = len * mp->m_sb.sb_rextsize;
+ 		qfield = XFS_TRANS_DQ_RTBCOUNT;
 -- 
 2.27.0
 
