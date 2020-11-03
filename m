@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F121D2A3A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DD22A3A6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgKCCI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:08:56 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:45956 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgKCCIz (ORCPT
+        id S1726212AbgKCC3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgKCC3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:08:55 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201103020852epoutp04f226e98f7875157340d3a5b241ff1034~D3Who6Azt1567315673epoutp04O
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:08:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201103020852epoutp04f226e98f7875157340d3a5b241ff1034~D3Who6Azt1567315673epoutp04O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604369332;
-        bh=MFuZlfb/Yn1FfDXGe9nnnS1LaE1d3HqlFqTNLWzKXtQ=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=CJihPDzySQyauHEF3YXWgGmeizM0KrqlnK6pBZ1JsZ4PMUoklju5445YtsFPKNGgi
-         w/edSsEWMNxETNU5LlAZoHxRcg6auV4cRCOwxKolGf24+hbfpSDhwyQdUG9wZeDUs/
-         b9l4U+bV4Pbc4kKqYZ/pacuY03259vVp6YNG1DMw=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201103020852epcas1p29e1f632a9e5f1609e8e29b88e395b492~D3Wg9BiC12965429654epcas1p23;
-        Tue,  3 Nov 2020 02:08:52 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CQCrK3zz1zMqYmB; Tue,  3 Nov
-        2020 02:08:49 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        97.20.09582.6ABB0AF5; Tue,  3 Nov 2020 11:08:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201103020838epcas1p4496f5796cb600465f05b19c1ebce1098~D3WUBQ4TJ1044310443epcas1p4E;
-        Tue,  3 Nov 2020 02:08:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201103020838epsmtrp2f3a72ca2f9749d3e5bfed43c02794da4~D3WUAV_0X2405724057epsmtrp2A;
-        Tue,  3 Nov 2020 02:08:38 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-ff-5fa0bba68383
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FD.C7.08745.5ABB0AF5; Tue,  3 Nov 2020 11:08:38 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103020837epsmtip17f8c1cb8b99ebd7ff1794daf1912910d~D3WTkkBsw2593625936epsmtip1g;
-        Tue,  3 Nov 2020 02:08:37 +0000 (GMT)
-Subject: Re: [PATCH v6 49/52] PM / devfreq: tegra20: Convert to EMC_STAT
- driver, support interconnect and device-tree
-To:     Dmitry Osipenko <digetx@gmail.com>, cwchoi00@gmail.com
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree <devicetree@vger.kernel.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <7ee7e7bb-6c0d-dfd1-f00d-a718c06d7479@samsung.com>
-Date:   Tue, 3 Nov 2020 11:22:35 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Mon, 2 Nov 2020 21:29:54 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AC2C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Nov 2020 18:29:53 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id y14so12871286pfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Nov 2020 18:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Wdkmteix8A4gNgFVEGww/ERZCRHTeyb15q8nCWpffyo=;
+        b=whE7ofcxwO6tJr765yKyefT3UFbmSkP1tItF+4eCaBE+3SnpOi84eqF42zULPcvNRl
+         JY8zUOKBWAV2BYnYCGrQFZ6zcsaP2h14i4Vy2WRbkTZzNkHr/u2lwUADl2/0mZYFIQfn
+         swVVjvJoNq48frkwTAgq4/9z5oKhlS9fvhxeiiQAn4xgzhI1dWk0jS2JOoJCV/T//taZ
+         kuQMFU7QFU1PrMc6rPWU1DOLCAr+19A0vE/O9RKE9MKa0l1IhXU9d9/F9bxiMM37rqqk
+         oqCxC86Wh6+7+GVsdTwIeGpIc6gXuSzveB5RwqPL5gTA1fe49p6rDqnSXydABR7fXWUu
+         etAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wdkmteix8A4gNgFVEGww/ERZCRHTeyb15q8nCWpffyo=;
+        b=LtxyBA3oYQtsHMuMa16VhoSv2fRRw/dEZzcxyjCoNUhqi62eJ5sT6S0UMIxSHBtKYj
+         YUGUMNovEiIekANqCNvN7Z842n9319oREcwnj0NyHdas+a3A6JA8FZDEwr4H8URMNV9D
+         IH0fWKbPWMUNTEnrxGkRMrD1IT1ZTYKwLWeYioXyp66Eylmeq6LwU+xkjPPs7sHZ0vOd
+         UfQC9KULhOJJO5Uvz3h1DPaGp5EgDvQiJCIVUZBPMPKwqyRWVurVQopQUaqcfw14iBuG
+         4C4z5JfSPzC9RECY4ALgeZyWcK29sTiQLsPgGdAiXhP11NiGPQi1UpKJYQcI26lmMSPi
+         ouNQ==
+X-Gm-Message-State: AOAM533eN95t05CIcEHlY0AYRTRrknvQFbAA3pR3ShzIN3C5rq04agaF
+        qsPPwVIG3fdr/Mw4cgzS28ciKg==
+X-Google-Smtp-Source: ABdhPJySOh59Yr4Z7bpkPn7Nq+q1Sw31GYyhuZrR6v3q0qxbJSZlRb6Gw/35O8rXDR84qivdMgtcVw==
+X-Received: by 2002:a65:4945:: with SMTP id q5mr1674696pgs.83.1604370592513;
+        Mon, 02 Nov 2020 18:29:52 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([103.141.182.112])
+        by smtp.gmail.com with ESMTPSA id e8sm15054147pfn.175.2020.11.02.18.29.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 02 Nov 2020 18:29:51 -0800 (PST)
+Date:   Tue, 3 Nov 2020 10:29:44 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] perf lock: Don't free "lock_seq_stat" if
+ read_count isn't zero
+Message-ID: <20201103022944.GB13232@leoy-ThinkPad-X240s>
+References: <20201021003948.28817-1-leo.yan@linaro.org>
+ <20201021003948.28817-2-leo.yan@linaro.org>
+ <20201102165626.GD3405508@krava>
 MIME-Version: 1.0
-In-Reply-To: <bff3bf4a-8111-7c96-92f6-46343d85be0d@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLJsWRmVeSWpSXmKPExsWy7bCmge6y3QviDWbu1rd4dlTb4t2np6wW
-        84+cY7VY/fExo8WVr+/ZLKbv3cRm0TJrEYvF+fMb2C22Pl3DZHG26Q27xeVdc9gsPvceYbTo
-        /DKLzeLiKVeL240r2CwmrZ3KaHH2mbdF694j7Bb/rm1ksfi5ax6LxeYHx9gcRD3e32hl99g5
-        6y67x6Vzf5g9Nq3qZPO4c20Pm8f97uNMHr3N79g8+rasYvT4vEkugDMq2yYjNTEltUghNS85
-        PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6DslhbLEnFKgUEBicbGSvp1N
-        UX5pSapCRn5xia1SakFKToFlgV5xYm5xaV66XnJ+rpWhgYGRKVBhQnbGlwU5BZM4KzZ+ms3c
-        wLiUvYuRk0NCwERi6tsvbF2MXBxCAjsYJZ5Me8QC4XxilJg3ZwZYlZDAZ0aJCSc0YDpmHDzG
-        ClG0i1Hi6dJt7BDOe0aJiQdXMoFUCQuUS5ybuYURxBYRsJL49QqiiFmgmU1i9ZUtzCAJNgEt
-        if0vbrCB2PwCihJXfzwGa+AVsJN4cO0KkM3BwSKgIrFiZy5IWFQgTOLkthaoEkGJkzOfsIDY
-        nAK2EifXLwG7lFlAXOLWk/lMELa8RPPW2cwQV8/nlDh+2ALCdpF4P+UxC4QtLPHq+BZoWEhJ
-        fH63lw3CrpZYefIIOFwkBDoYJbbsv8AKkTCW2L90MhPIbcwCmhLrd+lDhBUldv6eywixl0/i
-        3dceVpASCQFeiY42IYgSZYnLD+4yQdiSEovbO9kmMCrNQvLNLCQfzELywSyEZQsYWVYxiqUW
-        FOempxYbFhgjx/UmRnC61zLfwTjt7Qe9Q4xMHIyHGCU4mJVEeGsi58UL8aYkVlalFuXHF5Xm
-        pBYfYjQFBu9EZinR5HxgxskriTc0NTI2NrYwMTQzNTRUEuf9o90RLySQnliSmp2aWpBaBNPH
-        xMEp1cB06GqHZUbc528e/v9W1WUdzePrlY+dMDVh69pYtYqQ5O2RyyR2P56R+8RQoDtQ+uTm
-        VruvnFOnLstiXmdiYJXJ6qQmpnebb9/nFR8WPloy71cB8+47u3XUCn1sS0U/dO89abjblfl4
-        kTr3otkZ2voei0qT5+4wfMS/7Y3UhFP/e5sXLLlV4d1v63b0sESP0bTaDVs1T3lLLrn9KusD
-        t87VzO8r18+OW6X38WumJJP21rL1zlWWzsVfz/GeqHmv9pXLXeblhoBEc9PCZUpbM8+3enjL
-        fyh+f91dVWDmGfeblR3P2+SeCQtbef5U/etWfnu1ws+gEHuePhu3E6eZ5xXdtLw/uXphzqRQ
-        eYUbt4KUWIozEg21mIuKEwHlsQPXgAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsWy7bCSnO6y3QviDXZMYbZ4dlTb4t2np6wW
-        84+cY7VY/fExo8WVr+/ZLKbv3cRm0TJrEYvF+fMb2C22Pl3DZHG26Q27xeVdc9gsPvceYbTo
-        /DKLzeLiKVeL240r2CwmrZ3KaHH2mbdF694j7Bb/rm1ksfi5ax6LxeYHx9gcRD3e32hl99g5
-        6y67x6Vzf5g9Nq3qZPO4c20Pm8f97uNMHr3N79g8+rasYvT4vEkugDOKyyYlNSezLLVI3y6B
-        K+PLgpyCSZwVGz/NZm5gXMrexcjJISFgIjHj4DHWLkYuDiGBHYwSixefZoFISEpMu3iUuYuR
-        A8gWljh8uBii5i2jxNmtT5hAaoQFyiXOzdzCCGKLCFhJ/Hq1jR2kiFmgk03i3ooGFoiOh0wS
-        LXc3g61jE9CS2P/iBhuIzS+gKHH1x2Owbl4BO4kH164wgmxjEVCRWLEzFyQsKhAmsXPJYyaI
-        EkGJkzOfgB3HKWArcXL9ErCRzALqEn/mXWKGsMUlbj2ZzwRhy0s0b53NPIFReBaS9llIWmYh
-        aZmFpGUBI8sqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg2NfS2sG4Z9UHvUOMTByM
-        hxglOJiVRHhrIufFC/GmJFZWpRblxxeV5qQWH2KU5mBREuf9OmthnJBAemJJanZqakFqEUyW
-        iYNTqoFJrNssde/O+z2xW4I4o9esXq29aCrj73f/OkMeOopZTw+38G1p/Rob4ungGVdwcsfh
-        BU5H/Q/GMjLeXeAz8//3xxttmDJX/+laKJnnHHL1zpLFnbaCi8Laf9VIXnv6K9Yk5V6x6+nf
-        jKaGJyMVDhZW/NSJ+7+arWXBRqfes3/jOU+9yTJa+XSye0do5mfBpV/SvWbGfJ71+EHb7rrg
-        9Wxac4QkWyxuSK2/YN6Szsd7d2FLo23Vp4aDho9chPKXlLF4x99svc3mMetZa9S95SvfH5HQ
-        sFV6L+Y5uUdq27tp547XP2mc67Tb7dVWo8ZbkUul9mwI9Zp4XMhmoXD2pN97rIJyzreXL1J6
-        d8Pmbj2vEktxRqKhFnNRcSIAXdvuBWwDAAA=
-X-CMS-MailID: 20201103020838epcas1p4496f5796cb600465f05b19c1ebce1098
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201102200839epcas1p30a5235333319f7affbe0f0c814ec3308
-References: <20201025221735.3062-1-digetx@gmail.com>
-        <20201025221735.3062-50-digetx@gmail.com>
-        <CAGTfZH0KxyZYLZ_AgM7Lr+4s35kaWJp1AenpZ-o_FRLCCHC+6A@mail.gmail.com>
-        <0ffa84f6-625e-807c-e9af-7a67f0fe48e7@gmail.com>
-        <CGME20201102200839epcas1p30a5235333319f7affbe0f0c814ec3308@epcas1p3.samsung.com>
-        <bff3bf4a-8111-7c96-92f6-46343d85be0d@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102165626.GD3405508@krava>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 5:08 AM, Dmitry Osipenko wrote:
-> 01.11.2020 17:12, Dmitry Osipenko пишет:
-> ...
->> We will probably move the Tegra20 EMC_STAT devfreq driver into the
->> memory driver and remove the older IMC_STAT driver in v7, like it was
->> suggested by Thierry Reding. This will be a much less invasive code change.
->>
->>> Also, if you want to get more responsiveness, you could use delayed timer
->>> instead of deferrable timer by editing the devfreq_dev_profile structure.
->>
->> Thanks, I'll try the deferrable timer.
+On Mon, Nov 02, 2020 at 05:56:26PM +0100, Jiri Olsa wrote:
+> On Wed, Oct 21, 2020 at 08:39:48AM +0800, Leo Yan wrote:
+> > When execute command "perf lock report", it hits failure and outputs log
+> > as follows:
+> > 
+> >   perf: builtin-lock.c:623: report_lock_release_event: Assertion `!(seq->read_count < 0)' failed.
+> >   Aborted
+> > 
+> > This is an imbalance issue.  The locking sequence structure
+> > "lock_seq_stat" contains the reader counter and it is used to check if
+> > the locking sequence is balance or not between acquiring and releasing.
+> > 
+> > If the tool wrongly frees "lock_seq_stat" when "read_count" isn't zero,
+> > the "read_count" will be reset to zero when allocate a new structure at
+> > the next time; thus it causes the wrong counting for reader and finally
+> > results in imbalance issue.
+> > 
+> > To fix this issue, if detects "read_count" is not zero (means still
+> > have read user in the locking sequence), goto the "end" tag to skip
+> > freeing structure "lock_seq_stat".
+> > 
+> > Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/builtin-lock.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> > index 5cecc1ad78e1..a2f1e53f37a7 100644
+> > --- a/tools/perf/builtin-lock.c
+> > +++ b/tools/perf/builtin-lock.c
+> > @@ -621,7 +621,7 @@ static int report_lock_release_event(struct evsel *evsel,
+> >  	case SEQ_STATE_READ_ACQUIRED:
+> >  		seq->read_count--;
+> >  		BUG_ON(seq->read_count < 0);
+> > -		if (!seq->read_count) {
+> > +		if (seq->read_count) {
+> >  			ls->nr_release++;
 > 
-> I took a brief look at the delayed timer and I think the deferrable
-> timer should be more a preferred option because this devfreq drive is
-> more an assistance for the optimal bandwidth selection and it will be
-> more preferred to keep system idling whenever possible.
-> 
-> My primary concern is the initial performance lag in a case of
-> multimedia applications. But this will be resolved by hooking up
-> performance voting to all drivers, once we will get around to it.
+> it seems ok, but I fail to see what's nr_release for
+> the point is just to skip the removal of seq right?
 
-OK. You can choice the type of timer on both probe
-and via sysfs file on the runtime.
+To be honest, I'm not sure if I understand your question :)
 
+Either remove "seq" or not, "nr_release" will be increased.  When remove
+"seq", the code line [1] will increase '1' for "nr_release"; when skip
+to remove "seq", "nr_release" is also increased 1 [2].  So I don't see
+the logic issue for "nr_release", do I miss anything?
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Another side topic is the four metrics "nr_acquire", "nr_release",
+"nr_readlock", "nr_trylock" have been accounted, but they are not really
+used for output final result.  I'd like to defer this later as a task
+for refine the output metrics.
+
+Thanks,
+Leo
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/builtin-lock.c#n641
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/builtin-lock.c#n625
