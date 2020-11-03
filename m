@@ -2,227 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE0D2A4BD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389882A4BDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgKCQpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728508AbgKCQpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:45:13 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E58CC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:45:11 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id v5so13392578wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QVYSL7Z7XSgVb+kN/ChQfOvuxiKpkqlxd/bMhr/vzd0=;
-        b=eR2eh/ew+5BKh8a8YAYPPrPz99u4o8NTTZPjaHpYEpPSkNh8KQm90kx2omCbKCLedO
-         SqztYlervHqm0+Hht0b9EOr8U4Y97NyEEHjfv67mW8qeUCEQTzP8F+j8BY8Gxi4bsRQO
-         C4PAObCYns+hKSe4u7X/USssgryGxFxwVjX/4A2tydK/5PX8E6+8OIBEy3nWQ7ufMj7y
-         4dUvpd7ZiBdgus7Bib44KWrgvAx8IagpfJukBvdwG5VU9YGF7n+bnhmpwcpx5ubraL3a
-         D+7KBSTA4P3kqX6vtb2cd3ocRQDJTJBPfJiBm1Y/3KiTgQ77piHoSPaM7EZyKU4mh0no
-         EZRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QVYSL7Z7XSgVb+kN/ChQfOvuxiKpkqlxd/bMhr/vzd0=;
-        b=Iruet9PEiz4G4lHuBw9FaC0kc7JoMMhIXg1BUlngxIfmlCx9posNOv+BbFPJqESAwr
-         tYnwi/7zSqX4g86SuTDAIKN+9vIK33QKKB/n9DiLusfnU0TSf11nLaaejqKP/OnSikbe
-         ipuBIBAIfIH+X4SDWCfKxyO+sgWxy3WimC6kuANOQSyWxBQnxRi05+GPlj3V21ldZLBC
-         L76XVE2kA0uMHcKbITklp9zRWMcauFZfi6dYiYBz1ksUfJHEKnFEy5/Z9k2kP1nVmRRi
-         046isSG+a15IRH7TjEhqpZONUSldWteGm9HO7iA/bvOMaKInElE8aK3mg9V9KhKJtmnq
-         7+oA==
-X-Gm-Message-State: AOAM533cOnvfCyWSTzyJYpURuMOLY0OEQHcqL2FimrDu258lCFVL/8aG
-        Ud+X8N1PmWmbciv++B73U9SUag==
-X-Google-Smtp-Source: ABdhPJwF8gbDb8L3Tz1UdLuY3+8DQb937KN1OTBNJ7x2becQ9TqjfefvGY69ex8uGSenwM77E59owQ==
-X-Received: by 2002:a05:600c:210:: with SMTP id 16mr21621wmi.122.1604421910339;
-        Tue, 03 Nov 2020 08:45:10 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id v6sm3430544wmj.6.2020.11.03.08.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 08:45:09 -0800 (PST)
-Subject: Re: [PATCH 5/5] interconnect: qcom: Add MSM8939 interconnect provider
- driver
-To:     Jun Nie <jun.nie@linaro.org>
-Cc:     devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, shawn.guo@linaro.org
-References: <20200930081645.3434-1-jun.nie@linaro.org>
- <20200930081645.3434-6-jun.nie@linaro.org>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- xsFNBFjTuRcBEACyAOVzghvyN19Sa/Nit4LPBWkICi5W20p6bwiZvdjhtuh50H5q4ktyxJtp
- 1+s8dMSa/j58hAWhrc2SNL3fttOCo+MM1bQWwe8uMBQJP4swgXf5ZUYkSssQlXxGKqBSbWLB
- uFHOOBTzaQBaNgsdXo+mQ1h8UCgM0zQOmbs2ort8aHnH2i65oLs5/Xgv/Qivde/FcFtvEFaL
- 0TZ7odM67u+M32VetH5nBVPESmnEDjRBPw/DOPhFBPXtal53ZFiiRr6Bm1qKVu3dOEYXHHDt
- nF13gB+vBZ6x5pjl02NUEucSHQiuCc2Aaavo6xnuBc3lnd4z/xk6GLBqFP3P/eJ56eJv4d0B
- 0LLgQ7c1T3fU4/5NDRRCnyk6HJ5+HSxD4KVuluj0jnXW4CKzFkKaTxOp7jE6ZD/9Sh74DM8v
- etN8uwDjtYsM07I3Szlh/I+iThxe/4zVtUQsvgXjwuoOOBWWc4m4KKg+W4zm8bSCqrd1DUgL
- f67WiEZgvN7tPXEzi84zT1PiUOM98dOnmREIamSpKOKFereIrKX2IcnZn8jyycE12zMkk+Sc
- ASMfXhfywB0tXRNmzsywdxQFcJ6jblPNxscnGMh2VlY2rezmqJdcK4G4Lprkc0jOHotV/6oJ
- mj9h95Ouvbq5TDHx+ERn8uytPygDBR67kNHs18LkvrEex/Z1cQARAQABzShHZW9yZ2kgRGph
- a292IDxnZW9yZ2kuZGpha292QGxpbmFyby5vcmc+wsF+BBMBAgAoBQJY07kXAhsDBQkHhM4A
- BgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyi/eZcnWWUuvsD/4miikUeAO6fU2Xy3fT
- l7RUCeb2Uuh1/nxYoE1vtXcow6SyAvIVTD32kHXucJJfYy2zFzptWpvD6Sa0Sc58qe4iLY4j
- M54ugOYK7XeRKkQHFqqR2T3g/toVG1BOLS2atooXEU+8OFbpLkBXbIdItqJ1M1SEw8YgKmmr
- JlLAaKMq3hMb5bDQx9erq7PqEKOB/Va0nNu17IL58q+Q5Om7S1x54Oj6LiG/9kNOxQTklOQZ
- t61oW1Ewjbl325fW0/Lk0QzmfLCrmGXXiedFEMRLCJbVImXVKdIt/Ubk6SAAUrA5dFVNBzm2
- L8r+HxJcfDeEpdOZJzuwRyFnH96u1Xz+7X2V26zMU6Wl2+lhvr2Tj7spxjppR+nuFiybQq7k
- MIwyEF0mb75RLhW33sdGStCZ/nBsXIGAUS7OBj+a5fm47vQKv6ekg60oRTHWysFSJm1mlRyq
- exhI6GwUo5GM/vE36rIPSJFRRgkt6nynoba/1c4VXxfhok2rkP0x3CApJ5RimbvITTnINY0o
- CU6f1ng1I0A1UTi2YcLjFq/gmCdOHExT4huywfu1DDf0p1xDyPA1FJaii/gJ32bBP3zK53hM
- dj5S7miqN7F6ZpvGSGXgahQzkGyYpBR5pda0m0k8drV2IQn+0W8Qwh4XZ6/YdfI81+xyFlXc
- CJjljqsMCJW6PdgEH87BTQRY07kXARAAvupGd4Jdd8zRRiF+jMpv6ZGz8L55Di1fl1YRth6m
- lIxYTLwGf0/p0oDLIRldKswena3fbWh5bbTMkJmRiOQ/hffhPSNSyyh+WQeLY2kzl6geiHxD
- zbw37e2hd3rWAEfVFEXOLnmenaUeJFyhA3Wd8OLdRMuoV+RaLhNfeHctiEn1YGy2gLCq4VNb
- 4Wj5hEzABGO7+LZ14hdw3hJIEGKtQC65Jh/vTayGD+qdwedhINnIqslk9tCQ33a+jPrCjXLW
- X29rcgqigzsLHH7iVHWA9R5Aq7pCy5hSFsl4NBn1uV6UHlyOBUuiHBDVwTIAUnZ4S8EQiwgv
- WQxEkXEWLM850V+G6R593yZndTr3yydPgYv0xEDACd6GcNLR/x8mawmHKzNmnRJoOh6Rkfw2
- fSiVGesGo83+iYq0NZASrXHAjWgtZXO1YwjW9gCQ2jYu9RGuQM8zIPY1VDpQ6wJtjO/KaOLm
- NehSR2R6tgBJK7XD9it79LdbPKDKoFSqxaAvXwWgXBj0Oz+Y0BqfClnAbxx3kYlSwfPHDFYc
- R/ppSgnbR5j0Rjz/N6Lua3S42MDhQGoTlVkgAi1btbdV3qpFE6jglJsJUDlqnEnwf03EgjdJ
- 6KEh0z57lyVcy5F/EUKfTAMZweBnkPo+BF2LBYn3Qd+CS6haZAWaG7vzVJu4W/mPQzsAEQEA
- AcLBZQQYAQIADwUCWNO5FwIbDAUJB4TOAAAKCRCyi/eZcnWWUhlHD/0VE/2x6lKh2FGP+QHH
- UTKmiiwtMurYKJsSJlQx0T+j/1f+zYkY3MDX+gXa0d0xb4eFv8WNlEjkcpSPFr+pQ7CiAI33
- 99kAVMQEip/MwoTYvM9NXSMTpyRJ/asnLeqa0WU6l6Z9mQ41lLzPFBAJ21/ddT4xeBDv0dxM
- GqaH2C6bSnJkhSfSja9OxBe+F6LIAZgCFzlogbmSWmUdLBg+sh3K6aiBDAdZPUMvGHzHK3fj
- gHK4GqGCFK76bFrHQYgiBOrcR4GDklj4Gk9osIfdXIAkBvRGw8zg1zzUYwMYk+A6v40gBn00
- OOB13qJe9zyKpReWMAhg7BYPBKIm/qSr82aIQc4+FlDX2Ot6T/4tGUDr9MAHaBKFtVyIqXBO
- xOf0vQEokkUGRKWBE0uA3zFVRfLiT6NUjDQ0vdphTnsdA7h01MliZLQ2lLL2Mt5lsqU+6sup
- Tfql1omgEpjnFsPsyFebzcKGbdEr6vySGa3Cof+miX06hQXKe99a5+eHNhtZJcMAIO89wZmj
- 7ayYJIXFqjl/X0KBcCbiAl4vbdBw1bqFnO4zd1lMXKVoa29UHqby4MPbQhjWNVv9kqp8A39+
- E9xw890l1xdERkjVKX6IEJu2hf7X3MMl9tOjBK6MvdOUxvh1bNNmXh7OlBL1MpJYY/ydIm3B
- KEmKjLDvB0pePJkdTw==
-Message-ID: <39ad2fc8-8604-5529-c2d5-d5b434f19859@linaro.org>
-Date:   Tue, 3 Nov 2020 18:45:12 +0200
+        id S1728228AbgKCQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:48:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:52118 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgKCQsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:48:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11D0A139F;
+        Tue,  3 Nov 2020 08:48:15 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0C173F718;
+        Tue,  3 Nov 2020 08:48:13 -0800 (PST)
+Subject: Re: [PATCH v2 3/4] iommu/iova: Flush CPU rcache for when a depot
+ fills
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
+Cc:     xiyou.wangcong@gmail.com, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        chenxiang66@hisilicon.com, thunder.leizhen@huawei.com
+References: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
+ <1603733501-211004-4-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <65b568ef-ff2a-0993-e6f5-b6414b3b19f8@arm.com>
+Date:   Tue, 3 Nov 2020 16:48:12 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20200930081645.3434-6-jun.nie@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1603733501-211004-4-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 11:16, Jun Nie wrote:
-> Add driver for the Qualcomm interconnect buses found in MSM8939 based
-> platforms. The topology consists of four NoCs that are controlled by
-> a remote processor that collects the aggregated bandwidth for each
-> master-slave pairs.
+On 2020-10-26 17:31, John Garry wrote:
+> Leizhen reported some time ago that IOVA performance may degrade over time
+> [0], but unfortunately his solution to fix this problem was not given
+> attention.
 > 
-> Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> To summarize, the issue is that as time goes by, the CPU rcache and depot
+> rcache continue to grow. As such, IOVA RB tree access time also continues
+> to grow.
+
+I'm struggling to see how this is not simply indicative of a leak 
+originating elsewhere. For the number of magazines to continually grow, 
+it means IOVAs *of a particular size* are being freed faster than they 
+are being allocated, while the only place that ongoing allocations 
+should be coming from is those same magazines!
+
+Now indeed that could happen over the short term if IOVAs are allocated 
+and freed again in giant batches larger than the total global cache 
+capacity, but that would show a cyclic behaviour - when activity starts, 
+everything is first allocated straight from the tree, then when it ends 
+the caches would get overwhelmed by the large burst of freeing and start 
+having to release things back to the tree, but eventually that would 
+stop once everything *is* freed, then when activity begins again the 
+next round of allocating would inherently clear out all the caches 
+before going anywhere near the tree. To me the "steady decline" 
+behaviour suggests that someone somewhere is making DMA unmap calls with 
+a smaller size than they were mapped with (you tend to notice it quicker 
+the other way round due to all the device errors and random memory 
+corruption) - in many cases that would appear to work out fine from the 
+driver's point of view, but would provoke exactly this behaviour in the 
+IOVA allocator.
+
+Robin.
+
+> At a certain point, a depot may become full, and also some CPU rcaches may
+> also be full when inserting another IOVA is attempted. For this scenario,
+> currently the "loaded" CPU rcache is freed and a new one is created. This
+> freeing means that many IOVAs in the RB tree need to be freed, which
+> makes IO throughput performance fall off a cliff in some storage scenarios:
+> 
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
+> 
+> And continue in this fashion, without recovering. Note that in this
+> example it was required to wait 16 hours for this to occur. Also note that
+> IO throughput also becomes gradually becomes more unstable leading up to
+> this point.
+> 
+> As a solution to this issue, judge that the IOVA caches have grown too big
+> when cached magazines need to be free, and just flush all the CPUs rcaches
+> instead.
+> 
+> The depot rcaches, however, are not flushed, as they can be used to
+> immediately replenish active CPUs.
+> 
+> In future, some IOVA compaction could be implemented to solve the
+> instabilty issue, which I figure could be quite complex to implement.
+> 
+> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+> 
+> Analyzed-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > ---
->  drivers/interconnect/qcom/Kconfig   |   9 +
->  drivers/interconnect/qcom/Makefile  |   2 +
->  drivers/interconnect/qcom/msm8939.c | 355 ++++++++++++++++++++++++++++
->  3 files changed, 366 insertions(+)
->  create mode 100644 drivers/interconnect/qcom/msm8939.c
+>   drivers/iommu/iova.c | 16 ++++++----------
+>   1 file changed, 6 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
-> index 25486de5a38d..6395404bfe3f 100644
-> --- a/drivers/interconnect/qcom/Kconfig
-> +++ b/drivers/interconnect/qcom/Kconfig
-> @@ -17,6 +17,15 @@ config INTERCONNECT_QCOM_MSM8916
->  	  This is a driver for the Qualcomm Network-on-Chip on msm8916-based
->  	  platforms.
->  
-> +config INTERCONNECT_QCOM_MSM8939
-> +	tristate "Qualcomm MSM8939 interconnect driver"
-> +	depends on INTERCONNECT_QCOM
-> +	depends on QCOM_SMD_RPM
-> +	select INTERCONNECT_QCOM_SMD_RPM
-> +	help
-> +	  This is a driver for the Qualcomm Network-on-Chip on msm8939-based
-> +	  platforms.
-> +
->  config INTERCONNECT_QCOM_MSM8974
->  	tristate "Qualcomm MSM8974 interconnect driver"
->  	depends on INTERCONNECT_QCOM
-> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qcom/Makefile
-> index f5e803489de0..84b75022f0d8 100644
-> --- a/drivers/interconnect/qcom/Makefile
-> +++ b/drivers/interconnect/qcom/Makefile
-> @@ -2,6 +2,7 @@
->  
->  icc-bcm-voter-objs			:= bcm-voter.o
->  qnoc-msm8916-objs			:= msm8916.o
-> +qnoc-msm8939-objs			:= msm8939.o
->  qnoc-msm8974-objs			:= msm8974.o
->  icc-osm-l3-objs				:= osm-l3.o
->  qnoc-qcs404-objs			:= qcs404.o
-> @@ -13,6 +14,7 @@ icc-smd-rpm-objs			:= smd-rpm.o icc-rpm.o
->  
->  obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) += icc-bcm-voter.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) += qnoc-msm8916.o
-> +obj-$(CONFIG_INTERCONNECT_QCOM_MSM8939) += qnoc-msm8939.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_MSM8974) += qnoc-msm8974.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_OSM_L3) += icc-osm-l3.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_QCS404) += qnoc-qcs404.o
-> diff --git a/drivers/interconnect/qcom/msm8939.c b/drivers/interconnect/qcom/msm8939.c
-> new file mode 100644
-> index 000000000000..dfbec30ed149
-> --- /dev/null
-> +++ b/drivers/interconnect/qcom/msm8939.c
-> @@ -0,0 +1,355 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 Linaro Ltd
-> + * Author: Jun Nie <jun.nie@linaro.org>
-> + * With reference of msm8916 interconnect driver of Georgi Djakov.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/device.h>
-> +#include <linux/interconnect-provider.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/of_device.h>
-
-Nit: Move this above platform_device.h to make it sorted.
-
-> +
-> +#include <dt-bindings/interconnect/qcom,msm8939.h>
-> +
-> +#include "smd-rpm.h"
-> +#include "icc-rpm.h"
-> +
-[..]
-> +static const struct of_device_id msm8939_noc_of_match[] = {
-> +	{ .compatible = "qcom,msm8939-bimc", .data = &msm8939_bimc },
-> +	{ .compatible = "qcom,msm8939-pcnoc", .data = &msm8939_pcnoc },
-> +	{ .compatible = "qcom,msm8939-snoc", .data = &msm8939_snoc },
-> +	{ .compatible = "qcom,msm8939-snoc-mm", .data = &msm8939_snoc_mm },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, msm8939_noc_of_match);
-> +
-> +static struct platform_driver msm8939_noc_driver = {
-> +	.probe = msm8939_qnoc_probe,
-> +	.remove = qnoc_remove,
-> +	.driver = {
-> +		.name = "qnoc-msm8939",
-> +		.of_match_table = msm8939_noc_of_match,
-
-The sync_state patches got merged, so please add this:
-		.sync_state = icc_sync_state,
-
-Thanks,
-Georgi
-
-> +	},
-> +};
-> +module_platform_driver(msm8939_noc_driver);
-> +MODULE_AUTHOR("Jun Nie <jun.nie@linaro.org>");
-> +MODULE_DESCRIPTION("Qualcomm MSM8939 NoC driver");
-> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 1f3f0f8b12e0..386005055aca 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -901,7 +901,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   				 struct iova_rcache *rcache,
+>   				 unsigned long iova_pfn)
+>   {
+> -	struct iova_magazine *mag_to_free = NULL;
+>   	struct iova_cpu_rcache *cpu_rcache;
+>   	bool can_insert = false;
+>   	unsigned long flags;
+> @@ -923,13 +922,12 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   				if (cpu_rcache->loaded)
+>   					rcache->depot[rcache->depot_size++] =
+>   							cpu_rcache->loaded;
+> -			} else {
+> -				mag_to_free = cpu_rcache->loaded;
+> +				can_insert = true;
+> +				cpu_rcache->loaded = new_mag;
+>   			}
+>   			spin_unlock(&rcache->lock);
+> -
+> -			cpu_rcache->loaded = new_mag;
+> -			can_insert = true;
+> +			if (!can_insert)
+> +				iova_magazine_free(new_mag);
+>   		}
+>   	}
+>   
+> @@ -938,10 +936,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   
+>   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+>   
+> -	if (mag_to_free) {
+> -		iova_magazine_free_pfns(mag_to_free, iovad);
+> -		iova_magazine_free(mag_to_free);
+> -	}
+> +	if (!can_insert)
+> +		free_all_cpu_cached_iovas(iovad);
+>   
+>   	return can_insert;
+>   }
 > 
