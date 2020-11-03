@@ -2,50 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AA62A4D30
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952F82A4D34
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgKCRiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:38:22 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:33114 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgKCRiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:38:22 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1ka0G9-0054Fm-Bj; Tue, 03 Nov 2020 18:38:17 +0100
-Date:   Tue, 3 Nov 2020 18:38:17 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        f.fainelli@gmail.com, hkallweit1@gmail.com, robh@kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 4/4] net: phy: dp83td510: Add support for the
- DP83TD510 Ethernet PHY
-Message-ID: <20201103173817.GP1042051@lunn.ch>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-5-dmurphy@ti.com>
- <20201030160330.622c55a7@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <5b32a56b-f054-5790-c5cf-bf1e86403bad@ti.com>
- <20201103172153.GO1042051@lunn.ch>
- <d51ef446-1528-5d3f-8548-831598a005a7@ti.com>
+        id S1729026AbgKCRid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:38:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727857AbgKCRic (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:38:32 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8A9C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:38:32 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id o3so14203780pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:38:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7X3BbvjDrsn7ygRSJDCtlaYquNn6mTNp8oqpq3hyWlQ=;
+        b=ms7/+dtLljlluO37xt96zw8YARFc9rD1+o7LTO6aRKO7yXhIA2N+N0wA09Y0+7Jxq+
+         KhIOOBAAOfsGwse9QyUQTDu5zJrUjvmFSmTZZC//jjjtBLI3uXWUdOVCwRKk7UgQJ5En
+         4Uqb/IZOGARLzQF58PXqpFwRtu9XgoPMljdD/Kb/NluaHI5+agi5rN+E+s5uKBBjj4zi
+         +cwX47z9jpe6GdmeGP7RcP8Ss/AHNenrP4A5h32Zksfamm1xe366h1WphtgQ3FXn67kl
+         WYLqSyplc64fEYIjqQdLTCsmoOUpAduHUSQGg4Ka1ILfGNcxpuZSdXcKzLo89A1GpUhu
+         BOHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7X3BbvjDrsn7ygRSJDCtlaYquNn6mTNp8oqpq3hyWlQ=;
+        b=On6GIrA51nDkcQ8XxRLM2xOSWsQ5OGTD0fbzHVSHd927X5vvFTZbX1etenhI9VxME3
+         Jc8uCwcG5RE4M6Ayk3OwlOGDxPHfd0YgCHPIGDe8x3BGT2T2pZ64RDl/T9yiR5lyI/RG
+         VyJfUzg5GWd25cMlIa6+CDUQqWbTBoqaLO6t/jCLilas8UCWy95+QEOfM3eLmpOU3mIV
+         goUgcyVJGjYjRI7W0jARo5jqr1/g61w2R+2RfMz5aeotC2iCFhp/b4DnG2rG2d9sD7v5
+         +hxKAq6TaL5I5a3Nblb30u9/zEHWK9BntHgpDifMqGts7iZW9K1/F+nVD0e09UFwCA/q
+         f57Q==
+X-Gm-Message-State: AOAM531U/bOJnzhSv2VqBwoX3jEs5mNz7RRT5j17Pl32+n2LS/jRPSuf
+        RteWc7W+lEhBD5cHe+RP/wWrK6Ak4F0vkSOtjp96xA==
+X-Google-Smtp-Source: ABdhPJyOa5rBkqu7NYkTH7RmQqj5gNamoyrF6MSPrAia5E1eeeOszu4vTPxmN1gQwld1sjzo+ikvh/Gv2Iyou0QHBHg=
+X-Received: by 2002:a17:90b:204d:: with SMTP id ji13mr319770pjb.20.1604425111290;
+ Tue, 03 Nov 2020 09:38:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d51ef446-1528-5d3f-8548-831598a005a7@ti.com>
+References: <20201103111049.51916-1-98.arpi@gmail.com> <20201103113353.GC4077@smile.fi.intel.com>
+ <20201103115223.GA268796@kroah.com> <20201103160728.GQ20201@alley> <20201103162340.GA281002@kroah.com>
+In-Reply-To: <20201103162340.GA281002@kroah.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 3 Nov 2020 09:38:20 -0800
+Message-ID: <CAFd5g472GnXmjs3gzU9=qgcB+5uBdym+-pO19M1xnGvQu5BWQw@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        alexandre.belloni@bootlin.com,
+        Randy Dunlap <rdunlap@infradead.org>, idryomov@gmail.com,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Bird, Timothy" <Tim.Bird@sony.com>,
+        David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > drivers/net/phy/dp83td510.c:70:11: warning: symbol 'dp83td510_feature_array' was not declared. Should it be static?
-> > > I did not see this warning. Did you use W=1?
-> > I _think_ that one is W=1. All the PHY drivers are W=1 clean, and i
-> > want to keep it that way. And i hope to make it the default in a lot
-> > of the network code soon.
-> OK I built with the W=1 before submission I did not see this but I will try
-> some other things.
+On Tue, Nov 3, 2020 at 8:22 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 03, 2020 at 05:11:47PM +0100, Petr Mladek wrote:
+> > On Tue 2020-11-03 12:52:23, Greg KH wrote:
+> > > On Tue, Nov 03, 2020 at 01:33:53PM +0200, Andy Shevchenko wrote:
+> > > > On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
+> > > > > Convert test lib/test_printf.c to KUnit. More information about
+> > > > > KUnit can be found at:
+> > > > > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> > > > > KUnit provides a common framework for unit tests in the kernel.
+> > > > > KUnit and kselftest are standardizing around KTAP, converting this
+> > > > > test to KUnit makes this test output in KTAP which we are trying to
+> > > > > make the standard test result format for the kernel. More about
+> > > > > the KTAP format can be found at:
+> > > > > https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
+> > > > > I ran both the original and converted tests as is to produce the
+> > > > > output for success of the test in the two cases. I also ran these
+> > > > > tests with a small modification to show the difference in the output
+> > > > > for failure of the test in both cases. The modification I made is:
+> > > > > - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > > > > + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> > > > >
+> > > > > Original test success:
+> > > > > [    0.540860] test_printf: loaded.
+> > > > > [    0.540863] test_printf: random seed = 0x5c46c33837bc0619
+> > > > > [    0.541022] test_printf: all 388 tests passed
+> > > > >
+> > > > > Original test failure:
+> > > > > [    0.537980] test_printf: loaded.
+> > > > > [    0.537983] test_printf: random seed = 0x1bc1efd881954afb
+> > > > > [    0.538029] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > > > [    0.538030] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > > > [    0.538124] test_printf: failed 2 out of 388 tests
+> > > > > [    0.538125] test_printf: random seed used was 0x1bc1efd881954afb
+> > > > >
+> > > > > Converted test success:
+> > > > >     # Subtest: printf
+> > > > >     1..25
+> > > > >     ok 1 - test_basic
+> > > > >     ok 2 - test_number
+> > > > >     ok 3 - test_string
+> > > > >     ok 4 - plain
+> > > > >     ok 5 - null_pointer
+> > > > >     ok 6 - error_pointer
+> > > > >     ok 7 - invalid_pointer
+> > > > >     ok 8 - symbol_ptr
+> > > > >     ok 9 - kernel_ptr
+> > > > >     ok 10 - struct_resource
+> > > > >     ok 11 - addr
+> > > > >     ok 12 - escaped_str
+> > > > >     ok 13 - hex_string
+> > > > >     ok 14 - mac
+> > > > >     ok 15 - ip
+> > > > >     ok 16 - uuid
+> > > > >     ok 17 - dentry
+> > > > >     ok 18 - struct_va_format
+> > > > >     ok 19 - time_and_date
+> > > > >     ok 20 - struct_clk
+> > > > >     ok 21 - bitmap
+> > > > >     ok 22 - netdev_features
+> > > > >     ok 23 - flags
+> > > > >     ok 24 - errptr
+> > > > >     ok 25 - fwnode_pointer
+> > > > > ok 1 - printf
+> > > > >
+> > > > > Converted test failure:
+> > > > >     # Subtest: printf
+> > > > >     1..25
+> > > > >     ok 1 - test_basic
+> > > > >     ok 2 - test_number
+> > > > >     ok 3 - test_string
+> > > > >     ok 4 - plain
+> > > > >     ok 5 - null_pointer
+> > > > >     ok 6 - error_pointer
+> > > > >     ok 7 - invalid_pointer
+> > > > >     ok 8 - symbol_ptr
+> > > > >     ok 9 - kernel_ptr
+> > > > >     ok 10 - struct_resource
+> > > > >     ok 11 - addr
+> > > > >     ok 12 - escaped_str
+> > > > >     ok 13 - hex_string
+> > > > >     ok 14 - mac
+> > > > >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:82
+> > > > > vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > > >     # ip: EXPECTATION FAILED at lib/printf_kunit.c:124
+> > > > > kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> > > > >     not ok 15 - ip
+> > > > >     ok 16 - uuid
+> > > > >     ok 17 - dentry
+> > > > >     ok 18 - struct_va_format
+> > > > >     ok 19 - time_and_date
+> > > > >     ok 20 - struct_clk
+> > > > >     ok 21 - bitmap
+> > > > >     ok 22 - netdev_features
+> > > > >     ok 23 - flags
+> > > > >     ok 24 - errptr
+> > > > >     ok 25 - fwnode_pointer
+> > > > > not ok 1 - printf
+> > > >
+> > > > Better, indeed.
+> > > >
+> > > > But can be this improved to have a cumulative statistics, like showing only
+> > > > number of total, succeeded, failed with details of the latter ones?
+> > >
+> > > Is that the proper test output format?  We have a standard...
+> >
+> > What is the standard, please?
+>
+> The TAP format should be the standard, no reason the kernel can not spit
+> out the same test message format that the userspace tests do, right?
 
-Then it might be sparse. Try C=1.
+KUnit and kselftest both use the TAP format. Well, we both use slight
+variations on the TAP format. Nevertheless, we are both unifying
+around a common variation of TAP called KTAP[1]. To my knowledge,
+neither kselftest or KUnit fully obey the new KTAP spec, but I believe
+we are both working toward full compliance (as of 5.10 KUnit output
+should be fully compliant[2]), and both are pretty close.
 
-     Andrew
+When I say both kselftest and KUnit are pretty close to obeying KTAP,
+I mean that for the purpose of Arpitha's change here which we are
+discussing, the sample segment of output that she shared as the new
+output of this test *is fully compliant with KTAP and is not expected
+to change any time soon*. Additionally, most, but not all, of
+kselftest's tests are compliant as well.
+
+The main visual difference between KUnit and kselftest TAP output
+comes from two things: kselftests tend to make heavy use of diagnostic
+lines (basically log lines which serve to communicate arbitrary
+unstructured information about the test) - KUnit has facilities for
+devs to use these in tests, but so far they have not gotten much use
+probably due to the smaller scope nature of KUnit tests. The other
+difference is because KUnit groups related test cases together into
+subtests (KUnit calls them test suites, but TAP calls them subtests)
+whereas kselftest does not - again this largely has to do with the
+style of tests. Both of these features exist in KTAP, but the output
+tends to reflect the kinds of tests being written.
+
+Tim, Shuah, David (or anyone else), please let me know if I missed anything.
+
+I hope that answers everyone's questions.
+
+P.S. You can get KUnit results from user space separated out from
+dmesg if you prefer to run your tests that way[3].
+
+[1] https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/
+[2] We now support the top level test plan as specified, but do not
+support SKIP tests yet; however, most KUnit tests don't need SKIP
+tests anyway. See [1] for more information.
+[3] https://www.kernel.org/doc/html/latest/dev-tools/kunit/usage.html#kunit-debugfs-representation
