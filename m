@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C4D2A5319
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422292A5254
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732699AbgKCU4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:56:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57820 "EHLO mail.kernel.org"
+        id S1730748AbgKCUs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732446AbgKCU4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:17 -0500
+        id S1731594AbgKCUsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 646DC2053B;
-        Tue,  3 Nov 2020 20:56:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 718F322409;
+        Tue,  3 Nov 2020 20:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436976;
-        bh=7mFk/CA0TIWoc/EhV77uWD+611/NhLjRBi2Jfe8I7qY=;
+        s=default; t=1604436532;
+        bh=yCHJ2wCfg0fl/GyJZ30URcZuVDSb5TIPEQWdwDfpm0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVzgPNjPAhtA4dVwceN5ZGd2Ja9AVtDP44OSLs/NSCiVJS596ssvKC9RcoGWZWZ1J
-         IRCXfUqNx8ONcWI4mrYFgCuMCf2Bd0tSoC3WWjXpQtUwGCPz4/eepfLTr3mBvf6pkZ
-         NGiaMaPYlJng/O71/J0O5QqzLqgUqB/zy7gFkiv0=
+        b=LcwQluVjV7HGj/NwxLaB9ubDpRSj727bXvvHLDDHASXzQu4G4GkekW2+45bC4IE8P
+         QbqJ4t2ydSZ55q0IOYBffId4kXLqP1g1UfoDNUyjOPpbwux+31U161wOcUZEQhfuzb
+         s54dhtBq1OD/loqlfE5Z7ekyzlzFSKKcc8mnQ3iU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/214] nbd: make the config put is called before the notifying the waiter
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.9 290/391] powerpc/powermac: Fix low_sleep_handler with KUAP and KUEP
 Date:   Tue,  3 Nov 2020 21:35:41 +0100
-Message-Id: <20201103203259.174472239@linuxfoundation.org>
+Message-Id: <20201103203406.620753101@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 87aac3a80af5cbad93e63250e8a1e19095ba0d30 ]
+commit 2c637d2df4ee4830e9d3eb2bd5412250522ce96e upstream.
 
-There has one race case for ceph's rbd-nbd tool. When do mapping
-it may fail with EBUSY from ioctl(nbd, NBD_DO_IT), but actually
-the nbd device has already unmaped.
+low_sleep_handler() has an hardcoded restore of segment registers
+that doesn't take KUAP and KUEP into account.
 
-It dues to if just after the wake_up(), the recv_work() is scheduled
-out and defers calling the nbd_config_put(), though the map process
-has exited the "nbd->recv_task" is not cleared.
+Use head_32's load_segment_registers() routine instead.
 
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a68c31fc01ef ("powerpc/32s: Implement Kernel Userspace Access Protection")
+Fixes: 31ed2b13c48d ("powerpc/32s: Implement Kernel Userspace Execution Prevention.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/21b05f7298c1b18f73e6e5b4cd5005aafa24b6da.1599820109.git.christophe.leroy@csgroup.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/block/nbd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/head_32.S           |    2 +-
+ arch/powerpc/platforms/powermac/sleep.S |    9 +--------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 7c577cabb9c3b..742f8160b6e28 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -787,9 +787,9 @@ static void recv_work(struct work_struct *work)
+--- a/arch/powerpc/kernel/head_32.S
++++ b/arch/powerpc/kernel/head_32.S
+@@ -1002,7 +1002,7 @@ BEGIN_MMU_FTR_SECTION
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	blr
  
- 		blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
- 	}
-+	nbd_config_put(nbd);
- 	atomic_dec(&config->recv_threads);
- 	wake_up(&config->recv_wq);
--	nbd_config_put(nbd);
- 	kfree(args);
- }
+-load_segment_registers:
++_GLOBAL(load_segment_registers)
+ 	li	r0, NUM_USER_SEGMENTS /* load up user segment register values */
+ 	mtctr	r0		/* for context 0 */
+ 	li	r3, 0		/* Kp = 0, Ks = 0, VSID = 0 */
+--- a/arch/powerpc/platforms/powermac/sleep.S
++++ b/arch/powerpc/platforms/powermac/sleep.S
+@@ -294,14 +294,7 @@ grackle_wake_up:
+ 	 * we do any r1 memory access as we are not sure they
+ 	 * are in a sane state above the first 256Mb region
+ 	 */
+-	li	r0,16		/* load up segment register values */
+-	mtctr	r0		/* for context 0 */
+-	lis	r3,0x2000	/* Ku = 1, VSID = 0 */
+-	li	r4,0
+-3:	mtsrin	r3,r4
+-	addi	r3,r3,0x111	/* increment VSID */
+-	addis	r4,r4,0x1000	/* address of next segment */
+-	bdnz	3b
++	bl	load_segment_registers
+ 	sync
+ 	isync
  
--- 
-2.27.0
-
 
 
