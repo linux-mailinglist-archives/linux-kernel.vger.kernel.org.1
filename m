@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AF92A5401
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353772A5487
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388223AbgKCVGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45856 "EHLO mail.kernel.org"
+        id S2388975AbgKCVMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:12:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388218AbgKCVGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:49 -0500
+        id S2388525AbgKCVMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:12:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0EC9205ED;
-        Tue,  3 Nov 2020 21:06:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 982BC21534;
+        Tue,  3 Nov 2020 21:12:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437608;
-        bh=RFBUn9nQ9UEvmhsRqgxmIbzZdl7faCjeCRUgBX4r9YA=;
+        s=default; t=1604437927;
+        bh=iGi1A/HIjlPZYD+2SeqNGeJAXliQ5RfNBdSLrnNyclk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RrCw9LQMQLAyixm1zvegrngdfwTV7bjGy7wzz96MuqT0kZjYzRKjIlff4wbrW+Mm+
-         /dcymLTJ5U03tVRevGOtmmDCgS0x66OS+1Drj7XWvg66rkSVvikGqSKjAc0Rl6aK55
-         cBdhOLP8C1h2avB+cH7VixM+Wt+t2iKqfj2CDUM0=
+        b=WpaJjmDBqXIMR42HRD463JrcFS0hkiWUkDxRuXpkJ8OfX26XwgX7er/76YbEyRtE/
+         GBjcdaZWxLSUuEkrsgeD7zkfY6YxjBT+MKAVgKPdEStsi8NM5rPf5H7N83Eb15qm5e
+         UFCAuz1NoS+HAGeMytm0MtaDpnHxE1A1W/9SDHDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 149/191] iio:light:si1145: Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
+Subject: [PATCH 4.14 064/125] leds: bcm6328, bcm6358: use devres LED registering function
 Date:   Tue,  3 Nov 2020 21:37:21 +0100
-Message-Id: <20201103203246.658966400@linuxfoundation.org>
+Message-Id: <20201103203206.192851985@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,94 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Marek Behún <marek.behun@nic.cz>
 
-commit 0456ecf34d466261970e0ff92b2b9c78a4908637 upstream.
+commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 24 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable array in the iio_priv() data with alignment
-explicitly requested.  This data is allocated with kzalloc so no
-data can leak appart from previous readings.
+These two drivers do not provide remove method and use devres for
+allocation of other resources, yet they use led_classdev_register
+instead of the devres variant, devm_led_classdev_register.
 
-Depending on the enabled channels, the  location of the timestamp
-can be at various aligned offsets through the buffer.  As such we
-any use of a structure to enforce this alignment would incorrectly
-suggest a single location for the timestamp.  Comments adjusted to
-express this clearly in the code.
+Fix this.
 
-Fixes: ac45e57f1590 ("iio: light: Add driver for Silabs si1132, si1141/2/3 and si1145/6/7 ambient light, uv index and proximity sensors")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722155103.979802-9-jic23@kernel.org
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Álvaro Fernández Rojas <noltari@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Jaedon Shin <jaedon.shin@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/light/si1145.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/leds/leds-bcm6328.c |    2 +-
+ drivers/leds/leds-bcm6358.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/light/si1145.c
-+++ b/drivers/iio/light/si1145.c
-@@ -172,6 +172,7 @@ struct si1145_part_info {
-  * @part_info:	Part information
-  * @trig:	Pointer to iio trigger
-  * @meas_rate:	Value of MEAS_RATE register. Only set in HW in auto mode
-+ * @buffer:	Used to pack data read from sensor.
-  */
- struct si1145_data {
- 	struct i2c_client *client;
-@@ -183,6 +184,14 @@ struct si1145_data {
- 	bool autonomous;
- 	struct iio_trigger *trig;
- 	int meas_rate;
-+	/*
-+	 * Ensure timestamp will be naturally aligned if present.
-+	 * Maximum buffer size (may be only partly used if not all
-+	 * channels are enabled):
-+	 *   6*2 bytes channels data + 4 bytes alignment +
-+	 *   8 bytes timestamp
-+	 */
-+	u8 buffer[24] __aligned(8);
- };
+--- a/drivers/leds/leds-bcm6328.c
++++ b/drivers/leds/leds-bcm6328.c
+@@ -336,7 +336,7 @@ static int bcm6328_led(struct device *de
+ 	led->cdev.brightness_set = bcm6328_led_set;
+ 	led->cdev.blink_set = bcm6328_blink_set;
  
- /**
-@@ -444,12 +453,6 @@ static irqreturn_t si1145_trigger_handle
- 	struct iio_poll_func *pf = private;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct si1145_data *data = iio_priv(indio_dev);
--	/*
--	 * Maximum buffer size:
--	 *   6*2 bytes channels data + 4 bytes alignment +
--	 *   8 bytes timestamp
--	 */
--	u8 buffer[24];
- 	int i, j = 0;
- 	int ret;
- 	u8 irq_status = 0;
-@@ -482,7 +485,7 @@ static irqreturn_t si1145_trigger_handle
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
  
- 		ret = i2c_smbus_read_i2c_block_data_or_emulated(
- 				data->client, indio_dev->channels[i].address,
--				sizeof(u16) * run, &buffer[j]);
-+				sizeof(u16) * run, &data->buffer[j]);
- 		if (ret < 0)
- 			goto done;
- 		j += run * sizeof(u16);
-@@ -497,7 +500,7 @@ static irqreturn_t si1145_trigger_handle
- 			goto done;
- 	}
+--- a/drivers/leds/leds-bcm6358.c
++++ b/drivers/leds/leds-bcm6358.c
+@@ -141,7 +141,7 @@ static int bcm6358_led(struct device *de
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
- 		iio_get_time_ns(indio_dev));
+ 	led->cdev.brightness_set = bcm6358_led_set;
  
- done:
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
+ 
 
 
