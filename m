@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50B12A4D36
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225122A4D44
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgKCRiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        id S1728841AbgKCRkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728841AbgKCRiu (ORCPT
+        with ESMTP id S1727530AbgKCRkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:38:50 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2CBC061A04
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:38:50 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id s21so19227896oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:38:50 -0800 (PST)
+        Tue, 3 Nov 2020 12:40:45 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E519C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:40:45 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y16so20008587ljk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:40:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6yq0B3gvpA5I9jO0QaxOACvCmaKCwDtvfH76pkYCkZg=;
-        b=FqmmT6V8Gq5zNDIRdAcsPxa3SHsggSSNGDGshs9JNs2boyl4bwPhwJvkChemdgu8sQ
-         8g2z9V5syZcqucGxPh97feZDakb+BmVINkLo8avFUzEv38aC/OVzMdmrhq2Db3D7IDbA
-         DAE5DBqAk9bVC59sFuSRAFsy57q+Ckyl4WCT9fakS/H5JmJX/zuLpBtNOSudLhwi79Lg
-         h155UN0cN2fM/3gR5qV+FC604ThUqXqqSpxTK4Up6THGOgyx3ecwMZ4g8/CJSTPwnxsB
-         j17Jji8+K47Z/mVwX3f1Ro2UH6C0HqHfIHvR1uUfYb4f/6OoCh8XMNNALRoACXkNzB9w
-         /j6Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VNuZGY4bpOVQ0MWLoadHLlFU7CajKxxBqUm83XLo9pg=;
+        b=HMA9GKwvbdKK/+0mVxuViEE+jonKrCcpg4izx74kjD6cePewJ27tQSij8RYpkFdSs1
+         w/SVIscNoPKqcQGjWeedtzu6vz+iecm8rT4dumRlRdUsVWQGr2OnOXiqvB1acZS2dN/I
+         I9ODfraNHzaYMpRzWgSmjhMzYpYEx67/w2iyo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6yq0B3gvpA5I9jO0QaxOACvCmaKCwDtvfH76pkYCkZg=;
-        b=ip1dQ6VeKJM8CpfVweRVrySOGryoOt5v/g5aoJZKWljisj98RqNRVpv+Xt4sDLk/5B
-         tD4aLJWeEHrWlEB7H11H7sbPoF5Jc8dVe1dwfr2hD3QsIHGEGp39QjqrmBB78hQBFhL9
-         TCrrCOhFX417gPx6ggLL3ok8A8KObsvQNNU8LdT1ZE5c83NqyF+OHZxN2fPw+bXGWyWL
-         2F4iLnc+vX0KQ3NHYXjRHubYE8zdgXYoqvU5/UshFW9G20xdvqKDE5csMB7o83MdHXz0
-         4JIPQbWwpQRj3OFkY3Npi5W+eID+akhFLNmS67zLsJsh38qJ/seSlWKffF3iFTIrh0W6
-         YqGA==
-X-Gm-Message-State: AOAM533nJTiaQ8F04E2kwctdQBkVui0wDlMMwLz1fXCBZX/3L3H/R0hQ
-        MfNy+V5ChKFF6m8qDqsSgeZ+hg==
-X-Google-Smtp-Source: ABdhPJypPLRjFtGH2biL/X5Yn96B4TBH3Vu+himb7NU0CUAstfPyiQfNjdgy9o775vs0mUl4QvjBxw==
-X-Received: by 2002:aca:fcd5:: with SMTP id a204mr146080oii.161.1604425129714;
-        Tue, 03 Nov 2020 09:38:49 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h3sm4288352oom.18.2020.11.03.09.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 09:38:48 -0800 (PST)
-Date:   Tue, 3 Nov 2020 11:38:47 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] dt-bindings: clock: Introduce RPMHCC bindings for
- SDX55
-Message-ID: <20201103173847.GQ3151@builder.lan>
-References: <20201028074232.22922-1-manivannan.sadhasivam@linaro.org>
- <20201028074232.22922-4-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VNuZGY4bpOVQ0MWLoadHLlFU7CajKxxBqUm83XLo9pg=;
+        b=LmnVFH7UA+zC6t6mvmTbo+Fkw19jGbBmiRkivS9hsY8DUq+UXfM1cyTNSb7xb46rSA
+         IPQ6CQTV1QMkNbs9Z3CO/lT+e/fvUkWBDbMHCusyQuNcTiEinwuuk6xkDPCa+sJKAiTJ
+         FpjOPeck1jSiORAK5eO6ot+WwICG3LCIPuoVQWHjFEdb/LKZdFmQKKFb/JfICmnLOlw9
+         nqvGdX5B2y1SS3dl0+Hq2cRzrXvQmLnpRFY4ifY4UBUv8NfsyI3BWqn09wseVOeI40KB
+         cP0B10s3L/0KuDGkLT2JWMOElnau9xmRto6AA7hUugGcqv/4wCgS4IIF1XOQEQ8tWLZX
+         W9hA==
+X-Gm-Message-State: AOAM533CD87gp9u5qQIWBL84sNlSI+1+32TnAb0qtnMl8BIYAGR8Gxwy
+        ThME5IiY5pP4rI3ytgYOjSsvOjh2FQtRFQ==
+X-Google-Smtp-Source: ABdhPJwmEAPuSNeHiIJC7Pi3uoP/8nfnNQpfuawo1vS5UlbI3RWwRS3EcC1rnqcIvp6uYeYB4PPh9A==
+X-Received: by 2002:a2e:9c8d:: with SMTP id x13mr9601732lji.253.1604425242960;
+        Tue, 03 Nov 2020 09:40:42 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id 21sm4092142lfa.183.2020.11.03.09.40.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 09:40:39 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 141so23335415lfn.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:40:38 -0800 (PST)
+X-Received: by 2002:a19:83c9:: with SMTP id f192mr7604236lfd.148.1604425238332;
+ Tue, 03 Nov 2020 09:40:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028074232.22922-4-manivannan.sadhasivam@linaro.org>
+References: <0-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com>
+ <2-v2-dfe9ecdb6c74+2066-gup_fork_jgg@nvidia.com> <20201030225250.GB6357@xz-x1>
+ <20201030235121.GQ2620339@nvidia.com> <20201103001712.GB52235@lx-t490>
+ <20201103002532.GL2620339@nvidia.com> <20201103004133.GD52235@lx-t490>
+ <e03dba4e-fd1d-a32c-c99c-fc3fa51419c4@nvidia.com> <20201103065225.GA63301@lx-t490>
+In-Reply-To: <20201103065225.GA63301@lx-t490>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 3 Nov 2020 09:40:22 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
+Message-ID: <CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mm: prevent gup_fast from racing with COW during fork
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Peter Xu <peterx@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28 Oct 02:42 CDT 2020, Manivannan Sadhasivam wrote:
+On Mon, Nov 2, 2020 at 10:52 PM Ahmed S. Darwish
+<a.darwish@linutronix.de> wrote:
+>
+> The problem is, I've already documented seqlock.h to death.... There are
+> more comments than code in there, and there is "seqlock.rst" under
+> Documentation/ to further describe the big picture.
 
-> From: Vinod Koul <vkoul@kernel.org>
-> 
-> Add compatible for SDX55 RPMHCC and DT include.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Well, honestly, I think the correct thing to do is to get rid of the
+*_seqcount_t_*() functions entirely.
 
-Given that you handled the patch on its way here you should add your
-Signed-off-by.
+They add nothing but confusion, and they are entirely misnamed. That's
+not the pattern we use for "internal use only" functions, and they are
+*very* confusing.
 
-When doing so feel free to add my:
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+They have other issues too: like raw_write_seqcount_end() not being
+usable on its own when preemptibility isn't an issue like here. You
+basically _have_ to use raw_write_seqcount_t_end(), because otherwise
+it tries to re-enable preemption that was never there.
 
-Regards,
-Bjorn
-
-> ---
->  Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml | 1 +
->  include/dt-bindings/clock/qcom,rpmh.h                    | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml b/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-> index a46a3a799a70..a54930f111ba 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-> @@ -19,6 +19,7 @@ properties:
->      enum:
->        - qcom,sc7180-rpmh-clk
->        - qcom,sdm845-rpmh-clk
-> +      - qcom,sdx55-rpmh-clk
->        - qcom,sm8150-rpmh-clk
->        - qcom,sm8250-rpmh-clk
->  
-> diff --git a/include/dt-bindings/clock/qcom,rpmh.h b/include/dt-bindings/clock/qcom,rpmh.h
-> index 2e6c54e65455..cd806eccb7dd 100644
-> --- a/include/dt-bindings/clock/qcom,rpmh.h
-> +++ b/include/dt-bindings/clock/qcom,rpmh.h
-> @@ -21,5 +21,6 @@
->  #define RPMH_IPA_CLK				12
->  #define RPMH_LN_BB_CLK1				13
->  #define RPMH_LN_BB_CLK1_A			14
-> +#define RPMH_QPIC_CLK				15
->  
->  #endif
-> -- 
-> 2.17.1
-> 
+                   Linus
