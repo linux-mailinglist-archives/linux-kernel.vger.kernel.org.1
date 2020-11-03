@@ -2,307 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797A32A4720
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36172A467F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgKCN7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:59:37 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:26482 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729469AbgKCN6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:58:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604411901; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=ObqWOTpheK3mm0bfxZD76ibrbEOYwcqvFAOyd+uof3c=; b=JRUwiN1430SS0kvAJUwXpxoq/KkZ0mEZ2m0EFR6brVRVcsawbVrnh0YFe1lLhKLfNCFVkXNg
- 0YbAtr4jstDKTk0Cze/GOpO4gV2TL0JhOZUGz5jr7TN/Q8S/oRZdbKm1U8KQIogYv81hlYgp
- ttaU5OqOQHxUpc02MbWZ9F4ZWzI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fa153ecb64b1c5b78f96c60 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 12:58:19
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 722ACC3854B; Tue,  3 Nov 2020 09:19:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A367FC3853E;
-        Tue,  3 Nov 2020 09:19:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A367FC3853E
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org, Gurbir Arora <gurbaror@codeaurora.org>
-Subject: [PATCH v7 3/4] remoteproc: qcom: Add capability to collect minidumps
-Date:   Tue,  3 Nov 2020 01:19:19 -0800
-Message-Id: <1604395160-12443-4-git-send-email-sidgup@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1604395160-12443-1-git-send-email-sidgup@codeaurora.org>
-References: <1604395160-12443-1-git-send-email-sidgup@codeaurora.org>
+        id S1729346AbgKCNbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:31:36 -0500
+Received: from mail-bn8nam12on2089.outbound.protection.outlook.com ([40.107.237.89]:52127
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729244AbgKCNbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:31:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E1hafhJ9C46N4dBLS4mIqXTKzbOXzTxwerL/jGEeBHnhT+cF8eJBApuPblGbXIcrNN5jwvXMzMpSm7TsWda+txsI3tppIjXvS2GTcos0X6+IEIatFliTHK4O/7E+yw4smGV+brXVs37GgX3/zG19DDBWsoodhICyoEnReZBYQ0Dfg4G2+jUdr9bAeTOT+sTxB0ujSeCf+6/kqufKt3YeT2w3ddzSDKiHCZuuirDwpgL2yb+wOGybPBwoxvX+uSoKH1U1H6KdPTFrYzjaKkS3yhpXf+TPVW8O7giOcTDD/KU87xjX7ZoLvFpYiJWwOcH4Adu+nmBZ7jnJDtgdNidAOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sSdXhSGpxQt4ANsCFtrlXaZfNepTnqri8pCZZAzBYBw=;
+ b=ID1IP3PvgaRqrrh5SFeNth2N6i4hStYDvUWw+p60yz6G2RfeM88zR36t3Ac4fDT6yf4cXGNkdnmbi1DeZoGdaTVH/hR68GNqNqke6B1RNpfHFsJ5CiFew8JAlYLCss1ug7g8FTRUmAtHyygi5zp1oe/xiAVQH9wfpYu/jTHt8nB9Qh5ahd4WuNevSMhBN39UWfnhWH3GAbBekb92f694/ukWlK+0Mi6eG2/nU9UP/9e7lEa7Gai00GDX3SgVx0DU5Vip1+oPkfSAfUrpYEsNKbhHUm/u/2GCNIlGGfBLn9FiRZ4CYULisIOXMTMVfw2PeAh6wS5ULMvF5dBvPEs8rA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=davemloft.net smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sSdXhSGpxQt4ANsCFtrlXaZfNepTnqri8pCZZAzBYBw=;
+ b=OcYMNYs+FLlu2zVTSNmoULQG8FyAByZ0DHxFLgwamPJcoXdBBcHpVywg8r/3JN6xDFXa9tVpM4l+DTzCTiKUtAZUXQrkohlPu/Opd+oL1CEPKlgxAh+e60w9ceLpi1nk5sDzI08byyNr/+rIwLsHGOaucOO+XRUHyCAXXcSIUds=
+Received: from SN4PR0201CA0070.namprd02.prod.outlook.com
+ (2603:10b6:803:20::32) by MW2PR02MB3689.namprd02.prod.outlook.com
+ (2603:10b6:907:7::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 3 Nov
+ 2020 13:31:31 +0000
+Received: from SN1NAM02FT025.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:20:cafe::e3) by SN4PR0201CA0070.outlook.office365.com
+ (2603:10b6:803:20::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
+ Transport; Tue, 3 Nov 2020 13:31:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT025.mail.protection.outlook.com (10.152.72.87) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3520.15 via Frontend Transport; Tue, 3 Nov 2020 13:31:30 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 3 Nov 2020 05:31:10 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 3 Nov 2020 05:31:09 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ davem@davemloft.net,
+ kuba@kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Received: from [172.23.64.106] (port=34647 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <radhey.shyam.pandey@xilinx.com>)
+        id 1kZwOz-000620-3L; Tue, 03 Nov 2020 05:31:09 -0800
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 13245)
+        id 4157612137D; Tue,  3 Nov 2020 19:01:08 +0530 (IST)
+From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <michal.simek@xilinx.com>
+CC:     <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Subject: [PATCH net-next] net: emaclite: Add error handling for of_address_ and phy read functions
+Date:   Tue, 3 Nov 2020 19:01:05 +0530
+Message-ID: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+X-Mailer: git-send-email 2.1.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 07c8e41f-2de1-4f4f-fcc0-08d87ffcc61a
+X-MS-TrafficTypeDiagnostic: MW2PR02MB3689:
+X-Microsoft-Antispam-PRVS: <MW2PR02MB3689A950790B2B4FDE2352BCC7110@MW2PR02MB3689.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o9iUfGcXMNe7kREyRGoYtHbNi8BfrqNtFxtsxDBkpbA/PBuy42qJSZWKnOHoAsNmlf7UdbXisZF5G8+uprQ/3f6bNndz3gHoOViG4wEfCeTaK+5ZFLFXlljTF70Vj4gB54hU+8rg2O58EXhLgQpEFp3J4JJCqdSCz9cvRjr+EAKgFAVXQ155oRw/pYPbeOcF0V0rY2wsVUZ3z4xBkmRnAxSVU/gR8krjLp/2+dBwf8wRo4oM7sS2nkR74fZsDAbBNP9Cu07yNRMvUo/VWo09BpM21AQvoSKabqNALFw3zUKXyWpE2+ug/lza3qVd6UCkc4/mu41+JO0HBaR4fXoApZwgpSaPSRNRGbkCbJHv+3b4RndK9PPniph6cA2WJArUEl+l54n4XwJJkiwQXci0VzZ8zPY2GTJ5oJ4egT01J5A=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(46966005)(110136005)(336012)(316002)(54906003)(426003)(26005)(42186006)(47076004)(6636002)(70586007)(2616005)(70206006)(107886003)(36906005)(5660300002)(82310400003)(4326008)(186003)(6666004)(83380400001)(7636003)(6266002)(8676002)(356005)(36756003)(82740400003)(8936002)(478600001)(2906002)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 13:31:30.4269
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07c8e41f-2de1-4f4f-fcc0-08d87ffcc61a
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT025.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3689
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for collecting minidump in the event of remoteproc
-crash. Parse the minidump table based on remoteproc's unique minidump-id,
-read all memory regions from the remoteproc's minidump table entry and
-expose the memory to userspace. The remoteproc platform driver can choose
-to collect a full/mini dump by specifying the coredump op.
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-Co-developed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Co-developed-by: Gurbir Arora <gurbaror@codeaurora.org>
-Signed-off-by: Gurbir Arora <gurbaror@codeaurora.org>
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+Add ret variable, conditions to check the return value and it's error
+path for of_address_to_resource() and phy_read() functions.
+
+Addresses-Coverity: Event check_return value.
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 ---
- drivers/remoteproc/qcom_minidump.h |  64 +++++++++++++++++++++++
- drivers/remoteproc/qcom_q6v5_pas.c | 104 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 166 insertions(+), 2 deletions(-)
- create mode 100644 drivers/remoteproc/qcom_minidump.h
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/remoteproc/qcom_minidump.h b/drivers/remoteproc/qcom_minidump.h
-new file mode 100644
-index 0000000..5857d06
---- /dev/null
-+++ b/drivers/remoteproc/qcom_minidump.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+ */
-+
-+#ifndef __QCOM_MINIDUMP_H
-+#define __QCOM_MINIDUMP_H
-+
-+#define MAX_NUM_OF_SS           10
-+#define MAX_REGION_NAME_LENGTH  16
-+#define SBL_MINIDUMP_SMEM_ID	602
-+#define MD_REGION_VALID		('V' << 24 | 'A' << 16 | 'L' << 8 | 'I' << 0)
-+#define MD_SS_ENCR_DONE		('D' << 24 | 'O' << 16 | 'N' << 8 | 'E' << 0)
-+#define MD_SS_ENABLED		('E' << 24 | 'N' << 16 | 'B' << 8 | 'L' << 0)
-+
-+/**
-+ * struct minidump_region - Minidump region
-+ * @name		: Name of the region to be dumped
-+ * @seq_num:		: Use to differentiate regions with same name.
-+ * @valid		: This entry to be dumped (if set to 1)
-+ * @address		: Physical address of region to be dumped
-+ * @size		: Size of the region
-+ */
-+struct minidump_region {
-+	char	name[MAX_REGION_NAME_LENGTH];
-+	__le32	seq_num;
-+	__le32	valid;
-+	__le64	address;
-+	__le64	size;
-+};
-+
-+/**
-+ * struct minidump_subsystem_toc: Subsystem's SMEM Table of content
-+ * @status : Subsystem toc init status
-+ * @enabled : if set to 1, this region would be copied during coredump
-+ * @encryption_status: Encryption status for this subsystem
-+ * @encryption_required : Decides to encrypt the subsystem regions or not
-+ * @ss_region_count : Number of regions added in this subsystem toc
-+ * @md_ss_smem_regions_baseptr : regions base pointer of the subsystem
-+ */
-+struct minidump_subsystem_toc {
-+	__le32	status;
-+	__le32	enabled;
-+	__le32	encryption_status;
-+	__le32	encryption_required;
-+	__le32	ss_region_count;
-+	__le64	md_ss_smem_regions_baseptr;
-+};
-+
-+/**
-+ * struct minidump_global_toc: Global Table of Content
-+ * @md_toc_init : Global Minidump init status
-+ * @md_revision : Minidump revision
-+ * @md_enable_status : Minidump enable status
-+ * @md_ss_toc : Array of subsystems toc
-+ */
-+struct minidump_global_toc {
-+	__le32				status;
-+	__le32				md_revision;
-+	__le32				enabled;
-+	struct minidump_subsystem_toc	md_ss_toc[MAX_NUM_OF_SS];
-+};
-+
-+#endif
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 3837f23..349f725 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -28,11 +28,13 @@
- #include "qcom_pil_info.h"
- #include "qcom_q6v5.h"
- #include "remoteproc_internal.h"
-+#include "qcom_minidump.h"
- 
- struct adsp_data {
- 	int crash_reason_smem;
- 	const char *firmware_name;
- 	int pas_id;
-+	unsigned int minidump_id;
- 	bool has_aggre2_clk;
- 	bool auto_boot;
- 
-@@ -63,6 +65,7 @@ struct qcom_adsp {
- 	int proxy_pd_count;
- 
- 	int pas_id;
-+	unsigned int minidump_id;
- 	int crash_reason_smem;
- 	bool has_aggre2_clk;
- 	const char *info_name;
-@@ -116,6 +119,88 @@ static void adsp_pds_disable(struct qcom_adsp *adsp, struct device **pds,
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+index 0c26f5b..fc5ccd1 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int phy_id, int reg,
+ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+ {
+ 	struct mii_bus *bus;
+-	int rc;
++	int rc, ret;
+ 	struct resource res;
+ 	struct device_node *np = of_get_parent(lp->phy_node);
+ 	struct device_node *npp;
+@@ -834,7 +834,13 @@ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
  	}
- }
+ 	npp = of_get_parent(np);
  
-+static void adsp_minidump_cleanup(struct rproc *rproc)
-+{
-+	struct rproc_dump_segment *entry, *tmp;
-+
-+	list_for_each_entry_safe(entry, tmp, &rproc->dump_segments, node) {
-+		list_del(&entry->node);
-+		kfree(entry->priv);
-+		kfree(entry);
+-	of_address_to_resource(npp, 0, &res);
++	ret = of_address_to_resource(npp, 0, &res);
++	if (ret) {
++		dev_err(dev, "%s resource error!\n",
++			dev->of_node->full_name);
++		of_node_put(lp->phy_node);
++		return ret;
 +	}
-+}
+ 	if (lp->ndev->mem_start != res.start) {
+ 		struct phy_device *phydev;
+ 		phydev = of_phy_find_device(lp->phy_node);
+@@ -923,7 +929,7 @@ static int xemaclite_open(struct net_device *dev)
+ 	xemaclite_disable_interrupts(lp);
+ 
+ 	if (lp->phy_node) {
+-		u32 bmcr;
++		int bmcr;
+ 
+ 		lp->phy_dev = of_phy_connect(lp->ndev, lp->phy_node,
+ 					     xemaclite_adjust_link, 0,
+@@ -945,6 +951,13 @@ static int xemaclite_open(struct net_device *dev)
+ 
+ 		/* Restart auto negotiation */
+ 		bmcr = phy_read(lp->phy_dev, MII_BMCR);
++		if (bmcr < 0) {
++			dev_err(&lp->ndev->dev, "phy_read failed\n");
++			phy_disconnect(lp->phy_dev);
++			lp->phy_dev = NULL;
 +
-+static void adsp_add_minidump_segments(struct rproc *rproc,
-+				       struct minidump_subsystem_toc *minidump_ss)
-+{
-+	struct minidump_region __iomem *ptr;
-+	struct minidump_region region;
-+	int seg_cnt, i;
-+	dma_addr_t da;
-+	size_t size;
-+	char *name;
-+
-+	if (!list_empty(&rproc->dump_segments)) {
-+		dev_err(&rproc->dev, "dump segment list already populated\n");
-+		return;
-+	}
-+
-+	seg_cnt = le32_to_cpu(minidump_ss->ss_region_count);
-+	ptr = ioremap((unsigned long)le64_to_cpu(minidump_ss->md_ss_smem_regions_baseptr),
-+		      seg_cnt * sizeof(struct minidump_region));
-+
-+	if (!ptr)
-+		return;
-+
-+	for (i = 0; i < seg_cnt; i++) {
-+		memcpy_fromio(&region, ptr + i, sizeof(region));
-+		if (region.valid == MD_REGION_VALID) {
-+			name = kmalloc(MAX_REGION_NAME_LENGTH, GFP_KERNEL);
-+			strlcpy(name, region.name, MAX_REGION_NAME_LENGTH);
-+			da = le64_to_cpu(region.address);
-+			size = le32_to_cpu(region.size);
-+			rproc_coredump_add_custom_segment(rproc, da, size, NULL, name);
++			return bmcr;
 +		}
-+	}
-+
-+	iounmap(ptr);
-+}
-+
-+static void adsp_dump(struct rproc *rproc)
-+{
-+	struct qcom_adsp *adsp = rproc->priv;
-+	struct minidump_subsystem_toc *minidump_ss;
-+	struct minidump_global_toc *minidump_toc;
-+
-+	/* Get Global minidump ToC*/
-+	minidump_toc = qcom_smem_get(QCOM_SMEM_HOST_ANY, SBL_MINIDUMP_SMEM_ID, NULL);
-+
-+	/* check if global table pointer exists and init is set */
-+	if (IS_ERR(minidump_toc) || !minidump_toc->status) {
-+		dev_err(&rproc->dev, "SMEM is not initialized.\n");
-+		return;
-+	}
-+
-+	/* Get subsystem table of contents using the minidump id */
-+	minidump_ss = &minidump_toc->md_ss_toc[adsp->minidump_id];
-+
-+	/**
-+	 * Collect minidump if SS ToC is valid and segment table
-+	 * is initialized in memory and encryption status is set.
-+	 */
-+	if (minidump_ss->md_ss_smem_regions_baseptr == 0 ||
-+	    le32_to_cpu(minidump_ss->status) != 1 ||
-+	    le32_to_cpu(minidump_ss->enabled) != MD_SS_ENABLED ||
-+	    le32_to_cpu(minidump_ss->encryption_status) != MD_SS_ENCR_DONE) {
-+		dev_err(&rproc->dev, "Minidump not ready!! Aborting\n");
-+		return;
-+	}
-+
-+	adsp_add_minidump_segments(rproc, minidump_ss);
-+	rproc_minidump(rproc);
-+	adsp_minidump_cleanup(rproc);
-+}
-+
- static int adsp_load(struct rproc *rproc, const struct firmware *fw)
- {
- 	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
-@@ -258,6 +343,15 @@ static const struct rproc_ops adsp_ops = {
- 	.panic = adsp_panic,
- };
+ 		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
+ 		phy_write(lp->phy_dev, MII_BMCR, bmcr);
  
-+static const struct rproc_ops adsp_minidump_ops = {
-+	.start = adsp_start,
-+	.stop = adsp_stop,
-+	.da_to_va = adsp_da_to_va,
-+	.load = adsp_load,
-+	.panic = adsp_panic,
-+	.coredump = adsp_dump,
-+};
-+
- static int adsp_init_clock(struct qcom_adsp *adsp)
- {
- 	int ret;
-@@ -398,8 +492,13 @@ static int adsp_probe(struct platform_device *pdev)
- 	if (ret < 0 && ret != -EINVAL)
- 		return ret;
- 
--	rproc = rproc_alloc(&pdev->dev, pdev->name, &adsp_ops,
--			    fw_name, sizeof(*adsp));
-+	if (desc->minidump_id)
-+		rproc = rproc_alloc(&pdev->dev, pdev->name, &adsp_minidump_ops, fw_name,
-+				    sizeof(*adsp));
-+	else
-+		rproc = rproc_alloc(&pdev->dev, pdev->name, &adsp_ops, fw_name,
-+				    sizeof(*adsp));
-+
- 	if (!rproc) {
- 		dev_err(&pdev->dev, "unable to allocate remoteproc\n");
- 		return -ENOMEM;
-@@ -411,6 +510,7 @@ static int adsp_probe(struct platform_device *pdev)
- 	adsp = (struct qcom_adsp *)rproc->priv;
- 	adsp->dev = &pdev->dev;
- 	adsp->rproc = rproc;
-+	adsp->minidump_id = desc->minidump_id;
- 	adsp->pas_id = desc->pas_id;
- 	adsp->has_aggre2_clk = desc->has_aggre2_clk;
- 	adsp->info_name = desc->sysmon_name;
 -- 
-Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.7.4
 
