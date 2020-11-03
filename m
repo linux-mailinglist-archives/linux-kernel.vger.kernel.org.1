@@ -2,828 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCED2A3E28
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1212A3E2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgKCH5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:57:11 -0500
-Received: from mga14.intel.com ([192.55.52.115]:38406 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727981AbgKCH5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:57:10 -0500
-IronPort-SDR: juGixNkOJwKlVTqoHxNJrOqL5oHcUQEyXtw3gG0noFfC1dE3WWGOnWyM4vPRIjomd2dD0PX9Yc
- bTM8wz9QY5AA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="168231292"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="168231292"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 23:57:09 -0800
-IronPort-SDR: 3JFmocKmPoE8TlC14GN3T/t8hw+8uX5O/4Z6O93u7vnmZ8ibFwm9IbshHU6BJnzG+HeqZ0Q4IA
- w12Djp5gRTGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="305964534"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Nov 2020 23:57:06 -0800
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     miquel.raynal@bootlin.com, vigneshr@ti.com,
-        tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v16 2/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
-Date:   Tue,  3 Nov 2020 15:56:55 +0800
-Message-Id: <20201103075655.18699-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201103075655.18699-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20201103075655.18699-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1727898AbgKCH6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:58:52 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35374 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgKCH6v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:58:51 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A37wWCg121425;
+        Tue, 3 Nov 2020 01:58:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604390312;
+        bh=9ur+xq0E036quUpkLpCo7JJNZVUnUVc2aT5Zysuzg/g=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=LcwWEOdfHJVS1z6a205bmF7N6abZiNqgufSHTJtn/CHbBCWnGfSc1JkEEl4buCJIh
+         +TFeNtBTwI+2eRat7jYHeSXIjd5mxITkunYLOy2CXy7jjkhHfkcthqO9x9RQcgbRDD
+         Xcj+ynYwn1mjO2tKjssrhKjRKIk3LX5oUHhbHQ+4=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A37wWGB069124
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 01:58:32 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 01:58:32 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 01:58:32 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A37wQED028806;
+        Tue, 3 Nov 2020 01:58:26 -0600
+Subject: Re: [PATCH v7 00/18] Implement NTB Controller using multiple PCI EP
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>,
+        <alanmikhak@gmail.com>, <alan.mikhak@sifive.com>
+References: <20200930153519.7282-1-kishon@ti.com>
+ <fe2db298-2116-7f52-80bd-a3d01a9a1521@ti.com>
+ <72ebe7db-86cd-6827-03ff-bde32c10dc7e@ti.com>
+ <20201020131843.GA25784@e121166-lin.cambridge.arm.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <27b4ae15-03ce-e2f1-a0b5-65db7c7dd71e@ti.com>
+Date:   Tue, 3 Nov 2020 13:28:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201020131843.GA25784@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
++Alan
 
-This patch adds the new IP of Nand Flash Controller(NFC) support
-on Intel's Lightning Mountain(LGM) SoC.
+Hi Jon Mason, Allen Hubbe, Dave Jiang,
 
-DMA is used for burst data transfer operation, also DMA HW supports
-aligned 32bit memory address and aligned data access by default.
-DMA burst of 8 supported. Data register used to support the read/write
-operation from/to device.
+On 20/10/20 6:48 pm, Lorenzo Pieralisi wrote:
+> On Tue, Oct 20, 2020 at 01:45:45PM +0530, Kishon Vijay Abraham I wrote:
+>> Hi,
+>>
+>> On 05/10/20 11:27 am, Kishon Vijay Abraham I wrote:
+>>> Hi Jon Mason, Allen Hubbe, Dave Jiang,
+>>>
+>>> On 30/09/20 9:05 pm, Kishon Vijay Abraham I wrote:
+>>>> This series is about implementing SW defined Non-Transparent Bridge (NTB)
+>>>> using multiple endpoint (EP) instances. This series has been tested using
+>>>> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
+>>>> on the other end. However there is nothing platform specific for the NTB
+>>>> functionality.
+>>>
+>>> This series has two patches that adds to drivers/ntb/ directory.
+>>> [PATCH v7 15/18] NTB: Add support for EPF PCI-Express Non-Transparent
+>>> Bridge and [PATCH v7 16/18] NTB: tool: Enable the NTB/PCIe link on the
+>>> local or remote side of bridge.
+>>>
+>>> If you can review and Ack the above patches, Lorenzo can queue it along
+>>> with the rest of the series.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- drivers/mtd/nand/raw/Kconfig                 |   8 +
- drivers/mtd/nand/raw/Makefile                |   1 +
- drivers/mtd/nand/raw/intel-nand-controller.c | 722 +++++++++++++++++++++++++++
- 3 files changed, 731 insertions(+)
- create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+Would you be able to review and Ack the NTB parts of this series?
+>>>
+>>> Thanks for your help in advance.
+>>
+>> Gentle ping on this series.
+> 
+> I am not queueing any more patches for this merge window - we postpone
+> this series to v5.11 and in the interim it would be good to define some
+> possible users.
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 6c46f25b57e2..1b3690fd08dc 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -462,6 +462,14 @@ config MTD_NAND_ARASAN
- 	  Enables the driver for the Arasan NAND flash controller on
- 	  Zynq Ultrascale+ MPSoC.
- 
-+config MTD_NAND_INTEL_LGM
-+	tristate "Support for NAND controller on Intel LGM SoC"
-+	depends on OF || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  Enables support for NAND Flash chips on Intel's LGM SoC.
-+	  NAND flash controller interfaced through the External Bus Unit.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 2930f5b9015d..9e6037363fc6 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
- obj-$(CONFIG_MTD_NAND_MESON)		+= meson_nand.o
- obj-$(CONFIG_MTD_NAND_CADENCE)		+= cadence-nand-controller.o
- obj-$(CONFIG_MTD_NAND_ARASAN)		+= arasan-nand-controller.o
-+obj-$(CONFIG_MTD_NAND_INTEL_LGM)	+= intel-nand-controller.o
- 
- nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_onfi.o
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-new file mode 100644
-index 000000000000..28280c0f9625
---- /dev/null
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -0,0 +1,722 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/* Copyright (c) 2020 Intel Corporation. */
-+
-+#include <linux/clk.h>
-+#include <linux/completion.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/iopoll.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/rawnand.h>
-+#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand.h>
-+
-+#include <linux/platform_device.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <asm/unaligned.h>
-+
-+#define EBU_CLC			0x000
-+#define EBU_CLC_RST		0x00000000u
-+
-+#define EBU_ADDR_SEL(n)		(0x020 + (n) * 4)
-+/* 5 bits 26:22 included for comparison in the ADDR_SELx */
-+#define EBU_ADDR_MASK(x)	((x) << 4)
-+#define EBU_ADDR_SEL_REGEN	0x1
-+
-+#define EBU_BUSCON(n)		(0x060 + (n) * 4)
-+#define EBU_BUSCON_CMULT_V4	0x1
-+#define EBU_BUSCON_RECOVC(n)	((n) << 2)
-+#define EBU_BUSCON_HOLDC(n)	((n) << 4)
-+#define EBU_BUSCON_WAITRDC(n)	((n) << 6)
-+#define EBU_BUSCON_WAITWRC(n)	((n) << 8)
-+#define EBU_BUSCON_BCGEN_CS	0x0
-+#define EBU_BUSCON_SETUP_EN	BIT(22)
-+#define EBU_BUSCON_ALEC		0xC000
-+
-+#define EBU_CON			0x0B0
-+#define EBU_CON_NANDM_EN	BIT(0)
-+#define EBU_CON_NANDM_DIS	0x0
-+#define EBU_CON_CSMUX_E_EN	BIT(1)
-+#define EBU_CON_ALE_P_LOW	BIT(2)
-+#define EBU_CON_CLE_P_LOW	BIT(3)
-+#define EBU_CON_CS_P_LOW	BIT(4)
-+#define EBU_CON_SE_P_LOW	BIT(5)
-+#define EBU_CON_WP_P_LOW	BIT(6)
-+#define EBU_CON_PRE_P_LOW	BIT(7)
-+#define EBU_CON_IN_CS_S(n)	((n) << 8)
-+#define EBU_CON_OUT_CS_S(n)	((n) << 10)
-+#define EBU_CON_LAT_EN_CS_P	((0x3D) << 18)
-+
-+#define EBU_WAIT		0x0B4
-+#define EBU_WAIT_RDBY		BIT(0)
-+#define EBU_WAIT_WR_C		BIT(3)
-+
-+#define HSNAND_CTL1		0x110
-+#define HSNAND_CTL1_ADDR_SHIFT	24
-+
-+#define HSNAND_CTL2		0x114
-+#define HSNAND_CTL2_ADDR_SHIFT	8
-+#define HSNAND_CTL2_CYC_N_V5	(0x2 << 16)
-+
-+#define HSNAND_INT_MSK_CTL	0x124
-+#define HSNAND_INT_MSK_CTL_WR_C	BIT(4)
-+
-+#define HSNAND_INT_STA		0x128
-+#define HSNAND_INT_STA_WR_C	BIT(4)
-+
-+#define HSNAND_CTL		0x130
-+#define HSNAND_CTL_ENABLE_ECC	BIT(0)
-+#define HSNAND_CTL_GO		BIT(2)
-+#define HSNAND_CTL_CE_SEL_CS(n)	BIT(3 + (n))
-+#define HSNAND_CTL_RW_READ	0x0
-+#define HSNAND_CTL_RW_WRITE	BIT(10)
-+#define HSNAND_CTL_ECC_OFF_V8TH	BIT(11)
-+#define HSNAND_CTL_CKFF_EN	0x0
-+#define HSNAND_CTL_MSG_EN	BIT(17)
-+
-+#define HSNAND_PARA0		0x13c
-+#define HSNAND_PARA0_PAGE_V8192	0x3
-+#define HSNAND_PARA0_PIB_V256	(0x3 << 4)
-+#define HSNAND_PARA0_BYP_EN_NP	0x0
-+#define HSNAND_PARA0_BYP_DEC_NP	0x0
-+#define HSNAND_PARA0_TYPE_ONFI	BIT(18)
-+#define HSNAND_PARA0_ADEP_EN	BIT(21)
-+
-+#define HSNAND_CMSG_0		0x150
-+#define HSNAND_CMSG_1		0x154
-+
-+#define HSNAND_ALE_OFFS		BIT(2)
-+#define HSNAND_CLE_OFFS		BIT(3)
-+#define HSNAND_CS_OFFS		BIT(4)
-+
-+#define HSNAND_ECC_OFFSET	0x008
-+
-+#define NAND_DATA_IFACE_CHECK_ONLY	-1
-+
-+#define MAX_CS	2
-+
-+#define HZ_PER_MHZ	1000000L
-+#define USEC_PER_SEC	1000000L
-+
-+struct ebu_nand_cs {
-+	void __iomem *chipaddr;
-+	dma_addr_t nand_pa;
-+	u32 addr_sel;
-+};
-+
-+struct ebu_nand_controller {
-+	struct nand_controller controller;
-+	struct nand_chip chip;
-+	struct device *dev;
-+	void __iomem *ebu;
-+	void __iomem *hsnand;
-+	struct dma_chan *dma_tx;
-+	struct dma_chan *dma_rx;
-+	struct completion dma_access_complete;
-+	unsigned long clk_rate;
-+	struct clk *clk;
-+	u32 nd_para0;
-+	u8 cs_num;
-+	struct ebu_nand_cs cs[MAX_CS];
-+};
-+
-+static inline struct ebu_nand_controller *nand_to_ebu(struct nand_chip *chip)
-+{
-+	return container_of(chip, struct ebu_nand_controller, chip);
-+}
-+
-+static int ebu_nand_waitrdy(struct nand_chip *chip, int timeout_ms)
-+{
-+	struct ebu_nand_controller *ctrl = nand_to_ebu(chip);
-+	u32 status;
-+
-+	return readl_poll_timeout(ctrl->ebu + EBU_WAIT, status,
-+				  (status & EBU_WAIT_RDBY) ||
-+				  (status & EBU_WAIT_WR_C), 20, timeout_ms);
-+}
-+
-+static u8 ebu_nand_readb(struct nand_chip *chip)
-+{
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	u8 cs_num = ebu_host->cs_num;
-+	u8 val;
-+
-+	val = readb(ebu_host->cs[cs_num].chipaddr + HSNAND_CS_OFFS);
-+	ebu_nand_waitrdy(chip, 1000);
-+	return val;
-+}
-+
-+static void ebu_nand_writeb(struct nand_chip *chip, u32 offset, u8 value)
-+{
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	u8 cs_num = ebu_host->cs_num;
-+
-+	writeb(value, ebu_host->cs[cs_num].chipaddr + offset);
-+	ebu_nand_waitrdy(chip, 1000);
-+}
-+
-+static void ebu_read_buf(struct nand_chip *chip, u_char *buf, unsigned int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		buf[i] = ebu_nand_readb(chip);
-+}
-+
-+static void ebu_write_buf(struct nand_chip *chip, const u_char *buf, int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		ebu_nand_writeb(chip, HSNAND_CS_OFFS, buf[i]);
-+}
-+
-+static void ebu_nand_disable(struct nand_chip *chip)
-+{
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+
-+	writel(0, ebu_host->ebu + EBU_CON);
-+}
-+
-+static void ebu_select_chip(struct nand_chip *chip)
-+{
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	void __iomem *nand_con = ebu_host->ebu + EBU_CON;
-+	u32 cs = ebu_host->cs_num;
-+
-+	writel(EBU_CON_NANDM_EN | EBU_CON_CSMUX_E_EN | EBU_CON_CS_P_LOW |
-+	       EBU_CON_SE_P_LOW | EBU_CON_WP_P_LOW | EBU_CON_PRE_P_LOW |
-+	       EBU_CON_IN_CS_S(cs) | EBU_CON_OUT_CS_S(cs) |
-+	       EBU_CON_LAT_EN_CS_P, nand_con);
-+}
-+
-+static int ebu_nand_set_timings(struct nand_chip *chip, int csline,
-+				const struct nand_interface_config *conf)
-+{
-+	struct ebu_nand_controller *ctrl = nand_to_ebu(chip);
-+	unsigned int rate = clk_get_rate(ctrl->clk) / HZ_PER_MHZ;
-+	unsigned int period = DIV_ROUND_UP(USEC_PER_SEC, rate);
-+	const struct nand_sdr_timings *timings;
-+	u32 trecov, thold, twrwait, trdwait;
-+	u32 reg = 0;
-+
-+	timings = nand_get_sdr_timings(conf);
-+	if (IS_ERR(timings))
-+		return PTR_ERR(timings);
-+
-+	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-+		return 0;
-+
-+	trecov = DIV_ROUND_UP(max(timings->tREA_max, timings->tREH_min),
-+			      period);
-+	reg |= EBU_BUSCON_RECOVC(trecov);
-+
-+	thold = DIV_ROUND_UP(max(timings->tDH_min, timings->tDS_min), period);
-+	reg |= EBU_BUSCON_HOLDC(thold);
-+
-+	trdwait = DIV_ROUND_UP(max(timings->tRC_min, timings->tREH_min),
-+			       period);
-+	reg |= EBU_BUSCON_WAITRDC(trdwait);
-+
-+	twrwait = DIV_ROUND_UP(max(timings->tWC_min, timings->tWH_min), period);
-+	reg |= EBU_BUSCON_WAITWRC(twrwait);
-+
-+	reg |= EBU_BUSCON_CMULT_V4 | EBU_BUSCON_BCGEN_CS | EBU_BUSCON_ALEC |
-+		EBU_BUSCON_SETUP_EN;
-+
-+	writel(reg, ctrl->ebu + EBU_BUSCON(ctrl->cs_num));
-+
-+	return 0;
-+}
-+
-+static int ebu_nand_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->offset = HSNAND_ECC_OFFSET;
-+	oobregion->length = chip->ecc.total;
-+
-+	return 0;
-+}
-+
-+static int ebu_nand_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->offset = chip->ecc.total + HSNAND_ECC_OFFSET;
-+	oobregion->length = mtd->oobsize - oobregion->offset;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops ebu_nand_ooblayout_ops = {
-+	.ecc = ebu_nand_ooblayout_ecc,
-+	.free = ebu_nand_ooblayout_free,
-+};
-+
-+static void ebu_dma_rx_callback(void *cookie)
-+{
-+	struct ebu_nand_controller *ebu_host = cookie;
-+
-+	dmaengine_terminate_async(ebu_host->dma_rx);
-+
-+	complete(&ebu_host->dma_access_complete);
-+}
-+
-+static void ebu_dma_tx_callback(void *cookie)
-+{
-+	struct ebu_nand_controller *ebu_host = cookie;
-+
-+	dmaengine_terminate_async(ebu_host->dma_tx);
-+
-+	complete(&ebu_host->dma_access_complete);
-+}
-+
-+static int ebu_dma_start(struct ebu_nand_controller *ebu_host, u32 dir,
-+			 const u8 *buf, u32 len)
-+{
-+	struct dma_async_tx_descriptor *tx;
-+	struct completion *dma_completion;
-+	dma_async_tx_callback callback;
-+	struct dma_chan *chan;
-+	dma_cookie_t cookie;
-+	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-+	dma_addr_t buf_dma;
-+	int ret;
-+	u32 timeout;
-+
-+	if (dir == DMA_DEV_TO_MEM) {
-+		chan = ebu_host->dma_rx;
-+		dma_completion = &ebu_host->dma_access_complete;
-+		callback = ebu_dma_rx_callback;
-+	} else {
-+		chan = ebu_host->dma_tx;
-+		dma_completion = &ebu_host->dma_access_complete;
-+		callback = ebu_dma_tx_callback;
-+	}
-+
-+	buf_dma = dma_map_single(chan->device->dev, (void *)buf, len, dir);
-+	if (dma_mapping_error(chan->device->dev, buf_dma)) {
-+		dev_err(ebu_host->dev, "Failed to map DMA buffer\n");
-+		ret = -EIO;
-+		goto err_unmap;
-+	}
-+
-+	tx = dmaengine_prep_slave_single(chan, buf_dma, len, dir, flags);
-+	if (!tx)
-+		return -ENXIO;
-+
-+	tx->callback = callback;
-+	tx->callback_param = ebu_host;
-+	cookie = tx->tx_submit(tx);
-+
-+	ret = dma_submit_error(cookie);
-+	if (ret) {
-+		dev_err(ebu_host->dev, "dma_submit_error %d\n", cookie);
-+		ret = -EIO;
-+		goto err_unmap;
-+	}
-+
-+	init_completion(dma_completion);
-+	dma_async_issue_pending(chan);
-+
-+	/* Wait DMA to finish the data transfer.*/
-+	timeout = wait_for_completion_timeout(dma_completion, msecs_to_jiffies(1000));
-+	if (!timeout) {
-+		dev_err(ebu_host->dev, "I/O Error in DMA RX (status %d)\n",
-+			dmaengine_tx_status(chan, cookie, NULL));
-+		dmaengine_terminate_sync(chan);
-+		ret = -ETIMEDOUT;
-+		goto err_unmap;
-+	}
-+
-+	return 0;
-+
-+err_unmap:
-+	dma_unmap_single(ebu_host->dev, buf_dma, len, dir);
-+
-+	return ret;
-+}
-+
-+static void ebu_nand_trigger(struct ebu_nand_controller *ebu_host,
-+			     int page, u32 cmd)
-+{
-+	unsigned int val;
-+
-+	val = cmd | (page & 0xFF) << HSNAND_CTL1_ADDR_SHIFT;
-+	writel(val, ebu_host->hsnand + HSNAND_CTL1);
-+	val = (page & 0xFFFF00) >> 8 | HSNAND_CTL2_CYC_N_V5;
-+	writel(val, ebu_host->hsnand + HSNAND_CTL2);
-+
-+	writel(ebu_host->nd_para0, ebu_host->hsnand + HSNAND_PARA0);
-+
-+	/* clear first, will update later */
-+	writel(0xFFFFFFFF, ebu_host->hsnand + HSNAND_CMSG_0);
-+	writel(0xFFFFFFFF, ebu_host->hsnand + HSNAND_CMSG_1);
-+
-+	writel(HSNAND_INT_MSK_CTL_WR_C,
-+	       ebu_host->hsnand + HSNAND_INT_MSK_CTL);
-+
-+	if (!cmd)
-+		val = HSNAND_CTL_RW_READ;
-+	else
-+		val = HSNAND_CTL_RW_WRITE;
-+
-+	writel(HSNAND_CTL_MSG_EN | HSNAND_CTL_CKFF_EN |
-+	       HSNAND_CTL_ECC_OFF_V8TH | HSNAND_CTL_CE_SEL_CS(ebu_host->cs_num) |
-+	       HSNAND_CTL_ENABLE_ECC | HSNAND_CTL_GO | val,
-+	       ebu_host->hsnand + HSNAND_CTL);
-+}
-+
-+static int ebu_nand_read_page_hwecc(struct nand_chip *chip, u8 *buf,
-+				    int oob_required, int page)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	int ret, reg_data;
-+
-+	ebu_nand_trigger(ebu_host, page, NAND_CMD_READ0);
-+
-+	ret = ebu_dma_start(ebu_host, DMA_DEV_TO_MEM, buf, mtd->writesize);
-+	if (ret)
-+		return ret;
-+
-+	if (oob_required)
-+		chip->ecc.read_oob(chip, page);
-+
-+	reg_data = readl(ebu_host->hsnand + HSNAND_CTL);
-+	reg_data &= ~HSNAND_CTL_GO;
-+	writel(reg_data, ebu_host->hsnand + HSNAND_CTL);
-+
-+	return 0;
-+}
-+
-+static int ebu_nand_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
-+				     int oob_required, int page)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	void __iomem *int_sta = ebu_host->hsnand + HSNAND_INT_STA;
-+	int reg_data, ret, val;
-+	u32 reg;
-+
-+	ebu_nand_trigger(ebu_host, page, NAND_CMD_SEQIN);
-+
-+	ret = ebu_dma_start(ebu_host, DMA_MEM_TO_DEV, buf, mtd->writesize);
-+	if (ret)
-+		return ret;
-+
-+	if (oob_required) {
-+		reg = get_unaligned_le32(chip->oob_poi);
-+		writel(reg, ebu_host->hsnand + HSNAND_CMSG_0);
-+
-+		reg = get_unaligned_le32(chip->oob_poi + 4);
-+		writel(reg, ebu_host->hsnand + HSNAND_CMSG_1);
-+	}
-+
-+	ret = readl_poll_timeout_atomic(int_sta, val, !(val & HSNAND_INT_STA_WR_C),
-+					10, 1000);
-+	if (ret)
-+		return ret;
-+
-+	reg_data = readl(ebu_host->hsnand + HSNAND_CTL);
-+	reg_data &= ~HSNAND_CTL_GO;
-+	writel(reg_data, ebu_host->hsnand + HSNAND_CTL);
-+
-+	return 0;
-+}
-+
-+static const u8 ecc_strength[] = { 1, 1, 4, 8, 24, 32, 40, 60, };
-+
-+static int ebu_nand_attach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
-+	u32 ecc_steps, ecc_bytes, ecc_total, pagesize, pg_per_blk;
-+	u32 ecc_strength_ds = chip->ecc.strength;
-+	u32 ecc_size = chip->ecc.size;
-+	u32 writesize = mtd->writesize;
-+	u32 blocksize = mtd->erasesize;
-+	int bch_algo, start, val;
-+
-+	/* Default to an ECC size of 512 */
-+	if (!chip->ecc.size)
-+		chip->ecc.size = 512;
-+
-+	switch (ecc_size) {
-+	case 512:
-+		start = 1;
-+		if (!ecc_strength_ds)
-+			ecc_strength_ds = 4;
-+		break;
-+	case 1024:
-+		start = 4;
-+		if (!ecc_strength_ds)
-+			ecc_strength_ds = 32;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* BCH ECC algorithm Settings for number of bits per 512B/1024B */
-+	bch_algo = round_up(start + 1, 4);
-+	for (val = start; val < bch_algo; val++) {
-+		if (ecc_strength_ds == ecc_strength[val])
-+			break;
-+	}
-+	if (val == bch_algo)
-+		return -EINVAL;
-+
-+	if (ecc_strength_ds == 8)
-+		ecc_bytes = 14;
-+	else
-+		ecc_bytes = DIV_ROUND_UP(ecc_strength_ds * fls(8 * ecc_size), 8);
-+
-+	ecc_steps = writesize / ecc_size;
-+	ecc_total = ecc_steps * ecc_bytes;
-+	if ((ecc_total + 8) > mtd->oobsize)
-+		return -ERANGE;
-+
-+	chip->ecc.total = ecc_total;
-+	pagesize = fls(writesize >> 11);
-+	if (pagesize > HSNAND_PARA0_PAGE_V8192)
-+		return -ERANGE;
-+
-+	pg_per_blk = fls((blocksize / writesize) >> 6) / 8;
-+	if (pg_per_blk > HSNAND_PARA0_PIB_V256)
-+		return -ERANGE;
-+
-+	ebu_host->nd_para0 = pagesize | pg_per_blk | HSNAND_PARA0_BYP_EN_NP |
-+			     HSNAND_PARA0_BYP_DEC_NP | HSNAND_PARA0_ADEP_EN |
-+			     HSNAND_PARA0_TYPE_ONFI | (val << 29);
-+
-+	mtd_set_ooblayout(mtd, &ebu_nand_ooblayout_ops);
-+	chip->ecc.read_page = ebu_nand_read_page_hwecc;
-+	chip->ecc.write_page = ebu_nand_write_page_hwecc;
-+
-+	return 0;
-+}
-+
-+static int ebu_nand_exec_op(struct nand_chip *chip,
-+			    const struct nand_operation *op, bool check_only)
-+{
-+	const struct nand_op_instr *instr = NULL;
-+	unsigned int op_id;
-+	int i, timeout_ms, ret = 0;
-+
-+	if (check_only)
-+		return 0;
-+
-+	ebu_select_chip(chip);
-+	for (op_id = 0; op_id < op->ninstrs; op_id++) {
-+		instr = &op->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			ebu_nand_writeb(chip, HSNAND_CLE_OFFS | HSNAND_CS_OFFS,
-+					instr->ctx.cmd.opcode);
-+			break;
-+
-+		case NAND_OP_ADDR_INSTR:
-+			for (i = 0; i < instr->ctx.addr.naddrs; i++)
-+				ebu_nand_writeb(chip,
-+						HSNAND_ALE_OFFS | HSNAND_CS_OFFS,
-+						instr->ctx.addr.addrs[i]);
-+			break;
-+
-+		case NAND_OP_DATA_IN_INSTR:
-+			ebu_read_buf(chip, instr->ctx.data.buf.in,
-+				     instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_DATA_OUT_INSTR:
-+			ebu_write_buf(chip, instr->ctx.data.buf.out,
-+				      instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_WAITRDY_INSTR:
-+			timeout_ms = instr->ctx.waitrdy.timeout_ms * 1000;
-+			ret = ebu_nand_waitrdy(chip, timeout_ms);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct nand_controller_ops ebu_nand_controller_ops = {
-+	.attach_chip = ebu_nand_attach_chip,
-+	.setup_interface = ebu_nand_set_timings,
-+	.exec_op = ebu_nand_exec_op,
-+};
-+
-+static void ebu_dma_cleanup(struct ebu_nand_controller *ebu_host)
-+{
-+	if (ebu_host->dma_rx)
-+		dma_release_channel(ebu_host->dma_rx);
-+
-+	if (ebu_host->dma_tx)
-+		dma_release_channel(ebu_host->dma_tx);
-+}
-+
-+static int ebu_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct ebu_nand_controller *ebu_host;
-+	struct nand_chip *nand;
-+	struct mtd_info *mtd = NULL;
-+	struct resource *res;
-+	char *resname;
-+	int ret, i;
-+	u32 cs;
-+
-+	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
-+	if (!ebu_host)
-+		return -ENOMEM;
-+
-+	ebu_host->dev = dev;
-+	nand_controller_init(&ebu_host->controller);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
-+	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(ebu_host->ebu))
-+		return PTR_ERR(ebu_host->ebu);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
-+	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(ebu_host->hsnand))
-+		return PTR_ERR(ebu_host->hsnand);
-+
-+	ret = device_property_read_u32(dev, "reg", &cs);
-+	if (ret) {
-+		dev_err(dev, "failed to get chip select: %d\n", ret);
-+		return ret;
-+	}
-+	ebu_host->cs_num = cs;
-+
-+	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
-+	ebu_host->cs[cs].chipaddr = devm_ioremap_resource(dev, res);
-+	ebu_host->cs[cs].nand_pa = res->start;
-+	if (IS_ERR(ebu_host->cs[cs].chipaddr))
-+		return PTR_ERR(ebu_host->cs[cs].chipaddr);
-+
-+	ebu_host->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(ebu_host->clk))
-+		return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
-+				     "failed to get clock\n");
-+
-+	ret = clk_prepare_enable(ebu_host->clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable clock: %d\n", ret);
-+		return ret;
-+	}
-+	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
-+
-+	ebu_host->dma_tx = dma_request_chan(dev, "tx");
-+	if (IS_ERR(ebu_host->dma_tx))
-+		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
-+				     "failed to request DMA tx chan!.\n");
-+
-+	ebu_host->dma_rx = dma_request_chan(dev, "rx");
-+	if (IS_ERR(ebu_host->dma_rx))
-+		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
-+				     "failed to request DMA rx chan!.\n");
-+
-+	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
-+	if (!res)
-+		return -EINVAL;
-+	ebu_host->cs[cs].addr_sel = res->start;
-+	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
-+	       ebu_host->ebu + EBU_ADDR_SEL(cs));
-+
-+	nand_set_flash_node(&ebu_host->chip, dev->of_node);
-+	if (!mtd->name) {
-+		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
-+		return -EINVAL;
-+	}
-+
-+	mtd = nand_to_mtd(&ebu_host->chip);
-+	mtd->dev.parent = dev;
-+	ebu_host->dev = dev;
-+
-+	platform_set_drvdata(pdev, ebu_host);
-+	nand_set_controller_data(&ebu_host->chip, ebu_host);
-+
-+	nand = &ebu_host->chip;
-+	nand->controller = &ebu_host->controller;
-+	nand->controller->ops = &ebu_nand_controller_ops;
-+
-+	/* Scan to find existence of the device */
-+	ret = nand_scan(&ebu_host->chip, 1);
-+	if (ret)
-+		goto err_cleanup_dma;
-+
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret)
-+		goto err_clean_nand;
-+
-+	return 0;
-+
-+err_clean_nand:
-+	nand_cleanup(&ebu_host->chip);
-+err_cleanup_dma:
-+	ebu_dma_cleanup(ebu_host);
-+	clk_disable_unprepare(ebu_host->clk);
-+
-+	return ret;
-+}
-+
-+static int ebu_nand_remove(struct platform_device *pdev)
-+{
-+	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
-+	int ret;
-+
-+	ret = mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
-+	WARN_ON(ret);
-+	nand_cleanup(&ebu_host->chip);
-+	ebu_nand_disable(&ebu_host->chip);
-+	ebu_dma_cleanup(ebu_host);
-+	clk_disable_unprepare(ebu_host->clk);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ebu_nand_match[] = {
-+	{ .compatible = "intel,nand-controller" },
-+	{ .compatible = "intel,lgm-ebunand" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, ebu_nand_match);
-+
-+static struct platform_driver ebu_nand_driver = {
-+	.probe = ebu_nand_probe,
-+	.remove = ebu_nand_remove,
-+	.driver = {
-+		.name = "intel-nand-controller",
-+		.of_match_table = ebu_nand_match,
-+	},
-+
-+};
-+module_platform_driver(ebu_nand_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Vadivel Murugan R <vadivel.muruganx.ramuthevar@intel.com>");
-+MODULE_DESCRIPTION("Intel's LGM External Bus NAND Controller driver");
--- 
-2.11.0
+Alan, Do you have a system where you can test this series? It only needs
+two endpoint instances on a single system.
 
+Thanks
+Kishon
+
+> 
+> Thanks,
+> Lorenzo
+> 
+>> Thanks
+>> Kishon
+>>>
+>>> Best Regards,
+>>> Kishon
+>>>
+>>>>
+>>>> This was presented in Linux Plumbers Conference. Link to presentation
+>>>> and video can be found @ [1]
+>>>>
+>>>> RFC patch series can be found @ [2]
+>>>> v1 patch series can be found @ [3]
+>>>> v2 patch series can be found @ [4]
+>>>> v3 patch series can be found @ [5]
+>>>> v4 patch series can be found @ [6]
+>>>> v5 patch series can be found @ [7]
+>>>> v6 patch series can be found @ [8]
+>>>>
+>>>> Changes from v6:
+>>>> 1) Fixed issues when multiple NTB devices are creating using multiple
+>>>>    functions
+>>>> 2) Fixed issue with writing scratchpad register
+>>>> 3) Created a video demo @ [9]
+>>>>
+>>>> Changes from v5:
+>>>> 1) Fixed a formatting issue in Kconfig pointed out by Randy
+>>>> 2) Checked for Error or Null in pci_epc_add_epf()
+>>>>
+>>>> Changes from v4:
+>>>> 1) Fixed error condition checks in pci_epc_add_epf()
+>>>>
+>>>> Changes from v3:
+>>>> 1) Fixed Documentation edits suggested by Randy Dunlap <rdunlap@infradead.org>
+>>>>
+>>>> Changes from v2:
+>>>> 1) Add support for the user to create sub-directory of 'EPF Device'
+>>>>    directory (for endpoint function specific configuration using
+>>>>    configfs).
+>>>> 2) Add documentation for NTB specific attributes in configfs
+>>>> 3) Check for PCI_CLASS_MEMORY_RAM (PCIe class) before binding ntb_hw_epf
+>>>>    driver
+>>>> 4) Other documentation fixes
+>>>>
+>>>> Changes from v1:
+>>>> 1) As per Rob's comment, removed support for creating NTB function
+>>>>    device from DT
+>>>> 2) Add support to create NTB EPF device using configfs (added support in
+>>>>    configfs to associate primary and secondary EPC with EPF.
+>>>>
+>>>> Changes from RFC:
+>>>> 1) Converted the DT binding patches to YAML schema and merged the
+>>>>    DT binding patches together
+>>>> 2) NTB documentation is converted to .rst
+>>>> 3) One HOST can now interrupt the other HOST using MSI-X interrupts
+>>>> 4) Added support for teardown of memory window and doorbell
+>>>>    configuration
+>>>> 5) Add support to provide support 64-bit memory window size from
+>>>>    DT
+>>>>
+>>>> [1] -> https://linuxplumbersconf.org/event/4/contributions/395/
+>>>> [2] -> http://lore.kernel.org/r/20190926112933.8922-1-kishon@ti.com
+>>>> [3] -> http://lore.kernel.org/r/20200514145927.17555-1-kishon@ti.com
+>>>> [4] -> http://lore.kernel.org/r/20200611130525.22746-1-kishon@ti.com
+>>>> [5] -> http://lore.kernel.org/r/20200904075052.8911-1-kishon@ti.com
+>>>> [6] -> http://lore.kernel.org/r/20200915042110.3015-1-kishon@ti.com
+>>>> [7] -> http://lore.kernel.org/r/20200918064227.1463-1-kishon@ti.com
+>>>> [8] -> http://lore.kernel.org/r/20200924092519.17082-1-kishon@ti.com
+>>>> [9] -> https://youtu.be/dLKKxrg5-rY
+>>>>
+>>>> Kishon Vijay Abraham I (18):
+>>>>   Documentation: PCI: Add specification for the *PCI NTB* function
+>>>>     device
+>>>>   PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit
+>>>>     BAR
+>>>>   PCI: endpoint: Add helper API to get the 'next' unreserved BAR
+>>>>   PCI: endpoint: Make *_free_bar() to return error codes on failure
+>>>>   PCI: endpoint: Remove unused pci_epf_match_device()
+>>>>   PCI: endpoint: Add support to associate secondary EPC with EPF
+>>>>   PCI: endpoint: Add support in configfs to associate two EPCs with EPF
+>>>>   PCI: endpoint: Add pci_epc_ops to map MSI irq
+>>>>   PCI: endpoint: Add pci_epf_ops for epf drivers to expose function
+>>>>     specific attrs
+>>>>   PCI: endpoint: Allow user to create sub-directory of 'EPF Device'
+>>>>     directory
+>>>>   PCI: cadence: Implement ->msi_map_irq() ops
+>>>>   PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
+>>>>   PCI: endpoint: Add EP function driver to provide NTB functionality
+>>>>   PCI: Add TI J721E device to pci ids
+>>>>   NTB: Add support for EPF PCI-Express Non-Transparent Bridge
+>>>>   NTB: tool: Enable the NTB/PCIe link on the local or remote side of
+>>>>     bridge
+>>>>   Documentation: PCI: Add configfs binding documentation for pci-ntb
+>>>>     endpoint function
+>>>>   Documentation: PCI: Add userguide for PCI endpoint NTB function
+>>>>
+>>>>  .../PCI/endpoint/function/binding/pci-ntb.rst |   38 +
+>>>>  Documentation/PCI/endpoint/index.rst          |    3 +
+>>>>  .../PCI/endpoint/pci-endpoint-cfs.rst         |   10 +
+>>>>  .../PCI/endpoint/pci-ntb-function.rst         |  351 +++
+>>>>  Documentation/PCI/endpoint/pci-ntb-howto.rst  |  160 ++
+>>>>  drivers/misc/pci_endpoint_test.c              |    1 -
+>>>>  drivers/ntb/hw/Kconfig                        |    1 +
+>>>>  drivers/ntb/hw/Makefile                       |    1 +
+>>>>  drivers/ntb/hw/epf/Kconfig                    |    6 +
+>>>>  drivers/ntb/hw/epf/Makefile                   |    1 +
+>>>>  drivers/ntb/hw/epf/ntb_hw_epf.c               |  755 ++++++
+>>>>  drivers/ntb/test/ntb_tool.c                   |    1 +
+>>>>  .../pci/controller/cadence/pcie-cadence-ep.c  |   60 +-
+>>>>  drivers/pci/endpoint/functions/Kconfig        |   12 +
+>>>>  drivers/pci/endpoint/functions/Makefile       |    1 +
+>>>>  drivers/pci/endpoint/functions/pci-epf-ntb.c  | 2114 +++++++++++++++++
+>>>>  drivers/pci/endpoint/functions/pci-epf-test.c |   13 +-
+>>>>  drivers/pci/endpoint/pci-ep-cfs.c             |  176 +-
+>>>>  drivers/pci/endpoint/pci-epc-core.c           |  130 +-
+>>>>  drivers/pci/endpoint/pci-epf-core.c           |  105 +-
+>>>>  include/linux/pci-epc.h                       |   39 +-
+>>>>  include/linux/pci-epf.h                       |   28 +-
+>>>>  include/linux/pci_ids.h                       |    1 +
+>>>>  23 files changed, 3934 insertions(+), 73 deletions(-)
+>>>>  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-ntb.rst
+>>>>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
+>>>>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+>>>>  create mode 100644 drivers/ntb/hw/epf/Kconfig
+>>>>  create mode 100644 drivers/ntb/hw/epf/Makefile
+>>>>  create mode 100644 drivers/ntb/hw/epf/ntb_hw_epf.c
+>>>>  create mode 100644 drivers/pci/endpoint/functions/pci-epf-ntb.c
+>>>>
