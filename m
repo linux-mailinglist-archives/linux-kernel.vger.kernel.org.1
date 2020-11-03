@@ -2,202 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504CE2A4D48
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0432A4D4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgKCRmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:42:11 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35544 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbgKCRmL (ORCPT
+        id S1728855AbgKCRmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728690AbgKCRmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:42:11 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103174159euoutp013bb365202d23fa3479debf8bcb9c0fee~EEFPSGfxs0187501875euoutp018;
-        Tue,  3 Nov 2020 17:41:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103174159euoutp013bb365202d23fa3479debf8bcb9c0fee~EEFPSGfxs0187501875euoutp018
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604425319;
-        bh=+c191vStEcBpp0tReQUjkojqVkYelLLRiqQLkPx/3k4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kf1g/UiLgfg/+XsZl01UBhHqH1oezVmE746M3TyUxQYTzoXWGva32AoS0qmnky1Vw
-         HXLZJod6N6kSdHC1XW+GN0PCI5Np2/tXtdL5L8UYIanE6PNSSgqrBcpbxIt0huyAf3
-         ZLURvcQjGg796yyCI4Lg2ZcaElXKDn4Rp2dxWPpU=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201103174153eucas1p1416a579a93f01ee5edda3ed9d09f0051~EEFKGr5rt2033320333eucas1p1N;
-        Tue,  3 Nov 2020 17:41:53 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 59.AE.05997.16691AF5; Tue,  3
-        Nov 2020 17:41:53 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103174153eucas1p1bde36909139c5662249eb5a1586504d7~EEFJtwfjM0849308493eucas1p1V;
-        Tue,  3 Nov 2020 17:41:53 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201103174153eusmtrp2c52df24de6776f2f90da3349495fad6b~EEFJtHyrH2875328753eusmtrp2e;
-        Tue,  3 Nov 2020 17:41:53 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-3e-5fa19661e461
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2C.98.06314.06691AF5; Tue,  3
-        Nov 2020 17:41:53 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201103174152eusmtip1d6ba58782f21b6cc48051c9d6017211a~EEFIxVs9X2413224132eusmtip1S;
-        Tue,  3 Nov 2020 17:41:52 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 1/5] ARM: dts: exynos: Fix ethernet description for
- Odroid XU3
-Date:   Tue, 03 Nov 2020 18:41:42 +0100
-In-Reply-To: <20201103163610.GA14739@kozik-lap> (Krzysztof Kozlowski's
-        message of "Tue, 3 Nov 2020 17:36:10 +0100")
-Message-ID: <dleftjo8kes5gp.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 3 Nov 2020 12:42:20 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F44AC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:42:20 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id l24so19220274edj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VYn/vKDpZ5hpbmpnVni806ofiX+cJciXsAeXX/Sk4l0=;
+        b=rXQORZKJ2U+ylxQMF+9AWKUkZJig+UmoOXKVflnPvZyXuXR3GWmyk8sl0FLRxGl5xg
+         5lfIaoIOsrcyieN13ynqLZkEePlq89EUJamlYl6hghYN63fgjJkxx5xHyPyZzpGICC+o
+         2o5rigaAjjX8gaTETVTq1LnQYk/hyVYawJ6DJXxvf7OlCULVdl1YUj4OO7Gu+CRU2OBq
+         MAaCSUd8n0j4PhonBKq9VehFQtMRUjEKokqvCTZl0igGB0NPyqMotDu7y/VLM73ncz3z
+         f3MmwqNWLrByP7AxDGZS7wh2d1qoMU/OM17PTogjmy70uuo1AHpN8QVQ1rOprZFXD+UO
+         5GRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VYn/vKDpZ5hpbmpnVni806ofiX+cJciXsAeXX/Sk4l0=;
+        b=fJnLSwjrNlxM8MYUEdIQYvUle6v3OBsPtd9kdZqN3hkFsaOf/PhAb7AkrCi9HJBwIl
+         Ck5tNx0PSOouJAvDQyAUTaEsR+UZZn57XdOf/26FrEcjdt4ldQUhKqtys+PEupoCIu+J
+         Cz85HGk6WV5JBA26JBMIN1VSNDRus8do0B5eN0NfJQYFqtP95dFo4/zY0O4q2EWsztPX
+         25F/ud39QEtMNSSpB5ZGBawJk+SPaQwnQU6W9ewo8AiqZupp7E8yBf8xg5xNK9vsSusE
+         Ir3a7lMqiul1mh/DV1M+YBU8L/15cIguB9HR33Lb+veTHuSz+h19paRF25gdXHm4Zm4U
+         IPjQ==
+X-Gm-Message-State: AOAM533Skwfs63a0JL2udNbkUvn4ByXQlITWRhjXT+NKf20hycWcP+o3
+        1BAbv0m6E30Nwvinmwysgpf2COPEXvQk1WyfDj9C4Q==
+X-Google-Smtp-Source: ABdhPJx5S3UzzTfDY8cKn+TAZM3BY37RtnJgYkeBXCiaVtJb0CB9xGlXlLQ7ZmZrDmrYSo9E3rydacpjFJ5hnLH6KB4=
+X-Received: by 2002:a05:6402:4d:: with SMTP id f13mr23008097edu.306.1604425339037;
+ Tue, 03 Nov 2020 09:42:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRmVeSWpSXmKPExsWy7djP87qJ0xbGGzxcrm+xccZ6Vov5R86x
-        WvQ/fs1scf78BnaLTY+vsVpc3jWHzWLG+X1MFus23mK3WHvkLrtF694j7A5cHjtn3WX32LSq
-        k81j85J6j74tqxg9Pm+SC2CN4rJJSc3JLEst0rdL4Mq48+MjU8Fp0Yp3Z3azNzB+Fuxi5OSQ
-        EDCRePb3C2MXIxeHkMAKRokHsyeyQzhfGCXW/toPlfnMKHF8ySpGmJbWnZ1sEInljBKLv9+D
-        annOKLFk1VbmLkYODjYBPYm1ayNAGkQENCWu//3OClLDLNDALNH/cQ/YJGGBEIkFJ64zgdgs
-        AqoS1989ArM5BUoletoegNm8AuYSr27PZwexRQUsJba8uM8OEReUODnzCQuIzSyQKzHz/Buo
-        6+6xS1z/KQVhu0hMfHIGKi4s8er4FnYIW0bi/875TCB3SgjUS0yeZAZym4RAD6PEtjk/WCBq
-        rCXunPvFBmE7SjxbMIUNop5P4sZbQYi1fBKTtk1nhgjzSnS0CUFUq0is698DNUVKovfVCqgL
-        PCRa502ChlsTo8SNnXsZJzAqzELyzSwk38wCGssMDLr1u/QhwtoSyxa+ZoawbSXWrXvPsoCR
-        dRWjeGppcW56arFRXmq5XnFibnFpXrpecn7uJkZg4jr97/iXHYy7/iQdYhTgYFTi4XVIXRAv
-        xJpYVlyZe4hRBWjSow2rLzBKseTl56UqifA6nT0dJ8SbklhZlVqUH19UmpNafIhRmoNFSZzX
-        eNHLWCGB9MSS1OzU1ILUIpgsEwenVAOjqZ+e6GbjixP3N9ybp9aTMu2WS+xF/eM/zbrtqmR5
-        m2/fii2u7tG1V2bhu3vFMX6lSGSHhsZayXn9urf3PG7r99ysu17AfOqMt3k9gvKzAtK6Hu9v
-        ND3xf8tmB6lkOYkZJh8E12SWMgvcMwlqYDF8pih25r/XwuUPjUyXrG9kvPt990qj81ZKLMUZ
-        iYZazEXFiQCDSAiLZAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsVy+t/xu7qJ0xbGG8zfJmGxccZ6Vov5R86x
-        WvQ/fs1scf78BnaLTY+vsVpc3jWHzWLG+X1MFus23mK3WHvkLrtF694j7A5cHjtn3WX32LSq
-        k81j85J6j74tqxg9Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXS
-        t7NJSc3JLEst0rdL0Mu48+MjU8Fp0Yp3Z3azNzB+Fuxi5OSQEDCRaN3ZydbFyMUhJLCUUWL2
-        z1XMXYwcQAkpiZVz0yFqhCX+XOtiA7GFBJ4ySizuEAQpYRPQk1i7NgIkLCKgKXH973dWkDHM
-        Ak3MEo9vzgCrFxYIkvjxeh5Ur57E0pvbWUBsFgFVievvHjGBzOEUKJU4+tYTJMwrYC7x6vZ8
-        dhBbVMBSYsuL++wQcUGJkzOfgLUyC2RLfF39nHkCo8AsJKlZSFKzgKYyA520fpc+RFhbYtnC
-        18wQtq3EunXvWRYwsq5iFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjLhtx35u3sF4aWPwIUYB
-        DkYlHl6H1AXxQqyJZcWVuYcYVYDGPNqw+gKjFEtefl6qkgiv09nTcUK8KYmVValF+fFFpTmp
-        xYcYTYHenMgsJZqcD0wSeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4
-        OKUaGBe68Pcv/O1TaSUqErGnN8n6LFuEZMLXEDEtkX279kX/Mmo/8Nt8+uPvS4ysyu5tU7wS
-        c+Pxa1XNamFWhlwbF5MSDxEzHxlHppC7n9jceuxqN3Q07S1T2uEvs1W2I3G5TKPQlb8NczL1
-        fs/fudu5yW/XiewD//wzPl89NjP26P0DTV2Pwhm2KLEUZyQaajEXFScCAJfE29jaAgAA
-X-CMS-MailID: 20201103174153eucas1p1bde36909139c5662249eb5a1586504d7
-X-Msg-Generator: CA
-X-RootMTR: 20201103174153eucas1p1bde36909139c5662249eb5a1586504d7
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201103174153eucas1p1bde36909139c5662249eb5a1586504d7
-References: <20201103163610.GA14739@kozik-lap>
-        <CGME20201103174153eucas1p1bde36909139c5662249eb5a1586504d7@eucas1p1.samsung.com>
+References: <20201001230403.2445035-1-danielwinkler@google.com>
+ <CAP2xMbtC0invbRT2q6LuamfEbE9ppMkRUO+jOisgtBG17JkrwA@mail.gmail.com>
+ <CABBYNZJ65vXxeyJmZ_L_D+9pm7uDHo0+_ioHzMyh0q8sVmREsQ@mail.gmail.com>
+ <CAP2xMbs4sUyap_-YAFA6=52Qj+_uxGww7LwmbWACVC0j0LvbLQ@mail.gmail.com> <CABBYNZ+0LW0sOPPe+QHWLn7XXdAjqKB3Prm21SyUQLeQqW=StA@mail.gmail.com>
+In-Reply-To: <CABBYNZ+0LW0sOPPe+QHWLn7XXdAjqKB3Prm21SyUQLeQqW=StA@mail.gmail.com>
+From:   Daniel Winkler <danielwinkler@google.com>
+Date:   Tue, 3 Nov 2020 09:42:07 -0800
+Message-ID: <CAP2xMbsJ6EQYbJvS=59Dpj83sugFGaP98Mq-1SgxrJ+aSqd4pA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Bluetooth: Add new MGMT interface for advertising add
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Hello Luiz,
 
-It was <2020-11-03 wto 17:36>, when Krzysztof Kozlowski wrote:
-> On Tue, Nov 03, 2020 at 01:46:14PM +0100, =C5=81ukasz Stelmach wrote:
->> Create ethernet alias=20
+Thank you for the information. It is good to know that this tool is
+actively used and that there is a way to skip existing flaky tests.
+Just for clarification, is this a requirement to land the kernel
+changes, i.e. should I prioritize adding these tests immediately to
+move the process forward? Or can we land the changes based on the
+testing I have already done and I'll work on these tests in parallel?
+
+Thanks,
+Daniel
+
+On Thu, Oct 29, 2020 at 5:04 PM Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
 >
-> Your commit msg should explain why.
+> Hi Daniel,
 >
-
-OK. (And a separate patch - ack)
-
->> and assign appropriate compatible properties.
+> On Thu, Oct 29, 2020 at 3:25 PM Daniel Winkler <danielwinkler@google.com> wrote:
+> >
+> > Hi Luiz,
+> >
+> > Thank you for the feedback regarding mgmt-tester. I intended to use
+> > the tool, but found that it had a very high rate of test failure even
+> > before I started adding new tests. If you have a strong preference for
+> > its use, I can look into it again but it may take some time. These
+> > changes were tested with manual and automated functional testing on
+> > our end.
+> >
+> > Please let me know your thoughts.
 >
-> Then what was before? Indeed they do not look like anything
-> reasonable... old VID do not appear on any of Odroid boards.
+> Total: 406, Passed: 358 (88.2%), Failed: 43, Not Run: 5
 >
-
-The first is acutally an Intel hub, the second is a webcam. Where did
-I=C2=A0found them? I can't be sure today.
-
-In case of USB devices the kernel uses topology information to match
-devices instead of compatible properties and u-boot uses
-aliases. Therefore, bad IDs don't break anything.
-
->>=20
->> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
->> ---
->
-> Best regards,
-> Krzysztof
->
->>  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/=
-dts/exynos5422-odroidxu3.dts
->> index d0f6ac5fa79d..2a4153484664 100644
->> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
->> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
->> @@ -15,6 +15,10 @@
->>  / {
->>  	model =3D "Hardkernel Odroid XU3";
->>  	compatible =3D "hardkernel,odroid-xu3", "samsung,exynos5800", "samsung=
-,exynos5";
->> +
->> +	aliases {
->> +		ethernet =3D &ethernet;
->> +	};
->>  };
->>=20=20
->>  &i2c_0 {
->> @@ -76,13 +80,13 @@ &usbhost2 {
->>  	#size-cells =3D <0>;
->>=20=20
->>  	hub@1 {
->> -		compatible =3D "usb8087,0024";
->> +		compatible =3D "usb0424,9514";
->>  		reg =3D <1>;
->>  		#address-cells =3D <1>;
->>  		#size-cells =3D <0>;
->>=20=20
->>  		ethernet: usbether@1 {
->> -			compatible =3D "usb0c45,6310";
->> +			compatible =3D "usb0424,ec00";
->>  			reg =3D <1>;
->>  			local-mac-address =3D [00 00 00 00 00 00]; /* Filled in by a bootloa=
-der */
->>  		};
->> --=20
->> 2.26.2
->>=20
->
->
-
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+hllYACgkQsK4enJil
-gBBYcAf/d7j1CpbaTmFNiujiCo6TDDWRAeGAmrF3cIl6O+gtIROgWHb7Jfp9dxv2
-6jf6GvuU6UaxIBpWtE/UZQDOT/w1hVOWFeGrSZWRp3QbSWBv1xB6JoNW7F0K/58C
-lwHAONduwJ3/VW5WeKi2Q0XZ+X0Lo7G6lFIMRT5rTXt0pboSg5peFlCRUi9QrdpF
-mxodMNks+IOQxBfXSgfGPmOMYAj33pUBD+xHQqKx/QQqX4Aor0zIhnKqHYpx9Hwo
-Z0+FAQZfhVL+rr2ZGi9VUF+dYoehjlQHtk6DXSYjzKk84CxkSDsVKkJ9ZRDy91yX
-MHszzZurciEOJ1k8g/V5qHeiOM+ZNQ==
-=o+JZ
------END PGP SIGNATURE-----
---=-=-=--
+> Looks like there are some 43 tests failing, we will need to fix these
+> but it should prevent us to add new ones as well, you can use -p to
+> filter what tests to run if you want to avoid these for now.
