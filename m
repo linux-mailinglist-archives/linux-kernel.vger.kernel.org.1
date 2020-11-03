@@ -2,80 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03802A45C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484B82A45BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgKCM6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:58:39 -0500
+        id S1729130AbgKCM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:58:30 -0500
 Received: from z5.mailgun.us ([104.130.96.5]:20145 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729099AbgKCM6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:58:36 -0500
+        id S1729078AbgKCM62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:58:28 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604408316; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=HRLt78uC83l0Og4T2L1No+cXdRB7kVouUKpsLrsLarU=; b=f5P5U0dZzVjolaFehCDE/q6pVHm865PqW8vkIYLhjtiSS1pE889TRBbzlcrT+mv1fxcgRwje
- W2ScB5v2KajFbQPtvZojpjQ2zq6T9v7CyjS1XizTKW9fCEYFiJwbKIIojA30yGOo0n8udaHB
- g3etz4leWO5Q48KH1+JEZrjgdPM=
+ s=smtp; t=1604408308; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Vl1gSkuYNKu59mDRMCZ/CekkC7CyDy0hSBNDzA19YYI=; b=vifi6kFD0RI0DwYATPWpcZzMbPVay5IlUkg2YzJZNV7NnIhoNgohCYOm3/43upqtnR+Phj0m
+ DRV3ve8gVqea+P6zYzTXoABkZc6mO35ipl77u94gY4qfYXQnMKiT0n3QIqHAvn0ddEw0DF3T
+ VlS3UUjEbXvVLlv6VqwW6s3k/x8=
 X-Mailgun-Sending-Ip: 104.130.96.5
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fa153eb75bebe827ae93a8e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 12:58:19
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fa153ecb64b1c5b78f96c53 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 12:58:20
  GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 12EDDC38523; Tue,  3 Nov 2020 07:00:30 +0000 (UTC)
+        id 46297C3853C; Tue,  3 Nov 2020 09:19:30 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F098CC384E0;
-        Tue,  3 Nov 2020 07:00:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F098CC384E0
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C27CC38537;
+        Tue,  3 Nov 2020 09:19:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C27CC38537
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kelvin Cheung <keguang.zhang@gmail.com>
-Cc:     Daisy Zhang251 <daisy.zhang251@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Daisy Zhang1 <daisy.zhang1@unisoc.com>
-Subject: Re: [PATCH] cfg80211: make wifi driver probe
-References: <1602833787-4206-1-git-send-email-daisy.zhang251@gmail.com>
-        <87a6vzpwt5.fsf@codeaurora.org>
-        <CAJhJPsVmBD5S5gW9cwgtjZrQNrN7iGG7FF5WX+RwLH0UquKCMA@mail.gmail.com>
-Date:   Tue, 03 Nov 2020 09:00:24 +0200
-In-Reply-To: <CAJhJPsVmBD5S5gW9cwgtjZrQNrN7iGG7FF5WX+RwLH0UquKCMA@mail.gmail.com>
-        (Kelvin Cheung's message of "Tue, 3 Nov 2020 10:51:08 +0800")
-Message-ID: <87blgeudpz.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v7 0/4] Introduce mini-dump support for remoteproc
+Date:   Tue,  3 Nov 2020 01:19:16 -0800
+Message-Id: <1604395160-12443-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kelvin Cheung <keguang.zhang@gmail.com> writes:
+Sometimes firmware sizes can be in tens of MB's and reading all the memory
+during coredump can consume lot of time and memory.
 
-> We are preparing the Wi-Fi driver for Unisoc WCN chips. Please ignore
-> this draft version. There will be a formal version soon.
+Introducing support for mini-dumps. Mini-dump contains smallest amount of
+useful information, that could help to debug subsystem crashes.
 
-Ok, I'll drop this. But please don't use HTML in mails, more info in the
-wiki page below. I recommend reading it all very carefully.
+During bootup memory is allocated in SMEM (Shared memory) in the form of a
+table that contains the physical addresses and sizes of the regions that
+are supposed to be collected during coredump. This memory is shared amongst
+all processors in a Qualcomm platform, so all remoteprocs fill in their
+entry in the global table once they are out of reset.
+
+This patch series adds support for parsing the global minidump table and
+uses the current coredump frameork to expose this memory to userspace
+during remoteproc's recovery.
+
+This patch series also integrates the patch:
+https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
+
+Changelog:
+v6 -> v7:
+- The STR_TAB size is calculated dynamically now instead of a predefined size.
+- Added comments to indicate details about the reserved null section header. More
+  details can be found at https://refspecs.linuxfoundation.org/elf/elf.pdf.
+
+v5 -> v6:
+- Removed priv_cleanup operation from rproc_ops. The dump_segments list is
+  updated and cleaned up each time minidump is invoked.
+- Split patch #2 into 2 parts - one that adds the rproc_minidump function, and
+  the other that uses the new function in the qcom_q6v5_pas driver.
+- Updated structs in qcom_minidump to explicitly indicate the endianness of the
+  data stored in SMEM, also updated member names.
+- Read the global table of contents in SMEM each time adsp_minidump is invoked.
+
+v4 -> v5:
+- Fixed adsp_add_minidump_segments to read IO memory using appropriate functions.
+
+v3 -> v4:
+- Made adsp_priv_cleanup a static function.
+
+v2 -> v3:
+- Refactored code to remove dependency on Qualcomm configs.
+- Renamed do_rproc_minidump to rproc_minidump and marked as exported
+  symbol.
+
+v1 -> v2:
+- 3 kernel test robot warnings have been resolved.
+- Introduced priv_cleanup op in order to making the cleaning of
+  private elements used by the remoteproc more readable.
+- Removed rproc_cleanup_priv as it is no longer needed.
+- Switched to if/else format for rproc_alloc in order to keep 
+  the static const decalaration of adsp_minidump_ops.
+
+Siddharth Gupta (4):
+  remoteproc: core: Add ops to enable custom coredump functionality
+  remoteproc: coredump: Add minidump functionality
+  remoteproc: qcom: Add capability to collect minidumps
+  remoteproc: qcom: Add minidump id for sm8150 modem
+
+ drivers/remoteproc/qcom_minidump.h          |  64 +++++++++++++
+ drivers/remoteproc/qcom_q6v5_pas.c          | 105 ++++++++++++++++++++-
+ drivers/remoteproc/remoteproc_core.c        |   6 +-
+ drivers/remoteproc/remoteproc_coredump.c    | 140 ++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_elf_helpers.h |  26 ++++++
+ include/linux/remoteproc.h                  |   3 +
+ 6 files changed, 341 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/remoteproc/qcom_minidump.h
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
