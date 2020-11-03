@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA632A544F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960222A55CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388611AbgKCVJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:09:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S2388530AbgKCVWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:22:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733291AbgKCVJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:09:55 -0500
+        id S2388065AbgKCVFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4699B206B5;
-        Tue,  3 Nov 2020 21:09:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A172620658;
+        Tue,  3 Nov 2020 21:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437794;
-        bh=PR+rXQevfbFRv1UC0Qz0pM7Gh7ravOUuE0AYZlaS/Rw=;
+        s=default; t=1604437547;
+        bh=vJNDHtA8dIwtrwZJCs7FdcTmW+Ou1/G9CnSb63A9HRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwzQftWdRIbbwVilLqhWsraJYb47gUCyHhzUrG78XHc/py9qoSkTvPC0BgauYFYgG
-         VkFdwLomw2D18HLf4Q8pMAnGXYDKnkYhwC5U5hM2oMj6C7L43WIIDc4TqCRJuD2xot
-         VRU+9yq5eIE7LzS2sK2DGxWDure74lxTe7ZpmPXw=
+        b=MAYgqtg7opERgfHYhnuoXG1+BPAU952lxFPYsZ28h6GPBTWqjwWMDvVAgfdDte+zn
+         vTN40i7P4zJCoWuyWqF/vvPrkh8rFVso3tJ7kr+y4d/bEZArCymYO3WSKRhXRdn23E
+         tJtHLb7bRhwTvvs+uYdfA7AQZ3FuCfnDJa/ay1jU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 036/125] kgdb: Make "kgdbcon" work properly with "kgdb_earlycon"
-Date:   Tue,  3 Nov 2020 21:36:53 +0100
-Message-Id: <20201103203202.255424975@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Hung <alex.hung@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 122/191] ACPI: video: use ACPI backlight for HP 635 Notebook
+Date:   Tue,  3 Nov 2020 21:36:54 +0100
+Message-Id: <20201103203244.697783509@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Alex Hung <alex.hung@canonical.com>
 
-[ Upstream commit b18b099e04f450cdc77bec72acefcde7042bd1f3 ]
+commit b226faab4e7890bbbccdf794e8b94276414f9058 upstream.
 
-On my system the kernel processes the "kgdb_earlycon" parameter before
-the "kgdbcon" parameter.  When we setup "kgdb_earlycon" we'll end up
-in kgdb_register_callbacks() and "kgdb_use_con" won't have been set
-yet so we'll never get around to starting "kgdbcon".  Let's remedy
-this by detecting that the IO module was already registered when
-setting "kgdb_use_con" and registering the console then.
+The default backlight interface is AMD's radeon_bl0 which does not
+work on this system, so use the ACPI backlight interface on it
+instead.
 
-As part of this, to avoid pre-declaring things, move the handling of
-the "kgdbcon" further down in the file.
+BugLink: https://bugs.launchpad.net/bugs/1894667
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Alex Hung <alex.hung@canonical.com>
+[ rjw: Changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200630151422.1.I4aa062751ff5e281f5116655c976dff545c09a46@changeid
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/debug_core.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ drivers/acpi/video_detect.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 694fcd0492827..4cf5697e72b18 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -95,14 +95,6 @@ int dbg_switch_cpu;
- /* Use kdb or gdbserver mode */
- int dbg_kdb_mode = 1;
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -274,6 +274,15 @@ static const struct dmi_system_id video_
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "530U4E/540U4E"),
+ 		},
+ 	},
++	/* https://bugs.launchpad.net/bugs/1894667 */
++	{
++	 .callback = video_detect_force_video,
++	 .ident = "HP 635 Notebook",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "HP 635 Notebook PC"),
++		},
++	},
  
--static int __init opt_kgdb_con(char *str)
--{
--	kgdb_use_con = 1;
--	return 0;
--}
--
--early_param("kgdbcon", opt_kgdb_con);
--
- module_param(kgdb_use_con, int, 0644);
- module_param(kgdbreboot, int, 0644);
- 
-@@ -816,6 +808,20 @@ static struct console kgdbcons = {
- 	.index		= -1,
- };
- 
-+static int __init opt_kgdb_con(char *str)
-+{
-+	kgdb_use_con = 1;
-+
-+	if (kgdb_io_module_registered && !kgdb_con_registered) {
-+		register_console(&kgdbcons);
-+		kgdb_con_registered = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+early_param("kgdbcon", opt_kgdb_con);
-+
- #ifdef CONFIG_MAGIC_SYSRQ
- static void sysrq_handle_dbg(int key)
- {
--- 
-2.27.0
-
+ 	/* Non win8 machines which need native backlight nevertheless */
+ 	{
 
 
