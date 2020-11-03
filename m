@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6122A4F1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2722A4F23
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgKCSmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCSmL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:42:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0313CC0613D1;
-        Tue,  3 Nov 2020 10:42:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=YXZpVNwL/dLpoF4pzz/IhdjtjMqDWoU1YThxJJXLyEE=; b=HcXUbLLe/5DD24k7gLkgoWtF47
-        N/BdNAnK5efaY7Y4mTQRxUAVGgmp17qAjZz+J1FnU/GnBwU8E8LPPwVIm3zRqkkvIo3zV0wINOI4q
-        XYFr5512GTutDblcNmsZ6eC24+eQznruWiVrjykYAOWO1voX0S84xH2I2tUndVapFWg4VCMQYWD/r
-        tZiTvCtxTNEZAah+j+0aEduJ6WwVh2xSE0KBkcJDZ1gXWGLd0tIGhRJ/6Mt2ijjykyLbRpqSBbeHE
-        tgQNfW907UpBY92lOHg4IYQB9+4wXiE8GBgjgSU/ou70BntuKLUbW0coUEU6jNF/WnDpPHl6FEV0y
-        QTDfJhfw==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ka1Fu-0004nl-Ky; Tue, 03 Nov 2020 18:42:07 +0000
-Subject: Re: linux-next: Tree for Nov 3
- (drivers/net/ethernet/marvell/prestera/prestera_switchdev.o)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20201103181931.0ea86551@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0fcb653e-8a8c-350e-abf7-d802867ef0e9@infradead.org>
-Date:   Tue, 3 Nov 2020 10:42:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729370AbgKCSmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:42:22 -0500
+Received: from mga02.intel.com ([134.134.136.20]:57561 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729342AbgKCSmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:42:21 -0500
+IronPort-SDR: t0cm1t6hDHqBWbnymcYBQWQ0V0T1mscZggcEyDdYPQ31BUuWDMTiVuf5pXxU5UMobiOPDpoctM
+ Auy7mfGjf6OQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156093808"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="156093808"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:42:20 -0800
+IronPort-SDR: NHUhhr4Ld0+ktxaexVqc9ly5ziPRS5Y+EjthlhRuorVcxAnBGj8aOQJlCSYv9leRTjjDuriVDY
+ sxTjbk20XkgQ==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="528593430"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:42:19 -0800
+Date:   Tue, 3 Nov 2020 10:42:18 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V2 05/10] x86/pks: Add PKS kernel API
+Message-ID: <20201103184218.GB1531489@iweiny-DESK2.sc.intel.com>
+References: <20201102205320.1458656-1-ira.weiny@intel.com>
+ <20201102205320.1458656-6-ira.weiny@intel.com>
+ <20201103065024.GC75930@kroah.com>
+ <20201103175335.GA1531489@iweiny-DESK2.sc.intel.com>
+ <20201103181407.GA83845@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103181931.0ea86551@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103181407.GA83845@kroah.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 11:19 PM, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Nov 03, 2020 at 07:14:07PM +0100, Greg KH wrote:
+> On Tue, Nov 03, 2020 at 09:53:36AM -0800, Ira Weiny wrote:
+> > On Tue, Nov 03, 2020 at 07:50:24AM +0100, Greg KH wrote:
+> > > On Mon, Nov 02, 2020 at 12:53:15PM -0800, ira.weiny@intel.com wrote:
+> > > > From: Fenghua Yu <fenghua.yu@intel.com>
+> > > > 
+> > 
+> > [snip]
+> > 
+> > > > diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+> > > > index 2955ba976048..0959a4c0ca64 100644
+> > > > --- a/include/linux/pkeys.h
+> > > > +++ b/include/linux/pkeys.h
+> > > > @@ -50,4 +50,28 @@ static inline void copy_init_pkru_to_fpregs(void)
+> > > >  
+> > > >  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
+> > > >  
+> > > > +#define PKS_FLAG_EXCLUSIVE 0x00
+> > > > +
+> > > > +#ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> > > > +static inline int pks_key_alloc(const char * const pkey_user, int flags)
+> > > > +{
+> > > > +	return -EOPNOTSUPP;
+> > > > +}
+> > > > +static inline void pks_key_free(int pkey)
+> > > > +{
+> > > > +}
+> > > > +static inline void pks_mk_noaccess(int pkey)
+> > > > +{
+> > > > +	WARN_ON_ONCE(1);
+> > > 
+> > > So for panic-on-warn systems, this is ok to reboot the box?
+> > 
+> > I would not expect this to reboot the box no.  But it is a violation of the API
+> > contract.  If pky_key_alloc() returns an error calling any of the other
+> > functions is an error.
+> > 
+> > > 
+> > > Are you sure, that feels odd...
+> > 
+> > It does feel odd and downright wrong...  But there are a lot of WARN_ON_ONCE's
+> > out there to catch this type of internal programming error.  Is panic-on-warn
+> > commonly used?
 > 
-> Changes since 20201102:
-> 
+> Yes it is, and we are trying to recover from that as it is something
+> that you should recover from.  Properly handle the error and move on.
 
-on x86_64:
+Sorry, I did not know that...  Ok I'll look at the series because I probably
+have others I need to change.
 
-when CONFIG_BRIDGE=m:
-
-ld: drivers/net/ethernet/marvell/prestera/prestera_switchdev.o: in function `prestera_bridge_port_event':
-prestera_switchdev.c:(.text+0x2ebd): undefined reference to `br_vlan_enabled'
-
-
-Also please add drivers/net/ethernet/marvell/prestera/ to the
-MAINTAINERS file.
-
-thanks.
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks,
+Ira
