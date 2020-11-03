@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAA32A53F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187E82A5443
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgKCVGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:06:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44876 "EHLO mail.kernel.org"
+        id S2388528AbgKCVJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387854AbgKCVGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:04 -0500
+        id S1731133AbgKCVJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:29 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58AE0206B5;
-        Tue,  3 Nov 2020 21:06:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6A16206B5;
+        Tue,  3 Nov 2020 21:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437563;
-        bh=DytOeOrkR1YgVSrR0h53UU3WqwNe52PqGw1Uojp/UaI=;
+        s=default; t=1604437768;
+        bh=RVWkpqy3sTuwBhVP6+LuINdp5SmKD7OFIxV0YedDOLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgY1oAV3keliG+VMf2lpPKcJs8LEk/K+H1JzPo5/Sa7zJxaKrzNiG7rfEdS75pubT
-         Ewlh9kD7Zx9SMGyk7celvTwmpQ8hDlR74BvywXFrc2uuQEn4EgIquK8uFJh+3fdi4/
-         nUv/oO9YpXh4qhrbww+v3g7w1xMwr32gEYS8VFf8=
+        b=YNP7YjPD+yMEnjti756dIiznO/J7w4hXsQasrhIvPfAQQscSwBUrjxwX0BwspQGc4
+         kSJ+HLPWBj5+Qij3DJIa0QNDXeIFE+F2+g3nSMRpNpIzuAnPStcSlTXW9ixEzSCywS
+         E2VpAOS+wTC83wEfDYMODGk8HNEQ74rBV8/KRzdc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fangzhi Zuo <Jerry.Zuo@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>, Eryk Brol <eryk.brol@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 092/191] drm/amd/display: HDMI remote sink need mode validation for Linux
-Date:   Tue,  3 Nov 2020 21:36:24 +0100
-Message-Id: <20201103203242.530452642@linuxfoundation.org>
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [PATCH 4.14 008/125] x86/xen: disable Firmware First mode for correctable memory errors
+Date:   Tue,  3 Nov 2020 21:36:25 +0100
+Message-Id: <20201103203157.981525726@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangzhi Zuo <Jerry.Zuo@amd.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 95d620adb48f7728e67d82f56f756e8d451cf8d2 ]
+commit d759af38572f97321112a0852353613d18126038 upstream.
 
-[Why]
-Currently mode validation is bypassed if remote sink exists. That
-leads to mode set issue when a BW bottle neck exists in the link path,
-e.g., a DP-to-HDMI converter that only supports HDMI 1.4.
+When running as Xen dom0 the kernel isn't responsible for selecting the
+error handling mode, this should be handled by the hypervisor.
 
-Any invalid mode passed to Linux user space will cause the modeset
-failure due to limitation of Linux user space implementation.
+So disable setting FF mode when running as Xen pv guest. Not doing so
+might result in boot splats like:
 
-[How]
-Mode validation is skipped only if in edid override. For real remote
-sink, clock limit check should be done for HDMI remote sink.
+[    7.509696] HEST: Enabling Firmware First mode for corrected errors.
+[    7.510382] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 2.
+[    7.510383] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 3.
+[    7.510384] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 4.
+[    7.510384] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 5.
+[    7.510385] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 6.
+[    7.510386] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 7.
+[    7.510386] mce: [Firmware Bug]: Ignoring request to disable invalid MCA bank 8.
 
-Have HDMI related remote sink going through mode validation to
-elimiate modes which pixel clock exceeds BW limitation.
+Reason is that the HEST ACPI table contains the real number of MCA
+banks, while the hypervisor is emulating only 2 banks for guests.
 
-Signed-off-by: Fangzhi Zuo <Jerry.Zuo@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Acked-by: Eryk Brol <eryk.brol@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20200925140751.31381-1-jgross@suse.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/xen/enlighten_pv.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index 2fb2c683ad54b..fa0e6c8e2447c 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -2009,7 +2009,7 @@ enum dc_status dc_link_validate_mode_timing(
- 	/* A hack to avoid failing any modes for EDID override feature on
- 	 * topology change such as lower quality cable for DP or different dongle
- 	 */
--	if (link->remote_sinks[0])
-+	if (link->remote_sinks[0] && link->remote_sinks[0]->sink_signal == SIGNAL_TYPE_VIRTUAL)
- 		return DC_OK;
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -1404,6 +1404,15 @@ asmlinkage __visible void __init xen_sta
+ 		x86_init.mpparse.get_smp_config = x86_init_uint_noop;
  
- 	/* Passive Dongle */
--- 
-2.27.0
-
+ 		xen_boot_params_init_edd();
++
++#ifdef CONFIG_ACPI
++		/*
++		 * Disable selecting "Firmware First mode" for correctable
++		 * memory errors, as this is the duty of the hypervisor to
++		 * decide.
++		 */
++		acpi_disable_cmcff = 1;
++#endif
+ 	}
+ #ifdef CONFIG_PCI
+ 	/* PCI BIOS service won't work from a PV guest. */
 
 
