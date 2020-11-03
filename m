@@ -2,84 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A3C2A4ED5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3849D2A4EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729069AbgKCS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:28:26 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:49340 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728855AbgKCS20 (ORCPT
+        id S1729110AbgKCS32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:29:28 -0500
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:47102 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728206AbgKCS32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:28:26 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.10])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1ka12T-00016Z-4a; Tue, 03 Nov 2020 18:28:13 +0000
-Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Cyril.Jean@microchip.com, atishp@atishpatra.org
-Cc:     devicetree@vger.kernel.org, aou@eecs.berkeley.edu,
-        Daire.McNamara@microchip.com, anup.patel@wdc.com,
-        linux-kernel@vger.kernel.org, atish.patra@wdc.com,
-        robh+dt@kernel.org, alistair.francis@wdc.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        linux-riscv@lists.infradead.org, Padmarao.Begari@microchip.com
-References: <20201028232759.1928479-1-atish.patra@wdc.com>
- <20201028232759.1928479-3-atish.patra@wdc.com>
- <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk>
- <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
- <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk>
- <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
- <fbe404b5-3bb1-dd00-e558-e4a55960b767@microchip.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <fe079b4a-5410-5cc8-3f5e-8a95b573078a@codethink.co.uk>
-Date:   Tue, 3 Nov 2020 18:28:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 3 Nov 2020 13:29:28 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 35BDC1802913A;
+        Tue,  3 Nov 2020 18:29:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2892:3138:3139:3140:3141:3142:3355:3865:3867:3870:3871:3872:3874:4321:5007:6120:7875:8957:9163:10004:10848:11026:11232:11658:11914:12043:12297:12438:12555:12679:12683:12760:13439:14096:14097:14110:14180:14181:14659:14721:21080:21394:21451:21627:21990:30054:30070:30075,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: anger96_1d006c4272ba
+X-Filterd-Recvd-Size: 5155
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  3 Nov 2020 18:29:26 +0000 (UTC)
+Message-ID: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+Subject: [RFC PATCH] .clang-format: Remove conditional comments
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 03 Nov 2020 10:29:24 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <fbe404b5-3bb1-dd00-e558-e4a55960b767@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2020 18:10, Cyril.Jean@microchip.com wrote:
-> On 11/3/20 3:07 PM, Atish Patra wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On Fri, Oct 30, 2020 at 2:20 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+Now that the clang minimum supported version is > 10.0, enable the
+commented out conditional reformatting key:value lines in the file.
 
-,snip[
+Signed-off-by: Joe Perches <joe@perches.com>
+---
 
->>>> @Cyril : Can we enable both eMMC & sdcard at the same time ?
->>> I would put /both/ in but only enable the one in use for the moment.
->>> Our boards are booting of eMMC as supplied, so this isn't going to work
->>> as well. The eMMC is 8bit wide, and thus is only delivering 11MB/sec
->>> instead of 22MB/sec. This performance is still not great, but losing
->>> half the data-rate is just not good.
->>>
->> I am not sure what should be enabled by default. Updating sdcard is much
->> easier than eMMC card and we use that approach.
->>
->> @Cyril: Is there a way that we can enable both ?
->>
-> Yes, we can enable both but this requires a modification to the FPGA
-> design. One of the guys prototyped this while I was away. We will move
-> this along. This will require reprogramming the FPGA with a new design
-> and HSS version.
-> 
-> Regards,
-> 
-> Cyril.
+Hey Miguel.
 
-I either missed or couldn't find a way of forcing the boot mode to be
-from the SD slot. Have I missed something? At the moment we'd like to
-have more storage available as the ~7G free on the eMMC is not enough.
+I don't use this, but on its face it seems a reasonable change
+if the commented out key:value lines are correct.
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+ .clang-format | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-https://www.codethink.co.uk/privacy.html
+diff --git a/.clang-format b/.clang-format
+index 10dc5a9a61b3..531b97501f14 100644
+--- a/.clang-format
++++ b/.clang-format
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ #
+-# clang-format configuration file. Intended for clang-format >= 4.
++# clang-format configuration file. Intended for clang-format >= 10.
+ #
+ # For more information, see:
+ #
+@@ -13,7 +13,7 @@ AccessModifierOffset: -4
+ AlignAfterOpenBracket: Align
+ AlignConsecutiveAssignments: false
+ AlignConsecutiveDeclarations: false
+-#AlignEscapedNewlines: Left # Unknown to clang-format-4.0
++AlignEscapedNewlines: Left
+ AlignOperands: true
+ AlignTrailingComments: false
+ AllowAllParametersOfDeclarationOnNextLine: false
+@@ -37,24 +37,24 @@ BraceWrapping:
+   AfterObjCDeclaration: false
+   AfterStruct: false
+   AfterUnion: false
+-  #AfterExternBlock: false # Unknown to clang-format-5.0
++  AfterExternBlock: false
+   BeforeCatch: false
+   BeforeElse: false
+   IndentBraces: false
+-  #SplitEmptyFunction: true # Unknown to clang-format-4.0
+-  #SplitEmptyRecord: true # Unknown to clang-format-4.0
+-  #SplitEmptyNamespace: true # Unknown to clang-format-4.0
++  SplitEmptyFunction: true
++  SplitEmptyRecord: true
++  SplitEmptyNamespace: true
+ BreakBeforeBinaryOperators: None
+ BreakBeforeBraces: Custom
+-#BreakBeforeInheritanceComma: false # Unknown to clang-format-4.0
++BreakBeforeInheritanceComma: false
+ BreakBeforeTernaryOperators: false
+ BreakConstructorInitializersBeforeComma: false
+-#BreakConstructorInitializers: BeforeComma # Unknown to clang-format-4.0
++BreakConstructorInitializers: BeforeComma
+ BreakAfterJavaFieldAnnotations: false
+ BreakStringLiterals: false
+ ColumnLimit: 80
+ CommentPragmas: '^ IWYU pragma:'
+-#CompactNamespaces: false # Unknown to clang-format-4.0
++CompactNamespaces: false
+ ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ ConstructorInitializerIndentWidth: 8
+ ContinuationIndentWidth: 8
+@@ -62,7 +62,7 @@ Cpp11BracedListStyle: false
+ DerivePointerAlignment: false
+ DisableFormat: false
+ ExperimentalAutoDetectBinPacking: false
+-#FixNamespaceComments: false # Unknown to clang-format-4.0
++FixNamespaceComments: false
+ 
+ # Taken from:
+ #   git grep -h '^#define [^[:space:]]*for_each[^[:space:]]*(' include/ \
+@@ -494,13 +494,13 @@ ForEachMacros:
+   - 'xbc_node_for_each_key_value'
+   - 'zorro_for_each_dev'
+ 
+-#IncludeBlocks: Preserve # Unknown to clang-format-5.0
++IncludeBlocks: Preserve
+ IncludeCategories:
+   - Regex: '.*'
+     Priority: 1
+ IncludeIsMainRegex: '(Test)?$'
+ IndentCaseLabels: false
+-#IndentPPDirectives: None # Unknown to clang-format-5.0
++IndentPPDirectives: None
+ IndentWidth: 8
+ IndentWrappedFunctionNames: false
+ JavaScriptQuotes: Leave
+@@ -510,13 +510,13 @@ MacroBlockBegin: ''
+ MacroBlockEnd: ''
+ MaxEmptyLinesToKeep: 1
+ NamespaceIndentation: None
+-#ObjCBinPackProtocolList: Auto # Unknown to clang-format-5.0
++ObjCBinPackProtocolList: Auto
+ ObjCBlockIndentWidth: 8
+ ObjCSpaceAfterProperty: true
+ ObjCSpaceBeforeProtocolList: true
+ 
+ # Taken from git's rules
+-#PenaltyBreakAssignment: 10 # Unknown to clang-format-4.0
++PenaltyBreakAssignment: 10
+ PenaltyBreakBeforeFirstCallParameter: 30
+ PenaltyBreakComment: 10
+ PenaltyBreakFirstLessLess: 0
+@@ -527,14 +527,14 @@ PenaltyReturnTypeOnItsOwnLine: 60
+ PointerAlignment: Right
+ ReflowComments: false
+ SortIncludes: false
+-#SortUsingDeclarations: false # Unknown to clang-format-4.0
++SortUsingDeclarations: false
+ SpaceAfterCStyleCast: false
+ SpaceAfterTemplateKeyword: true
+ SpaceBeforeAssignmentOperators: true
+-#SpaceBeforeCtorInitializerColon: true # Unknown to clang-format-5.0
+-#SpaceBeforeInheritanceColon: true # Unknown to clang-format-5.0
++SpaceBeforeCtorInitializerColon: true
++SpaceBeforeInheritanceColon: true
+ SpaceBeforeParens: ControlStatements
+-#SpaceBeforeRangeBasedForLoopColon: true # Unknown to clang-format-5.0
++SpaceBeforeRangeBasedForLoopColon: true
+ SpaceInEmptyParentheses: false
+ SpacesBeforeTrailingComments: 1
+ SpacesInAngles: false
+
