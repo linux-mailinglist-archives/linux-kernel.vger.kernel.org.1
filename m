@@ -2,156 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAF22A4C22
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F882A4C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgKCRAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:00:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37958 "EHLO mx2.suse.de"
+        id S1728465AbgKCRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:02:46 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:40877 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727323AbgKCRAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:00:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9FF7AC97;
-        Tue,  3 Nov 2020 17:00:35 +0000 (UTC)
-Message-ID: <0fc240575aad6a538fdc282e419411a615ba93f3.camel@suse.de>
-Subject: Re: [PATCH v5 0/7] arm64: Default to 32-bit wide ZONE_DMA
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     robh+dt@kernel.org, hch@lst.de, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
-        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org
-Date:   Tue, 03 Nov 2020 18:00:33 +0100
-In-Reply-To: <20201030181134.GE23196@gaia>
-References: <20201029172550.3523-1-nsaenzjulienne@suse.de>
-         <20201030181134.GE23196@gaia>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-e4mvEaSQmsP7NUXAJ5iB"
-User-Agent: Evolution 3.36.5 
+        id S1727971AbgKCRCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:02:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604422966; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FOhbWz4gRfs3rCg5R5uOtLqn0IGJgDb4wNO+hqzeXBk=;
+ b=Y1cDpYM878czh5MC9MYGwq7kzdG8MRLLNJPAPLzAnJI01H+f0oDxZ2eTuHComdRys2VqJvIG
+ Iw5X7Ar1FJFhN6Nb8eWGldrd4W+D3VGGIXGb1e8/08LWHMJ/KaancW9AbIMwIgAgcygUkVAN
+ 1dIHAA7lCdqbpXcUVnt3k4MjqcA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fa18d2db79ce7b2cd1bdd2c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 17:02:37
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 00D8DC433FE; Tue,  3 Nov 2020 17:02:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 079D6C433C8;
+        Tue,  3 Nov 2020 17:02:35 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 03 Nov 2020 09:02:35 -0800
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: promote irq_hpd handle to handle link
+ trainign correctly
+In-Reply-To: <160434536802.884498.16389146296525781476@swboyd.mtv.corp.google.com>
+References: <20201030232324.11170-1-khsieh@codeaurora.org>
+ <160434536802.884498.16389146296525781476@swboyd.mtv.corp.google.com>
+Message-ID: <2e63aa17a3b81f452b972160365b1f64@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-11-02 11:29, Stephen Boyd wrote:
+> Subject has a typo in "training".
+> 
+> Quoting Kuogee Hsieh (2020-10-30 16:23:24)
+>> Some dongles, such as Apple, required link training done at irq_hpd
+> 
+> s/required/require/
+> 
+>> request instead of plugin request. This patch promote irq_hpd hanlder
+> 
+> s/hanlder/handler/
+> 
+>> to handle link training and setup hpd_state correctly.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+> 
+> Any Fixes tag?
+> 
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 20 ++++++++++++++++++--
+>>  1 file changed, 18 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 13b66266cd69..55627530957c 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -483,10 +485,24 @@ static int dp_display_usbpd_attention_cb(struct 
+>> device *dev)
+>>                 return -ENODEV;
+>>         }
+>> 
+>> +       hpd = dp->usbpd;
+>> +
+>>         /* check for any test request issued by sink */
+>>         rc = dp_link_process_request(dp->link);
+>> -       if (!rc)
+>> -               dp_display_handle_irq_hpd(dp);
+>> +       if (!rc) {
+>> +               sink_request = dp->link->sink_request;
+>> +               if (sink_request & DS_PORT_STATUS_CHANGED) {
+>> +                       dp->hpd_state = ST_CONNECT_PENDING;
+>> +                       hpd->hpd_high = 1;
+>> +               }
+>> +
+>> +               rc = dp_display_handle_irq_hpd(dp);
+>> +
+>> +               if (rc && sink_request & DS_PORT_STATUS_CHANGED) {
+> 
+> Can you add parenthesis around this?
+> 
+> 		if (rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
+> 
+> 
+> I honestly don't know what's going on in this patch. It talks about
+> making link training happen during irq hpd handler but this is the
+> attention handler and we're checking port status changed? This is
+> related? The code is really not clear.
+irq_hpd request is generated by sinker to ask host attention that 
+something has changed.
+POST_STATUS_CHNAGED bit set  by sinker to indicated link had loss of 
+sync. Therefore
+host need to restart link retaining to fix the link loss of sync 
+problem.
 
---=-e4mvEaSQmsP7NUXAJ5iB
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2020-10-30 at 18:11 +0000, Catalin Marinas wrote:
-> On Thu, Oct 29, 2020 at 06:25:43PM +0100, Nicolas Saenz Julienne wrote:
-> > Ard Biesheuvel (1):
-> >   arm64: mm: Set ZONE_DMA size based on early IORT scan
-> >=20
-> > Nicolas Saenz Julienne (6):
-> >   arm64: mm: Move reserve_crashkernel() into mem_init()
-> >   arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
-> >   of/address: Introduce of_dma_get_max_cpu_address()
-> >   of: unittest: Add test for of_dma_get_max_cpu_address()
-> >   arm64: mm: Set ZONE_DMA size based on devicetree's dma-ranges
-> >   mm: Remove examples from enum zone_type comment
->=20
-> Thanks for putting this together. I had a minor comment but the patches
-> look fine to me. We still need an ack from Rob on the DT patch and I can
-> queue the series for 5.11.
-
-I'm preparing a v6 unifying both functions as you suggested.
-
-> Could you please also test the patch below on top of this series? It's
-> the removal of the implied DMA offset in the max_zone_phys()
-> calculation.
-
-Yes, happily. Comments below.
-
-> --------------------------8<-----------------------------
-> From 3ae252d888be4984a612236124f5b099e804c745 Mon Sep 17 00:00:00 2001
-> From: Catalin Marinas <catalin.marinas@arm.com>
-> Date: Fri, 30 Oct 2020 18:07:34 +0000
-> Subject: [PATCH] arm64: Ignore any DMA offsets in the max_zone_phys()
->  calculation
->=20
-> Currently, the kernel assumes that if RAM starts above 32-bit (or
-> zone_bits), there is still a ZONE_DMA/DMA32 at the bottom of the RAM and
-> such constrained devices have a hardwired DMA offset. In practice, we
-> haven't noticed any such hardware so let's assume that we can expand
-> ZONE_DMA32 to the available memory if no RAM below 4GB. Similarly,
-> ZONE_DMA is expanded to the 4GB limit if no RAM addressable by
-> zone_bits.
->=20
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> ---
->  arch/arm64/mm/init.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
->=20
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 095540667f0f..362160e16fb2 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -175,14 +175,21 @@ static void __init reserve_elfcorehdr(void)
->  #endif /* CONFIG_CRASH_DUMP */
-> =20
->  /*
-> - * Return the maximum physical address for a zone with a given address s=
-ize
-> - * limit. It currently assumes that for memory starting above 4G, 32-bit
-> - * devices will use a DMA offset.
-> + * Return the maximum physical address for a zone accessible by the give=
-n bits
-> + * limit. If the DRAM starts above 32-bit, expand the zone to the maximu=
-m
-> + * available memory, otherwise cap it at 32-bit.
->   */
->  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
->  {
-> -	phys_addr_t offset =3D memblock_start_of_DRAM() & GENMASK_ULL(63, zone_=
-bits);
-> -	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
-> +	phys_addr_t zone_mask =3D (1ULL << zone_bits) - 1;
-
-Maybe use DMA_BIT_MASK(), instead of the manual calculation?
-
-> +	phys_addr_t phys_start =3D memblock_start_of_DRAM();
-> +
-> +	if (!(phys_start & U32_MAX))
-
-I'd suggest using 'bigger than' instead of masks. Just to cover ourselves
-against memory starting at odd locations. Also it'll behaves properly when
-phys_start is zero (this breaks things on RPi4).
-
-> +		zone_mask =3D PHYS_ADDR_MAX;
-> +	else if (!(phys_start & zone_mask))
-> +		zone_mask =3D U32_MAX;
-> +
-> +	return min(zone_mask + 1, memblock_end_of_DRAM());
-
-This + 1 isn't going to play well when zone_mask is PHYS_ADDR_MAX.
-
-Regards,
-Nicolas
-
-
---=-e4mvEaSQmsP7NUXAJ5iB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+hjLEACgkQlfZmHno8
-x/5wjggAjwdWMN+H9Cj7ukCCZxIw/mZ7tdk+jtxD8++ocqSv/BLWzfPJhliE31of
-ShuRaGhx2UpgX/fny9Ng9cEMWPdjYb6wpyI7EEm2As3R8aWDXwEFh1bu6PkdPyLu
-VBm0BkVSUY5Iu9fQYym1yA1KukGrzijxEW7+QFIUwrm1Bdralpg+67WLbOWUxmdI
-SGlntSKWlUcfRXCg+/XzLFfODu+htiXHSSBW1zMWx/OsNPHb6Mupfrtdogqv65UP
-aQpkzoqyZBlC9ueBXHtWUiDEv7EUdosKbia5mxa7i9apZ5ZPSy/OkGkY9mZq3evn
-XiCaUCaYMdiZx1RCUE2VRr9HqZnuEQ==
-=QpfN
------END PGP SIGNATURE-----
-
---=-e4mvEaSQmsP7NUXAJ5iB--
-
+> 
+>> +                       hpd->hpd_high = 0;
+>> +                       dp->hpd_state = ST_DISCONNECTED;
+>> +               }
+>> +       }
+>> 
+>>         return rc;
+>>  }
+>> 
+>> base-commit: 0e162b10644605428cd2596c12f8ed410cf9d2d9
+> 
+> What commit is this?
