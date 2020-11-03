@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036422A5637
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E7D2A55CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733239AbgKCVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
+        id S2388541AbgKCVWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:22:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733185AbgKCVAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:21 -0500
+        id S2387804AbgKCVFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:05:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F4BF223BF;
-        Tue,  3 Nov 2020 21:00:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F6D222226;
+        Tue,  3 Nov 2020 21:05:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437220;
-        bh=xqG+fTUmgaQ/vKT6h4IaipzHW2KvYVEABwaPKeUy88M=;
+        s=default; t=1604437533;
+        bh=iGi1A/HIjlPZYD+2SeqNGeJAXliQ5RfNBdSLrnNyclk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hXGKisvcWlTAF9b7/IgOfzVNpmBgw0olWV5jom+2tixCDest0GsFaMlefFeP6P6d0
-         lY6faO/Qljp6rpY04Ho3ASfgGNXu6hd0RiasN5LaVmvqRJY6Iujlq0ZdWDadmzJcia
-         jkUTLZGZEoNj9FeHMNXPQ3Ewq7QFXfM97kEKgWEo=
+        b=jahEy6rIl84167K+ARLhHGPnQrBloLj98/N7WePnDoVzB43zLCKZ/85ZMs0TtBUTq
+         HkC7UDPqrpA4YFzmmosM5E0TAyDg4T4J4JV0b6aYRw84vFZ3eCPYkWW/irxl9sUnfa
+         YhRatRS9gHtLIMwhF1FpmXKQTlIcidd+OdTQgpfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 160/214] powerpc/memhotplug: Make lmb size 64bit
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
+Subject: [PATCH 4.19 116/191] leds: bcm6328, bcm6358: use devres LED registering function
 Date:   Tue,  3 Nov 2020 21:36:48 +0100
-Message-Id: <20201103203305.777246317@linuxfoundation.org>
+Message-Id: <20201103203244.236927317@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,119 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Marek Behún <marek.behun@nic.cz>
 
-commit 301d2ea6572386245c5d2d2dc85c3b5a737b85ac upstream.
+commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
 
-Similar to commit 89c140bbaeee ("pseries: Fix 64 bit logical memory block panic")
-make sure different variables tracking lmb_size are updated to be 64 bit.
+These two drivers do not provide remove method and use devres for
+allocation of other resources, yet they use led_classdev_register
+instead of the devres variant, devm_led_classdev_register.
 
-This was found by code audit.
+Fix this.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201007114836.282468-3-aneesh.kumar@linux.ibm.com
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Álvaro Fernández Rojas <noltari@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Jaedon Shin <jaedon.shin@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/pseries/hotplug-memory.c |   43 ++++++++++++++++--------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ drivers/leds/leds-bcm6328.c |    2 +-
+ drivers/leds/leds-bcm6358.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -279,7 +279,7 @@ static int dlpar_offline_lmb(struct drme
- 	return dlpar_change_lmb_state(lmb, false);
- }
+--- a/drivers/leds/leds-bcm6328.c
++++ b/drivers/leds/leds-bcm6328.c
+@@ -336,7 +336,7 @@ static int bcm6328_led(struct device *de
+ 	led->cdev.brightness_set = bcm6328_led_set;
+ 	led->cdev.blink_set = bcm6328_blink_set;
  
--static int pseries_remove_memblock(unsigned long base, unsigned int memblock_size)
-+static int pseries_remove_memblock(unsigned long base, unsigned long memblock_size)
- {
- 	unsigned long block_sz, start_pfn;
- 	int sections_per_block;
-@@ -310,10 +310,11 @@ out:
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
  
- static int pseries_remove_mem_node(struct device_node *np)
- {
--	const __be32 *regs;
-+	const __be32 *prop;
- 	unsigned long base;
--	unsigned int lmb_size;
-+	unsigned long lmb_size;
- 	int ret = -EINVAL;
-+	int addr_cells, size_cells;
+--- a/drivers/leds/leds-bcm6358.c
++++ b/drivers/leds/leds-bcm6358.c
+@@ -141,7 +141,7 @@ static int bcm6358_led(struct device *de
  
- 	/*
- 	 * Check to see if we are actually removing memory
-@@ -324,12 +325,19 @@ static int pseries_remove_mem_node(struc
- 	/*
- 	 * Find the base address and size of the memblock
- 	 */
--	regs = of_get_property(np, "reg", NULL);
--	if (!regs)
-+	prop = of_get_property(np, "reg", NULL);
-+	if (!prop)
- 		return ret;
+ 	led->cdev.brightness_set = bcm6358_led_set;
  
--	base = be64_to_cpu(*(unsigned long *)regs);
--	lmb_size = be32_to_cpu(regs[3]);
-+	addr_cells = of_n_addr_cells(np);
-+	size_cells = of_n_size_cells(np);
-+
-+	/*
-+	 * "reg" property represents (addr,size) tuple.
-+	 */
-+	base = of_read_number(prop, addr_cells);
-+	prop += addr_cells;
-+	lmb_size = of_read_number(prop, size_cells);
+-	rc = led_classdev_register(dev, &led->cdev);
++	rc = devm_led_classdev_register(dev, &led->cdev);
+ 	if (rc < 0)
+ 		return rc;
  
- 	pseries_remove_memblock(base, lmb_size);
- 	return 0;
-@@ -620,7 +628,7 @@ static int dlpar_memory_remove_by_ic(u32
- 
- #else
- static inline int pseries_remove_memblock(unsigned long base,
--					  unsigned int memblock_size)
-+					  unsigned long memblock_size)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -953,10 +961,11 @@ int dlpar_memory(struct pseries_hp_error
- 
- static int pseries_add_mem_node(struct device_node *np)
- {
--	const __be32 *regs;
-+	const __be32 *prop;
- 	unsigned long base;
--	unsigned int lmb_size;
-+	unsigned long lmb_size;
- 	int ret = -EINVAL;
-+	int addr_cells, size_cells;
- 
- 	/*
- 	 * Check to see if we are actually adding memory
-@@ -967,12 +976,18 @@ static int pseries_add_mem_node(struct d
- 	/*
- 	 * Find the base and size of the memblock
- 	 */
--	regs = of_get_property(np, "reg", NULL);
--	if (!regs)
-+	prop = of_get_property(np, "reg", NULL);
-+	if (!prop)
- 		return ret;
- 
--	base = be64_to_cpu(*(unsigned long *)regs);
--	lmb_size = be32_to_cpu(regs[3]);
-+	addr_cells = of_n_addr_cells(np);
-+	size_cells = of_n_size_cells(np);
-+	/*
-+	 * "reg" property represents (addr,size) tuple.
-+	 */
-+	base = of_read_number(prop, addr_cells);
-+	prop += addr_cells;
-+	lmb_size = of_read_number(prop, size_cells);
- 
- 	/*
- 	 * Update memory region to represent the memory add
 
 
