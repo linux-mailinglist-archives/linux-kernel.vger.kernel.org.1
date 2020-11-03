@@ -2,220 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6912A4455
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAD32A4453
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728543AbgKCLdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:33:01 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:36065 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728343AbgKCLdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:33:00 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103113248euoutp01748a2fc02110ee26e2aeee40d364fd6f~D-C5vLR5p0569605696euoutp012
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 11:32:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103113248euoutp01748a2fc02110ee26e2aeee40d364fd6f~D-C5vLR5p0569605696euoutp012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604403168;
-        bh=fReq/5gleB0cci52KJ0pEExEhZgxvPuj7W3jQgkJdxw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=XKHNMKJsML6y/xa7G5YIwWFJ6uPInaY5KS89Ddo3fjAoxIaiYm5cCuGTqF7bya62x
-         d67gxCMBaPPdHRNJcG1Px1le2MglDrHowQGlFNCWt9ILPtzmCmq/la8F397xlmcav+
-         GztvmxJ/eVSmaaFMMs6QBV5Qo2648nWrBNe4bzz0=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201103113236eucas1p25c4317debfce3dd093e24503f4a02295~D-CuDkbNN0380303803eucas1p25;
-        Tue,  3 Nov 2020 11:32:36 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id AB.82.06456.4DF31AF5; Tue,  3
-        Nov 2020 11:32:36 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201103113235eucas1p282f0b782b066ea7aea385c0d85b53951~D-CtrFiAq0380303803eucas1p24;
-        Tue,  3 Nov 2020 11:32:35 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201103113235eusmtrp2154c224a1b462956fbf31e688ec94053~D-CtqTkmS3132631326eusmtrp2K;
-        Tue,  3 Nov 2020 11:32:35 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-7c-5fa13fd4f2d7
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 26.14.06017.3DF31AF5; Tue,  3
-        Nov 2020 11:32:35 +0000 (GMT)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201103113234eusmtip1455972894957538c7a51aa7381fdf5ff~D-CsrFtLb2256922569eusmtip1i;
-        Tue,  3 Nov 2020 11:32:34 +0000 (GMT)
-Subject: Re: [PATCH v7 2/6] interconnect: Add generic interconnect driver
- for Exynos SoCs
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     georgi.djakov@linaro.org, krzk@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <6cc9a2f8-9d9a-68b7-9f47-e16fefb18d88@samsung.com>
-Date:   Tue, 3 Nov 2020 12:32:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.1
+        id S1728480AbgKCLc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:32:56 -0500
+Received: from mga03.intel.com ([134.134.136.65]:14320 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728343AbgKCLc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:32:56 -0500
+IronPort-SDR: nvumdhws0EpGVLuw31h7ukWkJ6xFYkekanZHBpJH+6EciIiiafqRv+fdf2gMR9pJa7zcJnxWn8
+ QHPOdXhGe5ow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169142920"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="169142920"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 03:32:55 -0800
+IronPort-SDR: Xok5TTeP53mEEvRa6eqBOm9Q6BAhXsqLRP6HUdxNB4KVHRwvcrLxzrf4GYr/wDyMoiNoif1IOM
+ 66dvYfuocakQ==
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="320398888"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 03:32:52 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kZuZV-003T4k-PG; Tue, 03 Nov 2020 13:33:53 +0200
+Date:   Tue, 3 Nov 2020 13:33:53 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org,
+        rdunlap@infradead.org, idryomov@gmail.com,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] lib: Convert test_printf.c to KUnit
+Message-ID: <20201103113353.GC4077@smile.fi.intel.com>
+References: <20201103111049.51916-1-98.arpi@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <88af4e53-6c7a-c2e6-ad28-a9d6bb5bf623@samsung.com>
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGc2fa6VApXgqkh4qCDYnFKEjEOIkr6kPji5j4YCQsFUdQaSUd
-        QNAHF8CFijag7NLKTiOiiERBBEkBEVkiiAuQxogoGiFYwH2hHY28fef+57/n/MmhSWm/UE4f
-        0MazOq06VkGJBfXtX3tWDmy6GrGqroRkrEVpiLmZWyNknk2/FTJGS4+QGZiZpJicplqKybQa
-        BExv7w0R099QSDG2DAticnvvE0y1ZUTEDJ2spJi0JouIyc0apzYvVNWaz1Gq4cF7lMqq7yBU
-        F+rMSGWrXRIi3CNev4+NPZDI6gI2Ropj2nrKUNygT9KHG53oBHrhmY6caMBBkJ3xk0hHYlqK
-        KxG0XG8n7IIUTyOoNnvygg3BrE1P/nNUlhdTvFCBoG+6QsgXUwjyClJF9i43HAqvshocDnes
-        hLyfA8jeROIZAs71mpBdoHAgZLRdcLAEb4SipwaHQYB9oe3NFcceHjgcDDdTBXyPK3TmjTrY
-        CW+CiR+FDiaxDF6OGgmevSHldgFpHwZ4RgRlD8YQv/c2aDGf/pvBDd531Il49oLfd40Eb0hB
-        cL5xSMQXBgTWDtNf9zoY7vk2l5qeG+EHNQ0BdgQcDE8sSh5d4PlHV34HF8iszyH5ZwmcPS3l
-        //CF7+Ycgmc56Ed/CwxIkT8vWf68NPnz0uT/H2tCAjOSsQmcJprlArXsEX9OreEStNH+UYc1
-        tWju1Lp+dXy6g2ae7G1FmEYKZ8lm1hQhFaoTuWRNKwKaVLhLtnR3hUsl+9TJR1nd4QhdQizL
-        taJFtEAhk6wuHg+T4mh1PHuIZeNY3T+VoJ3kJ5BHbHBpNldapN+fZ6uWT+0yPgoJqpI1R0VG
-        JqWPfCNWXi6R5nQLv5TLtT7iYpOLUTbW/Liy+bUrFR/Vdejaw3bnY96iGr/ZrXc2rAlfrjy4
-        ULn9YOaOuDC9327/UC9j1YK1k+6XPh9bEdNcZT3l0nAmzPtWfcI7vLRv8cTFnY3By44rBFyM
-        OnA5qePUfwDMfoauZgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsVy+t/xu7qX7RfGG5xYpmpxf14ro8XGGetZ
-        La5/ec5qMf/IOVaLK1/fs1lM37uJzWLS/QksFufPb2C3uLxrDpvF594jjBYzzu9jslh75C67
-        xe3GFWwWrXuPsFvMmPySzYHfY9OqTjaPO9f2sHnc7z7O5NG3ZRWjx+dNcgGsUXo2RfmlJakK
-        GfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZR88tZSy4plDxesNJ
-        xgbGm5JdjJwcEgImEiuWLWLrYuTiEBJYyijxvuswaxcjB1BCSmJ+ixJEjbDEn2tdUDXvGSWO
-        nt7OBlIjLBAtMfWDI0iNiICGxMy/VxhBapgFvjJJXN5/BarhC6PE7+uTGUGq2AQMJXqP9oHZ
-        vAJ2EvOuTmAGsVkEVCSOPp3LBGKLCsRJ/JjYywZRIyhxcuYTFhCbU8Be4t2fOWA2s4C6xJ95
-        l5ghbHGJW0/mM0HY8hLNW2czT2AUmoWkfRaSlllIWmYhaVnAyLKKUSS1tDg3PbfYSK84Mbe4
-        NC9dLzk/dxMjMIq3Hfu5ZQdj17vgQ4wCHIxKPLwOqQvihVgTy4orcw8xSnAwK4nwOp09HSfE
-        m5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cAEk1cSb2hqaG5haWhubG5sZqEkztshcDBGSCA9
-        sSQ1OzW1ILUIpo+Jg1OqgfEQX843rliR7mvVoS3Vsnf1D189Z2/KJBy6oz/IksdysWEMs0FP
-        cmaZ+KQvs1z2eN3NvXzveMDPhdGfF+/9lGDe5LjL2k3o+vxTVVdXHr31LnimoX/Fnrvz7pzU
-        WSNwvmydxZ3om+fEjFY6F7sdM3M4daVNtWTjwcXqLo3H8o1OXdiRy8KXslOJpTgj0VCLuag4
-        EQC6appF+AIAAA==
-X-CMS-MailID: 20201103113235eucas1p282f0b782b066ea7aea385c0d85b53951
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9
-References: <20201030125149.8227-1-s.nawrocki@samsung.com>
-        <CGME20201030125301eucas1p218b0e654cb4c826b05280f28836da8d9@eucas1p2.samsung.com>
-        <20201030125149.8227-3-s.nawrocki@samsung.com>
-        <88af4e53-6c7a-c2e6-ad28-a9d6bb5bf623@samsung.com>
+In-Reply-To: <20201103111049.51916-1-98.arpi@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.11.2020 10:37, Chanwoo Choi wrote:
-> On 10/30/20 9:51 PM, Sylwester Nawrocki wrote:
->> This patch adds a generic interconnect driver for Exynos SoCs in order
->> to provide interconnect functionality for each "samsung,exynos-bus"
->> compatible device.
->>
->> The SoC topology is a graph (or more specifically, a tree) and its
->> edges are specified using the 'samsung,interconnect-parent' in the
+On Tue, Nov 03, 2020 at 04:40:49PM +0530, Arpitha Raghunandan wrote:
+> Convert test lib/test_printf.c to KUnit. More information about
+> KUnit can be found at:
+> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> KUnit provides a common framework for unit tests in the kernel.
+> KUnit and kselftest are standardizing around KTAP, converting this
+> test to KUnit makes this test output in KTAP which we are trying to
+> make the standard test result format for the kernel. More about
+> the KTAP format can be found at:
+> https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
+> I ran both the original and converted tests as is to produce the
+> output for success of the test in the two cases. I also ran these
+> tests with a small modification to show the difference in the output
+> for failure of the test in both cases. The modification I made is:
+> - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+> + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
 > 
-> samsung,interconnect-parent -> interconnects?
-
-Yes, I will rephrase the whole commit message as it's a bit outdated now.
-
-I've changed the sentence to:
-"The SoC topology is a graph (or more specifically, a tree) and its
-edges are described by specifying in the 'interconnects' property
-the interconnect consumer path for each interconnect provider DT node."
-
->> DT. Due to unspecified relative probing order, -EPROBE_DEFER may be
->> propagated to ensure that the parent is probed before its children.
->>
->> Each bus is now an interconnect provider and an interconnect node as
->> well (cf. Documentation/interconnect/interconnect.rst), i.e. every bus
->> registers itself as a node. Node IDs are not hardcoded but rather
->> assigned dynamically at runtime. This approach allows for using this
->> driver with various Exynos SoCs.
->>
->> Frequencies requested via the interconnect API for a given node are
->> propagated to devfreq using dev_pm_qos_update_request(). Please note
->> that it is not an error when CONFIG_INTERCONNECT is 'n', in which
->> case all interconnect API functions are no-op.
->>
->> The bus-width DT property is to determine the interconnect data
->> width and traslate requested bandwidth to clock frequency for each
->> bus.
->>
->> Signed-off-by: Artur ≈öwigo≈Ñ <a.swigon@samsung.com>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-
->> +++ b/drivers/interconnect/exynos/exynos.c
-
->> +struct exynos_icc_priv {
->> +	struct device *dev;
->> +
->> +	/* One interconnect node per provider */
->> +	struct icc_provider provider;
->> +	struct icc_node *node;
->> +
->> +	struct dev_pm_qos_request qos_req;
->> +	u32 bus_clk_ratio;
->> +};
->> +
->> +static struct icc_node *exynos_icc_get_parent(struct device_node *np)
->> +{
->> +	struct of_phandle_args args;
->> +	struct icc_node_data *icc_node_data;
->> +	struct icc_node *icc_node;
->> +	int num, ret;
->> +
->> +	num = of_count_phandle_with_args(np, "interconnects",
->> +					 "#interconnect-cells");
->> +	if (num < 1)
->> +		return NULL; /* parent nodes are optional */
->> +
->> +	/* Get the interconnect target node */
->> +	ret = of_parse_phandle_with_args(np, "interconnects",
->> +					"#interconnect-cells", 0, &args);
->> +	if (ret < 0)
->> +		return ERR_PTR(ret);
->> +
->> +	icc_node_data = of_icc_get_from_provider(&args);
->> +	of_node_put(args.np);
->> +
->> +	if (IS_ERR(icc_node_data))
->> +		return ERR_CAST(icc_node_data);
->> +
->> +	icc_node = icc_node_data->node;
->> +	kfree(icc_node_data);
->> +
->> +	return icc_node;
->> +}
+> Original test success:
+> [    0.540860] test_printf: loaded.
+> [    0.540863] test_printf: random seed = 0x5c46c33837bc0619
+> [    0.541022] test_printf: all 388 tests passed
 > 
-> I have a question about exynos_icc_get_parent().
-> As I checked, this function returns the only one icc_node
-> as parent node. But, bus_display dt node in the exynos4412.dtsi
-> specifies the two interconnect node as following with bus_leftbus, bus_dmc,
+> Original test failure:
+> [    0.537980] test_printf: loaded.
+> [    0.537983] test_printf: random seed = 0x1bc1efd881954afb
+> [    0.538029] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> [    0.538030] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> [    0.538124] test_printf: failed 2 out of 388 tests
+> [    0.538125] test_printf: random seed used was 0x1bc1efd881954afb
 > 
-> When I checked the return value of exynos_icc_get_parent()
-> during probing for bus_display device, exynos_icc_get_parent() function
-> only returns 'bus_leftbus' icc_node. Do you need to add two phandle
-> of icc node?
+> Converted test success:
+> † † # Subtest: printf
+> † † 1..25
+> † † ok 1 - test_basic
+> † † ok 2 - test_number
+> † † ok 3 - test_string
+> † † ok 4 - plain
+> † † ok 5 - null_pointer
+> † † ok 6 - error_pointer
+> † † ok 7 - invalid_pointer
+> † † ok 8 - symbol_ptr
+> † † ok 9 - kernel_ptr
+> † † ok 10 - struct_resource
+> † † ok 11 - addr
+> † † ok 12 - escaped_str
+> † † ok 13 - hex_string
+> † † ok 14 - mac
+> † † ok 15 - ip
+> † † ok 16 - uuid
+> † † ok 17 - dentry
+> † † ok 18 - struct_va_format
+> † † ok 19 - time_and_date
+> † † ok 20 - struct_clk
+> † † ok 21 - bitmap
+> † † ok 22 - netdev_features
+> † † ok 23 - flags
+> † † ok 24 - errptr
+> † † ok 25 - fwnode_pointer
+> ok 1 - printf
+> 
+> Converted test failure:
+> † † # Subtest: printf
+> † † 1..25
+> † † ok 1 - test_basic
+> † † ok 2 - test_number
+> † † ok 3 - test_string
+> † † ok 4 - plain
+> † † ok 5 - null_pointer
+> † † ok 6 - error_pointer
+> † † ok 7 - invalid_pointer
+> † † ok 8 - symbol_ptr
+> † † ok 9 - kernel_ptr
+> † † ok 10 - struct_resource
+> † † ok 11 - addr
+> † † ok 12 - escaped_str
+> † † ok 13 - hex_string
+> † † ok 14 - mac
+> † † # ip: EXPECTATION FAILED at lib/printf_kunit.c:82
+> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> † † # ip: EXPECTATION FAILED at lib/printf_kunit.c:124
+> kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+> † † not ok 15 - ip
+> † † ok 16 - uuid
+> † † ok 17 - dentry
+> † † ok 18 - struct_va_format
+> † † ok 19 - time_and_date
+> † † ok 20 - struct_clk
+> † † ok 21 - bitmap
+> † † ok 22 - netdev_features
+> † † ok 23 - flags
+> † † ok 24 - errptr
+> † † ok 25 - fwnode_pointer
+> not ok 1 - printf
 
-Yes, as we use the interconnect consumer bindings we need to specify a path,
-i.e. a <initiator, target> pair. When the provider node initializes it will
-link itself to that path. Currently the provider driver uses just the first 
-phandle.
+Better, indeed.
 
-> +++ b/arch/arm/boot/dts/exynos4412.dtsi
-> @@ -472,7 +472,7 @@
->                         clocks = <&clock CLK_ACLK160>;
->                         clock-names = "bus";
->                         operating-points-v2 = <&bus_display_opp_table>;
->                         interconnects = <&bus_leftbus &bus_dmc>;
->                         #interconnect-cells = <0>;
->                         status = "disabled";
->                 };
+But can be this improved to have a cumulative statistics, like showing only
+number of total, succeeded, failed with details of the latter ones?
+
+> This patch is based on top of Andy's series that renames KUnit based
+> tests in lib/ and Ramsus' series on deterministic random testing.
+
+For the reference:
+https://lore.kernel.org/linux-kselftest/20201016110836.52613-1-andriy.shevchenko@linux.intel.com/
+
+...
+
+> -static void __init
+> -test_string(void)
+> +static void
+> +test_string(struct kunit *ktest)
+
+I guess no need anymore to keep them on two lines, just combine to one line.
 
 -- 
-Regards,
-Sylwester
+With Best Regards,
+Andy Shevchenko
+
+
