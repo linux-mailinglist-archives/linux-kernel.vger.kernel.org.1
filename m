@@ -2,185 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3E12A59E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EFF2A59EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgKCWRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:17:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        id S1730154AbgKCWSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgKCWRv (ORCPT
+        with ESMTP id S1730672AbgKCWSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:17:51 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05EAC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:17:50 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ka4cc-0000kh-3Q; Tue, 03 Nov 2020 23:17:46 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:a118:5f1:5158:c960] (unknown [IPv6:2a03:f580:87bc:d400:a118:5f1:5158:c960])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 79219589BD4;
-        Tue,  3 Nov 2020 22:17:44 +0000 (UTC)
-Subject: Re: [PATCH 0/2] prevent potential access of uninitialized members in
- can_rcv() and canfd_rcv()
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        socketcan@hartkopp.net, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
- iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
- 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
- +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
- 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
- sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
- n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
- 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
- /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
- Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
- ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
- 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
- LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
- iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
- B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
- B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
- b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
- yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
- 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
- Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
- RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
- /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
- YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
- wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
- h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
- AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
- m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
- fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
- Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
- BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
- Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
- 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
- cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
- qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
- +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
- /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
- h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
- 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
- sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
- Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
- vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
- X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
- z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
- z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
- 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
- 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
- HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
- xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <794cd63d-b0cb-2cc9-199c-d18724852db6@pengutronix.de>
-Date:   Tue, 3 Nov 2020 23:17:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 3 Nov 2020 17:18:05 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DDFC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 14:18:05 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id a20so17568940ilk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 14:18:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XZBVHEAp42vxJEHeSAw1s/YHSsTHQeeek5BWzllP8aQ=;
+        b=rSkFjBdWdIlFlQRrNHk7MpZkgFdczISK78VfgOozleCL8IdGJymEn7kd7sKGjVGNNH
+         qkUMp0b47wMWsBpR47TvNZ9+8GaOW158XJalFeKxeYmpB73qSRCWASoHFO7qfrxFkY2q
+         44itgvvuKqtnfsVQiMiJlCa+vQIT+Hnxlq8eVVnKR4VzED5DIzZJYdlIpNlt/e+WFNkd
+         Qbztp8Es7pEu4jnZsI8geHGm7Pc4W/fwAuq54TVvGG2YdMmlOmKu0vhyiOoCIZ4wPCPa
+         mZfRehoHQPQ2GriBIXKKWuqMQgKGUANEYhm+88U7wB9NaehtuVOnP1Yk4zKp0bvgFXwk
+         lnBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XZBVHEAp42vxJEHeSAw1s/YHSsTHQeeek5BWzllP8aQ=;
+        b=Tn/fFuo+Qv51EWql6b1zo8ENw8ashbwaOgbQjUiG3xay2/tv/T1aZIyZP5pogaWjow
+         9mjx64mdr9Zrj8Uuj4VLix6+iMp9m++xpxNVi1mJ8fFjYh/ugW/w+ccCkUlBMEV/+/0d
+         k+pRqS1/dkgkUZ+EQvx8t/PZMd5+WyI2Sov6HXhIx1G1dP/RC9elhAPWYrgDvKCDIv9v
+         knzX6FjTeDlXTcJ73IHRLXdd/rWmV4jtr4W+TsUlODCsGzgYJYP2i8ibZjxcRsrcGXF6
+         l7hDj5+ZmfaDbG7h/kaLklL4DgS/6dAcJ42VIRsVekuN5qfVDaPWWY7m4t0uTC0oJQxi
+         RP1A==
+X-Gm-Message-State: AOAM531gqb21SlXsEGt2aciK89RjbW78RXgn04jvBQVizBsiXyj0czfd
+        eYWGawPa3FjpNxFiAh/L/cTwP7TSPCwVuoBE/08wzKCoX08=
+X-Google-Smtp-Source: ABdhPJzzuVDiPpQRe0mk0ZUT5mZva6NDqMcKGlC7H5HU6E1AIT8y6Dq4gNSgNY/iZwgJXomANne/4FN3oJbi6drx1CE=
+X-Received: by 2002:a05:6e02:bcb:: with SMTP id c11mr15874080ilu.285.1604441884548;
+ Tue, 03 Nov 2020 14:18:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="DdWBTypegOL3k6T7g0dsn17XNTI1gRNTT"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201027233733.1484855-1-bgardon@google.com> <20201027233733.1484855-6-bgardon@google.com>
+ <20201102222102.GE20600@xz-x1> <CANgfPd_sLtqFb3sdpBpd6FWLV4MWKHXH8TSzDbPthzVSQPMJ+A@mail.gmail.com>
+ <20201103011205.GG20600@xz-x1>
+In-Reply-To: <20201103011205.GG20600@xz-x1>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 3 Nov 2020 14:17:53 -0800
+Message-ID: <CANgfPd-cWpZviQJj6p5qUDex8rve7N9kFK0Ym_Qt3DBU7QwqJQ@mail.gmail.com>
+Subject: Re: [PATCH 5/5] KVM: selftests: Introduce the dirty log perf test
+To:     Peter Xu <peterx@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DdWBTypegOL3k6T7g0dsn17XNTI1gRNTT
-Content-Type: multipart/mixed; boundary="9XYUBXvVXEpFimu1vm1NDXcF0m5tGs2P8";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>, socketcan@hartkopp.net,
- davem@davemloft.net, kuba@kernel.org
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <794cd63d-b0cb-2cc9-199c-d18724852db6@pengutronix.de>
-Subject: Re: [PATCH 0/2] prevent potential access of uninitialized members in
- can_rcv() and canfd_rcv()
-References: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
-In-Reply-To: <20201103213906.24219-1-anant.thazhemadam@gmail.com>
+On Mon, Nov 2, 2020 at 5:12 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Mon, Nov 02, 2020 at 03:56:05PM -0800, Ben Gardon wrote:
+> > On Mon, Nov 2, 2020 at 2:21 PM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > On Tue, Oct 27, 2020 at 04:37:33PM -0700, Ben Gardon wrote:
+> > > > The dirty log perf test will time verious dirty logging operations
+> > > > (enabling dirty logging, dirtying memory, getting the dirty log,
+> > > > clearing the dirty log, and disabling dirty logging) in order to
+> > > > quantify dirty logging performance. This test can be used to inform
+> > > > future performance improvements to KVM's dirty logging infrastructure.
+> > >
+> > > One thing to mention is that there're a few patches in the kvm dirty ring
+> > > series that reworked the dirty log test quite a bit (to add similar test for
+> > > dirty ring).  For example:
+> > >
+> > >   https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
+> > >
+> > > Just a FYI if we're going to use separate test programs.  Merging this tests
+> > > should benefit in many ways, of course (e.g., dirty ring may directly runnable
+> > > with the perf tests too; so we can manually enable this "perf mode" as a new
+> > > parameter in dirty_log_test, if possible?), however I don't know how hard -
+> > > maybe there's some good reason to keep them separate...
+> >
+> > Absolutely, we definitely need a performance test for both modes. I'll
+> > take a look at the patch you linked and see what it would take to
+> > support dirty ring in this test.
+>
+> That would be highly appreciated.
+>
+> > Do you think that should be done in this series, or would it make
+> > sense to add as a follow up?
+>
+> To me I slightly lean toward working upon those patches, since we should
+> potentially share quite some code there (e.g., the clear dirty log cleanup
+> seems necessary, or not easy to add the dirty ring tests anyway).  But current
+> one is still ok to me at least as initial version - we should always be more
+> tolerant for test cases, aren't we? :)
+>
+> So maybe we can wait for a 3rd opinion before you change the direction.
 
---9XYUBXvVXEpFimu1vm1NDXcF0m5tGs2P8
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+I took a look at your patches for dirty ring and dirty logging modes
+and thought about this some more.
+I think your patch to merge the get and clear dirty log tests is
+great, and I can try to include it and build on it in my series as
+well if desired. I don't think it would be hard to use the same mode
+approach in the dirty log perf test. That said, I think it would be
+easier to keep the functional test (dirty_log_test,
+clear_dirty_log_test) separate from the performance test because the
+dirty log validation is extra time and complexity not needed in the
+dirty log perf test. I did try building them in the same test
+initially, but it was really ugly. Perhaps a future refactoring could
+merge them better.
 
-On 11/3/20 10:39 PM, Anant Thazhemadam wrote:
-> In both can_rcv(), and canfd_rcv(), when skb->len =3D 0, cfd->len=20
-> (which is uninitialized) is accessed by pr_warn_once().
->=20
-> Performing the validation check for cfd->len separately, after the=20
-> validation check for skb->len is done, resolves this issue in both=20
-> instances, without compromising the degree of detail provided in the
-> log messages.
->=20
-> Anant Thazhemadam (2):
->   can: af_can: prevent potential access of uninitialized member in
->     can_rcv()
->   can: af_can: prevent potential access of uninitialized member in
->     canfd_rcv()
->=20
->  net/can/af_can.c | 38 ++++++++++++++++++++++++++++----------
->  1 file changed, 28 insertions(+), 10 deletions(-)
->=20
+>
+> >
+> > >
+> > > [...]
+> > >
+> > > > +static void run_test(enum vm_guest_mode mode, unsigned long iterations,
+> > > > +                  uint64_t phys_offset, int vcpus,
+> > > > +                  uint64_t vcpu_memory_bytes, int wr_fract)
+> > > > +{
+> > >
+> > > [...]
+> > >
+> > > > +     /* Start the iterations */
+> > > > +     iteration = 0;
+> > > > +     host_quit = false;
+> > > > +
+> > > > +     clock_gettime(CLOCK_MONOTONIC, &start);
+> > > > +     for (vcpu_id = 0; vcpu_id < vcpus; vcpu_id++) {
+> > > > +             pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
+> > > > +                            &perf_test_args.vcpu_args[vcpu_id]);
+> > > > +     }
+> > > > +
+> > > > +     /* Allow the vCPU to populate memory */
+> > > > +     pr_debug("Starting iteration %lu - Populating\n", iteration);
+> > > > +     while (READ_ONCE(vcpu_last_completed_iteration[vcpu_id]) != iteration)
+> > > > +             pr_debug("Waiting for vcpu_last_completed_iteration == %lu\n",
+> > > > +                     iteration);
+> > >
+> > > Isn't array vcpu_last_completed_iteration[] initialized to all zeros?  If so, I
+> > > feel like this "while" won't run as expected to wait for populating mem.
+> >
+> > I think you are totally right. The array should be initialized to -1,
+> > which I realize isn't a uint and unsigned integer overflow is bad, so
+> > the array should be converted to ints too.
+> > I suppose I didn't catch this because it would just make the
+> > populating pass 0 look really short and pass 1 really long. I remember
+> > seeing that behavior but not realizing that it was caused by a test
+> > bug. I will correct this, thank you for pointing that out.
+> >
+> > >
+> > > The flooding pr_debug() seems a bit scary too if the mem size is huge..  How
+> > > about a pr_debug() after the loop (so if we don't see that it means it hanged)?
+> >
+> > I don't think the number of messages on pr_debug will be proportional
+> > to the size of memory, but rather the product of iterations and vCPUs.
+> > That said, that's still a lot of messages.
+>
+> The guest code dirties all pages, and that process is proportional to the size
+> of memory, no?
+>
+> Btw since you mentioned vcpus - I also feel like above chunk should be put into
+> the for loop above...
 
-Applied both to linux-can/testing
+Ooof I misread my code. You're totally right. I'll fix that by
+removing the print there.
 
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---9XYUBXvVXEpFimu1vm1NDXcF0m5tGs2P8--
-
---DdWBTypegOL3k6T7g0dsn17XNTI1gRNTT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+h1wQACgkQqclaivrt
-76mpdggAo4UGijeisHQfM7pg7txwKuoqCvThXIrUBWjX1QE2LEChJiP5oMYKlLcs
-PrN7a34d+Li+mdMd/dasGDz7ddVdPvPNiJVve/zP5Fvw4TGPkPeYIk2UKJqmtGCw
-wFyDjxsLLUrvk/9fxKTaqTNMVV+1YmirFkgOkbMLgj9ZgZZgcPxJfjiPlE//djml
-zMFt+kX/O3ifQL60CNH5lzIxXmne9eVzyZlIjtIkOscCrpxoOUkdHGT6mhcEtZo2
-eClqh8Fg9l10XEaH5DLta6bP603WFRDL1pi6ffuroaDiIRCIatWUfiP8U7v9ILk4
-5MnYlM63eTbTdz9eJWcsnswVrU6hVw==
-=OjB/
------END PGP SIGNATURE-----
-
---DdWBTypegOL3k6T7g0dsn17XNTI1gRNTT--
+>
+> > My assumption was that if you've gone to the trouble to turn on debug
+> > logging, it's easier to comment log lines out than add them, but I'm
+> > also happy to just move this to a single message after the loop.
+>
+> Yah that's subjective too - feel free to keep whatever you prefer.  In all
+> cases, hopefully I won't even need to enable pr_debug at all. :)
+>
+> --
+> Peter Xu
+>
