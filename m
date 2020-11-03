@@ -2,133 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2FC2A881A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4D02A8864
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 21:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732141AbgKEU35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Nov 2020 15:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
+        id S1732366AbgKEUxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Nov 2020 15:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgKEU35 (ORCPT
+        with ESMTP id S1726729AbgKEUxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:29:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3B8C0613CF;
-        Thu,  5 Nov 2020 12:29:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zdWW6brH1+DGRjR+miSgwIS5XWmxKhqw6LUMWKo+45c=; b=aM9sv2b8xov6sHzl6Whn4c9UzA
-        VIwEGx7ktjptspRFy26iS4e+CnMUr6M3hRuAWOs0cHuc9Qgpom0G+GdEL1m5RR6bxQcFnKO/klj0a
-        Fsyc+FEm2oQI79BIoW4zOEP9Z9rhN/612lpN0hv2lJwt1IyCsJo4ohaYo8TeJQv7BqgdFLNDogi/7
-        YJohBJVTXxXxwwb6Gq1Q2+hen282mACEynxr5h+qOp26cMGijnwhDIteDcIh+CWbj9QDlFVlAqDUx
-        OBTvi6LdmkhefLfXtmYVQngofDd2Hq2pT4efnDaZ6jTPsFq133p3BZEns3PJd0ZvOyvRciNkddTIr
-        NFEOeDMg==;
-Received: from [2601:1c0:6280:3f0::60d5]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kaltH-00057o-SK; Thu, 05 Nov 2020 20:29:52 +0000
-Subject: Re: linux-next: Tree for Nov 5
- [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko]
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Lin Lei <linlei@linux.alibaba.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20201105170604.6588a06e@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1890051c-f317-af83-7cba-ff858c6d1f5c@infradead.org>
-Date:   Thu, 5 Nov 2020 12:29:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 5 Nov 2020 15:53:41 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBE5C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Nov 2020 12:53:41 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 72so2276804pfv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Nov 2020 12:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=glxnw0G7mxkHwrXWKFo1FuZeLsueNuAwrkAI5cvobhs=;
+        b=KDgDPHLCwQNjq5ZevQXlPQyPpemkdsQuLbYTPNaG/g2JQkTMTSKuf8dBXtgLXmtg6E
+         pTn+g84r/p2ezItTwPsXkOC7cnygQfyQHNhWcFkWCr3Gdu61XTW46uFVpmesvrXQb2Lc
+         VgWwP1v7Irp/RBZlm5IS7yP066DSUkT+RazNa8AL4vDf/ndVHqLK7m8fMpx4VO8QxDtc
+         Wb4vl4CPL5WAtqJAf04E1nX7MeVMIzi/WDQ0IcTo81AJgmlhSbdisZKTwT0vT4V1hHkF
+         CAsK1PiOGuK3wgI0678kaE2DLjQecdLPB87g9LxzJc+vydmqW70Br5Kmij0jJFBS7Ikv
+         CAUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=glxnw0G7mxkHwrXWKFo1FuZeLsueNuAwrkAI5cvobhs=;
+        b=Gc3UiKIDD0T7BQ8YwH+t0xbrFg/W9O0VmXa6f7SlevC9KAwVrBJX2Ob7dQl7EaLD8e
+         dWJwlSKjvVPr4z9vP/dF1V81SD4AwLVGSCHuYj6BEPy4icBEz+UVttwPdlmdMYVFUFJS
+         R6ZdRF3qQrkc1LkVPAmoU8JINbKUL7su/aIoJyVTdQcpMhUmzhhOt3ktJ8qEPyi98TJH
+         uXW81zHLQyUvLFw9VBtE+Swh5a85q4h3lB7JkpO9IrCDkMSDOIO5AaZ4yBhEIjhHqWkM
+         fhDGpZLa5qML8kWssaJc76z5ZnJ9RJDqSwLzGWGjwWe+OyrP8XsytLoW+dqi58M0hQts
+         URBQ==
+X-Gm-Message-State: AOAM5316N04j3wW3tm0sb88EZdN6sxcwD8BJSyhJzBgDLi7kJvwUscl8
+        89bnktShFUrqDltrM58d/RM=
+X-Google-Smtp-Source: ABdhPJyhAkapNdkpklhp3VVPTNJjZxbq2eyxfS+sTZd+MNej0Btgyt5rp0RM8Y8rT9MnkqSvAoiaDg==
+X-Received: by 2002:a17:90b:496:: with SMTP id bh22mr4354896pjb.120.1604609621292;
+        Thu, 05 Nov 2020 12:53:41 -0800 (PST)
+Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
+        by smtp.gmail.com with ESMTPSA id u22sm3265528pgf.24.2020.11.05.12.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 12:53:39 -0800 (PST)
+From:   Yang Shi <shy828301@gmail.com>
+To:     mhocko@suse.com, ziy@nvidia.com, songliubraving@fb.com,
+        mgorman@suse.de, jack@suse.cz, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] mm: misc migrate cleanup and improvement
+Date:   Tue,  3 Nov 2020 05:03:29 -0800
+Message-Id: <20201103130334.13468-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201105170604.6588a06e@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/20 10:06 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20201104:
-> 
-> The drm-intel-fixes tree lost its build failure.
-> 
-> The drm-msm tree gained conflicts against the drm and drm-misc trees.
-> 
-> The mfd tree gained a build failure so I used the version from
-> next-20201104.
-> 
-> The pinctrl tree lost its build failure.
-> 
-> The akpm-current tree gained a build failure for which I reverted
-> a commit.
-> 
-> Non-merge commits (relative to Linus' tree): 3085
->  3498 files changed, 376683 insertions(+), 40297 deletions(-)
-> 
-> ----------------------------------------------------------------------------
-> 
-> I have created today's linux-next tree at
-> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-> are tracking the linux-next tree using git, you should not use "git pull"
-> to do so as that will try to merge the new linux-next release with the
-> old one.  You should use "git fetch" and checkout or reset to the new
-> master.
-> 
-> You can see which trees have been included by looking in the Next/Trees
-> file in the source.  There are also quilt-import.log and merge.log
-> files in the Next directory.  Between each merge, the tree was built
-> with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
-> multi_v7_defconfig for arm and a native build of tools/perf. After
-> the final fixups (if any), I do an x86_64 modules_install followed by
-> builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
-> ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
-> and sparc64 defconfig and htmldocs. And finally, a simple boot test
-> of the powerpc pseries_le_defconfig kernel in qemu (with and without
-> kvm enabled).
-> 
-> Below is a summary of the state of the merge.
-> 
-> I am currently merging 327 trees (counting Linus' and 85 trees of bug
-> fix patches pending for the current merge release).
-> 
-> Stats about the size of the tree over time can be seen at
-> http://neuling.org/linux-next-size.html .
-> 
-> Status of my local build tests will be at
-> http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-> advice about cross compilers/configs that work, we are always open to add
-> more builds.
-> 
-> Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-> Gortmaker for triage and bug fixes.
-> 
 
-on x86_64:
+Some misc migrate code cleanup and improvement.
 
-CONFIG_STMMAC_ETH=m
-# CONFIG_STMMAC_PLATFORM is not set
-CONFIG_DWMAC_INTEL=m
-CONFIG_STMMAC_PCI=m
+Yang Shi (5):
+      mm: truncate_complete_page is not existed anymore
+      mm: migrate: simplify the logic for handling permanent failure
+      mm: migrate: skip shared exec THP for NUMA balancing
+      mm: migrate: clean up migrate_prep{_local}
+      mm: migrate: return -ENOSYS if THP migration is unsupported
 
-dwmac-thead.c is always built but it seems to expect (require) that
-stmmac_platform.c is also always built, but the latter has a Kconfig
-option that can be (is) disabled, resulting in build errors:
+ include/linux/migrate.h |   4 +--
+ mm/mempolicy.c          |   8 ++----
+ mm/migrate.c            | 148 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------
+ mm/vmscan.c             |   2 +-
+ 4 files changed, 99 insertions(+), 63 deletions(-)
 
-ERROR: modpost: "stmmac_pltfr_pm_ops" [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko] undefined!
-ERROR: modpost: "stmmac_pltfr_remove" [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko] undefined!
-ERROR: modpost: "stmmac_remove_config_dt" [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko] undefined!
-ERROR: modpost: "stmmac_probe_config_dt" [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko] undefined!
-ERROR: modpost: "stmmac_get_platform_resources" [drivers/net/ethernet/stmicro/stmmac/dwmac-thead.ko] undefined!
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
