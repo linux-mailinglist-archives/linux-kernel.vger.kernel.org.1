@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA70A2A5356
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B91E2A52BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733179AbgKCVAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
+        id S1732149AbgKCUwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730777AbgKCU77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:59 -0500
+        id S1732137AbgKCUwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F08EB223AC;
-        Tue,  3 Nov 2020 20:59:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2952B2236F;
+        Tue,  3 Nov 2020 20:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437199;
-        bh=JXPGxJRDp7PlOYH8alET6KGPLUiaU+blm6Ne4oIWc5w=;
+        s=default; t=1604436763;
+        bh=mM9p67JparyPNl0jBq+FJskXxSCBycxRnaITaoh7xgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sTcJ7rAaQcCGLVDI8W68GTuJEnusuxJ1Jcc4WeqLrrhJ692Jtmf+F2P2YjkBqWKF
-         wX75ZoVdZ/bWxWLDiLy9VNy0HqktGttU9nKqd6peHKlRRf7haEYueQURB3O8qNMZ/z
-         RN1havc74IBpqGSj02ZLg6N0s/FYSWvvaxQD0NQw=
+        b=nUijQ7oUPq0XGeBsKXd+bKsiyXtfhTo8dvC4ACl+YjJpbAAWiBHiIJWg7cUl7h95V
+         n4pPeUgQO9k+S9icyTkvvIEfFORU6pFF7yuaGmAi7zhaADZ+PaDBZlGZ95wykHIvuO
+         nSXWpYbQcm0B8rbHP8FoDedH6XrU+Ww0kh8+lEfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH 5.4 188/214] libceph: clear con->out_msg on Policy::stateful_server faults
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.9 385/391] cpufreq: Introduce cpufreq_driver_test_flags()
 Date:   Tue,  3 Nov 2020 21:37:16 +0100
-Message-Id: <20201103203308.300937789@linuxfoundation.org>
+Message-Id: <20201103203413.141104074@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 28e1581c3b4ea5f98530064a103c6217bedeea73 upstream.
+commit a62f68f5ca53ab61cba2f0a410d0add7a6d54a52 upstream.
 
-con->out_msg must be cleared on Policy::stateful_server
-(!CEPH_MSG_CONNECT_LOSSY) faults.  Not doing so botches the
-reconnection attempt, because after writing the banner the
-messenger moves on to writing the data section of that message
-(either from where it got interrupted by the connection reset or
-from the beginning) instead of writing struct ceph_msg_connect.
-This results in a bizarre error message because the server
-sends CEPH_MSGR_TAG_BADPROTOVER but we think we wrote struct
-ceph_msg_connect:
+Add a helper function to test the flags of the cpufreq driver in use
+againt a given flags mask.
 
-  libceph: mds0 (1)172.21.15.45:6828 socket error on write
-  ceph: mds0 reconnect start
-  libceph: mds0 (1)172.21.15.45:6829 socket closed (con state OPEN)
-  libceph: mds0 (1)172.21.15.45:6829 protocol version mismatch, my 32 != server's 32
-  libceph: mds0 (1)172.21.15.45:6829 protocol version mismatch
+In particular, this will be needed to test the
+CPUFREQ_NEED_UPDATE_LIMITS cpufreq driver flag in the schedutil
+governor.
 
-AFAICT this bug goes back to the dawn of the kernel client.
-The reason it survived for so long is that only MDS sessions
-are stateful and only two MDS messages have a data section:
-CEPH_MSG_CLIENT_RECONNECT (always, but reconnecting is rare)
-and CEPH_MSG_CLIENT_REQUEST (only when xattrs are involved).
-The connection has to get reset precisely when such message
-is being sent -- in this case it was the former.
-
-Cc: stable@vger.kernel.org
-Link: https://tracker.ceph.com/issues/47723
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ceph/messenger.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/cpufreq/cpufreq.c |   12 ++++++++++++
+ include/linux/cpufreq.h   |    1 +
+ 2 files changed, 13 insertions(+)
 
---- a/net/ceph/messenger.c
-+++ b/net/ceph/messenger.c
-@@ -3007,6 +3007,11 @@ static void con_fault(struct ceph_connec
- 		ceph_msg_put(con->in_msg);
- 		con->in_msg = NULL;
- 	}
-+	if (con->out_msg) {
-+		BUG_ON(con->out_msg->con != con);
-+		ceph_msg_put(con->out_msg);
-+		con->out_msg = NULL;
-+	}
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1904,6 +1904,18 @@ void cpufreq_resume(void)
+ }
  
- 	/* Requeue anything that hasn't been acked */
- 	list_splice_init(&con->out_sent, &con->out_queue);
+ /**
++ * cpufreq_driver_test_flags - Test cpufreq driver's flags against given ones.
++ * @flags: Flags to test against the current cpufreq driver's flags.
++ *
++ * Assumes that the driver is there, so callers must ensure that this is the
++ * case.
++ */
++bool cpufreq_driver_test_flags(u16 flags)
++{
++	return !!(cpufreq_driver->flags & flags);
++}
++
++/**
+  *	cpufreq_get_current_driver - return current driver's name
+  *
+  *	Return the name string of the currently loaded cpufreq driver
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -428,6 +428,7 @@ struct cpufreq_driver {
+ int cpufreq_register_driver(struct cpufreq_driver *driver_data);
+ int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
+ 
++bool cpufreq_driver_test_flags(u16 flags);
+ const char *cpufreq_get_current_driver(void);
+ void *cpufreq_get_driver_data(void);
+ 
 
 
