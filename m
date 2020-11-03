@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693BA2A573B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FE42A571B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732263AbgKCVi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:38:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58432 "EHLO mail.kernel.org"
+        id S1733039AbgKCVeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:34:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732736AbgKCU4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:35 -0500
+        id S1732252AbgKCU4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7445B20732;
-        Tue,  3 Nov 2020 20:56:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4E0820732;
+        Tue,  3 Nov 2020 20:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436993;
-        bh=cq4N67AXND+ehHmZ0wnQjczu3m/x2c89Jl5bmTbMYOc=;
+        s=default; t=1604437000;
+        bh=md9wSusj+UYDdkbmuUuq3AZ/paY7fC3MwE3iDZlR9iw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hs+oWyexmWweRzbwgCSCKMTAMa9JqoTCrV70WuZxWkFp8WzNARIvPHsTX/P0yRXZY
-         9yW3WZ9mS46Fwx7WoovX3o/SDk2ZwMs4+Ahfrz4QB1C0/BO8hF1YwD5sx/40jUtiZx
-         pk7lP7Nyh++o1VzKaVRguH5/+c/J7ZYvEYPz6Fbk=
+        b=tWg0sLoDWfhAL7xDQfo9eD6/5QY5H92dW7qehbraRJDPWP1tW1RNEjXHKJDfeTxKZ
+         DMFq1LG0WRpTi0q1iQ49suN/YcOexndF2KzVimBwGk8GMY+O8//qbI5QXCVfNs5AdC
+         Cw6fBktuV/qSSWNp4n3/RwzFtUYm4MUGEv88s9Po=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.4 100/214] selftests/x86/fsgsbase: Test PTRACE_PEEKUSER for GSBASE with invalid LDT GS
-Date:   Tue,  3 Nov 2020 21:35:48 +0100
-Message-Id: <20201103203259.903783924@linuxfoundation.org>
+        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.4 102/214] perf/x86/amd/ibs: Dont include randomized bits in get_ibs_op_count()
+Date:   Tue,  3 Nov 2020 21:35:50 +0100
+Message-Id: <20201103203300.110510920@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -42,106 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Kim Phillips <kim.phillips@amd.com>
 
-commit 1b9abd1755ad947d7c9913e92e7837b533124c90 upstream.
+commit 680d69635005ba0e58fe3f4c52fc162b8fc743b0 upstream.
 
-This tests commit:
+get_ibs_op_count() adds hardware's current count (IbsOpCurCnt) bits
+to its count regardless of hardware's valid status.
 
-  8ab49526b53d ("x86/fsgsbase/64: Fix NULL deref in 86_fsgsbase_read_task")
+According to the PPR for AMD Family 17h Model 31h B0 55803 Rev 0.54,
+if the counter rolls over, valid status is set, and the lower 7 bits
+of IbsOpCurCnt are randomized by hardware.
 
-Unpatched kernels will OOPS.
+Don't include those bits in the driver's event count.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: 8b1e13638d46 ("perf/x86-ibs: Fix usage of IBS op current count")
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/c618ae86d1f757e01b1a8e79869f553cb88acf9a.1598461151.git.luto@kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/selftests/x86/fsgsbase.c |   65 +++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ arch/x86/events/amd/ibs.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/tools/testing/selftests/x86/fsgsbase.c
-+++ b/tools/testing/selftests/x86/fsgsbase.c
-@@ -442,6 +442,68 @@ static void test_unexpected_base(void)
- 
- #define USER_REGS_OFFSET(r) offsetof(struct user_regs_struct, r)
- 
-+static void test_ptrace_write_gs_read_base(void)
-+{
-+	int status;
-+	pid_t child = fork();
-+
-+	if (child < 0)
-+		err(1, "fork");
-+
-+	if (child == 0) {
-+		printf("[RUN]\tPTRACE_POKE GS, read GSBASE back\n");
-+
-+		printf("[RUN]\tARCH_SET_GS to 1\n");
-+		if (syscall(SYS_arch_prctl, ARCH_SET_GS, 1) != 0)
-+			err(1, "ARCH_SET_GS");
-+
-+		if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != 0)
-+			err(1, "PTRACE_TRACEME");
-+
-+		raise(SIGTRAP);
-+		_exit(0);
-+	}
-+
-+	wait(&status);
-+
-+	if (WSTOPSIG(status) == SIGTRAP) {
-+		unsigned long base;
-+		unsigned long gs_offset = USER_REGS_OFFSET(gs);
-+		unsigned long base_offset = USER_REGS_OFFSET(gs_base);
-+
-+		/* Read the initial base.  It should be 1. */
-+		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
-+		if (base == 1) {
-+			printf("[OK]\tGSBASE started at 1\n");
-+		} else {
-+			nerrs++;
-+			printf("[FAIL]\tGSBASE started at 0x%lx\n", base);
-+		}
-+
-+		printf("[RUN]\tSet GS = 0x7, read GSBASE\n");
-+
-+		/* Poke an LDT selector into GS. */
-+		if (ptrace(PTRACE_POKEUSER, child, gs_offset, 0x7) != 0)
-+			err(1, "PTRACE_POKEUSER");
-+
-+		/* And read the base. */
-+		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
-+
-+		if (base == 0 || base == 1) {
-+			printf("[OK]\tGSBASE reads as 0x%lx with invalid GS\n", base);
-+		} else {
-+			nerrs++;
-+			printf("[FAIL]\tGSBASE=0x%lx (should be 0 or 1)\n", base);
-+		}
-+	}
-+
-+	ptrace(PTRACE_CONT, child, NULL, NULL);
-+
-+	wait(&status);
-+	if (!WIFEXITED(status))
-+		printf("[WARN]\tChild didn't exit cleanly.\n");
-+}
-+
- static void test_ptrace_write_gsbase(void)
+--- a/arch/x86/events/amd/ibs.c
++++ b/arch/x86/events/amd/ibs.c
+@@ -335,11 +335,15 @@ static u64 get_ibs_op_count(u64 config)
  {
- 	int status;
-@@ -511,6 +573,9 @@ int main()
- 	shared_scratch = mmap(NULL, 4096, PROT_READ | PROT_WRITE,
- 			      MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+ 	u64 count = 0;
  
-+	/* Do these tests before we have an LDT. */
-+	test_ptrace_write_gs_read_base();
-+
- 	/* Probe FSGSBASE */
- 	sethandler(SIGILL, sigill, 0);
- 	if (sigsetjmp(jmpbuf, 1) == 0) {
++	/*
++	 * If the internal 27-bit counter rolled over, the count is MaxCnt
++	 * and the lower 7 bits of CurCnt are randomized.
++	 * Otherwise CurCnt has the full 27-bit current counter value.
++	 */
+ 	if (config & IBS_OP_VAL)
+-		count += (config & IBS_OP_MAX_CNT) << 4; /* cnt rolled over */
+-
+-	if (ibs_caps & IBS_CAPS_RDWROPCNT)
+-		count += (config & IBS_OP_CUR_CNT) >> 32;
++		count = (config & IBS_OP_MAX_CNT) << 4;
++	else if (ibs_caps & IBS_CAPS_RDWROPCNT)
++		count = (config & IBS_OP_CUR_CNT) >> 32;
+ 
+ 	return count;
+ }
 
 
