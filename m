@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1C92A454D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3812A454E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbgKCMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgKCMfF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:35:05 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59414C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 04:35:03 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id g17so2935872qts.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 04:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UU5MbHumRhOWz5JLbHMs+2sxMU2srbV+zxrr4jBZi2I=;
-        b=h164jmH6p50wj+mnP3PqI9hxv+1TNNnCzR0DJ8tBt8d9S3tr6kA9HU1Z93XEcyeO4q
-         SehC5WwN6ThjIUptkhy/nOHEUGBIhKLW+BADyHTDBu/xHkqrVSgOsZ5FgsUI6J1jnTbT
-         tv87qqQwbKFxV9a2RL7dngNztsoS7tjyGE2sZdODGRpcYNMuO/lNfCi7/kwj4i5teukK
-         tB701hrZN4cLn2TIp7hDmJ7IVgDCTeNJSSR6KXBZvXiG+EpeB6YKG1dakmxFTxzVWd0Z
-         +w0b1YS+Fu0wC2m+lIHFX6bp0/Exzf7buVXLRelDwUSOf6+lgwcjl5GSkY1rnKFxmz/Y
-         CD+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UU5MbHumRhOWz5JLbHMs+2sxMU2srbV+zxrr4jBZi2I=;
-        b=WZ9p6F2b1nz45vpL/SwSqia+f/WIjqhqFonhGAU5KXFliEio43H+LpY7dPnWPQlhIO
-         XaPyzU0hlrJBZGb3JqBBRvHaIn1z0G4vBG5G0EZrB239mlw0fr0KUvUw9UnkThhLHs4/
-         NRN6sj/HqKD7xAR5Ny6pBeshKfcNbK8d6nSMIPasblTr1YEasTyiTodOCP6MC9KNYNSd
-         zgjPIqqPQavmPZUl+APpgCNmhketqVWuvKypYuuzK4S81L94E99e7VFxqIcW9o1ATbe8
-         aDHAUiBzoJU4avWEceOs7IEUo1jU4ohzLjPmfXy92abZopDpsI7A4wn3cqmhf9VUC4s1
-         iAjQ==
-X-Gm-Message-State: AOAM532Nh62IzVPAZd3JSWw4rjxkbD072+wGNo1DecXylluqOiZmdcJn
-        kY/ASG4H4w9QQMF2z+EucR//1EFmOrbTNPNRAzw=
-X-Google-Smtp-Source: ABdhPJxW4sXn5T8vr31QlV/awsooj8O9pH/jklyMLlWscgm+PC1A+hvLLBLp8OdaGALS+uuBVMevWG4hT2cQq3GKE4o=
-X-Received: by 2002:aed:384a:: with SMTP id j68mr18825464qte.170.1604406902596;
- Tue, 03 Nov 2020 04:35:02 -0800 (PST)
+        id S1728507AbgKCMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:35:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:48046 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726388AbgKCMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:35:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50202106F;
+        Tue,  3 Nov 2020 04:35:22 -0800 (PST)
+Received: from [10.57.54.223] (unknown [10.57.54.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20EFF3F718;
+        Tue,  3 Nov 2020 04:35:21 -0800 (PST)
+Subject: Re: [PATCH v5 2/2] iommu/iova: Free global iova rcache on iova alloc
+ failure
+To:     vjitta@codeaurora.org, joro@8bytes.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     vinmenon@codeaurora.org, kernel-team@android.com
+References: <1601451864-5956-1-git-send-email-vjitta@codeaurora.org>
+ <1601451864-5956-2-git-send-email-vjitta@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ff318311-77e8-b235-37dd-7b1b5f5d8ed9@arm.com>
+Date:   Tue, 3 Nov 2020 12:35:19 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201103115645.684-1-kechengsong@huawei.com>
-In-Reply-To: <20201103115645.684-1-kechengsong@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Tue, 3 Nov 2020 13:34:51 +0100
-Message-ID: <CAFLxGvwKTezooPvWQDZViaXsZ6zsbgf6b-O8RtcU9x6w27xYpQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd:ubi: Remove useless code in bytes_str_to_int
-To:     Chengsong Ke <kechengsong@huawei.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601451864-5956-2-git-send-email-vjitta@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:00 PM Chengsong Ke <kechengsong@huawei.com> wrote:
->
-> From: k00524021 <kechengsong@huawei.com>
->
-> As a local variable, "endp" is neither refered nor returned
-> after this line "endp += 2", it looks like a useless code,
-> suggest to remove it.
->
-> Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
+On 2020-09-30 08:44, vjitta@codeaurora.org wrote:
+> From: Vijayanand Jitta <vjitta@codeaurora.org>
+> 
+> When ever an iova alloc request fails we free the iova
+> ranges present in the percpu iova rcaches and then retry
+> but the global iova rcache is not freed as a result we could
+> still see iova alloc failure even after retry as global
+> rcache is holding the iova's which can cause fragmentation.
+> So, free the global iova rcache as well and then go for the
+> retry.
+
+This looks reasonable to me - it's mildly annoying that we end up with 
+so many similar-looking functions, but the necessary differences are 
+right down in the middle of the loops so nothing can reasonably be 
+factored out :(
+
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
 > ---
->  drivers/mtd/ubi/build.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index e85b04e9716b..46a6dd75e533 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -1351,8 +1351,6 @@ static int bytes_str_to_int(const char *str)
->                 fallthrough;
->         case 'K':
->                 result *= 1024;
-> -               if (endp[1] == 'i' && endp[2] == 'B')
-> -                       endp += 2;
-
-Makes sense. But why did you send a v2?
-
--- 
-Thanks,
-//richard
+>   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
+>   1 file changed, 23 insertions(+)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index c3a1a8e..faf9b13 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -25,6 +25,7 @@ static void init_iova_rcaches(struct iova_domain *iovad);
+>   static void free_iova_rcaches(struct iova_domain *iovad);
+>   static void fq_destroy_all_entries(struct iova_domain *iovad);
+>   static void fq_flush_timeout(struct timer_list *t);
+> +static void free_global_cached_iovas(struct iova_domain *iovad);
+>   
+>   void
+>   init_iova_domain(struct iova_domain *iovad, unsigned long granule,
+> @@ -442,6 +443,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
+>   		flush_rcache = false;
+>   		for_each_online_cpu(cpu)
+>   			free_cpu_cached_iovas(cpu, iovad);
+> +		free_global_cached_iovas(iovad);
+>   		goto retry;
+>   	}
+>   
+> @@ -1057,5 +1059,26 @@ void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
+>   	}
+>   }
+>   
+> +/*
+> + * free all the IOVA ranges of global cache
+> + */
+> +static void free_global_cached_iovas(struct iova_domain *iovad)
+> +{
+> +	struct iova_rcache *rcache;
+> +	unsigned long flags;
+> +	int i, j;
+> +
+> +	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+> +		rcache = &iovad->rcaches[i];
+> +		spin_lock_irqsave(&rcache->lock, flags);
+> +		for (j = 0; j < rcache->depot_size; ++j) {
+> +			iova_magazine_free_pfns(rcache->depot[j], iovad);
+> +			iova_magazine_free(rcache->depot[j]);
+> +			rcache->depot[j] = NULL;
+> +		}
+> +		rcache->depot_size = 0;
+> +		spin_unlock_irqrestore(&rcache->lock, flags);
+> +	}
+> +}
+>   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
+>   MODULE_LICENSE("GPL");
+> 
