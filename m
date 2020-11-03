@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E019B2A5251
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42402A5316
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731655AbgKCUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40694 "EHLO mail.kernel.org"
+        id S1732691AbgKCU4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:56:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731594AbgKCUso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:44 -0500
+        id S1732446AbgKCU4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19E5620719;
-        Tue,  3 Nov 2020 20:48:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3962223C7;
+        Tue,  3 Nov 2020 20:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436523;
-        bh=MDxeIWzPkWIc4RWQNRLI5fM9mwVobg1dF7tmhVFpTeo=;
+        s=default; t=1604436972;
+        bh=UTEUI9uMVOyIxEKJFKUJFivzWsK5qY0eatTZBYfFeO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/WXQhmGkNN5UQdr8aXuByI3KsnQNIFKdVNfyu5xtfilncMM5yfh4eab9FzqD2E2T
-         GOoCuCyEmgdDlOTUKi+GhXDKMxMQcYvkX338pZb29ddBZlzGBtBRBuYQDJvur2O39v
-         ptJJpbQMKeBq6vydZ0YIbi4BtFnLEQqI+oviMlZg=
+        b=vzg+hRWsmvom55qy8vQRYkZfyUaW8rSrpKMMH+BOaI2eqNmQ3MFfpPHl/OwU9osPk
+         Q43czV2kKluSEO8Io7Z93BdDvDHQ56jcVZeqENAJwmG2DveFj/aQh0sUfqUSxN/qAB
+         77aPzTtMN5tpFckV8bTTRjbOXMaHH7ZW6B8fpepE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 287/391] powerpc: Warn about use of smt_snooze_delay
-Date:   Tue,  3 Nov 2020 21:35:38 +0100
-Message-Id: <20201103203406.411780188@linuxfoundation.org>
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 091/214] ARM: dts: s5pv210: move PMU node out of clock controller
+Date:   Tue,  3 Nov 2020 21:35:39 +0100
+Message-Id: <20201103203258.976302351@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,104 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
+[ Upstream commit bb98fff84ad1ea321823759edaba573a16fa02bd ]
 
-It's not done anything for a long time. Save the percpu variable, and
-emit a warning to remind users to not expect it to do anything.
+The Power Management Unit (PMU) is a separate device which has little
+common with clock controller.  Moving it to one level up (from clock
+controller child to SoC) allows to remove fake simple-bus compatible and
+dtbs_check warnings like:
 
-This uses pr_warn_once instead of pr_warn_ratelimit as testing
-'ppc64_cpu --smt=off' on a 24 core / 4 SMT system showed the warning
-to be noisy, as the online/offline loop is slow.
+  clock-controller@e0100000: $nodename:0:
+    'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
 
-Fixes: 3fa8cad82b94 ("powerpc/pseries/cpuidle: smt-snooze-delay cleanup.")
-Cc: stable@vger.kernel.org # v3.14
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Acked-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200902000012.3440389-1-joel@jms.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Jonathan Bakker <xc-racer2@live.ca>
+Link: https://lore.kernel.org/r/20200907161141.31034-8-krzk@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/sysfs.c |   42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+ arch/arm/boot/dts/s5pv210.dtsi | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
---- a/arch/powerpc/kernel/sysfs.c
-+++ b/arch/powerpc/kernel/sysfs.c
-@@ -32,29 +32,27 @@
+diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
+index ec41e46edaced..f10139bd80a53 100644
+--- a/arch/arm/boot/dts/s5pv210.dtsi
++++ b/arch/arm/boot/dts/s5pv210.dtsi
+@@ -92,19 +92,16 @@
+ 		};
  
- static DEFINE_PER_CPU(struct cpu, cpu_devices);
+ 		clocks: clock-controller@e0100000 {
+-			compatible = "samsung,s5pv210-clock", "simple-bus";
++			compatible = "samsung,s5pv210-clock";
+ 			reg = <0xe0100000 0x10000>;
+ 			clock-names = "xxti", "xusbxti";
+ 			clocks = <&xxti>, <&xusbxti>;
+ 			#clock-cells = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges;
++		};
  
--/*
-- * SMT snooze delay stuff, 64-bit only for now
-- */
--
- #ifdef CONFIG_PPC64
+-			pmu_syscon: syscon@e0108000 {
+-				compatible = "samsung-s5pv210-pmu", "syscon";
+-				reg = <0xe0108000 0x8000>;
+-			};
++		pmu_syscon: syscon@e0108000 {
++			compatible = "samsung-s5pv210-pmu", "syscon";
++			reg = <0xe0108000 0x8000>;
+ 		};
  
--/* Time in microseconds we delay before sleeping in the idle loop */
--static DEFINE_PER_CPU(long, smt_snooze_delay) = { 100 };
-+/*
-+ * Snooze delay has not been hooked up since 3fa8cad82b94 ("powerpc/pseries/cpuidle:
-+ * smt-snooze-delay cleanup.") and has been broken even longer. As was foretold in
-+ * 2014:
-+ *
-+ *  "ppc64_util currently utilises it. Once we fix ppc64_util, propose to clean
-+ *  up the kernel code."
-+ *
-+ * powerpc-utils stopped using it as of 1.3.8. At some point in the future this
-+ * code should be removed.
-+ */
- 
- static ssize_t store_smt_snooze_delay(struct device *dev,
- 				      struct device_attribute *attr,
- 				      const char *buf,
- 				      size_t count)
- {
--	struct cpu *cpu = container_of(dev, struct cpu, dev);
--	ssize_t ret;
--	long snooze;
--
--	ret = sscanf(buf, "%ld", &snooze);
--	if (ret != 1)
--		return -EINVAL;
--
--	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
-+	pr_warn_once("%s (%d) stored to unsupported smt_snooze_delay, which has no effect.\n",
-+		     current->comm, current->pid);
- 	return count;
- }
- 
-@@ -62,9 +60,9 @@ static ssize_t show_smt_snooze_delay(str
- 				     struct device_attribute *attr,
- 				     char *buf)
- {
--	struct cpu *cpu = container_of(dev, struct cpu, dev);
--
--	return sprintf(buf, "%ld\n", per_cpu(smt_snooze_delay, cpu->dev.id));
-+	pr_warn_once("%s (%d) read from unsupported smt_snooze_delay\n",
-+		     current->comm, current->pid);
-+	return sprintf(buf, "100\n");
- }
- 
- static DEVICE_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
-@@ -72,16 +70,10 @@ static DEVICE_ATTR(smt_snooze_delay, 064
- 
- static int __init setup_smt_snooze_delay(char *str)
- {
--	unsigned int cpu;
--	long snooze;
--
- 	if (!cpu_has_feature(CPU_FTR_SMT))
- 		return 1;
- 
--	snooze = simple_strtol(str, NULL, 10);
--	for_each_possible_cpu(cpu)
--		per_cpu(smt_snooze_delay, cpu) = snooze;
--
-+	pr_warn("smt-snooze-delay command line option has no effect\n");
- 	return 1;
- }
- __setup("smt-snooze-delay=", setup_smt_snooze_delay);
+ 		pinctrl0: pinctrl@e0200000 {
+-- 
+2.27.0
+
 
 
