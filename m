@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA992A51E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FAD2A51AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgKCUnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:43:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
+        id S1730617AbgKCUm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:42:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730592AbgKCUmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:42:54 -0500
+        id S1730608AbgKCUm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:42:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF04C223AC;
-        Tue,  3 Nov 2020 20:42:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 205AA223BD;
+        Tue,  3 Nov 2020 20:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436173;
-        bh=OciS+22kPt/cqDa1LKTGI61esaQCpAFxigNTqlL3T+8=;
+        s=default; t=1604436175;
+        bh=Ruz/DldL8PDflyqGNbomgVXGltzi7AuKlFJAXU/Bg6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BA/2ElpcZwp7cJHB/fsLohpL1i1i1L0hux1UP0LPeiqLONBEHecri9uYmzOnFZEne
-         4wfHyZyUwmAkQ3z21FQYAocRkcTaG61OrcH4onOD8xBuqPHNxVK9Zvxj1GDsrZrUXX
-         1Ei4SjrAC+sGJxBxhFIEk5wajmYQT1WHehayF3Z4=
+        b=jUX+TBLAYnqBiOBZ5nEFiEEf8PsWiOaWA2u00UfHJmcXQGY5bC3N7eGY10JM2sr7z
+         mYr7uD/zjn6kXxrfEPWVFMb9x6sWWjTZZdNQCoTpTxj5/bbojFXwMJxZ6SBPx4TFdY
+         MiImLQaUOI4dZDsZe0lCzuXva/21C5Kg+8Cx6QOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Jun <jun.li@nxp.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 133/391] usb: dwc3: core: do not queue work if dr_mode is not USB_DR_MODE_OTG
-Date:   Tue,  3 Nov 2020 21:33:04 +0100
-Message-Id: <20201103203355.803855607@linuxfoundation.org>
+Subject: [PATCH 5.9 134/391] bus: mhi: core: Abort suspends due to outgoing pending packets
+Date:   Tue,  3 Nov 2020 21:33:05 +0100
+Message-Id: <20201103203355.871687185@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,87 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jun <jun.li@nxp.com>
+From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-[ Upstream commit dc336b19e82d0454ea60270cd18fbb4749e162f6 ]
+[ Upstream commit 515847c557dd33167be86cb429fc0674a331bc88 ]
 
-Do not try to queue a drd work if dr_mode is not USB_DR_MODE_OTG
-because the work is not inited, this may be triggered by user try
-to change mode file of debugfs on a single role port, which will
-cause below kernel dump:
-[   60.115529] ------------[ cut here ]------------
-[   60.120166] WARNING: CPU: 1 PID: 627 at kernel/workqueue.c:1473
-__queue_work+0x46c/0x520
-[   60.128254] Modules linked in:
-[   60.131313] CPU: 1 PID: 627 Comm: sh Not tainted
-5.7.0-rc4-00022-g914a586-dirty #135
-[   60.139054] Hardware name: NXP i.MX8MQ EVK (DT)
-[   60.143585] pstate: a0000085 (NzCv daIf -PAN -UAO)
-[   60.148376] pc : __queue_work+0x46c/0x520
-[   60.152385] lr : __queue_work+0x314/0x520
-[   60.156393] sp : ffff8000124ebc40
-[   60.159705] x29: ffff8000124ebc40 x28: ffff800011808018
-[   60.165018] x27: ffff800011819ef8 x26: ffff800011d39980
-[   60.170331] x25: ffff800011808018 x24: 0000000000000100
-[   60.175643] x23: 0000000000000013 x22: 0000000000000001
-[   60.180955] x21: ffff0000b7c08e00 x20: ffff0000b6c31080
-[   60.186267] x19: ffff0000bb99bc00 x18: 0000000000000000
-[   60.191579] x17: 0000000000000000 x16: 0000000000000000
-[   60.196891] x15: 0000000000000000 x14: 0000000000000000
-[   60.202202] x13: 0000000000000000 x12: 0000000000000000
-[   60.207515] x11: 0000000000000000 x10: 0000000000000040
-[   60.212827] x9 : ffff800011d55460 x8 : ffff800011d55458
-[   60.218138] x7 : ffff0000b7800028 x6 : 0000000000000000
-[   60.223450] x5 : ffff0000b7800000 x4 : 0000000000000000
-[   60.228762] x3 : ffff0000bb997cc0 x2 : 0000000000000001
-[   60.234074] x1 : 0000000000000000 x0 : ffff0000b6c31088
-[   60.239386] Call trace:
-[   60.241834]  __queue_work+0x46c/0x520
-[   60.245496]  queue_work_on+0x6c/0x90
-[   60.249075]  dwc3_set_mode+0x48/0x58
-[   60.252651]  dwc3_mode_write+0xf8/0x150
-[   60.256489]  full_proxy_write+0x5c/0xa8
-[   60.260327]  __vfs_write+0x18/0x40
-[   60.263729]  vfs_write+0xdc/0x1c8
-[   60.267045]  ksys_write+0x68/0xf0
-[   60.270360]  __arm64_sys_write+0x18/0x20
-[   60.274286]  el0_svc_common.constprop.0+0x68/0x160
-[   60.279077]  do_el0_svc+0x20/0x80
-[   60.282394]  el0_sync_handler+0x10c/0x178
-[   60.286403]  el0_sync+0x140/0x180
-[   60.289716] ---[ end trace 70b155582e2b7988 ]---
+Add the missing check to abort suspends if a client driver has pending
+outgoing packets to send to the device. This allows better utilization
+of the MHI bus wherein clients on the host are not left waiting for
+longer suspend or resume cycles to finish for data transfers.
 
-Signed-off-by: Li Jun <jun.li@nxp.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20200929175218.8178-4-manivannan.sadhasivam@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/bus/mhi/core/pm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 2f9f4ad562d4e..6dd02a8802f4b 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -121,9 +121,6 @@ static void __dwc3_set_mode(struct work_struct *work)
- 	int ret;
- 	u32 reg;
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 7960980780832..661d704c8093d 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -686,7 +686,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
+ 		return -EIO;
  
--	if (dwc->dr_mode != USB_DR_MODE_OTG)
--		return;
--
- 	pm_runtime_get_sync(dwc->dev);
+ 	/* Return busy if there are any pending resources */
+-	if (atomic_read(&mhi_cntrl->dev_wake))
++	if (atomic_read(&mhi_cntrl->dev_wake) ||
++	    atomic_read(&mhi_cntrl->pending_pkts))
+ 		return -EBUSY;
  
- 	if (dwc->current_dr_role == DWC3_GCTL_PRTCAP_OTG)
-@@ -209,6 +206,9 @@ void dwc3_set_mode(struct dwc3 *dwc, u32 mode)
- {
- 	unsigned long flags;
+ 	/* Take MHI out of M2 state */
+@@ -712,7 +713,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
  
-+	if (dwc->dr_mode != USB_DR_MODE_OTG)
-+		return;
-+
- 	spin_lock_irqsave(&dwc->lock, flags);
- 	dwc->desired_dr_role = mode;
- 	spin_unlock_irqrestore(&dwc->lock, flags);
+ 	write_lock_irq(&mhi_cntrl->pm_lock);
+ 
+-	if (atomic_read(&mhi_cntrl->dev_wake)) {
++	if (atomic_read(&mhi_cntrl->dev_wake) ||
++	    atomic_read(&mhi_cntrl->pending_pkts)) {
+ 		write_unlock_irq(&mhi_cntrl->pm_lock);
+ 		return -EBUSY;
+ 	}
 -- 
 2.27.0
 
