@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6C32A5405
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DC32A5643
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388242AbgKCVHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:07:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46020 "EHLO mail.kernel.org"
+        id S2387417AbgKCVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:01:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731404AbgKCVG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:06:56 -0500
+        id S1732410AbgKCVA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:00:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17C9020757;
-        Tue,  3 Nov 2020 21:06:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89923223C7;
+        Tue,  3 Nov 2020 21:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437615;
-        bh=/y7H92Kxy/9wo+t0QSJYuIYPw2TgRjpkBGgOFB+T/No=;
+        s=default; t=1604437257;
+        bh=qAe2rnN958PsgWxtKniFbsM/EczxHG/amxzn10O82I8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jLmi/e/c7WF13miuDDIpGkS/tBUZjQRMuwA0mbLd0pYiXB2qG2AkxKNVuHleFlwm4
-         rUHI70EyICAzr/vugTqy+48Xo3k1JhCW83UnDkvn3LTGllQahsnIa1/gW0KU89GB7F
-         kTOED3NUkUZw4jW3zRc4TkwRRPVwNzyreDHFfBlM=
+        b=floNHrDg87EVZx3eySHDl/T1Fr5TxuNb6Mf+DXWSG8B8wNkbig7FT5eVCj3T1FBAC
+         g7GFKs3puTqX3rwZDVDfugu5RuVm/CrzsvMRpnFVmHO75NVR891kmwkVUbTzAg3Xxl
+         OQfuVfsnUZoSd5qs/eKfxBhfrCR9e0EqMECD2uvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.19 152/191] iio:gyro:itg3200: Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org, Dave Airlie <airlied@redhat.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH 5.4 196/214] drm/ttm: fix eviction valuable range check.
 Date:   Tue,  3 Nov 2020 21:37:24 +0100
-Message-Id: <20201103203246.864510812@linuxfoundation.org>
+Message-Id: <20201103203309.020978087@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Dave Airlie <airlied@redhat.com>
 
-commit 10ab7cfd5522f0041028556dac864a003e158556 upstream.
+commit fea456d82c19d201c21313864105876deabe148b upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-This is fixed by using an explicit c structure. As there are no
-holes in the structure, there is no possiblity of data leakage
-in this case.
+This was adding size to start, but pfn and start are in pages,
+so it should be using num_pages.
 
-The explicit alignment of ts is not strictly necessary but potentially
-makes the code slightly less fragile.  It also removes the possibility
-of this being cut and paste into another driver where the alignment
-isn't already true.
+Not sure this fixes anything in the real world, just noticed it
+during refactoring.
 
-Fixes: 36e0371e7764 ("iio:itg3200: Use iio_push_to_buffers_with_timestamp()")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722155103.979802-6-jic23@kernel.org
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Cc: stable@vger.kernel.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20201019222257.1684769-2-airlied@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/gyro/itg3200_buffer.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/gyro/itg3200_buffer.c
-+++ b/drivers/iio/gyro/itg3200_buffer.c
-@@ -49,13 +49,20 @@ static irqreturn_t itg3200_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct itg3200 *st = iio_priv(indio_dev);
--	__be16 buf[ITG3200_SCAN_ELEMENTS + sizeof(s64)/sizeof(u16)];
-+	/*
-+	 * Ensure correct alignment and padding including for the
-+	 * timestamp that may be inserted.
-+	 */
-+	struct {
-+		__be16 buf[ITG3200_SCAN_ELEMENTS];
-+		s64 ts __aligned(8);
-+	} scan;
- 
--	int ret = itg3200_read_all_channels(st->i2c, buf);
-+	int ret = itg3200_read_all_channels(st->i2c, scan.buf);
- 	if (ret < 0)
- 		goto error_ret;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan, pf->timestamp);
- 
- 	iio_trigger_notify_done(indio_dev->trig);
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -761,7 +761,7 @@ bool ttm_bo_eviction_valuable(struct ttm
+ 	/* Don't evict this BO if it's outside of the
+ 	 * requested placement range
+ 	 */
+-	if (place->fpfn >= (bo->mem.start + bo->mem.size) ||
++	if (place->fpfn >= (bo->mem.start + bo->mem.num_pages) ||
+ 	    (place->lpfn && place->lpfn <= bo->mem.start))
+ 		return false;
  
 
 
