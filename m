@@ -2,265 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43892A47C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327A02A4737
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 15:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbgKCNqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:46:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:49186 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729264AbgKCNqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:46:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ADA0106F;
-        Tue,  3 Nov 2020 05:46:47 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6424C3F718;
-        Tue,  3 Nov 2020 05:46:46 -0800 (PST)
-Date:   Tue, 3 Nov 2020 13:46:44 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Yun Hsiang <hsiang023167@gmail.com>
-Cc:     dietmar.eggemann@arm.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201103134644.rafsqisz7fxopo5n@e107158-lin.cambridge.arm.com>
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
+        id S1729466AbgKCOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 09:04:51 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:43857 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729432AbgKCOEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:04:01 -0500
+X-UUID: e74818044ead4c7fa295b06134707924-20201103
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bhRnUTD1xu2itKmWSn3uPQ8AOD0EU3W6g5Vk2gTnsog=;
+        b=M24ObXQ5CD6jDsnzqejx95O9k6+44puG5qPRrd7A4MkNX1SL/+hnArNJ04XAsJgxD0UEZoGO0u4QApOlct7z50bXKxDLNQ931wM8DmLdXu9zIa6Ll8i3NyLdHTxRF2oSEErvjrBDnaRWFdGwXo4llB2/L8LMUrSe9XolbhWLVlM=;
+X-UUID: e74818044ead4c7fa295b06134707924-20201103
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1008270133; Tue, 03 Nov 2020 22:03:48 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Nov 2020 22:03:47 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Nov 2020 22:03:46 +0800
+Message-ID: <1604412227.13152.11.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
+ caused by ufshcd_hold()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        "Alim Akhtar" <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 3 Nov 2020 22:03:47 +0800
+In-Reply-To: <09c5d4d31a0bd9bed99815cfbf51aaad@codeaurora.org>
+References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
+         <1604384682-15837-2-git-send-email-cang@codeaurora.org>
+         <1604387262.13152.2.camel@mtkswgap22>
+         <09c5d4d31a0bd9bed99815cfbf51aaad@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201103023756.1012088-1-hsiang023167@gmail.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yun
+SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjAtMTEtMDMgYXQgMTg6MDEgKzA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IE9uIDIwMjAtMTEtMDMgMTU6MDcsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEhpIENh
+biwNCj4gPiANCj4gPiBPbiBNb24sIDIwMjAtMTEtMDIgYXQgMjI6MjQgLTA4MDAsIENhbiBHdW8g
+d3JvdGU6DQo+ID4+IFRoZSBzY3NpX2Jsb2NrX3JlcXNfY250IGluY3JlYXNlZCBpbiB1ZnNoY2Rf
+aG9sZCgpIGlzIHN1cHBvc2VkIHRvIGJlDQo+ID4+IGRlY3JlYXNlZCBiYWNrIGluIHVmc2hjZF91
+bmdhdGVfd29yaygpIGluIGEgcGFpcmVkIHdheS4gSG93ZXZlciwgaWYNCj4gPj4gc3BlY2lmaWMg
+dWZzaGNkX2hvbGQvcmVsZWFzZSBzZXF1ZW5jZXMgYXJlIG1ldCwgaXQgaXMgcG9zc2libGUgdGhh
+dA0KPiA+PiBzY3NpX2Jsb2NrX3JlcXNfY250IGlzIGluY3JlYXNlZCB0d2ljZSBidXQgb25seSBv
+bmUgdW5nYXRlIHdvcmsgaXMNCj4gPj4gcXVldWVkLiBUbyBtYWtlIHN1cmUgc2NzaV9ibG9ja19y
+ZXFzX2NudCBpcyBoYW5kbGVkIGJ5IHVmc2hjZF9ob2xkKCkgDQo+ID4+IGFuZA0KPiA+IA0KPiA+
+IEp1c3QgY3VyaW91cyB0aGF0IGhvdyBjb3VsZCB0aGlzIGJlIHBvc3NpYmxlPyBXb3VsZCB5b3Ug
+aGF2ZSBzb21lIA0KPiA+IGZhaWxlZA0KPiA+IGV4YW1wbGVzPw0KPiA+IA0KPiANCj4gWzFdIE9u
+ZSBnYXRlX3dvcmsoKSBpcyBpbiB0aGUgd29ya3F1ZXVlLCBub3QgeWV0IGV4ZWN1dGVkLCBub3cg
+Y2xrIHN0YXRlIA0KPiA9PSBSRVFfQ0xLU19PRkYuDQo+IFsyXSB1ZnNoY2RfcXVldWVjb21tYW5k
+KCkgY2FsbHMgdWZzaGNkX2hvbGQoYXN5bmMgPT0gdHVyZSkgLT4gDQo+IGFjdGl2ZV9yZXErKyAt
+PiBzY3NpX2Jsb2NrX3JlcXNfY250KysgLT4gUkVRX0NMS1NfT04gLT4gcXVldWUgdW5nYXRlIA0K
+PiB3b3JrIC0+IGFjdGl2ZV9yZXEtLSAtPiByZXR1cm4gLUVBR0FJTi4NCj4gWzNdIE5vdyBnYXRl
+X3dvcmsoKSBzdGFydHMgdG8gcnVuLCBidXQgc2luY2UgdGhlIGNsayBzdGF0ZSBpcyANCj4gUkVR
+X0NMS1NfT04sIGdhdGVfd29yaygpIGp1c3Qgc2V0cyBjbGsgc3RhdGUgdG8gQ0xLU19PTiBhbmQg
+YmFpbC4NCj4gWzNdIFNvbWVvbmUgY2FsbHMgdWZzaGNkX2hvbGQoYXN5bmMgPT0gZmFsc2UpIC0+
+IGRvIHNvbWV0aGluZyAtPiANCj4gdWZzaGNkX3JlbGVhc2UoKSAtPiBjbGsgc3RhdGUgaXMgY2hh
+bmdlZCB0byBSRVFfQ0xLU19PRkYuIE5vdGUgdGhhdCwgDQo+IHRpbGwgbm93LCB1bmdhdGVfd29y
+aygpIGlzIHN0aWxsIGluIHRoZSB3b3JrIHF1ZXVlLCBub3QgZXhlY3V0ZWQgeWV0Lg0KPiBbNF0g
+Tm93LCBpZiBzb21lb25lIGNhbGxzIHVmc2hjZF9ob2xkKCksIHdlIHdpbGwgaGl0IHRoZSBpc3N1
+ZS4NCj4gDQo+IEFib3ZlIHNlcXVlbmNlIGlzIGEgdmVyeSBjb21tb24gY2xrIGdhdGUvdW5nYXRl
+IHNlcXVlbmNlLiBUaGUgaXNzdWUNCj4gaXMgYmVjYXVzZSB1bmdhdGVfd29yayBpcyBxdWV1ZWQg
+YnV0IGNhbm5vdCBiZSBleGVjdXRlZCBpbiB0aW1lLiBJbiBteQ0KPiBjYXNlLCBJIHNlZSB0aGUg
+dW5nYXRlX3dvcmsgaXMgc29tZWhvdyBkZWxheWVkIGZvciBhYm91dCAxNTBtcy4gVGhpcw0KPiBj
+aGFuZ2UgaGFzIGJlZW4gdGVzdGVkIGJ5IGN1c3RvbWVycyBvbiBtdWx0aXBsZSBwbGF0Zm9ybXMu
+IEFuZCB5b3UNCj4gY2FuIHRlbGwgZnJvbSB0aGUgY29kZSB0aGF0IGl0IHdvbid0IGJyZWFrIGFu
+eXRoaW5nLiA6KQ0KDQpUaGFua3Mgc28gbXVjaCBmb3IgdGhlIGRldGFpbHMuIExvb2tzIGdvb2Qg
+dG8gbWUuDQoNClJldmlld2VkLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsu
+Y29tPg0KDQo+IA0KPiBUaGFua3MsDQo+IA0KPiBDYW4gR3VvLg0KPiANCj4gPj4gdWZzaGNkX3Vu
+Z2F0ZV93b3JrKCkgaW4gYSBwYWlyZWQgd2F5LCBpbmNyZWFzZSBpdCBvbmx5IGlmIHF1ZXVlX3dv
+cmsoKQ0KPiA+PiByZXR1cm5zIHRydWUuDQo+ID4+IA0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBDYW4g
+R3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiA+PiBSZXZpZXdlZC1ieTogSG9uZ3d1IFN1IDxo
+b25nd3VzQGNvZGVhdXJvcmEub3JnPg0KPiA+PiAtLS0NCj4gPj4gIGRyaXZlcnMvc2NzaS91ZnMv
+dWZzaGNkLmMgfCA2ICsrKy0tLQ0KPiA+PiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KSwgMyBkZWxldGlvbnMoLSkNCj4gPj4gDQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kv
+dWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+PiBpbmRleCA4NDdm
+MzU1Li5lZmE3ZDg2IDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5j
+DQo+ID4+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPj4gQEAgLTE2MzQsMTIg
+KzE2MzQsMTIgQEAgaW50IHVmc2hjZF9ob2xkKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgDQo+
+ID4+IGFzeW5jKQ0KPiA+PiAgCQkgKi8NCj4gPj4gIAkJLyogZmFsbHRocm91Z2ggKi8NCj4gPj4g
+IAljYXNlIENMS1NfT0ZGOg0KPiA+PiAtCQl1ZnNoY2Rfc2NzaV9ibG9ja19yZXF1ZXN0cyhoYmEp
+Ow0KPiA+PiAgCQloYmEtPmNsa19nYXRpbmcuc3RhdGUgPSBSRVFfQ0xLU19PTjsNCj4gPj4gIAkJ
+dHJhY2VfdWZzaGNkX2Nsa19nYXRpbmcoZGV2X25hbWUoaGJhLT5kZXYpLA0KPiA+PiAgCQkJCQlo
+YmEtPmNsa19nYXRpbmcuc3RhdGUpOw0KPiA+PiAtCQlxdWV1ZV93b3JrKGhiYS0+Y2xrX2dhdGlu
+Zy5jbGtfZ2F0aW5nX3dvcmtxLA0KPiA+PiAtCQkJICAgJmhiYS0+Y2xrX2dhdGluZy51bmdhdGVf
+d29yayk7DQo+ID4+ICsJCWlmIChxdWV1ZV93b3JrKGhiYS0+Y2xrX2dhdGluZy5jbGtfZ2F0aW5n
+X3dvcmtxLA0KPiA+PiArCQkJICAgICAgICZoYmEtPmNsa19nYXRpbmcudW5nYXRlX3dvcmspKQ0K
+PiA+PiArCQkJdWZzaGNkX3Njc2lfYmxvY2tfcmVxdWVzdHMoaGJhKTsNCj4gPj4gIAkJLyoNCj4g
+Pj4gIAkJICogZmFsbCB0aHJvdWdoIHRvIGNoZWNrIGlmIHdlIHNob3VsZCB3YWl0IGZvciB0aGlz
+DQo+ID4+ICAJCSAqIHdvcmsgdG8gYmUgZG9uZSBvciBub3QuDQo+ID4gDQo+ID4gVGhhbmtzLA0K
+PiA+IFN0YW5sZXkgQ2h1DQoNCg==
 
-+Juri (A question for you below)
-
-On 11/03/20 10:37, Yun Hsiang wrote:
-> If the user wants to stop controlling uclamp and let the task inherit
-> the value from the group, we need a method to reset.
-> 
-> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
-> sched_setattr syscall.
-> 
-> The policy is
-> _CLAMP_RESET                           => reset both min and max
-> _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-> 
-> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  include/uapi/linux/sched.h |  7 +++--
->  kernel/sched/core.c        | 59 ++++++++++++++++++++++++++++----------
->  2 files changed, 49 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> index 3bac0a8ceab2..6c823ddb1a1e 100644
-> --- a/include/uapi/linux/sched.h
-> +++ b/include/uapi/linux/sched.h
-> @@ -132,17 +132,20 @@ struct clone_args {
->  #define SCHED_FLAG_KEEP_PARAMS		0x10
->  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
->  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
-
-The new flag needs documentation about how it should be used. It has a none
-obvious policy that we can't expect users to just get it.
-
->  
->  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
->  				 SCHED_FLAG_KEEP_PARAMS)
->  
->  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
-
-Either do this..
-
->  
->  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
->  			 SCHED_FLAG_RECLAIM		| \
->  			 SCHED_FLAG_DL_OVERRUN		| \
->  			 SCHED_FLAG_KEEP_ALL		| \
-> -			 SCHED_FLAG_UTIL_CLAMP)
-> +			 SCHED_FLAG_UTIL_CLAMP		| \
-> +			 SCHED_FLAG_UTIL_CLAMP_RESET)
-
-Or this.
-
-I checked glibc and it seems they don't use the sched.h from linux and more
-surprisingly they don't seem to have a wrapper for sched_setattr(). bionic libc
-from Android does take sched.h from linux, but didn't find any user. So we
-might be okay with modifying these here.
-
-I still would like us to document better what we expect from these defines.
-Are they for internal kernel use or really for user space? If the former we
-should take them out of here. If the latter, then adding the RESET is dangerous
-as it'll cause an observable change in behavior; that is if an application was
-using SCHED_FLAG_ALL or SCHED_FLAG_UTIL_CLAMP to update the UTIL_MIN/MAX of
-a task, existing binaries will find out now that instead of modifying the value
-they're actually resetting them.
-
-Juri, it seems you originally introduced SCHED_FLAG_ALL. I assume this was some
-sort of shorthand for user space, not the kernel?
-
-If the latter, I think we should move SCHED_FLAG_ALL and SCHED_FLAG_UTIL_CLAMP
-to core.c and hope no one is already relying on them.
-
->  
->  #endif /* _UAPI_LINUX_SCHED_H */
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8160ab5263f8..6ae463b64834 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1004,7 +1004,7 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
->  	return uclamp_idle_value(rq, clamp_id, clamp_value);
->  }
->  
-> -static void __uclamp_update_util_min_rt_default(struct task_struct *p)
-> +static inline void __uclamp_update_util_min_rt_default(struct task_struct *p)
-
-Seems unrelated change. Worth a mention in the commit message at least.
-
->  {
->  	unsigned int default_util_min;
->  	struct uclamp_se *uc_se;
-> @@ -1413,8 +1413,14 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
->  static int uclamp_validate(struct task_struct *p,
->  			   const struct sched_attr *attr)
->  {
-> -	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> -	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-> +	unsigned int lower_bound, upper_bound;
-> +
-> +	/* Do not check uclamp attributes values in reset case. */
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
-> +		return 0;
-> +
-> +	lower_bound = p->uclamp_req[UCLAMP_MIN].value;
-> +	upper_bound = p->uclamp_req[UCLAMP_MAX].value;
->  
->  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
->  		lower_bound = attr->sched_util_min;
-> @@ -1438,20 +1444,43 @@ static int uclamp_validate(struct task_struct *p,
->  	return 0;
->  }
->  
-> +static int uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
-
-Add the policy part of the commit message as a documentation to this function
-please.
-
-ie:
-
-	/*
-	 * The policy is
-	 * _CLAMP_RESET                           => reset both min and max
-	 * _CLAMP_RESET | _CLAMP_MIN              => reset min value
-	 * _CLAMP_RESET | _CLAMP_MAX              => reset max value
-	 * _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-	 */
-
-> +{
-> +	/* No _UCLAMP_RESET flag set: do not reset */
-> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
-> +		return false;
-> +
-> +	/* Only _UCLAMP_RESET flag set: reset both clamps */
-> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
-> +		return true;
-> +
-> +	/* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
-> +		return true;
-> +
-> +	/* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static void __setscheduler_uclamp(struct task_struct *p,
->  				  const struct sched_attr *attr)
->  {
->  	enum uclamp_id clamp_id;
->  
->  	/*
-> -	 * On scheduling class change, reset to default clamps for tasks
-> -	 * without a task-specific value.
-> +	 * Reset to default clamps on forced _UCLAMP_RESET (always) and
-> +	 * for tasks without a task-specific value (on scheduling class change).
->  	 */
->  	for_each_clamp_id(clamp_id) {
-> +		unsigned int clamp_value;
->  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
->  
->  		/* Keep using defined clamps across class changes */
-> -		if (uc_se->user_defined)
-> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
-> +				uc_se->user_defined)
->  			continue;
->  
->  		/*
-> @@ -1459,24 +1488,24 @@ static void __setscheduler_uclamp(struct task_struct *p,
->  		 * at runtime.
->  		 */
->  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
-> -			__uclamp_update_util_min_rt_default(p);
-> +			clamp_value = sysctl_sched_uclamp_util_min_rt_default;
->  		else
-> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
-> +			clamp_value = uclamp_none(clamp_id);
->  
-> +		uclamp_se_set(uc_se, clamp_value, false);
-
-This is another unrelated change. Add a comment in the commit message at least
-please.
-
->  	}
->  
-> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> +	if (likely(!(attr->sched_flags && SCHED_FLAG_UTIL_CLAMP)) ||
-> +		attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET)
->  		return;
->  
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
->  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> -			      attr->sched_util_min, true);
-> -	}
-> +				attr->sched_util_min, true);
->  
-> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
->  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
-> -			      attr->sched_util_max, true);
-> -	}
-> +				attr->sched_util_max, true);
-
-These two hunks seem unrelated too. Multi line statement should still have
-braces AFAIK. Why change it?
-
-Generally personally I am not fond of mixing 'cleanup' and modifications.
-Especially when they are unrelated. They come across as churn to me but
-I won't insist on removing/splitting them but at least document them in the
-commit message with good reasons please.
-
-Thanks
-
---
-Qais Yousef
-
->  }
->  
->  static void uclamp_fork(struct task_struct *p)
-> -- 
-> 2.25.1
-> 
