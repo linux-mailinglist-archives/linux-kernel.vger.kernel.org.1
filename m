@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE042A5524
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F83E2A5692
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388459AbgKCVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:10:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51376 "EHLO mail.kernel.org"
+        id S1732992AbgKCU6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388731AbgKCVK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:10:27 -0500
+        id S1730727AbgKCU6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:58:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF0AA206B5;
-        Tue,  3 Nov 2020 21:10:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF8AE2053B;
+        Tue,  3 Nov 2020 20:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437827;
-        bh=8IoPhvaNi50VZ4kDbgG2391J0F0bfxVrFVK+xANb+9Q=;
+        s=default; t=1604437114;
+        bh=KEtK5hdAZfsIrtGMreF2YXohOfq3j5+ktLYhH8ZE8NA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hoVc+I8l5SerM8LR9SDMjJhhOP0szRKElV0pbfIPSi0WjRlMv2NKc5aAZr8uGWW/b
-         l7PGSIldTYexgEZDj/H/LS9v3XXOgej/FL/trVapAjVLew981gyohGvcN06x1spiep
-         N8jnpkwKRZZ+TZvlSdJ90MUzowoJ5lsLcG+h1ydY=
+        b=mLr1InVyN1UQncFwkAMEeLIXiTmFbHcrxiglal7e3CguUq8P0gLmRwUdC/S+qwrK+
+         t2k1+xVx2f9GfykKn61BQwSJIdfja/IF7LwgD5UXAroIplV/wmbkHpDTijXzTWSA/d
+         eQLGUIZXRGbKJmagOBsn3ZIw/51bmZe3ORGNjgeU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 022/125] um: change sigio_spinlock to a mutex
+        stable@vger.kernel.org, Tobias Jordan <kernel@cdqe.de>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 151/214] iio: adc: gyroadc: fix leak of device node iterator
 Date:   Tue,  3 Nov 2020 21:36:39 +0100
-Message-Id: <20201103203159.931746512@linuxfoundation.org>
+Message-Id: <20201103203304.951123480@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
-References: <20201103203156.372184213@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,78 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Tobias Jordan <kernel@cdqe.de>
 
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
+commit da4410d4078ba4ead9d6f1027d6db77c5a74ecee upstream.
 
-Lockdep complains at boot:
+Add missing of_node_put calls when exiting the for_each_child_of_node
+loop in rcar_gyroadc_parse_subdevs early.
 
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
+Also add goto-exception handling for the error paths in that loop.
 
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
+Fixes: 059c53b32329 ("iio: adc: Add Renesas GyroADC driver")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+Link: https://lore.kernel.org/r/20200926161946.GA10240@agrajag.zerfleddert.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Change the spinlock to a mutex to avoid that.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/adc/rcar-gyroadc.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index b5e0cbb343828..476ded92affac 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -36,14 +36,14 @@ int write_sigio_irq(int fd)
+--- a/drivers/iio/adc/rcar-gyroadc.c
++++ b/drivers/iio/adc/rcar-gyroadc.c
+@@ -357,7 +357,7 @@ static int rcar_gyroadc_parse_subdevs(st
+ 			num_channels = ARRAY_SIZE(rcar_gyroadc_iio_channels_3);
+ 			break;
+ 		default:
+-			return -EINVAL;
++			goto err_e_inval;
+ 		}
+ 
+ 		/*
+@@ -374,7 +374,7 @@ static int rcar_gyroadc_parse_subdevs(st
+ 				dev_err(dev,
+ 					"Failed to get child reg property of ADC \"%pOFn\".\n",
+ 					child);
+-				return ret;
++				goto err_of_node_put;
+ 			}
+ 
+ 			/* Channel number is too high. */
+@@ -382,7 +382,7 @@ static int rcar_gyroadc_parse_subdevs(st
+ 				dev_err(dev,
+ 					"Only %i channels supported with %pOFn, but reg = <%i>.\n",
+ 					num_channels, child, reg);
+-				return -EINVAL;
++				goto err_e_inval;
+ 			}
+ 		}
+ 
+@@ -391,7 +391,7 @@ static int rcar_gyroadc_parse_subdevs(st
+ 			dev_err(dev,
+ 				"Channel %i uses different ADC mode than the rest.\n",
+ 				reg);
+-			return -EINVAL;
++			goto err_e_inval;
+ 		}
+ 
+ 		/* Channel is valid, grab the regulator. */
+@@ -401,7 +401,8 @@ static int rcar_gyroadc_parse_subdevs(st
+ 		if (IS_ERR(vref)) {
+ 			dev_dbg(dev, "Channel %i 'vref' supply not connected.\n",
+ 				reg);
+-			return PTR_ERR(vref);
++			ret = PTR_ERR(vref);
++			goto err_of_node_put;
+ 		}
+ 
+ 		priv->vref[reg] = vref;
+@@ -425,8 +426,10 @@ static int rcar_gyroadc_parse_subdevs(st
+ 		 * attached to the GyroADC at a time, so if we found it,
+ 		 * we can stop parsing here.
+ 		 */
+-		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A)
++		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A) {
++			of_node_put(child);
+ 			break;
++		}
+ 	}
+ 
+ 	if (first) {
+@@ -435,6 +438,12 @@ static int rcar_gyroadc_parse_subdevs(st
+ 	}
+ 
+ 	return 0;
++
++err_e_inval:
++	ret = -EINVAL;
++err_of_node_put:
++	of_node_put(child);
++	return ret;
  }
  
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
- 
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
- 
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
--- 
-2.27.0
-
+ static void rcar_gyroadc_deinit_supplies(struct iio_dev *indio_dev)
 
 
