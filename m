@@ -2,158 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663222A3FDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DFE2A3FE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgKCJUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:20:37 -0500
-Received: from smtpcmd0987.aruba.it ([62.149.156.87]:42265 "EHLO
-        smtpcmd0987.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgKCJUg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:20:36 -0500
-Received: from [192.168.1.132] ([93.146.66.165])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id ZsUMk9eeRiwdrZsUMkir2k; Tue, 03 Nov 2020 10:20:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1604395231; bh=p3NYnEsBV1+gOzvEA4H7wP3MD4VfueeB7ja3XqlV1qA=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=DPtPYg8actwqXljbQjOBvwnwnM1Ff7/dTyd6BqH2rOuyZLQOI0o1JCBm6hs5A/9hg
-         TUGN0ch5GA8/HEV9tv4jSh17/KQNqwFT7eNi0LEEZGtDv73qU3rLhfcyvv7jWt6imi
-         DADrbZTiR3POX0P1dgwAtpn3xayjEEyLUICqWv1RlepWxJEy51iz+ISlPTxeexzINa
-         scH6jBS2rChASFNulGmgFVUpr8wZxV2jy1qq4jcKxp6znq6tVuHHL2slDtL/adHRJf
-         eDp/GPPNySupe5KaqZ4wprdD4aqOoEngQY5rDoKIXydZHuW8ecVt9gnVvW+5piAdRA
-         81r1ARQ+8SgRQ==
-Subject: Re: [PATCH 1/2] misc: c2port: core: Make copying name from userspace
- more secure
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20201102111211.1047972-1-lee.jones@linaro.org>
- <d7b2a5d8d46e4f7885315ea4aa032b8c@AcuMS.aculab.com>
- <20201102114903.GN4127@dell> <20201102121150.GA663356@kroah.com>
- <20201102124301.GC4488@dell> <20201102125910.GA1008111@kroah.com>
- <20201102134729.GD4488@dell>
- <9f10500a-cfd7-bcbe-7b8e-edd49ab4d43c@enneenne.com>
- <20201103085726.GN4488@dell>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <82957cb2-0ad0-8b26-cfdc-2482efb3f7b5@enneenne.com>
-Date:   Tue, 3 Nov 2020 10:20:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727470AbgKCJXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:23:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53964 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726734AbgKCJXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:23:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604395391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZirvJkFfS5KQWBeS+X1b4eLDAWA7Tfi5Tdja1+LJ1c4=;
+        b=JdWuxErStXUT8gLHd/RYGe/UBTRaPIXthJXEuFtepLvLSQ1VotX1EG/2Owx3j8Y24w5/t/
+        mIduwBLlsf5JbdLIDvrBPVYncvRWBg+VOvNKLklGO62yrCnm2GdY5OnINFD29N+q8W+f5r
+        q9u0w4UH1TKMoxQPoDRB0OzTBbOb2ow=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC1D8AC97;
+        Tue,  3 Nov 2020 09:23:10 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 10:23:09 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rashmica Gupta <rashmica.g@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 4/4] powernv/memtrace: don't abuse memory hot(un)plug
+ infrastructure for memory allocations
+Message-ID: <20201103092309.GD21990@dhcp22.suse.cz>
+References: <20201029162718.29910-1-david@redhat.com>
+ <20201029162718.29910-5-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103085726.GN4488@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfO4mtq8keX3eKwLVlULaMK/t6hE2iJWGNFpCR/+9VEEoOJvwzgnIGNgkigcAf3Lj0gOrxKMVQLx/PGt8aZEYkn7LyzeCv7RWqHecIuKY3bYPUvHDHiBK
- dd4NPvf3Tg5oQf60A+4lNRJ3l7+oi/3L6N6d6MDjdrlSGgGlH5q8hZVwsQS8w15i8QJGhqa68ih5IOqpqwxrzZtsz7p2xqQYPizOj54jWrGs9nTXNHpYrUtM
- wiV1QViy/63O0fSXApBZUYy9L5zNosTTvffetNl7kX18ptL/6qLXlULYvRtp2SErZ81LBo923kMgQLGY36S6rQzdcu/SJljDn4a9Cui8wpC/VcnmGsNRENVO
- LPOP3hVlg0OZEuSkIiOWuRXnEglf4Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029162718.29910-5-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2020 09:57, Lee Jones wrote:
-> On Mon, 02 Nov 2020, Rodolfo Giometti wrote:
+On Thu 29-10-20 17:27:18, David Hildenbrand wrote:
+> Let's use alloc_contig_pages() for allocating memory and remove the
+> linear mapping manually via arch_remove_linear_mapping(). Mark all pages
+> PG_offline, such that they will definitely not get touched - e.g.,
+> when hibernating. When freeing memory, try to revert what we did.
 > 
->> On 02/11/2020 14:47, Lee Jones wrote:
->>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
->>>
->>>> On Mon, Nov 02, 2020 at 12:43:01PM +0000, Lee Jones wrote:
->>>>> On Mon, 02 Nov 2020, gregkh@linuxfoundation.org wrote:
->>>>>
->>>>>> On Mon, Nov 02, 2020 at 11:49:03AM +0000, Lee Jones wrote:
->>>>>>> On Mon, 02 Nov 2020, David Laight wrote:
->>>>>>>
->>>>>>>> From: Lee Jones
->>>>>>>>> Sent: 02 November 2020 11:12
->>>>>>>>>
->>>>>>>>> strncpy() may not provide a NUL terminator, which means that a 1-byte
->>>>>>>>> leak would be possible *if* this was ever copied to userspace.  Ensure
->>>>>>>>> the buffer will always be NUL terminated by using the kernel's
->>>>>>>>> strscpy() which a) uses the destination (instead of the source) size
->>>>>>>>> as the bytes to copy and b) is *always* NUL terminated.
->>>>>>>>>
->>>>>>>>> Cc: Rodolfo Giometti <giometti@enneenne.com>
->>>>>>>>> Cc: "Eurotech S.p.A" <info@eurotech.it>
->>>>>>>>> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
->>>>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
->>>>>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>>>>>>>> ---
->>>>>>>>>  drivers/misc/c2port/core.c | 2 +-
->>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
->>>>>>>>> index 80d87e8a0bea9..b96444ec94c7e 100644
->>>>>>>>> --- a/drivers/misc/c2port/core.c
->>>>>>>>> +++ b/drivers/misc/c2port/core.c
->>>>>>>>> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
->>>>>>>>>  	}
->>>>>>>>>  	dev_set_drvdata(c2dev->dev, c2dev);
->>>>>>>>>
->>>>>>>>> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
->>>>>>>>> +	strscpy(c2dev->name, name, sizeof(c2dev->name));
->>>>>>>>
->>>>>>>> strscpy() doesn't zero fill so if the memory isn't zeroed
->>>>>>>> and a 'blind' copy to user of the structure is done
->>>>>>>> then more data is leaked.
->>>>>>>>
->>>>>>>> strscpy() may be better, but rational isn't right.
->>>>>>>
->>>>>>> The original patch zeroed the data too, but I was asked to remove that
->>>>>>> part [0].  In your opinion, should it be reinstated?
->>>>>>>
->>>>>>> [0] https://lore.kernel.org/patchwork/patch/1272290/
->>>>>>
->>>>>> Just keep the kzalloc() part of the patch, this portion makes no sense
->>>>>> to me.
->>>>>
->>>>> Can do.
->>>>>
->>>>>> But if you REALLY want to get it correct, call dev_set_name()
->>>>>> instead please, as that is what it is there for.
->>>>>
->>>>> The line above isn't setting the 'struct device' name.  It looks as
->>>>> though 'struct c2port' has it's own member, also called 'name'.  As to
->>>>> how they differ, I'm not currently aware.  Nor do I wish to mess
->>>>> around with the semantics all that much.
->>>>>
->>>>> Going with suggestion #1.
->>>>
->>>> As the "device" already has a name, I suggest just getting rid of this
->>>> name field anyway, no need for duplicates.
->>>
->>> That definitely goes against the point I made above:
->>>
->>>  "Nor do I wish to mess around with the semantics all that much."
->>>
->>> It looks as though the device name 'c2port%d' varies greatly to the
->>> requested name 'uc'.  I don't have enough knowledge of how user-
->>> space expects to use the provided sysfs entries to be able to
->>> competently merge/decide which of these should be kept and which to
->>> discard.
->>>
->>> Hopefully one of the authors/maintainers are reading this and can come
->>> up with an acceptable solution.
->>
->> User-space usage can change its behavior so, please, consider the best solution
->> from the kernel space point-of-view. :)
+> The original idea was discussed in:
+>  https://lkml.kernel.org/r/48340e96-7e6b-736f-9e23-d3111b915b6e@redhat.com
 > 
-> If you're sure, I can add it to my TODO.
+> This is similar to CONFIG_DEBUG_PAGEALLOC handling on other
+> architectures, whereby only single pages are unmapped from the linear
+> mapping. Let's mimic what memory hot(un)plug would do with the linear
+> mapping.
+> 
+> We now need MEMORY_HOTPLUG and CONTIG_ALLOC as dependencies.
+> 
+> Simple test under QEMU TCG (10GB RAM, single NUMA node):
+> 
+> sh-5.0# mount -t debugfs none /sys/kernel/debug/
+> sh-5.0# cat /sys/devices/system/memory/block_size_bytes
+> 40000000
+> sh-5.0# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
+> [   71.052836][  T356] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
+> sh-5.0# echo 0x80000000 > /sys/kernel/debug/powerpc/memtrace/enable
+> [   75.424302][  T356] radix-mmu: Mapped 0x0000000080000000-0x00000000c0000000 with 64.0 KiB pages
+> [   75.430549][  T356] memtrace: Freed trace memory back on node 0
+> [   75.604520][  T356] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
+> sh-5.0# echo 0x100000000 > /sys/kernel/debug/powerpc/memtrace/enable
+> [   80.418835][  T356] radix-mmu: Mapped 0x0000000080000000-0x0000000100000000 with 64.0 KiB pages
+> [   80.430493][  T356] memtrace: Freed trace memory back on node 0
+> [   80.433882][  T356] memtrace: Failed to allocate trace memory on node 0
+> sh-5.0# echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
+> [   91.920158][  T356] memtrace: Allocated trace memory on node 0 at 0x0000000080000000
+> 
+> Note 1: We currently won't be allocating from ZONE_MOVABLE - because our
+> 	pages are not movable. However, as we don't run with any memory
+> 	hot(un)plug mechanism around, we could make an exception to
+> 	increase the chance of allocations succeeding.
+> 
+> Note 2: PG_reserved isn't sufficient. E.g., kernel_page_present() used
+> 	along PG_reserved in hibernation code will always return "true"
+> 	on powerpc, resulting in the pages getting touched. It's too
+> 	generic - e.g., indicates boot allocations.
+> 
+> Note 3: For now, we keep using memory_block_size_bytes() as minimum
+> 	granularity. I'm not able to come up with a better guess (most
+> 	probably, doing it on a section basis could be possible).
+> 
+> Suggested-by: Michal Hocko <mhocko@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Rashmica Gupta <rashmica.g@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Yes, no problem!
+Thanks! This looks like a move into the right direction. I cannot really
+judge implementation details because I am not familiar with the code.
+I have only one tiny concern:
+[...]
+> -/* called with device_hotplug_lock held */
+> -static bool memtrace_offline_pages(u32 nid, u64 start_pfn, u64 nr_pages)
+> +static u64 memtrace_alloc_node(u32 nid, u64 size)
+>  {
+> -	const unsigned long start = PFN_PHYS(start_pfn);
+> -	const unsigned long size = PFN_PHYS(nr_pages);
+> +	const unsigned long nr_pages = PHYS_PFN(size);
+> +	unsigned long pfn, start_pfn;
+> +	struct page *page;
+>  
+> -	if (walk_memory_blocks(start, size, NULL, check_memblock_online))
+> -		return false;
+> -
+> -	walk_memory_blocks(start, size, (void *)MEM_GOING_OFFLINE,
+> -			   change_memblock_state);
+> -
+> -	if (offline_pages(start_pfn, nr_pages)) {
+> -		walk_memory_blocks(start, size, (void *)MEM_ONLINE,
+> -				   change_memblock_state);
+> -		return false;
+> -	}
+> +	/*
+> +	 * Trace memory needs to be aligned to the size, which is guaranteed
+> +	 * by alloc_contig_pages().
+> +	 */
+> +	page = alloc_contig_pages(nr_pages, __GFP_THISNODE | __GFP_NOWARN,
+> +				  nid, NULL);
 
-Ciao,
+__GFP_THISNODE without other modifiers looks suspicious. I suspect you
+want to enfore node locality and exclude movable zones by this. While
+this works it is an antipattern. I would rather use GFP_KERNEL |
+__GFP_THISNODE | __GFP_NOWARN to be more in line with other gfp usage.
 
-Rodolfo
-
+If for no other reasons we want to be able to work inside a normal
+compaction context (comparing to effectively GFP_NOIO which the above
+implies). Also this looks like a sleepable context.
 -- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+Michal Hocko
+SUSE Labs
