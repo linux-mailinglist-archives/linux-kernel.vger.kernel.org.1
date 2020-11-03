@@ -2,224 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0332A45D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C45B2A45D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgKCNCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:02:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20184 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728245AbgKCNBG (ORCPT
+        id S1729102AbgKCNAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgKCNAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:01:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604408464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4O2iJ/zgY4Lte+KS6CupKkbJfPOpvRKxzpKWrj3MKA0=;
-        b=YmasCj/3ugRjpDZAw0MXchUJaUSrscZiCsga/bjzRuNBbUegtaaC6WvjiAVALWAvDr8WnL
-        w7piH5OSV21CyxodCzvYAa5u6ShhINGrljFY8vrRgTBfa68rXnSRpYNJwyEa3Ka1LybDbC
-        Yed/ty+h8lFwj5rLmRhb3El3klHd23Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-VEWn-h9CPqq0JLAQqybR3w-1; Tue, 03 Nov 2020 08:01:00 -0500
-X-MC-Unique: VEWn-h9CPqq0JLAQqybR3w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1651718CB723;
-        Tue,  3 Nov 2020 13:00:55 +0000 (UTC)
-Received: from [10.72.12.109] (ovpn-12-109.pek2.redhat.com [10.72.12.109])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D3DC6672C0;
-        Tue,  3 Nov 2020 13:00:15 +0000 (UTC)
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-To:     Si-Wei Liu <si-wei.liu@oracle.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com>
- <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <42fe6ef3-90f6-ddb9-f206-e60c1e98c301@redhat.com>
-Date:   Tue, 3 Nov 2020 21:00:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 3 Nov 2020 08:00:34 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8CAC0613D1;
+        Tue,  3 Nov 2020 05:00:33 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id z3so7746865pfz.6;
+        Tue, 03 Nov 2020 05:00:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cLOijGoctpVii6lG3GNscCwHl4zBjRguK02Pj+vC7Bo=;
+        b=Lnt8Hjmu9dGoSLDAasF005iIBbNvJDUDXT2QOAwpwOqhEQdjNHVxckiiJFr8mU4us4
+         ZfvZURxeeV5pnQwRthC7wy5OhPHWgFUG+/dOdwLIl0starUECLJ9LsqKhehkbUNWbd+W
+         Gk40A7rI2KRJIH1RbJpPY9GOqOxSiWOz5ua9ugFXxzjUDbUsv8kMQdEWKNvX6VsLw7n/
+         Z/wiuG6cRq9ieuH87Rmjj6KfKi8oWILHkl2ewcbROaYc73EbRg5fyydXWz+3H1wFoUe9
+         y7HhwZtgPvyA5h3Hv1fhVJNm3akcVlQ9BYdE+WTW2Dmb7vNqchZ5wD9Su7dBPwQn1Tdu
+         8I5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cLOijGoctpVii6lG3GNscCwHl4zBjRguK02Pj+vC7Bo=;
+        b=tmQCwqwjUTvMkEI+P1Ie/5YLDEaRu4NijUMGdNk5k8sau8EW3sAUC91rsG5c9CGd44
+         Q7UbrXHgwW+C8d1susSVAuGOCaxLY5OS9k/fw39c0Vtj9z3/CvxDaWZ4WInVOmI3++3m
+         YIqhcYl85l2yW22/vU15bqLmba9z6684y9QgdkOCDICx37OYJwPYu8zpWOpa8cg+Z6Jr
+         woG6FQLguuQvvNBdqsXwkHM/vDTewpNztaNnNb7hkA79/So/Ll5IauKvbBwY5RQ5CyXn
+         LlOgyLQZXYBPgy7Kwwzdbl1ICuhjyfnI4bUIuJAaZLjZP4NYsaCDUz/d7WtkV9FA1DIj
+         Pr0Q==
+X-Gm-Message-State: AOAM530ohaxqJy0wbtyom/6WBGwabHu4WTlsKX99K1DC7yC5YLyq9d0o
+        eGqdT4jUXGm6nrlct0AUT95G3HIPEjeLWkKBwQo=
+X-Google-Smtp-Source: ABdhPJw+ttTwVOHCreEYANGBLEJOjyklNontnw0owjnvgHA5/sZlnEhBwxgZCZadbjBWnXjZWUz50lU3Vv1QK1Vv3D4=
+X-Received: by 2002:a17:90a:f184:: with SMTP id bv4mr3599635pjb.1.1604408433473;
+ Tue, 03 Nov 2020 05:00:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook> <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+ <202010231945.90FA4A4AA@keescook> <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+In-Reply-To: <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Tue, 3 Nov 2020 07:00:22 -0600
+Message-ID: <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/10/30 下午3:45, Si-Wei Liu wrote:
-> Pinned pages are not properly accounted particularly when
-> mapping error occurs on IOTLB update. Clean up dangling
-> pinned pages for the error path.
+On Fri, Oct 30, 2020 at 7:18 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> I got a bare metal test machine with Intel(R) Xeon(R) CPU E5-2660 v3 @
+> 2.60GHz, running Ubuntu 18.04. Test kernels are compiled at
+> 57a339117e52 ("selftests/seccomp: Compare bitmap vs filter overhead")
+> and 3650b228f83a ("Linux 5.10-rc1"), built with Ubuntu's
+> 5.3.0-64-generic's config, then `make olddefconfig`. "Mitigations off"
+> indicate the kernel was booted with "nospectre_v2 nospectre_v1
+> no_stf_barrier tsx=off tsx_async_abort=off".
 >
-> The memory usage for bookkeeping pinned pages is reverted
-> to what it was before: only one single free page is needed.
-> This helps reduce the host memory demand for VM with a large
-> amount of memory, or in the situation where host is running
-> short of free memory.
+> The benchmark was single-job make on x86_64 defconfig of 5.9.1, with
+> CPU affinity to set only processor #0. Raw results are appended below.
+> Each boot is tested by running the build directly and inside docker,
+> with and without seccomp. The commands used are attached below. Each
+> test is 4 trials, with the middle two (non-minimum, non-maximum) wall
+> clock time averaged. Results summary:
 >
-> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
-> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> ---
->   drivers/vhost/vdpa.c | 64 +++++++++++++++++++++++++++++++++++++---------------
->   1 file changed, 46 insertions(+), 18 deletions(-)
+>                 Mitigations On                  Mitigations Off
+>                 With Cache      Without Cache   With Cache      Without Cache
+> Native          18:17.38        18:13.78        18:16.08        18:15.67
+> D. no seccomp   18:15.54        18:17.71        18:17.58        18:16.75
+> D. + seccomp    20:42.47        20:45.04        18:47.67        18:49.01
 >
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index b6d9016..8da8558 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->   
->   	if (r)
->   		vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
-> +	else
-> +		atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->   
->   	return r;
->   }
-> @@ -591,14 +593,16 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->   	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->   	unsigned int gup_flags = FOLL_LONGTERM;
->   	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
-> -	unsigned long locked, lock_limit, pinned, i;
-> +	unsigned long lock_limit, sz2pin, nchunks, i;
->   	u64 iova = msg->iova;
-> +	long pinned;
->   	int ret = 0;
->   
->   	if (vhost_iotlb_itree_first(iotlb, msg->iova,
->   				    msg->iova + msg->size - 1))
->   		return -EEXIST;
->   
-> +	/* Limit the use of memory for bookkeeping */
->   	page_list = (struct page **) __get_free_page(GFP_KERNEL);
->   	if (!page_list)
->   		return -ENOMEM;
-> @@ -607,52 +611,64 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->   		gup_flags |= FOLL_WRITE;
->   
->   	npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SHIFT;
-> -	if (!npages)
-> -		return -EINVAL;
-> +	if (!npages) {
-> +		ret = -EINVAL;
-> +		goto free;
-> +	}
->   
->   	mmap_read_lock(dev->mm);
->   
-> -	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->   	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
-> -
-> -	if (locked > lock_limit) {
-> +	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->   		ret = -ENOMEM;
-> -		goto out;
-> +		goto unlock;
->   	}
->   
->   	cur_base = msg->uaddr & PAGE_MASK;
->   	iova &= PAGE_MASK;
-> +	nchunks = 0;
->   
->   	while (npages) {
-> -		pinned = min_t(unsigned long, npages, list_size);
-> -		ret = pin_user_pages(cur_base, pinned,
-> -				     gup_flags, page_list, NULL);
-> -		if (ret != pinned)
-> +		sz2pin = min_t(unsigned long, npages, list_size);
-> +		pinned = pin_user_pages(cur_base, sz2pin,
-> +					gup_flags, page_list, NULL);
-> +		if (sz2pin != pinned) {
-> +			if (pinned < 0) {
-> +				ret = pinned;
-> +			} else {
-> +				unpin_user_pages(page_list, pinned);
-> +				ret = -ENOMEM;
-> +			}
->   			goto out;
-> +		}
-> +		nchunks++;
->   
->   		if (!last_pfn)
->   			map_pfn = page_to_pfn(page_list[0]);
->   
-> -		for (i = 0; i < ret; i++) {
-> +		for (i = 0; i < pinned; i++) {
->   			unsigned long this_pfn = page_to_pfn(page_list[i]);
->   			u64 csize;
->   
->   			if (last_pfn && (this_pfn != last_pfn + 1)) {
->   				/* Pin a contiguous chunk of memory */
->   				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
-> -				if (vhost_vdpa_map(v, iova, csize,
-> -						   map_pfn << PAGE_SHIFT,
-> -						   msg->perm))
-> +				ret = vhost_vdpa_map(v, iova, csize,
-> +						     map_pfn << PAGE_SHIFT,
-> +						     msg->perm);
-> +				if (ret)
->   					goto out;
-> +
->   				map_pfn = this_pfn;
->   				iova += csize;
-> +				nchunks = 0;
->   			}
->   
->   			last_pfn = this_pfn;
->   		}
->   
-> -		cur_base += ret << PAGE_SHIFT;
-> -		npages -= ret;
-> +		cur_base += pinned << PAGE_SHIFT;
-> +		npages -= pinned;
->   	}
->   
->   	/* Pin the rest chunk */
-> @@ -660,10 +676,22 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->   			     map_pfn << PAGE_SHIFT, msg->perm);
->   out:
->   	if (ret) {
-> +		if (nchunks && last_pfn) {
-> +			unsigned long pfn;
-> +
-> +			/*
-> +			 * Unpin the outstanding pages which are unmapped.
-> +			 * Mapped pages are accounted in vdpa_map(), thus
-> +			 * will be handled by vdpa_unmap().
-> +			 */
-> +			for (pfn = map_pfn; pfn <= last_pfn; pfn++)
-> +				unpin_user_page(pfn_to_page(pfn));
-> +		}
->   		vhost_vdpa_unmap(v, msg->iova, msg->size);
+> To be honest, I'm somewhat surprised that it didn't produce as much of
+> a dent in the seccomp overhead in this macro benchmark as I had
+> expected.
+
+My peers pointed out that in my previous benchmark there are still a
+few mitigations left on, and suggested to use "noibrs noibpb nopti
+nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable
+no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off".
+Results with "Mitigations Off" updated:
+
+                        Mitigations On            Mitigations Off
+                With Cache      Without Cache   With Cache      Without Cache
+Native          18:17.38        18:13.78        17:43.42        17:47.68
+D. no seccomp   18:15.54        18:17.71        17:34.59        17:37.54
+D. + seccomp    20:42.47        20:45.04        17:35.70        17:37.16
+
+Whether seccomp is on or off seems not to make much of a difference
+for this benchmark. Bitmap being enabled does seem to decrease the
+overall compilation time but it also affects where seccomp is off, so
+the speedup is probably from other factors. We are thinking about
+using more syscall-intensive workloads, such as httpd.
+
+Thugh, this does make me wonder, where does the 3-minute overhead with
+seccomp with mitigations come from? Is it data cache misses? If that
+is the case, can we somehow preload the seccomp bitmap cache maybe? I
+mean, mitigations only cause around half a minute slowdown without
+seccomp but seccomp somehow amplify the slowdown with an additional
+2.5 minutes, so something must be off here.
+
+This is the raw output for the time commands:
+
+==== with cache, mitigations off ====
+
+947.02user 108.62system 17:47.65elapsed 98%CPU (0avgtext+0avgdata
+239804maxresident)k
+25112inputs+217152outputs (166major+51934447minor)pagefaults 0swaps
+
+947.91user 108.20system 17:46.53elapsed 99%CPU (0avgtext+0avgdata
+239576maxresident)k
+0inputs+217152outputs (0major+51941524minor)pagefaults 0swaps
+
+948.33user 108.70system 17:47.72elapsed 98%CPU (0avgtext+0avgdata
+239604maxresident)k
+0inputs+217152outputs (0major+51938566minor)pagefaults 0swaps
+
+948.65user 108.81system 17:48.41elapsed 98%CPU (0avgtext+0avgdata
+239692maxresident)k
+0inputs+217152outputs (0major+51935349minor)pagefaults 0swaps
 
 
-I want to know what's wrong with current code.
+932.12user 113.68system 17:37.24elapsed 98%CPU (0avgtext+0avgdata
+239660maxresident)k
+0inputs+217152outputs (0major+51547571minor)pagefaults 0swap
 
-We call vhost_vdpa_unmap() on error which calls vhost_vdpa_iotlb_unmap() 
-that will unpin and reduce the pinned_vm.
+931.69user 114.12system 17:37.84elapsed 98%CPU (0avgtext+0avgdata
+239448maxresident)k
+0inputs+217152outputs (0major+51539964minor)pagefaults 0swaps
 
-Thanks
+932.25user 113.39system 17:37.75elapsed 98%CPU (0avgtext+0avgdata
+239372maxresident)k
+0inputs+217152outputs (0major+51538018minor)pagefaults 0swaps
+
+931.09user 114.25system 17:37.34elapsed 98%CPU (0avgtext+0avgdata
+239508maxresident)k
+0inputs+217152outputs (0major+51537700minor)pagefaults 0swaps
 
 
-> -		atomic64_sub(npages, &dev->mm->pinned_vm);
->   	}
-> +unlock:
->   	mmap_read_unlock(dev->mm);
-> +free:
->   	free_page((unsigned long)page_list);
->   	return ret;
->   }
+929.96user 113.42system 17:36.23elapsed 98%CPU (0avgtext+0avgdata
+239448maxresident)k
+984inputs+217152outputs (22major+51544059minor)pagefaults 0swaps
 
+929.73user 115.13system 17:38.09elapsed 98%CPU (0avgtext+0avgdata
+239464maxresident)k
+0inputs+217152outputs (0major+51540259minor)pagefaults 0swaps
+
+930.13user 112.71system 17:36.17elapsed 98%CPU (0avgtext+0avgdata
+239620maxresident)k
+0inputs+217152outputs (0major+51540623minor)pagefaults 0swaps
+
+930.57user 113.02system 17:49.70elapsed 97%CPU (0avgtext+0avgdata
+239432maxresident)k
+0inputs+217152outputs (0major+51537776minor)pagefaults 0swaps
+
+==== without cache, mitigations off ====
+
+947.59user 108.06system 17:44.56elapsed 99%CPU (0avgtext+0avgdata
+239484maxresident)k
+25112inputs+217152outputs (167major+51938723minor)pagefaults 0swaps
+
+947.95user 108.58system 17:43.40elapsed 99%CPU (0avgtext+0avgdata
+239580maxresident)k
+0inputs+217152outputs (0major+51943434minor)pagefaults 0swaps
+
+948.54user 106.62system 17:42.39elapsed 99%CPU (0avgtext+0avgdata
+239608maxresident)k
+0inputs+217152outputs (0major+51936408minor)pagefaults 0swaps
+
+947.85user 107.92system 17:43.44elapsed 99%CPU (0avgtext+0avgdata
+239656maxresident)k
+0inputs+217152outputs (0major+51931633minor)pagefaults 0swaps
+
+
+931.28user 111.16system 17:33.59elapsed 98%CPU (0avgtext+0avgdata
+239440maxresident)k
+0inputs+217152outputs (0major+51543540minor)pagefaults 0swaps
+
+930.21user 112.56system 17:34.20elapsed 98%CPU (0avgtext+0avgdata
+239400maxresident)k
+0inputs+217152outputs (0major+51539699minor)pagefaults 0swaps
+
+930.16user 113.74system 17:35.06elapsed 98%CPU (0avgtext+0avgdata
+239344maxresident)k
+0inputs+217152outputs (0major+51543072minor)pagefaults 0swaps
+
+930.17user 112.77system 17:34.98elapsed 98%CPU (0avgtext+0avgdata
+239176maxresident)k
+0inputs+217152outputs (0major+51540777minor)pagefaults 0swaps
+
+
+931.92user 113.31system 17:36.05elapsed 98%CPU (0avgtext+0avgdata
+239520maxresident)k
+984inputs+217152outputs (22major+51534636minor)pagefaults 0swaps
+
+931.14user 112.81system 17:35.35elapsed 98%CPU (0avgtext+0avgdata
+239524maxresident)k
+0inputs+217152outputs (0major+51549007minor)pagefaults 0swaps
+
+930.93user 114.56system 17:37.72elapsed 98%CPU (0avgtext+0avgdata
+239360maxresident)k
+0inputs+217152outputs (0major+51542191minor)pagefaults 0swaps
+
+932.26user 111.54system 17:35.36elapsed 98%CPU (0avgtext+0avgdata
+239572maxresident)k
+0inputs+217152outputs (0major+51537921minor)pagefaults 0swaps
+
+YiFei Zhu
