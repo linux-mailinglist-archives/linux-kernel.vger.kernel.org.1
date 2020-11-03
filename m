@@ -2,175 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5369F2A50BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1980F2A50C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgKCUMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgKCUMO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:12:14 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441AAC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 12:12:13 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id b2so17164753ots.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 12:12:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=csm6WJIqkvgmHgjyFbVOCKjF/qQY6zaL8P5DbbzYf5w=;
-        b=O7zOsHoJsyNmSctB0hK/p1kq9D4Cf8l1PE33c5vl9PD3ENNqc46es0CXlSAKn3elQC
-         vBj7lEgL1EUxhewi8dyETj92Cp60JPR/ydwC9dZZY9SeebuEtot5UC2VXxo0s8f5s19r
-         BHnOxC/7Qy5YMXKJZN6T7VR7RnDZKx3TBGvgYpyUuxNTyr9KBiylO77bEpg2S6v7ZeYW
-         bqFHs81C5qtwfz82Twd7VX7U0z7vpmboXKwB57B7dSlCGVguiYWN7kJapx8OVNo5av+j
-         yRf/JR9az66TlaVbxQLRlHn6OvCymaxY6I1Id7aHMXDai/L9xZwNrBuDf22FxSwqLFSg
-         tNhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=csm6WJIqkvgmHgjyFbVOCKjF/qQY6zaL8P5DbbzYf5w=;
-        b=gtWR4rrfg6DaWf+gAPZcoTL7T2XfxLLKz2s4lW1Dq6EkA3REyjE/Osi95nsModg2Ce
-         K70grkEgYQOleLEQDSxG91gi54VWV0+Q96AHr9L8s/iLwfPgyxV6A68wSMBjSJok8qCH
-         UHX9eYXz4Yo+dWcf9yhMXLGgoSiusDtPv0XG+1SDXCIsnUce6AeNHDNPMD+2BhZP6VES
-         vvo9tggc+pECAi54hJVpxbkvv96RdR2z3TJQfaPoJRHgvx04gIvx6E18Y4c7LzieAEHy
-         8AxV2flDu6KrxQL3b6QY1cd/mxSOLyGIp0jRJjMmcaw+s8Ifx+Jjx8uVa9A/CMB3GsMt
-         gGbA==
-X-Gm-Message-State: AOAM5310VzIV7VHb5EwEPvdQoJtDmTgBdB3VBWTWi2TqmcvH4w8FeMrK
-        LNuQUs5lecr5mYulMyXCiIRm+8MLDumui96bT2XuDg==
-X-Google-Smtp-Source: ABdhPJz5PAXuw4nvCoOi2WMbeaAaYxFbUwsUxwUrIuKo9hsfaVXO5qZ3KTaQqFX7qJ+DkibTNBKBkh6JeDQfHPHfPac=
-X-Received: by 2002:a9d:7cd7:: with SMTP id r23mr15671271otn.228.1604434332404;
- Tue, 03 Nov 2020 12:12:12 -0800 (PST)
+        id S1729160AbgKCUMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:12:53 -0500
+Received: from aposti.net ([89.234.176.197]:50666 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729061AbgKCUMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:12:52 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Artur Rojek <contact@artur-rojek.eu>
+Cc:     od@zcrc.me, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] iio/adc: ingenic: Fix AUX/VBAT readings when touchscreen is used
+Date:   Tue,  3 Nov 2020 20:12:38 +0000
+Message-Id: <20201103201238.161083-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20201029201358.29181-1-cunkel@drivescale.com> <265efd48-b0c6-cba5-c77e-5efb0e6b9e00@redhat.com>
-In-Reply-To: <265efd48-b0c6-cba5-c77e-5efb0e6b9e00@redhat.com>
-From:   Chris Unkel <cunkel@drivescale.com>
-Date:   Tue, 3 Nov 2020 12:12:00 -0800
-Message-ID: <CAHFUYDo23BBq0R5mZBZgcCEzE=rN_ZYHCZp5WEs-nBZwYeyEnA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] md superblock write alignment on 512e devices
-To:     Xiao Ni <xni@redhat.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiao,
+When the command feature of the ADC is used, it is possible to program
+the ADC, and specify at each step what input should be processed, and in
+comparison to what reference.
 
-Thanks for the excellent feedback.  Since bitmap_offset appears to be
-a free-form field, it wasn't apparent to me that the bitmap never
-starts within 4K of the bitmap.
+This broke the AUX and battery readings when the touchscreen was
+enabled, most likely because the CMD feature would change the VREF all
+the time.
 
-I don't think it's worth worrying about a logical block size that's
-more than 4K here--from what I can see logical block size larger than
-the usual 4K page isn't going to happen.
+Now, when AUX or battery are read, we temporarily disable the CMD
+feature, which means that we won't get touchscreen readings in that time
+frame. But it now gives correct values for AUX / battery, and the
+touchscreen isn't disabled for long enough to be an actual issue.
 
-I do think that it makes sense to handle the case where the physical
-block size is more than 4K.  I think what you propose works, but I
-think in the physical block > MAX_SB_SIZE case it makes more sense to
-align the superblock writes to the physical block size (as now) rather
-than rejecting the create/assemble.  Mounting with the possible
-performance hit seems like a better outcome for the user in that case
-than refusing to assemble.
-It's the same check that would have to be written to reject the
-assembly in that case and so the code shouldn't really be any more
-complex.
+Fixes: b96952f498db ("IIO: Ingenic JZ47xx: Add touchscreen mode.")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/iio/adc/ingenic-adc.c | 33 +++++++++++++++++++++++++++------
+ 1 file changed, 27 insertions(+), 6 deletions(-)
 
-So basically what I propose is:  if the physical block size is no
-larger than MAX_SB_SIZE, pad to that; otherwise pad to to
-logical_block_size, that is, replace queue_logical_block_size()
-with something equivalent to:
+diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
+index 92b25083e23f..ecaff6a9b716 100644
+--- a/drivers/iio/adc/ingenic-adc.c
++++ b/drivers/iio/adc/ingenic-adc.c
+@@ -177,13 +177,12 @@ static void ingenic_adc_set_config(struct ingenic_adc *adc,
+ 	mutex_unlock(&adc->lock);
+ }
+ 
+-static void ingenic_adc_enable(struct ingenic_adc *adc,
+-			       int engine,
+-			       bool enabled)
++static void ingenic_adc_enable_unlocked(struct ingenic_adc *adc,
++					int engine,
++					bool enabled)
+ {
+ 	u8 val;
+ 
+-	mutex_lock(&adc->lock);
+ 	val = readb(adc->base + JZ_ADC_REG_ENABLE);
+ 
+ 	if (enabled)
+@@ -192,20 +191,42 @@ static void ingenic_adc_enable(struct ingenic_adc *adc,
+ 		val &= ~BIT(engine);
+ 
+ 	writeb(val, adc->base + JZ_ADC_REG_ENABLE);
++}
++
++static void ingenic_adc_enable(struct ingenic_adc *adc,
++			       int engine,
++			       bool enabled)
++{
++	mutex_lock(&adc->lock);
++	ingenic_adc_enable_unlocked(adc, engine, enabled);
+ 	mutex_unlock(&adc->lock);
+ }
+ 
+ static int ingenic_adc_capture(struct ingenic_adc *adc,
+ 			       int engine)
+ {
++	u32 cfg;
+ 	u8 val;
+ 	int ret;
+ 
+-	ingenic_adc_enable(adc, engine, true);
++	/*
++	 * Disable CMD_SEL temporarily, because it causes wrong VBAT readings,
++	 * probably due to the switch of VREF. We must keep the lock here to
++	 * avoid races with the buffer enable/disable functions.
++	 */
++	mutex_lock(&adc->lock);
++	cfg = readl(adc->base + JZ_ADC_REG_CFG);
++	writel(cfg & ~JZ_ADC_REG_CFG_CMD_SEL, adc->base + JZ_ADC_REG_CFG);
++
++
++	ingenic_adc_enable_unlocked(adc, engine, true);
+ 	ret = readb_poll_timeout(adc->base + JZ_ADC_REG_ENABLE, val,
+ 				 !(val & BIT(engine)), 250, 1000);
+ 	if (ret)
+-		ingenic_adc_enable(adc, engine, false);
++		ingenic_adc_enable_unlocked(adc, engine, false);
++
++	writel(cfg, adc->base + JZ_ADC_REG_CFG);
++	mutex_unlock(&adc->lock);
+ 
+ 	return ret;
+ }
+-- 
+2.28.0
 
-    queue_physical_block_size(...) > MAX_SB_SIZE ?
-queue_logical_block_size(...) : queue_physical_block_size(...)
-
-which is simple, safe in all cases, doesn't reject any feasible
-assembly, and generates aligned sb writes on all common current
-devices (512n,4kn,512e.)
-
-What do you think?
-
-Regards,
-
-  --Chris
-
-On Sun, Nov 1, 2020 at 11:43 PM Xiao Ni <xni@redhat.com> wrote:
->
->
->
-> On 10/30/2020 04:13 AM, Christopher Unkel wrote:
-> > Hello,
-> >
-> > Thanks for the feedback on the previous patch series.
-> >
-> > A updated patch series with the same function as the first patch
-> > (https://lkml.org/lkml/2020/10/22/1058 "md: align superblock writes to
-> > physical blocks") follows.
-> >
-> > As suggested, it introduces a helper function, which can be used to
-> > reduce some code duplication.  It handles the case in super_1_sync()
-> > where the superblock is extended by the addition of new component
-> > devices.
-> >
-> > I think it also fixes a bug where the existing code in super_1_load()
-> > ought to be rejecting the array with EINVAL: if the superblock padded
-> > out to the *logical* block length runs into the bitmap.  For example, if
-> > the bitmap offset is 2 (bitmap 1K after superblock) and the logical
-> > block size is 4K, the superblock padded out to 4K runs into the bitmap.
-> > This case may be unusual (perhaps only happens if the array is created
-> > on a 512n device and then raw contents are copied onto a 4kn device) but
-> > I think it is possible.
-> Hi Chris
-> For super1.1 and super1.2 bitmap offset is 8. It's a fixed value. So it
-> should
-> not have the risk?
->
-> But for future maybe it has this problem. If the disk logical or
-> physical block size
-> is larger than 4K in future, it has data corruption risk.
-> >
-> > With respect to the option of simply replacing
-> > queue_logical_block_size() with queue_physical_block_size(), I think
-> > this can result in the code rejecting devices that can be loaded, but
-> In mdadm it defines the max super size of super1 is 4096
-> #define MAX_SB_SIZE 4096
-> /* bitmap super size is 256, but we round up to a sector for alignment */
-> #define BM_SUPER_SIZE 512
-> #define MAX_DEVS ((int)(MAX_SB_SIZE - sizeof(struct mdp_superblock_1)) / 2)
-> #define SUPER1_SIZE     (MAX_SB_SIZE + BM_SUPER_SIZE \
->                           + sizeof(struct misc_dev_info))
->
-> It should be ok to replace queue_logical_block_size with
-> queue_physical_block_size?
-> Now it doesn't check physical block size and super block size. For
-> super1, we can add
-> a check that if physical block size is larger than MAX_SB_SIZE, then we
-> reject to create/assmble
-> the raid device.
-> > for which the physical block alignment can't be respected--the longer
-> > padded size would trigger the EINVAL cases testing against
-> > data_offset/new_data_offset.  I think it's better to proceed in such
-> > cases, just with unaligned superblock writes as would presently happen.
-> > Also if I'm right about the above bug, then I think this subsitution
-> > would be more likely to trigger it.
-> >
-> > Thanks,
-> >
-> >    --Chris
-> >
-> >
-> > Christopher Unkel (3):
-> >    md: factor out repeated sb alignment logic
-> >    md: align superblock writes to physical blocks
-> >    md: reuse sb length-checking logic
-> >
-> >   drivers/md/md.c | 69 +++++++++++++++++++++++++++++++++++++------------
-> >   1 file changed, 52 insertions(+), 17 deletions(-)
-> >
->
