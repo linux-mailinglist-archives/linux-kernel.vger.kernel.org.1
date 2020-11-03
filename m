@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBF42A593E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71B52A5940
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgKCUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:41:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
+        id S1729923AbgKCUl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:41:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730430AbgKCUls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:48 -0500
+        id S1730421AbgKCUlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6038E223AC;
-        Tue,  3 Nov 2020 20:41:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4979223AB;
+        Tue,  3 Nov 2020 20:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436107;
-        bh=MEA3fYY7orHTZa76wElIUpLcS7Hu5gXbG/cvEpgn5V4=;
+        s=default; t=1604436110;
+        bh=b+EUa/HZZerOFZhY3a4qiUmM1E6DUp3dYuXsys0e0qM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxL78fDZVVEFOSkcIvcdz44YMWDqRoPjDAkBWLn6X0zT0vF3MthQJfBJT75kOTisx
-         st2+FXSEQUPr3LNU0At1OlLg+JDxoLGynqh+Uh3mFXZTM88o0vSOvlogdDEtwGGp0m
-         ezyvT7lHH8jkP8RWdk/RwInWHWXYKK+6zFUmjkl4=
+        b=FmfTg/8AvrvWbk2HiwwunN8W06dgryk42kh4bWC33aiaj3lx/6r1kHThC45Xlk1wT
+         3swl/1CqtXwR1OUvzmnIwf141l2RLkEe4BP6Sw+1m+TqmvRb5RWtPq3sY4bgBQoXGS
+         3jWd4fyVCaDxRrhaNXt765nLocAYNHsHtmP5q944=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        stable@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 107/391] selftests/bpf: Define string const as global for test_sysctl_prog.c
-Date:   Tue,  3 Nov 2020 21:32:38 +0100
-Message-Id: <20201103203354.042754189@linuxfoundation.org>
+Subject: [PATCH 5.9 108/391] selinux: access policycaps with READ_ONCE/WRITE_ONCE
+Date:   Tue,  3 Nov 2020 21:32:39 +0100
+Message-Id: <20201103203354.109057343@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,55 +44,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Stephen Smalley <stephen.smalley.work@gmail.com>
 
-[ Upstream commit 6e057fc15a2da4ee03eb1fa6889cf687e690106e ]
+[ Upstream commit e8ba53d0023a76ba0f50e6ee3e6288c5442f9d33 ]
 
-When tweaking llvm optimizations, I found that selftest build failed
-with the following error:
-  libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-  libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_mem.tcp_mem_name'
-          in section '.rodata.str1.1'
-  Error: failed to open BPF object file: Relocation failed
-  make: *** [/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h] Error 255
-  make: *** Deleting file `/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h'
+Use READ_ONCE/WRITE_ONCE for all accesses to the
+selinux_state.policycaps booleans to prevent compiler
+mischief.
 
-The local string constant "tcp_mem_name" is put into '.rodata.str1.1' section
-which libbpf cannot handle. Using untweaked upstream llvm, "tcp_mem_name"
-is completely inlined after loop unrolling.
-
-Commit 7fb5eefd7639 ("selftests/bpf: Fix test_sysctl_loop{1, 2}
-failure due to clang change") solved a similar problem by defining
-the string const as a global. Let us do the same here
-for test_sysctl_prog.c so it can weather future potential llvm changes.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200910202718.956042-1-yhs@fb.com
+Signed-off-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/test_sysctl_prog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ security/selinux/include/security.h | 14 +++++++-------
+ security/selinux/ss/services.c      |  3 ++-
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-index 50525235380e8..5489823c83fc2 100644
---- a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-+++ b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-@@ -19,11 +19,11 @@
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
- #endif
- 
-+const char tcp_mem_name[] = "net/ipv4/tcp_mem";
- static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
+diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
+index b0e02cfe3ce14..8a432f646967e 100644
+--- a/security/selinux/include/security.h
++++ b/security/selinux/include/security.h
+@@ -177,49 +177,49 @@ static inline bool selinux_policycap_netpeer(void)
  {
--	char tcp_mem_name[] = "net/ipv4/tcp_mem";
- 	unsigned char i;
--	char name[64];
-+	char name[sizeof(tcp_mem_name)];
- 	int ret;
+ 	struct selinux_state *state = &selinux_state;
  
- 	memset(name, 0, sizeof(name));
+-	return state->policycap[POLICYDB_CAPABILITY_NETPEER];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NETPEER]);
+ }
+ 
+ static inline bool selinux_policycap_openperm(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_OPENPERM];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_OPENPERM]);
+ }
+ 
+ static inline bool selinux_policycap_extsockclass(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS]);
+ }
+ 
+ static inline bool selinux_policycap_alwaysnetwork(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK]);
+ }
+ 
+ static inline bool selinux_policycap_cgroupseclabel(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL]);
+ }
+ 
+ static inline bool selinux_policycap_nnp_nosuid_transition(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION]);
+ }
+ 
+ static inline bool selinux_policycap_genfs_seclabel_symlinks(void)
+ {
+ 	struct selinux_state *state = &selinux_state;
+ 
+-	return state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS];
++	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS]);
+ }
+ 
+ int security_mls_enabled(struct selinux_state *state);
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index 1caf4e6033096..c55b3063753ab 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -2103,7 +2103,8 @@ static void security_load_policycaps(struct selinux_state *state)
+ 	struct ebitmap_node *node;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(state->policycap); i++)
+-		state->policycap[i] = ebitmap_get_bit(&p->policycaps, i);
++		WRITE_ONCE(state->policycap[i],
++			ebitmap_get_bit(&p->policycaps, i));
+ 
+ 	for (i = 0; i < ARRAY_SIZE(selinux_policycap_names); i++)
+ 		pr_info("SELinux:  policy capability %s=%d\n",
 -- 
 2.27.0
 
