@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097B32A526E
+	by mail.lfdr.de (Postfix) with ESMTP id 834342A526F
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731729AbgKCUt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:49:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43286 "EHLO mail.kernel.org"
+        id S1731741AbgKCUuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:50:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731700AbgKCUtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:50 -0500
+        id S1729702AbgKCUt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FA0222404;
-        Tue,  3 Nov 2020 20:49:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D68320719;
+        Tue,  3 Nov 2020 20:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436589;
-        bh=UhyYgVp+1KR7j5IDTpEgX1c8mS2WPI5TB7Sqf8WcqCQ=;
+        s=default; t=1604436596;
+        bh=BmdPBCob9YUk0ta18A6Y2dyMSGi0tEIs8U3uQDLyt30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yS5LSSLrLkpnZm98ExgoXsOtkN6MJ0phrUpr9jsUxStsgfcyAeVr5aY0scoRe5J20
-         BDnxqxWG1h2ro05aZ6B9FHzPC5uSSBNZIgd+pkLB0SW2tZkRzw95Pa42/K8isgMUZV
-         42xHCgUcVfCeKAdzDZxhGkFbr2zrki8yBE1M18gY=
+        b=KrqbvHeCk2LYhpa7+8SlzxNWUF4S8NPUZBpaQQ2TvlDqR90aHNdU5fEnyx8eKGsBv
+         wlpgmVJYPr7HiVPWk4Hfi9CZCN+Opnp/S3uwZvKk/MNl7a2F4tZGYQsAoGnWkIq7VR
+         4Nb7osarf+q9f2WoQiGyeEJBh9X3vdHqImAi2dGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Galiffi <David.Galiffi@amd.com>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        stable@vger.kernel.org, Likun Gao <Likun.Gao@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.9 317/391] drm/amd/display: Fix incorrect backlight register offset for DCN
-Date:   Tue,  3 Nov 2020 21:36:08 +0100
-Message-Id: <20201103203408.501224393@linuxfoundation.org>
+Subject: [PATCH 5.9 320/391] drm/amdgpu: update golden setting for sienna_cichlid
+Date:   Tue,  3 Nov 2020 21:36:11 +0100
+Message-Id: <20201103203408.701761446@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,37 +42,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Galiffi <David.Galiffi@amd.com>
+From: Likun Gao <Likun.Gao@amd.com>
 
-commit 651111be24aa4c8b62c10f6fff51d9ad82411249 upstream.
+commit 0d142232d9436acab3578ee995472f58adcbf201 upstream.
 
-[Why]
-Typo in backlight refactor introduced wrong register offset.
+Update golden setting for sienna_cichlid.
 
-[How]
-SR(BIOS_SCRATCH_2) to NBIO_SR(BIOS_SCRATCH_2).
-
-Signed-off-by: David Galiffi <David.Galiffi@amd.com>
-Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Likun Gao <Likun.Gao@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: <stable@vger.kernel.org>
+Cc: stable@vger.kernel.org # 5.9.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.h
-@@ -54,7 +54,7 @@
- 	SR(BL_PWM_CNTL2), \
- 	SR(BL_PWM_PERIOD_CNTL), \
- 	SR(BL_PWM_GRP1_REG_LOCK), \
--	SR(BIOS_SCRATCH_2)
-+	NBIO_SR(BIOS_SCRATCH_2)
- 
- #define DCE_PANEL_CNTL_SF(reg_name, field_name, post_fix)\
- 	.field_name = reg_name ## __ ## field_name ## post_fix
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -3091,6 +3091,7 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGL2C_ADDR_MATCH_MASK, 0xffffffff, 0xffffffcf),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGL2C_CM_CTRL1, 0xff8fff0f, 0x580f1008),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGL2C_CTRL3, 0xf7ffffff, 0x10f80988),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmLDS_CONFIG,  0x00000020, 0x00000020),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_CL_ENHANCE, 0xf17fffff, 0x01200007),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_BINNER_TIMEOUT_COUNTER, 0xffffffff, 0x00000800),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_ENHANCE_2, 0xffffffbf, 0x00000820),
 
 
