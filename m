@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548302A525E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324852A5301
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731488AbgKCUtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:49:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39022 "EHLO mail.kernel.org"
+        id S1732310AbgKCUz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:55:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731401AbgKCUsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:00 -0500
+        id S1732242AbgKCUzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:55:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A38220719;
-        Tue,  3 Nov 2020 20:47:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F8582053B;
+        Tue,  3 Nov 2020 20:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436480;
-        bh=UUZhJu7PlHJEOTeScATk6/XWUhsNVq7I6xnmh+OhpVc=;
+        s=default; t=1604436913;
+        bh=wq5DBJCkBhOeDeG63sfmtQYCwTQmAJnj0LNi+e1pePk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ar2zxCfrAW/3pMDIcjvchfrXr/XuFfsbbt2xWrrPFU5r5i7UDXuUEH5BySP0ehWAx
-         Ex0c2Ox7MLJT4izf5OlRrhYUjU8OI3d9bsx9lvHV48j5ztuO6eDeRV+A1svyOmTy7X
-         059NW8PLZ2f/4GlUteqCnaAENPExwqq42B1Prwlo=
+        b=CX/+naJ02vbiLTYwGN0eLd+7RwzrjU7LhEJ+bLq0sSoOgHWRWWdXXa/WyODAKtHTG
+         4p6i/rZABz+CHpo9Uomin+aYjM3PzacR/GFDPAjJuF0vOv+XcD0LM/mFgktHnfO/3v
+         AZln3Q5YAlbZeuxkZJwVovDqNIxC0/ELll/KxFWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gaurav Kohli <gkohli@codeaurora.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.9 261/391] tracing: Fix race in trace_open and buffer resize call
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 064/214] xfs: dont free rt blocks when were doing a REMAP bunmapi call
 Date:   Tue,  3 Nov 2020 21:35:12 +0100
-Message-Id: <20201103203404.635910328@linuxfoundation.org>
+Message-Id: <20201103203256.377202168@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Kohli <gkohli@codeaurora.org>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-commit bbeb97464eefc65f506084fd9f18f21653e01137 upstream.
+[ Upstream commit 8df0fa39bdd86ca81a8d706a6ed9d33cc65ca625 ]
 
-Below race can come, if trace_open and resize of
-cpu buffer is running parallely on different cpus
-CPUX                                CPUY
-				    ring_buffer_resize
-				    atomic_read(&buffer->resize_disabled)
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-rb_reset_cpu
-				    rb_update_pages
-				    remove/insert pages
-resetting pointer
+When callers pass XFS_BMAPI_REMAP into xfs_bunmapi, they want the extent
+to be unmapped from the given file fork without the extent being freed.
+We do this for non-rt files, but we forgot to do this for realtime
+files.  So far this isn't a big deal since nobody makes a bunmapi call
+to a rt file with the REMAP flag set, but don't leave a logic bomb.
 
-This race can cause data abort or some times infinte loop in
-rb_remove_pages and rb_insert_pages while checking pages
-for sanity.
-
-Take buffer lock to fix this.
-
-Link: https://lkml.kernel.org/r/1601976833-24377-1-git-send-email-gkohli@codeaurora.org
-
-Cc: stable@vger.kernel.org
-Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
-Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ring_buffer.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/xfs/libxfs/xfs_bmap.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -4866,6 +4866,9 @@ void ring_buffer_reset_cpu(struct trace_
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return;
+diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
+index f8db3fe616df9..c114d24be6193 100644
+--- a/fs/xfs/libxfs/xfs_bmap.c
++++ b/fs/xfs/libxfs/xfs_bmap.c
+@@ -4985,20 +4985,25 @@ xfs_bmap_del_extent_real(
  
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
+ 	flags = XFS_ILOG_CORE;
+ 	if (whichfork == XFS_DATA_FORK && XFS_IS_REALTIME_INODE(ip)) {
+-		xfs_fsblock_t	bno;
+ 		xfs_filblks_t	len;
+ 		xfs_extlen_t	mod;
+ 
+-		bno = div_u64_rem(del->br_startblock, mp->m_sb.sb_rextsize,
+-				  &mod);
+-		ASSERT(mod == 0);
+ 		len = div_u64_rem(del->br_blockcount, mp->m_sb.sb_rextsize,
+ 				  &mod);
+ 		ASSERT(mod == 0);
+ 
+-		error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
+-		if (error)
+-			goto done;
++		if (!(bflags & XFS_BMAPI_REMAP)) {
++			xfs_fsblock_t	bno;
 +
- 	atomic_inc(&cpu_buffer->resize_disabled);
- 	atomic_inc(&cpu_buffer->record_disabled);
- 
-@@ -4876,6 +4879,8 @@ void ring_buffer_reset_cpu(struct trace_
- 
- 	atomic_dec(&cpu_buffer->record_disabled);
- 	atomic_dec(&cpu_buffer->resize_disabled);
++			bno = div_u64_rem(del->br_startblock,
++					mp->m_sb.sb_rextsize, &mod);
++			ASSERT(mod == 0);
 +
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
- 
-@@ -4889,6 +4894,9 @@ void ring_buffer_reset_online_cpus(struc
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	int cpu;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
++			error = xfs_rtfree_extent(tp, bno, (xfs_extlen_t)len);
++			if (error)
++				goto done;
++		}
 +
- 	for_each_online_buffer_cpu(buffer, cpu) {
- 		cpu_buffer = buffer->buffers[cpu];
- 
-@@ -4907,6 +4915,8 @@ void ring_buffer_reset_online_cpus(struc
- 		atomic_dec(&cpu_buffer->record_disabled);
- 		atomic_dec(&cpu_buffer->resize_disabled);
- 	}
-+
-+	mutex_unlock(&buffer->mutex);
- }
- 
- /**
+ 		do_fx = 0;
+ 		nblks = len * mp->m_sb.sb_rextsize;
+ 		qfield = XFS_TRANS_DQ_RTBCOUNT;
+-- 
+2.27.0
+
 
 
