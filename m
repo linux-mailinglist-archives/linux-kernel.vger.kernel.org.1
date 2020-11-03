@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F38B2A523C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249112A52D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgKCUsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:48:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38916 "EHLO mail.kernel.org"
+        id S1732429AbgKCUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:53:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730623AbgKCUr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:58 -0500
+        id S1731766AbgKCUxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:53:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45B70223FD;
-        Tue,  3 Nov 2020 20:47:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B39BB22226;
+        Tue,  3 Nov 2020 20:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436477;
-        bh=rpe7itsELLeXF2AC2kygj+B+2ADMNIN1orbgN3x/xhY=;
+        s=default; t=1604436816;
+        bh=fnbyTJCQxdf7TG5t2E5u5tBxyVFzqa2UzX2cWklu1to=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u3ji8YRpMNq0+Fj2Cutd45xVCSK45LQ2b+ZDf/V7A0QEYll0mMDmuUSnNVKR6Gu0Z
-         xpG1d720++aTiFm4l52Cp7TUurQzuDKcYSUlftRriGKzFDL7qJZNFh2B1K25BeuVRj
-         p6naEmLXZTFHCG4ZXyorjNFp9LYfgCF0C3IhoaKw=
+        b=AM/OGgy9O/zMyMXP0ujsSzYRdlYUfH0xaSfxJYc5YuHlWTYbGy8LvS57Bp01PcJQK
+         Ju9IhjvWJ5pUBWz+EoCdo5jVaWRVWLP/MulTfUuLRD1wNa474Jwrf24id5p0jCSWyU
+         68SkoCzQruxB9A2nME3D+/jRpokOzKAf5491yhoY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.9 219/391] scsi: qla2xxx: Fix crash on session cleanup with unload
-Date:   Tue,  3 Nov 2020 21:34:30 +0100
-Message-Id: <20201103203401.711886269@linuxfoundation.org>
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 023/214] powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+Date:   Tue,  3 Nov 2020 21:34:31 +0100
+Message-Id: <20201103203252.161408033@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 50457dab670f396557e60c07f086358460876353 upstream.
+[ Upstream commit 66acd46080bd9e5ad2be4b0eb1d498d5145d058e ]
 
-On unload, session cleanup prematurely gave the signal for driver unload
-path to advance.
+powerpc uses IPIs in some situations to switch a kernel thread away
+from a lazy tlb mm, which is subject to the TLB flushing race
+described in the changelog introducing ARCH_WANT_IRQS_OFF_ACTIVATE_MM.
 
-Link: https://lore.kernel.org/r/20200929102152.32278-6-njavali@marvell.com
-Fixes: 726b85487067 ("qla2xxx: Add framework for async fabric discovery")
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200914045219.3736466-3-npiggin@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_target.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/powerpc/Kconfig                   | 1 +
+ arch/powerpc/include/asm/mmu_context.h | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -1229,14 +1229,15 @@ void qlt_schedule_sess_for_deletion(stru
- 	case DSC_DELETE_PEND:
- 		return;
- 	case DSC_DELETED:
--		if (tgt && tgt->tgt_stop && (tgt->sess_count == 0))
--			wake_up_all(&tgt->waitQ);
--		if (sess->vha->fcport_count == 0)
--			wake_up_all(&sess->vha->fcport_waitQ);
--
- 		if (!sess->plogi_link[QLT_PLOGI_LINK_SAME_WWN] &&
--			!sess->plogi_link[QLT_PLOGI_LINK_CONFLICT])
-+			!sess->plogi_link[QLT_PLOGI_LINK_CONFLICT]) {
-+			if (tgt && tgt->tgt_stop && tgt->sess_count == 0)
-+				wake_up_all(&tgt->waitQ);
-+
-+			if (sess->vha->fcport_count == 0)
-+				wake_up_all(&sess->vha->fcport_waitQ);
- 			return;
-+		}
- 		break;
- 	case DSC_UPD_FCPORT:
- 		/*
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index ad620637cbd11..27ef333e96f6d 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -147,6 +147,7 @@ config PPC
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
+ 	select ARCH_WANT_IPC_PARSE_VERSION
++	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	select ARCH_WEAK_RELEASE_ACQUIRE
+ 	select BINFMT_ELF
+ 	select BUILDTIME_EXTABLE_SORT
+diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
+index 58efca9343113..f132b418a8c7a 100644
+--- a/arch/powerpc/include/asm/mmu_context.h
++++ b/arch/powerpc/include/asm/mmu_context.h
+@@ -216,7 +216,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+  */
+ static inline void activate_mm(struct mm_struct *prev, struct mm_struct *next)
+ {
+-	switch_mm(prev, next, current);
++	switch_mm_irqs_off(prev, next, current);
+ }
+ 
+ /* We don't currently use enter_lazy_tlb() for anything */
+-- 
+2.27.0
+
 
 
