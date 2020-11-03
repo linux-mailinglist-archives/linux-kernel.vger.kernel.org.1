@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF252A4CD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1A32A4CDA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgKCR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgKCR3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:29:40 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34C8C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:29:39 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id k18so92883wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:29:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xtvki4McB9jLla/dsGGCtBrgMZkhHSdMqdGrQg++B7s=;
-        b=benXQO3sK0iEbfXbr95M6CNtTsHLNB77tt15bbBfaM7TnqifSmnCVkGysAIyN+52gW
-         0Y+mHsPaZo0qboioe5ohkdUM1/E2WZq8jaqsOFCtMZS7p7ghs8E/pY0KrtoZqMqKINjd
-         gPnvbvARMcuoHpNXQchLSuoMTAqHMghmXcYmnwqwlEDGpXDlDGi1S8NPWdGjA/8ndMpv
-         R5j1yEW+Mwc/2dh3aNPUCQb5yve/9adq2eJrL9htvy75PrVVfdKc7UyvzzZFJcuam2EM
-         IDGjcS6Q03UZy4UEXiCNFvm3xlEhQewof4idbCxjr1k6UzjDdKSWqRJHvq5K4lTBQkeK
-         dejA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xtvki4McB9jLla/dsGGCtBrgMZkhHSdMqdGrQg++B7s=;
-        b=Wgl9xRx4jq2Q6RbcXzW895xeur7YS4sZ0qi8Ow6JcohGQuvLPkM8bbaJZEpitf3NBz
-         5Rzs0rB+sQjFMeTMGk+gCfeMjZbReqh4v3vdJGDJQXThmRZ9aqhXS6bkAPo8/0hZQBYN
-         ILlDlPH1Jy5ZhhEN4e+tLliMzPW5RVvu6UEX1GdJThgcnARWVdxII9baVmnDUxwdq0kE
-         WAvnTjpA2ye4B3m7vwFJjCk1yyLBFe3gIBKde9/yPXVgI3JK7qJo2b4es2/YvvmxxYFq
-         W+Ich/XcsLnMLBOLs7OK/aE9jjaljwxlejTJ02gylxrOHkwNt2ZqHCz8J6H4UtcFjhCi
-         T+/A==
-X-Gm-Message-State: AOAM530iQ01ss4jQDMCl1JZ5xNgtXdCs5n8CToaBwMlnbp5KxUtbJ/IM
-        BhRkDH2tpTSuttOSfqlPdT11IA==
-X-Google-Smtp-Source: ABdhPJy3/9ThSlWZqJU/rcjOCjU5D3nGY5d9eqWADAB6zPbqUKcs+gT+NotvoRGQjR7icLcX3cQkfQ==
-X-Received: by 2002:a1c:9a0e:: with SMTP id c14mr216144wme.35.1604424578462;
-        Tue, 03 Nov 2020 09:29:38 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id b4sm18798318wro.57.2020.11.03.09.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 09:29:37 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v4.9..v4.19] rtc: rx8010: don't modify the global rtc ops
-Date:   Tue,  3 Nov 2020 18:29:01 +0100
-Message-Id: <20201103172901.18231-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
+        id S1728743AbgKCRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:30:21 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:27397 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728701AbgKCRaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 12:30:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604424621; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=C4CMFwI1HM31pHkchZgqYiU+8s6XN3zv2mGhUlUukhY=; b=Fjh3Qh43Z5l7dA6Hkx3sS6ZhIFoNcoXtAnaJaMCWr3/gOHb3UExsCCcx/OIX/0UUre8Yt7mE
+ Q4QLvQWYzDO4unX8cwT0OV0vBhC9FjM74K+6HnbD3gyIW8t0xb3NMYfrbqIcqQVLGkbxxQF1
+ aE1Kz6HYyYsJIuy+m85opvN92cI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fa19396fcec43b7830a3837 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 17:29:58
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A03EC433FE; Tue,  3 Nov 2020 17:29:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2239EC433C6;
+        Tue,  3 Nov 2020 17:29:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2239EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Tue, 3 Nov 2020 10:29:52 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     robdclark@gmail.com, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm: a5xx: Make preemption reset case reentrant
+Message-ID: <20201103172951.GB5934@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
+        robdclark@gmail.com, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Eric Anholt <eric@anholt.net>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20201102200227.8876-1-marijn.suijten@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102200227.8876-1-marijn.suijten@somainline.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, Nov 02, 2020 at 09:02:25PM +0100, Marijn Suijten wrote:
+> nr_rings is reset to 1, but when this function is called for a second
+> (and third!) time nr_rings > 1 is false, thus the else case is entered
+> to set up a buffer for the RPTR shadow and consequently written to
+> RB_RPTR_ADDR, hanging platforms without WHERE_AM_I firmware support.
+> 
+> Restructure the condition in such a way that shadow buffer setup only
+> ever happens when has_whereami is true; otherwise preemption is only
+> finalized when the number of ring buffers has not been reset to 1 yet.
+> 
+> Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-The way the driver is implemented is buggy for the (admittedly unlikely)
-use case where there are two RTCs with one having an interrupt configured
-and the second not. This is caused by the fact that we use a global
-rtc_class_ops struct which we modify depending on whether the irq number
-is present or not.
+Way better. Thanks for doing this.
 
-Fix it by using two const ops structs with and without alarm operations.
-While at it: not being able to request a configured interrupt is an error
-so don't ignore it and bail out of probe().
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-Fixes: ed13d89b08e3 ("rtc: Add Epson RX8010SJ RTC driver")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200914154601.32245-2-brgl@bgdev.pl
----
- drivers/rtc/rtc-rx8010.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+> ---
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index d6804a802355..9a202a7da131 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -755,12 +755,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+>  	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
+>  		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
+>  
+> -	/* Disable preemption if WHERE_AM_I isn't available */
+> -	if (!a5xx_gpu->has_whereami && gpu->nr_rings > 1) {
+> -		a5xx_preempt_fini(gpu);
+> -		gpu->nr_rings = 1;
+> -	} else {
+> -		/* Create a privileged buffer for the RPTR shadow */
+> +	/* Create a privileged buffer for the RPTR shadow */
+> +	if (a5xx_gpu->has_whereami) {
+>  		if (!a5xx_gpu->shadow_bo) {
+>  			a5xx_gpu->shadow = msm_gem_kernel_new(gpu->dev,
+>  				sizeof(u32) * gpu->nr_rings,
+> @@ -774,6 +770,10 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+>  
+>  		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
+>  			REG_A5XX_CP_RB_RPTR_ADDR_HI, shadowptr(a5xx_gpu, gpu->rb[0]));
+> +	} else if (gpu->nr_rings > 1) {
+> +		/* Disable preemption if WHERE_AM_I isn't available */
+> +		a5xx_preempt_fini(gpu);
+> +		gpu->nr_rings = 1;
+>  	}
+>  
+>  	a5xx_preempt_hw_init(gpu);
+> -- 
+> 2.29.2
+> 
 
-diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index 7ddc22eb5b0f..f4db80f9c1b1 100644
---- a/drivers/rtc/rtc-rx8010.c
-+++ b/drivers/rtc/rtc-rx8010.c
-@@ -428,16 +428,26 @@ static int rx8010_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
- 	}
- }
- 
--static struct rtc_class_ops rx8010_rtc_ops = {
-+static const struct rtc_class_ops rx8010_rtc_ops_default = {
- 	.read_time = rx8010_get_time,
- 	.set_time = rx8010_set_time,
- 	.ioctl = rx8010_ioctl,
- };
- 
-+static const struct rtc_class_ops rx8010_rtc_ops_alarm = {
-+	.read_time = rx8010_get_time,
-+	.set_time = rx8010_set_time,
-+	.ioctl = rx8010_ioctl,
-+	.read_alarm = rx8010_read_alarm,
-+	.set_alarm = rx8010_set_alarm,
-+	.alarm_irq_enable = rx8010_alarm_irq_enable,
-+};
-+
- static int rx8010_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
- 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
-+	const struct rtc_class_ops *rtc_ops;
- 	struct rx8010_data *rx8010;
- 	int err = 0;
- 
-@@ -468,16 +478,16 @@ static int rx8010_probe(struct i2c_client *client,
- 
- 		if (err) {
- 			dev_err(&client->dev, "unable to request IRQ\n");
--			client->irq = 0;
--		} else {
--			rx8010_rtc_ops.read_alarm = rx8010_read_alarm;
--			rx8010_rtc_ops.set_alarm = rx8010_set_alarm;
--			rx8010_rtc_ops.alarm_irq_enable = rx8010_alarm_irq_enable;
-+			return err;
- 		}
-+
-+		rtc_ops = &rx8010_rtc_ops_alarm;
-+	} else {
-+		rtc_ops = &rx8010_rtc_ops_default;
- 	}
- 
- 	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
--		&rx8010_rtc_ops, THIS_MODULE);
-+					       rtc_ops, THIS_MODULE);
- 
- 	if (IS_ERR(rx8010->rtc)) {
- 		dev_err(&client->dev, "unable to register the class device\n");
 -- 
-2.29.1
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
