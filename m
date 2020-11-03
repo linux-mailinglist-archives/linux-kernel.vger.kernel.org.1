@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E912A5342
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E61E2A52A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733094AbgKCU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:59:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34312 "EHLO mail.kernel.org"
+        id S1732011AbgKCUvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:51:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732507AbgKCU7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:59:16 -0500
+        id S1730308AbgKCUvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB5A0223AC;
-        Tue,  3 Nov 2020 20:59:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 256352071E;
+        Tue,  3 Nov 2020 20:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437156;
-        bh=tDP9tNKvXcz9W4/Ob2VP0SNZMWutwGjYqRUALACOOio=;
+        s=default; t=1604436710;
+        bh=TLQXn4pmUjcvNk1YPYPQecF335j53y2AyGsM+J010d8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EeTnclL+AEScoKuxRKJCdXSekaJ4uiJQaW2iVlAfOTKHdN+bTufOIo4001DbBzPwl
-         BHIJb2wOxO/NXWxV2OOobijkVHl83hc416YTlDb7PwpahdA16yFI0s9z3Ctmojb/AK
-         fQniQiyKaplv5FkVw5eq6rheg9Nd/B68J+Jq5KyA=
+        b=YpL74lDM8Pqe7b8WQFUvRDqSeLQ8lFjCaFy/05rq2Er5IcJxb28Opi8TwzEkmVL3I
+         6rPMoVLz+bXXh9Vo+lm+kFWMvnlKbtynTxGWC/FYVTF97t+/AWizkPyR5QOqE92w93
+         e6WwtDfsTLHYsTD7ghcJxJuWtXIF4Z13TzuhSk0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.4 171/214] ubifs: Dont parse authentication mount options in remount process
-Date:   Tue,  3 Nov 2020 21:36:59 +0100
-Message-Id: <20201103203306.775312263@linuxfoundation.org>
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.9 369/391] ARM: config: aspeed: Fix selection of media drivers
+Date:   Tue,  3 Nov 2020 21:37:00 +0100
+Message-Id: <20201103203412.047213504@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Joel Stanley <joel@jms.id.au>
 
-commit bb674a4d4de1032837fcbf860a63939e66f0b7ad upstream.
+commit 98c3f0a1b3ef83f6be6b212c970bee795e1a0467 upstream.
 
-There is no need to dump authentication options while remounting,
-because authentication initialization can only be doing once in
-the first mount process. Dumping authentication mount options in
-remount process may cause memory leak if UBIFS has already been
-mounted with old authentication mount options.
+In the 5.7 merge window the media kconfig was restructued. For most
+platforms these changes set CONFIG_MEDIA_SUPPORT_FILTER=y which keeps
+unwanted drivers disabled.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>  # 4.20+
-Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+The exception is if a config sets EMBEDDED or EXPERT (see b0cd4fb27665).
+In that case the filter is set to =n, causing a bunch of DVB tuner drivers
+(MEDIA_TUNER_*) to be accidentally enabled. This was noticed as it blew
+out the build time for the Aspeed defconfigs.
+
+Enabling the filter means the Aspeed config also needs to set
+CONFIG_MEDIA_PLATFORM_SUPPORT=y in order to have the CONFIG_VIDEO_ASPEED
+driver enabled.
+
+Fixes: 06b93644f4d1 ("media: Kconfig: add an option to filter in/out platform drivers")
+Fixes: b0cd4fb27665 ("media: Kconfig: on !EMBEDDED && !EXPERT, enable driver filtering")
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Cc: stable@vger.kernel.org
+CC: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ubifs/super.c |   18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ arch/arm/configs/aspeed_g4_defconfig |    3 ++-
+ arch/arm/configs/aspeed_g5_defconfig |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1092,14 +1092,20 @@ static int ubifs_parse_options(struct ub
- 			break;
- 		}
- 		case Opt_auth_key:
--			c->auth_key_name = kstrdup(args[0].from, GFP_KERNEL);
--			if (!c->auth_key_name)
--				return -ENOMEM;
-+			if (!is_remount) {
-+				c->auth_key_name = kstrdup(args[0].from,
-+								GFP_KERNEL);
-+				if (!c->auth_key_name)
-+					return -ENOMEM;
-+			}
- 			break;
- 		case Opt_auth_hash_name:
--			c->auth_hash_name = kstrdup(args[0].from, GFP_KERNEL);
--			if (!c->auth_hash_name)
--				return -ENOMEM;
-+			if (!is_remount) {
-+				c->auth_hash_name = kstrdup(args[0].from,
-+								GFP_KERNEL);
-+				if (!c->auth_hash_name)
-+					return -ENOMEM;
-+			}
- 			break;
- 		case Opt_ignore:
- 			break;
+--- a/arch/arm/configs/aspeed_g4_defconfig
++++ b/arch/arm/configs/aspeed_g4_defconfig
+@@ -160,7 +160,8 @@ CONFIG_SENSORS_TMP421=y
+ CONFIG_SENSORS_W83773G=y
+ CONFIG_WATCHDOG_SYSFS=y
+ CONFIG_MEDIA_SUPPORT=y
+-CONFIG_MEDIA_CAMERA_SUPPORT=y
++CONFIG_MEDIA_SUPPORT_FILTER=y
++CONFIG_MEDIA_PLATFORM_SUPPORT=y
+ CONFIG_V4L_PLATFORM_DRIVERS=y
+ CONFIG_VIDEO_ASPEED=y
+ CONFIG_DRM=y
+--- a/arch/arm/configs/aspeed_g5_defconfig
++++ b/arch/arm/configs/aspeed_g5_defconfig
+@@ -175,7 +175,8 @@ CONFIG_SENSORS_TMP421=y
+ CONFIG_SENSORS_W83773G=y
+ CONFIG_WATCHDOG_SYSFS=y
+ CONFIG_MEDIA_SUPPORT=y
+-CONFIG_MEDIA_CAMERA_SUPPORT=y
++CONFIG_MEDIA_SUPPORT_FILTER=y
++CONFIG_MEDIA_PLATFORM_SUPPORT=y
+ CONFIG_V4L_PLATFORM_DRIVERS=y
+ CONFIG_VIDEO_ASPEED=y
+ CONFIG_DRM=y
 
 
