@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216DB2A5357
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363732A52BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733188AbgKCVAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:00:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
+        id S1732164AbgKCUwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:52:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733180AbgKCVAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:00:02 -0500
+        id S1732154AbgKCUws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:52:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 341222053B;
-        Tue,  3 Nov 2020 21:00:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCD172053B;
+        Tue,  3 Nov 2020 20:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437201;
-        bh=3pBLNJs1luTn9YzSBMBqv1uQYXwYTOhXuVCwqMm8TRg=;
+        s=default; t=1604436768;
+        bh=pB7QqlUSUS5TIZ5kW+2Hqyu1ZFew0jKtSe+hCUuj3/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nh0XrH4tQIICLgISfkN/nZPyrLe9j3TGeAjmd/qk1piPh2DkfVHKNsgo/wSLn7nVt
-         KtMVmu/MlnWcpIveCZq2vXdzklfRyzMW/lR7qOWbOgjRhNiyKLI20kezwauc2XMrua
-         KQ/1bQksVacs1v1pYEuLYVNIgxWDpgPFC25/pkDI=
+        b=a724eUf3KrJ9h7LnBawF4Oo1vuXIx6rEmrKLLrA20kbkbZfAdUohTakLXnx30tHui
+         AhS3CuFVBdJ35OffDH7hBColgPfxD4CgBCtDPHF7sEIGSnlLtkbsqIs2oHppxEDUrI
+         sh2dgOG1a0K0LYeG66LMx7F6ZLBNKKalfO3kImbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 5.4 189/214] 9P: Cast to loff_t before multiplying
-Date:   Tue,  3 Nov 2020 21:37:17 +0100
-Message-Id: <20201103203308.383145075@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH 5.9 387/391] vhost_vdpa: Return -EFAULT if copy_from_user() fails
+Date:   Tue,  3 Nov 2020 21:37:18 +0100
+Message-Id: <20201103203413.277357607@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit f5f7ab168b9a60e12a4b8f2bb6fcc91321dc23c1 upstream.
+commit 7922460e33c81f41e0d2421417228b32e6fdbe94 upstream.
 
-On 32-bit systems, this multiplication will overflow for files larger
-than 4GB.
+The copy_to/from_user() functions return the number of bytes which we
+weren't able to copy but the ioctl should return -EFAULT if they fail.
 
-Link: http://lkml.kernel.org/r/20201004180428.14494-2-willy@infradead.org
+Fixes: a127c5bbb6a8 ("vhost-vdpa: fix backend feature ioctls")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20201023120853.GI282278@mwanda
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Cc: stable@vger.kernel.org
-Fixes: fb89b45cdfdc ("9P: introduction of a new cache=mmap model.")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/9p/vfs_file.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vhost/vdpa.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -609,9 +609,9 @@ static void v9fs_mmap_vm_close(struct vm
- 	struct writeback_control wbc = {
- 		.nr_to_write = LONG_MAX,
- 		.sync_mode = WB_SYNC_ALL,
--		.range_start = vma->vm_pgoff * PAGE_SIZE,
-+		.range_start = (loff_t)vma->vm_pgoff * PAGE_SIZE,
- 		 /* absolute end, byte at end included */
--		.range_end = vma->vm_pgoff * PAGE_SIZE +
-+		.range_end = (loff_t)vma->vm_pgoff * PAGE_SIZE +
- 			(vma->vm_end - vma->vm_start - 1),
- 	};
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -428,12 +428,11 @@ static long vhost_vdpa_unlocked_ioctl(st
+ 	void __user *argp = (void __user *)arg;
+ 	u64 __user *featurep = argp;
+ 	u64 features;
+-	long r;
++	long r = 0;
  
+ 	if (cmd == VHOST_SET_BACKEND_FEATURES) {
+-		r = copy_from_user(&features, featurep, sizeof(features));
+-		if (r)
+-			return r;
++		if (copy_from_user(&features, featurep, sizeof(features)))
++			return -EFAULT;
+ 		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
+ 			return -EOPNOTSUPP;
+ 		vhost_set_backend_features(&v->vdev, features);
+@@ -476,7 +475,8 @@ static long vhost_vdpa_unlocked_ioctl(st
+ 		break;
+ 	case VHOST_GET_BACKEND_FEATURES:
+ 		features = VHOST_VDPA_BACKEND_FEATURES;
+-		r = copy_to_user(featurep, &features, sizeof(features));
++		if (copy_to_user(featurep, &features, sizeof(features)))
++			r = -EFAULT;
+ 		break;
+ 	default:
+ 		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
 
 
