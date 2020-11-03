@@ -2,156 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7F42A3F9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB46D2A3F95
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 10:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgKCJFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 04:05:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726018AbgKCJFO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:05:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604394312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NCLuRFwSBz7lCHK9Xxh7qpGQtAw7uNBdQ5Y4F/GcLRE=;
-        b=d8PdvZrwMnI4pZm4SxbUhTosGou6pqV+AmCUYDPNtSFuGGMvaoroa34w5Lx4pkF5Zl5Aq4
-        K7bv1w3YBkViM+x9OU4fubHwRdiiwY8MXTAPhpJoM+hDhmXcnlk0NRFbHROivCGyQKQ2nm
-        X0Gu4jb5ozi8o6dZE6uffpfha1lwtwc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-QnBW_FxePh-2eshNLH4Rrw-1; Tue, 03 Nov 2020 04:05:09 -0500
-X-MC-Unique: QnBW_FxePh-2eshNLH4Rrw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23D0C106B816;
-        Tue,  3 Nov 2020 09:05:08 +0000 (UTC)
-Received: from [10.72.13.208] (ovpn-13-208.pek2.redhat.com [10.72.13.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F47D21E97;
-        Tue,  3 Nov 2020 09:04:32 +0000 (UTC)
-Subject: Re: [PATCH] vhost/vsock: add IOTLB API support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     mst@redhat.com, netdev@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>
-References: <20201029174351.134173-1-sgarzare@redhat.com>
- <751cc074-ae68-72c8-71de-a42458058761@redhat.com>
- <20201030105422.ju2aj2bmwsckdufh@steredhat>
- <278f4732-e561-2b4f-03ee-b26455760b01@redhat.com>
- <20201102171104.eiovmkj23fle5ioj@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8648a2e3-1052-3b5b-11ce-87628ac8dd33@redhat.com>
-Date:   Tue, 3 Nov 2020 17:04:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726659AbgKCJEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 04:04:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgKCJEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:04:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17C75B135;
+        Tue,  3 Nov 2020 09:04:36 +0000 (UTC)
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+To:     "tiantao (H)" <tiantao6@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+ <8af4223a-037e-7093-cac3-0061aa7b8025@suse.de>
+ <29e7eeb5-de7b-89bd-b710-38c00e3c7b54@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <3c627d02-c226-bdda-772e-55a76ae52816@suse.de>
+Date:   Tue, 3 Nov 2020 10:04:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201102171104.eiovmkj23fle5ioj@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <29e7eeb5-de7b-89bd-b710-38c00e3c7b54@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="s7JgjpPpOWhj1zpnWsJpn22TN9iwH7Yet"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--s7JgjpPpOWhj1zpnWsJpn22TN9iwH7Yet
+Content-Type: multipart/mixed; boundary="4O1ho7gnFXB4kNPYLxDT4eDLCuMs074jk";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: "tiantao (H)" <tiantao6@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, airlied@linux.ie,
+ daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <3c627d02-c226-bdda-772e-55a76ae52816@suse.de>
+Subject: Re: [PATCH v2] drm: Add the new api to install irq
+References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
+ <8af4223a-037e-7093-cac3-0061aa7b8025@suse.de>
+ <29e7eeb5-de7b-89bd-b710-38c00e3c7b54@huawei.com>
+In-Reply-To: <29e7eeb5-de7b-89bd-b710-38c00e3c7b54@huawei.com>
 
-On 2020/11/3 上午1:11, Stefano Garzarella wrote:
-> On Fri, Oct 30, 2020 at 07:44:43PM +0800, Jason Wang wrote:
+--4O1ho7gnFXB4kNPYLxDT4eDLCuMs074jk
+Content-Type: multipart/mixed;
+ boundary="------------697B086C84832DFE51B1E0EB"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------697B086C84832DFE51B1E0EB
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 03.11.20 um 09:57 schrieb tiantao (H):
+>=20
+>=20
+> =E5=9C=A8 2020/11/3 15:56, Thomas Zimmermann =E5=86=99=E9=81=93:
+>> Hi
 >>
->> On 2020/10/30 下午6:54, Stefano Garzarella wrote:
->>> On Fri, Oct 30, 2020 at 06:02:18PM +0800, Jason Wang wrote:
->>>>
->>>> On 2020/10/30 上午1:43, Stefano Garzarella wrote:
->>>>> This patch enables the IOTLB API support for vhost-vsock devices,
->>>>> allowing the userspace to emulate an IOMMU for the guest.
->>>>>
->>>>> These changes were made following vhost-net, in details this patch:
->>>>> - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
->>>>>   device if the feature is acked
->>>>> - implements VHOST_GET_BACKEND_FEATURES and
->>>>>   VHOST_SET_BACKEND_FEATURES ioctls
->>>>> - calls vq_meta_prefetch() before vq processing to prefetch vq
->>>>>   metadata address in IOTLB
->>>>> - provides .read_iter, .write_iter, and .poll callbacks for the
->>>>>   chardev; they are used by the userspace to exchange IOTLB messages
->>>>>
->>>>> This patch was tested with QEMU and a patch applied [1] to fix a
->>>>> simple issue:
->>>>>     $ qemu -M q35,accel=kvm,kernel-irqchip=split \
->>>>>            -drive file=fedora.qcow2,format=qcow2,if=virtio \
->>>>>            -device intel-iommu,intremap=on \
->>>>>            -device vhost-vsock-pci,guest-cid=3,iommu_platform=on
->>>>
->>>>
->>>> Patch looks good, but a question:
->>>>
->>>> It looks to me you don't enable ATS which means vhost won't get any 
->>>> invalidation request or did I miss anything?
->>>>
+>> Thanks, the code looks good already. There just are a few nits below.
+>>
+> Thanks for the help with the review code.
+> Add the new api devm_drm_irq_install and himbc use the new interface as=
+
+> one patch or two?
+
+Better make two patches from it.
+
+Best regards
+Thomas
+
+>=20
+>> Am 03.11.20 um 03:10 schrieb Tian Tao:
+>>> Add new api devm_drm_irq_install() to register interrupts,
+>>> no need to call drm_irq_uninstall() when the drm module is removed.
 >>>
->>> You're right, I didn't see invalidation requests, only miss and 
->>> updates.
->>> Now I have tried to enable 'ats' and 'device-iotlb' but I still 
->>> don't see any invalidation.
+>>> v2:
+>>> fixed the wrong parameter.
 >>>
->>> How can I test it? (Sorry but I don't have much experience yet with 
->>> vIOMMU)
+>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>>> ---
+>>> =C2=A0 drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
+>>> =C2=A0 include/drm/drm_drv.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 ++-
+>>> =C2=A0 2 files changed, 25 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+>>> index cd162d4..0fe5243 100644
+>>> --- a/drivers/gpu/drm/drm_drv.c
+>>> +++ b/drivers/gpu/drm/drm_drv.c
 >>
+>> The implementation should rather go to drm_irq.c
 >>
->> I guess it's because the batched unmap. Maybe you can try to use 
->> "intel_iommu=strict" in guest kernel command line to see if it works.
+>>> @@ -39,6 +39,7 @@
+>>> =C2=A0 #include <drm/drm_color_mgmt.h>
+>>> =C2=A0 #include <drm/drm_drv.h>
+>>> =C2=A0 #include <drm/drm_file.h>
+>>> +#include <drm/drm_irq.h>
+>>> =C2=A0 #include <drm/drm_managed.h>
+>>> =C2=A0 #include <drm/drm_mode_object.h>
+>>> =C2=A0 #include <drm/drm_print.h>
+>>> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *pare=
+nt,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> =C2=A0 }
+>>> =C2=A0 +static void devm_drm_dev_irq_uninstall(void *data)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 drm_irq_uninstall(data);
+>>> +}
+>>> +
+>>> +int devm_drm_irq_install(struct device *parent,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct drm_device *dev, int irq)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 int ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D drm_irq_install(dev, irq);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D devm_add_action(parent, devm_drm_dev_irq_=
+uninstall, dev);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devm_drm_dev_irq_uninstal=
+l(dev);
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 return ret;
+>>> +}
+>>> +EXPORT_SYMBOL(devm_drm_irq_install);
+>>> +
+>>> =C2=A0 void *__devm_drm_dev_alloc(struct device *parent, struct drm_d=
+river
+>>> *driver,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t size, size_t offset)
+>>> =C2=A0 {
+>>> diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+>>> index 0230762..fec1776 100644
+>>> --- a/include/drm/drm_drv.h
+>>> +++ b/include/drm/drm_drv.h
 >>
->> Btw, make sure the qemu contains the patch [1]. Otherwise ATS won't 
->> be enabled for recent Linux Kernel in the guest.
->
-> The problem was my kernel, it was built with a tiny configuration.
-> Using fedora stock kernel I can see the 'invalidate' requests, but I 
-> also had the following issues.
->
-> Do they make you ring any bells?
->
-> $ ./qemu -m 4G -smp 4 -M q35,accel=kvm,kernel-irqchip=split \
->     -drive file=fedora.qcow2,format=qcow2,if=virtio \
->     -device intel-iommu,intremap=on,device-iotlb=on \
->     -device vhost-vsock-pci,guest-cid=6,iommu_platform=on,ats=on,id=v1
->
->     qemu-system-x86_64: vtd_iova_to_slpte: detected IOVA overflow     
-> (iova=0x1d40000030c0)
+>> And the declaration should go to drm_irq.h
+>>
+>> We generally don't merge unused code, so you should convert at least o=
+ne
+>> KMS driver, say hibmc, to use the new interface.
+>>
+>> Best regards
+>> Thomas
+>>
+>>> @@ -513,7 +513,8 @@ struct drm_driver {
+>>> =C2=A0 =C2=A0 void *__devm_drm_dev_alloc(struct device *parent, struc=
+t
+>>> drm_driver *driver,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t size, size_t offset);
+>>> -
+>>> +int devm_drm_irq_install(struct device *parent, struct drm_device *d=
+ev,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 int irq);
+>>> =C2=A0 /**
+>>> =C2=A0=C2=A0 * devm_drm_dev_alloc - Resource managed allocation of a
+>>> &drm_device instance
+>>> =C2=A0=C2=A0 * @parent: Parent device object
+>>>
+>>
+>=20
 
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-It's a hint that IOVA exceeds the AW. It might be worth to check whether 
-the missed IOVA reported from IOTLB is legal.
+--------------697B086C84832DFE51B1E0EB
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x680DC11D530B7A23.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0x680DC11D530B7A23.asc"
 
-Thanks
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
+H47
+fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
+bqP
+5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
+z9E
+ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
+nEm
+imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
+W1t
+ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
+BYC
+AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
+Onf
+G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
+GJm
+DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
++1Q
+DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
+p8n
+91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
+zF1
+CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
+gUC
+WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
+IiL
++he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
+42f
+CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
+Urj
+EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
+45N
+GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
+Tpy
+Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
+u5r
+A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
+/N8
+GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
+j0g
+voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
+bZM
+RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
+zWw
+iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
+Xy9
+RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
+c0n
+VGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+wsCOBBMBCAA4AhsDBQsJC=
+AcC
+BhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl78SF4ACgkQaA3BH=
+VML
+eiOpGAgAih6C1OnWms/N8eBMC4Q93y/nyywe5vCL22Dr1rwgn6Iw2jOGziJSi7zhY4sEk2NKJ=
+5cd
+lFrx8mP//b+xO4AGffwBD0Vwpf38Hj2Gt0KjpzRYccqqU+tJPO5c0pjI52ZIV3+kOEFvYGfkN=
+PHE
+flE+b81T8L2dSXCLtj4WAGUM1rmHn3bCYl+/RwkB+8XnoL5AvrmMcU4Uhb3FJpM4DHExccYkd=
+eSL
+ojBppOCztBCUpBx3le+8QPVvAvJDuur4wRmjk3sjKClAwzeqoYyUKcN3JDdb3mt3QcJal9rSh=
+VEI
+7B25IvfmEbs42oGm8GPzPkaNJu3gcska+l5PSTfurNETGsJdBBARAgAdFiEEJ+jjpp87z/+5L=
+Y5q
+LnehMBH108IFAls6HVcACgkQLnehMBH108LTkACgjLQdDYMENi6BDjY/gd/LF9lMi8oAnR+o0=
+FwE
+Vb1K1tEMQ/1x+k1U6/xgwsBzBBABCAAdFiEEHl2YIZkIo5VO2MxYqlA7ya4PR6cFAls58bMAC=
+gkQ
+qlA7ya4PR6cvTAgAzY1N5QMKh8ECRtYcZNmilyV59uHTEY9hAR+203JqWnSGfUKtU7s6xfl5O=
+NGq
+DI5rULk4Cw2CEIzg9Sat+/lxn36w2f1tEznS5Vb0gVGWrzDAFjj7tB6MnmCzsNb/S1kgxnqJM=
+Yor
+RYQ7uB3Yr2Fdp08FJxN0ipd5YfzaZ6KoSWcRAv4r1R4ZQGuS77URAg7HDOIrBMOVO+HIn7GYQ=
+qPS
+5ZFw5yXbvEtL1c5Y8Zdw1AG2VmEXx78TWQVG3kI8/lQF1QI3yrJ1Rp2x5eK9I0OJihv13IlIW=
+3sb
+QGrj9pxF63kA20ZFaynzFglBGiyxExYvTD0/xKIhzYhj8mtCunPb2cLAcwQQAQgAHRYhBLsjb=
+bex
+nu/GyEcdaKfzfBmMOTGBBQJbOjLAAAoJEKfzfBmMOTGBBoMIALIW4EtBY28tPwZMOpN/+ARPO=
+a2g
+Qzpivw7iNtiDTnGIXMCoxly1CybfMdqTHYmuKbEO9AlFAlDOnkgInsn8E65IvgUTVI95Ah+Ob=
+iPI
+FkYc/9a+AexPl7f5kI9489k77eKtqtMpWFpo/vROmRroSw4JnM7ovwPq1QOSHExfTKbLunzD1=
+i3V
+4PShSZ6bGsp1LW6Wk0lRMHDuAk3xsyjBWfJwSbrCe3E6OsLG7BuQqEUt2fR6NxdDRSR9tQUp9=
+Tri
+AYG5LndmUzxeU6FAQjD8Wt1ezOFH5ODcCDXfRyYmE6uCGA4EvO8l9R3o68NPlUjPRAZsCbxJa=
+UAg
+iazX1nyQGwvOwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHU=
+E9e
+osYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+q=
+bU6
+3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWWG=
+KdD
+egUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lvhFXod=
+NFM
+AgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsAEQEAAcLAf=
+AQY
+AQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkDwmcAAAoJEGgNwR1TC3ojp=
+fcI
+AInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2h9ifw9Nf2TjCZ6AMvC3thAN0r=
+FDj
+55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxUn+LSiRrOdywn6erjxRi9EYTVLCHcD=
+hBE
+jKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uIaMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU=
+2y3
+ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBWHE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/t=
+sZv
+yEX6zN8CtirPdPWu/VXNRYAl/lat7lSI3H26qrE=3D
+=3DmxFq
+-----END PGP PUBLIC KEY BLOCK-----
 
-> qemu-system-x86_64: vtd_iommu_translate: detected translation failure 
-> (dev=00:03:00, iova=0x1d40000030c0)
->     qemu-system-x86_64: New fault is not recorded due to compression 
-> of     faults
->
-> Guest kernel messages:
->     [   44.940872] DMAR: DRHD: handling fault status reg 2
->     [   44.941989] DMAR: [DMA Read] Request device [00:03.0] PASID     
-> ffffffff fault addr ffff88W
->     [   49.785884] DMAR: DRHD: handling fault status reg 2
->     [   49.788874] DMAR: [DMA Read] Request device [00:03.0] PASID     
-> ffffffff fault addr ffff88W
->
->
-> QEMU: b149dea55c Merge remote-tracking branch 
-> 'remotes/cschoenebeck/tags/pull-9p-20201102' into staging
->
-> Linux guest: 5.8.16-200.fc32.x86_64
->
->
-> Thanks,
-> Stefano
->
+--------------697B086C84832DFE51B1E0EB--
 
+--4O1ho7gnFXB4kNPYLxDT4eDLCuMs074jk--
+
+--s7JgjpPpOWhj1zpnWsJpn22TN9iwH7Yet
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl+hHSIFAwAAAAAACgkQaA3BHVMLeiOH
+ggf5AVZWpAB2XKBb5YfD+7piOl0NNClBanvsMNxq24SCegvgPcY3GD0wxn8HHTYO2TunbHoKaKeE
+q+SZDzgO0rS9sypxhl3KaPYpMSo72aj4xBh/EKbbDK2Lw78of7fmy2zq12di/V6w13tsmA4QZF8/
+WR610w4ZpOEieIdchDTFX/yuLSDIxtRxn/cwJmNQHgfUECVT/eLuzYNe7X+MJI0vH8qoqGkWJHZE
+WKAFW9MqWHA2iSTuJW3Kmlzi7UUmzF7Umh2r93yDwalg/wMTEdI5+ssPdAHoIm+h3XKtA81moXQJ
+YcVQJw6QyC05bSY4okVHsdpVYe6W4G1PxmdAuOPf/g==
+=NF6O
+-----END PGP SIGNATURE-----
+
+--s7JgjpPpOWhj1zpnWsJpn22TN9iwH7Yet--
