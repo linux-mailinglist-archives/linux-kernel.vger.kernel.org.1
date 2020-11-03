@@ -2,124 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757342A456D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A702A457F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgKCMpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:45:44 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38844 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgKCMpn (ORCPT
+        id S1729107AbgKCMqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:46:51 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:33631 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729063AbgKCMqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:45:43 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3CjU30093058;
-        Tue, 3 Nov 2020 06:45:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604407530;
-        bh=MX6c8hjcZDZUesVswKmxwJG1AWhIKQOHy2Qu8D7QvJg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=uaS1XINNYyC0R4S5tpUfC7m9Pf6LJJLEsRUVV7cPrn6drpafw+CLXOlLf7ryjg8kn
-         M3DvKSAJDnwg4ribErcNQryKtbC9SDj0BOGZxba6m+sk5th1B1myRSRxpdYpmeB3SZ
-         Yhd4UU/012yXsBaY12YsmVU+V/ISTmk1swng2P1k=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3CjU4b059231
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Nov 2020 06:45:30 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
- 2020 06:45:30 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 3 Nov 2020 06:45:30 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3CjTv0038496;
-        Tue, 3 Nov 2020 06:45:30 -0600
-Date:   Tue, 3 Nov 2020 18:15:29 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Richard Weinberger <richard.weinberger@gmail.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] mtd: Make sure UBIFS does not do multi-pass page
- programming on flashes that don't support it
-Message-ID: <20201103124527.x6mp6slck44aotzn@ti.com>
-References: <20201012180404.6476-1-p.yadav@ti.com>
- <20201027111804.e27pyvf62eksngmp@ti.com>
- <CAFLxGvxc=EqBStzLz3ApwYDomKMe=WeK22ohfPQs1WrMCsaVQg@mail.gmail.com>
- <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
+        Tue, 3 Nov 2020 07:46:46 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201103124626euoutp01be7b94b7e6043b5f02d10a8b034f564d~EADL0pzuS3099230992euoutp016
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 12:46:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201103124626euoutp01be7b94b7e6043b5f02d10a8b034f564d~EADL0pzuS3099230992euoutp016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1604407586;
+        bh=i794pLslzJXNiaVJRd7P1/f8MpJnvcoOH/9cT9dgm1A=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ms2uPRn+k+QT4w5mV5n/kQPFF8Z49hdZUwy5UL0WeJGTddjvMegSzRCZOEns6oXyO
+         5IKvRlEHU7Dc1t4xKcbxCVAEBycE4CF9QjRX7Y1ps3hGSbsXgddGGtS7dRQmIZ2t40
+         fR/EIOnE+fQ6R441P44zSvI8dNaRuqir+bqy7QcE=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201103124620eucas1p2f487ebc6992b5032c08752a136d7cf1c~EADG6R0983143631436eucas1p2B;
+        Tue,  3 Nov 2020 12:46:20 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 67.4E.05997.C1151AF5; Tue,  3
+        Nov 2020 12:46:20 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201103124620eucas1p169f37e0bd1f30222cdc88de0675adf60~EADGgP1jY0367203672eucas1p1V;
+        Tue,  3 Nov 2020 12:46:20 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201103124620eusmtrp2c00bef40b04cd540e2a9f1d7e5b8c6fd~EADGfjdBM1156311563eusmtrp2B;
+        Tue,  3 Nov 2020 12:46:20 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-1e-5fa1511c43a7
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A4.C4.06314.C1151AF5; Tue,  3
+        Nov 2020 12:46:20 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201103124620eusmtip2d4a398dcd45b8d79615d72be51267547~EADGReObj1136311363eusmtip2h;
+        Tue,  3 Nov 2020 12:46:20 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH 0/5] Add Ethernet interface description for Odroid boards
+Date:   Tue,  3 Nov 2020 13:46:13 +0100
+Message-Id: <20201103124618.21358-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fa578bda-132a-320a-264c-d973bae194dd@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm29l2jqut4zR8USlaJjTwUkYcUELFYoWh/azQufSgljfOvGQU
+        SmYXKWcaqVOZWeawdDlvOS+seStFp2amoZJayQx/hLM0pHI7Sv573ud93vd5n4+PwMQ6nisR
+        n5RKM0mKBAlfwG3pWzd7uZ97Ivcd7POiGkp0PErTM8yjVAvfMcpsfoVTUyYtovQLEzzqvaGc
+        T5WYuzhUfcMnnKrrmcGp3M4ePHCXrE09g8v0tff4ssZnWbL8plokW9HvC+ddEATE0Anx6TTj
+        cyJKEGccZVJU+NWy/jyUjSy8PORAAHkMNn5UbGIBISa1CG7lPOawhRVBiXUMscUKAv3wEHd7
+        ZORhL8Y2ahBUdzfaG2JyEYGx+YYN88kgUFW/te91Jos5UN2hsU9gZBeCttlHmE3lRJ6GubEW
+        PA8RBJc8BJ8NEhstJP0hX2XisG774U5NK5/lHeFd6Re72R5SCi9vfrRjbFOT01yGsXoDDuNT
+        AhaHgD5ncSuoEyz1N+Esdoe/bRqOzRbILCgqPG47Dcj7CFrK17ZS+sP08G++TYORh0Fn8GHp
+        IGi32N7ONiqCyWVH9gIRFLYUYywthLu3xazaA+pVHVsLXeHBkhaxWAZW7TJegA6od+RS78ii
+        /u9bibBa5EKnKRNjaeXRJDrDW6lIVKYlxXpHJyfq0eY3GvzTb32NDBuXTIgkkGS3MJCulIt5
+        inRlZqIJAYFJnIXBQ4ORYmGMIvMazSTLmbQEWmlCbgRX4iL0q7JEiMlYRSp9haZTaGa7yyEc
+        XLPRmYKKvYZuUZPvVGjIcBfHPD2qVpjCOwmK+ZAx7zZ/qjTya5Ej82bt5Iif9FvogKVm0oRe
+        GJt/OXguZkjao8OeWjOuB4gmhpaee627r+rkA72Vcx4Sfu/4xWzjT16ap/RsfF3YxMBsxPkx
+        iuHkjjaHVEXJLq+ig8jaGixM0Ui4yjjFESnGKBX/ACdgW9xCAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xe7oygQvjDba0C1psnLGe1WL+kXOs
+        Fv2PXzNbnD+/gd3i5qEVjBabHl9jtbi8aw6bxYzz+5gs1m28xW6x9shddovWvUfYHbg9ds66
+        y+6xaVUnm8fmJfUefVtWMXp83iQXwBqlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwe
+        a2VkqqRvZ5OSmpNZllqkb5egl3HgYlFBP3vF7ONdjA2ML1m7GDk5JARMJC5MPMrcxcjFISSw
+        lFFiz5EWpi5GDqCElMTKuekQNcISf651sYHYQgJPGSX+nq0FsdkEHCX6l55gBekVEZjPJHFq
+        dgeYwyywj1Fi/9HF7CBVwgKeEg8vbWMHGcoioCrxYJcSSJhXwFqir/8QE8QCeYn25dvZIOKC
+        EidnPmEBKWcWUJdYP08IJMwvoCWxpuk6C4jNDFTevHU28wRGgVlIOmYhdMxCUrWAkXkVo0hq
+        aXFuem6xoV5xYm5xaV66XnJ+7iZGYCxtO/Zz8w7GSxuDDzEKcDAq8fA6pC6IF2JNLCuuzD3E
+        KMHBrCTC63T2dJwQb0piZVVqUX58UWlOavEhRlOgbyYyS4km5wPjPK8k3tDU0NzC0tDc2NzY
+        zEJJnLdD4GCMkEB6YklqdmpqQWoRTB8TB6dUA2Pvr3De/zy3nvbNDD3H8E91QskqcalX1qYR
+        m4rnhjtM4O/59/tJYJtT4jPGg9Eis64p6/u3TXdceEZZKH+V72unJe5qwfPtL26f+ilJ2s1S
+        I/vh/zOzZph1OpV/5b3RtcvNe4HZJGbrj7eXOc+x7J3oZnJxT8ftJdZSkg9375slqLWMkb18
+        ylQlluKMREMt5qLiRAA92NdJuwIAAA==
+X-CMS-MailID: 20201103124620eucas1p169f37e0bd1f30222cdc88de0675adf60
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201103124620eucas1p169f37e0bd1f30222cdc88de0675adf60
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201103124620eucas1p169f37e0bd1f30222cdc88de0675adf60
+References: <CGME20201103124620eucas1p169f37e0bd1f30222cdc88de0675adf60@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/20 05:05PM, Vignesh Raghavendra wrote:
-> 
-> 
-> On 11/1/20 3:14 AM, Richard Weinberger wrote:
-> > On Tue, Oct 27, 2020 at 12:24 PM Pratyush Yadav <p.yadav@ti.com> wrote:
-> >>> [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
-> >>
-> >> Ping. Any comments on the series?
-> > 
-> > From the UBIFS point of view I'd like to avoid as many device specific
-> > settings as possible.
-> > We check already for NOR flash, checking for NOR *and* SPI_NOR_NO_MULTI_PASS_PP
-> > feels a bit clumsy.
-> > 
-> > Tudor, what do you think about SPI_NOR_NO_MULTI_PASS_PP?
-> > This kind of NOR seems to be a little NAND'ish. Maybe we can hide this detail
-> > in the mtd framework?
-> > 
-> 
-> Agree with Richard. I don't see need for SPI_NOR_NO_MULTI_PASS_PP. From
-> MTD point of view setting mtd->writesize to be equal to pagesize should
-> be enough. Its upto clients of MTD devices to ensure there is no multi
-> pass programming within a "writesize" block.
+Add devicetree description of Ethernet devices on Odroid boards. These
+descriptions enable setting MAC addresses with a bootloader.
 
-That is what I initially thought too but then I realized that multi-pass 
-programming is completely different from page-size programming. Instead 
-of writing 4 bytes twice, you can zero out the entire page in one single 
-operation. You would be compliant with the write size requirement but 
-you still do multi-pass programming because you did not erase the page 
-before this operation.
+Łukasz Stelmach (5):
+  ARM: dts: exynos: Fix ethernet description for Odroid XU3
+  ARM: dts: exynos: Add Ethernet interface description for Odroid X3
+    Lite
+  ARM: dts: exynos: Add Ethernet interface description for Odroid XU
+  ARM: dts: exynos: Add Ethernet interface description for Odroid U3
+  ARM: dts: exynos: Add Ethernet interface description for Odroid X/X2
 
-It is also not completely correct to say the Cypress S28 flash has a 
-write size of 256. You _can_ write one byte if you want. You just can't 
-write to that page again without erasing it first. For example, if a 
-file system only wants to write 128 bytes on a page, it can do so 
-without having to write the whole page. It just needs to make sure it 
-doesn't write to it again without erasing first.
-
-nor_erase_prepare() was written to handle quirks of some specific 
-devices. Not every device starts filling zeroes from the end of a page. 
-So we have device-specific code in UBIFS already. You will obviously 
-need device-specific settings to have control over that code.
-
-One might argue that we should move nor_erase_prepare() out of UBIFS. 
-But requiring a flash to start erasing from the start of the page is a 
-UBIFS-specific requirement. Other users of a flash might not care about 
-it at all.
-
-And so we have ourselves a bit of a conundrum. Adding 
-SPI_NOR_NO_MULTI_PASS_PP is IMHO the least disruptive answer. If the 
-file system wants to do multi-pass page programming on NOR flashes, how 
-else do we tell it not to do it for this specific flash?
-
-> If this is not clear in the current documentation of struct mtd, then
-> that can be updated.
+ arch/arm/boot/dts/exynos4412-odroidu3.dts     | 12 ++++++++
+ arch/arm/boot/dts/exynos4412-odroidx.dts      | 28 +++++++++++++++++++
+ arch/arm/boot/dts/exynos5410-odroidxu.dts     | 15 ++++++++++
+ .../boot/dts/exynos5422-odroidxu3-lite.dts    | 22 +++++++++++++++
+ arch/arm/boot/dts/exynos5422-odroidxu3.dts    |  8 ++++--
+ 5 files changed, 83 insertions(+), 2 deletions(-)
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.26.2
+
