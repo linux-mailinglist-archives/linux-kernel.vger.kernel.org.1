@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8583F2A55B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C332A543F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388467AbgKCVVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:21:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
+        id S2388504AbgKCVJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388072AbgKCVFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:55 -0500
+        id S1731184AbgKCVJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B02B1205ED;
-        Tue,  3 Nov 2020 21:05:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D89205ED;
+        Tue,  3 Nov 2020 21:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437554;
-        bh=9UbLHLp/zBS1NxsGFfQv3PrnPDocKjM7MBANzoumH5Q=;
+        s=default; t=1604437761;
+        bh=dsuCJHkNZA7PKvITJVdCaMr9N1fGyRZ5sZxrIp3EQQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ePkqYUkuAF79Zy1A4jPGoMHBeSjNOmbBebWprtKLXEnpPs/wRbwJxzZAShuDCm9qV
-         b0tED4aFty4k3lxqVXCIHEXn3Ae34HmmqfEXRt4+MpfU5vij3GWvM8bi4s55a4QyiT
-         x3hamWhTJI2CdZdKNMDK4D12+3ztxUEgeasr82Mw=
+        b=hWhzv570UxKXOH18H/ChFUOr6TD2wbKVdJjjvgtbPWpVu8hs7MqWnnifUS+Nd21hO
+         ch8MrIXhETm9STF+jiB9otsoFSQwfSHQE9zB+pHmFCNUDM9iya+7hRaarGNK5a0ANM
+         1B5vNXfNbgCNcH5/DsC8iM3bf8HU8/n1N5RoYZQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 089/191] drivers/net/wan/hdlc_fr: Correctly handle special skb->protocol values
-Date:   Tue,  3 Nov 2020 21:36:21 +0100
-Message-Id: <20201103203242.324983699@linuxfoundation.org>
+        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 005/125] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+Date:   Tue,  3 Nov 2020 21:36:22 +0100
+Message-Id: <20201103203157.177666868@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,187 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 
-[ Upstream commit 8306266c1d51aac9aa7aa907fe99032a58c6382c ]
+[ Upstream commit 68b9f0865b1ef545da180c57d54b82c94cb464a4 ]
 
-The fr_hard_header function is used to prepend the header to skbs before
-transmission. It is used in 3 situations:
-1) When a control packet is generated internally in this driver;
-2) When a user sends an skb on an Ethernet-emulating PVC device;
-3) When a user sends an skb on a normal PVC device.
+In the function ravb_hwtstamp_get() in ravb_main.c with the existing
+values for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
+(0x6)
 
-These 3 situations need to be handled differently by fr_hard_header.
-Different headers should be prepended to the skb in different situations.
+if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+	config.rx_filter = HWTSTAMP_FILTER_ALL;
 
-Currently fr_hard_header distinguishes these 3 situations using
-skb->protocol. For situation 1 and 2, a special skb->protocol value
-will be assigned before calling fr_hard_header, so that it can recognize
-these 2 situations. All skb->protocol values other than these special ones
-are treated by fr_hard_header as situation 3.
+if the test on RAVB_RXTSTAMP_TYPE_ALL should be true,
+it will never be reached.
 
-However, it is possible that in situation 3, the user sends an skb with
-one of the special skb->protocol values. In this case, fr_hard_header
-would incorrectly treat it as situation 1 or 2.
+This issue can be verified with 'hwtstamp_config' testing program
+(tools/testing/selftests/net/hwtstamp_config.c). Setting filter type
+to ALL and subsequent retrieving it gives incorrect value:
 
-This patch tries to solve this issue by using skb->dev instead of
-skb->protocol to distinguish between these 3 situations. For situation
-1, skb->dev would be NULL; for situation 2, skb->dev->type would be
-ARPHRD_ETHER; and for situation 3, skb->dev->type would be ARPHRD_DLCI.
+$ hwtstamp_config eth0 OFF ALL
+flags = 0
+tx_type = OFF
+rx_filter = ALL
+$ hwtstamp_config eth0
+flags = 0
+tx_type = OFF
+rx_filter = PTP_V2_L2_EVENT
 
-This way fr_hard_header would be able to distinguish these 3 situations
-correctly regardless what skb->protocol value the user tries to use in
-situation 3.
+Correct this by converting if-else's to switch.
 
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Link: https://lore.kernel.org/r/20201026102130.29368-1-andrew_gabbasov@mentor.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wan/hdlc_fr.c | 98 ++++++++++++++++++++-------------------
- 1 file changed, 51 insertions(+), 47 deletions(-)
+ drivers/net/ethernet/renesas/ravb_main.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 03b5f5cce6f47..96b4ce13f3a5d 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -276,63 +276,69 @@ static inline struct net_device **get_dev_p(struct pvc_device *pvc,
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1768,12 +1768,16 @@ static int ravb_hwtstamp_get(struct net_
+ 	config.flags = 0;
+ 	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
+ 						HWTSTAMP_TX_OFF;
+-	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
++	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
++	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
+ 		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+-	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
++		break;
++	case RAVB_RXTSTAMP_TYPE_ALL:
+ 		config.rx_filter = HWTSTAMP_FILTER_ALL;
+-	else
++		break;
++	default:
+ 		config.rx_filter = HWTSTAMP_FILTER_NONE;
++	}
  
- static int fr_hard_header(struct sk_buff **skb_p, u16 dlci)
- {
--	u16 head_len;
- 	struct sk_buff *skb = *skb_p;
- 
--	switch (skb->protocol) {
--	case cpu_to_be16(NLPID_CCITT_ANSI_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CCITT_ANSI_LMI;
--		break;
--
--	case cpu_to_be16(NLPID_CISCO_LMI):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_CISCO_LMI;
--		break;
--
--	case cpu_to_be16(ETH_P_IP):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IP;
--		break;
--
--	case cpu_to_be16(ETH_P_IPV6):
--		head_len = 4;
--		skb_push(skb, head_len);
--		skb->data[3] = NLPID_IPV6;
--		break;
--
--	case cpu_to_be16(ETH_P_802_3):
--		head_len = 10;
--		if (skb_headroom(skb) < head_len) {
--			struct sk_buff *skb2 = skb_realloc_headroom(skb,
--								    head_len);
-+	if (!skb->dev) { /* Control packets */
-+		switch (dlci) {
-+		case LMI_CCITT_ANSI_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CCITT_ANSI_LMI;
-+			break;
-+
-+		case LMI_CISCO_DLCI:
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_CISCO_LMI;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_DLCI) {
-+		switch (skb->protocol) {
-+		case htons(ETH_P_IP):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IP;
-+			break;
-+
-+		case htons(ETH_P_IPV6):
-+			skb_push(skb, 4);
-+			skb->data[3] = NLPID_IPV6;
-+			break;
-+
-+		default:
-+			skb_push(skb, 10);
-+			skb->data[3] = FR_PAD;
-+			skb->data[4] = NLPID_SNAP;
-+			/* OUI 00-00-00 indicates an Ethertype follows */
-+			skb->data[5] = 0x00;
-+			skb->data[6] = 0x00;
-+			skb->data[7] = 0x00;
-+			/* This should be an Ethertype: */
-+			*(__be16 *)(skb->data + 8) = skb->protocol;
-+		}
-+
-+	} else if (skb->dev->type == ARPHRD_ETHER) {
-+		if (skb_headroom(skb) < 10) {
-+			struct sk_buff *skb2 = skb_realloc_headroom(skb, 10);
- 			if (!skb2)
- 				return -ENOBUFS;
- 			dev_kfree_skb(skb);
- 			skb = *skb_p = skb2;
- 		}
--		skb_push(skb, head_len);
-+		skb_push(skb, 10);
- 		skb->data[3] = FR_PAD;
- 		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
-+		/* OUI 00-80-C2 stands for the 802.1 organization */
-+		skb->data[5] = 0x00;
- 		skb->data[6] = 0x80;
- 		skb->data[7] = 0xC2;
-+		/* PID 00-07 stands for Ethernet frames without FCS */
- 		skb->data[8] = 0x00;
--		skb->data[9] = 0x07; /* bridged Ethernet frame w/out FCS */
--		break;
-+		skb->data[9] = 0x07;
- 
--	default:
--		head_len = 10;
--		skb_push(skb, head_len);
--		skb->data[3] = FR_PAD;
--		skb->data[4] = NLPID_SNAP;
--		skb->data[5] = FR_PAD;
--		skb->data[6] = FR_PAD;
--		skb->data[7] = FR_PAD;
--		*(__be16*)(skb->data + 8) = skb->protocol;
-+	} else {
-+		return -EINVAL;
- 	}
- 
- 	dlci_to_q922(skb->data, dlci);
-@@ -428,8 +434,8 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
- 				skb_put(skb, pad);
- 				memset(skb->data + len, 0, pad);
- 			}
--			skb->protocol = cpu_to_be16(ETH_P_802_3);
- 		}
-+		skb->dev = dev;
- 		if (!fr_hard_header(&skb, pvc->dlci)) {
- 			dev->stats.tx_bytes += skb->len;
- 			dev->stats.tx_packets++;
-@@ -497,10 +503,8 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
- 	memset(skb->data, 0, len);
- 	skb_reserve(skb, 4);
- 	if (lmi == LMI_CISCO) {
--		skb->protocol = cpu_to_be16(NLPID_CISCO_LMI);
- 		fr_hard_header(&skb, LMI_CISCO_DLCI);
- 	} else {
--		skb->protocol = cpu_to_be16(NLPID_CCITT_ANSI_LMI);
- 		fr_hard_header(&skb, LMI_CCITT_ANSI_DLCI);
- 	}
- 	data = skb_tail_pointer(skb);
--- 
-2.27.0
-
+ 	return copy_to_user(req->ifr_data, &config, sizeof(config)) ?
+ 		-EFAULT : 0;
 
 
