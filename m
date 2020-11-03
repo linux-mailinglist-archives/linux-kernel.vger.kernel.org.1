@@ -2,114 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DD42A5A08
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25742A5A0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgKCWV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:21:56 -0500
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:39252 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730264AbgKCWV4 (ORCPT
+        id S1730274AbgKCWXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:23:01 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12359 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729342AbgKCWXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:21:56 -0500
-Received: by mail-vs1-f65.google.com with SMTP id y78so10376248vsy.6;
-        Tue, 03 Nov 2020 14:21:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ystGsVRRSLNIp7DU6AxtzDMYZFgSTFYVKgOF4oPJhUs=;
-        b=Ioj5MN+NTJ/3Qed/d3naiDBpcBe6jjwHMescqsZj5cMiNEIaX2LTlmSgu6G9t4CMhw
-         wMwIFKrp1XD9pl3efnWb40Yu5GMg5XiWyVyxfSHz1CE3TKR0kLT5BbfSWx3BuHg3/Nmh
-         XQI/lTuwIMtL/JhQfaK7IWCCyubWee5pfws6E+Ugh+xEDeQBmZgZN8q2vy3eGdfCddOS
-         TTQtVqltKA1can/GT5/UPSdB5ACp9Gsv/INP9u6hE1VlxznBdmP+a1hcxq1zm+D9YPcr
-         sMUWrpG9bHWCwpkIs3op5xvP7sx5q3MM19gSTxmF9GEDYQq8WTLkc6RowJqBnfk/j1gg
-         X3bw==
-X-Gm-Message-State: AOAM530+7woV6LHL0uOwctXH9kfFmJtVYI6NSkOHHV5zid47ByUM5VVL
-        iSEpCjqNZZ6lBJCe9IBixpBMZwUpqqeGIldxXHY=
-X-Google-Smtp-Source: ABdhPJx+6wzHKdabHgncagBkljWabHvhFprI3xGnbyk5I/SRAbasPwnXsBl4ELjrlBl2/q+vZ8AkpOF/VPVeRiX/WEE=
-X-Received: by 2002:a67:2883:: with SMTP id o125mr20678367vso.46.1604442114870;
- Tue, 03 Nov 2020 14:21:54 -0800 (PST)
+        Tue, 3 Nov 2020 17:23:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa1d8440002>; Tue, 03 Nov 2020 14:23:00 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 22:22:57 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 3 Nov 2020 22:22:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=igbBPRL+zZKYcq3yYAqIYdlviW1GYJApuFypcnT88ygWyhiHAXsRoeO4Ts/hyJCm5x+hzA21lTSGMunRN4c6NlFFKrR+DeSh2C49eaZulaKaI76ylz0lY+rXfyITZTGsjNZduLQquJYwHb7MrbxPUhZCMmlGVsM5o7cKUK7EevUkCbOb+aFw0IL8TdHsocJiqmBr2QfwuRsFFMqiKSZ88tbZIAt3A4x3Rz6bx1/inFKj4HQGPCrJruTqH067xPKGwmOlIqedRKAqM7tzdgmVC6Disk19NhxYOEZcLyVHuq3oWEnZlOv/doLF0lJNdc1+oczqXrv8yWc4LrzlU+/XEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B0WzHpWkWcaNfBo4tCq/4Le9XPHR5I7NXBrDD4Oh1iw=;
+ b=Gvu+OnElioIM7fAqYW3hbbejX3aH1Idecs3d3dxWrhA2We0mOKzrJedxfw5+YOAuWhBDqdp9uWJEjgGG/xft86ft0pJ3y8hDbEwe1Z/lx5BpEX+0a3H+1QZnT0IbDxac961yctOl8U5Tmxr8hQ35j7vQEC280t2192XNE4TJc1Ish8m4Zarwn/IBn08yYxabgjDNF7gUVtIhYm3zrXfmX4O9gY00GFvchNLTr1C8TgYxQzske4wMwBJwk3wehr5/lIYkxT04ytzGY6EHePfXKy/7D5xGos//IcVz1uUGC2HtITokvdwNuiWhLCp/mjkafTB7EyfRabmuoTh0rAFTgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from MN2PR12MB3616.namprd12.prod.outlook.com (2603:10b6:208:cc::25)
+ by MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Tue, 3 Nov
+ 2020 22:22:56 +0000
+Received: from MN2PR12MB3616.namprd12.prod.outlook.com
+ ([fe80::89a:e4ad:708f:363f]) by MN2PR12MB3616.namprd12.prod.outlook.com
+ ([fe80::89a:e4ad:708f:363f%5]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 22:22:55 +0000
+From:   Khalil Blaiech <kblaiech@nvidia.com>
+To:     Liu Shixin <liushixin2@huawei.com>,
+        Khalil Blaiech <kblaiech@mellanox.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Vadim Pasternak <vadimp@mellanox.com>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
+Thread-Topic: [PATCH] i2c: mlxbf: Fix build error with CONFIG_ACPI disabled
+Thread-Index: AQHWsQ3PPh2vaT/kqUS5dM5uxtiw0Km2/L3Q
+Date:   Tue, 3 Nov 2020 22:22:54 +0000
+Message-ID: <MN2PR12MB36165494D3D965C4CF96628BAB110@MN2PR12MB3616.namprd12.prod.outlook.com>
+References: <20201102121234.1343672-1-liushixin2@huawei.com>
+In-Reply-To: <20201102121234.1343672-1-liushixin2@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [173.48.75.27]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 831c5ae7-38be-44bf-5573-08d880470344
+x-ms-traffictypediagnostic: MN2PR12MB3008:
+x-microsoft-antispam-prvs: <MN2PR12MB3008FF59D606EC47433E73A2AB110@MN2PR12MB3008.namprd12.prod.outlook.com>
+x-ms-exchange-transport-forked: True
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3O1B4IF7uEe/q5K3sHjYKArC9dt30HM/SmlrSrTC3VozsDLvp+jUv/4KUpPMsq/mzdwPYSsPxkQmE+JueBp9ewKtJQ+OZ1ZK/0sPOgWdH/sHJTTACjBJvm9LIP63IlIK8EbJfWN2S+6Xkl2MVclGIsuTHoXmqT3tyZX0uIRsEV5sRDlUOkjR664mR/DSy4EDa4uSREpapgl3t6/lTe86YUv2P5aOPvXYULumfHLofBE6pKAcKc+ejqs87LVtiIg1Wn3+UP6Ec+pOoORrcFubdz/C3HxoNB//O9s1DKpEpzvETrwTovkXUjr9joX/9AZ+vdqDf3sybhdws6c1Zd6X4A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3616.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(376002)(396003)(9686003)(2906002)(54906003)(86362001)(8676002)(7696005)(4326008)(33656002)(5660300002)(6506007)(8936002)(478600001)(26005)(110136005)(66946007)(66476007)(64756008)(52536014)(55016002)(186003)(71200400001)(316002)(66556008)(76116006)(66446008)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: tPS3i8ZstlYYLJzc7XfexMBdQUtwp8mFh0vNhgUJ5/HvI2iC08jnog4OI0Q1ANwVHUiRA2zPHngNRdCaFj726t3jg9VKxUiB1tEeGoSzINozJnd5RG3eqg/HbhdBBlP9vkiwKh5qaL4e20anFHmBDm2+grTtVeZHKdKJiwaHWwiFC6sJp6CpbJOoxLgiMY//GaeoAAU1AJhX9r4L5b0zSHpqHBJ66APxxBztO/zndBmu6uLzpDkUwaY4RNI/7z7H0fkWe1X8awn+oDqrQkdyDPelpRf+8zXmOE130QUjnfJK5qqpE1mJeX1+SAxENjPfGm+rZLqU+Jc6uFXzuc3f97B6FvoDGRzpUshNWUpbft2/9yWVygQq/8kVh4ixgsQJkdooe/giA/KXJyAvdBuBOld30bYPVR6c04DUOEvuZYbIj7Ap/HKEa77wzxgv4djiC4ahtsqbdHpr/IjS5exXWeqLmMgkVU8vvlwvmsZL7mk7YeUO7J8UAFbc7Ja6QsOQi9rE9u3KnyuG+F8MX5eSD1qEXT2I8YlRFHVm78utQ0rrHgpznoJuU4qPjCVB33gjxtT+xESvyyWhyFqXShLmgohaa6APLWDkAmdxrul16+Lyq4Y1Uq0rD6S/prRGLsbXAmcf5k2YtONdn2DOfhMXyg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201103221510.575827-1-lyude@redhat.com>
-In-Reply-To: <20201103221510.575827-1-lyude@redhat.com>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Tue, 3 Nov 2020 17:21:43 -0500
-Message-ID: <CAKb7Uvhr8Cvd+kfw0Rcee-Nrtdg9y3JhGPeNsJjVEDcWXnVxxw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/edid: Fix uninitialized variable in drm_cvt_modes()
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "# 3.9+" <stable@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Chao Yu <chao@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3616.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 831c5ae7-38be-44bf-5573-08d880470344
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 22:22:55.7379
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VbzuwEj4mxcezA3Vyl02ZPxSRRVRu+xcLdpvKbHh7hQ9RjPxB8lQg8Glug725KkP6ejxOelD5HRElo7Do7PCrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3008
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604442180; bh=B0WzHpWkWcaNfBo4tCq/4Le9XPHR5I7NXBrDD4Oh1iw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
+         x-ms-exchange-transport-forked:x-ms-oob-tlc-oobclassifiers:
+         x-ms-exchange-senderadcheck:x-microsoft-antispam:
+         x-microsoft-antispam-message-info:x-forefront-antispam-report:
+         x-ms-exchange-antispam-messagedata:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=KvbqX3F/wwgUo/TB3buJD2q/GbeIfHlKch7P/8O7s3+Z1z/s/KLIhEIOKEeggQKHr
+         /tcpHT78NRxtZ122RZUOpECDY5zpjVwv2jsOEz7279yvwlTNkeJ7CTk1X8pV4HGYFe
+         0KTfx4vFj6mvJtxdznopxiv4pQcUpI44cA8L+52ZLT+sfc+a6OMClUuGCBtvERcAaR
+         etwQU5MH7CqQvmHDrEFzJYBMcELHA6qR8s05AYpfuF1lQBDNUhyW6gTQG0oVw1XYhG
+         rEcvT9xYC78u3kLrjI6RwrmA09XAB1i0lpf3tvLOjMNWMrZxj+y4E6hMITJYwvgbPP
+         /GFvpVemG7hsg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 5:15 PM Lyude Paul <lyude@redhat.com> wrote:
->
-> Noticed this when trying to compile with -Wall on a kernel fork. We potentially
-> don't set width here, which causes the compiler to complain about width
-> potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
->
-> Changes since v1:
-> * Don't emit an error as this code isn't reachable, just mark it as such
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
->
-> Cc: <stable@vger.kernel.org> # v5.9+
-> Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  drivers/gpu/drm/drm_edid.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 631125b46e04..0643b98c6383 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector *connector,
->
->         for (i = 0; i < 4; i++) {
->                 int width, height;
-> +               u8 cvt_aspect_ratio;
->
->                 cvt = &(timing->data.other_data.data.cvt[i]);
->
-> @@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
->                         continue;
->
->                 height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) + 1) * 2;
-> -               switch (cvt->code[1] & 0x0c) {
-> +               cvt_aspect_ratio = cvt->code[1] & 0x0c;
-
-The temp var doesn't do anything now right? Previously you were using
-it in the print, but now you can drop these two hunks, I think?
-
-  -ilia
-
-> +               switch (cvt_aspect_ratio) {
->                 case 0x00:
->                         width = height * 4 / 3;
->                         break;
-> @@ -3114,6 +3116,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
->                 case 0x0c:
->                         width = height * 15 / 9;
->                         break;
-> +               default:
-> +                       unreachable();
->                 }
->
->                 for (j = 1; j < 5; j++) {
-> --
-> 2.28.0
->
+TGl1LCB0aGFuayB5b3UgdmVyeSBtdWNoIGZvciB0aGUgZml4Lg0KDQpQbGVhc2Ugbm90ZSB0aGF0
+IEkgcG9zdGVkIGEgcGF0Y2ggc2VyaWVzIG9uIE9jdG9iZXIsIDI4dGggaW5jbHVkaW5nDQp0aGlz
+IGZpeC4gQWxzbyBub3RlIHRoYXQgSSBwb3N0ZWQgYSB2MiB0b2RheS4NCg0KS2hhbGlsIA0KDQo+
+IFN1YmplY3Q6IFtQQVRDSF0gaTJjOiBtbHhiZjogRml4IGJ1aWxkIGVycm9yIHdpdGggQ09ORklH
+X0FDUEkgZGlzYWJsZWQNCj4gDQo+IGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbWx4YmYuYzogSW4g
+ZnVuY3Rpb24g4oCYbWx4YmZfaTJjX2FjcGlfcHJvYmXigJk6DQo+IGRyaXZlcnMvaTJjL2J1c3Nl
+cy9pMmMtbWx4YmYuYzoyMjk2Ojg6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5j
+dGlvbg0KPiDigJhhY3BpX2RldmljZV91aWTigJk7IGRpZCB5b3UgbWVhbiDigJhjcHVfZGV2aWNl
+X3Vw4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC0NCj4gZnVuY3Rpb24tZGVjbGFyYXRpb25dDQo+ICAg
+dWlkID0gYWNwaV9kZXZpY2VfdWlkKGFkZXYpOw0KPiAgICAgICAgIF5+fn5+fn5+fn5+fn5+fg0K
+PiAgICAgICAgIGNwdV9kZXZpY2VfdXANCj4gDQo+IFNpZ25lZC1vZmYtYnk6IExpdSBTaGl4aW4g
+PGxpdXNoaXhpbjJAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJj
+LW1seGJmLmMgfCA3ICsrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykN
+Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMgYi9kcml2
+ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMNCj4gaW5kZXggZWU1OWUwZGEwODJkLi5jZDhhOTA5
+NDMxYTkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbWx4YmYuYw0KPiAr
+KysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1seGJmLmMNCj4gQEAgLTIyNzIsNiArMjI3Miw3
+IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQNCj4gbWx4YmZfaTJjX2FjcGlf
+aWRzW10gPSB7DQo+IA0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShhY3BpLCBtbHhiZl9pMmNfYWNw
+aV9pZHMpOw0KPiANCj4gKyNpZmRlZiBDT05GSUdfQUNQSQ0KPiAgc3RhdGljIGludCBtbHhiZl9p
+MmNfYWNwaV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtbHhiZl9pMmNfcHJpdg0K
+PiAqcHJpdikNCj4gIHsNCj4gIAljb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQgKmFpZDsNCj4g
+QEAgLTIzMDUsNiArMjMwNiwxMiBAQCBzdGF0aWMgaW50IG1seGJmX2kyY19hY3BpX3Byb2JlKHN0
+cnVjdCBkZXZpY2UNCj4gKmRldiwgc3RydWN0IG1seGJmX2kyY19wcml2ICpwcml2KQ0KPiANCj4g
+IAlyZXR1cm4gcmV0Ow0KPiAgfQ0KPiArI2Vsc2UNCj4gK3N0YXRpYyBpbnQgbWx4YmZfaTJjX2Fj
+cGlfcHJvYmUoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgbWx4YmZfaTJjX3ByaXYNCj4gKnBy
+aXYpDQo+ICt7DQo+ICsJcmV0dXJuIC1FTk9ERVY7DQo+ICt9DQo+ICsjZW5kaWYNCj4gDQo+ICBz
+dGF0aWMgaW50IG1seGJmX2kyY19vZl9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBt
+bHhiZl9pMmNfcHJpdg0KPiAqcHJpdikNCj4gIHsNCj4gLS0NCj4gMi4yNS4xDQoNCg==
