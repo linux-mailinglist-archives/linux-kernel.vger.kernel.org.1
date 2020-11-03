@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4102A4FDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EB52A4FEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 20:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729456AbgKCTSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 14:18:50 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6985 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729087AbgKCTSu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:18:50 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa1ad1c0001>; Tue, 03 Nov 2020 11:18:52 -0800
-Received: from [10.2.49.167] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 19:18:49 +0000
-Subject: Re: [RFC PATCH resend 3/6] mm: Add refcount for preserving mm_struct
- without pgd
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jann Horn <jannh@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20201016230915.1972840-1-jannh@google.com>
- <20201016230915.1972840-4-jannh@google.com> <20201016232153.GD37159@ziepe.ca>
- <CAG48ez1+VzW=Gz+2CKze_kmFYfb9J3PdrkJtxS21EyqGHZMGjw@mail.gmail.com>
- <CAG48ez0ChA80cjg4-=1k8PfXV_4u_YVQay9g_RdrLjbAzch4Gw@mail.gmail.com>
- <CAG48ez1ue84pXoQvdjqiXZSj5_3+2Wq7A9v9D_7=rzEFac2AFg@mail.gmail.com>
- <20201103132127.GK36674@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <4f428d8e-b660-9e31-6968-b28f6d7088f5@nvidia.com>
-Date:   Tue, 3 Nov 2020 11:18:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729628AbgKCTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 14:19:11 -0500
+Received: from mg.ssi.bg ([178.16.128.9]:45176 "EHLO mg.ssi.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729520AbgKCTTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:19:07 -0500
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id A599E2A4DC;
+        Tue,  3 Nov 2020 21:19:04 +0200 (EET)
+Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
+        by mg.ssi.bg (Proxmox) with ESMTP id B2A012A5B6;
+        Tue,  3 Nov 2020 21:19:03 +0200 (EET)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id BF6403C09C1;
+        Tue,  3 Nov 2020 21:19:02 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 0A3JIv8w008680;
+        Tue, 3 Nov 2020 21:19:00 +0200
+Date:   Tue, 3 Nov 2020 21:18:57 +0200 (EET)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     =?UTF-8?Q?Cezar_S=C3=A1_Espinola?= <cezarsa@gmail.com>
+cc:     Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        "open list:IPVS" <netdev@vger.kernel.org>,
+        "open list:IPVS" <lvs-devel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>
+Subject: Re: [PATCH RFC] ipvs: add genetlink cmd to dump all services and
+ destinations
+In-Reply-To: <CA++F93jp=6mfVm9brGOMeBE0EKoJhg4EAuN04jeBnXKsC-rTag@mail.gmail.com>
+Message-ID: <5b911129-e3de-f198-625a-8998cd6cdf0@ssi.bg>
+References: <20201030202727.1053534-1-cezarsa@gmail.com> <9140ef65-f76d-4bf1-b211-e88c101a5461@ssi.bg> <CA++F93jp=6mfVm9brGOMeBE0EKoJhg4EAuN04jeBnXKsC-rTag@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103132127.GK36674@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604431132; bh=+CPAgnnyqw7VL/JoIR0Kx+j9vZxF1jTOALVKJZvaioQ=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Z035LvsYyiQh+Qrrs6mbfgKqZHCU4WAXlib5do+P2G30AYSolgzcwkc19NpY61nAc
-         Y/ZmcmVUOabb4GLDzhrHM7bSHSIHdCFs6341uFVB5AMF/rzOj1t9S76lrSYV9M/NQe
-         22APW7CcQTQzEQ//2jwsYkfs49RuZZmGU5F02CKhaWp6fcgcNrLgjwZLMj+Bs0MIvR
-         p5cZOutussLxBCurITL0hshae9TYDEqmRj43Egpry0X5IWWDM4APrbBjHCKiTH7cJx
-         RRhfQYWsOsNzmJrnUan7JSjrgNjlr3r0+kDzmaMB86s3jLVmlEhnx3hm4Ll8cX+yxS
-         ISc4zlZswZGOQ==
+Content-Type: multipart/mixed; boundary="-1463811672-1624316750-1604431142=:3799"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/20 5:21 AM, Jason Gunthorpe wrote:
-> On Tue, Nov 03, 2020 at 04:19:11AM +0100, Jann Horn wrote:
->> On Tue, Nov 3, 2020 at 3:11 AM Jann Horn <jannh@google.com> wrote:
->>> On Sat, Oct 17, 2020 at 2:30 AM Jann Horn <jannh@google.com> wrote:
->>>> On Sat, Oct 17, 2020 at 1:21 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>>>> On Sat, Oct 17, 2020 at 01:09:12AM +0200, Jann Horn wrote:
->>>>>> Currently, mm_struct has two refcounts:
-...
-> Either way can work, I liked the suggestion because it suggests an
-> good name for the ref: 'mmget_pgd' or somesuch
-> 
-> What I don't like is how nonsensical the names here are becoming:
-> mmget/mmgrab/mm_ref
-> 
-> Gives no impression at the callsite what is right/wrong
-> 
-> Names like this:
->   mmget_struct
->   mmget_pgd
->   mmget_tables
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-What?! I had just resigned myself to a bimonthly exercise, re-memorizing
-the mm_struct naming correlation between grab, drop, get, put, count,
-and users. And now you want to make it directly understandable? :)
+---1463811672-1624316750-1604431142=:3799
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-> Make alot more sense to me..
+
+	Hello,
+
+On Tue, 3 Nov 2020, Cezar Sá Espinola wrote:
+
+> >         And now what happens if all dests can not fit in a packet?
+> > We should start next packet with the same svc? And then
+> > user space should merge the dests when multiple packets
+> > start with same service?
 > 
-> I think this patch needs to do something about the naming..
+> My (maybe not so great) idea was to avoid repeating the svc on each
+> packet. It's possible for a packet to start with a destination and
+> user space must consider then as belonging to the last svc received on
+> the previous packet. The comparison "ctx->last_svc != svc" was
+> intended to ensure that a packet only starts with destinations if the
+> current service is the same as the svc we sent on the previous packet.
+
+	You can also consider the idea of having 3 coordinates
+for start svc: idx_svc_tab (0 or 1), idx_svc_row (0..IP_VS_SVC_TAB_SIZE-1)
+and idx_svc for index in row's chain. On new packet this will
+indicate the htable and its row and we have to skip svcs in
+this row to find our starting svc. I think, this will still fit in
+the netlink_callback's args area. If not, we can always kmalloc
+our context in args[0]. In single table, this should speedup
+the start svc lookup 128 times in average (we have 256 rows).
+In setup with 1024 svcs (average 4 in each of the 256 rows)
+we should skip these 0..3 entries instead of 512 in average.
+
+> >         last_svc is used out of __ip_vs_mutex region,
+> > so it is not safe. We can get a reference count but this
+> > is bad if user space blocks.
 > 
+> I thought it would be relatively safe to store a pointer to the last
+> svc since I would only use it for pointer comparison and never
+> dereferencing it. But in retrospect it does look unsafe and fragile
+> and could probably lead to errors especially if services are modified
+> during a dump causing the stored pointer to point to a different
+> service.
 
-A third counter also seems like the tipping point, to me.
+	Yes, nobody is using such pointers. We should create
+packets that correctly identify svc for the dests. The drawback
+is that user space may need more work for merging. We can always
+create a sorted array of pointers to svcs, so that we can binary
+search with bsearch() the svc from every received packet. Then we
+will know if this is a new svc or an old one (with dests in
+multiple packets). Should we also check for dest duplicates in
+the svc? The question is how much safe we should play. In
+user space the max work we can do is to avoid duplicates
+and to put dests to their correct svc.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> >         But even if we use just indexes it should be ok.
+> > If multiple agents are used in parallel it is not our
+> > problem. What can happen is that we can send duplicates
+> > or to skip entries (both svcs and dests). It is impossible
+> > to keep any kind of references to current entries or even
+> > keys to lookup them if another agent can remove them.
+> 
+> Got it. I noticed this behavior while writing this patch and even
+> created a few crude validation scripts running parallel agents and
+> checking the diff in [1].
+
+	Ok, make sure your tests cover cases with multiple
+dests, so that single service occupies multiple packets,
+I'm not sure if 100 dests fit in one packet or not.
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+---1463811672-1624316750-1604431142=:3799--
+
