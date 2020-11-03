@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5253C2A5839
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56A02A5856
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731582AbgKCVtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:49:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42536 "EHLO mail.kernel.org"
+        id S1731661AbgKCUsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:48:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731566AbgKCUta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:30 -0500
+        id S1731429AbgKCUsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:48:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D76E52242A;
-        Tue,  3 Nov 2020 20:49:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08285223FD;
+        Tue,  3 Nov 2020 20:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436569;
-        bh=qYjs7RLvnGoWpCuN8en2y4tkw6+i3gHtcyqfSxCnruI=;
+        s=default; t=1604436482;
+        bh=nqWMGVhHhMXEbtzobguTJH7MLcMFDBI6BlfZOIveW8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ve/PPVpT128Zg5pGr7X0O/jL6gUW+rkHugldxAE76UMczthRXpue4BNPD0VvdxdTZ
-         R3F6UFDunwRpTRWDKg0kPGHWm4mKfy4UDTOoSe09EYcNYamzBaocBlBJpIxgUOYX7W
-         7TNO/gVT99XGONyKOS9yqc6u2+ZrGHcMv/1KSKCE=
+        b=VMlbMPg3hmL3Qs57R4/9ZMO6JXXe0ETqLuAirkMMVSMBszwaXbPUn0jw6fedVBnzq
+         ifhD/jvOvzzIgeDsu8U5bxQktOpottRyvVOhIL+CkUyWsh9v01PIzHKe8iUFmkfgqE
+         Y1Q/2rIGIV8ogDr0QiRo/XfrZ0t0D8KkOWK3bHvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.9 269/391] iio: adc: at91-sama5d2_adc: fix DMA conversion crash
-Date:   Tue,  3 Nov 2020 21:35:20 +0100
-Message-Id: <20201103203405.180495932@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.9 270/391] iio:imu:inv_mpu6050 Fix dma and ts alignment and data leak issues.
+Date:   Tue,  3 Nov 2020 21:35:21 +0100
+Message-Id: <20201103203405.249079624@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,79 +45,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 1a198794451449113fa86994ed491d6986802c23 upstream.
+commit 6b0cc5dce0725ae8f1a2883514da731c55eeb35e upstream.
 
-After the move of the postenable code to preenable, the DMA start was
-done before the DMA init, which is not correct.
-The DMA is initialized in set_watermark. Because of this, we need to call
-the DMA start functions in set_watermark, after the DMA init, instead of
-preenable hook, when the DMA is not properly setup yet.
+This case is a bit different to the rest of the series.  The driver
+was doing a regmap_bulk_read into a buffer that wasn't dma safe
+as it was on the stack with no guarantee of it being in a cacheline
+on it's own.   Fixing that also dealt with the data leak and
+alignment issues that Lars-Peter pointed out.
 
-Fixes: f3c034f61775 ("iio: at91-sama5d2_adc: adjust iio_triggered_buffer_{predisable,postenable} positions")
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-Link: https://lore.kernel.org/r/20200923121748.49384-1-eugen.hristev@microchip.com
-Cc: <Stable@vger.kernel.org>
+Also removed some unaligned handling as we are now aligned.
+
+Fixes tag is for the dma safe buffer issue. Potentially we would
+need to backport timestamp alignment futher but that is a totally
+different patch.
+
+Fixes: fd64df16f40e ("iio: imu: inv_mpu6050: Add SPI support for MPU6000")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200722155103.979802-18-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/at91-sama5d2_adc.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h  |   12 +++++++++---
+ drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c |   12 +++++-------
+ 2 files changed, 14 insertions(+), 10 deletions(-)
 
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -884,7 +884,7 @@ static bool at91_adc_current_chan_is_tou
- 			       AT91_SAMA5D2_MAX_CHAN_IDX + 1);
- }
- 
--static int at91_adc_buffer_preenable(struct iio_dev *indio_dev)
-+static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
- {
- 	int ret;
- 	u8 bit;
-@@ -901,7 +901,7 @@ static int at91_adc_buffer_preenable(str
- 	/* we continue with the triggered buffer */
- 	ret = at91_adc_dma_start(indio_dev);
- 	if (ret) {
--		dev_err(&indio_dev->dev, "buffer postenable failed\n");
-+		dev_err(&indio_dev->dev, "buffer prepare failed\n");
- 		return ret;
- 	}
- 
-@@ -989,7 +989,6 @@ static int at91_adc_buffer_postdisable(s
- }
- 
- static const struct iio_buffer_setup_ops at91_buffer_setup_ops = {
--	.preenable = &at91_adc_buffer_preenable,
- 	.postdisable = &at91_adc_buffer_postdisable,
+--- a/drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h
++++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h
+@@ -122,6 +122,13 @@ struct inv_mpu6050_chip_config {
+ 	u8 user_ctrl;
  };
  
-@@ -1563,6 +1562,7 @@ static void at91_adc_dma_disable(struct
- static int at91_adc_set_watermark(struct iio_dev *indio_dev, unsigned int val)
- {
- 	struct at91_adc_state *st = iio_priv(indio_dev);
-+	int ret;
- 
- 	if (val > AT91_HWFIFO_MAX_SIZE)
- 		return -EINVAL;
-@@ -1586,7 +1586,15 @@ static int at91_adc_set_watermark(struct
- 	else if (val > 1)
- 		at91_adc_dma_init(to_platform_device(&indio_dev->dev));
- 
--	return 0;
-+	/*
-+	 * We can start the DMA only after setting the watermark and
-+	 * having the DMA initialization completed
-+	 */
-+	ret = at91_adc_buffer_prepare(indio_dev);
-+	if (ret)
-+		at91_adc_dma_disable(to_platform_device(&indio_dev->dev));
++/*
++ * Maximum of 6 + 6 + 2 + 7 (for MPU9x50) = 21 round up to 24 and plus 8.
++ * May be less if fewer channels are enabled, as long as the timestamp
++ * remains 8 byte aligned
++ */
++#define INV_MPU6050_OUTPUT_DATA_SIZE         32
 +
-+	return ret;
- }
+ /**
+  *  struct inv_mpu6050_hw - Other important hardware information.
+  *  @whoami:	Self identification byte from WHO_AM_I register
+@@ -165,6 +172,7 @@ struct inv_mpu6050_hw {
+  *  @magn_raw_to_gauss:	coefficient to convert mag raw value to Gauss.
+  *  @magn_orient:       magnetometer sensor chip orientation if available.
+  *  @suspended_sensors:	sensors mask of sensors turned off for suspend
++ *  @data:		dma safe buffer used for bulk reads.
+  */
+ struct inv_mpu6050_state {
+ 	struct mutex lock;
+@@ -190,6 +198,7 @@ struct inv_mpu6050_state {
+ 	s32 magn_raw_to_gauss[3];
+ 	struct iio_mount_matrix magn_orient;
+ 	unsigned int suspended_sensors;
++	u8 data[INV_MPU6050_OUTPUT_DATA_SIZE] ____cacheline_aligned;
+ };
  
- static int at91_adc_update_scan_mode(struct iio_dev *indio_dev,
+ /*register and associated bit definition*/
+@@ -334,9 +343,6 @@ struct inv_mpu6050_state {
+ #define INV_ICM20608_TEMP_OFFSET	     8170
+ #define INV_ICM20608_TEMP_SCALE		     3059976
+ 
+-/* 6 + 6 + 2 + 7 (for MPU9x50) = 21 round up to 24 and plus 8 */
+-#define INV_MPU6050_OUTPUT_DATA_SIZE         32
+-
+ #define INV_MPU6050_REG_INT_PIN_CFG	0x37
+ #define INV_MPU6050_ACTIVE_HIGH		0x00
+ #define INV_MPU6050_ACTIVE_LOW		0x80
+--- a/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
++++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c
+@@ -13,7 +13,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/poll.h>
+ #include <linux/math64.h>
+-#include <asm/unaligned.h>
+ #include "inv_mpu_iio.h"
+ 
+ /**
+@@ -121,7 +120,6 @@ irqreturn_t inv_mpu6050_read_fifo(int ir
+ 	struct inv_mpu6050_state *st = iio_priv(indio_dev);
+ 	size_t bytes_per_datum;
+ 	int result;
+-	u8 data[INV_MPU6050_OUTPUT_DATA_SIZE];
+ 	u16 fifo_count;
+ 	s64 timestamp;
+ 	int int_status;
+@@ -160,11 +158,11 @@ irqreturn_t inv_mpu6050_read_fifo(int ir
+ 	 * read fifo_count register to know how many bytes are inside the FIFO
+ 	 * right now
+ 	 */
+-	result = regmap_bulk_read(st->map, st->reg->fifo_count_h, data,
+-				  INV_MPU6050_FIFO_COUNT_BYTE);
++	result = regmap_bulk_read(st->map, st->reg->fifo_count_h,
++				  st->data, INV_MPU6050_FIFO_COUNT_BYTE);
+ 	if (result)
+ 		goto end_session;
+-	fifo_count = get_unaligned_be16(&data[0]);
++	fifo_count = be16_to_cpup((__be16 *)&st->data[0]);
+ 
+ 	/*
+ 	 * Handle fifo overflow by resetting fifo.
+@@ -182,7 +180,7 @@ irqreturn_t inv_mpu6050_read_fifo(int ir
+ 	inv_mpu6050_update_period(st, pf->timestamp, nb);
+ 	for (i = 0; i < nb; ++i) {
+ 		result = regmap_bulk_read(st->map, st->reg->fifo_r_w,
+-					  data, bytes_per_datum);
++					  st->data, bytes_per_datum);
+ 		if (result)
+ 			goto flush_fifo;
+ 		/* skip first samples if needed */
+@@ -191,7 +189,7 @@ irqreturn_t inv_mpu6050_read_fifo(int ir
+ 			continue;
+ 		}
+ 		timestamp = inv_mpu6050_get_timestamp(st);
+-		iio_push_to_buffers_with_timestamp(indio_dev, data, timestamp);
++		iio_push_to_buffers_with_timestamp(indio_dev, st->data, timestamp);
+ 	}
+ 
+ end_session:
 
 
