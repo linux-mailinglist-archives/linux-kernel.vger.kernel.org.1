@@ -2,144 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A6B2A50C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD582A50C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgKCUPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727688AbgKCUP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:15:28 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEF2C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 12:15:28 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id 62so7280834pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 12:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xcS/eDZKYQVPpPM3i+DV4YykHabb4CCW7PICDQhefoo=;
-        b=cfHsoIfG20R3C11RE4UI+XHVhn4awqd8TA1ZVQIXvTfGkMfAw5Bp+iMbnIhID1IcNz
-         4Zj2E+kSg/KqyvwolrZ9R/x+RywpPHHreSKyvV5eVAY6FGIjda3XCCmzEzbvb1QHvjNe
-         wMffqQh1vzcgYESNIC0mGGYU4dr06IytXYqgI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xcS/eDZKYQVPpPM3i+DV4YykHabb4CCW7PICDQhefoo=;
-        b=BPqkH13q0duob8uKKQKETRYRg+g7b+L/1mkQ9nfi5gnilgSzYVPVQ8CtanAbKh/FiB
-         +bWIlIIbFOnKGMs6kMLMuLAWC0YtTPiNJ2ZdD4cl83IAvL1DP5ay4c5qNvstRjqG4qy+
-         lqar1YWpbhz67kh0XnkORO7kZrzUg62M9wm/gplYfn+HLe11W41XLxo9k/W3D4ycMwgF
-         wrCAG2yIx0tGs1vYWGVUFVitbB6Lq4bclDMD9ARGRWoxROKXr+wdBx1BZjG/GuAhfwOL
-         gRHd2GSN/1ReTu9Hn8KJK57buY2eGKLMGximvp7KRyS+TEDkcQvNwaUf90BKkglJIiir
-         fBsw==
-X-Gm-Message-State: AOAM530cUOyqsrNYROHy5WBrgUHc3yFqDJnu9HUxaTG9o3iC4leZ6qJS
-        gzr5nhrJi1751ImOOrB3prQs7w==
-X-Google-Smtp-Source: ABdhPJyMwrWw1bim6fkp/jon6iNStNmbV6Qtl7aVQkl/mI4zTPmQ/kIQAnLJcPNAxsDkuyJIIN31kQ==
-X-Received: by 2002:a17:90b:3494:: with SMTP id kd20mr952020pjb.84.1604434528221;
-        Tue, 03 Nov 2020 12:15:28 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id a28sm2523094pfk.50.2020.11.03.12.15.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 12:15:27 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH stable 5.9] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
-Date:   Tue,  3 Nov 2020 12:15:26 -0800
-Message-Id: <20201103201526.372590-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-MIME-Version: 1.0
+        id S1729213AbgKCURN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:17:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgKCURN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:17:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C2345AC77;
+        Tue,  3 Nov 2020 20:17:11 +0000 (UTC)
+Date:   Tue, 03 Nov 2020 21:17:11 +0100
+Message-ID: <s5hv9emkxfc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Yu Hao <yuhaobehappy@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sound/core/seq: remove dead code
+In-Reply-To: <CAM0=KirN+ALL=kzQsV2CenBcUNAgP6pQTZaSTEC+oimWmrkjSg@mail.gmail.com>
+References: <20201102071154.23563-1-yuhaobehappy@gmail.com>
+        <s5himamoacp.wl-tiwai@suse.de>
+        <CAM0=KirN+ALL=kzQsV2CenBcUNAgP6pQTZaSTEC+oimWmrkjSg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 1de111b51b829bcf01d2e57971f8fd07a665fa3f upstream.
+On Tue, 03 Nov 2020 19:43:55 +0100,
+Yu Hao wrote:
+> 
+> Yes, I can do that.
+> 
+> And a quick question, to resubmit with that change means that I should create
+> a new submission and this one ends, right?
 
-According to the SMCCC spec[1](7.5.2 Discovery) the
-ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
-SMCCC_RET_NOT_SUPPORTED.
+Yes, just submit a fresh patch.
 
- 0 is "workaround required and safe to call this function"
- 1 is "workaround not required but safe to call this function"
- SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
 
-SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
-calling this function may not work because it isn't implemented in some
-cases". Wonderful. We map this SMC call to
+thanks,
 
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
+Takashi
 
-For KVM hypercalls (hvc), we've implemented this function id to return
-SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
-isn't supposed to be there. Per the code we call
-arm64_get_spectre_v2_state() to figure out what to return for this
-feature discovery call.
-
- 0 is SPECTRE_MITIGATED
- SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Let's clean this up so that KVM tells the guest this mapping:
-
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
-
-Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://developer.arm.com/documentation/den0028/latest [1]
-Link: https://lore.kernel.org/r/20201023154751.1973872-1-swboyd@chromium.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/kvm/hypercalls.c | 2 +-
- include/linux/arm-smccc.h   | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-index 550dfa3e53cd..b8e7f6c4524f 100644
---- a/arch/arm64/kvm/hypercalls.c
-+++ b/arch/arm64/kvm/hypercalls.c
-@@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
- 				val = SMCCC_RET_SUCCESS;
- 				break;
- 			case KVM_BP_HARDEN_NOT_REQUIRED:
--				val = SMCCC_RET_NOT_REQUIRED;
-+				val = SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED;
- 				break;
- 			}
- 			break;
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index 15c706fb0a37..0e50ba3e88d7 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -86,6 +86,8 @@
- 			   ARM_SMCCC_SMC_32,				\
- 			   0, 0x7fff)
- 
-+#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
-+
- /* Paravirtualised time calls (defined by ARM DEN0057A) */
- #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
- 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
--- 
-Sent by a computer, using git, on the internet
-
+> 
+> Thanks.
+> 
+> On Tue, Nov 3, 2020 at 5:09 AM Takashi Iwai <tiwai@suse.de> wrote:
+> 
+>     On Mon, 02 Nov 2020 08:11:54 +0100,
+>     Yu Hao wrote:
+>     >
+>     > The function snd_seq_queue_client_termination() is only called from
+>     > function seq_free_client1(). The seq_free_client1() calls function
+>     > snd_seq_queue_client_leave(), which deletes all objects whose owner
+>     > equals to client->number in global array queue_list, before the function
+>     > snd_seq_queue_client_termination(), which checks whether there are
+>     > any objects in global array queue_list whose owner equals to
+>     > client->number, with the same argument client->number. So
+>     > the checking code in function snd_seq_queue_client_termination() is
+>     > dead code. Remove those dead code.
+>     >
+>     > Signed-off-by: Yu Hao <yuhaobehappy@gmail.com>
+>    
+>     Actually the whole function snd_seq_queue_client_termination() can be
+>     removed.  It's a quite old code and I don't remember clearly, but I
+>     guess the intention was to call this before the actual queue
+>     deletion.  OTOH, it doesn't make any sense to change that order any
+>     longer, as the snd_seq_queue_client_leave() already takes similar
+>     procedure anyway, so let's rather wipe off the useless function.
+>    
+>     Could you resubmit with that change?
+> 
+>     thanks,
+>    
+>     Takashi
+>    
+>     > ---
+>     >  sound/core/seq/seq_queue.c | 11 -----------
+>     >  1 file changed, 11 deletions(-)
+>     >
+>     > diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+>     > index 71a6ea62c3be..91b3f3295d0b 100644
+>     > --- a/sound/core/seq/seq_queue.c
+>     > +++ b/sound/core/seq/seq_queue.c
+>     > @@ -545,21 +545,10 @@ void snd_seq_queue_client_termination(int client)
+>     >       unsigned long flags;
+>     >       int i;
+>     >       struct snd_seq_queue *q;
+>     > -     bool matched;
+>     > 
+>     >       for (i = 0; i < SNDRV_SEQ_MAX_QUEUES; i++) {
+>     >               if ((q = queueptr(i)) == NULL)
+>     >                       continue;
+>     > -             spin_lock_irqsave(&q->owner_lock, flags);
+>     > -             matched = (q->owner == client);
+>     > -             if (matched)
+>     > -                     q->klocked = 1;
+>     > -             spin_unlock_irqrestore(&q->owner_lock, flags);
+>     > -             if (matched) {
+>     > -                     if (q->timer->running)
+>     > -                             snd_seq_timer_stop(q->timer);
+>     > -                     snd_seq_timer_reset(q->timer);
+>     > -             }
+>     >               queuefree(q);
+>     >       }
+>     >  }
+>     > --
+>     > 2.17.1
+>     >
+> 
+> 
