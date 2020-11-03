@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A61D2A531E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF19D2A5261
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732734AbgKCU4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
+        id S1731528AbgKCUtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:49:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732713AbgKCU4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:56:24 -0500
+        id S1731693AbgKCUtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0E6E2080D;
-        Tue,  3 Nov 2020 20:56:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA9F7223FD;
+        Tue,  3 Nov 2020 20:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436984;
-        bh=ZMRTrQy77xo85wCSfJlaBFNeQl2ZDsF9q+BolxflVnA=;
+        s=default; t=1604436542;
+        bh=JhRCqgYBftJV9RLEr0aFlDHQbjUDv3WD1T3e62GZwS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vdekdRH94dZ3iUKv3tjemqeVMYkqZ7HLPdWOY/N0F3mz0LQulhK2UPhz5DtbHGtCO
-         ZabXMTHfHzkMNLiD+untFtuRPM395CagQGRUJhB1RBjS80dus/nC1mPbtdI8Q4Lxci
-         KyQhmpbaehPQkEI0QehGyy7sVEPhTcR5VVSwLY+k=
+        b=nb7LI/o+UuP68FBpDKf3MEVqM+nEBJgq8Vzvn3MoC/p9Vv9De/y70uftnDAz1YuHZ
+         LajoML3cvtqphx/b8ZADaEaGEYS1FNSe9+BqrKjXnKeU+/9sviunt9j6waftscKohq
+         Vr0wNDI9Vhe528xtXJHOUeY/dbC54NFj6zcTYpiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, KoWei Sung <winders@amazon.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 5.4 096/214] md/raid5: fix oops during stripe resizing
-Date:   Tue,  3 Nov 2020 21:35:44 +0100
-Message-Id: <20201103203259.493491139@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.9 294/391] powerpc/32: Fix vmap stack - Properly set r1 before activating MMU
+Date:   Tue,  3 Nov 2020 21:35:45 +0100
+Message-Id: <20201103203406.911311335@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit b44c018cdf748b96b676ba09fdbc5b34fc443ada upstream.
+commit da7bb43ab9da39bcfed0d146ce94e1f0cbae4ca0 upstream.
 
-KoWei reported crash during raid5 reshape:
+We need r1 to be properly set before activating MMU, otherwise any new
+exception taken while saving registers into the stack in exception
+prologs will use the user stack, which is wrong and will even lockup
+or crash when KUAP is selected.
 
-[ 1032.252932] Oops: 0002 [#1] SMP PTI
-[...]
-[ 1032.252943] RIP: 0010:memcpy_erms+0x6/0x10
-[...]
-[ 1032.252947] RSP: 0018:ffffba1ac0c03b78 EFLAGS: 00010286
-[ 1032.252949] RAX: 0000784ac0000000 RBX: ffff91bec3d09740 RCX: 0000000000001000
-[ 1032.252951] RDX: 0000000000001000 RSI: ffff91be6781c000 RDI: 0000784ac0000000
-[ 1032.252953] RBP: ffffba1ac0c03bd8 R08: 0000000000001000 R09: ffffba1ac0c03bf8
-[ 1032.252954] R10: 0000000000000000 R11: 0000000000000000 R12: ffffba1ac0c03bf8
-[ 1032.252955] R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
-[ 1032.252958] FS:  0000000000000000(0000) GS:ffff91becf500000(0000) knlGS:0000000000000000
-[ 1032.252959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1032.252961] CR2: 0000784ac0000000 CR3: 000000031780a002 CR4: 00000000001606e0
-[ 1032.252962] Call Trace:
-[ 1032.252969]  ? async_memcpy+0x179/0x1000 [async_memcpy]
-[ 1032.252977]  ? raid5_release_stripe+0x8e/0x110 [raid456]
-[ 1032.252982]  handle_stripe_expansion+0x15a/0x1f0 [raid456]
-[ 1032.252988]  handle_stripe+0x592/0x1270 [raid456]
-[ 1032.252993]  handle_active_stripes.isra.0+0x3cb/0x5a0 [raid456]
-[ 1032.252999]  raid5d+0x35c/0x550 [raid456]
-[ 1032.253002]  ? schedule+0x42/0xb0
-[ 1032.253006]  ? schedule_timeout+0x10e/0x160
-[ 1032.253011]  md_thread+0x97/0x160
-[ 1032.253015]  ? wait_woken+0x80/0x80
-[ 1032.253019]  kthread+0x104/0x140
-[ 1032.253022]  ? md_start_sync+0x60/0x60
-[ 1032.253024]  ? kthread_park+0x90/0x90
-[ 1032.253027]  ret_from_fork+0x35/0x40
+Do that by switching the meaning of r11 and r1 until we have saved r1
+to the stack: copy r1 into r11 and setup the new stack pointer in r1.
+To avoid complicating and impacting all generic and specific prolog
+code (and more), copy back r1 into r11 once r11 is save onto
+the stack.
 
-This is because cache_size_mutex was unlocked too early in resize_stripes,
-which races with grow_one_stripe() that grow_one_stripe() allocates a
-stripe with wrong pool_size.
+We could get rid of copying r1 back and forth at the cost of
+rewriting everything to use r1 instead of r11 all the way when
+CONFIG_VMAP_STACK is set, but the effort is probably not worth it.
 
-Fix this issue by unlocking cache_size_mutex after updating pool_size.
-
-Cc: <stable@vger.kernel.org> # v4.4+
-Reported-by: KoWei Sung <winders@amazon.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Fixes: 028474876f47 ("powerpc/32: prepare for CONFIG_VMAP_STACK")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/8f85e8752ac5af602db7237ef53d634f4f3d3892.1599486108.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/raid5.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/head_32.h |   43 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2407,8 +2407,6 @@ static int resize_stripes(struct r5conf
- 	} else
- 		err = -ENOMEM;
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -39,15 +39,24 @@
+ .endm
  
--	mutex_unlock(&conf->cache_size_mutex);
--
- 	conf->slab_cache = sc;
- 	conf->active_name = 1-conf->active_name;
- 
-@@ -2431,6 +2429,8 @@ static int resize_stripes(struct r5conf
- 
- 	if (!err)
- 		conf->pool_size = newsize;
-+	mutex_unlock(&conf->cache_size_mutex);
-+
- 	return err;
- }
- 
+ .macro EXCEPTION_PROLOG_1 for_rtas=0
++#ifdef CONFIG_VMAP_STACK
++	mr	r11, r1
++	subi	r1, r1, INT_FRAME_SIZE		/* use r1 if kernel */
++	beq	1f
++	mfspr	r1,SPRN_SPRG_THREAD
++	lwz	r1,TASK_STACK-THREAD(r1)
++	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
++#else
+ 	subi	r11, r1, INT_FRAME_SIZE		/* use r1 if kernel */
+ 	beq	1f
+ 	mfspr	r11,SPRN_SPRG_THREAD
+ 	lwz	r11,TASK_STACK-THREAD(r11)
+ 	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
++#endif
+ 1:
+ 	tophys_novmstack r11, r11
+ #ifdef CONFIG_VMAP_STACK
+-	mtcrf	0x7f, r11
++	mtcrf	0x7f, r1
+ 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
+ #endif
+ .endm
+@@ -62,6 +71,15 @@
+ 	stw	r10,_CCR(r11)		/* save registers */
+ #endif
+ 	mfspr	r10, SPRN_SPRG_SCRATCH0
++#ifdef CONFIG_VMAP_STACK
++	stw	r11,GPR1(r1)
++	stw	r11,0(r1)
++	mr	r11, r1
++#else
++	stw	r1,GPR1(r11)
++	stw	r1,0(r11)
++	tovirt(r1, r11)		/* set new kernel sp */
++#endif
+ 	stw	r12,GPR12(r11)
+ 	stw	r9,GPR9(r11)
+ 	stw	r10,GPR10(r11)
+@@ -89,9 +107,6 @@
+ 	mfspr	r12,SPRN_SRR0
+ 	mfspr	r9,SPRN_SRR1
+ #endif
+-	stw	r1,GPR1(r11)
+-	stw	r1,0(r11)
+-	tovirt_novmstack r1, r11	/* set new kernel sp */
+ #ifdef CONFIG_40x
+ 	rlwinm	r9,r9,0,14,12		/* clear MSR_WE (necessary?) */
+ #else
+@@ -309,19 +324,19 @@ label:
+ .macro vmap_stack_overflow_exception
+ #ifdef CONFIG_VMAP_STACK
+ #ifdef CONFIG_SMP
+-	mfspr	r11, SPRN_SPRG_THREAD
+-	lwz	r11, TASK_CPU - THREAD(r11)
+-	slwi	r11, r11, 3
+-	addis	r11, r11, emergency_ctx@ha
++	mfspr	r1, SPRN_SPRG_THREAD
++	lwz	r1, TASK_CPU - THREAD(r1)
++	slwi	r1, r1, 3
++	addis	r1, r1, emergency_ctx@ha
+ #else
+-	lis	r11, emergency_ctx@ha
++	lis	r1, emergency_ctx@ha
+ #endif
+-	lwz	r11, emergency_ctx@l(r11)
+-	cmpwi	cr1, r11, 0
++	lwz	r1, emergency_ctx@l(r1)
++	cmpwi	cr1, r1, 0
+ 	bne	cr1, 1f
+-	lis	r11, init_thread_union@ha
+-	addi	r11, r11, init_thread_union@l
+-1:	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
++	lis	r1, init_thread_union@ha
++	addi	r1, r1, init_thread_union@l
++1:	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
+ 	EXCEPTION_PROLOG_2
+ 	SAVE_NVGPRS(r11)
+ 	addi	r3, r1, STACK_FRAME_OVERHEAD
 
 
