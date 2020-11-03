@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4418F2A5827
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA612A5800
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731826AbgKCVtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:49:17 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:43695 "EHLO m42-4.mailgun.net"
+        id S1732884AbgKCVrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:47:03 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:57326 "EHLO leonov.paulk.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731638AbgKCUtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604436585; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=QXDW7ApX0OmVBkOprTaLa95T5xEPy4i9pE3/1IvLL/s=; b=HsZ38SPMv7lx2cJXm7lNqIDx0mhAir8vXxvBVnpWfxGLr+aOK5xDXISploX4x8JapliGa/iJ
- AWysEUUWCvOfBnNa/RtEa5XV8VV+09M10R7on8VZeohq0/mNFdEnLnNvYQhGlVyX8W1toKYg
- M5UGPUfA+xZiw3pbkGegFJtJGUM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fa1c269b64b1c5b7859f204 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 20:49:45
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3BC46C43449; Tue,  3 Nov 2020 20:49:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
+        id S1731964AbgKCUvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:31 -0500
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 98851C0121;
+        Tue,  3 Nov 2020 21:51:28 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id F2ACFC1D57; Tue,  3 Nov 2020 21:51:27 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53AB2C38522;
-        Tue,  3 Nov 2020 20:49:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53AB2C38522
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/msm/dp: promote irq_hpd handle to handle link training correctly
-Date:   Tue,  3 Nov 2020 12:49:02 -0800
-Message-Id: <20201103204902.11899-4-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201103204902.11899-1-khsieh@codeaurora.org>
-References: <20201103204902.11899-1-khsieh@codeaurora.org>
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (collins [192.168.1.129])
+        by gagarine.paulk.fr (Postfix) with ESMTP id 7F334C1D3F;
+        Tue,  3 Nov 2020 21:51:00 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Paul Kocialkowski <contact@paulk.fr>,
+        Matteo Scordino <matteo.scordino@gmail.com>
+Subject: [PATCH v2 0/6] Allwinner V3 SL631 Action Camera Support and Related Fixes
+Date:   Tue,  3 Nov 2020 21:50:52 +0100
+Message-Id: <20201103205058.435207-1-contact@paulk.fr>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some dongles require link training done at irq_hpd request instead
-of plugin request. This patch promote irq_hpd handler to handle link
-training and setup hpd_state correctly.
+This series adds support for the Allwinner V3-based SL631 family of
+Action Cameras, starting with the IMX179 fashion.
 
- Fixes: fdaf9a5e3c15 (drm/msm/dp: fixes wrong connection state caused by failure of link training)
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+A few fixes to V3 support are added along the way, most notably support
+for the NMI IRQ controller which is necessary for the AXP209 IRQ.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0c0573ad34e6..27e7e27b8b90 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -449,10 +449,9 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
- 	sink_request = dp->link->sink_request;
- 
- 	if (sink_request & DS_PORT_STATUS_CHANGED) {
--		dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
- 		if (dp_display_is_sink_count_zero(dp)) {
- 			DRM_DEBUG_DP("sink count is zero, nothing to do\n");
--			return 0;
-+			return -ENOTCONN;
- 		}
- 
- 		return dp_display_process_hpd_high(dp);
-@@ -469,7 +468,9 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
- static int dp_display_usbpd_attention_cb(struct device *dev)
- {
- 	int rc = 0;
-+	u32 sink_request;
- 	struct dp_display_private *dp;
-+	struct dp_usbpd *hpd;
- 
- 	if (!dev) {
- 		DRM_ERROR("invalid dev\n");
-@@ -483,10 +484,26 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 		return -ENODEV;
- 	}
- 
-+	hpd = dp->usbpd;
-+
- 	/* check for any test request issued by sink */
- 	rc = dp_link_process_request(dp->link);
--	if (!rc)
--		dp_display_handle_irq_hpd(dp);
-+	if (!rc) {
-+		sink_request = dp->link->sink_request;
-+		if (sink_request & DS_PORT_STATUS_CHANGED) {
-+			/* same as unplugged */
-+			hpd->hpd_high = 0;
-+			dp->hpd_state = ST_DISCONNECT_PENDING;
-+			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
-+		}
-+
-+		rc = dp_display_handle_irq_hpd(dp);
-+
-+		if (!rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
-+			hpd->hpd_high = 1;
-+			dp->hpd_state = ST_CONNECT_PENDING;
-+		}
-+	}
- 
- 	return rc;
- }
+Note that some patches in this series may have already been submitted
+(but not yet merged) by others and are included for the series to build.
+
+Changes since v1:
+- Rework commit log messages as requested;
+- Fixed v3s nmi controller compatible order in dt bindings doc;
+- Changed SL631 compatible vendor to allwinner;
+- Fixed LRADC button node names;
+- Removed unused LDO4 regulator node;
+- Removed merged patches.
+
+Happy reviewing!
+
+Paul Kocialkowski (6):
+  dt-bindings: irq: sun7i-nmi: Add binding documentation for the V3s NMI
+  irqchip/sunxi-nmi: Add support for the V3s NMI
+  ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
+  ARM: dts: sun8i: Cleanup the Pinecube AXP209 node
+  dt-bindings: arm: sunxi: Add SL631 with IMX179 bindings
+  ARM: dts: sun8i-v3: Add support for the SL631 Action Camera with
+    IMX179
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   6 +
+ .../allwinner,sun7i-a20-sc-nmi.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/sun8i-s3-pinecube.dts       |   8 +-
+ arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts   |  12 ++
+ arch/arm/boot/dts/sun8i-v3-sl631.dtsi         | 138 ++++++++++++++++++
+ arch/arm/boot/dts/sun8i-v3s.dtsi              |  10 +-
+ drivers/irqchip/irq-sunxi-nmi.c               |  18 ++-
+ 8 files changed, 186 insertions(+), 8 deletions(-)
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631.dtsi
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.29.1
 
