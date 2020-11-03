@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987952A458F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAEF2A45A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 13:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgKCMuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 07:50:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34873 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726388AbgKCMuq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:50:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604407844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=czYSHEkJZRKBHJc6+H3B9w8RmjDMKNgYyM8LaMqolZw=;
-        b=VMsEE6Y1zplAdZk7YralgLB5F1aOY65et04JnOngvOJSf9ocAandXhEcmmFWSM/68/yzG6
-        G2xGRywXTuWACnzWV20St/YTNkD5I25Rxxf48IhDOorAP0jsbazYlAxdg7bQKCMiSBnq2z
-        qMsNgN2mQWUUwTSoPTSbzNJfhQY6VzE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-8apJzIFdN-egZ6oA7GB6Hw-1; Tue, 03 Nov 2020 07:50:41 -0500
-X-MC-Unique: 8apJzIFdN-egZ6oA7GB6Hw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFC81106C10A;
-        Tue,  3 Nov 2020 12:50:38 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CF925672C0;
-        Tue,  3 Nov 2020 12:50:35 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  3 Nov 2020 13:50:38 +0100 (CET)
-Date:   Tue, 3 Nov 2020 13:50:34 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Mark Mossberg <mark.mossberg@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org, hpa@zytor.com, jannh@google.com,
-        kyin@redhat.com
-Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
- error message
-Message-ID: <20201103125034.GA30391@redhat.com>
-References: <20201002042915.403558-1-mark.mossberg@gmail.com>
+        id S1729128AbgKCMyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 07:54:21 -0500
+Received: from smtp.uniroma2.it ([160.80.6.22]:46057 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728996AbgKCMyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 07:54:04 -0500
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0A3CquXm020392
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 3 Nov 2020 13:52:57 +0100
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [net-next,v1,0/5] seg6: add support for SRv6 End.DT4 behavior
+Date:   Tue,  3 Nov 2020 13:52:37 +0100
+Message-Id: <20201103125242.11468-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002042915.403558-1-mark.mossberg@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02, Mark Mossberg wrote:
->
-> Printing "Bad RIP value" if copy_code() fails can be misleading for
-> userspace pointers, since copy_code() can fail if the instruction
-> pointer is valid, but the code is paged out.
+This patchset provides support for the SRv6 End.DT4 behavior.
 
-Another problem is that show_opcodes() makes no sense if user_mode(regs)
-and tsk is not current. Try "echo t > /proc/sysrq-trigger".
+The SRv6 End.DT4 is used to implement multi-tenant IPv4 L3 VPN. It
+decapsulates the received packets and performs IPv4 routing lookup in
+the routing table of the tenant. The SRv6 End.DT4 Linux implementation
+leverages a VRF device. The SRv6 End.DT4 is defined in the SRv6 Network
+Programming [1].
 
-In this case copy_from_user_nmi() will either fail, or (worse) it will
-read the "random" memory from current->mm.
+- Patch 1/5 is needed to solve a pre-existing issue with tunneled packets
+  when a sniffer is attached;
 
-Perhaps we can add something like
+- Patch 2/5 improves the management of the seg6local attributes used by the
+  SRv6 behaviors;
 
-	if (user_mode(regs) && regs != task_pt_regs(current))
-		return;
+- Patch 3/5 introduces two callbacks used for customizing the
+  creation/destruction of a SRv6 behavior;
 
-at the start of show_opcodes() ?
+- Patch 4/5 is the core patch that adds support for the SRv6 End.DT4 behavior;
 
-> --- a/arch/x86/kernel/dumpstack.c
-> +++ b/arch/x86/kernel/dumpstack.c
-> @@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
->  	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
->  
->  	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
-> -		printk("%sCode: Bad RIP value.\n", loglvl);
-> +		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
-> +		       loglvl, prologue);
->  	} else {
->  		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
->  		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
-> -- 
-> 2.25.1
-> 
+- Patch 5/5 adds the selftest for SRv6 End.DT4 behavior.
+
+I would like to thank David Ahern for his support during the development of
+this patch set.
+
+Comments, suggestions and improvements are very welcome!
+
+Thanks,
+Andrea Mayer
+
+v1
+ improve comments;
+
+ add new patch 2/5 titled: seg6: improve management of behavior attributes
+
+ seg6: add support for the SRv6 End.DT4 behavior 
+  - remove the inline keyword in the definition of fib6_config_get_net().
+
+ selftests: add selftest for the SRv6 End.DT4 behavior
+  - add check for the vrf sysctl
+
+[1] https://tools.ietf.org/html/draft-ietf-spring-srv6-network-programming
+
+Andrea Mayer (5):
+  vrf: add mac header for tunneled packets when sniffer is attached
+  seg6: improve management of behavior attributes
+  seg6: add callbacks for customizing the creation/destruction of a
+    behavior
+  seg6: add support for the SRv6 End.DT4 behavior
+  selftests: add selftest for the SRv6 End.DT4 behavior
+
+ drivers/net/vrf.c                             |  78 ++-
+ net/ipv6/seg6_local.c                         | 370 ++++++++++++-
+ .../selftests/net/srv6_end_dt4_l3vpn_test.sh  | 494 ++++++++++++++++++
+ 3 files changed, 927 insertions(+), 15 deletions(-)
+ create mode 100755 tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+
+-- 
+2.20.1
 
