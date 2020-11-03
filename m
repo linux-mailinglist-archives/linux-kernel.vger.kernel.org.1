@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4525C2A5835
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D898D2A581B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732118AbgKCVtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:49:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
+        id S1732162AbgKCVso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:48:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731583AbgKCUtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:49:35 -0500
+        id S1731732AbgKCUt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:49:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89988223FD;
-        Tue,  3 Nov 2020 20:49:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46A2F22404;
+        Tue,  3 Nov 2020 20:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436574;
-        bh=nKmsieHP+Q5iP8RVEYxwtSZMk69vmjd3cYIPI16zKf0=;
+        s=default; t=1604436598;
+        bh=10E+evXaSoanrGML/WlMAmxK4soRQKnBX3Wuv12W+X8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iV+/4KJrYK7I8caCXZao22v/4gD+yFB02btGRIj26xr8l9YVysQ8QfspqeroSbRKJ
-         Ho4beU46Tn/jE43z8v3zwru7n2gt7usSvAZ8KLgTs1T0QC7rtgsRNoQouKBSCbf/iV
-         7MWztBuZ4ZcUBtwpIVQhwc9c7CjN4kE+21t8EQsw=
+        b=LgOnKe33AIVTv7mdjjtBr3dL5PLGzgGGni+rCKs7m/w9ksTXU+IayhkWoqdLjX8cC
+         rJ8fzhi0NSvlLpxgISqgClZmSmZB25bK1eGr8VeQS/QDdqY9zy2lBZrfszXTyzlOaZ
+         wslDYjVXSkwtSc/IkliX1aofqo+KFvu7s8gmc7Cw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: [PATCH 5.9 302/391] NFSD: Add missing NFSv2 .pc_func methods
-Date:   Tue,  3 Nov 2020 21:35:53 +0100
-Message-Id: <20201103203407.465667369@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.9 303/391] ubifs: dent: Fix some potential memory leaks while iterating entries
+Date:   Tue,  3 Nov 2020 21:35:54 +0100
+Message-Id: <20201103203407.549317349@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,72 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 6b3dccd48de8a4c650b01499a0b09d1e2279649e upstream.
+commit 58f6e78a65f1fcbf732f60a7478ccc99873ff3ba upstream.
 
-There's no protection in nfsd_dispatch() against a NULL .pc_func
-helpers. A malicious NFS client can trigger a crash by invoking the
-unused/unsupported NFSv2 ROOT or WRITECACHE procedures.
+Fix some potential memory leaks in error handling branches while
+iterating dent entries. For example, function dbg_check_dir()
+forgets to free pdent if it exists.
 
-The current NFSD dispatcher does not support returning a void reply
-to a non-NULL procedure, so the reply to both of these is wrong, for
-the moment.
-
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfsd/nfsproc.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ fs/ubifs/debug.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/nfsd/nfsproc.c
-+++ b/fs/nfsd/nfsproc.c
-@@ -118,6 +118,13 @@ done:
- 	return nfsd_return_attrs(nfserr, resp);
- }
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -1123,6 +1123,7 @@ int dbg_check_dir(struct ubifs_info *c,
+ 			err = PTR_ERR(dent);
+ 			if (err == -ENOENT)
+ 				break;
++			kfree(pdent);
+ 			return err;
+ 		}
  
-+/* Obsolete, replaced by MNTPROC_MNT. */
-+static __be32
-+nfsd_proc_root(struct svc_rqst *rqstp)
-+{
-+	return nfs_ok;
-+}
-+
- /*
-  * Look up a path name component
-  * Note: the dentry in the resp->fh may be negative if the file
-@@ -203,6 +210,13 @@ nfsd_proc_read(struct svc_rqst *rqstp)
- 	return fh_getattr(&resp->fh, &resp->stat);
- }
- 
-+/* Reserved */
-+static __be32
-+nfsd_proc_writecache(struct svc_rqst *rqstp)
-+{
-+	return nfs_ok;
-+}
-+
- /*
-  * Write data to a file
-  * N.B. After this call resp->fh needs an fh_put
-@@ -617,6 +631,7 @@ static const struct svc_procedure nfsd_p
- 		.pc_xdrressize = ST+AT,
- 	},
- 	[NFSPROC_ROOT] = {
-+		.pc_func = nfsd_proc_root,
- 		.pc_decode = nfssvc_decode_void,
- 		.pc_encode = nfssvc_encode_void,
- 		.pc_argsize = sizeof(struct nfsd_void),
-@@ -654,6 +669,7 @@ static const struct svc_procedure nfsd_p
- 		.pc_xdrressize = ST+AT+1+NFSSVC_MAXBLKSIZE_V2/4,
- 	},
- 	[NFSPROC_WRITECACHE] = {
-+		.pc_func = nfsd_proc_writecache,
- 		.pc_decode = nfssvc_decode_void,
- 		.pc_encode = nfssvc_encode_void,
- 		.pc_argsize = sizeof(struct nfsd_void),
 
 
