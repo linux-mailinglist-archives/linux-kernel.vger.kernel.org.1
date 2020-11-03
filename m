@@ -2,85 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DD72A4BC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF582A4BC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgKCQkR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 11:40:17 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52402 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgKCQkR (ORCPT
+        id S1727971AbgKCQoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727530AbgKCQoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:40:17 -0500
-Received: by mail-wm1-f65.google.com with SMTP id c18so13387822wme.2;
-        Tue, 03 Nov 2020 08:40:15 -0800 (PST)
+        Tue, 3 Nov 2020 11:44:02 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CD4C061A47
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 08:44:02 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id j7so18953381oie.12
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 08:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j0VBbXjpdL1m/xb8jfV3yaghCTs9f/IYXw0uJjV4+rU=;
+        b=M+HZ82AtYhoaAt9FZ4rgWk/5MD4+nZb7WcWR3gfEIYlUZqs2y6t1bR7CvbgCPbntUV
+         Afx7XggS3KeT1i5AVXGuSUlLPcq+czFQtHIENyt7wPJWZZOW7QjUUnmHv3E1euL8fnVy
+         ZvOkH9jdI6WT3jqYaIjw4Ri9uepjbGaJHN+4+/BTxjqGh5bmLSNzDAuqXG8dY/Pm96Pn
+         PfHVq72w3NR4vJwri6vLDyUs+nPoxKUU/RAwC3OpLaqVahb4yJh4FjtTJ9OLAUR/CJaB
+         eh+mmoT4u6H0OgG1SFuDfPavB0dvinWJqxtWq3WPL5C8xAaLmktR6hkPqz2K8GBR4lb0
+         C0rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5VqbnNEsISzTx1+2zCjn0IZi1oNIpk688VcKl8HpDLI=;
-        b=hTLh+TaGcZ/cL5FpLGpfQYkIYFmluvt11cuki2h5VO28K+N56Na0EF27MmEFlg7iDD
-         shckgZAfiHc8bAiJAeOVu4kujoOeaxHD9f/SPbCYUuG3p1B043+Rwr2o2xi54t7tD3BH
-         YTVbuku03fCRG4TivDt8ukZmkX/vtPER4BIK+mIyLUiSc4DhrQzQEjXWrD9XIiFs9WsK
-         Ji9inBnxCriWvcty6JabHUw6XhXLKZpWt9YG2J4Oq5yYx6hG7+L05eUWaNUiqAJNpBJ5
-         kXtXo0dXnBtQIWH9QtrKAd/gS/kHD/vtImGZhqItM3q7IdNp/jF8X2IXi/B6h6nGLTtX
-         l60w==
-X-Gm-Message-State: AOAM530VO4NnJ/WBcM+AK2Ic655G3ViL4UFVrAVmUYa/HMzmDdvwHltv
-        QdCVW+2U9PVxIR6MmL5xBC8=
-X-Google-Smtp-Source: ABdhPJxHA9TXX2ewYjGAO6mdcEx5JBCuiEyhaA6ckxhF7acHpUaj+iPlTPCc70w028VEW+8eqfRE+A==
-X-Received: by 2002:a1c:7301:: with SMTP id d1mr615443wmb.141.1604421615281;
-        Tue, 03 Nov 2020 08:40:15 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b136sm3328206wmb.21.2020.11.03.08.40.13
+         :mime-version:content-disposition:in-reply-to;
+        bh=j0VBbXjpdL1m/xb8jfV3yaghCTs9f/IYXw0uJjV4+rU=;
+        b=gj6GAfyvfK9draGiSMjoXJbO8sSezqlf/PoiQHDL9ILoDVe/vjQPSs55Cef0yZf+AF
+         fJgd0m4TiUD+Xks0UuFbYL4VQDTTNmZCawqIBotcqyEHmpkNJPE/p/eaIC1107RjVgFC
+         XXd6tAZhRw/HuG4UVn/BcSAq7l9KrGnojuD6oYMtE+aHmu2OCkj6uxtG1+50a1lsT+a4
+         NLdjD5yNdBXkb74+lDlb5khSTnBPGAmSMMvfmMpjPs2PcMEhKsXR7T1208m99hQjLavR
+         zlmjl5dQwe+DypIVJlH9q+/GJP6F+wo5DTvsZa5zjLzPEuIbgkHg5e9YemV9ORubQl3E
+         XImA==
+X-Gm-Message-State: AOAM5313fonxyBh6iktOFajYrSofctNYzw74QcEYP9HBKTiw1QHX0+cM
+        f/Mtt50mo5sCodvN18FHtHLi5Q==
+X-Google-Smtp-Source: ABdhPJwZjp/dFRtE//tmZhs907FIpCy2zncucfBJOw0PNrwnOe8AbpeFlsJnAONQOEDZNee3PI9UNA==
+X-Received: by 2002:a54:408b:: with SMTP id i11mr163oii.89.1604421841389;
+        Tue, 03 Nov 2020 08:44:01 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a22sm2948498oib.52.2020.11.03.08.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 08:40:14 -0800 (PST)
-Date:   Tue, 3 Nov 2020 17:40:12 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 3/5] ARM: dts: exynos: Add Ethernet interface description
- for Odroid XU
-Message-ID: <20201103164012.GD14739@kozik-lap>
-References: <20201103124618.21358-1-l.stelmach@samsung.com>
- <CGME20201103124621eucas1p23bae6351a79c0e271b68223a35dbd7f7@eucas1p2.samsung.com>
- <20201103124618.21358-4-l.stelmach@samsung.com>
+        Tue, 03 Nov 2020 08:44:00 -0800 (PST)
+Date:   Tue, 3 Nov 2020 10:43:58 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: Add SDX55 pinctrl
+ bindings
+Message-ID: <20201103164358.GO3151@builder.lan>
+References: <20201103055801.472736-1-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201103124618.21358-4-l.stelmach@samsung.com>
+In-Reply-To: <20201103055801.472736-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:46:16PM +0100, Łukasz Stelmach wrote:
-> Add Ethernet interface description for Odroid XU.
+On Mon 02 Nov 23:58 CST 2020, Vinod Koul wrote:
+
+> Add device tree binding Documentation details for Qualcomm SDX55
+> pinctrl driver.
 > 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  arch/arm/boot/dts/exynos5410-odroidxu.dts | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  .../bindings/pinctrl/qcom,sdx55-pinctrl.yaml  | 145 ++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdx55-pinctrl.yaml
 > 
-> diff --git a/arch/arm/boot/dts/exynos5410-odroidxu.dts b/arch/arm/boot/dts/exynos5410-odroidxu.dts
-> index 75b4150c26d7..882d9296fa5d 100644
-> --- a/arch/arm/boot/dts/exynos5410-odroidxu.dts
-> +++ b/arch/arm/boot/dts/exynos5410-odroidxu.dts
-> @@ -19,6 +19,10 @@ / {
->  	model = "Hardkernel Odroid XU";
->  	compatible = "hardkernel,odroid-xu", "samsung,exynos5410", "samsung,exynos5";
->  
-> +	aliases {
-> +		ethernet = &ethernet;
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sdx55-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sdx55-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..95b77d9a608c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sdx55-pinctrl.yaml
+> @@ -0,0 +1,145 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,sdx55-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. SDX55 TLMM block
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  SDX55 platform.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sdx55-pinctrl
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifies the TLMM summary IRQ
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description:
+> +      Specifies the PIN numbers and Flags, as defined in defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  wakeup-parent:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '-pins$':
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +    properties:
+> +      pins:
+> +        description:
+> +          List of gpio pins affected by the properties specified in this subnode.
+> +        items:
+> +          oneOf:
+> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-6])$"
+> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
+> +        minItems: 1
+> +        maxItems: 36
+> +
+> +      function:
+> +        description:
+> +          Specify the alternative function to be configured for the specified
+> +          pins. Functions are only valid for gpio pins.
+> +        enum: [ adsp_ext, atest, audio_ref, bimc_dte0, bimc_dte1, blsp_i2c1,
+> +                blsp_i2c2, blsp_i2c3, blsp_i2c4, blsp_spi1, blsp_spi2,
+> +                blsp_spi3, blsp_spi4, blsp_uart1, blsp_uart2, blsp_uart3,
+> +                blsp_uart4, char_exec, coex_uart, coex_uart2, cri_trng,
+> +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0,
+> +                ebi0_wrcdc, ebi2_a, ebi2_lcd, emac_gcc0, emac_gcc1,
+> +                emac_pps0, emac_pps1, ext_dbg, gcc_gp1, gcc_gp2, gcc_gp3,
+> +                gcc_plltest, gpio, i2s_mclk, jitter_bist, ldo_en, ldo_update,
+> +                mgpi_clk, m_voc, native_char, native_char0, native_char1,
+> +                native_char2, native_char3, native_tsens, native_tsense,
+> +                nav_gpio, pa_indicator, pcie_clkreq, pci_e, pll_bist, pll_ref,
+> +                pll_test, pri_mi2s, prng_rosc, qdss_cti, qdss_gpio,
+> +                qdss_gpio0, qdss_gpio1, qdss_gpio2, qdss_gpio3, qdss_gpio4,
+> +                qdss_gpio5, qdss_gpio6, qdss_gpio7, qdss_gpio8, qdss_gpio9,
+> +                qdss_gpio10, qdss_gpio11, qdss_gpio12, qdss_gpio13,
+> +                qdss_gpio14, qdss_gpio15, qdss_stm0, qdss_stm1, qdss_stm2,
+> +                qdss_stm3, qdss_stm4, qdss_stm5, qdss_stm6, qdss_stm7,
+> +                qdss_stm8, qdss_stm9, qdss_stm10, qdss_stm11, qdss_stm12,
+> +                qdss_stm13, qdss_stm14, qdss_stm15, qdss_stm16, qdss_stm17,
+> +                qdss_stm18, qdss_stm19, qdss_stm20, qdss_stm21, qdss_stm22,
+> +                qdss_stm23, qdss_stm24, qdss_stm25, qdss_stm26, qdss_stm27,
+> +                qdss_stm28, qdss_stm29, qdss_stm30, qdss_stm31, qlink0_en,
+> +                qlink0_req, qlink0_wmss, qlink1_en, qlink1_req, qlink1_wmss,
+> +                spmi_coex, sec_mi2s, spmi_vgi, tgu_ch0, uim1_clk, uim1_data,
+> +                uim1_present, uim1_reset, uim2_clk, uim2_data, uim2_present,
+> +                uim2_reset, usb2phy_ac, vsense_trigger ]
+> +
+> +        drive-strength:
+> +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +          default: 2
+> +          description:
+> +            Selects the drive strength for the specified pins, in mA.
+> +
+> +        bias-pull-down: true
+> +
+> +        bias-pull-up: true
+> +
+> +        bias-disable: true
+> +
+> +        output-high: true
+> +
+> +        output-low: true
+> +
+> +      required:
+> +        - pins
+> +        - function
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        pinctrl@1f00000 {
+> +                compatible = "qcom,sdx55-pinctrl";
+> +                reg = <0x0f100000 0x300000>;
+> +                interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
+> +                #interrupt-cells = <2>;
+> +                interrupt-controller;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
 
-Just like with patch 1/5 - please explain in commit msg why do you need
-this.
+Isn't gpio-ranges a required property? Perhaps that's only a functional
+requirement for the hogs to work?
 
-Best regards,
-Krzysztof
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> +        };
+> +
+> +...
+> -- 
+> 2.26.2
+> 
