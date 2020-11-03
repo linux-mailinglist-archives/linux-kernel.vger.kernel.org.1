@@ -2,137 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B482A446E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D402A4472
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbgKCLoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:44:11 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:57214 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgKCLoL (ORCPT
+        id S1728654AbgKCLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:44:31 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15823 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgKCLob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:44:11 -0500
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E7A7820C1713
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 03:44:09 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7A7820C1713
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1604403850;
-        bh=37ChBpsbVjcfTyXaezJtJ5UnNPk/LUKQFX519mQ46jg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S40pzj4z7zAJcfObKQ+IE+eQQT1WJUJ0gaMHMEn/KQqw7cKKjeScUsbfiDmrAwXW2
-         iHCsER+v1h73oenAfK5vHkHveBlXQzpaKq0lgDZlGKZYH/gquui1UdheilV8XWM3S2
-         6LPuLTwHrEx7nw6cwx4OmLqeX8Tt/D5EWQS3fdk0=
-Received: by mail-qk1-f176.google.com with SMTP id s14so14255307qkg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 03:44:09 -0800 (PST)
-X-Gm-Message-State: AOAM531bOvIwukVWSJ/jOQQbBv8kXNwT95JtD/bIUql5YCicKvC/AoB3
-        82I8NKPIH8P6M8EZGhq+grrlvsGCwy9UPneDepg=
-X-Google-Smtp-Source: ABdhPJx3hhs5D0RVItSKDm3AIiXH8xRxlpQW2R7DDDG51LAtMFtFDouyJAZ8UhCKEQ8uvQ6GQDWH0ffkRxOIut/9BJA=
-X-Received: by 2002:a37:508:: with SMTP id 8mr18956658qkf.207.1604403848891;
- Tue, 03 Nov 2020 03:44:08 -0800 (PST)
+        Tue, 3 Nov 2020 06:44:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa142a10000>; Tue, 03 Nov 2020 03:44:33 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
+ 2020 11:44:30 +0000
+Received: from localhost.localdomain (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 3 Nov 2020 11:44:28 +0000
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] drm/tegra: sor: Don't warn on probe deferral
+Date:   Tue, 3 Nov 2020 11:44:26 +0000
+Message-ID: <20201103114426.546626-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201027133545.58625-1-mcroce@linux.microsoft.com>
- <20201027133545.58625-3-mcroce@linux.microsoft.com> <20201030143049.GE1602@alley>
- <CAFnufp2zSsESBK-ZfCJD5dFzMGc9pU4R-VT1j8eu1f4xPde19w@mail.gmail.com> <20201102110107.GG20201@alley>
-In-Reply-To: <20201102110107.GG20201@alley>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 3 Nov 2020 12:43:32 +0100
-X-Gmail-Original-Message-ID: <CAFnufp3tOKOB=xqe8Ln46n2wBFMDC4XoZpu51xk5B=Acp=L-JA@mail.gmail.com>
-Message-ID: <CAFnufp3tOKOB=xqe8Ln46n2wBFMDC4XoZpu51xk5B=Acp=L-JA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] reboot: fix parsing of reboot cpu number
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604403873; bh=rntxA0RjiInWM7/UTBNFjUV2RmVmdlOjNbvWUA83d2k=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=GzuMlUZRznf3zmicrEnhFp66Z3L2nqtM0k2iO74oWhwGqAIK4e9MP8OCn9S97FDBY
+         xjosivdSGxtLe2svkx3zLl8NoEmxIu8pmWFug7k0JST6aEIyHPRASGayVM1O8oFENj
+         Ea6RqZkpJTvfwzGZ9zXPioLWjIsMy/azDvZX8LvBLPuwbw4tSXZ6tW5Ozgc/VZWTN4
+         EHMF2dhMVlwif71tCTsnqxJRZzG268oTyM4eYBwc4vQCUkx2IV4CshYublAk36Gr0Q
+         F9wxTQobiFqs4GB7ctFG3v7zwx2TaqKR7JRITffDNW60+bXwfo2ZlkFBjV+i3YDOnw
+         DhfO07VVuRYpw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 12:01 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Sun 2020-11-01 02:57:40, Matteo Croce wrote:
-> > On Fri, Oct 30, 2020 at 3:30 PM Petr Mladek <pmladek@suse.com> wrote:
-> > >
-> > > On Tue 2020-10-27 14:35:45, Matteo Croce wrote:
-> > > > From: Matteo Croce <mcroce@microsoft.com>
-> > > >
-> > > > The kernel cmdline reboot= argument allows to specify the CPU used
-> > > > for rebooting, with the syntax `s####` among the other flags, e.g.
-> > > >
-> > > >   reboot=soft,s4
-> > > >   reboot=warm,s31,force
-> > > >
-> > > > In the early days the parsing was done with simple_strtoul(), later
-> > > > deprecated in favor of the safer kstrtoint() which handles overflow.
-> > > >
-> > > > But kstrtoint() returns -EINVAL if there are non-digit characters
-> > > > in a string, so if this flag is not the last given, it's silently
-> > > > ignored as well as the subsequent ones.
-> > > >
-> > > > To fix it, revert the usage of simple_strtoul(), which is no longer
-> > > > deprecated, and restore the old behaviour.
-> > > >
-> > > > While at it, merge two identical code blocks into one.
-> > >
-> > > > --- a/kernel/reboot.c
-> > > > +++ b/kernel/reboot.c
-> > > > @@ -552,25 +552,19 @@ static int __init reboot_setup(char *str)
-> > > >
-> > > >               case 's':
-> > > >               {
-> > > > -                     int rc;
-> > > > -
-> > > > -                     if (isdigit(*(str+1))) {
-> > > > -                             rc = kstrtoint(str+1, 0, &reboot_cpu);
-> > > > -                             if (rc)
-> > > > -                                     return rc;
-> > > > -                             if (reboot_cpu >= num_possible_cpus()) {
-> > > > -                                     reboot_cpu = 0;
-> > > > -                                     return -ERANGE;
-> > > > -                             }
-> > > > -                     } else if (str[1] == 'm' && str[2] == 'p' &&
-> > > > -                                isdigit(*(str+3))) {
-> > > > -                             rc = kstrtoint(str+3, 0, &reboot_cpu);
-> > > > -                             if (rc)
-> > > > -                                     return rc;
-> > > > -                             if (reboot_cpu >= num_possible_cpus()) {
-> > > > -                                     reboot_cpu = 0;
-> > >
-> > >                                                      ^^^^^^
-> > >
-> > > > +                     int cpu;
-> > > > +
-> > > > +                     /*
-> > > > +                      * reboot_cpu is s[mp]#### with #### being the processor
-> > > > +                      * to be used for rebooting. Skip 's' or 'smp' prefix.
-> > > > +                      */
-> > > > +                     str += str[1] == 'm' && str[2] == 'p' ? 3 : 1;
-> > > > +
-> > > > +                     if (isdigit(str[0])) {
-> > > > +                             cpu = simple_strtoul(str, NULL, 0);
-> > > > +                             if (cpu >= num_possible_cpus())
-> > > >                                       return -ERANGE;
-> > > > -                             }
-> > > > +                             reboot_cpu = cpu;
-> > >
-> > > The original value stays when the new one is out of range. It is
-> > > small functional change that should get mentioned in the commit
-> > > message or better fixed separately.
->
-> Ah, I see. From some reason, I assumed that it was defined as
-> module_param() or core_param(). Then it would be possible to modify
-> it later via /sys.
->
-> I am sorry for the noise.
->
+Deferred probe is an expected return value for tegra_output_probe().
+Given that the driver deals with it properly, there's no need to output
+a warning that may potentially confuse users.
 
-Never mind :)
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ drivers/gpu/drm/tegra/sor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So, is this an ack? Or I need to prepare a v3 with the revert as first patch?
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index e88a17c2937f..5a232055b8cc 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3765,7 +3765,7 @@ static int tegra_sor_probe(struct platform_device *pd=
+ev)
+=20
+ 	err =3D tegra_output_probe(&sor->output);
+ 	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
++		dev_err_probe(&pdev->dev, "failed to probe output: %d\n", err);
+ 		return err;
+ 	}
+=20
+--=20
+2.25.1
 
-Regards,
--- 
-per aspera ad upstream
