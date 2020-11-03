@@ -2,120 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBD32A46FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459C2A46E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgKCNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729362AbgKCNw0 (ORCPT
+        id S1729473AbgKCNwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:52:10 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52390 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729466AbgKCNwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:52:26 -0500
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C31C0613D1;
-        Tue,  3 Nov 2020 05:52:26 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4CQWS671PfzQkKw;
-        Tue,  3 Nov 2020 14:52:22 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id FlqcKCn97r9e; Tue,  3 Nov 2020 14:52:18 +0100 (CET)
-Date:   Tue, 3 Nov 2020 14:52:14 +0100 (CET)
-From:   Hagen Paul Pfeifer <hagen@jauu.net>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Message-ID: <1547601988.128687.1604411534845@office.mailbox.org>
-In-Reply-To: <20201102154028.GD4879@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20201101110935.GA4105325@laniakea> <20201102154028.GD4879@kernel.org>
-Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
+        Tue, 3 Nov 2020 08:52:05 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A3Dpn4a108643;
+        Tue, 3 Nov 2020 07:51:49 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604411509;
+        bh=L/e82f7swU3+d1b8kV7l8FO2jyfC9UbSSrjiYERfAO8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ZQN8ezDIW/G1zvoWvLUGKMJCrGJtppBlNSeem3MIeY1j4V3HRXife/7kYdSd/ibvq
+         9IUuwtDwIziuFONXvmCsTdWWPW+ubqUUaP1q468m5+01J6nz7Hx1y93skBgLGrOc90
+         JF1ebcHnInbOk1aneAC/F+V1Wrq8iMQjLVvDC+y8=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A3DpnEV027602
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Nov 2020 07:51:49 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 3 Nov
+ 2020 07:51:48 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 3 Nov 2020 07:51:48 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A3DpjW7030507;
+        Tue, 3 Nov 2020 07:51:46 -0600
+Subject: Re: [GIT PULL] irqchip updates for 5.10, take #1
+To:     Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <20201101122223.255806-1-maz@kernel.org>
+ <CAL_JsqLp9PRbumKTf0r8+LbFmR740dQPerrQDJF14XtpwxG0Rw@mail.gmail.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <d9c9c1be-022f-3202-d599-26a7baea61c4@ti.com>
+Date:   Tue, 3 Nov 2020 15:52:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -0.65 / 15.00 / 15.00
-X-Rspamd-Queue-Id: D612C1723
-X-Rspamd-UID: 9101f0
+In-Reply-To: <CAL_JsqLp9PRbumKTf0r8+LbFmR740dQPerrQDJF14XtpwxG0Rw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 11/02/2020 4:40 PM Mike Rapoport <rppt@kernel.org> wrote:
+Rob,
 
-> > Isn't memfd_secret currently *unnecessarily* designed to be a "one task
-> > feature"? memfd_secret fulfills exactly two (generic) features:
-> > 
-> > - address space isolation from kernel (aka SECRET_EXCLUSIVE, not in kernel's
-> >   direct map) - hide from kernel, great
-> > - disabling processor's memory caches against speculative-execution vulnerabilities
-> >   (spectre and friends, aka SECRET_UNCACHED), also great
-> > 
-> > But, what about the following use-case: implementing a hardened IPC mechanism
-> > where even the kernel is not aware of any data and optionally via SECRET_UNCACHED
-> > even the hardware caches are bypassed! With the patches we are so close to
-> > achieving this.
-> > 
-> > How? Shared, SECRET_EXCLUSIVE and SECRET_UNCACHED mmaped pages for IPC
-> > involved tasks required to know this mapping (and memfd_secret fd). After IPC
-> > is done, tasks can copy sensitive data from IPC pages into memfd_secret()
-> > pages, un-sensitive data can be used/copied everywhere.
+On 03/11/2020 15.39, Rob Herring wrote:
+> On Sun, Nov 1, 2020 at 6:22 AM Marc Zyngier <maz@kernel.org> wrote:
+>>
+>> Hi Thomas,
+>>
+>> Here's a smallish set of fixes for 5.10. Some fixes after the
+>> IPI-as-IRQ (I expect a couple more next week), two significant bug
+>> fixes for the SiFive PLIC, and a TI update to handle their "unmapped
+>> events". The rest is the usual set of cleanups and tidying up.
+>>
+>> Please pull,
+>>
+>>         M.
+>>
+>> The following changes since commit 63ea38a402213d8c9c16e58ee4901ff51bc8fe3c:
+>>
+>>   Merge branch 'irq/mstar' into irq/irqchip-next (2020-10-10 12:46:54 +0100)
+>>
+>> are available in the Git repository at:
+>>
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.10-1
+>>
+>> for you to fetch changes up to d95bdca75b3fb41bf185efe164e05aed820081a5:
+>>
+>>   irqchip/ti-sci-inta: Add support for unmapped event handling (2020-11-01 12:00:50 +0000)
+>>
+>> ----------------------------------------------------------------
+>> irqchip fixes for Linux 5.10, take #1
+>>
+>> - A couple of fixes after the IPI as IRQ patches (Kconfig, bcm2836)
+>> - Two SiFive PLIC fixes (irq_set_affinity, hierarchy handling)
+>> - "unmapped events" handling for the ti-sci-inta controller
+>> - Tidying up for the irq-mst driver (static functions, Kconfig)
+>> - Small cleanup in the Renesas irqpin driver
+>> - STM32 exti can now handle LP timer events
+>>
+>> ----------------------------------------------------------------
+>> Fabrice Gasnier (1):
+>>       irqchip/stm32-exti: Add all LP timer exti direct events support
+>>
+>> Geert Uytterhoeven (2):
+>>       irqchip/mst: MST_IRQ should depend on ARCH_MEDIATEK or ARCH_MSTARV7
+>>       irqchip/renesas-intc-irqpin: Merge irlm_bit and needs_irlm
+>>
+>> Greentime Hu (2):
+>>       irqchip/sifive-plic: Fix broken irq_set_affinity() callback
+>>       irqchip/sifive-plic: Fix chip_data access within a hierarchy
+>>
+>> Marc Zyngier (4):
+>>       genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+>>       irqchip/mst: Make mst_intc_of_init static
+>>       irqchip/mips: Drop selection of IRQ_DOMAIN_HIERARCHY
+>>       irqchip/bcm2836: Fix missing __init annotation
+>>
+>> Peter Ujfalusi (2):
+>>       dt-bindings: irqchip: ti, sci-inta: Update for unmapped event handling
 > 
-> As long as the task share the file descriptor, they can share the
-> secretmem pages, pretty much like normal memfd.
-
-Including process_vm_readv() and process_vm_writev()? Let's take a hypothetical
-"dbus-daemon-secure" service that receives data from process A and wants to
-copy/distribute it to data areas of N other processes. Much like dbus but without
-SOCK_DGRAM rather direct copy into secretmem/mmap pages (ring-buffer). Should be
-possible, right?
-
-> > One missing piece is still the secure zeroization of the page(s) if the
-> > mapping is closed by last process to guarantee a secure cleanup. This can
-> > probably done as an general mmap feature, not coupled to memfd_secret() and
-> > can be done independently ("reverse" MAP_UNINITIALIZED feature).
+> This breaks dt_binding_check in linux-next:
 > 
-> There are "init_on_alloc" and "init_on_free" kernel parameters that
-> enable zeroing of the pages on alloc and on free globally.
-> Anyway, I'll add zeroing of the freed memory to secretmem.
+> Traceback (most recent call last):
+>   File "/usr/local/bin/dt-extract-example", line 45, in <module>
+>     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py",
+> line 343, in load
+>     return constructor.get_single_data()
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py",
+> line 111, in get_single_data
+>     node = self.composer.get_single_node()
+>   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+>   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 891, in
+> _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+> ruamel.yaml.parser.ParserError: while parsing a block mapping
+>   in "<unicode string>", line 4, column 1
+> did not find expected key
+>   in "<unicode string>", line 37, column 2
+> make[1]: *** [Documentation/devicetree/bindings/Makefile:20:
+> Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.example.dts]
+> Error 1
+> make[1]: *** Deleting file
+> 'Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.example.dts'
+> ./Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml:37:2:
+> [error] syntax error: expected <block end>, but found '<scalar>'
+> (syntax)
+> 
+> Looks like it's the block diagram change which needs more indentation.
 
-Great, this allows page-specific (thus runtime-performance-optimized) zeroing
-of secured pages. init_on_free lowers the performance to much and is not precice
-enough.
+Sorry, I have sent a fix:
+https://lore.kernel.org/lkml/20201103135004.2363-1-peter.ujfalusi@ti.com/
 
-Hagen
+> 
+> Rob
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
