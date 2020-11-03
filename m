@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0842A5552
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C332A5431
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388592AbgKCVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:08:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S2388600AbgKCVIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:08:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388599AbgKCVIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:08:44 -0500
+        id S2388601AbgKCVIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:08:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B8CB21534;
-        Tue,  3 Nov 2020 21:08:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E05CE206B5;
+        Tue,  3 Nov 2020 21:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437723;
-        bh=iA1ttNm06iJLfQ8hdxVhFGVLcLxQCUX4bDZ3azqJbRI=;
+        s=default; t=1604437725;
+        bh=BQAiSB5HKL8GvcYtruKKpWLmUAS2rG95pW3ourTel+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=widc2iW0gfK3Ni/FLF5V7mdZ2Y6Oqq4QvO1fiLy0bn0zF8vo6JSZrpviD3idRJsNW
-         6yJ16LhVykoaJAtLm3VjoH63XmaMA6aFn3txQI5D2J8JrAr9moBhTZ8YKSQrwdC3OJ
-         Cpnq2zgHCXh76GlIBH8tQN240PMtdQI5oKNqGSQk=
+        b=osWc5Zqvs5cEhHrNTVNfL73dM3/hgR/RNF5emOX/htQE0PMNTllF8AFQSOz+73/He
+         L12MqsNR4rd52vZ2JsL3n2/h/MHbOHg3ssxGeq0eVqqUM++/VHWQGAxgRD85NxLaqk
+         RTm9GYftb5ZO78EYfZdu+hSAu1qUAQ5lvH+roCXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
-        Luo Meng <luomeng12@huawei.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 175/191] ext4: fix invalid inode checksum
-Date:   Tue,  3 Nov 2020 21:37:47 +0100
-Message-Id: <20201103203248.994841173@linuxfoundation.org>
+        Constantine Sapuntzakis <costa@purestorage.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 176/191] ext4: fix superblock checksum calculation race
+Date:   Tue,  3 Nov 2020 21:37:48 +0100
+Message-Id: <20201103203249.095741531@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
 References: <20201103203232.656475008@linuxfoundation.org>
@@ -44,57 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Constantine Sapuntzakis <costa@purestorage.com>
 
-commit 1322181170bb01bce3c228b82ae3d5c6b793164f upstream.
+commit acaa532687cdc3a03757defafece9c27aa667546 upstream.
 
-During the stability test, there are some errors:
-  ext4_lookup:1590: inode #6967: comm fsstress: iget: checksum invalid.
+The race condition could cause the persisted superblock checksum
+to not match the contents of the superblock, causing the
+superblock to be considered corrupt.
 
-If the inode->i_iblocks too big and doesn't set huge file flag, checksum
-will not be recalculated when update the inode information to it's buffer.
-If other inode marks the buffer dirty, then the inconsistent inode will
-be flushed to disk.
+An example of the race follows.  A first thread is interrupted in the
+middle of a checksum calculation. Then, another thread changes the
+superblock, calculates a new checksum, and sets it. Then, the first
+thread resumes and sets the checksum based on the older superblock.
 
-Fix this problem by checking i_blocks in advance.
+To fix, serialize the superblock checksum calculation using the buffer
+header lock. While a spinlock is sufficient, the buffer header is
+already there and there is precedent for locking it (e.g. in
+ext4_commit_super).
+
+Tested the patch by booting up a kernel with the patch, creating
+a filesystem and some files (including some orphans), and then
+unmounting and remounting the file system.
 
 Cc: stable@kernel.org
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Link: https://lore.kernel.org/r/20201020013631.3796673-1-luomeng12@huawei.com
+Signed-off-by: Constantine Sapuntzakis <costa@purestorage.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Suggested-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200914161014.22275-1-costa@purestorage.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/inode.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/ext4/super.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5271,6 +5271,12 @@ static int ext4_do_update_inode(handle_t
- 	if (ext4_test_inode_state(inode, EXT4_STATE_NEW))
- 		memset(raw_inode, 0, EXT4_SB(inode->i_sb)->s_inode_size);
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -200,7 +200,18 @@ void ext4_superblock_csum_set(struct sup
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return;
  
-+	err = ext4_inode_blocks_set(handle, raw_inode, ei);
-+	if (err) {
-+		spin_unlock(&ei->i_raw_lock);
-+		goto out_brelse;
-+	}
-+
- 	raw_inode->i_mode = cpu_to_le16(inode->i_mode);
- 	i_uid = i_uid_read(inode);
- 	i_gid = i_gid_read(inode);
-@@ -5304,11 +5310,6 @@ static int ext4_do_update_inode(handle_t
- 	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
- 	EXT4_EINODE_SET_XTIME(i_crtime, ei, raw_inode);
++	/*
++	 * Locking the superblock prevents the scenario
++	 * where:
++	 *  1) a first thread pauses during checksum calculation.
++	 *  2) a second thread updates the superblock, recalculates
++	 *     the checksum, and updates s_checksum
++	 *  3) the first thread resumes and finishes its checksum calculation
++	 *     and updates s_checksum with a potentially stale or torn value.
++	 */
++	lock_buffer(EXT4_SB(sb)->s_sbh);
+ 	es->s_checksum = ext4_superblock_csum(sb, es);
++	unlock_buffer(EXT4_SB(sb)->s_sbh);
+ }
  
--	err = ext4_inode_blocks_set(handle, raw_inode, ei);
--	if (err) {
--		spin_unlock(&ei->i_raw_lock);
--		goto out_brelse;
--	}
- 	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
- 	raw_inode->i_flags = cpu_to_le32(ei->i_flags & 0xFFFFFFFF);
- 	if (likely(!test_opt2(inode->i_sb, HURD_COMPAT)))
+ void *ext4_kvmalloc(size_t size, gfp_t flags)
 
 
