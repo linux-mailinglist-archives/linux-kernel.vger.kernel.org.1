@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FE82A4B95
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CB22A4B98
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgKCQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:32:38 -0500
-Received: from mga17.intel.com ([192.55.52.151]:47964 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgKCQch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:32:37 -0500
-IronPort-SDR: /sClODo3mhsqZh6EjCqLxl9xG+pD6SqA2fVGKn3573gtACvRyCLk6X5ue8iavqeBOiiyGOfQoo
- YT5BGMeR+wiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="148938099"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="148938099"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:32:37 -0800
-IronPort-SDR: WfgwmvfGml5BSVZD4UDOE/583Vi++IgeIZe4vunJDVytGoRRzV7GKL6JCkJ7lKmfQMUPUANIsj
- nkVs680ReJQw==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="538547046"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.201])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 08:32:36 -0800
-Date:   Tue, 3 Nov 2020 17:32:26 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
-Message-ID: <20201103163225.GA19947@ubuntu>
-References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
- <20201027175218.1033609-4-mathieu.poirier@linaro.org>
+        id S1728292AbgKCQdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:33:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726018AbgKCQdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:33:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604421185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rh02QKGX84nhra5jyTMHRudQLVhPKvsvo4vCQqCRuEw=;
+        b=ALjKtEs6yMYtXk91wAv7TYqQkp3XJzzM9Eddtm9vCYfMddqWNTBKWUz24UK+qQqvtT0YGO
+        BovsZJbWpuPA3DXYxOH48r32KGA7SYoKoyIbDEzI6CfkQECgd0fRk8jN4W4mIqkN71+6Ks
+        BxGe56em1uuCOXkX7N7AgDBciRgBTBk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-OsNJZ1jTMhWgTbpiKMCW8Q-1; Tue, 03 Nov 2020 11:33:04 -0500
+X-MC-Unique: OsNJZ1jTMhWgTbpiKMCW8Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1D036415C;
+        Tue,  3 Nov 2020 16:33:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-47.rdu2.redhat.com [10.10.115.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA7095B4A1;
+        Tue,  3 Nov 2020 16:33:00 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 1/2] afs: Fix warning due to unadvanced marshalling pointer
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 03 Nov 2020 16:32:58 +0000
+Message-ID: <160442117884.677368.3642109457622229990.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027175218.1033609-4-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+When using the afs.yfs.acl xattr to change an AuriStor ACL, a warning can
+be generated when the request is marshalled because the buffer pointer
+isn't increased after adding the last element, thereby triggering the check
+at the end if the ACL wasn't empty.  This just causes something like the
+following warning, but doesn't stop the call from happening successfully:
 
-On Tue, Oct 27, 2020 at 11:52:13AM -0600, Mathieu Poirier wrote:
-> Move structure rpmsg_ns_msg to its own header file so that
-> it can be used by other entities.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 32 +-----------------------
->  include/linux/rpmsg_ns.h         | 42 ++++++++++++++++++++++++++++++++
+    kAFS: YFS.StoreOpaqueACL2: Request buffer underflow (36<108)
 
-Sorry for a delayed comment, it just occurred to me: there is a 
-include/linux/rpmsg directory already, so, perhaps it would be 
-better to place the new headers there as include/linux/rpmsg/ns.h 
-and include/linux/rpmsg/byteorder.h?
+Fix this simply by increasing the count prior to the check.
 
-Thanks
-Guennadi
+Fixes: f5e4546347bc ("afs: Implement YFS ACL setting")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+
+ fs/afs/yfsclient.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
+index 3b1239b7e90d..bd787e71a657 100644
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -1990,6 +1990,7 @@ void yfs_fs_store_opaque_acl2(struct afs_operation *op)
+ 	memcpy(bp, acl->data, acl->size);
+ 	if (acl->size != size)
+ 		memset((void *)bp + acl->size, 0, size - acl->size);
++	bp += size / sizeof(__be32);
+ 	yfs_check_req(call, bp);
+ 
+ 	trace_afs_make_fs_call(call, &vp->fid);
+
+
