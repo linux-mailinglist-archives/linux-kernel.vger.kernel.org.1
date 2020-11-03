@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6F42A548A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8593E2A548C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388990AbgKCVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:12:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54366 "EHLO mail.kernel.org"
+        id S1733045AbgKCVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:12:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388973AbgKCVMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:12:10 -0500
+        id S2388345AbgKCVMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:12:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2A82206B5;
-        Tue,  3 Nov 2020 21:12:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6302C205ED;
+        Tue,  3 Nov 2020 21:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437929;
-        bh=dV0oHAJrbtnLgh/JMhACTm5bLtrHPT2g2ubmqUEGnZI=;
+        s=default; t=1604437931;
+        bh=xncVV5FKSklRFvgJh6i9vjsqqrXim3nJArtMSs75AP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rUnYjno0bWcfhmUHuvIQfutOW3AdmGQaMrWUkx7KCcByPMy4iEw8mvS/QjSO40gP8
-         eb1DdXaQtG9YcANd2T9XGRH0W5Ag+781H25yHl2jJmdoIibi1r6v5+eevIJ8Ul6/Nj
-         62mXhT/g8J7FE6MWOqF/akLOG3/zKYuZMlsFh0fU=
+        b=M9i1ioJ5tVsBpS1PmK4iqYmtESFlN+cRZ024Qhk5f8z7hX0rQ1+d1IK4x8opHrK7O
+         gfQt+UgTmheTD34oHUdOM1kTqNaccfA/aVN73i0cpA/tUTsGuSlHhDqRd+A7vSjkJr
+         2I6kFd/jstgLShYVtpkiXLCl+og2EvfFBI8i8vSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.14 091/125] s390/stp: add locking to sysfs functions
-Date:   Tue,  3 Nov 2020 21:37:48 +0100
-Message-Id: <20201103203210.033449871@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.14 092/125] powerpc/rtas: Restrict RTAS requests from userspace
+Date:   Tue,  3 Nov 2020 21:37:49 +0100
+Message-Id: <20201103203210.249484340@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
 References: <20201103203156.372184213@linuxfoundation.org>
@@ -43,236 +43,264 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Andrew Donnellan <ajd@linux.ibm.com>
 
-commit b3bd02495cb339124f13135d51940cf48d83e5cb upstream.
+commit bd59380c5ba4147dcbaad3e582b55ccfd120b764 upstream.
 
-The sysfs function might race with stp_work_fn. To prevent that,
-add the required locking. Another issue is that the sysfs functions
-are checking the stp_online flag, but this flag just holds the user
-setting whether STP is enabled. Add a flag to clock_sync_flag whether
-stp_info holds valid data and use that instead.
+A number of userspace utilities depend on making calls to RTAS to retrieve
+information and update various things.
+
+The existing API through which we expose RTAS to userspace exposes more
+RTAS functionality than we actually need, through the sys_rtas syscall,
+which allows root (or anyone with CAP_SYS_ADMIN) to make any RTAS call they
+want with arbitrary arguments.
+
+Many RTAS calls take the address of a buffer as an argument, and it's up to
+the caller to specify the physical address of the buffer as an argument. We
+allocate a buffer (the "RMO buffer") in the Real Memory Area that RTAS can
+access, and then expose the physical address and size of this buffer in
+/proc/powerpc/rtas/rmo_buffer. Userspace is expected to read this address,
+poke at the buffer using /dev/mem, and pass an address in the RMO buffer to
+the RTAS call.
+
+However, there's nothing stopping the caller from specifying whatever
+address they want in the RTAS call, and it's easy to construct a series of
+RTAS calls that can overwrite arbitrary bytes (even without /dev/mem
+access).
+
+Additionally, there are some RTAS calls that do potentially dangerous
+things and for which there are no legitimate userspace use cases.
+
+In the past, this would not have been a particularly big deal as it was
+assumed that root could modify all system state freely, but with Secure
+Boot and lockdown we need to care about this.
+
+We can't fundamentally change the ABI at this point, however we can address
+this by implementing a filter that checks RTAS calls against a list
+of permitted calls and forces the caller to use addresses within the RMO
+buffer.
+
+The list is based off the list of calls that are used by the librtas
+userspace library, and has been tested with a number of existing userspace
+RTAS utilities. For compatibility with any applications we are not aware of
+that require other calls, the filter can be turned off at build time.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Reported-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Andrew Donnellan <ajd@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200820044512.7543-1-ajd@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/time.c |  118 ++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 85 insertions(+), 33 deletions(-)
+ arch/powerpc/Kconfig       |   13 +++
+ arch/powerpc/kernel/rtas.c |  153 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 166 insertions(+)
 
---- a/arch/s390/kernel/time.c
-+++ b/arch/s390/kernel/time.c
-@@ -347,8 +347,9 @@ static DEFINE_PER_CPU(atomic_t, clock_sy
- static DEFINE_MUTEX(clock_sync_mutex);
- static unsigned long clock_sync_flags;
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -1027,6 +1027,19 @@ config FSL_RIO
  
--#define CLOCK_SYNC_HAS_STP	0
--#define CLOCK_SYNC_STP		1
-+#define CLOCK_SYNC_HAS_STP		0
-+#define CLOCK_SYNC_STP			1
-+#define CLOCK_SYNC_STPINFO_VALID	2
+ source "drivers/rapidio/Kconfig"
  
- /*
-  * The get_clock function for the physical clock. It will get the current
-@@ -585,6 +586,22 @@ void stp_queue_work(void)
- 	queue_work(time_sync_wq, &stp_work);
++config PPC_RTAS_FILTER
++	bool "Enable filtering of RTAS syscalls"
++	default y
++	depends on PPC_RTAS
++	help
++	  The RTAS syscall API has security issues that could be used to
++	  compromise system integrity. This option enforces restrictions on the
++	  RTAS calls and arguments passed by userspace programs to mitigate
++	  these issues.
++
++	  Say Y unless you know what you are doing and the filter is causing
++	  problems for you.
++
+ endmenu
+ 
+ config NONSTATIC_KERNEL
+--- a/arch/powerpc/kernel/rtas.c
++++ b/arch/powerpc/kernel/rtas.c
+@@ -1056,6 +1056,147 @@ struct pseries_errorlog *get_pseries_err
+ 	return NULL;
  }
  
-+static int __store_stpinfo(void)
-+{
-+	int rc = chsc_sstpi(stp_page, &stp_info, sizeof(struct stp_sstpi));
++#ifdef CONFIG_PPC_RTAS_FILTER
 +
-+	if (rc)
-+		clear_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
-+	else
-+		set_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
-+	return rc;
++/*
++ * The sys_rtas syscall, as originally designed, allows root to pass
++ * arbitrary physical addresses to RTAS calls. A number of RTAS calls
++ * can be abused to write to arbitrary memory and do other things that
++ * are potentially harmful to system integrity, and thus should only
++ * be used inside the kernel and not exposed to userspace.
++ *
++ * All known legitimate users of the sys_rtas syscall will only ever
++ * pass addresses that fall within the RMO buffer, and use a known
++ * subset of RTAS calls.
++ *
++ * Accordingly, we filter RTAS requests to check that the call is
++ * permitted, and that provided pointers fall within the RMO buffer.
++ * The rtas_filters list contains an entry for each permitted call,
++ * with the indexes of the parameters which are expected to contain
++ * addresses and sizes of buffers allocated inside the RMO buffer.
++ */
++struct rtas_filter {
++	const char *name;
++	int token;
++	/* Indexes into the args buffer, -1 if not used */
++	int buf_idx1;
++	int size_idx1;
++	int buf_idx2;
++	int size_idx2;
++
++	int fixed_size;
++};
++
++static struct rtas_filter rtas_filters[] __ro_after_init = {
++	{ "ibm,activate-firmware", -1, -1, -1, -1, -1 },
++	{ "ibm,configure-connector", -1, 0, -1, 1, -1, 4096 },	/* Special cased */
++	{ "display-character", -1, -1, -1, -1, -1 },
++	{ "ibm,display-message", -1, 0, -1, -1, -1 },
++	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
++	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
++	{ "ibm,open-errinct", -1, -1, -1, -1, -1 },
++	{ "ibm,get-config-addr-info2", -1, -1, -1, -1, -1 },
++	{ "ibm,get-dynamic-sensor-state", -1, 1, -1, -1, -1 },
++	{ "ibm,get-indices", -1, 2, 3, -1, -1 },
++	{ "get-power-level", -1, -1, -1, -1, -1 },
++	{ "get-sensor-state", -1, -1, -1, -1, -1 },
++	{ "ibm,get-system-parameter", -1, 1, 2, -1, -1 },
++	{ "get-time-of-day", -1, -1, -1, -1, -1 },
++	{ "ibm,get-vpd", -1, 0, -1, 1, 2 },
++	{ "ibm,lpar-perftools", -1, 2, 3, -1, -1 },
++	{ "ibm,platform-dump", -1, 4, 5, -1, -1 },
++	{ "ibm,read-slot-reset-state", -1, -1, -1, -1, -1 },
++	{ "ibm,scan-log-dump", -1, 0, 1, -1, -1 },
++	{ "ibm,set-dynamic-indicator", -1, 2, -1, -1, -1 },
++	{ "ibm,set-eeh-option", -1, -1, -1, -1, -1 },
++	{ "set-indicator", -1, -1, -1, -1, -1 },
++	{ "set-power-level", -1, -1, -1, -1, -1 },
++	{ "set-time-for-power-on", -1, -1, -1, -1, -1 },
++	{ "ibm,set-system-parameter", -1, 1, -1, -1, -1 },
++	{ "set-time-of-day", -1, -1, -1, -1, -1 },
++	{ "ibm,suspend-me", -1, -1, -1, -1, -1 },
++	{ "ibm,update-nodes", -1, 0, -1, -1, -1, 4096 },
++	{ "ibm,update-properties", -1, 0, -1, -1, -1, 4096 },
++	{ "ibm,physical-attestation", -1, 0, 1, -1, -1 },
++};
++
++static bool in_rmo_buf(u32 base, u32 end)
++{
++	return base >= rtas_rmo_buf &&
++		base < (rtas_rmo_buf + RTAS_RMOBUF_MAX) &&
++		base <= end &&
++		end >= rtas_rmo_buf &&
++		end < (rtas_rmo_buf + RTAS_RMOBUF_MAX);
 +}
 +
-+static int stpinfo_valid(void)
++static bool block_rtas_call(int token, int nargs,
++			    struct rtas_args *args)
 +{
-+	return stp_online && test_bit(CLOCK_SYNC_STPINFO_VALID, &clock_sync_flags);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rtas_filters); i++) {
++		struct rtas_filter *f = &rtas_filters[i];
++		u32 base, size, end;
++
++		if (token != f->token)
++			continue;
++
++		if (f->buf_idx1 != -1) {
++			base = be32_to_cpu(args->args[f->buf_idx1]);
++			if (f->size_idx1 != -1)
++				size = be32_to_cpu(args->args[f->size_idx1]);
++			else if (f->fixed_size)
++				size = f->fixed_size;
++			else
++				size = 1;
++
++			end = base + size - 1;
++			if (!in_rmo_buf(base, end))
++				goto err;
++		}
++
++		if (f->buf_idx2 != -1) {
++			base = be32_to_cpu(args->args[f->buf_idx2]);
++			if (f->size_idx2 != -1)
++				size = be32_to_cpu(args->args[f->size_idx2]);
++			else if (f->fixed_size)
++				size = f->fixed_size;
++			else
++				size = 1;
++			end = base + size - 1;
++
++			/*
++			 * Special case for ibm,configure-connector where the
++			 * address can be 0
++			 */
++			if (!strcmp(f->name, "ibm,configure-connector") &&
++			    base == 0)
++				return false;
++
++			if (!in_rmo_buf(base, end))
++				goto err;
++		}
++
++		return false;
++	}
++
++err:
++	pr_err_ratelimited("sys_rtas: RTAS call blocked - exploit attempt?\n");
++	pr_err_ratelimited("sys_rtas: token=0x%x, nargs=%d (called by %s)\n",
++			   token, nargs, current->comm);
++	return true;
 +}
 +
- static int stp_sync_clock(void *data)
- {
- 	struct clock_sync_data *sync = data;
-@@ -606,8 +623,7 @@ static int stp_sync_clock(void *data)
- 			if (rc == 0) {
- 				sync->clock_delta = clock_delta;
- 				clock_sync_global(clock_delta);
--				rc = chsc_sstpi(stp_page, &stp_info,
--						sizeof(struct stp_sstpi));
-+				rc = __store_stpinfo();
- 				if (rc == 0 && stp_info.tmd != 2)
- 					rc = -EAGAIN;
- 			}
-@@ -652,7 +668,7 @@ static void stp_work_fn(struct work_stru
- 	if (rc)
- 		goto out_unlock;
- 
--	rc = chsc_sstpi(stp_page, &stp_info, sizeof(struct stp_sstpi));
-+	rc = __store_stpinfo();
- 	if (rc || stp_info.c == 0)
- 		goto out_unlock;
- 
-@@ -689,10 +705,14 @@ static ssize_t stp_ctn_id_show(struct de
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%016llx\n",
--		       *(unsigned long long *) stp_info.ctnid);
-+	ssize_t ret = -ENODATA;
++#else
 +
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%016llx\n",
-+			      *(unsigned long long *) stp_info.ctnid);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
++static bool block_rtas_call(int token, int nargs,
++			    struct rtas_args *args)
++{
++	return false;
++}
++
++#endif /* CONFIG_PPC_RTAS_FILTER */
++
+ /* We assume to be passed big endian arguments */
+ asmlinkage int ppc_rtas(struct rtas_args __user *uargs)
+ {
+@@ -1093,6 +1234,9 @@ asmlinkage int ppc_rtas(struct rtas_args
+ 	args.rets = &args.args[nargs];
+ 	memset(args.rets, 0, nret * sizeof(rtas_arg_t));
+ 
++	if (block_rtas_call(token, nargs, &args))
++		return -EINVAL;
++
+ 	/* Need to handle ibm,suspend_me call specially */
+ 	if (token == ibm_suspend_me_token) {
+ 
+@@ -1154,6 +1298,9 @@ void __init rtas_initialize(void)
+ 	unsigned long rtas_region = RTAS_INSTANTIATE_MAX;
+ 	u32 base, size, entry;
+ 	int no_base, no_size, no_entry;
++#ifdef CONFIG_PPC_RTAS_FILTER
++	int i;
++#endif
+ 
+ 	/* Get RTAS dev node and fill up our "rtas" structure with infos
+ 	 * about it.
+@@ -1189,6 +1336,12 @@ void __init rtas_initialize(void)
+ #ifdef CONFIG_RTAS_ERROR_LOGGING
+ 	rtas_last_error_token = rtas_token("rtas-last-error");
+ #endif
++
++#ifdef CONFIG_PPC_RTAS_FILTER
++	for (i = 0; i < ARRAY_SIZE(rtas_filters); i++) {
++		rtas_filters[i].token = rtas_token(rtas_filters[i].name);
++	}
++#endif
  }
  
- static DEVICE_ATTR(ctn_id, 0400, stp_ctn_id_show, NULL);
-@@ -701,9 +721,13 @@ static ssize_t stp_ctn_type_show(struct
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.ctn);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.ctn);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(ctn_type, 0400, stp_ctn_type_show, NULL);
-@@ -712,9 +736,13 @@ static ssize_t stp_dst_offset_show(struc
- 				   struct device_attribute *attr,
- 				   char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x2000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.dsto);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x2000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.dsto);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(dst_offset, 0400, stp_dst_offset_show, NULL);
-@@ -723,9 +751,13 @@ static ssize_t stp_leap_seconds_show(str
- 					struct device_attribute *attr,
- 					char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x8000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.leaps);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x8000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.leaps);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(leap_seconds, 0400, stp_leap_seconds_show, NULL);
-@@ -734,9 +766,13 @@ static ssize_t stp_stratum_show(struct d
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.stratum);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.stratum);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(stratum, 0400, stp_stratum_show, NULL);
-@@ -745,9 +781,13 @@ static ssize_t stp_time_offset_show(stru
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x0800))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int) stp_info.tto);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x0800))
-+		ret = sprintf(buf, "%i\n", (int) stp_info.tto);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(time_offset, 0400, stp_time_offset_show, NULL);
-@@ -756,9 +796,13 @@ static ssize_t stp_time_zone_offset_show
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online || !(stp_info.vbits & 0x4000))
--		return -ENODATA;
--	return sprintf(buf, "%i\n", (int)(s16) stp_info.tzo);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid() && (stp_info.vbits & 0x4000))
-+		ret = sprintf(buf, "%i\n", (int)(s16) stp_info.tzo);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(time_zone_offset, 0400,
-@@ -768,9 +812,13 @@ static ssize_t stp_timing_mode_show(stru
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.tmd);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.tmd);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(timing_mode, 0400, stp_timing_mode_show, NULL);
-@@ -779,9 +827,13 @@ static ssize_t stp_timing_state_show(str
- 				struct device_attribute *attr,
- 				char *buf)
- {
--	if (!stp_online)
--		return -ENODATA;
--	return sprintf(buf, "%i\n", stp_info.tst);
-+	ssize_t ret = -ENODATA;
-+
-+	mutex_lock(&stp_work_mutex);
-+	if (stpinfo_valid())
-+		ret = sprintf(buf, "%i\n", stp_info.tst);
-+	mutex_unlock(&stp_work_mutex);
-+	return ret;
- }
- 
- static DEVICE_ATTR(timing_state, 0400, stp_timing_state_show, NULL);
+ int __init early_init_dt_scan_rtas(unsigned long node,
 
 
