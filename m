@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC9D2A57B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7512A58CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732253AbgKCVpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:45:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
+        id S1731584AbgKCVy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:54:58 -0500
+Received: from mga04.intel.com ([192.55.52.120]:64306 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732182AbgKCUwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:52:55 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A203A2053B;
-        Tue,  3 Nov 2020 20:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436775;
-        bh=RAJY/o5wLsTD7a8m2ah2SQ32/iyA/FEWJLhEtrirAw4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ndh8Tm4cDj6mgGzcKGAfxKQddumQxXQGcb0wPRxmsUQ4Prkg3OF+8Ybn/4TFx91XB
-         D2gvRikRajjVDQVGXqRcuzCaImmUrjhcXgyNMeB1VBoodjanq8qY4iec7MWiASA58O
-         FBQE+0IbuNqxXy5c61pZjuSGd5vocrOacpwe2G/E=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.9 390/391] time/sched_clock: Mark sched_clock_read_begin/retry() as notrace
-Date:   Tue,  3 Nov 2020 21:37:21 +0100
-Message-Id: <20201103203413.480694586@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730976AbgKCUpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:45:14 -0500
+IronPort-SDR: lK9uwlL9GEnHYmKUKjSsHnGNLiBtTiUjvJQjB9eFJl4d0TEDTt5ViHqUPn5rTuTo7WS85iorl/
+ HWEaRBjdbqJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="166533693"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="166533693"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:45:13 -0800
+IronPort-SDR: Kn7pr1SjtLIO7vgNmRTf7Nx2eS+7gOaG6Wq5WPGE/3s2MLVxIWPA9WRQAf+dmRunEBuCRwTgp2
+ cBCnBM6rWN6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="527317813"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Nov 2020 12:45:11 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id BB5A512A; Tue,  3 Nov 2020 22:45:10 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH v6 0/7] resource: introduce union(), intersection() API
+Date:   Tue,  3 Nov 2020 22:45:03 +0200
+Message-Id: <20201103204510.19154-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+Some users may want to use resource library to manage their own resources,
+besides existing users that open code union() and intersection()
+implementations.
 
-commit 4cd2bb12981165f865d2b8ed92b446b52310ef74 upstream.
+Provide a generic API for wider use.
 
-Since sched_clock_read_begin() and sched_clock_read_retry() are called
-by notrace function sched_clock(), they shouldn't be traceable either,
-or else ftrace_graph_caller will run into a dead loop on the path
-as below (arm for instance):
+Changelog v6:
+- added missed tags
 
-  ftrace_graph_caller()
-    prepare_ftrace_return()
-      function_graph_enter()
-        ftrace_push_return_trace()
-          trace_clock_local()
-            sched_clock()
-              sched_clock_read_begin/retry()
+Changelog v5:
+- added test cases (Greg)
 
-Fixes: 1b86abc1c645 ("sched_clock: Expose struct clock_read_data")
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200929082027.16787-1-quanyang.wang@windriver.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Changelog v4:
+- added Rb tag (Rafael)
+- Cc'ed to LKML and Greg (Rafael)
 
----
- kernel/time/sched_clock.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changelog v3:
+- rebased on top of v5.10-rc1
+- dropped upstreamed dependencies
+- added Rb tag to the last patch (Mika)
 
---- a/kernel/time/sched_clock.c
-+++ b/kernel/time/sched_clock.c
-@@ -68,13 +68,13 @@ static inline u64 notrace cyc_to_ns(u64
- 	return (cyc * mult) >> shift;
- }
- 
--struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-+notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
- {
- 	*seq = raw_read_seqcount_latch(&cd.seq);
- 	return cd.read_data + (*seq & 1);
- }
- 
--int sched_clock_read_retry(unsigned int seq)
-+notrace int sched_clock_read_retry(unsigned int seq)
- {
- 	return read_seqcount_retry(&cd.seq, seq);
- }
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
 
+Andy Shevchenko (7):
+  resource: Simplify region_intersects() by reducing conditionals
+  resource: Group resource_overlaps() with other inline helpers
+  resource: Introduce resource_union() for overlapping resources
+  resource: Introduce resource_intersection() for overlapping resources
+  resource: Add test cases for new resource API
+  PCI/ACPI: Replace open coded variant of resource_union()
+  ACPI: watchdog: Replace open coded variant of resource_union()
+
+ drivers/acpi/acpi_watchdog.c |   6 +-
+ drivers/acpi/pci_root.c      |   4 +-
+ include/linux/ioport.h       |  34 ++++++--
+ kernel/Makefile              |   1 +
+ kernel/resource.c            |  10 +--
+ kernel/resource_kunit.c      | 150 +++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug            |  11 +++
+ 7 files changed, 196 insertions(+), 20 deletions(-)
+ create mode 100644 kernel/resource_kunit.c
+
+-- 
+2.28.0
 
