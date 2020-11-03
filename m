@@ -2,192 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927E72A4338
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A52A2A4346
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 11:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgKCKhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 05:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbgKCKhJ (ORCPT
+        id S1728134AbgKCKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 05:38:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59348 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726581AbgKCKiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 05:37:09 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D0FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 02:37:08 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id i2so18497443ljg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 02:37:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5GcucvkpK8kMef8JRK6neh/95+aedCMWaWFyvdBMuJI=;
-        b=Wh6WFkgoQOQ9/AmfIvmZQkTLiyCit9lXw7J1L5B4rsN7eV0Kg8S23izD3b6C2YQl8f
-         4e9CV7RRVNFtXBsy1vVjg1BxjHyYHxLcELHss6N39DRVia9juSjh3foXvWNYiJmja2Gp
-         PpEncTfwxF50qMGaUGpvlcRb6M6JB5gOjAYrTFMI/b4ZJw4hcxILn4/foUDQN2diDJXa
-         YV3LkJFsLdJJ+Srww0D2FH6CQ8F6Lk0tm62rKAY1y2gcCnmHs3bA2qF2F65n5tQrPa70
-         8pkX0SQDLQElFJm8PeAgpSYGx5l2AssKb98QeW/13zat1T8m2b6hpYLI3zCed8XSebe3
-         1Wfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5GcucvkpK8kMef8JRK6neh/95+aedCMWaWFyvdBMuJI=;
-        b=PopinfFqpsryXgTfolfZ2R+5/jwHaQEmXMUJexu0cEs3YDLTTbHk+RDzZG3W5UjP+t
-         u6VJ6IPhJSvlJx6yrmXi98lGCvFB5qw9eb00LReOHe4SlWRQZl0o37AQ7nPWk4zu8Fu7
-         r2GBWQUDfKsguX0LMGHNR1sIcXtXTRuAX5tSKcAs6ANqgAoyM97WWIHUoW9rrk8m3JlG
-         5npwgLhHIJ3UpGhLlf8pDDSrl+DYKHuCBmYt8CxvZKa5uDC1yz6dIjiwUNMnQWbGFSai
-         fhhppPd8u25lDbJfSOxxXvrlbcbW3KfTzj8BLpVbS7HvRRuTul4Tc3WhqDi3qD+LWMms
-         dQsw==
-X-Gm-Message-State: AOAM533ajQmg/i3Cu7xpR/zRH3aeWUaorEpBPqHM2xCGWjf9kHVRe/hb
-        lojiU53gTDahwpuvpb37X+bxT1jvz54pattLUa6Pfw==
-X-Google-Smtp-Source: ABdhPJyLCXn6n7JwwyyVsJICHg0f8BJ4slro0/8J9XFTybUf/uwbNFZooKlvdhdc49pQBXt8XGZ3L8/0zj1tZuHmsEY=
-X-Received: by 2002:a05:651c:291:: with SMTP id b17mr7952875ljo.34.1604399826815;
- Tue, 03 Nov 2020 02:37:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103103051.34553-1-ajye_huang@compal.corp-partner.google.com> <20201103103051.34553-2-ajye_huang@compal.corp-partner.google.com>
-In-Reply-To: <20201103103051.34553-2-ajye_huang@compal.corp-partner.google.com>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Tue, 3 Nov 2020 18:36:55 +0800
-Message-ID: <CALprXBboAS7Dkn-K5fpKB+XNWShX-1xbgrL4Gzi04uyCwY6ABA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] ASoC: google: dt-bindings: modify machine bindings
- for two MICs case
-To:     Ajye Huang <ajye.huang@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tue, 3 Nov 2020 05:38:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604399894;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZK7kTdSBJkhWYXO+It5JpZizMtRKkiDqlX6IiABWQ7I=;
+        b=a2b0PFcFMHydRjAYBRRLKvuAgUExc6OaEVtNniEa4OI23RQYiQs10jO7bq0Z88346+lJoD
+        fhrDweHW2KHYWtwL3BFcBFalfsn7zV087SuJZDu99RoiBv/mNsde5DrPf+iIzvY+sCPcTy
+        cnruR8Yn5EJ1jF0icfcUG+ttjVxbi7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-kGyoSPjNOa2bGC08sRRHMw-1; Tue, 03 Nov 2020 05:38:10 -0500
+X-MC-Unique: kGyoSPjNOa2bGC08sRRHMw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04E471009E3F;
+        Tue,  3 Nov 2020 10:38:08 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B3DD4747C6;
+        Tue,  3 Nov 2020 10:38:04 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
         Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, "H.J. Lu" <hjl.tools@gmail.com>
+Subject: Re: [PATCH 2/4] elf: Move note processing after l_phdr is updated
+ [BZ #26831]
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+        <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
+Date:   Tue, 03 Nov 2020 11:38:03 +0100
+In-Reply-To: <7b008fd34f802456db3731a043ff56683b569ff7.1604393169.git.szabolcs.nagy@arm.com>
+        (Szabolcs Nagy's message of "Tue, 3 Nov 2020 10:26:18 +0000")
+Message-ID: <87r1pabu9g.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-Could you please kindly review this patch ?
+* Szabolcs Nagy:
 
- I had got your "reviewed-by" on v1 patch, the v1 depends on this patch series
-(https://patchwork.kernel.org/patch/11773221) at that time.
-
-Now, that patch what I depended (11773221) had made modification and
-it was Applied to
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-commit e158d2d83cab ("ASoC: google: dt-bindings: Add sc7180-trogdor
-machine bindings")
-
-I noted what I did on cover letter
-v2:
-- Documentation: Modify the dimc-gpios property description and examples.
-
-That is why I bother you again to review it. Please let me know if
-this looks good to you.
-Thanks!
-
-On Tue, Nov 3, 2020 at 6:31 PM Ajye Huang <ajye.huang@gmail.com> wrote:
+> Program headers are processed in two pass: after the first pass
+> load segments are mmapped so in the second pass target specific
+> note processing logic can access the notes.
 >
-> Add a property "dmic-gpios" for switching between two MICs.
->
-> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+> The second pass is moved later so various link_map fields are
+> set up that may be useful for note processing such as l_phdr.
 > ---
->  .../bindings/sound/google,sc7180-trogdor.yaml | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
+>  elf/dl-load.c | 30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> index efc34689d6b5..9e0505467e57 100644
-> --- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> +++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-> @@ -34,6 +34,9 @@ properties:
->    "#size-cells":
->      const: 0
->
-> +  dmic-gpios:
-> +    description: GPIO for switching between DMICs
+> diff --git a/elf/dl-load.c b/elf/dl-load.c
+> index ceaab7f18e..673cf960a0 100644
+> --- a/elf/dl-load.c
+> +++ b/elf/dl-load.c
+> @@ -1259,21 +1259,6 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
+>  				  maplength, has_holes, loader);
+>      if (__glibc_unlikely (errstring != NULL))
+>        goto call_lose;
+> -
+> -    /* Process program headers again after load segments are mapped in
+> -       case processing requires accessing those segments.  Scan program
+> -       headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
+> -       exits.  */
+> -    for (ph = &phdr[l->l_phnum]; ph != phdr; --ph)
+> -      switch (ph[-1].p_type)
+> -	{
+> -	case PT_NOTE:
+> -	  _dl_process_pt_note (l, fd, &ph[-1]);
+> -	  break;
+> -	case PT_GNU_PROPERTY:
+> -	  _dl_process_pt_gnu_property (l, fd, &ph[-1]);
+> -	  break;
+> -	}
+>    }
+>  
+>    if (l->l_ld == 0)
+> @@ -1481,6 +1466,21 @@ cannot enable executable stack as shared object requires");
+>      /* Assign the next available module ID.  */
+>      l->l_tls_modid = _dl_next_tls_modid ();
+>  
+> +  /* Process program headers again after load segments are mapped in
+> +     case processing requires accessing those segments.  Scan program
+> +     headers backward so that PT_NOTE can be skipped if PT_GNU_PROPERTY
+> +     exits.  */
+> +  for (ph = &l->l_phdr[l->l_phnum]; ph != l->l_phdr; --ph)
+> +    switch (ph[-1].p_type)
+> +      {
+> +      case PT_NOTE:
+> +	_dl_process_pt_note (l, fd, &ph[-1]);
+> +	break;
+> +      case PT_GNU_PROPERTY:
+> +	_dl_process_pt_gnu_property (l, fd, &ph[-1]);
+> +	break;
+> +      }
 > +
->  patternProperties:
->    "^dai-link(@[0-9])?$":
->      description:
-> @@ -81,6 +84,7 @@ additionalProperties: false
->  examples:
->
->    - |
-> +    //Example 1
->      sound {
->          compatible = "google,sc7180-trogdor";
->          model = "sc7180-rt5682-max98357a-1mic";
-> @@ -128,3 +132,57 @@ examples:
->              };
->          };
->      };
-> +
-> +  - |
-> +    //Example 2 (2mic case)
-> +    sound {
-> +        compatible = "google,sc7180-trogdor";
-> +        model = "sc7180-rt5682-max98357a-2mic";
-> +
-> +        audio-routing =
-> +                    "Headphone Jack", "HPOL",
-> +                    "Headphone Jack", "HPOR";
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        dmic-gpios = <&tlmm 86 0>;
-> +
-> +        dai-link@0 {
-> +            link-name = "MultiMedia0";
-> +            reg = <0>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 0>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&alc5682 0>;
-> +            };
-> +        };
-> +
-> +        dai-link@1 {
-> +            link-name = "MultiMedia1";
-> +            reg = <1>;
-> +            cpu {
-> +                sound-dai = <&lpass_cpu 1>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&max98357a>;
-> +            };
-> +        };
-> +
-> +        dai-link@2 {
-> +            link-name = "MultiMedia2";
-> +            reg = <2>;
-> +            cpu {
-> +                sound-dai = <&lpass_hdmi 0>;
-> +            };
-> +
-> +            codec {
-> +                sound-dai = <&msm_dp>;
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> --
-> 2.25.1
->
+>  #ifdef DL_AFTER_LOAD
+>    DL_AFTER_LOAD (l);
+>  #endif
+
+Is this still compatible with the CET requirements?
+
+I hope it is because the CET magic happens in _dl_open_check, so after
+the the code in elf/dl-load.c has run.
+
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+
