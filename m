@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D8A2A3DA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA9B2A3DAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgKCH2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 02:28:09 -0500
-Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:59148 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725968AbgKCH2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:28:09 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 88E3F1730877;
-        Tue,  3 Nov 2020 07:28:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3873:3874:4321:5007:6119:7514:7875:8545:9108:10004:10400:10848:11232:11658:11914:12043:12297:12663:12740:12760:12895:13069:13072:13095:13160:13229:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21433:21451:21627:21660:21819:30003:30022:30026:30029:30030:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: blade17_1707ebf272b6
-X-Filterd-Recvd-Size: 2792
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  3 Nov 2020 07:28:07 +0000 (UTC)
-Message-ID: <e9d540c35ac04f0bb69e26d29c76c7cbd5693df8.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: improve email parsing
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Date:   Mon, 02 Nov 2020 23:28:06 -0800
-In-Reply-To: <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
-References: <20201103054810.21978-1-dwaipayanray1@gmail.com>
-         <CABJPP5DkJ3gwZDW+FBShs3Yo8z6GfP4LSMRW4hO5hL+fVXjShQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1727808AbgKCH3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:29:40 -0500
+Received: from mga02.intel.com ([134.134.136.20]:58283 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbgKCH3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:29:39 -0500
+IronPort-SDR: s+jbcbFJJD00Rs0Dvvvl07xJaxyHV8URDvbuDSA2VTvDP7kHsZnF9KwqIdLYLZc7qUOx6qyi2n
+ R61fAIZCXrTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="155999399"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="155999399"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 23:29:39 -0800
+IronPort-SDR: 2JwyHF+rwKrId2o2gdW5kMJvmpmaWyM1RD2wpeRZSKOkKXWhh8O0W9HbVncpKH2lLycljKI0hc
+ 8O+SJu5EubFg==
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="470690411"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.118]) ([10.239.13.118])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 23:29:35 -0800
+Subject: Re: [PATCH] KVM: VMX: Enable Notify VM exit
+To:     Tao Xu <tao3.xu@intel.com>, Andy Lutomirski <luto@amacapital.net>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201102061445.191638-1-tao3.xu@intel.com>
+ <CALCETrVqdq4zw=Dcd6dZzSmUZTMXHP50d=SRSaY2AV5sauUzOw@mail.gmail.com>
+ <a5f500ee-51f8-54a7-d927-0e8eee644e26@intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <a7c8cdeb-c5be-a00f-eb2f-fcc8762c07b2@intel.com>
+Date:   Tue, 3 Nov 2020 15:29:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <a5f500ee-51f8-54a7-d927-0e8eee644e26@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 11:28 +0530, Dwaipayan Ray wrote:
-> On Tue, Nov 3, 2020 at 11:18 AM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
-> > 
-> > checkpatch doesn't report warnings for many common mistakes
-> > in emails. Some of which are trailing commas and incorrect
-> > use of email comments.
-> > 
-> > At the same time several false positives are reported due to
-> > incorrect handling of mail comments. The most common of which
-> > is due to the pattern:
-> > 
-> > <stable@vger.kernel.org> # X.X
-> > 
-> > Improve email parsing mechanism in checkpatch.
-> > 
-> > What is added:
-> > 
-> > - Support for multiple name/address comments.
-> > - Improved handling of quoted names.
-> > - Sanitize improperly formatted comments.
-> > - Sanitize trailing semicolon or dot after email.
-[]
-> What do you think? Should warnings for the names which should
-> be quoted be reported considering this result?
+On 11/3/2020 2:08 PM, Tao Xu wrote:
+> 
+> 
+> On 11/3/20 12:43 AM, Andy Lutomirski wrote:
+>> On Sun, Nov 1, 2020 at 10:14 PM Tao Xu <tao3.xu@intel.com> wrote:
+>>>
+...
+>>
+>>> +static int handle_notify(struct kvm_vcpu *vcpu)
+>>> +{
+>>> +       unsigned long exit_qualification = 
+>>> vmcs_readl(EXIT_QUALIFICATION);
+>>> +
+>>> +       /*
+>>> +        * Notify VM exit happened while executing iret from NMI,
+>>> +        * "blocked by NMI" bit has to be set before next VM entry.
+>>> +        */
+>>> +       if (exit_qualification & NOTIFY_VM_CONTEXT_VALID) {
+>>> +               if (enable_vnmi &&
+>>> +                   (exit_qualification & INTR_INFO_UNBLOCK_NMI))
+>>> +                       vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
+>>> +                                     GUEST_INTR_STATE_NMI);
+>>
+>> This needs actual documentation in the SDM or at least ISE please.
+>>
 
-Clearly the quote suggestion is unnecessary.
+Hi Andy,
 
-I think that "cc: stable@(?:vger\.)?kernel\.org" should be
-treated differently from other forms of invalid/odd address lines.
+Do you mean SDM or ISE should call out it needs to restore "blocked by 
+NMI" if bit 12 of exit qualification is set and VMM decides to re-enter 
+the guest?
 
-My suggestion is that the case insensitive form of
+you can refer to SDM 27.2.3 "Information about NMI unblocking Due to 
+IRET" in latest SDM 325462-072US
 
-Cc: stable@vger.kernel.org
-
-or only another similar case insensitive forms with a
-# comment separator like
-
-Cc: <stable@vger.kernel.org> # some comment
-
-be acceptable for stable.
-
-All other forms with stable@ should emit some message.
-
-And other <foo>-by: and cc: addresses should only have a form like
-
-Signed-off-by: "Full.Name" (possible comment) <email@domain.tld>
-or
-Signed-off-by: Full Name (possible comment) <email@domain.tld>
-
-etc..
-
-and any additional content after .tld in the email address be flagged
-with some message like "unexpected content after email address" rather
-than "might be better as".
-
-What do you think best?
+> Notify VM-Exit is defined in ISE, chapter 9.2:
+> https://software.intel.com/content/dam/develop/external/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf 
+> 
+> 
+> I will add this information into commit message. Thank you for reminding 
+> me.
 
