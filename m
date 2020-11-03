@@ -2,173 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB3F2A4D75
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B062A4D7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 18:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgKCRsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 12:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgKCRsa (ORCPT
+        id S1728471AbgKCRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 12:52:18 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:15872 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725957AbgKCRwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 12:48:30 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A73C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 09:48:30 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id i2so20027324ljg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o0HUqTtrB0uneYNpLQNhQJ6FusME7LjWI9KZLqRyy8M=;
-        b=HlBdVjW42hUSJkakIiVHCgxY07l6tlPx/MKTOg49MQqEt9fKpSl2tO6bNlSfEMf3/D
-         yOb2ZUXxHpDZzPlQCZuCKgGgj4iIodCB3C8y4WCLAE53N4IY/fO4MumxqPXGllxVBzjJ
-         AuMTxQdvsElAjMkZERbVlQwjny9JwixE30+4I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o0HUqTtrB0uneYNpLQNhQJ6FusME7LjWI9KZLqRyy8M=;
-        b=HfDK3z26wIev5sGbASV8ZsCK7NCTb/s8Sb/5YJEOIxm/N0nfHTzxc7mpHetonKgO7C
-         0jniCRoP64Mscl1Q+N0UNSMGc3H/sG2C0dWzFvAeZV+nlmEf4G7Dk+y+/WegQRKEnIIw
-         yx7C9kN9b70AFkfnAYtTzT6e6ZaKhnXZ0UQdomq6AGC49QiLOnetm3pv7qsG6fgfxvY1
-         LTQ4rcbTFxoJk/6kRKJmxTSubycJcapQ/98wIOIVl4aUM9cF92PDxsOnaPFW62OKKkSH
-         TP4N/L8nm2fmF3Y6t7xMVWGryn7Laesyehj90vRs7da70CJXPdIkXsCE3sjilhVzxr80
-         gP8w==
-X-Gm-Message-State: AOAM5307snucExaVG+LurT61rA7J6KFfNAcfZVY2Sb7Yc+cheDb0ha2v
-        krPNn99+IfLGuzbmqXCi+J7y68/ImEH6aw==
-X-Google-Smtp-Source: ABdhPJxoFSZKp6AWI/Tv6RPsiq/xNqLQcnzBMvwinK38zydFI7H3iQDFlD5f0d9CNzQRVIzGS++/8g==
-X-Received: by 2002:a2e:81cf:: with SMTP id s15mr8782409ljg.147.1604425708760;
-        Tue, 03 Nov 2020 09:48:28 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id u2sm4063566lfl.115.2020.11.03.09.48.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 09:48:27 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id a7so23335155lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 09:48:27 -0800 (PST)
-X-Received: by 2002:a19:4815:: with SMTP id v21mr8859386lfa.603.1604425706752;
- Tue, 03 Nov 2020 09:48:26 -0800 (PST)
+        Tue, 3 Nov 2020 12:52:18 -0500
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3Hh7xG004584;
+        Tue, 3 Nov 2020 12:52:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=y/X9RFV5i/XaGurzYdRt5Wf/nDmxED4hbLvceFlbAhY=;
+ b=dvPB+2dCSRIaTu85TrQAUizEJIUhXP3I1gS84iqUhhVkmcQ2cXLdXoYBkxD91DDQ3Mwi
+ QMTQEfmNDTXNNz7Q/5K6U3baJdRAthb97e29JvLDtZJPVr6OWgjEluTSmFw1foVDXUZU
+ jalg4JA2x97knkaXDWD1q+d4sBDmp3+8Br7UwKERXQ1SQ7irDkV/1kGBL0yi/XgRCq9N
+ jd4cjtCk5n0Efk1lfZKK+JZblRQyMaNnAmbLgS6xj5G5rSfbHTrZSQZx35HzX0aqwPpO
+ 8n8vNvt661XEoJRgd5lY44HqW1HlaG9VVR49M+BqUuAtX1oQGXMcLalcmy3kXWNQRId3 wQ== 
+Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0a-00154904.pphosted.com with ESMTP id 34h38gkk0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Nov 2020 12:52:00 -0500
+Received: from pps.filterd (m0144103.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3HjqCN131316;
+        Tue, 3 Nov 2020 12:51:59 -0500
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by mx0b-00154901.pphosted.com with ESMTP id 34k9bgatdg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Nov 2020 12:51:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eBgHs5Vni1A1ns4vt3aZr+Ga+kkY+xVUdOVi25nJX+xmqiT1ZT+vEF7mOSBdWot4eIyS2ee1wBu3o+p7wcGJ7++7mjJAVBWCTxtDKL3+s5tiPkM0JZ0kwsDkdDwFWax5q91YKcQ855eIKQGQeoGhqq4Sfo1lBUPQTggaheoVnGdkts0dq9Q9YBkmsdAfpUEc5vKZqNEFDMk0OwFkFroK9vq+tJQ4Dsnn/i0ETLjMKcOR3HUb9wUxeOGNOpeVURQ7NQGvC+TcxypYeGSKY5Z4tYzDx+ln2HP9K8ArHUdFXIN3fa9u4V0isispXTKwasa3Xgf0RL6dsqPKKGCUTdCLJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y/X9RFV5i/XaGurzYdRt5Wf/nDmxED4hbLvceFlbAhY=;
+ b=S4qEVr0vUPkqpZEdoWsU4ASqPUG/Zq9BAMQTi5gQLyiblUEL4cuGsRt6DUDwiUdWrtYg3SpoNnzcEKsZ6zGkMhK87aHtsn5PgOdxachNJt55mAUwroelJmm5sCFcO4oBpZj21xn72L/hKWfoyhgzjoTh3VzU1RdOzSxz5Kqp88iCxprccK4SoTc1cWCOqiCc67TlgHplkK6wEPCYDtkszGOulsds4eUNNj5BgL/YbOKU4DrNAQYuAUL/UeahWEtd5Qc1Z+fLwLznFM/SHn66CDsSnYWIB0CXaLPKQ5ycQ9HNwBdP52hPeTLaC/EOMv3jQj7JaH9qq7lRTQrcVMFLGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y/X9RFV5i/XaGurzYdRt5Wf/nDmxED4hbLvceFlbAhY=;
+ b=Rqcv/vR6d8fUYmzoMwN75eB3DNdz3od4IsfA8U+29fUqyyJm0eTBC+v4xgST48K3NndIlAuAaMbGk3DZIXxinrK9u2irUqNioejYHk/2Opmw/HkLiJL6Fg3eUXnhkwHV7215+j8j51yjmD/VwuftkSUgvIqJCakcV0mTKLOBXW0=
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
+ by DM5PR19MB0923.namprd19.prod.outlook.com (2603:10b6:3:2d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 3 Nov
+ 2020 17:51:57 +0000
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a]) by DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a8ff:e803:ee80:e59a%3]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
+ 17:51:57 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>
+CC:     "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>
+Subject: RE: [PATCH] ASoC: rt715:add Mic Mute LED control support
+Thread-Topic: [PATCH] ASoC: rt715:add Mic Mute LED control support
+Thread-Index: AQHWseEjYgOvfJhc/UebM8naQzkVCam2YlCAgAAyV4CAABsq0A==
+Date:   Tue, 3 Nov 2020 17:51:57 +0000
+Message-ID: <DM6PR19MB2636291E083E1843B0E0035CFA110@DM6PR19MB2636.namprd19.prod.outlook.com>
+References: <20201103125859.8759-1-Perry_Yuan@Dell.com>
+ <20201103131253.GA5545@sirena.org.uk>
+ <5f2c1282-4401-276a-8dad-127fa1f449fd@linux.intel.com>
+In-Reply-To: <5f2c1282-4401-276a-8dad-127fa1f449fd@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-11-03T17:51:51.7023762Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=ba2e31ec-2f80-405d-b00a-337bb358e52d;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [76.251.167.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: da416816-ab46-4b0d-c50e-08d880212884
+x-ms-traffictypediagnostic: DM5PR19MB0923:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR19MB092348F262602E9AD6004EFDFA110@DM5PR19MB0923.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MsgHMR5rxVW40BDXiVWUkHfbF6Dj2D2UE2+bcs006+2TBRQ689BOHzT/RDM/bkRbrAzSOH2bllnWN2dVh/JWyxjTa25Z9bwihUOwPqdpMBiPQCXAZJI4qe+YEfa9CvUGuSXwsum4Nl2EeR8nfoDd7AMLuwQR5Jyd1r1ognaeYXtfxj+oMW6SW2E4m15VAd1bmDyBYKJZwtX9zN8+UV6zDCXQ83YYffH/ldk6Nuad6oco4YpmQqUT5kDTCt4lchWHQpDmxCg7MoQrYx/uVscM0VW5PvMWMQrJ8BAN2/pYmtRoQGEclCofBijY2ZGPO/aNWiLEVUnoNRfoUhhcXkAThihKMwd9+f4YGIx8ffVeUZ80Vu5AoVaFjAXRluvTf16GB0us99Jfi6gPLD8NsW3R7g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(39860400002)(376002)(346002)(53546011)(83380400001)(33656002)(55016002)(2906002)(6506007)(4326008)(478600001)(186003)(8676002)(7696005)(8936002)(71200400001)(66476007)(66556008)(6636002)(76116006)(66946007)(110136005)(9686003)(316002)(86362001)(26005)(786003)(5660300002)(966005)(64756008)(66446008)(52536014)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ojav0AAlpeoWezU9R0qIkkHMaUYFa68ue40t7mVFyaXQJs0jK/EP96Kxt9oq5BZSOyn4wze+FWtOunXGHY/yEflbdpYEepKgSFe7IKQ8aYRIhHkPBTXze29OQyxVWbl4Xzj6SS/PB++V2dnGkAe80AFfrcdIys5H6x/ft3AHVH+Ybjfv/OC0StKF3yFVrzhJmbto3OmJpgQjVr3M+NaiHxgUE2n6i6+wHh7Rxrh5Z9h5vUi7LAVHMp8Ol2Jqi/0hCBw5D4hJpEuBR9JNcA67CN89/c4qngK6HyGcqTo1Kxc9W2QeoOzYrtbVV2TuydA/xytGPSTfkrZh3TXof+Om56R42PdvSY/OxPd5BwAaslB5HpI55Qvi0Co66vmCjSDEFOXv5Av8vx2D1iqc8MqiCZNBDR7psNqpayy59GK2FyT0PxBqMtLHy2JQV7rhi7EYJyoh0q7ecUiXdey1ICWE8wbUJmeMxDnucItvXaYvI7I604C6hEVpd22LI2Xd6vaQ+oVxYDq0TO3w9qPJQZJud7ZS/frlnDUR2UK545dBoJwBuHxd1bHG4XWbuLkOxLpzrqWR307LiiYoyWaF9SGUv9F/EPpWl0pDl/PqpJtyOH2mofuPV9uzU8X61NbJq6Dll2L7mlEMDsI6GHwc71L8nA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201103092712.714480842@linutronix.de> <20201103095858.827582066@linutronix.de>
-In-Reply-To: <20201103095858.827582066@linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 3 Nov 2020 09:48:10 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg2D_yjgKYkXCybD3uf0dtwYh6HxZ9BQJfV5t+EBqLGQQ@mail.gmail.com>
-Message-ID: <CAHk-=wg2D_yjgKYkXCybD3uf0dtwYh6HxZ9BQJfV5t+EBqLGQQ@mail.gmail.com>
-Subject: Re: [patch V3 22/37] highmem: High implementation details and
- document API
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-aio@kvack.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        nouveau@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da416816-ab46-4b0d-c50e-08d880212884
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 17:51:57.3461
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WavswQe1Sx2rOkNO2qHeniHcXQk5jQKy7U2Aer+vjODESIfoF8t48KzJYznzphvv7EkaOZ6SEvnlxn4dJDN14f8OECKmSl++UZ3iXan4r/s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB0923
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 bulkscore=0 impostorscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011030120
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 2:33 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> +static inline void *kmap(struct page *page)
-> +{
-> +       void *addr;
-> +
-> +       might_sleep();
-> +       if (!PageHighMem(page))
-> +               addr = page_address(page);
-> +       else
-> +               addr = kmap_high(page);
-> +       kmap_flush_tlb((unsigned long)addr);
-> +       return addr;
-> +}
-> +
-> +static inline void kunmap(struct page *page)
-> +{
-> +       might_sleep();
-> +       if (!PageHighMem(page))
-> +               return;
-> +       kunmap_high(page);
-> +}
+> -----Original Message-----
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Sent: Tuesday, November 3, 2020 10:13
+> To: Mark Brown; Yuan, Perry
+> Cc: oder_chiou@realtek.com; alsa-devel@alsa-project.org; lgirdwood@gmail.=
+com;
+> Limonciello, Mario; linux-kernel@vger.kernel.org; tiwai@suse.com
+> Subject: Re: [PATCH] ASoC: rt715:add Mic Mute LED control support
+>=20
+>=20
+> [EXTERNAL EMAIL]
+>=20
+> Somehow this patch was filtered by alsa-devel servers?
+>=20
+> On 11/3/20 7:12 AM, Mark Brown wrote:
+> > On Tue, Nov 03, 2020 at 04:58:59AM -0800, Perry Yuan wrote:
+> >> From: perry_yuan <perry_yuan@dell.com>
+> >>
+> >> Some new Dell system is going to support audio internal micphone
+> >> privacy setting from hardware level with micmute led state changing
+> >>
+> >> This patch allow to change micmute led state through this micphone
+> >> led control interface like hda_generic provided.
+> >
+> > If this is useful it should be done at the subsystem level rather than
+> > open coded in a specific CODEC driver, however I don't undersand why it
+> > is.
+> >
+> >> +static int rt715_micmute_led_mode_put(struct snd_kcontrol *kcontrol,
+> >> +      struct snd_ctl_elem_value *ucontrol)
+> >> +{
+> >> +    struct snd_soc_component *component =3D snd_kcontrol_chip(kcontro=
+l);
+> >> +    struct rt715_priv *rt715 =3D snd_soc_component_get_drvdata(compon=
+ent);
+> >> +    int led_mode =3D ucontrol->value.integer.value[0];
+> >> +
+> >> +    rt715->micmute_led =3D led_mode;
+> >> +#if IS_ENABLED(CONFIG_LEDS_TRIGGER_AUDIO)
+> >> +    ledtrig_audio_set(LED_AUDIO_MICMUTE,
+> >> +               rt715->micmute_led ? LED_ON : LED_OFF);
+> >> +#endif
+> >> +  return 0;
+> >> +}
+> >
+> > This is just adding a userspace API to set a LED via the standard LED
+> > APIs.  Since the LED subsystem already has a perfectly good userspace
+> > API why not use that?  There is no visible value in this being in the
+> > sound subsystem.
+>=20
+> I also don't quite follow. This looks as inspired from HDaudio code, but
+> with a lot of simplifications.
+>=20
+> If the intent was that when userspace decides to mute the LED is turned
+> on, wouldn't it be enough to just track the state of a 'capture switch'
+> responsible for mute, i.e. when the capture Switch is 'off' the LED is
+> on. I don't see the point of having a new control, you would be adding
+> more work for PulseAudio/UCM whereas connecting the capture switch to a
+> led comes with zero work in userspace. See e.g. how the mute mic LED was
+> handled in the SOF code handling DMICs, we didn't add a new control but
+> turned the LED in the switch .put callback, see
+>=20
+> https://elixir.bootlin.com/linux/latest/source/sound/soc/sof/control.c#L1=
+8
+>=20
+> https://elixir.bootlin.com/linux/latest/source/sound/soc/sof/control.c#L1=
+53
+>=20
+> Actually thinking more about it, having two controls for 'mute LED' and
+> 'capture switch' could lead to inconsistent states where the LED is on
+> without mute being activated. we should really bolt the LED activation
+> to the capture switch, that way the mute and LED states are aligned.
+>=20
 
-I have no complaints about the patch, but it strikes me that if people
-want to actually have much better debug coverage, this is where it
-should be (I like the "every other address" thing too, don't get me
-wrong).
+After giving it some thought I agree.  The UCM change that was opened
+here https://github.com/alsa-project/alsa-ucm-conf/pull/60 wouldn't
+be necessary at all if you just track capture switch directly like SOF does=
+.
 
-In particular, instead of these PageHighMem(page) tests, I think
-something like this would be better:
-
-   #ifdef CONFIG_DEBUG_HIGHMEM
-     #define page_use_kmap(page) ((page),1)
-   #else
-     #define page_use_kmap(page) PageHighMem(page)
-   #endif
-
-adn then replace those "if (!PageHighMem(page))" tests with "if
-(!page_use_kmap())" instead.
-
-IOW, in debug mode, it would _always_ remap the page, whether it's
-highmem or not. That would really stress the highmem code and find any
-fragilities.
-
-No?
-
-Anyway, this is all sepatrate from the series, which still looks fine
-to me. Just a reaction to seeing the patch, and Thomas' earlier
-mention that the highmem debugging doesn't actually do much.
-
-               Linus
