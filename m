@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3692A517A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706F82A5186
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729929AbgKCUlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52654 "EHLO mail.kernel.org"
+        id S1730393AbgKCUlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729897AbgKCUlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:02 -0500
+        id S1729995AbgKCUlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05AE922226;
-        Tue,  3 Nov 2020 20:41:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C89B2224E;
+        Tue,  3 Nov 2020 20:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436061;
-        bh=wX4d7FN/inLk35NEUKxXJVXUNXsCHQUkglhjOTDNNjo=;
+        s=default; t=1604436091;
+        bh=VUGwMPfZGW+1mMj7jlP06cHUXqmzfN8zHnrsmoHawts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDcr+YC4nHjQamg8KP67yB4NinKhwH2G0bIt0d7xMnxLf4Yxhmvzdc18V+tenmeQH
-         CtxvAMowWX8NSZFfNe27gwUbkJHIHaY6vMwZEFj0Q9Hr9Wf+I6+PqOEIgSM7J9Kmls
-         9diAbBPMANGOkWnekJ+NkgyuqLvIk2XDrioqfgE8=
+        b=lYhUsM4Co788fVCCnvBv4N1oyxReOomjLLdZCbUbM8xlfvZrT2nkibh+s5qpgYiaK
+         gfFjTkE7GWA4i77zv54lvkoUzozIB3o2OFOpy86uS7RkNHhAWJH0o1ME63I6UuTS3q
+         /4pPAsKYBuXxsAGeUNYUQucip88HPCNPmL4yh6pw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 059/391] f2fs: handle errors of f2fs_get_meta_page_nofail
-Date:   Tue,  3 Nov 2020 21:31:50 +0100
-Message-Id: <20201103203351.373316808@linuxfoundation.org>
+Subject: [PATCH 5.9 061/391] powerpc/64s: handle ISA v3.1 local copy-paste context switches
+Date:   Tue,  3 Nov 2020 21:31:52 +0100
+Message-Id: <20201103203351.480716817@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,129 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 86f33603f8c51537265ff7ac0320638fd2cbdb1b ]
+[ Upstream commit dc462267d2d7aacffc3c1d99b02d7a7c59db7c66 ]
 
-First problem is we hit BUG_ON() in f2fs_get_sum_page given EIO on
-f2fs_get_meta_page_nofail().
+The ISA v3.1 the copy-paste facility has a new memory move functionality
+which allows the copy buffer to be pasted to domestic memory (RAM) as
+opposed to foreign memory (accelerator).
 
-Quick fix was not to give any error with infinite loop, but syzbot caught
-a case where it goes to that loop from fuzzed image. In turned out we abused
-f2fs_get_meta_page_nofail() like in the below call stack.
+This means the POWER9 trick of avoiding the cp_abort on context switch if
+the process had not mapped foreign memory does not work on POWER10. Do the
+cp_abort unconditionally there.
 
-- f2fs_fill_super
- - f2fs_build_segment_manager
-  - build_sit_entries
-   - get_current_sit_page
+KVM must also cp_abort on guest exit to prevent copy buffer state leaking
+between contexts.
 
-INFO: task syz-executor178:6870 can't die for more than 143 seconds.
-task:syz-executor178 state:R
- stack:26960 pid: 6870 ppid:  6869 flags:0x00004006
-Call Trace:
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1179:
- #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6242
-1 lock held by systemd-journal/3920:
-1 lock held by in:imklog/6769:
- #0: ffff88809eebc130 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-1 lock held by syz-executor178/6870:
- #0: ffff8880925120e0 (&type->s_umount_key#47/1){+.+.}-{3:3}, at: alloc_super+0x201/0xaf0 fs/super.c:229
-
-Actually, we didn't have to use _nofail in this case, since we could return
-error to mount(2) already with the error handler.
-
-As a result, this patch tries to 1) remove _nofail callers as much as possible,
-2) deal with error case in last remaining caller, f2fs_get_sum_page().
-
-Reported-by: syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Acked-by: Paul Mackerras <paulus@ozlabs.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200825075535.224536-1-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/checkpoint.c |  2 +-
- fs/f2fs/f2fs.h       |  2 +-
- fs/f2fs/node.c       |  2 +-
- fs/f2fs/segment.c    | 12 +++++++++---
- 4 files changed, 12 insertions(+), 6 deletions(-)
+ arch/powerpc/kernel/process.c           | 16 +++++++++-------
+ arch/powerpc/kvm/book3s_hv.c            |  7 +++++++
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S |  8 ++++++++
+ 3 files changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 0b7aec059f112..4a97fe4ddf789 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -107,7 +107,7 @@ struct page *f2fs_get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index)
- 	return __get_meta_page(sbi, index, true);
- }
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 73a57043ee662..3f2dc0675ea7a 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1256,15 +1256,17 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ 		restore_math(current->thread.regs);
  
--struct page *f2fs_get_meta_page_nofail(struct f2fs_sb_info *sbi, pgoff_t index)
-+struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index)
- {
- 	struct page *page;
- 	int count = 0;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 98c4b166f192b..d44c6c36de678 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3385,7 +3385,7 @@ enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
- void f2fs_stop_checkpoint(struct f2fs_sb_info *sbi, bool end_io);
- struct page *f2fs_grab_meta_page(struct f2fs_sb_info *sbi, pgoff_t index);
- struct page *f2fs_get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index);
--struct page *f2fs_get_meta_page_nofail(struct f2fs_sb_info *sbi, pgoff_t index);
-+struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index);
- struct page *f2fs_get_tmp_page(struct f2fs_sb_info *sbi, pgoff_t index);
- bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 					block_t blkaddr, int type);
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index cb1b5b61a1dab..cc4700f6240db 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -109,7 +109,7 @@ static void clear_node_page_dirty(struct page *page)
+ 		/*
+-		 * The copy-paste buffer can only store into foreign real
+-		 * addresses, so unprivileged processes can not see the
+-		 * data or use it in any way unless they have foreign real
+-		 * mappings. If the new process has the foreign real address
+-		 * mappings, we must issue a cp_abort to clear any state and
+-		 * prevent snooping, corruption or a covert channel.
++		 * On POWER9 the copy-paste buffer can only paste into
++		 * foreign real addresses, so unprivileged processes can not
++		 * see the data or use it in any way unless they have
++		 * foreign real mappings. If the new process has the foreign
++		 * real address mappings, we must issue a cp_abort to clear
++		 * any state and prevent snooping, corruption or a covert
++		 * channel. ISA v3.1 supports paste into local memory.
+ 		 */
+ 		if (current->mm &&
+-			atomic_read(&current->mm->context.vas_windows))
++			(cpu_has_feature(CPU_FTR_ARCH_31) ||
++			atomic_read(&current->mm->context.vas_windows)))
+ 			asm volatile(PPC_CP_ABORT);
+ 	}
+ #endif /* CONFIG_PPC_BOOK3S_64 */
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 4ba06a2a306cf..3bd3118c76330 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3530,6 +3530,13 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	 */
+ 	asm volatile("eieio; tlbsync; ptesync");
  
- static struct page *get_current_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
- {
--	return f2fs_get_meta_page_nofail(sbi, current_nat_addr(sbi, nid));
-+	return f2fs_get_meta_page(sbi, current_nat_addr(sbi, nid));
- }
++	/*
++	 * cp_abort is required if the processor supports local copy-paste
++	 * to clear the copy buffer that was under control of the guest.
++	 */
++	if (cpu_has_feature(CPU_FTR_ARCH_31))
++		asm volatile(PPC_CP_ABORT);
++
+ 	mtspr(SPRN_LPID, vcpu->kvm->arch.host_lpid);	/* restore host LPID */
+ 	isync();
  
- static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index e247a5ef3713f..2628406f43f64 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2344,7 +2344,9 @@ int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra)
-  */
- struct page *f2fs_get_sum_page(struct f2fs_sb_info *sbi, unsigned int segno)
- {
--	return f2fs_get_meta_page_nofail(sbi, GET_SUM_BLOCK(sbi, segno));
-+	if (unlikely(f2fs_cp_error(sbi)))
-+		return ERR_PTR(-EIO);
-+	return f2fs_get_meta_page_retry(sbi, GET_SUM_BLOCK(sbi, segno));
- }
+diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+index 799d6d0f4eade..cd9995ee84419 100644
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -1830,6 +1830,14 @@ END_FTR_SECTION_IFSET(CPU_FTR_P9_RADIX_PREFETCH_BUG)
+ 2:
+ #endif /* CONFIG_PPC_RADIX_MMU */
  
- void f2fs_update_meta_page(struct f2fs_sb_info *sbi,
-@@ -2616,7 +2618,11 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type)
- 	__next_free_blkoff(sbi, curseg, 0);
- 
- 	sum_page = f2fs_get_sum_page(sbi, new_segno);
--	f2fs_bug_on(sbi, IS_ERR(sum_page));
-+	if (IS_ERR(sum_page)) {
-+		/* GC won't be able to use stale summary pages by cp_error */
-+		memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
-+		return;
-+	}
- 	sum_node = (struct f2fs_summary_block *)page_address(sum_page);
- 	memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
- 	f2fs_put_page(sum_page, 1);
-@@ -3781,7 +3787,7 @@ int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
- static struct page *get_current_sit_page(struct f2fs_sb_info *sbi,
- 					unsigned int segno)
- {
--	return f2fs_get_meta_page_nofail(sbi, current_sit_addr(sbi, segno));
-+	return f2fs_get_meta_page(sbi, current_sit_addr(sbi, segno));
- }
- 
- static struct page *get_next_sit_page(struct f2fs_sb_info *sbi,
++	/*
++	 * cp_abort is required if the processor supports local copy-paste
++	 * to clear the copy buffer that was under control of the guest.
++	 */
++BEGIN_FTR_SECTION
++	PPC_CP_ABORT
++END_FTR_SECTION_IFSET(CPU_FTR_ARCH_31)
++
+ 	/*
+ 	 * POWER7/POWER8 guest -> host partition switch code.
+ 	 * We don't have to lock against tlbies but we do
 -- 
 2.27.0
 
