@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E716D2A594B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9922A5945
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 23:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730451AbgKCWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 17:06:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53296 "EHLO mail.kernel.org"
+        id S1730382AbgKCWGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 17:06:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729779AbgKCUl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:41:27 -0500
+        id S1730404AbgKCUlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:41:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94B3B2224E;
-        Tue,  3 Nov 2020 20:41:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A6BE2224E;
+        Tue,  3 Nov 2020 20:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436087;
-        bh=y6dWLgr/k78WEXsGzpf5VMOpXSUhgcaF1CjkWV47f08=;
+        s=default; t=1604436098;
+        bh=HYZINePm2LslxJENDm5IkhLICpPSG9n+DLgRT9OIrLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doRpevBjmi+Htn/NwNf0U2deAzmcDPy2kOAHLrTxi2SAoSs1sExrtlZmt1Tu7HAZN
-         TH2QEXekb791v4FUEIyE27bhCxkRrAW1g+H4YhSe3ICSmCaqnMPHPtofCAJOrccWzh
-         Bwh6Acmh4hmzLa+7bvyI+9JfOEdVGTZ6oUMhW33A=
+        b=hDP9fhNRUSvpxIA29/9A7rsylXgpk8r4n87ftOXNgJkP3jcjyEYlNGyWm7XHOlv/I
+         TBewG+X8StcDdNRAVZVyE/Fsn+sMzjmlfS+i/ThdOIQ7KFtizXU2En0odgK61HcKnk
+         ceZBD0wTFExbq72jqQFmJC+IEhd8kNgFTnwWzsW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 060/391] afs: Dont assert on unpurgeable server records
-Date:   Tue,  3 Nov 2020 21:31:51 +0100
-Message-Id: <20201103203351.427774628@linuxfoundation.org>
+Subject: [PATCH 5.9 064/391] xfs: Set xfs_buf type flag when growing summary/bitmap files
+Date:   Tue,  3 Nov 2020 21:31:55 +0100
+Message-Id: <20201103203351.644054008@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,60 +45,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Chandan Babu R <chandanrlinux@gmail.com>
 
-[ Upstream commit 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8 ]
+[ Upstream commit 72cc95132a93293dcd0b6f68353f4741591c9aeb ]
 
-Don't give an assertion failure on unpurgeable afs_server records - which
-kills the thread - but rather emit a trace line when we are purging a
-record (which only happens during network namespace removal or rmmod) and
-print a notice of the problem.
+The following sequence of commands,
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+  mkfs.xfs -f -m reflink=0 -r rtdev=/dev/loop1,size=10M /dev/loop0
+  mount -o rtdev=/dev/loop1 /dev/loop0 /mnt
+  xfs_growfs  /mnt
+
+... causes the following call trace to be printed on the console,
+
+XFS: Assertion failed: (bip->bli_flags & XFS_BLI_STALE) || (xfs_blft_from_flags(&bip->__bli_format) > XFS_BLFT_UNKNOWN_BUF && xfs_blft_from_flags(&bip->__bli_format) < XFS_BLFT_MAX_BUF), file: fs/xfs/xfs_buf_item.c, line: 331
+Call Trace:
+ xfs_buf_item_format+0x632/0x680
+ ? kmem_alloc_large+0x29/0x90
+ ? kmem_alloc+0x70/0x120
+ ? xfs_log_commit_cil+0x132/0x940
+ xfs_log_commit_cil+0x26f/0x940
+ ? xfs_buf_item_init+0x1ad/0x240
+ ? xfs_growfs_rt_alloc+0x1fc/0x280
+ __xfs_trans_commit+0xac/0x370
+ xfs_growfs_rt_alloc+0x1fc/0x280
+ xfs_growfs_rt+0x1a0/0x5e0
+ xfs_file_ioctl+0x3fd/0xc70
+ ? selinux_file_ioctl+0x174/0x220
+ ksys_ioctl+0x87/0xc0
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x3e/0x70
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+This occurs because the buffer being formatted has the value of
+XFS_BLFT_UNKNOWN_BUF assigned to the 'type' subfield of
+bip->bli_formats->blf_flags.
+
+This commit fixes the issue by assigning one of XFS_BLFT_RTSUMMARY_BUF
+and XFS_BLFT_RTBITMAP_BUF to the 'type' subfield of
+bip->bli_formats->blf_flags before committing the corresponding
+transaction.
+
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Chandan Babu R <chandanrlinux@gmail.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/server.c            | 7 ++++++-
- include/trace/events/afs.h | 2 ++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_rtalloc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/afs/server.c b/fs/afs/server.c
-index e82e452e26124..684a2b02b9ff7 100644
---- a/fs/afs/server.c
-+++ b/fs/afs/server.c
-@@ -550,7 +550,12 @@ void afs_manage_servers(struct work_struct *work)
+diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
+index 86994d7f7cba3..912f96a248f25 100644
+--- a/fs/xfs/xfs_rtalloc.c
++++ b/fs/xfs/xfs_rtalloc.c
+@@ -778,8 +778,14 @@ xfs_growfs_rt_alloc(
+ 	struct xfs_bmbt_irec	map;		/* block map output */
+ 	int			nmap;		/* number of block maps */
+ 	int			resblks;	/* space reservation */
++	enum xfs_blft		buf_type;
+ 	struct xfs_trans	*tp;
  
- 		_debug("manage %pU %u", &server->uuid, active);
- 
--		ASSERTIFCMP(purging, active, ==, 0);
-+		if (purging) {
-+			trace_afs_server(server, atomic_read(&server->ref),
-+					 active, afs_server_trace_purging);
-+			if (active != 0)
-+				pr_notice("Can't purge s=%08x\n", server->debug_id);
-+		}
- 
- 		if (active == 0) {
- 			time64_t expire_at = server->unuse_time;
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 13c05e28c0b6c..342b35fc33c59 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -40,6 +40,7 @@ enum afs_server_trace {
- 	afs_server_trace_get_new_cbi,
- 	afs_server_trace_get_probe,
- 	afs_server_trace_give_up_cb,
-+	afs_server_trace_purging,
- 	afs_server_trace_put_call,
- 	afs_server_trace_put_cbi,
- 	afs_server_trace_put_find_rsq,
-@@ -270,6 +271,7 @@ enum afs_cb_break_reason {
- 	EM(afs_server_trace_get_new_cbi,	"GET cbi  ") \
- 	EM(afs_server_trace_get_probe,		"GET probe") \
- 	EM(afs_server_trace_give_up_cb,		"giveup-cb") \
-+	EM(afs_server_trace_purging,		"PURGE    ") \
- 	EM(afs_server_trace_put_call,		"PUT call ") \
- 	EM(afs_server_trace_put_cbi,		"PUT cbi  ") \
- 	EM(afs_server_trace_put_find_rsq,	"PUT f-rsq") \
++	if (ip == mp->m_rsumip)
++		buf_type = XFS_BLFT_RTSUMMARY_BUF;
++	else
++		buf_type = XFS_BLFT_RTBITMAP_BUF;
++
+ 	/*
+ 	 * Allocate space to the file, as necessary.
+ 	 */
+@@ -841,6 +847,8 @@ xfs_growfs_rt_alloc(
+ 					mp->m_bsize, 0, &bp);
+ 			if (error)
+ 				goto out_trans_cancel;
++
++			xfs_trans_buf_set_type(tp, bp, buf_type);
+ 			memset(bp->b_addr, 0, mp->m_sb.sb_blocksize);
+ 			xfs_trans_log_buf(tp, bp, 0, mp->m_sb.sb_blocksize - 1);
+ 			/*
 -- 
 2.27.0
 
