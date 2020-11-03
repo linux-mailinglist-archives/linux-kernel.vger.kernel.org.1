@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6C92A449E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A912A4493
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgKCL4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:56:35 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6696 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgKCL4f (ORCPT
+        id S1728766AbgKCLxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 06:53:20 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7453 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgKCLxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:56:35 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQStR0xXvz15QX0;
-        Tue,  3 Nov 2020 19:56:31 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 19:56:26 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] scsi: qla4xxx: Remove redundant assignment to variable rval
-Date:   Tue, 3 Nov 2020 20:01:37 +0800
-Message-ID: <20201103120137.109717-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 3 Nov 2020 06:53:19 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQSpj0R9fzhfP1;
+        Tue,  3 Nov 2020 19:53:17 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 19:53:07 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <madalin.bucur@nxp.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] dpaa_eth: use false and true for bool variables
+Date:   Tue, 3 Nov 2020 20:05:00 +0800
+Message-ID: <1604405100-33255-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable rval has been initialized with 'QLA_ERROR'. The assignment
-is redundant in an error path. So remove it.
+Fix coccicheck warnings:
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+./dpaa_eth.c:2549:2-22: WARNING: Assignment of 0/1 to bool variable
+./dpaa_eth.c:2562:2-22: WARNING: Assignment of 0/1 to bool variable
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/scsi/qla4xxx/ql4_os.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 676778cbc550..aaccbf71dff5 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -686,7 +686,6 @@ static int qla4xxx_get_chap_by_index(struct scsi_qla_host *ha,
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index d9c2859..31407c1 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2546,7 +2546,7 @@ static void dpaa_eth_napi_enable(struct dpaa_priv *priv)
+ 	for_each_online_cpu(i) {
+ 		percpu_priv = per_cpu_ptr(priv->percpu_priv, i);
  
- 	if (!ha->chap_list) {
- 		ql4_printk(KERN_ERR, ha, "CHAP table cache is empty!\n");
--		rval = QLA_ERROR;
- 		goto exit_get_chap;
+-		percpu_priv->np.down = 0;
++		percpu_priv->np.down = false;
+ 		napi_enable(&percpu_priv->np.napi);
  	}
+ }
+@@ -2559,7 +2559,7 @@ static void dpaa_eth_napi_disable(struct dpaa_priv *priv)
+ 	for_each_online_cpu(i) {
+ 		percpu_priv = per_cpu_ptr(priv->percpu_priv, i);
  
-@@ -698,14 +697,12 @@ static int qla4xxx_get_chap_by_index(struct scsi_qla_host *ha,
- 
- 	if (chap_index > max_chap_entries) {
- 		ql4_printk(KERN_ERR, ha, "Invalid Chap index\n");
--		rval = QLA_ERROR;
- 		goto exit_get_chap;
+-		percpu_priv->np.down = 1;
++		percpu_priv->np.down = true;
+ 		napi_disable(&percpu_priv->np.napi);
  	}
- 
- 	*chap_entry = (struct ql4_chap_table *)ha->chap_list + chap_index;
- 	if ((*chap_entry)->cookie !=
- 	     __constant_cpu_to_le16(CHAP_VALID_COOKIE)) {
--		rval = QLA_ERROR;
- 		*chap_entry = NULL;
- 	} else {
- 		rval = QLA_SUCCESS;
+ }
 -- 
-2.17.1
+2.6.2
 
