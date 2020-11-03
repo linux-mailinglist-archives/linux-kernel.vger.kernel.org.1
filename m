@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DE12A56B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864422A55C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733046AbgKCVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:30:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
+        id S1733284AbgKCVE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:04:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732945AbgKCU6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:58:19 -0500
+        id S2388033AbgKCVEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:04:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3986C22226;
-        Tue,  3 Nov 2020 20:58:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64F9220658;
+        Tue,  3 Nov 2020 21:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437097;
-        bh=pPSOsyEIt9vou/H7DplKGWdQoh0OKGg+V9QEwjSncp4=;
+        s=default; t=1604437490;
+        bh=FDgL0XsLhpdRFS4u/BcWRFfU2xZXVTDuou3wCX2E7rE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b5LlFbS+4yUKylKq5NxrLANRQKbSNLKKXf1QOI9H3x1MQwTYpktl0HVOy00rkQAmD
-         hpJ3lIm13ECkC348zz4Ho5fyAGpXuMqZtC2x7XHVxoCjb0HlGrvzceqtk9PTfkgGb6
-         +fJSZoSCwRFc1DKMuSy2rN8nDF9yAw+6VVkJPXeI=
+        b=AximMhgpPhEecMF5Kxu7qZ9y5oxqx6oYLtixLdWQ+Qv7uynla6FESsaCeA47nx5zA
+         3y8r1ZrhCmp1rp4mlMnNJkbxNBlbLznplHen3J7g9c19WlZipeAPJxynfWmR3STJeO
+         GB0S9oquU5rvdQigABwkFGgx/fHZM5837RTvzC8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Fritsch <sf@sfritsch.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.4 144/214] drm/i915: Force VTd workarounds when running as a guest OS
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 100/191] ext4: Detect already used quota file early
 Date:   Tue,  3 Nov 2020 21:36:32 +0100
-Message-Id: <20201103203304.315586015@linuxfoundation.org>
+Message-Id: <20201103203243.088642273@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
+References: <20201103203232.656475008@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Jan Kara <jack@suse.cz>
 
-commit 8195400f7ea95399f721ad21f4d663a62c65036f upstream.
+[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
 
-If i915.ko is being used as a passthrough device, it does not know if
-the host is using intel_iommu. Mixing the iommu and gfx causes a few
-issues (such as scanout overfetch) which we need to workaround inside
-the driver, so if we detect we are running under a hypervisor, also
-assume the device access is being virtualised.
+When we try to use file already used as a quota file again (for the same
+or different quota type), strange things can happen. At the very least
+lockdep annotations may be wrong but also inode flags may be wrongly set
+/ reset. When the file is used for two quota types at once we can even
+corrupt the file and likely crash the kernel. Catch all these cases by
+checking whether passed file is already used as quota file and bail
+early in that case.
 
-Reported-by: Stefan Fritsch <sf@sfritsch.de>
-Suggested-by: Stefan Fritsch <sf@sfritsch.de>
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Stefan Fritsch <sf@sfritsch.de>
-Cc: stable@vger.kernel.org
-Tested-by: Stefan Fritsch <sf@sfritsch.de>
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201019101523.4145-1-chris@chris-wilson.co.uk
-(cherry picked from commit f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes occasional generic/219 failure due to lockdep complaint.
 
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_drv.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/ext4/super.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -33,6 +33,8 @@
- #include <uapi/drm/i915_drm.h>
- #include <uapi/drm/drm_fourcc.h>
- 
-+#include <asm/hypervisor.h>
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0c15ff19acbd4..16ea7cfd130c0 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5752,6 +5752,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+ 	/* Quotafile not on the same filesystem? */
+ 	if (path->dentry->d_sb != sb)
+ 		return -EXDEV;
 +
- #include <linux/io-mapping.h>
- #include <linux/i2c.h>
- #include <linux/i2c-algo-bit.h>
-@@ -2197,7 +2199,9 @@ static inline bool intel_vtd_active(void
- 	if (intel_iommu_gfx_mapped)
- 		return true;
- #endif
--	return false;
++	/* Quota already enabled for this file? */
++	if (IS_NOQUOTA(d_inode(path->dentry)))
++		return -EBUSY;
 +
-+	/* Running as a guest, we assume the host is enforcing VT'd */
-+	return !hypervisor_is_type(X86_HYPER_NATIVE);
- }
- 
- static inline bool intel_scanout_needs_vtd_wa(struct drm_i915_private *dev_priv)
+ 	/* Journaling quota? */
+ 	if (EXT4_SB(sb)->s_qf_names[type]) {
+ 		/* Quotafile not in fs root? */
+-- 
+2.27.0
+
 
 
