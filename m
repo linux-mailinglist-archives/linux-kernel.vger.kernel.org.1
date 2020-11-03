@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9A2A3EEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741CE2A3EF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbgKCIaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:30:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:44152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgKCIaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:30:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A393139F;
-        Tue,  3 Nov 2020 00:30:03 -0800 (PST)
-Received: from [10.57.19.30] (unknown [10.57.19.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF6343F718;
-        Tue,  3 Nov 2020 00:29:59 -0800 (PST)
-Subject: Re: [PATCH v3 0/4] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Quentin Perret <qperret@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, daniel.lezcano@linaro.org,
-        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
-        rafael@kernel.org, sudeep.holla@arm.com, viresh.kumar@linaro.org,
-        sboyd@kernel.org, nm@ti.com
-References: <20201019140601.3047-1-lukasz.luba@arm.com>
- <d3c64655-dc31-73dc-8483-bf5805a9d389@arm.com>
- <20201102135449.GE2221764@google.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <af50b82f-015a-ad32-4e57-da3de9ac0a77@arm.com>
-Date:   Tue, 3 Nov 2020 08:29:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726864AbgKCIbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgKCIbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:31:53 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F332DC0613D1;
+        Tue,  3 Nov 2020 00:31:52 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id t14so13134061pgg.1;
+        Tue, 03 Nov 2020 00:31:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/kEY1+Wj4A6o2via5YD8DTFuwW8aYbCWHvyBUYczxyg=;
+        b=VFZn8Hhkb9g0pPcbEpPnVX7+bVcBTpVBNC/dVwV/dUloVWtnrJhpkJN63u4OzmmPgx
+         48jrVTvhagESHhLKaMduc2S48zgCiomBBZCDVt/fNxD+52Nn/ehai1eC3Vz1wayGwTSO
+         NrLUojetzUJWId0qaW3Y14D2bZAakPhz/FYSROpsX3faiUwRSjniU8LO6wvJaozgq16B
+         ai3CFhFqqKTwTbRD0KSjEWy+uuJpCed2EjiGEbdDQ5E9thHWIYtDHoF14obDdHayCRZb
+         GnJL8kV7sMoYaW1BNXsb1uPRR+FiNi03nvG/c6rrYJduddija3ET+Sz8xlhcUGJF7FOS
+         96tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/kEY1+Wj4A6o2via5YD8DTFuwW8aYbCWHvyBUYczxyg=;
+        b=ZzhTMMscQfInpUCQVH3yoqQu3rur49PR/ZQRtcchgG8HE//gJlUzmWXNeBWAJtCy6L
+         X+WSenjbA6BxYh9uKjISp1eXzR7w10x4qpoHB7P4Gt/FhNCdLRFqiiLjjZ53sOMIRyNM
+         uDbSBc3gW+f9j/G7CU5x0TTVdScQmz2I5YzPnsPYPzWwkRgNH0bA9TgabBv8DhFoiJ6h
+         XxX+3O1aEtWPvI0Ba19mI4/DenUjcke6J/72cjYM2mpUsNM8azktF/wY1vy/1mN+ZeM9
+         +vzIQBQ8xZYjbTEpiRC5bJGWTCyGg7LAzSBRkUx+WKpKU2tJC0JTPqHS3lQm7mNAEhfq
+         lpnA==
+X-Gm-Message-State: AOAM5314alIwDOyQ7DCXap0EcJuUPKUMC0BHqcCeGN+WcpwcNwALi0cM
+        JyFeqfaFNtHiQ4nTzkQjDGaXiyy8BvnyGUmaZ2E=
+X-Google-Smtp-Source: ABdhPJwU3V9Gc2nWQl0z8vKa34dAV2EusTcDpth7i6ltJhtb21Yk9PSO0eAyVduM1DlM80X8w6rXexeXvN1IKFgBN70=
+X-Received: by 2002:a17:90a:430b:: with SMTP id q11mr2672605pjg.129.1604392312516;
+ Tue, 03 Nov 2020 00:31:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201102135449.GE2221764@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201102210025.53520-1-andriy.shevchenko@linux.intel.com> <1183267b-3e90-ab71-b1f6-7760ad0ca57c@huawei.com>
+In-Reply-To: <1183267b-3e90-ab71-b1f6-7760ad0ca57c@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Nov 2020 10:31:36 +0200
+Message-ID: <CAHp75VcEhdmU6NW8Dn-r7Aipden7vYda72nP3_LW09+jTFxOBg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] resource: introduce union(), intersection() API
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 2:46 AM Hanjun Guo <guohanjun@huawei.com> wrote:
+>
+> On 2020/11/3 5:00, Andy Shevchenko wrote:
+> > Some users may want to use resource library to manage their own resources,
+> > besides existing users that open code union() and intersection()
+> > implementations.
+> >
+> > Provide a generic API for wider use.
+> >
+> > Changelog v4:
+> > - added Rb tag (Rafael)
+> > - Cc'ed to LKML and Greg (Rafael)
+> >
+> > Changelog v3:
+> > - rebased on top of v5.10-rc1
+> > - dropped upstreamed dependencies
+> > - added Rb tag to the last patch (Mika)
+> >
+> > Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: linux-pci@vger.kernel.org
+> >
+> > Andy Shevchenko (6):
+> >    resource: Simplify region_intersects() by reducing conditionals
+> >    resource: Group resource_overlaps() with other inline helpers
+> >    resource: Introduce resource_union() for overlapping resources
+> >    resource: Introduce resource_intersection() for overlapping resources
+> >    PCI/ACPI: Replace open coded variant of resource_union()
+> >    ACPI: watchdog: Replace open coded variant of resource_union()
+> >
+> >   drivers/acpi/acpi_watchdog.c |  6 +-----
+> >   drivers/acpi/pci_root.c      |  4 +---
+> >   include/linux/ioport.h       | 34 +++++++++++++++++++++++++++-------
+> >   kernel/resource.c            | 10 +++++-----
+> >   4 files changed, 34 insertions(+), 20 deletions(-)
+>
+> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+
+Thanks. Is it for the entire series?
 
 
-On 11/2/20 1:54 PM, Quentin Perret wrote:
-> On Monday 02 Nov 2020 at 08:54:38 (+0000), Lukasz Luba wrote:
->> Gentle ping to Quentin and Daniel for sharing opinion on this patch set.
->> If you are OK, then I could use this as a base for next work.
-> 
-> One or two small nits, but overall this LGTM. Thanks Lukasz.
-
-Thank you Quentin for the review. I am going to send v4 with these small
-changes.
-
-Regards,
-Lukasz
-
-> 
->> As you probably know I am working also on 'sustainable power' estimation
->> which could be used when there is no DT value but it comes from FW.
->> That would meet requirement from Doug, when the DT cannot be used,
->> but we have sustainable levels from FW [1].
-> 
-> Cool, and also, I'd be happy to hear from Doug if passing the sustained
-> power via sysfs is good enough for his use-case in the meantime?
-> 
-> Thanks,
-> Quentin
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
