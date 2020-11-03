@@ -2,179 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A8B2A509F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 002D62A50AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbgKCUDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:03:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20084 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725997AbgKCUDH (ORCPT
+        id S1729693AbgKCUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:05:26 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:36156 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgKCUF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:03:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604433785;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hs/zXGHlz9vLFkghpxlnSjQMAlQ6jTL7a/WUuTWkQUQ=;
-        b=V8kSaHMw/xDs7HKMnAitNiYBTIHRM8pJeLEq9+tYTs+cScZbAvUQ8C73BtkLhKKssfHUfR
-        xDkNkIAR0cI+XsLZQThIXWZUii1L57SGhlgm9wStW7sPoeEOeOoWGfd+zNsczEZUOVYGj5
-        sLU15tkUok1gEVVBFowBS9srBT1q0Sk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-QmF2bu4SMemwnoMi8hTSbw-1; Tue, 03 Nov 2020 15:03:04 -0500
-X-MC-Unique: QmF2bu4SMemwnoMi8hTSbw-1
-Received: by mail-qv1-f72.google.com with SMTP id s9so8416184qvt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 12:03:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=hs/zXGHlz9vLFkghpxlnSjQMAlQ6jTL7a/WUuTWkQUQ=;
-        b=ndAYcIc4wIS6mKcDKbHVvqxZAqU6PXimXUXF/JK7wzXjSCZ7XkN05+3oJl+aVfvtJ0
-         L4DasWELkO8UxNzfD5mH8T9F/u6AmFOJ2upTpleU1yiiUgfgY3fOGWDPvldxwcUZfx7X
-         uJRR5JLQRp+hQCYbasNyk2Kr7gCRUA1n/NyMLs8ntbjP7C6hW+wyeoH+CChIfNxZmsPK
-         dbzlDdyaEfq0fnrqWnb5UWLjWBTLSGRrg5eVyY5mqVk1PveU0ECzDqcuoicwYFReQTpb
-         /tpZ1/trJEB0Q0IV8G8Iz+v0AdyjaiOOOGwkQA//Ym4wm74Rb7NYKkD/fFBMzk53TXAY
-         NuHw==
-X-Gm-Message-State: AOAM532klyuLzusTT0BA224SMSbqerUsWklwk4jRbnXI/XbJawQ8q4Hi
-        ht7nIsU956utiCVgduf/Lu+Qs8Jy35tvRi095LRZwwvzgQdrRYuztGPbh+dSSFqfwRhdPhYccuw
-        W91PNbV/NYadH+gc4FC2RO6n7
-X-Received: by 2002:a05:620a:1193:: with SMTP id b19mr8991536qkk.42.1604433784110;
-        Tue, 03 Nov 2020 12:03:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz3Uif/P5KpG7c3Wmsy5fgC5l2WzpKVRev2cYaqxmHthv/mJZZ6oxzAqBLM1VOiN/jiyFC7lg==
-X-Received: by 2002:a05:620a:1193:: with SMTP id b19mr8991516qkk.42.1604433783827;
-        Tue, 03 Nov 2020 12:03:03 -0800 (PST)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id o21sm206002qko.9.2020.11.03.12.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 12:03:03 -0800 (PST)
-Message-ID: <dd9b5ea4409886e83b87a6769e7ed45c753298cb.camel@redhat.com>
-Subject: Re: [PATCH] drm/edid: Fix uninitialized variable in drm_cvt_modes()
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Airlie <airlied@linux.ie>, Chao Yu <chao@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "# 3.9+" <stable@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>
-Date:   Tue, 03 Nov 2020 15:03:01 -0500
-In-Reply-To: <CAKb7UvjJHMbDEAYJRCCdQ=LZfpogb4Z6y+yYFgPYKvbE1mM1ig@mail.gmail.com>
-References: <20201022165450.682571-1-lyude@redhat.com>
-         <CAKb7UvhfWA6ijoQnq2Mvrx8jfn57EC-P5KBkYR3HmrBUrntJhg@mail.gmail.com>
-         <8d15a513bd38a01b3607e5c75b5754cc599fe33c.camel@redhat.com>
-         <CAKb7UvjJHMbDEAYJRCCdQ=LZfpogb4Z6y+yYFgPYKvbE1mM1ig@mail.gmail.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 3 Nov 2020 15:05:26 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B307F20B4905;
+        Tue,  3 Nov 2020 12:05:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B307F20B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604433925;
+        bh=FpRaU+1eA08DHDzzs2SLgSYuS0jFUegfVIwGSw2MrPM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Ow5SVZ/xuAOhzp4Gps8tIL5ExIsBerckCwQ+gbwRldD48gb0cbTNKextoK9tcQLE8
+         QIZpQOczJZO+5O9w6sd6HuJlKll9ibyG9qnXqVGlM07/NVnPTttih9uLvj6lxSVUEH
+         gFTDxBqxhYtJBY60Ky5uwXO3lRaqmh0dbY5qDM4k=
+Subject: Re: [PATCH v8 2/4] powerpc: Refactor kexec functions to move arch
+ independent code to ima
+To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
+        robh@kernel.org, gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
+        balajib@linux.microsoft.com
+References: <20201030174429.29893-1-nramas@linux.microsoft.com>
+ <20201030174429.29893-3-nramas@linux.microsoft.com>
+ <87f63dc12739b346d556f85537324d3ae055097d.camel@linux.ibm.com>
+ <397f1bbf-46bf-b522-616b-2e006ef30e70@linux.microsoft.com>
+ <f45e865c005ce05a6bc376e14c089937197e2aeb.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <5032768c-779b-a03f-aacc-0c2da51ecc87@linux.microsoft.com>
+Date:   Tue, 3 Nov 2020 12:05:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f45e865c005ce05a6bc376e14c089937197e2aeb.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 14:53 -0500, Ilia Mirkin wrote:
-> On Tue, Nov 3, 2020 at 2:47 PM Lyude Paul <lyude@redhat.com> wrote:
-> > 
-> > Sorry! Thought I had responded to this but apparently not, comments down
-> > below
-> > 
-> > On Thu, 2020-10-22 at 14:04 -0400, Ilia Mirkin wrote:
-> > > On Thu, Oct 22, 2020 at 12:55 PM Lyude Paul <lyude@redhat.com> wrote:
-> > > > 
-> > > > Noticed this when trying to compile with -Wall on a kernel fork. We
-> > > > potentially
-> > > > don't set width here, which causes the compiler to complain about width
-> > > > potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
-> > > > 
-> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
-> > > > 
-> > > > Cc: <stable@vger.kernel.org> # v5.9+
-> > > > Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
-> > > > Signed-off-by: Lyude Paul <lyude@redhat.com>
-> > > > ---
-> > > >  drivers/gpu/drm/drm_edid.c | 8 +++++++-
-> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> > > > index 631125b46e04..2da158ffed8e 100644
-> > > > --- a/drivers/gpu/drm/drm_edid.c
-> > > > +++ b/drivers/gpu/drm/drm_edid.c
-> > > > @@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector
-> > > > *connector,
-> > > > 
-> > > >         for (i = 0; i < 4; i++) {
-> > > >                 int width, height;
-> > > > +               u8 cvt_aspect_ratio;
-> > > > 
-> > > >                 cvt = &(timing->data.other_data.data.cvt[i]);
-> > > > 
-> > > > @@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector
-> > > > *connector,
-> > > >                         continue;
-> > > > 
-> > > >                 height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) +
-> > > > 1) *
-> > > > 2;
-> > > > -               switch (cvt->code[1] & 0x0c) {
-> > > > +               cvt_aspect_ratio = cvt->code[1] & 0x0c;
-> > > > +               switch (cvt_aspect_ratio) {
-> > > >                 case 0x00:
-> > > >                         width = height * 4 / 3;
-> > > >                         break;
-> > > > @@ -3114,6 +3116,10 @@ static int drm_cvt_modes(struct drm_connector
-> > > > *connector,
-> > > >                 case 0x0c:
-> > > >                         width = height * 15 / 9;
-> > > >                         break;
-> > > > +               default:
-> > > 
-> > > What value would cvt->code[1] have such that this gets hit?
-> > > 
-> > > Or is this a "compiler is broken, so let's add more code" situation?
-> > > If so, perhaps the code added could just be enough to silence the
-> > > compiler (unreachable, etc)?
-> > 
-> > I mean, this information comes from the EDID which inherently means it's
-> > coming
-> > from an untrusted source so the value could be literally anything as long as
-> > the
-> > EDID has a valid checksum. Note (assuming I'm understanding this code
-> > correctly):
-> > 
-> > drm_add_edid_modes() → add_cvt_modes() → drm_for_each_detailed_block() →
-> > do_cvt_mode() → drm_cvt_modes()
-> > 
-> > So afaict this isn't a broken compiler but a legitimate uninitialized
-> > variable.
+On 11/3/20 11:50 AM, Mimi Zohar wrote:
+> On Tue, 2020-11-03 at 11:23 -0800, Lakshmi Ramasubramanian wrote:
+>> On 11/3/20 6:55 AM, Mimi Zohar wrote:
+>>
+>> Hi Mimi,
+>>
+>>>
+>>> On Fri, 2020-10-30 at 10:44 -0700, Lakshmi Ramasubramanian wrote:
+>>>> The functions ima_get_kexec_buffer() and ima_free_kexec_buffer(),
+>>>> that handle carrying forward the IMA measurement logs on kexec for
+>>>> powerpc do not have architecture specific code, but they are currently
+>>>> defined for powerpc only.
+>>>>
+>>>> Move ima_get_kexec_buffer() and ima_free_kexec_buffer() to IMA
+>>>> subsystem. A later patch in this series will use these functions for
+>>>> carrying forward the IMA measurement log for ARM64.
+>>>>
+>>>> With the above refactoring arch/powerpc/kexec/ima.c contains only
+>>>> functions used when CONFIG_IMA_KEXEC is enabled. Update Makefile
+>>>> in arch/powerpc/kexec to include arch/powerpc/kexec/ima.c only
+>>>> when CONFIG_IMA_KEXEC is enabled.
+>>>>
+>>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>
+>>> Similar comments to 1/4.
+>>> -  Last line of first paragraph can be rephrased like " ... on kexec,
+>>> do not contain architecture specific code, but are currently limited to
+>>> powerpc."
+>> Sure.
+>>
+>>> -  This patch should be limited to moving existing functions.
+>>> Truncate the Subject line to "Move arch independent IMA kexec functions
+>>> to ima_kexec.c."
+>> Will do.
+>>
+>>> - Don't refer to a later patch, but explain the purpose here.  For
+>>> example, "Move ... , making them accessible to other archs."
+>> Sure.
+>>
+>>> - The definition of "FDT_PROP_IMA_KEXEC_BUFFER" should be made as a
+>>> separate, prepartory patch, prior to the existing 1/4.  The resulting
+>>> code being moved in this patch (and similarly for 1/4) will be exactly
+>>> the same as the code being deleted.
+>>
+>> Definition of FDT_PROP_IMA_KEXEC_BUFFER will be made as a preparatory
+>> patch as you'd mentioned in the comments for [PATCH 1/4].
+>>
+>> Will split [PATCH 2/4] as listed below:
+>>
+>> PATCH #1: Move ima_get_kexec_buffer() and ima_free_kexec_buffer() to
+>> IMA, along with deleting them in arch/powerpc/kexec/ima.c
 > 
-> The value can be anything, but it has to be something. The switch is
-> on "unknown & 0x0c", so only 4 cases are possible, which are
-> enumerated in the switch.
-
-oops, you're completely right lol. will figure out what the unreachable macro in
-the kernel is and use that in a respin of this patch
-
-> 
->   -ilia
+> No, other than the comments above, this patch is fine.  It moves
+> ima_get_kexec_buffer() and ima_free_kexec_buffer() to ima_kexec.c.
 > 
 
--- 
-Sincerely,
-   Lyude Paul (she/her)
-   Software Engineer at Red Hat
-   
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+Ok - I will do the updates in the patch description only and keep the 
+code changes as is. Thanks for clarifying.
+
+  -lakshmi
+
 
