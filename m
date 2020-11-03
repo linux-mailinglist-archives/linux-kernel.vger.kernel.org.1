@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0952A4EE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEB12A4EFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgKCSc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCScZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:32:25 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CF0C0613D1;
-        Tue,  3 Nov 2020 10:32:25 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id x13so14988936pfa.9;
-        Tue, 03 Nov 2020 10:32:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l4JCOmPWAT+yYUBvCZET+yptdj/Tc0NVm0IibQB+PfQ=;
-        b=txDAmFVb38CY1nzZOdVrps35WpTW/egoyq+ZQwWkhr1p7LPJUqzVkXNpsPXj9EF8kw
-         XvlQ+hWIeF+xPL5kkLIUopLElRQAEKVsXsC5DFAhhnAquT8aVWLfoz2xc3ToZe9pijhg
-         323BGdu6O7G8yMgVn35CkYcMBDy3a5i9a1WpOAKnDVfbxTfPL4UOygILSD1ysqNvMG5E
-         veVzRWIbXpnFzmG6Ebx1JIJk8ffeZvmtKnMBsFZs0yb2thLEFrsgApOLRNQuSDMReM3q
-         B6mx1Sy8H+Z1w7aYx1iA3IfIeiOxC5bvK2pcPKMQUF/cWYn3KB6BssO8o6Y12EK7qX3w
-         CExQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l4JCOmPWAT+yYUBvCZET+yptdj/Tc0NVm0IibQB+PfQ=;
-        b=Vdy0UZBxZAxfEoN6++9q5MVjdCAOR+JP+1AA6luB1XBTnlwa4QLDBm/nP0oMl/XUbj
-         FkxnKmI205EP8ftUdlSIz/Cyu8yDMTFffUQXKAcOWtvFNwOqS/DCqjSTdunAYb6O3ECf
-         GeRhkrwD3EE19AhZ4Mu2vIlYyJzgxmJJcJEddbibjQIowcgRhY/5pnN/vWprNf0BgGwC
-         2Q+yE9eZ0+3RJYltYtniOpJE/H7u7XaMtaPNM10+HfQyeEjO21wHx04ywb46vJrbVstW
-         kEOBo4hOs8a6Wpv9hJO0zJJ9kR9hGjQSONhS2RSgcMKnS9W33Oh9Zxz9rweB6z6UD+rZ
-         sIPg==
-X-Gm-Message-State: AOAM533csAVoI57n543RZCH1iKENiCuXjhZCBm7xAC20e/fLoKO3M5Pv
-        1pxiaIFoSQg1bLQHfUnUbx0=
-X-Google-Smtp-Source: ABdhPJxamAUIYShiGUjLUpK1A3Mov75jUY87XCIC8TU8klzaOr2s0LD58FQ8Rmh6kneN+k2ELxu2RA==
-X-Received: by 2002:a63:fc15:: with SMTP id j21mr18250946pgi.258.1604428345144;
-        Tue, 03 Nov 2020 10:32:25 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id t26sm11495683pfl.72.2020.11.03.10.32.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 10:32:24 -0800 (PST)
-Date:   Tue, 3 Nov 2020 10:32:21 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Input <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>,
-        andrea@borgia.bo.it, Aaron Ma <aaron.ma@canonical.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>, Pavel Balan <admin@kryma.net>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] HID: i2c-hid: Allow subclasses of i2c-hid for
- power sequencing
-Message-ID: <20201103183221.GA1003057@dtor-ws>
-References: <20201102161210.v3.1.Ibb28033c81d87fcc13a6ba28c6ea7ac154d65f93@changeid>
- <20201102161210.v3.2.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
- <CAL_JsqLxGugWg7Xwr-NQa1h+a_=apQsfFCU0KF-97xt1ZB8jMg@mail.gmail.com>
- <28e75d51-28d8-5a9a-adf9-71f107e94dfb@redhat.com>
- <CAO-hwJK2DfU_v==uwWyyPkH9N6zb9Vh_pJOxz8dZ_mqJ1+CdsA@mail.gmail.com>
+        id S1729217AbgKCSfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:35:45 -0500
+Received: from mga07.intel.com ([134.134.136.100]:4685 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725957AbgKCSfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:35:45 -0500
+IronPort-SDR: buNiKJ7L0PwMRDGqaHyQccn7SSh/1LhTplWDQBZmyU418c09Po2RTmZJycDJrUe6PJEBeaEn1k
+ Z6tfHhL7c7aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233270443"
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="233270443"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:35:44 -0800
+IronPort-SDR: bHNj/JoKRstYrDj0mgNWLSQhGnm+ZYTN8dj56MWswfjiAGkIfOhPdwmBvy/IdjjZwZ5fQ+DI4d
+ ESd+Xk1fdcWg==
+X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
+   d="scan'208";a="528591147"
+Received: from ctanriov-mobl1.amr.corp.intel.com (HELO [10.212.114.78]) ([10.212.114.78])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:35:43 -0800
+Subject: Re: [PATCH] ASoC: rt715:add Mic Mute LED control support
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>
+References: <20201103125859.8759-1-Perry_Yuan@Dell.com>
+ <20201103131253.GA5545@sirena.org.uk>
+ <5f2c1282-4401-276a-8dad-127fa1f449fd@linux.intel.com>
+ <20201103175948.GF5545@sirena.org.uk>
+ <DM6PR19MB26368B60076D049F009B75A3FA110@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <15ed949b-0313-168c-bfc5-3e71d9548e3f@linux.intel.com>
+Date:   Tue, 3 Nov 2020 12:35:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO-hwJK2DfU_v==uwWyyPkH9N6zb9Vh_pJOxz8dZ_mqJ1+CdsA@mail.gmail.com>
+In-Reply-To: <DM6PR19MB26368B60076D049F009B75A3FA110@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:42:47PM +0100, Benjamin Tissoires wrote:
+
+> I don't think it came through in the commit message, but I wanted to mention
+> in the system that prompted this software does not control the LED.  The LED
+> is actually controlled by hardware, but has circuitry to delay the hardware
+> mute until software mute is complete to avoid any "popping noises".
 > 
-> I also want to say that I like the general idea of Doug's patch.
-> Having a separate driver that handles the specific use case of goodix
-> is really nice, as it allows to just load this driver without touching
-> the core of i2c-hid. I believe this is in line with what Google tries
-> to do with their kernel that OEMs can not touch, but only add overlays
-> to it. The implementation is not polished (I don't think this new
-> driver belongs to the input subsystem), but I like the general idea of
-> having the "subclassing". Maybe we can make it prettier with Hans'
-> suggestion, given that this mainly means we are transforming
-> i2c-hid-core.c into a library.
+> This patch along with the platform/x86 patch:
+> https://patchwork.kernel.org/project/platform-driver-x86/patch/20201103125542.8572-1-Perry_Yuan@Dell.com/
+> complete that loop.
 > 
-> As for where this new goodix driver goes, it can stay in
-> drivers/hid/i2c-hid IMO.
+> The flow is:
+> User presses mute key, dell-wmi receives event, passes to dell-privacy-wmi.
+> This emits to userspace as KEY_MICMUTE.  Userspace processes it and via UCM
+> switches get toggled.  The codec driver (or subsystem perhaps) will use LED
+> trigger to notify to change LED.  This gets picked up by dell-privacy-acpi.
+> 
+> dell-privacy-acpi doesn't actually change LED, but notifies that SW mute was
+> done.
+> 
+> If none of that flow was used the LED and mute function still work, but there
+> might be the popping noise.
 
-Yep, I agree, it has nothing to do with input (except the device being
-physically a touchscreen ;) ), so driver/hid/i2c-hid makes most sense to
-me too.
+Side note that the existing UCM config for RT715 does not do what I 
+suggested, it seems we are using an incorrect configuration for 
+CaptureSwitch and CaptureVolume:
 
-Thanks.
+CaptureSwitch "PGA5.0 5 Master Capture Switch"
+	      CaptureVolume "PGA5.0 5 Master Capture Volume"		 
+CaptureVolume "PGA5.0 5 Master Capture Volume"
 
--- 
-Dmitry
+That should be an RT715 control, not an SOF one. This was brought to our 
+attention this morning. Probably a copy-paste from the DMIC case, likely 
+needs to be changed for both RT715 and RT715-sdca cases.
+
+https://github.com/thesofproject/linux/issues/2544#issuecomment-721231103
