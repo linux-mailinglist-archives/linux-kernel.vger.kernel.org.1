@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2864E2A52EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE992A522B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgKCUys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:54:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54232 "EHLO mail.kernel.org"
+        id S1730811AbgKCUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:47:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732586AbgKCUyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:46 -0500
+        id S1730638AbgKCUrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D9FE2053B;
-        Tue,  3 Nov 2020 20:54:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B209E223FD;
+        Tue,  3 Nov 2020 20:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436885;
-        bh=r6SiJ2SNXKWtcN05YyI9wiJhF4DsqyX/AoVPZ8xYsK4=;
+        s=default; t=1604436440;
+        bh=JhqZYrzLoq7d1IA7dJCErI9pM2rLwGx0q5SNQ8neXAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jQZENXHBrovB0/h/dFTahOPOdkL/rHhuE747JK2qICnL4inqY9l7y/78RtsC1ext1
-         rJwXZYrdMFG+YpGuzCwDuvrhb/zwSCiRqeNw+zJ4wGehoqwkixfE0MEHXF5VB/jQ1Z
-         aCafJGhnjEKjY5DYkHqJpqeSd5fAElP6IhNcg5mU=
+        b=xw8um6SC4zWFNftKCg0EiaW5E9E/edNh4ie/0kZafSi/ApgHDXg/XwDeB2HX3jE4y
+         cgGilC0ISRlAFEWQWnWRlHhJRqJLteaS3QvAa0GkjpFDYuOUQaGvgx3MC0ft2emW5c
+         g2zfUTa+KwCzv4Fy4RWnBH89dWntcoieBhYpAkn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/214] selftests/bpf: Define string const as global for test_sysctl_prog.c
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH 5.9 250/391] usb: host: fsl-mph-dr-of: check return of dma_set_mask()
 Date:   Tue,  3 Nov 2020 21:35:01 +0100
-Message-Id: <20201103203255.197204964@linuxfoundation.org>
+Message-Id: <20201103203403.884394754@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Ran Wang <ran.wang_1@nxp.com>
 
-[ Upstream commit 6e057fc15a2da4ee03eb1fa6889cf687e690106e ]
+commit 3cd54a618834430a26a648d880dd83d740f2ae30 upstream.
 
-When tweaking llvm optimizations, I found that selftest build failed
-with the following error:
-  libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-  libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_mem.tcp_mem_name'
-          in section '.rodata.str1.1'
-  Error: failed to open BPF object file: Relocation failed
-  make: *** [/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h] Error 255
-  make: *** Deleting file `/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h'
+fsl_usb2_device_register() should stop init if dma_set_mask() return
+error.
 
-The local string constant "tcp_mem_name" is put into '.rodata.str1.1' section
-which libbpf cannot handle. Using untweaked upstream llvm, "tcp_mem_name"
-is completely inlined after loop unrolling.
+Fixes: cae058610465 ("drivers/usb/host: fsl: Set DMA_MASK of usb platform device")
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+Link: https://lore.kernel.org/r/20201010060308.33693-1-ran.wang_1@nxp.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Commit 7fb5eefd7639 ("selftests/bpf: Fix test_sysctl_loop{1, 2}
-failure due to clang change") solved a similar problem by defining
-the string const as a global. Let us do the same here
-for test_sysctl_prog.c so it can weather future potential llvm changes.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200910202718.956042-1-yhs@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/test_sysctl_prog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/fsl-mph-dr-of.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-index 5cbbff416998c..4396faf33394a 100644
---- a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-+++ b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
-@@ -19,11 +19,11 @@
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
- #endif
+--- a/drivers/usb/host/fsl-mph-dr-of.c
++++ b/drivers/usb/host/fsl-mph-dr-of.c
+@@ -94,10 +94,13 @@ static struct platform_device *fsl_usb2_
  
-+const char tcp_mem_name[] = "net/ipv4/tcp_mem";
- static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
- {
--	char tcp_mem_name[] = "net/ipv4/tcp_mem";
- 	unsigned char i;
--	char name[64];
-+	char name[sizeof(tcp_mem_name)];
- 	int ret;
+ 	pdev->dev.coherent_dma_mask = ofdev->dev.coherent_dma_mask;
  
- 	memset(name, 0, sizeof(name));
--- 
-2.27.0
-
+-	if (!pdev->dev.dma_mask)
++	if (!pdev->dev.dma_mask) {
+ 		pdev->dev.dma_mask = &ofdev->dev.coherent_dma_mask;
+-	else
+-		dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
++	} else {
++		retval = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
++		if (retval)
++			goto error;
++	}
+ 
+ 	retval = platform_device_add_data(pdev, pdata, sizeof(*pdata));
+ 	if (retval)
 
 
