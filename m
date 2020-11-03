@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF0F2A57A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A01A02A57A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgKCUxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:53:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
+        id S1732475AbgKCUxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:53:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732432AbgKCUxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:43 -0500
+        id S1732467AbgKCUxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:53:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A516A2053B;
-        Tue,  3 Nov 2020 20:53:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02B3A223AC;
+        Tue,  3 Nov 2020 20:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436823;
-        bh=aV0qCIPO+iS/XjCmfg4PGIsNk4ENNrlKeymShUIKL4E=;
+        s=default; t=1604436825;
+        bh=iqbvRu1cTVrWDWuNo+lE1qskQkdLC7n/RbnpnRLd2UQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=re/RrvKD7g2yqnESo8ckhuVcnXCVmIs57I22YZNp0tstipH8t4zWvfNRKwIhHBG19
-         /Qlbet9FQfT9cK7d/pFDNJfeIq0eQ5o/xXI4bcpBtZtrplzriL1N/th9etE0v1+jmb
-         uDcjuxxKr52OJ/Znni5Jo/h7yFRFKdmd7LHI4MiQ=
+        b=k7SXDmyD9mhGRAmZHYvb7QUcTsb/gb+/JHzEqwG7P1k0RTsKUhHNMTvNUe5I/xCNQ
+         jzt2GpPzXgqeXeN91Z/5oU2m6+iFxEkqDtCFvIpXvm1uiRx+OlMJlCQVDu4RZpT4YV
+         aE05zewmwys8k4hScY5U8iHfB+i6P2AjhXxaHXrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com,
+        syzbot+3698081bcf0bb2d12174@syzkaller.appspotmail.com,
         Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 026/214] f2fs: fix uninit-value in f2fs_lookup
-Date:   Tue,  3 Nov 2020 21:34:34 +0100
-Message-Id: <20201103203252.490705866@linuxfoundation.org>
+Subject: [PATCH 5.4 027/214] f2fs: fix to check segment boundary during SIT page readahead
+Date:   Tue,  3 Nov 2020 21:34:35 +0100
+Message-Id: <20201103203252.600342136@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
 References: <20201103203249.448706377@linuxfoundation.org>
@@ -46,77 +46,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit 6d7ab88a98c1b7a47c228f8ffb4f44d631eaf284 ]
+[ Upstream commit 6a257471fa42c8c9c04a875cd3a2a22db148e0f0 ]
 
 As syzbot reported:
 
+kernel BUG at fs/f2fs/segment.h:657!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 16220 Comm: syz-executor.0 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:f2fs_ra_meta_pages+0xa51/0xdc0 fs/f2fs/segment.h:657
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
- lookup_open fs/namei.c:3082 [inline]
- open_last_lookups fs/namei.c:3177 [inline]
- path_openat+0x2729/0x6a90 fs/namei.c:3365
- do_filp_open+0x2b8/0x710 fs/namei.c:3395
- do_sys_openat2+0xa88/0x1140 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_compat_sys_openat fs/open.c:1242 [inline]
- __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
- __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
- do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
- __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+ build_sit_entries fs/f2fs/segment.c:4195 [inline]
+ f2fs_build_segment_manager+0x4b8a/0xa3c0 fs/f2fs/segment.c:4779
+ f2fs_fill_super+0x377d/0x6b80 fs/f2fs/super.c:3633
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x2070 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-In f2fs_lookup(), @res_page could be used before being initialized,
-because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
-been fuzzed to zero, then @res_page will never be initialized, causing
-this kmsan warning, relocating @res_page initialization place to fix
-this bug.
+@blkno in f2fs_ra_meta_pages could exceed max segment count, causing panic
+in following sanity check in current_sit_addr(), add check condition to
+avoid this issue.
 
-Reported-by: syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com
+Reported-by: syzbot+3698081bcf0bb2d12174@syzkaller.appspotmail.com
 Signed-off-by: Chao Yu <yuchao0@huawei.com>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/dir.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/f2fs/checkpoint.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index e9af46dc06f72..78d041f9775a4 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -303,16 +303,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	unsigned int max_depth;
- 	unsigned int level;
- 
-+	*res_page = NULL;
-+
- 	if (f2fs_has_inline_dentry(dir)) {
--		*res_page = NULL;
- 		de = f2fs_find_in_inline_dir(dir, fname, res_page);
- 		goto out;
- 	}
- 
--	if (npages == 0) {
--		*res_page = NULL;
-+	if (npages == 0)
- 		goto out;
--	}
- 
- 	max_depth = F2FS_I(dir)->i_current_depth;
- 	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
-@@ -323,7 +322,6 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	}
- 
- 	for (level = 0; level < max_depth; level++) {
--		*res_page = NULL;
- 		de = find_in_level(dir, level, fname, res_page);
- 		if (de || IS_ERR(*res_page))
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 3d7f9e20a54bd..6d9be7783d25c 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -243,6 +243,8 @@ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+ 					blkno * NAT_ENTRY_PER_BLOCK);
  			break;
+ 		case META_SIT:
++			if (unlikely(blkno >= TOTAL_SEGS(sbi)))
++				goto out;
+ 			/* get sit block addr */
+ 			fio.new_blkaddr = current_sit_addr(sbi,
+ 					blkno * SIT_ENTRY_PER_BLOCK);
 -- 
 2.27.0
 
