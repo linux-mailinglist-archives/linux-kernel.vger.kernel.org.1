@@ -2,187 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9292A3CAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3C62A3CB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 07:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgKCGPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 01:15:44 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15892 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGPn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:15:43 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa0f5910000>; Mon, 02 Nov 2020 22:15:45 -0800
-Received: from [10.2.49.167] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 06:15:40 +0000
-Subject: Re: [resource] 22b17dc667: Kernel panic - not syncing: Fatal
- exception
-To:     lkp <lkp@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-CC:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <lkp@lists.01.org>
-References: <20201103060649.GA30210@xsang-OptiPlex-9020>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <1ec0dee9-e1bb-9cf1-a8c2-ad1e294c5acf@nvidia.com>
-Date:   Mon, 2 Nov 2020 22:15:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726864AbgKCGSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 01:18:04 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:53550 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725958AbgKCGSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:18:04 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtAS9qBfy5YEAA--.4195S3;
+        Tue, 03 Nov 2020 14:17:55 +0800 (CST)
+Subject: Re: [PATCH v2 5/6] MIPS: Loongson64: Make sure the PC address is
+ correct when 3A4000+ CPU hotplug
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+References: <1604373306-3599-1-git-send-email-yangtiezhu@loongson.cn>
+ <1604373306-3599-6-git-send-email-yangtiezhu@loongson.cn>
+ <b67e3a4b-2f2f-37c5-88fa-24e11ac21cac@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Lu Zeng <zenglu@loongson.cn>, Jun Yi <yijun@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <f9ca25c7-dc3b-6f2d-9011-166851d1a62a@loongson.cn>
+Date:   Tue, 3 Nov 2020 14:17:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201103060649.GA30210@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604384145; bh=HHKB/RdS8zOAOPLdFEq5BHCD+y3I+0AFVJdR07v4b2Y=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=JwOwCwijT1kVCiMMH7uWO3V38VR6sMEcYyvq67pbbu3hJ+DPHKUtnJqETyaxHWRIT
-         m2xUbsYFpKxlfg5ce1M6aG2etyTc++fQlJpwIDZWLn2afx9gbk7WaClnMP3sVhQoZ8
-         6GX9VHqqwD16fLg9I8hpx/8ZVIUAUWLvE6NhWo/ec4JhNV5HDtMZvF+W1nUgdeeJgj
-         Lf169WBQDhKmaXdFsKjUUEguegA0pS0aJO/LCDltQmzs+qKxkCMXJuxbSt9jQh2/0J
-         MeNCr8rseweUGqS7xAMB0+C5n0ZbF66TmR81JNS1sc11HJPPRlRgDtnh3xYDv/DVXI
-         oKrB4bDrDJhGw==
+In-Reply-To: <b67e3a4b-2f2f-37c5-88fa-24e11ac21cac@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxmtAS9qBfy5YEAA--.4195S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF13AFy5Xw17CF1DXFW5ZFb_yoW5XFyDp3
+        4DA3ZFkFs8WFyUCF1ktw18XFyUJFZ3tFykZry2qw48u3s0gw1a9FyfKryFga4xuFn5Ka4j
+        qryUCFykCFZ8uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JU-J5rUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/20 10:06 PM, lkp wrote:
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 22b17dc667d36418ccabb9c668c4b489185fb40a ("[PATCH v5 13/15] resource: Move devmem revoke code to resource framework")
-> url: https://github.com/0day-ci/linux/commits/Daniel-Vetter/follow_pfn-and-other-iomap-races/20201030-181112
-> base: git://linuxtv.org/media_tree.git master
-> 
-> in testcase: fsmark
-> version: fsmark-x86_64-3.3-1_20201007
-> with following parameters:
-> 
-> 	iterations: 1x
-> 	nr_threads: 1t
-> 	disk: 1BRD_48G
-> 	fs: f2fs
-> 	fs2: nfsv4
-> 	filesize: 4M
-> 	test_size: 40G
-> 	sync_method: NoSync
-> 	cpufreq_governor: performance
-> 	ucode: 0x5002f01
-> 
-> test-description: The fsmark is a file system benchmark to test synchronous write workloads, for example, mail servers workload.
-> test-url: https://sourceforge.net/projects/fsmark/
-> 
-> 
-> on test machine: 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
+On 11/03/2020 01:28 PM, Jiaxun Yang wrote:
+>
+>
+> 在 2020/11/3 11:15, Tiezhu Yang 写道:
+>> In loongson3_type3_play_dead(), in order to make sure the PC address is
+>> correct, use lw to read the low 32 bits first, if the result is not 
+>> zero,
+>> then use ld to read the whole 64 bits, otherwise there maybe exists 
+>> atomic
+>> problem due to write high 32 bits first and then low 32 bits, like this:
+>>
+>> high 32 bits (write done)
+>>                                    -- only read high 32-bits which is 
+>> wrong
+>> low 32 bits (not yet write done)
+>>
+>> This problem is especially for Loongson 3A4000+ CPU due to using 
+>> Mail_Send
+>> register which can only send 32 bits data one time. Although it is 
+>> hard to
+>> reproduce, we can do something at the software level to avoid the 
+>> risks for
+>> 3A4000+ CPU, this change has no influence on the other Loongson CPUs.
+>>
+>> Signed-off-by: Lu Zeng <zenglu@loongson.cn>
+>> Signed-off-by: Jun Yi <yijun@loongson.cn>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>
+> Hi Tiezhu,
+>
+> Sorry that I didn't look this patch carefully in previous rev, here's 
+> my comments,
+>
+> Firstly the commit message and code comment looks bogus...
+>
+> I'd prefer
 
-Yep, this is the same crash that I saw. And the .config also has
+Hi Jiaxun,
 
-   # CONFIG_IO_STRICT_DEVMEM is not set
+Thanks for your detail review, it looks better.
+Let me update it and then send v3.
 
-so it all makes sense.
+Thanks,
+Tiezhu
 
+>
+> ---
+> MIPS: Loongson64: SMP: Fix up play_dead jump indicator
+>
+> In play_dead function, the whole 64-bit PC mailbox was used as a 
+> indicator
+> to determine if the master core had written boot jump information.
+>
+> However, after we introduced CSR mailsend, the 64-bit PC mailbox won't be
+> written atomicly. Thus we have to use the lower 32-bit, which will be 
+> written at
+> the last, as the jump indicator instead.
+> -- 
+>
+> Thanks.
+>
+>> ---
+>>
+>> v2: No changes
+>>
+>>   arch/mips/loongson64/smp.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+>> index 736e98d..e32b46e 100644
+>> --- a/arch/mips/loongson64/smp.c
+>> +++ b/arch/mips/loongson64/smp.c
+>> @@ -764,9 +764,10 @@ static void loongson3_type3_play_dead(int 
+>> *state_addr)
+>>           "1: li    %[count], 0x100             \n" /* wait for init 
+>> loop */
+>>           "2: bnez  %[count], 2b                \n" /* limit mailbox 
+>> access */
+>>           "   addiu %[count], -1                \n"
+>> -        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC via 
+>> mailbox */
+>> +        "   lw    %[initfunc], 0x20(%[base])  \n" /* get PC (low 32 
+>> bits) via mailbox */
+>
+> Here you can comment as "Check jump indicator (lower 32-bit of PC 
+> mailbox)"
+>
+> Thanks.
+>
+> - Jiaxun
+>>           "   beqz  %[initfunc], 1b             \n"
+>>           "   nop                               \n"
+>> +        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC (whole 
+>> 64 bits) via mailbox */
+>>           "   ld    $sp, 0x28(%[base])          \n" /* get SP via 
+>> mailbox */
+>>           "   ld    $gp, 0x30(%[base])          \n" /* get GP via 
+>> mailbox */
+>>           "   ld    $a1, 0x38(%[base])          \n"
 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> [   28.644165] systemd[1]: RTC configured in localtime, applying delta of 0 minutes to system time.
-> 
-> [   28.699473] #PF: supervisor read access in kernel mode
-> [   28.704611] #PF: error_code(0x0000) - not-present page
-> [   28.709749] PGD 0 P4D 0
-> [   28.712291] Oops: 0000 [#1] SMP NOPTI
-> [   28.715956] CPU: 0 PID: 1 Comm: systemd Not tainted 5.10.0-rc1-00015-g22b17dc667d3 #1
-> [   28.723793] RIP: 0010:do_dentry_open+0x1c9/0x360
-> [   28.728410] Code: 84 82 01 00 00 81 ca 00 00 04 00 89 53 44 48 8b 83 f0 00 00 00 81 63 40 3f fc ff ff 48 8d bb 98 00 00 00 c7 43 34 00 00 00 00 <48> 8b 00 48 8b 70 30 e8 2b cb f4 ff f6 43 41 40 74 5a 48 8b 83 f0
-> [   28.747157] RSP: 0018:ffffc9000006fcc8 EFLAGS: 00010206
-> [   28.752380] RAX: 0000000000000000 RBX: ffff8881502ad400 RCX: 0000000000000000
-> [   28.759506] RDX: 00000000000a201d RSI: ffffffff8284d260 RDI: ffff8881502ad498
-> [   28.766639] RBP: ffff88a485a06490 R08: 0000000000000000 R09: ffffffff8284d260
-> [   28.773769] R10: ffffc9000006fcc8 R11: 756c6176006d656d R12: 0000000000000000
-> [   28.780895] R13: ffffffff8133ddc0 R14: ffff8881502ad410 R15: ffff8881502ad400
-> [   28.788028] FS:  00007ff54afa1940(0000) GS:ffff888c4f600000(0000) knlGS:0000000000000000
-> [   28.796113] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   28.801858] CR2: 0000000000000000 CR3: 0000000100120003 CR4: 00000000007706f0
-> [   28.808983] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   28.816114] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   28.823239] PKRU: 55555554
-> [   28.825952] Call Trace:
-> [   28.828412]  path_openat+0xaa8/0x10a0
-> [   28.832073]  do_filp_open+0x91/0x100
-> [   28.835653]  ? acpi_os_wait_semaphore+0x48/0x80
-> [   28.840186]  ? __check_object_size+0x136/0x160
-> [   28.844631]  do_sys_openat2+0x20d/0x2e0
-> [   28.848470]  do_sys_open+0x44/0x80
-> [   28.851878]  do_syscall_64+0x33/0x40
-> [   28.855457]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   28.860509] RIP: 0033:0x7ff54c1521ae
-> [   28.864086] Code: 25 00 00 41 00 3d 00 00 41 00 74 48 48 8d 05 59 65 0d 00 8b 00 85 c0 75 69 89 f2 b8 01 01 00 00 48 89 fe bf 9c ff ff ff 0f 05 <48> 3d 00 f0 ff ff 0f 87 a6 00 00 00 48 8b 4c 24 28 64 48 33 0c 25
-> [   28.882833] RSP: 002b:00007ffd1c9586d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-> [   28.890399] RAX: ffffffffffffffda RBX: 00007ffd1c9587d0 RCX: 00007ff54c1521ae
-> [   28.897531] RDX: 0000000000080000 RSI: 00007ff54bfa0e5a RDI: 00000000ffffff9c
-> [   28.904662] RBP: 00007ffd1c9587d8 R08: 000000000000021f R09: 000055f837cf4290
-> [   28.911796] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000056dd9000
-> [   28.918927] R13: 00000000ffffffff R14: 00007ffd1c9587d0 R15: 0000000000000002
-> [   28.926060] Modules linked in: ip_tables
-> [   28.929986] CR2: 0000000000000000
-> mDebian GNU/Linu
-> [   28.933416] ---[ end trace 94e4f9aa3df66098 ]---
-> [   28.939355] RIP: 0010:do_dentry_open+0x1c9/0x360
-> [   28.943975] Code: 84 82 01 00 00 81 ca 00 00 04 00 89 53 44 48 8b 83 f0 00 00 00 81 63 40 3f fc ff ff 48 8d bb 98 00 00 00 c7 43 34 00 00 00 00 <48> 8b 00 48 8b 70 30 e8 2b cb f4 ff f6 43 41 40 74 5a 48 8b 83 f0
-> [   28.962721] RSP: 0018:ffffc9000006fcc8 EFLAGS: 00010206
-> [   28.967948] RAX: 0000000000000000 RBX: ffff8881502ad400 RCX: 0000000000000000
-> [   28.975079] RDX: 00000000000a201d RSI: ffffffff8284d260 RDI: ffff8881502ad498
-> [   28.982211] RBP: ffff88a485a06490 R08: 0000000000000000 R09: ffffffff8284d260
-> [   28.989337] R10: ffffc9000006fcc8 R11: 756c6176006d656d R12: 0000000000000000
-> [   28.996467] R13: ffffffff8133ddc0 R14: ffff8881502ad410 R15: ffff8881502ad400
-> [   29.003592] FS:  00007ff54afa1940(0000) GS:ffff888c4f600000(0000) knlGS:0000000000000000
-> [   29.011668] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   29.017409] CR2: 0000000000000000 CR3: 0000000100120003 CR4: 00000000007706f0
-> [   29.024539] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   29.031671] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   29.038804] PKRU: 55555554
-> [   29.041508] Kernel panic - not syncing: Fatal exception
-> ACPI MEMORY or I/O RESET_REG.
-> 
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install job.yaml  # job file is attached in this email
->          bin/lkp run     job.yaml
-> 
-> 
-> 
-> Thanks,
-> oliver.sang@intel.com
-> 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
