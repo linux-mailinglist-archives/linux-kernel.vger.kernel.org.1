@@ -2,167 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0590C2A4666
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7422D2A465A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 14:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729316AbgKCN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 08:29:05 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:45803 "EHLO m42-4.mailgun.net"
+        id S1729270AbgKCN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 08:28:39 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:14742 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729272AbgKCN2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:28:42 -0500
+        id S1729219AbgKCN2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:28:36 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604410122; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=sqwyhNLZtT91lsQd+XyBIalxVdR7yZ2gDZ/X4qFOhdM=;
- b=qSERQSbEUT97i2FGPMvx1Iycf2SpxhaJkNh7ziesRhJxUfMc1g/WK1N5xorKq2maKI797nny
- QCQUgFcFswvL7EOs5ESLhhIh7RJ2E5wABbOt/IP5Gu8urm29wrUm5lcy8VqfffWBnlOpIkZb
- NQz1eqQ1cFdNvRB2pzvbE2b+kW8=
+ s=smtp; t=1604410116; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gCMQzXqxVATbZltihWPug0xwxDJnW/aK5mmtdzr6c14=; b=adwTOq8e1yKSKBZg0qa2cg/+XbmS2boiJPWT1wI8BXBdFLpN/zFjNRGB2ndjbG+7VYExxGea
+ rn8iOS6qR49ndPOE08MwcBo47SgQyrUFzDw5YPxw0Xsfnl2LS9rCyF8tt9iFCQpDJIl5Kg16
+ enkX71T99ZfpGNfPOM6jxtRNNI8=
 X-Mailgun-Sending-Ip: 69.72.42.4
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fa15af7d981633da35830f3 (version=TLS1.2,
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fa15af79f889442bbd11625 (version=TLS1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Nov 2020 13:28:23
  GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08564C384EF; Tue,  3 Nov 2020 06:27:27 +0000 (UTC)
+        id 0F106C384F8; Tue,  3 Nov 2020 06:42:00 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [49.205.245.25])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D57E7C433B1;
-        Tue,  3 Nov 2020 06:27:26 +0000 (UTC)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34CB7C433B1;
+        Tue,  3 Nov 2020 06:41:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34CB7C433B1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH] mmc: block: Prevent new req entering queue while freeing
+ up the queue
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Peng Hao <richard.peng@oppo.com>
+References: <1603883984-24333-1-git-send-email-vbadigan@codeaurora.org>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <99b758d8-0fd5-2ee2-a12f-c09e71ec470b@codeaurora.org>
+Date:   Tue, 3 Nov 2020 12:11:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1603883984-24333-1-git-send-email-vbadigan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 03 Nov 2020 14:27:26 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Try to save power mode change and UIC cmd
- completion timeout
-In-Reply-To: <1604384682-15837-4-git-send-email-cang@codeaurora.org>
-References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
- <1604384682-15837-4-git-send-email-cang@codeaurora.org>
-Message-ID: <ba1a544b827cd290d1a48e8307a8e2d0@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, please ignore this specific change, which is wrongly sent out.
+Hi Ulf, Adrian,
 
-On 2020-11-03 14:24, Can Guo wrote:
-> Use the uic_cmd->cmd_active as a flag to track the lifecycle of an UIC 
-> cmd.
-> The flag is set before send the UIC cmd and cleared after the 
-> completion is
-> raised in IRQ handler. For a power mode change operation, including 
-> hibern8
-> enter/exit, the flag is cleared only after hba->uic_async_done 
-> completion
-> is raised. When completion timeout happens, if the flag is cleared, 
-> instead
-> of returning timeout error, simply ignore it.
-> 
-> Change-Id: Ie3cd6ae6221a44619925fb2cf78136a5617fdd5d
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+Gentle reminder. Can you share your comments on this issue and change?
+
+Thanks
+
+On 10/28/2020 4:49 PM, Veerabhadrarao Badiganti wrote:
+> The commit bbdc74dc19e0 ("mmc: block: Prevent new req entering queue
+> after its cleanup") has introduced this change but it got moved after
+> del_gendisk() with commit 57678e5a3d51 ("mmc: block: Delete gendisk
+> before cleaning up the request queue").
+>
+> It is blocking reboot with below Call stack().
+>
+> INFO: task reboot:3086 blocked for more than 122 seconds.
+>       __schedule
+>       schedule
+>       schedule_timeout
+>       io_schedule_timeout
+>       do_wait_for_common
+>       wait_for_completion_io
+>       submit_bio_wait
+>       blkdev_issue_flush
+>       ext4_sync_fs
+>       __sync_filesystem
+>       sync_filesystem
+>       fsync_bdev
+>       invalidate_partition
+>       del_gendisk
+>       mmc_blk_remove_req
+>       mmc_blk_remove
+>       mmc_bus_remove
+>       device_release_driver_internal
+>       device_release_driver
+>       bus_remove_device
+>       device_del
+>       mmc_remove_card
+>       mmc_remove
+>       mmc_stop_host
+>       mmc_remove_host
+>       sdhci_remove_host
+>       sdhci_msm_remove
+>       sdhci_msm_shutdown
+>       platform_drv_shutdown
+>       device_shutdown
+>       kernel_restart_prepare
+>       kernel_restart
+>
+> So bringing this change back.
+>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 252e022..8b291c3 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2131,10 +2131,20 @@ ufshcd_wait_for_uic_cmd(struct ufs_hba *hba,
-> struct uic_command *uic_cmd)
->  	unsigned long flags;
-> 
->  	if (wait_for_completion_timeout(&uic_cmd->done,
-> -					msecs_to_jiffies(UIC_CMD_TIMEOUT)))
-> +					msecs_to_jiffies(UIC_CMD_TIMEOUT))) {
->  		ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
-> -	else
-> +	} else {
->  		ret = -ETIMEDOUT;
-> +		dev_err(hba->dev,
-> +			"uic cmd 0x%x with arg3 0x%x completion timeout\n",
-> +			uic_cmd->command, uic_cmd->argument3);
-> +
-> +		if (!uic_cmd->cmd_active) {
-> +			dev_err(hba->dev, "%s: UIC cmd has been completed, return the 
-> result\n",
-> +				__func__);
-> +			ret = uic_cmd->argument2 & MASK_UIC_COMMAND_RESULT;
-> +		}
-> +	}
-> 
->  	spin_lock_irqsave(hba->host->host_lock, flags);
->  	hba->active_uic_cmd = NULL;
-> @@ -2166,6 +2176,7 @@ __ufshcd_send_uic_cmd(struct ufs_hba *hba,
-> struct uic_command *uic_cmd,
->  	if (completion)
->  		init_completion(&uic_cmd->done);
-> 
-> +	uic_cmd->cmd_active = 1;
->  	ufshcd_dispatch_uic_cmd(hba, uic_cmd);
-> 
->  	return 0;
-> @@ -3944,10 +3955,18 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba
-> *hba, struct uic_command *cmd)
->  		dev_err(hba->dev,
->  			"pwr ctrl cmd 0x%x with mode 0x%x completion timeout\n",
->  			cmd->command, cmd->argument3);
-> +
-> +		if (!cmd->cmd_active) {
-> +			dev_err(hba->dev, "%s: Power Mode Change operation has been
-> completed, go check UPMCRS\n",
-> +				__func__);
-> +			goto check_upmcrs;
-> +		}
-> +
->  		ret = -ETIMEDOUT;
->  		goto out;
->  	}
-> 
-> +check_upmcrs:
->  	status = ufshcd_get_upmcrs(hba);
->  	if (status != PWR_LOCAL) {
->  		dev_err(hba->dev,
-> @@ -5060,11 +5079,14 @@ static irqreturn_t ufshcd_uic_cmd_compl(struct
-> ufs_hba *hba, u32 intr_status)
->  		hba->active_uic_cmd->argument3 =
->  			ufshcd_get_dme_attr_val(hba);
->  		complete(&hba->active_uic_cmd->done);
-> +		if (!hba->uic_async_done)
-> +			hba->active_uic_cmd->cmd_active = 0;
->  		retval = IRQ_HANDLED;
->  	}
-> 
->  	if ((intr_status & UFSHCD_UIC_PWR_MASK) && hba->uic_async_done) {
->  		complete(hba->uic_async_done);
-> +		hba->active_uic_cmd->cmd_active = 0;
->  		retval = IRQ_HANDLED;
->  	}
->  	return retval;
+>
+> I'm observing this issue 100% of the time with shutdown callback added to sdhci-msm driver.
+> I'm trying on 5.4 kernel with ChromeOS.
+>
+> Please let me know if this can be fixed in a better way.
+> ---
+>
+>   drivers/mmc/core/block.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 8d3df0be0355..76dbb2b8a13b 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2627,6 +2627,7 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
+>   		 * from being accepted.
+>   		 */
+>   		card = md->queue.card;
+> +		blk_set_queue_dying(md->queue.queue);
+>   		if (md->disk->flags & GENHD_FL_UP) {
+>   			device_remove_file(disk_to_dev(md->disk), &md->force_ro);
+>   			if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
