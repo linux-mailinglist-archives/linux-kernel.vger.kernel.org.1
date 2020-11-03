@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5DA2A53E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4F32A5565
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgKCVFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 16:05:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
+        id S2388557AbgKCVJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:09:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387804AbgKCVFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 16:05:25 -0500
+        id S2388547AbgKCVJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 16:09:39 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 708F720658;
-        Tue,  3 Nov 2020 21:05:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1AA020757;
+        Tue,  3 Nov 2020 21:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604437523;
-        bh=zAYSBpAeCBEf4/TMh31w9RjdOdb04PUkKjzvWRPX8rE=;
+        s=default; t=1604437778;
+        bh=ZuFTrDOuM+pycEPjXPSqbaKXZzqr9qUyI4TYfI8Bb2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxv/PCNfFtRG8rbAiSH06afZEZ2MSvIEJJbBdzjyzyxXqE1kAv7joYG1lQwib0Ba0
-         o6zSTVegCXf/XO7f8Pbbo6vJ9TuqIhzzowXKH14Lu6BPnLgO/NMflhBtU0eEjyAeya
-         JB8Qw4jOPBuUxjF6/97gFSNSk7c5qgg6a8Rv8Ph8=
+        b=uo6P/UMoo+ENfqI3iI5ZoJiWj/u26NlfoBBcxfGBZYsyqwjBWqTMjS1jeW4IyFRyd
+         35u4Z1ufSRpJtg7/jKhxR+1aM1U9nEeBKdj1z9vTfUGrnr/bXsjnA9Ha73d5kiqt6Q
+         eQn/5DSTxj/LrsxTP+S7VBTvYiQOIH0OmL202mMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raul E Rangel <rrangel@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.19 113/191] mmc: sdhci-acpi: AMDI0040: Set SDHCI_QUIRK2_PRESET_VALUE_BROKEN
-Date:   Tue,  3 Nov 2020 21:36:45 +0100
-Message-Id: <20201103203244.020938935@linuxfoundation.org>
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 029/125] media: videodev2.h: RGB BT2020 and HSV are always full range
+Date:   Tue,  3 Nov 2020 21:36:46 +0100
+Message-Id: <20201103203200.929914040@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203232.656475008@linuxfoundation.org>
-References: <20201103203232.656475008@linuxfoundation.org>
+In-Reply-To: <20201103203156.372184213@linuxfoundation.org>
+References: <20201103203156.372184213@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +43,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raul E Rangel <rrangel@chromium.org>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-commit f23cc3ba491af77395cea3f9d51204398729f26b upstream.
+[ Upstream commit b305dfe2e93434b12d438434461b709641f62af4 ]
 
-This change fixes HS400 tuning for devices with invalid presets.
+The default RGB quantization range for BT.2020 is full range (just as for
+all the other RGB pixel encodings), not limited range.
 
-SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
-used for DDR52. The HS400 retuning sequence is:
+Update the V4L2_MAP_QUANTIZATION_DEFAULT macro and documentation
+accordingly.
 
-    HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
+Also mention that HSV is always full range and cannot be limited range.
 
-This means that when HS400 tuning happens, we transition through DDR52
-for a very brief period. This causes presets to be enabled
-unintentionally and stay enabled when transitioning back to HS200 or
-HS400. Some firmware has invalid presets, so we end up with driver
-strengths that can cause I/O problems.
+When RGB BT2020 was introduced in V4L2 it was not clear whether it should
+be limited or full range, but full range is the right (and consistent)
+choice.
 
-Fixes: 34597a3f60b1 ("mmc: sdhci-acpi: Add support for ACPI HID of AMD Controller with HS400")
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-acpi.c |   37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ .../media/uapi/v4l/colorspaces-defs.rst         |  9 ++++-----
+ .../media/uapi/v4l/colorspaces-details.rst      |  5 ++---
+ include/uapi/linux/videodev2.h                  | 17 ++++++++---------
+ 3 files changed, 14 insertions(+), 17 deletions(-)
 
---- a/drivers/mmc/host/sdhci-acpi.c
-+++ b/drivers/mmc/host/sdhci-acpi.c
-@@ -546,6 +546,43 @@ static int sdhci_acpi_emmc_amd_probe_slo
- 	    (host->mmc->caps & MMC_CAP_1_8V_DDR))
- 		host->mmc->caps2 = MMC_CAP2_HS400_1_8V;
+diff --git a/Documentation/media/uapi/v4l/colorspaces-defs.rst b/Documentation/media/uapi/v4l/colorspaces-defs.rst
+index f24615544792b..16e46bec80934 100644
+--- a/Documentation/media/uapi/v4l/colorspaces-defs.rst
++++ b/Documentation/media/uapi/v4l/colorspaces-defs.rst
+@@ -29,8 +29,7 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+ :c:type:`v4l2_hsv_encoding` specifies which encoding is used.
  
-+	/*
-+	 * There are two types of presets out in the wild:
-+	 * 1) Default/broken presets.
-+	 *    These presets have two sets of problems:
-+	 *    a) The clock divisor for SDR12, SDR25, and SDR50 is too small.
-+	 *       This results in clock frequencies that are 2x higher than
-+	 *       acceptable. i.e., SDR12 = 25 MHz, SDR25 = 50 MHz, SDR50 =
-+	 *       100 MHz.x
-+	 *    b) The HS200 and HS400 driver strengths don't match.
-+	 *       By default, the SDR104 preset register has a driver strength of
-+	 *       A, but the (internal) HS400 preset register has a driver
-+	 *       strength of B. As part of initializing HS400, HS200 tuning
-+	 *       needs to be performed. Having different driver strengths
-+	 *       between tuning and operation is wrong. It results in different
-+	 *       rise/fall times that lead to incorrect sampling.
-+	 * 2) Firmware with properly initialized presets.
-+	 *    These presets have proper clock divisors. i.e., SDR12 => 12MHz,
-+	 *    SDR25 => 25 MHz, SDR50 => 50 MHz. Additionally the HS200 and
-+	 *    HS400 preset driver strengths match.
-+	 *
-+	 *    Enabling presets for HS400 doesn't work for the following reasons:
-+	 *    1) sdhci_set_ios has a hard coded list of timings that are used
-+	 *       to determine if presets should be enabled.
-+	 *    2) sdhci_get_preset_value is using a non-standard register to
-+	 *       read out HS400 presets. The AMD controller doesn't support this
-+	 *       non-standard register. In fact, it doesn't expose the HS400
-+	 *       preset register anywhere in the SDHCI memory map. This results
-+	 *       in reading a garbage value and using the wrong presets.
-+	 *
-+	 *       Since HS400 and HS200 presets must be identical, we could
-+	 *       instead use the the SDR104 preset register.
-+	 *
-+	 *    If the above issues are resolved we could remove this quirk for
-+	 *    firmware that that has valid presets (i.e., SDR12 <= 12 MHz).
-+	 */
-+	host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
-+
- 	host->mmc_host_ops.select_drive_strength = amd_select_drive_strength;
- 	host->mmc_host_ops.set_ios = amd_set_ios;
- 	return 0;
+ .. note:: The default R'G'B' quantization is full range for all
+-   colorspaces except for BT.2020 which uses limited range R'G'B'
+-   quantization.
++   colorspaces. HSV formats are always full range.
+ 
+ .. tabularcolumns:: |p{6.0cm}|p{11.5cm}|
+ 
+@@ -162,8 +161,8 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+       - Details
+     * - ``V4L2_QUANTIZATION_DEFAULT``
+       - Use the default quantization encoding as defined by the
+-	colorspace. This is always full range for R'G'B' (except for the
+-	BT.2020 colorspace) and HSV. It is usually limited range for Y'CbCr.
++	colorspace. This is always full range for R'G'B' and HSV.
++	It is usually limited range for Y'CbCr.
+     * - ``V4L2_QUANTIZATION_FULL_RANGE``
+       - Use the full range quantization encoding. I.e. the range [0…1] is
+ 	mapped to [0…255] (with possible clipping to [1…254] to avoid the
+@@ -173,4 +172,4 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+     * - ``V4L2_QUANTIZATION_LIM_RANGE``
+       - Use the limited range quantization encoding. I.e. the range [0…1]
+ 	is mapped to [16…235]. Cb and Cr are mapped from [-0.5…0.5] to
+-	[16…240].
++	[16…240]. Limited Range cannot be used with HSV.
+diff --git a/Documentation/media/uapi/v4l/colorspaces-details.rst b/Documentation/media/uapi/v4l/colorspaces-details.rst
+index 09fabf4cd4126..ca7176cae8dd8 100644
+--- a/Documentation/media/uapi/v4l/colorspaces-details.rst
++++ b/Documentation/media/uapi/v4l/colorspaces-details.rst
+@@ -370,9 +370,8 @@ Colorspace BT.2020 (V4L2_COLORSPACE_BT2020)
+ The :ref:`itu2020` standard defines the colorspace used by Ultra-high
+ definition television (UHDTV). The default transfer function is
+ ``V4L2_XFER_FUNC_709``. The default Y'CbCr encoding is
+-``V4L2_YCBCR_ENC_BT2020``. The default R'G'B' quantization is limited
+-range (!), and so is the default Y'CbCr quantization. The chromaticities
+-of the primary colors and the white reference are:
++``V4L2_YCBCR_ENC_BT2020``. The default Y'CbCr quantization is limited range.
++The chromaticities of the primary colors and the white reference are:
+ 
+ 
+ 
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 1c095b5a99c58..b773e96b4a286 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -362,9 +362,9 @@ enum v4l2_hsv_encoding {
+ 
+ enum v4l2_quantization {
+ 	/*
+-	 * The default for R'G'B' quantization is always full range, except
+-	 * for the BT2020 colorspace. For Y'CbCr the quantization is always
+-	 * limited range, except for COLORSPACE_JPEG: this is full range.
++	 * The default for R'G'B' quantization is always full range.
++	 * For Y'CbCr the quantization is always limited range, except
++	 * for COLORSPACE_JPEG: this is full range.
+ 	 */
+ 	V4L2_QUANTIZATION_DEFAULT     = 0,
+ 	V4L2_QUANTIZATION_FULL_RANGE  = 1,
+@@ -373,14 +373,13 @@ enum v4l2_quantization {
+ 
+ /*
+  * Determine how QUANTIZATION_DEFAULT should map to a proper quantization.
+- * This depends on whether the image is RGB or not, the colorspace and the
+- * Y'CbCr encoding.
++ * This depends on whether the image is RGB or not, the colorspace.
++ * The Y'CbCr encoding is not used anymore, but is still there for backwards
++ * compatibility.
+  */
+ #define V4L2_MAP_QUANTIZATION_DEFAULT(is_rgb_or_hsv, colsp, ycbcr_enc) \
+-	(((is_rgb_or_hsv) && (colsp) == V4L2_COLORSPACE_BT2020) ? \
+-	 V4L2_QUANTIZATION_LIM_RANGE : \
+-	 (((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
+-	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE))
++	(((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
++	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE)
+ 
+ enum v4l2_priority {
+ 	V4L2_PRIORITY_UNSET       = 0,  /* not initialized */
+-- 
+2.27.0
+
 
 
