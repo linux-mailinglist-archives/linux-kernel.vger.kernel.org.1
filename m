@@ -2,250 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DE72A50FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058952A533F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgKCUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:37:03 -0500
-Received: from mga18.intel.com ([134.134.136.126]:55780 "EHLO mga18.intel.com"
+        id S1732473AbgKCU7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:59:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728157AbgKCUhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:37:00 -0500
-IronPort-SDR: 86qM8s9lziwD6JfrEIcE7RpXjoM7iw8vDhJP+0g76HMsoFhXs1b1wWCx+dJhtPGKdJg2khsu9j
- iamIOA4OeMCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156898593"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="156898593"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 12:37:00 -0800
-IronPort-SDR: bBVUxlKg63ESgzPtszszhEl/LUUYJ98jT773/7tEGqR4BQpJD8EkTe3whc4gwWhBIPm23ZqUAl
- j9AEyuWVY/+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="352454772"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 03 Nov 2020 12:36:59 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 11940646; Tue,  3 Nov 2020 22:36:56 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v5 5/7] resource: Add test cases for new resource API
-Date:   Tue,  3 Nov 2020 22:36:53 +0200
-Message-Id: <20201103203655.17701-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
-References: <20201103203655.17701-1-andriy.shevchenko@linux.intel.com>
+        id S1733058AbgKCU7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:59:03 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD49F2053B;
+        Tue,  3 Nov 2020 20:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604437142;
+        bh=eM6w+HbpO30a66/rFp2xskdZ1nI9nPo89xz2YciUCNc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=R9COULfr+0oMrbdzhGaDgVPUqB1JZwi+YW1lsHecQqblgnX+1u7eVkf4oLYphMoZ2
+         IpaqaW87jGh2/O8KXP42avvdZBxiN9R2nnI2vJlE8Q7BjX5xinF2XBnngyCeBoCywE
+         e0mSntlrfAqjQEvNw019k8ZV3ofvOCFMkHimBREg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>
+Subject: [PATCH 5.4 165/214] NFSv4.2: support EXCHGID4_FLAG_SUPP_FENCE_OPS 4.2 EXCHANGE_ID flag
+Date:   Tue,  3 Nov 2020 21:36:53 +0100
+Message-Id: <20201103203306.244619789@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test cases for newly added resource APIs.
+From: Olga Kornievskaia <kolga@netapp.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+commit 8c39076c276be0b31982e44654e2c2357473258a upstream.
+
+RFC 7862 introduced a new flag that either client or server is
+allowed to set: EXCHGID4_FLAG_SUPP_FENCE_OPS.
+
+Client needs to update its bitmask to allow for this flag value.
+
+v2: changed minor version argument to unsigned int
+
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/Makefile         |   1 +
- kernel/resource_kunit.c | 150 ++++++++++++++++++++++++++++++++++++++++
- lib/Kconfig.debug       |  11 +++
- 3 files changed, 162 insertions(+)
- create mode 100644 kernel/resource_kunit.c
+ fs/nfs/nfs4proc.c         |    9 ++++++---
+ include/uapi/linux/nfs4.h |    3 +++
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/Makefile b/kernel/Makefile
-index af601b9bda0e..aac15aeb9d69 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -123,6 +123,7 @@ obj-$(CONFIG_HAS_IOMEM) += iomem.o
- obj-$(CONFIG_RSEQ) += rseq.o
- obj-$(CONFIG_WATCH_QUEUE) += watch_queue.o
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7859,9 +7859,11 @@ int nfs4_proc_secinfo(struct inode *dir,
+  * both PNFS and NON_PNFS flags set, and not having one of NON_PNFS, PNFS, or
+  * DS flags set.
+  */
+-static int nfs4_check_cl_exchange_flags(u32 flags)
++static int nfs4_check_cl_exchange_flags(u32 flags, u32 version)
+ {
+-	if (flags & ~EXCHGID4_FLAG_MASK_R)
++	if (version >= 2 && (flags & ~EXCHGID4_2_FLAG_MASK_R))
++		goto out_inval;
++	else if (version < 2 && (flags & ~EXCHGID4_FLAG_MASK_R))
+ 		goto out_inval;
+ 	if ((flags & EXCHGID4_FLAG_USE_PNFS_MDS) &&
+ 	    (flags & EXCHGID4_FLAG_USE_NON_PNFS))
+@@ -8274,7 +8276,8 @@ static int _nfs4_proc_exchange_id(struct
+ 	if (status  != 0)
+ 		goto out;
  
-+obj-$(CONFIG_RESOURCE_KUNIT_TEST) += resource_kunit.o
- obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
+-	status = nfs4_check_cl_exchange_flags(resp->flags);
++	status = nfs4_check_cl_exchange_flags(resp->flags,
++			clp->cl_mvops->minor_version);
+ 	if (status  != 0)
+ 		goto out;
  
- CFLAGS_stackleak.o += $(DISABLE_STACKLEAK_PLUGIN)
-diff --git a/kernel/resource_kunit.c b/kernel/resource_kunit.c
-new file mode 100644
-index 000000000000..9fdbca8426f1
---- /dev/null
-+++ b/kernel/resource_kunit.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Test cases for API provided by resource.c and ioport.h
-+ */
-+
-+#include <kunit/test.h>
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+
-+#define R0_START	0x0000
-+#define R0_END		0xffff
-+#define R1_START	0x1234
-+#define R1_END		0x2345
-+#define R2_START	0x4567
-+#define R2_END		0x5678
-+#define R3_START	0x6789
-+#define R3_END		0x789a
-+#define R4_START	0x2000
-+#define R4_END		0x7000
-+
-+static struct resource r0 = { .start = R0_START, .end = R0_END };
-+static struct resource r1 = { .start = R1_START, .end = R1_END };
-+static struct resource r2 = { .start = R2_START, .end = R2_END };
-+static struct resource r3 = { .start = R3_START, .end = R3_END };
-+static struct resource r4 = { .start = R4_START, .end = R4_END };
-+
-+struct result {
-+	struct resource *r1;
-+	struct resource *r2;
-+	struct resource r;
-+	bool ret;
-+};
-+
-+static struct result results_for_union[] = {
-+	{
-+		.r1 = &r1, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
-+	}, {
-+		.r1 = &r3, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
-+	}, {
-+		.r1 = &r4, .r2 = &r0, .r.start = R0_START, .r.end = R0_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r1, .ret = false,
-+	}, {
-+		.r1 = &r3, .r2 = &r1, .ret = false,
-+	}, {
-+		.r1 = &r4, .r2 = &r1, .r.start = R1_START, .r.end = R4_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r3, .ret = false,
-+	}, {
-+		.r1 = &r2, .r2 = &r4, .r.start = R4_START, .r.end = R4_END, .ret = true,
-+	}, {
-+		.r1 = &r3, .r2 = &r4, .r.start = R4_START, .r.end = R3_END, .ret = true,
-+	},
-+};
-+
-+static struct result results_for_intersection[] = {
-+	{
-+		.r1 = &r1, .r2 = &r0, .r.start = R1_START, .r.end = R1_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r0, .r.start = R2_START, .r.end = R2_END, .ret = true,
-+	}, {
-+		.r1 = &r3, .r2 = &r0, .r.start = R3_START, .r.end = R3_END, .ret = true,
-+	}, {
-+		.r1 = &r4, .r2 = &r0, .r.start = R4_START, .r.end = R4_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r1, .ret = false,
-+	}, {
-+		.r1 = &r3, .r2 = &r1, .ret = false,
-+	}, {
-+		.r1 = &r4, .r2 = &r1, .r.start = R4_START, .r.end = R1_END, .ret = true,
-+	}, {
-+		.r1 = &r2, .r2 = &r3, .ret = false,
-+	}, {
-+		.r1 = &r2, .r2 = &r4, .r.start = R2_START, .r.end = R2_END, .ret = true,
-+	}, {
-+		.r1 = &r3, .r2 = &r4, .r.start = R3_START, .r.end = R4_END, .ret = true,
-+	},
-+};
-+
-+static void resource_do_test(struct kunit *test, bool ret, struct resource *r,
-+			     bool exp_ret, struct resource *exp_r,
-+			     struct resource *r1, struct resource *r2)
-+{
-+	KUNIT_EXPECT_EQ_MSG(test, ret, exp_ret, "Resources %pR %pR", r1, r2);
-+	KUNIT_EXPECT_EQ_MSG(test, r->start, exp_r->start, "Start elements are not equal");
-+	KUNIT_EXPECT_EQ_MSG(test, r->end, exp_r->end, "End elements are not equal");
-+}
-+
-+static void resource_do_union_test(struct kunit *test, struct result *r)
-+{
-+	struct resource result;
-+	bool ret;
-+
-+	memset(&result, 0, sizeof(result));
-+	ret = resource_union(r->r1, r->r2, &result);
-+	resource_do_test(test, ret, &result, r->ret, &r->r, r->r1, r->r2);
-+
-+	memset(&result, 0, sizeof(result));
-+	ret = resource_union(r->r2, r->r1, &result);
-+	resource_do_test(test, ret, &result, r->ret, &r->r, r->r2, r->r1);
-+}
-+
-+static void resource_test_union(struct kunit *test)
-+{
-+	struct result *r = results_for_union;
-+	unsigned int i = 0;
-+
-+	do {
-+		resource_do_union_test(test, &r[i]);
-+	} while (++i < ARRAY_SIZE(results_for_union));
-+}
-+
-+static void resource_do_intersection_test(struct kunit *test, struct result *r)
-+{
-+	struct resource result;
-+	bool ret;
-+
-+	memset(&result, 0, sizeof(result));
-+	ret = resource_intersection(r->r1, r->r2, &result);
-+	resource_do_test(test, ret, &result, r->ret, &r->r, r->r1, r->r2);
-+
-+	memset(&result, 0, sizeof(result));
-+	ret = resource_intersection(r->r2, r->r1, &result);
-+	resource_do_test(test, ret, &result, r->ret, &r->r, r->r2, r->r1);
-+}
-+
-+static void resource_test_intersection(struct kunit *test)
-+{
-+	struct result *r = results_for_intersection;
-+	unsigned int i = 0;
-+
-+	do {
-+		resource_do_intersection_test(test, &r[i]);
-+	} while (++i < ARRAY_SIZE(results_for_intersection));
-+}
-+
-+static struct kunit_case resource_test_cases[] = {
-+	KUNIT_CASE(resource_test_union),
-+	KUNIT_CASE(resource_test_intersection),
-+	{}
-+};
-+
-+static struct kunit_suite resource_test_suite = {
-+	.name = "resource",
-+	.test_cases = resource_test_cases,
-+};
-+kunit_test_suite(resource_test_suite);
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 8596989423bf..663e7238a56e 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2232,6 +2232,17 @@ config BITFIELD_KUNIT
+--- a/include/uapi/linux/nfs4.h
++++ b/include/uapi/linux/nfs4.h
+@@ -136,6 +136,8 @@
  
- 	  If unsure, say N.
+ #define EXCHGID4_FLAG_UPD_CONFIRMED_REC_A	0x40000000
+ #define EXCHGID4_FLAG_CONFIRMED_R		0x80000000
++
++#define EXCHGID4_FLAG_SUPP_FENCE_OPS		0x00000004
+ /*
+  * Since the validity of these bits depends on whether
+  * they're set in the argument or response, have separate
+@@ -143,6 +145,7 @@
+  */
+ #define EXCHGID4_FLAG_MASK_A			0x40070103
+ #define EXCHGID4_FLAG_MASK_R			0x80070103
++#define EXCHGID4_2_FLAG_MASK_R			0x80070107
  
-+config RESOURCE_KUNIT_TEST
-+	tristate "KUnit test for resource API"
-+	depends on KUNIT
-+	help
-+	  This builds the resource API unit test.
-+	  Tests the logic of API provided by resource.c and ioport.h.
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config SYSCTL_KUNIT_TEST
- 	tristate "KUnit test for sysctl" if !KUNIT_ALL_TESTS
- 	depends on KUNIT
--- 
-2.28.0
+ #define SEQ4_STATUS_CB_PATH_DOWN		0x00000001
+ #define SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRING	0x00000002
+
 
