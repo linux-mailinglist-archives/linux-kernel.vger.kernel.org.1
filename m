@@ -2,203 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA85B2A3DCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9FA2A3DCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 08:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgKCHjH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 02:39:07 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38169 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCHjG (ORCPT
+        id S1727892AbgKCHju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 02:39:50 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54905 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725958AbgKCHjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:39:06 -0500
-Received: by mail-wm1-f67.google.com with SMTP id h62so6935027wme.3;
-        Mon, 02 Nov 2020 23:39:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bXuOa5KbndwxymZMhvdD2xbY7A2ognK9fHBfraWla5A=;
-        b=rPpjewIAbYcTSCakUEvD6eQmvPf9KnMO+huuTxnh8AlUvqDPHq/oQY9oFeBmGnB3/0
-         hTkzY6wDpHPdkl0c7/tDyyOw1SmpxltvNEBiPJ3opiRp/VMlTg7x6s1ZDkK+PhqqOB+v
-         8uOaxT4xsEoP2zj09+PaPy4jWhKQ60pYz4RgMlnYiyv2c9nkhnhxLfgBOaEewhsvpjaV
-         H4yNYhhDINRFl21VScBdZ0NMLGGz0uq9HDJWefx6qKpu3Nt5lEWa9Ly+s006OpRWCtOk
-         ii4s65EuB7jNpQCYrZujDK5wcwPQTican2i94AM7NNjrRkZ2HxfiMIeKJfsv1lHYU093
-         vRvw==
-X-Gm-Message-State: AOAM5329YM2GGjeabwGTJ97QOeuIzGoLRcXF7UcjFCvbKu7ip7hH+1l/
-        DQZblrdIY4Y2NiJ/W3cVwxc=
-X-Google-Smtp-Source: ABdhPJwm22tojRgKDZZZBLNhCz/qUtsvSpAEOhnfV4hVAerCMO+ZDaweHjRmryHMGGwQ17X7zMAjeg==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr2096786wmp.187.1604389144305;
-        Mon, 02 Nov 2020 23:39:04 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id a185sm1983713wmf.24.2020.11.02.23.39.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 23:39:03 -0800 (PST)
-Date:   Tue, 3 Nov 2020 08:39:01 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Tue, 3 Nov 2020 02:39:49 -0500
+X-UUID: 51b34c5255d245b689b6dde48e5d9086-20201103
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZZrwHSS1iEJcnFxsaFwOkWSIeqBrHNXbvsvad1w31c0=;
+        b=jpEKNxLMJF3m1Z2UJy/TLKydQxeNHaEsfpxxLSTBf/189X6IgF1caOFcvf27tZduzmCI/3kn4RaTzyE3nu2JoYTuVNoYsK87bkvtjpCf0Y8EVzvwV3BltVdt3UqdsohYaySfcBFan1SZ2JYC6bFUWlXUO9WwookACIf9u9FmsCk=;
+X-UUID: 51b34c5255d245b689b6dde48e5d9086-20201103
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 325287640; Tue, 03 Nov 2020 15:39:46 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Nov 2020 15:39:44 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Nov 2020 15:39:44 +0800
+Message-ID: <1604389184.13152.9.camel@mtkswgap22>
+Subject: RE: [PATCH v1 1/6] scsi: ufs-mediatek: Assign arguments with
+ correct type
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
         "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>
-Subject: Re: [PATCH V2] arm64: dts: imx8mp-evk: add CAN support
-Message-ID: <20201103073901.GA3599@kozik-lap>
-References: <20201102021634.6480-1-qiangqing.zhang@nxp.com>
- <20201102082853.GB6152@kozik-lap>
- <DB8PR04MB6795A0C0D6F33721311945DCE6110@DB8PR04MB6795.eurprd04.prod.outlook.com>
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
+Date:   Tue, 3 Nov 2020 15:39:44 +0800
+In-Reply-To: <DM6PR04MB6575F51915ED4E904ED82EC1FC110@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201029115750.24391-1-stanley.chu@mediatek.com>
+         <20201029115750.24391-2-stanley.chu@mediatek.com>
+         <DM6PR04MB6575F51915ED4E904ED82EC1FC110@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <DB8PR04MB6795A0C0D6F33721311945DCE6110@DB8PR04MB6795.eurprd04.prod.outlook.com>
+X-TM-SNTS-SMTP: 0E859257A7E797E8F756E436308F7A8CC066855BC4D0EBA211CF9AA173D4A0132000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:23:12AM +0000, Joakim Zhang wrote:
-> 
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: 2020年11月2日 16:29
-> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > Cc: shawnguo@kernel.org; s.hauer@pengutronix.de; festevam@gmail.com;
-> > dl-linux-imx <linux-imx@nxp.com>; devicetree@vger.kernel.org;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > mkl@pengutronix.de
-> > Subject: Re: [PATCH V2] arm64: dts: imx8mp-evk: add CAN support
-> > 
-> > On Mon, Nov 02, 2020 at 10:16:34AM +0800, Joakim Zhang wrote:
-> > > Add CAN device node and pinctrl on i.MX8MP evk board.
-> > >
-> > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > > ---
-> > > ChangeLogs:
-> > > V1->V2:
-> > > 	* add missing space before '=',
-> > > 	fsl,clk-source= /bits/ 8 <0> -> fsl,clk-source = /bits/ 8 <0>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 62
-> > ++++++++++++++++++++
-> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi    | 30 ++++++++++
-> > >  2 files changed, 92 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > > b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > > index 908b92bb4dcd..b10dce8767a4 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > > @@ -33,6 +33,28 @@
-> > >  		      <0x1 0x00000000 0 0xc0000000>;
-> > >  	};
-> > >
-> > > +	reg_can1_stby: regulator-can1-stby {
-> > > +		compatible = "regulator-fixed";
-> > > +		regulator-name = "can1-stby";
-> > > +		pinctrl-names = "default";
-> > > +		pinctrl-0 = <&pinctrl_flexcan1_reg>;
-> > > +		regulator-min-microvolt = <3300000>;
-> > > +		regulator-max-microvolt = <3300000>;
-> > > +		gpio = <&gpio5 5 GPIO_ACTIVE_HIGH>;
-> > > +		enable-active-high;
-> > > +	};
-> > > +
-> > > +	reg_can2_stby: regulator-can2-stby {
-> > > +		compatible = "regulator-fixed";
-> > > +		regulator-name = "can2-stby";
-> > > +		pinctrl-names = "default";
-> > > +		pinctrl-0 = <&pinctrl_flexcan2_reg>;
-> > > +		regulator-min-microvolt = <3300000>;
-> > > +		regulator-max-microvolt = <3300000>;
-> > > +		gpio = <&gpio4 27 GPIO_ACTIVE_HIGH>;
-> > > +		enable-active-high;
-> > > +	};
-> > > +
-> > >  	reg_usdhc2_vmmc: regulator-usdhc2 {
-> > >  		compatible = "regulator-fixed";
-> > >  		pinctrl-names = "default";
-> > > @@ -45,6 +67,20 @@
-> > >  	};
-> > >  };
-> > >
-> > > +&flexcan1 {
-> > > +	pinctrl-names = "default";
-> > > +	pinctrl-0 = <&pinctrl_flexcan1>;
-> > > +	xceiver-supply = <&reg_can1_stby>;
-> > > +	status = "okay";
-> > > +};
-> > > +
-> > > +&flexcan2 {
-> > > +	pinctrl-names = "default";
-> > > +	pinctrl-0 = <&pinctrl_flexcan2>;
-> > > +	xceiver-supply = <&reg_can2_stby>;
-> > > +	status = "disabled";/* can2 pin conflict with pdm */ };
-> > > +
-> > >  &fec {
-> > >  	pinctrl-names = "default";
-> > >  	pinctrl-0 = <&pinctrl_fec>;
-> > > @@ -144,6 +180,32 @@
-> > >  		>;
-> > >  	};
-> > >
-> > > +	pinctrl_flexcan1: flexcan1grp {
-> > > +		fsl,pins = <
-> > > +			MX8MP_IOMUXC_SPDIF_RX__CAN1_RX          0x154
-> > > +			MX8MP_IOMUXC_SPDIF_TX__CAN1_TX          0x154
-> > > +		>;
-> > > +	};
-> > > +
-> > > +	pinctrl_flexcan2: flexcan2grp {
-> > > +		fsl,pins = <
-> > > +			MX8MP_IOMUXC_SAI5_MCLK__CAN2_RX         0x154
-> > > +			MX8MP_IOMUXC_SAI5_RXD3__CAN2_TX         0x154
-> > > +		>;
-> > > +	};
-> > > +
-> > > +	pinctrl_flexcan1_reg: flexcan1reggrp {
-> > > +		fsl,pins = <
-> > > +			MX8MP_IOMUXC_SPDIF_EXT_CLK__GPIO5_IO05  0x154   /*
-> > CAN1_STBY */
-> > > +		>;
-> > > +	};
-> > > +
-> > > +	pinctrl_flexcan2_reg: flexcan2reggrp {
-> > > +		fsl,pins = <
-> > > +			MX8MP_IOMUXC_SAI2_MCLK__GPIO4_IO27      0x154
-> > /* CAN2_STBY */
-> > > +		>;
-> > > +	};
-> > > +
-> > >  	pinctrl_gpio_led: gpioledgrp {
-> > >  		fsl,pins = <
-> > >  			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16	0x19
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > index 479312293036..ecccfbb4f5ad 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > @@ -552,6 +552,36 @@
-> > >  				status = "disabled";
-> > >  			};
-> > >
-> > > +			flexcan1: can@308c0000 {
-> > > +				compatible = "fsl,imx8mp-flexcan", "fsl,imx6q-flexcan";
-> > 
-> > Undocumented compatible in
-> > Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> 
-> Hi Krzsztof,
-> 
-> Yes, I will resend the patch after below patch goes into mainline. Thanks.
-> https://www.spinics.net/lists/linux-can/msg04896.html
+SGkgQXZyaSwNCg0KT24gVHVlLCAyMDIwLTExLTAzIGF0IDA3OjEyICswMDAwLCBBdnJpIEFsdG1h
+biB3cm90ZToNCj4gPiANCj4gPiBJbiB1ZnNfbXRrX3VuaXByb19zZXRfbHBtKCksIHVzZSBzcGVj
+aWZpYyB1bnNpZ25lZCB2YWx1ZXMNCj4gPiBhcyB0aGUgYXJndW1lbnQgdG8gaW52b2tlIHVmc2hj
+ZF9kbWVfc2V0KCkuDQo+ID4gDQo+ID4gSW4gdGhlIHNhbWUgdGltZSwgY2hhbmdlIHRoZSBuYW1l
+IG9mIHVmc19tdGtfdW5pcHJvX3NldF9wbSgpDQo+ID4gdG8gdWZzX210a191bmlwcm9fc2V0X2xw
+bSgpIHRvIGFsaWduIHRoZSBuYW1pbmcgY29udmVudGlvbg0KPiA+IGluIE1lZGlhVGVrIFVGUyBk
+cml2ZXIuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogU3RhbmxleSBDaHUgPHN0YW5sZXkuY2h1
+QG1lZGlhdGVrLmNvbT4NCj4gTG9va3MgbGlrZSB0aGlzIHBhdGNoIGlzIGdpbGRpbmcgdGhlIGxp
+bHk/DQoNClRoYW5rcyBmb3IgdGhlIHJldmlldy4NCg0KUGxlYXNlIHNlZSBleHBsYW5hdGlvbiBi
+ZWxvdy4NCg0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsu
+YyB8IDEyICsrKysrKy0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCsp
+LCA2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZz
+L3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiA+IGlu
+ZGV4IDhkZjczYmMyZjhjYi4uMDE5NmE4OTA1NWI1IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMv
+c2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4gPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1t
+ZWRpYXRlay5jDQo+ID4gQEAgLTYzOSwxNCArNjM5LDE0IEBAIHN0YXRpYyBpbnQgdWZzX210a19w
+d3JfY2hhbmdlX25vdGlmeShzdHJ1Y3QNCj4gPiB1ZnNfaGJhICpoYmEsDQo+ID4gICAgICAgICBy
+ZXR1cm4gcmV0Ow0KPiA+ICB9DQo+ID4gDQo+ID4gLXN0YXRpYyBpbnQgdWZzX210a191bmlwcm9f
+c2V0X3BtKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgbHBtKQ0KPiA+ICtzdGF0aWMgaW50IHVm
+c19tdGtfdW5pcHJvX3NldF9scG0oc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBscG0pDQo+ID4g
+IHsNCj4gPiAgICAgICAgIGludCByZXQ7DQo+ID4gICAgICAgICBzdHJ1Y3QgdWZzX210a19ob3N0
+ICpob3N0ID0gdWZzaGNkX2dldF92YXJpYW50KGhiYSk7DQo+ID4gDQo+ID4gICAgICAgICByZXQg
+PSB1ZnNoY2RfZG1lX3NldChoYmEsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBV
+SUNfQVJHX01JQl9TRUwoVlNfVU5JUFJPUE9XRVJET1dOQ09OVFJPTCwgMCksDQo+ID4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBscG0pOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgbHBtID8gMSA6IDApOw0KPiBib29sIGlzIGltcGxpY2l0bHkgY29udmVydGVkIHRvIGlu
+dCBhbnl3YXk/DQoNClRoaXMgY2hhbmdlIGlzIHRoZSBlY2hvIG9mIHlvdXIgc3VnZ2VzdGlvbiBp
+bg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXNjc2kvcGF0Y2gv
+MjAyMDA5MDgwNjQ1MDcuMzA3NzQtNC1zdGFubGV5LmNodUBtZWRpYXRlay5jb20vDQoNCkFjdHVh
+bGx5IEkgdGhpbmsgeW91ciBzdWdnZXN0aW9uIGlzIGNvbnN0cnVjdGl2ZSB0aGF0IHRoZSBhY2Nl
+cHRlZA0KdmFsdWVzIG9mIFZTX1VOSVBST1BPV0VSRE9XTkNPTlRST0wgYXJlIGJldHRlciBjbGVh
+cmx5IGRlZmluZWQgc28gSSB1c2UNCnRoZSBjYXN0aW5nIGhlcmUgaW4gdGhpcyBwYXRjaC4NCg0K
+PiANCj4gPiAgICAgICAgIGlmICghcmV0IHx8ICFscG0pIHsNCj4gPiAgICAgICAgICAgICAgICAg
+LyoNCj4gPiAgICAgICAgICAgICAgICAgICogRm9yY2libHkgc2V0IGFzIG5vbi1MUE0gbW9kZSBp
+ZiBVSUMgY29tbWFuZHMgaXMgZmFpbGVkDQo+ID4gQEAgLTY2NCw3ICs2NjQsNyBAQCBzdGF0aWMg
+aW50IHVmc19tdGtfcHJlX2xpbmsoc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gPiAgICAgICAgIGlu
+dCByZXQ7DQo+ID4gICAgICAgICB1MzIgdG1wOw0KPiA+IA0KPiA+IC0gICAgICAgcmV0ID0gdWZz
+X210a191bmlwcm9fc2V0X3BtKGhiYSwgZmFsc2UpOw0KPiA+ICsgICAgICAgcmV0ID0gdWZzX210
+a191bmlwcm9fc2V0X2xwbShoYmEsIGZhbHNlKTsNCj4gPiAgICAgICAgIGlmIChyZXQpDQo+ID4g
+ICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+ID4gDQo+ID4gQEAgLTc3NCw3ICs3NzQsNyBA
+QCBzdGF0aWMgaW50IHVmc19tdGtfbGlua19zZXRfaHBtKHN0cnVjdCB1ZnNfaGJhDQo+ID4gKmhi
+YSkNCj4gPiAgICAgICAgIGlmIChlcnIpDQo+ID4gICAgICAgICAgICAgICAgIHJldHVybiBlcnI7
+DQo+ID4gDQo+ID4gLSAgICAgICBlcnIgPSB1ZnNfbXRrX3VuaXByb19zZXRfcG0oaGJhLCBmYWxz
+ZSk7DQo+ID4gKyAgICAgICBlcnIgPSB1ZnNfbXRrX3VuaXByb19zZXRfbHBtKGhiYSwgZmFsc2Up
+Ow0KPiA+ICAgICAgICAgaWYgKGVycikNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsN
+Cj4gPiANCj4gPiBAQCAtNzk1LDEwICs3OTUsMTAgQEAgc3RhdGljIGludCB1ZnNfbXRrX2xpbmtf
+c2V0X2xwbShzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEpDQo+ID4gIHsNCj4gPiAgICAgICAgIGlu
+dCBlcnI7DQo+ID4gDQo+ID4gLSAgICAgICBlcnIgPSB1ZnNfbXRrX3VuaXByb19zZXRfcG0oaGJh
+LCB0cnVlKTsNCj4gPiArICAgICAgIGVyciA9IHVmc19tdGtfdW5pcHJvX3NldF9scG0oaGJhLCB0
+cnVlKTsNCj4gPiAgICAgICAgIGlmIChlcnIpIHsNCj4gPiAgICAgICAgICAgICAgICAgLyogUmVz
+dW1lIFVuaVBybyBzdGF0ZSBmb3IgZm9sbG93aW5nIGVycm9yIHJlY292ZXJ5ICovDQo+ID4gLSAg
+ICAgICAgICAgICAgIHVmc19tdGtfdW5pcHJvX3NldF9wbShoYmEsIGZhbHNlKTsNCj4gPiArICAg
+ICAgICAgICAgICAgdWZzX210a191bmlwcm9fc2V0X2xwbShoYmEsIGZhbHNlKTsNCj4gPiAgICAg
+ICAgICAgICAgICAgcmV0dXJuIGVycjsNCj4gPiAgICAgICAgIH0NCj4gPiANCj4gPiAtLQ0KPiA+
+IDIuMTguMA0KDQpUaGFua3MsDQpTdGFubGV5IENodQ0KDQo=
 
-Thanks for the link. It's all good and there is no need to resend
-because your compatible is mentioned there.
-
-Best regards,
-Krzysztof
