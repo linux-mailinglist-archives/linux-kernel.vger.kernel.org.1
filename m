@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CDC2A4476
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E18E2A44A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 12:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgKCLqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 06:46:12 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7411 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgKCLqL (ORCPT
+        id S1728573AbgKCL7e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Nov 2020 06:59:34 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:59800 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgKCL7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:46:11 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CQSfP1fFFz71yY;
-        Tue,  3 Nov 2020 19:46:05 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 3 Nov 2020 19:45:58 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <sagi@grimberg.me>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] IB/isert: Fix warning Comparison to bool
-Date:   Tue, 3 Nov 2020 19:57:54 +0800
-Message-ID: <1604404674-32998-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 3 Nov 2020 06:59:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 9802C60B33ED;
+        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id oQdy23ef3ZQl; Tue,  3 Nov 2020 12:59:31 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 343706125F2E;
+        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CAsv9HTMQe0m; Tue,  3 Nov 2020 12:59:31 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 1515D60B33ED;
+        Tue,  3 Nov 2020 12:59:31 +0100 (CET)
+Date:   Tue, 3 Nov 2020 12:59:31 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <782317824.260495.1604404771008.JavaMail.zimbra@nod.at>
+In-Reply-To: <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
+References: <20201012180404.6476-1-p.yadav@ti.com> <20201012180404.6476-3-p.yadav@ti.com> <f013d7af-6e1d-5b8f-4a23-7f6c150f896a@ti.com>
+Subject: Re: [PATCH 2/3] UBI: Do not zero out EC and VID when multi-pass
+ writes are not supported
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Do not zero out EC and VID when multi-pass writes are not supported
+Thread-Index: IYY5CPrwbEGqjygzDycc3Mf8hJzERg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warning reported by coccicheck:
+----- Ursprüngliche Mail -----
+> Von: "Vignesh Raghavendra" <vigneshr@ti.com>
+>
+> You may want to get rid of assertion for mtd->writesize != 1 in case of
+> MTD_NORFLASH.
 
-./ib_isert.c:1104:12-24: WARNING: Comparison to bool
+Agreed. I hope nothing else breaks if NOR has suddenly a writesize >= 1.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/infiniband/ulp/isert/ib_isert.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index bd47894..e47cd02 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -1101,7 +1101,7 @@ isert_handle_scsi_cmd(struct isert_conn *isert_conn,
- sequence_cmd:
- 	rc = iscsit_sequence_cmd(conn, cmd, buf, hdr->cmdsn);
- 
--	if (!rc && dump_payload == false && unsol_data)
-+	if (!rc && !dump_payload && unsol_data)
- 		iscsit_set_unsolicited_dataout(cmd);
- 	else if (dump_payload && imm_data)
- 		target_put_sess_cmd(&cmd->se_cmd);
--- 
-2.6.2
-
+Thanks,
+//richard
