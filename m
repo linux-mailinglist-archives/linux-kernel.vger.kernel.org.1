@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF392A5255
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FBC2A531B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731690AbgKCUtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:49:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
+        id S1732711AbgKCU4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:56:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731673AbgKCUsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:48:55 -0500
+        id S1731901AbgKCU4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:56:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF9D520719;
-        Tue,  3 Nov 2020 20:48:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5E6020732;
+        Tue,  3 Nov 2020 20:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436535;
-        bh=ahjbn9H70hPUckCaDcElCvVnZe3GnTqMRqR5U/J3N8c=;
+        s=default; t=1604436979;
+        bh=D3/AXZBIntDiR9M4rknP2TzTGA9SxfI64sk29l4o/Ds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBcNyaTtUVGIQGV0RbKxP9qEmIjNrIalwr+NET8NMgDi6k/NNBrq3unC+4jGEZKxN
-         b//WZZtCpoeZ/n6hGsjeb9Vtfgc3w6e4Xx//Z6YBH+4VKozj0RgVPvzokh3MBhaGuS
-         JiHYZeT9jpLw9DDgvQsP+ql3804jngXwDtyn1mDc=
+        b=gx4oQUzKJQPYqzT835r4k0Px/hKJhPc68NXMJTD4R+09TTr71BlRMRecyaaA44m40
+         xC79XO1oc//uzssfmjJ33Sar//prVhcHxjiH0C7zILMSRN7V+MJmlT/EZU3aqk8lGs
+         RosjzA9qPekx3WrtUnzm6n0LNWI5PVUtburSrxEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ganesh Goudar <ganeshgr@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 291/391] powerpc/mce: Avoid nmi_enter/exit in real mode on pseries hash
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 094/214] sgl_alloc_order: fix memory leak
 Date:   Tue,  3 Nov 2020 21:35:42 +0100
-Message-Id: <20201103203406.705455782@linuxfoundation.org>
+Message-Id: <20201103203259.285644721@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
-References: <20201103203348.153465465@linuxfoundation.org>
+In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
+References: <20201103203249.448706377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ganesh Goudar <ganeshgr@linux.ibm.com>
+From: Douglas Gilbert <dgilbert@interlog.com>
 
-commit 8d0e2101274358d9b6b1f27232b40253ca48bab5 upstream.
+[ Upstream commit b2a182a40278bc5849730e66bca01a762188ed86 ]
 
-Use of nmi_enter/exit in real mode handler causes the kernel to panic
-and reboot on injecting SLB mutihit on pseries machine running in hash
-MMU mode, because these calls try to accesses memory outside RMO
-region in real mode handler where translation is disabled.
+sgl_alloc_order() can fail when 'length' is large on a memory
+constrained system. When order > 0 it will potentially be
+making several multi-page allocations with the later ones more
+likely to fail than the earlier one. So it is important that
+sgl_alloc_order() frees up any pages it has obtained before
+returning NULL. In the case when order > 0 it calls the wrong
+free page function and leaks. In testing the leak was
+sufficient to bring down my 8 GiB laptop with OOM.
 
-Add check to not to use these calls on pseries machine running in hash
-MMU mode.
-
-Fixes: 116ac378bb3f ("powerpc/64s: machine check interrupt update NMI accounting")
-Cc: stable@vger.kernel.org # v5.8+
-Signed-off-by: Ganesh Goudar <ganeshgr@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201009064005.19777-2-ganeshgr@linux.ibm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/mce.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ lib/scatterlist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/mce.c
-+++ b/arch/powerpc/kernel/mce.c
-@@ -591,12 +591,11 @@ EXPORT_SYMBOL_GPL(machine_check_print_ev
- long notrace machine_check_early(struct pt_regs *regs)
- {
- 	long handled = 0;
--	bool nested = in_nmi();
- 	u8 ftrace_enabled = this_cpu_get_ftrace_enabled();
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index 5813072bc5895..29346184fcf2e 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -514,7 +514,7 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
+ 		elem_len = min_t(u64, length, PAGE_SIZE << order);
+ 		page = alloc_pages(gfp, order);
+ 		if (!page) {
+-			sgl_free(sgl);
++			sgl_free_order(sgl, order);
+ 			return NULL;
+ 		}
  
- 	this_cpu_set_ftrace_enabled(0);
--
--	if (!nested)
-+	/* Do not use nmi_enter/exit for pseries hpte guest */
-+	if (radix_enabled() || !firmware_has_feature(FW_FEATURE_LPAR))
- 		nmi_enter();
- 
- 	hv_nmi_check_nonrecoverable(regs);
-@@ -607,7 +606,7 @@ long notrace machine_check_early(struct
- 	if (ppc_md.machine_check_early)
- 		handled = ppc_md.machine_check_early(regs);
- 
--	if (!nested)
-+	if (radix_enabled() || !firmware_has_feature(FW_FEATURE_LPAR))
- 		nmi_exit();
- 
- 	this_cpu_set_ftrace_enabled(ftrace_enabled);
+-- 
+2.27.0
+
 
 
