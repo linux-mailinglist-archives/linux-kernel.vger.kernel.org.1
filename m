@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D162A57AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107B82A56EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732238AbgKCUxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:53:21 -0500
-Received: from leonov.paulk.fr ([185.233.101.22]:57380 "EHLO leonov.paulk.fr"
+        id S1732282AbgKCVcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:32:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732388AbgKCUxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:53:14 -0500
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id 26D89BFBC2;
-        Tue,  3 Nov 2020 21:53:12 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id 651DDC1D4A; Tue,  3 Nov 2020 21:53:11 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
-        autolearn_force=no version=3.4.2
-Received: from localhost.localdomain (collins [192.168.1.129])
-        by gagarine.paulk.fr (Postfix) with ESMTP id 93D2BC1D4C;
-        Tue,  3 Nov 2020 21:51:01 +0100 (CET)
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Paul Kocialkowski <contact@paulk.fr>,
-        Matteo Scordino <matteo.scordino@gmail.com>
-Subject: [PATCH v2 4/6] ARM: dts: sun8i: Cleanup the Pinecube AXP209 node
-Date:   Tue,  3 Nov 2020 21:50:56 +0100
-Message-Id: <20201103205058.435207-5-contact@paulk.fr>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201103205058.435207-1-contact@paulk.fr>
-References: <20201103205058.435207-1-contact@paulk.fr>
+        id S1732129AbgKCU5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:57:22 -0500
+Received: from localhost (p5486c89f.dip0.t-ipconnect.de [84.134.200.159])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90F52223BF;
+        Tue,  3 Nov 2020 20:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604437042;
+        bh=a7ZH9fyHYZTO/SRArO7XSMg0/aQU+bYIqJmSUVsuhCA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QTtwg4L4/i86DoriZ3tYS9UO8SdYNdPyXWiI6EoauuBTIeuVHWnP26XFh7c0Rq1L+
+         GgIz9Uj1tNWnCbVSuQYAtd/ppNMWuddZbO32TkTXv71MqGsLvgzWEgp4k3AeCK16Ad
+         iyf6nSlurOM/etk+w2gx0lPk1Gkmv10vscjFFcCg=
+Date:   Tue, 3 Nov 2020 21:57:18 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org
+Subject: Re: [PATCH 2/3] i2c: owl: Add support for atomic transfers
+Message-ID: <20201103205718.GC1583@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org
+References: <cover.1602190168.git.cristian.ciocaltea@gmail.com>
+ <1af37112fafd6cf069dfe864560f77996f57d80d.1602190168.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="m51xatjYGsM+13rf"
+Content-Disposition: inline
+In-Reply-To: <1af37112fafd6cf069dfe864560f77996f57d80d.1602190168.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes a few things with the Pinecube AXP209 node:
-- No compatible is required since it is using an AXP209 (not AXP203)
-  according to the schematics and this is what the included axp209.dtsi
-  already has;
-- The interrupt-controller and #interrupt-cells properties are already
-  described in the included axp209.dtsi;
-- The interrupt comes through the NMI controller, not directly through
-  the GIC.
 
-Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
----
- arch/arm/boot/dts/sun8i-s3-pinecube.dts | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+--m51xatjYGsM+13rf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/sun8i-s3-pinecube.dts b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-index 9bab6b7f4014..ed6b4e94088d 100644
---- a/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-+++ b/arch/arm/boot/dts/sun8i-s3-pinecube.dts
-@@ -88,13 +88,9 @@ &i2c0 {
- 	status = "okay";
- 
- 	axp209: pmic@34 {
--		compatible = "x-powers,axp203",
--			     "x-powers,axp209";
- 		reg = <0x34>;
--		interrupt-parent = <&gic>;
--		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-controller;
--		#interrupt-cells = <1>;
-+		interrupt-parent = <&nmi_intc>;
-+		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
--- 
-2.29.1
+On Fri, Oct 09, 2020 at 12:44:40AM +0300, Cristian Ciocaltea wrote:
+> Atomic transfers are required to properly power off a machine through
+> an I2C controlled PMIC, such as the Actions Semi ATC260x series.
+>=20
+> System shutdown may happen with interrupts being disabled and, as a
+> consequence, the kernel may hang if the driver does not support atomic
+> transfers.
+>=20
+> This functionality is essentially implemented by polling the FIFO
+> Status register until either Command Execute Completed or NACK Error
+> bits are set.
+>=20
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
+Applied to for-next, thanks!
+
+
+--m51xatjYGsM+13rf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+hxC4ACgkQFA3kzBSg
+KbYrHw//euNdIAgM/h+leoIrHtmx4U1t4ASeeDaSMNetrFYOEGWcHtzjDZkYMMJj
+3jEzBhFGNGWPMixjn9JTUg3nIhnEMZ7VUklIUaIBRr9Ig/6AU3ymAHk1mFLVVcQo
+ZWKC1yCGr6BS910ahG4ydLI9JM4cECwBcxy6uAm4scKX8mqW7AJY8aPxv1bsA71R
+9JbDkSYP1PwhslH0NBcubgSwrF8zP93PRGp6nVItqw4l9/7yLYunTNlwR8yNt1F5
+t7p3u9Yg/JVBOklJDWyKOVRSqyYgfqzDdutVhXnXtUhyJcu6qf7XyioT1/XmMlmH
+3qSemDshe75Un0dAM5a6nyRHoG4CG/Je7j2SQb5XfXO1gyuaUo1TCZOAqqy/BDWw
+GLX91vvGu7Y6sJCyHAGyZ5FLB3KOLwMWOTDTauHqzVgSlWFsuPOufvBBBeaAE/HB
+IsjK3KPZ+oFi7nAD5zjPi6pHF2/jOl0G6P6AN7vA4w+3SAtz6e9JsWfFWKlFmGV6
+BaOexMaHHQ5WlJEGFrwoEwW2+8nFxf1tRk7yRI2GeL7CHykdsyx8vx5MXDmJwwnC
+HZA0NShfFaKS9lQAZVNg7NmTdHaJ70xfHCvBWU7oCgqJskhUaWGQ/Bga8Fsn/V12
+z8IAa4ixpYWCtjVitRlo8bLDMk5KUCEg0CG9bNk+QVpS8cbA0fw=
+=IJ2+
+-----END PGP SIGNATURE-----
+
+--m51xatjYGsM+13rf--
