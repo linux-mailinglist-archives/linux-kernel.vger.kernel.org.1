@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A31A2A4B6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85962A4B87
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 17:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgKCQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 11:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
+        id S1728413AbgKCQaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 11:30:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgKCQ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:28:41 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728082AbgKCQaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:30:18 -0500
+Received: from kernel.org (unknown [87.71.17.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E105206DF;
-        Tue,  3 Nov 2020 16:28:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FB1C206DF;
+        Tue,  3 Nov 2020 16:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604420920;
-        bh=Uf0rEM4kb83WVfODPddvYcob/2wgnlCM5a0LkulML3c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DLSDnwfaEDRzLrOW+ViQlcsS3AT89HldQ5QaXtCrE2p7Ka194/kgfmGcyLpRiCKdS
-         0FHmuqo1lfJZ2iDD28FNcLt7O11lpXNCPXoysSt38y+MVCeqFxYUxvYubuuPQMgHYZ
-         50KPhGKTQtKvEaXw+ydxiL7LZSWk5KX4oDr4P6ZE=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3] MAINTAINERS: add Dan Murphy as TI LP8xxx drivers maintainer
-Date:   Tue,  3 Nov 2020 17:28:32 +0100
-Message-Id: <20201103162832.14085-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        s=default; t=1604421016;
+        bh=jYHfX66WW2BdNqS2XWf0ysCG2+5llIa7XFBTFdDX/eI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aIT9WT+BvHALjjzBR+JANCva7x0iax3JsHcWBCEfbBEXiFyByvncM0vQDEjoMsNzh
+         qIUHx4c/P1fmtrQLv9EIQHUB/NNPUa0sJ3XCbfY5Co0b/q6PUKAT7BitPwWCXDu5+c
+         05kTyD2Qgu6hQisAN/yBj1hMLhxnioRXXIEvqYek=
+Date:   Tue, 3 Nov 2020 18:30:02 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Hagen Paul Pfeifer <hagen@jauu.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20201103163002.GK4879@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20201101110935.GA4105325@laniakea>
+ <20201102154028.GD4879@kernel.org>
+ <1547601988.128687.1604411534845@office.mailbox.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1547601988.128687.1604411534845@office.mailbox.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Milo Kim's email in TI bounces with permanent error (550: Invalid
-recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
-credits and add Dan Murphy from TI to look after:
- - TI LP855x backlight driver,
- - TI LP8727 charger driver,
- - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+On Tue, Nov 03, 2020 at 02:52:14PM +0100, Hagen Paul Pfeifer wrote:
+> > On 11/02/2020 4:40 PM Mike Rapoport <rppt@kernel.org> wrote:
+> 
+> > > Isn't memfd_secret currently *unnecessarily* designed to be a "one task
+> > > feature"? memfd_secret fulfills exactly two (generic) features:
+> > > 
+> > > - address space isolation from kernel (aka SECRET_EXCLUSIVE, not in kernel's
+> > >   direct map) - hide from kernel, great
+> > > - disabling processor's memory caches against speculative-execution vulnerabilities
+> > >   (spectre and friends, aka SECRET_UNCACHED), also great
+> > > 
+> > > But, what about the following use-case: implementing a hardened IPC mechanism
+> > > where even the kernel is not aware of any data and optionally via SECRET_UNCACHED
+> > > even the hardware caches are bypassed! With the patches we are so close to
+> > > achieving this.
+> > > 
+> > > How? Shared, SECRET_EXCLUSIVE and SECRET_UNCACHED mmaped pages for IPC
+> > > involved tasks required to know this mapping (and memfd_secret fd). After IPC
+> > > is done, tasks can copy sensitive data from IPC pages into memfd_secret()
+> > > pages, un-sensitive data can be used/copied everywhere.
+> > 
+> > As long as the task share the file descriptor, they can share the
+> > secretmem pages, pretty much like normal memfd.
+> 
+> Including process_vm_readv() and process_vm_writev()? Let's take a hypothetical
+> "dbus-daemon-secure" service that receives data from process A and wants to
+> copy/distribute it to data areas of N other processes. Much like dbus but without
+> SOCK_DGRAM rather direct copy into secretmem/mmap pages (ring-buffer). Should be
+> possible, right?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Dan Murphy <dmurphy@ti.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Sebastian Reichel <sre@kernel.org>
+I'm not sure I follow you here.
+For process_vm_readv() and process_vm_writev() secremem will be only
+accessible on the local part, but not on the remote.
+So copying data to secretmem pages using process_vm_writev wouldn't
+work.
 
----
+> > > One missing piece is still the secure zeroization of the page(s) if the
+> > > mapping is closed by last process to guarantee a secure cleanup. This can
+> > > probably done as an general mmap feature, not coupled to memfd_secret() and
+> > > can be done independently ("reverse" MAP_UNINITIALIZED feature).
+> > 
+> > There are "init_on_alloc" and "init_on_free" kernel parameters that
+> > enable zeroing of the pages on alloc and on free globally.
+> > Anyway, I'll add zeroing of the freed memory to secretmem.
+> 
+> Great, this allows page-specific (thus runtime-performance-optimized) zeroing
+> of secured pages. init_on_free lowers the performance to much and is not precice
+> enough.
+> 
+> Hagen
 
-Dear Lee,
-
-Could you take care about this patch?
-
-Best regards,
-Krzysztof
-
-Changes since v2:
-1. Fix subject (TP -> TI)
-
-Changes since v1:
-1. Add Dan Murphy, do not remove the entries.
----
- CREDITS     | 3 +++
- MAINTAINERS | 6 +++---
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/CREDITS b/CREDITS
-index cb02b9923a52..2a214a47c67a 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -1910,6 +1910,9 @@ S: 660 Harvard Ave. #7
- S: Santa Clara, CA 95051
- S: USA
- 
-+N: Milo Kim
-+D: TI LP855x, LP8727 and LP8788 drivers
-+
- N: Russell King
- E: rmk@arm.linux.org.uk
- D: Linux/arm integrator, maintainer & hacker
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b75f29..9d74b222f9ad 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17529,20 +17529,20 @@ F:	sound/soc/codecs/isabelle*
- F:	sound/soc/codecs/lm49453*
- 
- TI LP855x BACKLIGHT DRIVER
--M:	Milo Kim <milo.kim@ti.com>
-+M:	Dan Murphy <dmurphy@ti.com>
- S:	Maintained
- F:	Documentation/driver-api/backlight/lp855x-driver.rst
- F:	drivers/video/backlight/lp855x_bl.c
- F:	include/linux/platform_data/lp855x.h
- 
- TI LP8727 CHARGER DRIVER
--M:	Milo Kim <milo.kim@ti.com>
-+M:	Dan Murphy <dmurphy@ti.com>
- S:	Maintained
- F:	drivers/power/supply/lp8727_charger.c
- F:	include/linux/platform_data/lp8727.h
- 
- TI LP8788 MFD DRIVER
--M:	Milo Kim <milo.kim@ti.com>
-+M:	Dan Murphy <dmurphy@ti.com>
- S:	Maintained
- F:	drivers/iio/adc/lp8788_adc.c
- F:	drivers/leds/leds-lp8788.c
 -- 
-2.25.1
-
+Sincerely yours,
+Mike.
