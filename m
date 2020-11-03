@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5872A52E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C8E2A521E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731745AbgKCUy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:54:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53230 "EHLO mail.kernel.org"
+        id S1731270AbgKCUq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:46:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732558AbgKCUyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:54:18 -0500
+        id S1730006AbgKCUqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:46:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A824223AC;
-        Tue,  3 Nov 2020 20:54:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78DCC20719;
+        Tue,  3 Nov 2020 20:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436857;
-        bh=XPrpLHp8SJ7X+ZnC6pm4Ws7zcjeZ9mA/aqASE+QZaKk=;
+        s=default; t=1604436414;
+        bh=ETAY37V9+jSoGTqnl9UcgPunUWhPQ0cJvaAKy8DAllg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fsTGlD5qbXSIKon0+ZSMiWAWt8hV+0O+7F+kyKemaTu56FBOgYxOXFC26iwOrDn3x
-         6p+7Mvljl4BvMkfy2DTodXRuUF/5udmlUH6FsOfPzZDNG/G44whGYP2m3nTc/438ni
-         B9tHdWWaoJEyJiHnI6DRMtJX/ow/Nj16i5Vm0qzk=
+        b=TyK3qJJN31RpE2WvSoVmNisRPqflDXFiqaGFiFJd76Y1ZbvdELaNN4tjBDTpryBwZ
+         vQU1i12U/xWvt9Rf/0bNyeZ4rbp4TMkNB+bg+edRibbDhytBJ/7fGCLKJgZzdXpl8b
+         QRJvaHhBePpVpdc8uGdUgHRuKzNKXE24OXxKssFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 042/214] usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
-Date:   Tue,  3 Nov 2020 21:34:50 +0100
-Message-Id: <20201103203254.037737252@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.9 240/391] usb: dwc3: ep0: Fix ZLP for OUT ep0 requests
+Date:   Tue,  3 Nov 2020 21:34:51 +0100
+Message-Id: <20201103203403.200683135@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-References: <20201103203249.448706377@linuxfoundation.org>
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Badhri Jagan Sridharan <badhri@google.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit 6bbe2a90a0bb4af8dd99c3565e907fe9b5e7fd88 ]
+commit 66706077dc89c66a4777a4c6298273816afb848c upstream.
 
-The patch addresses the compliance test failures while running
-TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 of the "Deterministic PD
-Compliance MOI" test plan published in https://www.usb.org/usbc.
-For a product to be Type-C compliant, it's expected that these tests
-are run on usb.org certified Type-C compliance tester as mentioned in
-https://www.usb.org/usbc.
+The current ZLP handling for ep0 requests is only for control IN
+requests. For OUT direction, DWC3 needs to check and setup for MPS
+alignment.
 
-The purpose of the tests TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 is to
-verify the PR_SWAP response of the device. While doing so, the test
-asserts that Source Capabilities message is NOT received from the test
-device within tSwapSourceStart min (20 ms) from the time the last bit
-of GoodCRC corresponding to the RS_RDY message sent by the UUT was
-sent. If it does then the test fails.
+Usually, control OUT requests can indicate its transfer size via the
+wLength field of the control message. So usb_request->zero is usually
+not needed for OUT direction. To handle ZLP OUT for control endpoint,
+make sure the TRB is MPS size.
 
-This is in line with the requirements from the USB Power Delivery
-Specification Revision 3.0, Version 1.2:
-"6.6.8.1 SwapSourceStartTimer
-The SwapSourceStartTimer Shall be used by the new Source, after a
-Power Role Swap or Fast Role Swap, to ensure that it does not send
-Source_Capabilities Message before the new Sink is ready to receive
-the
-Source_Capabilities Message. The new Source Shall Not send the
-Source_Capabilities Message earlier than tSwapSourceStart after the
-last bit of the EOP of GoodCRC Message sent in response to the PS_RDY
-Message sent by the new Source indicating that its power supply is
-ready."
-
-The patch makes sure that TCPM does not send the Source_Capabilities
-Message within tSwapSourceStart(20ms) by transitioning into
-SRC_STARTUP only after  tSwapSourceStart(20ms).
-
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20200817183828.1895015-1-badhri@google.com
+Cc: stable@vger.kernel.org
+Fixes: c7fcdeb2627c ("usb: dwc3: ep0: simplify EP0 state machine")
+Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/usb/typec/tcpm/tcpm.c | 2 +-
- include/linux/usb/pd.h        | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/ep0.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 355a2c7fac0b4..16e124753df72 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -3482,7 +3482,7 @@ static void run_state_machine(struct tcpm_port *port)
- 		 */
- 		tcpm_set_pwr_role(port, TYPEC_SOURCE);
- 		tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
--		tcpm_set_state(port, SRC_STARTUP, 0);
-+		tcpm_set_state(port, SRC_STARTUP, PD_T_SWAP_SRC_START);
- 		break;
+--- a/drivers/usb/dwc3/ep0.c
++++ b/drivers/usb/dwc3/ep0.c
+@@ -942,12 +942,16 @@ static void dwc3_ep0_xfer_complete(struc
+ static void __dwc3_ep0_do_control_data(struct dwc3 *dwc,
+ 		struct dwc3_ep *dep, struct dwc3_request *req)
+ {
++	unsigned int		trb_length = 0;
+ 	int			ret;
  
- 	case VCONN_SWAP_ACCEPT:
-diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-index 145c38e351c25..6655ce32feff1 100644
---- a/include/linux/usb/pd.h
-+++ b/include/linux/usb/pd.h
-@@ -442,6 +442,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
- #define PD_T_ERROR_RECOVERY	100	/* minimum 25 is insufficient */
- #define PD_T_SRCSWAPSTDBY      625     /* Maximum of 650ms */
- #define PD_T_NEWSRC            250     /* Maximum of 275ms */
-+#define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
+ 	req->direction = !!dep->number;
  
- #define PD_T_DRP_TRY		100	/* 75 - 150 ms */
- #define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
--- 
-2.27.0
-
+ 	if (req->request.length == 0) {
+-		dwc3_ep0_prepare_one_trb(dep, dwc->ep0_trb_addr, 0,
++		if (!req->direction)
++			trb_length = dep->endpoint.maxpacket;
++
++		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr, trb_length,
+ 				DWC3_TRBCTL_CONTROL_DATA, false);
+ 		ret = dwc3_ep0_start_trans(dep);
+ 	} else if (!IS_ALIGNED(req->request.length, dep->endpoint.maxpacket)
+@@ -994,9 +998,12 @@ static void __dwc3_ep0_do_control_data(s
+ 
+ 		req->trb = &dwc->ep0_trb[dep->trb_enqueue - 1];
+ 
++		if (!req->direction)
++			trb_length = dep->endpoint.maxpacket;
++
+ 		/* Now prepare one extra TRB to align transfer size */
+ 		dwc3_ep0_prepare_one_trb(dep, dwc->bounce_addr,
+-					 0, DWC3_TRBCTL_CONTROL_DATA,
++					 trb_length, DWC3_TRBCTL_CONTROL_DATA,
+ 					 false);
+ 		ret = dwc3_ep0_start_trans(dep);
+ 	} else {
 
 
