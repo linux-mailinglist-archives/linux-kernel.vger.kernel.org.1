@@ -2,109 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2722A4F23
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8509F2A4F27
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgKCSmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:42:22 -0500
-Received: from mga02.intel.com ([134.134.136.20]:57561 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729342AbgKCSmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:42:21 -0500
-IronPort-SDR: t0cm1t6hDHqBWbnymcYBQWQ0V0T1mscZggcEyDdYPQ31BUuWDMTiVuf5pXxU5UMobiOPDpoctM
- Auy7mfGjf6OQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156093808"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="156093808"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:42:20 -0800
-IronPort-SDR: NHUhhr4Ld0+ktxaexVqc9ly5ziPRS5Y+EjthlhRuorVcxAnBGj8aOQJlCSYv9leRTjjDuriVDY
- sxTjbk20XkgQ==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="528593430"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:42:19 -0800
-Date:   Tue, 3 Nov 2020 10:42:18 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH V2 05/10] x86/pks: Add PKS kernel API
-Message-ID: <20201103184218.GB1531489@iweiny-DESK2.sc.intel.com>
-References: <20201102205320.1458656-1-ira.weiny@intel.com>
- <20201102205320.1458656-6-ira.weiny@intel.com>
- <20201103065024.GC75930@kroah.com>
- <20201103175335.GA1531489@iweiny-DESK2.sc.intel.com>
- <20201103181407.GA83845@kroah.com>
+        id S1729342AbgKCSnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728351AbgKCSm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:42:59 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D6CC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:42:59 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s9so19567955wro.8
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:42:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ooc/4skm8b41a0c2OVLhlIuGfy2g3W0VRGaKqUSnLp8=;
+        b=ctpRq/I4KR2iZH4NQ6gdEh86ePuqpslZPlOn1mdzkX+79TdYTXNdWmtONeK67ocwGN
+         pnpFAv/UkMXqgSNTbgfO35gWmZtYuIVWAdwrgjXu9RMB5KxH7c7zATXBzZmaOElSiDzK
+         NwvUz6Q7ybj6DW34pIRDPsIQxRJWCajO81s7pGSLsvZdDy4fznW7405Todk5u6FFSd8s
+         KufWeN1WYlltVwSLTeOsO/I3lDFOi50n4uyXpU73x1h9OW13mFZ3neTy+WIlQ4D2ERrR
+         Phr0M4VzKyHdBJRzm+yQYqHyZiwM7sd9CoSEn8FYbmb5jNyA9AzBl0YZPKLHr68DCKPX
+         DbdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ooc/4skm8b41a0c2OVLhlIuGfy2g3W0VRGaKqUSnLp8=;
+        b=Byly49TJc+Myu5iaRPbjzH/CRa5rXnl3yVxsbwG2HVZ4Zgi9igui2grD3k+cQvWGm5
+         nup8ZQapBl8fFjRj0IxKGNmr8h+JwVMK6xuYSeLVpK/MbyJ3OfR2Y9h3qVyQZPVgl36c
+         /gSm7pt7RMnBf+Skv8Z98MYAz5cGlOlzZ+FirutdVpJmIENC7iXReIZP+32auF31yFpY
+         7eHagAXcKqmgm9AL2bjNxWVgz6hVtJIagDAhSOL9otHj0QkTJPcDFNlTzwxz5XVGhXbi
+         aSEioLvrZQmObyW6FFszqm/nf91bf9KXHKE1fnnm8RAnbBAcL64LuZIp9Uq5uPrlmhiQ
+         YmyA==
+X-Gm-Message-State: AOAM531HJJmQNRSUbwm7+jUWvXYs39J8dQ8rkCYg7punW/zg8ejNQ18i
+        rhqjSves3XV0WiiaH3zDzPPtG5Pxg7GYbA==
+X-Google-Smtp-Source: ABdhPJzSCwPs9bpReY1ZvH8McvR4XSDVsk/2lcaduCUpzCaPFMntxFxfCSMOOzAZtvID82wFkespPQ==
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr28278104wru.356.1604428977874;
+        Tue, 03 Nov 2020 10:42:57 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:f853:3b7b:eb7b:1bf? ([2a01:e34:ed2f:f020:f853:3b7b:eb7b:1bf])
+        by smtp.googlemail.com with ESMTPSA id y20sm3731260wma.15.2020.11.03.10.42.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 10:42:57 -0800 (PST)
+Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
+ power management
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <20201006122024.14539-4-daniel.lezcano@linaro.org>
+ <4484e771-9011-0928-e961-cd3a53be55e9@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <18d2393a-2954-f271-817f-f9f9bf651f25@linaro.org>
+Date:   Tue, 3 Nov 2020 19:42:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103181407.GA83845@kroah.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <4484e771-9011-0928-e961-cd3a53be55e9@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:14:07PM +0100, Greg KH wrote:
-> On Tue, Nov 03, 2020 at 09:53:36AM -0800, Ira Weiny wrote:
-> > On Tue, Nov 03, 2020 at 07:50:24AM +0100, Greg KH wrote:
-> > > On Mon, Nov 02, 2020 at 12:53:15PM -0800, ira.weiny@intel.com wrote:
-> > > > From: Fenghua Yu <fenghua.yu@intel.com>
-> > > > 
-> > 
-> > [snip]
-> > 
-> > > > diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
-> > > > index 2955ba976048..0959a4c0ca64 100644
-> > > > --- a/include/linux/pkeys.h
-> > > > +++ b/include/linux/pkeys.h
-> > > > @@ -50,4 +50,28 @@ static inline void copy_init_pkru_to_fpregs(void)
-> > > >  
-> > > >  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
-> > > >  
-> > > > +#define PKS_FLAG_EXCLUSIVE 0x00
-> > > > +
-> > > > +#ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> > > > +static inline int pks_key_alloc(const char * const pkey_user, int flags)
-> > > > +{
-> > > > +	return -EOPNOTSUPP;
-> > > > +}
-> > > > +static inline void pks_key_free(int pkey)
-> > > > +{
-> > > > +}
-> > > > +static inline void pks_mk_noaccess(int pkey)
-> > > > +{
-> > > > +	WARN_ON_ONCE(1);
-> > > 
-> > > So for panic-on-warn systems, this is ok to reboot the box?
-> > 
-> > I would not expect this to reboot the box no.  But it is a violation of the API
-> > contract.  If pky_key_alloc() returns an error calling any of the other
-> > functions is an error.
-> > 
-> > > 
-> > > Are you sure, that feels odd...
-> > 
-> > It does feel odd and downright wrong...  But there are a lot of WARN_ON_ONCE's
-> > out there to catch this type of internal programming error.  Is panic-on-warn
-> > commonly used?
+
+Hi Lukasz,
+
+thanks for the review and the comments.
+
+On 23/10/2020 12:29, Lukasz Luba wrote:
+> Hi Daniel,
+
+[ ... ]
+
+>> +
+>> +config DTPM
+>> +    bool "Power capping for dynamic thermal power management"
 > 
-> Yes it is, and we are trying to recover from that as it is something
-> that you should recover from.  Properly handle the error and move on.
+> Maybe starting with capital letters: Dynamic Thermal Power Management?
 
-Sorry, I did not know that...  Ok I'll look at the series because I probably
-have others I need to change.
+Ok, noted.
 
-Thanks,
-Ira
+[ ... ]
+
+>> +++ b/drivers/powercap/dtpm.c
+>> @@ -0,0 +1,430 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright 2020 Linaro Limited
+>> + *
+>> + * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> + *
+>> + * The powercap based Dynamic Thermal Power Management framework
+>> + * provides to the userspace a consistent API to set the power limit
+>> + * on some devices.
+>> + *
+>> + * DTPM defines the functions to create a tree of constraints. Each
+>> + * parent node is a virtual description of the aggregation of the
+>> + * children. It propagates the constraints set at its level to its
+>> + * children and collect the children power infomation. The leaves of
+> 
+> s/infomation/information/
+
+Ok, thanks
+
+[ ... ]
+
+>> +static struct powercap_control_type *pct;
+>> +static struct dtpm *root;
+> 
+> I wonder if it safe to have the tree without a global lock for it, like
+> mutex tree_lock ?
+> I have put some comments below when the code traverses the tree.
+
+The mutex is a heavy lock and the its purpose is to allow the current
+process to be preempted while the spinlock is very fast without preemption.
+
+Putting in place a single lock will simplify the code but I'm not sure
+it is worth as it could be a contention. It would be simpler to switch
+to a big lock than the opposite.
+
+[ ... ]
+
+>> +static void dtpm_rebalance_weight(void)
+>> +{
+>> +    __dtpm_rebalance_weight(root);
+>> +}
+>> +
+>> +static void dtpm_sub_power(struct dtpm *dtpm)
+>> +{
+>> +    struct dtpm *parent = dtpm->parent;
+>> +
+>> +    while (parent) {
+> 
+> I am not sure if it is safe for a corner case when the
+> nodes are removing from bottom to top. We don't hold a tree
+> lock, so these two (above line and below) operations might
+> be split/preempted and 'parent' freed before taking the lock.
+> Is it possible? (Note: I might missed something like double
+> locking using this local node spinlock).
+
+The parent can not be freed until it has children, the check is done in
+the release node function.
+
+>> +        spin_lock(&parent->lock);
+>> +        parent->power_min -= dtpm->power_min;
+>> +        parent->power_max -= dtpm->power_max;
+>> +        spin_unlock(&parent->lock);
+>> +        parent = parent->parent;
+>> +    }
+>> +
+>> +    dtpm_rebalance_weight();
+>> +}
+>> +
+>> +static void dtpm_add_power(struct dtpm *dtpm)
+>> +{
+>> +    struct dtpm *parent = dtpm->parent;
+>> +
+>> +    while (parent) {
+> 
+> Similar here?
+> 
+>> +        spin_lock(&parent->lock);
+>> +        parent->power_min += dtpm->power_min;
+>> +        parent->power_max += dtpm->power_max;
+>> +        spin_unlock(&parent->lock);
+>> +        parent = parent->parent;
+>> +    }
+>> +
+>> +    dtpm_rebalance_weight();
+>> +}
+>> +
+>> +/**
+>> + * dtpm_update_power - Update the power on the dtpm
+>> + * @dtpm: a pointer to a dtpm structure to update
+>> + * @power_min: a u64 representing the new power_min value
+>> + * @power_max: a u64 representing the new power_max value
+>> + *
+>> + * Function to update the power values of the dtpm node specified in
+>> + * parameter. These new values will be propagated to the tree.
+>> + *
+>> + * Return: zero on success, -EINVAL if the values are inconsistent
+>> + */
+>> +int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max)
+>> +{
+>> +    if (power_min == dtpm->power_min && power_max == dtpm->power_max)
+>> +        return 0;
+>> +
+>> +    if (power_max < power_min)
+>> +        return -EINVAL;
+>> +
+>> +    dtpm_sub_power(dtpm);
+>> +    spin_lock(&dtpm->lock);
+>> +    dtpm->power_min = power_min;
+>> +    dtpm->power_max = power_max;
+>> +    spin_unlock(&dtpm->lock);
+>> +    dtpm_add_power(dtpm);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +/**
+>> + * dtpm_release_zone - Cleanup when the node is released
+>> + * @pcz: a pointer to a powercap_zone structure
+>> + *
+>> + * Do some housecleaning and update the weight on the tree. The
+>> + * release will be denied if the node has children. This function must
+>> + * be called by the specific release callback of the different
+>> + * backends.
+>> + *
+>> + * Return: 0 on success, -EBUSY if there are children
+>> + */
+>> +int dtpm_release_zone(struct powercap_zone *pcz)
+>> +{
+>> +    struct dtpm *dtpm = to_dtpm(pcz);
+>> +    struct dtpm *parent = dtpm->parent;
+>> +
+> 
+> I would lock the whole tree, just to play safe.
+> What do you think?
+
+I would like to keep the fine grain locking to prevent a potential
+contention. If it appears we hit a locking incorrectness or a race
+putting in question the fine grain locking scheme, then we can consider
+switching to a tree lock.
+
+>> +    if (!list_empty(&dtpm->children))
+>> +        return -EBUSY;
+>> +
+>> +    if (parent) {
+>> +        spin_lock(&parent->lock);
+>> +        list_del(&dtpm->sibling);
+>> +        spin_unlock(&parent->lock);
+>> +    }
+>> +
+>> +    dtpm_sub_power(dtpm);
+>> +
+>> +    kfree(dtpm);
+>> +
+>> +    return 0;
+>> +}
+
+[ ... ]
+
+>> +struct dtpm *dtpm_alloc(void)
+>> +{
+>> +    struct dtpm *dtpm;
+>> +
+>> +    dtpm = kzalloc(sizeof(*dtpm), GFP_KERNEL);
+>> +    if (dtpm) {
+>> +        INIT_LIST_HEAD(&dtpm->children);
+>> +        INIT_LIST_HEAD(&dtpm->sibling);
+>> +        spin_lock_init(&dtpm->lock);
+> 
+> Why do we use spinlock and not mutex?
+
+The mutex will force the calling process to be preempted, that is useful
+when the critical sections contains blocking calls.
+
+Here we are just changing values without blocking calls, so using the
+spinlock is more adequate as they are faster.
+
+[ ... ]
+
+>> +static int __init dtpm_init(void)
+>> +{
+>> +    struct dtpm_descr **dtpm_descr;
+>> +
+>> +    pct = powercap_register_control_type(NULL, "dtpm", NULL);
+>> +    if (!pct) {
+>> +        pr_err("Failed to register control type\n");
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    for_each_dtpm_table(dtpm_descr)
+>> +        (*dtpm_descr)->init(*dtpm_descr);
+> 
+> We don't check the returned value here. It is required that the
+> devices should already be up and running (like cpufreq).
+> But if for some reason the init() failed, maybe it's worth to add a
+> field inside the dtpm_desc or dtpm struct like 'bool ready' ?
+> It could be retried to init later.
+
+It would be make sense to check the init return value if we want to
+rollback what we have done. Here we don't want to do that. If one
+subsystem fails to insert itself in the tree, it will log an error but
+the tree should continue to give access to what have been successfully
+initialized.
+
+The rollback is important in the init() ops, not in dtpm_init().
+
+>> +
+>> +    return 0;
+>> +}
+>> +late_initcall(dtpm_init);
+> 
+> The framework would start operating at late boot. We don't control
+> the thermal/power issues in earier stages.
+> Although, at this late stage all other things like cpufreq should be
+> ready, so the ->init() on them is likely to success.
+
+Right, the dtpm is accessible through sysfs for an userspace thermal
+daemon doing the smart mitigation. So do the initcall can be really late.
+
+[ ... ]
+
+Thanks for the review.
+
+  -- Daniel
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
