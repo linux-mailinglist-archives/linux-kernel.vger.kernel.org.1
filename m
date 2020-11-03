@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AED2A5234
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4E12A5238
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730868AbgKCUrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:47:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38324 "EHLO mail.kernel.org"
+        id S1731398AbgKCUrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:47:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731367AbgKCUrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:47:42 -0500
+        id S1730543AbgKCUrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:47:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C62FC223FD;
-        Tue,  3 Nov 2020 20:47:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EB30223FD;
+        Tue,  3 Nov 2020 20:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436461;
-        bh=OlkrlWvBlgacWn6cEy3tc/WFHg9lIR7sccu3BttW8so=;
+        s=default; t=1604436466;
+        bh=Fub2pQZg96t+IAgVTNsfIh1eGT9Asy6zW3oeZiM4LkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MZtSAmLKTO3HhAgqcXB1l1D5mL7mcCHOMsvC4NyFbjuy7FhLEuS1b++gWV4dgHSRU
-         9AhTxXXJb32FkDDaXgceN9IfLrdVOdrOnsQwVWzk7lZ030hbyhGKGq6UU/AOV+0i4N
-         /O/Kjk2H4YaYPUuvJkL0QuYKM0QF/H4yJzoJSbWA=
+        b=DqbYtVxYD43gOkiTINnNQnsQXLOZuQFVme4xaZK/iomMHDo8HedUIUtCmtacaMfaw
+         K8YZsftpMwjDze52Thj1pz2PeMHFGSZ0Dt8w6uEyYqlcFpC8XtPLoWRW1vYEsu+pb+
+         THZn1KrlJMEAOhmHTpIv/inXYZH1QZzatysfbtlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.9 223/391] btrfs: qgroup: fix qgroup meta rsv leak for subvolume operations
-Date:   Tue,  3 Nov 2020 21:34:34 +0100
-Message-Id: <20201103203401.995861735@linuxfoundation.org>
+        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH 5.9 224/391] btrfs: sysfs: init devices outside of the chunk_mutex
+Date:   Tue,  3 Nov 2020 21:34:35 +0100
+Message-Id: <20201103203402.066464183@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -42,155 +42,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit e85fde5162bf1b242cbd6daf7dba0f9b457d592b upstream.
+commit ca10845a56856fff4de3804c85e6424d0f6d0cde upstream.
 
-[BUG]
-When quota is enabled for TEST_DEV, generic/013 sometimes fails like this:
+While running btrfs/061, btrfs/073, btrfs/078, or btrfs/178 we hit the
+following lockdep splat:
 
-  generic/013 14s ... _check_dmesg: something found in dmesg (see xfstests-dev/results//generic/013.dmesg)
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.9.0-rc3+ #4 Not tainted
+  ------------------------------------------------------
+  kswapd0/100 is trying to acquire lock:
+  ffff96ecc22ef4a0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0x3f/0x330
 
-And with the following metadata leak:
+  but task is already holding lock:
+  ffffffff8dd74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
 
-  BTRFS warning (device dm-3): qgroup 0/1370 has unreleased space, type 2 rsv 49152
-  ------------[ cut here ]------------
-  WARNING: CPU: 2 PID: 47912 at fs/btrfs/disk-io.c:4078 close_ctree+0x1dc/0x323 [btrfs]
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #3 (fs_reclaim){+.+.}-{0:0}:
+	 fs_reclaim_acquire+0x65/0x80
+	 slab_pre_alloc_hook.constprop.0+0x20/0x200
+	 kmem_cache_alloc+0x37/0x270
+	 alloc_inode+0x82/0xb0
+	 iget_locked+0x10d/0x2c0
+	 kernfs_get_inode+0x1b/0x130
+	 kernfs_get_tree+0x136/0x240
+	 sysfs_get_tree+0x16/0x40
+	 vfs_get_tree+0x28/0xc0
+	 path_mount+0x434/0xc00
+	 __x64_sys_mount+0xe3/0x120
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #2 (kernfs_mutex){+.+.}-{3:3}:
+	 __mutex_lock+0x7e/0x7e0
+	 kernfs_add_one+0x23/0x150
+	 kernfs_create_link+0x63/0xa0
+	 sysfs_do_create_link_sd+0x5e/0xd0
+	 btrfs_sysfs_add_devices_dir+0x81/0x130
+	 btrfs_init_new_device+0x67f/0x1250
+	 btrfs_ioctl+0x1ef/0x2e20
+	 __x64_sys_ioctl+0x83/0xb0
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
+	 __mutex_lock+0x7e/0x7e0
+	 btrfs_chunk_alloc+0x125/0x3a0
+	 find_free_extent+0xdf6/0x1210
+	 btrfs_reserve_extent+0xb3/0x1b0
+	 btrfs_alloc_tree_block+0xb0/0x310
+	 alloc_tree_block_no_bg_flush+0x4a/0x60
+	 __btrfs_cow_block+0x11a/0x530
+	 btrfs_cow_block+0x104/0x220
+	 btrfs_search_slot+0x52e/0x9d0
+	 btrfs_insert_empty_items+0x64/0xb0
+	 btrfs_insert_delayed_items+0x90/0x4f0
+	 btrfs_commit_inode_delayed_items+0x93/0x140
+	 btrfs_log_inode+0x5de/0x2020
+	 btrfs_log_inode_parent+0x429/0xc90
+	 btrfs_log_new_name+0x95/0x9b
+	 btrfs_rename2+0xbb9/0x1800
+	 vfs_rename+0x64f/0x9f0
+	 do_renameat2+0x320/0x4e0
+	 __x64_sys_rename+0x1f/0x30
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
+	 __lock_acquire+0x119c/0x1fc0
+	 lock_acquire+0xa7/0x3d0
+	 __mutex_lock+0x7e/0x7e0
+	 __btrfs_release_delayed_node.part.0+0x3f/0x330
+	 btrfs_evict_inode+0x24c/0x500
+	 evict+0xcf/0x1f0
+	 dispose_list+0x48/0x70
+	 prune_icache_sb+0x44/0x50
+	 super_cache_scan+0x161/0x1e0
+	 do_shrink_slab+0x178/0x3c0
+	 shrink_slab+0x17c/0x290
+	 shrink_node+0x2b2/0x6d0
+	 balance_pgdat+0x30a/0x670
+	 kswapd+0x213/0x4c0
+	 kthread+0x138/0x160
+	 ret_from_fork+0x1f/0x30
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    &delayed_node->mutex --> kernfs_mutex --> fs_reclaim
+
+   Possible unsafe locking scenario:
+
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(fs_reclaim);
+				 lock(kernfs_mutex);
+				 lock(fs_reclaim);
+    lock(&delayed_node->mutex);
+
+   *** DEADLOCK ***
+
+  3 locks held by kswapd0/100:
+   #0: ffffffff8dd74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
+   #1: ffffffff8dd65c50 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x115/0x290
+   #2: ffff96ed2ade30e0 (&type->s_umount_key#36){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
+
+  stack backtrace:
+  CPU: 0 PID: 100 Comm: kswapd0 Not tainted 5.9.0-rc3+ #4
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
   Call Trace:
-   btrfs_put_super+0x15/0x17 [btrfs]
-   generic_shutdown_super+0x72/0x110
-   kill_anon_super+0x18/0x30
-   btrfs_kill_super+0x17/0x30 [btrfs]
-   deactivate_locked_super+0x3b/0xa0
-   deactivate_super+0x40/0x50
-   cleanup_mnt+0x135/0x190
-   __cleanup_mnt+0x12/0x20
-   task_work_run+0x64/0xb0
-   __prepare_exit_to_usermode+0x1bc/0x1c0
-   __syscall_return_slowpath+0x47/0x230
-   do_syscall_64+0x64/0xb0
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  ---[ end trace a6cfd45ba80e4e06 ]---
-  BTRFS error (device dm-3): qgroup reserved space leaked
-  BTRFS info (device dm-3): disk space caching is enabled
-  BTRFS info (device dm-3): has skinny extents
+   dump_stack+0x8b/0xb8
+   check_noncircular+0x12d/0x150
+   __lock_acquire+0x119c/0x1fc0
+   lock_acquire+0xa7/0x3d0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   __mutex_lock+0x7e/0x7e0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? lock_acquire+0xa7/0x3d0
+   ? find_held_lock+0x2b/0x80
+   __btrfs_release_delayed_node.part.0+0x3f/0x330
+   btrfs_evict_inode+0x24c/0x500
+   evict+0xcf/0x1f0
+   dispose_list+0x48/0x70
+   prune_icache_sb+0x44/0x50
+   super_cache_scan+0x161/0x1e0
+   do_shrink_slab+0x178/0x3c0
+   shrink_slab+0x17c/0x290
+   shrink_node+0x2b2/0x6d0
+   balance_pgdat+0x30a/0x670
+   kswapd+0x213/0x4c0
+   ? _raw_spin_unlock_irqrestore+0x41/0x50
+   ? add_wait_queue_exclusive+0x70/0x70
+   ? balance_pgdat+0x670/0x670
+   kthread+0x138/0x160
+   ? kthread_create_worker_on_cpu+0x40/0x40
+   ret_from_fork+0x1f/0x30
 
-[CAUSE]
-The qgroup preallocated meta rsv operations of that offending root are:
+This happens because we are holding the chunk_mutex at the time of
+adding in a new device.  However we only need to hold the
+device_list_mutex, as we're going to iterate over the fs_devices
+devices.  Move the sysfs init stuff outside of the chunk_mutex to get
+rid of this lockdep splat.
 
-  btrfs_delayed_inode_reserve_metadata: rsv_meta_prealloc root=1370 num_bytes=131072
-  btrfs_delayed_inode_reserve_metadata: rsv_meta_prealloc root=1370 num_bytes=131072
-  btrfs_subvolume_reserve_metadata: rsv_meta_prealloc root=1370 num_bytes=49152
-  btrfs_delayed_inode_release_metadata: convert_meta_prealloc root=1370 num_bytes=-131072
-  btrfs_delayed_inode_release_metadata: convert_meta_prealloc root=1370 num_bytes=-131072
-
-It's pretty obvious that, we reserve qgroup meta rsv in
-btrfs_subvolume_reserve_metadata(), but doesn't have corresponding
-release/convert calls in btrfs_subvolume_release_metadata().
-
-This leads to the leakage.
-
-[FIX]
-To fix this bug, we should follow what we're doing in
-btrfs_delalloc_reserve_metadata(), where we reserve qgroup space, and
-add it to block_rsv->qgroup_rsv_reserved.
-
-And free the qgroup reserved metadata space when releasing the
-block_rsv.
-
-To do this, we need to change the btrfs_subvolume_release_metadata() to
-accept btrfs_root, and record the qgroup_to_release number, and call
-btrfs_qgroup_convert_reserved_meta() for it.
-
-Fixes: 733e03a0b26a ("btrfs: qgroup: Split meta rsv type into meta_prealloc and meta_pertrans")
-CC: stable@vger.kernel.org # 4.19+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+CC: stable@vger.kernel.org # 4.4.x: f3cd2c58110dad14e: btrfs: sysfs, rename device_link add/remove functions
+CC: stable@vger.kernel.org # 4.4.x
+Reported-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ctree.h     |    2 +-
- fs/btrfs/inode.c     |    2 +-
- fs/btrfs/ioctl.c     |    6 +++---
- fs/btrfs/root-tree.c |   13 +++++++++++--
- 4 files changed, 16 insertions(+), 7 deletions(-)
+ fs/btrfs/volumes.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2619,7 +2619,7 @@ enum btrfs_flush_state {
- int btrfs_subvolume_reserve_metadata(struct btrfs_root *root,
- 				     struct btrfs_block_rsv *rsv,
- 				     int nitems, bool use_global_rsv);
--void btrfs_subvolume_release_metadata(struct btrfs_fs_info *fs_info,
-+void btrfs_subvolume_release_metadata(struct btrfs_root *root,
- 				      struct btrfs_block_rsv *rsv);
- void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes);
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2613,9 +2613,6 @@ int btrfs_init_new_device(struct btrfs_f
+ 	btrfs_set_super_num_devices(fs_info->super_copy,
+ 				    orig_super_num_devices + 1);
  
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4051,7 +4051,7 @@ out_end_trans:
- 		err = ret;
- 	inode->i_flags |= S_DEAD;
- out_release:
--	btrfs_subvolume_release_metadata(fs_info, &block_rsv);
-+	btrfs_subvolume_release_metadata(root, &block_rsv);
- out_up_write:
- 	up_write(&fs_info->subvol_sem);
- 	if (err) {
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -618,7 +618,7 @@ static noinline int create_subvol(struct
- 	trans = btrfs_start_transaction(root, 0);
- 	if (IS_ERR(trans)) {
- 		ret = PTR_ERR(trans);
--		btrfs_subvolume_release_metadata(fs_info, &block_rsv);
-+		btrfs_subvolume_release_metadata(root, &block_rsv);
- 		goto fail_free;
- 	}
- 	trans->block_rsv = &block_rsv;
-@@ -742,7 +742,7 @@ fail:
- 	kfree(root_item);
- 	trans->block_rsv = NULL;
- 	trans->bytes_reserved = 0;
--	btrfs_subvolume_release_metadata(fs_info, &block_rsv);
-+	btrfs_subvolume_release_metadata(root, &block_rsv);
+-	/* add sysfs device entry */
+-	btrfs_sysfs_add_devices_dir(fs_devices, device);
+-
+ 	/*
+ 	 * we've got more storage, clear any full flags on the space
+ 	 * infos
+@@ -2623,6 +2620,10 @@ int btrfs_init_new_device(struct btrfs_f
+ 	btrfs_clear_space_info_full(fs_info);
  
- 	err = btrfs_commit_transaction(trans);
- 	if (err && !ret)
-@@ -856,7 +856,7 @@ fail:
- 	if (ret && pending_snapshot->snap)
- 		pending_snapshot->snap->anon_dev = 0;
- 	btrfs_put_root(pending_snapshot->snap);
--	btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->block_rsv);
-+	btrfs_subvolume_release_metadata(root, &pending_snapshot->block_rsv);
- free_pending:
- 	if (pending_snapshot->anon_dev)
- 		free_anon_bdev(pending_snapshot->anon_dev);
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -512,11 +512,20 @@ int btrfs_subvolume_reserve_metadata(str
- 	if (ret && qgroup_num_bytes)
- 		btrfs_qgroup_free_meta_prealloc(root, qgroup_num_bytes);
- 
-+	if (!ret) {
-+		spin_lock(&rsv->lock);
-+		rsv->qgroup_rsv_reserved += qgroup_num_bytes;
-+		spin_unlock(&rsv->lock);
-+	}
- 	return ret;
- }
- 
--void btrfs_subvolume_release_metadata(struct btrfs_fs_info *fs_info,
-+void btrfs_subvolume_release_metadata(struct btrfs_root *root,
- 				      struct btrfs_block_rsv *rsv)
- {
--	btrfs_block_rsv_release(fs_info, rsv, (u64)-1, NULL);
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	u64 qgroup_to_release;
+ 	mutex_unlock(&fs_info->chunk_mutex);
 +
-+	btrfs_block_rsv_release(fs_info, rsv, (u64)-1, &qgroup_to_release);
-+	btrfs_qgroup_convert_reserved_meta(root, qgroup_to_release);
- }
++	/* Add sysfs device entry */
++	btrfs_sysfs_add_devices_dir(fs_devices, device);
++
+ 	mutex_unlock(&fs_devices->device_list_mutex);
+ 
+ 	if (seeding_dev) {
 
 
