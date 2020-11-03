@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BD12A5167
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A032A5164
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 21:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgKCUka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:40:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
+        id S1729400AbgKCUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 15:40:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730206AbgKCUkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:40:25 -0500
+        id S1730217AbgKCUkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:40:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51340223AB;
-        Tue,  3 Nov 2020 20:40:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 098202236F;
+        Tue,  3 Nov 2020 20:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436024;
-        bh=vbhmWNAfFloNN1ZhGiiBhaSAizStjkbh4+d9cRpkQLM=;
+        s=default; t=1604436029;
+        bh=Y1Pn9np0wB+6pPQcbGHYcjbaA8ylYPCflBapr0RiuGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HFUoJltB2BAUUgSuxEPZz/+wqqxEWbJsiGhDNHe2ttvHhx4D6AYb+IkjphxOrecc5
-         cnWhfXoNNFJ9xQmTrEoUchpzEDiXH/uMgKpB/yf57ZRJez0CTpfmPasRO9s9Si7xuN
-         EGcbh4fctuoditHGhuncKbMsd+xKWDZlNOd4aaBU=
+        b=pXs3QOfm4HdPfsZ3ErT87YQ5VeULbP93eRTmoA3JqO6tnWV0BtaY6JX4tJiU5fgOC
+         Kz3yWglRS2/KF3I3zuYrp6IydHYnvA+uxv8EEECBcl6HDUtfWgHYMSLDe14IilXXLg
+         tjrZ9SY2tSEdnHyiaGcdt7u6FeFLkZ64JvRr9HXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Venkateswara Naralasetty <vnaralas@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 071/391] ath10k: fix retry packets update in station dump
-Date:   Tue,  3 Nov 2020 21:32:02 +0100
-Message-Id: <20201103203352.025477759@linuxfoundation.org>
+Subject: [PATCH 5.9 073/391] drm/ast: Separate DRM driver from PCI code
+Date:   Tue,  3 Nov 2020 21:32:04 +0100
+Message-Id: <20201103203352.132041253@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -44,73 +44,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit 67b927f9820847d30e97510b2f00cd142b9559b6 ]
+[ Upstream commit d50ace1e72f05708cc5dbc89b9bbb9873f150092 ]
 
-When tx status enabled, retry count is updated from tx completion status.
-which is not working as expected due to firmware limitation where
-firmware can not provide per MSDU rate statistics from tx completion
-status. Due to this tx retry count is always 0 in station dump.
+Putting the DRM driver to the top of the file and the PCI code to the
+bottom makes ast_drv.c more readable. While at it, the patch prefixes
+file-scope variables with ast_.
 
-Fix this issue by updating the retry packet count from per peer
-statistics. This patch will not break on SDIO devices since, this retry
-count is already updating from peer statistics for SDIO devices.
-
-Tested-on: QCA9984 PCI 10.4-3.6-00104
-Tested-on: QCA9882 PCI 10.2.4-1.0-00047
-
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1591856446-26977-1-git-send-email-vnaralas@codeaurora.org
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200730135206.30239-3-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/ast/ast_drv.c | 59 ++++++++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 215ade6faf328..69ad4ca1a87c1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3583,12 +3583,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
- 	}
+diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
+index 0b58f7aee6b01..9d04f2b5225cf 100644
+--- a/drivers/gpu/drm/ast/ast_drv.c
++++ b/drivers/gpu/drm/ast/ast_drv.c
+@@ -43,9 +43,33 @@ int ast_modeset = -1;
+ MODULE_PARM_DESC(modeset, "Disable/Enable modesetting");
+ module_param_named(modeset, ast_modeset, int, 0400);
  
- 	if (ar->htt.disable_tx_comp) {
--		arsta->tx_retries += peer_stats->retry_pkts;
- 		arsta->tx_failed += peer_stats->failed_pkts;
--		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
--			   arsta->tx_retries, arsta->tx_failed);
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
-+			   arsta->tx_failed);
- 	}
- 
-+	arsta->tx_retries += peer_stats->retry_pkts;
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
+-#define PCI_VENDOR_ASPEED 0x1a03
++/*
++ * DRM driver
++ */
 +
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
- 						    rate_idx);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2177e9d92bdff..03c7edf05a1d1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8542,12 +8542,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
- 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
- 
- 	if (ar->htt.disable_tx_comp) {
--		sinfo->tx_retries = arsta->tx_retries;
--		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
- 		sinfo->tx_failed = arsta->tx_failed;
- 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
- 	}
- 
-+	sinfo->tx_retries = arsta->tx_retries;
-+	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
++DEFINE_DRM_GEM_FOPS(ast_fops);
 +
- 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
++static struct drm_driver ast_driver = {
++	.driver_features = DRIVER_ATOMIC |
++			   DRIVER_GEM |
++			   DRIVER_MODESET,
++
++	.fops = &ast_fops,
++	.name = DRIVER_NAME,
++	.desc = DRIVER_DESC,
++	.date = DRIVER_DATE,
++	.major = DRIVER_MAJOR,
++	.minor = DRIVER_MINOR,
++	.patchlevel = DRIVER_PATCHLEVEL,
+ 
+-static struct drm_driver driver;
++	DRM_GEM_VRAM_DRIVER
++};
++
++/*
++ * PCI driver
++ */
++
++#define PCI_VENDOR_ASPEED 0x1a03
+ 
+ #define AST_VGA_DEVICE(id, info) {		\
+ 	.class = PCI_BASE_CLASS_DISPLAY << 16,	\
+@@ -56,13 +80,13 @@ static struct drm_driver driver;
+ 	.subdevice = PCI_ANY_ID,		\
+ 	.driver_data = (unsigned long) info }
+ 
+-static const struct pci_device_id pciidlist[] = {
++static const struct pci_device_id ast_pciidlist[] = {
+ 	AST_VGA_DEVICE(PCI_CHIP_AST2000, NULL),
+ 	AST_VGA_DEVICE(PCI_CHIP_AST2100, NULL),
+ 	{0, 0, 0},
+ };
+ 
+-MODULE_DEVICE_TABLE(pci, pciidlist);
++MODULE_DEVICE_TABLE(pci, ast_pciidlist);
+ 
+ static void ast_kick_out_firmware_fb(struct pci_dev *pdev)
+ {
+@@ -94,7 +118,7 @@ static int ast_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (ret)
+ 		return ret;
+ 
+-	dev = drm_dev_alloc(&driver, &pdev->dev);
++	dev = drm_dev_alloc(&ast_driver, &pdev->dev);
+ 	if (IS_ERR(dev))
+ 		return  PTR_ERR(dev);
+ 
+@@ -118,11 +142,9 @@ err_ast_driver_unload:
+ err_drm_dev_put:
+ 	drm_dev_put(dev);
+ 	return ret;
+-
  }
  
+-static void
+-ast_pci_remove(struct pci_dev *pdev)
++static void ast_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct drm_device *dev = pci_get_drvdata(pdev);
+ 
+@@ -217,30 +239,12 @@ static const struct dev_pm_ops ast_pm_ops = {
+ 
+ static struct pci_driver ast_pci_driver = {
+ 	.name = DRIVER_NAME,
+-	.id_table = pciidlist,
++	.id_table = ast_pciidlist,
+ 	.probe = ast_pci_probe,
+ 	.remove = ast_pci_remove,
+ 	.driver.pm = &ast_pm_ops,
+ };
+ 
+-DEFINE_DRM_GEM_FOPS(ast_fops);
+-
+-static struct drm_driver driver = {
+-	.driver_features = DRIVER_ATOMIC |
+-			   DRIVER_GEM |
+-			   DRIVER_MODESET,
+-
+-	.fops = &ast_fops,
+-	.name = DRIVER_NAME,
+-	.desc = DRIVER_DESC,
+-	.date = DRIVER_DATE,
+-	.major = DRIVER_MAJOR,
+-	.minor = DRIVER_MINOR,
+-	.patchlevel = DRIVER_PATCHLEVEL,
+-
+-	DRM_GEM_VRAM_DRIVER
+-};
+-
+ static int __init ast_init(void)
+ {
+ 	if (vgacon_text_force() && ast_modeset == -1)
+@@ -261,4 +265,3 @@ module_exit(ast_exit);
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL and additional rights");
+-
 -- 
 2.27.0
 
