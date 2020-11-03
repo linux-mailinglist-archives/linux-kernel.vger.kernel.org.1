@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23042A3A86
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D562A3A88
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 03:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgKCClr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Nov 2020 21:41:47 -0500
-Received: from mga06.intel.com ([134.134.136.31]:64732 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725997AbgKCClr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Nov 2020 21:41:47 -0500
-IronPort-SDR: HSPhAwLuNlDfQn6/uDKAUOgVWUNhsc93Xsmtly94tBLxexv/+ynVA+aNIHUdFFX3agwCyIw8F2
- eMs41RtLJhDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="230617642"
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="230617642"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:41:45 -0800
-IronPort-SDR: pMCcW3vEUvHSzX/Ock69kEE8byVAxVvfoV2A2WPoGKJnKpPVPddXvRd2hKg4NRwuvbelKFfkqQ
- EtASVpEFLAAw==
-X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
-   d="scan'208";a="528240587"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:41:45 -0800
-Date:   Mon, 2 Nov 2020 18:41:43 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2 0/4] perf: Fix perf_event_attr::exclusive rotation
-Message-ID: <20201103024143.GK466880@tassilo.jf.intel.com>
-References: <20201029162719.519685265@infradead.org>
- <20201031234418.GE3380099@krava>
- <20201102035238.GI466880@tassilo.jf.intel.com>
- <20201102141625.GX2594@hirez.programming.kicks-ass.net>
+        id S1726264AbgKCCpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Nov 2020 21:45:46 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42240 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725968AbgKCCpp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:45:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UE2a0gk_1604371541;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UE2a0gk_1604371541)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 03 Nov 2020 10:45:41 +0800
+Subject: Re: [PATCH v20 04/20] mm/thp: use head for head page in
+ lru_add_page_tail
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-5-git-send-email-alex.shi@linux.alibaba.com>
+ <20201029135047.GE599825@cmpxchg.org>
+ <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+ <20201102160357.GP27442@casper.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <374a5d13-e5d2-9f5e-0185-5b0f2a613fa6@linux.alibaba.com>
+Date:   Tue, 3 Nov 2020 10:43:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102141625.GX2594@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201102160357.GP27442@casper.infradead.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:16:25PM +0100, Peter Zijlstra wrote:
-> On Sun, Nov 01, 2020 at 07:52:38PM -0800, Andi Kleen wrote:
-> > The main motivation is actually that the "multiple groups" algorithm
-> > in perf doesn't work all that great: it has quite a few cases where it
-> > starves groups or makes the wrong decisions. That is because it is very
-> > difficult (likely NP complete) problem and the kernel takes a lot
-> > of short cuts to avoid spending too much time on it.
+
+
+ÔÚ 2020/11/3 ÉÏÎç12:03, Matthew Wilcox Ð´µÀ:
+> On Fri, Oct 30, 2020 at 10:46:54AM +0800, Alex Shi wrote:
+>> -static void lru_add_page_tail(struct page *page, struct page *page_tail,
+>> +static void lru_add_page_tail(struct page *head, struct page *tail,
+>>  		struct lruvec *lruvec, struct list_head *list)
+>>  {
+>> -	VM_BUG_ON_PAGE(!PageHead(page), page);
+>> -	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
+>> -	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
+>> +	VM_BUG_ON_PAGE(!PageHead(head), head);
+>> +	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>> +	VM_BUG_ON_PAGE(PageLRU(tail), head);
 > 
-> The event scheduling should be starvation free, except in the presence
-> of pinned events.
+> These last two should surely have been
+> 	VM_BUG_ON_PAGE(PageCompound(tail), tail);
+> 	VM_BUG_ON_PAGE(PageLRU(tail), tail);
 > 
-> If you can show starvation without pinned events, it's a bug.
+> Also, what do people think about converting these to VM_BUG_ON_PGFLAGS?
+
+Hi Matthew,
+
+Thanks for reminder! Looks these changes worth for another patch.
+
 > 
-> It will also always do equal or better than exclusive mode wrt PMU
-> utilization. Again, if it doesn't it's a bug.
+> Either way:
+> 
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
 
-Simple example (I think we've shown that one before):
 
-(on skylake)
-$ cat /proc/sys/kernel/nmi_watchdog
-0
-$ perf stat -e instructions,cycles,frontend_retired.latency_ge_2,frontend_retired.latency_ge_16 -a sleep 2
+I will take this option this time. :)
 
- Performance counter stats for 'system wide':
-
-       654,514,990      instructions              #    0.34  insn per cycle           (50.67%)
-     1,924,297,028      cycles                                                        (74.28%)
-        21,708,935      frontend_retired.latency_ge_2                                     (75.01%)
-         1,769,952      frontend_retired.latency_ge_16                                     (24.99%)
-
-       2.002426541 seconds time elapsed
-
-The second frontend_retired should be both getting 50% and the fixed events should be getting
-100%. So several events are starved.
-
-Another similar example is trying to schedule the topdown events on Icelake in parallel to other
-groups. It works with one extra group, but breaks with two.
-
-(on icelake)
-$ cat /proc/sys/kernel/nmi_watchdog
-0
-$ perf stat -e '{slots,topdown-bad-spec,topdown-be-bound,topdown-fe-bound,topdown-retiring},{branches,branches,branches,branches,branches,branches,branches,branches},{branches,branches,branches,branches,branches,branches,branches,branches}' -a sleep 1
-
- Performance counter stats for 'system wide':
-
-        71,229,087      slots                                                         (60.65%)
-         5,066,320      topdown-bad-spec          #      7.1% bad speculation         (60.65%)
-        35,080,387      topdown-be-bound          #     49.2% backend bound           (60.65%)
-        22,769,750      topdown-fe-bound          #     32.0% frontend bound          (60.65%)
-         8,336,760      topdown-retiring          #     11.7% retiring                (60.65%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-           424,584      branches                                                      (70.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-         3,634,075      branches                                                      (30.00%)
-
-       1.001312511 seconds time elapsed
-
-A tool using exclusive hopefully will be able to do better than this.
-
--Andi
+Thanks!
+Alex
