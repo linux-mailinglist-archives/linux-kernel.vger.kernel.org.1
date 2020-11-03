@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D222A57CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE06F2A57E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 22:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731760AbgKCUvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 15:51:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47398 "EHLO mail.kernel.org"
+        id S1732611AbgKCVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 16:46:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgKCUvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 15:51:48 -0500
+        id S1732003AbgKCUvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 15:51:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DADD82053B;
-        Tue,  3 Nov 2020 20:51:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61E752071E;
+        Tue,  3 Nov 2020 20:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604436708;
-        bh=ZEG/PITrBrNEmPAiZ7Xuy2CVBKPYhPVhfGll2w7GYr0=;
+        s=default; t=1604436712;
+        bh=sPcDn3pCFsVf/hXUP2umMlz2D70RkKKsF+8Rs+E/f/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSHqNe1EjlA46QDoQmNMxuo02sRMkXhYbNAwWQF02k9lGx+27Fr/jkwPBEW+tJDDt
-         h6hooG2UhqPOUEWaLl/UwufuY0tVOkxQAldHj/I2KjfJjT6lHLqiMSIFwTBiVrAfc8
-         bNJn9uyZ9SPy95GX6C9DJeE5FLAI55fjpGQfrM0s=
+        b=Zavex8GFYnHMZENXJiZFWSyvXXK590JgR3Aj7V9kyX6NQ5lb9iTBgn5+r7tYbNINN
+         cHhF/PMSVBQqQQSXp0f/FHDn/kinVWroz3+hXNIsIAtF346TTGNGr/8esxRrXhow5o
+         ezOzCz1/43Fg899UvioPbdLP6PEnsyrH/hhGQ2N8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.9 368/391] ARM: dts: s5pv210: fix pinctrl property of "vibrator-en" regulator in Aries
-Date:   Tue,  3 Nov 2020 21:36:59 +0100
-Message-Id: <20201103203411.979640211@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 5.9 370/391] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
+Date:   Tue,  3 Nov 2020 21:37:01 +0100
+Message-Id: <20201103203412.114859901@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
 References: <20201103203348.153465465@linuxfoundation.org>
@@ -43,32 +44,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 2c6658c607a3af2ed7bd41dc57a3dd31537d023e upstream.
+commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
 
-Fix typo in pinctrl property of "vibrator-en" fixed regulator in Aries
-family of boards.  The error caused lack of pin configuration for the
-GPIO used in vibrator.
+Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
+without CONFIG_MMU leads to build errors:
 
-Fixes: 04568cb58a43 ("ARM: dts: s5pv210: Disable pull for vibrator enable GPIO on Aries boards")
+  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
+  arch/arm/plat-samsung/pm-debug.c:57:2: error:
+    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+
+Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200907161141.31034-5-krzk@kernel.org
+Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/s5pv210-aries.dtsi |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/plat-samsung/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/s5pv210-aries.dtsi
-+++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
-@@ -66,7 +66,7 @@
- 		gpio = <&gpj1 1 GPIO_ACTIVE_HIGH>;
- 
- 		pinctrl-names = "default";
--		pinctr-0 = <&vibrator_ena>;
-+		pinctrl-0 = <&vibrator_ena>;
- 	};
- 
- 	touchkey_vdd: regulator-fixed-1 {
+--- a/arch/arm/plat-samsung/Kconfig
++++ b/arch/arm/plat-samsung/Kconfig
+@@ -241,6 +241,7 @@ config SAMSUNG_PM_DEBUG
+ 	depends on PM && DEBUG_KERNEL
+ 	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
+ 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
++	depends on DEBUG_LL && MMU
+ 	help
+ 	  Say Y here if you want verbose debugging from the PM Suspend and
+ 	  Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
 
 
