@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB482A3F79
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102DA2A3F7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 09:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgKCI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 03:57:54 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7410 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgKCI5x (ORCPT
+        id S1727328AbgKCI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 03:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgKCI6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:57:53 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CQNwF6ySjz71qv;
-        Tue,  3 Nov 2020 16:57:49 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 3 Nov 2020
- 16:57:45 +0800
-Subject: Re: [PATCH v2] drm: Add the new api to install irq
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <1604369441-65254-1-git-send-email-tiantao6@hisilicon.com>
- <8af4223a-037e-7093-cac3-0061aa7b8025@suse.de>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <29e7eeb5-de7b-89bd-b710-38c00e3c7b54@huawei.com>
-Date:   Tue, 3 Nov 2020 16:57:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 3 Nov 2020 03:58:30 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF06C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 00:58:30 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 79so7836725otc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 00:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K+MACc07Pws5365l/xLxcP/2+AmzqU4XUQhOAyut96E=;
+        b=STTpWyPq5ZxF9tVO8yTXEekYkaMc1WUut1WqgdmpKnGDVFgQfZxacNWbA0Cq9f670m
+         k3owC92JGcElxZp6Nrwlk7KgXICcDXabPHuef6rUUyQhnKwg/Dg08+1FJernJwXLkBVf
+         /75n4yFwei0v/zhtgjb2hCN2/zQxCLMS16vgA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K+MACc07Pws5365l/xLxcP/2+AmzqU4XUQhOAyut96E=;
+        b=VuIMMQfok9vWHHKlqtonwTWqcufMj/0R1UN8Ga22f7LdFC2/jyx26KNhZBUQnS/aoC
+         K2Ng2nYeSW/017WgwbjR0MCGiNra0+acJW+7UbCovYd9GihCXu98Um93T9AmV9y9TqdU
+         A1vPkL2WRCAAfKxjGbidbNzV2CE23eaawq7fGv8n723Yl7TYZYODJiBJ1JryNMZj25ow
+         U5TfS3LPdhscXTQ1vp8+SjtXZUf16wNcorUK2u5deVFIsl+UJEElLGLhcizCJFN69Li7
+         JNinnlPN4XMfc/eKfyaqVqyO9rQbX6GRK2NU6PpihxkDoPfefCxCjaUMtsmTmF2Ms/Lu
+         EvJw==
+X-Gm-Message-State: AOAM530py0uRk3FK2NKt19/381shOGdNPMN10Szgjb5r503+ZntpqShE
+        NnUVD+ZE5az1jhyJn/Ed8/13JnmyrhJ9UAQ5XmMo/g==
+X-Google-Smtp-Source: ABdhPJxOUQMQt3VYJItKDV/Lz5YeNzd3tJtHdejPHKPM2wx8pryoxeJVO79ab36z3kuxd2CEyKRMu7F0p9S4AIWqM10=
+X-Received: by 2002:a9d:3b4:: with SMTP id f49mr14183517otf.188.1604393909620;
+ Tue, 03 Nov 2020 00:58:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8af4223a-037e-7093-cac3-0061aa7b8025@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+References: <20201030181822.570402-1-lee.jones@linaro.org> <20201102183242.2031659-1-yepeilin.cs@gmail.com>
+ <20201103085324.GL4488@dell>
+In-Reply-To: <20201103085324.GL4488@dell>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 3 Nov 2020 09:58:18 +0100
+Message-ID: <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 3, 2020 at 9:53 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Mon, 02 Nov 2020, Peilin Ye wrote:
+>
+> > From: Lee Jones <lee.jones@linaro.org>
+> >
+> > Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
+> > fonts") introduced the following error when building rpc_defconfig (only
+> > this build appears to be affected):
+> >
+> >  `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
+> >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> >  `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
+> >     defined in discarded section `.data' of arch/arm/boot/compressed/font.o
+> >  make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
+> >  make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
+> >  make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+> >
+> > The .data section is discarded at link time.  Reinstating acorndata_8x8 as
+> > const ensures it is still available after linking.  Do the same for the
+> > other 12 built-in fonts as well, for consistency purposes.
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Cc: Russell King <linux@armlinux.org.uk>
+> > Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > ---
+> > Changes in v2:
+> >   - Fix commit ID to 6735b4632def in commit message (Russell King
+> >     <linux@armlinux.org.uk>)
+> >   - Add `const` back for all 13 built-in fonts (Daniel Vetter
+> >     <daniel.vetter@ffwll.ch>)
+> >   - Add a Fixes: tag
+> >
+> >  lib/fonts/font_10x18.c     | 2 +-
+> >  lib/fonts/font_6x10.c      | 2 +-
+> >  lib/fonts/font_6x11.c      | 2 +-
+> >  lib/fonts/font_6x8.c       | 2 +-
+> >  lib/fonts/font_7x14.c      | 2 +-
+> >  lib/fonts/font_8x16.c      | 2 +-
+> >  lib/fonts/font_8x8.c       | 2 +-
+> >  lib/fonts/font_acorn_8x8.c | 2 +-
+> >  lib/fonts/font_mini_4x6.c  | 2 +-
+> >  lib/fonts/font_pearl_8x8.c | 2 +-
+> >  lib/fonts/font_sun12x22.c  | 2 +-
+> >  lib/fonts/font_sun8x16.c   | 2 +-
+> >  lib/fonts/font_ter16x32.c  | 2 +-
+> >  13 files changed, 13 insertions(+), 13 deletions(-)
+>
+> LGTM.
+>
+> Thanks for keeping my authorship.  Much appreciated.
 
+Should I stuff this into drm-misc-fixes? Or will someone else pick
+this up? Greg?
 
-在 2020/11/3 15:56, Thomas Zimmermann 写道:
-> Hi
-> 
-> Thanks, the code looks good already. There just are a few nits below.
-> 
-Thanks for the help with the review code.
-Add the new api devm_drm_irq_install and himbc use the new interface as 
-one patch or two?
-
-> Am 03.11.20 um 03:10 schrieb Tian Tao:
->> Add new api devm_drm_irq_install() to register interrupts,
->> no need to call drm_irq_uninstall() when the drm module is removed.
->>
->> v2:
->> fixed the wrong parameter.
->>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->> ---
->>   drivers/gpu/drm/drm_drv.c | 23 +++++++++++++++++++++++
->>   include/drm/drm_drv.h     |  3 ++-
->>   2 files changed, 25 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
->> index cd162d4..0fe5243 100644
->> --- a/drivers/gpu/drm/drm_drv.c
->> +++ b/drivers/gpu/drm/drm_drv.c
-> 
-> The implementation should rather go to drm_irq.c
-> 
->> @@ -39,6 +39,7 @@
->>   #include <drm/drm_color_mgmt.h>
->>   #include <drm/drm_drv.h>
->>   #include <drm/drm_file.h>
->> +#include <drm/drm_irq.h>
->>   #include <drm/drm_managed.h>
->>   #include <drm/drm_mode_object.h>
->>   #include <drm/drm_print.h>
->> @@ -678,6 +679,28 @@ static int devm_drm_dev_init(struct device *parent,
->>   	return ret;
->>   }
->>   
->> +static void devm_drm_dev_irq_uninstall(void *data)
->> +{
->> +	drm_irq_uninstall(data);
->> +}
->> +
->> +int devm_drm_irq_install(struct device *parent,
->> +			 struct drm_device *dev, int irq)
->> +{
->> +	int ret;
->> +
->> +	ret = drm_irq_install(dev, irq);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = devm_add_action(parent, devm_drm_dev_irq_uninstall, dev);
->> +	if (ret)
->> +		devm_drm_dev_irq_uninstall(dev);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(devm_drm_irq_install);
->> +
->>   void *__devm_drm_dev_alloc(struct device *parent, struct drm_driver *driver,
->>   			   size_t size, size_t offset)
->>   {
->> diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
->> index 0230762..fec1776 100644
->> --- a/include/drm/drm_drv.h
->> +++ b/include/drm/drm_drv.h
-> 
-> And the declaration should go to drm_irq.h
-> 
-> We generally don't merge unused code, so you should convert at least one
-> KMS driver, say hibmc, to use the new interface.
-> 
-> Best regards
-> Thomas
-> 
->> @@ -513,7 +513,8 @@ struct drm_driver {
->>   
->>   void *__devm_drm_dev_alloc(struct device *parent, struct drm_driver *driver,
->>   			   size_t size, size_t offset);
->> -
->> +int devm_drm_irq_install(struct device *parent, struct drm_device *dev,
->> +			 int irq);
->>   /**
->>    * devm_drm_dev_alloc - Resource managed allocation of a &drm_device instance
->>    * @parent: Parent device object
->>
-> 
-
+I guess drm-misc-fixes might be easiest since there's a bunch of other
+fbcon/font stuff in the queue in drm-misc from Peilin.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
