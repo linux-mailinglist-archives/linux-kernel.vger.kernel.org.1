@@ -2,644 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2147A2A4EFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860ED2A4EFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Nov 2020 19:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729249AbgKCSga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 13:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
+        id S1729263AbgKCSg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 13:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgKCSg3 (ORCPT
+        with ESMTP id S1728767AbgKCSgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:36:29 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217BFC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:36:29 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b12so8979950plr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:36:29 -0800 (PST)
+        Tue, 3 Nov 2020 13:36:55 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CA0C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 10:36:55 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id e16so2690871ile.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 10:36:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xbG2rkbYtbtAx2QOvFJStmUQUZjXYeKKuQ7EX/wKhBQ=;
-        b=PVZzMmvSD71eQq7oy/R/SaUWUDqTSgVeJ69exLzmTWkNn3dtLC3m7B+zAN1br8Z+7I
-         uTsu0RlNiontBCLIPPtnyVZXAufUZXmT+SexFY87KI0Ni3oTyDAMd2TcK+Z1o0gWxz+s
-         rKa3p+RpR1G2yspg/4nymi6vCW9tXO+14jKdhUVWVVLYVGI0iNHsV4vwTMjaU6PVIglG
-         O4yWUpVLat2wkkeHqG8LqT05JR0lndcTKrMQJWomYSVKCbbLmkutL/1tnjl6aUbo6L0L
-         b1OO/9pvUTwFVEWZcZSwv/2n4ZS0Za08b7F5bk1jEfbRNWM4e6k+pV+qTRKlaXCpgLIL
-         SFxw==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYbQzlD7g6CgMEWc3wST+ZDYhV+JHgWV0zK7h/WfMj0=;
+        b=iG5fZ4XP9AuvacaY3DzFjo+WannOzars7jtIdP0wgaDlrlYSJvqAaB6jd7l1j4CO8p
+         9/kZcI/PuZpz3E7mNyYf0nvFqoK5bHBPZQH6nRMdWE5/zcPThauK4IdPzuZBEUeI/TpB
+         OktHTxoGsI4069vUpZ22tgkm1d/C77ndMad64=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xbG2rkbYtbtAx2QOvFJStmUQUZjXYeKKuQ7EX/wKhBQ=;
-        b=b54RfR/KNtSlpxdloTcjnNlJNChD7YON/uy0GmWgxDNU61b1hI0gg3V9Vn07ii5UAJ
-         UjLuEAfz+/q5sKQmGkXlzp9QKXpxesvR4wGCy8L0mo0SCZ4yJ4sfuEF2/kcswEClDFxn
-         hPDhuR7idfqiyRsiaFH1LDQEh1/1tUeSjo1oXjIlOMZYHRQijNEkXc/JxKTXN66pBE1O
-         tscrnauWS475KPYfsJdJKo2BQJFKjmWPZdv39f5J3UHTIn6YwQ1wP57GtnoeSLPWRCGo
-         Xy9ih1KHFuK4x8whNRWoXZWiWzVhndu7P5E8E7oP5C/3CqWUAXZ/gvkNsrQk/YiICtnM
-         mZlA==
-X-Gm-Message-State: AOAM5312u/+na8kXA/6SQWV2PabSQu+WLEgIWv0ubAC3Vd0smfV3AhFw
-        kGgf/5GsI0MSzfj5LQ41kRl46g==
-X-Google-Smtp-Source: ABdhPJyhYC/MtTkdtUNcmu1wHhLPvFRRZsCwktnOWyKKhC5uAnzRcQ3eBQWk2xLarf+m2PK5Jay84g==
-X-Received: by 2002:a17:902:bd8e:b029:d4:c98b:c315 with SMTP id q14-20020a170902bd8eb02900d4c98bc315mr27347989pls.69.1604428588391;
-        Tue, 03 Nov 2020 10:36:28 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id h11sm6942471pfo.69.2020.11.03.10.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 10:36:27 -0800 (PST)
-Date:   Tue, 3 Nov 2020 11:36:25 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/26] coresight: Convert claim/disclaim operations to
- use access wrappers
-Message-ID: <20201103183625.GD2855763@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-12-suzuki.poulose@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYbQzlD7g6CgMEWc3wST+ZDYhV+JHgWV0zK7h/WfMj0=;
+        b=jAE7GBnD9RejqNdKIBlCTBdDF4aZ5qVUh8zuc/wuURs9Oy0pab9XbnXK7cfVDhOs7q
+         xsBO+7glfOpeteXdUyFm8J3DA1YbxstwrrE0jSgbrtdY8a5D3vi1a88+xoo9eVahOkcP
+         o/dKrHBzY5uSgrGQZfdb7KP8J9+TVNjeA6noKdIZFOH70USVAof+DGIQ/HkgKp4d43xY
+         NFYl5yBvBLdh/9svsFb6c+PNQjsV7B8bE5QRmXe+janGsryrIQLJ2vTlMJinKtblz7J6
+         UI1GHeR/ymqaDa0fnpLXvEupibTP2lgSC9RKbJJCiuWN3SSlUN/ykLRiBC8ZKcR4e1W3
+         iqTA==
+X-Gm-Message-State: AOAM532GG2KNlFHFuWqew3lFR4gE0HMP2YLUlaBcCzF4/V12GvnKdubO
+        MYK+86Uc4hY9IWH20NbqYvKA9EA0GXoelV/NBIz6
+X-Google-Smtp-Source: ABdhPJx+f5Ogky6p999+76oktJVi6X+vrRgYJsuz5k2oZd0lveLH427nrSylT9VxPXleQYaNaD7hBezO9gV6D/ZVbcc=
+X-Received: by 2002:a92:3305:: with SMTP id a5mr174396ilf.219.1604428614935;
+ Tue, 03 Nov 2020 10:36:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-12-suzuki.poulose@arm.com>
+References: <20201028232759.1928479-1-atish.patra@wdc.com> <20201028232759.1928479-3-atish.patra@wdc.com>
+ <41f1248b-78c6-bac1-410b-9e222368c5f6@codethink.co.uk> <CAOnJCUJhQ=Zv0S4iCK4CDzQr_dfkw3J6ycdM=p6=5B2_sL1Ekg@mail.gmail.com>
+ <2d7cc829-5df6-6b94-4c8f-9bae6080444e@codethink.co.uk> <CAOnJCULejyF9xyLk5M0TXqW_=nn0KM5aE8nhK+1h0Xayd2pKUg@mail.gmail.com>
+ <fbe404b5-3bb1-dd00-e558-e4a55960b767@microchip.com> <fe079b4a-5410-5cc8-3f5e-8a95b573078a@codethink.co.uk>
+In-Reply-To: <fe079b4a-5410-5cc8-3f5e-8a95b573078a@codethink.co.uk>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 3 Nov 2020 10:36:43 -0800
+Message-ID: <CAOnJCUKH77XDymG+jAUYHP+5TC2aabTR4f8jF6s6FqqQNR=_CQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Cyril.Jean@microchip.com, devicetree@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daire McNamara <Daire.McNamara@microchip.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Padmarao Begari <Padmarao.Begari@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:29PM +0000, Suzuki K Poulose wrote:
-> Convert the generic CLAIM tag management APIs to use the
-> device access layer abstraction.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c  |  6 +-
->  drivers/hwtracing/coresight/coresight-core.c  | 66 +++++++++++--------
->  .../hwtracing/coresight/coresight-cti-core.c  | 17 +++--
->  drivers/hwtracing/coresight/coresight-etb10.c |  4 +-
->  .../coresight/coresight-etm3x-core.c          |  8 ++-
->  .../coresight/coresight-etm4x-core.c          |  4 +-
->  .../hwtracing/coresight/coresight-funnel.c    |  6 +-
->  .../coresight/coresight-replicator.c          | 16 +++--
->  .../hwtracing/coresight/coresight-tmc-etf.c   | 10 +--
->  .../hwtracing/coresight/coresight-tmc-etr.c   |  4 +-
->  include/linux/coresight.h                     | 16 ++---
->  11 files changed, 95 insertions(+), 62 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index 34c74b05c542..438063523463 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -412,6 +412,7 @@ static int catu_enable_hw(struct catu_drvdata *drvdata, void *data)
->  	u32 control, mode;
->  	struct etr_buf *etr_buf = data;
->  	struct device *dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	if (catu_wait_for_ready(drvdata))
->  		dev_warn(dev, "Timeout while waiting for READY\n");
-> @@ -422,7 +423,7 @@ static int catu_enable_hw(struct catu_drvdata *drvdata, void *data)
->  		return -EBUSY;
->  	}
->  
-> -	rc = coresight_claim_device_unlocked(drvdata->base);
-> +	rc = coresight_claim_device_unlocked(csdev);
->  	if (rc)
->  		return rc;
->  
-> @@ -466,9 +467,10 @@ static int catu_disable_hw(struct catu_drvdata *drvdata)
->  {
->  	int rc = 0;
->  	struct device *dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	catu_write_control(drvdata, 0);
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  	if (catu_wait_for_ready(drvdata)) {
->  		dev_info(dev, "Timeout while waiting for READY\n");
->  		rc = -EAGAIN;
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 42ba989a6b5e..4e7dd5941046 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -145,30 +145,32 @@ static int coresight_find_link_outport(struct coresight_device *csdev,
->  	return -ENODEV;
->  }
->  
-> -static inline u32 coresight_read_claim_tags(void __iomem *base)
-> +static inline u32 coresight_read_claim_tags(struct coresight_device *csdev)
->  {
-> -	return readl_relaxed(base + CORESIGHT_CLAIMCLR);
-> +	return csdev_access_relaxed_read32(&csdev->access, CORESIGHT_CLAIMCLR);
->  }
->  
-> -static inline bool coresight_is_claimed_self_hosted(void __iomem *base)
-> +static inline bool coresight_is_claimed_self_hosted(struct coresight_device *csdev)
->  {
-> -	return coresight_read_claim_tags(base) == CORESIGHT_CLAIM_SELF_HOSTED;
-> +	return coresight_read_claim_tags(csdev) == CORESIGHT_CLAIM_SELF_HOSTED;
->  }
->  
-> -static inline bool coresight_is_claimed_any(void __iomem *base)
-> +static inline bool coresight_is_claimed_any(struct coresight_device *csdev)
->  {
-> -	return coresight_read_claim_tags(base) != 0;
-> +	return coresight_read_claim_tags(csdev) != 0;
->  }
->  
-> -static inline void coresight_set_claim_tags(void __iomem *base)
-> +static inline void coresight_set_claim_tags(struct coresight_device *csdev)
->  {
-> -	writel_relaxed(CORESIGHT_CLAIM_SELF_HOSTED, base + CORESIGHT_CLAIMSET);
-> +	csdev_access_relaxed_write32(&csdev->access, CORESIGHT_CLAIM_SELF_HOSTED,
-> +				  CORESIGHT_CLAIMSET);
+On Tue, Nov 3, 2020 at 10:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 03/11/2020 18:10, Cyril.Jean@microchip.com wrote:
+> > On 11/3/20 3:07 PM, Atish Patra wrote:
+> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>
+> >> On Fri, Oct 30, 2020 at 2:20 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> ,snip[
+>
+> >>>> @Cyril : Can we enable both eMMC & sdcard at the same time ?
+> >>> I would put /both/ in but only enable the one in use for the moment.
+> >>> Our boards are booting of eMMC as supplied, so this isn't going to work
+> >>> as well. The eMMC is 8bit wide, and thus is only delivering 11MB/sec
+> >>> instead of 22MB/sec. This performance is still not great, but losing
+> >>> half the data-rate is just not good.
+> >>>
+> >> I am not sure what should be enabled by default. Updating sdcard is much
+> >> easier than eMMC card and we use that approach.
+> >>
+> >> @Cyril: Is there a way that we can enable both ?
+> >>
+> > Yes, we can enable both but this requires a modification to the FPGA
+> > design. One of the guys prototyped this while I was away. We will move
+> > this along. This will require reprogramming the FPGA with a new design
+> > and HSS version.
+> >
+> > Regards,
+> >
+> > Cyril.
+>
+> I either missed or couldn't find a way of forcing the boot mode to be
+> from the SD slot. Have I missed something? At the moment we'd like to
+> have more storage available as the ~7G free on the eMMC is not enough.
+>
 
-Indentation
+I use tftpboot to load the kernel & DT from the network. SD card is
+enabled in this DT and Linux
+kernel uses SD slot instead of eMMC.
 
->  	isb();
->  }
->  
-> -static inline void coresight_clear_claim_tags(void __iomem *base)
-> +static inline void coresight_clear_claim_tags(struct coresight_device *csdev)
->  {
-> -	writel_relaxed(CORESIGHT_CLAIM_SELF_HOSTED, base + CORESIGHT_CLAIMCLR);
-> +	csdev_access_relaxed_write32(&csdev->access, CORESIGHT_CLAIM_SELF_HOSTED,
-> +				  CORESIGHT_CLAIMCLR);
+To summarize, eMMC is used for HSS & U-Boot while SD card is used for
+Linux which makes
+more storage available to Linux.
 
-Indentation
+IMO, we should enable the sdcard for Linux DT until updated FPGA
+design & HSS is available.
 
->  	isb();
->  }
->  
-> @@ -182,27 +184,33 @@ static inline void coresight_clear_claim_tags(void __iomem *base)
->   * Called with CS_UNLOCKed for the component.
->   * Returns : 0 on success
->   */
-> -int coresight_claim_device_unlocked(void __iomem *base)
-> +int coresight_claim_device_unlocked(struct coresight_device *csdev)
->  {
-> -	if (coresight_is_claimed_any(base))
-> +	if (WARN_ON(!csdev))
-> +		return -EINVAL;
-> +
-> +	if (coresight_is_claimed_any(csdev))
->  		return -EBUSY;
->  
-> -	coresight_set_claim_tags(base);
-> -	if (coresight_is_claimed_self_hosted(base))
-> +	coresight_set_claim_tags(csdev);
-> +	if (coresight_is_claimed_self_hosted(csdev))
->  		return 0;
->  	/* There was a race setting the tags, clean up and fail */
-> -	coresight_clear_claim_tags(base);
-> +	coresight_clear_claim_tags(csdev);
->  	return -EBUSY;
->  }
->  EXPORT_SYMBOL_GPL(coresight_claim_device_unlocked);
->  
-> -int coresight_claim_device(void __iomem *base)
-> +int coresight_claim_device(struct coresight_device *csdev)
->  {
->  	int rc;
->  
-> -	CS_UNLOCK(base);
-> -	rc = coresight_claim_device_unlocked(base);
-> -	CS_LOCK(base);
-> +	if (WARN_ON(!csdev))
-> +		return -EINVAL;
-> +
-> +	CS_UNLOCK(csdev->access.base);
-> +	rc = coresight_claim_device_unlocked(csdev);
-> +	CS_LOCK(csdev->access.base);
->  
->  	return rc;
->  }
-> @@ -212,11 +220,14 @@ EXPORT_SYMBOL_GPL(coresight_claim_device);
->   * coresight_disclaim_device_unlocked : Clear the claim tags for the device.
->   * Called with CS_UNLOCKed for the component.
->   */
-> -void coresight_disclaim_device_unlocked(void __iomem *base)
-> +void coresight_disclaim_device_unlocked(struct coresight_device *csdev)
->  {
->  
-> -	if (coresight_is_claimed_self_hosted(base))
-> -		coresight_clear_claim_tags(base);
-> +	if (WARN_ON(!csdev))
-> +		return;
-> +
-> +	if (coresight_is_claimed_self_hosted(csdev))
-> +		coresight_clear_claim_tags(csdev);
->  	else
->  		/*
->  		 * The external agent may have not honoured our claim
-> @@ -227,11 +238,14 @@ void coresight_disclaim_device_unlocked(void __iomem *base)
->  }
->  EXPORT_SYMBOL_GPL(coresight_disclaim_device_unlocked);
->  
-> -void coresight_disclaim_device(void __iomem *base)
-> +void coresight_disclaim_device(struct coresight_device *csdev)
->  {
-> -	CS_UNLOCK(base);
-> -	coresight_disclaim_device_unlocked(base);
-> -	CS_LOCK(base);
-> +	if (WARN_ON(!csdev))
-> +		return;
-> +
-> +	CS_UNLOCK(csdev->access.base);
-> +	coresight_disclaim_device_unlocked(csdev);
-> +	CS_LOCK(csdev->access.base);
->  }
->  EXPORT_SYMBOL_GPL(coresight_disclaim_device);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index 3bb0de97d66e..5651d7f61a70 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -102,7 +102,7 @@ static int cti_enable_hw(struct cti_drvdata *drvdata)
->  		goto cti_state_unchanged;
->  
->  	/* claim the device */
-> -	rc = coresight_claim_device(drvdata->base);
-> +	rc = coresight_claim_device(drvdata->csdev);
->  	if (rc)
->  		goto cti_err_not_enabled;
->  
-> @@ -136,7 +136,7 @@ static void cti_cpuhp_enable_hw(struct cti_drvdata *drvdata)
->  		goto cti_hp_not_enabled;
->  
->  	/* try to claim the device */
-> -	if (coresight_claim_device(drvdata->base))
-> +	if (coresight_claim_device(drvdata->csdev))
->  		goto cti_hp_not_enabled;
->  
->  	cti_write_all_hw_regs(drvdata);
-> @@ -154,6 +154,7 @@ static int cti_disable_hw(struct cti_drvdata *drvdata)
->  {
->  	struct cti_config *config = &drvdata->config;
->  	struct device *dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	spin_lock(&drvdata->spinlock);
->  
-> @@ -171,7 +172,7 @@ static int cti_disable_hw(struct cti_drvdata *drvdata)
->  	writel_relaxed(0, drvdata->base + CTICONTROL);
->  	config->hw_enabled = false;
->  
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  	CS_LOCK(drvdata->base);
->  	spin_unlock(&drvdata->spinlock);
->  	pm_runtime_put(dev);
-> @@ -655,6 +656,7 @@ static int cti_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
->  			     void *v)
->  {
->  	struct cti_drvdata *drvdata;
-> +	struct coresight_device *csdev;
->  	unsigned int cpu = smp_processor_id();
->  	int notify_res = NOTIFY_OK;
->  
-> @@ -662,6 +664,7 @@ static int cti_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
->  		return NOTIFY_OK;
->  
->  	drvdata = cti_cpu_drvdata[cpu];
-> +	csdev = drvdata->csdev;
->  
->  	if (WARN_ON_ONCE(drvdata->ctidev.cpu != cpu))
->  		return NOTIFY_BAD;
-> @@ -673,13 +676,13 @@ static int cti_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
->  		/* CTI regs all static - we have a copy & nothing to save */
->  		drvdata->config.hw_powered = false;
->  		if (drvdata->config.hw_enabled)
-> -			coresight_disclaim_device(drvdata->base);
-> +			coresight_disclaim_device(csdev);
->  		break;
->  
->  	case CPU_PM_ENTER_FAILED:
->  		drvdata->config.hw_powered = true;
->  		if (drvdata->config.hw_enabled) {
-> -			if (coresight_claim_device(drvdata->base))
-> +			if (coresight_claim_device(csdev))
->  				drvdata->config.hw_enabled = false;
->  		}
->  		break;
-> @@ -692,7 +695,7 @@ static int cti_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
->  		/* check enable reference count to enable HW */
->  		if (atomic_read(&drvdata->config.enable_req_count)) {
->  			/* check we can claim the device as we re-power */
-> -			if (coresight_claim_device(drvdata->base))
-> +			if (coresight_claim_device(csdev))
->  				goto cti_notify_exit;
->  
->  			drvdata->config.hw_enabled = true;
-> @@ -736,7 +739,7 @@ static int cti_dying_cpu(unsigned int cpu)
->  	spin_lock(&drvdata->spinlock);
->  	drvdata->config.hw_powered = false;
->  	if (drvdata->config.hw_enabled)
-> -		coresight_disclaim_device(drvdata->base);
-> +		coresight_disclaim_device(drvdata->csdev);
->  	spin_unlock(&drvdata->spinlock);
->  	return 0;
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index f994a22876d9..0a416883e012 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -132,7 +132,7 @@ static void __etb_enable_hw(struct etb_drvdata *drvdata)
->  
->  static int etb_enable_hw(struct etb_drvdata *drvdata)
->  {
-> -	int rc = coresight_claim_device(drvdata->base);
-> +	int rc = coresight_claim_device(drvdata->csdev);
->  
->  	if (rc)
->  		return rc;
-> @@ -344,7 +344,7 @@ static void etb_disable_hw(struct etb_drvdata *drvdata)
->  {
->  	__etb_disable_hw(drvdata);
->  	etb_dump_hw(drvdata);
-> -	coresight_disclaim_device(drvdata->base);
-> +	coresight_disclaim_device(drvdata->csdev);
->  }
->  
->  static int etb_disable(struct coresight_device *csdev)
-> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> index 36c5b0ae1b43..70d6d809cb47 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> @@ -358,10 +358,11 @@ static int etm_enable_hw(struct etm_drvdata *drvdata)
->  	int i, rc;
->  	u32 etmcr;
->  	struct etm_config *config = &drvdata->config;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	CS_UNLOCK(drvdata->base);
->  
-> -	rc = coresight_claim_device_unlocked(drvdata->base);
-> +	rc = coresight_claim_device_unlocked(csdev);
->  	if (rc)
->  		goto done;
->  
-> @@ -566,6 +567,7 @@ static void etm_disable_hw(void *info)
->  	int i;
->  	struct etm_drvdata *drvdata = info;
->  	struct etm_config *config = &drvdata->config;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	CS_UNLOCK(drvdata->base);
->  	etm_set_prog(drvdata);
-> @@ -577,7 +579,7 @@ static void etm_disable_hw(void *info)
->  		config->cntr_val[i] = etm_readl(drvdata, ETMCNTVRn(i));
->  
->  	etm_set_pwrdwn(drvdata);
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  
->  	CS_LOCK(drvdata->base);
->  
-> @@ -602,7 +604,7 @@ static void etm_disable_perf(struct coresight_device *csdev)
->  	 * power down the tracer.
->  	 */
->  	etm_set_pwrdwn(drvdata);
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  
->  	CS_LOCK(drvdata->base);
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 2744aadaa5ec..4f1bcf98fefe 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -115,7 +115,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  
->  	etm4_os_unlock(drvdata);
->  
-> -	rc = coresight_claim_device_unlocked(drvdata->base);
-> +	rc = coresight_claim_device_unlocked(csdev);
->  	if (rc)
->  		goto done;
->  
-> @@ -523,7 +523,7 @@ static void etm4_disable_hw(void *info)
->  			readl_relaxed(drvdata->base + TRCCNTVRn(i));
->  	}
->  
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  
->  	CS_LOCK(drvdata->base);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-> index f77466aea26f..2f8675c527bf 100644
-> --- a/drivers/hwtracing/coresight/coresight-funnel.c
-> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> @@ -52,13 +52,14 @@ static int dynamic_funnel_enable_hw(struct funnel_drvdata *drvdata, int port)
->  {
->  	u32 functl;
->  	int rc = 0;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	CS_UNLOCK(drvdata->base);
->  
->  	functl = readl_relaxed(drvdata->base + FUNNEL_FUNCTL);
->  	/* Claim the device only when we enable the first slave */
->  	if (!(functl & FUNNEL_ENSx_MASK)) {
-> -		rc = coresight_claim_device_unlocked(drvdata->base);
-> +		rc = coresight_claim_device_unlocked(csdev);
->  		if (rc)
->  			goto done;
->  	}
-> @@ -101,6 +102,7 @@ static void dynamic_funnel_disable_hw(struct funnel_drvdata *drvdata,
->  				      int inport)
->  {
->  	u32 functl;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	CS_UNLOCK(drvdata->base);
->  
-> @@ -110,7 +112,7 @@ static void dynamic_funnel_disable_hw(struct funnel_drvdata *drvdata,
->  
->  	/* Disclaim the device if none of the slaves are now active */
->  	if (!(functl & FUNNEL_ENSx_MASK))
-> -		coresight_disclaim_device_unlocked(drvdata->base);
-> +		coresight_disclaim_device_unlocked(csdev);
->  
->  	CS_LOCK(drvdata->base);
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index fcf25740116c..e35d79e74e30 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -45,12 +45,18 @@ struct replicator_drvdata {
->  
->  static void dynamic_replicator_reset(struct replicator_drvdata *drvdata)
->  {
-> +	struct coresight_device *csdev = drvdata->csdev;
->  	CS_UNLOCK(drvdata->base);
->  
-> -	if (!coresight_claim_device_unlocked(drvdata->base)) {
-> +	if (WARN_ON(!csdev))
-> +		return;
+> --
+> Ben Dooks                               http://www.codethink.co.uk/
+> Senior Engineer                         Codethink - Providing Genius
+>
+> https://www.codethink.co.uk/privacy.html
 
-I don't see a need for this check. Function replicator_reset() is called from
-probe() where the validity of drvdata->csdev is checked just before.
 
-> +
-> +	CS_UNLOCK(drvdata->base);
-> +
-> +	if (!coresight_claim_device_unlocked(csdev)) {
->  		writel_relaxed(0xff, drvdata->base + REPLICATOR_IDFILTER0);
->  		writel_relaxed(0xff, drvdata->base + REPLICATOR_IDFILTER1);
-> -		coresight_disclaim_device_unlocked(drvdata->base);
-> +		coresight_disclaim_device_unlocked(csdev);
->  	}
->  
->  	CS_LOCK(drvdata->base);
-> @@ -70,6 +76,7 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
->  {
->  	int rc = 0;
->  	u32 id0val, id1val;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	CS_UNLOCK(drvdata->base);
->  
-> @@ -84,7 +91,7 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
->  		id0val = id1val = 0xff;
->  
->  	if (id0val == 0xff && id1val == 0xff)
-> -		rc = coresight_claim_device_unlocked(drvdata->base);
-> +		rc = coresight_claim_device_unlocked(csdev);
->  
->  	if (!rc) {
->  		switch (outport) {
-> @@ -140,6 +147,7 @@ static void dynamic_replicator_disable(struct replicator_drvdata *drvdata,
->  				       int inport, int outport)
->  {
->  	u32 reg;
-> +	struct coresight_device *csdev = drvdata->csdev;
->  
->  	switch (outport) {
->  	case 0:
-> @@ -160,7 +168,7 @@ static void dynamic_replicator_disable(struct replicator_drvdata *drvdata,
->  
->  	if ((readl_relaxed(drvdata->base + REPLICATOR_IDFILTER0) == 0xff) &&
->  	    (readl_relaxed(drvdata->base + REPLICATOR_IDFILTER1) == 0xff))
-> -		coresight_disclaim_device_unlocked(drvdata->base);
-> +		coresight_disclaim_device_unlocked(csdev);
->  	CS_LOCK(drvdata->base);
->  }
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> index 44402d413ebb..3a5605eda68f 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> @@ -37,7 +37,7 @@ static void __tmc_etb_enable_hw(struct tmc_drvdata *drvdata)
->  
->  static int tmc_etb_enable_hw(struct tmc_drvdata *drvdata)
->  {
-> -	int rc = coresight_claim_device(drvdata->base);
-> +	int rc = coresight_claim_device(drvdata->csdev);
->  
->  	if (rc)
->  		return rc;
-> @@ -88,7 +88,7 @@ static void __tmc_etb_disable_hw(struct tmc_drvdata *drvdata)
->  static void tmc_etb_disable_hw(struct tmc_drvdata *drvdata)
->  {
->  	__tmc_etb_disable_hw(drvdata);
-> -	coresight_disclaim_device(drvdata->base);
-> +	coresight_disclaim_device(drvdata->csdev);
->  }
->  
->  static void __tmc_etf_enable_hw(struct tmc_drvdata *drvdata)
-> @@ -109,7 +109,7 @@ static void __tmc_etf_enable_hw(struct tmc_drvdata *drvdata)
->  
->  static int tmc_etf_enable_hw(struct tmc_drvdata *drvdata)
->  {
-> -	int rc = coresight_claim_device(drvdata->base);
-> +	int rc = coresight_claim_device(drvdata->csdev);
->  
->  	if (rc)
->  		return rc;
-> @@ -120,11 +120,13 @@ static int tmc_etf_enable_hw(struct tmc_drvdata *drvdata)
->  
->  static void tmc_etf_disable_hw(struct tmc_drvdata *drvdata)
->  {
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +
->  	CS_UNLOCK(drvdata->base);
->  
->  	tmc_flush_and_stop(drvdata);
->  	tmc_disable_hw(drvdata);
-> -	coresight_disclaim_device_unlocked(drvdata->base);
-> +	coresight_disclaim_device_unlocked(csdev);
->  	CS_LOCK(drvdata->base);
->  }
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> index 714f9e867e5f..a8b1c49761c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -1038,7 +1038,7 @@ static int tmc_etr_enable_hw(struct tmc_drvdata *drvdata,
->  	rc = tmc_etr_enable_catu(drvdata, etr_buf);
->  	if (rc)
->  		return rc;
-> -	rc = coresight_claim_device(drvdata->base);
-> +	rc = coresight_claim_device(drvdata->csdev);
->  	if (!rc) {
->  		drvdata->etr_buf = etr_buf;
->  		__tmc_etr_enable_hw(drvdata);
-> @@ -1132,7 +1132,7 @@ void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
->  	__tmc_etr_disable_hw(drvdata);
->  	/* Disable CATU device if this ETR is connected to one */
->  	tmc_etr_disable_catu(drvdata);
-> -	coresight_disclaim_device(drvdata->base);
-> +	coresight_disclaim_device(drvdata->csdev);
->  	/* Reset the ETR buf used by hardware */
->  	drvdata->etr_buf = NULL;
->  }
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index cefc8fe239e6..c2d0a2aea45f 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -474,11 +474,11 @@ extern int coresight_timeout(struct csdev_access *csa,
->  			     int position,
->  			     int value);
->  
-> -extern int coresight_claim_device(void __iomem *base);
-> -extern int coresight_claim_device_unlocked(void __iomem *base);
-> +extern int coresight_claim_device(struct coresight_device *csdev);
-> +extern int coresight_claim_device_unlocked(struct coresight_device *csdev);
->  
-> -extern void coresight_disclaim_device(void __iomem *base);
-> -extern void coresight_disclaim_device_unlocked(void __iomem *base);
-> +extern void coresight_disclaim_device(struct coresight_device *csdev);
-> +extern void coresight_disclaim_device_unlocked(struct coresight_device *csdev);
->  extern char *coresight_alloc_device_name(struct coresight_dev_list *devs,
->  					 struct device *dev);
->  
-> @@ -513,18 +513,18 @@ static inline int coresight_timeout(struct csdev_access *csa,
->  	return 1;
->  }
->  
-> -static inline int coresight_claim_device_unlocked(void __iomem *base)
-> +static inline int coresight_claim_device_unlocked(struct coresight_device *csdev)
->  {
->  	return -EINVAL;
->  }
->  
-> -static inline int coresight_claim_device(void __iomem *base)
-> +static inline int coresight_claim_device(struct coresight_device *csdev)
->  {
->  	return -EINVAL;
->  }
->  
-> -static inline void coresight_disclaim_device(void __iomem *base) {}
-> -static inline void coresight_disclaim_device_unlocked(void __iomem *base) {}
-> +static inline void coresight_disclaim_device(struct coresight_device *csdev) {}
-> +static inline void coresight_disclaim_device_unlocked(struct coresight_device *csdev) {}
->  
->  static inline bool coresight_loses_context_with_cpu(struct device *dev)
->  {
-> -- 
-> 2.24.1
-> 
+
+-- 
+Regards,
+Atish
