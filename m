@@ -2,155 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031312A6572
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44C62A6576
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730183AbgKDNo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:44:28 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:51072 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgKDNoZ (ORCPT
+        id S1730184AbgKDNpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728508AbgKDNpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:44:25 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201104134413euoutp02280dc548f350cefb2147e85ab69bc9c1~EUe7hz2hn1129911299euoutp02v
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 13:44:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201104134413euoutp02280dc548f350cefb2147e85ab69bc9c1~EUe7hz2hn1129911299euoutp02v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604497453;
-        bh=YGH+JbTQOfuDdbp4N5Uv+Yv/0y7PZudFMj/VFg78vkQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=IIwa8pscXPn7aWmc7ooJ1TywwhwPQBX0T9e/bx1d5BWgGK+w1KrED3ZcTNLuYxx56
-         jQ+2NvhWVSSLGFJakRJTnny3dH8BCuxEDAnX5lBwFifmCo51DNWiTtrcF1TPjNsHxa
-         +5EPyyY1p0eJO/6nbMyA4UxDDDwdzprHNuB2yc3Q=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201104134411eucas1p175f5c0186b0099d5ce393edab48b83b1~EUe58NHMb0782907829eucas1p1B;
-        Wed,  4 Nov 2020 13:44:11 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 23.20.05997.B20B2AF5; Wed,  4
-        Nov 2020 13:44:11 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201104134411eucas1p234ecdc496597231a697ce6d679dcec2d~EUe5hJPsJ1541315413eucas1p22;
-        Wed,  4 Nov 2020 13:44:11 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201104134411eusmtrp2a12e9212288e8ba1ec448dd7c6298cd0~EUe5gd2nn1478514785eusmtrp2s;
-        Wed,  4 Nov 2020 13:44:11 +0000 (GMT)
-X-AuditID: cbfec7f4-677ff7000000176d-cd-5fa2b02b2f2c
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2F.7E.06314.B20B2AF5; Wed,  4
-        Nov 2020 13:44:11 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201104134410eusmtip18cc09701ef79ee90145fee1ce5f92bbb~EUe5AViNF1300113001eusmtip1_;
-        Wed,  4 Nov 2020 13:44:10 +0000 (GMT)
-Subject: Re: [PATCH] ARM: dts: exynos: Assign a fixed index to mmc devices
- on exynos4412 based ODROID boards
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     Markus Reichl <m.reichl@fivetechno.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <71e4ecca-b980-e224-0fbe-b30330e490fb@samsung.com>
-Date:   Wed, 4 Nov 2020 14:44:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.0
+        Wed, 4 Nov 2020 08:45:08 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C175FC061A4A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 05:45:08 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id s21so22231689oij.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 05:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tjiKTafBvqhyHu+XrblZM0qTc82uTpcV2NnP3xiexks=;
+        b=ZhgOwDzOMctQUKpELCF6xCfAiCAnFc6zk2q+FcTcjlWq5EpTui0t6wNd3SDZHPo4JJ
+         0iwSfk3vA/4xK0orZjkWmbAMwsGd1nUmruRW6SkQy76kp2ucIb2ryFgooJoJTfnNUe34
+         xZmTwa+9BGhk9B3aPPRVEIgf/CWx1PvcC7w/iDMLY7S/cKdLZ6oU+0ZvdlEV4ZbrEZPP
+         H/TGzVLNfonL5tVkiBxsOUAe+5MjFgE+D+98gKxWPdCFifWjiqlzxj60SusVxKrBCLz0
+         17fl02kiPFxXngNJ/mJr2pPrznCUcWuBgb1OBglhLjyWEfM8HlERCbKsbN7V8OA0WJjM
+         u5TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tjiKTafBvqhyHu+XrblZM0qTc82uTpcV2NnP3xiexks=;
+        b=oxBA2AMr6Y/xuLXIbszuvxabckxhbxttFVOappq4KiQ09IZze1xaAPVCmHtcjoJDiF
+         lMebSFaScTkVWN1jvVzV4CADbfp7gB+pWdAOIQD0GJKuZhwl2FqE5R8G3n1IMACFahlz
+         PdGVY7OSXd1m+RpzOgfPkud157LE60g2zWeZ83nN6uJA8ucvmA7XLjbW2Q3PTBQlsnLH
+         Yj+N2DCV8zDXMfPfmVxAqxXqQcmCo8voO7YbHmYxkgf0noyiLTRKtjUbcJoz+FtFeSkj
+         tovWFTt6LBH8H75AwpeL26rcxrw/R/C0PJEfzheEYkvZz6EoW00kKPEuG8EfE/h1b+WK
+         IgtQ==
+X-Gm-Message-State: AOAM530M0wT1AIroBjMED20UKMq9tf7MpeNzS6i3hTvbf1PSlGCKbhE7
+        liOTCDzVLsF1ESTPTyZvJH+5owpgUH0LFHhcGd1o3r2V/QxUJA==
+X-Google-Smtp-Source: ABdhPJw/I69T9sXsTerkq96XXMF5qviBr0D4q8GyIjoyXXpCO8JCusvbseV9st/kEeUgyejwLokLFcam2B8RifsTGBQ=
+X-Received: by 2002:aca:570d:: with SMTP id l13mr2651297oib.96.1604497508034;
+ Wed, 04 Nov 2020 05:45:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c1040872-0ae1-3988-29d0-60c8a711cdb1@samsung.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djP87raGxbFG1z7Z2Ex/8g5Vov+x6+Z
-        Lc6f38BusenxNVaLy7vmsFnMOL+PyeLlkR+MFq17j7A7cHjculPvsWlVJ5vH5iX1Hp83yQWw
-        RHHZpKTmZJalFunbJXBl7PjJUTCdv2LNml/MDYyneboYOTkkBEwkGlZ8Zeti5OIQEljBKNHz
-        Yi8jhPOFUWLhwY1Qmc+MEju/f2eGafnw5xkrRGI5o0TnhsdQLe8ZJQ6cWwJWJSyQJ7Fh+k8w
-        m03AUKLrbRfYKBGBaYwSWyeeAWtnFmhnlDg15wY7SBWvgJ3E/BuPwGwWARWJr9MPsoHYogJJ
-        En8//2GGqBGUODnzCQuIzSlgL7F2WR9YPbOAvETz1tnMELa4xK0n85lAFkgIbGKXWN00nRHi
-        cBeJPzcgGiQEhCVeHd8CZctI/N8J09DMKPHw3Fp2CKeHUeJy0wyobmuJO+d+AZ3EAbRCU2L9
-        Ln2IsKPE30Xt7CBhCQE+iRtvBSGO4JOYtG06M0SYV6KjTQiiWk1i1vF1cGsPXrjEPIFRaRaS
-        12YheWcWkndmIexdwMiyilE8tbQ4Nz212CgvtVyvODG3uDQvXS85P3cTIzAJnf53/MsOxl1/
-        kg4xCnAwKvHwHti2MF6INbGsuDL3EKMEB7OSCK/T2dNxQrwpiZVVqUX58UWlOanFhxilOViU
-        xHmNF72MFRJITyxJzU5NLUgtgskycXBKNTBWbi648epfYvJJ9cwf2y/+myalmBgkaJvDUWNj
-        7VwnWZe0kFtjo9RB44ORfwLYGhwY/Xoccv5arPJ5ubAqfhvj7kYuBZvWlHkSK7ivVZZdfzin
-        wJFzbeom5vo3k28+unD+mX2oxvXbnBdPaspsLtnmWB/wX+jr9rOcEikbNls/4Fr8q2fS9EdK
-        LMUZiYZazEXFiQByVf93PgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xu7raGxbFG6x/LmEx/8g5Vov+x6+Z
-        Lc6f38BusenxNVaLy7vmsFnMOL+PyeLlkR+MFq17j7A7cHjculPvsWlVJ5vH5iX1Hp83yQWw
-        ROnZFOWXlqQqZOQXl9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehl7PjJ
-        UTCdv2LNml/MDYyneboYOTkkBEwkPvx5xtrFyMUhJLCUUWL1hAOsEAkZiZPTGqBsYYk/17rY
-        QGwhgbeMEruuWoLYwgJ5Ev/mHmMBsdkEDCW63oLUcHGICExhlDgz8TkjiMMs0M4oceftbDaI
-        FRuYJDYtX8QI0sIrYCcx/8YjdhCbRUBF4uv0g2ArRAWSJF5emMoEUSMocXLmE7AVnAL2EmuX
-        9YHVMwuYSczb/JAZwpaXaN46G8oWl7j1ZD7TBEahWUjaZyFpmYWkZRaSlgWMLKsYRVJLi3PT
-        c4sN9YoTc4tL89L1kvNzNzECY27bsZ+bdzBe2hh8iFGAg1GJh/fAtoXxQqyJZcWVuYcYJTiY
-        lUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGA6yCuJNzQ1NLewNDQ3Njc2s1AS
-        5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwMg740VLmNkGmZX8BVtS4i1FN9kb5D4TYA/JOWCz
-        tzY/N3yX9E0j4ZIp03o25qla6qbc63DjO3GCRy/Vc7VppO//9q1P89P52Stj3t87+Jh50qyN
-        wSetm45+lT6l9Ue37vdStnPC24sUngSvdE+MT3jGs4dpw9NvJ/bEfH5z9c+y7gPaPt09bkos
-        xRmJhlrMRcWJAERMvpPPAgAA
-X-CMS-MailID: 20201104134411eucas1p234ecdc496597231a697ce6d679dcec2d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201104102634eucas1p2ec7b705dd5092afa25d9877d1014f46a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201104102634eucas1p2ec7b705dd5092afa25d9877d1014f46a
-References: <CGME20201104102634eucas1p2ec7b705dd5092afa25d9877d1014f46a@eucas1p2.samsung.com>
-        <20201104102558.11070-1-m.reichl@fivetechno.de>
-        <efe8a911-6072-59fb-8a8e-d5cdb4352cab@samsung.com>
-        <5800260a-5332-f627-eb36-32df4fbf05e3@fivetechno.de>
-        <c1040872-0ae1-3988-29d0-60c8a711cdb1@samsung.com>
+References: <20200909163831.1894142-1-robert.marko@sartura.hr>
+In-Reply-To: <20200909163831.1894142-1-robert.marko@sartura.hr>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Wed, 4 Nov 2020 14:44:57 +0100
+Message-ID: <CA+HBbNFiF9KvQAbkjqy1Le8eGRLd7md8PKwOvRao1ah4dO1TJA@mail.gmail.com>
+Subject: Re: [PATCH v8] ARM: dts: qcom: ipq4019: add USB devicetree nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        robh+dt@kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     John Crispin <john@phrozen.org>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.11.2020 14:13, Marek Szyprowski wrote:
-> On 04.11.2020 14:06, Markus Reichl wrote:
->> Am 04.11.20 um 13:25 schrieb Marek Szyprowski:
->>> On 04.11.2020 11:25, Markus Reichl wrote:
->>>> Recently introduced async probe on mmc devices can shuffle block IDs.
->>>> Pin them to fixed values to ease booting in evironments where UUIDs
->>>> ar not practical.
->>>> Use newly introduced aliases for mmcblk devices from [1].
->>>>
->>>> [1]
->>>> https://patchwork.kernel.org/patch/11747669/
->>>>
->>>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
->>>> ---
->>>>    arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
->>>> b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
->>>> index a5c1ce1e396c..aa10d5bc7e1c 100644
->>>> --- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
->>>> +++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
->>>> @@ -13,6 +13,11 @@
->>>>    #include "exynos-mfc-reserved-memory.dtsi"
->>>>      / {
->>>> +    aliases {
->>>> +        mmc0 = &sdhci_2;
->>>> +        mmc1 = &mshc_0;
->>> Like in the OdroidXU3-family patch, I would use 0 for the eMMC (mshc_0)
->>> and 2 for the SD-card (sdhci_2).
->> How to deal then with sdhci_0 (from exynos4.dtsi) vc. mshc_0 (from
->> exynos4412.dts)?
-> sdhci_0 and mshc_0 both operate on the same physical MMC0 bus, so this
-> is not an issue. They cannot be used simultaneously. The latter is just
-> faster, the first one has been left there mainly for the software
-> compatibility.
+On Wed, Sep 9, 2020 at 6:38 PM Robert Marko <robert.marko@sartura.hr> wrote:
+>
+> From: John Crispin <john@phrozen.org>
+>
+> Since we now have driver for the USB PHY, and USB controller is already supported by the DWC3 driver lets add the necessary nodes to DTSI.
+>
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> ---
+> Changes from v7 to v8:
+> * Add labels for usb2 and usb3 nodes
+> Changes from v6 to v7:
+> * Remove changes to qcom-ipq4019-ap.dk01.1.dtsi
+> It has slipped in unwanted, we only want to add
+> nodes to the DTSI.
+>
+>  arch/arm/boot/dts/qcom-ipq4019.dtsi | 74 +++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+> index 74d8e2c8e4b3..4a973253024a 100644
+> --- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
+> +++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+> @@ -605,5 +605,79 @@ ethphy4: ethernet-phy@4 {
+>                                 reg = <4>;
+>                         };
+>                 };
+> +
+> +               usb3_ss_phy: ssphy@9a000 {
+> +                       compatible = "qcom,usb-ss-ipq4019-phy";
+> +                       #phy-cells = <0>;
+> +                       reg = <0x9a000 0x800>;
+> +                       reg-names = "phy_base";
+> +                       resets = <&gcc USB3_UNIPHY_PHY_ARES>;
+> +                       reset-names = "por_rst";
+> +                       status = "disabled";
+> +               };
+> +
+> +               usb3_hs_phy: hsphy@a6000 {
+> +                       compatible = "qcom,usb-hs-ipq4019-phy";
+> +                       #phy-cells = <0>;
+> +                       reg = <0xa6000 0x40>;
+> +                       reg-names = "phy_base";
+> +                       resets = <&gcc USB3_HSPHY_POR_ARES>, <&gcc USB3_HSPHY_S_ARES>;
+> +                       reset-names = "por_rst", "srif_rst";
+> +                       status = "disabled";
+> +               };
+> +
+> +               usb3: usb3@8af8800 {
+> +                       compatible = "qcom,dwc3";
+> +                       reg = <0x8af8800 0x100>;
+> +                       #address-cells = <1>;
+> +                       #size-cells = <1>;
+> +                       clocks = <&gcc GCC_USB3_MASTER_CLK>,
+> +                                <&gcc GCC_USB3_SLEEP_CLK>,
+> +                                <&gcc GCC_USB3_MOCK_UTMI_CLK>;
+> +                       clock-names = "master", "sleep", "mock_utmi";
+> +                       ranges;
+> +                       status = "disabled";
+> +
+> +                       dwc3@8a00000 {
+> +                               compatible = "snps,dwc3";
+> +                               reg = <0x8a00000 0xf8000>;
+> +                               interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
+> +                               phys = <&usb3_hs_phy>, <&usb3_ss_phy>;
+> +                               phy-names = "usb2-phy", "usb3-phy";
+> +                               dr_mode = "host";
+> +                       };
+> +               };
+> +
+> +               usb2_hs_phy: hsphy@a8000 {
+> +                       compatible = "qcom,usb-hs-ipq4019-phy";
+> +                       #phy-cells = <0>;
+> +                       reg = <0xa8000 0x40>;
+> +                       reg-names = "phy_base";
+> +                       resets = <&gcc USB2_HSPHY_POR_ARES>, <&gcc USB2_HSPHY_S_ARES>;
+> +                       reset-names = "por_rst", "srif_rst";
+> +                       status = "disabled";
+> +               };
+> +
+> +               usb2: usb2@60f8800 {
+> +                       compatible = "qcom,dwc3";
+> +                       reg = <0x60f8800 0x100>;
+> +                       #address-cells = <1>;
+> +                       #size-cells = <1>;
+> +                       clocks = <&gcc GCC_USB2_MASTER_CLK>,
+> +                                <&gcc GCC_USB2_SLEEP_CLK>,
+> +                                <&gcc GCC_USB2_MOCK_UTMI_CLK>;
+> +                       clock-names = "master", "sleep", "mock_utmi";
+> +                       ranges;
+> +                       status = "disabled";
+> +
+> +                       dwc3@6000000 {
+> +                               compatible = "snps,dwc3";
+> +                               reg = <0x6000000 0xf8000>;
+> +                               interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
+> +                               phys = <&usb2_hs_phy>;
+> +                               phy-names = "usb2-phy";
+> +                               dr_mode = "host";
+> +                       };
+> +               };
+>         };
+>  };
+> --
+> 2.26.2
 
-I've thought a bit more on this and I would simply prefer to add generic 
-MMC aliases to the top-level Exynos dtsi files (3250, 4210, 4412, 5250, 
-5410, 5420) to keep Linux logical MMC bus numbers in sync with the HW 
-bus numbers on all boards.
+Hi,
+Any chance of reviewing this?
 
-Best regards
-
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Regards,
+Robert
+>
