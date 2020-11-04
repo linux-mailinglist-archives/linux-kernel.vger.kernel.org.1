@@ -2,287 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A932A6D1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4906F2A6D1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731418AbgKDSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:46:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
+        id S1731610AbgKDSrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:47:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:42154 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726737AbgKDSqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:46:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B688F206C1;
-        Wed,  4 Nov 2020 18:46:27 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 13:46:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
-Subject: [PATCH 05/11 v2.1] kprobes/ftrace: Add recursion protection to the
- ftrace callback
-Message-ID: <20201104134624.2c792a5a@gandalf.local.home>
-In-Reply-To: <20201103202257.029364fd78492fd8efc360dc@kernel.org>
-References: <20201030213142.096102821@goodmis.org>
-        <20201030214013.824581418@goodmis.org>
-        <20201103202257.029364fd78492fd8efc360dc@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726737AbgKDSrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:47:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40FF114BF;
+        Wed,  4 Nov 2020 10:47:11 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77B623F718;
+        Wed,  4 Nov 2020 10:47:10 -0800 (PST)
+Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>, libc-alpha@sourceware.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+ <20201103173438.GD5545@sirena.org.uk>
+ <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
+ <20201104105058.GA4812@sirena.org.uk>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <8c2d08a7-5595-6221-8da8-a7cbf6e1d493@arm.com>
+Date:   Wed, 4 Nov 2020 12:47:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201104105058.GA4812@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Hi,
 
-If a ftrace callback does not supply its own recursion protection and
-does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-make a helper trampoline to do so before calling the callback instead of
-just calling the callback directly.
+On 11/4/20 4:50 AM, Mark Brown wrote:
+> On Tue, Nov 03, 2020 at 11:41:42PM -0600, Jeremy Linton wrote:
+>> On 11/3/20 11:34 AM, Mark Brown wrote:
+> 
+>>> Given that there were still some ongoing discussions on a more robust
+>>> kernel interface here and there seem to be a few concerns with this
+>>> series should we perhaps just take a step back and disable this seccomp
+>>> filter in systemd on arm64, at least for the time being?  That seems
+>>> safer than rolling out things that set ABI quickly, a big part of the
+> 
+>> So, that's a bigger hammer than I think is needed and punishes !BTI
+>> machines. I'm going to suggest that if we need to carry a temp patch its
+>> more like the glibc patch I mentioned in the Fedora defect. That patch
+>> simply logs a message, on the mprotect failures rather than aborting. Its
+>> fairly non-intrusive.
+> 
+>> That leaves seccomp functional, and BTI generally functional except when
+>> seccomp is restricting it. I've also been asked that if a patch like that is
+>> needed, its (temporary?) merged to the glibc trunk, rather than just being
+>> carried by the distro's.
+> 
+> The effect on pre-BTI hardware is an issue, another option would be for
+> systemd to disable this seccomp usage but only after checking for BTI
+> support in the system rather than just doing so purely based on the
+> architecture.
+> 
 
-The default for ftrace_ops is going to change. It will expect that handlers
-provide their own recursion protection, unless its ftrace_ops states
-otherwise.
-
-Link: https://lkml.kernel.org/r/20201028115613.140212174@goodmis.org
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-csky@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-s390@vger.kernel.org
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- arch/csky/kernel/probes/ftrace.c     | 12 ++++++++++--
- arch/parisc/kernel/ftrace.c          | 16 +++++++++++++---
- arch/powerpc/kernel/kprobes-ftrace.c | 11 ++++++++++-
- arch/s390/kernel/ftrace.c            | 16 +++++++++++++---
- arch/x86/kernel/kprobes/ftrace.c     | 12 ++++++++++--
- 5 files changed, 56 insertions(+), 11 deletions(-)
-
-diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-index 5264763d05be..5eb2604fdf71 100644
---- a/arch/csky/kernel/probes/ftrace.c
-+++ b/arch/csky/kernel/probes/ftrace.c
-@@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
- void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 			   struct ftrace_ops *ops, struct pt_regs *regs)
- {
-+	int bit;
- 	bool lr_saver = false;
- 	struct kprobe *p;
- 	struct kprobe_ctlblk *kcb;
- 
--	/* Preempt is disabled by ftrace */
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
-+		return;
-+
-+	preempt_disable_notrace();
- 	p = get_kprobe((kprobe_opcode_t *)ip);
- 	if (!p) {
- 		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
- 		if (unlikely(!p) || kprobe_disabled(p))
--			return;
-+			goto out;
- 		lr_saver = true;
- 	}
- 
-@@ -56,6 +61,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 		 */
- 		__this_cpu_write(current_kprobe, NULL);
- 	}
-+out:
-+	preempt_enable_notrace();
-+	ftrace_test_recursion_unlock(bit);
- }
- NOKPROBE_SYMBOL(kprobe_ftrace_handler);
- 
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 63e3ecb9da81..13d85042810a 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -207,14 +207,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 			   struct ftrace_ops *ops, struct pt_regs *regs)
- {
- 	struct kprobe_ctlblk *kcb;
--	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-+	struct kprobe *p;
-+	int bit;
- 
--	if (unlikely(!p) || kprobe_disabled(p))
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
- 		return;
- 
-+	preempt_disable_notrace();
-+	p = get_kprobe((kprobe_opcode_t *)ip);
-+	if (unlikely(!p) || kprobe_disabled(p))
-+		goto out;
-+
- 	if (kprobe_running()) {
- 		kprobes_inc_nmissed_count(p);
--		return;
-+		goto out;
- 	}
- 
- 	__this_cpu_write(current_kprobe, p);
-@@ -235,6 +242,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 		}
- 	}
- 	__this_cpu_write(current_kprobe, NULL);
-+out:
-+	preempt_enable_notrace();
-+	ftrace_test_recursion_unlock(bit);
- }
- NOKPROBE_SYMBOL(kprobe_ftrace_handler);
- 
-diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
-index 972cb28174b2..5df8d50c65ae 100644
---- a/arch/powerpc/kernel/kprobes-ftrace.c
-+++ b/arch/powerpc/kernel/kprobes-ftrace.c
-@@ -18,10 +18,16 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
- {
- 	struct kprobe *p;
- 	struct kprobe_ctlblk *kcb;
-+	int bit;
- 
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
-+		return;
-+
-+	preempt_disable_notrace();
- 	p = get_kprobe((kprobe_opcode_t *)nip);
- 	if (unlikely(!p) || kprobe_disabled(p))
--		return;
-+		goto out;
- 
- 	kcb = get_kprobe_ctlblk();
- 	if (kprobe_running()) {
-@@ -52,6 +58,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
- 		 */
- 		__this_cpu_write(current_kprobe, NULL);
- 	}
-+out:
-+	preempt_enable_notrace();
-+	ftrace_test_recursion_unlock(bit);
- }
- NOKPROBE_SYMBOL(kprobe_ftrace_handler);
- 
-diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-index b388e87a08bf..8f31c726537a 100644
---- a/arch/s390/kernel/ftrace.c
-+++ b/arch/s390/kernel/ftrace.c
-@@ -201,14 +201,21 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 		struct ftrace_ops *ops, struct pt_regs *regs)
- {
- 	struct kprobe_ctlblk *kcb;
--	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-+	struct kprobe *p;
-+	int bit;
- 
--	if (unlikely(!p) || kprobe_disabled(p))
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
- 		return;
- 
-+	preempt_disable_notrace();
-+	p = get_kprobe((kprobe_opcode_t *)ip);
-+	if (unlikely(!p) || kprobe_disabled(p))
-+		goto out;
-+
- 	if (kprobe_running()) {
- 		kprobes_inc_nmissed_count(p);
--		return;
-+		goto out;
- 	}
- 
- 	__this_cpu_write(current_kprobe, p);
-@@ -228,6 +235,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 		}
- 	}
- 	__this_cpu_write(current_kprobe, NULL);
-+out:
-+	preempt_enable_notrace();
-+	ftrace_test_recursion_unlock(bit);
- }
- NOKPROBE_SYMBOL(kprobe_ftrace_handler);
- 
-diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-index 681a4b36e9bb..a40a6cdfcca3 100644
---- a/arch/x86/kernel/kprobes/ftrace.c
-+++ b/arch/x86/kernel/kprobes/ftrace.c
-@@ -18,11 +18,16 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- {
- 	struct kprobe *p;
- 	struct kprobe_ctlblk *kcb;
-+	int bit;
- 
--	/* Preempt is disabled by ftrace */
-+	bit = ftrace_test_recursion_trylock();
-+	if (bit < 0)
-+		return;
-+
-+	preempt_disable_notrace();
- 	p = get_kprobe((kprobe_opcode_t *)ip);
- 	if (unlikely(!p) || kprobe_disabled(p))
--		return;
-+		goto out;
- 
- 	kcb = get_kprobe_ctlblk();
- 	if (kprobe_running()) {
-@@ -52,6 +57,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 		 */
- 		__this_cpu_write(current_kprobe, NULL);
- 	}
-+out:
-+	preempt_enable_notrace();
-+	ftrace_test_recursion_unlock(bit);
- }
- NOKPROBE_SYMBOL(kprobe_ftrace_handler);
- 
--- 
-2.25.4
-
+That works, but your also losing seccomp in the case where the machine 
+is BTI capable, but the service isn't. So it should really be checking 
+the elf notes, but at that point you might just as well patch glibc.
