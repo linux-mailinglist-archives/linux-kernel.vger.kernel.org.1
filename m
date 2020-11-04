@@ -2,95 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666162A674F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC962A6752
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgKDPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
+        id S1730395AbgKDPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgKDPTW (ORCPT
+        with ESMTP id S1730198AbgKDPT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:19:22 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5704AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:19:20 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p22so2720708wmg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:19:20 -0800 (PST)
+        Wed, 4 Nov 2020 10:19:26 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EBBC0613D3;
+        Wed,  4 Nov 2020 07:19:26 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id 126so27588981lfi.8;
+        Wed, 04 Nov 2020 07:19:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=D9YsrGN9wWLv3mX7dkJBqjaJH+HqiYhxAqtKcEQZoEQ=;
-        b=ESOcqmcmdlSBpst0NLiwQTyp6ATQj/xVBJ8v/wHN0bGElMDhQzgtCbKjzMxYDimtOM
-         QyBNdwZVHihtaYz9l9uXrPp5n8/UvcnVUMbVR1HBqL2iXmZFIDbNHdmwG8j4vvoCs1vq
-         Q+0Embfu1d/pSYvA8ayGkQZsCW3dBfwAlpCTj6Z4sykz4keNk22VH+wgAMOuCuiHmQ0l
-         Ib+NRQBONXAI+teuxoTRmG8CEjgy8p0VEWvPaSpCAkSMDVFQgWcWS+BD4vzNAi/2F5Vg
-         gL1e+/LmL+JNuWxR+7yOpRWHPwGPoxebE4aZO2NDOTSobd1QUU9XN0++hxyXyZApuiTK
-         lGcw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IKIIpB9wqyidyjb1EI8WFpMa+/cnKeKADUKKGpWDv08=;
+        b=NptPlEGjmoYRgz9gbQS8+xuGz9yZ8ay7KQ+4RLy0Mi9mgRLXLF7eSZri//Wv+ozuMd
+         Za11jHGFTilOW2qjOreq4UpZUbqKBdoZtjPfrkHP1vxN+LpehgkkLLUYLQ/wH0RWeB0E
+         /lqqxJ4PWBA8iwO39iRsRwKTO9IHld8M2N848B5uF1c7JhloOl5YJaoZjXpW9YC+P5od
+         21A50Sqd7K1N7GuWHBbI4fFpUNKFGtX2LrSUcGUiki5jp3wLqtoCPlOeajTVMknzrxLv
+         HSkXI7714dQumN5Lp7mTEe0xTA+SLaSfod1Enr6YV38J8rzHmII/CTrnQV73l1i7dKui
+         dWAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=D9YsrGN9wWLv3mX7dkJBqjaJH+HqiYhxAqtKcEQZoEQ=;
-        b=iE5O8IDDzLwpG7xvpTed7aQTPfntRQjJuAVzVFc5UemNxUh63uroFYEadOBJmlO1mJ
-         qsisWAsOZIvBXegLmV3DN0q/2NG7hhYxAFyYVN5J8rxCclHGN/u9xxgM+9uPJAJr+hYK
-         OTFxXva0+RuFsNoX7rr2oq+nwK0nsMzlgQTDVsWWy8BSizIbMnIbIqGr9/0ofHTao4cb
-         e5ZYvxF7OGSOc0PNdNpv7FlWGzF3ABqhkgDg6BoB0nbWhACGJao7TasBTk4ylDm/qOYK
-         b2oLea5jc6D7kny1WoXsW4dAcVydkChpPOOXPstBg/PIfpX855KpnHfo0fC+Tl4ZpNJM
-         oA1g==
-X-Gm-Message-State: AOAM5325YxEmWh8IIdtTGjGnkE8CcMSqLs8gUU50vz1cQ3lkWaXe4cAz
-        /djU4D2ARKgjb2Uc/vDVkvP5oA==
-X-Google-Smtp-Source: ABdhPJwjO9gdBQ3A1EtXca/y3WeuvIcYU20JPYHU2jSpFYSGJCsfNFJNSgvD9gAQ0LrvY1egrHrDjw==
-X-Received: by 2002:a1c:6405:: with SMTP id y5mr5165258wmb.150.1604503158966;
-        Wed, 04 Nov 2020 07:19:18 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id d20sm3205552wra.38.2020.11.04.07.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:19:18 -0800 (PST)
-Date:   Wed, 4 Nov 2020 15:19:16 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: mfd: rohm,bd71837-pmic: Add common
- properties
-Message-ID: <20201104151916.GL4488@dell>
-References: <20200917193754.542-1-krzk@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IKIIpB9wqyidyjb1EI8WFpMa+/cnKeKADUKKGpWDv08=;
+        b=WYYAAYKdcsudkJNa9F+ijk0ONkBpqHys6G9G1Mgc7I6dOXO+yG0Ue2ymcuIZAD/aTJ
+         286Yj3p29L1I4Uf631IkOQ3N1bHyrRaoxHiPDSmvrqGU1jGu4fh8o8btgQbDNyB0TCVe
+         0RmRVNSbn10gUu6QpBkFqkCPAMPdipEbEWISPrleU5P0j6QcSWHLyo12RAToLM5RxBYA
+         gjXhNKKGwUECX55mvCksXNE+B6jnPtgqQBuzbpqiQdLVqXSxQ/LgVcta5mBmG6paCysX
+         80+azvO+fpD1KiC0yAleBSWROvDYAuiZA5zAOzzA3WGRpiGYwivepkPCK2fvHMhcHLKA
+         eI8w==
+X-Gm-Message-State: AOAM531qpLuMCqD4FqYJV1VmW5lnftEbmMUzaPapzt+wiULbZtbEKlxj
+        fhKOIjc0dB31n3Hw7/K1+rLY4UwNgWe7Sg==
+X-Google-Smtp-Source: ABdhPJxRsNTI+FRktRgXc8IKzV3bqj8ft1XhtV7Y1uPyzyr4gei7EPySND+E7YvldxtAg6TA6B1hkw==
+X-Received: by 2002:ac2:58f6:: with SMTP id v22mr10547760lfo.431.1604503163884;
+        Wed, 04 Nov 2020 07:19:23 -0800 (PST)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id f9sm542782ljg.53.2020.11.04.07.19.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 07:19:23 -0800 (PST)
+Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Florian Weimer <fweimer@redhat.com>, Will Deacon <will@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+References: <cover.1604393169.git.szabolcs.nagy@arm.com>
+ <20201103173438.GD5545@sirena.org.uk>
+ <20201104092012.GA6439@willie-the-truck>
+ <87h7q54ghy.fsf@oldenburg2.str.redhat.com>
+ <d2f51a90-c5d6-99bd-35b8-f4fded073f95@gmail.com>
+ <20201104143500.GC28902@gaia>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <f595e572-40bc-a052-f3f2-763433d6762f@gmail.com>
+Date:   Wed, 4 Nov 2020 17:19:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20201104143500.GC28902@gaia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200917193754.542-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020, Krzysztof Kozlowski wrote:
+On 4.11.2020 16.35, Catalin Marinas wrote:
+> On Wed, Nov 04, 2020 at 11:55:57AM +0200, Topi Miettinen wrote:
+>> On 4.11.2020 11.29, Florian Weimer wrote:
+>>> * Will Deacon:
+>>>
+>>>> Is there real value in this seccomp filter if it only looks at mprotect(),
+>>>> or was it just implemented because it's easy to do and sounds like a good
+>>>> idea?
+>>>
+>>> It seems bogus to me.  Everyone will just create alias mappings instead,
+>>> just like they did for the similar SELinux feature.  See “Example code
+>>> to avoid execmem violations” in:
+>>>
+>>>     <https://www.akkadia.org/drepper/selinux-mem.html>
+> [...]
+>>> As you can see, this reference implementation creates a PROT_WRITE
+>>> mapping aliased to a PROT_EXEC mapping, so it actually reduces security
+>>> compared to something that generates the code in an anonymous mapping
+>>> and calls mprotect to make it executable.
+> [...]
+>> If a service legitimately needs executable and writable mappings (due to
+>> JIT, trampolines etc), it's easy to disable the filter whenever really
+>> needed with "MemoryDenyWriteExecute=no" (which is the default) in case of
+>> systemd or a TE rule like "allow type_t self:process { execmem };" for
+>> SELinux. But this shouldn't be the default case, since there are many
+>> services which don't need W&X.
+> 
+> I think Drepper's point is that separate X and W mappings, with enough
+> randomisation, would be more secure than allowing W&X at the same
+> address (but, of course, less secure than not having W at all, though
+> that's not always possible).
+> 
+>> I'd also question what is the value of BTI if it can be easily circumvented
+>> by removing PROT_BTI with mprotect()?
+> 
+> Well, BTI is a protection against JOP attacks. The assumption here is
+> that an attacker cannot invoke mprotect() to disable PROT_BTI. If it
+> can, it's probably not worth bothering with a subsequent JOP attack, it
+> can already call functions directly.
 
-> Add common properties appearing in DTSes (clock-names,
-> clock-output-names) with the common values (actually used in DTSes) to
-> fix dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
->     pmic@4b: 'clock-names', 'clock-output-names', do not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. Define the names, as used in existing DTS files.
-> ---
->  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6 ++++++
->  1 file changed, 6 insertions(+)
+I suppose that the target for the attacker is to eventually perform 
+system calls rather than looping forever in JOP/ROP gadgets.
 
-Applied, thanks.
+> I see MDWX not as a way of detecting attacks but rather plugging
+> inadvertent security holes in certain programs. On arm64, such hardening
+> currently gets in the way of another hardening feature, BTI.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I don't think it has to get in the way at all. Why wouldn't something 
+simple like this work:
+
+diff --git a/elf/dl-load.c b/elf/dl-load.c
+index 646c5dca40..12a74d15e8 100644
+--- a/elf/dl-load.c
++++ b/elf/dl-load.c
+@@ -1170,8 +1170,13 @@ _dl_map_object_from_fd (const char *name, const 
+char *origname, int fd,
+             c->prot |= PROT_READ;
+           if (ph->p_flags & PF_W)
+             c->prot |= PROT_WRITE;
+-         if (ph->p_flags & PF_X)
++         if (ph->p_flags & PF_X) {
+             c->prot |= PROT_EXEC;
++#ifdef PROT_BTI
++           if (GLRO(dl_bti) & 1)
++             c->prot |= PROT_BTI;
++#endif
++         }
+  #endif
+           break;
+
+diff --git a/elf/dl-support.c b/elf/dl-support.c
+index 7704c101c5..22c7cc7b81 100644
+--- a/elf/dl-support.c
++++ b/elf/dl-support.c
+@@ -222,7 +222,7 @@ __rtld_lock_define_initialized_recursive (, 
+_dl_load_write_lock)
+
+
+  #ifdef HAVE_AUX_VECTOR
+-int _dl_clktck;
++int _dl_clktck, _dl_bti;
+
+  void
+  _dl_aux_init (ElfW(auxv_t) *av)
+@@ -294,6 +294,11 @@ _dl_aux_init (ElfW(auxv_t) *av)
+        case AT_RANDOM:
+         _dl_random = (void *) av->a_un.a_val;
+         break;
++#ifdef PROT_BTI
++      case AT_BTI:
++       _dl_bti = (void *) av->a_un.a_val;
++       break;
++#endif
+        DL_PLATFORM_AUXV
+        }
+    if (seen == 0xf)
+
+Kernel sets the aux vector to indicate that BTI should be enabled for 
+all segments and main exe is already protected.
+
+-Topi
