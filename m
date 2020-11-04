@@ -2,134 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82882A673A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2CC2A673D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730525AbgKDPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:16:04 -0500
-Received: from m12-15.163.com ([220.181.12.15]:47671 "EHLO m12-15.163.com"
+        id S1730582AbgKDPQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:16:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45442 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgKDPQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:16:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=VSar2
-        wdEREwQtbNXW3U+mTBkXhxZPJuA5rzAVzEzkCs=; b=gYO0gQUMv+jpq36YMD8Fi
-        UfjghN2SHyz1DTDEjGMQdEL1wXxcaOdGzTKDvu4Ir06UOO/JvNOY7AxzOcGx7xiP
-        DYi0QxthHpC4FUhM15wKo4rdIwx3i9DsJj0U0gCi2thsbWXcSU9bok3BZ/Qqt+4N
-        URBSnA7boydsgxPSTus6G4=
-Received: from localhost (unknown [101.86.211.214])
-        by smtp11 (Coremail) with SMTP id D8CowACXoytxxaJfODSOGQ--.63470S2;
-        Wed, 04 Nov 2020 23:14:58 +0800 (CST)
-Date:   Wed, 4 Nov 2020 23:14:57 +0800
-From:   Hui Su <sh_def@163.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] mm/memcontrol: replace '== root_mem_cgroup' with
- mem_cgroup_is_root
-Message-ID: <20201104151457.GA108301@rlk>
+        id S1726796AbgKDPQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 10:16:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 44500ABA2;
+        Wed,  4 Nov 2020 15:16:05 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0C1FC1E130F; Wed,  4 Nov 2020 16:16:05 +0100 (CET)
+Date:   Wed, 4 Nov 2020 16:16:05 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
+ BUG_ON(PageWriteback(page); ]
+Message-ID: <20201104151605.GG5600@quack2.suse.cz>
+References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
+ <20201022004906.GQ20115@casper.infradead.org>
+ <20201026094948.GA29758@quack2.suse.cz>
+ <20201026131353.GP20115@casper.infradead.org>
+ <d06d3d2a-7032-91da-35fa-a9dee4440a14@kernel.dk>
+ <aa3dfe1f9705f02197f9a75b60d4c28cc97ddff4.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CM-TRANSID: D8CowACXoytxxaJfODSOGQ--.63470S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCFWUArWkJr17uw4UJrW3Awb_yoW5ZFWDpF
-        sIy3W3Ww4rArW5Xr1fKayq9a4rAa18Xa15JryxJw1xZw13Jw15tF17Ar1UJFyUCF9xGry7
-        JFs0yw18Gw4jvFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U5rcfUUUUU=
-X-Originating-IP: [101.86.211.214]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBDhfSX1rbK7KxjQAAsw
+In-Reply-To: <aa3dfe1f9705f02197f9a75b60d4c28cc97ddff4.camel@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have supplied the inline func: mem_cgroup_is_root().
-So we may use mem_cgroup_is_root() instead of using
-'memcg == root_mem_cgroup' or 'memcg != root_mem_cgroup'
-directly, which is more readable.
+On Mon 26-10-20 10:26:26, Qian Cai wrote:
+> On Mon, 2020-10-26 at 07:55 -0600, Jens Axboe wrote:
+> > I've tried to reproduce this as well, to no avail. Qian, could you perhaps
+> > detail the setup? What kind of storage, kernel config, compiler, etc.
+> > 
+> 
+> So far I have only been able to reproduce on this Intel platform:
+> 
+> HPE DL560 gen10
+> Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
+> 131072 MB memory, 1000 GB disk space (smartpqi nvme)
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- mm/memcontrol.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Did you try running with the debug patch Matthew sent? Any results?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3dcbf24d2227..ac7af04ef88f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -868,7 +868,7 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
- 	memcg = mem_cgroup_from_obj(p);
- 
- 	/* Untracked pages have no memcg, no lruvec. Update only the node */
--	if (!memcg || memcg == root_mem_cgroup) {
-+	if (!memcg || mem_cgroup_is_root(memcg)) {
- 		__mod_node_page_state(pgdat, idx, val);
- 	} else {
- 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
-@@ -1312,7 +1312,7 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
- 	struct mem_cgroup *iter;
- 	int ret = 0;
- 
--	BUG_ON(memcg == root_mem_cgroup);
-+	BUG_ON(mem_cgroup_is_root(memcg));
- 
- 	for_each_mem_cgroup_tree(iter, memcg) {
- 		struct css_task_iter it;
-@@ -2069,7 +2069,7 @@ struct mem_cgroup *mem_cgroup_get_oom_group(struct task_struct *victim,
- 	rcu_read_lock();
- 
- 	memcg = mem_cgroup_from_task(victim);
--	if (memcg == root_mem_cgroup)
-+	if (mem_cgroup_is_root(memcg))
- 		goto out;
- 
- 	/*
-@@ -2978,7 +2978,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
- 	else
- 		memcg = mem_cgroup_from_task(current);
- 
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-+	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
- 		objcg = rcu_dereference(memcg->objcg);
- 		if (objcg && obj_cgroup_tryget(objcg))
- 			break;
-@@ -7027,7 +7027,7 @@ void mem_cgroup_sk_alloc(struct sock *sk)
- 
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_task(current);
--	if (memcg == root_mem_cgroup)
-+	if (mem_cgroup_is_root(memcg))
- 		goto out;
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg->tcpmem_active)
- 		goto out;
-@@ -7156,7 +7156,7 @@ static struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg)
- 		 * The root cgroup cannot be destroyed, so it's refcount must
- 		 * always be >= 1.
- 		 */
--		if (WARN_ON_ONCE(memcg == root_mem_cgroup)) {
-+		if (WARN_ON_ONCE(mem_cgroup_is_root(memcg))) {
- 			VM_BUG_ON(1);
- 			break;
- 		}
-@@ -7313,7 +7313,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 
- 	if (cgroup_memory_noswap || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return nr_swap_pages;
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg))
-+	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
- 		nr_swap_pages = min_t(long, nr_swap_pages,
- 				      READ_ONCE(memcg->swap.max) -
- 				      page_counter_read(&memcg->swap));
-@@ -7335,7 +7335,7 @@ bool mem_cgroup_swap_full(struct page *page)
- 	if (!memcg)
- 		return false;
- 
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-+	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
- 		unsigned long usage = page_counter_read(&memcg->swap);
- 
- 		if (usage * 2 >= READ_ONCE(memcg->swap.high) ||
+								Honza
 -- 
-2.29.0
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
