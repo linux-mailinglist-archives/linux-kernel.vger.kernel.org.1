@@ -2,316 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DB62A5FBC
+	by mail.lfdr.de (Postfix) with ESMTP id BE3D82A5FBD
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgKDIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:37:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35730 "EHLO mx2.suse.de"
+        id S1728902AbgKDIiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:38:13 -0500
+Received: from mga11.intel.com ([192.55.52.93]:51943 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgKDIht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:37:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604479067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BXrxwtWFFGW7i/sPKc1/C4GjAg2pI7UBPBtCX2IYUyE=;
-        b=MYvVUJnm+tNlx3UXq+8sbVOeL2l73sBl73vL9fypAofxexuto3g5+dYsmPK4uUW9JUxW/R
-        fSZrKwc/dTm6iMShibichmjZgf3MQNAhO+QkKeSNsG2dkiNfJyi4gV7Jq0XjxLQXB0NTnv
-        ILWkNzB/DEQlbrKQUPQtrzDyeFM+KSI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B7E9ACBF;
-        Wed,  4 Nov 2020 08:37:47 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 09:37:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH rfc 1/3] mm: memcg: deprecate the non-hierarchical mode
-Message-ID: <20201104083746.GC10052@dhcp22.suse.cz>
-References: <20201103212725.3716088-1-guro@fb.com>
- <20201103212725.3716088-2-guro@fb.com>
+        id S1725891AbgKDIiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:38:13 -0500
+IronPort-SDR: Zr6ssoV6UN2hmEngT86lWJR10RVXLkM8fQY2NgIYMpE+N+umIk8Cen+CxEBdlgKtH5Td2Hu0Io
+ j8TOgF8pUxlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="165679543"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="165679543"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 00:38:12 -0800
+IronPort-SDR: 358ET1Wi4AFwNQ7WiM8YOHagJROKopIiydIhujUvr8oE+Zm4lDvShQo1wefXn1ZTNuyccNlz15
+ ohaMOgurAEqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="538833669"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga005.jf.intel.com with ESMTP; 04 Nov 2020 00:38:09 -0800
+Subject: Re: [PATCH V4 1/2] scsi: ufs: Add DeepSleep feature
+To:     Can Guo <cang@codeaurora.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
+ <20201103141403.2142-2-adrian.hunter@intel.com>
+ <5331559186b4ecf5e5ffc1bf1d28c6b3@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f3195f76-e81f-393e-a32e-3d06eaa10aeb@intel.com>
+Date:   Wed, 4 Nov 2020 10:37:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103212725.3716088-2-guro@fb.com>
+In-Reply-To: <5331559186b4ecf5e5ffc1bf1d28c6b3@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03-11-20 13:27:23, Roman Gushchin wrote:
-> The non-hierarchical cgroup v1 mode is a legacy of early days
-> of the memory controller and doesn't bring any value today.
-
-This is a bold statement ;)
-All that we know today is that we have a warning in place to complain
-loudly when somebody relies on use_hierarchy=0 with a deeper
-hierarchy. For all those years we have seen _zero_ reports that would
-describe a sensible usecase.
-Moreover we (SUSE) have backported this warning into old distribution
-kernels (since 3.0 based kernels) to extend the coverage and didn't hear
-even for users who adopt new kernels only very slowly. The only report
-we have seen so far was a LTP test suite which doesn't really reflect
-any real life usecase.
-
-Feel free to reuse the above in the changelog.
-
-> However, it complicates the code and creates many edge cases
-> all over the memory controller code.
+On 4/11/20 10:29 am, Can Guo wrote:
+> Hi Adrian,
 > 
-> It's a good time to deprecate it completely.
+> On 2020-11-03 22:14, Adrian Hunter wrote:
+>> DeepSleep is a UFS v3.1 feature that achieves the lowest power consumption
+>> of the device, apart from power off.
+>>
+>> In DeepSleep mode, no commands are accepted, and the only way to exit is
+>> using a hardware reset or power cycle.
+>>
+>> This patch assumes that if a power cycle was an option, then power off
+>> would be preferable, so only exit via a hardware reset is supported.
+>>
+>> Drivers that wish to support DeepSleep need to set a new capability flag
+>> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
+>>  ->device_reset() callback.
+>>
+>> It is assumed that UFS devices with wspecversion >= 0x310 support
+>> DeepSleep.
+>>
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>  Documentation/ABI/testing/sysfs-driver-ufs | 34 +++++++++++--------
+>>  drivers/scsi/ufs/ufs-sysfs.c               |  7 ++++
+>>  drivers/scsi/ufs/ufs.h                     |  1 +
+>>  drivers/scsi/ufs/ufshcd.c                  | 39 ++++++++++++++++++++--
+>>  drivers/scsi/ufs/ufshcd.h                  | 17 +++++++++-
+>>  include/trace/events/ufs.h                 |  3 +-
+>>  6 files changed, 83 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs
+>> b/Documentation/ABI/testing/sysfs-driver-ufs
+>> index adc0d0e91607..e77fa784d6d8 100644
+>> --- a/Documentation/ABI/testing/sysfs-driver-ufs
+>> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
+>> @@ -916,21 +916,24 @@ Date:        September 2014
+>>  Contact:    Subhash Jadavani <subhashj@codeaurora.org>
+>>  Description:    This entry could be used to set or show the UFS device
+>>          runtime power management level. The current driver
+>> -        implementation supports 6 levels with next target states:
+>> +        implementation supports 7 levels with next target states:
+>>
+>>          ==  ====================================================
+>> -        0   an UFS device will stay active, an UIC link will
+>> +        0   UFS device will stay active, UIC link will
+>>              stay active
+>> -        1   an UFS device will stay active, an UIC link will
+>> +        1   UFS device will stay active, UIC link will
+>>              hibernate
+>> -        2   an UFS device will moved to sleep, an UIC link will
+>> +        2   UFS device will be moved to sleep, UIC link will
+>>              stay active
+>> -        3   an UFS device will moved to sleep, an UIC link will
+>> +        3   UFS device will be moved to sleep, UIC link will
+>>              hibernate
+>> -        4   an UFS device will be powered off, an UIC link will
+>> +        4   UFS device will be powered off, UIC link will
+>>              hibernate
+>> -        5   an UFS device will be powered off, an UIC link will
+>> +        5   UFS device will be powered off, UIC link will
+>>              be powered off
+>> +        6   UFS device will be moved to deep sleep, UIC link
+>> +        will be powered off. Note, deep sleep might not be
+>> +        supported in which case this value will not be accepted
 > 
-> Functionally this patch enabled is by default for all cgroups
-> and forbids switching it off. Nothing changes if cgroup v2 is used:
-> hierarchical mode was enforced from scratch.
+> Nitpicking, usually higher spm/rpm_lvl means better power saving.
+> Since POWERDOWN+LINKOFF achieves the lowest power consumption, can
+> we put DEEPSLEEP_LINKOFF to 5, and POWERDOWN_LINKOFF to 6?
+
+That would break the API i.e. we shouldn't change the meaning of '5'
+
+Also, pedantically it depends on whether regulators are provided as to
+whether Deep Sleep is higher/lower than PowerDown i.e. without regulators to
+switch off the device, it will remain in PowerDown mode which does not save
+as much power as Deep Sleep.
+
 > 
-> To protect the ABI memory.use_hierarchy interface is preserved
-> with a limited functionality: reading always returns "1", writing
-> of "1" passes silently, writing of any other value fails with
-> -EINVAL and a warning to dmesg (on the first occasion).
-
-Yes, that makes sense.
- 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-
-I do not see any problems with the patch or any left overs behind
-(except for the documentation which you handle in the follow up
-patches).
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks and let's see whether some last minute usecase show up.
-
-> ---
->  include/linux/memcontrol.h |  7 ---
->  kernel/cgroup/cgroup.c     |  5 ---
->  mm/memcontrol.c            | 90 ++++++--------------------------------
->  3 files changed, 13 insertions(+), 89 deletions(-)
+> Thanks,
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 0f4dd7829fb2..31000929db4b 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -234,11 +234,6 @@ struct mem_cgroup {
->  	/* vmpressure notifications */
->  	struct vmpressure vmpressure;
->  
-> -	/*
-> -	 * Should the accounting and control be hierarchical, per subtree?
-> -	 */
-> -	bool use_hierarchy;
-> -
->  	/*
->  	 * Should the OOM killer kill all belonging tasks, had it kill one?
->  	 */
-> @@ -758,8 +753,6 @@ static inline bool mem_cgroup_is_descendant(struct mem_cgroup *memcg,
->  {
->  	if (root == memcg)
->  		return true;
-> -	if (!root->use_hierarchy)
-> -		return false;
->  	return cgroup_is_descendant(memcg->css.cgroup, root->css.cgroup);
->  }
->  
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index f2eeff74d713..621a586e3529 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -281,9 +281,6 @@ bool cgroup_ssid_enabled(int ssid)
->   * - cpuset: a task can be moved into an empty cpuset, and again it takes
->   *   masks of ancestors.
->   *
-> - * - memcg: use_hierarchy is on by default and the cgroup file for the flag
-> - *   is not created.
-> - *
->   * - blkcg: blk-throttle becomes properly hierarchical.
->   *
->   * - debug: disallowed on the default hierarchy.
-> @@ -5156,8 +5153,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
->  	    cgroup_parent(parent)) {
->  		pr_warn("%s (%d) created nested cgroup for controller \"%s\" which has incomplete hierarchy support. Nested cgroups may change behavior in the future.\n",
->  			current->comm, current->pid, ss->name);
-> -		if (!strcmp(ss->name, "memory"))
-> -			pr_warn("\"memory\" requires setting use_hierarchy to 1 on the root\n");
->  		ss->warned_broken_hierarchy = true;
->  	}
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 4b0cd4b78d47..2a37785e9abd 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1127,12 +1127,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->  	if (prev && !reclaim)
->  		pos = prev;
->  
-> -	if (!root->use_hierarchy && root != root_mem_cgroup) {
-> -		if (prev)
-> -			goto out;
-> -		return root;
-> -	}
-> -
->  	rcu_read_lock();
->  
->  	if (reclaim) {
-> @@ -1212,7 +1206,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->  
->  out_unlock:
->  	rcu_read_unlock();
-> -out:
->  	if (prev && prev != root)
->  		css_put(&prev->css);
->  
-> @@ -3440,10 +3433,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->  }
->  
->  /*
-> - * Test whether @memcg has children, dead or alive.  Note that this
-> - * function doesn't care whether @memcg has use_hierarchy enabled and
-> - * returns %true if there are child csses according to the cgroup
-> - * hierarchy.  Testing use_hierarchy is the caller's responsibility.
-> + * Test whether @memcg has children, dead or alive.
->   */
->  static inline bool memcg_has_children(struct mem_cgroup *memcg)
->  {
-> @@ -3503,37 +3493,20 @@ static ssize_t mem_cgroup_force_empty_write(struct kernfs_open_file *of,
->  static u64 mem_cgroup_hierarchy_read(struct cgroup_subsys_state *css,
->  				     struct cftype *cft)
->  {
-> -	return mem_cgroup_from_css(css)->use_hierarchy;
-> +	return 1;
->  }
->  
->  static int mem_cgroup_hierarchy_write(struct cgroup_subsys_state *css,
->  				      struct cftype *cft, u64 val)
->  {
-> -	int retval = 0;
-> -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> -	struct mem_cgroup *parent_memcg = mem_cgroup_from_css(memcg->css.parent);
-> -
-> -	if (memcg->use_hierarchy == val)
-> +	if (val == 1)
->  		return 0;
->  
-> -	/*
-> -	 * If parent's use_hierarchy is set, we can't make any modifications
-> -	 * in the child subtrees. If it is unset, then the change can
-> -	 * occur, provided the current cgroup has no children.
-> -	 *
-> -	 * For the root cgroup, parent_mem is NULL, we allow value to be
-> -	 * set if there are no children.
-> -	 */
-> -	if ((!parent_memcg || !parent_memcg->use_hierarchy) &&
-> -				(val == 1 || val == 0)) {
-> -		if (!memcg_has_children(memcg))
-> -			memcg->use_hierarchy = val;
-> -		else
-> -			retval = -EBUSY;
-> -	} else
-> -		retval = -EINVAL;
-> +	pr_warn_once("Non-hierarchical mode is deprecated. "
-> +		     "Please report your usecase to linux-mm@kvack.org if you "
-> +		     "depend on this functionality.\n");
->  
-> -	return retval;
-> +	return -EINVAL;
->  }
->  
->  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
-> @@ -3727,8 +3700,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
->  		child = mem_cgroup_from_css(css);
->  		BUG_ON(child->kmemcg_id != kmemcg_id);
->  		child->kmemcg_id = parent->kmemcg_id;
-> -		if (!memcg->use_hierarchy)
-> -			break;
->  	}
->  	rcu_read_unlock();
->  
-> @@ -5319,38 +5290,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  	if (parent) {
->  		memcg->swappiness = mem_cgroup_swappiness(parent);
->  		memcg->oom_kill_disable = parent->oom_kill_disable;
-> -	}
-> -	if (!parent) {
-> -		page_counter_init(&memcg->memory, NULL);
-> -		page_counter_init(&memcg->swap, NULL);
-> -		page_counter_init(&memcg->kmem, NULL);
-> -		page_counter_init(&memcg->tcpmem, NULL);
-> -	} else if (parent->use_hierarchy) {
-> -		memcg->use_hierarchy = true;
-> +
->  		page_counter_init(&memcg->memory, &parent->memory);
->  		page_counter_init(&memcg->swap, &parent->swap);
->  		page_counter_init(&memcg->kmem, &parent->kmem);
->  		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
->  	} else {
-> -		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
-> -		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
-> -		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
-> -		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
-> -		/*
-> -		 * Deeper hierachy with use_hierarchy == false doesn't make
-> -		 * much sense so let cgroup subsystem know about this
-> -		 * unfortunate state in our controller.
-> -		 */
-> -		if (parent != root_mem_cgroup)
-> -			memory_cgrp_subsys.broken_hierarchy = true;
-> -	}
-> +		page_counter_init(&memcg->memory, NULL);
-> +		page_counter_init(&memcg->swap, NULL);
-> +		page_counter_init(&memcg->kmem, NULL);
-> +		page_counter_init(&memcg->tcpmem, NULL);
->  
-> -	/* The following stuff does not apply to the root */
-> -	if (!parent) {
->  		root_mem_cgroup = memcg;
->  		return &memcg->css;
->  	}
->  
-> +	/* The following stuff does not apply to the root */
->  	error = memcg_online_kmem(memcg);
->  	if (error)
->  		goto fail;
-> @@ -6187,24 +6142,6 @@ static void mem_cgroup_move_task(void)
->  }
->  #endif
->  
-> -/*
-> - * Cgroup retains root cgroups across [un]mount cycles making it necessary
-> - * to verify whether we're attached to the default hierarchy on each mount
-> - * attempt.
-> - */
-> -static void mem_cgroup_bind(struct cgroup_subsys_state *root_css)
-> -{
-> -	/*
-> -	 * use_hierarchy is forced on the default hierarchy.  cgroup core
-> -	 * guarantees that @root doesn't have any children, so turning it
-> -	 * on for the root memcg is enough.
-> -	 */
-> -	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> -		root_mem_cgroup->use_hierarchy = true;
-> -	else
-> -		root_mem_cgroup->use_hierarchy = false;
-> -}
-> -
->  static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long value)
->  {
->  	if (value == PAGE_COUNTER_MAX)
-> @@ -6542,7 +6479,6 @@ struct cgroup_subsys memory_cgrp_subsys = {
->  	.can_attach = mem_cgroup_can_attach,
->  	.cancel_attach = mem_cgroup_cancel_attach,
->  	.post_attach = mem_cgroup_move_task,
-> -	.bind = mem_cgroup_bind,
->  	.dfl_cftypes = memory_files,
->  	.legacy_cftypes = mem_cgroup_legacy_files,
->  	.early_init = 0,
-> -- 
-> 2.26.2
+> Can Guo.
+> 
+>>          ==  ====================================================
+>>
+>>  What:        /sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
+>> @@ -954,21 +957,24 @@ Date:        September 2014
+>>  Contact:    Subhash Jadavani <subhashj@codeaurora.org>
+>>  Description:    This entry could be used to set or show the UFS device
+>>          system power management level. The current driver
+>> -        implementation supports 6 levels with next target states:
+>> +        implementation supports 7 levels with next target states:
+>>
+>>          ==  ====================================================
+>> -        0   an UFS device will stay active, an UIC link will
+>> +        0   UFS device will stay active, UIC link will
+>>              stay active
+>> -        1   an UFS device will stay active, an UIC link will
+>> +        1   UFS device will stay active, UIC link will
+>>              hibernate
+>> -        2   an UFS device will moved to sleep, an UIC link will
+>> +        2   UFS device will be moved to sleep, UIC link will
+>>              stay active
+>> -        3   an UFS device will moved to sleep, an UIC link will
+>> +        3   UFS device will be moved to sleep, UIC link will
+>>              hibernate
+>> -        4   an UFS device will be powered off, an UIC link will
+>> +        4   UFS device will be powered off, UIC link will
+>>              hibernate
+>> -        5   an UFS device will be powered off, an UIC link will
+>> +        5   UFS device will be powered off, UIC link will
+>>              be powered off
+>> +        6   UFS device will be moved to deep sleep, UIC link
+>> +        will be powered off. Note, deep sleep might not be
+>> +        supported in which case this value will not be accepted
+>>          ==  ====================================================
+>>
+>>  What:        /sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
+>> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+>> index bdcd27faa054..08e72b7eef6a 100644
+>> --- a/drivers/scsi/ufs/ufs-sysfs.c
+>> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+>> @@ -28,6 +28,7 @@ static const char *ufschd_ufs_dev_pwr_mode_to_string(
+>>      case UFS_ACTIVE_PWR_MODE:    return "ACTIVE";
+>>      case UFS_SLEEP_PWR_MODE:    return "SLEEP";
+>>      case UFS_POWERDOWN_PWR_MODE:    return "POWERDOWN";
+>> +    case UFS_DEEPSLEEP_PWR_MODE:    return "DEEPSLEEP";
+>>      default:            return "UNKNOWN";
+>>      }
+>>  }
+>> @@ -38,6 +39,7 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct
+>> device *dev,
+>>                           bool rpm)
+>>  {
+>>      struct ufs_hba *hba = dev_get_drvdata(dev);
+>> +    struct ufs_dev_info *dev_info = &hba->dev_info;
+>>      unsigned long flags, value;
+>>
+>>      if (kstrtoul(buf, 0, &value))
+>> @@ -46,6 +48,11 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct
+>> device *dev,
+>>      if (value >= UFS_PM_LVL_MAX)
+>>          return -EINVAL;
+>>
+>> +    if (ufs_pm_lvl_states[value].dev_state == UFS_DEEPSLEEP_PWR_MODE &&
+>> +        (!(hba->caps & UFSHCD_CAP_DEEPSLEEP) ||
+>> +         !(dev_info->wspecversion >= 0x310)))
+>> +        return -EINVAL;
+>> +
+>>      spin_lock_irqsave(hba->host->host_lock, flags);
+>>      if (rpm)
+>>          hba->rpm_lvl = value;
+>> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+>> index f8ab16f30fdc..d593edb48767 100644
+>> --- a/drivers/scsi/ufs/ufs.h
+>> +++ b/drivers/scsi/ufs/ufs.h
+>> @@ -442,6 +442,7 @@ enum ufs_dev_pwr_mode {
+>>      UFS_ACTIVE_PWR_MODE    = 1,
+>>      UFS_SLEEP_PWR_MODE    = 2,
+>>      UFS_POWERDOWN_PWR_MODE    = 3,
+>> +    UFS_DEEPSLEEP_PWR_MODE    = 4,
+>>  };
+>>
+>>  #define UFS_WB_BUF_REMAIN_PERCENT(val) ((val) / 10)
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 2309253d3101..ee083b96e405 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -163,6 +163,11 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
+>>      {UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+>>      {UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+>>      {UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
+>> +    /*
+>> +     * For DeepSleep, the link is first put in hibern8 and then off.
+>> +     * Leaving the link in hibern8 is not supported.
+>> +     */
+>> +    {UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE},
+>>  };
+>>
+>>  static inline enum ufs_dev_pwr_mode
+>> @@ -8297,7 +8302,8 @@ static int ufshcd_link_state_transition(struct
+>> ufs_hba *hba,
+>>      }
+>>      /*
+>>       * If autobkops is enabled, link can't be turned off because
+>> -     * turning off the link would also turn off the device.
+>> +     * turning off the link would also turn off the device, except in the
+>> +     * case of DeepSleep where the device is expected to remain powered.
+>>       */
+>>      else if ((req_link_state == UIC_LINK_OFF_STATE) &&
+>>           (!check_for_bkops || !hba->auto_bkops_enabled)) {
+>> @@ -8307,6 +8313,9 @@ static int ufshcd_link_state_transition(struct
+>> ufs_hba *hba,
+>>           * put the link in low power mode is to send the DME end point
+>>           * to device and then send the DME reset command to local
+>>           * unipro. But putting the link in hibern8 is much faster.
+>> +         *
+>> +         * Note also that putting the link in Hibern8 is a requirement
+>> +         * for entering DeepSleep.
+>>           */
+>>          ret = ufshcd_uic_hibern8_enter(hba);
+>>          if (ret) {
+>> @@ -8439,6 +8448,7 @@ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba
+>> *hba)
+>>  static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>  {
+>>      int ret = 0;
+>> +    int check_for_bkops;
+>>      enum ufs_pm_level pm_lvl;
+>>      enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>>      enum uic_link_state req_link_state;
+>> @@ -8524,7 +8534,13 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+>> enum ufs_pm_op pm_op)
+>>      }
+>>
+>>      flush_work(&hba->eeh_work);
+>> -    ret = ufshcd_link_state_transition(hba, req_link_state, 1);
+>> +
+>> +    /*
+>> +     * In the case of DeepSleep, the device is expected to remain powered
+>> +     * with the link off, so do not check for bkops.
+>> +     */
+>> +    check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
+>> +    ret = ufshcd_link_state_transition(hba, req_link_state,
+>> check_for_bkops);
+>>      if (ret)
+>>          goto set_dev_active;
+>>
+>> @@ -8565,11 +8581,25 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+>> enum ufs_pm_op pm_op)
+>>      if (hba->clk_scaling.is_allowed)
+>>          ufshcd_resume_clkscaling(hba);
+>>      ufshcd_vreg_set_hpm(hba);
+>> +    /*
+>> +     * Device hardware reset is required to exit DeepSleep. Also, for
+>> +     * DeepSleep, the link is off so host reset and restore will be done
+>> +     * further below.
+>> +     */
+>> +    if (ufshcd_is_ufs_dev_deepsleep(hba)) {
+>> +        ufshcd_vops_device_reset(hba);
+>> +        WARN_ON(!ufshcd_is_link_off(hba));
+>> +    }
+>>      if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+>>          ufshcd_set_link_active(hba);
+>>      else if (ufshcd_is_link_off(hba))
+>>          ufshcd_host_reset_and_restore(hba);
+>>  set_dev_active:
+>> +    /* Can also get here needing to exit DeepSleep */
+>> +    if (ufshcd_is_ufs_dev_deepsleep(hba)) {
+>> +        ufshcd_vops_device_reset(hba);
+>> +        ufshcd_host_reset_and_restore(hba);
+>> +    }
+>>      if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+>>          ufshcd_disable_auto_bkops(hba);
+>>  enable_gating:
+>> @@ -8631,6 +8661,9 @@ static int ufshcd_resume(struct ufs_hba *hba,
+>> enum ufs_pm_op pm_op)
+>>      if (ret)
+>>          goto disable_vreg;
+>>
+>> +    /* For DeepSleep, the only supported option is to have the link off */
+>> +    WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
+>> +
+>>      if (ufshcd_is_link_hibern8(hba)) {
+>>          ret = ufshcd_uic_hibern8_exit(hba);
+>>          if (!ret) {
+>> @@ -8644,6 +8677,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+>> enum ufs_pm_op pm_op)
+>>          /*
+>>           * A full initialization of the host and the device is
+>>           * required since the link was put to off during suspend.
+>> +         * Note, in the case of DeepSleep, the device will exit
+>> +         * DeepSleep due to device reset.
+>>           */
+>>          ret = ufshcd_reset_and_restore(hba);
+>>          /*
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index 0fbb735bb70c..213be0667b59 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -114,16 +114,22 @@ enum uic_link_state {
+>>      ((h)->curr_dev_pwr_mode = UFS_SLEEP_PWR_MODE)
+>>  #define ufshcd_set_ufs_dev_poweroff(h) \
+>>      ((h)->curr_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE)
+>> +#define ufshcd_set_ufs_dev_deepsleep(h) \
+>> +    ((h)->curr_dev_pwr_mode = UFS_DEEPSLEEP_PWR_MODE)
+>>  #define ufshcd_is_ufs_dev_active(h) \
+>>      ((h)->curr_dev_pwr_mode == UFS_ACTIVE_PWR_MODE)
+>>  #define ufshcd_is_ufs_dev_sleep(h) \
+>>      ((h)->curr_dev_pwr_mode == UFS_SLEEP_PWR_MODE)
+>>  #define ufshcd_is_ufs_dev_poweroff(h) \
+>>      ((h)->curr_dev_pwr_mode == UFS_POWERDOWN_PWR_MODE)
+>> +#define ufshcd_is_ufs_dev_deepsleep(h) \
+>> +    ((h)->curr_dev_pwr_mode == UFS_DEEPSLEEP_PWR_MODE)
+>>
+>>  /*
+>>   * UFS Power management levels.
+>> - * Each level is in increasing order of power savings.
+>> + * Each level is in increasing order of power savings, except DeepSleep
+>> + * which is lower than PowerDown with power on but not PowerDown with
+>> + * power off.
+>>   */
+>>  enum ufs_pm_level {
+>>      UFS_PM_LVL_0, /* UFS_ACTIVE_PWR_MODE, UIC_LINK_ACTIVE_STATE */
+>> @@ -132,6 +138,7 @@ enum ufs_pm_level {
+>>      UFS_PM_LVL_3, /* UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+>>      UFS_PM_LVL_4, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+>>      UFS_PM_LVL_5, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE */
+>> +    UFS_PM_LVL_6, /* UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE */
+>>      UFS_PM_LVL_MAX
+>>  };
+>>
+>> @@ -599,6 +606,14 @@ enum ufshcd_caps {
+>>       * This would increase power savings.
+>>       */
+>>      UFSHCD_CAP_AGGR_POWER_COLLAPSE            = 1 << 9,
+>> +
+>> +    /*
+>> +     * This capability allows the host controller driver to use DeepSleep,
+>> +     * if it is supported by the UFS device. The host controller driver must
+>> +     * support device hardware reset via the hba->device_reset() callback,
+>> +     * in order to exit DeepSleep state.
+>> +     */
+>> +    UFSHCD_CAP_DEEPSLEEP                = 1 << 10,
+>>  };
+>>
+>>  struct ufs_hba_variant_params {
+>> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
+>> index 84841b3a7ffd..2362244c2a9e 100644
+>> --- a/include/trace/events/ufs.h
+>> +++ b/include/trace/events/ufs.h
+>> @@ -19,7 +19,8 @@
+>>  #define UFS_PWR_MODES            \
+>>      EM(UFS_ACTIVE_PWR_MODE)        \
+>>      EM(UFS_SLEEP_PWR_MODE)        \
+>> -    EMe(UFS_POWERDOWN_PWR_MODE)
+>> +    EM(UFS_POWERDOWN_PWR_MODE)    \
+>> +    EMe(UFS_DEEPSLEEP_PWR_MODE)
+>>
+>>  #define UFSCHD_CLK_GATING_STATES    \
+>>      EM(CLKS_OFF)            \
 
--- 
-Michal Hocko
-SUSE Labs
