@@ -2,228 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEBB2A63DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDCA2A63F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgKDME3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:04:29 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:39303 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728287AbgKDME2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:04:28 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A4C4IES0003516, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A4C4IES0003516
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 4 Nov 2020 20:04:18 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 4 Nov 2020 20:04:18 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 4 Nov 2020 20:04:18 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alex_lu@realsil.com.cn>, <hildawu@realtek.com>
-CC:     <kidman@realtek.com>, <max.chou@realtek.com>
-Subject: [PATCH] Bluetooth: btrtl: Refine the ic_id_table for clearer and more regular
-Date:   Wed, 4 Nov 2020 20:04:14 +0800
-Message-ID: <20201104120414.12772-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729481AbgKDMNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:13:44 -0500
+Received: from mga14.intel.com ([192.55.52.115]:47985 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728287AbgKDMNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:13:43 -0500
+IronPort-SDR: 1MpfaYdg47mB7Get8jpbEKh56afOF6/8JQpDinx45HRn0d+90V05Y8v99JK1/WQmYUU+WtHQhv
+ Nst194offI7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="168419488"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="168419488"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 04:13:43 -0800
+IronPort-SDR: CvBR0A+Qgyd3U/98UQ71gFdI5mT22z3EdKYKHOrwN0jXx4Uc8OB1UB2Qglm5wFZlSpKz8uAPbR
+ RIvETSBLq99A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="528915531"
+Received: from tejas-system-product-name.iind.intel.com ([10.145.162.130])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Nov 2020 04:13:40 -0800
+From:   Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Cc:     bp@alien8.de, lucas.demarchi@intel.com, matthew.d.roper@intel.com,
+        hariom.pandey@intel.com
+Subject: [PATCH] x86/gpu: add JSL stolen memory support
+Date:   Wed,  4 Nov 2020 17:35:06 +0530
+Message-Id: <20201104120506.172447-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
- RTEXMBS03.realtek.com.tw (172.21.6.34)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
+JSL re-uses the same stolen memory as ICL and EHL.
 
-Enhance the ic_id_table that it's able to maintain regularly.
-To judge which chip should be initialized by LMP subversion, HCI revision,
- HCI version and HCI bus which were given in the ic_id_table.
-Also, refine the incorrect LMP subversion of ROM for RTL8723D and
-RTL8723A.
-
-Suggested-by: Alex Lu <alex_lu@realsil.com.cn>
-Signed-off-by: Max Chou <max.chou@realtek.com>
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Matt Roper <matthew.d.roper@intel.com>
+Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
 ---
- drivers/bluetooth/btrtl.c | 65 ++++++++++++---------------------------
- 1 file changed, 19 insertions(+), 46 deletions(-)
+ arch/x86/kernel/early-quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 3a9afc905f24..1ab9f27e4fa7 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -18,10 +18,8 @@
- #define VERSION "0.1"
- 
- #define RTL_EPATCH_SIGNATURE	"Realtech"
--#define RTL_ROM_LMP_3499	0x3499
- #define RTL_ROM_LMP_8723A	0x1200
- #define RTL_ROM_LMP_8723B	0x8723
--#define RTL_ROM_LMP_8723D	0x8873
- #define RTL_ROM_LMP_8821A	0x8821
- #define RTL_ROM_LMP_8761A	0x8761
- #define RTL_ROM_LMP_8822B	0x8822
-@@ -31,10 +29,13 @@
- #define IC_MATCH_FL_HCIREV	(1 << 1)
- #define IC_MATCH_FL_HCIVER	(1 << 2)
- #define IC_MATCH_FL_HCIBUS	(1 << 3)
--#define IC_INFO(lmps, hcir) \
--	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV, \
-+#define IC_INFO(lmps, hcir, hciv, bus) \
-+	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV | \
-+		       IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS, \
- 	.lmp_subver = (lmps), \
--	.hci_rev = (hcir)
-+	.hci_rev = (hcir), \
-+	.hci_ver = (hciv), \
-+	.hci_bus = (bus)
- 
- struct id_table {
- 	__u16 match_flags;
-@@ -58,112 +59,85 @@ struct btrtl_device_info {
+diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
+index a4b5af03dcc1..534cc3f78c6b 100644
+--- a/arch/x86/kernel/early-quirks.c
++++ b/arch/x86/kernel/early-quirks.c
+@@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
+ 	INTEL_CNL_IDS(&gen9_early_ops),
+ 	INTEL_ICL_11_IDS(&gen11_early_ops),
+ 	INTEL_EHL_IDS(&gen11_early_ops),
++	INTEL_JSL_IDS(&gen11_early_ops),
+ 	INTEL_TGL_12_IDS(&gen11_early_ops),
+ 	INTEL_RKL_IDS(&gen11_early_ops),
  };
- 
- static const struct id_table ic_id_table[] = {
--	{ IC_MATCH_FL_LMPSUBV, RTL_ROM_LMP_8723A, 0x0,
--	  .config_needed = false,
--	  .has_rom_version = false,
--	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
--	  .cfg_name = NULL },
--
--	{ IC_MATCH_FL_LMPSUBV, RTL_ROM_LMP_3499, 0x0,
-+	/* 8723A */
-+	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = false,
- 	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
- 	  .cfg_name = NULL },
- 
- 	/* 8723BS */
--	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
--			 IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS,
--	  .lmp_subver = RTL_ROM_LMP_8723B,
--	  .hci_rev = 0xb,
--	  .hci_ver = 6,
--	  .hci_bus = HCI_UART,
-+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART),
- 	  .config_needed = true,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8723bs_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8723bs_config" },
- 
- 	/* 8723B */
--	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb),
-+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8723b_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8723b_config" },
- 
- 	/* 8723D */
--	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd),
-+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB),
- 	  .config_needed = true,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8723d_config" },
- 
- 	/* 8723DS */
--	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
--			 IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS,
--	  .lmp_subver = RTL_ROM_LMP_8723B,
--	  .hci_rev = 0xd,
--	  .hci_ver = 8,
--	  .hci_bus = HCI_UART,
-+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART),
- 	  .config_needed = true,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8723ds_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8723ds_config" },
- 
--	/* 8723DU */
--	{ IC_INFO(RTL_ROM_LMP_8723D, 0x826C),
--	  .config_needed = true,
--	  .has_rom_version = true,
--	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
--	  .cfg_name = "rtl_bt/rtl8723d_config" },
--
- 	/* 8821A */
--	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa),
-+	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8821a_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8821a_config" },
- 
- 	/* 8821C */
--	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc),
-+	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8821c_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8821c_config" },
- 
- 	/* 8761A */
--	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa),
-+	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8761a_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8761a_config" },
- 
- 	/* 8761B */
--	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb),
-+	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8761b_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8761b_config" },
- 
- 	/* 8822C with UART interface */
--	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
--			 IC_MATCH_FL_HCIBUS,
--	  .lmp_subver = RTL_ROM_LMP_8822B,
--	  .hci_rev = 0x000c,
--	  .hci_ver = 0x0a,
--	  .hci_bus = HCI_UART,
-+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_UART),
- 	  .config_needed = true,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8822cs_config" },
- 
- 	/* 8822C with USB interface */
--	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc),
-+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_USB),
- 	  .config_needed = false,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8822cu_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8822cu_config" },
- 
- 	/* 8822B */
--	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb),
-+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb, 0x7, HCI_USB),
- 	  .config_needed = true,
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
-@@ -654,7 +628,6 @@ int btrtl_download_firmware(struct hci_dev *hdev,
- 
- 	switch (btrtl_dev->ic_info->lmp_subver) {
- 	case RTL_ROM_LMP_8723A:
--	case RTL_ROM_LMP_3499:
- 		return btrtl_setup_rtl8723a(hdev, btrtl_dev);
- 	case RTL_ROM_LMP_8723B:
- 	case RTL_ROM_LMP_8821A:
 -- 
-2.17.1
+2.28.0
 
