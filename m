@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56BD2A60CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653D32A60C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgKDJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:43:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33200 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728889AbgKDJnK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:43:10 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4933w4023583;
-        Wed, 4 Nov 2020 04:41:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zdRbraW1F2GIaa1UV8CaG7ZHN3GkfsDk51ocD6Ao0uA=;
- b=scOIzNnkJXQfwShsDUxhQ5uolcyuMOX8cG+RIERaFDl98wAsBZ5YsPlEimw+C77IhP+3
- Oxjc/hGOVfGXMUlFC3rSBijUJ0Bf3N20AoPaJXPcOhZxxp/bKXfaMTsSadZxHWLOH4VW
- WOVYV6Vij642VqSpywYqAtPyZ3SgJksEQAVj3K9SFih/EShyg+wk4o7ogVqdT54G6iDa
- BD/UTHIUprNrcyFTJPsmoVX65dja9uyD1pU1neWCrM/myXumIf4oZ5PVlshrKL+1tOzk
- SZiXW30GxvFexGVVloC/kPSADyUfXOPJaOLPRz9TjUluiH4AsZMtOT+d3Tmue/0iPVzT dQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34kqdana48-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 04:41:38 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A494B4g028017;
-        Wed, 4 Nov 2020 04:41:38 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34kqdana3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 04:41:37 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A49Qceh031125;
-        Wed, 4 Nov 2020 09:41:35 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 34h01uc0wh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 09:41:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A49fXSr3408582
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Nov 2020 09:41:33 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3181311C04C;
-        Wed,  4 Nov 2020 09:41:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 95A4311C052;
-        Wed,  4 Nov 2020 09:41:32 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.163.138])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Nov 2020 09:41:32 +0000 (GMT)
-Subject: Re: [PATCH] x86/mpx: fix recursive munmap() corruption
-To:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, mhocko@suse.com,
-        rguenther@suse.de, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        luto@amacapital.net, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, vbabka@suse.cz
-References: <20190401141549.3F4721FE@viggo.jf.intel.com>
- <alpine.DEB.2.21.1904191248090.3174@nanos.tec.linutronix.de>
- <87d0lht1c0.fsf@concordia.ellerman.id.au>
- <6718ede2-1fcb-1a8f-a116-250eef6416c7@linux.vnet.ibm.com>
- <4f43d4d4-832d-37bc-be7f-da0da735bbec@intel.com>
- <4e1bbb14-e14f-8643-2072-17b4cdef5326@linux.vnet.ibm.com>
- <87k1faa2i0.fsf@concordia.ellerman.id.au>
- <9c2b2826-4083-fc9c-5a4d-c101858dd560@linux.vnet.ibm.com>
- <12313ba8-75b5-d44d-dbc0-0bf2c87dfb59@csgroup.eu>
- <452b347c-0a86-c710-16ba-5a98c12a47e3@linux.vnet.ibm.com>
- <02389b9c-141c-f5b7-756a-516599063766@gmail.com>
-From:   Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Message-ID: <3d93d41c-24fb-d24e-53f1-9dcb5c8d6394@linux.vnet.ibm.com>
-Date:   Wed, 4 Nov 2020 10:41:32 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        id S1728867AbgKDJmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:42:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36466 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725946AbgKDJmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:42:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7126AB0E;
+        Wed,  4 Nov 2020 09:42:07 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 09:42:05 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Puhov <peter.puhov@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Robert Foley <robert.foley@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Jirka Hladky <jhladky@redhat.com>
+Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
+ lowest group_util when idle_cpus are equal
+Message-ID: <20201104094205.GI3306@suse.de>
+References: <20200714125941.4174-1-peter.puhov@linaro.org>
+ <20201102105043.GB3371@techsingularity.net>
+ <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
+ <20201102144418.GB154641@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <02389b9c-141c-f5b7-756a-516599063766@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_06:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040068
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201102144418.GB154641@lorien.usersys.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/11/2020 à 22:08, Dmitry Safonov a écrit :
-> Hi Laurent, Christophe, Michael, all,
+On Mon, Nov 02, 2020 at 09:44:18AM -0500, Phil Auld wrote:
+> > > I have not investigated why because I do not have the bandwidth
+> > > to do a detailed study (I was off for a few days and my backlog is
+> > > severe). However, I recommend in before v5.10 this be reverted and retried.
+> > > If I'm cc'd on v2, I'll run the same tests through the grid and see what
+> > > falls out.
+> > 
+> > I'm going to have a look at the regressions and see if  patches that
+> > have been queued for v5.10 or even more recent patch can help or if
+> > the patch should be adjusted
+> >
 > 
-> On 11/3/20 5:11 PM, Laurent Dufour wrote:
->> Le 23/10/2020 à 14:28, Christophe Leroy a écrit :
-> [..]
->>>>> That seems like it would work for CRIU and make sense in general?
->>>>
->>>> Sorry for the late answer, yes this would make more sense.
->>>>
->>>> Here is a patch doing that.
->>>>
->>>
->>> In your patch, the test seems overkill:
->>>
->>> +    if ((start <= vdso_base && vdso_end <= end) ||  /* 1   */
->>> +        (vdso_base <= start && start < vdso_end) || /* 3,4 */
->>> +        (vdso_base < end && end <= vdso_end))       /* 2,3 */
->>> +        mm->context.vdso_base = mm->context.vdso_end = 0;
->>>
->>> What about
->>>
->>>       if (start < vdso_end && vdso_start < end)
->>>           mm->context.vdso_base = mm->context.vdso_end = 0;
->>>
->>> This should cover all cases, or am I missing something ?
->>>
->>>
->>> And do we really need to store vdso_end in the context ?
->>> I think it should be possible to re-calculate it: the size of the VDSO
->>> should be (&vdso32_end - &vdso32_start) + PAGE_SIZE for 32 bits VDSO,
->>> and (&vdso64_end - &vdso64_start) + PAGE_SIZE for the 64 bits VDSO.
->>
->> Thanks Christophe for the advise.
->>
->> That is covering all the cases, and indeed is similar to the Michael's
->> proposal I missed last year.
->>
->> I'll send a patch fixing this issue following your proposal.
+> Fwiw, we have pulled this in, along with some of the 5.10-rc1 fixes in this
+> area and in the load balancing code.
 > 
-> It's probably not necessary anymore. I've sent patches [1], currently in
-> akpm, the last one forbids splitting of vm_special_mapping.
-> So, a user is able munmap() or mremap() vdso as a whole, but not partly.
-
-Hi Dmitry,
-
-That's a good thing too, but I think my patch is still valid in the PowerPC 
-code, fixing a bad check, even if some corner cases are handled earlier in the code.
-
-> [1]:
-> https://lore.kernel.org/linux-mm/20201013013416.390574-1-dima@arista.com/
+> We found some load balancing improvements and some minor overall perf
+> gains in a few places, but generally did not see any difference from before
+> the commit mentioned here.
 > 
-> Thanks,
->            Dmitry
+> I'm wondering, Mel, if you have compared 5.10-rc1? 
 > 
 
+The results indicate that reverting on 5.9 would have been the right
+decision. It's less clear for 5.10-rc2 so I'm only showing the 5.10-rc2
+comparison. Bear in mind that this is one machine only so I'll be
+rerunning against all the affected machines according to the bisections
+run against 5.9.
+
+aim9
+                                5.10.0-rc2             5.10.0-rc2
+                                   vanilla        5.10-rc2-revert
+Hmean     page_test   510863.13 (   0.00%)   517673.91 *   1.33%*
+Hmean     brk_test   1807400.76 (   0.00%)  1814815.29 *   0.41%*
+Hmean     exec_test      821.41 (   0.00%)      841.05 *   2.39%*
+Hmean     fork_test     4399.71 (   0.00%)     5124.86 *  16.48%*
+
+Reverting shows a 16.48% gain for fork_test and minor gains for others.
+To be fair, I don't generally consider the fork_test to be particularly
+important because fork microbenchmarks that do no real work are rarely
+representative of anything useful. It tends to go up and down a lot and
+it's rare a regression in fork_test correlates to anything else.
+
+Hackbench failed to run because I typo'd the configuration. Kernel build
+benchmark and git test suite both were inconclusive for 5.10-rc2
+(neutral results) although the showed 10-20% gain for kernbench and 24%
+gain in git test suite by reverting in 5.9.
+
+The gitsource test was interesting for a few reasons. First, the big
+difference between 5.9 and 5.10 is that the workload is mostly concentrated
+on one NUMA node. mpstat shows that 5.10-rc2 uses all of the CPUs on one
+node lightly. Reverting the patch shows that far fewer CPUs are used at
+a higher utilisation -- not particularly high utilisation because of the
+nature of the workload but noticable. i.e.  gitsource with the revert
+packs the workload onto fewer CPUs. The same holds for fork_test --
+reverting packs the workload onto fewer CPUs with higher utilisation on
+each of them. Generally this plays well with cpufreq without schedutil
+using fewer CPUs means the CPU is likely to reach higher frequencies.
+
+While it's possible that some other factor masked the impact of the patch,
+the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
+indicates that if the patch was implemented against 5.10-rc2, it would
+likely not have been merged. I've queued the tests on the remaining
+machines to see if something more conclusive falls out.
+
+-- 
+Mel Gorman
+SUSE Labs
