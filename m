@@ -2,142 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C8B2A6FB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475982A6FB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 22:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730019AbgKDVeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 16:34:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgKDVeD (ORCPT
+        id S1730864AbgKDVfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 16:35:42 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44392 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgKDVfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:34:03 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BFAC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 13:34:03 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id p12so75407qtp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 13:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iHZD2JCK/HDwhsMu1vVM7AOnv1j/wL3L6uGfwT70qHM=;
-        b=RiGKLvkM2fI0f2pGevdBjuq9lVHh/vlXQ7+9n8MQUEi1onyiCrP0EKjXY2h75Z80xO
-         wV3f//kC2Tn2LreECFmnDJ+oHMuc2plxlFVGJ3tpgy4hcPZwwfs7ou39g9v9um14BTtz
-         76IcG6Oezj4e+gauSRVps1jR9Qz14KhTsQwfrGnXPkVwSOQqTi6R3I09C+fXIvjccroX
-         /ExJUrTbv9xs6mOwbqERUNoPKt+aejJEnpN07U6GpHQszPfC3cyN058H52mVmMMH6EEM
-         97I51UuGImTa1vpOvm/+hqiuXTrlm5rKWQQL/y+jpIzNCsR5q4nTWiJQaxYv2J9NqMBh
-         kt4g==
+        Wed, 4 Nov 2020 16:35:42 -0500
+Received: by mail-oi1-f193.google.com with SMTP id t16so6418451oie.11;
+        Wed, 04 Nov 2020 13:35:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iHZD2JCK/HDwhsMu1vVM7AOnv1j/wL3L6uGfwT70qHM=;
-        b=IVvH6kG5tPpJZ68Q8sDHTj9ASLjRUsSKHAzVeher8tp+MWm3pivJ20oaFrJWYmBx74
-         Wp3vov9eMnzBKOyWh5X+ggXcEBKT6rAISIKt0e9T0i5I6i9pNPazuvSJZnmDhhU//sfy
-         MiYpV2g4u9fzfAKexT0FNUvSfb6VBbhr2ezUSfmScUsvaay0C/5mnX+YUjsQ/um60uwi
-         ReGS8jZs+/f2IsqaXSXtxfYUl494iJ0UnUM1srnCCyjuM4h6k8khD7aGbM6lHIubbwkX
-         3XMKZJWdgJ/Gnv1NZ8s0Ir8Vv9Tr9sWLFC6nxElCTRH+5T73UrkaKN1h+yy/TlziyDCk
-         ZFkA==
-X-Gm-Message-State: AOAM532Vl/8oiFn7RWrOt+13AC81xwB4vOcRGUVbCVnW0zBfQ/8U8tXp
-        jmg0aegZI2bssKMNmYPBJVf8Lw==
-X-Google-Smtp-Source: ABdhPJz1lZC0hQdq+/Z+Gg9PunT4MgTgJeE8do4JSq8mGR99B6PprmXnUqIAQZ2hfu2RtSa36rAYWg==
-X-Received: by 2002:ac8:5307:: with SMTP id t7mr52090qtn.273.1604525642181;
-        Wed, 04 Nov 2020 13:34:02 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l30sm1193806qta.73.2020.11.04.13.34.00
+        bh=XsTIGAagzOnMRm7sMHojCYBN2wI108e8FrvxB5eYOtQ=;
+        b=hPpUyyjscPGGM2LvgcZ/VaZBiN4cLDDSM02uc9jUYG1jP+SePWZbSQq/wl05D5Osve
+         JTJ+pMNy1O5V129ItJO3BPdnqTTPWSV6GICI8a3ja40KPFJfyDIZyTJRZxviJ7UHPOkM
+         9GWjpIkl/1pjXXXIzE6/BDAqojvxpit+165Dxuy9mWRtGOUWkBePYe0NAbVZIyqGscls
+         xmlUiIn4siZ1GH7qKmutt5nJriNWh3Q4mX7mA8PlueAdaUC7sFHebcv//wFQNj7YvDJ1
+         Rlv8wGYkCX3oPVlYlfhtRo96Lmel39wo24HY1Ro1xUtiRiC8hUVJ/xwfsc5ep2FZ0EGo
+         876g==
+X-Gm-Message-State: AOAM531RVb13hU3FcTb2yvxCLhxzxyx0HHl3d4DBRpVrw1muRA4VSKXh
+        +pGt4T9VsKhacZ5TdYvifA==
+X-Google-Smtp-Source: ABdhPJyNHCIleN5pdM4VTuW7A8t+EwS1FMDVPZZfBh64Vpq2rBA54/k5ISX86pTWQ4vqWPhYl1VYag==
+X-Received: by 2002:aca:2111:: with SMTP id 17mr3648355oiz.139.1604525740674;
+        Wed, 04 Nov 2020 13:35:40 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m65sm769596otc.36.2020.11.04.13.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 13:34:01 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kaQPo-00Giar-AC; Wed, 04 Nov 2020 17:34:00 -0400
-Date:   Wed, 4 Nov 2020 17:34:00 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "xiaofeng.yan" <xiaofeng.yan2012@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, oulijun@huawei.com, yanxiaofeng7@jd.com
-Subject: Re: [PATCH 2/2] infiniband: Modify the reference to xa_store_irq()
- because the parameter of this function  has changed
-Message-ID: <20201104213400.GX36674@ziepe.ca>
-References: <20201104023213.760-1-xiaofeng.yan2012@gmail.com>
- <20201104023213.760-2-xiaofeng.yan2012@gmail.com>
- <20201104185843.GV36674@ziepe.ca>
- <20201104193036.GD17076@casper.infradead.org>
+        Wed, 04 Nov 2020 13:35:40 -0800 (PST)
+Received: (nullmailer pid 4163321 invoked by uid 1000);
+        Wed, 04 Nov 2020 21:35:39 -0000
+Date:   Wed, 4 Nov 2020 15:35:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH v3 2/6] dt-bindings: pci: add the samsung,exynos-pcie
+ binding
+Message-ID: <20201104213539.GA4144654@bogus>
+References: <20201029134017.27400-1-m.szyprowski@samsung.com>
+ <CGME20201029134038eucas1p28d9bd33bc9e36b960b021a40ef299b47@eucas1p2.samsung.com>
+ <20201029134017.27400-3-m.szyprowski@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104193036.GD17076@casper.infradead.org>
+In-Reply-To: <20201029134017.27400-3-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:30:36PM +0000, Matthew Wilcox wrote:
-> On Wed, Nov 04, 2020 at 02:58:43PM -0400, Jason Gunthorpe wrote:
-> > >  static void cm_finalize_id(struct cm_id_private *cm_id_priv)
-> > >  {
-> > >  	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
-> > > -		     cm_id_priv, GFP_KERNEL);
-> > > +		     cm_id_priv);
-> > >  }
-> > 
-> > This one is almost a bug, the entry is preallocated with NULL though:
-> > 
-> > 	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
-> > 				  &cm.local_id_next, GFP_KERNEL);
-> > 
-> > so it should never allocate here:
-> > 
-> > static int cm_req_handler(struct cm_work *work)
-> > {
-> > 	spin_lock_irq(&cm_id_priv->lock);
-> > 	cm_finalize_id(cm_id_priv);
+On Thu, Oct 29, 2020 at 02:40:13PM +0100, Marek Szyprowski wrote:
+> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
+> variant). Based on the text dt-binding posted by Jaehoon Chung.
 > 
-> Uhm.  I think you want a different debugging check from this.  The actual
-> bug here is that you'll get back from calling cm_finalize_id() with
-> interrupts enabled. 
-
-Ooh, that is just no fun too :\
-
-Again surprised some lockdep didn't catch wrongly nesting irq locks
-
-> Can you switch to xa_store(), or do we need an
-> xa_store_irqsave()?
-
-Yes, it looks like there is no reason for this, all users of the
-xarray are from sleeping contexts, so it shouldn't need the IRQ
-version.. I made a patch for this thanks
-
-The cm_id_priv->lock is probably also not needing to be irq either,
-but that is much harder to tell for sure
-
-> > Still, woops.
-> > 
-> > Matt, maybe a might_sleep is deserved in here someplace?
-> >
-> > @@ -1534,6 +1534,8 @@ void *__xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
-> >         XA_STATE(xas, xa, index);
-> >         void *curr;
-> >  
-> > +       might_sleep_if(gfpflags_allow_blocking(gfp));
-> > +
-> >         if (WARN_ON_ONCE(xa_is_advanced(entry)))
-> >                 return XA_ERROR(-EINVAL);
-> >         if (xa_track_free(xa) && !entry)
-> > 
-> > And similar in the other places that conditionally call __xas_nomem()
-> > ?
-
-But this debugging would still catch the wrong nesting of a GFP_KERNEL
-inside a spinlock, you don't like it?
-
-> > I also still wish there was a proper 'xa store in already allocated
-> > but null' idiom - I remember you thought about using gfp flags == 0 at
-> > one point.
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../bindings/pci/samsung,exynos-pcie.yaml     | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
 > 
-> An xa_replace(), perhaps?
+> diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> new file mode 100644
+> index 000000000000..1810bf722350
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> @@ -0,0 +1,119 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/samsung,exynos-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Marek Szyprowski <m.szyprowski@samsung.com>
+> +  - Jaehoon Chung <jh80.chung@samsung.com>
+> +
+> +description: |+
+> +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
+> +  PCIe IP and thus inherits all the common properties defined in
+> +  designware-pcie.txt.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: samsung,exynos5433-pcie
+> +
+> +  reg:
+> +    items:
+> +      - description: Data Bus Interface (DBI) registers.
+> +      - description: External Local Bus interface (ELBI) registers.
+> +      - description: PCIe configuration space region.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: elbi
+> +      - const: config
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PCIe bridge clock
+> +      - description: PCIe bus clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pcie
+> +      - const: pcie_bus
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  vdd10-supply:
+> +    description:
+> +      Phandle to a regulator that provides 1.0V power to the PCIe block.
+> +
+> +  vdd18-supply:
+> +    description:
+> +      Phandle to a regulator that provides 1.8V power to the PCIe block.
+> +
+> +  num-lanes:
+> +    const: 1
+> +
+> +  num-viewport:
+> +    const: 3
 
-Make sense.. But I've also done this with cmpxchg. A magic GFP flag,
-as you tried to do with 0, is appealing in many ways
+I'm confused why you need this. This is only used with the iATU except 
+for keystone. Platforms like Exynos with their own child bus config 
+space accessors don't have an iATU. 
 
-Jason
+BTW, for cases with an iATU, I'm working on making the number of 
+viewports runtime detected.
+
+> +
+> +required:
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - "#interrupt-cells"
+> +  - interrupt-map
+> +  - interrupt-map-mask
+> +  - ranges
+> +  - bus-range
+> +  - device_type
+> +  - num-lanes
+> +  - num-viewport
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - vdd10-supply
+> +  - vdd18-supply
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/exynos5433.h>
+> +
+> +    pcie: pcie@15700000 {
+> +        compatible = "samsung,exynos5433-pcie";
+> +        reg = <0x15700000 0x1000>, <0x156b0000 0x1000>, <0x0c000000 0x1000>;
+> +        reg-names = "dbi", "elbi", "config";
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        #interrupt-cells = <1>;
+> +        device_type = "pci";
+> +        interrupts = <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&cmu_fsys CLK_PCIE>, <&cmu_fsys CLK_PCLK_PCIE_PHY>;
+> +        clock-names = "pcie", "pcie_bus";
+> +        phys = <&pcie_phy>;
+> +        pinctrl-0 = <&pcie_bus &pcie_wlanen>;
+> +        pinctrl-names = "default";
+> +        num-lanes = <1>;
+> +        num-viewport = <3>;
+> +        bus-range = <0x00 0xff>;
+> +        ranges = <0x81000000 0 0	  0x0c001000 0 0x00010000>,
+> +                 <0x82000000 0 0x0c011000 0x0c011000 0 0x03feefff>;
+> +        vdd10-supply = <&ldo6_reg>;
+> +        vdd18-supply = <&ldo7_reg>;
+> +        interrupt-map-mask = <0 0 0 0>;
+> +        interrupt-map = <0 0 0 0 &gic GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> +...
+> -- 
+> 2.17.1
+> 
