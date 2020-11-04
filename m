@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3114C2A697B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78EF2A697A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731054AbgKDQZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:25:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        id S1731044AbgKDQZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730907AbgKDQZF (ORCPT
+        with ESMTP id S1730965AbgKDQZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:25:05 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6B7C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:25:03 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id c17so3340152wrc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:25:02 -0800 (PST)
+        Wed, 4 Nov 2020 11:25:04 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F506C061A4C
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:25:04 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p22so2948942wmg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=upETjiEPBAeYXJaDapQnz8RTaIUvobSDgtGDF4HQ8C4=;
-        b=Wr1VrvM29yIcMiycLDDk50Vjw0jKq/vpiQh5ADfzp3wkEnC6Y7VqHn5MvUQQWlcoCM
-         xxBaZpIlakYPU2h5u6qS7bReTt7UJVeMCBP9fMs3f1Q5zkpMw2gCxsIqqmNz9MzBBvwT
-         MinQcwv7J/3tybf+gufIF+/77sfs6L5YtbrTw8TviyVXy7/zXk8B+dmCcs9IXyzLtU4P
-         br8bofp41oUg+oGnQNlbdLQaVpu1aidRsUmHOcXcHp30ag7/6XLaeMK/VCCkVp2eBHnn
-         N5+A4cMELZCbpNPEmtVgPBNOyMLyGExtwyumqlgjOMphImk6RN+4Q19NCtKvGbF1qCJc
-         QNTQ==
+        bh=gEEnx9N3Q6ff4TorTnZ32g1gwXsaI47EH/IMR+WZidg=;
+        b=r3DtYquA9eQDmSD8EW1+bhREgzlV6LvrBBEaMbs2ZbGnZsxd0B7Ny0INQFWdj3D7Na
+         +4/kMzSys6PKK6/3Q+brrOCiFFXgVcRSS0g9J2h0BRu2LesSSz1RTSA6+EwH+1kOdqOL
+         NGVUxj8cRbOkhi5UKo572NgzFqy3prqW+s9PkrrTH+dcoZ/YvXouI43w3qeH7oyL2qPy
+         yP22JD5q8Qa07DTRK/ia+yqxjglgJ/SbUkZqBEszmFT99IykGP8hrbG7yRBlqGoxQKNf
+         MWz0D5Y3JJhf0fKqQvLr/bEdd3+B8Vx/B0sVnb0oBhHFDwDhBpdsdsIPV5Gv03+lAu19
+         J8bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=upETjiEPBAeYXJaDapQnz8RTaIUvobSDgtGDF4HQ8C4=;
-        b=rSoyapYKXzu+eXUQGlByFs7dBblhKVA/bE47Af8R3NogqWDr4D954fPjy7hN7Ijkhd
-         yITD+83hJOqE1Rn3RCej7oYsQOy+GdpwDzfE3WezDjGyHLPwJgLR/d+q7fbwQBvPPKWJ
-         u3dA06Jrzfy7ww+6Tx/6cGKV/sfctVGLmfuqysZwwDMRHbTuHx09hYGhfm4N+Dzp/gy7
-         OqazN4NY1qijCuDUVOkVDqGGhPJYxOEYiJdbPFHZC1brXiE9YXUSGI4winPwkSxLSUIe
-         2ZYnAXsMjsyadDWf5ZrJxHs5l2FYwkAotgCdZoPOe5ULHFsi7hJIFdQPFXueYdpa4g3q
-         VVqg==
-X-Gm-Message-State: AOAM5313j1lZyepYh0Zxl0Jj4uCa/+BvIkuMNhSs/k1mU1tN7ZPGGdZX
-        u7EHbMY+KqjT6uFgbPnZUX9oIcOyCituo5pi
-X-Google-Smtp-Source: ABdhPJzMUHJTxNM97Uu4GmPbwhCG+T4iv6uaRjx8TRLWALfVEZSpGRW/Yi9M8aDD+SY+aRUPVpI08g==
-X-Received: by 2002:adf:f841:: with SMTP id d1mr33437900wrq.297.1604507101738;
-        Wed, 04 Nov 2020 08:25:01 -0800 (PST)
+        bh=gEEnx9N3Q6ff4TorTnZ32g1gwXsaI47EH/IMR+WZidg=;
+        b=NaQKMdRXV+vxZJzsdm0swBMgxMWIn9taqehCX80RfzYmuTXhY/v7hzKiG6ZEqwCqSZ
+         I9ZEhhw8XZz3jTFVDiUSGZIL5m/ZE8SeroMJJei6Hjo9f1LkOScnHz7purYpoa8p+Tjn
+         JVhIPYKD3fZ1ME4XfyEYCVDD+xH3F2VCveTxr05siXtvzk2qEj2ToeVA2gYAJmBvTVmo
+         m5RwgRZC0KqBi6VN6wdoRE6rjGxX5XDv05N9E28hRn9qutS133ibmhJyDAIDXhJZi8hD
+         Pig91ahpjbUBQXA/WxUoFdoLk9fGL3XkuyDSvuxAOevdh97XBwTy4f0o8LTASJ3hK/4g
+         nYDA==
+X-Gm-Message-State: AOAM532jtr6ZZ8sENYSuYHyT04+6YzbeshNf56ypkET/FbG1/WN5wjED
+        OyA3ZT6g9ckSTKgt7Kndo+KlUPyk0ZmUeW5W
+X-Google-Smtp-Source: ABdhPJxGqzrZnMIGaRg5z6soxSJjVletd47ti4DjCQzkqa4Lt8eafXod2NPLJ+2rqaagHZWPvAoFRw==
+X-Received: by 2002:a1c:2d5:: with SMTP id 204mr5624113wmc.181.1604507102814;
+        Wed, 04 Nov 2020 08:25:02 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id o129sm3008564wmb.25.2020.11.04.08.25.00
+        by smtp.gmail.com with ESMTPSA id o129sm3008564wmb.25.2020.11.04.08.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:25:01 -0800 (PST)
+        Wed, 04 Nov 2020 08:25:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Dan Murphy <dmurphy@ti.com>, linux-input@vger.kernel.org
-Subject: [PATCH 16/20] input: misc: drv260x: Fix kernel-doc formatting and remove one abuse
-Date:   Wed,  4 Nov 2020 16:24:23 +0000
-Message-Id: <20201104162427.2984742-17-lee.jones@linaro.org>
+Subject: [PATCH 17/20] input: misc: drv2665: Fix formatting expected by kernel-doc
+Date:   Wed,  4 Nov 2020 16:24:24 +0000
+Message-Id: <20201104162427.2984742-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104162427.2984742-1-lee.jones@linaro.org>
 References: <20201104162427.2984742-1-lee.jones@linaro.org>
@@ -67,75 +67,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'input_dev' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'client' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'regmap' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'work' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'enable_gpio' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'regulator' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'magnitude' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'mode' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'library' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'rated_voltage' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:194: warning: Function parameter or member 'overdrive_voltage' not described in 'drv260x_data'
- drivers/input/misc/drv260x.c:244: warning: Function parameter or member 'voltage' not described in 'drv260x_calculate_voltage'
+ drivers/input/misc/drv2665.c:59: warning: Function parameter or member 'input_dev' not described in 'drv2665_data'
+ drivers/input/misc/drv2665.c:59: warning: Function parameter or member 'client' not described in 'drv2665_data'
+ drivers/input/misc/drv2665.c:59: warning: Function parameter or member 'regmap' not described in 'drv2665_data'
+ drivers/input/misc/drv2665.c:59: warning: Function parameter or member 'work' not described in 'drv2665_data'
+ drivers/input/misc/drv2665.c:59: warning: Function parameter or member 'regulator' not described in 'drv2665_data'
 
 Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: Dan Murphy <dmurphy@ti.com>
 Cc: linux-input@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/input/misc/drv260x.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/input/misc/drv2665.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/misc/drv260x.c b/drivers/input/misc/drv260x.c
-index 79d7fa710a714..fabe106d499d4 100644
---- a/drivers/input/misc/drv260x.c
-+++ b/drivers/input/misc/drv260x.c
-@@ -167,17 +167,17 @@
+diff --git a/drivers/input/misc/drv2665.c b/drivers/input/misc/drv2665.c
+index 918ad9c3fa812..0e65ab180f499 100644
+--- a/drivers/input/misc/drv2665.c
++++ b/drivers/input/misc/drv2665.c
+@@ -44,11 +44,11 @@
  
  /**
-  * struct drv260x_data -
+  * struct drv2665_data -
 - * @input_dev - Pointer to the input device
 - * @client - Pointer to the I2C client
 - * @regmap - Register map of the device
 - * @work - Work item used to off load the enable/disable of the vibration
-- * @enable_gpio - Pointer to the gpio used for enable/disabling
 - * @regulator - Pointer to the regulator for the IC
-- * @magnitude - Magnitude of the vibration event
-- * @mode - The operating mode of the IC (LRA_NO_CAL, ERM or LRA)
-- * @library - The vibration library to be used
-- * @rated_voltage - The rated_voltage of the actuator
-- * @overdriver_voltage - The over drive voltage of the actuator
 + * @input_dev: Pointer to the input device
 + * @client: Pointer to the I2C client
 + * @regmap: Register map of the device
 + * @work: Work item used to off load the enable/disable of the vibration
-+ * @enable_gpio: Pointer to the gpio used for enable/disabling
 + * @regulator: Pointer to the regulator for the IC
-+ * @magnitude: Magnitude of the vibration event
-+ * @mode: The operating mode of the IC (LRA_NO_CAL, ERM or LRA)
-+ * @library: The vibration library to be used
-+ * @rated_voltage: The rated_voltage of the actuator
-+ * @overdriver_voltage: The over drive voltage of the actuator
- **/
- struct drv260x_data {
+  */
+ struct drv2665_data {
  	struct input_dev *input_dev;
-@@ -234,12 +234,12 @@ static const struct reg_default drv260x_reg_defs[] = {
- #define DRV260X_DEF_RATED_VOLT		0x90
- #define DRV260X_DEF_OD_CLAMP_VOLT	0x90
- 
--/**
-+/*
-  * Rated and Overdriver Voltages:
-  * Calculated using the formula r = v * 255 / 5.6
-  * where r is what will be written to the register
-  * and v is the rated or overdriver voltage of the actuator
-- **/
-+ */
- static int drv260x_calculate_voltage(unsigned int voltage)
- {
- 	return (voltage * 255 / 5600);
 -- 
 2.25.1
 
