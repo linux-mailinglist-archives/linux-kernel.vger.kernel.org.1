@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1332A628F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67272A6293
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgKDKvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:51:49 -0500
-Received: from mail.vivotek.com ([60.248.39.150]:39592 "EHLO mail.vivotek.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729250AbgKDKvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:51:48 -0500
-Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
-        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 0A4AnefU031984;
-        Wed, 4 Nov 2020 18:51:36 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=dkim;
- bh=n17L+VgwUlZONlxnSTqJHNnmc6rjWo7kZxEP07PWD9g=;
- b=DuetMlwGjSBihTI82u39rINBVUZ6qOZDOa+jzh1yxG+xdYhYwtHVk9ionPUnJNfAiqI2
- 1sWTENmRUKJEx8ym6TsG1WZT5EpKr2MTWNA50Wts7aimZxt1j1Dv6KDekoThie5m076O
- WpmMSi7/lBZV3wB4+/aqxIlBZ8H+JQUl4aQ= 
-Received: from cas01.vivotek.tw ([192.168.0.58])
-        by vivotekpps.vivotek.com with ESMTP id 34gtc345p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 18:51:36 +0800
-Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
- CAS01.vivotek.tw ([::1]) with mapi id 14.03.0487.000; Wed, 4 Nov 2020
- 18:51:35 +0800
-From:   <Michael.Wu@vatics.com>
-To:     <wsa@kernel.org>
-CC:     <jarkko.nikula@linux.intel.com>,
-        <andriy.shevchenko@linux.intel.com>,
-        <mika.westerberg@linux.intel.com>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <morgan.chang@vatics.com>
-Subject: RE: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
- before WRITE_RECEIVED
-Thread-Topic: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
- before WRITE_RECEIVED
-Thread-Index: AQHWrpNb9HMFwrLvFkOeW57CDSt2oKm2ZmOAgAFYIoD//4qogIAAh8cg
-Date:   Wed, 4 Nov 2020 10:51:34 +0000
-Message-ID: <5DB475451BAA174CB158B5E897FC1525B129558A@MBS07.vivotek.tw>
-References: <20201030080420.28016-1-michael.wu@vatics.com>
- <20201030080420.28016-3-michael.wu@vatics.com> <20201103210349.GE1583@kunai>
- <5DB475451BAA174CB158B5E897FC1525B1295560@MBS07.vivotek.tw>
- <20201104103531.GA3984@ninjato>
-In-Reply-To: <20201104103531.GA3984@ninjato>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [192.168.17.134]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        id S1729345AbgKDKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:52:37 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38405 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgKDKwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:52:36 -0500
+Received: by mail-oi1-f196.google.com with SMTP id 9so21712712oir.5;
+        Wed, 04 Nov 2020 02:52:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Tgxgz65t1p/f8iIMRXffOT0LvSZivNKheyZ9LDhkIc=;
+        b=cbmlMwJ0Vp256O2KwLamG2DUJZOIdeGF5l4Kjk3ITDK+9H5qdqtxPEo0YlbKFaTtIn
+         w1ac7agk8zpVIzjLjnYsgdr31pP9ecf+dgq0dk7SwOl8e/A1Vg3bjJc1zSEBLlZOOE7T
+         TApX/5T8Ql3uwEwcbiu11yCCg1etISdbaGlszRETpM8wrSNI/2NIwkQo+4EeTHRkUe+7
+         brBxApDeb9I8cSZpMpRr8y+0P4ILD2SE5pWx+kFsSuGiauEoE2HLELz6zJOZCFm/BC4e
+         KsswlrXc2pk1EBsd7Ns2uJqSinTdcQlKRnqVqX41I+ronvC+YRR+p5/Dw3Vm7jbFPUV0
+         yy5A==
+X-Gm-Message-State: AOAM532vZHsqYy/A5FAvWQ1vne6OXICcgL4NQlViiKebm9kZJhGHKNm1
+        041CfR+K0ZknbFTwLxlUjdOMjUa2Xfj6cepu/tA=
+X-Google-Smtp-Source: ABdhPJyvMxieCAu21C5+PVfz2yWWX9ytXdUxoVF8evK3bsrE8Y92FJiB0HEOlFOhHtXntxTD7+2uR7Dx21t0iuJoSCQ=
+X-Received: by 2002:aca:52c9:: with SMTP id g192mr2234724oib.54.1604487154307;
+ Wed, 04 Nov 2020 02:52:34 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_06:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Reason: safe
+References: <20201103162435.13689-1-krzk@kernel.org> <20201103162435.13689-7-krzk@kernel.org>
+In-Reply-To: <20201103162435.13689-7-krzk@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 4 Nov 2020 11:52:23 +0100
+Message-ID: <CAMuHMdVx_oYFpe8G7iKcQ0FFwpPTTiWZLps3WsLSphqJ0pweyQ@mail.gmail.com>
+Subject: Re: [PATCH 7/8] clk: renesas: renesas-cpg-mssr: fix kerneldoc of cpg_mssr_priv
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV29sZnJhbSwNCg0KPiBUaGFua3MgZm9yIHRoZSBkZXRhaWxlZCBleHBsYW5hdGlvbiEgT2th
-eSwgdGhlbiB3aGF0IHlvdSBkbyBsb29rcw0KPiBjb3JyZWN0IHRvIG1lIChmcm9tIGEgaGlnaCBs
-ZXZlbCBwZXJzcGVjdGl2ZSB3aXRob3V0IHJlYWxseSBrbm93aW5nIHRoZQ0KPiBIVyk6IHdoZW4g
-UlggaXMgZnVsbCwgeW91IGZpcnN0IHNlbmQgdGhlIHN0YXRlIFdSSVRFX1JFUVVFU1RFRCB3aGVu
-DQo+IHRoZXJlIGlzIG5vIG90aGVyIHRyYW5zZmVyIG9uLWdvaW5nLiBUaGVuIHlvdSBzZW5kIFdS
-SVRFX1JFQ0VJVkVEDQo+IGltbWVkaWF0ZWx5LiBJIHRoaW5rIHRoaXMgaXMgdGhlIHdheSB0byBk
-byBpdC4NCg0KQmluZ28hISBUaGFua3MgZm9yIHlvdXIgdW5kZXJzdGFuZGluZy4NCg0KSSB0aGlu
-ayBJIHNob3VsZCBoYXZlIGEgaGFiaXQgb2Ygd3JpdGluZyBjb21tZW50cy4uLiBYLVANCg0KQmVz
-dCByZWdhcmRzLA0KTWljaGFlbCBXdQ0K
+On Tue, Nov 3, 2020 at 5:25 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> The struct cpg_mssr_priv missed proper formatting:
+>
+>     drivers/clk/renesas/renesas-cpg-mssr.c:142: warning:
+>         cannot understand function prototype: 'struct cpg_mssr_priv '
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.11.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
