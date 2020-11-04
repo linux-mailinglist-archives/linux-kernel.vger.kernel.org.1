@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB662A69D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F0C2A69D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgKDQc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:32:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgKDQc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:32:58 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44E7C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:32:57 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id m9so9142623iox.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:32:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W89f9FhGl3ZmVVNh0IHsLhIBpTCURVceMfMaDhwTtHw=;
-        b=wOXbh51kkIYJs16L1wH3zkeCtTYv8T3jVyI9PcksX4T2ZXuxqC5XvQwkRVBbymWcyG
-         TYU5UXvAznrnKFiD+OFfz9pYVb7HHC3ZPM/DWvFTIt6TSN6dEuGo4JkCT1eI10I4TxGm
-         fdN5ynsz/tQLW95cF1DdBCu/iV/HEMG4pwV4CcKwVe1+DYxQIJnZb63+MfhDX5n9Xt4J
-         jd4K66pXpTidg9covNMepxicSh9d7ohLlI/UlvSDxmsI5XwbnVhcJsfXZSYc29zSLfI0
-         BsExRvy8tvEYvHhJldBW/hCWGxlOwl2cUai165/ViBT29XXai5mqfZ00DdKAlaU5auwY
-         R4mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W89f9FhGl3ZmVVNh0IHsLhIBpTCURVceMfMaDhwTtHw=;
-        b=pJRhP3ZwS7vPB6ubAONPXgkUYAxkAg1QC5pdSBgPuXh+thoaF2FNS0PeETVHhvq70Z
-         L5HOa4+yjID8EnVOsw63jqOeCEbETIhkfRbdlCmmbBVjktef8YFFRQdfVAkJTLFRjQNn
-         yI/WO67kJnAH2z4FxADz49tUttlmSBPjKFEbI058cCzJRPYaWqIOyUhldgFKtStxROWB
-         +SO1CXbNYMcU4O9vYtgk3zs2eoZb+qpd7OIl94ozyhC0L0VIWjH57Q5lio1mu0X13hNg
-         OQxhurArKQqTd5e+5zCuVHZwUiPtk3FW3bhRQ/8S/0xFYdGC2avZrnLtfYJOYwHxWAVW
-         1AZw==
-X-Gm-Message-State: AOAM531kvwRJqu5J+grCRwQB5/2jGH7MqAsFmVa09Zs/KXTekK7yusFp
-        C8zL6olgmrWvbnEKHw5DMnPN3yzN0aGmeV5g2wIizw==
-X-Google-Smtp-Source: ABdhPJzI+uzUtU73vm0s4A7AvEp9YID3FbNdalzqjNgFJmq5wpaL01y5gHvbqYCy2dkgoW+bhhed0RJ5Umd2Q8NVm7A=
-X-Received: by 2002:a02:65cf:: with SMTP id u198mr20169169jab.24.1604507577178;
- Wed, 04 Nov 2020 08:32:57 -0800 (PST)
+        id S1730889AbgKDQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:34:03 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:58226 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728999AbgKDQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:34:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604507642; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=9g398sYCus/6pchotAT4Q21ccbvaxHY6VWW1VZCOQ7s=; b=skv4vRTasAPj+M6oTX8qeC05wjjaOkdJvfXIPSyUBcnBIoTDveZusf4uRuF7m2bocF5jv9ey
+ tyZ6QSjM9rDom0boYR9pQw62VnIr5ATDnbiO+/79qCelMHMIEnKNIGKX1AUMRAGW5AY/gpt4
+ B+qd+07J9MJQT/UG21ZxOer/o5c=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fa2d7dc8dd4beedee96a1df (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 16:33:32
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 15C3FC433C9; Wed,  4 Nov 2020 16:33:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D65AC433C8;
+        Wed,  4 Nov 2020 16:33:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8D65AC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     ath11k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: ath11k: QCA6390 support on Linux
+References: <87r1r4nukq.fsf@codeaurora.org>
+Date:   Wed, 04 Nov 2020 18:33:28 +0200
+In-Reply-To: <87r1r4nukq.fsf@codeaurora.org> (Kalle Valo's message of "Mon, 14
+        Sep 2020 20:20:53 +0300")
+Message-ID: <87mtzxqdyf.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-7-brgl@bgdev.pl>
-In-Reply-To: <20201026141839.28536-7-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 4 Nov 2020 17:32:46 +0100
-Message-ID: <CAMRc=Mfin3Rp9cFky4MKAc0cEtKU3LW3=R4nWE-Eeok7ypVVOQ@mail.gmail.com>
-Subject: Re: [RFT PATCH 6/7] gpio: exar: switch to using regmap
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 3:18 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> We can simplify the code in gpio-exar by using regmap. This allows us to
-> drop the mutex (regmap provides its own locking) and we can also reuse
-> regmap's bit operations instead of implementing our own update function.
->
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Kalle Valo <kvalo@codeaurora.org> writes:
 
-[snip]
-
+> some of the Dell XPS 15 9500 models have QCA6390 Wi-Fi 6 device. ath11k
+> will be the driver to support QCA6390 and the plan is that Linux v5.10
+> (most likely released end of December) will be the first release to
+> support it.
 >
->  static int exar_direction_output(struct gpio_chip *chip, unsigned int offset,
->                                  int value)
->  {
-> -       exar_set_value(chip, offset, value);
-> -       return exar_set_direction(chip, 0, offset);
-> +       struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
-> +
-> +       regmap_clear_bits(exar_gpio->regs, addr, BIT(bit));
-> +
-> +       return 0;
->  }
+> But as everything is not ready yet I recommend people to test
+> ath11k-qca6390-bringup branch, and specifically tag
+> ath11k-qca6390-bringup-202008181507. Below are instructions how to
+> install kernel and firmware.
 >
+> Do note that this is still experimental, there will be bugs but at least
+> it should be possible to connect to an AP and have connectivity.
+>
+> Please send all questions, comments and bug reports to
+> ath11k@lists.infradead.org list. I do not have time to reply to private
+> email. I have Bcced people who have contacted me privately.
 
-Upon closer look I noticed this now ignores the value argument. I
-doubt however it's the culprit of the crash Jan reported.
+Some updates:
 
-[snip]
+* QCA6390 support is now in v5.10-rc2
 
-Bartosz
+* pull request to linux-firmware sent, not yet pulled
+
+* board-2.bin should be now used instead of board.bin
+
+* there was some reorganisation in ath11k-firmware
+
+Here are updated instructions on how to test ath11k:
+
+# clone kernel
+git clone -b v5.10-rc2 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+# clone firmware
+git clone https://github.com/kvalo/ath11k-firmware.git
+
+# Ensure below options are selected in the kernel
+cd linux
+make menuconfig
+--> Select Device drivers
+	--> Network device support
+		--> Wireless LAN
+			--> Enable as below
+				<M> Qualcomm Technologies 11ax chipset support
+				<M>       Atheros ath11k PCI support
+				[*]       QCA ath11k debugging
+				[*]       QCA ath11k debugfs support
+				[*]       ath11k tracing support
+				[*]     QCA ath11k spectral scan support
+
+# Build and install the kernel and kernel modules
+
+# Install firmware
+cd ../ath11k-firmware
+sudo mkdir -p /lib/firmware/ath11k/QCA6390/hw2.0/
+sudo cp QCA6390/hw2.0/1.0.1/WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1/*.bin /lib/firmware/ath11k/QCA6390/hw2.0/
+sudo cp QCA6390/hw2.0/board-2.bin /lib/firmware/ath11k/QCA6390/hw2.0/
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
