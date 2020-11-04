@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F642A6416
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D862A641F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729874AbgKDMTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:19:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:36142 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgKDMTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:19:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEBCB1474;
-        Wed,  4 Nov 2020 04:19:01 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 651B63F719;
-        Wed,  4 Nov 2020 04:19:00 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:18:56 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Brown <broonie@kernel.org>, toiwoton@gmail.com,
-        libc-alpha@sourceware.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-Message-ID: <20201104121855.GQ6882@arm.com>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201026162410.GB27285@arm.com>
- <20201026165755.GV3819@arm.com>
- <20201026175230.GC27285@arm.com>
- <45c64b49-a38b-4b0c-d9cf-6c586dacbcc9@arm.com>
- <20201027141522.GD27285@arm.com>
- <20201029110220.GC10776@gaia>
+        id S1729883AbgKDMTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:19:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30837 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728645AbgKDMTq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:19:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604492385;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=gvbJKCfeEljigutKFUzdUYW55JqbQpoNpBQ+4SF+G30=;
+        b=Hep2pHp/ydN439qtUEOvg8ZFRYgF6ELuAMVyV83eWDzue1YZ4RoY6LzpAW6Q8vVlAnL3Ff
+        T7L+UIvJz50acFOMU/pIFigrIPru8ofeW/qK/EgPHByW9TkMLQBqqeN5AG8t0/ML8KzwN3
+        4TPhq8F3W8B4gqmGlnkCrPL8B+5f/B0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-xmFgMa1aNs-6L8PAORyRBw-1; Wed, 04 Nov 2020 07:19:40 -0500
+X-MC-Unique: xmFgMa1aNs-6L8PAORyRBw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7508A192CC72;
+        Wed,  4 Nov 2020 12:19:39 +0000 (UTC)
+Received: from tucnak.zalov.cz (ovpn-113-127.ams2.redhat.com [10.36.113.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 017C06266E;
+        Wed,  4 Nov 2020 12:19:38 +0000 (UTC)
+Received: from tucnak.zalov.cz (localhost [127.0.0.1])
+        by tucnak.zalov.cz (8.16.1/8.16.1) with ESMTPS id 0A4CJZRx3343910
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 4 Nov 2020 13:19:35 +0100
+Received: (from jakub@localhost)
+        by tucnak.zalov.cz (8.16.1/8.16.1/Submit) id 0A4CJYBh3343909;
+        Wed, 4 Nov 2020 13:19:34 +0100
+Date:   Wed, 4 Nov 2020 13:19:34 +0100
+From:   Jakub Jelinek <jakub@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Nick Clifton <nickc@redhat.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+Message-ID: <20201104121934.GT3788@tucnak>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <20201022012106.1875129-1-ndesaulniers@google.com>
+ <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201102081810.GB3788@tucnak>
+ <CAKwvOd=ez9nXCdQu6QRbNk5tfUAsSj9RLhopZtNE4RhDupg7+w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201029110220.GC10776@gaia>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <CAKwvOd=ez9nXCdQu6QRbNk5tfUAsSj9RLhopZtNE4RhDupg7+w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:02:22AM +0000, Catalin Marinas via Libc-alpha wrote:
-> On Tue, Oct 27, 2020 at 02:15:22PM +0000, Dave P Martin wrote:
-> > I also wonder whether we actually care whether the pages are marked
-> > executable or not here; probably the flags can just be independent.  This
-> > rather depends on whether the how the architecture treats the BTI (a.k.a
-> > GP) pagetable bit for non-executable pages.  I have a feeling we already
-> > allow PROT_BTI && !PROT_EXEC through anyway.
-> > 
-> > 
-> > What about a generic-ish set/clear interface that still works by just
-> > adding a couple of PROT_ flags:
-> > 
-> > 	switch (flags & (PROT_SET | PROT_CLEAR)) {
-> > 	case PROT_SET: prot |= flags; break;
-> > 	case PROT_CLEAR: prot &= ~flags; break;
-> > 	case 0: prot = flags; break;
-> > 
-> > 	default:
-> > 		return -EINVAL;
-> > 	}
-> > 
-> > This can't atomically set some flags while clearing some others, but for
-> > simple stuff it seems sufficient and shouldn't be too invasive on the
-> > kernel side.
-> > 
-> > We will still have to take the mm lock when doing a SET or CLEAR, but
-> > not for the non-set/clear case.
-> > 
-> > 
-> > Anyway, libc could now do:
-> > 
-> > 	mprotect(addr, len, PROT_SET | PROT_BTI);
-> > 
-> > with much the same effect as your PROT_BTI_IF_X.
-> > 
-> > 
-> > JITting or breakpoint setting code that wants to change the permissions
-> > temporarily, without needing to know whether PROT_BTI is set, say:
-> > 
-> > 	mprotect(addr, len, PROT_SET | PROT_WRITE);
-> > 	*addr = BKPT_INSN;
-> > 	mprotect(addr, len, PROT_CLEAR | PROT_WRITE);
+On Tue, Nov 03, 2020 at 02:21:22PM -0800, Nick Desaulniers wrote:
+> > > This script fails for GCC 10.
+> >
+> > One thing is GCC DWARF-5 support, that is whether the compiler
+> > will support -gdwarf-5 flag, and that support should be there from
+> > GCC 7 onwards.
 > 
-> The problem with this approach is that you can't catch
-> PROT_EXEC|PROT_WRITE mappings via seccomp. So you'd have to limit it to
-> some harmless PROT_ flags only. I don't like this limitation, nor the
-> PROT_BTI_IF_X approach.
+> I should improve my Kconfig check; I don't actually have a test for
+> -gdwarf-5 for the compiler.  In godbolt, it looks like -gdwarf-5
+> produces an error from GCC up until GCC 5.1.  Does (5.1 < GCC < 7) not
+> produce DWARF5?
 
-Ack; this is just one flavour of interface, and every approach seems to
-have some shortcomings.
+No.  After all, those versions also predate DWARF5.
+All 5.1 - 6.x did was start accepting -gdwarf-5 as experimental option
+that enabled some small DWARF subset (initially only a few DW_LANG_* codes
+newly added to DWARF5 drafts).  Only GCC 7 (released after DWARF 5 has
+been finalized) started emitting DWARF5 section headers and got most of the
+DWARF5 changes in, e.g. including switching over most of the now
+standardized GNU extensions from their DW_*_GNU_* codes to DWARF5 DW_*).
+With GCC 5/6, you get:
+echo 'int i;' | gcc -c -o /tmp/test.o -xc - -gdwarf-5; readelf -wi /tmp/test.o | grep Version:
+   Version:       4
+while with 7+
+   Version:       5
+instead.
 
-> The only generic solutions I see are to either use a stateful filter in
-> systemd or pass the old state to the kernel in a cmpxchg style so that
-> seccomp can check it (I think you suggest this at some point).
+>  Maybe there's a more specific test you had in mind?
 
-The "cmpxchg" option has the disadvantage that the caller needs to know
-the original permissions.  It seems that glibc is prepared to work
-around this, but it won't always be feasible in ancillary /
-instrumentation code or libraries.
+Guess what you want to test is what version you actually get in .debug_info
+if you compile with -gdwarf-5.
 
-IMHO it would be preferable to apply a policy to mmap/mprotect in the
-kernel proper rather then BPF being the only way to do it -- in any
-case, the required checks seem to be out of the scope of what can be
-done efficiently (or perhaps at all) in a syscall filter.
+> > Another separate thing is whether the assembler does support
+> > the -gdwarf-5 option (i.e. if you can compile assembler files
+> > with -Wa,-gdwarf-5) for GNU as I think that is binutils 35.1,
+> > i.e. very new); but only if you want to pass the -Wa,-gdwarf-5
+> > only when compiling *.s and *.S files.  That option is about whether
+> > the assembler will emit DWARF5 or DWARF2 .debug_line.
+> > It is fine to compile C sources with -gdwarf-5 and use DWARF2
+> > .debug_line for assembler files if as doesn't support it.
+> >
+> > Yet another thing is if you can pass -Wa,-gdwarf-5 even when
+> > compiling C files.  There are several bugs in that category that have been
+> > fixed only in the last few days on binutils trunk, I'd suggest
+> > just not to bother, GCC 11 will have proper test for fixed assembler
+> > and will pass -gdwarf-5 to as when compiling even C sources with -gdwarf-5.
+> 
+> Do you have links?  I would prefer to do feature detection rather than
 
-> The latter requires a new syscall which is not something we can address
-> as a quick, back-portable fix here. If systemd cannot be changed to use
-> a stateful filter for w^x detection, my suggestion is to go for the
-> kernel setting PROT_BTI on the main executable with glibc changed to
-> tolerate EPERM on mprotect(). I don't mind adding an AT_FLAGS bit if
-> needed but I don't think it buys us much.
+The
+https://gcc.gnu.org/r11-3693
+https://gcc.gnu.org/r11-4338
+commits contain those tests in gcc/configure.ac
 
-I agree, this seems the best short-term approach.
+	Jakub
 
-> Once the current problem is fixed, we can look at a better solution
-> longer term as a new syscall.
-
-Agreed, I think if we try to rush the addition of new syscalls, the
-chance of coming up with a bad design is high...
-
-Cheers
----Dave
