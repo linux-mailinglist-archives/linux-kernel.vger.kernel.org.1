@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343402A6D88
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED7A2A6D89
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgKDTHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729784AbgKDTHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:07:20 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECF7C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:07:18 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 133so18078602pfx.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hjSSC3tt8p/75sU4HCBAJWqPHKqxgfCJ1FmAe9+VYac=;
-        b=KnWHT2OUy4hMo9/BmVfv0xknGutGjNJ1KtmGKB+R/+1gSRWjJNxBtjVAvtVQfzIh5G
-         JDe2tB4aSHDYX5mLG0PLq4KT/1vXTgoaSE1ql5aTgcDsGe+65bK13hzvdJChBMbcfExj
-         sm4VIxu6QtBbMh2Kj2JucY/OIavcb4Bgbis/M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hjSSC3tt8p/75sU4HCBAJWqPHKqxgfCJ1FmAe9+VYac=;
-        b=B/X4hMOC8QiGNyVcjcGkB0L/yAOm970eLgKUx4lSfoSTJ/4UxJ+4Kv1zZSMH2fl+qS
-         CF02i8HVFDIDSnOn+HEuBb8uh4jvIImfshnfhP4B0nVghMq4zhRP8zGEGxtDA8AmCG6y
-         YI9MrWx1J7XPl8TAjh12mVWEzWruPFtcgAbet5RiAc4bZ8A7JK+z2H7P7amgU4ax3o4q
-         Dv7M3pGcfEG+fDoVe6PVj+u4pykkd3x198TaaUbhklxTSd0gW9CLf6lkJNsWXMmnUhAf
-         ppVndzG/TsejmjjWIJkVehkRNYyUvCFSIq/4dphp4qkRERCbfTjQUZRoMN7zBMioIHvc
-         JU1A==
-X-Gm-Message-State: AOAM531Cwa/KixPPFkcWWgCwd51phz53VoQHYR5JYGq3umrw7Tfuk3Mw
-        2qFe2zU1sc4/c+nZ+EPBx9xA9w==
-X-Google-Smtp-Source: ABdhPJzIv2cvySmYjFFmSkxxCZUKe/o/tqZdhtwdvmiPabaMXC3F2FzHiw6gBfeyzHAOjN+2/F22eQ==
-X-Received: by 2002:a65:56cd:: with SMTP id w13mr22554369pgs.132.1604516838025;
-        Wed, 04 Nov 2020 11:07:18 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w143sm3245488pfc.31.2020.11.04.11.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:07:17 -0800 (PST)
-Date:   Wed, 4 Nov 2020 11:07:16 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/exec: Fix building of exec test
-Message-ID: <202011041105.5A2D9D1F@keescook>
-References: <20201104100706.659089-1-mpe@ellerman.id.au>
+        id S1730207AbgKDTJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:09:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729723AbgKDTJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 14:09:14 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56636206B7;
+        Wed,  4 Nov 2020 19:09:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604516953;
+        bh=mSutlcNYIah1MmEz6WNyZ34UpZyeTVM1cMbko4T6UI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DMtlPfalLECP8WrKkuG7GIUjuAVmeLg4GcMSxrxBflnQzN9202rpCQy8PrhB4jNMm
+         kyjLDs7T2OrCFeiI1Vop/WGLAoP2SfroJPDKm/5F8ShozN6GXgkXkZebsqBOPiu97+
+         snzA0449+/x+ojGI0EOgPMq1GTgpHXcEVko/G3tw=
+Date:   Wed, 4 Nov 2020 21:09:03 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 03/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+Message-ID: <20201104190903.GA304537@kernel.org>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
+ <20201104182129.GD23298@zn.tnic>
+ <20201104190443.GA318315@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104100706.659089-1-mpe@ellerman.id.au>
+In-Reply-To: <20201104190443.GA318315@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:07:06PM +1100, Michael Ellerman wrote:
-> Currently the exec test does not build:
+On Wed, Nov 04, 2020 at 09:04:52PM +0200, Jarkko Sakkinen wrote:
+> On Wed, Nov 04, 2020 at 07:21:29PM +0100, Borislav Petkov wrote:
+> > On Wed, Nov 04, 2020 at 04:54:09PM +0200, Jarkko Sakkinen wrote:
+> > > +static void __init sgx_init(void)
+> > > +{
+> > > +	int i;
+> > > +
+> > > +	if (!boot_cpu_has(X86_FEATURE_SGX))
+> > 
+> > Guys, you need to build-test *every* *single* patch - otherwise we break
+> > bisectability and that is a no-no:
 > 
->   make[1]: Entering directory '/linux/tools/testing/selftests/exec'
->   ...
->   make[1]: *** No rule to make target '/output/kselftest/exec/pipe', needed by 'all'.
+> I've done it quite a few times (every time I've rebased my tree).  I did
+> today too before sending but forgot to redo git format-patch again (was
+> the very last thing). In my tree the order is:
+
+If you want, I can do a resend of this version same time underlining
+that this the only difference and I do have a framework to check this
+thing in place.
+
+> e987eb0c95dd (HEAD -> master, origin/master, origin/HEAD) x86/sgx: Update MAINTAINERS
+> 90dc0ee37f44 docs: x86/sgx: Document SGX kernel architecture
+> 1c2e9bdab128 x86/sgx: Add ptrace() support for the SGX driver
+> 05ce4345fb5f x86/sgx: Add a page reclaimer
+> 94c1f778fa09 selftests/x86: Add a selftest for SGX
+> 741b631d197b x86/vdso: Implement a vDSO for Intel SGX enclave call
+> 5744b02641ff x86/traps: Attempt to fixup exceptions in vDSO before signaling
+> e957c7e79dd0 x86/fault: Add helper function to sanitize error code
+> 96cc520b2bc9 x86/vdso: Add support for exception fixup in vDSO functions
+> 4aff9d81b2fe x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+> ea9bc917c469 x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+> 6e61e843291d x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+> 4235ce22235e x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+> 681299401c91 x86/sgx: Add SGX misc driver interface
+> fbd69fd9acf4 mm: Add 'mprotect' hook to struct vm_operations_struct
+> 93b27a8908aa x86/sgx: Add SGX page allocator functions
+> 5984a2ca130c x86/cpu/intel: Add nosgx kernel parameter
+> e131efe5ba06 x86/cpu/intel: Detect SGX support
+> b0bacb54d36c x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+> 0c64b4c07298 x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections
+> 358d17098c4c x86/cpufeatures: x86/msr: Add Intel SGX Launch Control hardware bits
+> 8f7ab60e5458 x86/cpufeatures: x86/msr: Add Intel SGX hardware bits
+> 0fb18ca935cf x86/sgx: Add wrappers for ENCLS functions
+> 3dbc95582baf x86/sgx: Add SGX architectural data structures
 > 
-> This is because pipe is listed in TEST_GEN_FILES, but pipe is not
-> generated by the Makefile, it's created at runtime. So drop pipe from
-> TEST_GEN_FILES.
-
-Ah, yes, shouldn't it be added to EXTRA_CLEAN though?
-
-Fixes: 61016db15b8e ("selftests/exec: Verify execve of non-regular files fail")
-
+> I always do this before I send the patch set (or rebase my tree):
 > 
-> With that fixed, then install fails:
+> for x in {23..0}
+> do
+> git checkout master~$x
+> git clean -f -d -x
+> make tinyconfig && cat >> .config <<EOF
+> CONFIG_64BIT=y   
+> CONFIG_CRYPTO=y
+> CONFIG_CRYPTO_SHA256=y
+> CONFIG_X86_SGX=y
+> CONFIG_DEBUG_INFO=y
+> EOF
+> yes '' | make oldconfig && make CC="ccache gcc" -j$(nproc) || break
+> git --no-pager log --oneline -1 >> success.txt
+> done
 > 
->   make[1]: Entering directory '/linux/tools/testing/selftests/exec'
->   rsync -a binfmt_script non-regular /output/install/exec/
->   rsync: link_stat "/linux/tools/testing/selftests/exec/non-regular" failed: No such file or directory (2)
-> 
-> That's because non-regular hasn't been built, because it's in
-> TEST_PROGS, it should be part of TEST_GEN_PROGS to indicate that it
-> needs to be built.
+> The order is the only difference between the patch set and my tree (i.e.
+> diff's do not conflict between the orderings).
 
-Yes, thanks again!
-
-Fixes: 0f71241a8e32 ("selftests/exec: add file type errno tests")
-
-for both:
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+/Jarkko
