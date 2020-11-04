@@ -2,170 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CC72A70A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F052A70A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732089AbgKDWiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:38:21 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31972 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728085AbgKDWiV (ORCPT
+        id S1732336AbgKDWil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:38:41 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:40632 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgKDWik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:38:21 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4MTvXQ006018;
-        Wed, 4 Nov 2020 14:38:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
- b=jJOWNDX3uFjBKHQP197Ajf+iOzNFtbD7H/mju691sv6If979RmQpjJ10ahihL9UOjPFC
- E+AJtQQAAs0tPBH8EfhZJ2iNjYw1C8nrorQGy37aKa8bYeZ/QBaXrVpHaYd0fkE7s7dH
- rqSMC+wCFnVFXGeUhgctA9co+cINrLiW/9g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34ky5tt9uq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 04 Nov 2020 14:38:07 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 4 Nov 2020 14:38:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g1eVIKBmqZU8k7TTXxUNXFQtTFZZf0XvNFKq9fx1F2lVkx4qRpA1hQ0KXw83elLjkIrQHPCSoYEz/6MEL1uLUvDpmVmjzasq/g+cD0LO6zCEuS+/tjO1edQuQd6ySXgo1fz1mJupd4lGZ87DSJbOpyP9irTcqGVmI2XonDgGjuq6rkABXlAraOdirRXuuxI+uzVAoBrkEsmzb0cWqsSgWZNSy8JYSwbImT/JLjna04kNyKlrYzBzvz8rFqNiky5nf0+O/uRLQF9L8COgokOP7UP69HxlaQg3ih9Y8wJEnEyHvRrN0Hzu1NmGcGzuFBRXd/CHtLhTc2AVxlaA8A/HyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
- b=SnM+laQNrX+FVBFXKeA+fgPWLe2SkTcgwCpk5zRC7cRKtYCAkMTDKevi6f0xG/pmRwxYDqjppP1IFKbMbsrqy30jScsVDTti7PwC5IIVPXDF9xvOnoL+RfBK5pr+0THvviv1fMsJw08UeMYniIs5F5oC8XsSi3bZkYCepOt+xFFam6m3ojHSvu5+o6GIVvYygjfs6IXSIOviQNs+3t03in4ZoS3MmF4qE6Fq29eBqj++oIpoLLgy6kKwcbwAZ2zIDt5K/4GsUOShFQ8b7if1Pcey/A8Q/FR1XfOp5R8/NKBNU0zBF05HbWXCs13M1M5cyROUFkiJjGfiWGDaPKwZjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
- b=TDENzwI3mNN8drG9OZM+Lc3CC5ZefjbWaxNbV8DQ1leGm+t2RMiNLMqPBR5RpI14dR2X41ip54+nWHau1/92s5OH762Hi9WiADFRBI+8DX7QSehMgk8rp6d5xk6GuNi6NojCG32CVGwPuUwyS8X/tEsjOkHkQC2SFaLdMwztEIc=
-Authentication-Results: 163.com; dkim=none (message not signed)
- header.d=none;163.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2391.namprd15.prod.outlook.com (2603:10b6:a02:8c::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Wed, 4 Nov
- 2020 22:38:04 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 22:38:04 +0000
-Date:   Wed, 4 Nov 2020 14:38:00 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Hui Su <sh_def@163.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <shakeelb@google.com>, <laoar.shao@gmail.com>,
-        <chris@chrisdown.name>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-ID: <20201104223800.GD1938922@carbon.dhcp.thefacebook.com>
-References: <20201104142516.GA106571@rlk>
+        Wed, 4 Nov 2020 17:38:40 -0500
+Received: by mail-oo1-f67.google.com with SMTP id l4so34188oos.7;
+        Wed, 04 Nov 2020 14:38:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5F9w24H5+YugjPz9c4Mn+stc5mZszvwF1JlDcvgb4RY=;
+        b=ky7oPzb9BTZrRvGwyJcFHu7QSIZlcKarKEPfX9mOU5lgte2vVuKb78cYBN6UYSM+Jq
+         heRBfNma99P4fZzi3lCUzmcx+X1smECdxUctgHWNBysV0/Ad/sJPXfClUYsuFPtKkT1B
+         hQ7mgJIT5hR0La9pRYj6UqV/LZ1i+QhTwx0ZhyigP8vZMDElAMq0M9gfqil8fjA9UU83
+         Pc173I1djXR1YktIJ1mpZOWAIFhud+eWn7sCQMshRZ9Ye2GYEJuTTTMCCLZO4un6qaot
+         ivokkB1yGGDPBtzgNkA49IOxCqIljx0Rb1SSAgjpJ+cVE70bHcMQHeyW8T/yWo0dqc/5
+         SaGg==
+X-Gm-Message-State: AOAM530hMbJuej1YV0x1BzU8/N1QzREWWjTXf0dJftgU+5zAkwfILNQW
+        Wl+J4NUZoat9nuyyLjIXjw==
+X-Google-Smtp-Source: ABdhPJxXChkJO0SFyBD8Gjh0W3TV35P8ZCaeFyqrtpfDrDFLHya2Ssx8m75+AmX6F6omD2jKDaE9tg==
+X-Received: by 2002:a4a:6b1a:: with SMTP id g26mr261780ooc.13.1604529519488;
+        Wed, 04 Nov 2020 14:38:39 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t4sm826598oov.15.2020.11.04.14.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 14:38:38 -0800 (PST)
+Received: (nullmailer pid 54072 invoked by uid 1000);
+        Wed, 04 Nov 2020 22:38:37 -0000
+Date:   Wed, 4 Nov 2020 16:38:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
+        paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
+        ezequiel@collabora.com, laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+Subject: Re: [PATCH v4 03/11] media: dt-bindings: Add bindings for
+ i.MX8QXP/QM JPEG driver
+Message-ID: <20201104223837.GA49021@bogus>
+References: <20201102030821.3049-1-mirela.rabulea@oss.nxp.com>
+ <20201102030821.3049-4-mirela.rabulea@oss.nxp.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104142516.GA106571@rlk>
-X-Originating-IP: [2620:10d:c090:400::5:ae3f]
-X-ClientProxiedBy: MWHPR14CA0061.namprd14.prod.outlook.com
- (2603:10b6:300:81::23) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:ae3f) by MWHPR14CA0061.namprd14.prod.outlook.com (2603:10b6:300:81::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 22:38:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 22cd2d9c-1a39-4beb-879a-08d881124b2e
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2391:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2391706F8957759B683F67B8BEEF0@BYAPR15MB2391.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3As0JoBdg9I0wFZshkl2qN6V7YMb4RRwqi9r6dQxmKYENvdERTJ6JkMQeXEjwBhTC7jgg8cu9RYlHr4SPwqE0W5RDG3wqyxbQv/h29jDV8RU2fiiABociWrvchzDtVRwLH+25X3alMa7L0DSgwq6u9qFw8RD+xLSg6IetNbFjJMA1NY1Hsve7hZvIJwBgkG3mOqRg0v9qUN/072zZvkpd8NsPaOShMMU9WMhMlM5cLU7MIEKTCUT8v31gfO/CgcXlQ4VEa40sDmPJ25o7PS4GTFeUWNS7u6K9Km9UVbJ1xQKX+oeoX5KEwTG6BsqpywVviHxwxS+lfAWl1RT+iKqyw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(396003)(366004)(9686003)(4326008)(86362001)(5660300002)(8676002)(83380400001)(1076003)(55016002)(2906002)(66556008)(66476007)(7696005)(66946007)(8936002)(16526019)(6506007)(33656002)(52116002)(186003)(478600001)(7416002)(6916009)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: HPCsBN+bSVeyVmB/lV/vDkwc2mUuX5Y+C0Zr67w+6i8IchCQdetUXnOBmfl2VydmyAORC+e4ezhDyUbaGxchSZBNKPkRwd401v2qfFIlb57YsYj0VBGEhHGnBXiMQVoFsZUJ7SLBHhmkRIT3HZdVyCJkrvtPHa6amScJcZAAXJx4+vzzqxkx+d2qF7X97mj13Rp+RTuU4voYJb42rpY2EB/x1R3tKirP0/Zm9FvHVHLwwLm6DwyoujzrouX6kbeZe5coP5Q5TRyGoHMGnoPf1mtfJLa3pw7lCXP6bp3K4nHkeJRrZGnyzZGLFGKnDgBisjg4SIul2zWGpQ9NWC95UAR6LbiZ8vieFs7a4F789NlxYyzIegckEhxRKcEEfGjo3U/teyYMnPWgwoSqWvmC0JYUdVuGYy2asX+4g9fLxuqQMppS2eSm7ekBY9Mb/V+E2kbv/EQRvX/vpZN9P/2TYToosQuJorwkhkZyphfPdmOlbSvQeQ/3ZnceWeMbI+BxMKoXX8S2a3PdCNUOGQ/JHl5w/WRPBL1M8t1IdlTLU9a4U5rSKU++4ImqiEuDFMbLztI81KCXI9TlCt0x9oAu1ViI8oGySBY0Mb7XVQbykcRcC7ubAM5ilfXs3CRXLL/J8XnrUEx2AnfAwT4rRrcdSayA4HUqXXMoy0srfe+hc5c=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22cd2d9c-1a39-4beb-879a-08d881124b2e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:38:04.5329
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xSy3X/01QdUTpQh+yDluV1tL5msVKCqfoc8FR9FZkp2colpjp20RebXNIL+wyEgG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2391
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_15:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- clxscore=1011 malwarescore=0 priorityscore=1501 suspectscore=1 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 phishscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040161
-X-FB-Internal: deliver
+In-Reply-To: <20201102030821.3049-4-mirela.rabulea@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:25:16PM +0800, Hui Su wrote:
-> mem_cgroup_page_lruvec() in memcontrol.c and
-> mem_cgroup_lruvec() in memcontrol.h is very similar
-> except for the param(page and memcg) which also can be
-> convert to each other.
+On Mon, Nov 02, 2020 at 05:08:13AM +0200, Mirela Rabulea (OSS) wrote:
+> From: Mirela Rabulea <mirela.rabulea@nxp.com>
 > 
-> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
+> Add bindings documentation for i.MX8QXP/QM JPEG decoder & encoder driver.
 > 
-> Signed-off-by: Hui Su <sh_def@163.com>
+> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
 > ---
->  include/linux/memcontrol.h | 18 +++++++++++++++--
->  mm/memcontrol.c            | 40 --------------------------------------
->  2 files changed, 16 insertions(+), 42 deletions(-)
+>  .../devicetree/bindings/media/imx8-jpeg.yaml  | 83 +++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/imx8-jpeg.yaml
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index e391e3c56de5..a586363fb766 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
->  /**
->   * mem_cgroup_lruvec - get the lru list vector for a memcg & node
->   * @memcg: memcg of the wanted lruvec
-> + * @pgdat: pglist_data
->   *
->   * Returns the lru list vector holding pages for a given @memcg &
-> - * @node combination. This can be the node lruvec, if the memory
-> + * @pgdat combination. This can be the node lruvec, if the memory
->   * controller is disabled.
->   */
->  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-> @@ -489,7 +490,20 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  	return lruvec;
->  }
+> diff --git a/Documentation/devicetree/bindings/media/imx8-jpeg.yaml b/Documentation/devicetree/bindings/media/imx8-jpeg.yaml
+> new file mode 100644
+> index 000000000000..2df538d87bfd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/imx8-jpeg.yaml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/imx8-jpeg.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: i.MX8QXP/QM JPEG decoder/encoder Device Tree Bindings
+> +
+> +maintainers:
+> +  - Mirela Rabulea <mirela.rabulea@nxp.com>
+> +
+> +description: |-
+> +  The JPEG decoder/encoder present in.MXQXP/QM SoC is an
+> +  ISO/IEC 10918-1 JPEG standard compliant decoder/encoder, for Baseline
+> +  and Extended Sequential DCT modes.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +            # JPEG decoder
+> +          - fsl,imx8-jpgdec
+> +            # JPEG encoder
+> +          - fsl,imx8-jpgenc
 
-Hi Hui,
-
->  
-> -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-> +/**
-> + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-> + * @page: the page
-> + * @pgdat: pgdat of the page
-> + *
-> + * This function relies on page->mem_cgroup being stable.
-> + */
-> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> +						struct pglist_data *pgdat)
-
-Hm, do we need to pass page and pgdat?
-
-> +{
-> +	struct mem_cgroup *memcg = page->mem_cgroup;
-
-It seems like you need to rebase the patch against the latest mm snapshot.
+Which imx8? Should be SoC specific.
 
 > +
-> +	return mem_cgroup_lruvec(memcg, pgdat);
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      There are 4 slots available in the IP
+> +      If a certain slot is used, it should have an associated interrupt
+> +    minItems: 1               # At least one slot should be available
+> +    maxItems: 4               # The IP has 4 slots available for use
 
-Thanks!
+You don't need to know which slot is available?
+
+> +
+> +  power-domains:
+> +    description:
+> +      List of phandle and PM domain specifier as documented in
+> +      Documentation/devicetree/bindings/power/power_domain.txt
+> +    minItems: 2               # Wrapper and 1 slot
+> +    maxItems: 5               # Wrapper and 4 slots
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/firmware/imx/rsrc.h>
+> +
+> +    jpegdec: jpegdec@58400000 {
+> +        compatible = "fsl,imx8-jpgdec";
+> +        reg = <0x58400000 0x00050000 >;
+> +        interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
+> +        power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
+> +                        <&pd IMX_SC_R_MJPEG_DEC_S0>,
+> +                        <&pd IMX_SC_R_MJPEG_DEC_S1>,
+> +                        <&pd IMX_SC_R_MJPEG_DEC_S2>,
+> +                        <&pd IMX_SC_R_MJPEG_DEC_S3>;
+> +    };
+> +
+> +    jpegenc: jpegenc@58450000 {
+> +        compatible = "fsl,imx8-jpgenc";
+> +        reg = <0x58450000 0x00050000 >;
+> +        interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
+> +        power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
+> +                        <&pd IMX_SC_R_MJPEG_ENC_S0>,
+> +                        <&pd IMX_SC_R_MJPEG_ENC_S1>,
+> +                        <&pd IMX_SC_R_MJPEG_ENC_S2>,
+> +                        <&pd IMX_SC_R_MJPEG_ENC_S3>;
+> +    };
+> +...
+> -- 
+> 2.17.1
+> 
