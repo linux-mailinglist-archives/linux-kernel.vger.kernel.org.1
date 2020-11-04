@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87412A6CEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615332A6CEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732610AbgKDShf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S1732618AbgKDShh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732597AbgKDShc (ORCPT
+        with ESMTP id S1732605AbgKDShe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:37:32 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9117DC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:37:31 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h62so3288185wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:37:31 -0800 (PST)
+        Wed, 4 Nov 2020 13:37:34 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81ACC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:37:33 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id e6so5906070wro.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:37:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EXNwt+3vSlZrX0Tc14BJDd1gNrfJjl5kGrrEIH8XAj4=;
-        b=Wd2U/unpY3ZmVHfcTbXAiJY7KLJhty+qkCnEOe1v+9gF7Tk+esJECns+5NE7xRADVQ
-         rb4jMmrIrDFF3Uqc+kw+TsQP0kUBbP0Q60mBlfNxiHzEXnQZF440tMQx2el8T+naYfSe
-         nl6S2po85sezmLtPjaY/udhRbTngUIYz9zKldqnrNaoNQummnBHmMim25jYYlhSDGnMB
-         Cuq7Q+xfCJoLb+/MPsBLXPPSxHnCmLW/mhKnoYOoXXFQRNHjTAzA522j5kTSmzHtOXCP
-         IKtntiI2vPQxFCCjANt2TbA2A8r58wUouHeIdCcZ/vjLL7AFsxzBAHJM1tvSTiqOAKAb
-         /xjQ==
+        bh=iZCBnLMJdYcxZwBzQ3Sarf0ddb9E9I/tpQ6NvhqLTsI=;
+        b=B4IhEM6i7eYAD2ymU3gP34oS4vn1E/wZkt1PdaiPM5/5CtTpRosOvwsKQKo0X96cCK
+         0+g8w1fiydBxSAvZustLDS0jWbYdNwVoVeSGiVp01VErE+3NmXu2Zguj4zhDd3RQwoNG
+         en6FWwAw0dLaqo1BuTfum7Ta4FxBg0BjZWLF6bqxR53vkiKPlHv0os4fdHkCfVcSOUha
+         CL9qYevzyEmHuWS9pBv5RwzPROVRKDWww8V+k967+KldgQKur4GRkaO8J8q5SOBxRSpK
+         YvVewWO1VZib5H/HpCQ7HbmNXpRdZWPNttE3mKM8sUogeVrex2BX1GvjsLxVqnF1JotD
+         ALOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EXNwt+3vSlZrX0Tc14BJDd1gNrfJjl5kGrrEIH8XAj4=;
-        b=pJDbsyRFs4JFfXsFfZQ1QuCm1+0z+r4bFBuXVAMxyv7HNRlO0s2RYAXxU4GPEySihi
-         /9ZpJuE3tYHUsJKJ5YC6Nq7xt+/boafnBFOoYSkPQfjrUgQyIPjr+9SAXFsoLNoNc1jR
-         ZqNY1WDiwCk5DEMsLLfA+GC1IH4YjGvp0s0cTo4M2aGEFTwB2BTG+aW/++7j0JmfrIof
-         6x1KZp13qKe9Tkay3wfKJoIB/n/ztny2fM3uSTSI783DUU0rd1bjehujsQSi9bkX+JFp
-         jWyNLlZeu6XKnxBD05Mu6Ij7HbEHOUvwgDaROf5bkC9wbwsROZXYxEp42HWJURnz2e1j
-         AbkQ==
-X-Gm-Message-State: AOAM530+/vqNpolSjY7Ycs442XDnvXw2JfauGxQnfqsMQYgnLF8z8Nst
-        1Jerk6jQhUYNd+3RDLtx90T/TQ==
-X-Google-Smtp-Source: ABdhPJwYR8Ha03TCz1M7oXikmCAwIAt1jt3ItFF9iYz0IjOXIOyB9xrETMaJm4+yQW9aUe1KTMy7ig==
-X-Received: by 2002:a7b:c401:: with SMTP id k1mr5901008wmi.120.1604515050112;
-        Wed, 04 Nov 2020 10:37:30 -0800 (PST)
+        bh=iZCBnLMJdYcxZwBzQ3Sarf0ddb9E9I/tpQ6NvhqLTsI=;
+        b=aQA3WNywWJ8TxToqt1q6uumCuh5CxX00ZpZDXqC3jNXeFnEvOLCfCEputPDpkx1DZT
+         mfrjdT6fFCdxkFNFrfSTCbt1/DL+cYSf1hVpRP6kz4cZF1ZzhK1nc75vx4Ld1iJnbLT/
+         D/bA3lNIMW00fISVEhMoy6lwuuzUGW9hiiWGtVlpG1MpD8n5umeEnc4tK22y4BIbV/6o
+         ppYNdDRBFdwSPHBeMIt99zPMoe6GCsIt4cnLFH78wLce3zWvZJkLSXnGZkrKxFWR4eNs
+         Tw1AX2W3g5XuVoudf+on4MWJT5NVMf26ycmAIfbrxCF5tK89GSG8X0qVWiSN1CVnvsqC
+         v/Dw==
+X-Gm-Message-State: AOAM533e7/qbjH3HM58B9jc4wS8/txCYWM6R2yTl0trZNGBFdvHgGN/F
+        YE2AQLFNdpXUUen/8OkFbVWKMQ==
+X-Google-Smtp-Source: ABdhPJwUdVDMguoQlzBKa3UHyXk6rhVG7P6EPtc5ja0S5UDbXD4NiQS5VqgFkkGyhfeVbjM4nCuCpA==
+X-Received: by 2002:adf:fe48:: with SMTP id m8mr33208177wrs.127.1604515052352;
+        Wed, 04 Nov 2020 10:37:32 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:c8d2:30f2:53c6:bc2])
-        by smtp.gmail.com with ESMTPSA id h4sm3635371wrp.52.2020.11.04.10.37.28
+        by smtp.gmail.com with ESMTPSA id r10sm3396829wmg.16.2020.11.04.10.37.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 10:37:28 -0800 (PST)
+        Wed, 04 Nov 2020 10:37:31 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Quentin Perret <qperret@google.com>,
         Andrew Scull <ascull@google.com>, kernel-team@android.com,
         David Brazdil <dbrazdil@google.com>
-Subject: [RFC PATCH 24/26] kvm: arm64: Keep nVHE EL2 vector installed
-Date:   Wed,  4 Nov 2020 18:36:28 +0000
-Message-Id: <20201104183630.27513-25-dbrazdil@google.com>
+Subject: [RFC PATCH 25/26] kvm: arm64: Trap host SMCs
+Date:   Wed,  4 Nov 2020 18:36:29 +0000
+Message-Id: <20201104183630.27513-26-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201104183630.27513-1-dbrazdil@google.com>
 References: <20201104183630.27513-1-dbrazdil@google.com>
@@ -75,67 +75,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM by default keeps the stub vector installed and installs the nVHE
-vector only briefly for init and later on demand. Change this policy
-to install the vector at init and then never uninstall it.
+While nVHE KVM is installed, start trapping all host SMCs. By default,
+these are simply forwarded to EL3, but PSCI SMCs are validated first.
+
+Create new constant HCR_HOST_NVHE_STUB_FLAGS with the old set of HCR
+flags to use before the nVHE vector is installed or when switching back
+to stub vector.
+
+Extend HCR_HOST_NVHE_FLAGS to contain HCR_TSC. Set HCR_EL2 to it before
+installing nVHE vector.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kvm/arm.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/kvm_arm.h   | 3 ++-
+ arch/arm64/kernel/head.S           | 2 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S | 6 ++++++
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 6fbda652200b..3dff6af69eca 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -64,6 +64,11 @@ static bool vgic_present;
- static DEFINE_PER_CPU(unsigned char, kvm_arm_hardware_enabled);
- DEFINE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+index 64ce29378467..04b862955f32 100644
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@ -79,7 +79,8 @@
+ 			 HCR_AMO | HCR_SWIO | HCR_TIDCP | HCR_RW | HCR_TLOR | \
+ 			 HCR_FMO | HCR_IMO | HCR_PTW )
+ #define HCR_VIRT_EXCP_MASK (HCR_VSE | HCR_VI | HCR_VF)
+-#define HCR_HOST_NVHE_FLAGS (HCR_RW | HCR_API | HCR_APK | HCR_ATA)
++#define HCR_HOST_NVHE_STUB_FLAGS (HCR_RW | HCR_API | HCR_APK | HCR_ATA)
++#define HCR_HOST_NVHE_FLAGS (HCR_HOST_NVHE_STUB_FLAGS | HCR_TSC)
+ #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
  
-+static bool keep_hyp_installed(void)
-+{
-+	return !is_kernel_in_hyp_mode();
-+}
+ /* TCR_EL2 Registers bits */
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index e7270b63abed..ea17413a04e0 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -522,7 +522,7 @@ SYM_FUNC_START(el2_setup)
+ #endif
+ 
+ SYM_INNER_LABEL(el2_setup_nvhe, SYM_L_LOCAL)
+-	mov_q	x0, HCR_HOST_NVHE_FLAGS
++	mov_q	x0, HCR_HOST_NVHE_STUB_FLAGS
+ 	msr	hcr_el2, x0
+ 	isb
+ 
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+index dd297a1a8f82..97684deba6c1 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+@@ -88,6 +88,10 @@ SYM_CODE_END(__kvm_hyp_init)
+  * x0: struct kvm_nvhe_init_params PA
+  */
+ SYM_CODE_START(___kvm_hyp_init)
++	mov_q	x1, HCR_HOST_NVHE_FLAGS
++	msr	hcr_el2, x1
++	isb
 +
- int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
-@@ -1430,7 +1435,8 @@ static void _kvm_arch_hardware_disable(void *discard)
+ 	ldr	x1, [x0, #NVHE_INIT_TPIDR_EL2]
+ 	msr	tpidr_el2, x1
  
- void kvm_arch_hardware_disable(void)
- {
--	_kvm_arch_hardware_disable(NULL);
-+	if (!keep_hyp_installed())
-+		_kvm_arch_hardware_disable(NULL);
- }
+@@ -220,6 +224,8 @@ reset:
+ 	bic	x5, x5, x6		// Clear SCTL_M and etc
+ 	pre_disable_mmu_workaround
+ 	msr	sctlr_el2, x5
++	mov_q	x5, HCR_HOST_NVHE_STUB_FLAGS
++	msr	hcr_el2, x5
+ 	isb
  
- #ifdef CONFIG_CPU_PM
-@@ -1473,11 +1479,13 @@ static struct notifier_block hyp_init_cpu_pm_nb = {
- 
- static void __init hyp_cpu_pm_init(void)
- {
--	cpu_pm_register_notifier(&hyp_init_cpu_pm_nb);
-+	if (!keep_hyp_installed())
-+		cpu_pm_register_notifier(&hyp_init_cpu_pm_nb);
- }
- static void __init hyp_cpu_pm_exit(void)
- {
--	cpu_pm_unregister_notifier(&hyp_init_cpu_pm_nb);
-+	if (!keep_hyp_installed())
-+		cpu_pm_unregister_notifier(&hyp_init_cpu_pm_nb);
- }
- #else
- static inline void hyp_cpu_pm_init(void)
-@@ -1580,7 +1588,8 @@ static int init_subsystems(void)
- 	kvm_coproc_table_init();
- 
- out:
--	on_each_cpu(_kvm_arch_hardware_disable, NULL, 1);
-+	if (err || !keep_hyp_installed())
-+		on_each_cpu(_kvm_arch_hardware_disable, NULL, 1);
- 
- 	return err;
- }
+ 	/* Install stub vectors */
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
