@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A762A67E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FD42A67DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbgKDPkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:40:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38247 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730640AbgKDPkM (ORCPT
+        id S1730589AbgKDPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:40:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729992AbgKDPkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:40:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604504411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dPvtNi0fWtu3e7U/ZEYRHIyUhMYOakG1awB8Vk3JXsQ=;
-        b=CIFauVmtG2UxKVO8qPh284Wl9AGRcReJN3qV7dTQ1LAQ5bE/42NLVkeD/wxP5EL0GSVb0b
-        Z1I+hqP315typEUL7YEQraOtykUfP7GTIY3HbRxf3XT4wqunaekmueIu5YDQAOsXQ9Q/RD
-        qMrys8yjuOWukKea6yDRmwFZn9TMCBA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-ejY8Y8HcOJisIPjKOwABkw-1; Wed, 04 Nov 2020 10:40:07 -0500
-X-MC-Unique: ejY8Y8HcOJisIPjKOwABkw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82A398030DD;
-        Wed,  4 Nov 2020 15:40:05 +0000 (UTC)
-Received: from ovpn-112-92.rdu2.redhat.com (ovpn-112-92.rdu2.redhat.com [10.10.112.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59F0D610F3;
-        Wed,  4 Nov 2020 15:40:04 +0000 (UTC)
-Message-ID: <37abe67a5a7d83b361932464b4af499fdeaf5ef7.camel@redhat.com>
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-From:   Qian Cai <cai@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Wed, 04 Nov 2020 10:40:03 -0500
-In-Reply-To: <20201104151605.GG5600@quack2.suse.cz>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
-         <20201022004906.GQ20115@casper.infradead.org>
-         <20201026094948.GA29758@quack2.suse.cz>
-         <20201026131353.GP20115@casper.infradead.org>
-         <d06d3d2a-7032-91da-35fa-a9dee4440a14@kernel.dk>
-         <aa3dfe1f9705f02197f9a75b60d4c28cc97ddff4.camel@redhat.com>
-         <20201104151605.GG5600@quack2.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Wed, 4 Nov 2020 10:40:09 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E208CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:40:08 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h22so2762553wmb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:40:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wep9eHIlHmt9345GeonA3mlm93DwH2S4gpNglLx7w/I=;
+        b=MxLEJVVqf/UWjuxQqDE7m/MC1xrKr/vmmDW7S2f4+oE4dqHNfSTeiVwhu2LvHCyqSg
+         cIQovCeOxuYkjFDnU38UiZbpq9mLg1FaMCyClaL8xAbQLIldhy/TdU5/AMdcSuTreYht
+         zWvrGGotrXjF5i3vNEFNYHemFmLncCiBAn37cqTRUXfShys9k2NWUcBEIFAVSVQcq3nd
+         0CPfUxC1O5Osk+06teqg8aE6/Os33n+3XG6+IbCDL67+vXLfZ+pNWI2RofrTWLTUr5Sa
+         9G5CIdHdPHyaLCIBBhJdehSN5PZFyBxiBsYjCc2eWaQUYxm+s1/wyXa398lONNNz7dYt
+         QtwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wep9eHIlHmt9345GeonA3mlm93DwH2S4gpNglLx7w/I=;
+        b=uCxCqWXi3qMHl17SiUlJFipvODBsk29ZZ9i6UuvbMzYjfcXyTP2cdRvLhK69CKFepW
+         r2Wl9yBOjiboACqvgRFmHNFrlz72xv4JYoX2pk7pwHAzc+DIHeLg6CEXJMqjd2KDAhTO
+         Q+ihnOKe7bleUq21kUM6+LLcoI9gm0oTk+xhIv8opUSZCrP4XcLEiuQ0+FU24jO6UsPZ
+         1kH1cNmPv00evOw9lylWghyo+0c7wqqOZVG9F0Az5J2Xoj5BPCTKG9j0da8c3IuhyqYv
+         3IdoxcrT00jVdIzzOcgdbPCFYPt3Ix2d89I6BopzrLYdPyIjvenfT4vBWRoRp2HzSRRR
+         Za2g==
+X-Gm-Message-State: AOAM531auOYtZx6cJ+6s/ZvUdjw//E5qTkNKNDbhCncReIN9bK6NLWEs
+        DECDuKAKU8Wb7M7G8l8u1XN/6EF82TbY4iyR
+X-Google-Smtp-Source: ABdhPJxlOHljiEnt3GDydsV/OEjm43XGIwK18G3+FSOhlvM6g73pTtGZhTVIW3rJaRcdqYOaq1+KNQ==
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr5214407wmi.70.1604504407665;
+        Wed, 04 Nov 2020 07:40:07 -0800 (PST)
+Received: from dell ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id j71sm2807895wmj.10.2020.11.04.07.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 07:40:06 -0800 (PST)
+Date:   Wed, 4 Nov 2020 15:40:05 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH RESEND 1/2] mfd: madera: Add reset as part of resume
+Message-ID: <20201104154005.GO4488@dell>
+References: <20201027094132.16472-1-ckeepax@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027094132.16472-1-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 16:16 +0100, Jan Kara wrote:
-> On Mon 26-10-20 10:26:26, Qian Cai wrote:
-> > On Mon, 2020-10-26 at 07:55 -0600, Jens Axboe wrote:
-> > > I've tried to reproduce this as well, to no avail. Qian, could you perhaps
-> > > detail the setup? What kind of storage, kernel config, compiler, etc.
-> > > 
-> > 
-> > So far I have only been able to reproduce on this Intel platform:
-> > 
-> > HPE DL560 gen10
-> > Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
-> > 131072 MB memory, 1000 GB disk space (smartpqi nvme)
-> 
-> Did you try running with the debug patch Matthew sent? Any results?
-Running every day, but no luck so far.
+On Tue, 27 Oct 2020, Charles Keepax wrote:
 
+> The DCVDD supply does not always power down when the CODEC enters
+> suspend, for example shared regulators or always-on regulators. In
+> these cases if a register is written back to the default value whilst
+> the CODEC is in suspend that register will retain the previous value.
+> As DCVDD never powered down, the register retains its old value and
+> as the cache sync only synchronises registers that differ from the
+> default the new value is never written out.
+> 
+> Ensure the registers are in the expected state after suspend by always
+> resetting the CODEC on resume. This also has the benefit of being
+> recommended by the datasheet for DCVDD supplies that take longer than
+> 2mS to rise.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  drivers/mfd/madera-core.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
