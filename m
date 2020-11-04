@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1F32A7039
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641992A7045
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgKDWIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:08:34 -0500
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:43537 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKDWId (ORCPT
+        id S1731954AbgKDWOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732001AbgKDWOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:08:33 -0500
-Received: by mail-oo1-f66.google.com with SMTP id z14so11858oom.10;
-        Wed, 04 Nov 2020 14:08:32 -0800 (PST)
+        Wed, 4 Nov 2020 17:14:10 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EF4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 14:14:10 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id e7so18453115pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:14:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4SX8JmQlcxK5oX4LLeWbxpL7OAoTDYcCU+6+RVvGYlM=;
+        b=RX2JBijVQFv1L+Mod4nyguYVc83aMkdQnTSA4fshKUc7aV23uLUvF08QHDh0Is4Pqc
+         Y8C7u7YARCq/nsAwL8gHMGWDjRZ/i8rf6teR9z+sDJZUgLYQtq2wJ0I48zHOVm1zkNrf
+         ta1xYjO+dpWNT4NcIGfE2jZIbJ6ZSCtbIauIs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cUpVQds8DCOsEY6f9AUbNrj5fsXMdU/YU8tvU+q5oco=;
-        b=gNATklkRs/ozvJWGjlIBK1ijbZyf5MVC74ysCZ37Ss8sm4US27AIU4PWxIq7R18Hq8
-         YKnAMEE28zMsTUfek6mjv0QMdTjFqJ3FpiBjAPhRfqziMovQvEd+x7g1t+P68MxsCe9T
-         14XjCQngDlRgq+K3SlZBuwLeb2bpFQk449vkrI3IK7/qmD2/vf9/eKTe4hjeUeixE8n3
-         tkb47tyY1U1HbrIF8a1PjJa9ZotavwOuf46+W0Md0q37zfN+hKeiy8LG5ZFeS62iZZew
-         sSFSQoQqjaMlAH5GSO/zpychy6g9ozaRvCorsIX83IeydDDSYF/ms9SkKLi+DCuphThe
-         gEmg==
-X-Gm-Message-State: AOAM531F02yZfMuzAyop7j4orC0MZipsHDrMHxeAHOaGjayWBdZNQIHD
-        d17MojnKHHJio8Gl2cYtXq6HztRylg==
-X-Google-Smtp-Source: ABdhPJwlVBWqAnaWTc0kRKqZp6PjxlWuv66zncIa54/soy0ziGh46mHILrMtnDZOUzvyTKu4aiY+Tg==
-X-Received: by 2002:a4a:6f4d:: with SMTP id i13mr189550oof.25.1604527712393;
-        Wed, 04 Nov 2020 14:08:32 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p126sm750613oia.24.2020.11.04.14.08.31
+        bh=4SX8JmQlcxK5oX4LLeWbxpL7OAoTDYcCU+6+RVvGYlM=;
+        b=jyOg2mBhaEVQvtWvgp1e3hBgH8elT0KssFwz1Argx326QM7cGALRjuy3znn0p+HrFj
+         bcG8aumAX6dVehvXDktYWpUQqtq77aCdM8Lp55QvpCnT8y07Kt/9l7xMA3Hleg01aiRa
+         Vsqjne6PHZLPyixtxWwbawphfZGMHQVL7GZSOicgsnEkYk+Ao8uOW9qwhIXqxzCJ7c3o
+         tM6PMYqvnaXIeGTEV+I6hQuMN9zmFIu9K76uY4kggTx1fWDMMUD/lMZknmak6T2Z0Idt
+         B+7zOIKszmuHd4H0cYMOnTqI2GBe5LOKHOpOYRKshn2EK8FwdfNhpnR4Z2e4GgaByDpV
+         uifg==
+X-Gm-Message-State: AOAM532Tgs+Q63+BVRNP8YI870l6ojfi2MP6BBpOfidm7ajp2jjYxmvn
+        aL6kUjBHsEzE14I5URAphXEmoQ==
+X-Google-Smtp-Source: ABdhPJwnQvdrXkvZA4YnhjXoMmBDm+dt32SsDETknXAd989qVmGT8ZvBz6SW/KD78kJNz8WtONYvwA==
+X-Received: by 2002:a17:90b:b12:: with SMTP id bf18mr11114pjb.205.1604528049604;
+        Wed, 04 Nov 2020 14:14:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j20sm3306738pgh.15.2020.11.04.14.14.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 14:08:31 -0800 (PST)
-Received: (nullmailer pid 13892 invoked by uid 1000);
-        Wed, 04 Nov 2020 22:08:31 -0000
-Date:   Wed, 4 Nov 2020 16:08:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Dan Murphy <dmurphy@ti.com>, davem@davemloft.net,
-        f.fainelli@gmail.com, hkallweit1@gmail.com,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/4] dt-bindings: net: Add Rx/Tx output
- configuration for 10base T1L
-Message-ID: <20201104220831.GA10591@bogus>
-References: <20201030172950.12767-1-dmurphy@ti.com>
- <20201030172950.12767-3-dmurphy@ti.com>
- <20201030195655.GD1042051@lunn.ch>
+        Wed, 04 Nov 2020 14:14:08 -0800 (PST)
+Date:   Wed, 4 Nov 2020 14:14:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: RFC: default to spec_store_bypass_disable=prctl
+ spectre_v2_user=prctl
+Message-ID: <202011041411.AD961737EA@keescook>
+References: <20201104215702.GG24993@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030195655.GD1042051@lunn.ch>
+In-Reply-To: <20201104215702.GG24993@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 08:56:55PM +0100, Andrew Lunn wrote:
-> On Fri, Oct 30, 2020 at 12:29:48PM -0500, Dan Murphy wrote:
-> > Per the 802.3cg spec the 10base T1L can operate at 2 different
-> > differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
-> > drive that output is dependent on the PHY's on board power supply.
-> 
-> Hi Dan
-> 
-> So this property is about the board being able to support the needed
-> voltages? The PHY is not forced into 2.4v p2p, it just says the PHY
-> can operate at 2.4v and the board will not melt, blow a fuse, etc?
-> 
-> I actually think it is normal to specify the reverse. List the maximum
-> that device can do because of board restrictions. e.g.
-> 
-> - maximum-power-milliwatt : Maximum module power consumption
->   Specifies the maximum power consumption allowable by a module in the
->   slot, in milli-Watts.  Presently, modules can be up to 1W, 1.5W or 2W.
-> 
-> - max-link-speed:
->    If present this property specifies PCI gen for link capability.  Host
->    drivers could add this as a strategy to avoid unnecessary operation for
->    unsupported link speed, for instance, trying to do training for
->    unsupported link speed, etc.  Must be '4' for gen4, '3' for gen3, '2'
->    for gen2, and '1' for gen1. Any other values are invalid.
-> 
->  - max-microvolt : The maximum voltage value supplied to the haptic motor.
->                 [The unit of the voltage is a micro]
-> 
-> So i think this property should be
-> 
->    max-tx-rx-p2p = <1000>;
-> 
-> to limit it to 1000mv p2p because of board PSU limitations, and it is
-> free to do 22000mv is the property is not present.
+On Wed, Nov 04, 2020 at 04:57:02PM -0500, Andrea Arcangeli wrote:
+> Switch the kernel default of SSBD and STIBP to the ones with
+> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
+> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
 
-'-microvolt' suffix please.
+Agreed. I think this is the right time to flip this switch. I agree with
+the (very well described) rationales. :)
 
-> 
->    Andrew
-> 
+Fundamentally, likely everyone who is interested in manipulating the
+mitigations are doing so now, and it doesn't make sense (on many fronts)
+to tie some to seccomp mode any more (which was intended as a temporary
+defense to gain coverage while sysadmins absorbed what the best
+practices should be).
+
+Thanks for sending this!
+
+Acked-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
