@@ -2,275 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB642A71EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F4A2A7214
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732997AbgKDXmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:42:49 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38494 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732517AbgKDXlG (ORCPT
+        id S1732863AbgKDXqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:46:25 -0500
+Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:45189
+        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732778AbgKDXqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:41:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4NdTRH027609;
-        Wed, 4 Nov 2020 23:41:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=TmvYSJAEXaLiuZqwCoKufrk44V28jWvQyY1Rql+I8fE=;
- b=ZhC9ginK2YTXj5nolrEEswjRXpbG1XEb5wCrqsk5kgqjbzF9Ks/DaKFKPyBkC7b4PYLt
- JQ5HY2cG8Ni4FG8p0ommD5cOsUKnSm2cTNpJZXwcrRx9HO1gJTsdavyAthUD2knIotIJ
- BCwR/W2T4IZb5ln+FfSon13HodHKeGmv/romcJPkHCDcDTEawCNaNSNIEvGYJw3yKq+e
- Zwp+KO2/IQkhl787m+DQ/tY5L9aUfsht9jrtLCSbFE24Jp5ec0G1aPK9eBKwgEjkbhZN
- Y2qtMxvTAxqrFDOCk/6estO7z0fkcsBiPJ9/eDYRFCjV6M2k+YBeOz4DvcFeqQw4hmBF Yw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34hhvchf0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 23:40:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4NdwS6095672;
-        Wed, 4 Nov 2020 23:40:59 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 34hvryn7nf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 23:40:59 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A4NevN5029823;
-        Wed, 4 Nov 2020 23:40:57 GMT
-Received: from [10.159.134.39] (/10.159.134.39)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 04 Nov 2020 15:40:56 -0800
-Message-ID: <5FA33C06.6010000@oracle.com>
-Date:   Wed, 04 Nov 2020 15:40:54 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Wed, 4 Nov 2020 18:46:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604533558; bh=LCB9ydE1w9hHkpb8wYy6jD57eyJtJQ5ce5sXeiV/bXE=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject; b=gZ/+HO+w7BQqocEnlUfvRIt8ioh/gFredxe+Ja3kaZ+n8r/lYgYFHXdZFpeghIk81e6/qcTVoba51k6pj9W82yrcnyOdg1IGZotio6p2GRMZSw4SyZ8dnRnUY0I6oaM/dBTOMYjqCD48vBxH1/GNm7U0xoHYri5zV/rjKJFal+IlLVhnjfxzX3DMCLr5jQfg83Cz8X2zftTL+OXvn2fGM3BNCrMPdiY+o61emUJlMABzrNW0HqkodE4cFMnJQ1b9fWFVtypCMXYS9YhlnwVp5kNN4nKzh0m9rMZDZkL6qlbX0Y5tF4teeh7Z1erpjM7m4sSB+ivws5rjI7qcQ1VxcA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1604533558; bh=1pG/hS+NXpOHsMz7wD5tQTPWY1FNdAEu8otDkklYa2K=; h=From:To:Subject:Date; b=ZSguEc0FFZ11Jg/hTfsxrsG7wExMJmVXNzkZKujXWn9RilsDxwjFIVGldZG5/XS+Eq3znY5xTof75q6wGPJlqpXULuKm6kEN/S7/CeJxwH+JDUx8wcBmBR5p8q8jFQrl3BYyehb+o0wwUWbH/ul9G7LyW9/EY1/MqjW6V+eKkvP9vHF1f6JOI4HUHQms7ID5uZsBtQNIAQDISGwz/JNftj4D2wNfBgnK6W1MUVPD7S6V8XPH42L/qVYNmR1hLYTlUanXfA2VglvWtOHF/8OP+toacJ53idrm8VgRXQ1ZwM0uqBahtK28uGMp0hvhIHG5aDUwpnZ/JL24x1VjuOB4cQ==
+X-YMail-OSG: Ibqzj4IVM1kVhtR_ahkb1CcoWFYqQBNdOmez4IRmnmFGnQpje4ojfPmbjTph1L0
+ TiM3AKazRA_XdKb2D2tSG5.TwGo8a25c6gfEebXPVMftW1FaOINKA1.yTNtGn1EiKfiynPDUvDXe
+ Sc4CLal9KYMckzSHSmfTn8DLu39sQ_4eAAHGUqVfFIaVxmhHNT9PPfe8jWZDVu1nicF_B12VvhvV
+ J3H3DXriqp6uD_hj.smMyyYa8h3xPwcNd..O7f_ssbAbgq38Q5s4kz22034zZ_SMhiIfzCEljWtz
+ PKkd4HcmUSnl5QXIVqaQKUIxD0sOtZrig0J2grVjGlIYcYQ.k0cZHCkb2u6_Um7M9rukr_NVp3Ir
+ 2yFzt4ad_ma0y.glNmS7B094B0yJ_lAxBB5kF89XLOf0kJemZTCwVQekMhmsW4LlKcZOuep7AOWy
+ Xx9ivavNKJS1IUDJBvAWPQ3ZnsRc4VjLaHrxBES94q65G0.67lkEx4wUbP93vT3.3opuz7DL5VLq
+ 8vjeVzfDSMVUptI2Svu6s44uh33qpDtX_7uocfZzNd58UB9ULoaxz3yb48ujaM9bGwq_.61GsQpG
+ Ee3f3Cs4HkddOy6Kv6OFIUUiWcVrbHpkWvT_Ytgo7VRnqM34U1KBznu0HelSdc0z3m3Cl4hq6QxE
+ Y488WrMYgNg0b3aZKd7fuwV_7wDGMkLvJMYO4FyIiBzRevZ3PDE7h9eVNbLcazp7DEtyCPExBDyM
+ VhiQTuQHu20sTW2KVBk6E4o5Zez0MlL1LOr4EKc1VdiEi3zfQY3pCVubNMZJK4hETh0echJNN2SR
+ BHnALePl2d55EHYoddJDjEf1eeWQZnih9bYlsWi9g_PAHMv7hwLUCIUAKGsI46Js1DfC4inLJJO0
+ G5qpZG8QQFleyBP.7RH.sityhbQKo2WBlhgOQqlxyHZDceGWdVsF1Cy8WFrVYiBIKA2ovbcNlBdp
+ o0FgKWQFQe5d7koFGbBu3UzqroC.Vd5xxx3C7_PgCZZ1pFb.wDY4rYpdlAntifz8tCNvL92zGtSC
+ lipaK_MmokHKWy3l4N7mHSDWEtuX2TDY2B8ZArW7b8cJvQPQ7joDJ6cogYb04cz1eFST2wnSGc84
+ 1b4gp_7gg5gT93MD_YjkSrbSQ02uHjj3MSP7pHZ_zs8a59cUCNW4baWL1wYYoiuEKBUB8FFReSGD
+ wF9.VtplKOQ4j4lrbv7Sr3x_Odbq4joar30yieqmUMr5uZhzNuy3VNxeJt91WQtoklNx.tbOPLZg
+ hrcH8_pmWQt8cOI3L06HzPGBPgA3xsuGeKqthhCigd4Cqb67VRXId0vdxnICBkgaHDzeAY4jFma8
+ 5.JbdkOWND7xyanjeyn1m2PPTHu.Ffy8Uo8T6u6fLDh8PT6pGCBSde9hZskb4vBQf6uUOgJ5_ZGG
+ fZRq5a_.0vUJ6CdbQR53j7RvCwOjn45NmtwK1c04R233kr8UAOP6L8HGncGShnmkwr3lMBomHUIN
+ 5xD5fnw9ZjM.UIIl2m7KniZwp92JY1yK0bXCoc_rOMl1ldUGFHq6wTAPHY_hOu03zFnDtC56HjZo
+ B555NnUdQbSEOs7dYRZ1.V52FlTe8vHTa2zchwtkT2B_4sRYFfhreQ0vVnuiLixMlbN0I.qW4SmU
+ MT47Mf8LiaIXIerbZBCcIs5kGG4KlOE8DAKRv1raO39dHbrabBpwVKjIdU9tQ2k8Ib6BPT6YaKPH
+ y1Oq8WBl3Qv3XfsZs_i.Ji12IoufD.IWyeLRyWB3J_.W_LDT_R5TGfMRUmw2uYlnq1C_3zAKUOS3
+ WUW862mSlH.0zLdR.0zEc2idZTT_4N6QZAfOTGI41KBdzyR0xEkjw47w_w9HHyar3L54vO2HnWn6
+ IvVh0.QphEsL6IePJJhY3.PkvEjU3eGGjNl5yODVPRgps1kV7iC_lcsvkVRvVzfbnW_4lhP1wE5.
+ 5Y0XdwiqbnXsGaDOJHrXlsqBoOmhJBwjY_V.3ufLdC0BckZo63ODm1Kzz8NsRFUHt4TU1MiTw0XA
+ 9GYmXUCK79vLaLHlt4dAkCr0A4hM_RM8JUfRCwHaD3AIwnBINIlV.Krf.5hkIh8s2yCryhwCT.Q7
+ ObLxztCYYTgLm119cP.X1Vj5AjwCkMUDDWCbagI6uwKiwqHSmeGXV7emUR2HUP4BPgUUK4CVlsah
+ y2fdSsvxZ4xBF7iNeBI3SyHp2_KD.nszdZqEGHl7_D3HGZWm4vWZCGVBiRFsMeS4aIswjIDfG3CB
+ SS_JdTY6regehqPS486hYGmuJ6VvNE4qqoaxQJrR2V_4ipy1wijr1NcqidlMJnKuO59BSxiF8NWP
+ igd8TB_IiOw5rCEZt_nykSVlKpUUjm7R5GGfbKuQ9FmYsWz50EA34ngstZ3b10k2vudn7mAeSvYh
+ UxfT99Prd_BuMObKrxq4fbBPEIOJEy_WxbFYvt3F3oRxzzkoWoiDB5w2IVIT5LEQMfAXWz6bKGm4
+ qLAkn0Rm8m15T7Kv7mkUOvef2LL1KMJoTZYnbyQ1lDQlcpxG53ctQheJP2JT6G9gatnmNZgcXw73
+ cl0dByS.Gxcj1oL61UTv.KR8raZAQbXPlcO2m1fZbVwYgdRU2GLny5iggTj4.FijUeHO5OAjOjls
+ q.bkHpHvQbtDUhaX9MKvFp36cJulWHsu2P6HYxehXyK9cVpBS8Rzf6abRwg.X_YEtpDfDbzd9QUR
+ Lq_4VQ5vKBqA3pIGSzGVabzoup0VZmD3a7s2L91iGWSpKpG50purm89G97FI9mb64U1PXZXnTH_c
+ WGwc5taiVU2lWgqcJ1ZjLXdmbdQG_EgWfTYkmGe6ipWBu3vvV_HfqSS4V3YtE7S6MgUBF6d9aHtK
+ 43xP_i3zMudNW04IpYDD7fOhLuHYqJ25biBLbhdvvYpkXM8u4sp5VO3t7cwefx2L1.vhQIErTcKS
+ VVeIS25KW9tDM7Pjx3isRywDO9eSgVAKcTEcaG5hOCkMVibdogzHfq5Sb.ug7xvFkt9AsRC2Lka8
+ pSgMrsJmAEYQC5eFN0N6bBHSAq5VOoStFHSCU2qnnNgtN_hmj.mJu.llM7f7kAdXt17RWn0o4c4a
+ WCrQ6rlyXCWJVKZVh1fZHw9.JTy1EXlpD2CCvOSvrM1NvnXz8PzZiublb17p0my9ZdBxxfPhvH3C
+ 0QVIhI4KpVtbClmKmzuei.UQyPRzvk0CDVhkX.AyaYRJSb.TKNNF2bdHkVt.RCbCW13PSqTF_E_f
+ bgIV1QqLKyPgE8X.Pmb.CpQ2D3_Pz1hfjDXuXtDMJNyolwlK5f40qh6y2OwHpTow04gR_uZpXf8B
+ FQMWPo55rXYNrtnTYqJAA4ji8rifpDSHA6bOZHraF5FWZx.pkhluLhjyttIFQ3EsUQaLZotQx_GX
+ wyDb7PPXF08Y-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Wed, 4 Nov 2020 23:45:58 +0000
+Received: by smtp401.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 9b9e375e4e591189f65b01f46bb2c359;
+          Wed, 04 Nov 2020 23:45:52 +0000 (UTC)
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
+        keescook@chromium.org, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
+Subject: [PATCH v22 03/23] LSM: Use lsmblob in security_audit_rule_match
+Date:   Wed,  4 Nov 2020 15:40:54 -0800
+Message-Id: <20201104234114.11346-4-casey@schaufler-ca.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20201104234114.11346-1-casey@schaufler-ca.com>
+References: <20201104234114.11346-1-casey@schaufler-ca.com>
 MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604043944-4897-1-git-send-email-si-wei.liu@oracle.com> <1604043944-4897-2-git-send-email-si-wei.liu@oracle.com> <77a2aefe-ccad-bd51-3721-1139d4e535d7@redhat.com>
-In-Reply-To: <77a2aefe-ccad-bd51-3721-1139d4e535d7@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=2 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040169
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change the secid parameter of security_audit_rule_match
+to a lsmblob structure pointer. Pass the entry from the
+lsmblob structure for the approprite slot to the LSM hook.
 
-On 11/3/2020 6:42 PM, Jason Wang wrote:
->
-> On 2020/10/30 下午3:45, Si-Wei Liu wrote:
->> Pinned pages are not properly accounted particularly when
->> mapping error occurs on IOTLB update. Clean up dangling
->> pinned pages for the error path.
->>
->> The memory usage for bookkeeping pinned pages is reverted
->> to what it was before: only one single free page is needed.
->> This helps reduce the host memory demand for VM with a large
->> amount of memory, or in the situation where host is running
->> short of free memory.
->>
->> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->> ---
->>   drivers/vhost/vdpa.c | 64 
->> +++++++++++++++++++++++++++++++++++++---------------
->>   1 file changed, 46 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index b6d9016..8da8558 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>         if (r)
->>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->> +    else
->> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>         return r;
->>   }
->> @@ -591,14 +593,16 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>       unsigned int gup_flags = FOLL_LONGTERM;
->>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->> -    unsigned long locked, lock_limit, pinned, i;
->> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>       u64 iova = msg->iova;
->> +    long pinned;
->>       int ret = 0;
->>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>                       msg->iova + msg->size - 1))
->>           return -EEXIST;
->>   +    /* Limit the use of memory for bookkeeping */
->>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>       if (!page_list)
->>           return -ENOMEM;
->> @@ -607,52 +611,64 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>           gup_flags |= FOLL_WRITE;
->>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->> PAGE_SHIFT;
->> -    if (!npages)
->> -        return -EINVAL;
->> +    if (!npages) {
->> +        ret = -EINVAL;
->> +        goto free;
->> +    }
->>         mmap_read_lock(dev->mm);
->>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->> -
->> -    if (locked > lock_limit) {
->> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>           ret = -ENOMEM;
->> -        goto out;
->> +        goto unlock;
->>       }
->>         cur_base = msg->uaddr & PAGE_MASK;
->>       iova &= PAGE_MASK;
->> +    nchunks = 0;
->>         while (npages) {
->> -        pinned = min_t(unsigned long, npages, list_size);
->> -        ret = pin_user_pages(cur_base, pinned,
->> -                     gup_flags, page_list, NULL);
->> -        if (ret != pinned)
->> +        sz2pin = min_t(unsigned long, npages, list_size);
->> +        pinned = pin_user_pages(cur_base, sz2pin,
->> +                    gup_flags, page_list, NULL);
->> +        if (sz2pin != pinned) {
->> +            if (pinned < 0) {
->> +                ret = pinned;
->> +            } else {
->> +                unpin_user_pages(page_list, pinned);
->> +                ret = -ENOMEM;
->> +            }
->>               goto out;
->> +        }
->> +        nchunks++;
->>             if (!last_pfn)
->>               map_pfn = page_to_pfn(page_list[0]);
->>   -        for (i = 0; i < ret; i++) {
->> +        for (i = 0; i < pinned; i++) {
->>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>               u64 csize;
->>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>                   /* Pin a contiguous chunk of memory */
->>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->> -                if (vhost_vdpa_map(v, iova, csize,
->> -                           map_pfn << PAGE_SHIFT,
->> -                           msg->perm))
->> +                ret = vhost_vdpa_map(v, iova, csize,
->> +                             map_pfn << PAGE_SHIFT,
->> +                             msg->perm);
->> +                if (ret)
->>                       goto out;
->> +
->>                   map_pfn = this_pfn;
->>                   iova += csize;
->> +                nchunks = 0;
->>               }
->>                 last_pfn = this_pfn;
->>           }
->>   -        cur_base += ret << PAGE_SHIFT;
->> -        npages -= ret;
->> +        cur_base += pinned << PAGE_SHIFT;
->> +        npages -= pinned;
->>       }
->>         /* Pin the rest chunk */
->> @@ -660,10 +676,22 @@ static int 
->> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>                    map_pfn << PAGE_SHIFT, msg->perm);
->>   out:
->>       if (ret) {
->> +        if (nchunks && last_pfn) {
->
->
-> Can we decrease npages where you did "nchunks++" then we can check 
-> npages here instead?
-Hmmm, I am not sure I get what you want... @nchunks gets reset to 0 
-whenever a certain range of pinned pages is successfully mapped. The 
-conditional (when nchunks is non-zero) here indicates if there's any 
-_outstanding_ pinned page that has to clean up in the error handling 
-path. While the decrement of @npages may not occur when resetting the 
-@nchunks counter, rendering incorrect cleanup in the error path.
+Change the users of security_audit_rule_match to use the
+lsmblob instead of a u32. The scaffolding function lsmblob_init()
+fills the blob with the value of the old secid, ensuring that
+it is available to the appropriate module hook. The sources of
+the secid, security_task_getsecid() and security_inode_getsecid(),
+will be converted to use the blob structure later in the series.
+At the point the use of lsmblob_init() is dropped.
 
-BTW while reviewing it I got noticed of an error in my code. There might 
-be still page pinning leak from wherever the vhost_vdpa_map() error 
-occurs towards the end of page_list. I will post a v2 to fix this.
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: John Johansen <john.johansen@canonical.com>
+Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+Acked-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+---
+ include/linux/security.h            |  7 ++++---
+ kernel/auditfilter.c                |  6 ++++--
+ kernel/auditsc.c                    | 14 ++++++++++----
+ security/integrity/ima/ima.h        |  4 ++--
+ security/integrity/ima/ima_policy.c |  7 +++++--
+ security/security.c                 | 10 ++++++++--
+ 6 files changed, 33 insertions(+), 15 deletions(-)
 
-Regards,
--Siwei
-
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -656,8 +656,19 @@ static int vhost_vdpa_process_iotlb_update(struct 
-vhost_vdpa *v,
-                                 ret = vhost_vdpa_map(v, iova, csize,
-                                                      map_pfn << PAGE_SHIFT,
-                                                      msg->perm);
--                               if (ret)
-+                               if (ret) {
-+                                       /*
-+                                        * Unpin the pages that are left 
-unmapped
-+                                        * from this point on in the current
-+                                        * page_list. The remaining 
-outstanding
-+                                        * ones which may stride across 
-several
-+                                        * chunks will be covered in the 
-common
-+                                        * error path subsequently.
-+                                        */
-+ unpin_user_pages(&page_list[i],
-+                                                        pinned - i);
-                                         goto out;
-+                               }
-
-                                 map_pfn = this_pfn;
-                                 iova += csize;
-
-
-
->
-> Thanks
->
->
->> +            unsigned long pfn;
->> +
->> +            /*
->> +             * Unpin the outstanding pages which are unmapped.
->> +             * Mapped pages are accounted in vdpa_map(), thus
->> +             * will be handled by vdpa_unmap().
->> +             */
->> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->> +                unpin_user_page(pfn_to_page(pfn));
->> +        }
->>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>       }
->> +unlock:
->>       mmap_read_unlock(dev->mm);
->> +free:
->>       free_page((unsigned long)page_list);
->>       return ret;
->>   }
->
+diff --git a/include/linux/security.h b/include/linux/security.h
+index fdb6e95c98e8..89c538aa283e 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1892,7 +1892,8 @@ static inline int security_key_getsecurity(struct key *key, char **_buffer)
+ #ifdef CONFIG_SECURITY
+ int security_audit_rule_init(u32 field, u32 op, char *rulestr, void **lsmrule);
+ int security_audit_rule_known(struct audit_krule *krule);
+-int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule);
++int security_audit_rule_match(struct lsmblob *blob, u32 field, u32 op,
++			      void **lsmrule);
+ void security_audit_rule_free(void **lsmrule);
+ 
+ #else
+@@ -1908,8 +1909,8 @@ static inline int security_audit_rule_known(struct audit_krule *krule)
+ 	return 0;
+ }
+ 
+-static inline int security_audit_rule_match(u32 secid, u32 field, u32 op,
+-					    void **lsmrule)
++static inline int security_audit_rule_match(struct lsmblob *blob, u32 field,
++					    u32 op, void **lsmrule)
+ {
+ 	return 0;
+ }
+diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
+index 45da229f9f1f..e27424216159 100644
+--- a/kernel/auditfilter.c
++++ b/kernel/auditfilter.c
+@@ -1331,6 +1331,7 @@ int audit_filter(int msgtype, unsigned int listtype)
+ 			struct audit_field *f = &e->rule.fields[i];
+ 			pid_t pid;
+ 			u32 sid;
++			struct lsmblob blob;
+ 
+ 			switch (f->type) {
+ 			case AUDIT_PID:
+@@ -1361,8 +1362,9 @@ int audit_filter(int msgtype, unsigned int listtype)
+ 			case AUDIT_SUBJ_CLR:
+ 				if (f->lsm_isset) {
+ 					security_task_getsecid(current, &sid);
+-					result = security_audit_rule_match(sid,
+-						   f->type, f->op,
++					lsmblob_init(&blob, sid);
++					result = security_audit_rule_match(
++						   &blob, f->type, f->op,
+ 						   f->lsm_rules);
+ 				}
+ 				break;
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 16e3430f7d07..7dd6b815a9eb 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -474,6 +474,7 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 	const struct cred *cred;
+ 	int i, need_sid = 1;
+ 	u32 sid;
++	struct lsmblob blob;
+ 	unsigned int sessionid;
+ 
+ 	cred = rcu_dereference_check(tsk->cred, tsk == current || task_creation);
+@@ -672,7 +673,9 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 					security_task_getsecid(tsk, &sid);
+ 					need_sid = 0;
+ 				}
+-				result = security_audit_rule_match(sid, f->type,
++				lsmblob_init(&blob, sid);
++				result = security_audit_rule_match(&blob,
++								   f->type,
+ 								   f->op,
+ 								   f->lsm_rules);
+ 			}
+@@ -687,15 +690,17 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 			if (f->lsm_isset) {
+ 				/* Find files that match */
+ 				if (name) {
++					lsmblob_init(&blob, name->osid);
+ 					result = security_audit_rule_match(
+-								name->osid,
++								&blob,
+ 								f->type,
+ 								f->op,
+ 								f->lsm_rules);
+ 				} else if (ctx) {
+ 					list_for_each_entry(n, &ctx->names_list, list) {
++						lsmblob_init(&blob, name->osid);
+ 						if (security_audit_rule_match(
+-								n->osid,
++								&blob,
+ 								f->type,
+ 								f->op,
+ 								f->lsm_rules)) {
+@@ -707,7 +712,8 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 				/* Find ipc objects that match */
+ 				if (!ctx || ctx->type != AUDIT_IPC)
+ 					break;
+-				if (security_audit_rule_match(ctx->ipc.osid,
++				lsmblob_init(&blob, ctx->ipc.osid);
++				if (security_audit_rule_match(&blob,
+ 							      f->type, f->op,
+ 							      f->lsm_rules))
+ 					++result;
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 38043074ce5e..d7fe1d5ee8c9 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -429,8 +429,8 @@ static inline void ima_filter_rule_free(void *lsmrule)
+ {
+ }
+ 
+-static inline int ima_filter_rule_match(u32 secid, u32 field, u32 op,
+-					void *lsmrule)
++static inline int ima_filter_rule_match(struct lsmblob *blob, u32 field,
++					u32 op, void *lsmrule)
+ {
+ 	return -EINVAL;
+ }
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index cd393aaa17d5..3e47cc9b7400 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -562,6 +562,7 @@ static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
+ 	for (i = 0; i < MAX_LSM_RULES; i++) {
+ 		int rc = 0;
+ 		u32 osid;
++		struct lsmblob lsmdata;
+ 
+ 		if (!ima_lsm_isset(rule->lsm[i].rules)) {
+ 			if (!rule->lsm[i].args_p)
+@@ -574,14 +575,16 @@ static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
+ 		case LSM_OBJ_ROLE:
+ 		case LSM_OBJ_TYPE:
+ 			security_inode_getsecid(inode, &osid);
+-			rc = ima_filter_rule_match(osid, rule->lsm[i].type,
++			lsmblob_init(&lsmdata, osid);
++			rc = ima_filter_rule_match(&lsmdata, rule->lsm[i].type,
+ 						   Audit_equal,
+ 						   rule->lsm[i].rules);
+ 			break;
+ 		case LSM_SUBJ_USER:
+ 		case LSM_SUBJ_ROLE:
+ 		case LSM_SUBJ_TYPE:
+-			rc = ima_filter_rule_match(secid, rule->lsm[i].type,
++			lsmblob_init(&lsmdata, secid);
++			rc = ima_filter_rule_match(&lsmdata, rule->lsm[i].type,
+ 						   Audit_equal,
+ 						   rule->lsm[i].rules);
+ 		default:
+diff --git a/security/security.c b/security/security.c
+index d01363cb0082..4ecbef074809 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2558,11 +2558,14 @@ void security_audit_rule_free(void **lsmrule)
+ 	hlist_for_each_entry(hp, &security_hook_heads.audit_rule_free, list) {
+ 		if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
+ 			continue;
++		if (lsmrule[hp->lsmid->slot] == NULL)
++			continue;
+ 		hp->hook.audit_rule_free(lsmrule[hp->lsmid->slot]);
+ 	}
+ }
+ 
+-int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule)
++int security_audit_rule_match(struct lsmblob *blob, u32 field, u32 op,
++			      void **lsmrule)
+ {
+ 	struct security_hook_list *hp;
+ 	int rc;
+@@ -2570,7 +2573,10 @@ int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule)
+ 	hlist_for_each_entry(hp, &security_hook_heads.audit_rule_match, list) {
+ 		if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
+ 			continue;
+-		rc = hp->hook.audit_rule_match(secid, field, op,
++		if (lsmrule[hp->lsmid->slot] == NULL)
++			continue;
++		rc = hp->hook.audit_rule_match(blob->secid[hp->lsmid->slot],
++					       field, op,
+ 					       &lsmrule[hp->lsmid->slot]);
+ 		if (rc)
+ 			return rc;
+-- 
+2.24.1
 
