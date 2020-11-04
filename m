@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2055F2A6C8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665242A6C8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731659AbgKDSQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:16:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S1732326AbgKDSRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKDSQc (ORCPT
+        with ESMTP id S1732239AbgKDSRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:16:32 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28317C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:16:32 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id a10so6224267edt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:16:32 -0800 (PST)
+        Wed, 4 Nov 2020 13:17:10 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7713EC061A4C
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:17:10 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id c5so12874809qtw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:17:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ScsUfMVtHVOkrxRg8IkMHR/vOs6RC0oZtG2XpQSfnDc=;
-        b=GG12ddCjF6k3EWW69O4N/rQPdaTqdUAMdjBKaSCmt7TP+4b7THsvZqvOUGHgoM55+X
-         U8BB+TLd3mad114TDBfNa1aPlh8EcEgrYUXbrEz8/elsflnkduaiL0E7MaVD6zTliAx5
-         OWrrcGjwstb1zHjhKoMJwf1T2lvvcgeWsJ4oNX+CupBWK1jOzEpP0/gXc28FYHvoJkra
-         Shrud1EJit4c8TOQMV1/+UcLOjfnHwcOtoHr/rAZxEC2obC5EkSGO7Bnr4j7b9FxPnWE
-         kR0gY36H9gGm4FKmwjorKLzL5M+WEeMoxU+K7lhguCDupSK7vg8egQxyUpU0GBVpnRl4
-         4XRQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0IlAXzxWFTQTUuhmHtEVnKs2xhR6KwI7WPZxiLpUe5M=;
+        b=nBv9S+jwc5JdfLlq4RL/YRGMRQsYfNmjawGrU9GxIfERfAzcpQgZP7hrv69Mesc6M+
+         quTXVEbUxyGRkpm9rbsP8azSm9DhVnbhxJgRfZltG0yrlTEb9tUc276PX/VzeI4+sRFb
+         4r/IU25uiRBU2ueg3BK2D1b5dzTlQrhsuR29PTFyGpgIBwSarkIUR8LSQBS70hi2P/nX
+         3m9r9pQVhoUF1DKe/otBAG1Rv7Kcrglv3VfUI2ehd7bNrMEt5ljYuJ0XfoYPWDc7w4EG
+         xr2aRwLmdjA9s+hlno1U0yOoQqyB/mpuAfQuUyKvK6M+DNWEL6fkUm6gwdGKM5MFyxPD
+         3ciQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ScsUfMVtHVOkrxRg8IkMHR/vOs6RC0oZtG2XpQSfnDc=;
-        b=O2kXg+xFoFo8Q4mp8/XLzDFUANcUs3xNercfB4snGdDvGgkV08kUtJKkeidaqUADub
-         jjD3CF25rdqGtCCXyT0jR/oydii+SOsliOzErsGUyaPuDMwDSIqgokKHrCag7blv69+r
-         NOf9xycFrjj+aaqzP4n0in1Nq5XZCWFfsdmY2DCYGxSbUqUIGKZ7QqSKB6t53a5K4Of7
-         XYvvWzxcNGzfEkQhyYrNOJHWy/bpSgmDHtrQtHZ5SEmlCoeE9jxrVMW0aKoFl3kt1UtJ
-         sFVjwm+TW2hn799nHpduW901amylkgJotp/XjzQ4Y4AIpUATAKRhsZ4vQi6fFbuV3Ki8
-         0nYQ==
-X-Gm-Message-State: AOAM5320CmDzIqpl3NcTibnjkcdtLrEqjuF730rXgt0AD/YcluiA+qba
-        RYdJQwaXYBWpPyqCWRbfRjxeVk2Uk0MJ/w==
-X-Google-Smtp-Source: ABdhPJxr8Z9P4OM6xMY8BXhqI+5M9rJf2u62htW8jxdcQQPuhJKFw4WGk2swstD7auAmEKLtA0sIPA==
-X-Received: by 2002:a05:6402:1158:: with SMTP id g24mr27158697edw.323.1604513790800;
-        Wed, 04 Nov 2020 10:16:30 -0800 (PST)
-Received: from localhost.localdomain ([85.153.228.172])
-        by smtp.gmail.com with ESMTPSA id u26sm1449448edt.39.2020.11.04.10.16.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0IlAXzxWFTQTUuhmHtEVnKs2xhR6KwI7WPZxiLpUe5M=;
+        b=dD/wCoPOxX8wnPkacRjndr4H92k5xJ4LywLemLOp5C+TME6tcwIPgfrocqcuDXUbaZ
+         1qgggu4YrtOzB2xUJMMDWJMjb6fSxSsF5VyapYDBy/eI+biiAuJ//u8pjqjPH3hVTuia
+         c4oMXBeyfFNN3nZBZ+h7BT50z5CtklPmExR1qHq1fARFTlduFDj41GT+bkP1r3IM/luG
+         /oErvASLFQkqgJXlILzKMQ6AmFFqyUlYt3b3tLuZlu41Jeq9twbvBebiCIqv1YMv1eJD
+         Uwkps7xy0sFKOHh54GLWOrf0levJdZbPbsi4OUwwhfCbSKM51uWqZlFSmXrZhnDEWjmR
+         hzjw==
+X-Gm-Message-State: AOAM531l4L4ZF4wtBewJA1Ia5a94GtGC2ydM4UsMwGmZVZ+DYtyDQT8y
+        fVDDYOhqUbSKNUXD1vdmFtYUOw==
+X-Google-Smtp-Source: ABdhPJzbeLbokY3xWw1ad4Wlq96Bw2Ur+AXtnppBcNVDAcKLM++yGsaQXPWFUe04HeoITS7ilZQ2EA==
+X-Received: by 2002:ac8:590c:: with SMTP id 12mr12840139qty.28.1604513829572;
+        Wed, 04 Nov 2020 10:17:09 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id a30sm701698qtn.55.2020.11.04.10.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 10:16:30 -0800 (PST)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
-Date:   Wed,  4 Nov 2020 21:15:23 +0300
-Message-Id: <20201104181522.43567-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 04 Nov 2020 10:17:08 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kaNLI-00GaUi-BN; Wed, 04 Nov 2020 14:17:08 -0400
+Date:   Wed, 4 Nov 2020 14:17:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        J??r??me Glisse <jglisse@redhat.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        KVM list <kvm@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v5 05/15] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201104181708.GU36674@ziepe.ca>
+References: <1f7cf690-35e2-c56f-6d3f-94400633edd2@nvidia.com>
+ <CAKMK7uFYDSqnNp_xpohzCEidw_iLufNSoX4v55sNZj-nwTckSg@mail.gmail.com>
+ <7f29a42a-c408-525d-90b7-ef3c12b5826c@nvidia.com>
+ <CAKMK7uEw701AWXNJbRNM8Z+FkyUB5FbWegmSzyWPy9cG4W7OLA@mail.gmail.com>
+ <20201104140023.GQ36674@ziepe.ca>
+ <CAKMK7uH69hsFjYUkjg1aTh5f=q_3eswMSS5feFs6+ovz586+0A@mail.gmail.com>
+ <20201104162125.GA13007@infradead.org>
+ <CAKMK7uH=0+3FSR4LxP7bJUB4BsCcnCzfK2=D+2Am9QNmfZEmfw@mail.gmail.com>
+ <20201104163758.GA17425@infradead.org>
+ <20201104164119.GA18218@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104164119.GA18218@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When DMA_RALINK is enabled and DMADEVICES is disabled, it results in the
-following Kbuild warnings:
+On Wed, Nov 04, 2020 at 04:41:19PM +0000, Christoph Hellwig wrote:
+> On Wed, Nov 04, 2020 at 04:37:58PM +0000, Christoph Hellwig wrote:
+> > On Wed, Nov 04, 2020 at 05:26:58PM +0100, Daniel Vetter wrote:
+> > > What we're discussing is whether gup_fast and pup_fast also obey this,
+> > > or fall over and can give you the struct page that's backing the
+> > > dma_mmap_* memory. Since the _fast variant doesn't check for
+> > > vma->vm_flags, and afaict that's the only thing which closes this gap.
+> > > And like you restate, that would be a bit a problem. So where's that
+> > > check which Jason&me aren't spotting?
+> > 
+> > remap_pte_range uses pte_mkspecial to set up the PTEs, and gup_pte_range
+> > errors out on pte_special.  Of course this only works for the
+> > CONFIG_ARCH_HAS_PTE_SPECIAL case, for other architectures we do have
+> > a real problem.
+> 
+> Except that we don't really support pte-level gup-fast without
+> CONFIG_ARCH_HAS_PTE_SPECIAL, and in fact all architectures selecting
+> HAVE_FAST_GUP also select ARCH_HAS_PTE_SPECIAL, so we should be fine.
 
-WARNING: unmet direct dependencies detected for DMA_ENGINE
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
+Mm, I thought it was probably the special flag..
 
-WARNING: unmet direct dependencies detected for DMA_VIRTUAL_CHANNELS
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
+Knowing that CONFIG_HAVE_FAST_GUP can't be set without
+CONFIG_ARCH_HAS_PTE_SPECIAL is pretty insightful, can we put that in
+the Kconfig?
 
-The reason is that DMA_RALINK selects DMA_ENGINE and DMA_VIRTUAL_CHANNELS
-without depending on or selecting DMADEVICES while DMA_ENGINE and
-DMA_VIRTUAL_CHANNELS are subordinate to DMADEVICES. This can also fail
-building the kernel as demonstrated in a bug report.
+config HAVE_FAST_GUP
+        depends on MMU
+        depends on ARCH_HAS_PTE_SPECIAL
+        bool
 
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
+?
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210055
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/staging/ralink-gdma/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/staging/ralink-gdma/Kconfig b/drivers/staging/ralink-gdma/Kconfig
-index 54e8029e6b1a..0017376234e2 100644
---- a/drivers/staging/ralink-gdma/Kconfig
-+++ b/drivers/staging/ralink-gdma/Kconfig
-@@ -2,6 +2,7 @@
- config DMA_RALINK
- 	tristate "RALINK DMA support"
- 	depends on RALINK && !SOC_RT288X
-+	depends on DMADEVICES
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
- 
--- 
-2.25.1
-
+Jason
