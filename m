@@ -2,112 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931DB2A6AC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852A82A6AE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731561AbgKDQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731365AbgKDQwo (ORCPT
+        id S1731940AbgKDQxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:53:17 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:54827 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731697AbgKDQxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:52:44 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EEEC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:52:43 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id u62so22887534iod.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:52:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ete0w7OwwAo9K9sCTazD4Lhb1CP7WOqpnU3tycCjBtY=;
-        b=eNDtigO6Xsb6qmSJfAC688RmSmLZlxjb7sMlqr3xO3lpzjb/tCAecKcVAI9Vjcc7Fc
-         4H0lfvD6PDy1PbOdLDhI/RaCfzZjnH2uBTbtzV562y+E8lyegIqp+rqH0qROk67iRqg/
-         biO6D5mBiZ6yUFzqufIKugZGgpFSN3IO9eDj5vb7K/o5d2r88+t/pUAVqEK/KeXXVdci
-         5yzDNEICSDouMf7fdElttnJPYdQEDRLoe8MjP+4o5prZH7G3rEt3T2skDRFC9z0MvW4d
-         w1anbrz0LKmLNjMUp1sIFoNtVIK6p2KaZbZ7umpXYA/mcUFngcwILoG4wui6ZweYX8aW
-         HBUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ete0w7OwwAo9K9sCTazD4Lhb1CP7WOqpnU3tycCjBtY=;
-        b=GKwyLKb/czzA7+IBgzXV0t45+uNwvBIz37Ss0rHkme9d+AcjWEJRT5LexEpXN27WA4
-         yhMFArJ/VuabGwoqz3ehBTTTPe+CKCFKVGtm6HxsYQC/bI/h8STVU39N4XN3VVTJWwht
-         O3fZWJjkBOQdoq9+S4vEDnRehyXpJ1aVGC8l2o8xRKdQYrfC+kr3aGah/2GWBC/QVbRP
-         rsJyeigzY2zFqn0iuGNs5ZQdhtcyVrjSoMKIL4hyTjKKDml+bY9qgEHStw9QQmQwyFGA
-         DUKDEEpTdQGU7+Qx6fSpfIrv+pSADJraidIZacBvPeRG2l/oVdSm2KVaIbO/3Z0pjcur
-         Ao0A==
-X-Gm-Message-State: AOAM531q4qEy5AWvvU0z0io3Jku3VTTKYDw9rhU4zib+MXIK6RBR0DA3
-        8zfFqruT6WACwK1FGfEvRvA=
-X-Google-Smtp-Source: ABdhPJxwr/sJB8QTM0k36oDjJV4HlXHTxM7jEXkIYgw70AvfMmx5iHFRZQDihuCdEXUkfTCr6fmuwg==
-X-Received: by 2002:a5d:894d:: with SMTP id b13mr1794120iot.52.1604508762603;
-        Wed, 04 Nov 2020 08:52:42 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id n4sm1416097iox.6.2020.11.04.08.52.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:52:42 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ARM: imx: mach-imx6q: correctly identify i.MX6QP SoCs
-Date:   Wed,  4 Nov 2020 11:52:39 -0500
-Message-Id: <20201104165239.4738-1-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 4 Nov 2020 11:53:14 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id F2B1458017C;
+        Wed,  4 Nov 2020 11:53:11 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 04 Nov 2020 11:53:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=WGtBZotx2zMMoQxK+qbO6rThrSe
+        UPqBq/GTH8RWASsU=; b=OIApHCdFlhK39henbLMfOB/6tYQOiuWZFMBfXo31QwY
+        82mGkt1bjfe3POJNEepzIvMNk7Tn+ECBHFjuk9zLe5RmPCFjswQPKwKgrFQr2vTM
+        56gnxq3+ZV+virOTZWqy5n8xiNG4VXoHgWLk+dmdtoMgW+enlwo47N8R06SOHm5O
+        X1Z8mFNFomUMpfEZ51/zrh2OO6Luq6WS4OPMxo1oNm/UjAnYRpBK1xEhuAnmvL7h
+        0vb4HvAZ7ObyU73KedRAHnz/FDD43DCydTp1YfPRvx5UM5N+LYKdE8OmKfbOxiwf
+        J5YfSVhtL8hI1Ep1TnegyPRI0HpFI3AqsYPHvHB4/FA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WGtBZo
+        tx2zMMoQxK+qbO6rThrSeUPqBq/GTH8RWASsU=; b=fT4yyXdrCzcaXQptYyvthQ
+        PGGhbZyv9wAob5GpmvCFlmp7/CUpxx0G1JpCRO2QcQIvCBNaulZjsDLN6KQyAqk1
+        1Uf/uoIFSafRBBk24ja5XFD07m26ESvpwYcY4SCk4uOMJ+fuOI7ddPOG7Q+bYfvL
+        VDWoBMkyR5xRVu3ahM4FgHpaJ6S44tog3PrDRE1YsNWOsywe0f5i5d6OVU9TqVfU
+        lNgOJgsfhPfiN5ZctYnu4eRgmac0V1gdtxEVdtVYBKqPIr6iPuP+VBuqkHgB5+RJ
+        ap2YmvKFx1U7iXWEiWMMFxLtRhHy71nWCccSjvfrkvhoB3QwHSvRqdkszgC5/QoQ
+        ==
+X-ME-Sender: <xms:ddyiX_kVZzypW8ie_ay14__Tf_Lu9sv8YLSSfcH2GImvWdNYUJ0ouw>
+    <xme:ddyiXy0tJM1Ox96p3rY1Eh_qtbE7qIFUYYqvgZWP_EKy0Ui43cBRRan_GCfhGb3wE
+    lXU6BoGZmMQh_Z2wEc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
+    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
+    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:ddyiX1oC2nva4xv5RDiRXZ-OpHwTCB4ALz83mBzk3YHNvEeDQqbDKA>
+    <xmx:ddyiX3lIyxVSk7CtaIb1MkDgCaW-FcswGzPte2jIWxe85BeAxgvFvQ>
+    <xmx:ddyiX91VeuTQTaW7kK32181gtWdpJkw-6U_b8L6eQ_rsrhsvEDFnyg>
+    <xmx:d9yiX0utDmXtYOUDUh5Z6R1BCBAMVxKvghUZBEpOer5KJ5sOn6__Uw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A5338306467D;
+        Wed,  4 Nov 2020 11:53:09 -0500 (EST)
+Date:   Wed, 4 Nov 2020 17:53:08 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 07/14] dt-bindings: media: i2c: Add A31 MIPI CSI-2
+ bindings documentation
+Message-ID: <20201104165308.rcdxvzyj3kbiyfan@gilmour.lan>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-8-paul.kocialkowski@bootlin.com>
+ <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
+ <20201027095221.GE168350@aptenodytes>
+ <20201027184459.eberpkr52kay3du6@gilmour.lan>
+ <20201104104827.GD285779@aptenodytes>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xacrwb5dafcleu43"
+Content-Disposition: inline
+In-Reply-To: <20201104104827.GD285779@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX6QP rev 1.1 SoC on my board is mis-identified by Linux:
-the log (incorrectly) shows "i.MX6Q rev 2.1".
 
-Correct this by assuming that every SoC that identifies as
-i.MX6Q with rev >= 2.0 is really an i.MX6QP.
+--xacrwb5dafcleu43
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
----
+On Wed, Nov 04, 2020 at 11:48:27AM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Tue 27 Oct 20, 19:44, Maxime Ripard wrote:
+> > On Tue, Oct 27, 2020 at 10:52:21AM +0100, Paul Kocialkowski wrote:
+> > > Hi,
+> > >=20
+> > > On Mon 26 Oct 20, 17:14, Maxime Ripard wrote:
+> > > > i2c? :)
+> > >=20
+> > > Oops, good catch!
+> > > =20
+> > > > On Fri, Oct 23, 2020 at 07:45:39PM +0200, Paul Kocialkowski wrote:
+> > > > > This introduces YAML bindings documentation for the A31 MIPI CSI-2
+> > > > > controller.
+> > > > >=20
+> > > > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > > ---
+> > > > >  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 ++++++++++++=
+++++++
+> > > > >  1 file changed, 168 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/media/allwi=
+nner,sun6i-a31-mipi-csi2.yaml
+> > > > >=20
+> > > > > diff --git a/Documentation/devicetree/bindings/media/allwinner,su=
+n6i-a31-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,=
+sun6i-a31-mipi-csi2.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..9adc0bc27033
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31=
+-mipi-csi2.yaml
+> > > > > @@ -0,0 +1,168 @@
+> > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-mip=
+i-csi2.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Allwinner A31 MIPI CSI-2 Device Tree Bindings
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    oneOf:
+> > > > > +      - const: allwinner,sun6i-a31-mipi-csi2
+> > > > > +      - items:
+> > > > > +          - const: allwinner,sun8i-v3s-mipi-csi2
+> > > > > +          - const: allwinner,sun6i-a31-mipi-csi2
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  interrupts:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    items:
+> > > > > +      - description: Bus Clock
+> > > > > +      - description: Module Clock
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    items:
+> > > > > +      - const: bus
+> > > > > +      - const: mod
+> > > > > +
+> > > > > +  phys:
+> > > > > +    items:
+> > > > > +      - description: MIPI D-PHY
+> > > > > +
+> > > > > +  phy-names:
+> > > > > +    items:
+> > > > > +      - const: dphy
+> > > > > +
+> > > > > +  resets:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  # See ./video-interfaces.txt for details
+> > > > > +  ports:
+> > > > > +    type: object
+> > > > > +
+> > > > > +    properties:
+> > > > > +      port@0:
+> > > > > +        type: object
+> > > > > +        description: Input port, connect to a MIPI CSI-2 sensor
+> > > > > +
+> > > > > +        properties:
+> > > > > +          reg:
+> > > > > +            const: 0
+> > > > > +
+> > > > > +          endpoint:
+> > > > > +            type: object
+> > > > > +
+> > > > > +            properties:
+> > > > > +              remote-endpoint: true
+> > > > > +
+> > > > > +              bus-type:
+> > > > > +                const: 4
+> > > > > +
+> > > > > +              clock-lanes:
+> > > > > +                maxItems: 1
+> > > > > +
+> > > > > +              data-lanes:
+> > > > > +                minItems: 1
+> > > > > +                maxItems: 4
+> > > > > +
+> > > > > +            required:
+> > > > > +              - bus-type
+> > > > > +              - data-lanes
+> > > > > +              - remote-endpoint
+> > > > > +
+> > > > > +            additionalProperties: false
+> > > > > +
+> > > > > +        required:
+> > > > > +          - endpoint
+> > > > > +
+> > > > > +        additionalProperties: false
+> > > > > +
+> > > > > +      port@1:
+> > > > > +        type: object
+> > > > > +        description: Output port, connect to a CSI controller
+> > > > > +
+> > > > > +        properties:
+> > > > > +          reg:
+> > > > > +            const: 1
+> > > > > +
+> > > > > +          endpoint:
+> > > > > +            type: object
+> > > > > +
+> > > > > +            properties:
+> > > > > +              remote-endpoint: true
+> > > > > +
+> > > > > +              bus-type:
+> > > > > +                const: 4
+> > > >=20
+> > > > That one seems a bit weird. If the input and output ports are using=
+ the
+> > > > same format, what is that "bridge" supposed to be doing?
+> > >=20
+> > > Fair enough. What this represents is the internal link (likely a FIFO=
+) between
+> > > the two controllers. It is definitely not a MIPI CSI-2 bus but there'=
+s no
+> > > mbus type for an internal link (probably because it's not a bus after=
+ all).
+> > >=20
+> > > Note that on the CSI controller side, we need the bus-type to be set =
+to 4 for it
+> > > to properly select the MIPI CSI-2 input. So it just felt more logical=
+ to have
+> > > the same on the other side of the endpoint. On the other hand, we can=
+ just
+> > > remove it on the MIPI CSI-2 controller side since it won't check it a=
+nd have it
+> > > fallback to the unknown mbus type.
+> > >=20
+> > > But that would make the types inconsistent on the two sides of the li=
+nk.
+> > > I don't think V4L2 will complain about it at the moment, but it would=
+ also make
+> > > sense that it does eventually.
+> > >=20
+> > > What do you think?
+> >=20
+> > There's still the same issue though, it doesn't make any sense that a
+> > bridge doesn't change the bus type. If it really did, we wouldn't need
+> > that in the first place.
+>=20
+> Yes I agreee.
+>=20
+> > What you want to check in your driver is whether the subdev you're
+> > connected to has a sink pad that uses MIPI-CSI
+>=20
+> I'm not really sure that's possible, but if it is it would indeed be the =
+most
+> appropriate solution. If it's not, we still need to know that we need to =
+feed
+> from MIPI CSI-2 so I don't see any other option than report MIPI CSI-2 on=
+ both
+> ends of MIPI CSI-2 controller.
+>=20
+> But there's still the question of what media bus type should be reported =
+for
+> the CSI <-> MIPI CSI-2 link. I'm fine with unknown but we could also add a
+> generic internal bus type for this case.
 
-Tree: v5.10-rc2
+I guess both questions would need to be discussed more on the v4l2 side.
 
-To: Shawn Guo <shawnguo@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: Anson Huang <Anson.Huang@nxp.com>
-Cc: Peng Fan <peng.fan@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+Maxime
 
- arch/arm/mach-imx/mach-imx6q.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+--xacrwb5dafcleu43
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
-index 85c084a716ab..703998ebb52e 100644
---- a/arch/arm/mach-imx/mach-imx6q.c
-+++ b/arch/arm/mach-imx/mach-imx6q.c
-@@ -245,8 +245,13 @@ static void __init imx6q_axi_init(void)
- 
- static void __init imx6q_init_machine(void)
- {
--	if (cpu_is_imx6q() && imx_get_soc_revision() == IMX_CHIP_REVISION_2_0)
--		imx_print_silicon_rev("i.MX6QP", IMX_CHIP_REVISION_1_0);
-+	if (cpu_is_imx6q() && imx_get_soc_revision() >= IMX_CHIP_REVISION_2_0)
-+		/*
-+		 * SoCs that identify as i.MX6Q >= rev 2.0 are really i.MX6QP.
-+		 * Quirk: i.MX6QP revision = i.MX6Q revision - (1, 0),
-+		 * e.g. i.MX6QP rev 1.1 identifies as i.MX6Q rev 2.1.
-+		 */
-+		imx_print_silicon_rev("i.MX6QP", imx_get_soc_revision() - 0x10);
- 	else
- 		imx_print_silicon_rev(cpu_is_imx6dl() ? "i.MX6DL" : "i.MX6Q",
- 				imx_get_soc_revision());
--- 
-2.17.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6LcdAAKCRDj7w1vZxhR
+xc3DAPsEOVFi4YsULyJxUGOG/CUJe58SiZEoSLOt7kVYjgc4hAD/TFRmJ5F8zSIM
+RMVcnb7MsVl3UWOZyZMRL0DxZRfk7wo=
+=IT0H
+-----END PGP SIGNATURE-----
+
+--xacrwb5dafcleu43--
