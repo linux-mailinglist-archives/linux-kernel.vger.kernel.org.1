@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE162A5BCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703B42A5BDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730497AbgKDBUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:20:11 -0500
-Received: from mga07.intel.com ([134.134.136.100]:35041 "EHLO mga07.intel.com"
+        id S1730078AbgKDB0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:26:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729246AbgKDBUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:20:11 -0500
-IronPort-SDR: cyMiIHyyTdQH4G5DF9L1HaJjxx/NOyccr7EcQQdilFN8p9NeppqhvzN+SR85naq+gtCXypFD2j
- ykjMB3KaREXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233315191"
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="233315191"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 17:20:10 -0800
-IronPort-SDR: 4pY2+a1DIwkXToZ9q2M6653+q/Wz3pGfS2jTa8wHOA1K1563ntTuBtzjeNksNQax5UIErewMw8
- 4rB+PLuCbtqw==
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="471016005"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 17:20:06 -0800
-Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
- -22.7% regression
-To:     Michal Hocko <mhocko@suse.com>, Rong Chen <rong.a.chen@intel.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@intel.com
-References: <20201102091543.GM31092@shao2-debian>
- <20201102092754.GD22613@dhcp22.suse.cz>
- <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
- <20201102100247.GF22613@dhcp22.suse.cz>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
-Date:   Wed, 4 Nov 2020 09:20:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1725769AbgKDB0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:26:48 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BE2720870;
+        Wed,  4 Nov 2020 01:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604453207;
+        bh=zRz7lN2mWm7XjA4D67Aa4p2jJ4PcqfE06/L1N+87SUQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ECJMSBJpta1OwFaiD5gYUv+edD2IUQluloF4EvbJAlQnePAcbITLz98yJAuspKrSV
+         cA6Q7SX/E6YIuwctK/pBlbzJMHl2I1A5zy4juSjDcugbO2g8nD0voUN8QeU+n3T3vg
+         c7LluP+QHPlY2gmc/QAlXaF2m1AlZetu8E9CUh6s=
+Date:   Tue, 3 Nov 2020 17:26:46 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 0/2] net: allow virtual netdevs to forward
+ UDP L4 and fraglist GSO skbs
+Message-ID: <20201103172646.30dc9502@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <NysZRGMkuWq0KPTCJ1Dz2FTjRkeJXDH3edVrsEeJkQI@cp4-web-036.plabs.ch>
+References: <NysZRGMkuWq0KPTCJ1Dz2FTjRkeJXDH3edVrsEeJkQI@cp4-web-036.plabs.ch>
 MIME-Version: 1.0
-In-Reply-To: <20201102100247.GF22613@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/2/2020 6:02 PM, Michal Hocko wrote:
-> On Mon 02-11-20 17:53:14, Rong Chen wrote:
->>
->>
->> On 11/2/20 5:27 PM, Michal Hocko wrote:
->>> On Mon 02-11-20 17:15:43, kernel test robot wrote:
->>>> Greeting,
->>>>
->>>> FYI, we noticed a -22.7% regression of will-it-scale.per_process_ops due to commit:
->>>>
->>>>
->>>> commit: bd0b230fe14554bfffbae54e19038716f96f5a41 ("mm/memcg: unify swap and memsw page counters")
->>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>> I really fail to see how this can be anything else than a data structure
->>> layout change. There is one counter less.
->>>
->>> btw. are cgroups configured at all? What would be the configuration?
->>
->> Hi Michal,
->>
->> We used the default configure of cgroups, not sure what configuration you
->> want,
->> could you give me more details? and here is the cgroup info of will-it-scale
->> process:
->>
->> $ cat /proc/3042/cgroup
->> 12:hugetlb:/
->> 11:memory:/system.slice/lkp-bootstrap.service
+On Sun, 01 Nov 2020 13:16:32 +0000 Alexander Lobakin wrote:
+> NETIF_F_GSO_UDP_L4 and NETIF_F_GSO_FRAGLIST allow drivers to offload
+> GSO UDP L4. This works well on simple setups, but when any logical
+> netdev (e.g. VLAN) is present, kernel stack always performs software
+> resegmentation which actually kills the performance.
 > 
-> OK, this means that memory controler is enabled and in use. Btw. do you
-> get the original performance if you add one phony page_counter after the
-> union?
+> The full path in such cases is like:
+> 1. Our NIC driver advertises a support for fraglists, GSO UDP L4, GSO
+>    fraglists.
+> 2. User enables fraglisted GRO via Ethtool.
+> 3. GRO subsystem receives UDP frames from driver and merges the packets
+>    into fraglisted GSO skb(s).
+> 4. Networking stack queues it up for xmitting.
+> 5. Virtual device like VLAN doesn't advertise a support for GSO UDP L4
+>    and GSO fraglists, so skb_gso_check() doesn't allow to pass this skb
+>    as is to the real driver.
+> 6. Kernel then has to form a bunch of regular UDP skbs from that one and
+>    pass it to the driver instead. This fallback is *extremely* slow for
+>    any GSO types, but especially for GSO fraglists.
+> 7. All further processing performs with a series of plain UDP skbs, and
+>    the driver gets it one-by-one, despite that it supports UDP L4 and
+>    fraglisted GSO.
 > 
-I add one phony page_counter after the union and re-test, the regression 
-reduced to -1.2%. It looks like the regression caused by the data 
-structure layout change.
+> That's not OK because:
+> a) logical/virtual netdevs like VLANs, bridges etc. should pass GSO skbs
+>    as is;
+> b) even if the final driver doesn't support such type of GSO, this
+>    software resegmenting should be performed right before it, not in the
+>    middle of processing -- I think I even saw that note somewhere in
+>    kernel documentation, and it's totally reasonable in terms of
+>    performance.
+> 
+> Despite the fact that no mainline drivers currently supports fraglist
+> GSO, this should and can be easily fixed by adding UDP L4 and fraglist
+> GSO to the list of GSO types that can be passed-through the logical
+> interfaces (NETIF_F_GSO_SOFTWARE). After this change, no resegmentation
+> occurs (if a particular driver supports and advertises this), and the
+> performance goes on par with e.g. 1:1 forwarding.
+> The only logical netdevs that seem to be unaffected to this are bridge
+> interfaces, as their code uses full NETIF_F_GSO_MASK.
+> 
+> Tested on MIPS32 R2 router board with a WIP NIC driver in VLAN NAT:
+> 20 Mbps baseline, 1 Gbps / link speed with this patch.
+> 
+> Since v1 [1]:
+>  - handle bonding and team drivers as suggested by Willem de Bruijn;
+>  - reword and expand the introduction with the particular example. 
+> 
+> [1] https://lore.kernel.org/netdev/Mx3BWGop6fGORN6Cpo4mHIHz2b1bb0eLxeMG8vsijnk@cp3-web-020.plabs.ch
 
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode/debug-setup:
- 
-lkp-hsw-4ex1/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/50%/process/page_fault2/performance/0x16/test1
 
-commit:
-   8d387a5f172f26ff8c76096d5876b881dec6b7ce
-   bd0b230fe14554bfffbae54e19038716f96f5a41
-   b3233916ab0a883e1117397e28b723bd0e4ac1eb (debug patch add one phony 
-page_counter after the union)
-
-8d387a5f172f26ff bd0b230fe14554bfffbae54e190 b3233916ab0a883e1117397e28b
----------------- --------------------------- ---------------------------
-          %stddev     %change         %stddev     %change         %stddev
-              \          |                \          |                \
-     187632           -22.8%     144931            -1.2%     185391 
-    will-it-scale.per_process_ops
-   13509525           -22.8%   10435073            -1.2%   13348181 
-    will-it-scale.workload
-
-
-
--- 
-Zhengjun Xing
+Applied, thanks!
