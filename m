@@ -2,239 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A897A2A6389
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 150EF2A638F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729520AbgKDLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:44:31 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3430 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgKDLnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:43:21 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa293da0002>; Wed, 04 Nov 2020 03:43:22 -0800
-Received: from [10.40.203.207] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
- 2020 11:43:11 +0000
-Subject: Re: [PATCH V3 2/2] PCI: dwc: Add support to configure for ECRC
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20201103210753.GA264744@bjorn-Precision-5520>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <eea9b090-b938-b5eb-e8da-0bf9d15238a3@nvidia.com>
-Date:   Wed, 4 Nov 2020 17:13:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1729493AbgKDLsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:48:04 -0500
+Received: from mga07.intel.com ([134.134.136.100]:16204 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgKDLqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:46:42 -0500
+IronPort-SDR: 5fG76cl0jgyzmP1HqGfK3+GtAxHz/K5oFQ/geJH1RG8R/cr8M5tbcch+evbRlHkwayYKa8pOcz
+ Nz0bFjF1mIZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233366377"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="233366377"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:46:41 -0800
+IronPort-SDR: 68kskoXqxwYBFqWbszWyaEQkCGG5qeIkJGC5hc6NY2wJMZcLz88Qhstzoozgc0QQfFt7j092xm
+ MWHOjYSRFquA==
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="471197594"
+Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.249.147.98]) ([10.249.147.98])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:46:39 -0800
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, cezary.rojewski@intel.com,
+        Mark Brown <broonie@kernel.org>
+References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
+ <20201103153541.GC3267686@kroah.com>
+From:   "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
+Message-ID: <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+Date:   Wed, 4 Nov 2020 12:46:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201103210753.GA264744@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201103153541.GC3267686@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604490202; bh=66l6IaSt2EQzvuhWgskE//8Zl/d1V1j9JoZAPdzM7TU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=HRmI0ItTSKnsR5hHPxknTCgnKaukni5GqHJcrO1JtXoWTZrzZsMUG4RVJ6nTRGmIm
-         ygzC2e6EKgvM5ZsWeWOSZk+I0qbG0ApXsShQ1ZfQbvJ5wnFXs9CgXT9wV8gbjb7U4b
-         Su2sSs7yWemwlgox4hdmU6CzGHyCnbkvSVFbGvozg6QWQ12c/3M1dsVtIxfl4JtoiL
-         4d6ybzyqkbKj54kX7I+u2wXQjI6cFS1pKubdhk+rwrszHkahvveltT2OmsJELPWO6G
-         ktcOD/cl/u0DOvSVKS2U483+He5IfbV400K1tAZmkqEGy6oRowxvhyHranMbBb9luJ
-         gQEtGOj7Ls+OQ==
+Content-Language: pl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 11/4/2020 2:37 AM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Tue, Nov 03, 2020 at 08:57:01AM +0530, Vidya Sagar wrote:
->> On 11/3/2020 4:32 AM, Bjorn Helgaas wrote:
->>> On Thu, Oct 29, 2020 at 11:09:59AM +0530, Vidya Sagar wrote:
->>>> DesignWare core has a TLP digest (TD) override bit in one of the control
->>>> registers of ATU. This bit also needs to be programmed for proper ECRC
->>>> functionality. This is currently identified as an issue with DesignWare
->>>> IP version 4.90a. This patch does the required programming in ATU upon
->>>> querying the system policy for ECRC.
->>>
->>> I guess this is a hardware defect, right?
->> Yes. This is common across all DWC implementations (version 4.90 precisely)
+>> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
 >>
->>> How much of a problem would it be if we instead added a "no_ecrc"
->>> quirk for this hardware so we never enabled ECRC?
->> Well, on Tegra for some of the high fidelity use cases, ECRC is required to
->> be turned on and if it can be done safely with these patches, why shouldn't
->> we not enable ECRC at all?
+>> Add alternative topology binary file name based on used machine driver
+>> and fallback to use this name after failed attempt to load topology file
+>> with name based on NHLT.
+>> This change addresses multiple issues with current mechanism, for
+>> example - there are devices without NHLT table, and that currently
+>> results in tplg_name being empty.
 >>
->>> IIUC, the current Linux support of ECRC is a single choice at
->>> boot-time: by default ECRC is not enabled, but if you boot with
->>> "pci=ecrc=on", we turn on ECRC for every device.
->>>
->>> That seems like the minimal support, but I think the spec allows ECRC
->>> to be enabled selectively, on individual devices.  I can imagine a
->>> sysfs knob that would allow us to enable/disable ECRC per-device at
->>> run-time.
->>>
->>> If we had such a sysfs knob, it would be pretty ugly and maybe
->>> impractical to work around this hardware issue.  So I'm a little bit
->>> hesitant to add functionality that might have to be removed in the
->>> future.
+>> Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+>> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Link: https://lore.kernel.org/r/20200427132727.24942-2-mateusz.gorski@linux.intel.com
+>> Signed-off-by: Mark Brown <broonie@kernel.org>
+>> ---
 >>
->> Agree with this. But since it is a boot-time choice at this point, I think
->> we can still go ahead with this approach to have a working ECRC mechanism
->> right? I don't see any sysfs knob for AER controlling at this point.
-> 
-> I don't want to do anything that will prevent us from adding
-> per-device ECRC control in the future.
-> 
-> My concern is that if we add a run-time sysfs knob in the future, the
-> user experience on this hardware will be poor because there's no
-> convenient path to twiddle the PCIE_ATU_TD bit when the generic code
-> changes the AER Control bit.
-Agree.
-Can we add it to the documentation that run time changing of ECRC 
-settings are not supported on this (i.e. Tegra194) platform (or for that 
-matter on any SoC with PCIe based on DesignWare core version 4.90A). By 
-'not supported', I meant that the ECRC digest part may not work but the 
-normal functionality will continue to work without reporting any AER 
-errors. I tried to emulate the following scenarios on Tegra194 silicon 
-and here are my observations.
-FWIW, I'm referring to the PCIe spec Rev 5.0 Ver 1.0 (22 May 2019)
+>> This functionality is merged on upstream kernel and widely used. Merging
+>> it to LTS kernel would improve the user experience and resolve some of the
+>> problems regarding topology naming that the users are facing.
+> What problems are people facing, and what kernel(s) are you asking for
+> this to be ported to, and why can't people just use 5.8 or newer if they
+> have this new hardware?
+>
+> thanks,
+>
+> greg k-h
 
-> 
-> What is the failure mode in these scenarios:
-> 
->    - User boots with defaults, ECRC is disabled.
->    - User enables ECRC via sysfs.
->    - What happens here?  ECRC is enabled via AER Control but not via
->      DWC TD bit.  I assume ECRC doesn't work.  Does it cause PCIe
->      errors (malformed TLP, etc)?
-Since DWC TD bit is not programmed, for all the transactions that go 
-through ATU, TLP Digest won't get generated (although AER registers 
-indicate that ECRC should get generated).
-As per the spec section "2.7.1 ECRC Rules"
+I forgot to add - I wanted this change to be merged to stable 5.4 
+kernel. Please let me know if I should resend this patch with this 
+information included.
 
----
-If a device Function is enabled to generate ECRC, it must calculate and 
-apply ECRC for all TLPs originated by the Function
----
+As for the user issues - topology binary file name is currently created 
+according to information from NHLT. The problem is, that some laptops 
+(for example Dell XPS 13) do not have NHLT at all. This results in 
+topology binary name being empty (" ").
+This patch adds alternative name based on loaded machine driver.
 
-So the RP would be violating the PCIe spec, but it doesn't result in any 
-error because the same section has the following rule as well
+It applies not only to new hardware, please note that the mentioned Dell 
+XPS 13 is based on Kabylake. This issue existed on upstream from the 
+beginning of Skylake driver and was only recently addressed.
 
----
-If a device Function is enabled to check ECRC, it must do so for all 
-TLPs with ECRC where the device is the ultimate PCI Express Receiver
-	Note that it is still possible for the Function to receive TLPs without 
-ECRC, and these are processed normally - this is not an error
----
-
-so, even if the EP has ECRC check enabled, because of the above rule, it 
-just processes those packets without ECRC as normal packets.
-Basically, whoever is enabling ECRC run time gets cheated as 
-transactions routed through ATU don't really have ECRC digest
-
-> 
-> Or this one:
-> 
->    - User boots with "pci=ecrc=on", ECRC is enabled.
->    - ECRC works fine.
->    - User disables ECRC via sysfs.
->    - What happens here?  ECRC is disabled via AER Control, but DWC TD
->      bit thinks it's still enabled.
-In this case, the EP doesn't have ECRC check enabled but receives TLPs 
-with ECRC digest. This again won't result in any error because of the 
-section "2.2.3 TLP Digest Rules" which says
-
----
-If an intermediate or ultimate PCI Express Receiver of the TLP does not 
-support ECRC checking, the Receiver must ignore the TLP Digest
----
-
-So the EP just ignores the TLP Digest and process the TLP normally.
-Although functionality wise there is no issue here, there could be some 
-impact on the perf because of the extra DWord data. This is again 
-debatable as the perf/data path is typically from EP's DMA engine to 
-host system memory and not config/BAR accesses.
-> 
-> If you enabled ECRC unconditionally on DWC and the sysfs knob had no
-> effect, I'd be OK with that.  I'm more worried about what happens when
-> the AER bit and the DWC TD bit are set so they don't match.  What is
-> the failure mode there?
-Based on the above experiments, we can as well keep the DWC TD bit 
-programmed unconditionally and it won't lead to any errors. As mentioned 
-before, the only downside of it is the extra DWord in each ATU routed 
-TLP which may load the bus (in downstream direction) with no real 
-benefit as such.
-
-Please let me know where can we go from here.
-I can push a different patch to keep DWC TD bit always programmed if 
-that is the best approach to take at this point.
-> 
->>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->>>> Reviewed-by: Jingoo Han <jingoohan1@gmail.com>
->>>> ---
->>>> V3:
->>>> * Added 'Reviewed-by: Jingoo Han <jingoohan1@gmail.com>'
->>>>
->>>> V2:
->>>> * Addressed Jingoo's review comment
->>>> * Removed saving 'td' bit information in 'dw_pcie' structure
->>>>
->>>>    drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
->>>>    drivers/pci/controller/dwc/pcie-designware.h | 1 +
->>>>    2 files changed, 7 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->>>> index b5e438b70cd5..cbd651b219d2 100644
->>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
->>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->>>> @@ -246,6 +246,8 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>>>         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->>>>                                  upper_32_bits(pci_addr));
->>>>         val = type | PCIE_ATU_FUNC_NUM(func_no);
->>>> +     if (pci->version == 0x490A)
->>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->>>>         val = upper_32_bits(size - 1) ?
->>>>                 val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->>>>         dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->>>> @@ -294,8 +296,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->>>>                            lower_32_bits(pci_addr));
->>>>         dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->>>>                            upper_32_bits(pci_addr));
->>>> -     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
->>>> -                        PCIE_ATU_FUNC_NUM(func_no));
->>>> +     val = type | PCIE_ATU_FUNC_NUM(func_no);
->>>> +     if (pci->version == 0x490A)
->>>> +             val = val | pcie_is_ecrc_enabled() << PCIE_ATU_TD_SHIFT;
->>>> +     dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
->>>>         dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->>>>
->>>>         /*
->>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
->>>> index e7f441441db2..b01ef407fd52 100644
->>>> --- a/drivers/pci/controller/dwc/pcie-designware.h
->>>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
->>>> @@ -89,6 +89,7 @@
->>>>    #define PCIE_ATU_TYPE_IO             0x2
->>>>    #define PCIE_ATU_TYPE_CFG0           0x4
->>>>    #define PCIE_ATU_TYPE_CFG1           0x5
->>>> +#define PCIE_ATU_TD_SHIFT            8
->>>>    #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
->>>>    #define PCIE_ATU_CR2                 0x908
->>>>    #define PCIE_ATU_ENABLE                      BIT(31)
->>>> --
->>>> 2.17.1
->>>>
