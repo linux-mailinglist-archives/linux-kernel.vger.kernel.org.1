@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D532A7096
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86082A7098
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732464AbgKDWem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:34:42 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39696 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728085AbgKDWem (ORCPT
+        id S1732484AbgKDWfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727107AbgKDWfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:34:42 -0500
-Received: by mail-ot1-f66.google.com with SMTP id z16so290317otq.6;
-        Wed, 04 Nov 2020 14:34:42 -0800 (PST)
+        Wed, 4 Nov 2020 17:35:32 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AA9C0613CF;
+        Wed,  4 Nov 2020 14:35:31 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id y78so12404073vsy.6;
+        Wed, 04 Nov 2020 14:35:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ILAJ49z6tQ1g3I7M50igRvFR+RDZOmpMIx5R1kAjjF4=;
+        b=APaaW8d6bvKzzzHeY5G0dybIu/V/nduXVyg4f65X8mW3LRqAITHK+wbk/jpRST+0ZN
+         1vmwM+a/pomQMv1E7txLNLQw3Ri/cX1Sivs2Uhh5u5rv3LqZC2s/0l5+93BZ434oInFz
+         JT+5EGYA3oxX3ERF+2pmc2KxQeUqKhNp/vrP3bwRbBdIE1qUt1kMx60f7jBJC04fseOM
+         2y5WV3SmbTYFRxK2B+WYZVlGCaKH6v1lYrXEElFOuuIe+/F2LJfxr5lrHSZlWkgYwUwL
+         yAuF7BltylYaqHqhL7AdzYP8vnbvCdCbShucch7nXVWNl0Bx+9PYvG55N3qAKOoQPl17
+         Z9yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=De/asBW+7ACsxJA0V0dI5OfXqmfuP7smHiv8mpwjXZ0=;
-        b=X7yybQyZ6x2kvyi7EQ0eH1ZL3mvclkC1ezJY+ygugDZ2XqpsCAtRiWdNUOKk0+i5vE
-         /ldaDZtJ+HZyKC0WOxcXDQ9iGVj1mFlqB5NyEJ1h7hAWPY5+0r8gqs2rLMLHyl7yBeH/
-         up4U7Q0B2p376ovQv6ks8xkRoaq1GqUGa8vlo1wWy3B+hzmOmENLYNhf6xipayUw7j4p
-         q1jXZAluJi3/T40BIarl+leh7dz/ThBngoKleFGZ1qNAssyuiqXcBJ/1pXpHMcxDPxld
-         hqtfPZsDW6aGeydlP09SjSujTDBFaaru/S/ftrTlOMFXpKHk9U3I6Y+G6e97XAoVGlq0
-         l7QQ==
-X-Gm-Message-State: AOAM531K8qYXo8fov+t9YECB0+iaQ7kZ1PkOURNGLAzfg6VKYZ/yeYbq
-        07HFyx9D3GF46wTjsEsqou7FOrvpHA==
-X-Google-Smtp-Source: ABdhPJydVci5YTxHwBge3dnN274lTktXyAPo9XcUv0uObEVs8L/tBdqo/1r1n3NVYXAsKnCx7SfmbA==
-X-Received: by 2002:a9d:6e81:: with SMTP id a1mr19441014otr.303.1604529281700;
-        Wed, 04 Nov 2020 14:34:41 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t83sm789898oie.58.2020.11.04.14.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 14:34:41 -0800 (PST)
-Received: (nullmailer pid 48871 invoked by uid 1000);
-        Wed, 04 Nov 2020 22:34:40 -0000
-Date:   Wed, 4 Nov 2020 16:34:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, tiwai@suse.com, Xiubo.Lee@gmail.com,
-        alsa-devel@alsa-project.org, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, broonie@kernel.org, perex@perex.cz,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org, timur@kernel.org,
-        devicetree@vger.kernel.org, nicoleotsuka@gmail.com
-Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc
- for aud2htx module
-Message-ID: <20201104223440.GA48821@bogus>
-References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ILAJ49z6tQ1g3I7M50igRvFR+RDZOmpMIx5R1kAjjF4=;
+        b=QrKjibmNqBnmjh8Ywh9IPAvvx3z4TEwYT9ZmtWU2GOliM8ZYWRxQn0YNIii7b4kK/0
+         sSI1+t55OQeMFe2zBYPzPu+3lfwV3hvLS34x7tzc2sihjhDCjD9mbg2NEO1N6kDMURT6
+         Bvd61eKY/e80PrnitW8PNHzKPC5zi3IngBV2Iw9S/JJ4D3xPz7SBPv/NbbD1wFKPypcq
+         H4l8Vj6herp8SSsH3nl1wHsc9xsXponwjeWWZDJtHNgjnqSufV82SdBhoDKG8CDmnLPq
+         fxvXEUc9ioOaW7VVA/Kk/pXMud4vYaCQNncYks6Ub0kyhXy/zMuWD2MB11geUsFfnEWc
+         kedQ==
+X-Gm-Message-State: AOAM531otMd18WYHau17oERMB/xBpQH7NqN7leA8WMEHw+R0g6u77ASf
+        a85cBXJE4ObpHrWrQ+6Nsr8GcZxPJafJTP2P8Do=
+X-Google-Smtp-Source: ABdhPJxQ7/Oo3fg0x6W5H4/oqbIwIHF3XJaVD/OmtahiucyhhM3CMoHLxC0LtLuW5NkYTKrmqoAsrkIcAuYrsNkU7kY=
+X-Received: by 2002:a67:ff10:: with SMTP id v16mr84062vsp.40.1604529331083;
+ Wed, 04 Nov 2020 14:35:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+References: <20201104160847.30049-1-TheSven73@gmail.com> <20201104135827.0140aca9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201104135827.0140aca9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 4 Nov 2020 17:35:19 -0500
+Message-ID: <CAGngYiUPJQHMO5PvXKqV68MrzVCMCATQDxeQ3Vi+OGOQ2onj2Q@mail.gmail.com>
+Subject: Re: [PATCH v1] lan743x: correctly handle chips with internal PHY
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Roelof Berg <rberg@berg-solutions.de>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Nov 2020 09:52:26 +0800, Shengjiu Wang wrote:
-> AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
-> IP module found on i.MX8MP.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
-> changes in v3:
-> - Add additionalProperties
-> 
-> changes in v2:
-> - fix indentation issue
-> - remove nodename
-> 
->  .../bindings/sound/fsl,aud2htx.yaml           | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
-> 
+Hi Jakub,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Wed, Nov 4, 2020 at 4:58 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Not a big deal but if you have to change the patch could you make sure
+> your email address is spelled the same in the From line and other tags?
+
+Absolutely, thanks for letting me know about those case differences.
