@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032B52A5DB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E902A5DB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbgKDFYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 00:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45258 "EHLO
+        id S1729662AbgKDFYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 00:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgKDFYK (ORCPT
+        with ESMTP id S1725535AbgKDFYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 00:24:10 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAA4C061A4D;
-        Tue,  3 Nov 2020 21:24:10 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id r186so15604609pgr.0;
-        Tue, 03 Nov 2020 21:24:10 -0800 (PST)
+        Wed, 4 Nov 2020 00:24:36 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0AAC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 21:24:36 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id m188so16989495ybf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 21:24:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=91u4hMKCioER+EVyR6ml/jbfnIzrfjbmRinIZZGx/xk=;
-        b=YdrYyZxcjjJt9mRl+pDu6vYGZ6X9OdzKmF9UISwtxNdI1+2wRyPND+EdZsLzMB1eQb
-         gPY5BgFTUC8tdjVSathNHE44d2ZYqfAQrViiN+xFKaAXh8Aaim88RGUtvczEd6p3DNWJ
-         rVbM9lSgpcgkoYkswuWi7gxMH0VPMZuJu1G0uvtYOUXYeSBzqjkRO9XNY+2BwKgG/60l
-         he1PlENgTcr4NyVbAVScMSuh7zOa4ix2a1HA0baZr8aIsdbju959GzbWZKLIg0MiQQzb
-         KKkm0p+nGVAWoNHmDRdtT0wnzvN1wUnkgKmhpEYN7ixV0dBbrCop+IHxOT/HsCjwOAWX
-         ZIqw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=buN3yjcDVw2EqJ25Tq35AKInemBS4RdgzKO0/bnuCV0=;
+        b=vGQK7djcDS/vNaV/RFygyk6BcAPnZeGUiJr98CqLcH+RYPVJ/yBESFnCxIjeuEWOW1
+         LGYlitQ43kLbGBTGE61hNppZSYY8ODnBz4EBlgDJQoYb3lXFefTwuyBD+qWUEWA20kY/
+         mKU5OzRX3PafYBJhTaI9c2HztUi/ouQUKGSt/IEadXPaVlHyqWL3DnXFx+UWE3FJN3zF
+         xpaJBxuwpdjVluNGaBFPLflssP44NTFHs+H2AdJ20Q/11WOo3CaRANK2IX+hDJo9pgNA
+         peatOEWjxQqOqoQTlHe3FaB4qytV3Psl3ZN8yCUunlA9lGE4j/aH5x/c2+cGkerqrg5o
+         Bvww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=91u4hMKCioER+EVyR6ml/jbfnIzrfjbmRinIZZGx/xk=;
-        b=DUbnxZ6k6jqEh38EqZGGw0nOa2Xt66W2N6HfR6gtpc/Io8DrEPRTFH0o5Ls+sHbM8K
-         pNPa9/NaErKlG2XZDI+qMRAaQojPbrcUp25kb69ETNF6TNSF+2n9EchZFCN4ty2Ky4gt
-         ozwHjSCp2BxlBBxGZcm4WB8lf9TBtcIIJTJ38iO1/GLMKsrOC6bTMeeKPYr/Ef7wBJyw
-         a2svu5jOWlutCjkx7OsSh8O2sQBi4YmSclTxm4HOA5+qVO/z+YSZDMUy0xnOLK6oiXd2
-         qKIwnEP1+83PJJs93Xi/EV3HhWcRV02oxOS6pUNe1IuSEAFugRHNaLS49IddND+pJbkW
-         T/sw==
-X-Gm-Message-State: AOAM5319wtvfCI6ckAWztHA3caa4ikj/ttRV8d0Z2anNNx5Bg0evyCux
-        rBXlB8qM4cbLt6CnHOSLlg==
-X-Google-Smtp-Source: ABdhPJwu0/AM5hs9TYJFACJ9YsbS/FKUL3zVeZ9X/vgkQ8dMsKbSWVHHFANUcPZsDkfjPjp8OMzJVQ==
-X-Received: by 2002:aa7:80d9:0:b029:164:be9b:2b13 with SMTP id a25-20020aa780d90000b0290164be9b2b13mr26917386pfn.12.1604467449919;
-        Tue, 03 Nov 2020 21:24:09 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id b6sm701778pgq.58.2020.11.03.21.24.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Nov 2020 21:24:09 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     vishal@chelsio.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] cxgb4: Fix the -Wmisleading-indentation warning
-Date:   Wed,  4 Nov 2020 13:24:04 +0800
-Message-Id: <1604467444-23043-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=buN3yjcDVw2EqJ25Tq35AKInemBS4RdgzKO0/bnuCV0=;
+        b=l7XwA77ezckzwjfh8ysS2okN8H3VTisfSJEb978qt52h5A7JU6ZxAhUVwVKMAEhosd
+         ead8fdbeIIbd92BfBa+gDxc5oniKWUoYZFe5ALlZDa1rECrXFo/nbU2eOfelfTkh+why
+         zhxq7H0I3e4rjwfpHf4o2OvCkmnEeGddoH3NYGKVL9MpZi3xGyH23aHuIuxhbbaN7tP3
+         fWPVhiPPvCPV33YpgjbZQnnqp8n2bXkviQbs7Xgqx/gCMKImZ8jy7HYh5H7/HJztpg3j
+         V67zTKWE6/K1kGTE4I87VESylU4Hn6byr3E/7qvAaAKXyuhdWNb0WQNgazHjp1gaOlhP
+         IpUQ==
+X-Gm-Message-State: AOAM532UKNfZASHe1kCGGYi1eQ2FK9lsoAVxFrMo9YcnZAN6p+1yI6m3
+        ATwhUGFECWnDQ+YglyfRxWESrkNcDhvKOSzYGddJUISe
+X-Google-Smtp-Source: ABdhPJw4X2EBy/BQHRpdZVm/uRRy4mcbX1p8iCmDTcWFjekoSJMzV7O+PEmPMEB3ZtzQZllP8TXOHZJGepiAiFfsN+A=
+X-Received: by 2002:a25:338b:: with SMTP id z133mr36026198ybz.33.1604467476017;
+ Tue, 03 Nov 2020 21:24:36 -0800 (PST)
+MIME-Version: 1.0
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+ <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+ <f474396f8f47c303e3a3ac90a582c116e38e50e4.camel@perches.com>
+ <CANiq72nnpdPSngjoOf=imLxZ2g0A7ZXe5nRjF0qf5AG1UCfXyw@mail.gmail.com>
+ <8d02497f4565c3154d3f7bcf2968b56ccd945ab4.camel@perches.com>
+ <CANiq72k11+VO-igyHRakJEGuSmsDJyQCpYDVeNxZwRt62yCFXQ@mail.gmail.com> <1de8953aba13bcd4c9643bae61af2081e33f071f.camel@perches.com>
+In-Reply-To: <1de8953aba13bcd4c9643bae61af2081e33f071f.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 4 Nov 2020 06:24:25 +0100
+Message-ID: <CANiq72nsOOdRxVYNo7KetNKOD+8xZEsn3v8d1iOydvVRoTqOHA@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Joe Perches <joe@perches.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Hi Joe,
 
-Fix the gcc warning:
+First of all, thanks for taking the time to write your reasoning.
 
-drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c:2673:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
- 2673 |         for (i = 0; i < n; ++i) \
+On Wed, Nov 4, 2020 at 5:17 AM Joe Perches <joe@perches.com> wrote:
+>
+> The current kernel is v5.10 which requires clang 10.0 or higher.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For building, yes.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-index 0273f40b85f7..c24d34a937c8 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-@@ -2671,7 +2671,7 @@ do { \
- 	seq_printf(seq, "%-12s", s); \
- 	for (i = 0; i < n; ++i) \
- 		seq_printf(seq, " %16" fmt_spec, v); \
--		seq_putc(seq, '\n'); \
-+	seq_putc(seq, '\n'); \
- } while (0)
- #define S(s, v) S3("s", s, v)
- #define T3(fmt_spec, s, v) S3(fmt_spec, s, tx[i].v)
--- 
-2.20.0
+> This patch is not to be applied or backported to old kernels so no
+> person is going to use this patch on any old or backported kernel.
 
+Agreed (see my answer to Nick).
+
+> If a person is going to use clang-format on the current kernel sources
+> unless they are developing for the current kernel.
+>
+> They are going to have to be using clang 10.0 or higher and therefore
+> also will have and be using clang-format 10.0 or higher.
+
+No, they might be using GCC as usual and installed clang-format from
+their distro. In fact, I'd expect most developers accustomed to GCC to
+try it out that way, and also most of them to install compilers from
+their distro, not from the webpage, unless they need a newer version
+for some reason (e.g. new warnings, new debugging features in the
+kernel, etc.).
+
+In principle, clang-format (as a tool) is not related to building the
+kernel. We may call it "x-format" and think about it as a statically
+linked binary. What I am saying is that aligning clang-format to LLVM
+(now that LLVM has a minimum supported version) is not a necessity.
+
+We can still do it, of course, since there are new features for
+everyone and anybody that complains can install a newer version from
+the webpage. But there is nothing that forces us to require it. It is
+a decision that we balance w.r.t. new features. To put it concretely:
+if there were 0 new features or big fixes in clang-format 10 compared
+to 4, there would be no reason whatsoever to require users to download
+a new version.
+
+On the other side of the spectrum, some projects require a concrete
+version (not just a minimum), because they automatically format their
+entire codebase and want to avoid differences in output between
+clang-format versions. But we are far from automatically formatting
+the entire codebase.
+
+> Take it or not, apply it or not.  I don't use clang-format and unless
+> there are improvements to it, I imagine I'll continue to use emacs
+> indent-region and a few other reformatting tools instead.
+
+Again, I am not opposed to the change. In fact, I am eager to improve
+the output of clang-format so that more people get engaged with it. I
+was just surprised you asserted so strongly that nobody is using
+clang-format from their distro.
+
+Cheers,
+Miguel
