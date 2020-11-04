@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAF62A6C81
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2055F2A6C8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgKDSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S1731659AbgKDSQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgKDSJ5 (ORCPT
+        with ESMTP id S1725946AbgKDSQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:09:57 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B4EC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:09:57 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kaNEE-0007Hl-Ee; Wed, 04 Nov 2020 19:09:50 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kaNEE-00049j-16; Wed, 04 Nov 2020 19:09:50 +0100
-Date:   Wed, 4 Nov 2020 19:09:50 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH net-next v2 05/19] net: phy: at803x: remove the use of
- .ack_interrupt()
-Message-ID: <20201104180950.p4bqar7v36aougcz@pengutronix.de>
-References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
- <20201101125114.1316879-6-ciorneiioana@gmail.com>
+        Wed, 4 Nov 2020 13:16:32 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28317C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:16:32 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id a10so6224267edt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:16:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ScsUfMVtHVOkrxRg8IkMHR/vOs6RC0oZtG2XpQSfnDc=;
+        b=GG12ddCjF6k3EWW69O4N/rQPdaTqdUAMdjBKaSCmt7TP+4b7THsvZqvOUGHgoM55+X
+         U8BB+TLd3mad114TDBfNa1aPlh8EcEgrYUXbrEz8/elsflnkduaiL0E7MaVD6zTliAx5
+         OWrrcGjwstb1zHjhKoMJwf1T2lvvcgeWsJ4oNX+CupBWK1jOzEpP0/gXc28FYHvoJkra
+         Shrud1EJit4c8TOQMV1/+UcLOjfnHwcOtoHr/rAZxEC2obC5EkSGO7Bnr4j7b9FxPnWE
+         kR0gY36H9gGm4FKmwjorKLzL5M+WEeMoxU+K7lhguCDupSK7vg8egQxyUpU0GBVpnRl4
+         4XRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ScsUfMVtHVOkrxRg8IkMHR/vOs6RC0oZtG2XpQSfnDc=;
+        b=O2kXg+xFoFo8Q4mp8/XLzDFUANcUs3xNercfB4snGdDvGgkV08kUtJKkeidaqUADub
+         jjD3CF25rdqGtCCXyT0jR/oydii+SOsliOzErsGUyaPuDMwDSIqgokKHrCag7blv69+r
+         NOf9xycFrjj+aaqzP4n0in1Nq5XZCWFfsdmY2DCYGxSbUqUIGKZ7QqSKB6t53a5K4Of7
+         XYvvWzxcNGzfEkQhyYrNOJHWy/bpSgmDHtrQtHZ5SEmlCoeE9jxrVMW0aKoFl3kt1UtJ
+         sFVjwm+TW2hn799nHpduW901amylkgJotp/XjzQ4Y4AIpUATAKRhsZ4vQi6fFbuV3Ki8
+         0nYQ==
+X-Gm-Message-State: AOAM5320CmDzIqpl3NcTibnjkcdtLrEqjuF730rXgt0AD/YcluiA+qba
+        RYdJQwaXYBWpPyqCWRbfRjxeVk2Uk0MJ/w==
+X-Google-Smtp-Source: ABdhPJxr8Z9P4OM6xMY8BXhqI+5M9rJf2u62htW8jxdcQQPuhJKFw4WGk2swstD7auAmEKLtA0sIPA==
+X-Received: by 2002:a05:6402:1158:: with SMTP id g24mr27158697edw.323.1604513790800;
+        Wed, 04 Nov 2020 10:16:30 -0800 (PST)
+Received: from localhost.localdomain ([85.153.228.172])
+        by smtp.gmail.com with ESMTPSA id u26sm1449448edt.39.2020.11.04.10.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 10:16:30 -0800 (PST)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
+Date:   Wed,  4 Nov 2020 21:15:23 +0300
+Message-Id: <20201104181522.43567-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201101125114.1316879-6-ciorneiioana@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 19:09:27 up 355 days,  9:28, 376 users,  load average: 0.03, 0.05,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 02:51:00PM +0200, Ioana Ciornei wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> In preparation of removing the .ack_interrupt() callback, we must replace
-> its occurrences (aka phy_clear_interrupt), from the 2 places where it is
-> called from (phy_enable_interrupts and phy_disable_interrupts), with
-> equivalent functionality.
-> 
-> This means that clearing interrupts now becomes something that the PHY
-> driver is responsible of doing, before enabling interrupts and after
-> clearing them. Make this driver follow the new contract.
-> 
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: Michael Walle <michael@walle.cc>
-> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+When DMA_RALINK is enabled and DMADEVICES is disabled, it results in the
+following Kbuild warnings:
 
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+WARNING: unmet direct dependencies detected for DMA_ENGINE
+  Depends on [n]: DMADEVICES [=n]
+  Selected by [y]:
+  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
 
-> ---
-> Changes in v2:
->  - none
-> 
->  drivers/net/phy/at803x.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index c7f91934cf82..d0b36fd6c265 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -614,6 +614,11 @@ static int at803x_config_intr(struct phy_device *phydev)
->  	value = phy_read(phydev, AT803X_INTR_ENABLE);
->  
->  	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-> +		/* Clear any pending interrupts */
-> +		err = at803x_ack_interrupt(phydev);
-> +		if (err)
-> +			return err;
-> +
->  		value |= AT803X_INTR_ENABLE_AUTONEG_ERR;
->  		value |= AT803X_INTR_ENABLE_SPEED_CHANGED;
->  		value |= AT803X_INTR_ENABLE_DUPLEX_CHANGED;
-> @@ -621,9 +626,14 @@ static int at803x_config_intr(struct phy_device *phydev)
->  		value |= AT803X_INTR_ENABLE_LINK_SUCCESS;
->  
->  		err = phy_write(phydev, AT803X_INTR_ENABLE, value);
-> -	}
-> -	else
-> +	} else {
->  		err = phy_write(phydev, AT803X_INTR_ENABLE, 0);
-> +		if (err)
-> +			return err;
-> +
-> +		/* Clear any pending interrupts */
-> +		err = at803x_ack_interrupt(phydev);
-> +	}
->  
->  	return err;
->  }
-> @@ -1088,7 +1098,6 @@ static struct phy_driver at803x_driver[] = {
->  	.resume			= at803x_resume,
->  	/* PHY_GBIT_FEATURES */
->  	.read_status		= at803x_read_status,
-> -	.ack_interrupt		= at803x_ack_interrupt,
->  	.config_intr		= at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  	.get_tunable		= at803x_get_tunable,
-> @@ -1109,7 +1118,6 @@ static struct phy_driver at803x_driver[] = {
->  	.suspend		= at803x_suspend,
->  	.resume			= at803x_resume,
->  	/* PHY_BASIC_FEATURES */
-> -	.ack_interrupt		= at803x_ack_interrupt,
->  	.config_intr		= at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  }, {
-> @@ -1128,7 +1136,6 @@ static struct phy_driver at803x_driver[] = {
->  	/* PHY_GBIT_FEATURES */
->  	.read_status		= at803x_read_status,
->  	.aneg_done		= at803x_aneg_done,
-> -	.ack_interrupt		= &at803x_ack_interrupt,
->  	.config_intr		= &at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  	.get_tunable		= at803x_get_tunable,
-> @@ -1149,7 +1156,6 @@ static struct phy_driver at803x_driver[] = {
->  	.suspend		= at803x_suspend,
->  	.resume			= at803x_resume,
->  	/* PHY_BASIC_FEATURES */
-> -	.ack_interrupt		= at803x_ack_interrupt,
->  	.config_intr		= at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  	.cable_test_start	= at803x_cable_test_start,
-> @@ -1162,7 +1168,6 @@ static struct phy_driver at803x_driver[] = {
->  	.resume			= at803x_resume,
->  	.flags			= PHY_POLL_CABLE_TEST,
->  	/* PHY_BASIC_FEATURES */
-> -	.ack_interrupt		= &at803x_ack_interrupt,
->  	.config_intr		= &at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  	.cable_test_start	= at803x_cable_test_start,
-> -- 
-> 2.28.0
-> 
-> 
+WARNING: unmet direct dependencies detected for DMA_VIRTUAL_CHANNELS
+  Depends on [n]: DMADEVICES [=n]
+  Selected by [y]:
+  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
 
+The reason is that DMA_RALINK selects DMA_ENGINE and DMA_VIRTUAL_CHANNELS
+without depending on or selecting DMADEVICES while DMA_ENGINE and
+DMA_VIRTUAL_CHANNELS are subordinate to DMADEVICES. This can also fail
+building the kernel as demonstrated in a bug report.
+
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=210055
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/staging/ralink-gdma/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/ralink-gdma/Kconfig b/drivers/staging/ralink-gdma/Kconfig
+index 54e8029e6b1a..0017376234e2 100644
+--- a/drivers/staging/ralink-gdma/Kconfig
++++ b/drivers/staging/ralink-gdma/Kconfig
+@@ -2,6 +2,7 @@
+ config DMA_RALINK
+ 	tristate "RALINK DMA support"
+ 	depends on RALINK && !SOC_RT288X
++	depends on DMADEVICES
+ 	select DMA_ENGINE
+ 	select DMA_VIRTUAL_CHANNELS
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
