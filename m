@@ -2,72 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C9E2A63D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEBB2A63DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgKDMEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:04:06 -0500
-Received: from smtprelay0246.hostedemail.com ([216.40.44.246]:32850 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728287AbgKDMEF (ORCPT
+        id S1729744AbgKDME3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:04:29 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:39303 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728287AbgKDME2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:04:05 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 66BDE180A7FE2;
-        Wed,  4 Nov 2020 12:04:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6691:6742:7903:7974:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21325:21433:21451:21627:30003:30054:30055:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: turn90_630e8ab272c1
-X-Filterd-Recvd-Size: 2099
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 12:04:01 +0000 (UTC)
-Message-ID: <92d39ff1408078a656c43bee24e7e9b3e3815e72.camel@perches.com>
-Subject: Re: get_maintainer.pl bug? (was: Re: [PATCH 0/8] linker-section
- array fix and clean ups)
-From:   Joe Perches <joe@perches.com>
-To:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Date:   Wed, 04 Nov 2020 04:04:00 -0800
-In-Reply-To: <20201104091625.GP4085@localhost>
-References: <20201103175711.10731-1-johan@kernel.org>
-         <20201104091625.GP4085@localhost>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 4 Nov 2020 07:04:28 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A4C4IES0003516, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A4C4IES0003516
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 4 Nov 2020 20:04:18 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
+ RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 4 Nov 2020 20:04:18 +0800
+Received: from localhost.localdomain (172.21.132.186) by
+ RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 4 Nov 2020 20:04:18 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex_lu@realsil.com.cn>, <hildawu@realtek.com>
+CC:     <kidman@realtek.com>, <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: btrtl: Refine the ic_id_table for clearer and more regular
+Date:   Wed, 4 Nov 2020 20:04:14 +0800
+Message-ID: <20201104120414.12772-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.186]
+X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
+ RTEXMBS03.realtek.com.tw (172.21.6.34)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-04 at 10:16 +0100, Johan Hovold wrote:
-> Running scrips/get_maintainer.pl on this series [1] gave the wrong
-> address for Nick Desaulniers:
-> 
-> 	Nick Desaulniers <ndesaulniers@gooogle.com> (commit_signer:1/2=50%,commit_signer:1/8=12%)
-> 
-> It seems he recently misspelled his address in a reviewed-by tag to
-> commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
-> to __section("foo")") and that is now being picked up by the script.
-> 
-> I guess that's to be considered a bug?
+From: Max Chou <max.chou@realtek.com>
 
-No, that's a feature.  If it's _really_ a problem, (and I don't
-think it really is), that's what .mailmap is for.
+Enhance the ic_id_table that it's able to maintain regularly.
+To judge which chip should be initialized by LMP subversion, HCI revision,
+ HCI version and HCI bus which were given in the ic_id_table.
+Also, refine the incorrect LMP subversion of ROM for RTL8723D and
+RTL8723A.
 
+Suggested-by: Alex Lu <alex_lu@realsil.com.cn>
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+ drivers/bluetooth/btrtl.c | 65 ++++++++++++---------------------------
+ 1 file changed, 19 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 3a9afc905f24..1ab9f27e4fa7 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -18,10 +18,8 @@
+ #define VERSION "0.1"
+ 
+ #define RTL_EPATCH_SIGNATURE	"Realtech"
+-#define RTL_ROM_LMP_3499	0x3499
+ #define RTL_ROM_LMP_8723A	0x1200
+ #define RTL_ROM_LMP_8723B	0x8723
+-#define RTL_ROM_LMP_8723D	0x8873
+ #define RTL_ROM_LMP_8821A	0x8821
+ #define RTL_ROM_LMP_8761A	0x8761
+ #define RTL_ROM_LMP_8822B	0x8822
+@@ -31,10 +29,13 @@
+ #define IC_MATCH_FL_HCIREV	(1 << 1)
+ #define IC_MATCH_FL_HCIVER	(1 << 2)
+ #define IC_MATCH_FL_HCIBUS	(1 << 3)
+-#define IC_INFO(lmps, hcir) \
+-	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV, \
++#define IC_INFO(lmps, hcir, hciv, bus) \
++	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV | \
++		       IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS, \
+ 	.lmp_subver = (lmps), \
+-	.hci_rev = (hcir)
++	.hci_rev = (hcir), \
++	.hci_ver = (hciv), \
++	.hci_bus = (bus)
+ 
+ struct id_table {
+ 	__u16 match_flags;
+@@ -58,112 +59,85 @@ struct btrtl_device_info {
+ };
+ 
+ static const struct id_table ic_id_table[] = {
+-	{ IC_MATCH_FL_LMPSUBV, RTL_ROM_LMP_8723A, 0x0,
+-	  .config_needed = false,
+-	  .has_rom_version = false,
+-	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
+-	  .cfg_name = NULL },
+-
+-	{ IC_MATCH_FL_LMPSUBV, RTL_ROM_LMP_3499, 0x0,
++	/* 8723A */
++	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = false,
+ 	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
+ 	  .cfg_name = NULL },
+ 
+ 	/* 8723BS */
+-	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
+-			 IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS,
+-	  .lmp_subver = RTL_ROM_LMP_8723B,
+-	  .hci_rev = 0xb,
+-	  .hci_ver = 6,
+-	  .hci_bus = HCI_UART,
++	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8723bs_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8723bs_config" },
+ 
+ 	/* 8723B */
+-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb),
++	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8723b_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8723b_config" },
+ 
+ 	/* 8723D */
+-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd),
++	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8723d_config" },
+ 
+ 	/* 8723DS */
+-	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
+-			 IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS,
+-	  .lmp_subver = RTL_ROM_LMP_8723B,
+-	  .hci_rev = 0xd,
+-	  .hci_ver = 8,
+-	  .hci_bus = HCI_UART,
++	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8723ds_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8723ds_config" },
+ 
+-	/* 8723DU */
+-	{ IC_INFO(RTL_ROM_LMP_8723D, 0x826C),
+-	  .config_needed = true,
+-	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
+-	  .cfg_name = "rtl_bt/rtl8723d_config" },
+-
+ 	/* 8821A */
+-	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa),
++	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8821a_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8821a_config" },
+ 
+ 	/* 8821C */
+-	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc),
++	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8821c_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8821c_config" },
+ 
+ 	/* 8761A */
+-	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa),
++	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8761a_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8761a_config" },
+ 
+ 	/* 8761B */
+-	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb),
++	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8761b_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8761b_config" },
+ 
+ 	/* 8822C with UART interface */
+-	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
+-			 IC_MATCH_FL_HCIBUS,
+-	  .lmp_subver = RTL_ROM_LMP_8822B,
+-	  .hci_rev = 0x000c,
+-	  .hci_ver = 0x0a,
+-	  .hci_bus = HCI_UART,
++	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8822cs_config" },
+ 
+ 	/* 8822C with USB interface */
+-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc),
++	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8822cu_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8822cu_config" },
+ 
+ 	/* 8822B */
+-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb),
++	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb, 0x7, HCI_USB),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
+@@ -654,7 +628,6 @@ int btrtl_download_firmware(struct hci_dev *hdev,
+ 
+ 	switch (btrtl_dev->ic_info->lmp_subver) {
+ 	case RTL_ROM_LMP_8723A:
+-	case RTL_ROM_LMP_3499:
+ 		return btrtl_setup_rtl8723a(hdev, btrtl_dev);
+ 	case RTL_ROM_LMP_8723B:
+ 	case RTL_ROM_LMP_8821A:
+-- 
+2.17.1
 
