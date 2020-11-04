@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273F32A6288
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1332A628F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729198AbgKDKv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:51:28 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:41252 "EHLO gloria.sntech.de"
+        id S1729341AbgKDKvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:51:49 -0500
+Received: from mail.vivotek.com ([60.248.39.150]:39592 "EHLO mail.vivotek.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729089AbgKDKv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:51:28 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kaGNp-00054b-Sv; Wed, 04 Nov 2020 11:51:17 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linux-rockchip@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Markus Reichl <m.reichl@fivetechno.de>
-Cc:     Markus Reichl <m.reichl@fivetechno.de>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dianders@chromium.org
-Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399-roc-pc boards.
-Date:   Wed, 04 Nov 2020 11:51:17 +0100
-Message-ID: <4984701.vSXMUKeAfh@diego>
-In-Reply-To: <20201104094950.2096-1-m.reichl@fivetechno.de>
-References: <20201104094950.2096-1-m.reichl@fivetechno.de>
+        id S1729250AbgKDKvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:51:48 -0500
+Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
+        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 0A4AnefU031984;
+        Wed, 4 Nov 2020 18:51:36 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=dkim;
+ bh=n17L+VgwUlZONlxnSTqJHNnmc6rjWo7kZxEP07PWD9g=;
+ b=DuetMlwGjSBihTI82u39rINBVUZ6qOZDOa+jzh1yxG+xdYhYwtHVk9ionPUnJNfAiqI2
+ 1sWTENmRUKJEx8ym6TsG1WZT5EpKr2MTWNA50Wts7aimZxt1j1Dv6KDekoThie5m076O
+ WpmMSi7/lBZV3wB4+/aqxIlBZ8H+JQUl4aQ= 
+Received: from cas01.vivotek.tw ([192.168.0.58])
+        by vivotekpps.vivotek.com with ESMTP id 34gtc345p6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 18:51:36 +0800
+Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
+ CAS01.vivotek.tw ([::1]) with mapi id 14.03.0487.000; Wed, 4 Nov 2020
+ 18:51:35 +0800
+From:   <Michael.Wu@vatics.com>
+To:     <wsa@kernel.org>
+CC:     <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <morgan.chang@vatics.com>
+Subject: RE: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+Thread-Topic: [PATCH 2/2] i2c: designware: slave should do WRITE_REQUESTED
+ before WRITE_RECEIVED
+Thread-Index: AQHWrpNb9HMFwrLvFkOeW57CDSt2oKm2ZmOAgAFYIoD//4qogIAAh8cg
+Date:   Wed, 4 Nov 2020 10:51:34 +0000
+Message-ID: <5DB475451BAA174CB158B5E897FC1525B129558A@MBS07.vivotek.tw>
+References: <20201030080420.28016-1-michael.wu@vatics.com>
+ <20201030080420.28016-3-michael.wu@vatics.com> <20201103210349.GE1583@kunai>
+ <5DB475451BAA174CB158B5E897FC1525B1295560@MBS07.vivotek.tw>
+ <20201104103531.GA3984@ninjato>
+In-Reply-To: <20201104103531.GA3984@ninjato>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.17.134]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_06:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Markus,
-
-Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
-> Recently introduced async probe on mmc devices can shuffle block IDs.
-> Pin them to fixed values to ease booting in evironments where UUIDs
-> are not practical. Use newly introduced aliases for mmcblk devices from [1].
-> 
-> [1]
-> https://patchwork.kernel.org/patch/11747669/
-> 
-> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> index e7a459fa4322..bc9482b59428 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-> @@ -13,6 +13,11 @@ / {
->  	model = "Firefly ROC-RK3399-PC Board";
->  	compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
->  
-> +	aliases {
-> +		mmc0 = &sdmmc;
-> +		mmc1 = &sdhci;
-> +	};
-> +
-
-Any reason for this odering?
-
-I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
-This is also true for the ChromeOS out-of-tree usage of those, the
-rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, sdio.
-
-And I guess a further question would be when we're doing arbitary orderings
-anyway, why is this not in rk3399.dtsi ;-) ?
-
-
-Heiko
-
-
+SGkgV29sZnJhbSwNCg0KPiBUaGFua3MgZm9yIHRoZSBkZXRhaWxlZCBleHBsYW5hdGlvbiEgT2th
+eSwgdGhlbiB3aGF0IHlvdSBkbyBsb29rcw0KPiBjb3JyZWN0IHRvIG1lIChmcm9tIGEgaGlnaCBs
+ZXZlbCBwZXJzcGVjdGl2ZSB3aXRob3V0IHJlYWxseSBrbm93aW5nIHRoZQ0KPiBIVyk6IHdoZW4g
+UlggaXMgZnVsbCwgeW91IGZpcnN0IHNlbmQgdGhlIHN0YXRlIFdSSVRFX1JFUVVFU1RFRCB3aGVu
+DQo+IHRoZXJlIGlzIG5vIG90aGVyIHRyYW5zZmVyIG9uLWdvaW5nLiBUaGVuIHlvdSBzZW5kIFdS
+SVRFX1JFQ0VJVkVEDQo+IGltbWVkaWF0ZWx5LiBJIHRoaW5rIHRoaXMgaXMgdGhlIHdheSB0byBk
+byBpdC4NCg0KQmluZ28hISBUaGFua3MgZm9yIHlvdXIgdW5kZXJzdGFuZGluZy4NCg0KSSB0aGlu
+ayBJIHNob3VsZCBoYXZlIGEgaGFiaXQgb2Ygd3JpdGluZyBjb21tZW50cy4uLiBYLVANCg0KQmVz
+dCByZWdhcmRzLA0KTWljaGFlbCBXdQ0K
