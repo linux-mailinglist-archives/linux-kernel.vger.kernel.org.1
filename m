@@ -2,435 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858932A7097
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526932A7086
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgKDWfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:35:07 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:54730 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgKDWfG (ORCPT
+        id S1732391AbgKDWcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732258AbgKDWcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:35:06 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4MT9YE193720;
-        Wed, 4 Nov 2020 22:32:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=POwdnxVA37sCODlKnfwCuSWGC1qTj8/nVO6OCxt3Xwk=;
- b=KbG/aYFL/P2BvIjJfE2fw0a+3NvdZOAaWUeFSNh+yh37ztWSJvc8dAveGS+dE8HUVDQk
- NYs7Ch58rjEDUTVQaAUAs28X8nmu/KOzunjrwObtZRt92s99qXZfuNF42zqPT98t8eUR
- NJF7R1EZTU69u6EfpAcoB24GZGpBtL1Cti8XLy8rjyJt9r1j8Y0jpGKUR6j1GYmAVaMp
- bMMny9Rzi5x9RguzzYEvezsHZZncoJX7hxyOzGeoHGpFXnwhHiWYD0bXe00teqXRW8EJ
- u1uBiBFcXkeBtXPhGV4bUlICmy8b4P4NZOGU78ZWkwyyXWdIlfd/UHILPGxI09lSFEFu Pg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34hhw2s78j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 22:32:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4MUXPA122731;
-        Wed, 4 Nov 2020 22:30:38 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34hw0kn53k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 22:30:38 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A4MUTdG013094;
-        Wed, 4 Nov 2020 22:30:31 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 04 Nov 2020 14:30:29 -0800
-Subject: Re: [PATCH v8 -tip 17/26] sched: Split the cookie and setup per-task
- cookie on fork
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-18-joel@joelfernandes.org>
-From:   chris hyser <chris.hyser@oracle.com>
-Message-ID: <e296ed5a-d473-de1e-d2ab-af37e5db856a@oracle.com>
-Date:   Wed, 4 Nov 2020 17:30:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Wed, 4 Nov 2020 17:32:03 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A32C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 14:32:02 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id t143so12355949oif.10
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:32:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PyCrLipxpUSH3s5JKD4KJs2gnedOuRhvcE+wVQyXqrw=;
+        b=je27MR45BEcR4fBsFJd9VVbBkBmDzxyQJ14acFX/tbYK8BSPmUiBZzCDSH1cCyYUYd
+         Mq2zmZvncoR8YMCpEN1vnIPif+/Ms5eunHoR+N1CLIjtr8ibOszSS4FZHvys6LuSydAI
+         /Igsszp6lvAgmrPviL5OeauaTwA+I90ldrFAg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PyCrLipxpUSH3s5JKD4KJs2gnedOuRhvcE+wVQyXqrw=;
+        b=KjSgbyrXQm2unVE8FbmHAzPcHTkmgHzdk4U7Ou9lm/kQvIgJV0Ph0hzrorC+xPV4eN
+         vLJm5NSgFI0V4TqI0lqHuRUgQrdXTzO/UhWdaB8tz3po84HQndLIi6HuRH/d4tlFYh6B
+         bJQwLhP8u8dqadEkcCrADm436z2SmmOCpwJlxFIl88Do69qySS3E3TqhzjeJLgh5/F1d
+         FH0qYX/M+Ad8apLPiqurZHlcBhPrtlokbVrNGPtYBsPdZ/C97qZNhnnl8+Qo3Sg6q5DB
+         sJiINhhBE3hrR8RIy71722uMYb1yBMR3/Nzcll0KVXSEKP2lBQssEl7vZI99cQYYg5s5
+         MG7Q==
+X-Gm-Message-State: AOAM532LkRfxp+jY/yNqlTxrTx7tBBmp0d+KYb7WBXHJk9bZsWcVjzdb
+        vx+b38ZOO5P+VwK0/2Y6NfJ/UNXw+UjGiBq8
+X-Google-Smtp-Source: ABdhPJwTtdDOzbnOKKZWkA9PsDk5GGwPzK9RfQbYeJt3GtQ0TyFqWedHf5pLH4u27TnHlXCjBrxpYw==
+X-Received: by 2002:aca:c188:: with SMTP id r130mr4172308oif.99.1604529122057;
+        Wed, 04 Nov 2020 14:32:02 -0800 (PST)
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com. [209.85.167.174])
+        by smtp.gmail.com with ESMTPSA id 85sm804528oie.30.2020.11.04.14.32.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 14:32:01 -0800 (PST)
+Received: by mail-oi1-f174.google.com with SMTP id m17so2653889oie.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:32:00 -0800 (PST)
+X-Received: by 2002:aca:d07:: with SMTP id 7mr1874oin.15.1604529120516; Wed,
+ 04 Nov 2020 14:32:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201020014336.2076526-18-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040160
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9795 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- spamscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040160
+References: <20201104180734.286789-1-ribalda@chromium.org> <20201104180734.286789-2-ribalda@chromium.org>
+ <87769d554b4575bf9371380b013e66d70f1b21c4.camel@perches.com>
+ <20201104214201.GH29958@pendragon.ideasonboard.com> <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
+In-Reply-To: <9d439214e8c83ebf7b93dccca2f848fbaf75b9d4.camel@perches.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 4 Nov 2020 23:31:49 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
+Message-ID: <CANiDSCvwvQUTt1QMQGGyZPag9VeHj4Ugmj8QJdBNtw00UNt6Pg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] media: uvcvideo: Use pr_cont() macro
+To:     Joe Perches <joe@perches.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 9:43 PM, Joel Fernandes (Google) wrote:
-> In order to prevent interference and clearly support both per-task and CGroup
-> APIs, split the cookie into 2 and allow it to be set from either per-task, or
-> CGroup API. The final cookie is the combined value of both and is computed when
-> the stop-machine executes during a change of cookie.
-> 
-> Also, for the per-task cookie, it will get weird if we use pointers of any
-> emphemeral objects. For this reason, introduce a refcounted object who's sole
-> purpose is to assign unique cookie value by way of the object's pointer.
-> 
-> While at it, refactor the CGroup code a bit. Future patches will introduce more
-> APIs and support.
-> 
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->   include/linux/sched.h |   2 +
->   kernel/sched/core.c   | 241 ++++++++++++++++++++++++++++++++++++++++--
->   kernel/sched/debug.c  |   4 +
->   3 files changed, 236 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index fe6f225bfbf9..c6034c00846a 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -688,6 +688,8 @@ struct task_struct {
->   #ifdef CONFIG_SCHED_CORE
->   	struct rb_node			core_node;
->   	unsigned long			core_cookie;
-> +	unsigned long			core_task_cookie;
-> +	unsigned long			core_group_cookie;
->   	unsigned int			core_occupation;
->   #endif
->   
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index bab4ea2f5cd8..30a9e4cb5ce1 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -346,11 +346,14 @@ void sched_core_put(void)
->   	mutex_unlock(&sched_core_mutex);
->   }
->   
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-> +
->   #else /* !CONFIG_SCHED_CORE */
->   
->   static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
->   static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
->   static bool sched_core_enqueued(struct task_struct *task) { return false; }
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
->   
->   #endif /* CONFIG_SCHED_CORE */
->   
-> @@ -3583,6 +3586,20 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
->   #endif
->   #ifdef CONFIG_SCHED_CORE
->   	RB_CLEAR_NODE(&p->core_node);
-> +
-> +	/*
-> +	 * Tag child via per-task cookie only if parent is tagged via per-task
-> +	 * cookie. This is independent of, but can be additive to the CGroup tagging.
-> +	 */
-> +	if (current->core_task_cookie) {
-> +
-> +		/* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
-> +		if (!(clone_flags & CLONE_THREAD)) {
-> +			return sched_core_share_tasks(p, p);
-> +               }
-> +		/* Otherwise share the parent's per-task tag. */
-> +		return sched_core_share_tasks(p, current);
-> +	}
->   #endif
->   	return 0;
->   }
-> @@ -9177,6 +9194,217 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
->   #endif /* CONFIG_RT_GROUP_SCHED */
->   
->   #ifdef CONFIG_SCHED_CORE
-> +/*
-> + * A simple wrapper around refcount. An allocated sched_core_cookie's
-> + * address is used to compute the cookie of the task.
-> + */
-> +struct sched_core_cookie {
-> +	refcount_t refcnt;
-> +};
-> +
-> +/*
-> + * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
-> + * @p: The task to assign a cookie to.
-> + * @cookie: The cookie to assign.
-> + * @group: is it a group interface or a per-task interface.
-> + *
-> + * This function is typically called from a stop-machine handler.
-> + */
-> +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> +{
-> +	if (!p)
-> +		return;
-> +
-> +	if (group)
-> +		p->core_group_cookie = cookie;
-> +	else
-> +		p->core_task_cookie = cookie;
-> +
-> +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> +	p->core_cookie = (p->core_task_cookie <<
-> +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-> +
-> +	if (sched_core_enqueued(p)) {
-> +		sched_core_dequeue(task_rq(p), p);
-> +		if (!p->core_task_cookie)
-> +			return;
-> +	}
-> +
-> +	if (sched_core_enabled(task_rq(p)) &&
-> +			p->core_cookie && task_on_rq_queued(p))
-> +		sched_core_enqueue(task_rq(p), p);
-> +}
-> +
-> +/* Per-task interface */
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_cookie *ptr =
-> +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +	refcount_set(&ptr->refcnt, 1);
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return (unsigned long)ptr;
-> +}
-> +
-> +static bool sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return refcount_inc_not_zero(&ptr->refcnt);
-> +}
-> +
-> +static void sched_core_put_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	if (refcount_dec_and_test(&ptr->refcnt))
-> +		kfree(ptr);
-> +}
-> +
-> +struct sched_core_task_write_tag {
-> +	struct task_struct *tasks[2];
-> +	unsigned long cookies[2];
-> +};
-> +
-> +/*
-> + * Ensure that the task has been requeued. The stopper ensures that the task cannot
-> + * be migrated to a different CPU while its core scheduler queue state is being updated.
-> + * It also makes sure to requeue a task if it was running actively on another CPU.
-> + */
-> +static int sched_core_task_join_stopper(void *data)
-> +{
-> +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-> +	int i;
-> +
-> +	for (i = 0; i < 2; i++)
-> +		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> +{
-> +	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-> +	bool sched_core_put_after_stopper = false;
-> +	unsigned long cookie;
-> +	int ret = -ENOMEM;
-> +
-> +	mutex_lock(&sched_core_mutex);
-> +
-> +	/*
-> +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-> +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-> +	 *       by this function *after* the stopper removes the tasks from the
-> +	 *       core queue, and not before. This is just to play it safe.
-> +	 */
-> +	if (t2 == NULL) {
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-> +		}
-> +	} else if (t1 == t2) {
-> +		/* Assign a unique per-task cookie solely for t1. */
-> +
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +		}
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = cookie;
-> +	} else
-> +	/*
-> +	 * 		t1		joining		t2
-> +	 * CASE 1:
-> +	 * before	0				0
-> +	 * after	new cookie			new cookie
-> +	 *
-> +	 * CASE 2:
-> +	 * before	X (non-zero)			0
-> +	 * after	0				0
-> +	 *
-> +	 * CASE 3:
-> +	 * before	0				X (non-zero)
-> +	 * after	X				X
-> +	 *
-> +	 * CASE 4:
-> +	 * before	Y (non-zero)			X (non-zero)
-> +	 * after	X				X
-> +	 */
-> +	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 1. */
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		/* Add another reference for the other task. */
-> +		if (!sched_core_get_task_cookie(cookie)) {
-> +			return -EINVAL;
+Hi
 
-should be:              ret = -EINVAL;
+On Wed, Nov 4, 2020 at 10:51 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-11-04 at 23:42 +0200, Laurent Pinchart wrote:
+> > Hi Joe,
+>
+> Hi Laurent.
+>
+> > On Wed, Nov 04, 2020 at 11:29:30AM -0800, Joe Perches wrote:
+> > > On Wed, 2020-11-04 at 19:07 +0100, Ricardo Ribalda wrote:
+> > > > Replace all the uses of printk(KERN_CONT ... with pr_cont().
+> > >
+> > > Perhaps remove the uvc_printk macro and uses and use the more
+> > > common pr_fmt and pr_<level> mechanisms.
+> >
+> > I'd actually go for dev_* instead, to give some context. It's fairly
+> > common to have multiple UVC devices connected to a system, so printing
+> > the device name would be useful. It can still be wrapped with
+> > uvc_printk() if we want to wrap the cast from uvc_device to a struct
+> > device (we should actually try to get the device corresponding to the
+> > USB interface where available, so we should use uvc_streaming->intf->dev
+> > where possible, and fallback to uvc_device->udev->dev otherwise), or
+> > drop the wrapper completely.
+>
+> Of course yes.  I was not going to look around and update the existing
+> call sites to find whatever controlling uvc_device * or other struct *
+> to a real device that exists though.
+>
+> It's not even clear from the changes that an appropriate pointer to
+> some struct exists in all the functions.
+>
+> That's work for someone that knows the actual subsystem and I do not.
 
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.tasks[1] = t2;
-> +		wr.cookies[0] = wr.cookies[1] = cookie;
-> +
-> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 2. */
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> +
-> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> +		/* CASE 3. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +
-> +	} else {
-> +		/* CASE 4. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +	}
-> +
-> +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-> +
-> +	if (sched_core_put_after_stopper)
-> +		sched_core_put();
-> +
-> +	ret = 0;
-> +out_unlock:
-> +	mutex_unlock(&sched_core_mutex);
-> +	return ret;
-> +}
-> +
-> +/* CGroup interface */
->   static u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
->   {
->   	struct task_group *tg = css_tg(css);
-> @@ -9207,18 +9435,9 @@ static int __sched_write_tag(void *data)
->   	 * when we set cgroup tag to 0 when the loop is done below.
->   	 */
->   	while ((p = css_task_iter_next(&it))) {
-> -		p->core_cookie = !!val ? (unsigned long)tg : 0UL;
-> -
-> -		if (sched_core_enqueued(p)) {
-> -			sched_core_dequeue(task_rq(p), p);
-> -			if (!p->core_cookie)
-> -				continue;
-> -		}
-> -
-> -		if (sched_core_enabled(task_rq(p)) &&
-> -		    p->core_cookie && task_on_rq_queued(p))
-> -			sched_core_enqueue(task_rq(p), p);
-> +		unsigned long cookie = !!val ? (unsigned long)tg : 0UL;
->   
-> +		sched_core_tag_requeue(p, cookie, true /* group */);
->   	}
->   	css_task_iter_end(&it);
->   
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index c8fee8d9dfd4..88bf45267672 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -1024,6 +1024,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->   		__PS("clock-delta", t1-t0);
->   	}
->   
-> +#ifdef CONFIG_SCHED_CORE
-> +	__PS("core_cookie", p->core_cookie);
-> +#endif
-> +
->   	sched_show_numa(p, m);
->   }
->   
-> 
+I have updated my tree with the dev_ variants
 
--chrish
+https://github.com/ribalda/linux/commit/b8785fd8efb4f2e5bbf5d0f2df3e0d69a5439015
+
+will send it to the tree when I get more feedback from the other patches.
+
+Thanks!
+
+>
+> cheers, Joe
+>
+
+
+-- 
+Ricardo Ribalda
