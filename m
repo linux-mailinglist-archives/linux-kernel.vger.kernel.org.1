@@ -2,162 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E532A63F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57A42A63FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbgKDMMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:12:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        id S1729762AbgKDMPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgKDMMH (ORCPT
+        with ESMTP id S1728287AbgKDMPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:12:07 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B517C0613D3;
-        Wed,  4 Nov 2020 04:12:07 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id y184so24866052lfa.12;
-        Wed, 04 Nov 2020 04:12:07 -0800 (PST)
+        Wed, 4 Nov 2020 07:15:41 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC71C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 04:15:40 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 10so17144688pfp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 04:15:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zFxlkviNq8oY1JYiwmSh5Vs2myFF5OtsqFy2+LMGGlA=;
-        b=sO6TyAteui5wdoT8yCsvcUvZVkNkk67zcseg3SyHI8KxSkD73sCLPXkSA0OIpG+H/D
-         b53uDfygwEjofEHOLYCW+FIctHNovv6ZicvLQA46oSeW/oD2uHo4BHEA1HamDlK46zr1
-         UGGslxQm2cziEU2yX/w/xlzHjF36omdjKO4+6z9WbqS51kqabnHqmarLLL8+tpueCSnh
-         wFzmTXuQSxb+iPU5ZawSJdykJTrvo+ZLqNZ0+2XKuTulVaNK4hkdJFApja4/bMlcUp2c
-         WzJ2oZ6fVWbOjmd5tjQYOfAy3AR/dYP1pWS6Voa7EbtSwWV+1kS8NgkCK2h0qALj8/S9
-         YVqA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=R1J0AH9WgS50lM8FwPFZLpnnKAWRIzjyzvCVb6eH6q8=;
+        b=LffQLyBZWSLKygNLU7+9ISrE6hdj+29LZSoL0kyavnd4iP2nJS5rzih3teg/MmzDOI
+         etr9Q6zhdypa6G6uLRqZBItq/2pMojDYu/CjACz7rP2vKA08T9L6dplm4GqhxaeoSY+J
+         q7A4ff/S0+SJj7ElQ1+sCmHfqiIomlZ7Uh9pFY538e3Gy+H9qrVIaS7Gu+ISrp8Nieuc
+         7kK9PMUcSJrQRJga18KcWxpYaSOs4aRxa4vy/N9y+HEsHvbifQuMhP3qoKO2AAYyJqmD
+         hVSFOZfs6WeKCLsj9Y4JnYmNy4Sl74UFf/0uRlPfAmStzyzR2/gCTW6FHEYmvU3hJlgJ
+         6KLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zFxlkviNq8oY1JYiwmSh5Vs2myFF5OtsqFy2+LMGGlA=;
-        b=bzoM/4CM9FdLHfKsfAkACwOvydwtQ6HQudvYjDJ+VwjyXmS/9Q/oQnzo7NEvVnojk0
-         3hdPxTnCxKPagpy708Iyd4uD8fmOxAlXboCaGu37MqYQKutpWNcwVqpEVfQKPgwIc7l8
-         U2UeQvghsruT4q6A/N8Fza/ixcZKbFVNOjEABP8aIUbwgWHW4Y23AXSukcekOP9QgVsC
-         ZktLCg27s5bEfYHUbvg7EAiRZ/CvIutt+yebu6AaBe2tvscbN4P4x7lnT97A4A4kF8yS
-         KTS+8k1wVfX+rogrufrskgiB1QiwZZMnycDsPRIUJQF5bD3N9JBEb70Uvht2yw/m7ZJ9
-         ye9g==
-X-Gm-Message-State: AOAM53282xKHHSDVuOBbFsnhw8yYZ224eWRUdPz8m8/pEmxcZ8U4jfbW
-        cviJIEFvdujpLmjkWkOKnN8=
-X-Google-Smtp-Source: ABdhPJzklSAwEI5brLMtXwwy35EXqMl4O+dz0ngVRUUYFX6CW8nRdv4/seeFX58ly2xdXCiIlBHRLg==
-X-Received: by 2002:a19:4c1:: with SMTP id 184mr8809966lfe.547.1604491925925;
-        Wed, 04 Nov 2020 04:12:05 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id h11sm500174ljc.21.2020.11.04.04.12.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=R1J0AH9WgS50lM8FwPFZLpnnKAWRIzjyzvCVb6eH6q8=;
+        b=bN0aocH10WCXopCjA1FhlbRdulQTj5kWKI8VpFnDwQm4Xrqr++Do/VxrvNoA1mzWPp
+         nhcZdovK2Ri4hg1NuyjN+twLEgIpFHrPOSsXRL5aGD0pEyOMeVYeCWTaEdLuEOnGkdSe
+         ehDjSaTABidRzMV7JhoJygkulNuMNRmMGlJlhizAziAKPJ/T9oiSH9fJcsHbA+Oh1Gge
+         6baEKJFEsSC9ahhK+y/9qoVKTgDJaoOHoxnJ1icnBssCrhoEGkdEO5sB7Gzt57woFEN3
+         zZLAjcCGQ2sqHigzGFR+ieOiETDRZywKHtUgk3BdiVHbyPSWbB09VcJpyPaRviKwCxRw
+         wTNw==
+X-Gm-Message-State: AOAM533Wcu2bId9Hra4xSlWJkp1BhEWnytn+HEH5f9naGWpVCYHYASc1
+        EwjX9EfwcqrVYpJMPcMGnwI=
+X-Google-Smtp-Source: ABdhPJw8errMDs0Q21bOu5QpwF/Z3BYb7nDU4hdkJcP574gWqsGLZYHxZtFlddpR0ij7IWk1qxo48A==
+X-Received: by 2002:a17:90a:5884:: with SMTP id j4mr3973377pji.7.1604492139788;
+        Wed, 04 Nov 2020 04:15:39 -0800 (PST)
+Received: from localhost ([160.202.157.3])
+        by smtp.gmail.com with ESMTPSA id x4sm2288322pfm.98.2020.11.04.04.15.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:12:05 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 4 Nov 2020 13:12:03 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201104121203.GB17782@pc636>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103175422.GB1310511@google.com>
+        Wed, 04 Nov 2020 04:15:39 -0800 (PST)
+Date:   Wed, 4 Nov 2020 17:45:32 +0530
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com
+Subject: [PATCH] drm/i915/gvt: replace idr_init() by idr_init_base()
+Message-ID: <20201104121532.GA48202@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103175422.GB1310511@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:54:22PM -0500, Joel Fernandes wrote:
-> On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > The current memmory-allocation interface presents to following
-> > difficulties that this patch is designed to overcome
-> [...]
-> > ---
-> >  kernel/rcu/tree.c | 109 ++++++++++++++++++++++++++++------------------
-> >  1 file changed, 66 insertions(+), 43 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 06895ef85d69..f2da2a1cc716 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -177,7 +177,7 @@ module_param(rcu_unlock_delay, int, 0444);
-> >   * per-CPU. Object size is equal to one page. This value
-> >   * can be changed at boot time.
-> >   */
-> > -static int rcu_min_cached_objs = 2;
-> > +static int rcu_min_cached_objs = 5;
-> >  module_param(rcu_min_cached_objs, int, 0444);
-> >  
-> >  /* Retrieve RCU kthreads priority for rcutorture */
-> > @@ -3084,6 +3084,9 @@ struct kfree_rcu_cpu_work {
-> >   *	In order to save some per-cpu space the list is singular.
-> >   *	Even though it is lockless an access has to be protected by the
-> >   *	per-cpu lock.
-> > + * @page_cache_work: A work to refill the cache when it is empty
-> > + * @work_in_progress: Indicates that page_cache_work is running
-> > + * @hrtimer: A hrtimer for scheduling a page_cache_work
-> >   * @nr_bkv_objs: number of allocated objects at @bkvcache.
-> >   *
-> >   * This is a per-CPU structure.  The reason that it is not included in
-> > @@ -3100,6 +3103,11 @@ struct kfree_rcu_cpu {
-> >  	bool monitor_todo;
-> >  	bool initialized;
-> >  	int count;
-> > +
-> > +	struct work_struct page_cache_work;
-> > +	atomic_t work_in_progress;
-> 
-> Does it need to be atomic? run_page_cache_work() is only called under a lock.
-> You can use xchg() there. And when you do the atomic_set, you can use
-> WRITE_ONCE as it is a data-race.
-> 
-We can use xchg together with *_ONCE() macro. Could you please clarify what
-is your concern about using atomic_t? Both xchg() and atomic_xchg() guarantee
-atamarity. Same as WRITE_ONCE() or atomic_set().
+idr_init() uses base 0 which is an invalid identifier. The new function
+idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+all lookups that otherwise starts from 0 since 0 is always unused.
 
-> > @@ -4449,24 +4482,14 @@ static void __init kfree_rcu_batch_init(void)
-> >  
-> >  	for_each_possible_cpu(cpu) {
-> >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> > -		struct kvfree_rcu_bulk_data *bnode;
-> >  
-> >  		for (i = 0; i < KFREE_N_BATCHES; i++) {
-> >  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
-> >  			krcp->krw_arr[i].krcp = krcp;
-> >  		}
-> >  
-> > -		for (i = 0; i < rcu_min_cached_objs; i++) {
-> > -			bnode = (struct kvfree_rcu_bulk_data *)
-> > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > -
-> > -			if (bnode)
-> > -				put_cached_bnode(krcp, bnode);
-> > -			else
-> > -				pr_err("Failed to preallocate for %d CPU!\n", cpu);
-> > -		}
-> > -
-> >  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> > +		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> >  		krcp->initialized = true;
-> 
-> During initialization, is it not better to still pre-allocate? That way you
-> don't have to wait to get into a situation where you need to initially
-> allocate.
-> 
-Since we have a worker that does it when a cache is empty there is no
-a high need in doing it during initialization phase. If we can reduce
-an amount of code it is always good :)
+References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
 
-Thanks, Joel.
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+---
+ drivers/gpu/drm/i915/gvt/gvt.c  | 2 +-
+ drivers/gpu/drm/i915/gvt/vgpu.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---
-Vlad Rezki
+diff --git a/drivers/gpu/drm/i915/gvt/gvt.c b/drivers/gpu/drm/i915/gvt/gvt.c
+index c7c561237883..45b492edbb19 100644
+--- a/drivers/gpu/drm/i915/gvt/gvt.c
++++ b/drivers/gpu/drm/i915/gvt/gvt.c
+@@ -312,7 +312,7 @@ int intel_gvt_init_device(struct drm_i915_private *i915)
+ 
+ 	gvt_dbg_core("init gvt device\n");
+ 
+-	idr_init(&gvt->vgpu_idr);
++	idr_init_base(&gvt->vgpu_idr, 1);
+ 	spin_lock_init(&gvt->scheduler.mmio_context_lock);
+ 	mutex_init(&gvt->lock);
+ 	mutex_init(&gvt->sched_lock);
+diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/vgpu.c
+index f6d7e33c7099..1c8e63f84134 100644
+--- a/drivers/gpu/drm/i915/gvt/vgpu.c
++++ b/drivers/gpu/drm/i915/gvt/vgpu.c
+@@ -393,7 +393,7 @@ static struct intel_vgpu *__intel_gvt_create_vgpu(struct intel_gvt *gvt,
+ 	mutex_init(&vgpu->dmabuf_lock);
+ 	INIT_LIST_HEAD(&vgpu->dmabuf_obj_list_head);
+ 	INIT_RADIX_TREE(&vgpu->page_track_tree, GFP_KERNEL);
+-	idr_init(&vgpu->object_idr);
++	idr_init_base(&vgpu->object_idr, 1);
+ 	intel_vgpu_init_cfg_space(vgpu, param->primary);
+ 	vgpu->d3_entered = false;
+ 
+-- 
+2.25.1
+
