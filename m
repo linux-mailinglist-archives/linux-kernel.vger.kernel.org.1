@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD8D2A5FC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9EB2A5FCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgKDIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:40:25 -0500
-Received: from mga04.intel.com ([192.55.52.120]:52516 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgKDIkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:40:24 -0500
-IronPort-SDR: 4Hz9iT3/DgHjUU5mRfwF2wk2WvZvRmNMoESdfcLOS3v+ipRBW/WYSC8vWToVZQOH+P3s2EIfa0
- 8Ww4imFKg5XA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="166595546"
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="166595546"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 00:40:24 -0800
-IronPort-SDR: 1yqp2FoU4soRwC8zdeWoBQmLGPxpmPWAvYZG7Bs0yMWSWtekt/wPQ7d8ZxoU/TeW5HfQ3654bN
- uOiBlrM9daeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="528851047"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga005.fm.intel.com with ESMTP; 04 Nov 2020 00:40:22 -0800
-Date:   Wed, 4 Nov 2020 16:40:21 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
-        ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
- zone only node
-Message-ID: <20201104084021.GB15700@shbuild999.sh.intel.com>
-References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
- <20201104071308.GN21990@dhcp22.suse.cz>
- <20201104073826.GA15700@shbuild999.sh.intel.com>
- <20201104075819.GA10052@dhcp22.suse.cz>
+        id S1728243AbgKDIoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727812AbgKDIoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:44:19 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A89C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 00:44:15 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id m13so12330220oih.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:44:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ycqoIkcF9lPtiJBVMgjq7zwCX8Gyu6JCtVXT12jKTV8=;
+        b=SO6a9eIH6r+EzFThZ6MTARjwHEtx6LFHOpOvFgwKmnw7LjZXHcgycyhZfUmdSwXoni
+         9VPCbgc6ODqmZSPJVN4eXwn3IqpRr3uXKNjrMKGfBOBHLutZLHhso+mS3OiPqxM7Q6/l
+         K5a5NNqZWoxju2yJSN+OURI61y0XID3dk0Roo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ycqoIkcF9lPtiJBVMgjq7zwCX8Gyu6JCtVXT12jKTV8=;
+        b=S8bCfPK0wQxdm37ulmQZGO0dGuJAcNZmiUcdEJTKLXw+NpY8QlJ0MlVAyLWghs1Tes
+         rf3OjsMA/IS5cY9hp0QBm2kdGISo8+Qbj/AAlR6koOZSh/PesDnuZkkZ34rG2i3IaAEY
+         qGlb98TpVcv5hny0B43TRg4WyOCpZzZlfe0/oWUHWqkIhZ7T6AAwIUj/BLsYMyh3Z+Cy
+         HfrERmEgoj+5uZd6ds4NdoT/yYDLIwdgkaBgRsk6xTJelclePT575xq27RjmFdyYJB7M
+         oK8aTYIdf5Obe7ntQdnhxpzexJQxHeEY3jshsBN96mIteWkqpC0PxQUaTsrw7iUZqzzw
+         N3kA==
+X-Gm-Message-State: AOAM532RRWUDL6nt5A4psTeK9mDzrntrToob8qFzhTBpkBfaOTHUqQ5I
+        sOgAgqsvRfEfsKNegap7tKpjMRhAQRQXM7C9MJ5Z+A==
+X-Google-Smtp-Source: ABdhPJzFeuCQlV5NJZ+3HUxdvXgtCAFGX/0rEF7qnn1uI6qUI3Z5/MsHqFAcH2CxUPAQE20CBPAAF7SeJ5phPHzYaRc=
+X-Received: by 2002:aca:b141:: with SMTP id a62mr1813813oif.101.1604479455139;
+ Wed, 04 Nov 2020 00:44:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104075819.GA10052@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201030100815.2269-12-daniel.vetter@ffwll.ch>
+ <20201103212840.GA266427@bjorn-Precision-5520> <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
+In-Reply-To: <CAPcyv4jCGxWG0opLv4VzBRk5iLwu6CRse4DwF-otWkfXoGWe6A@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 4 Nov 2020 09:44:04 +0100
+Message-ID: <CAKMK7uF0QjesaNs97N-G8cZkXuAmFgcmTfHvoCP94br_WVcV6Q@mail.gmail.com>
+Subject: Re: [PATCH v5 11/15] PCI: Obey iomem restrictions for procfs mmap
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 08:58:19AM +0100, Michal Hocko wrote:
-> On Wed 04-11-20 15:38:26, Feng Tang wrote:
-> [...]
-> > > Could you be more specific about the usecase here? Why do you need a
-> > > binding to a pure movable node? 
-> > 
-> > One common configuration for a platform is small size of DRAM plus huge
-> > size of PMEM (which is slower but cheaper), and my guess of their use
-> > is to try to lead the bulk of user space allocation (GFP_HIGHUSER_MOVABLE)
-> > to PMEM node, and only let DRAM be used as less as possible. 
-> 
-> While this is possible, it is a tricky configuration. It is essentially 
-> get us back to 32b and highmem...
+On Tue, Nov 3, 2020 at 11:09 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> On Tue, Nov 3, 2020 at 1:28 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Oct 30, 2020 at 11:08:11AM +0100, Daniel Vetter wrote:
+> > > There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
+> > > files, and the old proc interface. Two check against
+> > > iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
+> > > this starts to matter, since we don't want random userspace having
+> > > access to PCI BARs while a driver is loaded and using it.
+> > >
+> > > Fix this by adding the same iomem_is_exclusive() check we already have
+> > > on the sysfs side in pci_mmap_resource().
+> > >
+> > > References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> >
+> > This is OK with me but it looks like IORESOURCE_EXCLUSIVE is currently
+> > only used in a few places:
+> >
+> >   e1000_probe() calls pci_request_selected_regions_exclusive(),
+> >   ne_pci_probe() calls pci_request_regions_exclusive(),
+> >   vmbus_allocate_mmio() calls request_mem_region_exclusive()
+> >
+> > which raises the question of whether it's worth keeping
+> > IORESOURCE_EXCLUSIVE at all.  I'm totally fine with removing it
+> > completely.
+>
+> Now that CONFIG_IO_STRICT_DEVMEM upgrades IORESOURCE_BUSY to
+> IORESOURCE_EXCLUSIVE semantics the latter has lost its meaning so I'd
+> be in favor of removing it as well.
 
-:) Another possible case is similar binding on a memory hotplugable
-platform, which has one unplugable node and several other nodes configured
-as movable only to be hot removable when needed
+Still has some value since it enforces exclusive access even if the
+config isn't enabled, and iirc e1000 had some fun with userspace tools
+clobbering the firmware and bricking the chip.
 
-> As I've said in reply to your second patch. I think we can make the oom
-> killer behavior more sensible in this misconfigured cases but I do not
-> think we want break the cpuset isolation for such a configuration.
-
-Do you mean we skip the killing and just let the allocation fail? We've
-checked the oom killer code first, when the oom happens, both DRAM
-node and unmovable node have lots of free memory, and killing process
-won't improve the situation.
-
-(Folloing is copied from your comments for 2/2) 
-> This allows to spill memory allocations over to any other node which
-> has Normal (or other lower) zones and as such it breaks cpuset isolation.
-> As I've pointed out in the reply to your cover letter it seems that
-> this is more of a misconfiguration than a bug.
-
-For the usage case (docker container running), the spilling is already
-happening, I traced its memory allocation requests, many of them are
-movable, and got fallback to the normal node naturally with current
-code, only a few got blocked, as many of __alloc_pages_nodemask are
-called witih 'NULL' nodemask parameter.
-
-And I made this RFC patch inspired by code in __alloc_pages_may_oom():
-
-	if (gfp_mask & __GFP_NOFAIL)
-		page = __alloc_pages_cpuset_fallback(gfp_mask, order,
-				ALLOC_NO_WATERMARKS, ac);
-
-Thanks,
-Feng
-
-> -- 
-> Michal Hocko
-> SUSE Labs
+Another thing I kinda wondered, since pci maintainer is here: At least
+in drivers/gpu I see very few drivers explicitly requestion regions
+(this might be a historical artifact due to the shadow attach stuff
+before we had real modesetting drivers). And pci core doesn't do that
+either, even when a driver is bound. Is this intentional, or
+should/could we do better? Since drivers work happily without
+reserving regions I don't think "the drivers need to remember to do
+this" will ever really work out well.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
