@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026F72A5C19
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2335E2A5C20
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730465AbgKDBoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:44:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgKDBoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:44:07 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CCFC20870;
-        Wed,  4 Nov 2020 01:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604454246;
-        bh=KI9LQShmDq+BbAxyoPo9nBH0BUcZngj2x4XBVSVL14w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0ua95QE7dN8/a8uyJ6TB/dmYe2R82r63Nk28Q2eoBMlXBkxvMNijRhLFW0h0ekJ16
-         9oxv+lGEGP/qRi7wM4bmDYwfpCfivLfGA3FcvoreQenaOmt4+HgwUv8Cz9izYqA6s/
-         KOighz9KFjh5dBklzmZ5BZ4t/Mp7yycD6ivhLHmc=
-Date:   Tue, 3 Nov 2020 17:44:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Oliver Neukum <oliver@neukum.org>
-Subject: Re: [PATCH net-next v2] net/usb/r8153_ecm: support ECM mode for
- RTL8153
-Message-ID: <20201103174405.43a4a3ab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <db4c6b3b30284206a6f131e922760e1e@realtek.com>
-References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
-        <1394712342-15778-388-Taiwan-albertk@realtek.com>
-        <20201031160838.39586608@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <dc7fd1d4d1c544e8898224c7d9b54bda@realtek.com>
-        <20201102114718.0118cc12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201103093241.GA79239@kroah.com>
-        <20201103081535.7e92a495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <db4c6b3b30284206a6f131e922760e1e@realtek.com>
+        id S1730535AbgKDBpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:45:02 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7138 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728567AbgKDBpB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:45:01 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQqGJ6pKyz15Qjc;
+        Wed,  4 Nov 2020 09:44:56 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 4 Nov 2020
+ 09:44:56 +0800
+Subject: Re: [PATCH 1/4] erofs: fix setting up pcluster for temporary pages
+To:     Gao Xiang <hsiangkao@redhat.com>
+CC:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>,
+        Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20201022145724.27284-1-hsiangkao.ref@aol.com>
+ <20201022145724.27284-1-hsiangkao@aol.com>
+ <f1f24a38-97f7-e9cf-03c8-2c95814b98a3@huawei.com>
+ <20201104011130.GA982972@xiangao.remote.csb>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <e4cbe373-ca69-5f95-99c7-422375c58e4e@huawei.com>
+Date:   Wed, 4 Nov 2020 09:44:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201104011130.GA982972@xiangao.remote.csb>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 01:39:52 +0000 Hayes Wang wrote:
-> Jakub Kicinski <kuba@kernel.org>
-> > Sent: Wednesday, November 4, 2020 12:16 AM  
-> [...]
-> > > So no, please do not create such a common file, it is not needed or a
-> > > good idea.  
-> > 
-> > I wouldn't go that far, PCI subsystem just doesn't want everyone to add
-> > IDs to the shared file unless there is a reason.
-> > 
-> >  *	Do not add new entries to this file unless the definitions
-> >  *	are shared between multiple drivers.
-> > 
-> > Which seems quite reasonable. But it is most certainly your call :)  
+On 2020/11/4 9:11, Gao Xiang wrote:
+> On Wed, Nov 04, 2020 at 09:05:56AM +0800, Chao Yu wrote:
+>> On 2020/10/22 22:57, Gao Xiang wrote:
+>>> From: Gao Xiang <hsiangkao@redhat.com>
+>>>
+>>> pcluster should be only set up for all managed pages instead of
+>>> temporary pages. Since it currently uses page->mapping to identify,
+>>> the impact is minor for now.
+>>>
+>>> Fixes: 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
+>>> Cc: <stable@vger.kernel.org> # 5.5+
+>>> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+>>
+>> Reviewed-by: Chao Yu <yuchao0@huawei.com>
 > 
-> Do I have to resend this patch?
+> Thanks, I've also added a note to the commit message like this,
+> "
+> [ Update: Vladimir reported the kernel log becomes polluted
+>    because PAGE_FLAGS_CHECK_AT_FREE flag(s) set if the page
+>    allocation debug option is enabled. ]
+> "
+> Will apply all of this to -fixes branch.
 
-Yes please, that'd be easiest for me. Also Oliver wasn't CCed on this
-posting.
+Thanks for noticing that, looks fine to me.
+
+Thanks,
+
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> Thanks,
+>>
+> 
+> .
+> 
