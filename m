@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2692A715E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE732A714F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732972AbgKDXVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        id S1732893AbgKDXUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:20:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732857AbgKDXUc (ORCPT
+        with ESMTP id S1732873AbgKDXUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Nov 2020 18:20:32 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566A3C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:20:30 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id m4so31190wrq.23
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:20:30 -0800 (PST)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3D1C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:20:32 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id 2so72951qtb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=VwB+r0G+nQxE1tuBjegw7DUOaY0AiMb9tMmTZBhg6+8=;
-        b=MDmPTXJQevl3NQ6pPgEvXpSSQtSuvY2cTzhAh3FiI69d33h3RwvxrJF8DhF4f9ozzW
-         38bGuVV/PLZ/cPT/AlhSH3FfbpQN9mZJ58knWztbqd6E7JMGFYQ7XWAqQyJfnNNNGDFw
-         d5rl22jSmqJvbLqs0mPj/8hYcvCcQFMBIfiWQyKhKZRnxiW4bT/I5A56UDSnrNFCF/vA
-         P6FRc3aJRnfbADBibKj/h59pLcE+PT8sseLnPTzIatx6eW/X7jX8BiGJ6FrffbHcc4/Z
-         58x0qGiCyUk2TeU4RU2RgD61GpjPYNjkeeQTO/N9ew2p8fegRjyWCv//Rs5tIMfLiwRu
-         GxJA==
+        bh=E7M1YMbMIR4yMAYd8ymzpiiG9f9KaGeAaRDscMDAbI8=;
+        b=vNs/tV40nkRYLh+bd2pRN8tnAzZTvTLYqRkQOCW6i0NqSU2MOjkywCmEziyzjFDNbr
+         1rXXXbldJOqtLhDCWvgATfC+KSCn3Aw1SgcbKhGaY2x/0ad9/WzaRZcunh9SZ9VhdWE+
+         93GL/HUwq1B+KUAPEFz5rUbLRIrVBCkQXeDb31FsmrSWnLJ4R1ycm2wOLG0aAjeFzPNd
+         jLN+AusTKOptQ9gIduhkrhSG92OcBcAhl87OkgzMmsZeCPCIffeaaQOvpyCBT3IoQjWh
+         u6V6jH9lhOM7AGfqm48kv9PP2ZoAcIs2IFa3F6C/Ts6nXU4mcYfW9PncMAclN7WOtnNw
+         P00Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=VwB+r0G+nQxE1tuBjegw7DUOaY0AiMb9tMmTZBhg6+8=;
-        b=pxpot20lJ5ihiATbSe+V02S+rw44Fk44XhcWvg+ycecZ/W11nn8dvN3RCaD+YFuNRm
-         8aepDiD3b5jYblhJsxW4IKjp6fHQDJfZOyPxiypi7KaI7WDhneLf+D9ytiUXmKWvrcup
-         FcCXjWFJeEySDJO6p0p5ynXiZGo70IKx5CnxxOjFvzkWo58XE9dvwddGrDzEf8FFau/X
-         U8oOVsUVAO4oTkSETGvenogUbur3yNdmVeFvYKz7yt02Uwurjt8B/Nobpw95xrWtkYTi
-         k9rth7RhHNmDcHh5ziQPtXRdEKUnuzFAbeF6SFljw7ozcV2J4vVae1SqEYiDBJsqTsOC
-         G/7g==
-X-Gm-Message-State: AOAM5313pUfvFEajsGexBspXYomd1jzKts0duhrGIYU+pb/niHEIPEgx
-        rEb3bWQS4013aYmZ0nWc+ixg7xRLwRcWT7pg
-X-Google-Smtp-Source: ABdhPJxroHsqJ2INmWm39MqryU/d9TuUcrDwnrdfUwfCHfE74IyGC4tjThzYCtzqtdPk9orQeLHnvF6nrHhjcgxf
+        bh=E7M1YMbMIR4yMAYd8ymzpiiG9f9KaGeAaRDscMDAbI8=;
+        b=X2WR46wvtV4C4baoI3ZyYlkSDgC5A85k5GPgu9aqso5HFDcZlq9xJRq/fGe/OIQQUt
+         OPOIa57FDezFJTQbmzi9Tk1JHCOU6egNRfMORSai/9NffW6QBn7D2nLzzf/1PGsX1ZOE
+         vPgUC0H3EBaeh8fk2fBmOrJA2azHCmbLQ8JIf9/n8V34exxODX6LUSEijcgpPjfxE2p+
+         5FgtiFg7+99icjMZ7fR/80H0jsgiOqiqJWFKpKinzcbg41udAV6HxQV/VBZI6zwmqG7B
+         yi8Cv8d1FXsXaUl7osEIQ6+MAdaCp5XiUwIMX86mFDvGauepKH6ZexcZShai9IxnBxCC
+         z+WA==
+X-Gm-Message-State: AOAM533ZRv8FRPSGspV1Lnj1BXd0JzpYiPKEDWUa4MRRDLpQlnR79izz
+        KdyhSjVVHX/jnjCR/bbpm+3E6SiGzOEJYUtu
+X-Google-Smtp-Source: ABdhPJzqgs/A05RlcSOyed/F/WMpRLrfZfCyn2cPNSS5rL4ubrhak1Ah1gehiCULAgkww5qluz2BjCh1uVyX/JcV
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c101:: with SMTP id
- w1mr80924wmi.170.1604532028927; Wed, 04 Nov 2020 15:20:28 -0800 (PST)
-Date:   Thu,  5 Nov 2020 00:18:49 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:4b32:: with SMTP id
+ s18mr435733qvw.16.1604532031338; Wed, 04 Nov 2020 15:20:31 -0800 (PST)
+Date:   Thu,  5 Nov 2020 00:18:50 +0100
 In-Reply-To: <cover.1604531793.git.andreyknvl@google.com>
-Message-Id: <b223b35fb4ae833ca0ae579de37c6b9f0aa828c3.1604531793.git.andreyknvl@google.com>
+Message-Id: <dff2b79698978d86f4813fb7901492a1a61190b7.1604531793.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1604531793.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v8 34/43] arm64: kasan: Add arch layer for memory tagging helpers
+Subject: [PATCH v8 35/43] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -73,77 +73,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a set of arch_*() memory tagging helpers currently only
-defined for arm64 when hardware tag-based KASAN is enabled. These helpers
-will be used by KASAN runtime to implement the hardware tag-based mode.
-
-The arch-level indirection level is introduced to simplify adding hardware
-tag-based KASAN support for other architectures in the future by defining
-the appropriate arch_*() macros.
+Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
+KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I42b0795a28067872f8308e00c6f0195bca435c2a
+Change-Id: I5d1117e6a991cbca00d2cfb4ba66e8ae2d8f513a
 ---
- arch/arm64/include/asm/memory.h |  8 ++++++++
- mm/kasan/kasan.h                | 22 ++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ mm/kasan/kasan.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index cd61239bae8c..580d6ef17079 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -230,6 +230,14 @@ static inline const void *__tag_set(const void *addr, u8 tag)
- 	return (const void *)(__addr | __tag_shifted(tag));
- }
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+#define arch_init_tags(max_tag)			mte_init_tags(max_tag)
-+#define arch_get_random_tag()			mte_get_random_tag()
-+#define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
-+#define arch_set_mem_tag_range(addr, size, tag)	\
-+			mte_set_mem_tag_range((addr), (size), (tag))
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- /*
-  * Physical vs virtual RAM address space conversion.  These are
-  * private definitions which should NOT be used outside memory.h
 diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index b5b00bff358f..e3cd6a3d2b23 100644
+index e3cd6a3d2b23..618e69d12f61 100644
 --- a/mm/kasan/kasan.h
 +++ b/mm/kasan/kasan.h
-@@ -241,6 +241,28 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #define reset_tag(addr)		((void *)arch_kasan_reset_tag(addr))
- #define get_tag(addr)		arch_kasan_get_tag(addr)
+@@ -5,7 +5,13 @@
+ #include <linux/kasan.h>
+ #include <linux/stackdepot.h>
  
-+#ifdef CONFIG_KASAN_HW_TAGS
-+
-+#ifndef arch_init_tags
-+#define arch_init_tags(max_tag)
-+#endif
-+#ifndef arch_get_random_tag
-+#define arch_get_random_tag()	(0xFF)
-+#endif
-+#ifndef arch_get_mem_tag
-+#define arch_get_mem_tag(addr)	(0xFF)
-+#endif
-+#ifndef arch_set_mem_tag_range
-+#define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
++#else
++#include <asm/mte-kasan.h>
++#define KASAN_GRANULE_SIZE	MTE_GRANULE_SIZE
 +#endif
 +
-+#define hw_init_tags(max_tag)			arch_init_tags(max_tag)
-+#define hw_get_random_tag()			arch_get_random_tag()
-+#define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
-+#define hw_set_mem_tag_range(addr, size, tag)	arch_set_mem_tag_range((addr), (size), (tag))
-+
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- /*
-  * Exported functions for interfaces called from assembly or from generated
-  * code. Declarations here to avoid warning about missing declarations.
+ #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
+ #define KASAN_GRANULE_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
+ 
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
