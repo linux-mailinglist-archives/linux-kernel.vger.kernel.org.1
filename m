@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4CE2A6DA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4889E2A6DAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731485AbgKDTNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731466AbgKDTNo (ORCPT
+        id S1731491AbgKDTPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:15:34 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:40364 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgKDTPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:13:44 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892B0C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:13:44 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b25so22866272ybj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=uYTChtPoUZn68QnU98ObMvhC9uF9K4phW3blmsNr5ng=;
-        b=J8L1VcQLpWaYwk5TXhwHuyzXC+bLLjOKKMgHPgUvOyu35w92we2LCRqFGPPyVyX9PU
-         FCVxZNMziDFxQmvNgFBRlicuSlPzT4tEWNJ/J4tnerbExp4m0PWrvq2CTs4qZUk+UttU
-         mpPj4A2geJz4ZYwgDWu1Z6/aZFhe6lR7afuvqklzz9J6HLI7DJP/fj+8gAeiFsQgijxp
-         bZDDXN1saKwe95UzdpPNW/LmsSerkBT0/SAXjUFPPG4LgMmefObLNbCI3/jX8UeZ3fwm
-         f2j8mrNFst2tMjjgI3zyF10zSf7lWAPle0fEL/xQdawH+yR2tzGJwKxoEhAQ41vr7na6
-         LBHw==
+        Wed, 4 Nov 2020 14:15:34 -0500
+Received: by mail-wm1-f66.google.com with SMTP id k18so3364280wmj.5;
+        Wed, 04 Nov 2020 11:15:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=uYTChtPoUZn68QnU98ObMvhC9uF9K4phW3blmsNr5ng=;
-        b=Kt0z6qvrug8/cnDYXdNTCYyM+RX2mJqcRDojjI66rPnayjS9GHRoIK/0KLxkR5APo1
-         aSiYdjvDdj7/V/MRWDy2vhqGXl6NpWPNQB7raUsARjAjzj7KqydjtAPtdnKDzr7HxDYY
-         bvpjl6A6u/N6QOxKaeZgwrLllNRhbtF5RH9UxjSV+74qTl3BecfFr719WSkqF4PH8yns
-         e2GyySxOh95X1NndDCeus3ExUOPWmTdeNFySbgsQrhBXUUFfinJclCHCMygWx6CGkVHm
-         XODvT0kGRPQ10XgpRy8VP4nBjzadX6/XOPM+qPp8kBJQsCJTIvveAam5ajnU8qZK7NH5
-         e13Q==
-X-Gm-Message-State: AOAM533vbPm5i/cWbHx9DvU5ICRZLkoSUkVyQD3r3sPalRHZg8pXK6ZB
-        nLskvQZhrRdd6gw/LDWVrbNs7T+0PrEGuhKlXMA=
-X-Google-Smtp-Source: ABdhPJxg0ez4h+LV3GpK48TsldixSvXLdah99f65jwhJpLLoMmn1AYu4aN0v5n7HEk8jMeDcNiDCpDhLzVYfAEEVrVE=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:ba4c:: with SMTP id
- z12mr36344394ybj.366.1604517223782; Wed, 04 Nov 2020 11:13:43 -0800 (PST)
-Date:   Wed,  4 Nov 2020 11:13:34 -0800
-Message-Id: <20201104191334.393972-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] MAINTAINERS: mark LLVM as maintained rather than supported
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7v8XNWb378ZY/CjlNvIn/30UioBbrTjZQwuMGRkG3IQ=;
+        b=EWmns0/p6rhEnpxVmtUx4KY5rW8XtODDRB55Fd5q7SgcHF3xz7otJDvpCHoAqDOLKF
+         swHbrN4ZQUlrbo98SFAZx9RQDB7VdgM0F+dpJQLD4fHUVXTpKDirSDRjN2ewKTqQac2P
+         jHmyAuyBK3ylKJM4LgUxNlP173qIRfmp3UmyhGPlD3vU9PNs4Z+FK7eh19mlLaqtfJPf
+         XNz/nngtLHa8OVa45Tw/4LljEGorm32t2kwt7OnI6jnsE0CxGtD3t3pXyd4LEO6f7ofC
+         FLBMTkXYyqVpUHPL6oCLiVEyUODdBzjr0E0VFLtQ3HsR0Zk74bBapgN7O2KPayBLPpGS
+         LOdA==
+X-Gm-Message-State: AOAM530ZfGKKitBoUYHSQ5cmYJbuyZRl5cLhRi4UTHHG3+leqmQGBGdw
+        uTMwU3rBKHuRHlLlCyNY0Hk=
+X-Google-Smtp-Source: ABdhPJy+GUA1BUDCh53c1vQmUq/aXWgRuLFUU/fJOZ4/aRRtmTCr4ULfvetun6jIKGJqh/QpJQq0wg==
+X-Received: by 2002:a1c:3103:: with SMTP id x3mr6148797wmx.107.1604517331370;
+        Wed, 04 Nov 2020 11:15:31 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:f032:e586:d54c:b9cb? ([2601:647:4802:9070:f032:e586:d54c:b9cb])
+        by smtp.gmail.com with ESMTPSA id n4sm3498536wmi.32.2020.11.04.11.15.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 11:15:30 -0800 (PST)
+Subject: Re: [PATCH 3/3] blk-mq: Use llist_head for blk_cpu_done
+To:     Christoph Hellwig <hch@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>, Mike Galbraith <efault@gmx.de>
+References: <20201029131212.dsulzvsb6pahahbs@linutronix.de>
+ <20201029140536.GA6376@infradead.org>
+ <20201029145623.3zry7o6nh6ks5tjj@linutronix.de>
+ <20201029145743.GA19379@infradead.org>
+ <d2c15411-5b21-535b-6e07-331ebe22f8c8@grimberg.me>
+ <20201029210103.ocufuvj6i4idf5hj@linutronix.de>
+ <deb40e55-d228-06c8-8719-fc8657a0a19b@grimberg.me>
+ <20201031104108.wjjdiklqrgyqmj54@linutronix.de>
+ <3bbfb5e1-c5d7-8f3b-4b96-6dc02be0550d@kernel.dk>
+ <20201102095533.fxc2xpauzsoju7cm@linutronix.de>
+ <20201102181238.GA17806@infradead.org>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <75970f9d-7e59-5fba-280a-d0d935fc4d2f@grimberg.me>
+Date:   Wed, 4 Nov 2020 11:15:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201102181238.GA17806@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Funding secured.
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>> There really aren't any rules for this, and it's perfectly legit to
+>>> complete from process context. Maybe you're a kthread driven driver and
+>>> that's how you handle completions. The block completion path has always
+>>> been hard IRQ safe, but possible to call from anywhere.
+>>
+>> I'm not trying to put restrictions and forbidding completions from a
+>> kthread. I'm trying to avoid the pointless softirq dance for no added
+>> value. We could:
+> 
+>> to not break that assumption you just mentioned and provide
+>> |static inline void blk_mq_complete_request_local(struct request *rq)
+>> |{
+>> |                 rq->q->mq_ops->complete(rq);
+>> |}
+>>
+>> so that completion issued from from process context (like those from
+>> usb-storage) don't end up waking `ksoftird' (running at SCHED_OTHER)
+>> completing the requests but rather performing it right away. The softirq
+>> dance makes no sense here.
+> 
+> Agreed.  But I don't think your above blk_mq_complete_request_local
+> is all that useful either as ->complete is defined by the caller,
+> so we could just do a direct call.  Basically we should just
+> return false from blk_mq_complete_request_remote after updating
+> the state when called from process context.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 721fa3aa62d0..165f580586aa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4274,7 +4274,7 @@ CLANG/LLVM BUILD SUPPORT
- M:	Nathan Chancellor <natechancellor@gmail.com>
- M:	Nick Desaulniers <ndesaulniers@google.com>
- L:	clang-built-linux@googlegroups.com
--S:	Supported
-+S:	Maintained
- W:	https://clangbuiltlinux.github.io/
- B:	https://github.com/ClangBuiltLinux/linux/issues
- C:	irc://chat.freenode.net/clangbuiltlinux
--- 
-2.29.1.341.ge80a0c044ae-goog
+Agreed.
 
+> But given that IIRC
+> we are not supposed to check what state we are called from
+> we'll need a helper just for updating the state instead and
+> ensure the driver uses the right helper.  Now of course we might
+> have process context callers that still want to bounce to the
+> submitting CPU, but in that case we should go directly to a
+> workqueue or similar.
+
+This would mean that it may be suboptimal for nvme-tcp to complete
+requests in softirq context from the network context (determined by
+NIC steering). Because in this case, this would trigger workqueue
+schedule on a per-request basis rather than once per .data_ready
+call like we do today. Is that correct?
+
+It has been observed that completing commands in softirq context
+(network determined cpu) because basically the completion does
+IPI + local complete, not IPI + softirq or IPI + workqueue.
+
+> Either way doing this properly will probabl involve an audit of all
+> drivers, but I think that is worth it.
+
+Agree.
