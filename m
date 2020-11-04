@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B923A2A607C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0E72A607F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgKDJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:29:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726434AbgKDJ3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604482180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sNIUH/NWHkFHY64VfaawTYBDidvMrnoULy11KAx4HxE=;
-        b=Hm0dasHDJho2bdaEvbHeeA4fvJqotcGLTfhaz5pda27RyAM9jSl5mqDxmiTBOKTXv/xIek
-        ih+3ptMrScXvhERZAnD66JwxJOqBjfi9GPgtypKYh39lHoDK3n7oDY7osOx7uh19vZwrh8
-        lOG0b7cWm6PGUkuV5JV3sZ8rKs5r8RA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-SFfYKSFfNCypDyaQQ8tYwQ-1; Wed, 04 Nov 2020 04:29:37 -0500
-X-MC-Unique: SFfYKSFfNCypDyaQQ8tYwQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 465421009E2F;
-        Wed,  4 Nov 2020 09:29:35 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-12.ams2.redhat.com [10.36.113.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D02D65D9CC;
-        Wed,  4 Nov 2020 09:29:31 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
-        <20201103173438.GD5545@sirena.org.uk>
-        <20201104092012.GA6439@willie-the-truck>
-Date:   Wed, 04 Nov 2020 10:29:29 +0100
-In-Reply-To: <20201104092012.GA6439@willie-the-truck> (Will Deacon's message
-        of "Wed, 4 Nov 2020 09:20:12 +0000")
-Message-ID: <87h7q54ghy.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1728465AbgKDJaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:30:00 -0500
+Received: from smtp21.cstnet.cn ([159.226.251.21]:52166 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726690AbgKDJaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:30:00 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-01 (Coremail) with SMTP id qwCowACnrYmPdKJfA2MUAQ--.61871S2;
+        Wed, 04 Nov 2020 17:29:51 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] media: i2c: mt9p031: Remove redundant null check before clk_disable_unprepare
+Date:   Wed,  4 Nov 2020 09:29:48 +0000
+Message-Id: <20201104092948.8560-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowACnrYmPdKJfA2MUAQ--.61871S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw1xGry7Ww4DJwb_yoW3Krg_Cr
+        n8Xr17WFWjvr90y348GFs5Ar9rtay8ZFW8Xa48t39akFWjv3Z8ZF4qvry3Aw1DtF4jkF15
+        AryUur4fArn7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4UJVWxJr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0enmtUUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYKA1z4jjNnQgAAs4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Will Deacon:
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-> Is there real value in this seccomp filter if it only looks at mprotect(),
-> or was it just implemented because it's easy to do and sounds like a good
-> idea?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/media/i2c/mt9p031.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-It seems bogus to me.  Everyone will just create alias mappings instead,
-just like they did for the similar SELinux feature.  See =E2=80=9CExample c=
-ode
-to avoid execmem violations=E2=80=9D in:
-
-  <https://www.akkadia.org/drepper/selinux-mem.html>
-
-As you can see, this reference implementation creates a PROT_WRITE
-mapping aliased to a PROT_EXEC mapping, so it actually reduces security
-compared to something that generates the code in an anonymous mapping
-and calls mprotect to make it executable.
-
-Furthermore, it requires unusual cache flushing code on some AArch64
-implementations (a requirement that is not shared by any Linux other
-architecture to which libffi has been ported), resulting in
-hard-to-track-down real-world bugs.
-
-Thanks,
-Florian
---=20
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'N=
-eill
+diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+index dc23b9ed510a..a633b934d93e 100644
+--- a/drivers/media/i2c/mt9p031.c
++++ b/drivers/media/i2c/mt9p031.c
+@@ -346,8 +346,7 @@ static void mt9p031_power_off(struct mt9p031 *mt9p031)
+ 	regulator_bulk_disable(ARRAY_SIZE(mt9p031->regulators),
+ 			       mt9p031->regulators);
+ 
+-	if (mt9p031->clk)
+-		clk_disable_unprepare(mt9p031->clk);
++	clk_disable_unprepare(mt9p031->clk);
+ }
+ 
+ static int __mt9p031_set_power(struct mt9p031 *mt9p031, bool on)
+-- 
+2.17.1
 
