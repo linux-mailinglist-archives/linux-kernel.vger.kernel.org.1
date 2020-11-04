@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8382A71BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BDF2A71B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733161AbgKDX0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:26:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        id S1732730AbgKDX0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732691AbgKDXYA (ORCPT
+        with ESMTP id S1732750AbgKDXYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:24:00 -0500
+        Wed, 4 Nov 2020 18:24:04 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2BFC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:23:59 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c9so404539ybs.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:23:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E46EC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:24:02 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id x197so376008ybg.18
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:24:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=qxSdT/htjPt1rfcdgR0CtyWt92pD/X+GQuarVc5W22A=;
-        b=Z6PCXnSTts8YmxctL8R7Frehiq4pIXSlJeDUZCZbNmy0fl+H77QjQaXxf2VR2mIxnL
-         jAqBDRGKE+3Iy5VcYSEgbEPJ53NSzGi9GhD7mEZfiHKo8ONvwKFTWoTqk6/Dv+sPPDVQ
-         rws4CbXu+gdD6Vj0wD1rLzChL1MQTuxyBHZg0L8zdpDu88R9GFGimNhbs/5zyBUyXHo0
-         23Ss2J6oz4ToQMDTudjsvy7GivTsWgSxT4ZmXT/ChbWPbtj3oqE+RW5zp69WtVhD8X0n
-         ndDLkiNB9YGG+1OkGhhS3zgN2V9p1xUWAD1Z8OJ24ZYLCktbG/nSFh8XX7Y480qa8JXX
-         vQ/Q==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=BhUjYszSk71wZlQtq5hRNOUlleKEQKCmateQuUAc1A0=;
+        b=Bww/3yKY+ONgWcJ3cLoSeSWBPGJ2hOS3FdcxPbz3akcI3W+hgtgq3R4WoTmlARlZqP
+         M5VyJmlXPSgGfPOYla6Cr/RUJZuHSF9L09ESU8I+XQA4i6jtltKJmyG4dMVDrewSrptv
+         76WeaxXUGcIgP8+ND2sovEN0lVt08XBee3p4OrzTZR1SCw8rQG5BOiY2hrKG0LRpmlT8
+         qP9m3pO8wXlMHwqmjZAhN62bCK9gb8jUT1x7Dp19hJ5/C+z5Ufi7chERIKkwy6mfEZgx
+         QLry5+3skYHHqz3iXBKFg7dr8izgsH8XuAdEa0Soi2x7Jl6vRfd8282WGtqjKOAYIJEM
+         FFug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=qxSdT/htjPt1rfcdgR0CtyWt92pD/X+GQuarVc5W22A=;
-        b=ocIrDVNl6/KzcT9MykMmDBbVSMCD7lfQhKWeFN14GycdWv9p5dols2lfqaK8GR0g2O
-         rDPYyZXVyMmtoPk7OpYCLusUaV2fucVKmlNibY58MHu2RjyFpyUAFEk6BSmxSew0Qer+
-         ztMnen7DYWzTKUJKBTsqyUu20Ol7tqdNteLmAYwUNr6i/uduBGdwnU3+ydWCo0hdeuv0
-         8pktPOC9fAZb/aaH5VCBZYdwoDQ5+HWkyFfhWOTsudNErQnz7/9NtOUgWyclaK3cJ+de
-         TXm8wVWtM0wxNNOmXqerlWnkHp8gpsqbKgcMDCzRril8xObeDtdbOBIUKMZIXebLPU6R
-         r6xQ==
-X-Gm-Message-State: AOAM532ZKLbJLgk0fBxsDwBxcR9ptJmGMPlCNaELmoAYcvIiT6W9azHB
-        Us5G7JhM39syh+LS/O7KyW+IF1cqN60H1Qo=
-X-Google-Smtp-Source: ABdhPJzf64PWD8NlgoAvp7yefgz83qDvAlatxAksLGDndOY3DpA93FJ1sU1LtLNL4PYFhovQS+WVfPQ1uwtMhXM=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=BhUjYszSk71wZlQtq5hRNOUlleKEQKCmateQuUAc1A0=;
+        b=Y6O5bT3Fwbs5YI8kilVJzBqSBJDNUeYHsSmAOrdFLR9UT+iJJ1phzYPSTqRhCe2J/H
+         1cy1vfUZyyf9qKqSLB86OwmbgI40NRxKIQ3HUu/1HaGeDJ1iSbET7xnNQxNYb4cTAoSB
+         UKDumzmXYRLfG2u9BLaUoPbGGLi8PKktIMZOaEZcki7dqbr3uaSX7P7hg6J+hxIe2oC+
+         7m2tLE9aGteQkkDJkfHS7oH7nsd9epuC3rhqgyZL84vn03to9/4mtOZWp9pI6QQ7nLSL
+         /axl5x0+Olj2X+/rZqZHd+XXa7/8NwWfkv2j/iyAEu9SbuW1+57JPte7TyNc68UBpMI9
+         9jaA==
+X-Gm-Message-State: AOAM533DdvV5iPNu0sT4RX/BWqUCoqCDMCzZBWVNgZ1TRvLMTp0JmhpW
+        /J4w5vn1R6VhlPtjzi4ZoK1Ac8WCj0N8hTM=
+X-Google-Smtp-Source: ABdhPJwpeEFN4gVsTaAomYr1fpuXRu2jKJlLJc0sAndfUh392UG+hSNst+uctyYjAO2rEcnP1boxrdw2x+fGHZo=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a25:da92:: with SMTP id
- n140mr254441ybf.275.1604532239153; Wed, 04 Nov 2020 15:23:59 -0800 (PST)
-Date:   Wed,  4 Nov 2020 15:23:37 -0800
-Message-Id: <20201104232356.4038506-1-saravanak@google.com>
+ (user=saravanak job=sendgmr) by 2002:a25:40c5:: with SMTP id
+ n188mr274862yba.514.1604532241782; Wed, 04 Nov 2020 15:24:01 -0800 (PST)
+Date:   Wed,  4 Nov 2020 15:23:38 -0800
+In-Reply-To: <20201104232356.4038506-1-saravanak@google.com>
+Message-Id: <20201104232356.4038506-2-saravanak@google.com>
 Mime-Version: 1.0
+References: <20201104232356.4038506-1-saravanak@google.com>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v1 00/18] Refactor fw_devlink to significantly improve boot time
+Subject: [PATCH v1 01/18] Revert "driver core: Avoid deferred probe due to fw_devlink_pause/resume()"
 From:   Saravana Kannan <saravanak@google.com>
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -72,86 +75,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation of fw_devlink is very inefficient because it
-tries to get away without creating fwnode links in the name of saving
-memory usage. Past attempts to optimize runtime at the cost of memory
-usage were blocked with request for data showing that the optimization
-made significant improvement for real world scenarios.
+This reverts commit 2451e746478a6a6e981cfa66b62b791ca93b90c8.
 
-We have those scenarios now. There have been several reports of boot
-time increase in the order of seconds in this thread [1]. Several OEMs
-and SoC manufacturers have also privately reported significant
-(350-400ms) increase in boot time due to all the parsing done by
-fw_devlink.
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c    | 21 ---------------------
+ include/linux/device.h |  3 +--
+ 2 files changed, 1 insertion(+), 23 deletions(-)
 
-So this patch series refactors fw_devlink to be more efficient. The key
-difference now is the addition of support for fwnode links -- just a few
-simple APIs. This also allows most of the code to be moved out of
-firmware specific (DT mostly) code into driver core.
-
-This brings the following benefits:
-- Instead of parsing the device tree multiple times (complexity was
-  close to O(N^3) where N in the number of properties) during bootup,
-  fw_devlink parses each fwnode node/property only once and creates
-  fwnode links. The rest of the fw_devlink code then just looks at these
-  fwnode links to do rest of the work.
-
-- Makes it much easier to debug probe issue due to fw_devlink in the
-  future. fw_devlink=on blocks the probing of devices if they depend on
-  a device that hasn't been added yet. With this refactor, it'll be very
-  easy to tell what that device is because we now have a reference to
-  the fwnode of the device.
-
-- Much easier to add fw_devlink support to ACPI and other firmware
-  types. A refactor to move the common bits from DT specific code to
-  driver core was in my TODO list as a prerequisite to adding ACPI
-  support to fw_devlink. This series gets that done.
-
-Tomi/Laurent/Grygorii,
-
-If you can test this series, that'd be great!
-
-Thanks,
-Saravana
-
-[1] - https://lore.kernel.org/linux-pm/CAGETcx-aiW251dhEXT1GNb9bi6YcX8W=jLBrro5CnPuEjGL09g@mail.gmail.com/
-
-Saravana Kannan (18):
-  Revert "driver core: Avoid deferred probe due to fw_devlink_pause/resume()"
-  Revert "driver core: Rename dev_links_info.defer_sync to defer_hook"
-  Revert "driver core: Don't do deferred probe in parallel with kernel_init thread"
-  Revert "driver core: Remove check in driver_deferred_probe_force_trigger()"
-  Revert "of: platform: Batch fwnode parsing when adding all top level devices"
-  Revert "driver core: fw_devlink: Add support for batching fwnode parsing"
-  driver core: Add fwnode_init()
-  driver core: Add fwnode link support
-  driver core: Allow only unprobed consumers for SYNC_STATE_ONLY device links
-  device property: Add fwnode_is_ancestor_of()
-  driver core: Redefine the meaning of fwnode_operations.add_links()
-  driver core: Add fw_devlink_parse_fwtree()
-  driver core: Add fwnode_get_next_parent_dev() helper function
-  driver core: Use device's fwnode to check if it is waiting for suppliers
-  of: property: Update implementation of add_links() to create fwnode links
-  efi: Update implementation of add_links() to create fwnode links
-  driver core: Add helper functions to convert fwnode links to device links
-  driver core: Refactor fw_devlink feature
-
- drivers/acpi/property.c         |   2 +-
- drivers/acpi/scan.c             |   2 +-
- drivers/base/core.c             | 584 +++++++++++++++++++++-----------
- drivers/base/property.c         |  27 ++
- drivers/base/swnode.c           |   2 +-
- drivers/firmware/efi/efi-init.c |  31 +-
- drivers/of/dynamic.c            |   1 +
- drivers/of/platform.c           |   2 -
- drivers/of/property.c           | 150 +++-----
- include/linux/device.h          |  10 +-
- include/linux/fwnode.h          |  66 ++--
- include/linux/of.h              |   2 +-
- include/linux/property.h        |   2 +
- kernel/irq/irqdomain.c          |   2 +-
- 14 files changed, 490 insertions(+), 393 deletions(-)
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 78114ddac755..a56601e68a8c 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -51,7 +51,6 @@ static DEFINE_MUTEX(wfs_lock);
+ static LIST_HEAD(deferred_sync);
+ static unsigned int defer_sync_state_count = 1;
+ static unsigned int defer_fw_devlink_count;
+-static LIST_HEAD(deferred_fw_devlink);
+ static DEFINE_MUTEX(defer_fw_devlink_lock);
+ static bool fw_devlink_is_permissive(void);
+ 
+@@ -1472,12 +1471,6 @@ static void fw_devlink_link_device(struct device *dev)
+ 			fw_ret = -EAGAIN;
+ 	} else {
+ 		fw_ret = -ENODEV;
+-		/*
+-		 * defer_hook is not used to add device to deferred_sync list
+-		 * until device is bound. Since deferred fw devlink also blocks
+-		 * probing, same list hook can be used for deferred_fw_devlink.
+-		 */
+-		list_add_tail(&dev->links.defer_hook, &deferred_fw_devlink);
+ 	}
+ 
+ 	if (fw_ret == -ENODEV)
+@@ -1546,9 +1539,6 @@ void fw_devlink_pause(void)
+  */
+ void fw_devlink_resume(void)
+ {
+-	struct device *dev, *tmp;
+-	LIST_HEAD(probe_list);
+-
+ 	mutex_lock(&defer_fw_devlink_lock);
+ 	if (!defer_fw_devlink_count) {
+ 		WARN(true, "Unmatched fw_devlink pause/resume!");
+@@ -1560,19 +1550,8 @@ void fw_devlink_resume(void)
+ 		goto out;
+ 
+ 	device_link_add_missing_supplier_links();
+-	list_splice_tail_init(&deferred_fw_devlink, &probe_list);
+ out:
+ 	mutex_unlock(&defer_fw_devlink_lock);
+-
+-	/*
+-	 * bus_probe_device() can cause new devices to get added and they'll
+-	 * try to grab defer_fw_devlink_lock. So, this needs to be done outside
+-	 * the defer_fw_devlink_lock.
+-	 */
+-	list_for_each_entry_safe(dev, tmp, &probe_list, links.defer_hook) {
+-		list_del_init(&dev->links.defer_hook);
+-		bus_probe_device(dev);
+-	}
+ }
+ /* Device links support end. */
+ 
+diff --git a/include/linux/device.h b/include/linux/device.h
+index 5ed101be7b2e..da00f8e449bb 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -352,8 +352,7 @@ enum dl_dev_state {
+  * @suppliers: List of links to supplier devices.
+  * @consumers: List of links to consumer devices.
+  * @needs_suppliers: Hook to global list of devices waiting for suppliers.
+- * @defer_hook: Hook to global list of devices that have deferred sync_state or
+- *		deferred fw_devlink.
++ * @defer_hook: Hook to global list of devices that have deferred sync_state.
+  * @need_for_probe: If needs_suppliers is on a list, this indicates if the
+  *		    suppliers are needed for probe or not.
+  * @status: Driver status information.
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
