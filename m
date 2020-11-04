@@ -2,111 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BE92A655A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9E72A655C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgKDNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:39:56 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:42398 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgKDNjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:39:55 -0500
-Date:   Wed, 04 Nov 2020 13:39:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604497192; bh=WdLBXEtTB5n+fQsb0z3+UyBitWtDwfM7q0BL1uG5J+4=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=fdNyEqnONVsoXGG9bpasjovquWUEtyw3bjAP49H6fTMBFJA6Y55fCeh316i7tPguh
-         g3oJV0oltLhOhgaDGTWiazuisjbwI2gkRVuCcZovJYyFWdH6O5pHnpcZdMN/wiRU8W
-         gNv3ul9dSOB90b3loNPij/nnh1Fy+4iAXNVMtrId4sJWRkHV6ByJpbOC6vGqaf0D80
-         orzGe/oPhKkoRPE9VAq0MI8zIO4ZOFjtslL+lsOGimpkLDtJlulvv5JyPrdGIt+cf9
-         Xxs+R6eZWhYX3tR0pA9zRRMu3U+t4zmpKckxvPFakL1R2PpaVR3w4CPI33RnFtNay4
-         uhEotKIfwJStg==
-To:     Paul Cercueil <paul@crapouillou.net>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH mips-next 0/2] mips: boot: add support for self-extracting FIT images (vmlinuz.itb)
-Message-ID: <eUfiHt8RGTIlXhRVg9xYtvUalUyxmikudUShCIFKWoo@cp7-web-039.plabs.ch>
-In-Reply-To: <LRR9JQ.VHLICAJG4L2X1@crapouillou.net>
-References: <WnsVNeMB9c330hqKGdZ32JHsKO2ZbTM1BOGv74ZSJ9o@cp4-web-014.plabs.ch> <LRR9JQ.VHLICAJG4L2X1@crapouillou.net>
+        id S1730060AbgKDNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:40:27 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:43200 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729677AbgKDNk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:40:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604497226; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=RpVoMAO7pE7bPDbOQefCI2LLXeTHBoEF7ybXZpUMBOc=; b=jrd/Ketx/nfQEW/XZ0wuHoH2VcFAnqmZvxMMXkqAtl5xNeckbVwF09f76Xa/7ey0bPkwAEZs
+ JjyArGlijg2DXRWU3XRZksTT2xBr2ooJ8lg/60i1RR16Vy1Ms8I8i3Vw6O4wgdQg17mLBYh+
+ M70j3dyjh/4vvLD8Smlyn3q00Yc=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fa2af4ac4a50c2467527410 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 13:40:26
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 226BAC433C9; Wed,  4 Nov 2020 13:40:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.103] (unknown [124.123.167.211])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC7B7C433C8;
+        Wed,  4 Nov 2020 13:40:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC7B7C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v9 4/7] rcu/trace: Add tracing for how segcb list changes
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-5-joel@joelfernandes.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <58c89893-1bf7-29bb-7f97-2e48755e8dd7@codeaurora.org>
+Date:   Wed, 4 Nov 2020 19:10:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.8 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD
-        shortcircuit=no autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20201103142603.1302207-5-joel@joelfernandes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Wed, 04 Nov 2020 11:26:09 +0000
 
-> Hi Alexander,
 
-Hi Paul!
+On 11/3/2020 7:56 PM, Joel Fernandes (Google) wrote:
+> Track how the segcb list changes before/after acceleration, during
+> queuing and during dequeuing.
+> 
+> This has proved useful to discover an optimization to avoid unwanted GP
+> requests when there are no callbacks accelerated. The overhead is minimal as
+> each segment's length is now stored in the respective segment.
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+>   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
+>   kernel/rcu/rcu_segcblist.h |  5 +++++
+>   kernel/rcu/tree.c          |  9 +++++++++
+>   4 files changed, 73 insertions(+)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 155b5cb43cfd..5f8f2ee1a936 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+>   		  __entry->qlen)
+>   );
+>   
+> +TRACE_EVENT_RCU(rcu_segcb_stats,
+> +
+> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
 
-> Le dim. 1 nov. 2020 =EF=BF=BD 15:11, Alexander Lobakin <alobakin@pm.me> a
-> =C3=A9crit :
->> Commit c3e2ee657418 ("MIPS: generic: Add support for zboot") added
->> support for self-extracting images to Generic MIPS. However, the
->> intended way to boot Generic MIPS kernels is using FIT Images and
->> UHI boot protocol, but currently there's no way to make
->> self-extracting
->> FIT Image (only legacy uzImages).
->>
->> This set consists of two parts:
->> 1) various cleanups in arch/mips/boot/compressed/Makefile as a
->>    prerequisite;
->> 2) a new target named "vmlinuz.itb" for composing self-extracting
->>    FIT Images, which allows to have the advantages of both UHI and
->>    vmlinuz.
->>
->> The second part involves some scenarios duplication, but I think it
->> can be a subject for another series (for constifying and unifying
->> FIT Images rules across the architectures).
->>
->> Alexander Lobakin (2):
->>   mips: boot: clean up self-extracting targets scenarios
->>   mips: boot: add support for self-extracting FIT images (vmlinuz.itb)
->
-> It doesn't break anything on my end, so:
->
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
->
-> for the series.
+I think we need to use long[] instead of int[] for cb_count everywhere 
+in this patch?
 
-Thanks!
 
-> Why vmlinuz.itb and not vmlinuz.fit or vmlinuz.uhi? Is the .itb suffix
-> already a thing?
+Thanks
+Neeraj
 
-As far as I know -- yes, ITB stands for Image Tree Blob (reference
-to Device Tree Blob) and it's a standartized extension for FIT Images
-(you can see that all variants for MIPS have ".itb" at the bottom of
-arch/mips/boot/Makefile).
+> +
+> +		TP_ARGS(ctx, cb_count, gp_seq),
+> +
+> +		TP_STRUCT__entry(
+> +			__field(const char *, ctx)
+> +			__array(int, cb_count, RCU_CBLIST_NSEGS)
+> +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
+> +		),
+> +
+> +		TP_fast_assign(
+> +			__entry->ctx = ctx;
+> +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
+> +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
+> +		),
+> +
+> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> +
+> +);
+> +
+>   /*
+>    * Tracepoint for the registration of a single RCU callback of the special
+>    * kvfree() form.  The first argument is the RCU type, the second argument
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 357c19bbcb00..2a03949d0b82 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -14,6 +14,7 @@
+>   #include <linux/types.h>
+>   
+>   #include "rcu_segcblist.h"
+> +#include "rcu.h"
+>   
+>   /* Initialize simple callback list. */
+>   void rcu_cblist_init(struct rcu_cblist *rclp)
+> @@ -328,6 +329,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+>   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+>   }
+>   
+> +/*
+> + * Return how many CBs each segment along with their gp_seq values.
+> + *
+> + * This function is O(N) where N is the number of segments. Only used from
+> + * tracing code which is usually disabled in production.
+> + */
+> +#ifdef CONFIG_RCU_TRACE
+> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> +			 int cbcount[RCU_CBLIST_NSEGS],
+> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> +		gpseq[i] = rsclp->gp_seq[i];
+> +	}
+> +}
+> +
+> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
+> +{
+> +	int cbs[RCU_CBLIST_NSEGS];
+> +	unsigned long gps[RCU_CBLIST_NSEGS];
+> +
+> +	if (!trace_rcu_segcb_stats_enabled())
+> +		return;
+> +
+> +	rcu_segcblist_countseq(rsclp, cbs, gps);
+> +
+> +	trace_rcu_segcb_stats(context, cbs, gps);
+> +}
+> +#endif
+> +
+>   /*
+>    * Extract only those callbacks still pending (not yet ready to be
+>    * invoked) from the specified rcu_segcblist structure and place them in
+> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> index cd35c9faaf51..7750734fa116 100644
+> --- a/kernel/rcu/rcu_segcblist.h
+> +++ b/kernel/rcu/rcu_segcblist.h
+> @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
+>   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
+>   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+>   			 struct rcu_segcblist *src_rsclp);
+> +#ifdef CONFIG_RCU_TRACE
+> +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context);
+> +#else
+> +#define __trace_rcu_segcb_stats(...)
+> +#endif
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 24c00020ab83..f6c6653b3ec2 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+>   		return false;
+>   
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+> +
+>   	/*
+>   	 * Callbacks are often registered with incomplete grace-period
+>   	 * information.  Something about the fact that getting exact
+> @@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>   	else
+>   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+>   
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
+> +
+>   	return ret;
+>   }
+>   
+> @@ -2466,11 +2470,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+>   	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+>   	if (offloaded)
+>   		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+> +
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
+>   	rcu_nocb_unlock_irqrestore(rdp, flags);
+>   
+>   	/* Invoke callbacks. */
+>   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+>   	rhp = rcu_cblist_dequeue(&rcl);
+> +
+>   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+>   		rcu_callback_t f;
+>   
+> @@ -2983,6 +2990,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>   		trace_rcu_callback(rcu_state.name, head,
+>   				   rcu_segcblist_n_cbs(&rdp->cblist));
+>   
+> +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+> +
+>   	/* Go handle any RCU core processing required. */
+>   	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+>   		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+> 
 
-> Cheers,
-> -Paul
-
-Al
-
->>  arch/mips/Makefile                 |  3 +-
->>  arch/mips/boot/.gitignore          |  1 +
->>  arch/mips/boot/compressed/Makefile | 96
->> +++++++++++++++++++++++++-----
->>  3 files changed, 85 insertions(+), 15 deletions(-)
->>
->> --
->> 2.29.2
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
