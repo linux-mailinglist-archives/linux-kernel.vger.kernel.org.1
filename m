@@ -2,330 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67502A6E43
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B322A6E4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729784AbgKDTmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:42:13 -0500
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:53324 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgKDTmL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:42:11 -0500
-Received: by mail-wm1-f42.google.com with SMTP id p22so3528509wmg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:42:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5H2cjp/ojaDeYXXC9nERJb2mJqNrN5ARkYKJWZfDeFU=;
-        b=pPJmKHVqPVmJJA1Xqq++NiPN7n6zokYvr0sAy1Hs57rzmS6GT+xTT3pOla/2cIpxtv
-         UxcYMxn/443GAIS+c0r7f+7Ot8SZFzg6L6Nnbv/Sp7mvXyg/kBjZGo10+px/tU9EppiF
-         ISzu2XQfePV4emgdM8cMM/grQsS5F/Y97n45XuhJ+7GP1fMv+7IijIX1uRhJi77sv9O+
-         +0lik0RBFAG7yDArHgAT62Ck3cw8UMPg/SvT9FGjvwFaJft0ats13kvKnzKxAA1Hyrpj
-         d1CfkMK1BMYUHTlfQiesc8aHE/mCz2aWkpr2reN8u/RJ0jvgwtx/h9GPA2Obv9SykBn/
-         fg0Q==
-X-Gm-Message-State: AOAM533Pncn1PnFrZMJVZRBRlA0hoRzlyyMSmGnElY2t/p47zY0VU2OP
-        sH0qkob0BjCQkq0wKXKz3qtZFj7pL+lHcsdT
-X-Google-Smtp-Source: ABdhPJzm9wH/PWtao4nmp4kvPqXcz+mpVgjyHDl9feTlzXZ0f4mps7Ua5uSzX+SOqMVwKuHex7earA==
-X-Received: by 2002:a1c:7d12:: with SMTP id y18mr6289138wmc.103.1604518927825;
-        Wed, 04 Nov 2020 11:42:07 -0800 (PST)
-Received: from msft-t490s.teknoraver.net (net-5-95-179-145.cust.vodafonedsl.it. [5.95.179.145])
-        by smtp.gmail.com with ESMTPSA id g17sm4185895wrw.37.2020.11.04.11.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:42:07 -0800 (PST)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] reboot: allow to specify reboot mode via sysfs
-Date:   Wed,  4 Nov 2020 20:41:56 +0100
-Message-Id: <20201104194156.105814-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
+        id S1730383AbgKDTqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:46:48 -0500
+Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:60412 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbgKDTqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 14:46:48 -0500
+Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by blackbox.su (Postfix) with ESMTPSA id D857982D09;
+        Wed,  4 Nov 2020 22:46:48 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=blackbox.su;
+        s=201811; t=1604519208;
+        bh=Wl6jFLMihoNHO2Bwe8IWK0SHn3NOrqmaBZlfC3hUrls=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NRQ2JmzXv52J8V1gZdmJ+zv9EMM0n+6F5VPaaffvldcIxmW9bqmWAY1uRCP6IHv81
+         XLId0TauVuWi8SGtZKcqaiZMnT7ycs7Huo7wyndMibbp84dkA6YZdt+6jch8kQvQME
+         zdyqgKtRubPcIfZwBdO8JitPbY6kVdY81IJkZUXAygrfR3ARt5J77XEH/eskZIrS9p
+         qgD7sEuiXPdg/pDeofWlagQJm9UKltD2HeZ1sOCoVqe8xT1XlgbWykqGOPOPsY4OdC
+         PIio3wWUATRr3j6VPrvnz/Hh5ZvM9+8E+QmKakAV/fJhrEYgQ4Ygd5dVNeFsl0vOYw
+         BflKPcu84PDOw==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     andrew@lunn.ch, Markus.Elfring@web.de,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] lan743x: fix for potential NULL pointer dereference with bare card
+Date:   Wed, 04 Nov 2020 22:46:35 +0300
+Message-ID: <2039725.TBXjNvtEQf@metabook>
+In-Reply-To: <20201103173815.506db576@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <220201101203820.GD1109407@lunn.ch> <20201101223556.16116-1-sbauer@blackbox.su> <20201103173815.506db576@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Wednesday, November 4, 2020 4:38:33 AM MSK Jakub Kicinski wrote:
+> On Mon,  2 Nov 2020 01:35:55 +0300 Sergej Bauer wrote:
+> > This is the 3rd revision of the patch fix for potential null pointer
+> > dereference with lan743x card.
+> > 
+> > The simpliest way to reproduce: boot with bare lan743x and issue "ethtool
+> > ethN" commant where ethN is the interface with lan743x card. Example:
+> > 
+> > $ sudo ethtool eth7
+> > dmesg:
+> > [  103.510336] BUG: kernel NULL pointer dereference, address:
+> > 0000000000000340 ...
+> > [  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
+> > ...
+> > [  103.511629] Call Trace:
+> > [  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
+> > [  103.511724]  dev_ethtool+0x1507/0x29d0
+> > [  103.511769]  ? avc_has_extended_perms+0x17f/0x440
+> > [  103.511820]  ? tomoyo_init_request_info+0x84/0x90
+> > [  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
+> > [  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
+> > [  103.511973]  ? inet_ioctl+0x187/0x1d0
+> > [  103.512016]  dev_ioctl+0xb5/0x560
+> > [  103.512055]  sock_do_ioctl+0xa0/0x140
+> > [  103.512098]  sock_ioctl+0x2cb/0x3c0
+> > [  103.512139]  __x64_sys_ioctl+0x84/0xc0
+> > [  103.512183]  do_syscall_64+0x33/0x80
+> > [  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > [  103.512274] RIP: 0033:0x7f54a9cba427
+> 
+> Applied, thanks!
 
-The kernel cmdline reboot= option offers some sort of control
-on how the reboot is issued.
-Add handles in sysfs to allow setting these reboot options, so they
-can be changed when the system is booted, other than at boot time.
+Hi, Jakub!
+Thank you for taking the time to review my patch
 
-The handlers are under <sysfs>/kernel/reboot, can be read to
-get the current configuration and written to alter it.
+                Regards,
+                        Sergej.
 
-	# cd /sys/kernel/reboot/
 
-	# grep . *
-	cpu:0
-	force:0
-	mode:cold
-	type:acpi
-
-	# echo 2 >cpu
-	# echo 1 >force
-	# echo soft >mode
-	# echo bios >type
-
-	# grep . *
-	cpu:2
-	force:1
-	mode:soft
-	type:bios
-
-Before setting anything, check for CAP_SYS_BOOT capability, so it's
-possible to allow an unpriviledged process to change these settings
-simply by relaxing the handles permissions, without opening them to
-the world.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- Documentation/ABI/testing/sysfs-kernel-reboot |  26 +++
- kernel/reboot.c                               | 193 ++++++++++++++++++
- 2 files changed, 219 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-reboot
-
-diff --git a/Documentation/ABI/testing/sysfs-kernel-reboot b/Documentation/ABI/testing/sysfs-kernel-reboot
-new file mode 100644
-index 000000000000..3fda90bdc644
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-@@ -0,0 +1,26 @@
-+What:		/sys/kernel/reboot
-+Date:		October 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Interface to set the kernel reboot mode, similarly to
-+		what can be done via the reboot= cmdline option.
-+		(see Documentation/admin-guide/kernel-parameters.txt)
-+
-+What:		/sys/kernel/reboot/mode
-+What:		/sys/kernel/reboot/type
-+What:		/sys/kernel/reboot/cpu
-+What:		/sys/kernel/reboot/force
-+
-+Date:		October 2020
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Tune reboot parameters.
-+
-+		mode: Reboot mode. Valid values are:
-+		cold warm hard soft gpio
-+
-+		type: Reboot type. Valid values are:
-+		bios acpi kbd triple efi pci
-+
-+		cpu: CPU number to use to reboot.
-+
-+		force: Force an immediate reboot.
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index e7b78d5ae1ab..38c1066d334d 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -594,3 +594,196 @@ static int __init reboot_setup(char *str)
- 	return 1;
- }
- __setup("reboot=", reboot_setup);
-+
-+#ifdef CONFIG_SYSFS
-+
-+#define STARTS_WITH(s, sc) (!strncmp(s, sc, sizeof(sc)))
-+
-+static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_mode) {
-+	case REBOOT_COLD:
-+		val = "cold\n";
-+		break;
-+	case REBOOT_WARM:
-+		val = "warm\n";
-+		break;
-+	case REBOOT_HARD:
-+		val = "hard\n";
-+		break;
-+	case REBOOT_SOFT:
-+		val = "soft\n";
-+		break;
-+	case REBOOT_GPIO:
-+		val = "gpio\n";
-+		break;
-+	default:
-+		val = "undefined\n";
-+	}
-+
-+	return strscpy(buf, val, 10);
-+}
-+static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (STARTS_WITH(buf, "cold"))
-+		reboot_mode = REBOOT_COLD;
-+	else if (STARTS_WITH(buf, "warm"))
-+		reboot_mode = REBOOT_WARM;
-+	else if (STARTS_WITH(buf, "hard"))
-+		reboot_mode = REBOOT_HARD;
-+	else if (STARTS_WITH(buf, "soft"))
-+		reboot_mode = REBOOT_SOFT;
-+	else if (STARTS_WITH(buf, "gpio"))
-+		reboot_mode = REBOOT_GPIO;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
-+
-+static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_type) {
-+	case BOOT_TRIPLE:
-+		val = "triple\n";
-+		break;
-+	case BOOT_KBD:
-+		val = "kbd\n";
-+		break;
-+	case BOOT_BIOS:
-+		val = "bios\n";
-+		break;
-+	case BOOT_ACPI:
-+		val = "acpi\n";
-+		break;
-+	case BOOT_EFI:
-+		val = "efi\n";
-+		break;
-+	case BOOT_CF9_FORCE:
-+		val = "cf9_force\n";
-+		break;
-+	case BOOT_CF9_SAFE:
-+		val = "cf9_safe\n";
-+		break;
-+	default:
-+		val = "undefined\n";
-+	}
-+
-+	return strscpy(buf, val, 10);
-+}
-+static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (STARTS_WITH(buf, "triple"))
-+		reboot_type = BOOT_TRIPLE;
-+	else if (STARTS_WITH(buf, "kbd"))
-+		reboot_type = BOOT_KBD;
-+	else if (STARTS_WITH(buf, "bios"))
-+		reboot_type = BOOT_BIOS;
-+	else if (STARTS_WITH(buf, "acpi"))
-+		reboot_type = BOOT_ACPI;
-+	else if (STARTS_WITH(buf, "efi"))
-+		reboot_type = BOOT_EFI;
-+	else if (STARTS_WITH(buf, "cf9_force"))
-+		reboot_type = BOOT_CF9_FORCE;
-+	else if (STARTS_WITH(buf, "cf9_safe"))
-+		reboot_type = BOOT_CF9_SAFE;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
-+
-+#undef STARTS_WITH
-+
-+static ssize_t cpu_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_cpu);
-+}
-+static ssize_t cpu_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	unsigned int cpunum;
-+	int rc;
-+
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	rc = kstrtouint(buf, 0, &cpunum);
-+
-+	if (rc)
-+		return rc;
-+
-+	if (cpunum >= num_possible_cpus())
-+		return -ERANGE;
-+
-+	reboot_cpu = cpunum;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_cpu_attr = __ATTR_RW(cpu);
-+
-+static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_force);
-+}
-+static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (buf[0] != '0' && buf[0] != '1')
-+		return -EINVAL;
-+
-+	reboot_force = buf[0] - '0';
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_force_attr = __ATTR_RW(force);
-+
-+static struct attribute *reboot_attrs[] = {
-+	&reboot_mode_attr.attr,
-+	&reboot_type_attr.attr,
-+	&reboot_cpu_attr.attr,
-+	&reboot_force_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group reboot_attr_group = {
-+	.attrs = reboot_attrs,
-+};
-+
-+static int __init reboot_ksysfs_init(void)
-+{
-+	struct kobject *reboot_kobj;
-+	int ret;
-+
-+	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
-+	if (!reboot_kobj)
-+		return -ENOMEM;
-+
-+	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
-+	if (ret) {
-+		kobject_put(reboot_kobj);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+core_initcall(reboot_ksysfs_init);
-+
-+#endif
--- 
-2.28.0
 
