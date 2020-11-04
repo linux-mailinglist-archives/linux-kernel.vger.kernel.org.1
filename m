@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC80D2A6E80
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2352A6E84
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgKDUEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:04:50 -0500
-Received: from mleia.com ([178.79.152.223]:55478 "EHLO mail.mleia.com"
+        id S1731544AbgKDUHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:07:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731503AbgKDUEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:04:49 -0500
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 0747A416CD3;
-        Wed,  4 Nov 2020 20:04:48 +0000 (UTC)
-Subject: Re: [PATCH 19/36] tty: serial: lpc32xx_hs: Remove unused variable
- 'tmp'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Kevin Wells <kevin.wells@nxp.com>,
-        Roland Stigge <stigge@antcom.de>, linux-serial@vger.kernel.org
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-20-lee.jones@linaro.org>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <208ff62b-c6c0-4b2c-250c-7951f422ba54@mleia.com>
-Date:   Wed, 4 Nov 2020 22:04:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727991AbgKDUHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:07:17 -0500
+Received: from gmail.com (unknown [104.132.1.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EE7220759;
+        Wed,  4 Nov 2020 20:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604520435;
+        bh=/KxEHYgp71/ldR6Q6v/198vdd/J27KB6R/yLwRxvdHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sMTdq2/JvXaoj6ioI59IfzGg+6h/K/RuZTjVhSyPvLS/M8m+Rxlu2JLIWkn788SR3
+         s7EG8t9sMlRSBCVayPVdoWbJjvnm8ejMmPoj52tmJsfGYtb1SY/Jda4EcOCXuYN01k
+         NhpVRHTGMoQrcZUeyOA5TumQe8awYGmol7L66rgg=
+Date:   Wed, 4 Nov 2020 12:07:01 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com
+Subject: Re: [PATCH v10 0/3] SELinux support for anonymous inodes and UFFD
+Message-ID: <20201104200701.GA1796392@gmail.com>
+References: <20201011082936.4131726-1-lokeshgidra@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201104193549.4026187-20-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20201104_200448_073610_BFADF4C5 
-X-CRM114-Status: GOOD (  16.54  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011082936.4131726-1-lokeshgidra@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Sun, Oct 11, 2020 at 01:29:33AM -0700, Lokesh Gidra wrote:
+> Daniel Colascione (3):
+>   Add a new LSM-supporting anonymous inode interface
+>   Teach SELinux about anonymous inodes
+>   Use secure anon inodes for userfaultfd
 
-On 11/4/20 9:35 PM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/tty/serial/lpc32xx_hs.c: In function ‘__serial_uart_flush’:
->   drivers/tty/serial/lpc32xx_hs.c:244:6: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Cc: Vladimir Zapolskiy <vz@mleia.com>
-> Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
-> Cc: Kevin Wells <kevin.wells@nxp.com>
-> Cc: Roland Stigge <stigge@antcom.de>
-> Cc: linux-serial@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/tty/serial/lpc32xx_hs.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/lpc32xx_hs.c b/drivers/tty/serial/lpc32xx_hs.c
-> index b5898c9320361..1fa098d7aec4b 100644
-> --- a/drivers/tty/serial/lpc32xx_hs.c
-> +++ b/drivers/tty/serial/lpc32xx_hs.c
-> @@ -241,12 +241,11 @@ static unsigned int __serial_get_clock_div(unsigned long uartclk,
->   
->   static void __serial_uart_flush(struct uart_port *port)
->   {
-> -	u32 tmp;
->   	int cnt = 0;
->   
->   	while ((readl(LPC32XX_HSUART_LEVEL(port->membase)) > 0) &&
->   	       (cnt++ < FIFO_READ_LIMIT))
-> -		tmp = readl(LPC32XX_HSUART_FIFO(port->membase));
-> +		readl(LPC32XX_HSUART_FIFO(port->membase));
->   }
->   
->   static void __serial_lpc32xx_rx(struct uart_port *port)
-> 
+Patches are supposed to have subsystem prefixes, e.g.
 
-Thank you for the change.
+	fs, security: add a new LSM-supporting anonymous inode interface
+	selinux: implement init_security_anon()
+	userfaultfd: use secure anon inodes
 
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+... but that points to the fact that the first one is really both fs and
+security subsystem changes.  Patches should be one logical change only.  I
+suggest splitting it up into:
 
-I'm sure the change is correct, likely the local variable was introduced
-to prevent an unwanted probable optimization by some odd/ancient compiler.
+	security: add init_security_anon() LSM hook
+	fs: add anon_inode_getfd_secure()
 
---
-Best wishes,
-Vladimir
+- Eric
