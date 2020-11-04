@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FB12A6070
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9210C2A6077
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgKDJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:20:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgKDJUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:20:19 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4689E20715;
-        Wed,  4 Nov 2020 09:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604481619;
-        bh=OB2pEHAq3eSy9zEaaBXh+kvuQPObkvMCdwCMUwzw1JY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=npUyaTWCrnrKnzUraBfak+xsfoK1LtFuckl7rhvbc/h3cxA+6xI9w8UKKlUbQZNVw
-         6tPD9MtchgCKOFA4wTe1S6ViePXtxYkmspUGsrF98MhWwKvTEjSpk2CTB/9TRa+tfT
-         3muQirkvuEYhnX6JeB8x0V62+X5I7KfSOSR0tBHE=
-Date:   Wed, 4 Nov 2020 09:20:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>, libc-alpha@sourceware.org,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-Message-ID: <20201104092012.GA6439@willie-the-truck>
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <20201103173438.GD5545@sirena.org.uk>
+        id S1727851AbgKDJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:23:41 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15071 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgKDJXk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:23:40 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa273200000>; Wed, 04 Nov 2020 01:23:44 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 09:23:40 +0000
+Received: from localhost.localdomain (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 4 Nov 2020 09:23:38 +0000
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH V2] drm/tegra: sor: Don't warn on probe deferral
+Date:   Wed, 4 Nov 2020 09:23:28 +0000
+Message-ID: <20201104092328.659169-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103173438.GD5545@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604481824; bh=r60uHgnZqlr9l6QYDsoSG53LtdJOyJ+klHDwosPcDnQ=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=GlEKN/B+1SqetmqM+bk/JLQWvScRc/xe4GcBdq35R+5RKQctlWQa3kKJ8BcJGZi9U
+         PAdDUSKwAXN09wj2jP0qiK7+iuF92vBrfis09Nj86KunUfpDvfjj7ybJuHhvTPpdrY
+         wqyC+Gg/3jT3d7DV370Lvwik8PcyvuCV8t+MckHS4sbNswr7Eib9q9O8+ZIWaGJHxF
+         j1w+llMf2vkRa55dop2gMa0VH0Swu6Ixb+JPObVPyUS0YrqoXcdxWOrZVxERMY5TTW
+         MGUXGlj+73cDa8OdRBuWxdNmDAlrZ8EuBCWKpp6/uuJhoOkomDnJTcyGbCv9LfWj6f
+         cl5MQY0IwhUEw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:34:38PM +0000, Mark Brown wrote:
-> On Tue, Nov 03, 2020 at 10:25:37AM +0000, Szabolcs Nagy wrote:
-> 
-> > Re-mmap executable segments instead of mprotecting them in
-> > case mprotect is seccomp filtered.
-> 
-> > For the kernel mapped main executable we don't have the fd
-> > for re-mmap so linux needs to be updated to add BTI. (In the
-> > presence of seccomp filters for mprotect(PROT_EXEC) the libc
-> > cannot change BTI protection at runtime based on user space
-> > policy so it is better if the kernel maps BTI compatible
-> > binaries with PROT_BTI by default.)
-> 
-> Given that there were still some ongoing discussions on a more robust
-> kernel interface here and there seem to be a few concerns with this
-> series should we perhaps just take a step back and disable this seccomp
-> filter in systemd on arm64, at least for the time being?  That seems
-> safer than rolling out things that set ABI quickly, a big part of the
-> reason we went with having the dynamic linker enable PROT_BTI in the
-> first place was to give us more flexibility to handle any unforseen
-> consequences of enabling BTI that we run into.  We are going to have
-> similar issues with other features like MTE so we need to make sure that
-> whatever we're doing works with them too.
-> 
-> Also updated to Will's current e-mail address - Will, do you have
-> thoughts on what we should do here?
+Deferred probe is an expected return value for tegra_output_probe().
+Given that the driver deals with it properly, there's no need to output
+a warning that may potentially confuse users.
 
-Changing the kernel to map the main executable with PROT_BTI by default is a
-user-visible change in behaviour and not without risk, so if we're going to
-do that then it needs to be opt-in because the current behaviour has been
-there since 5.8. I suppose we could shoe-horn in a cmdline option for 5.10
-(which will be the first LTS with BTI) but it would be better to put up with
-the current ABI if possible.
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
 
-Is there real value in this seccomp filter if it only looks at mprotect(),
-or was it just implemented because it's easy to do and sounds like a good
-idea?
+Changes since V1:
+- This time, I actually validated it!
 
-Will
+ drivers/gpu/drm/tegra/sor.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index e88a17c2937f..898a80ca37fa 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3764,10 +3764,9 @@ static int tegra_sor_probe(struct platform_device *p=
+dev)
+ 		return err;
+=20
+ 	err =3D tegra_output_probe(&sor->output);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
+-		return err;
+-	}
++	if (err < 0)
++		return dev_err_probe(&pdev->dev, err,
++				     "failed to probe output: %d\n", err);
+=20
+ 	if (sor->ops && sor->ops->probe) {
+ 		err =3D sor->ops->probe(sor);
+--=20
+2.25.1
+
