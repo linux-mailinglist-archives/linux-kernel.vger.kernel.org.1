@@ -2,137 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42722A5D36
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA482A5D3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgKDDvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 22:51:01 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:40318 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726008AbgKDDvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 22:51:01 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtEdJaJfkGIFAA--.15514S3;
-        Wed, 04 Nov 2020 11:50:54 +0800 (CST)
-Subject: Re: [PATCH v3 1/6] MIPS: Loongson64: Do not write the read only field
- LPA of CP0_CONFIG3
-To:     Huacai Chen <chenhc@lemote.com>
-References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
- <1604387525-23400-2-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <e999986a-8236-752a-8b17-353bb87fc521@loongson.cn>
-Date:   Wed, 4 Nov 2020 11:50:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729311AbgKDD5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 22:57:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728026AbgKDD5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 22:57:24 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A31C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 19:57:24 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so16836434yba.8
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 19:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ylcoj02BPuhWE4EiF6XhbU6xzEwhDsrRnFe1b7UE1QU=;
+        b=RS745sukUYYE+uqmJPdr7qy95EfqozAkhDd17x9feNndVTRzq6PgngRzYYb1dg6YzN
+         0GUz6fBUrOCBSPhoEGx8MH6hR+s9t951hKsBzV+XW4V2+kNKoL7Do2+JPI+5sHSa/IUF
+         tcHe1RarfYJW72+POgITtJArYbURMTxsr3KHnBAszf8JnvHBIuAkdu9IoyDMrBPYtM85
+         K+spYuiORQqqPKwZVnSPQ2+1eDGINfCdAG9hCZex7Tv3ZG56MCshkCogMsLwZUq3t0/Y
+         Y/1VieioaRG4OMDRS9Pl0m9lQtOjFN9te4QQzwmzhPDt7G20lPWDfwlrCIWi1HgkFV66
+         pJzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ylcoj02BPuhWE4EiF6XhbU6xzEwhDsrRnFe1b7UE1QU=;
+        b=QqvHt+51OB3qbv6BLfkpxH+E3F0y70xwjBy3WzYyjw/F+GyTbc8xHkvmna3+qa9q6h
+         77geolAal96VjtHuMcXF1/LSKI2tMy3gs0ihszzq/a4jL95pozcWdtn2Vo/QqFOxUmJN
+         IPldLJzsl5TwL4PSJEf9ONU5DOhNxFpmbfhvzMZTIThjyKHW0zo/3uQTQdlDa8pfkgbv
+         qeAwjPPtYz3KDb+eoU51XYuAep6rL8Rwt9Bm6flFUJoElhq5kU6xeBd2PC/+6kBvOTz4
+         +rAgLb6nEwmuNMw7IRjFrINCUry4AacBoTfNY/shBkSUx0jhXoNAii6XncikjhzE40DF
+         Bosg==
+X-Gm-Message-State: AOAM533R4U8ZvRnLT4gGJ2g/9/dScAa7JeT/uXoHAVPV8u3Uqxx15oJ5
+        OQha/uxpuQmDNf/HTqVzLDCACzRUcyRoPJjp0wZyVbV7RPE=
+X-Google-Smtp-Source: ABdhPJwWNuk3aE/7/Pfe9WLAilxwhtNdkbMGK8HlZULa/7TS1eoV/uKUUODqyISyO1PZq1mUESqQfcVS+gNuqH6HddQ=
+X-Received: by 2002:a25:e5c1:: with SMTP id c184mr6444106ybh.247.1604462243664;
+ Tue, 03 Nov 2020 19:57:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxmtEdJaJfkGIFAA--.15514S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3Cry7Wr13ArWkCw4UArb_yoW5Jw1fpa
-        n5Aa1kGF4UXr1UuFnYy34DWrWrJ39xtrW2kanFqr95X3s3K3sFgr1fJ3W8JFyrZry8Ka10
-        qFyF9rWjvanrC3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JU-miiUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+ <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+ <f474396f8f47c303e3a3ac90a582c116e38e50e4.camel@perches.com>
+ <CANiq72nnpdPSngjoOf=imLxZ2g0A7ZXe5nRjF0qf5AG1UCfXyw@mail.gmail.com> <8d02497f4565c3154d3f7bcf2968b56ccd945ab4.camel@perches.com>
+In-Reply-To: <8d02497f4565c3154d3f7bcf2968b56ccd945ab4.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 4 Nov 2020 04:57:12 +0100
+Message-ID: <CANiq72k11+VO-igyHRakJEGuSmsDJyQCpYDVeNxZwRt62yCFXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+To:     Joe Perches <joe@perches.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/04/2020 10:00 AM, Huacai Chen wrote:
-> Hi, Tiezhu,
+On Wed, Nov 4, 2020 at 4:15 AM Joe Perches <joe@perches.com> wrote:
 >
-> On Tue, Nov 3, 2020 at 3:13 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->> The field LPA of CP0_CONFIG3 register is read only for Loongson64, so the
->> write operations are meaningless, remove them.
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>
->> v2: No changes
->> v3: No changes
->>
->>   arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 --------
->>   arch/mips/loongson64/numa.c                               | 3 ---
->>   2 files changed, 11 deletions(-)
->>
->> diff --git a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
->> index 87a5bfb..e4d77f4 100644
->> --- a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
->> +++ b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
->> @@ -19,10 +19,6 @@
->>          .macro  kernel_entry_setup
->>          .set    push
->>          .set    mips64
->> -       /* Set LPA on LOONGSON3 config3 */
->> -       mfc0    t0, CP0_CONFIG3
->> -       or      t0, (0x1 << 7)
->> -       mtc0    t0, CP0_CONFIG3
-> Sorry for the late response, I have the same worry as Jiaxun. As you
-> know, Loongson's user manuals are not always correct, but the original
-> code comes from Loongson are usually better. So, my opinion is "Don't
-> change it if it doesn't break anything".
+> No one ever will use clang-format on the current kernel sources
+> without having a recent version of clang and clang-format.
 
-Hi Huacai,
+Why? Many distros come with clang-format pre-packaged, and in fact the
+original patch (that you commented on) argued for the >= 4 requirement
+that way.
 
-Thanks for your reply, I have confirmed by Loongson user manuals and
-hardware designers, CP0_CONFIG3 register is read only.
+I am not saying we cannot change it, in fact I'd prefer if we do it
+(see my answer to Nick); but I don't understand your basis to claim
+nobody is installing their distro clang-format package.
 
-Without this patch, the related kernel code is meaningless, with
-this patch, it can reflect the reality.
-
-Thanks,
-Tiezhu
-
->
-> Huacai
->
->>          /* Set ELPA on LOONGSON3 pagegrain */
->>          mfc0    t0, CP0_PAGEGRAIN
->>          or      t0, (0x1 << 29)
->> @@ -54,10 +50,6 @@
->>          .macro  smp_slave_setup
->>          .set    push
->>          .set    mips64
->> -       /* Set LPA on LOONGSON3 config3 */
->> -       mfc0    t0, CP0_CONFIG3
->> -       or      t0, (0x1 << 7)
->> -       mtc0    t0, CP0_CONFIG3
->>          /* Set ELPA on LOONGSON3 pagegrain */
->>          mfc0    t0, CP0_PAGEGRAIN
->>          or      t0, (0x1 << 29)
->> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
->> index cf9459f..c7e3cced 100644
->> --- a/arch/mips/loongson64/numa.c
->> +++ b/arch/mips/loongson64/numa.c
->> @@ -40,9 +40,6 @@ static void enable_lpa(void)
->>          unsigned long value;
->>
->>          value = __read_32bit_c0_register($16, 3);
->> -       value |= 0x00000080;
->> -       __write_32bit_c0_register($16, 3, value);
->> -       value = __read_32bit_c0_register($16, 3);
->>          pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
->>
->>          value = __read_32bit_c0_register($5, 1);
->> --
->> 2.1.0
->>
-
+Cheers,
+Miguel
