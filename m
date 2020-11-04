@@ -2,103 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6CE2A5AE1
+	by mail.lfdr.de (Postfix) with ESMTP id 789072A5AE2
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgKDAFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:05:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729385AbgKDAFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:05:50 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF32C061A48
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 16:05:49 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id b1so24645543lfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 16:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Eq/hKMyLgdp/QXXnQV5r6IWOxg03mEPCZUhhSNnW7WQ=;
-        b=kGbCaylyi3k1edOqC9ql7Ui7JoWXWXg6MNLPnsqRDCSqzBsrZ0+FWoh1oZ9OUo8SbC
-         wm654Ccbvp3ZTzDnAtEoYjzR5/5Ho9Nrayfi4QGYwRueZ/YErdfLFzGXCWNWsOJCHpK8
-         UPppa7VdIAXGPMtTUU1c6bV/Onokcw6tn8Sg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Eq/hKMyLgdp/QXXnQV5r6IWOxg03mEPCZUhhSNnW7WQ=;
-        b=tTsm4c46Rbc1zOg7X9pbjIXh+1VP9U/HMWDp0dcydK/gq8sP28owTFwBkH7ccV08S5
-         sw9rMXw5kDHkcjk4Cs67C7FW5pFn06DCUXTE9y2qPh+p/yO6YAE0h5qgP8mdLg1MtF37
-         USv++zufE2e+HviI7N9FHlipozUr9xZ8wwLAkYsk5NygvpYyYkryIyqNDE2D5cTF2zzc
-         V0TFhw+dFCLaz2h+BM6rdb8/ro0DMZVbLtm/U45e8Wwd/h9otJIMXjd/RNYLGR6UpMC9
-         tONnW+G5fJOX6CvKmPrA7a1nBTTTGQnWpNl4oWXRGXj0ODggVCET8vt+NiAeWNTMe57S
-         S4Fw==
-X-Gm-Message-State: AOAM530ipDfVbeLvU/ttc0wMLHUAgX34aCgVtzRPBt9c35aN5wZ6NAOz
-        efP3WADEYWbx/qz3XAOU56g7GLA//WBX5lIn2WQ7HQ==
-X-Google-Smtp-Source: ABdhPJyaQiAijXHPV9yeVkPh8oqSfakHStF6zz7Ot5pXha23zseqo/DSuoaYALXBcHKNlHfshHPlApWX9Z2AFXr6E70=
-X-Received: by 2002:ac2:44a4:: with SMTP id c4mr9029079lfm.365.1604448348193;
- Tue, 03 Nov 2020 16:05:48 -0800 (PST)
+        id S1729839AbgKDAF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:05:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729836AbgKDAFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 19:05:55 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D483D223BD;
+        Wed,  4 Nov 2020 00:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604448354;
+        bh=KZ6By4TUfVUgQ/D4nmd6klO+Ho7DgbM92Y0TRb1lyGw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Pl1XoOMkN8m5IwRwgIRc9JBtjNijN8KaAgcOw6gblZkJg6ARjKvVVNOrtxO+gqpLE
+         3GMaabVmFV5qQhJIfS/iM9/+SYUw9Ev9c3b7uIh4dAQfl38vpLL2BqwQSkxWpCw/Yp
+         ynPkxWU5PmOVNgFADfOBUnsO3YXMF2aT7Kqw8F2k=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 9B3CF3522ABD; Tue,  3 Nov 2020 16:05:54 -0800 (PST)
+Date:   Tue, 3 Nov 2020 16:05:54 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 1/7] rcu/tree: Make rcu_do_batch count how many
+ callbacks were executed
+Message-ID: <20201104000554.GF3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-References: <20201103153132.2717326-1-kpsingh@chromium.org>
- <20201103153132.2717326-8-kpsingh@chromium.org> <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
- <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
-In-Reply-To: <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 4 Nov 2020 01:05:37 +0100
-Message-ID: <CACYkzJ6D=vwaEhgaB2vevOo0186m=yfxeKBQ8eWWck8xjtczNA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/8] bpf: Add tests for task_local_storage
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103142603.1302207-2-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:59 PM KP Singh <kpsingh@chromium.org> wrote:
->
-> On Tue, Nov 3, 2020 at 7:47 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Nov 03, 2020 at 04:31:31PM +0100, KP Singh wrote:
-> > > +
-> > > +struct storage {
-> > > +     void *inode;
-> > > +     unsigned int value;
-> > > +     /* Lock ensures that spin locked versions of local stoage operations
-> > > +      * also work, most operations in this tests are still single threaded
-> > > +      */
-> > > +     struct bpf_spin_lock lock;
-> > > +};
-> >
-> > I think it's a good idea to test spin_lock in local_storage,
-> > but it seems the test is not doing it fully.
-> > It's only adding it to the storage, but the program is not accessing it.
->
-> I added it here just to check if the offset calculations (map->spin_lock_off)
-> are correctly happening for these new maps.
->
-> As mentioned in the updates, I do intend to generalize
-> tools/testing/selftests/bpf/map_tests/sk_storage_map.c which already has
->  the threading logic to exercise bpf_spin_lock in storage maps.
->
+On Tue, Nov 03, 2020 at 09:25:57AM -0500, Joel Fernandes (Google) wrote:
+> Currently, rcu_do_batch() depends on the unsegmented callback list's len field
+> to know how many CBs are executed. This fields counts down from 0 as CBs are
+> dequeued.  It is possible that all CBs could not be run because of reaching
+> limits in which case the remaining unexecuted callbacks are requeued in the
+> CPU's segcblist.
+> 
+> The number of callbacks that were not requeued are then the negative count (how
+> many CBs were run) stored in the rcl->len which has been counting down on every
+> dequeue. This negative count is then added to the per-cpu segmented callback
+> list's to correct its count.
+> 
+> Such a design works against future efforts to track the length of each segment
+> of the segmented callback list. The reason is because
+> rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
+> list's length field (rcl->len) during extraction.
+> 
+> Also, the design of counting down from 0 is confusing and error-prone IMHO.
+> 
+> This commit therefore explicitly counts how many callbacks were executed in
+> rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
+> field, without relying on the negativity of rcl->len.
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Actually, after I added simple bpf_spin_{lock, unlock} to the test programs, I
-ended up realizing that we have not exposed spin locks to LSM programs
-for now, this is because they inherit the tracing helpers.
+Queued for testing and further review, thank you all!
 
-I saw the docs mention that these are not exposed to tracing programs due to
-insufficient preemption checks. Do you think it would be okay to allow them
-for LSM programs?
+I will be pulling these in as I look them over, and running tests
+in between times, so this will take some time.
 
+As usual, I could not resist editing the commit log, so please
+see below to check whether I messed something up.
 
-- KP
+							Thanx, Paul
 
-> Hope this is an okay plan?
+------------------------------------------------------------------------
+
+commit d77ef2684cbff728c14b3c84a356139c52ca3a5e
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Tue Nov 3 09:25:57 2020 -0500
+
+    rcu/tree: Make rcu_do_batch count how many callbacks were executed
+    
+    The rcu_do_batch() function extracts the ready-to-invoke callbacks
+    from the rcu_segcblist located in the ->cblist field of the current
+    CPU's rcu_data structure.  These callbacks are first moved to a local
+    (unsegmented) rcu_cblist.  The rcu_do_batch() function then uses this
+    rcu_cblist's ->len field to count how many CBs it has invoked, but it
+    does so by counting that field down from zero.  Finally, this function
+    negates the value in this ->len field (resulting in a positive number)
+    and subtracts the result from the ->len field of the current CPU's
+    ->cblist field.
+    
+    Except that it is sometimes necessary for rcu_do_batch() to stop invoking
+    callbacks mid-stream, despite there being more ready to invoke, for
+    example, if a high-priority task wakes up.  In this case the remaining
+    not-yet-invoked callbacks are requeued back onto the CPU's ->cblist,
+    but remain in the ready-to-invoke segment of that list.  As above, the
+    negative of the local rcu_cblist's ->len field is still subtracted from
+    the ->len field of the current CPU's ->cblist field.
+    
+    The design of counting down from 0 is confusing and error-prone, plus
+    use of a positive count will make it easier to provide a uniform and
+    consistent API to deal with the per-segment counts that are added
+    later in this series.  For example, rcu_segcblist_extract_done_cbs()
+    can unconditionally populate the resulting unsegmented list's ->len
+    field during extraction.
+    
+    This commit therefore explicitly counts how many callbacks were executed
+    in rcu_do_batch() itself, counting up from zero, and then uses that
+    to update the per-CPU segcb list's ->len field, without relying on the
+    downcounting of rcl->len from zero.
+    
+    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+    Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 2d2a6b6b9..bb246d8 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -95,7 +95,7 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+  * This increase is fully ordered with respect to the callers accesses
+  * both before and after.
+  */
+-static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
++void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+ {
+ #ifdef CONFIG_RCU_NOCB_CPU
+ 	smp_mb__before_atomic(); /* Up to the caller! */
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 492262b..1d2d614 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -76,6 +76,7 @@ static inline bool rcu_segcblist_restempty(struct rcu_segcblist *rsclp, int seg)
+ }
+ 
+ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
++void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v);
+ void rcu_segcblist_init(struct rcu_segcblist *rsclp);
+ void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
+ void rcu_segcblist_offload(struct rcu_segcblist *rsclp);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b6ec565..c4035e7 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2436,7 +2436,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+-	long bl, count;
++	long bl, count = 0;
+ 	long pending, tlimit = 0;
+ 
+ 	/* If no callbacks are ready, just return. */
+@@ -2481,6 +2481,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+ 		rcu_callback_t f;
+ 
++		count++;
+ 		debug_rcu_head_unqueue(rhp);
+ 
+ 		rcu_lock_acquire(&rcu_callback_map);
+@@ -2494,15 +2495,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 
+ 		/*
+ 		 * Stop only if limit reached and CPU has something to do.
+-		 * Note: The rcl structure counts down from zero.
+ 		 */
+-		if (-rcl.len >= bl && !offloaded &&
++		if (count >= bl && !offloaded &&
+ 		    (need_resched() ||
+ 		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
+ 			break;
+ 		if (unlikely(tlimit)) {
+ 			/* only call local_clock() every 32 callbacks */
+-			if (likely((-rcl.len & 31) || local_clock() < tlimit))
++			if (likely((count & 31) || local_clock() < tlimit))
+ 				continue;
+ 			/* Exceeded the time limit, so leave. */
+ 			break;
+@@ -2519,7 +2519,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 
+ 	local_irq_save(flags);
+ 	rcu_nocb_lock(rdp);
+-	count = -rcl.len;
+ 	rdp->n_cbs_invoked += count;
+ 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
+ 			    is_idle_task(current), rcu_is_callbacks_kthread());
+@@ -2527,7 +2526,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	/* Update counts and requeue any remaining callbacks. */
+ 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
+ 	smp_mb(); /* List handling before counting for rcu_barrier(). */
+-	rcu_segcblist_insert_count(&rdp->cblist, &rcl);
++	rcu_segcblist_add_len(&rdp->cblist, -count);
+ 
+ 	/* Reinstate batch limit if we have worked down the excess. */
+ 	count = rcu_segcblist_n_cbs(&rdp->cblist);
