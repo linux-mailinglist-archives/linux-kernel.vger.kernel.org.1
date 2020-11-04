@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BD32A6383
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788572A6387
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729488AbgKDLkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:40:51 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40296 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729508AbgKDLks (ORCPT
+        id S1729752AbgKDLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729630AbgKDLlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:40:48 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4BdhVI144676;
-        Wed, 4 Nov 2020 11:40:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=rma02KPg1kKHnISzToa1qVrQU80lIknQ5aS0+dySMKA=;
- b=TWNQt4gM3JaDdDUBHnnI8fj7mB9KLjO0Dqdc4Gc9FdAZO6XAddNNmq0tZ6PQof0OQLa6
- Vy8cUdzaMjJ/YytnkcFaBwkJZQ0Z9amMx0ipfD9jWf1FgfYgSRIrv0Gw/rfydzJ1V2BD
- Db1n+3FapFp6g1GMEeSpQxwx2mUOYgfg3LVgdWlTI7+ncg9uaosCqMAOfDmYVLBSVydk
- MdRV/AjXmfWKRjFrS43tmOAJldgKMpT4EvSj5a8yTmhmVVzHaXjQKlz0H5Y/g3KaGS2v
- rDSnDYZX9j+kInn40q9A2CdTN7KCrz+of1qUemMkeHHWtQayEWydjmdsZzcaUrMfmFhl rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34hhvceae2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Nov 2020 11:40:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A4BaV4r019096;
-        Wed, 4 Nov 2020 11:40:32 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34hw0jruqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Nov 2020 11:40:32 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A4BePp2017833;
-        Wed, 4 Nov 2020 11:40:25 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 04 Nov 2020 03:40:25 -0800
-Date:   Wed, 4 Nov 2020 14:40:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [v2] media: atomisp: Fix error handling path
-Message-ID: <20201104114015.GH18329@kadam>
-References: <1604455331-28031-1-git-send-email-jrdr.linux@gmail.com>
- <65712450-1ee9-2dd3-cd43-f850807ae203@web.de>
- <20201104083121.GG18329@kadam>
- <85ff17ad-8aa7-a457-6e23-4f5c1c5152f2@web.de>
+        Wed, 4 Nov 2020 06:41:05 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58DDC0613D3;
+        Wed,  4 Nov 2020 03:41:03 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c20so17061459pfr.8;
+        Wed, 04 Nov 2020 03:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
+        b=TA/upDzkSlqE8bbPerc9M1oYcPB/SCguB/fv6tsU0qNJEICokPJOWWbzUO1heqjx1X
+         3MJkKQbgC+mF0e9Skbu2tODntCXpim0YAGDgj8FN7sDDIYQ3LWENybyqXCZl/be+XIV7
+         WkLl+XHEOUOo5pQruyx0qVAlxfInjmoyHlqVQGeveukro3khLO1jYepKUOZHrwFZ9ajK
+         qadPobf/QXXP57jlIZ1IuZ5JjtLZc2rA7A6Suqtp3Kq9x2PAu07ziUDnyQuTlnoexYBH
+         aFgJjI+kgZNHMfPu8OpcuPuLOyBtB9ucJUa6Vc1pIoNedcqDe7XyKvzwxbAnHqPdVC/8
+         3d2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
+        b=gXzrw5l7wvDRlPFIygshd7oftKBYo3pjLMzFSgvRdP/Kd/+AIWv5BsuWtj2GY9cfvH
+         TtRT4rvAkVNmmcrxkIK3WoWWWY3Hu3WjhJ3LmyA3zbJckbKQarJryi4pRvH3Xq0NbQjg
+         E24fsDwwacaRwU0t0CUKx97Vv26fBRieT8m397lRWYKzl1cR8g0cLI6hI29LsUewI57r
+         6kki9Q/5+0BJZzoaKuS4cOH9mWgBkkaIxo7qTT6FJV8PDMH2ROBjjDRxtcRYPxBejZq/
+         yzJm8PF79kPku3HmbksQY7LGBzXqQ9D3E8cqxpk6KtccAduKI50aCZfhCLipuUgO6DwT
+         jcag==
+X-Gm-Message-State: AOAM533IEE09U06Ifvqfuk5QAR3ImE0oCXXZE1FP9b3F/AXlfQ12LFix
+        O/435oEcidkH/aTdWev8u4J/C6Tu1GbuU1GBlyw=
+X-Google-Smtp-Source: ABdhPJxXrmLrL+mP1OQCNUcSRgpIRR5lxJCHjx9kumQZ9Rb2jjUaKiD5ojjTiFRpWH3+G31Xb1/FBX1ZKkxWCv735h0=
+X-Received: by 2002:a63:f445:: with SMTP id p5mr20807325pgk.293.1604490063419;
+ Wed, 04 Nov 2020 03:41:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85ff17ad-8aa7-a457-6e23-4f5c1c5152f2@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9794 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040087
+References: <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook> <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+ <202010231945.90FA4A4AA@keescook> <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+ <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com> <202011031612.6AA505157@keescook>
+In-Reply-To: <202011031612.6AA505157@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Wed, 4 Nov 2020 05:40:51 -0600
+Message-ID: <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:30:29AM +0100, Markus Elfring wrote:
-> >>> Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
-> >>> allocation")
-> >>
-> >> Please delete a line break for this tag.
-> >
-> > Markus, the thing is that we all saw the line break and we just thought
-> > it didn't matter at all...
-> 
-> Do you disagree to the known documentation then?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=4ef8451b332662d004df269d4cdeb7d9f31419b5#n123 
+On Tue, Nov 3, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
+> Yeah, this is very interesting. That there is anything measurably _slower_
+> with the cache is surprising. Though with only 4 runs, I wonder if it's
+> still noisy? What happens at 10 runs -- more importantly what is the
+> standard deviation?
 
-The documentation is correct but no one wants you to constantly be
-nagging developers about minor stuff...
+I could do that. it just takes such a long time. Each run takes about
+20 minutes so with 10 runs per environment, 3 environments (native + 2
+docker) per boot, and 4 boots (2 bootparam * 2 compile config), it's
+27 hours of compilation. I should probably script it at that point.
 
-One thing that I do is I start to write an email and then if I realize
-it's not worth complaining about and I save it to my postponed messages
-folder.  Then I never send it and I forget about it completely.  I have
-currently have 740 messages in my postponed messages folder.  :P
+> I assume this is from Indirect Branch Prediction Barrier (IBPB) and
+> Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
+> for threads under seccomp by default).
+>
+> Try booting with "spectre_v2_user=prctl"
 
-That's a lot of whining and complaining which I never sent and the world
-is the more beautiful for it.
+Hmm, to make sure, boot with just "spectre_v2_user=prctl" on the
+command line and test the performance of that?
 
-regards,
-dan carpenter
-
+YiFei Zhu
