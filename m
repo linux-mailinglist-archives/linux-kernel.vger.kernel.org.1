@@ -2,271 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CD02A6D46
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 19:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9053A2A6D55
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731919AbgKDS46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 13:56:58 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:52823 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731897AbgKDS45 (ORCPT
+        id S1730535AbgKDS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 13:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729297AbgKDS5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 13:56:57 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3E3C2580791;
-        Wed,  4 Nov 2020 13:56:55 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 04 Nov 2020 13:56:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=OVc/96aODvJeJoiBmnUW9Y0oJ7/
-        fFA1GzRqunAxPing=; b=tr1DljGPY9MWd7f90ap+INggtuV4FGeMUU+fcZ0zoIN
-        vF8JS4egEUyq61VRW2eRlAhIaa3F2Y8OITQlcc3ddrK2Q5ANgoKh+GuQiUxLSlJj
-        OJj/8aL8x1z1qUpppGGLMzL6Dqa5QllobEh+OtCW4cu0kwQW4L5WTEEtOj3pjkmF
-        bWAdBYQiBx3coHKEmdhQvQlfLE4WGkI0/6+Sivx73NRY4sG0BhN5gFnHqp+ylBWX
-        2QWMbY2TkA/dEVo3Nhia8dGAxo1hxCmGzVOnpvD9W+yB4XFu3TKHA2L68TJM6Q8v
-        jrAxjivO+hQ0ne/T3cHCYYs+Wd80b/8guk6u52gNexQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=OVc/96
-        aODvJeJoiBmnUW9Y0oJ7/fFA1GzRqunAxPing=; b=anMjAzC9sweKpPacv/4IgD
-        WKVDXQJpL4KrjsMH3GnGsJsQr897zB5gs6ioYdraAtq77CqRPHj25uha13q1kp85
-        OB64S87MejQlWhbiL+DoZcSfMmG9aMpk39fewdmcRzlOuI3seGEa6UrlIuu4/4ts
-        WKYOiiXGSgk0eshuamrIKtNOE9YcoR5IQqEWY1fc3pkAiOusIRau0/AdQpqmwOWU
-        vbChV6ooLdEmTkh2NzeQGhpZ6X6968VsFgeS6q33bMr1H+S7yP4KGTKOgM1038d0
-        SOIuVeeGGgbIGOf4yKDGGLg/31NXudsXiTMzf7xBkvBEOjjfv9kK1CNuQ1/NzIZA
-        ==
-X-ME-Sender: <xms:c_miX3rtHcLumC4p-mi0fiMAgww2OegeZq4rdUEYv5PBmj5igP3ckA>
-    <xme:c_miXxrVh4qiQ8EkwuoWJabkpNDGMxDneEE-Aj0zPFSCf312ngsgne6GWc68VEp_K
-    8mrCVQ6abtrHJehNpg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:c_miX0Nwo_wpV9cEK464ZgMgFr1GB44ezhZVpbYEZadFEhYfBJzaNQ>
-    <xmx:c_miX65qGkVL_cMX37jJ2twHMrEnhTTgvSTwKzRmww6irSAsU2XT7g>
-    <xmx:c_miX26Ew6AVZJxi2ZRZDctIRVEQRd6lanB4f72B8tO0gmV3mm2YIw>
-    <xmx:d_miXzwLttgMJJHUTB-GWAFeI3FwUd5oJ4EdKCw7gh9JTbMEnktz8A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 24349328038E;
-        Wed,  4 Nov 2020 13:56:51 -0500 (EST)
-Date:   Wed, 4 Nov 2020 19:56:50 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 08/14] media: sunxi: Add support for the A31 MIPI CSI-2
- controller
-Message-ID: <20201104185650.ii7dlekjtfar2xpp@gilmour.lan>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-9-paul.kocialkowski@bootlin.com>
- <20201026165407.rrq6ccsexcsub5bm@gilmour.lan>
- <20201104113458.GC287014@aptenodytes>
+        Wed, 4 Nov 2020 13:57:06 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10D0C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 10:57:05 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id t22so10708306plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 10:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eFbEFkCwKJ1hR3ookQi/7V8Itg1IPtT/zHbmeIxSz6g=;
+        b=M8V29X75bdxqtjcKywJmnyr1FqzkhvieUPrJY63jv4RFhMimKu9+P3nJ1F+HndPJsh
+         QzfeuWZuKcE8FrwefX0HGV1DUScWByoTiabA2VGBkCDVtSUXskkYKZXjTs191p7kBgsy
+         q5yRcPFcVQ+sw3CiP8F/EyXbTycT5ga0dpB7M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eFbEFkCwKJ1hR3ookQi/7V8Itg1IPtT/zHbmeIxSz6g=;
+        b=fT1IGodtksnYgpt75sIVvAkEfHs4UaLH4IPvkiSi+oE9OQ+tHM6XZNvqmv8e1uf9Jz
+         jwvC0Zwjh3iRWd2jWg41JuIoL8S+3KbcDk5Y144NVwWLEC8+ZVmz4/SxMznc8TX5RdfZ
+         I0c8UABvhWiwO7B04NmrYB/MhsUsknydcCaU3o+WpMoHNFcAgE1aTMuPTOAtlXetlgKJ
+         OzLU3iki8CFVs4rRQvazndv43qsLrdKTjcG8B1GHaQr3B6z1j7p6nPEPURc2CkMBkkB/
+         UjSavuK0QSlvty3biM8McTnHi3ER0/Tsx3bfKOYBNuQEP7fDII2exdRklYIkn9Og/Fc7
+         igFg==
+X-Gm-Message-State: AOAM5307uy9s8j7s37J1uAp01OPkfJQxsiRyOayxcx/lMWUlq+637PKN
+        Fi+jYCHb/UhQBOoa4g+HqfmN9g==
+X-Google-Smtp-Source: ABdhPJyu2rjAfEpo9PsZku1g5A6IasXMm5exN3bYVxllgILGsUnNv/NS1FwRd/sfhdORw2FuF5f16w==
+X-Received: by 2002:a17:902:ff0e:b029:d6:820d:cb81 with SMTP id f14-20020a170902ff0eb02900d6820dcb81mr31394012plj.47.1604516225344;
+        Wed, 04 Nov 2020 10:57:05 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q16sm3066965pff.114.2020.11.04.10.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 10:57:04 -0800 (PST)
+Date:   Wed, 4 Nov 2020 10:57:03 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202011041052.0D14CD6@keescook>
+References: <202010121556.1110776B83@keescook>
+ <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook>
+ <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+ <202010231945.90FA4A4AA@keescook>
+ <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+ <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
+ <202011031612.6AA505157@keescook>
+ <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ivpywtswxref2r4j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104113458.GC287014@aptenodytes>
+In-Reply-To: <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 05:40:51AM -0600, YiFei Zhu wrote:
+> On Tue, Nov 3, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
+> > Yeah, this is very interesting. That there is anything measurably _slower_
+> > with the cache is surprising. Though with only 4 runs, I wonder if it's
+> > still noisy? What happens at 10 runs -- more importantly what is the
+> > standard deviation?
+> 
+> I could do that. it just takes such a long time. Each run takes about
+> 20 minutes so with 10 runs per environment, 3 environments (native + 2
+> docker) per boot, and 4 boots (2 bootparam * 2 compile config), it's
+> 27 hours of compilation. I should probably script it at that point.
 
---ivpywtswxref2r4j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, I was facing the same issues. Though perhaps hackbench (with
+multiple CPUs) would be a better test (and it's much faster):
 
-On Wed, Nov 04, 2020 at 12:34:58PM +0100, Paul Kocialkowski wrote:
-> > > +	regmap_write(regmap, SUN6I_MIPI_CSI2_CFG_REG,
-> > > +		     SUN6I_MIPI_CSI2_CFG_CHANNEL_MODE(1) |
-> > > +		     SUN6I_MIPI_CSI2_CFG_LANE_COUNT(lanes_count));
-> >=20
-> > It's not really clear what the channel is here? The number of virtual
-> > channels? Something else?
->=20
-> That's somewhat described in the controller documentation. Channels refer=
-s to
-> physical channels of the controller, which can be used to redirect data
-> matching either a specific data type, a specific virtual channel, or both.
-> There's a somewhat similar concept of channels in the CSI controller too.
->=20
-> We're currently only using one...
->=20
-> > > +	regmap_write(regmap, SUN6I_MIPI_CSI2_VCDT_RX_REG,
-> > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(3, 3) |
-> > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(2, 2) |
-> > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(1, 1) |
-> > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(0, 0) |
-> > > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_DT(0, data_type));
->=20
-> ... but it's safer to configure them all to virtual channel numbers so we=
- don't
-> end up with multiple channels matching virtual channel 0.
->=20
-> I'll add a comment about that.
+https://lore.kernel.org/lkml/7723ae8d-8333-ba17-6983-a45ec8b11c54@redhat.com/
 
-Maybe we should have pads for all of them then, even if we don't support
-changing anything?
+(I usually run this with a CNT of 20 to get quick results.)
 
-> > > +static const struct v4l2_subdev_pad_ops sun6i_mipi_csi2_subdev_pad_o=
-ps =3D {
-> > > +	.enum_mbus_code		=3D sun6i_mipi_csi2_enum_mbus_code,
-> > > +	.get_fmt		=3D sun6i_mipi_csi2_get_fmt,
-> > > +	.set_fmt		=3D sun6i_mipi_csi2_set_fmt,
-> > > +	.enum_frame_size	=3D sun6i_mipi_csi2_enum_frame_size,
-> > > +	.enum_frame_interval	=3D sun6i_mipi_csi2_enum_frame_interval,
-> > > +};
-> > > +
-> > > +/* Subdev */
-> > > +
-> > > +static const struct v4l2_subdev_ops sun6i_mipi_csi2_subdev_ops =3D {
-> > > +	.core		=3D &sun6i_mipi_csi2_subdev_core_ops,
-> > > +	.video		=3D &sun6i_mipi_csi2_subdev_video_ops,
-> > > +	.pad		=3D &sun6i_mipi_csi2_subdev_pad_ops,
-> > > +};
-> > > +
-> > > +/* Notifier */
-> > > +
-> > > +static int sun6i_mipi_csi2_notifier_bound(struct v4l2_async_notifier=
- *notifier,
-> > > +					  struct v4l2_subdev *remote_subdev,
-> > > +					  struct v4l2_async_subdev *remote_subdev_async)
-> > > +{
-> > > +	struct v4l2_subdev *subdev =3D notifier->sd;
-> > > +	struct sun6i_mipi_csi2_video *video =3D
-> > > +		sun6i_mipi_csi2_subdev_video(subdev);
-> > > +	struct sun6i_mipi_csi2_dev *cdev =3D sun6i_mipi_csi2_video_dev(vide=
-o);
-> > > +	int source_pad;
-> > > +	int ret;
-> > > +
-> > > +	source_pad =3D media_entity_get_fwnode_pad(&remote_subdev->entity,
-> > > +						 remote_subdev->fwnode,
-> > > +						 MEDIA_PAD_FL_SOURCE);
-> > > +	if (source_pad < 0)
-> > > +		return source_pad;
-> > > +
-> > > +	ret =3D media_create_pad_link(&remote_subdev->entity, source_pad,
-> > > +				    &subdev->entity, 0,
-> > > +				    MEDIA_LNK_FL_ENABLED |
-> > > +				    MEDIA_LNK_FL_IMMUTABLE);
-> > > +	if (ret) {
-> > > +		dev_err(cdev->dev, "failed to create %s:%u -> %s:%u link\n",
-> > > +			remote_subdev->entity.name, source_pad,
-> > > +			subdev->entity.name, 0);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	video->remote_subdev =3D remote_subdev;
-> > > +	video->remote_pad_index =3D source_pad;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct v4l2_async_notifier_operations sun6i_mipi_csi2_n=
-otifier_ops =3D {
-> > > +	.bound		=3D sun6i_mipi_csi2_notifier_bound,
-> > > +};
-> > > +
-> > > +/* Media Entity */
-> > > +
-> > > +static int sun6i_mipi_csi2_link_validate(struct media_link *link)
-> > > +{
-> > > +	struct v4l2_subdev *subdev =3D
-> > > +		container_of(link->sink->entity, struct v4l2_subdev, entity);
-> > > +	struct sun6i_mipi_csi2_video *video =3D
-> > > +		sun6i_mipi_csi2_subdev_video(subdev);
-> > > +	struct v4l2_subdev *remote_subdev;
-> > > +	struct v4l2_subdev_format format =3D { 0 };
-> > > +	int ret;
-> > > +
-> > > +	if (!is_media_entity_v4l2_subdev(link->source->entity))
-> > > +		return -EINVAL;
-> > > +
-> > > +	remote_subdev =3D media_entity_to_v4l2_subdev(link->source->entity);
-> > > +
-> > > +	format.which =3D V4L2_SUBDEV_FORMAT_ACTIVE;
-> > > +	format.pad =3D link->source->index;
-> > > +
-> > > +	ret =3D v4l2_subdev_call(remote_subdev, pad, get_fmt, NULL, &format=
-);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	video->mbus_code =3D format.format.code;
-> > > +
-> > > +	return 0;
-> > > +}
-> >=20
-> > I'm not really sure what you're trying to validate here?
->=20
-> The whole purpose is to retreive video->mbus_code from the subdev, like i=
-t's
-> done in the sun6i-csi driver. Maybe there is a more appropriate op to do =
-it?
+> > I assume this is from Indirect Branch Prediction Barrier (IBPB) and
+> > Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
+> > for threads under seccomp by default).
+> >
+> > Try booting with "spectre_v2_user=prctl"
+> 
+> Hmm, to make sure, boot with just "spectre_v2_user=prctl" on the
+> command line and test the performance of that?
 
-I'm not sure why you need to do that in the link_validate though?
+Right, see if that eliminates the 3 minute jump seen for seccomp.
 
-You just need to init the pad format, and then you'll have a
-get_fmt/set_fmt for your pads.
-
-> > > +	cdev->regmap =3D devm_regmap_init_mmio_clk(&pdev->dev, "bus", io_ba=
-se,
-> > > +						 &sun6i_mipi_csi2_regmap_config);
-> > > +	if (IS_ERR(cdev->regmap)) {
-> > > +		dev_err(&pdev->dev, "failed to init register map\n");
-> > > +		return PTR_ERR(cdev->regmap);
-> > > +	}
-> >=20
-> > Yeah, so that won't work. regmap expects to have access to those
-> > registers when you enable that clock, but that won't happen since the
-> > reset line can be disabled. You would be better off using runtime_pm
-> > here.
->=20
-> I don't understand what you mean here or what the problem could be.
-> Here we're just initializing regmap and while this is done before the
-> registers are available for I/O, I don't see why it would cause any
-> issue at this point.
-
-The regmap here is supposed to take care of the resources, except it
-only does it for some of the resources here, which kind of breaks the
-expectations. And it doesn't allow you to have the reset / clock
-sequence properly done.
-
-> The exact same thing is done in the CSI driver.
-
-That's not an argument though, is it? :)
-
-Maxime
-
---ivpywtswxref2r4j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6L5cQAKCRDj7w1vZxhR
-xapUAPkBCQbEYpxpQRc2dQrlYckdrRucLdZjrw4DyHXeRpWXKwD8D9vPu/MJrl2p
-3cE184xWD5PpdHRseodrz4F6IAC7tA4=
-=egrI
------END PGP SIGNATURE-----
-
---ivpywtswxref2r4j--
+-- 
+Kees Cook
