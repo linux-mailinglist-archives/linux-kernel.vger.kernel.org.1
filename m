@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32A82A67A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73B22A67B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730162AbgKDP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:28:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728675AbgKDP2l (ORCPT
+        id S1730582AbgKDPbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:31:51 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:23741 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730525AbgKDPbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:28:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604503719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OzvLPilVuFx00ghPxfGHTtJOpDXHfZFvWBiD6OmUMv8=;
-        b=CwuW7XAZgh35K6Lmrnh4YZ3I4eoWpIlRmiUPQ9Dn8E3VS8N+APoCJMfCoqZ0jYEOIqYVo4
-        psrTFqgrVybV+c4xEnZXC+FdbveSLCR40KprCrMOxUxX7v5VreJZRw3N0dVLpNW3H6Nd9A
-        kVoOkllCoNKP0mh1OhTv15B2iHplmoA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-3YsTLM5uMWGiO6aEmwJwCg-1; Wed, 04 Nov 2020 10:28:36 -0500
-X-MC-Unique: 3YsTLM5uMWGiO6aEmwJwCg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A32D710A0B83;
-        Wed,  4 Nov 2020 15:28:34 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E00719650;
-        Wed,  4 Nov 2020 15:28:26 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 16:28:23 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Peter Feiner <pfeiner@google.com>
-Subject: Re: [PATCH v2 2/5] KVM: selftests: Factor code out of
- demand_paging_test
-Message-ID: <20201104152823.qxdlbygza7ykn5x2@kamzik.brq.redhat.com>
-References: <20201103234952.1626730-1-bgardon@google.com>
- <20201103234952.1626730-3-bgardon@google.com>
- <20201104121631.wvodsw7agsrdhje4@kamzik.brq.redhat.com>
- <20201104150017.GN20600@xz-x1>
+        Wed, 4 Nov 2020 10:31:51 -0500
+Date:   Wed, 04 Nov 2020 15:31:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604503904; bh=BQ2VaKtBiuQCT6Mo5ex46388MTeEB/SnXnxf3lZZ6PE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=a5WlYYvHMV++OZhuUV+kCl1zVOYrV9Vm7lfn6z9tXWm1JBLZOKa968UzJS/TkbqgN
+         wNwWCW6KdS1ak8qZ/6QtDAY4jIg1mLUy9I3d0BUiMp+cIVYtEQhpqZQERwWejf/+3M
+         acOJPAaBecyzPiUTt2UmUFJ9qDo6qjj9/A7D/mbxah5+R+Bwht3xnGLzlRGohULnKZ
+         Flc9/XySag7zQXjBQgDD6wtPZBqzhVDeqF7KYpFIwmJMcPyO3EujhdbAJVrHwJrABk
+         1NuprOaH0ubjmO/qfNAUKwQ0059p8+wgMwci3pD4PaKgzyJR9dRW+b8uw6EInxBJOV
+         2GH78BvoHl3Ug==
+To:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
+Message-ID: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104150017.GN20600@xz-x1>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:00:17AM -0500, Peter Xu wrote:
-> On Wed, Nov 04, 2020 at 01:16:31PM +0100, Andrew Jones wrote:
-> > If you don't mind I'd like to try and cleanup / generalize / refactor
-> > demand_paging_test.c and dirty_log_test.c with a few patches first for
-> > you to base this work on. I can probably get something posted today
-> > or tomorrow.
-> 
-> Drew,
-> 
-> Would you consider picking up the two patches below in the dirty ring series if
-> you plan to rework the dirty log tests?  I got your r-b so I am making bold to
-> think I'm ok to ask this; I just want to avoid another potential conflict
-> within the series.
+Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+specific dma memory pool"), every remoteproc has a DMA subdevice
+("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+DMA capabilities from the corresponding platform device. This allowed
+to associate different DMA pools with each vdev, and required from
+virtio drivers to perform DMA operations with the parent device
+(vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
 
-Sure, no problem.
+virtio_rpmsg_bus was already changed in the same merge cycle with
+commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+but virtio_console did not. In fact, operations using the grandparent
+worked fine while the grandparent was the platform device, but since
+commit c774ad010873 ("remoteproc: Fix and restore the parenting
+hierarchy for vdev") this was changed, and now the grandparent device
+is the remoteproc device without any DMA capabilities.
+So, starting v5.8-rc1 the following warning is observed:
 
-I'll go ahead and get that cleanup / refactor series out.
+[    2.483925] ------------[ cut here ]------------
+[    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7e=
+ee8
+[    2.489152] Modules linked in: virtio_console(+)
+[    2.503737]  virtio_rpmsg_bus rpmsg_core
+[    2.508903]
+[    2.528898] <Other modules, stack and call trace here>
+[    2.913043]
+[    2.914907] ---[ end trace 93ac8746beab612c ]---
+[    2.920102] virtio-ports vport1p0: Error allocating inbufs
 
-Thanks,
-drew
+kernel/dma/mapping.c:427 is:
 
-> 
-> Thanks!
-> 
-> [1] https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
-> [2] https://lore.kernel.org/kvm/20201023183358.50607-12-peterx@redhat.com/
-> 
-> -- 
-> Peter Xu
-> 
+WARN_ON_ONCE(!dev->coherent_dma_mask);
+
+obviously because the grandparent now is remoteproc dev without any
+DMA caps:
+
+[    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+
+Fix this the same way as it was for virtio_rpmsg_bus, using just the
+parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+operations.
+This also allows now to reserve DMA pools/buffers for rproc serial
+via Device Tree.
+
+Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy f=
+or vdev")
+Cc: stable@vger.kernel.org # 5.1+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/char/virtio_console.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index a2da8f768b94..1836cc56e357 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_de=
+vice *vdev, size_t buf_size
+ =09=09/*
+ =09=09 * Allocate DMA memory from ancestor. When a virtio
+ =09=09 * device is created by remoteproc, the DMA memory is
+-=09=09 * associated with the grandparent device:
+-=09=09 * vdev =3D> rproc =3D> platform-dev.
++=09=09 * associated with the parent device:
++=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
+ =09=09 */
+-=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
++=09=09buf->dev =3D vdev->dev.parent;
++=09=09if (!buf->dev)
+ =09=09=09goto free_buf;
+-=09=09buf->dev =3D vdev->dev.parent->parent;
+=20
+ =09=09/* Increase device refcnt to avoid freeing it */
+ =09=09get_device(buf->dev);
+--=20
+2.29.2
+
 
