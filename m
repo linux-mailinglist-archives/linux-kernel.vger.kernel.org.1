@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2632A70BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F09F2A70C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731876AbgKDWoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:44:24 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35472 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgKDWoY (ORCPT
+        id S1732544AbgKDWoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:44:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732515AbgKDWod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:44:24 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Mi3Ke123278;
-        Wed, 4 Nov 2020 16:44:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604529843;
-        bh=vm0SmAIBDv/JlPGpGIwp92DW3Tea209tPYxdOes6hak=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UwFfyLBnmAUFZUPYD9HqUcBurYKeBmsc7tHlGZ4wRfHCdyJ6HzwNqPTdjfBtqw8yj
-         j8FrSETFnbP1W0l3926R5u9eQekLj54q7LfCvAqxRe+VmdKi2iiH5+m2QXj79kQqY0
-         M91XNIL5CM+DFUW6dghLxrjm9gUM8o/Z4lt+T+zI=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A4Mi2Xf056145
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Nov 2020 16:44:02 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 4 Nov
- 2020 16:44:01 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 4 Nov 2020 16:44:02 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Mi1hS124737;
-        Wed, 4 Nov 2020 16:44:01 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH 4/4] arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set to "okay" for USB
-Date:   Wed, 4 Nov 2020 16:43:56 -0600
-Message-ID: <20201104224356.18040-5-nm@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201104224356.18040-1-nm@ti.com>
-References: <20201104224356.18040-1-nm@ti.com>
+        Wed, 4 Nov 2020 17:44:33 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6F2C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 14:44:31 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y16so204049ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ktpmn2NX0J5OPT7QN9c8op6gbH7kVw1jxv9tLBj7cuc=;
+        b=IFzi+wpry5wW+UcbEC2QWIKhQYjtR1ggicBVKASHjN2NV+62ExLtw0CYZFhffyZaXL
+         4wTGZ6IFAYjBXdxC509EJd1UuJfOZjza4SMu0WCgKRO5+PLp6Z3oo3u+GOMeeADnqSx+
+         E53VmeaTZqtXGiTWQogT9aH06dJf/lXRuON2c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ktpmn2NX0J5OPT7QN9c8op6gbH7kVw1jxv9tLBj7cuc=;
+        b=k1wGg/xt8nhiIVcBC38TnGe4ZmVV7xEb2eb78gxRNApIQ1d0HX5FdVWu/JUST3HvfM
+         MLTnqiOmbD83nkiL5eQbVEZO023L82oSdoBOP9eFwZ3y4Lvd9A6lYw3cyFQpx0oSzvo6
+         lOf99A9y1ZSXg82XsRBaRrE6ZfLYf1sXRI/DYD+cWQ2NowH0f5ubwto3Yhriv6vBglZT
+         Yt7mHjZkCc7V2G7/H6pZj5KG/J20FciXOZZwieM06/hgF8oDGcsZj7YrpjRi+6bWfs1F
+         keGJPT8k+ZseDZFunj8ZMX+pK/vSibpnqVinFNPnVkpaoQ844XWMpiUD7OaFbp9IAyKr
+         gfdQ==
+X-Gm-Message-State: AOAM532knmHtVPx1UKsTkQrOI3AtKnUE5yVtvSP7Hf8rD92nYpGJmELw
+        ylZHDY/TjQRF6wRo4wvUcweyzDVdzIL0kV54ofx0XA==
+X-Google-Smtp-Source: ABdhPJzm68ST7IajXhinHgxQieZdPSWnEWAiPZh6ZuCwMd/GrrlZYyo+OqdFWO/eE/CGMKWBWkLVz2Bh2AbNfubgAM0=
+X-Received: by 2002:a2e:1517:: with SMTP id s23mr71620ljd.83.1604529869714;
+ Wed, 04 Nov 2020 14:44:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201104164453.74390-1-kpsingh@chromium.org> <20201104164453.74390-6-kpsingh@chromium.org>
+ <20201104223539.pwtwnx6penoqm37j@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201104223539.pwtwnx6penoqm37j@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 4 Nov 2020 23:44:19 +0100
+Message-ID: <CACYkzJ57QLF8C+b9HcSFPz4j+HYRsGZfOZ+3i1JSU+R5NkVCiQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/9] bpf: Allow LSM programs to use bpf spin locks
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default state of a device tree node is "okay". There is no specific
-use of explicitly adding status = "okay" in the board dts.
+On Wed, Nov 4, 2020 at 11:35 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Nov 04, 2020 at 05:44:49PM +0100, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > Usage of spin locks was not allowed for tracing programs due to
+> > insufficient preemption checks. The verifier does not currently prevent
+> > LSM programs from using spin locks, but the helpers are not exposed
+> > via bpf_lsm_func_proto.
+> This could be the first patch but don't feel strongly about it.
+>
+> >
+> > Based on the discussion in [1], non-sleepable LSM programs should be
+> > able to use bpf_spin_{lock, unlock}.
+> >
+> > Sleepable LSM programs can be preempted which means that allowng spin
+> > locks will need more work (disabling preemption and the verifier
+> > ensuring that no sleepable helpers are called when a spin lock is held).
+> >
+> > [1]: https://lore.kernel.org/bpf/20201103153132.2717326-1-kpsingh@chromium.org/T/#md601a053229287659071600d3483523f752cd2fb
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  kernel/bpf/bpf_lsm.c  |  4 ++++
+> >  kernel/bpf/verifier.c | 17 +++++++++++++++++
+> >  2 files changed, 21 insertions(+)
+> >
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 61f8cc52fd5b..93383df2140b 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -63,6 +63,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >               return &bpf_task_storage_get_proto;
+> >       case BPF_FUNC_task_storage_delete:
+> >               return &bpf_task_storage_delete_proto;
+> > +     case BPF_FUNC_spin_lock:
+> > +             return &bpf_spin_lock_proto;
+> > +     case BPF_FUNC_spin_unlock:
+> > +             return &bpf_spin_unlock_proto;
+> >       default:
+> >               return tracing_prog_func_proto(func_id, prog);
+> >       }
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 314018e8fc12..7c6c246077cf 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -9739,6 +9739,23 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+> >               return -EINVAL;
+> >       }
+> >
+> > +     if (map_value_has_spin_lock(map)) {
+> > +             if (prog_type == BPF_PROG_TYPE_SOCKET_FILTER) {
+> > +                     verbose(env, "socket filter progs cannot use bpf_spin_lock yet\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             if (is_tracing_prog_type(prog_type)) {
+> > +                     verbose(env, "tracing progs cannot use bpf_spin_lock yet\n");
+> > +                     return -EINVAL;
+> > +             }
+> It is good to have a more specific verifier log.  However,
+> these are duplicated checks (a few lines above in the same function).
+> They should at least be removed.
+>
 
-Fixes: 7e7e7dd51d06 ("arm64: dts: ti: k3-am654-base-board: enable USB1")
-Cc: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 8 --------
- 1 file changed, 8 deletions(-)
+Thanks, I fixed this up and will move this as the first patch.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-index 199c4d4e7539..744efcbb4f7f 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-@@ -325,14 +325,6 @@ &sdhci1 {
- 	disable-wp;
- };
- 
--&dwc3_1 {
--	status = "okay";
--};
--
--&usb1_phy {
--	status = "okay";
--};
--
- &usb1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&usb1_pins_default>;
--- 
-2.29.2
-
+> > +
+> > +             if (prog->aux->sleepable) {
+> > +                     verbose(env, "sleepable progs cannot use bpf_spin_lock yet\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +     }
+> > +
+> >       if ((bpf_prog_is_dev_bound(prog->aux) || bpf_map_is_dev_bound(map)) &&
+> >           !bpf_offload_prog_map_match(prog, map)) {
+> >               verbose(env, "offload device mismatch between prog and map\n");
+> > --
+> > 2.29.1.341.ge80a0c044ae-goog
+> >
