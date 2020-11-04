@@ -2,175 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A482A612E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F91A2A6131
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgKDKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgKDKGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:06:51 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A0CC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 02:06:50 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id oq3so27088750ejb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 02:06:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3TaXtXs3xZiP56tEU01ifiqy3+is8ac1K/K3ycqOg/s=;
-        b=QHWqh3ajJg6ht/+Vf1g7tm0KtRQJKXWUhj9EamxC8Yj9d52zYfGg6WtWjyJfXBAzkN
-         59zlMIPDlK/zjoGUPe0Uid0tJY4YjQsL9Aq16p4WJeVKT+j4BsFUopoazcC3/fBsoJ5I
-         /VCWPaxBFOHNlOi6G4KBstagoowRdcElEUt6k67bqtKJ47cLEBkvXHSKmjA14ehnuw4d
-         RJguqSF6uke/lzFm5n5zCzCGKqJasqZYYKvCRuPjpCq/aVG6jgOKRsN8NPQ5Cq6ftW9e
-         5t+hYXf1SLA56Ci+PQ0/HxUiOkmzDS2NlEi93krTg4O8oj2AApnI219wpqnnZw7BM8D/
-         q3gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3TaXtXs3xZiP56tEU01ifiqy3+is8ac1K/K3ycqOg/s=;
-        b=StJ2RP8BCcy4cDlwsnoMV+XZ5ueLYbzVkZ5rLjPyAbgZHhkRde6PX8XG1iQZ9FOuvl
-         0MndIqn/+69OL/JHwFbby/MPXGnzsA/X7VlMKVOW5h/lsk9xptkg4Sxq/taW3x0PMvaZ
-         b2PPKhV2Cpz5Nv4fTXxnb6fy0PMD7YUQYotjimy9mRgE/vwoFaHntImsd/0Bh2Qa9kDR
-         NEOTNEebXSjMG3dPShnaUbrjI8O9tz2N0cav9hPsFWh9BPpCG93f5H2TS5obSQjh9W8F
-         XmSASDnU1xU+W/BI84XMCILbGp48fcUrEm5uyjOz/+WWLMLjlchpZuqrIL3+774AIY66
-         bAag==
-X-Gm-Message-State: AOAM530wPtz03/7/LNMZpvuK10TlqxJfn3AqmrpZ5b5PuvPtjfMobfzb
-        oeHKR0WOwuY99uAtKYHnj2x+pOHkbxvUadoIW6ENlw==
-X-Google-Smtp-Source: ABdhPJxPoMES71jQZ6OqHxJNlK05yFiYsV3+2PFb8Vc0qvP6AnDYzz6onuSfPWIN7aeugK90GcvNzhc6cPC3G82ZHXw=
-X-Received: by 2002:a17:906:39ce:: with SMTP id i14mr25129695eje.170.1604484409335;
- Wed, 04 Nov 2020 02:06:49 -0800 (PST)
+        id S1729179AbgKDKHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:07:14 -0500
+Received: from ozlabs.org ([203.11.71.1]:35273 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727389AbgKDKHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:07:13 -0500
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CR2Pr0TM2z9sTK; Wed,  4 Nov 2020 21:07:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604484432;
+        bh=MLycki1ORc3U1v+8blutc4vn9QHgJZyKlcel6wN5aHA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iJ3sjZA1RKSE4YhM7Qp8jPm5udAQqT1QItAbUZrD+F9DXYfOca1Jy2Z2rwZcyDWiK
+         DqK56QgE44JnpDBqz+fYEcXvbWt4HM5Pypjy/TzUrTt4yWsnPGUctbvFZRKCxgWL4F
+         rQ0exUcn6wulnlrJjamg6eK5r4XSApY5BnZOn2UMbo80cc7maJPEJAs6A2wQxlm7dp
+         iaFgfBBIUpc/wUiox4o6A4GLBCMOdrjby91lzQks6hqb7unTRtaG1hipO2FbOlvQ1o
+         Lx0Z3JUMV7P/epCGxmFT/1US9wQzIrUlLC/pUxuHfKZJIpKJmGNRiDEpjpz9EGdYt3
+         lmNsSjMt7Iw4Q==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org
+Subject: [PATCH] selftests/exec: Fix building of exec test
+Date:   Wed,  4 Nov 2020 21:07:06 +1100
+Message-Id: <20201104100706.659089-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201103203249.448706377@linuxfoundation.org>
-In-Reply-To: <20201103203249.448706377@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 4 Nov 2020 15:36:38 +0530
-Message-ID: <CA+G9fYs_LAk-vXYHeNxWGMHPYVi4DH=oZyJTcC=ioDNUR-C+4w@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/214] 5.4.75-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 02:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.75 release.
-> There are 214 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.75-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Currently the exec test does not build:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+  make[1]: Entering directory '/linux/tools/testing/selftests/exec'
+  ...
+  make[1]: *** No rule to make target '/output/kselftest/exec/pipe', needed by 'all'.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This is because pipe is listed in TEST_GEN_FILES, but pipe is not
+generated by the Makefile, it's created at runtime. So drop pipe from
+TEST_GEN_FILES.
 
-Summary
-------------------------------------------------------------------------
+With that fixed, then install fails:
 
-kernel: 5.4.75-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 1b513bf286096f9c66fc386cdc5e038980db8863
-git describe: v5.4.74-215-g1b513bf28609
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.74-215-g1b513bf28609
+  make[1]: Entering directory '/linux/tools/testing/selftests/exec'
+  rsync -a binfmt_script non-regular /output/install/exec/
+  rsync: link_stat "/linux/tools/testing/selftests/exec/non-regular" failed: No such file or directory (2)
 
-No regressions (compared to build v5.4.74)
+That's because non-regular hasn't been built, because it's in
+TEST_PROGS, it should be part of TEST_GEN_PROGS to indicate that it
+needs to be built.
 
-No fixes (compared to build v5.4.74)
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ tools/testing/selftests/exec/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Ran 37086 total tests in the following environments and test suites.
+diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
+index cf69b2fcce59..a1e8a7abf576 100644
+--- a/tools/testing/selftests/exec/Makefile
++++ b/tools/testing/selftests/exec/Makefile
+@@ -3,9 +3,9 @@ CFLAGS = -Wall
+ CFLAGS += -Wno-nonnull
+ CFLAGS += -D_GNU_SOURCE
+ 
+-TEST_PROGS := binfmt_script non-regular
+-TEST_GEN_PROGS := execveat load_address_4096 load_address_2097152 load_address_16777216
+-TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir pipe
++TEST_PROGS := binfmt_script
++TEST_GEN_PROGS := execveat non-regular load_address_4096 load_address_2097152 load_address_16777216
++TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir
+ # Makefile is a run-time dependency, since it's accessed by the execveat test
+ TEST_FILES := Makefile
+ 
 
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- nxp-ls2088-kasan
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
+base-commit: cf7cd542d1b538f6e9e83490bc090dd773f4266d
+-- 
+2.25.1
 
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-cve-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
