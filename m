@@ -2,129 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9872A65BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE822A65C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgKDOBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:01:06 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:50023 "EHLO gecko.sbs.de"
+        id S1726969AbgKDOCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:02:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:11257 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729481AbgKDN6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:58:02 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 0A4DvuIv013592
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Nov 2020 14:57:56 +0100
-Received: from [167.87.41.231] ([167.87.41.231])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0A4Dvuhl011779;
-        Wed, 4 Nov 2020 14:57:56 +0100
-Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20201026141839.28536-1-brgl@bgdev.pl>
- <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
- <1fd4d69b-4d64-05e5-45a3-b2182fb2d207@siemens.com>
-Message-ID: <0ab04241-4756-873b-980a-572b225c16e9@siemens.com>
-Date:   Wed, 4 Nov 2020 14:57:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726527AbgKDOCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:02:08 -0500
+IronPort-SDR: Ck6oRT/9GSj30lwG4HgwlreZV33r5fowkYM1IfMsCEkLQoeolukgpEPNzKMmes71BQl1xTPlsm
+ vKXPfWwaYkIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="253928618"
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="253928618"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:01:56 -0800
+IronPort-SDR: hXnJiNdbkWZLoYrlaTGLrYXR7Cn2+3f0uU0yDyEEepyNgeSNYWJ0I5TiXuj6LWli6jMDY3AIcM
+ edHa46A1/tOg==
+X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
+   d="scan'208";a="538932865"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.232])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 06:01:54 -0800
+Date:   Wed, 4 Nov 2020 15:01:44 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201104140143.GA30197@ubuntu>
+References: <20201027175218.1033609-1-mathieu.poirier@linaro.org>
+ <20201027175218.1033609-9-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1fd4d69b-4d64-05e5-45a3-b2182fb2d207@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027175218.1033609-9-mathieu.poirier@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.10.20 16:12, Jan Kiszka wrote:
-> On 26.10.20 15:46, Andy Shevchenko wrote:
->> On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>>
->>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>
->>> I just wanted to convert the driver to using simpler IDA API but ended up
->>> quickly converting it to using regmap. Unfortunately I don't have the HW
->>> to test it so marking the patches that introduce functional change as RFT
->>> and Cc'ing the original author.
->>
->> +Cc: Jan, AFAIR their devices are using Exar UART.
->>
+Hi Mathieu, Arnaud,
+
+I've tried the patch set with my VirtIO / vhost audio implementation, 
+in general it worked quite well, but I did need one chamge, which 
+should be improved in this patch:
+
+On Tue, Oct 27, 2020 at 11:52:18AM -0600, Mathieu Poirier wrote:
+> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 > 
-> Thanks for CC'ing. I cannot promise testing this soon, but I will try my
-> best.
+> Make the RPMSG name service announcement a stand alone driver so that it
+> can be reused by other subsystems.  It is also the first step in making the
+> functionatlity transport independent, i.e that is not tied to virtIO.
 > 
+> Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
 
-Finally tested, unfortunately with bad news:
+[snip]
 
-...
-at24 i2c-INT3499:00: 1024 byte INT3499:00 EEPROM, writable, 1 bytes/write
-pxa2xx_spi_pci 0000:00:15.0: enabling device (0000 -> 0002)
-pxa2xx_spi_pci 0000:00:15.1: enabling device (0000 -> 0002)
-exar_serial 0000:02:00.0: enabling device (0000 -> 0002)
-0000:02:00.0: ttyS2 at MMIO 0x90000000 (irq = 44, base_baud = 7812500) is a XR17V35X
-0000:02:00.0: ttyS3 at MMIO 0x90000400 (irq = 44, base_baud = 7812500) is a XR17V35X
-BUG: kernel NULL pointer dereference, address: 00000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0xc1150010) - not-present page
-*pde = 00000000 
-Oops: 0010 [#1] PREEMPT
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc2+ #438
-Hardware name: Intel Corp. QUARK/SIMATIC IOT2000, BIOS V24.02.01 10/30/2018
-Workqueue: events deferred_probe_work_func
-EIP: 0x0
-Code: Unable to access opcode bytes at RIP 0xffffffd6.
-EAX: 00000000 EBX: f7c74000 ECX: 00000004 EDX: 00000099
-ESI: 00000000 EDI: 00000000 EBP: c1157da8 ESP: c1157d90
-DS: 007b ES: 007b FS: 0000 GS: 00e0 SS: 0068 EFLAGS: 00010282
-CR0: 80050033 CR2: ffffffd6 CR3: 03771000 CR4: 00100010
-Call Trace:
- regmap_update_bits_base+0x22/0x60
- ? exar_set_value+0x70/0x70 [gpio_exar]
- ? exar_set_value+0x70/0x70 [gpio_exar]
- exar_direction_output+0x47/0x50 [gpio_exar]
- gpiod_direction_output_raw_commit+0x74/0x270
- ? exar_direction_input+0x50/0x50 [gpio_exar]
- ? exar_set_value+0x70/0x70 [gpio_exar]
- gpiod_direction_output+0xf0/0x160
- create_gpio_led+0xea/0x180
- gpio_led_probe+0x22c/0x460
- ? device_pm_check_callbacks+0x4c/0x100
- platform_drv_probe+0x2d/0x80
- really_probe+0xcb/0x330
- driver_probe_device+0x49/0xa0
- __device_attach_driver+0x61/0x80
- ? driver_allows_async_probing+0x60/0x60
- bus_for_each_drv+0x4f/0x90
- __device_attach+0xbb/0x120
- ? driver_allows_async_probing+0x60/0x60
- device_initial_probe+0x12/0x20
- bus_probe_device+0x6f/0x80
- deferred_probe_work_func+0x56/0x80
- process_one_work+0x1ce/0x390
- worker_thread+0x37/0x420
- kthread+0x115/0x130
- ? process_one_work+0x390/0x390
- ? kthread_create_on_node+0x20/0x20
- ret_from_fork+0x19/0x30
-Modules linked in: gpio_exar(+) spi_pxa2xx_platform 8250_exar spi_pxa2xx_pci ti_adc108s102 industrialio_triggered_buffer kfifo_buf industrialio at24
-CR2: 0000000000000000
----[ end trace d982fb210f759304 ]---
-EIP: 0x0
-Code: Unable to access opcode bytes at RIP 0xffffffd6.
-EAX: 00000000 EBX: f7c74000 ECX: 00000004 EDX: 00000099
-ESI: 00000000 EDI: 00000000 EBP: c1157da8 ESP: c1157d90
-DS: 007b ES: 007b FS: 0000 GS: 00e0 SS: 0068 EFLAGS: 00010282
-CR0: 80050033 CR2: ffffffd6 CR3: 03771000 CR4: 00100010
+> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+> index bb479f430080..42786bb759b5 100644
+> --- a/include/linux/rpmsg_ns.h
+> +++ b/include/linux/rpmsg_ns.h
+> @@ -39,4 +39,21 @@ enum rpmsg_ns_flags {
+>  /* Address 53 is reserved for advertising remote services */
+>  #define RPMSG_NS_ADDR			(53)
+>  
+> +/**
+> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> + * @rpdev: prepared rpdev to be used for creating endpoints
+> + *
+> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> + * basis for the rpmsg name service device.
+> + */
+> +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> +{
+> +       strcpy(rpdev->id.name, "rpmsg_ns");
 
-Jan
+you need to
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+#include <linux/rpmsg.h>
+
+in this file for rpdev definition. Or you could leave this function in 
+rpmsg_ns.c, then it's enough to forward-declare struct rpdev here.
+
+Thanks
+Guennadi
+
+> +       rpdev->driver_override = "rpmsg_ns";
+> +       rpdev->src = RPMSG_NS_ADDR;
+> +       rpdev->dst = RPMSG_NS_ADDR;
+> +
+> +       return rpmsg_register_device(rpdev);
+> +}
+> +
+>  #endif
+> -- 
+> 2.25.1
+> 
