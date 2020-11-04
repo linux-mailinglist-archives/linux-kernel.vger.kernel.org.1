@@ -2,261 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216152A5BEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499B32A5BFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 02:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgKDBaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 20:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730359AbgKDBaB (ORCPT
+        id S1729927AbgKDBcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 20:32:01 -0500
+Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:36786 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725769AbgKDBcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 20:30:01 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6A1C0401C3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 17:30:01 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id u2so3541347pls.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 17:30:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E+cZah/q0g9jl4Q/67CpDAAwhQR4OuHdsGIQ7vS19NA=;
-        b=kFPDQu9gdkWPECvdYqq05fIxB4KoU25ijItILqJNxvTc/5B1vpXMv0ufWftrniVQiW
-         QY+zz1y4ZC6VTrvavj0TaD7PCVNjGoshymnQyND6A0ZdEBm6aBbrOavkfnHcZ7TzwtnN
-         MmOdLE6DDmy3n4aIoV85zscu7TPHXfa1xMVo8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E+cZah/q0g9jl4Q/67CpDAAwhQR4OuHdsGIQ7vS19NA=;
-        b=jrRXInUzukIZl6DzqreFjhPGPL/ht1bWfCkRLDkJOMN6/FjsApobrPdNXmVoAtUEgS
-         mrAFLkSE3TgGoEW5zo3wBrUMWgpizDWQpKQRxAyv4hO4myOSUbiFNkA/co5uzc9jFvjq
-         HDcndZ77IdidHaUwO1PYpjx4HeXK14F7eNHhKfSJnrBR+6/ub5EsCpOFyYs5dFBPsTO/
-         08osgPw796lWbNOhY/SheXOFT15S65bCwAoJyyZE2vWfqNlT0V2XdA/d29pkDL05RZxi
-         WQptnrFWBHKMnS/WzysI3KBTt5X30aRJ+vcwSUgPtiOgoFjPkSkRQ33uYGqDxe/cxRva
-         wlFQ==
-X-Gm-Message-State: AOAM530ycWqfdzRQWWdLk7QTblrJIG5itD4k6aoyB4hbuP3a1vqpN8v1
-        GTE6ZwJM2qoQgIb2jglY5QQkjw==
-X-Google-Smtp-Source: ABdhPJz2madxkcDZ2Gv0YgLbwiZcpePYjx4aVUVimBHhyxlJt5LLztUconxKvoalnaC28UlIJdReLQ==
-X-Received: by 2002:a17:902:8e8b:b029:d2:4276:1df0 with SMTP id bg11-20020a1709028e8bb02900d242761df0mr27268491plb.62.1604453400693;
-        Tue, 03 Nov 2020 17:30:00 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id m3sm347424pjv.52.2020.11.03.17.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 17:30:00 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, swboyd@chromium.org,
-        andrea@borgia.bo.it, kai.heng.feng@canonical.com,
-        hdegoede@redhat.com, robh+dt@kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] HID: i2c-hid: Introduce goodix-i2c-hid as a subclass of i2c-hid
-Date:   Tue,  3 Nov 2020 17:29:29 -0800
-Message-Id: <20201103172824.v4.4.If41b7d621633b94d56653c6d53f5f89c5274de7b@changeid>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201104012929.3850691-1-dianders@chromium.org>
-References: <20201104012929.3850691-1-dianders@chromium.org>
+        Tue, 3 Nov 2020 20:32:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id EF1E418225E0A;
+        Wed,  4 Nov 2020 01:31:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1605:1711:1730:1747:1777:1792:1801:1963:2197:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2691:2739:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4470:4605:5007:6119:6120:7514:7903:8531:8957:8985:9025:9149:10010:10400:10848:11026:11232:11233:11473:11658:11914:12043:12050:12294:12296:12297:12438:12740:12895:13439:13618:13894:14096:14097:14180:14181:14659:14721:14819:21080:21324:21433:21627:21740:21811:21939:21990:30006:30012:30034:30054:30056:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:390,LUA_SUMMARY:none
+X-HE-Tag: bells46_5806729272bd
+X-Filterd-Recvd-Size: 4539
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  4 Nov 2020 01:31:57 +0000 (UTC)
+Message-ID: <ba3126e1424c578f5040c7a6f04cdd6a334b2db4.camel@perches.com>
+Subject: Re: [RFC PATCH] .clang-format: Remove conditional comments
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 03 Nov 2020 17:31:56 -0800
+In-Reply-To: <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com>
+References: <363325b4a85f094ba9cf06301dd022912ec79d03.camel@perches.com>
+         <CANiq72=r6oieZ-Nj-e6e+HriW8kADB75z2pj6W-gg7Cff3nqGw@mail.gmail.com>
+         <CAKwvOdmnz-DJ-hG5FKJZYF7W-ujPrgfMkrb2hMLhmzhk8Hx6dA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Goodix i2c-hid touchscreens are mostly i2c-hid compliant but have some
-special power sequencing requirements, including the need to drive a
-reset line during the sequencing.
+On Tue, 2020-11-03 at 17:08 -0800, Nick Desaulniers wrote:
+> On Tue, Nov 3, 2020 at 1:33 PM Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote: 
+> > On Tue, Nov 3, 2020 at 7:29 PM Joe Perches <joe@perches.com> wrote:
+> > > 
+> > > Now that the clang minimum supported version is > 10.0, enable the
+> > > commented out conditional reformatting key:value lines in the file.
+> > > 
+> > > Signed-off-by: Joe Perches <joe@perches.com>
+> > > ---
+> > > 
+> > > Hey Miguel.
+> > > 
+> > > I don't use this, but on its face it seems a reasonable change
+> > > if the commented out key:value lines are correct.
+> 
+> Joe,
+> what would it take to get you to use clang-format, or at least try it?
+>  Beers?  Bribes? Dirty deeds, done dirt cheap?
 
-Let's use the new ability of i2c-hid to have subclasses for power
-sequencing to support the first Goodix i2c-hid touchscreen: GT7375P
+Hey Nick.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Paint my house? ;)
 
-Changes in v4:
-- Totally redid based on the new subclass system.
+I've tried it.  It's OK.  It's not significantly better than
+Lindent in some ways, in other ways it's pretty good.
 
-Changes in v3:
-- Rework to use subclassing.
+It can make a real hash though of well formatted, human readable
+code.  I think that's it's biggest drawback.
 
- drivers/hid/i2c-hid/Kconfig             |  19 +++-
- drivers/hid/i2c-hid/Makefile            |   1 +
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 120 ++++++++++++++++++++++++
- 3 files changed, 138 insertions(+), 2 deletions(-)
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
+I posted an example of it a year or so back.
 
-diff --git a/drivers/hid/i2c-hid/Kconfig b/drivers/hid/i2c-hid/Kconfig
-index 819b7521c182..a16c6a69680b 100644
---- a/drivers/hid/i2c-hid/Kconfig
-+++ b/drivers/hid/i2c-hid/Kconfig
-@@ -32,10 +32,25 @@ config I2C_HID_OF
- 	  will be called i2c-hid-of.  It will also build/depend on the
- 	  module i2c-hid.
+https://lore.kernel.org/lkml/e9cb9bc8bd7fe38a5bb6ff7b7222b512acc7b018.camel@perches.com/
+
+In that thread I wrote:
+
+On Thu, 2019-09-12 at 03:18 -0700, Joe Perches wrote:
+> On Thu, 2019-09-12 at 10:24 +0200, Miguel Ojeda wrote:
+> > On Thu, Sep 12, 2019 at 9:43 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> > > Now I come to find that CodingStyle has settled on clang-format (in
+> > > the last 15 months) as the new standard which is a much better answer
+> > > to me than a manually specified style open to interpretation. I'll
+> > > take a look at getting libnvdimm converted over.
+> > 
+> > Note that clang-format cannot do everything as we want within the
+> > kernel just yet, but it is a close enough approximation -- it is near
+> > the point where we could simply agree to use it and stop worrying
+> > about styling issues. However, that would mean everyone needs to have
+> > a recent clang-format available, which I think is the biggest obstacle
+> > at the moment.
+> 
+> I don't think that's close to true yet for clang-format.
+> 
+> For instance: clang-format does not do anything with
+> missing braces, or coalescing multi-part strings,
+> or any number of other nominal coding style defects
+> like all the for_each macros, aligning or not aligning
+> columnar contents appropriately, etc...
+> 
+> clang-format as yet has no taste.
+> 
+> I believe it'll take a lot of work to improve it to a point
+> where its formatting is acceptable and appropriate.
+> 
+> An AI rather than a table based system like clang-format is
+> more likely to be a real solution, but training that AI
+> isn't a thing that I want to do.
+
+and an example very poor conversion from that same thread:
+
+        unsigned int key, newkey;
+        int i;
  
-+config I2C_HID_OF_GOODIX
-+	tristate "Driver for Goodix hid-i2c based devices on OF systems"
-+	default n
-+	depends on I2C && INPUT && OF
-+	help
-+	  Say Y here if you want support for Goodix i2c devices that use
-+	  the i2c-hid protocol on Open Firmware (Device Tree)-based
-+	  systems.
-+
-+	  If unsure, say N.
-+
-+	  This support is also available as a module.  If so, the module
-+	  will be called i2c-hid-of-goodix.  It will also build/depend on
-+	  the module i2c-hid.
-+
- endmenu
- 
- config I2C_HID_CORE
- 	tristate
--	default y if I2C_HID_ACPI=y || I2C_HID_OF=y
--	default m if I2C_HID_ACPI=m || I2C_HID_OF=m
-+	default y if I2C_HID_ACPI=y || I2C_HID_OF=y || I2C_HID_OF_GOODIX=y
-+	default m if I2C_HID_ACPI=m || I2C_HID_OF=m || I2C_HID_OF_GOODIX=m
- 	select HID
-diff --git a/drivers/hid/i2c-hid/Makefile b/drivers/hid/i2c-hid/Makefile
-index 9b4a73446841..302545a771f3 100644
---- a/drivers/hid/i2c-hid/Makefile
-+++ b/drivers/hid/i2c-hid/Makefile
-@@ -10,3 +10,4 @@ i2c-hid-$(CONFIG_DMI)				+= i2c-hid-dmi-quirks.o
- 
- obj-$(CONFIG_I2C_HID_ACPI)			+= i2c-hid-acpi.o
- obj-$(CONFIG_I2C_HID_OF)			+= i2c-hid-of.o
-+obj-$(CONFIG_I2C_HID_OF_GOODIX)			+= i2c-hid-of-goodix.o
-diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-new file mode 100644
-index 000000000000..7b27fd8b7401
---- /dev/null
-+++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for Goodix touchscreens that use the i2c-hid protocol.
-+ *
-+ * Copyright 2020 Google LLC
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pm.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include "i2c-hid.h"
-+
-+struct goodix_i2c_hid_timing_data {
-+	unsigned int post_gpio_reset_delay_ms;
-+	unsigned int post_power_delay_ms;
-+};
-+
-+struct i2c_hid_of_goodix {
-+	struct i2chid_subclass_data subclass;
-+
-+	struct regulator *vdd;
-+	struct gpio_desc *reset_gpio;
-+	const struct goodix_i2c_hid_timing_data *timings;
-+};
-+
-+static int goodix_i2c_hid_power_up_device(struct i2chid_subclass_data *subclass)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(subclass, struct i2c_hid_of_goodix, subclass);
-+	int ret;
-+
-+	ret = regulator_enable(ihid_goodix->vdd);
-+	if (ret)
-+		return ret;
-+
-+	if (ihid_goodix->timings->post_power_delay_ms)
-+		msleep(ihid_goodix->timings->post_power_delay_ms);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 0);
-+	if (ihid_goodix->timings->post_gpio_reset_delay_ms)
-+		msleep(ihid_goodix->timings->post_gpio_reset_delay_ms);
-+
-+	return 0;
-+}
-+
-+static void goodix_i2c_hid_power_down_device(struct i2chid_subclass_data *subclass)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(subclass, struct i2c_hid_of_goodix, subclass);
-+
-+	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
-+	regulator_disable(ihid_goodix->vdd);
-+}
-+
-+static int i2c_hid_of_goodix_probe(struct i2c_client *client,
-+				   const struct i2c_device_id *id)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix;
-+
-+	ihid_goodix = devm_kzalloc(&client->dev, sizeof(*ihid_goodix),
-+				   GFP_KERNEL);
-+	if (!ihid_goodix)
-+		return -ENOMEM;
-+
-+	ihid_goodix->subclass.power_up_device = goodix_i2c_hid_power_up_device;
-+	ihid_goodix->subclass.power_down_device = goodix_i2c_hid_power_down_device;
-+
-+	/* Start out with reset asserted */
-+	ihid_goodix->reset_gpio =
-+		devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ihid_goodix->reset_gpio))
-+		return PTR_ERR(ihid_goodix->reset_gpio);
-+
-+	ihid_goodix->vdd = devm_regulator_get(&client->dev, "vdd");
-+	if (IS_ERR(ihid_goodix->vdd))
-+		return PTR_ERR(ihid_goodix->vdd);
-+
-+	ihid_goodix->timings = device_get_match_data(&client->dev);
-+
-+	return i2c_hid_core_probe(client, &ihid_goodix->subclass, 0x0001);
-+}
-+
-+static const struct goodix_i2c_hid_timing_data goodix_gt7375p_timing_data = {
-+	.post_power_delay_ms = 10,
-+	.post_gpio_reset_delay_ms = 120,
-+};
-+
-+static const struct of_device_id goodix_i2c_hid_of_match[] = {
-+	{ .compatible = "goodix,gt7375p", .data = &goodix_gt7375p_timing_data },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, goodix_i2c_hid_of_match);
-+
-+static const struct dev_pm_ops goodix_i2c_hid_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(i2c_hid_core_suspend, i2c_hid_core_resume)
-+};
-+
-+static struct i2c_driver goodix_i2c_hid_ts_driver = {
-+	.driver = {
-+		.name	= "i2c_hid_of_goodix",
-+		.pm	= &goodix_i2c_hid_pm,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+		.of_match_table = of_match_ptr(goodix_i2c_hid_of_match),
-+	},
-+	.probe		= i2c_hid_of_goodix_probe,
-+	.remove		= i2c_hid_core_remove,
-+	.shutdown	= i2c_hid_core_shutdown,
-+};
-+module_i2c_driver(goodix_i2c_hid_ts_driver);
-+
-+MODULE_AUTHOR("Douglas Anderson <dianders@chromium.org>");
-+MODULE_DESCRIPTION("Goodix i2c-hid touchscreen driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.1.341.ge80a0c044ae-goog
+-       rc = sscanf(buf, "%"__stringify(SEC_CMD_SIZE)"s"
+-                   " %"__stringify(KEY_ID_SIZE)"s"
+-                   " %"__stringify(KEY_ID_SIZE)"s",
+-                   cmd, keystr, nkeystr);
++       rc = sscanf(
++               buf,
++               "%" __stringify(
++                       SEC_CMD_SIZE) "s"
++                                     " %" __stringify(
++                                             KEY_ID_SIZE) "s"
++                                                          " %" __stringify(
++                                                                  KEY_ID_SIZE) "s",
++               cmd, keystr, nkeystr);
+
 
