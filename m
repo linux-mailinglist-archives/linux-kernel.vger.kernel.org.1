@@ -2,190 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A482A5CA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5A32A5CA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 03:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgKDCTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 21:19:32 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7139 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730211AbgKDCTc (ORCPT
+        id S1730616AbgKDCTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 21:19:49 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:35440 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730019AbgKDCTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 21:19:32 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CQr275BY5z15R4y;
-        Wed,  4 Nov 2020 10:19:27 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 4 Nov 2020 10:19:19 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH RFC] f2fs: fix compat F2FS_IOC_{MOVE,GARBAGE_COLLECT}_RANGE
-Date:   Wed, 4 Nov 2020 10:19:06 +0800
-Message-ID: <20201104021906.108534-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 3 Nov 2020 21:19:49 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0A42JbrL6009421, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0A42JbrL6009421
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 4 Nov 2020 10:19:37 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMB04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Wed, 4 Nov 2020
+ 10:19:36 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <netdev@vger.kernel.org>
+CC:     <nic_swsd@realtek.com>, <linux-kernel@vger.kernel.org>,
+        <oliver@neukum.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net-next v2 RESEND] net/usb/r8153_ecm: support ECM mode for RTL8153
+Date:   Wed, 4 Nov 2020 10:19:22 +0800
+Message-ID: <1394712342-15778-392-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
+In-Reply-To: <1394712342-15778-387-Taiwan-albertk@realtek.com>
+References: <1394712342-15778-387-Taiwan-albertk@realtek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMB04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric reported a ioctl bug in below link:
+Support ECM mode based on cdc_ether with relative mii functions,
+when CONFIG_USB_RTL8152 is not set, or the device is not supported
+by r8152 driver.
 
-https://lore.kernel.org/linux-f2fs-devel/20201103032234.GB2875@sol.localdomain/
+Both r8152 and r8153_ecm would check the return value of
+rtl8152_get_version() in porbe(). If rtl8152_get_version()
+return none zero value, the r8152 is used for the device
+with vendor mode. Otherwise, the r8153_ecm is used for the
+device with ECM mode.
 
-That said, on some 32-bit architectures, u64 has only 32-bit alignment,
-notably i386 and x86_32, so that size of struct f2fs_gc_range compiled
-in x86_32 is 20 bytes, however the size in x86_64 is 24 bytes, binary
-compiled in x86_32 can not call F2FS_IOC_GARBAGE_COLLECT_RANGE successfully
-due to mismatched value of ioctl command in betweeen binary and f2fs
-module, similarly, F2FS_IOC_MOVE_RANGE will fail too.
-
-In this patch we introduce two ioctls for compatibility of above special
-32-bit binary:
-- F2FS_IOC32_GARBAGE_COLLECT_RANGE
-- F2FS_IOC32_MOVE_RANGE
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 ---
+ drivers/net/usb/Makefile    |   2 +-
+ drivers/net/usb/r8152.c     |  30 +------
+ drivers/net/usb/r8153_ecm.c | 162 ++++++++++++++++++++++++++++++++++++
+ include/linux/usb/r8152.h   |  37 ++++++++
+ 4 files changed, 204 insertions(+), 27 deletions(-)
+ create mode 100644 drivers/net/usb/r8153_ecm.c
+ create mode 100644 include/linux/usb/r8152.h
 
-Jaegeuk, Eric,
-
-I have no 32-bit machine now, so I don't run any test on this patch,
-please take a look at this RFC patch first.
-
- fs/f2fs/file.c            | 45 +++++++++++++++++++++++++++++++++++++--
- include/uapi/linux/f2fs.h | 25 ++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 2 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 52417a2e3f4f..2e0a5469745a 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4236,6 +4236,45 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
+index 99fd12be2111..99381e6bea78 100644
+--- a/drivers/net/usb/Makefile
++++ b/drivers/net/usb/Makefile
+@@ -13,7 +13,7 @@ obj-$(CONFIG_USB_LAN78XX)	+= lan78xx.o
+ obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
+ asix-y := asix_devices.o asix_common.o ax88172a.o
+ obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
+-obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
++obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r8153_ecm.o
+ obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
+ obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
+ obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index b9b3d19a2e98..c448d6089821 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -26,6 +26,7 @@
+ #include <linux/acpi.h>
+ #include <linux/firmware.h>
+ #include <crypto/hash.h>
++#include <linux/usb/r8152.h>
+ 
+ /* Information for net-next */
+ #define NETNEXT_VERSION		"11"
+@@ -653,18 +654,6 @@ enum rtl_register_content {
+ 
+ #define INTR_LINK		0x0004
+ 
+-#define RTL8152_REQT_READ	0xc0
+-#define RTL8152_REQT_WRITE	0x40
+-#define RTL8152_REQ_GET_REGS	0x05
+-#define RTL8152_REQ_SET_REGS	0x05
+-
+-#define BYTE_EN_DWORD		0xff
+-#define BYTE_EN_WORD		0x33
+-#define BYTE_EN_BYTE		0x11
+-#define BYTE_EN_SIX_BYTES	0x3f
+-#define BYTE_EN_START_MASK	0x0f
+-#define BYTE_EN_END_MASK	0xf0
+-
+ #define RTL8153_MAX_PACKET	9216 /* 9K */
+ #define RTL8153_MAX_MTU		(RTL8153_MAX_PACKET - VLAN_ETH_HLEN - \
+ 				 ETH_FCS_LEN)
+@@ -689,21 +678,9 @@ enum rtl8152_flags {
+ 	LENOVO_MACPASSTHRU,
+ };
+ 
+-/* Define these values to match your device */
+-#define VENDOR_ID_REALTEK		0x0bda
+-#define VENDOR_ID_MICROSOFT		0x045e
+-#define VENDOR_ID_SAMSUNG		0x04e8
+-#define VENDOR_ID_LENOVO		0x17ef
+-#define VENDOR_ID_LINKSYS		0x13b1
+-#define VENDOR_ID_NVIDIA		0x0955
+-#define VENDOR_ID_TPLINK		0x2357
+-
+ #define DEVICE_ID_THINKPAD_THUNDERBOLT3_DOCK_GEN2	0x3082
+ #define DEVICE_ID_THINKPAD_USB_C_DOCK_GEN2		0xa387
+ 
+-#define MCU_TYPE_PLA			0x0100
+-#define MCU_TYPE_USB			0x0000
+-
+ struct tally_counter {
+ 	__le64	tx_packets;
+ 	__le64	rx_packets;
+@@ -6621,7 +6598,7 @@ static int rtl_fw_init(struct r8152 *tp)
+ 	return 0;
  }
  
- #ifdef CONFIG_COMPAT
-+static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
-+{
-+	struct compat_f2fs_gc_range __user *urange;
-+	struct f2fs_gc_range range;
-+	int err;
-+
-+	urange = compat_ptr(arg);
-+	err = get_user(range.sync, &urange->sync);
-+	err |= get_user(range.start, &urange->start);
-+	err |= get_user(range.len, &urange->len);
-+	if (err)
-+		return -EFAULT;
-+	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(file)))))
-+		return -EIO;
-+	if (!f2fs_is_checkpoint_ready(F2FS_I_SB(file_inode(file))))
-+		return -ENOSPC;
-+	return f2fs_ioc_gc_range(file, (unsigned long)&range);
-+}
-+
-+static int f2fs_compat_ioc_move_range(struct file *file, unsigned long arg)
-+{
-+	struct compat_f2fs_move_range __user *urange;
-+	struct f2fs_move_range range;
-+	int err;
-+
-+	urange = compat_ptr(arg);
-+	err = get_user(range.dst_fd, &urange->dst_fd);
-+	err |= get_user(range.pos_in, &urange->pos_in);
-+	err |= get_user(range.pos_out, &urange->pos_out);
-+	err |= get_user(range.len, &urange->len);
-+	if (err)
-+		return -EFAULT;
-+	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(file)))))
-+		return -EIO;
-+	if (!f2fs_is_checkpoint_ready(F2FS_I_SB(file_inode(file))))
-+		return -ENOSPC;
-+	return f2fs_ioc_move_range(file, (unsigned long)&range);
-+}
-+
- long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-static u8 rtl_get_version(struct usb_interface *intf)
++u8 rtl8152_get_version(struct usb_interface *intf)
  {
- 	switch (cmd) {
-@@ -4248,6 +4287,10 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case FS_IOC32_GETVERSION:
- 		cmd = FS_IOC_GETVERSION;
- 		break;
-+	case F2FS_IOC32_GARBAGE_COLLECT_RANGE:
-+		return f2fs_compat_ioc_gc_range(file, arg);
-+	case F2FS_IOC32_MOVE_RANGE:
-+		return f2fs_compat_ioc_move_range(file, arg);
- 	case F2FS_IOC_START_ATOMIC_WRITE:
- 	case F2FS_IOC_COMMIT_ATOMIC_WRITE:
- 	case F2FS_IOC_START_VOLATILE_WRITE:
-@@ -4265,10 +4308,8 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
- 	case FS_IOC_GET_ENCRYPTION_NONCE:
- 	case F2FS_IOC_GARBAGE_COLLECT:
--	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
- 	case F2FS_IOC_WRITE_CHECKPOINT:
- 	case F2FS_IOC_DEFRAGMENT:
--	case F2FS_IOC_MOVE_RANGE:
- 	case F2FS_IOC_FLUSH_DEVICE:
- 	case F2FS_IOC_GET_FEATURES:
- 	case FS_IOC_FSGETXATTR:
-diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-index f00199a2e38b..8c14e88a9645 100644
---- a/include/uapi/linux/f2fs.h
-+++ b/include/uapi/linux/f2fs.h
-@@ -5,6 +5,10 @@
- #include <linux/types.h>
- #include <linux/ioctl.h>
+ 	struct usb_device *udev = interface_to_usbdev(intf);
+ 	u32 ocp_data = 0;
+@@ -6679,12 +6656,13 @@ static u8 rtl_get_version(struct usb_interface *intf)
  
-+#ifdef __KERNEL__
-+#include <linux/compat.h>
-+#endif
+ 	return version;
+ }
++EXPORT_SYMBOL_GPL(rtl8152_get_version);
+ 
+ static int rtl8152_probe(struct usb_interface *intf,
+ 			 const struct usb_device_id *id)
+ {
+ 	struct usb_device *udev = interface_to_usbdev(intf);
+-	u8 version = rtl_get_version(intf);
++	u8 version = rtl8152_get_version(intf);
+ 	struct r8152 *tp;
+ 	struct net_device *netdev;
+ 	int ret;
+diff --git a/drivers/net/usb/r8153_ecm.c b/drivers/net/usb/r8153_ecm.c
+new file mode 100644
+index 000000000000..2c3fabd38b16
+--- /dev/null
++++ b/drivers/net/usb/r8153_ecm.c
+@@ -0,0 +1,162 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/mii.h>
++#include <linux/usb.h>
++#include <linux/usb/cdc.h>
++#include <linux/usb/usbnet.h>
++#include <linux/usb/r8152.h>
 +
- /*
-  * f2fs-specific ioctl commands
-  */
-@@ -65,6 +69,16 @@ struct f2fs_gc_range {
- 	__u64 len;
- };
- 
-+#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
-+struct compat_f2fs_gc_range {
-+	u32 sync;
-+	compat_u64 start;
-+	compat_u64 len;
++#define OCP_BASE		0xe86c
++
++static int pla_read_word(struct usbnet *dev, u16 index)
++{
++	u16 byen = BYTE_EN_WORD;
++	u8 shift = index & 2;
++	__le32 tmp;
++	int ret;
++
++	if (shift)
++		byen <<= shift;
++
++	index &= ~3;
++
++	ret = usbnet_read_cmd(dev, RTL8152_REQ_GET_REGS, RTL8152_REQT_READ, index,
++			      MCU_TYPE_PLA | byen, &tmp, sizeof(tmp));
++	if (ret < 0)
++		goto out;
++
++	ret = __le32_to_cpu(tmp);
++	ret >>= (shift * 8);
++	ret &= 0xffff;
++
++out:
++	return ret;
++}
++
++static int pla_write_word(struct usbnet *dev, u16 index, u32 data)
++{
++	u32 mask = 0xffff;
++	u16 byen = BYTE_EN_WORD;
++	u8 shift = index & 2;
++	__le32 tmp;
++	int ret;
++
++	data &= mask;
++
++	if (shift) {
++		byen <<= shift;
++		mask <<= (shift * 8);
++		data <<= (shift * 8);
++	}
++
++	index &= ~3;
++
++	ret = usbnet_read_cmd(dev, RTL8152_REQ_GET_REGS, RTL8152_REQT_READ, index,
++			      MCU_TYPE_PLA | byen, &tmp, sizeof(tmp));
++
++	if (ret < 0)
++		goto out;
++
++	data |= __le32_to_cpu(tmp) & ~mask;
++	tmp = __cpu_to_le32(data);
++
++	ret = usbnet_write_cmd(dev, RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE, index,
++			       MCU_TYPE_PLA | byen, &tmp, sizeof(tmp));
++
++out:
++	return ret;
++}
++
++static int r8153_ecm_mdio_read(struct net_device *netdev, int phy_id, int reg)
++{
++	struct usbnet *dev = netdev_priv(netdev);
++	int ret;
++
++	ret = pla_write_word(dev, OCP_BASE, 0xa000);
++	if (ret < 0)
++		goto out;
++
++	ret = pla_read_word(dev, 0xb400 + reg * 2);
++
++out:
++	return ret;
++}
++
++static void r8153_ecm_mdio_write(struct net_device *netdev, int phy_id, int reg, int val)
++{
++	struct usbnet *dev = netdev_priv(netdev);
++	int ret;
++
++	ret = pla_write_word(dev, OCP_BASE, 0xa000);
++	if (ret < 0)
++		return;
++
++	ret = pla_write_word(dev, 0xb400 + reg * 2, val);
++}
++
++static int r8153_bind(struct usbnet *dev, struct usb_interface *intf)
++{
++	int status;
++
++	status = usbnet_cdc_bind(dev, intf);
++	if (status < 0)
++		return status;
++
++	dev->mii.dev = dev->net;
++	dev->mii.mdio_read = r8153_ecm_mdio_read;
++	dev->mii.mdio_write = r8153_ecm_mdio_write;
++	dev->mii.reg_num_mask = 0x1f;
++	dev->mii.supports_gmii = 1;
++
++	return status;
++}
++
++static const struct driver_info r8153_info = {
++	.description =	"RTL8153 ECM Device",
++	.flags =	FLAG_ETHER,
++	.bind =		r8153_bind,
++	.unbind =	usbnet_cdc_unbind,
++	.status =	usbnet_cdc_status,
++	.manage_power =	usbnet_manage_power,
 +};
-+#define F2FS_IOC32_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,\
-+						struct compat_f2fs_gc_range)
-+#endif
 +
- struct f2fs_defragment {
- 	__u64 start;
- 	__u64 len;
-@@ -77,6 +91,17 @@ struct f2fs_move_range {
- 	__u64 len;		/* size to move */
- };
- 
-+#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
-+struct compat_f2fs_move_range {
-+	u32 dst_fd;
-+	compat_u64 pos_in;
-+	compat_u64 pos_out;
-+	compat_u64 len;
++static const struct usb_device_id products[] = {
++{
++	USB_DEVICE_AND_INTERFACE_INFO(VENDOR_ID_REALTEK, 0x8153, USB_CLASS_COMM,
++				      USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = (unsigned long)&r8153_info,
++},
++
++	{ },		/* END */
 +};
-+#define F2FS_IOC32_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
-+					struct compat_f2fs_move_range)
++MODULE_DEVICE_TABLE(usb, products);
++
++static int rtl8153_ecm_probe(struct usb_interface *intf,
++			     const struct usb_device_id *id)
++{
++#if IS_REACHABLE(CONFIG_USB_RTL8152)
++	if (rtl8152_get_version(intf))
++		return -ENODEV;
 +#endif
 +
- struct f2fs_flush_device {
- 	__u32 dev_num;		/* device number to flush */
- 	__u32 segments;		/* # of segments to flush */
++	return usbnet_probe(intf, id);
++}
++
++static struct usb_driver r8153_ecm_driver = {
++	.name =		"r8153_ecm",
++	.id_table =	products,
++	.probe =	rtl8153_ecm_probe,
++	.disconnect =	usbnet_disconnect,
++	.suspend =	usbnet_suspend,
++	.resume =	usbnet_resume,
++	.reset_resume =	usbnet_resume,
++	.supports_autosuspend = 1,
++	.disable_hub_initiated_lpm = 1,
++};
++
++module_usb_driver(r8153_ecm_driver);
++
++MODULE_AUTHOR("Hayes Wang");
++MODULE_DESCRIPTION("Realtek USB ECM device");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/usb/r8152.h b/include/linux/usb/r8152.h
+new file mode 100644
+index 000000000000..20d88b1defc3
+--- /dev/null
++++ b/include/linux/usb/r8152.h
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ *  Copyright (c) 2020 Realtek Semiconductor Corp. All rights reserved.
++ */
++
++#ifndef	__LINUX_R8152_H
++#define __LINUX_R8152_H
++
++#define RTL8152_REQT_READ		0xc0
++#define RTL8152_REQT_WRITE		0x40
++#define RTL8152_REQ_GET_REGS		0x05
++#define RTL8152_REQ_SET_REGS		0x05
++
++#define BYTE_EN_DWORD			0xff
++#define BYTE_EN_WORD			0x33
++#define BYTE_EN_BYTE			0x11
++#define BYTE_EN_SIX_BYTES		0x3f
++#define BYTE_EN_START_MASK		0x0f
++#define BYTE_EN_END_MASK		0xf0
++
++#define MCU_TYPE_PLA			0x0100
++#define MCU_TYPE_USB			0x0000
++
++/* Define these values to match your device */
++#define VENDOR_ID_REALTEK		0x0bda
++#define VENDOR_ID_MICROSOFT		0x045e
++#define VENDOR_ID_SAMSUNG		0x04e8
++#define VENDOR_ID_LENOVO		0x17ef
++#define VENDOR_ID_LINKSYS		0x13b1
++#define VENDOR_ID_NVIDIA		0x0955
++#define VENDOR_ID_TPLINK		0x2357
++
++#if IS_REACHABLE(CONFIG_USB_RTL8152)
++extern u8 rtl8152_get_version(struct usb_interface *intf);
++#endif
++
++#endif /* __LINUX_R8152_H */
 -- 
 2.26.2
 
