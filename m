@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6792A693D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1C22A693E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgKDQQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        id S1730682AbgKDQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgKDQQJ (ORCPT
+        with ESMTP id S1729676AbgKDQQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:16:09 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F2AC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:16:08 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 12so15871680qkl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:16:08 -0800 (PST)
+        Wed, 4 Nov 2020 11:16:20 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF4CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:16:20 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id 12so15872483qkl.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:subject:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IlTAb4BQFKLR3Tp2hVVjxVAiIHililKzH5OOJDZzwxc=;
-        b=QOr8wzrOvSlBhZ2KeMtFcbmJEhtHgIaT6+6g88ZBDvljUOSxxEwVe5zPghnzfdSkgr
-         9cjGuWrwaEQcnIbUxY4PFPnLedMUsHGfEv/tmMYRvMTrro4owFbK7oSIoPScj0k0PXpi
-         fheanQ/c6UCG3EHEPDKfhEZ3EbWMQCOPmBHGJFcKjBm3pSBNkNSo7tRD4jbt85uFDyji
-         rFtL2DGQsPwJENXzwRqrLBHokB0oTyftZY7d3uJYuyDnIDlknN0tkwmgRHBY5wGdBsAz
-         WCPWfs+YetVLsE2UDVQRme14fbKVnVLaeQOpiubIVGUhw74nQVdmtmh6IcLhSdSlXyk9
-         wYiw==
+        bh=sMu+ZpDCHnLpFB+Y0yMO7W+S8qBAHVafomO84Zlx6mo=;
+        b=IK9xHdd6O4nkuBtJTTZmy6o8WBo6b9FleeSn2vxgN12HMyDE1v8bh4HevoOFWoffUf
+         gi0BoPVWVmIr+uJ5gKgG4dxlhVtBys3XDchQQ9abMJuNQz5hlLH7VFax85+EpttrnOl/
+         3NYz9+leDlSrHCbCoqgCVD27QSDLXkVz5v0C74yh9P3Tt8xlwievCzKI5CqAlmMZcDBK
+         DU533CP+ZGDW8SB6us7Dx/oz+b7un90YpPDInbCPthvQPeoWKiWPQ7w1O+kXUPs2ZXip
+         kLvxSLtpped6OnMZ9vcnyJnPPHT7qErq2WaV7EpfeV4J8dF6UqUvtPBG9wQcS323alUY
+         jifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IlTAb4BQFKLR3Tp2hVVjxVAiIHililKzH5OOJDZzwxc=;
-        b=Cj7Sh8p0Cc3cmTdKKMsbztHMya6GSLMTakgqTxOMdWTqhniNdgBCBfrz1CBEO3IGjP
-         bna1T2tld12eSYc8j/iHL/IEQBQ3Q/JBVoOttA5/Huip1Jvza66cOtZIIC7DtW/evfqb
-         /msX22CJDUn6YgCGqEY3RXYNY7mxa53Mh9bqo2/0/cDcUvSdqrDjkFJtSsPLFJC5EqJ+
-         z1ZHzohCDqDrga1zkq36VzQ5GO96pAR+fBqg8Bbmx54LwngGuX2j5pfkTJ5WZ5xM/CPO
-         y4bnQwHTHBW0f2lHdIN664FBv7AD5PiB0FvfPAeyMcj1jy+55+YnYFD1tQxmmahcGStI
-         7Idw==
-X-Gm-Message-State: AOAM532i3je28ewZdTY1LCKZC7MxK05ZbUdkv4UnRYgSEMqlHDMTi7/n
-        bunR8XltbwN1VqlTEw15bVIx2A==
-X-Google-Smtp-Source: ABdhPJwCPsL0biegx2jXavgl6FstsvZSJZYZFXvWTOeFm1W9KodCIvCfGi1jcZnKVCiIFSCBZ4BvFw==
-X-Received: by 2002:a05:620a:20c5:: with SMTP id f5mr2332163qka.69.1604506567074;
-        Wed, 04 Nov 2020 08:16:07 -0800 (PST)
+        bh=sMu+ZpDCHnLpFB+Y0yMO7W+S8qBAHVafomO84Zlx6mo=;
+        b=nCbUWxdJZ5tFiirCiMrkUMr10J2k3Ba44JplJVO6Q0h5y6ZVZBZ9G5kN6T/9v1Le3L
+         0iKEXxuYoDYRmSZpkRe8IVw1rGzdE3IBRcgra6gC8PxU4UsEzXPhoQbKrZCRBWioyoOs
+         rxyPnANbEHHgDkddAgfbOXK3/Nmy2hekzBbxm8fXX9hPlxU/BOXCwfogQxppsFWuy0um
+         Unc7gThOKokcJ1/G9eIq4wQqxYy1P6tMs+RMpp5IYxnEvGs+3wxxY+fbG/cdBRvlzKYq
+         qLvQ4Kex9SvlvP8nNLl9FBxwS3Dp1D4loxsyucPLMuGk59hQYLTqOuvAHHVZZG5gigSo
+         /yxw==
+X-Gm-Message-State: AOAM531UZ5xN//H39DN+q8MZtoBnCXdJ6lUWwMbudqN7EW00aTkPc06v
+        DlCVNrf2yaLzGt3k93EWOdIYOQ==
+X-Google-Smtp-Source: ABdhPJyuzbHEtB930xHAVmCShKKD/e839v53ULcRdvC8I2Wcp4YPrp4GA/MdLnzQfnbPHKQZTxhBGA==
+X-Received: by 2002:ae9:e41a:: with SMTP id q26mr17296299qkc.246.1604506579307;
+        Wed, 04 Nov 2020 08:16:19 -0800 (PST)
 Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id u31sm465634qtu.87.2020.11.04.08.16.06
+        by smtp.gmail.com with ESMTPSA id 185sm2745672qke.16.2020.11.04.08.16.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 08:16:06 -0800 (PST)
+        Wed, 04 Nov 2020 08:16:18 -0800 (PST)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v2 1/8] firmware: arm_scmi: review protocol registration
- interface
+Subject: Re: [PATCH v2 2/8] firmware: arm_scmi: introduce protocol handles
 To:     Cristian Marussi <cristian.marussi@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -59,13 +58,13 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         f.fainelli@gmail.com, etienne.carriere@linaro.org,
         vincent.guittot@linaro.org, souvik.chakravarty@arm.com
 References: <20201028202914.43662-1-cristian.marussi@arm.com>
- <20201028202914.43662-2-cristian.marussi@arm.com>
-Message-ID: <5bc2f96e-bb66-c816-d856-56a18456dcf5@linaro.org>
-Date:   Wed, 4 Nov 2020 11:16:06 -0500
+ <20201028202914.43662-3-cristian.marussi@arm.com>
+Message-ID: <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+Date:   Wed, 4 Nov 2020 11:16:18 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201028202914.43662-2-cristian.marussi@arm.com>
+In-Reply-To: <20201028202914.43662-3-cristian.marussi@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,300 +72,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
 Hi Cristian,
 
 On 10/28/20 4:29 PM, Cristian Marussi wrote:
-> Extend common protocol registration routines and provide some new generic
-> protocols' init/deinit helpers that tracks protocols' users and automatically
-> perform the proper initialization/de-initialization on demand.
-> 
-> Convert all protocols to use new registration schema while modifying only Base
-> protocol to use also the new initialization helpers.
-> 
-> All other standard protocols' initialization is still umodified and bound to
-> SCMI devices probing.
-
-minor nit : umodified->unmodified.
+> Add basic protocol handles definitions and helpers support.
+> All protocols initialization code and SCMI drivers probing is still
+> performed using the handle based interface.
 > 
 > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 > ---
-> v1 --> v2
-> - made all scmi_protocol refs const
-> - introduced IDR to handle protocols instead of static array
-> - refactored code around fast path
-> ---
->   drivers/firmware/arm_scmi/base.c    |  10 +-
->   drivers/firmware/arm_scmi/bus.c     |  61 +++++++---
->   drivers/firmware/arm_scmi/clock.c   |  10 +-
->   drivers/firmware/arm_scmi/common.h  |  31 ++++-
->   drivers/firmware/arm_scmi/driver.c  | 168 +++++++++++++++++++++++++++-
->   drivers/firmware/arm_scmi/notify.c  |   3 +-
->   drivers/firmware/arm_scmi/perf.c    |  10 +-
->   drivers/firmware/arm_scmi/power.c   |  10 +-
->   drivers/firmware/arm_scmi/reset.c   |  10 +-
->   drivers/firmware/arm_scmi/sensors.c |  10 +-
->   drivers/firmware/arm_scmi/system.c  |   8 +-
->   include/linux/scmi_protocol.h       |   6 +-
->   12 files changed, 299 insertions(+), 38 deletions(-)
+>   drivers/firmware/arm_scmi/common.h | 61 ++++++++++++++++++++++++++++
+>   drivers/firmware/arm_scmi/driver.c | 64 ++++++++++++++++++++++++++++++
+>   2 files changed, 125 insertions(+)
 > 
-
-[...]
-
-
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 3dfd8b6a0ebf..beae8991422d 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -11,11 +11,12 @@
->    * various power domain DVFS including the core/cluster, certain system
->    * clocks configuration, thermal sensors and many others.
->    *
-> - * Copyright (C) 2018 ARM Ltd.
-> + * Copyright (C) 2018-2020 ARM Ltd.
->    */
->   
->   #include <linux/bitmap.h>
->   #include <linux/export.h>
-> +#include <linux/idr.h>
->   #include <linux/io.h>
->   #include <linux/kernel.h>
->   #include <linux/ktime.h>
-> @@ -23,6 +24,7 @@
->   #include <linux/of_address.h>
->   #include <linux/of_device.h>
->   #include <linux/processor.h>
-> +#include <linux/refcount.h>
->   #include <linux/slab.h>
->   
->   #include "common.h"
-> @@ -68,6 +70,21 @@ struct scmi_xfers_info {
->   	spinlock_t xfer_lock;
->   };
->   
+> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> index b08a8ddbc22a..f0678be02a09 100644
+> --- a/drivers/firmware/arm_scmi/common.h
+> +++ b/drivers/firmware/arm_scmi/common.h
+> @@ -151,6 +151,67 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+>   		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+>   void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+>   			    struct scmi_xfer *xfer);
+> +
+> +struct scmi_xfer_ops;
+> +
 > +/**
-> + * struct scmi_protocol_instance  - Describe an initialized protocol instance.
-> + * @proto: A reference to the protocol descriptor.
-> + * @gid: A reference for per-protocol devres management.
-> + * @users: A refcount to track effective users of this protocol.
+> + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
 > + *
-> + * Each protocol is initialized independently once for each SCMI platform in
-> + * which is defined by DT and implemented by the SCMI server fw.
+> + * @dev: A reference to the associated SCMI instance device (handle->dev).
+> + * @xops: A reference to a struct holding refs to the core xfer operations that
+> + *	  can be used by the protocol implementation to generate SCMI messages.
+> + * @set_priv: A method to set protocol private data for this instance.
+> + * @get_priv: A method to get protocol private data previously set.
+> + *
+> + * This structure represents a protocol initialized against specific SCMI
+> + * instance and it will be used as follows:
+> + * - as a parameter fed from the core to the protocol initialization code so
+> + *   that it can access the core xfer operations to build and generate SCMI
+> + *   messages exclusively for the specific underlying protocol instance.
+> + * - as an opaque handle fed by an SCMI driver user when it tries to access
+> + *   this protocol through its own protocol operations.
+> + *   In this case this handle will be returned as an opaque object together
+> + *   with the related protocol operations when the SCMI driver tries to access
+> + *   the protocol.
 > + */
-> +struct scmi_protocol_instance {
-> +	const struct scmi_protocol	*proto;
-> +	void				*gid;
-> +	refcount_t			users;
+> +struct scmi_protocol_handle {
+> +	struct device *dev;
+> +	const struct scmi_xfer_ops *xops;
+> +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+> +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
 > +};
 
-Why do you need a separate protocol_instance? Will there be two 
-instances of the same protocol for a single scmi device/instance?
-Else everything that has been defined in this struct in this patch the
-following ones can be rolled into scmi_protocol struct, right ?
+So scmi_xfer_ops are the ops that actually talks with the scmi firmware 
+on the other end , right ? IIUC, these ops are the same for all the 
+protocols of a scmi instance. Imho, this struct is not the right place 
+for these ops to reside.You are inadvertently exposing scmi internal 
+details to the client drivers. There is no reason why this should be 
+part of scmi_handle. The protocols can extract it from the handle during 
+protocol_reigster, right?
 
+So, now to the second part, why do you need a scmi_protocol_handle? 
+Again IIUC, if you have set_priv and get_priv hooks and get_ops and 
+put_ops hooks, there is nothing that scmi_protocol_handle is providing 
+extra, right? As mentioned in the comments for last patch any reason all 
+of this cannot be rolled into scmi_protocol?
+
+As long as you are not supporting multiple scmi_protocol_instance and 
+scmi_protocol_handle for a protocol, I don't think having separate 
+structs make sense. And you need to do this only if you think there can 
+be multiple versions/instances of a protocol in the same scmi instance.
+Or am I missing something here ?
+
+> +
+> +/**
+> + * struct scmi_xfer_ops  - References to the core SCMI xfer operations.
+> + * @version_get: Get this version protocol.
+> + * @xfer_get_init: Initialize one struct xfer if any xfer slot is free.
+> + * @reset_rx_to_maxsz: Reset rx size to max transport size.
+> + * @do_xfer: Do the SCMI transfer.
+> + * @do_xfer_with_response: Do the SCMI transfer waiting for a response.
+> + * @xfer_put: Free the xfer slot.
+> + *
+> + * Note that all this operations expect a protocol handle as first parameter;
+> + * they then internally use it to infer the underlying protocol number: this
+> + * way is not possible for a protocol implementation to forge messages for
+> + * another protocol.
+> + */
+> +struct scmi_xfer_ops {
+> +	int (*version_get)(const struct scmi_protocol_handle *ph, u32 *version);
+> +	int (*xfer_get_init)(const struct scmi_protocol_handle *ph, u8 msg_id,
+> +			     size_t tx_size, size_t rx_size,
+> +			     struct scmi_xfer **p);
+> +	void (*reset_rx_to_maxsz)(const struct scmi_protocol_handle *ph,
+> +				  struct scmi_xfer *xfer);
+> +	int (*do_xfer)(const struct scmi_protocol_handle *ph,
+> +		       struct scmi_xfer *xfer);
+> +	int (*do_xfer_with_response)(const struct scmi_protocol_handle *ph,
+> +				     struct scmi_xfer *xfer);
+> +	void (*xfer_put)(const struct scmi_protocol_handle *ph,
+> +			 struct scmi_xfer *xfer);
+> +};
+> +
+> +struct scmi_revision_info *
+> +scmi_get_revision_area(const struct scmi_protocol_handle *ph);
+>   int scmi_handle_put(const struct scmi_handle *handle);
+>   struct scmi_handle *scmi_handle_get(struct device *dev);
+>   void scmi_set_handle(struct scmi_device *scmi_dev);
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index beae8991422d..8ca04acb6abb 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -72,19 +72,28 @@ struct scmi_xfers_info {
+>   
+>   /**
+>    * struct scmi_protocol_instance  - Describe an initialized protocol instance.
+> + * @handle: Reference to the SCMI handle associated to this protocol instance.
+>    * @proto: A reference to the protocol descriptor.
+>    * @gid: A reference for per-protocol devres management.
+>    * @users: A refcount to track effective users of this protocol.
+> + * @priv: Reference for optional protocol private data.
+> + * @ph: An embedded protocol handle that will be passed down to protocol
+> + *	initialization code to identify this instance.
+>    *
+>    * Each protocol is initialized independently once for each SCMI platform in
+>    * which is defined by DT and implemented by the SCMI server fw.
+>    */
+>   struct scmi_protocol_instance {
+> +	const struct scmi_handle	*handle;
+>   	const struct scmi_protocol	*proto;
+>   	void				*gid;
+>   	refcount_t			users;
+> +	void				*priv;
+> +	struct scmi_protocol_handle	ph;
+>   };
+>   
+> +#define ph_to_pi(h)	container_of(h, struct scmi_protocol_instance, ph)
 > +
 >   /**
 >    * struct scmi_info - Structure representing a SCMI instance
 >    *
-> @@ -80,6 +97,10 @@ struct scmi_xfers_info {
->    * @rx_minfo: Universal Receive Message management info
->    * @tx_idr: IDR object to map protocol id to Tx channel info pointer
->    * @rx_idr: IDR object to map protocol id to Rx channel info pointer
-> + * @protocols: IDR for protocols' instance descriptors initialized for
-> + *	       this SCMI instance: populated on protocol's first attempted
-> + *	       usage.
-> + * @protocols_mtx: A mutex to protect protocols instances initialization.
->    * @protocols_imp: List of protocols implemented, currently maximum of
->    *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
->    * @node: List head
-> @@ -94,6 +115,9 @@ struct scmi_info {
->   	struct scmi_xfers_info rx_minfo;
->   	struct idr tx_idr;
->   	struct idr rx_idr;
-> +	struct idr protocols;
-> +	/* Ensure mutual exclusive access to protocols instance array */
-> +	struct mutex protocols_mtx;
->   	u8 *protocols_imp;
->   	struct list_head node;
->   	int users;
-> @@ -519,6 +543,127 @@ int scmi_version_get(const struct scmi_handle *handle, u8 protocol,
+> @@ -543,6 +552,57 @@ int scmi_version_get(const struct scmi_handle *handle, u8 protocol,
 >   	return ret;
 >   }
 >   
 > +/**
-> + * scmi_get_protocol_instance  - Protocol initialization helper.
-> + * @handle: A reference to the SCMI platform instance.
-> + * @protocol_id: The protocol being requested.
+> + * scmi_set_protocol_priv  - Set protocol specific data at init time
 > + *
-> + * In case the required protocol has never been requested before for this
-> + * instance, allocate and initialize all the needed structures while handling
-> + * resource allocation with a dedicated per-protocol devres subgroup.
+> + * @ph: A reference to the protocol handle.
+> + * @priv: The private data to set.
 > + *
-> + * Return: A reference to an initialized protocol instance or error on failure.
+> + * Return: 0 on Success
 > + */
-> +static struct scmi_protocol_instance * __must_check
-> +scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> +static int scmi_set_protocol_priv(const struct scmi_protocol_handle *ph,
+> +				  void *priv)
 > +{
-> +	int ret = -ENOMEM;
-> +	void *gid;
-> +	struct scmi_protocol_instance *pi;
-> +	struct scmi_info *info = handle_to_scmi_info(handle);
+> +	struct scmi_protocol_instance *pi = ph_to_pi(ph);
 > +
-> +	mutex_lock(&info->protocols_mtx);
-> +	pi = idr_find(&info->protocols, protocol_id);
+> +	pi->priv = priv;
 > +
-> +	if (pi) {
-> +		refcount_inc(&pi->users);
-> +	} else {
-> +		const struct scmi_protocol *proto;
-> +
-> +		/* Fail if protocol not registered on bus */
-> +		proto = scmi_get_protocol(protocol_id);
-> +		if (!proto) {
-> +			ret = -ENODEV;
-> +			goto out;
-> +		}
-> +
-> +		/* Protocol specific devres group */
-> +		gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
-> +		if (!gid)
-> +			goto out;
-> +
-> +		pi = devm_kzalloc(handle->dev, sizeof(*pi), GFP_KERNEL);
-> +		if (!pi)
-> +			goto clean;
-> +
-> +		pi->gid = gid;
-> +		pi->proto = proto;
-> +		refcount_set(&pi->users, 1);
-> +		/* proto->init is assured NON NULL by scmi_protocol_register */
-> +		ret = pi->proto->init(handle);
-
-So init for a protocol will be called twice. Is this intentional ? Once 
-during the device probe via scmi_dev_probe and scmi_protocol_init. And
-once via scmi_get_protocol_instance which gets called in get_ops apis 
-defined and used in the later patches.
-
-> +		if (ret)
-> +			goto clean;
-> +
-> +		ret = idr_alloc(&info->protocols, pi,
-> +				protocol_id, protocol_id + 1, GFP_KERNEL);
-> +		if (ret != protocol_id)
-> +			goto clean;
-> +
-> +		devres_close_group(handle->dev, pi->gid);
-> +		dev_dbg(handle->dev, "Initialized protocol: 0x%X\n",
-> +			protocol_id);
-> +	}
-> +	mutex_unlock(&info->protocols_mtx);
-> +
-> +	return pi;
-> +
-> +clean:
-> +	devres_release_group(handle->dev, gid);
-> +out:
-> +	mutex_unlock(&info->protocols_mtx);
-> +	return ERR_PTR(ret);
+> +	return 0;
 > +}
 > +
 > +/**
-> + * scmi_acquire_protocol  - Protocol acquire
-> + * @handle: A reference to the SCMI platform instance.
-> + * @protocol_id: The protocol being requested.
+> + * scmi_get_protocol_priv  - Set protocol specific data at init time
 > + *
-> + * Register a new user for the requested protocol on the specified SCMI
-> + * platform instance, possibly triggering its initialization on first user.
+> + * @ph: A reference to the protocol handle.
 > + *
-> + * Return: 0 if protocol was acquired successfully.
+> + * Return: Protocol private data if any was set.
 > + */
-> +int scmi_acquire_protocol(struct scmi_handle *handle, u8 protocol_id)
+> +static void *scmi_get_protocol_priv(const struct scmi_protocol_handle *ph)
 > +{
-> +	return PTR_ERR_OR_ZERO(scmi_get_protocol_instance(handle, protocol_id));
+> +	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
+> +
+> +	return pi->priv;
 > +}
 > +
 > +/**
-> + * scmi_release_protocol  - Protocol de-initialization helper.
-> + * @handle: A reference to the SCMI platform instance.
-> + * @protocol_id: The protocol being requested.
+> + * scmi_get_revision_area  - Retrieve version memory area.
 > + *
-> + * Remove one user for the specified protocol and triggers de-initialization
-> + * and resources de-allocation once the last user has gone.
+> + * @ph: A reference to the protocol handle.
+> + *
+> + * A helper to grab the version memory area reference during SCMI Base protocol
+> + * initialization.
+> + *
+> + * Return: A reference to the version memory area associated to the SCMI
+> + *	   instance underlying this protocol handle.
 > + */
-> +void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
+> +struct scmi_revision_info *
+> +scmi_get_revision_area(const struct scmi_protocol_handle *ph)
 > +{
-> +	struct scmi_info *info = handle_to_scmi_info(handle);
-> +	struct scmi_protocol_instance *pi;
+> +	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
 > +
-> +	mutex_lock(&info->protocols_mtx);
-> +	pi = idr_find(&info->protocols, protocol_id);
-> +	if (WARN_ON(!pi))
-> +		goto out;
-> +
-> +	if (refcount_dec_and_test(&pi->users)) {
-> +		void *gid = pi->gid;
-> +
-> +		if (pi->proto->deinit)
-> +			pi->proto->deinit(handle);
-> +
-> +		idr_remove(&info->protocols, protocol_id);
-> +
-> +		devres_release_group(handle->dev, gid);
-> +		dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
-> +			protocol_id);
-> +	}
-> +
-> +out:
-> +	mutex_unlock(&info->protocols_mtx);
+> +	return pi->handle->version;
 > +}
 > +
->   void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
->   				     u8 *prot_imp)
->   {
-> @@ -785,6 +930,8 @@ static int scmi_probe(struct platform_device *pdev)
->   	info->dev = dev;
->   	info->desc = desc;
->   	INIT_LIST_HEAD(&info->node);
-> +	idr_init(&info->protocols);
-> +	mutex_init(&info->protocols_mtx);
+>   /**
+>    * scmi_get_protocol_instance  - Protocol initialization helper.
+>    * @handle: A reference to the SCMI platform instance.
+> @@ -588,6 +648,10 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
 >   
->   	platform_set_drvdata(pdev, info);
->   	idr_init(&info->tx_idr);
-> @@ -805,9 +952,14 @@ static int scmi_probe(struct platform_device *pdev)
->   	if (scmi_notification_init(handle))
->   		dev_err(dev, "SCMI Notifications NOT available.\n");
->   
-> -	ret = scmi_base_protocol_init(handle);
-> +	/*
-> +	 * Trigger SCMI Base protocol initialization.
-> +	 * It's mandatory and won't be ever released/deinit until the
-> +	 * SCMI stack is shutdown/unloaded as a whole.
-> +	 */
-> +	ret = scmi_acquire_protocol(handle, SCMI_PROTOCOL_BASE);
->   	if (ret) {
-> -		dev_err(dev, "unable to communicate with SCMI(%d)\n", ret);
-> +		dev_err(dev, "unable to communicate with SCMI\n");
->   		return ret;
->   	}
->   
-> @@ -859,6 +1011,10 @@ static int scmi_remove(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> +	mutex_lock(&info->protocols_mtx);
-> +	idr_destroy(&info->protocols);
-> +	mutex_unlock(&info->protocols_mtx);
-> +
->   	/* Safe to free channels since no more users */
->   	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
->   	idr_destroy(&info->tx_idr);
-> @@ -941,6 +1097,8 @@ static int __init scmi_driver_init(void)
->   {
->   	scmi_bus_init();
->   
-> +	scmi_base_register();
-> +
-
-minor nit. extra line addeed ?
+>   		pi->gid = gid;
+>   		pi->proto = proto;
+> +		pi->handle = handle;
+> +		pi->ph.dev = handle->dev;
+> +		pi->ph.set_priv = scmi_set_protocol_priv;
+> +		pi->ph.get_priv = scmi_get_protocol_priv;
+>   		refcount_set(&pi->users, 1);
+>   		/* proto->init is assured NON NULL by scmi_protocol_register */
+>   		ret = pi->proto->init(handle);
+> 
 
 -- 
 Warm Regards
