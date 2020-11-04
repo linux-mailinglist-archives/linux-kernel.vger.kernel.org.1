@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150EF2A638F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5EB2A6390
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgKDLsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729378AbgKDLsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 4 Nov 2020 06:48:04 -0500
-Received: from mga07.intel.com ([134.134.136.100]:16204 "EHLO mga07.intel.com"
+Received: from mx3.wp.pl ([212.77.101.9]:40845 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgKDLqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:46:42 -0500
-IronPort-SDR: 5fG76cl0jgyzmP1HqGfK3+GtAxHz/K5oFQ/geJH1RG8R/cr8M5tbcch+evbRlHkwayYKa8pOcz
- Nz0bFjF1mIZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="233366377"
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="233366377"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:46:41 -0800
-IronPort-SDR: 68kskoXqxwYBFqWbszWyaEQkCGG5qeIkJGC5hc6NY2wJMZcLz88Qhstzoozgc0QQfFt7j092xm
- MWHOjYSRFquA==
-X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
-   d="scan'208";a="471197594"
-Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.249.147.98]) ([10.249.147.98])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 03:46:39 -0800
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
- name
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, cezary.rojewski@intel.com,
-        Mark Brown <broonie@kernel.org>
-References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
- <20201103153541.GC3267686@kroah.com>
-From:   "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-Message-ID: <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
-Date:   Wed, 4 Nov 2020 12:46:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728841AbgKDLrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:47:23 -0500
+Received: (wp-smtpd smtp.wp.pl 6905 invoked from network); 4 Nov 2020 12:47:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1604490441; bh=M9x5+/RYPnJTU7dxjrTIQoQI12g1gmCKqEBPPVpFQig=;
+          h=From:To:Cc:Subject;
+          b=xc211WkNH2Kc/Rlm/mMtIw1YtXp67pP67K3roIkKQ2RCnpJ/5iDQ425ZygvtDjpop
+           JHgzUTxT9f7CA20C9qdWavswzFjcRjpAoc0eU/Qyc4Ty0WCGNG7U9pbJD7oDy+C4Pj
+           LdRyAOhTZQUEjHnmYh3FCF8SYMbRe8TzKhDe9EmQ=
+Received: from ip4-46-39-164-203.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.203])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <kvalo@codeaurora.org>; 4 Nov 2020 12:47:21 +0100
+Date:   Wed, 4 Nov 2020 12:47:19 +0100
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     =?utf-8?B?0JzQsNGA0LrQvtCyINCc0LjRhdCw0LjQuyDQkNC70LXQutGB0LDQvdC00YA=?=
+         =?utf-8?B?0L7QstC40Yc=?= <markov.mikhail@itmh.ru>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        "\"David S. Miller\"" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "illumin@yandex.ru" <illumin@yandex.ru>
+Subject: Re: [PATCH v2] rt2x00: save survey for every channel visited
+Message-ID: <20201104114719.GA75374@wp.pl>
+References: <1603134408870.78805@itmh.ru>
+ <20201020071243.GA302394@wp.pl>
+ <1603222991841.29674@itmh.ru>
+ <871rhbpw8b.fsf@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201103153541.GC3267686@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: pl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <871rhbpw8b.fsf@codeaurora.org>
+X-WP-MailID: 1679a778b8b3e14e6fb2fb83e25c807e
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [kZPh]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 06:19:32PM +0200, Kalle Valo wrote:
+> Марков Михаил Александрович <markov.mikhail@itmh.ru> writes:
+> 
+> > rt2800 only gives you survey for current channel.
+> >
+> > Survey-based ACS algorithms are failing to perform their job when working
+> > with rt2800.
+> >
+> > Make rt2800 save survey for every channel visited and be able to give away
+> > that information.
+> >
+> > There is a bug registered https://dev.archive.openwrt.org/ticket/19081 and
+> > this patch solves the issue.
+> >
+> > Signed-off-by: Markov Mikhail <markov.mikhail@itmh.ru>
+> 
+> Content-Type: text/plain; charset="koi8-r"
+> 
+> Just so you know I have no idea how patchwork or my scripts handle
+> koi8-r. I recommend using utf-8 when submitting patches, but I can
+> always try and see what breaks.
 
->> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
->>
->> Add alternative topology binary file name based on used machine driver
->> and fallback to use this name after failed attempt to load topology file
->> with name based on NHLT.
->> This change addresses multiple issues with current mechanism, for
->> example - there are devices without NHLT table, and that currently
->> results in tplg_name being empty.
->>
->> Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
->> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
->> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Link: https://lore.kernel.org/r/20200427132727.24942-2-mateusz.gorski@linux.intel.com
->> Signed-off-by: Mark Brown <broonie@kernel.org>
->> ---
->>
->> This functionality is merged on upstream kernel and widely used. Merging
->> it to LTS kernel would improve the user experience and resolve some of the
->> problems regarding topology naming that the users are facing.
-> What problems are people facing, and what kernel(s) are you asking for
-> this to be ported to, and why can't people just use 5.8 or newer if they
-> have this new hardware?
->
-> thanks,
->
-> greg k-h
+I've downloaded the patch from patchwork (using mbox button) and
+it applied cleanly for me by 'git am'. So I think there should be
+no problems, but if needed I can repost patch using utf-8.
 
-I forgot to add - I wanted this change to be merged to stable 5.4 
-kernel. Please let me know if I should resend this patch with this 
-information included.
-
-As for the user issues - topology binary file name is currently created 
-according to information from NHLT. The problem is, that some laptops 
-(for example Dell XPS 13) do not have NHLT at all. This results in 
-topology binary name being empty (" ").
-This patch adds alternative name based on loaded machine driver.
-
-It applies not only to new hardware, please note that the mentioned Dell 
-XPS 13 is based on Kabylake. This issue existed on upstream from the 
-beginning of Skylake driver and was only recently addressed.
-
+Thanks
+Stanislaw
