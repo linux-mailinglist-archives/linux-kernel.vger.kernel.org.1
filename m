@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3883E2A6734
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82882A673A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgKDPOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:14:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgKDPOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:14:06 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDB5C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:14:06 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id x13so16833719pgp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ZNNounMQIMRz8K10oG/OB7lWGgxV/OEsHEiMQfK/Lv8=;
-        b=C/P/mZbeUHdxW56yw6dSDbVuQsqw1gkds/wYzRuOe2oRN6NyBlmL3+CqoHKnnp+HnH
-         T19nKeaxHK+tfJ6tLfbXguZEMjaJHo3Bk47KrcdsnNnVa0ue3V2Tl8PkwnDezoGrTbWA
-         jKdiWDlFUnE6XliZpn58za66usgob8wv1LgqX772mLLzYIWbNLnNR6WlzmwlODeZV1JZ
-         +LNL7mzJvjxOkdcmG67P1WJx9ltZmi5SXM1Z1ytZTDM+Hz4XPaZ5fS1h7uyP9nkhkU66
-         w2QrjOEsRFw5TL1rRBZb43tEQTuXJX3wkF0uEyhM2sY7fjG352+yOdl+VlytMIS/jRvO
-         +WFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZNNounMQIMRz8K10oG/OB7lWGgxV/OEsHEiMQfK/Lv8=;
-        b=EV/n87dCBtJ7OWCz2L8iW9oBD3u64DBxGjjfAeTP5Fkgc6y9JwJZlLbZ2wydi4rwsc
-         HJc0UfGiPT0cWI74dCvWscyxcjodc05GinZGt/5QZfcCRflBUjOPdxDLJcpMMItcsmfa
-         jeAFbi3puLUvehLX3dQbbABHc/uYoUjCjHYQD1qcrfqterP7CcXPJuSwxQtcsfVSRk+T
-         8WH/XQRBkzYJf/6Hayi31iKB9ahezvrHmDOkSsvnZVxNOSiNKRdvqllbdkRFfonNStc/
-         9xFti14FWPTNMBWiN+pnW7Whb/UzUr1K+0/y0dH8gZu313VVHqCosU3RZDYXC1iVKxm3
-         0TLw==
-X-Gm-Message-State: AOAM530YOXbwKRoMl3vG+nLYxXpZk9Wcp9C/1bUJQcE5W/rV51USept+
-        kjHdwUcDl5QZLcxL/RMPPUU=
-X-Google-Smtp-Source: ABdhPJwqYTp5o+8CbcyUaE1B/F7rurtuzNjVeMUlFiaH2AP7l1ZV54Rnfv02uM64/jAslPkDIW5S2A==
-X-Received: by 2002:a62:2ec7:0:b029:164:4811:e1d6 with SMTP id u190-20020a622ec70000b02901644811e1d6mr31715059pfu.12.1604502845856;
-        Wed, 04 Nov 2020 07:14:05 -0800 (PST)
-Received: from localhost ([160.202.157.3])
-        by smtp.gmail.com with ESMTPSA id t32sm2900277pgl.0.2020.11.04.07.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:14:05 -0800 (PST)
-Date:   Wed, 4 Nov 2020 20:43:59 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH] drm/amdkfd: replace idr_init() by idr_init_base()
-Message-ID: <20201104151359.GA69034@localhost>
+        id S1730525AbgKDPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:16:04 -0500
+Received: from m12-15.163.com ([220.181.12.15]:47671 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726796AbgKDPQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 10:16:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=VSar2
+        wdEREwQtbNXW3U+mTBkXhxZPJuA5rzAVzEzkCs=; b=gYO0gQUMv+jpq36YMD8Fi
+        UfjghN2SHyz1DTDEjGMQdEL1wXxcaOdGzTKDvu4Ir06UOO/JvNOY7AxzOcGx7xiP
+        DYi0QxthHpC4FUhM15wKo4rdIwx3i9DsJj0U0gCi2thsbWXcSU9bok3BZ/Qqt+4N
+        URBSnA7boydsgxPSTus6G4=
+Received: from localhost (unknown [101.86.211.214])
+        by smtp11 (Coremail) with SMTP id D8CowACXoytxxaJfODSOGQ--.63470S2;
+        Wed, 04 Nov 2020 23:14:58 +0800 (CST)
+Date:   Wed, 4 Nov 2020 23:14:57 +0800
+From:   Hui Su <sh_def@163.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] mm/memcontrol: replace '== root_mem_cgroup' with
+ mem_cgroup_is_root
+Message-ID: <20201104151457.GA108301@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+X-CM-TRANSID: D8CowACXoytxxaJfODSOGQ--.63470S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCFWUArWkJr17uw4UJrW3Awb_yoW5ZFWDpF
+        sIy3W3Ww4rArW5Xr1fKayq9a4rAa18Xa15JryxJw1xZw13Jw15tF17Ar1UJFyUCF9xGry7
+        JFs0yw18Gw4jvFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U5rcfUUUUU=
+X-Originating-IP: [101.86.211.214]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBDhfSX1rbK7KxjQAAsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idr_init() uses base 0 which is an invalid identifier. The new function
-idr_init_base allows IDR to set the ID lookup from base 1. This avoids
-all lookups that otherwise starts from 0 since 0 is always unused.
+We have supplied the inline func: mem_cgroup_is_root().
+So we may use mem_cgroup_is_root() instead of using
+'memcg == root_mem_cgroup' or 'memcg != root_mem_cgroup'
+directly, which is more readable.
 
-References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
-
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+Signed-off-by: Hui Su <sh_def@163.com>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_events.c  | 2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-index ba2c2ce0c55a..b3339b53c8ad 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-@@ -230,7 +230,7 @@ static int create_other_event(struct kfd_process *p, struct kfd_event *ev)
- void kfd_event_init_process(struct kfd_process *p)
- {
- 	mutex_init(&p->event_mutex);
--	idr_init(&p->event_idr);
-+	idr_init_base(&p->event_idr, 1);
- 	p->signal_page = NULL;
- 	p->signal_event_count = 0;
- }
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-index 65803e153a22..022e61babe30 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-@@ -1289,7 +1289,7 @@ struct kfd_process_device *kfd_create_process_device_data(struct kfd_dev *dev,
- 	list_add(&pdd->per_device_list, &p->per_device_data);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3dcbf24d2227..ac7af04ef88f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -868,7 +868,7 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
+ 	memcg = mem_cgroup_from_obj(p);
  
- 	/* Init idr used for memory handle translation */
--	idr_init(&pdd->alloc_idr);
-+	idr_init_base(&pdd->alloc_idr, 1);
+ 	/* Untracked pages have no memcg, no lruvec. Update only the node */
+-	if (!memcg || memcg == root_mem_cgroup) {
++	if (!memcg || mem_cgroup_is_root(memcg)) {
+ 		__mod_node_page_state(pgdat, idx, val);
+ 	} else {
+ 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+@@ -1312,7 +1312,7 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	struct mem_cgroup *iter;
+ 	int ret = 0;
  
- 	return pdd;
+-	BUG_ON(memcg == root_mem_cgroup);
++	BUG_ON(mem_cgroup_is_root(memcg));
  
+ 	for_each_mem_cgroup_tree(iter, memcg) {
+ 		struct css_task_iter it;
+@@ -2069,7 +2069,7 @@ struct mem_cgroup *mem_cgroup_get_oom_group(struct task_struct *victim,
+ 	rcu_read_lock();
+ 
+ 	memcg = mem_cgroup_from_task(victim);
+-	if (memcg == root_mem_cgroup)
++	if (mem_cgroup_is_root(memcg))
+ 		goto out;
+ 
+ 	/*
+@@ -2978,7 +2978,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ 	else
+ 		memcg = mem_cgroup_from_task(current);
+ 
+-	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
++	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+ 		objcg = rcu_dereference(memcg->objcg);
+ 		if (objcg && obj_cgroup_tryget(objcg))
+ 			break;
+@@ -7027,7 +7027,7 @@ void mem_cgroup_sk_alloc(struct sock *sk)
+ 
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_task(current);
+-	if (memcg == root_mem_cgroup)
++	if (mem_cgroup_is_root(memcg))
+ 		goto out;
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg->tcpmem_active)
+ 		goto out;
+@@ -7156,7 +7156,7 @@ static struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg)
+ 		 * The root cgroup cannot be destroyed, so it's refcount must
+ 		 * always be >= 1.
+ 		 */
+-		if (WARN_ON_ONCE(memcg == root_mem_cgroup)) {
++		if (WARN_ON_ONCE(mem_cgroup_is_root(memcg))) {
+ 			VM_BUG_ON(1);
+ 			break;
+ 		}
+@@ -7313,7 +7313,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ 
+ 	if (cgroup_memory_noswap || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return nr_swap_pages;
+-	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg))
++	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
+ 		nr_swap_pages = min_t(long, nr_swap_pages,
+ 				      READ_ONCE(memcg->swap.max) -
+ 				      page_counter_read(&memcg->swap));
+@@ -7335,7 +7335,7 @@ bool mem_cgroup_swap_full(struct page *page)
+ 	if (!memcg)
+ 		return false;
+ 
+-	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
++	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+ 		unsigned long usage = page_counter_read(&memcg->swap);
+ 
+ 		if (usage * 2 >= READ_ONCE(memcg->swap.high) ||
 -- 
-2.25.1
+2.29.0
+
 
