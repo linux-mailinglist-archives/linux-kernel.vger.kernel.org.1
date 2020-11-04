@@ -2,120 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2618C2A63A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CC32A6399
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgKDLsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S1729633AbgKDLtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgKDLsf (ORCPT
+        with ESMTP id S1729625AbgKDLsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:48:35 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31047C0613D3;
-        Wed,  4 Nov 2020 03:48:35 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id b12so10186701plr.4;
-        Wed, 04 Nov 2020 03:48:35 -0800 (PST)
+        Wed, 4 Nov 2020 06:48:40 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED843C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:48:39 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id m17so590108oie.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:48:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7IzbM9m4aaHXdrXJm05MLSazuYENXBo0KE7aGRSwMEM=;
-        b=ZdFcNNsEPd+MrYWXHoLvBaTyKHUZhwFwZu3J/PQqzp5Y/s91VRqgtwgRqnPdnsJFzV
-         u8ndi/4ac74yeUDpbQr7HXPlEJnbasb7cO8o7gJ5QfnXfnqvT0IrHsEaICKEwxEa70A2
-         YXFhqPLDhnbJkNUfiRkcSqJ8rcr7T7iBd7vGmo4WjMykCP58kLBQOzps+/fitCtmG7lx
-         rqQXdb82DTVqzyozftIz+18xHfX9wm2lvzWUKmKLYyJ3imRpyuFKCfkdabT8dbUsAWYG
-         nv0yauU0g8FHPsO317oAA4Yrr0jRGmrdqn85extqA7+6MeHG+mc31wlEfpFhQQxxW9Z6
-         hBNQ==
+        bh=y7tj6Pzjp8JR2KC8TChsuwytVkVvMR+s47pe2JATvJU=;
+        b=MsKU1ybVT4f7H+c6z7o6qDsydeSwBR0uaSOc57E+hYVHLDJKTN1erCWU6QbkCZS2Pe
+         2Qfsvh9yqtYza+HWTGTEigZ2QsQHBxni2f+k7TsICC4sKXGNYRkGXo2zAt90spUIoTay
+         K+K3/VONsbCUEaM5tL/dR4Psu3Ip7JJ/5Nm7A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7IzbM9m4aaHXdrXJm05MLSazuYENXBo0KE7aGRSwMEM=;
-        b=hg+Ri/MEBJrLVyt6nwfiPJxjwP5O4yU43nlDmotGDwZG0RNu/Fl7bH1fC4btlWn8GJ
-         F2C7zQC2/K5LP7czbHlu7dJMcytb/YiSGxyVI7XwJcBVs6P5s8OZQnMTWyGYD1V058yi
-         c8sxNuLdKO8IALrugfv1vPSwJVUGDNam8g/Rnd1ndAejpTPXIM2SZ/DfRYr9m8gm6Uox
-         JkOMw/WfEhmhYOfUiqh9CmHULoUxkU4YBQ8S+RzLVupWt/asmgMPmbtXIvzPZ04rCfQ9
-         GcciqVfL9Yqj8EKoRcHHxzT/t8HFi8GiR3JGKzAXMct1s5pEAjA5zBSpoIq71v27SN7d
-         LGEA==
-X-Gm-Message-State: AOAM532R3iW2Z3OOrPTUMe49g7oTa3qVLQ5V86qGG8M3TloOUEsajTIO
-        dGDUFUTt3ad70ONP+fRyAnNuw6diopW70iJdUEk=
-X-Google-Smtp-Source: ABdhPJwhKGHgOtsgYmsX8K8geLNyRT+0OoRlLf1+UEBmK6aJHTGU8p2K0A8JMelevcl7yJOdhQWuD2QnmsGaSXA3des=
-X-Received: by 2002:a17:902:d30c:b029:d6:8208:bb1 with SMTP id
- b12-20020a170902d30cb02900d682080bb1mr29348288plc.44.1604490514732; Wed, 04
- Nov 2020 03:48:34 -0800 (PST)
+        bh=y7tj6Pzjp8JR2KC8TChsuwytVkVvMR+s47pe2JATvJU=;
+        b=X8zfLLRgnAP37anau2UBew1ycU17+iOatDF5FbjHYCpqSWEDp7sPNQRqVeRkXbQn4e
+         mV4/noUzskswCKMgQbrKu2IJlNMZyxGMdCPp5o6mcpC+9EAcgl0cjVRwbDvwvxcq1PG+
+         IU7kDo1ho6EtW1RFNcEDYa0IHzcrBw5Wx4dm4Ed5rv9QysvJ6/QjBA1ywezPjJ3QXLa0
+         h1SP4uzoSkAgu8n9m0MJFXDO6eRTbsSRnAzAQ704wOwXAwQ4IEnWTUopsXPrY6kvYfdH
+         FmPLr8Xe6KhyC60M4yRFpJxNwJZMK7MzA2vdJ2pVfupkcEmeMp/oNInphu4RwEqd5k+a
+         kuOg==
+X-Gm-Message-State: AOAM530nDbEsHuaOnWqy6ztqKxRu9VHqebmB6sAcd5Qc18azuIQshD6U
+        t1kkjlqZ8VISoyt1Iw7wVUImkrsm8I2AHg==
+X-Google-Smtp-Source: ABdhPJwDVZqOSfoiMDJ/LdUWjTocR92ZC+4on9HSvXsLXgKGffC73gV7Ir9rjR/sAIhD3NUT8gAuWQ==
+X-Received: by 2002:a05:6808:3:: with SMTP id u3mr2342690oic.113.1604490518997;
+        Wed, 04 Nov 2020 03:48:38 -0800 (PST)
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com. [209.85.167.180])
+        by smtp.gmail.com with ESMTPSA id t5sm430946oth.16.2020.11.04.03.48.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 03:48:37 -0800 (PST)
+Received: by mail-oi1-f180.google.com with SMTP id t16so4509252oie.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:48:37 -0800 (PST)
+X-Received: by 2002:aca:d07:: with SMTP id 7mr2193975oin.15.1604490516967;
+ Wed, 04 Nov 2020 03:48:36 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604410035.git.yifeifz2@illinois.edu> <4ec2970fcc819eb4d5dac2bd35233ccdadfda845.1604410035.git.yifeifz2@illinois.edu>
- <87wnz1to9n.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87wnz1to9n.fsf@mpe.ellerman.id.au>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Wed, 4 Nov 2020 05:48:21 -0600
-Message-ID: <CABqSeAQ+3sjLXH7GVt_tZrFT_e0nNMm8QgT+FBNQYSOc8viM=A@mail.gmail.com>
-Subject: Re: [PATCH seccomp 3/8] powerpc: Enable seccomp architecture tracking
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        linux-sh@vger.kernel.org, Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        linux-riscv@lists.infradead.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-s390@vger.kernel.org, YiFei Zhu <yifeifz2@illinois.edu>,
-        linux-csky@vger.kernel.org, Tianyin Xu <tyxu@illinois.edu>,
-        linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Will Drewry <wad@chromium.org>, linux-parisc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        David Laight <David.Laight@aculab.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, Tycho Andersen <tycho@tycho.pizza>
+References: <20201022133753.310506-1-ribalda@chromium.org> <20201022133753.310506-2-ribalda@chromium.org>
+ <20201104110937.GH26171@pendragon.ideasonboard.com>
+In-Reply-To: <20201104110937.GH26171@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 4 Nov 2020 12:48:25 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuCJigJ293pMnXT9wALUn3D2=RTKtzVcrD+Hr+u2uCWPA@mail.gmail.com>
+Message-ID: <CANiDSCuCJigJ293pMnXT9wALUn3D2=RTKtzVcrD+Hr+u2uCWPA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] media: uvcvideo: Add UVC_CTRL_FLAG_ENTITY_GET_INFO
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        tfiga@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 4:22 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > +#ifdef __LITTLE_ENDIAN__
+On Wed, Nov 4, 2020 at 12:10 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> As Kees mentioned this should (must?!) match the configured endian.
+> Hi Ricardo,
 >
-> But I think it would still be better to use the CONFIG symbol, which is
-> CONFIG_CPU_LITTLE_ENDIAN.
-
-My attempt here is to be consistent with asm/syscall.h
-syscall_get_arch [1]. Would it make sense to change that to
-CONFIG_CPU_LITTLE_ENDIAN then?
-
-[1] https://elixir.bootlin.com/linux/latest/source/arch/powerpc/include/asm/syscall.h#L116
-
-> > +# define SECCOMP_ARCH_NATIVE         (AUDIT_ARCH_PPC64 | __SECCOMP_ARCH_LE)
+> Thank you for the patch.
 >
-> You use __SECCOMP_ARCH_LE there, but previously you only defined
-> __SECCOMP_ARCH_LE_BIT.
+> On Thu, Oct 22, 2020 at 03:37:48PM +0200, Ricardo Ribalda wrote:
+> > This flag allows controls to get their properties from an entity defined
 >
-> Is there some magic somewhere that defines __SECCOMP_ARCH_LE based on
-> __SECCOMP_ARCH_LE_BIT ?
-
-Oops, my bad here.
-
-> > +# define SECCOMP_ARCH_NATIVE_NR              NR_syscalls
-> > +# define SECCOMP_ARCH_NATIVE_NAME    "ppc64"
+> s/entity defined/entity-defined/
 >
-> What's the name used for?
-
-This is used in the last patch in this series to report in procfs the
-name of each architecture tracked by the bitmap cache.
-
-> Usually we use "ppc64" for 64-bit big endian and "ppc64le" for 64-bit
-> little endian.
+> > function instead of via a query to the USB device.
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_ctrl.c | 9 +++++++--
+> >  drivers/media/usb/uvc/uvcvideo.h | 3 +++
+> >  include/uapi/linux/uvcvideo.h    | 2 ++
+> >  3 files changed, 12 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > index f479d8971dfb..7acdc055613b 100644
+> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > @@ -1708,8 +1708,13 @@ static int uvc_ctrl_get_flags(struct uvc_device *dev,
+> >       if (data == NULL)
+> >               return -ENOMEM;
+> >
+> > -     ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
+> > -                          info->selector, data, 1);
+> > +     if (ctrl->info.flags & UVC_CTRL_FLAG_ENTITY_GET_INFO)
 >
-> And usually we use "ppc" for 32-bit.
+> Do we need the flag, couldn't we use entity->get_info if it is non-null,
+> and call uvc_query_ctrl() otherwise ?
 
-Ok.
+The idea behind the flag is to support in the same entity controls
+that are uvc_query_ctrl() based
+and "entity private functions".
 
-YiFei Zhu
+As this moment, there is only the " GPIO entity"  that has has private
+functions, and does not require it.
+
+So I can simply remove the flag and add it later (if needed).
+
+Thanks
+
+>
+> > +             ret = ctrl->entity->get_info ?
+> > +                     ctrl->entity->get_info(ctrl->entity, ctrl->info.selector, data) :
+> > +                     -EINVAL;
+> > +     else
+> > +             ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
+> > +                                  info->selector, data, 1);
+> >       if (!ret)
+> >               info->flags |= (data[0] & UVC_CONTROL_CAP_GET ?
+> >                               UVC_CTRL_FLAG_GET_CUR : 0)
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index a3dfacf069c4..08922d889bb6 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -353,6 +353,9 @@ struct uvc_entity {
+> >       u8 bNrInPins;
+> >       u8 *baSourceID;
+> >
+> > +     int (*get_info)(struct uvc_entity *entity, u8 cs, u8 *caps);
+> > +     int (*get_cur)(struct uvc_entity *entity, u8 cs, void *data, u16 size);
+>
+> Looks like the second function should be part of patch 2/6 instead. I
+> would however squash 1/6 and 2/6.
+>
+> > +
+> >       unsigned int ncontrols;
+> >       struct uvc_control *controls;
+> >  };
+> > diff --git a/include/uapi/linux/uvcvideo.h b/include/uapi/linux/uvcvideo.h
+> > index f80f05b3c423..69b636290c31 100644
+> > --- a/include/uapi/linux/uvcvideo.h
+> > +++ b/include/uapi/linux/uvcvideo.h
+> > @@ -30,6 +30,8 @@
+> >  #define UVC_CTRL_FLAG_AUTO_UPDATE    (1 << 7)
+> >  /* Control supports asynchronous reporting */
+> >  #define UVC_CTRL_FLAG_ASYNCHRONOUS   (1 << 8)
+> > +/* Entity queries */
+> > +#define UVC_CTRL_FLAG_ENTITY_GET_INFO        (1 << 9)
+> >
+> >  #define UVC_CTRL_FLAG_GET_RANGE \
+> >       (UVC_CTRL_FLAG_GET_CUR | UVC_CTRL_FLAG_GET_MIN | \
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+-- 
+Ricardo Ribalda
