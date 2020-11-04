@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0362A6E06
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7462F2A6E08
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730044AbgKDTgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S1726849AbgKDTgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgKDTgC (ORCPT
+        with ESMTP id S1730007AbgKDTgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:36:02 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA54C061A4A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:02 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c18so3510896wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:02 -0800 (PST)
+        Wed, 4 Nov 2020 14:36:04 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891EDC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:04 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id d142so3502089wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OdvKCUKq0nojtCMM0KGT5aJAZNDW8NuYQSO90sv71Uc=;
-        b=wCoMoeCFqY5xu2QfY9z+bw7Fb0rt4bPqAm9TgvJfuztLnk3LS2eB4RBQN8IKGJQHeo
-         QIxK4cM+2rXVVq5RY8y9PiSnGkmIjNG/xerHzh4P+oZUcldSLI7zV1kMAX5/TPaBfV+5
-         z5LN5rnxwkGKXtvHUAeLXET8FYURlnu/B5VLU/6/H3oYm9PuQx5XpKSWCXOzm0xkMR7S
-         HAsZm+K3U808leuckF38vTXdCGZC7VBMbQxxunr9lHtwEZH5kfEf25WCwQIudiLeIPHT
-         H8R6bwVHk/Pu5ybw7dwFPnEUeEDwDDbc78qJybX+BrAQGW7ZLwgOezXVhWrGbjNA2B9i
-         p5rA==
+        bh=C/N5VekjPLPM7Pui3+xXrSTk4dOhYGb1u8++CWcrEhY=;
+        b=FkvcpHtJfzpI9+RIGA8bPkaDdhc67Xtb61R2JVEO8of1HO4qPBcTKaAKKorz11QQoz
+         IAIBDDbeNWtWWkrQfFZcfUxMtDlu0o4saZGjyi6Vq9+dahRM75XVLegwPzZIwFfMM73P
+         cEhgTNMn8Nv/8XhqHEW+gQi745pq7Des/2oKhOtX5qOvtKogT2H6hZZbeF3AYnI9tEGP
+         AW5W8x2/thUP9NP5q1GqJx3prtZy1DTdHNkyj3Bx6XiHb55WR5b1hA70LwRqIsGB3GJh
+         uIxdZSpJItdgoSA8mMGigNy54r9eoZhs/SUGyrFKxAFc6iIh9JVNlizrhxeqS0HXU+gY
+         MzGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OdvKCUKq0nojtCMM0KGT5aJAZNDW8NuYQSO90sv71Uc=;
-        b=inO3NMKYaMtQ882MspdCFxujuxLWw+NBaxzWDoT9ZlC8qtLh9zqIlKO63LCweYf4GE
-         g+B8ln7W6Piu1ruWmNDupMT+Qks6U6bzsfykJxk3R8KNLGGRIRTlbIwajI6LCHnHmwSp
-         lvqTwIy+cAD+9IpVY88APauBrJB3qdJadN7+ppZjqzH85/JeAZ/qPrZMnZFM0zyN68iu
-         aPusqopTz7twpzMvBZ+o1qyij8vUdiaEhQKOeueQ7mzF1CP5DxC55EZ8eDGyWPBiZNBD
-         6xY8akNYRpM/Hv7wvBr01vjehc031OyLrW9uj72ecXrBnLfXrA0sl+qXm4kRTu5FFqQo
-         Fk+w==
-X-Gm-Message-State: AOAM530IfXaS58N8E/OvhbcPlOgmz1z6k7jSZalsxwzh4Iv8G05vKnoc
-        Uj9Zm2T3lbAoDuYHosGxInKJUw==
-X-Google-Smtp-Source: ABdhPJwx7kUiYY8L5I9M732KlsD1JyaCYlJzpq20HsGlssz7jN+MlqlZZRjSrqsABpXKAFnWarXOWg==
-X-Received: by 2002:a1c:490b:: with SMTP id w11mr6237078wma.101.1604518561307;
-        Wed, 04 Nov 2020 11:36:01 -0800 (PST)
+        bh=C/N5VekjPLPM7Pui3+xXrSTk4dOhYGb1u8++CWcrEhY=;
+        b=dkHiz8BEP8Tb7XXAFxlduv0fS87KHN+aRMCUeguSBl/7DCV4hFN/9YOoKzE+YjJIeP
+         Bxz3PeYr9yHh8Om/xsismL8Xoh7uCO7CVPiekyIlkS/u9I6mb0jdsOP5bOi59STd39Sb
+         LdUYzzEpjpFF9wpBydvB/WszW7F4GdKdPC9CkFPQnlqJpigdsm1xCSVbGmxfQ/pzzQ+z
+         ppzasMWO0G8ja5PsbDYN8kZvdkaQ/E6DNplebPvxQ+u8qFKnx2ec37Rwz8lWczhtQdX9
+         W1IpPdrb56FCDaWuCpMJ4pscIbiSq5fZlIyWP+Q4/P2Zd/mZ8wobVABxhBTKywGBxvuN
+         BlxQ==
+X-Gm-Message-State: AOAM5313SDcjpQ5UabSRLf2NkPpin0210sdJcnPn1+adtymQDl6mEtHM
+        ScBEY6Wqu2knDYPfVfF6CEV4tQ==
+X-Google-Smtp-Source: ABdhPJw5/urW81j/lbvQbRCCGtteebvxAcHyJgc78ueE+MXuPgh+COazs5ioEj7u63QDxZleIMBjUA==
+X-Received: by 2002:a7b:c00a:: with SMTP id c10mr6196237wmb.119.1604518563203;
+        Wed, 04 Nov 2020 11:36:03 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.35.59
+        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:36:00 -0800 (PST)
+        Wed, 04 Nov 2020 11:36:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 03/36] tty: tty_baudrate: Add missing description for 'tty'
-Date:   Wed,  4 Nov 2020 19:35:16 +0000
-Message-Id: <20201104193549.4026187-4-lee.jones@linaro.org>
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Holloway <alfie@dcs.warwick.ac.uk>,
+        -- <julian@uhunix.uhcc.hawaii.edu>,
+        Marko Kohtala <Marko.Kohtala@hut.fi>,
+        Bill Hawes <whawes@star.net>,
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Andrew Morton <andrewm@uow.edu.eu>
+Subject: [PATCH 04/36] tty: tty_io: Move 'tty_sysctl_init's prototype to shared space
+Date:   Wed,  4 Nov 2020 19:35:17 +0000
+Message-Id: <20201104193549.4026187-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104193549.4026187-1-lee.jones@linaro.org>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -67,27 +75,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/tty_baudrate.c:234: warning: Function parameter or member 'tty' not described in 'tty_encode_baud_rate'
+ drivers/tty/tty_ldisc.c:883:6: warning: no previous prototype for ‘tty_sysctl_init’ [-Wmissing-prototypes]
+ 883 | void tty_sysctl_init(void)
+ | ^~~~~~~~~~~~~~~
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Nick Holloway <alfie@dcs.warwick.ac.uk>
+Cc: -- <julian@uhunix.uhcc.hawaii.edu>
+Cc: Marko Kohtala <Marko.Kohtala@hut.fi>
+Cc: Bill Hawes <whawes@star.net>
+Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Andrew Morton <andrewm@uow.edu.eu>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/tty_baudrate.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/tty_io.c | 2 --
+ include/linux/tty.h  | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/tty_baudrate.c b/drivers/tty/tty_baudrate.c
-index 84fec3c62d6a4..6551b188b736b 100644
---- a/drivers/tty/tty_baudrate.c
-+++ b/drivers/tty/tty_baudrate.c
-@@ -222,6 +222,7 @@ EXPORT_SYMBOL_GPL(tty_termios_encode_baud_rate);
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 7a4c02548fb3f..88b00c47b606e 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -514,8 +514,6 @@ static const struct file_operations hung_up_tty_fops = {
+ static DEFINE_SPINLOCK(redirect_lock);
+ static struct file *redirect;
  
+-extern void tty_sysctl_init(void);
+-
  /**
-  *	tty_encode_baud_rate		-	set baud rate of the tty
-+ *	@tty:   terminal device
-  *	@ibaud: input baud rate
-  *	@obaud: output baud rate
-  *
+  *	tty_wakeup	-	request more data
+  *	@tty: terminal
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index a99e9b8e4e316..10212c6e4345e 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -716,6 +716,7 @@ extern int __must_check tty_ldisc_init(struct tty_struct *tty);
+ extern void tty_ldisc_deinit(struct tty_struct *tty);
+ extern int tty_ldisc_receive_buf(struct tty_ldisc *ld, const unsigned char *p,
+ 				 char *f, int count);
++extern void tty_sysctl_init(void);
+ 
+ /* n_tty.c */
+ extern void n_tty_inherit_ops(struct tty_ldisc_ops *ops);
 -- 
 2.25.1
 
