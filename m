@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96D62A6325
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E052A632D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgKDLRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:17:49 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48670 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729616AbgKDLRd (ORCPT
+        id S1729520AbgKDLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:19:50 -0500
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:46611 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgKDLSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:17:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604488648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1lc46Rd9wCuf9yAM3x0VKjRoapHGrztvOKUbPr8Ji7E=;
-        b=cO2ZF0wwv9S0cKsVczS3IlOIfnKxt1HkxQVk5uvfxYDhOuVYIWxSGp1kuFtWX76T18qsjX
-        hB7J94xcYaJqB+ORmCbkLyhQfKnxqQDUDVuxZgafVeyEtEpTZS1Yu/RCPv0c/ftZRLoi4B
-        gFxgkCBSyTfMADAUDhKcg43UfS550sNrwxtf8s1J3LKE0uKeYaTNDm/nkYO+hp3xP5Qn0k
-        Qc7p+FEa30cjAjyOdb0Zm9Zmc4VuE3+v7XgtO9Be9RWAm9b5e8BabDp52zLkSQja76bBvK
-        H+/YEPEqq84hMi52VV3kNBTzaRg3D89YWqT6GDKVLLGXHaArGwcafPgBPILTXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604488648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1lc46Rd9wCuf9yAM3x0VKjRoapHGrztvOKUbPr8Ji7E=;
-        b=ktTTc5QEuhm/ecR+uDBY6KbenTPsRh9aO5iQN0v/VhZwDpxz4ozua95XP7fQfPtYQ9mbeM
-        Dn5AlhgWk5shKsCA==
-To:     Mike Galbraith <efault@gmx.de>,
-        Gratian Crisan <gratian.crisan@ni.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        James Minor <james.minor@ni.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: BUG_ON(!newowner) in fixup_pi_state_owner()
-In-Reply-To: <874km5mnbf.fsf@nanos.tec.linutronix.de>
-References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com> <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de> <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de> <874km5mnbf.fsf@nanos.tec.linutronix.de>
-Date:   Wed, 04 Nov 2020 12:17:28 +0100
-Message-ID: <871rh9mkvr.fsf@nanos.tec.linutronix.de>
+        Wed, 4 Nov 2020 06:18:33 -0500
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 95C211A3CC9;
+        Wed,  4 Nov 2020 19:17:56 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AM2AyQC0Da1dbRopcUQABart.3.1604488676603.Hmail.bernard@vivo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, opensource.kernel@vivo.com
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCAwLzJdIGRyaXZlcnMvdHR5OiBkZWxldGUgYnJlYWsgYWZ0ZXIgcmV0dXJuIG9yIGdvdG8=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.124
+In-Reply-To: <20201104110253.GB1688848@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 4 Nov 2020 19:17:56 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Wed, 4 Nov 2020 19:17:56 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQhgfGkhOTENLTEJCVkpNS09PQ0NNTE1NTkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CTk9PTEhCTkpPN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Nkk6Aio4Sz8aSh8ZKRQLGC4qOjkaCQ9VSFVKTUtPT0NDTUxMS05MVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSU9ZV1kIAVlBT05OTDcG
+X-HM-Tid: 0a7592fa450c93b4kuws95c211a3cc9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04 2020 at 11:24, Thomas Gleixner wrote:
-> On Wed, Nov 04 2020 at 08:42, Mike Galbraith wrote:
->> On Wed, 2020-11-04 at 01:56 +0100, Mike Galbraith wrote:
->> --- a/kernel/futex.c
->> +++ b/kernel/futex.c
->> @@ -2383,7 +2383,18 @@ static int fixup_pi_state_owner(u32 __us
->>  		 * Since we just failed the trylock; there must be an owner.
->>  		 */
->>  		newowner = rt_mutex_owner(&pi_state->pi_mutex);
->> -		BUG_ON(!newowner);
->> +
->> +		/*
->> +		 * Why? Because I know what I'm doing with these beasts?  Nope,
->> +		 * but what the hell, a busy restart loop let f_boosted become
->> +		 * owner, so go for it. Box still boots, works, no longer makes
->> +		 * boom with fbomb_v2, and as an added bonus, didn't even blow
->> +		 * futextests all up.  Maybe it'll help... or not, we'll see.
->> +		 */
->> +		if (unlikely(!newowner)) {
->> +			err = -EAGAIN;
->> +			goto handle_err;
->
-> Yes, that cures it, but does not really explain why newowner is
-> NULL. Lemme stare more.
-
-Aside of that it's going to create inconsistent state in the worst
-case. There is something really fishy in the trace Gratian provided....
+CgpGcm9tOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPgpE
+YXRlOiAyMDIwLTExLTA0IDE5OjAyOjUzClRvOiAgQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8u
+Y29tPgpDYzogIEppcmkgU2xhYnkgPGppcmlzbGFieUBrZXJuZWwub3JnPixTaGF3biBHdW8gPHNo
+YXduZ3VvQGtlcm5lbC5vcmc+LFNhc2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4s
+UGVuZ3V0cm9uaXggS2VybmVsIFRlYW0gPGtlcm5lbEBwZW5ndXRyb25peC5kZT4sRmFiaW8gRXN0
+ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPixOWFAgTGludXggVGVhbSA8bGludXgtaW14QG54cC5j
+b20+LGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcsbGludXgtc2VyaWFsQHZnZXIua2VybmVs
+Lm9yZyxsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcsb3BlbnNvdXJjZS5rZXJu
+ZWxAdml2by5jb20KU3ViamVjdDogUmU6IFtQQVRDSCAwLzJdIGRyaXZlcnMvdHR5OiBkZWxldGUg
+YnJlYWsgYWZ0ZXIgcmV0dXJuIG9yIGdvdG8+T24gV2VkLCBOb3YgMDQsIDIwMjAgYXQgMDI6NTM6
+MjlBTSAtMDgwMCwgQmVybmFyZCBaaGFvIHdyb3RlOgo+PiBUaGlzIHBhdGNoIHNlcmVpZXMgb3B0
+aW1pc2UgY29kZSBsaWtlOgo+PiB7Cj4+IGNhc2UgWFhYOgo+PiAJcmV0dXJuIFhYWDsKPj4gCWJy
+ZWFrOyAvL1RoZSBicmVhayBpcyBtZWFubGVzcywgc28ganVzdCBkZWxldGUgaXQuCj4+IGNhc2Ug
+WVlZOgo+PiAJZ290byBZWVk7Cj4+IAlicmVhazsgLy9UaGUgYnJlYWsgaXMgbWVhbmxlc3MsIHNv
+IGp1c3QgZGVsZXRlIGl0Lgo+PiAuLi4uLi4KPj4gfQo+PiAKPj4gU2lnbmVkLW9mZi1ieTogQmVy
+bmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgo+PiAKPj4gLS0tCj4+IEJlcm5hcmQgWmhhbyAo
+Mik6Cj4+ICAgZHJpdmVycy90dHkvbm96b21pLmM6IGRlbGV0ZSBubyB1c2UgYnJlYWsgYWZ0ZXIg
+Z290bwo+PiAgIGRyaXZlcnMvdHR5L3NlcmlhbC9pbXguYzogZGVsZXRlIG5vIHVzZSBicmVhayBh
+ZnRlciByZXR1cm4KPgo+VGhhdCBpcyBub3QgdGhlIHN1YmplY3Qgb2YgdGhlIHBhdGNoZXMgeW91
+IHNlbnQgb3V0LCB3aGF0IGJyb2tlPwoKSGk6CgpJIGFtIHNvcnJ5IHRoYXQgSSBhbSBhIGxpdHRs
+ZSBjb25mdXNlZDoKVGhlIHBhdGNoIHNlcmllc2BzIHN1YmplY3QgaXMgImRyaXZlcnMvdHR5OiBk
+ZWxldGUgYnJlYWsgYWZ0ZXIgcmV0dXJuIG9yIGdvdG8iCmFuZCB0aGUgYmx1cmIgaXM6ClRoaXMg
+cGF0Y2ggc2VyZWllcyBvcHRpbWlzZSBjb2RlIGxpa2U6CnsKY2FzZSBYWFg6CglyZXR1cm4gWFhY
+OwoJYnJlYWs7IC8vVGhlIGJyZWFrIGlzIG1lYW5sZXNzLCBzbyBqdXN0IGRlbGV0ZSBpdC4KY2Fz
+ZSBZWVk6Cglnb3RvIFlZWTsKCWJyZWFrOyAvL1RoZSBicmVhayBpcyBtZWFubGVzcywgc28ganVz
+dCBkZWxldGUgaXQuCi4uLi4uLgp9Cmxhc3QsIHRoZSBtb2RpZmllZCBmaWxlcyBhcmU6CkJlcm5h
+cmQgWmhhbyAoMik6CiAgZHJpdmVycy90dHkvbm96b21pLmM6IGRlbGV0ZSBubyB1c2UgYnJlYWsg
+YWZ0ZXIgZ290bwogIGRyaXZlcnMvdHR5L3NlcmlhbC9pbXguYzogZGVsZXRlIG5vIHVzZSBicmVh
+ayBhZnRlciByZXR1cm4KCklzIHRoZXJlIHNvbWV0aGluZyB3cm9uZyB0aGF0IEkgZGlkbmB0IGNh
+dGNoPwoKQlIvL0Jlcm5hcmQKDQoNCg==
