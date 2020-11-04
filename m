@@ -2,123 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E582A70C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4655F2A70D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgKDWrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:47:09 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26564 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726996AbgKDWrJ (ORCPT
+        id S1728952AbgKDWu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726996AbgKDWu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:47:09 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4Ml1Gh015995;
-        Wed, 4 Nov 2020 14:47:02 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=i6hIhBbaplErdssUdp2AQT9+surBNka9EcYDoCuFP4M=;
- b=NgH/bpVxgY9Twb6BSxSYi4JIJUuXO2QKcFMhKuHVMtqkl/EZ1tVde1aD7aNO4/EfsScm
- hb+hz5NTt0e8d/2nB1KsoePOlfRu94r7Yr5VPV9PiEN8bAvIKs8E/V4cuxR4e9zED64E
- wxiGmrG3TGda31g+3rvUXJ1bEflK0ze/FB8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34kd6j7k4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 04 Nov 2020 14:47:02 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 4 Nov 2020 14:46:28 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hNU6BHRrZWR5CjmDhtKX62kHVSJJpqPV2BxF85cRgtNhdvewb0Ist8Fubst6uO0AOMj1oDZTAwZES18HBA6ankhwIIyYxIXpYwCUUHzd13o5QmKzUCc7D9OKRYLN46ZOCuTCVVh/j4uiWpFMeg2OPW+Ut4DHQdUj+GqjDHV/EmB4G9W5BVbKgbjJYcm8KK/PC2X6gSiow99kFRH6o/USJtcN/kzIrCiYYvdfPycFIvfGWBUA7K0fYdEp7T3KlO+if1wPIXFtanvBzpWy3+NMvejjd0kW+s6PII+b7pajX36gOnA/306CTfF2QZihilcOfBD+d8q/HjUf6L8r8Ixmbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6hIhBbaplErdssUdp2AQT9+surBNka9EcYDoCuFP4M=;
- b=FOd7Sl4cmVW1xsvQRzwT9fAj2i2WsGQNcXkAdWtqSR1HrhgfiIx3N3+WRiLqa85/QIbvMwVSlE6qgchTWUgbUVsSo7tnbYXWi2BMFI+wq4icuoVZFzSjXaii+A5fi3CqbKPimkLHNov081COAlh62o/YMFWNFIPVUA+zxEKZB3EvPjDDCvLBpSNL6BwWjSbWSBkN3MwTIXniJHj/lROVXKYpTMQffAVLqJLKXG1p/HEurc/HvFd9dx4gwFOcYQHXGV67hqlTGW06FINXUk46gZ+DW6faat9Fo3yc+xZT7LH8IPk9Pt23XosrjmgbfHt5QD21gs515x8jUr/My7vFYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6hIhBbaplErdssUdp2AQT9+surBNka9EcYDoCuFP4M=;
- b=Dt4vTToEgdwxYUPsaA4N67Le5i+Yf9/SZIPgDH3Wbz50cAIEzIwq/nS3np/YSSIdoKhDhCf38ovuKHDR3fpzB+ZQXhSuvAp/fZq85zF0i9Vdhh+bNZ+JuMuY6yJUsFOd9uMC6Bf7qUdc548yHABzA3ZBXZBM+Uo4FucCvsOr/6Y=
-Authentication-Results: 163.com; dkim=none (message not signed)
- header.d=none;163.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2214.namprd15.prod.outlook.com (2603:10b6:a02:8d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Wed, 4 Nov
- 2020 22:46:27 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 22:46:27 +0000
-Date:   Wed, 4 Nov 2020 14:46:22 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Hui Su <sh_def@163.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/memcontrol: replace '== root_mem_cgroup' with
- mem_cgroup_is_root
-Message-ID: <20201104224622.GE1938922@carbon.dhcp.thefacebook.com>
-References: <20201104151457.GA108301@rlk>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104151457.GA108301@rlk>
-X-Originating-IP: [2620:10d:c090:400::5:806c]
-X-ClientProxiedBy: CO2PR04CA0116.namprd04.prod.outlook.com
- (2603:10b6:104:7::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:806c) by CO2PR04CA0116.namprd04.prod.outlook.com (2603:10b6:104:7::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 22:46:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 03a2e75f-5d37-4482-de91-08d8811376f4
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2214:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2214839F377EDB15E0E1B77FBEEF0@BYAPR15MB2214.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1MRNTsv26SoykT8IYf0XAw6Em5ZRG4C6QctxA2xPCUp0QJwl2DP2S0wtP73xLA8vFU6pGTP6ejNL/21/Eq7geEyPKAYPVQa9w/YI3TFp12oPlFjTCVBF3hrj3vfLpbMs9CGPwItSL+FMB1fCmEqwxMzKmHiTfsSX4v7aujOTYgqxh8Vc8a8fMP5UCHb3FqNzrj4FRCS/TsAQvjTneoZxZ6vUEwpeXwpb3TCJLhfj9TzXwcLCshYcwZ0ExIMicGnxHI4MFlLLkNgP7DzNmjVKKOgCpU+CZC2FiGLEj5+nF4dypjkH6IJCIVyaANCjx2WQ5tIRzR4sxpk0eosj4NsqHj+I90e3S2Oz24q/hdFzL/0OlOtebCrNWSQ+29a5vr8u4JgRIIUsxIq+xA+A2easeg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(39860400002)(366004)(6506007)(86362001)(6916009)(316002)(52116002)(7696005)(966005)(4744005)(2906002)(55016002)(9686003)(33656002)(1076003)(8936002)(66946007)(66556008)(66476007)(478600001)(4326008)(16526019)(83380400001)(186003)(8676002)(6666004)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Z4yDPEV9orJSwqOjwcUY9kFXdU0BfoE1kFg46R0hY//D3xIYiNzqB/1S1Ua055fxKYChghr9HeOUutb17w9Sd78AfmAz/4K9cg8cmNUz87AqURwIiQQxWQtkbvzCfcTLViBAH8Qyz/QGdioB8UDUc7RHN6AUYimerFXEUWEO0Q5B5gIgWvPYqtpGqnQ5h2K48qODMa3eeLZ/UmuUL3NuUUZQhbxdM+BBFP9opRryw0sLUiV8SOTUqo3mPSV4tj1zEVabhl8gpS+AUOXxBT2a/oYvvPpDTccNcnryfKlVqrLfAed3X3RwOSqORU5P63Ij9Io2ce5tUWO1Lc6N0H11BHKXFk/xs5UllZWGCX5qz2HxYwFheJAZHXMhEWzpwqQJz59A3HID0mqejmYEXw3G/OaWaBEFZdPOi4wpoBn44SZ8n0H3PWQVZbLbA2L6I6mpS5aUX5GgL33CGUAb+KCCsnddVSoAesdCvhc0WJOu0mBcl+8miGkZYUVdw7hqostkLiyYPZbYtIhRDtdCxz17cH5N1x7Ikj1P3xQXTw4ndRa9mOdoQq0fuGmVGgLQH0nc/tbLenmlTqrM5PgRBdbRI+Fb1yeUiGyN43tKVyV3FzwCCdAH6lFjkdCFab7vK93/qZ+B98t3Xdj0lHDUXDRTBo7+mJHUDfNQGF7zILlcO0H4jt3Z7xhckqq07RCLxU1K
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03a2e75f-5d37-4482-de91-08d8811376f4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:46:27.4865
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DkKz6zI+OkQ+reW/jlhHAoWaXw5HjOn4PqqmVG97WYVS7SOH37Y5b6aQPyd4CW7m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2214
-X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 4 Nov 2020 17:50:59 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDC2C0613CF;
+        Wed,  4 Nov 2020 14:50:59 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id z3so3139778pfb.10;
+        Wed, 04 Nov 2020 14:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tAyng+NRbLqoDdZKXQQbVGYLYTF01tOtqb3wwjrvMCQ=;
+        b=PIPN+ho8vhqah809l38Brm5NOhW6jT4TPYlijaD2wn1oX0SowkEBMesyb+nFs9+gqO
+         o5vP8N9Vn/bLGgaFvlbmXDO1Lvo60yZMcrBqn0TFDarGdXjDvvGa42/p9JAubZ+YBg/M
+         6+qEH1p1DwzLBfbRbWZtC4hmGUVl7oXhN3QrM8ClF0/6ETgnZt2DYwcid6FmQlDo6hyF
+         Bmya5iX0/v6rwkSt0V0yaPgqfYV+VTyL0GiDzAuhNsSr6ytKIY2GYR2tkTJmItt4k4s+
+         9N+VVlkMAyzlCd+XZk1scDQ+WfKHTZQxZGfAuiOZZOMEh2bSvmBgL5FK6KSb0QszWwuR
+         3JCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tAyng+NRbLqoDdZKXQQbVGYLYTF01tOtqb3wwjrvMCQ=;
+        b=KEoS8MTOs4ZfVtOn0Y6K7b8jtbS9/4tY1K87/GWByBMzE02zYNCoIbNFtkCbrwIaUH
+         aL/RIj17c8kHbL3WFscF2D/JNmS+Mmxplp4ys1RRqoTB5ivMiOraPWBK7Tni19k+Vqv5
+         XJv/Q9NB75ZjcQfxpJ+4BiIHJBl8S+7HixtFL8NdFkkELbEIGMLFaZznGYUR8qElPURZ
+         nU7K7rOMllP5S2HLr1WsIlEhwZoNpWsITV6G7J6+s6AARRigHwokkJ/a7xBbwShwkMa+
+         hfhBafkO1zr8N52VBPHFODg39erfaL65w7LdF1lXIJlmBIb9tNDr8BYsuMA6W03g7LN2
+         Di7w==
+X-Gm-Message-State: AOAM531BPS2tVwZGYUA7bVt6mVbkXcqdUM/33iogzphB93Aq8kTXTCLU
+        9DNx0h07aKuuZ/XVay1HJLI=
+X-Google-Smtp-Source: ABdhPJzc+9IhoxfLu/Y+QA1RetmpQho3PcJGRPFSwp4ot8ibWoQA/Ac4OgEj55Hac5S/tLSAxWVDAQ==
+X-Received: by 2002:a63:845:: with SMTP id 66mr210596pgi.318.1604530258334;
+        Wed, 04 Nov 2020 14:50:58 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id j1sm3577373pfa.96.2020.11.04.14.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 14:50:57 -0800 (PST)
+Date:   Wed, 4 Nov 2020 14:50:54 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, dusonlin@emc.com.tw,
+        KT Liao <kt.liao@emc.com.tw>, linux-input@vger.kernel.org
+Subject: Re: [PATCH 06/20] include: input: elan-i2c-ids: Mark 'elan_acpi_id'
+ as __maybe_unused
+Message-ID: <20201104225054.GC1003057@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-7-lee.jones@linaro.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_15:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 mlxlogscore=822 adultscore=0
- impostorscore=0 spamscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040163
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162427.2984742-7-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:14:57PM +0800, Hui Su wrote:
-> We have supplied the inline func: mem_cgroup_is_root().
-> So we may use mem_cgroup_is_root() instead of using
-> 'memcg == root_mem_cgroup' or 'memcg != root_mem_cgroup'
-> directly, which is more readable.
+Hi Lee,
 
-Most of these comparisons will go away soon:
-https://lkml.org/lkml/2020/10/21/612 (this is
-an rfc version, I'll send an updated version soon).
+On Wed, Nov 04, 2020 at 04:24:13PM +0000, Lee Jones wrote:
+> Some drivers which include 'elan-i2c-ids.h' make use of
+> 'elan_acpi_id', but not all do.  Tell the compiler that this is
+> expected behaviour.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: dusonlin@emc.com.tw
+> Cc: KT Liao <kt.liao@emc.com.tw>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  include/linux/input/elan-i2c-ids.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/input/elan-i2c-ids.h b/include/linux/input/elan-i2c-ids.h
+> index 520858d126808..b6976d99b6b75 100644
+> --- a/include/linux/input/elan-i2c-ids.h
+> +++ b/include/linux/input/elan-i2c-ids.h
+> @@ -23,7 +23,7 @@
+>  
+>  #include <linux/mod_devicetable.h>
+>  
+> -static const struct acpi_device_id elan_acpi_id[] = {
+> +static const struct acpi_device_id __maybe_unused elan_acpi_id[] = {
+>  	{ "ELAN0000", 0 },
+>  	{ "ELAN0100", 0 },
+>  	{ "ELAN0600", 0 },
 
-Thanks!
+I think I'd prefer something like this instead:
+
+diff --git a/drivers/input/mouse/elan_i2c_core.c
+b/drivers/input/mouse/elan_i2c_core.c
+index c599e21a8478..65d21a050cea 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -34,7 +34,6 @@
+ #include <linux/completion.h>
+ #include <linux/of.h>
+ #include <linux/property.h>
+-#include <linux/input/elan-i2c-ids.h>
+ #include <linux/regulator/consumer.h>
+ #include <asm/unaligned.h>
+
+@@ -1413,6 +1412,7 @@ static const struct i2c_device_id elan_id[] = {
+ MODULE_DEVICE_TABLE(i2c, elan_id);
+
+ #ifdef CONFIG_ACPI
++#include <linux/input/elan-i2c-ids.h>
+ MODULE_DEVICE_TABLE(acpi, elan_acpi_id);
+ #endif
+
+Thanks.
+
+-- 
+Dmitry
