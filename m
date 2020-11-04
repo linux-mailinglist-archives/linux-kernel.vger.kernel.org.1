@@ -2,190 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AACF2A5E8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA312A5E8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgKDHEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 02:04:51 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:39782 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgKDHEu (ORCPT
+        id S1728922AbgKDHFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 02:05:22 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9984 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728784AbgKDHFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:04:50 -0500
-X-Greylist: delayed 92149 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 02:04:48 EST
-Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.199.117])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id CAF02260EC;
-        Wed,  4 Nov 2020 07:04:46 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id 891BB3F162;
-        Wed,  4 Nov 2020 08:04:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id BB5FD2A3BE;
-        Wed,  4 Nov 2020 02:04:43 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604473483;
-        bh=aZc4gDTjovoY1c/1+WQlHNqjh+cUbu0fF1P8IIsFRbY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Y3rrmHzCyltEL2UKZq3EMKpbVWefU518vLnTrOxpUV8lqjhwmMKFxmHognSyFxY5m
-         RW9wc2u21nJTI3WsDM/2LLphpMPGlOhVIALut/vnAu4WT26Hjm4AOLCZv4sL+7W0B6
-         IcEUt1kAK/KLDuC7Yno+pUFMyC84wMZlUc01bz2Q=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EmKhBeLFrTB2; Wed,  4 Nov 2020 02:04:42 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed,  4 Nov 2020 02:04:42 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id B31DE41F36;
-        Wed,  4 Nov 2020 07:04:38 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="HkAg3wdK";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [113.52.132.214])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0E6BE41F1E;
-        Wed,  4 Nov 2020 07:04:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1604473471;
-        bh=aZc4gDTjovoY1c/1+WQlHNqjh+cUbu0fF1P8IIsFRbY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HkAg3wdKAdznpPZHk/4lHw1H1IJ6EDFGxd4LsBpx0t+P0TH5++H7n3YuzkHah6gWa
-         WQq6n6Kngv0kHzWhbQbpad0+DNYA1xFsvHwdNvoOVRWLq0yMe/XNlxGDCUtpraveNF
-         PFf7d+qhEAiVINzS/UgKOqau8c0ZkHQo/BmQ2PGQ=
-Subject: Re: [PATCH v3 5/6] MIPS: Loongson64: SMP: Fix up play_dead jump
- indicator
-To:     Jinyang He <hejinyang@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Lu Zeng <zenglu@loongson.cn>, Jun Yi <yijun@loongson.cn>
-References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
- <1604387525-23400-6-git-send-email-yangtiezhu@loongson.cn>
- <e534bc91-a946-fde7-a411-bf200abbe6a5@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <85ce1b63-1c39-d567-1bb1-8a6431c9c895@flygoat.com>
-Date:   Wed, 4 Nov 2020 15:04:18 +0800
+        Wed, 4 Nov 2020 02:05:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa252b30001>; Tue, 03 Nov 2020 23:05:23 -0800
+Received: from [10.40.203.207] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 07:05:01 +0000
+Subject: Re: [PATCH] PCI/ASPM: Save/restore ASPM-L1SS controls for
+ suspend/resume
+To:     <bhelgaas@google.com>, <hkallweit1@gmail.com>,
+        <wangxiongfeng2@huawei.com>, <mika.westerberg@linux.intel.com>,
+        <kai.heng.feng@canonical.com>, <chris.packham@alliedtelesis.co.nz>,
+        <yangyicong@hisilicon.com>, <lorenzo.pieralisi@arm.com>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20201024190442.871-1-vidyas@nvidia.com>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <86571610-b6ce-0f20-5a9f-99d6c427333a@nvidia.com>
+Date:   Wed, 4 Nov 2020 12:34:56 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <e534bc91-a946-fde7-a411-bf200abbe6a5@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B31DE41F36
-X-Spamd-Result: default: False [2.90 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[113.52.132.214:received];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+In-Reply-To: <20201024190442.871-1-vidyas@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604473523; bh=mxrv/GFcUzxOEqhqbn1Xb27HCl4eCXJNNUewo06n4cY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=oeE9u2Isat8FGOwqifDCpZGqTkua3CS8xLPYp9KV+YQufScJ0ZTbCPikMk6JX1Yng
+         XMiLzD45Z7FgNU4HZqJaX2BpbNN0+2R+S/39O30jMmb20/D2z0hE9tyWjsneM66p25
+         Z2qezFv5uhj6a9uX1ZjuAXlwVAwXCHVqOO9oaiEI1qQTLbREOYr4XlBFcwtQ52YBc6
+         2tngoQMzpUtTgxRxmqKGtMKxkWXhGq3bagolIyP4u7kRxWI+MzjA/08811Fq2ova81
+         TldDERN1LlMezU6xg/hsJWvbVAJhVyYwNzDxJLLUUAONHSbgpBNZc8RVOZH0DP8dDh
+         9m1auDhMt8BgQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bjorn / Lorenzo,
+Could you please review this change?
 
+Thanks,
+Vidya Sagar
 
-在 2020/11/4 14:31, Jinyang He 写道:
-> Hi, all,
->
-> On 11/03/2020 03:12 PM, Tiezhu Yang wrote:
->> In play_dead function, the whole 64-bit PC mailbox was used as a 
->> indicator
->> to determine if the master core had written boot jump information.
->>
->> However, after we introduced CSR mailsend, the hardware will not 
->> guarante
->> an atomic write for the 64-bit PC mailbox. Thus we have to use the lower
->> 32-bit which is written at the last as the jump indicator instead.
->>
->> Signed-off-by: Lu Zeng <zenglu@loongson.cn>
->> Signed-off-by: Jun Yi <yijun@loongson.cn>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>
->> v2: No changes
->> v3: Update the commit message and comment
->>
->>   arch/mips/loongson64/smp.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
->> index 736e98d..aa0cd72 100644
->> --- a/arch/mips/loongson64/smp.c
->> +++ b/arch/mips/loongson64/smp.c
->> @@ -764,9 +764,10 @@ static void loongson3_type3_play_dead(int 
->> *state_addr)
->>           "1: li    %[count], 0x100             \n" /* wait for init 
->> loop */
->>           "2: bnez  %[count], 2b                \n" /* limit mailbox 
->> access */
->>           "   addiu %[count], -1                \n"
->> -        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC via 
->> mailbox */
-> I have some confusion here. Play_dead CPUs is always brought up by 
-> cpu_up().
-> On Loongson64, it calls loongson3_boot_secondary(). The value of 
-> startargs[0]
-> is the address of smp_bootstrap() which is in CKSEG0 and a constant 
-> after the
-> kernel is compiled. That means its value likes 0xffffffff8... and only 
-> the low
-> 32bit is useful. As "lw" is sign-extended, could we replace "ld" with 
-> "lw" simply?
-
-Hi Jinyang,
-
-I'd prefer not to do so. In future we may have kernel running in other 
-spaces,
-(e.g. xkphys), and there is no reason to add a barrier on that without 
-actual benefit.
-I had check PMON firmware and it's also loading the full 64-bit address.
-
-Also to keep consistent, mailbox writing part needs to be refined to 
-match the
-behavior of reading. Otherwise other readers will be confused.
-
-Thus leaving it as is looks much more reasonable.
-
-Thanks.
-
-- Jiaxun
-
->
-> Thanks,
-> Jinyang
->> +        "   lw    %[initfunc], 0x20(%[base])  \n" /* check lower 
->> 32-bit as jump indicator */
->>           "   beqz  %[initfunc], 1b             \n"
->>           "   nop                               \n"
->> +        "   ld    %[initfunc], 0x20(%[base])  \n" /* get PC (whole 
->> 64-bit) via mailbox */
->>           "   ld    $sp, 0x28(%[base])          \n" /* get SP via 
->> mailbox */
->>           "   ld    $gp, 0x30(%[base])          \n" /* get GP via 
->> mailbox */
->>           "   ld    $a1, 0x38(%[base])          \n"
+On 10/25/2020 12:34 AM, Vidya Sagar wrote:
+> Previously ASPM L1-Sub-States control registers (CTL1 and CTL2) weren't
+> saved and restored during suspend/resume leading to ASPM-L1SS
+> configuration being lost post resume.
+> 
+> Save the ASPM-L1SS control registers so that the configuration is retained
+> post resume.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> v1:
+> * It would be really good if someone can verify it on a non tegra194 platform
+> 
+>   drivers/pci/pci.c       |  7 +++++++
+>   drivers/pci/pci.h       |  4 ++++
+>   drivers/pci/pcie/aspm.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 52 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index a458c46d7e39..034497264bde 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1551,6 +1551,7 @@ int pci_save_state(struct pci_dev *dev)
+>   		return i;
+>   
+>   	pci_save_ltr_state(dev);
+> +	pci_save_aspm_l1ss_state(dev);
+>   	pci_save_dpc_state(dev);
+>   	pci_save_aer_state(dev);
+>   	return pci_save_vc_state(dev);
+> @@ -1656,6 +1657,7 @@ void pci_restore_state(struct pci_dev *dev)
+>   	 * LTR itself (in the PCIe capability).
+>   	 */
+>   	pci_restore_ltr_state(dev);
+> +	pci_restore_aspm_l1ss_state(dev);
+>   
+>   	pci_restore_pcie_state(dev);
+>   	pci_restore_pasid_state(dev);
+> @@ -3319,6 +3321,11 @@ void pci_allocate_cap_save_buffers(struct pci_dev *dev)
+>   	if (error)
+>   		pci_err(dev, "unable to allocate suspend buffer for LTR\n");
+>   
+> +	error = pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_L1SS,
+> +					    2 * sizeof(u32));
+> +	if (error)
+> +		pci_err(dev, "unable to allocate suspend buffer for ASPM-L1SS\n");
+> +
+>   	pci_allocate_vc_save_buffers(dev);
+>   }
+>   
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index fa12f7cbc1a0..8d2135f61e36 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -565,11 +565,15 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
+>   void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+>   void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+>   void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+> +void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+> +void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
+>   #else
+>   static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+>   static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+>   static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+>   static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+> +static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+> +static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
+>   #endif
+>   
+>   #ifdef CONFIG_PCIE_ECRC
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 253c30cc1967..d965bbc563ed 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -742,6 +742,47 @@ static void pcie_config_aspm_l1ss(struct pcie_link_state *link, u32 state)
+>   				PCI_L1SS_CTL1_L1SS_MASK, val);
+>   }
+>   
+> +void pci_save_aspm_l1ss_state(struct pci_dev *dev)
+> +{
+> +	struct pci_cap_saved_state *save_state;
+> +	int aspm_l1ss;
+> +	u32 *cap;
+> +
+> +	if (!pci_is_pcie(dev))
+> +		return;
+> +
+> +	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
+> +	if (!aspm_l1ss)
+> +		return;
+> +
+> +	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
+> +	if (!save_state)
+> +		return;
+> +
+> +	cap = (u32 *)&save_state->cap.data[0];
+> +	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
+> +	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, cap++);
+> +}
+> +
+> +void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
+> +{
+> +	struct pci_cap_saved_state *save_state;
+> +	int aspm_l1ss;
+> +	u32 *cap;
+> +
+> +	if (!pci_is_pcie(dev))
+> +		return;
+> +
+> +	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
+> +	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
+> +	if (!save_state || !aspm_l1ss)
+> +		return;
+> +
+> +	cap = (u32 *)&save_state->cap.data[0];
+> +	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
+> +	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
+> +}
+> +
+>   static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+>   {
+>   	pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
+> 
