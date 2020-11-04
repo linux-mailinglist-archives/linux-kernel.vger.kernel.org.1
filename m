@@ -2,139 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD0A2A66B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8DA2A66AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730370AbgKDOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:47:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730351AbgKDOr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:47:26 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2360920674;
-        Wed,  4 Nov 2020 14:47:24 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 09:47:22 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 14/21] kprobes: Remove NMI context check
-Message-ID: <20201104094722.70b9977c@gandalf.local.home>
-In-Reply-To: <20201104110852.5dcace1aa7f912020ca1be2e@kernel.org>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <159870615628.1229682.6087311596892125907.stgit@devnote2>
-        <20201030213831.04e81962@oasis.local.home>
-        <20201102141138.1fa825113742f3bea23bc383@kernel.org>
-        <20201102145334.23d4ba691c13e0b6ca87f36d@kernel.org>
-        <20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org>
-        <20201102092726.57cb643f@gandalf.local.home>
-        <20201103143938.704c7974e93c854511580c38@kernel.org>
-        <20201103110913.2d7b4cea@rorschach.local.home>
-        <20201104110852.5dcace1aa7f912020ca1be2e@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730315AbgKDOqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728522AbgKDOqu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:46:50 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9603BC0613D3;
+        Wed,  4 Nov 2020 06:46:50 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w4so6566648pgg.13;
+        Wed, 04 Nov 2020 06:46:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D13WCRMZZS+wHwyj06riYhDl3tpjBHjdfCjUyz/WQjw=;
+        b=Xmhu5+bFkF0L5G71ykrfhD4RWML66PbLeDUPxDN80j7mqAhdBoe35JnX6z7+v/a7Bo
+         7+R6+oHsqFud1zdiStPBgzniC0UPiEXjISKUDjI404YW/9W6yJo1Jdlcf6y5LplxldBn
+         Vyct/k9aeF42siOt9oAePCkaI0rnvCyFRQka+wMW93fVCekLHmsXvGfBdTBEayUGQdUL
+         YEjP906eHTFCXn15CCnkgmmFXw2Uj2vDoDQwHkCcfBxZ9xjjwjcGRTlzX1GXRjLCd+0r
+         0RVIcybXcWd+v+QY7aBxZytJAZtyLbiiv/qXxCyyUQgFFNvmBUnd96YwHOgxMFAbO/vd
+         6uIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D13WCRMZZS+wHwyj06riYhDl3tpjBHjdfCjUyz/WQjw=;
+        b=Lqh1LSzHJHOCaCKWikvKkDfN4zQ9bC04oeuT7VrXOJJfyxKrCdjlJOYjwQE912bHND
+         oiEpOBBodG70a2TUsRluOKreHDWntk6iGHrMA2xkMQApixebF3Uvr7ur66RltWNz7tAb
+         81rNYsU1JA2awwXiEsIAum8tyFPs/r1cwI346nF/u36U3O42NzM/hcVnKnUnHJW9b2bn
+         WwLHLSLljxfEUrMjI9Cl7Yw7pqjZ207q4cHIJdaB0SEaePQsGahnBMvcasMol1cmvM5o
+         QCIEeQevfW2HeXPcPXqwl8q7T5VYoQuaJhGYtQcBCHa9rTUzTEO/i5bpC6dVmxK28+Ju
+         +A4w==
+X-Gm-Message-State: AOAM5335Pwlfm6YA0xzW7nSh4C7atdHQG6h8xQ9xXN+ChcgYaBwUnAaK
+        h0I6Hnap1uvDAnHvc3eFL5tevH9zzwbyz0gSo7o=
+X-Google-Smtp-Source: ABdhPJxYW1pmghuHcu04Hyvy/6SKuowuLBL9UfmNV2kf2mBYRMh6Gj8quAE1cS+fHyXcOr6ZPHBscIGmP6v1dx6/lTo=
+X-Received: by 2002:a63:3e05:: with SMTP id l5mr2275127pga.74.1604501210176;
+ Wed, 04 Nov 2020 06:46:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201104132624.17168-1-digetx@gmail.com> <20201104132624.17168-2-digetx@gmail.com>
+In-Reply-To: <20201104132624.17168-2-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 4 Nov 2020 16:47:38 +0200
+Message-ID: <CAHp75VeJrQCxaCR+6u79=k=EP7y=LpEsytp6MWQ+UGz+oFXP6A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] gpio: tegra: Use raw_spinlock
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 11:08:52 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Wed, Nov 4, 2020 at 3:27 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Use raw_spinlock in order to fix spurious messages about invalid context
+> when spinlock debugging is enabled. This happens because there is a legit
+> nested raw_spinlock->spinlock locking which debug code can't recognize and
+> handle.
 
-> kretprobe_hash_lock() and kretprobe_table_lock() will be called from
-> outside of the kprobe pre_handler context. So, please keep in_nmi()
-> in those functions.
-> for the pre_handler_kretprobe(), this looks good to me.
-> 
+This sounds like papering over a problem that exists somewhere else.
 
-Final version, before sending to Linus.
+What I would rather make as a selling point is that raw spin locks are
+necessary to be in the RT kernel for IRQ chips.
 
--- Steve
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH] kprobes: Tell lockdep about kprobe nesting
-
-Since the kprobe handlers have protection that prohibits other handlers from
-executing in other contexts (like if an NMI comes in while processing a
-kprobe, and executes the same kprobe, it will get fail with a "busy"
-return). Lockdep is unaware of this protection. Use lockdep's nesting api to
-differentiate between locks taken in INT3 context and other context to
-suppress the false warnings.
-
-Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/kprobes.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 8a12a25fa40d..41fdbb7953c6 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1249,7 +1249,13 @@ __acquires(hlist_lock)
- 
- 	*head = &kretprobe_inst_table[hash];
- 	hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 * Differentiate when it is taken in NMI context.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_hash_lock);
- 
-@@ -1258,7 +1264,13 @@ static void kretprobe_table_lock(unsigned long hash,
- __acquires(hlist_lock)
- {
- 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 * Differentiate when it is taken in NMI context.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_table_lock);
- 
-@@ -2028,7 +2040,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
--	raw_spin_lock_irqsave(&rp->lock, flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 	if (!hlist_empty(&rp->free_instances)) {
- 		ri = hlist_entry(rp->free_instances.first,
- 				struct kretprobe_instance, hlist);
-@@ -2039,7 +2056,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 		ri->task = current;
- 
- 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
--			raw_spin_lock_irqsave(&rp->lock, flags);
-+			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 			hlist_add_head(&ri->hlist, &rp->free_instances);
- 			raw_spin_unlock_irqrestore(&rp->lock, flags);
- 			return 0;
 -- 
-2.25.4
-
+With Best Regards,
+Andy Shevchenko
