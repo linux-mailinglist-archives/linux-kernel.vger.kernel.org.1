@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E662A6D9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954AF2A6DA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgKDTML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:12:11 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15585 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgKDTMK (ORCPT
+        id S1731418AbgKDTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgKDTNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:12:10 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa2fd0c0003>; Wed, 04 Nov 2020 11:12:12 -0800
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
- 2020 19:12:09 +0000
-Subject: Re: [PATCH V2] drm/tegra: sor: Don't warn on probe deferral
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>
-References: <20201104092328.659169-1-jonathanh@nvidia.com>
- <420d8e9e-47d5-0d46-a774-a47bcb52bdeb@gmail.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <e0c87fcc-5fe3-d2ba-0a58-41c670ac5e0a@nvidia.com>
-Date:   Wed, 4 Nov 2020 19:12:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Nov 2020 14:13:02 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4661C0613D3;
+        Wed,  4 Nov 2020 11:13:02 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0ef400317dde2deb3fed11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f400:317d:de2d:eb3f:ed11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B9BED1EC03C1;
+        Wed,  4 Nov 2020 20:12:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604517178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vVu9csKhteKU6kae0FPak6xIIsJyL2Kx45JkmeXH8g8=;
+        b=mXo2/W+n3XEaxyD7bx01mlXyFyvteJhnhSzpFN4WqJqcK9VtkwDMVKssnxEfcxr0IO6wM/
+        ZF9GwShYI8q58lBrhm+NEehHE6AsBLhQ0N2fXLwWf7bg71p4l54B3Y0ERtYC9H/KOfhKVh
+        uGrAG8lzmdZ4k9ZSHt3PV5F8VWiimyo=
+Date:   Wed, 4 Nov 2020 20:12:52 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 03/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+Message-ID: <20201104191252.GF23298@zn.tnic>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-4-jarkko.sakkinen@linux.intel.com>
+ <20201104182129.GD23298@zn.tnic>
+ <20201104190443.GA318315@kernel.org>
+ <20201104190903.GA304537@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <420d8e9e-47d5-0d46-a774-a47bcb52bdeb@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604517132; bh=wcT9OxMA6Jtc1260i+qV3pzxBsKsC87iufbCazK1OME=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=fsauGQVwL1kTXSdvsFTI+tIep5GjGhoLlaF/tuMeUczl1r7KLsR0d7J7Dr4uCImnF
-         pM6v6GtXbwIy8hq4Z5BcUyB2CnN8iDXR0HkKEpGcg7ER0ATcU4VSF43nWH2ysq+UNB
-         zNdV7ZIsWe9yIfkaNyzokf87MR18OoyX/oAsLcrm3Ey+oR5arWrxN+n38+D+ZhvjnK
-         bEMo224vD5PbaSWd5snewQyltkLT3N5R50BXMP8Ml2C2XHzEOk7nD/eFa94l2RqoS8
-         uwlWGVOI+i0+XNbQMPFj4pg8/xQsedzw6qEVXN0V27T2x6d3yR5pNCcaIOG4FeCIdz
-         LppHoAS6XgMbA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104190903.GA304537@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 09:09:03PM +0200, Jarkko Sakkinen wrote:
+> If you want, I can do a resend of this version same time underlining
+> that this the only difference and I do have a framework to check this
+> thing in place.
 
-On 04/11/2020 10:49, Dmitry Osipenko wrote:
-> 04.11.2020 12:23, Jon Hunter =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> Deferred probe is an expected return value for tegra_output_probe().
->> Given that the driver deals with it properly, there's no need to output
->> a warning that may potentially confuse users.
->>
->> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
->> ---
->>
->> Changes since V1:
->> - This time, I actually validated it!
->>
->>  drivers/gpu/drm/tegra/sor.c | 7 +++----
->>  1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
->> index e88a17c2937f..898a80ca37fa 100644
->> --- a/drivers/gpu/drm/tegra/sor.c
->> +++ b/drivers/gpu/drm/tegra/sor.c
->> @@ -3764,10 +3764,9 @@ static int tegra_sor_probe(struct platform_device=
- *pdev)
->>  		return err;
->> =20
->>  	err =3D tegra_output_probe(&sor->output);
->> -	if (err < 0) {
->> -		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
->> -		return err;
->> -	}
->> +	if (err < 0)
->> +		return dev_err_probe(&pdev->dev, err,
->> +				     "failed to probe output: %d\n", err);
->=20
-> Hello Jon,
->=20
-> There is no need to duplicate the error code in the message [1]. Perhaps
-> worth making a v3? :)
-Indeed! Thanks for catching. Trying to do to many things at the same
-time. I should have learned by now!
+No need - I'll simply reorder them here and see how far I'd get.
 
-Jon
+Thx.
 
---=20
-nvpublic
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
