@@ -2,154 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621E42A5F10
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0852A5F11
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgKDIEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:04:44 -0500
-Received: from mail-vi1eur05on2052.outbound.protection.outlook.com ([40.107.21.52]:38089
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726152AbgKDIEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:04:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UtHDfd193Q2FjJPtbhCo3U2IF5iPDPLH/I4KvVDvJ10N4fZzjdbnNZzLrRnzqwYHPoGZZId7hkf5ozv403Ma050vXODOM+aB5uEVykvBnZWgNh6kCbbXsyIJTY4ViyIwgj5h3+4cfoR8swV6rfGuNRQIIcPadgRoSr734cypf+kFiue1+vbokRAZGqu3xMUJF5J2yLHRrGig+S1E8UW0Mv5pGKV4iYa/CXq8C9VdCzLU615FduKd0J/6wYML2WIRi9D4vL6PrceOTEo337RDudWhTk1oyrFgHSvIHI4a2vLXssNvnwbOcRNEAgiCeF/sAtz7pDvhAbiMxrBA2W7BKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DOfBnBwAZuV4AtrBxpzTl664ivFoc0UKSGDqbsE/CNo=;
- b=oBU86RCPVo0oGUUmUIlTN6RmjfCUD5ky77flU1DPwPv/asljLJ7ANlWZ+8eX8OTsT6GPMGUknH7Db9UpT+6KWZdU66Xmzns7FVE+ADZlYbHZN3HoFWaNfABf6ST1zx+fa9NuGCLLVtfv2XXTQ4naOYgKs4nPSMGVsezF1iUM041Xzvmn0pTm+AquF05popSEQmSLUuZ4+2PxKGOkUcBKWr76LCZoEUiyOMGKbKFzKOPerW7js3mnY1ctyvrdos3voQ3s20nqLCxMz9PjERpOkx/K78FMuWlNvuyGp2C4of28Oadxw/n/XlViInNV61uQRrv2RHcMbDv6uisbhI8oFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DOfBnBwAZuV4AtrBxpzTl664ivFoc0UKSGDqbsE/CNo=;
- b=U0lZe3SrI3in4O7do5dbKr9jmCa9QXrUIsVcsGz46fgb3nn4Of3xffLVCEclOp1Oh/MTzi9nNu+kLeEPX56S0rM6/ie9w+xsr8hvAkaFGevI+LoigXDyBEXq1xUuMUDRLDxV3K4Sexiue9ygvwgwN5IZc4gEb1qfS6InM2BStls=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7593.eurprd04.prod.outlook.com (2603:10a6:10:20c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 4 Nov
- 2020 08:04:39 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 08:04:39 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Alice Guo <alice.guo@nxp.com>
-CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH v1 1/4] LF-2571-1: dt-bindings: soc: imx8m: add DT Binding
- doc for soc unique ID
-Thread-Topic: [PATCH v1 1/4] LF-2571-1: dt-bindings: soc: imx8m: add DT
- Binding doc for soc unique ID
-Thread-Index: AQHWsleZjv/BdR8iX0+npfVuvnx3Zqm3m+GAgAAA8EA=
-Date:   Wed, 4 Nov 2020 08:04:39 +0000
-Message-ID: <DB6PR0402MB27608D5A8A11C2D3779C4D0188EF0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20201104030645.12931-1-alice.guo@nxp.com>
- <20201104030645.12931-2-alice.guo@nxp.com>
- <CAJKOXPd_sArJ5-Ka2btZNxn3aBGFioDGOmQKbqeVNgtpUZUw=A@mail.gmail.com>
-In-Reply-To: <CAJKOXPd_sArJ5-Ka2btZNxn3aBGFioDGOmQKbqeVNgtpUZUw=A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 70c87391-55d6-4049-0e33-08d8809847bb
-x-ms-traffictypediagnostic: DBBPR04MB7593:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB75931964BC33256536601ACD88EF0@DBBPR04MB7593.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: et0PWLSsSHI35CP+NXdWluC4KYkQTyia7h0AvUsfqDdw27KRBj/DoKBSGx7/E1MjXZ1Wrj4fQFMlulJZwEA0jPcCgehsEI6ncposXv6j3TAH5xpnr9cxsyHKEzYnJF/tACwiN7gclovMOTf8DVKZdUWsbz5C3WRqZSp5wdq/c+hFkIQuVABoVDO0cYm6FmBEVC39dQhqVYBryRBOZoij4sduEfVjQRUiz+1Ct+BIAQgl7r6JjMTS5OzKkUDmKnAuP9+Hlqc5beX1q6SFhtDZAeoM2ZYb3bi2rEFEJHX5T7W5yZ/aP6J/kYaHIr+rXu+yy5PJV1Y+ieLf39IMc21vGplWnje3Bk6kXY35dQdOWzNJjeZKAqLM13YPCewi6K/zXOIpYX3WipFy3uahk6m7NkFQC8tzFQSwk3NQqttrsBCzPh4H4lztHpCRZnTVyQH0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(52536014)(54906003)(8936002)(8676002)(110136005)(186003)(5660300002)(4326008)(316002)(6636002)(6506007)(44832011)(2906002)(55016002)(26005)(76116006)(64756008)(7696005)(9686003)(45080400002)(86362001)(66946007)(33656002)(66446008)(478600001)(66476007)(71200400001)(66556008)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ftOObLlCGlcMS6rOPqf05TQj3mNU2gU4CyR3RK8joFf4v9s6oUKfsK1EtnI+Dhi7ZuLkn6+qQwJ96qVNtnCktfi7XAxL515ddt1PXh9v5yH+Og8Hp6XIrSaXISbf0bNHFmbvPgHcE4umC+3grjYHXSIgfG5WMQU6kfdRxdY1o16feEkqO5U3K8WbSa7wEeS4ATM4oONfGdv9FasbsvZxxUvLtp8r48iUIxm01D7i7dtBbTq/P4GpeGN5elez2JkhkZe+LJ0I+zOqLtn7wimq9TEQgWFL1tAy4I0dv49yrwmwtk417az7sj+yec/czejWYXk5QFBrBBKCHZPuFuRQTtFJkoM0969N1yyFpGKH2GyzJbMpeq3yxnjqxDA8iDKpzx9SGEaDBfUEAX6fGblhjWF3DDJKe+kVQSr2vfDq04glNhs9LYEAB4yaeUVvak6vsm9L5iB33QsxgvbVFTK+2bNYdSoTFPzCJxTTvseYn32UXX7HVKwbbp0fw1Sa1RWCwg78tVvB/t1w13WBDqmzTdzeb+C5DfatMK1SvtBzJysA0g/lQR17sQn1FK73NMXa/BZ9tCmjd4LneufJS7GzOAzi0IbGsA+ZKKMmpxl+WFCZyDJSLgZ9k48MYPtE3pjzK+fgVxDycjMpW249hgLqdA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728292AbgKDIEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:04:55 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:57468 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728243AbgKDIEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:04:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604477093; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZqZUvCoSyFDQniEnZ+5rlVAjANBkyoVHCb+AnuvKme8=;
+ b=XKgnQfkifSIIubeMhsODeJNOT5X4xy57OCG5YJ+yWlEkqvYOFGVx6XwEtXfp5LnTOZMOk+ZN
+ Y8VSAhK4pcp1YbbfXPv8I/PD6ilS58Amvtj9HUwlPhCi3osrtamIBX32IcKx2DvIKGOlAVaZ
+ pC2sI8Kg0Vp05m0yRiszhSuYY88=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5fa2609dd8a9d167f336fa61 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 08:04:45
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 13CBCC433C6; Wed,  4 Nov 2020 08:04:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36C10C433C8;
+        Wed,  4 Nov 2020 08:04:43 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70c87391-55d6-4049-0e33-08d8809847bb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2020 08:04:39.8981
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0wjj2ENSnxgbWuXcahkVDLzARtvR0QnvNP+n4wmW9SDEEDMOv6nHa3jjPMqNff3UANPP9dhi6fgFH0TRs5Qy6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7593
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 04 Nov 2020 16:04:43 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: Re: [PATCH V4 1/2] scsi: ufs: Add DeepSleep feature
+In-Reply-To: <20201103141403.2142-2-adrian.hunter@intel.com>
+References: <20201103141403.2142-1-adrian.hunter@intel.com>
+ <20201103141403.2142-2-adrian.hunter@intel.com>
+Message-ID: <57772a861aa3da3f1e2155db8deb70a2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIHYxIDEvNF0gTEYtMjU3MS0xOiBkdC1iaW5kaW5nczogc29j
-OiBpbXg4bTogYWRkIERUDQo+IEJpbmRpbmcgZG9jIGZvciBzb2MgdW5pcXVlIElEDQo+IA0KPiBP
-biBXZWQsIDQgTm92IDIwMjAgYXQgMDQ6MDksIEFsaWNlIEd1byA8YWxpY2UuZ3VvQG54cC5jb20+
-IHdyb3RlOg0KPiA+DQo+ID4gQWRkIERUIEJpbmRpbmcgZG9jIGZvciB0aGUgVW5pcXVlIElEIG9m
-IGkuTVggOE0gc2VyaWVzLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxpY2UgR3VvIDxhbGlj
-ZS5ndW9AbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL3NvYy9pbXgvaW14OG0t
-dW5pcXVlLWlkLnlhbWwgICAgIHwgMzINCj4gKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZp
-bGUgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4g
-PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL2lteC9pbXg4bS11bmlxdWUt
-aWQueWFtbA0KPiA+DQo+ID4gZGlmZiAtLWdpdA0KPiA+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NvYy9pbXgvaW14OG0tdW5pcXVlLWlkLnlhbWwNCj4gPiBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvaW14L2lteDhtLXVuaXF1ZS1pZC55YW1sDQo+
-ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmYxZTQ1NDU4
-Y2VjNw0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc29jL2lteC9pbXg4bS11bmlxdWUtaWQueWFtbA0KPiA+IEBAIC0wLDAgKzEs
-MzIgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+ICslWUFN
-TCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDoNCj4gPiAraHR0cHM6Ly9ldXIwMS5zYWZlbGlua3Mu
-cHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHAlM0ElMkYlMkZkZXZpDQo+ID4NCj4gK2Nl
-dHJlZS5vcmclMkZzY2hlbWFzJTJGYXJtJTJGbnhwJTJGaW14OG0tdW5pcXVlLWlkLnlhbWwlMjMm
-YW1wDQo+IDtkYXRhPTANCj4gPg0KPiArNCU3QzAxJTdDcGVuZy5mYW4lNDBueHAuY29tJTdDY2Qy
-M2I0YzhmNjFjNGNlYTVmZWMwOGQ4ODA5Nzc0YjcNCj4gJTdDNjg2ZQ0KPiA+DQo+ICthMWQzYmMy
-YjRjNmZhOTJjZDk5YzVjMzAxNjM1JTdDMCU3QzAlN0M2Mzc0MDA3MzUyODI2MzQxMTklN0MNCj4g
-VW5rbm93biU3DQo+ID4NCj4gK0NUV0ZwYkdac2IzZDhleUpXSWpvaU1DNHdMakF3TURBaUxDSlFJ
-am9pVjJsdU16SWlMQ0pCVGlJNklrMWhhVw0KPiB3aUxDSlgNCj4gPg0KPiArVkNJNk1uMCUzRCU3
-QzEwMDAmYW1wO3NkYXRhPUk4SWN5U1dZQW1GaGxtN3hOb1V5cHR4UjJjeE1BZlkNCj4gQVB2NmJm
-JTJCcA0KPiA+ICtjSEc4JTNEJmFtcDtyZXNlcnZlZD0wDQo+ID4gKyRzY2hlbWE6DQo+ID4gK2h0
-dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwJTNB
-JTJGJTJGZGV2aQ0KPiA+DQo+ICtjZXRyZWUub3JnJTJGbWV0YS1zY2hlbWFzJTJGY29yZS55YW1s
-JTIzJmFtcDtkYXRhPTA0JTdDMDElN0NwZQ0KPiBuZy5mYW4lDQo+ID4NCj4gKzQwbnhwLmNvbSU3
-Q2NkMjNiNGM4ZjYxYzRjZWE1ZmVjMDhkODgwOTc3NGI3JTdDNjg2ZWExZDNiYzJiNGM2DQo+IGZh
-OTJjZDkNCj4gPg0KPiArOWM1YzMwMTYzNSU3QzAlN0MwJTdDNjM3NDAwNzM1MjgyNjM0MTE5JTdD
-VW5rbm93biU3Q1RXRnBiDQo+IEdac2IzZDhleUpXSQ0KPiA+DQo+ICtqb2lNQzR3TGpBd01EQWlM
-Q0pRSWpvaVYybHVNeklpTENKQlRpSTZJazFoYVd3aUxDSlhWQ0k2TW4wJTNEJTcNCj4gQzEwMDAm
-DQo+ID4NCj4gK2FtcDtzZGF0YT1tOFQ0VUFPSW4zZkRoTzVPVXJYeWdUJTJCUm13d1pYUVc5ZEM1
-ekZRYVhsOVElMw0KPiBEJmFtcDtyZXNlcnYNCj4gPiArZWQ9MA0KPiA+ICsNCj4gPiArdGl0bGU6
-IE5YUCBpLk1YOE0gUGxhdGZvcm1zIERldmljZSBUcmVlIEJpbmRpbmdzDQo+IA0KPiBUaGlzIGlz
-IG5vdCBhIHRpdGxlIGZvciB0aGVzZSBiaW5kaW5ncy4gUGxlYXNlIGRlc2NyaWJlIHRoZSBiaW5k
-aW5ncyBmb3IgdGhpcw0KPiBkZXZpY2UuIEJhc2VkIG9uIGRlc2NyaXB0aW9uLCB0aGlzIG1pZ2h0
-IGNvdWxkIGdvIHRvIGJpbmRpbmdzL252bWVtDQo+IGRpcmVjdG9yeS4NCg0KSXQgbWlnaHQgYmUg
-bWlzbGVhZGluZyBoZXJlLiBJIHRoaW5rIHRoZSBiaW5kaW5ncyBpcyBmb3IgU29DLCBqdXN0IGxp
-a2UNCiJhcm0scmVhbHZpZXctZWItc29jIiBpbg0KRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL2FybS9hcm0scmVhbHZpZXcueWFtbA0KDQpSZWFkaW5nIHRoZSBwYXRjaCwgaXQgaXMg
-dG8gY29udmVydCBzb2MtaW14OG0uYyB0byBwbGF0Zm9ybSBkcml2ZXIsDQpzbyBuZWVkIHRvIGFk
-ZCBhIGNvbXBhdGlibGUgc3RyaW5nIGZvciB0aGUgc29jIGRldmljZSwNCkkgdGhpbmsgRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9mc2wueWFtbCBzaG91bGQgYmUNCmEgYmV0
-dGVyIHBsYWNlLg0KDQpSZWdhcmRzLA0KUGVuZy4NCg0KPiANCj4gPiArDQo+ID4gK3Byb3BlcnRp
-ZXM6DQo+ID4gKyAgY29tcGF0aWJsZToNCj4gPiArICAgIG9uZU9mOg0KPiANCj4gTm8gbmVlZCBm
-b3Igb25lT2YuDQo+IA0KPiA+ICsgICAgICAtIGl0ZW1zOg0KPiA+ICsgICAgICAgICAgLSBlbnVt
-Og0KPiA+ICsgICAgICAgICAgICAgIC0gZnNsLGlteDhtbS1zb2MNCj4gPiArICAgICAgICAgICAg
-ICAtIGZzbCxpbXg4bW4tc29jDQo+ID4gKyAgICAgICAgICAgICAgLSBmc2wsaW14OG1wLXNvYw0K
-PiA+ICsgICAgICAgICAgICAgIC0gZnNsLGlteDhtcS1zb2MNCj4gPiArICAgICAgICAgIC0gY29u
-c3Q6IHNpbXBsZS1idXMNCj4gPiArDQo+ID4gKyAgbnZtZW0tY2VsbHM6DQo+ID4gKyAgICBtYXhJ
-dGVtczogMQ0KPiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAgIFJlZmVyZW5jZSB0byBh
-biBudm1lbSBub2RlIGZvciB0aGUgU09DIFVuaXF1ZSBJRC4NCj4gDQo+IE1pc2xlYWRpbmcgZGVz
-Y3JpcHRpb24gLSBudm1lbS1jZWxscyBkbyBub3QgY29udGFpbiBhIHJlZmVyZW5jZS4gSnVzdCBz
-a2lwIGl0LA0KPiBudm1lbS1jZWxscyBzaG91bGQgYmUgb2J2aW91cyBmcm9tIHRoZSBudm1lbSBw
-cm92aWRlciBiaW5kaW5ncy4NCj4gDQo+ID4gKw0KPiA+ICsgIG52bWVtLWNlbGxzLW5hbWVzOg0K
-PiA+ICsgICAgY29uc3Q6IHNvY191bmlxdWVfaWQNCj4gDQo+IGFkZGl0aW9uYWxQcm9wZXJ0aWVz
-OiBmYWxzZQ0KPiANCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQo=
+On 2020-11-03 22:14, Adrian Hunter wrote:
+> DeepSleep is a UFS v3.1 feature that achieves the lowest power 
+> consumption
+> of the device, apart from power off.
+> 
+> In DeepSleep mode, no commands are accepted, and the only way to exit 
+> is
+> using a hardware reset or power cycle.
+> 
+> This patch assumes that if a power cycle was an option, then power off
+> would be preferable, so only exit via a hardware reset is supported.
+> 
+> Drivers that wish to support DeepSleep need to set a new capability 
+> flag
+> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
+>  ->device_reset() callback.
+> 
+> It is assumed that UFS devices with wspecversion >= 0x310 support
+> DeepSleep.
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+
+Reviewed-by: Can Guo <cang@codeaurora.org>
+
+> ---
+>  Documentation/ABI/testing/sysfs-driver-ufs | 34 +++++++++++--------
+>  drivers/scsi/ufs/ufs-sysfs.c               |  7 ++++
+>  drivers/scsi/ufs/ufs.h                     |  1 +
+>  drivers/scsi/ufs/ufshcd.c                  | 39 ++++++++++++++++++++--
+>  drivers/scsi/ufs/ufshcd.h                  | 17 +++++++++-
+>  include/trace/events/ufs.h                 |  3 +-
+>  6 files changed, 83 insertions(+), 18 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs
+> b/Documentation/ABI/testing/sysfs-driver-ufs
+> index adc0d0e91607..e77fa784d6d8 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-ufs
+> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
+> @@ -916,21 +916,24 @@ Date:		September 2014
+>  Contact:	Subhash Jadavani <subhashj@codeaurora.org>
+>  Description:	This entry could be used to set or show the UFS device
+>  		runtime power management level. The current driver
+> -		implementation supports 6 levels with next target states:
+> +		implementation supports 7 levels with next target states:
+> 
+>  		==  ====================================================
+> -		0   an UFS device will stay active, an UIC link will
+> +		0   UFS device will stay active, UIC link will
+>  		    stay active
+> -		1   an UFS device will stay active, an UIC link will
+> +		1   UFS device will stay active, UIC link will
+>  		    hibernate
+> -		2   an UFS device will moved to sleep, an UIC link will
+> +		2   UFS device will be moved to sleep, UIC link will
+>  		    stay active
+> -		3   an UFS device will moved to sleep, an UIC link will
+> +		3   UFS device will be moved to sleep, UIC link will
+>  		    hibernate
+> -		4   an UFS device will be powered off, an UIC link will
+> +		4   UFS device will be powered off, UIC link will
+>  		    hibernate
+> -		5   an UFS device will be powered off, an UIC link will
+> +		5   UFS device will be powered off, UIC link will
+>  		    be powered off
+> +		6   UFS device will be moved to deep sleep, UIC link
+> +		will be powered off. Note, deep sleep might not be
+> +		supported in which case this value will not be accepted
+>  		==  ====================================================
+> 
+>  What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
+> @@ -954,21 +957,24 @@ Date:		September 2014
+>  Contact:	Subhash Jadavani <subhashj@codeaurora.org>
+>  Description:	This entry could be used to set or show the UFS device
+>  		system power management level. The current driver
+> -		implementation supports 6 levels with next target states:
+> +		implementation supports 7 levels with next target states:
+> 
+>  		==  ====================================================
+> -		0   an UFS device will stay active, an UIC link will
+> +		0   UFS device will stay active, UIC link will
+>  		    stay active
+> -		1   an UFS device will stay active, an UIC link will
+> +		1   UFS device will stay active, UIC link will
+>  		    hibernate
+> -		2   an UFS device will moved to sleep, an UIC link will
+> +		2   UFS device will be moved to sleep, UIC link will
+>  		    stay active
+> -		3   an UFS device will moved to sleep, an UIC link will
+> +		3   UFS device will be moved to sleep, UIC link will
+>  		    hibernate
+> -		4   an UFS device will be powered off, an UIC link will
+> +		4   UFS device will be powered off, UIC link will
+>  		    hibernate
+> -		5   an UFS device will be powered off, an UIC link will
+> +		5   UFS device will be powered off, UIC link will
+>  		    be powered off
+> +		6   UFS device will be moved to deep sleep, UIC link
+> +		will be powered off. Note, deep sleep might not be
+> +		supported in which case this value will not be accepted
+>  		==  ====================================================
+> 
+>  What:		/sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c 
+> b/drivers/scsi/ufs/ufs-sysfs.c
+> index bdcd27faa054..08e72b7eef6a 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -28,6 +28,7 @@ static const char *ufschd_ufs_dev_pwr_mode_to_string(
+>  	case UFS_ACTIVE_PWR_MODE:	return "ACTIVE";
+>  	case UFS_SLEEP_PWR_MODE:	return "SLEEP";
+>  	case UFS_POWERDOWN_PWR_MODE:	return "POWERDOWN";
+> +	case UFS_DEEPSLEEP_PWR_MODE:	return "DEEPSLEEP";
+>  	default:			return "UNKNOWN";
+>  	}
+>  }
+> @@ -38,6 +39,7 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct
+> device *dev,
+>  					     bool rpm)
+>  {
+>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +	struct ufs_dev_info *dev_info = &hba->dev_info;
+>  	unsigned long flags, value;
+> 
+>  	if (kstrtoul(buf, 0, &value))
+> @@ -46,6 +48,11 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct
+> device *dev,
+>  	if (value >= UFS_PM_LVL_MAX)
+>  		return -EINVAL;
+> 
+> +	if (ufs_pm_lvl_states[value].dev_state == UFS_DEEPSLEEP_PWR_MODE &&
+> +	    (!(hba->caps & UFSHCD_CAP_DEEPSLEEP) ||
+> +	     !(dev_info->wspecversion >= 0x310)))
+> +		return -EINVAL;
+> +
+>  	spin_lock_irqsave(hba->host->host_lock, flags);
+>  	if (rpm)
+>  		hba->rpm_lvl = value;
+> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+> index f8ab16f30fdc..d593edb48767 100644
+> --- a/drivers/scsi/ufs/ufs.h
+> +++ b/drivers/scsi/ufs/ufs.h
+> @@ -442,6 +442,7 @@ enum ufs_dev_pwr_mode {
+>  	UFS_ACTIVE_PWR_MODE	= 1,
+>  	UFS_SLEEP_PWR_MODE	= 2,
+>  	UFS_POWERDOWN_PWR_MODE	= 3,
+> +	UFS_DEEPSLEEP_PWR_MODE	= 4,
+>  };
+> 
+>  #define UFS_WB_BUF_REMAIN_PERCENT(val) ((val) / 10)
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 2309253d3101..ee083b96e405 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -163,6 +163,11 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
+>  	{UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
+> +	/*
+> +	 * For DeepSleep, the link is first put in hibern8 and then off.
+> +	 * Leaving the link in hibern8 is not supported.
+> +	 */
+> +	{UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE},
+>  };
+> 
+>  static inline enum ufs_dev_pwr_mode
+> @@ -8297,7 +8302,8 @@ static int ufshcd_link_state_transition(struct
+> ufs_hba *hba,
+>  	}
+>  	/*
+>  	 * If autobkops is enabled, link can't be turned off because
+> -	 * turning off the link would also turn off the device.
+> +	 * turning off the link would also turn off the device, except in the
+> +	 * case of DeepSleep where the device is expected to remain powered.
+>  	 */
+>  	else if ((req_link_state == UIC_LINK_OFF_STATE) &&
+>  		 (!check_for_bkops || !hba->auto_bkops_enabled)) {
+> @@ -8307,6 +8313,9 @@ static int ufshcd_link_state_transition(struct
+> ufs_hba *hba,
+>  		 * put the link in low power mode is to send the DME end point
+>  		 * to device and then send the DME reset command to local
+>  		 * unipro. But putting the link in hibern8 is much faster.
+> +		 *
+> +		 * Note also that putting the link in Hibern8 is a requirement
+> +		 * for entering DeepSleep.
+>  		 */
+>  		ret = ufshcd_uic_hibern8_enter(hba);
+>  		if (ret) {
+> @@ -8439,6 +8448,7 @@ static void ufshcd_hba_vreg_set_hpm(struct 
+> ufs_hba *hba)
+>  static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  {
+>  	int ret = 0;
+> +	int check_for_bkops;
+>  	enum ufs_pm_level pm_lvl;
+>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>  	enum uic_link_state req_link_state;
+> @@ -8524,7 +8534,13 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	}
+> 
+>  	flush_work(&hba->eeh_work);
+> -	ret = ufshcd_link_state_transition(hba, req_link_state, 1);
+> +
+> +	/*
+> +	 * In the case of DeepSleep, the device is expected to remain powered
+> +	 * with the link off, so do not check for bkops.
+> +	 */
+> +	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
+> +	ret = ufshcd_link_state_transition(hba, req_link_state, 
+> check_for_bkops);
+>  	if (ret)
+>  		goto set_dev_active;
+> 
+> @@ -8565,11 +8581,25 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	if (hba->clk_scaling.is_allowed)
+>  		ufshcd_resume_clkscaling(hba);
+>  	ufshcd_vreg_set_hpm(hba);
+> +	/*
+> +	 * Device hardware reset is required to exit DeepSleep. Also, for
+> +	 * DeepSleep, the link is off so host reset and restore will be done
+> +	 * further below.
+> +	 */
+> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
+> +		ufshcd_vops_device_reset(hba);
+> +		WARN_ON(!ufshcd_is_link_off(hba));
+> +	}
+>  	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+>  		ufshcd_set_link_active(hba);
+>  	else if (ufshcd_is_link_off(hba))
+>  		ufshcd_host_reset_and_restore(hba);
+>  set_dev_active:
+> +	/* Can also get here needing to exit DeepSleep */
+> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
+> +		ufshcd_vops_device_reset(hba);
+> +		ufshcd_host_reset_and_restore(hba);
+> +	}
+>  	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+>  		ufshcd_disable_auto_bkops(hba);
+>  enable_gating:
+> @@ -8631,6 +8661,9 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	if (ret)
+>  		goto disable_vreg;
+> 
+> +	/* For DeepSleep, the only supported option is to have the link off 
+> */
+> +	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
+> !ufshcd_is_link_off(hba));
+> +
+>  	if (ufshcd_is_link_hibern8(hba)) {
+>  		ret = ufshcd_uic_hibern8_exit(hba);
+>  		if (!ret) {
+> @@ -8644,6 +8677,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		/*
+>  		 * A full initialization of the host and the device is
+>  		 * required since the link was put to off during suspend.
+> +		 * Note, in the case of DeepSleep, the device will exit
+> +		 * DeepSleep due to device reset.
+>  		 */
+>  		ret = ufshcd_reset_and_restore(hba);
+>  		/*
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 0fbb735bb70c..213be0667b59 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -114,16 +114,22 @@ enum uic_link_state {
+>  	((h)->curr_dev_pwr_mode = UFS_SLEEP_PWR_MODE)
+>  #define ufshcd_set_ufs_dev_poweroff(h) \
+>  	((h)->curr_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE)
+> +#define ufshcd_set_ufs_dev_deepsleep(h) \
+> +	((h)->curr_dev_pwr_mode = UFS_DEEPSLEEP_PWR_MODE)
+>  #define ufshcd_is_ufs_dev_active(h) \
+>  	((h)->curr_dev_pwr_mode == UFS_ACTIVE_PWR_MODE)
+>  #define ufshcd_is_ufs_dev_sleep(h) \
+>  	((h)->curr_dev_pwr_mode == UFS_SLEEP_PWR_MODE)
+>  #define ufshcd_is_ufs_dev_poweroff(h) \
+>  	((h)->curr_dev_pwr_mode == UFS_POWERDOWN_PWR_MODE)
+> +#define ufshcd_is_ufs_dev_deepsleep(h) \
+> +	((h)->curr_dev_pwr_mode == UFS_DEEPSLEEP_PWR_MODE)
+> 
+>  /*
+>   * UFS Power management levels.
+> - * Each level is in increasing order of power savings.
+> + * Each level is in increasing order of power savings, except 
+> DeepSleep
+> + * which is lower than PowerDown with power on but not PowerDown with
+> + * power off.
+>   */
+>  enum ufs_pm_level {
+>  	UFS_PM_LVL_0, /* UFS_ACTIVE_PWR_MODE, UIC_LINK_ACTIVE_STATE */
+> @@ -132,6 +138,7 @@ enum ufs_pm_level {
+>  	UFS_PM_LVL_3, /* UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+>  	UFS_PM_LVL_4, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+>  	UFS_PM_LVL_5, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE */
+> +	UFS_PM_LVL_6, /* UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE */
+>  	UFS_PM_LVL_MAX
+>  };
+> 
+> @@ -599,6 +606,14 @@ enum ufshcd_caps {
+>  	 * This would increase power savings.
+>  	 */
+>  	UFSHCD_CAP_AGGR_POWER_COLLAPSE			= 1 << 9,
+> +
+> +	/*
+> +	 * This capability allows the host controller driver to use 
+> DeepSleep,
+> +	 * if it is supported by the UFS device. The host controller driver 
+> must
+> +	 * support device hardware reset via the hba->device_reset() 
+> callback,
+> +	 * in order to exit DeepSleep state.
+> +	 */
+> +	UFSHCD_CAP_DEEPSLEEP				= 1 << 10,
+>  };
+> 
+>  struct ufs_hba_variant_params {
+> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
+> index 84841b3a7ffd..2362244c2a9e 100644
+> --- a/include/trace/events/ufs.h
+> +++ b/include/trace/events/ufs.h
+> @@ -19,7 +19,8 @@
+>  #define UFS_PWR_MODES			\
+>  	EM(UFS_ACTIVE_PWR_MODE)		\
+>  	EM(UFS_SLEEP_PWR_MODE)		\
+> -	EMe(UFS_POWERDOWN_PWR_MODE)
+> +	EM(UFS_POWERDOWN_PWR_MODE)	\
+> +	EMe(UFS_DEEPSLEEP_PWR_MODE)
+> 
+>  #define UFSCHD_CLK_GATING_STATES	\
+>  	EM(CLKS_OFF)			\
