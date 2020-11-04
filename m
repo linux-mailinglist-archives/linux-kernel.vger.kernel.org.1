@@ -2,251 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFE82A7050
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809142A7055
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732148AbgKDWTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:19:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36514 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730691AbgKDWSi (ORCPT
+        id S1732051AbgKDWVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:21:13 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:54728 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730396AbgKDWUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:18:38 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A4MFaFG027060;
-        Wed, 4 Nov 2020 14:18:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=NfD2VGhVkvqz8FHLkA3EFYasvL//2MZ3W5a9s5qW1MM=;
- b=SaD1YRcCF+/za0f85EROPpu4Icr/PYgXrj5IfkLGH0qXXzrhL92Aim8TyKFYjUYfpQrx
- J1OgczXivuer8HcOwPtEcmKah1FlOVAmlpvz+Mt6WqBScjEZrsKbmsPfdLpmHBYwnJeQ
- ARUlyLfZN/YWCLCW9xep29W/Vd+ik7/XgWE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 34k9k3h076-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 04 Nov 2020 14:18:21 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 4 Nov 2020 14:18:19 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=amxWyteQwBoPiVOQsDtELjX+EBrKAj+Vjj1M0seWW39ohNa8ZYFC62bVWd8BTGS+VqehEVHFO6mEbcb7jgcbWyNx/Pqc1qq26/dfaDdk9V4lDCCnomPjIkOV4LM1FiOuPZ8yL9e72kiTWRZJGvHuGDx7YbCJMahBq4OcjQRq4IDNWXT+rwrOp/rYr1yXdcVsZeMW8EdtSZms+a1lANHHjJHf0N5NNEBsNdWUZYqOjmU8YzHvBc7sC1KVf9k+htiFgltmusTrhdLtazl2StViQ90GInmgRgaHzYMZsUVJgfiaWwy3/DgWOyG8xyJTnmQ4nncyCU9Lip4BtO10SKGh4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NfD2VGhVkvqz8FHLkA3EFYasvL//2MZ3W5a9s5qW1MM=;
- b=mVxgG1O714nbzwdNf+OCLn1Gb9wtQExWbYI/HnRatKr+CykJsmeGvleZ4JQ4qKx7Sdwt6zKDyqYDtFOvVHf5DwxrQ7E40H5PkDDcIqp9Kdb30o30kPPy7k8+mx6q+7gkcvz7iMxzo+Mv8owdroG1Lf0GXS7woCxaEAQR/fYFWVbhTM3X7bzozKutBpq4qYLidPiTXTN+WAOBphZkIKvCKKETJaZOpZa8k2M1zbmTYZQWd0taKLPBkOdhxRNU1NMrhbem+FhB+dZa9tF9RggptqYc+A+x/VGOR8VhuBuvYOdJOwTt7T6vnoJylN4LkSYsLBBdsvsomFOcTkCuFuKVoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NfD2VGhVkvqz8FHLkA3EFYasvL//2MZ3W5a9s5qW1MM=;
- b=c6PX0LBPkOYelL/AOwVmvNu9hZB1KhLQugHuVXjQww9UDnVHbpLSkLqf2OPh0XwulQv5nIUqZfecxUivq4a3qqXvMUzhGpEo031fLpY0Wb9C/LvlZ4eFtsMt114EJlmp2StSu6eAAfnzA0whTr56IBJFsoq1SKk0KjSvCBdTzFU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by SJ0PR15MB4235.namprd15.prod.outlook.com (2603:10b6:a03:2e3::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 4 Nov
- 2020 22:18:05 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 22:18:04 +0000
-Date:   Wed, 4 Nov 2020 14:17:58 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v3 1/9] bpf: Implement task local storage
-Message-ID: <20201104221758.jr537hm7psfyvqlv@kafai-mbp.dhcp.thefacebook.com>
-References: <20201104164453.74390-1-kpsingh@chromium.org>
- <20201104164453.74390-2-kpsingh@chromium.org>
- <20201104220814.quq7jzpeb4wcyffv@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104220814.quq7jzpeb4wcyffv@kafai-mbp.dhcp.thefacebook.com>
-X-Originating-IP: [2620:10d:c090:400::5:3041]
-X-ClientProxiedBy: MW3PR05CA0001.namprd05.prod.outlook.com
- (2603:10b6:303:2b::6) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        Wed, 4 Nov 2020 17:20:17 -0500
+Received: by mail-il1-f199.google.com with SMTP id u129so11252967ilc.21
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 14:20:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Rc46J+LdfOQ971VpgAGBFMDqvkS69w+5fLDQxrrBNZI=;
+        b=S0Y/JLzX7FQpne13cfUMfYyJ8AQdRzfiTSSKiOdR1804E7okJvUGrPqtK+ZkBT79Fw
+         og5mSilrgrssqA8xwfXbl7lVaEp2ekiXxhkQT2zyfcNOpStk/g16stnfnaef127A0o0w
+         AHciz47RhDGFTi1OjPl3kI+O2a1KmajUenOEJ9zpkGKo/VqDn5Q4QbhTomJen15Sd9oQ
+         iH3SXrW44zaYB/BjPVQZ3m4xnvOlmAwxshMEYyoMyyNU9TK4kGLSLV0w41TileCXP3/v
+         z4zPfaa6I4RHPJgP1Vxb8k8AiDuBvDEcwGI6iH8TYE/yfH2q7sKy8b1nWupRIhSDPy3M
+         40Yg==
+X-Gm-Message-State: AOAM531j6sg8cx39p34MBLqhAfGXvZPweDYuubYDoOmd5691jiQGvrCG
+        WJcQmCO9xaczmBc5BStXyqh7A7iWOaYiq127ly0Yi8eLubcZ
+X-Google-Smtp-Source: ABdhPJysSLx4JiHvgheatnMzaJc5jZWPdLcY1C6ZB1HtMGEuhRV8eKCS8O4iBP1vbBx1SD+sXxJZnYMhdFXPZWsl6G2wg85Idl2Q
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MW3PR05CA0001.namprd05.prod.outlook.com (2603:10b6:303:2b::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Wed, 4 Nov 2020 22:18:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ead1b237-0d6f-441e-b493-08d8810f7fe9
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4235:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB42355C6631AD311EF29E2383D5EF0@SJ0PR15MB4235.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K5ThSyI0KUpDUSYkbw06pyrecD8t4A7cu3V97ED+aTeebs9NkJlQwoKBcWnegQO92XtYKyk8DiDzWK4X5WIb/Sd724vta1PP9V1ObCRlzb39ExlchKQy3sZnFipKF8/m2TkEXqLjD523Z0mMfFTGm0raZ2AXwmDtjF1NP/4tSGKqHym73VBv8VNsYEKxurQTGsrUEFiELV9ybScVyrtUY9W2DySJCxqE0rVsJmI03IMGmIqxd10GrSi1Ct2gqcXSZmuGu1bmz8cq/1wT/iO3JbEISp25csnMA6ePpglKq2bcpn9abI9q+Bq8KQzIQlhE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(396003)(376002)(136003)(366004)(9686003)(6666004)(8936002)(8676002)(6916009)(6506007)(4326008)(186003)(55016002)(86362001)(16526019)(66946007)(478600001)(5660300002)(2906002)(7696005)(66476007)(83380400001)(66556008)(1076003)(54906003)(316002)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vcp10orz1ZknApXkDDcPc02Y9MclfxXL/ekYGHonyDFGQZ3GKTiZRxykrIXMSGqQdwOUfN4WPNTShWoJFkSZSdiAR6NO5KoiZDSeBv0FRUID7YBy32TiMeQ/XiWge9bG+8DDjaOudOM9thvI1WxjeuwHxU7EJm1Q9sYDjrbIUDyt2vbisya04wbfeH1SpPQM+7MbixV9J8Sg8vU7dnA/CYwFNphdnSf6tYLLQtk/b21bejCUqM1B33hYMToRIJJGS9iHGre5XMppICMMdMb6ReBasTuVAf/r/JyELqlOUlgZh07TFrqf7bPQN6/YCESoBvo3YrpXeYEfy6wF5F2Y7XDgm1mDb0skRuBolVQzgrv5d4VJkm/7nvBR07wKdDvUBjRL8oL3k6t8am2wcIYymwE9azZhXwtkVkBBAj9eC/FphrdH6kLXEp6qeIVgH4RT1kpXO85egpKITVTokyFRxFDiLyo+46qA+Qb4tXuwGgto+OfO80ujPDuWr9784OWkj5W8X3nG4/sA8pASsllfWoS/59uVrnCcjG0jcFZpaigFawCd7R8WURORcwJN3YZ4BE81l8O1gND3sgvFoG6qxPuiAfTAUnjRPGFabMN27q8VVdPA71C81U1RSeQTF55kz+VWzk5HEhRjTPRrAWmyUw8H9dtC8tzRa5L2ij4clyA5uxU+jEQogeHG2up7qsRs
-X-MS-Exchange-CrossTenant-Network-Message-Id: ead1b237-0d6f-441e-b493-08d8810f7fe9
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:18:04.5239
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qmhOkOos6NcWkIyYMWldll0t3OSziKWQey7JFzBsPscvG5NSDWM78ycXw7EAn5bW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4235
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_15:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=599 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- adultscore=0 malwarescore=0 clxscore=1015 suspectscore=34 spamscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011040158
-X-FB-Internal: deliver
+X-Received: by 2002:a02:6342:: with SMTP id j63mr218086jac.41.1604528416474;
+ Wed, 04 Nov 2020 14:20:16 -0800 (PST)
+Date:   Wed, 04 Nov 2020 14:20:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004bcbf205b34f6294@google.com>
+Subject: KASAN: use-after-free Read in path_init (3)
+From:   syzbot <syzbot+3e565bbd2673747f90c2@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this reply which has missed some recipients.
+Hello,
 
-On Wed, Nov 04, 2020 at 02:08:14PM -0800, Martin KaFai Lau wrote:
-> On Wed, Nov 04, 2020 at 05:44:45PM +0100, KP Singh wrote:
-> [ ... ]
-> 
-> > +static void *bpf_pid_task_storage_lookup_elem(struct bpf_map *map, void *key)
-> > +{
-> > +	struct bpf_local_storage_data *sdata;
-> > +	struct task_struct *task;
-> > +	unsigned int f_flags;
-> > +	struct pid *pid;
-> > +	int fd, err;
-> > +
-> > +	fd = *(int *)key;
-> > +	pid = pidfd_get_pid(fd, &f_flags);
-> > +	if (IS_ERR(pid))
-> > +		return ERR_CAST(pid);
-> > +
-> > +	/* We should be in an RCU read side critical section, it should be safe
-> > +	 * to call pid_task.
-> > +	 */
-> > +	WARN_ON_ONCE(!rcu_read_lock_held());
-> > +	task = pid_task(pid, PIDTYPE_PID);
-> > +	if (!task) {
-> > +		err = -ENOENT;
-> > +		goto out;
-> > +	}
-> > +
-> > +	sdata = task_storage_lookup(task, map, true);
-> > +	put_pid(pid);
-> > +	return sdata ? sdata->data : NULL;
-> > +out:
-> > +	put_pid(pid);
-> > +	return ERR_PTR(err);
-> > +}
-> > +
-> > +static int bpf_pid_task_storage_update_elem(struct bpf_map *map, void *key,
-> > +					    void *value, u64 map_flags)
-> > +{
-> > +	struct bpf_local_storage_data *sdata;
-> > +	struct task_struct *task;
-> > +	unsigned int f_flags;
-> > +	struct pid *pid;
-> > +	int fd, err;
-> > +
-> > +	fd = *(int *)key;
-> > +	pid = pidfd_get_pid(fd, &f_flags);
-> > +	if (IS_ERR(pid))
-> > +		return PTR_ERR(pid);
-> > +
-> > +	/* We should be in an RCU read side critical section, it should be safe
-> > +	 * to call pid_task.
-> > +	 */
-> > +	WARN_ON_ONCE(!rcu_read_lock_held());
-> > +	task = pid_task(pid, PIDTYPE_PID);
-> > +	if (!task) {
-> > +		err = -ENOENT;
-> > +		goto out;
-> > +	}
-> > +
-> > +	sdata = bpf_local_storage_update(
-> > +		task, (struct bpf_local_storage_map *)map, value, map_flags);
-> It seems the task is protected by rcu here and the task may be going away.
-> Is it ok?
-> 
-> or the following comment in the later "BPF_CALL_4(bpf_task_storage_get, ...)"
-> is no longer valid?
-> 	/* This helper must only called from where the task is guaranteed
->  	 * to have a refcount and cannot be freed.
-> 	 */
-> 
-> > +
-> > +	err = PTR_ERR_OR_ZERO(sdata);
-> > +out:
-> > +	put_pid(pid);
-> > +	return err;
-> > +}
-> > +
-> 
-> [ ... ]
-> 
-> > +BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
-> > +	   task, void *, value, u64, flags)
-> > +{
-> > +	struct bpf_local_storage_data *sdata;
-> > +
-> > +	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
-> > +		return (unsigned long)NULL;
-> > +
-> > +	/* explicitly check that the task_storage_ptr is not
-> > +	 * NULL as task_storage_lookup returns NULL in this case and
-> > +	 * bpf_local_storage_update expects the owner to have a
-> > +	 * valid storage pointer.
-> > +	 */
-> > +	if (!task_storage_ptr(task))
-> > +		return (unsigned long)NULL;
-> > +
-> > +	sdata = task_storage_lookup(task, map, true);
-> > +	if (sdata)
-> > +		return (unsigned long)sdata->data;
-> > +
-> > +	/* This helper must only called from where the task is guaranteed
-> > +	 * to have a refcount and cannot be freed.
-> > +	 */
-> > +	if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
-> > +		sdata = bpf_local_storage_update(
-> > +			task, (struct bpf_local_storage_map *)map, value,
-> > +			BPF_NOEXIST);
-> > +		return IS_ERR(sdata) ? (unsigned long)NULL :
-> > +					     (unsigned long)sdata->data;
-> > +	}
-> > +
-> > +	return (unsigned long)NULL;
-> > +}
-> > +
-> 
-> [ ... ]
-> 
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 8f50c9c19f1b..f3fe9f53f93c 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -773,7 +773,8 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
-> >  		    map->map_type != BPF_MAP_TYPE_ARRAY &&
-> >  		    map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
-> >  		    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
-> > -		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE)
-> > +		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
-> > +		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
-> This is to enable spin lock support in a map's value.  Without peeking
-> patch 5, I was confused a bit here.  It seems patch 5 was missed when
-> inode storage was added.
-> 
-> >  			return -ENOTSUPP;
-> >  		if (map->spin_lock_off + sizeof(struct bpf_spin_lock) >
-> >  		    map->value_size) {
+syzbot found the following issue on:
+
+HEAD commit:    4e78c578 Add linux-next specific files for 20201030
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=110d0c92500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=83318758268dc331
+dashboard link: https://syzkaller.appspot.com/bug?extid=3e565bbd2673747f90c2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3e565bbd2673747f90c2@syzkaller.appspotmail.com
+
+MINIX-fs: mounting unchecked file system, running fsck is recommended
+MINIX-fs: deleted inode referenced: 6
+==================================================================
+BUG: KASAN: use-after-free in path_init+0x14ba/0x17d0 fs/namei.c:2208
+Read of size 8 at addr ffff8880633cc400 by task syz-executor.3/14486
+
+CPU: 1 PID: 14486 Comm: syz-executor.3 Not tainted 5.10.0-rc1-next-20201030-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ path_init+0x14ba/0x17d0 fs/namei.c:2208
+ path_parentat+0x22/0x1b0 fs/namei.c:2385
+ filename_parentat+0x188/0x560 fs/namei.c:2408
+ do_renameat2+0x16e/0xc00 fs/namei.c:4375
+ __do_sys_renameat fs/namei.c:4501 [inline]
+ __se_sys_renameat fs/namei.c:4498 [inline]
+ __x64_sys_renameat+0xbf/0xf0 fs/namei.c:4498
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fbef8029c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000108
+RAX: ffffffffffffffda RBX: 0000000000027340 RCX: 000000000045deb9
+RDX: 0000000000000006 RSI: 0000000020000500 RDI: 0000000000000003
+RBP: 000000000118bf68 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000200017c0 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffe203745cf R14: 00007fbef802a9c0 R15: 000000000118bf2c
+
+Allocated by task 14486:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:506 [inline]
+ slab_alloc_node mm/slub.c:2889 [inline]
+ slab_alloc mm/slub.c:2897 [inline]
+ kmem_cache_alloc+0x122/0x460 mm/slub.c:2902
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags+0x9a/0xe0 include/linux/audit.h:319
+ getname fs/namei.c:209 [inline]
+ __do_sys_renameat fs/namei.c:4501 [inline]
+ __se_sys_renameat fs/namei.c:4498 [inline]
+ __x64_sys_renameat+0xad/0xf0 fs/namei.c:4498
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 14486:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3140 [inline]
+ kmem_cache_free+0x82/0x350 mm/slub.c:3156
+ putname+0xe1/0x120 fs/namei.c:259
+ do_renameat2+0x3e6/0xc00 fs/namei.c:4481
+ __do_sys_renameat fs/namei.c:4501 [inline]
+ __se_sys_renameat fs/namei.c:4498 [inline]
+ __x64_sys_renameat+0xbf/0xf0 fs/namei.c:4498
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880633cc400
+ which belongs to the cache names_cache of size 4096
+The buggy address is located 0 bytes inside of
+ 4096-byte region [ffff8880633cc400, ffff8880633cd400)
+The buggy address belongs to the page:
+page:00000000f2c066e0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x633c8
+head:00000000f2c066e0 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff8880101c1280
+raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880633cc300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880633cc380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880633cc400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff8880633cc480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880633cc500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
