@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5DD2A664E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4E82A6658
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 15:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKDOYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 09:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbgKDOYA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:24:00 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D1DC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 06:24:00 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id c80so10814064oib.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 06:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QR9P889TV6Fm+64MkqBDR3Qv0vkmxXCe4guOWfntHO8=;
-        b=vzJv83fMFFUoT2sV52CFQ+1ZEHCw68cWjSWuUVH5eM87Dicq8EfGtuZtTZZnbnaAHd
-         7U0EYmLE55esvbCscgNLIbOVPeNLSOQTvjOroXj69HUW92jqyJkbmPrhHsOvH4gKQfqr
-         xnvXn+jbNVB5r9AL2pWKbwZr5ceqx9Snrm05aofLik3QQ0gSiLpM/281wXcTWu7o1xdR
-         9R38+RsoWIYIR5//fgjSO4b/T7cmef/6Zb3ZSGgE95rpUnmQ0GM/CfgfSMaptUlxnJZP
-         jwV8jQl2lh3dyF7LLBY7dvF3y1VjeJGnQgoepgZ4VjW2kHPkdHySKARqwAoCVgICXGG8
-         Gyjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QR9P889TV6Fm+64MkqBDR3Qv0vkmxXCe4guOWfntHO8=;
-        b=Cb35pRBQLGzcqb9R0pGNUMqmxejdGRmZYpuovAaNOzl3wc1+H/XMndD90SCCbY3JtR
-         WCxwxza6MbnfsmM/7XoB+PLWgjG4cjEjt2PNcGfpuPxoyzKBzxb3JopO6LHrebmmX4Uf
-         gvjmw25zIOLUHZTTPH7wgfxtCr+uDo0vbe9T36xCTyMUoQd/jf0eJ659NnHtU6UHl8gf
-         Ql7yHP9NstJDY2uZmz1NbPVTw7R+1Ykt0Lh+GmD6NIzBSgu/s2ubu2oaJHSqKnIAd7ch
-         259e6I7YwNP7cYQqixEy7YJpH9ChW6fQk2Devr/SVxdujpRRzsy7/3q18GfAv8LcoLTR
-         fVLQ==
-X-Gm-Message-State: AOAM530KDzTK4mFjkaa6+NqGunc1pzLgVstTgK5einIAPT5XnDEwbqPr
-        VWPlVgDXtjpjmAdw/5f56HipDh/l9zQrEPV5Fa6VxQ==
-X-Google-Smtp-Source: ABdhPJycEzgB3bjUR4k0OoZFNu8mEdpOh55snmkjf+FCx7MOcdw5evF2B/ftw0zmhNYGTBUFtEs+2BGfaFd8d5vP+lQ=
-X-Received: by 2002:aca:a988:: with SMTP id s130mr2710278oie.172.1604499839884;
- Wed, 04 Nov 2020 06:23:59 -0800 (PST)
+        id S1729795AbgKDO12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 09:27:28 -0500
+Received: from m12-16.163.com ([220.181.12.16]:41277 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726729AbgKDO12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:27:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=+7b6f
+        oOiP5Z9YBXE2KwaQcndnG3JikUcOzlmE2YTnls=; b=fS4axkMErEOzoG9saGOnX
+        bIQbf3lUfxOnbHkqEOBpybEr7XmzYxwHLvd1l0rxjIT3k9cLPGdX6ZXHoiI51PhV
+        Eri9QeKQopNabCeE6LuhYrJcwSSQcenN46qOnA0THPFKLNcAyMznz/ZTKGkby0m0
+        GN32nARCTwKsOs2D1oWVn8=
+Received: from localhost (unknown [101.86.211.214])
+        by smtp12 (Coremail) with SMTP id EMCowADnFGrMuaJffmFhJw--.17147S2;
+        Wed, 04 Nov 2020 22:25:17 +0800 (CST)
+Date:   Wed, 4 Nov 2020 22:25:16 +0800
+From:   Hui Su <sh_def@163.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        laoar.shao@gmail.com, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     sh_def@163.com
+Subject: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-ID: <20201104142516.GA106571@rlk>
 MIME-Version: 1.0
-References: <20201103175841.3495947-1-elver@google.com> <20201103175841.3495947-4-elver@google.com>
- <20201104130111.GA7577@C02TD0UTHF1T.local>
-In-Reply-To: <20201104130111.GA7577@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 4 Nov 2020 15:23:48 +0100
-Message-ID: <CANpmjNNyY+Myv12P-iou80LhQ0aG5UFudLbVWmRBcM3V=G540A@mail.gmail.com>
-Subject: Re: [PATCH v7 3/9] arm64, kfence: enable KFENCE for ARM64
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: EMCowADnFGrMuaJffmFhJw--.17147S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4UAryrJFyrGry7Kr15Arb_yoW5ur4xpF
+        ZxJ3W3A398JrWYgr1xta1q9a4fZa1xJw43Jr17Jw1SyF13K34Fq3W2kr1rJFWUuF9ayrnr
+        trZ0kr18G3yqvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U0iiDUUUUU=
+X-Originating-IP: [101.86.211.214]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitw3SX1aEGR9xmQAAsL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 14:06, Mark Rutland <mark.rutland@arm.com> wrote:
-> On Tue, Nov 03, 2020 at 06:58:35PM +0100, Marco Elver wrote:
-> > Add architecture specific implementation details for KFENCE and enable
-> > KFENCE for the arm64 architecture. In particular, this implements the
-> > required interface in <asm/kfence.h>.
-> >
-> > KFENCE requires that attributes for pages from its memory pool can
-> > individually be set. Therefore, force the entire linear map to be mapped
-> > at page granularity. Doing so may result in extra memory allocated for
-> > page tables in case rodata=full is not set; however, currently
-> > CONFIG_RODATA_FULL_DEFAULT_ENABLED=y is the default, and the common case
-> > is therefore not affected by this change.
-> >
-> > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> > Co-developed-by: Alexander Potapenko <glider@google.com>
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> Thanks for dilligently handling all the review feedback. This looks good
-> to me now, so FWIW:
->
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+mem_cgroup_page_lruvec() in memcontrol.c and
+mem_cgroup_lruvec() in memcontrol.h is very similar
+except for the param(page and memcg) which also can be
+convert to each other.
 
-Thank you!
+So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
 
-> There is one thing that I thing we should improve as a subsequent
-> cleanup, but I don't think that should block this as-is.
->
-> > +#define KFENCE_SKIP_ARCH_FAULT_HANDLER "el1_sync"
->
-> IIUC, the core kfence code is using this to figure out where to trace
-> from when there's a fault taken on an access to a protected page.
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ include/linux/memcontrol.h | 18 +++++++++++++++--
+ mm/memcontrol.c            | 40 --------------------------------------
+ 2 files changed, 16 insertions(+), 42 deletions(-)
 
-Correct.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e391e3c56de5..a586363fb766 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+ /**
+  * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+  * @memcg: memcg of the wanted lruvec
++ * @pgdat: pglist_data
+  *
+  * Returns the lru list vector holding pages for a given @memcg &
+- * @node combination. This can be the node lruvec, if the memory
++ * @pgdat combination. This can be the node lruvec, if the memory
+  * controller is disabled.
+  */
+ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+@@ -489,7 +490,20 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+ 	return lruvec;
+ }
+ 
+-struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
++/**
++ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
++ * @page: the page
++ * @pgdat: pgdat of the page
++ *
++ * This function relies on page->mem_cgroup being stable.
++ */
++static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
++						struct pglist_data *pgdat)
++{
++	struct mem_cgroup *memcg = page->mem_cgroup;
++
++	return mem_cgroup_lruvec(memcg, pgdat);
++}
+ 
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3dcbf24d2227..9d4e1150b194 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1330,46 +1330,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	return ret;
+ }
+ 
+-/**
+- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+- * @page: the page
+- * @pgdat: pgdat of the page
+- *
+- * This function relies on page->mem_cgroup being stable - see the
+- * access rules in commit_charge().
+- */
+-struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+-{
+-	struct mem_cgroup_per_node *mz;
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-
+-	if (mem_cgroup_disabled()) {
+-		lruvec = &pgdat->__lruvec;
+-		goto out;
+-	}
+-
+-	memcg = page->mem_cgroup;
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
+-	if (!memcg)
+-		memcg = root_mem_cgroup;
+-
+-	mz = mem_cgroup_page_nodeinfo(memcg, page);
+-	lruvec = &mz->lruvec;
+-out:
+-	/*
+-	 * Since a node can be onlined after the mem_cgroup was created,
+-	 * we have to be prepared to initialize lruvec->zone here;
+-	 * and if offlined then reonlined, we need to reinitialize it.
+-	 */
+-	if (unlikely(lruvec->pgdat != pgdat))
+-		lruvec->pgdat = pgdat;
+-	return lruvec;
+-}
+-
+ /**
+  * mem_cgroup_update_lru_size - account for adding or removing an lru page
+  * @lruvec: mem_cgroup per zone lru vector
+-- 
+2.29.0
 
-> It would be better if the arch code passed the exception's pt_regs into
-> the kfence fault handler, and the kfence began the trace began from
-> there. That would also allow for dumping the exception registers which
-> can help with debugging (e.g. figuring out how the address was derived
-> when it's calculated from multiple source registers). That would also be
-> a bit more robust to changes in an architectures' exception handling
-> code.
 
-Good idea, thanks. I guess there's no reason to not want to always
-skip to instruction_pointer(regs)?
-In which case I can prepare a patch to make this change. If this
-should go into a v8, please let me know. But it'd be easier as a
-subsequent patch as you say, given it'll be easier to review and these
-patches are in -mm now.
-
-Thanks,
--- Marco
