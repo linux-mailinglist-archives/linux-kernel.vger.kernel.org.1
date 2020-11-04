@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67272A6293
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F19902A62A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgKDKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:52:37 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38405 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbgKDKwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:52:36 -0500
-Received: by mail-oi1-f196.google.com with SMTP id 9so21712712oir.5;
-        Wed, 04 Nov 2020 02:52:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Tgxgz65t1p/f8iIMRXffOT0LvSZivNKheyZ9LDhkIc=;
-        b=cbmlMwJ0Vp256O2KwLamG2DUJZOIdeGF5l4Kjk3ITDK+9H5qdqtxPEo0YlbKFaTtIn
-         w1ac7agk8zpVIzjLjnYsgdr31pP9ecf+dgq0dk7SwOl8e/A1Vg3bjJc1zSEBLlZOOE7T
-         TApX/5T8Ql3uwEwcbiu11yCCg1etISdbaGlszRETpM8wrSNI/2NIwkQo+4EeTHRkUe+7
-         brBxApDeb9I8cSZpMpRr8y+0P4ILD2SE5pWx+kFsSuGiauEoE2HLELz6zJOZCFm/BC4e
-         KsswlrXc2pk1EBsd7Ns2uJqSinTdcQlKRnqVqX41I+ronvC+YRR+p5/Dw3Vm7jbFPUV0
-         yy5A==
-X-Gm-Message-State: AOAM532vZHsqYy/A5FAvWQ1vne6OXICcgL4NQlViiKebm9kZJhGHKNm1
-        041CfR+K0ZknbFTwLxlUjdOMjUa2Xfj6cepu/tA=
-X-Google-Smtp-Source: ABdhPJyvMxieCAu21C5+PVfz2yWWX9ytXdUxoVF8evK3bsrE8Y92FJiB0HEOlFOhHtXntxTD7+2uR7Dx21t0iuJoSCQ=
-X-Received: by 2002:aca:52c9:: with SMTP id g192mr2234724oib.54.1604487154307;
- Wed, 04 Nov 2020 02:52:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103162435.13689-1-krzk@kernel.org> <20201103162435.13689-7-krzk@kernel.org>
-In-Reply-To: <20201103162435.13689-7-krzk@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 4 Nov 2020 11:52:23 +0100
-Message-ID: <CAMuHMdVx_oYFpe8G7iKcQ0FFwpPTTiWZLps3WsLSphqJ0pweyQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] clk: renesas: renesas-cpg-mssr: fix kerneldoc of cpg_mssr_priv
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729515AbgKDKyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:54:01 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37286 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729400AbgKDKx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:53:58 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxWtAfiKJfj6MFAA--.5757S2;
+        Wed, 04 Nov 2020 18:53:19 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: Modify the FLAGS attribute value of text segment in PHDRS
+Date:   Wed,  4 Nov 2020 18:53:18 +0800
+Message-Id: <1604487198-19365-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxWtAfiKJfj6MFAA--.5757S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw4xtr4xCFyUtryxWF13CFg_yoWkZrX_KF
+        4Svw4qk3yfAry3X3WrZrs5GF98G395G3Wrur1DZr1j9F98Ars8XFWvqay7uws8ArWjkw4r
+        A3WfZrnrCFZFgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8uT5PUUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 5:25 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> The struct cpg_mssr_priv missed proper formatting:
->
->     drivers/clk/renesas/renesas-cpg-mssr.c:142: warning:
->         cannot understand function prototype: 'struct cpg_mssr_priv '
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+The attribute of the text segment should be read-only and executable,
+FLAGS(7) should be changed to FLAGS(5), like x86, s390 architecture.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.11.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/boot/compressed/ld.script | 2 +-
+ arch/mips/kernel/vmlinux.lds.S      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/mips/boot/compressed/ld.script b/arch/mips/boot/compressed/ld.script
+index 2ed08fb..35b0315 100644
+--- a/arch/mips/boot/compressed/ld.script
++++ b/arch/mips/boot/compressed/ld.script
+@@ -9,7 +9,7 @@
+ OUTPUT_ARCH(mips)
+ ENTRY(start)
+ PHDRS {
+-	text PT_LOAD FLAGS(7); /* RWX */
++	text PT_LOAD FLAGS(5); /* R_X */
+ }
+ SECTIONS
+ {
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index 5e97e9d..545c4a9 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -22,7 +22,7 @@
+ OUTPUT_ARCH(mips)
+ ENTRY(kernel_entry)
+ PHDRS {
+-	text PT_LOAD FLAGS(7);	/* RWX */
++	text PT_LOAD FLAGS(5);	/* R_X */
+ #ifndef CONFIG_CAVIUM_OCTEON_SOC
+ 	note PT_NOTE FLAGS(4);	/* R__ */
+ #endif /* CAVIUM_OCTEON_SOC */
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.1.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
