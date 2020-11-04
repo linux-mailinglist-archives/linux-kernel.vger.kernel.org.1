@@ -2,91 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43792A690E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3302A692C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729679AbgKDQGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:06:55 -0500
-Received: from mail.monom.org ([188.138.9.77]:36944 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727070AbgKDQGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:06:55 -0500
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id C9F24500609;
-        Wed,  4 Nov 2020 17:06:51 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 3F848500596;
-        Wed,  4 Nov 2020 17:06:51 +0100 (CET)
-Date:   Wed, 4 Nov 2020 17:06:50 +0100
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
-Message-ID: <20201104160650.b63zqof74wohgpa2@beryllium.lan>
-References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
- <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
- <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
- <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
- <20201104124746.74jdsig3dffomv3k@beryllium.lan>
- <20201104130930.llx56gtqt532h7c7@linutronix.de>
+        id S1729676AbgKDQND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgKDQNC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:13:02 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A12EC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:13:02 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id c5so12561284qtw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6XhlWy2zNDB285hOjmx7oZh3wIATZQKVDSLZhJN9BhI=;
+        b=WulVKS/EA5hv7vg5+XxUdiO+k4ssrt0a+Mc8Y+aJC/N41gc0kdE3qw91bQiGabeXf+
+         IQTKqAz0JDx9e6qdPxCoGk+RSgEpLdYG8mgevOcbVBWfw5aL05ua/ehIkM9clEX8yBh9
+         RwLra6YemA+jQTH5bT07k/cCj/g3XBLDCBJk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6XhlWy2zNDB285hOjmx7oZh3wIATZQKVDSLZhJN9BhI=;
+        b=gW0wp+4fCOJuNTbNyqhoqW1YUd26lDphOZ1A2oJqHkrH+jKS1RhsideJoD146kj3fF
+         EIixxr6RRPrGY++KpWJdGJwmn68Px6ouaos8XIIW8dkaF2v/0Qms9nxXVC3h5hsDk2Fq
+         wrPbJColuh4KiRv7wzxo/LqpTvj9ekJVNjwyp3yMwbHMgSEoZiHAF6mG3xpVdiEwY7uo
+         QeghHovk9ZXOsjD+Dc/4YtJIPbrTA/7COQKkB63k4B26qc6Ljgm40ojJHxJyUNL5VTUG
+         RKcl/SRUE0FLHr8Tt0YOe+On4jn4TF9U5ZKcaL0YezGym8moVmHWJk/+qiTSCyBxXziH
+         iSzQ==
+X-Gm-Message-State: AOAM531A/VewAPU/nPlGiSKt/cKr9SQPNsKUgO2wHFURIRQsrQIBqQej
+        SZ6vCNMjSI8a8OnQzg7gXAvhEQqdUF2AaQ==
+X-Google-Smtp-Source: ABdhPJyGHQ9FH3Pq1yscwyXCQU4Eb8xH/0yD8FSrmRqAJssp64bcQ6Mv7QW1CtHu2vQ+/tGB6xinnw==
+X-Received: by 2002:ac8:594c:: with SMTP id 12mr882830qtz.224.1604506380903;
+        Wed, 04 Nov 2020 08:13:00 -0800 (PST)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id p1sm2565243qkc.100.2020.11.04.08.13.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 08:13:00 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id f6so18528447ybr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:13:00 -0800 (PST)
+X-Received: by 2002:a9f:264a:: with SMTP id 68mr14432123uag.0.1604506031065;
+ Wed, 04 Nov 2020 08:07:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104130930.llx56gtqt532h7c7@linutronix.de>
+References: <20201104012929.3850691-1-dianders@chromium.org>
+ <20201103172824.v4.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid> <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com>
+In-Reply-To: <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 4 Nov 2020 08:06:58 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
+Message-ID: <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] HID: i2c-hid: Reorganize so ACPI and OF are subclasses
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 02:09:30PM +0100, Sebastian Andrzej Siewior wrote:
-> Could you figure out if the arm64 thingy started with -rt4 or was
-> already in rt3?
+Hi,
 
-I wrote a quick and dirty script to extract the data from my logs to see
-if the regression might be older then I remembered. I filtered out the
-obviously wrong configured runs (e.g !RT). It looks like the first
-recorded outlier is around 5.9.0-rt16. Does this already help or do you
-want me to bissect it down?
+On Wed, Nov 4, 2020 at 4:07 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> > +#include "i2c-hid.h"
+> > +
+> > +struct i2c_hid_acpi {
+> > +     struct i2chid_subclass_data subclass;
+>
+> This feels a bit weird, we are the subclass so typically we would
+> be embedding a base_class data struct here ...
+>
+> (more remarks below, note just my 2 cents you may want to wait
+> for feedback from others).
+>
+> > +     struct i2c_client *client;
+>
+> You pass this to i2c_hid_core_probe which then stores it own
+> copy, why not just store it in the subclass (or even better
+> baseclass) data struct ?
 
-rpi3    signaltest      5.4.59-rt36
-  382   0_signaltest         t0-max-latency      : fail     220.00
-  382   0_signaltest         t0-avg-latency      : pass      47.00
-  382   0_signaltest         t0-min-latency      : pass      20.00
-rpi3    signaltest      5.6.19-rt12
-  368   0_signaltest         t0-max-latency      : fail     221.00
-  368   0_signaltest         t0-avg-latency      : pass      45.00
-  368   0_signaltest         t0-min-latency      : pass      21.00
-rpi3    signaltest      5.9.0-rc8-rt12
-  813   0_signaltest         t0-max-latency      : fail     214.00
-  813   0_signaltest         t0-avg-latency      : pass      45.00
-  813   0_signaltest         t0-min-latency      : pass      20.00
-rpi3    signaltest      5.9.0-rc8-rt12
-  874   0_signaltest         t0-max-latency      : fail     217.00
-  874   0_signaltest         t0-avg-latency      : pass      45.00
-  874   0_signaltest         t0-min-latency      : pass      20.00
-rpi3    signaltest      5.9.0-rt16
-  963   0_signaltest         t0-max-latency      : fail     321.00
-  963   0_signaltest         t0-avg-latency      : pass      47.00
-  963   0_signaltest         t0-min-latency      : pass      21.00
-rpi3    signaltest      5.9.1-rt19
-  1038  0_signaltest         t0-max-latency      : fail     341.00
-  1038  0_signaltest         t0-avg-latency      : pass      46.00
-  1038  0_signaltest         t0-min-latency      : pass      20.00
-rpi3    signaltest      5.9.1-rt20
-  1079  0_signaltest         t0-max-latency      : fail     318.00
-  1079  0_signaltest         t0-avg-latency      : pass      47.00
-  1079  0_signaltest         t0-min-latency      : pass      21.00
-rpi3    signaltest      5.10.0-rc1-rt1
-  1118  0_signaltest         t0-max-latency      : fail     415.00
-  1118  0_signaltest         t0-avg-latency      : pass      53.00
-  1118  0_signaltest         t0-min-latency      : pass      23.00
-rpi3    signaltest      5.10.0-rc2-rt4
-  1163  0_signaltest         t0-max-latency      : fail     340.00
-  1163  0_signaltest         t0-avg-latency      : pass      53.00
-  1163  0_signaltest         t0-min-latency      : pass      24.00
+My goal was to avoid moving the big structure to the header file.
+Without doing that, I think you need something more like the setup I
+have.  I'll wait for Benjamin to comment on whether he'd prefer
+something like what I have here or if I should move the structure.
+
+
+> > @@ -156,10 +152,10 @@ struct i2c_hid {
+> >
+> >       wait_queue_head_t       wait;           /* For waiting the interrupt */
+> >
+> > -     struct i2c_hid_platform_data pdata;
+> > -
+> >       bool                    irq_wake_enabled;
+> >       struct mutex            reset_lock;
+> > +
+> > +     struct i2chid_subclass_data *subclass;
+> >  };
+>
+> Personally, I would do things a bit differently here:
+>
+> 1. Just add the
+>
+>         int (*power_up_device)(struct i2chid_subclass_data *subclass);
+>         void (*power_down_device)(struct i2chid_subclass_data *subclass);
+>
+> members which you put in the subclass struct here.
+>
+> 2. Move the declaration of this complete struct to drivers/hid/i2c-hid/i2c-hid.h
+> and use this as the base-class which I described before (and store the client
+> pointer here).
+>
+> 3. And then kzalloc both this baseclass struct + the subclass-data
+> (only the bool "power_fixed" in the ACPI case) in one go in the subclass code
+> replacing 2 kzallocs (+ error checking with one, simplifying the code and
+> reducing memory fragmentation (by a tiny sliver).
+
+Sure, I'll do that if Benjamin likes moving the structure to the header.
+
+
+> About the power_*_device callbacks, I wonder if it would not be more consistent
+> to also have a shutdown callback and make i2c_driver.shutdown point to
+> a (modified) i2c_hid_core_shutdown() function.
+
+Personally this doesn't seem cleaner to me, but I'm happy to do it if
+folks like it better.  Coming up with a name for the callback would be
+a bit awkward, which is a sign that this isn't quite ideal?  For the
+power_up()/power_down() those are sane concepts to abstract out.  Here
+we'd be abstracting out "subclass_shutdown_tail()" or something?
+...and if a subclass needs something at the head of shutdown, we'd
+need to add a "subclass_shutdown_head()"?
+
+
+> You may also want to consider pointing that shutdown callback to the power_off
+> function in the of case (in a separate commit as that is a behavioral change).
+
+I don't think this is the point of shutdown, but I could be corrected.
+Shutdown isn't really supposed to be the same as driver remove or
+anything.  IIUC the main point of shutdown is to support kexec and the
+goal is to quiesce DMA transactions.  Turning off power has never been
+a requirement that I was aware of.  We don't want to jam too much
+stuff in shutdown or else "shutdown" becomes as slow as boot for no
+good reason, right?
+
+
+> > diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
+> > new file mode 100644
+> > index 000000000000..e1838cdef0aa
+> > --- /dev/null
+> > +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
+> > @@ -0,0 +1,149 @@
+> > +/*
+> > + * HID over I2C Open Firmware Subclass
+> > + *
+> > + * Copyright (c) 2012 Benjamin Tissoires <benjamin.tissoires@gmail.com>
+> > + * Copyright (c) 2012 Ecole Nationale de l'Aviation Civile, France
+> > + * Copyright (c) 2012 Red Hat, Inc
+>
+> <snip>
+>
+> > +MODULE_DESCRIPTION("HID over I2C OF driver");
+> > +MODULE_AUTHOR("Benjamin Tissoires <benjamin.tissoires@gmail.com>");
+>
+> In case Benjamin misses this during his own review: I'm not sure if he
+> will want to be set as AUTHOR of this, given that part of the plan is
+> for someone else to be the primary point of contact for the of bits.
+
+I can stick myself in as the author if needed.  I'll wait for
+Benjamin's feedback here.
+
+
+-Doug
