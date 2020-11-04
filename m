@@ -2,84 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090502A6C3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D322A6C3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 18:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgKDRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 12:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730865AbgKDRyQ (ORCPT
+        id S1732137AbgKDRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 12:54:53 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23054 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726152AbgKDRyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 12:54:53 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HXnx0018078;
         Wed, 4 Nov 2020 12:54:16 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7668CC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 09:54:16 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id p15so23959436ljj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KDF/IVt/yM5vKvfY6fRo0fNzEAF8Z0Cn2GtQDil02vc=;
-        b=hXhtTtO+S8d2VZNihnap8ENkU4okxgo2j5jRC3/VfbThfzLKjoY9rFtASjZkhfK3s3
-         qhVE8hIVQgRDoaRjKV+sJOgqdoZDAN9jHBYe4N0IyHtI1g8IALfcuzpLWg2QZ6LIm8LB
-         c/aLMvqxGizeQKNfljmxCLZHLcPpM+v9Z3VkM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KDF/IVt/yM5vKvfY6fRo0fNzEAF8Z0Cn2GtQDil02vc=;
-        b=jifiI6Eey37yfU7WuxufPtC/1WI8UBvvUyv6QAAKKN3XfeAduR1XxZOzCJZHJ+2akD
-         fmjZ/0Y77I8dWTfCG9oxOYl4p1IxhXbP7WVTZTEbnLxf6Fe4t3sZYdrctIUDpHg9F6Sf
-         pXUo5ITdHkkB6xkIL+MnfpL15nk6MB8eQB+zKxKtTkaijb5PUsgh/9GK9/QrVDVqaUSo
-         PNbSJ9yc6Lre4eM5qItZghS2dhdFnvHJbK7TEuPKGt9/g2zM1ehtFCx9xEDqxNnFxk0c
-         wdR+wxWwDln8kIaizcGmPOiJnNAQsDZI66mLMWw+mqcO6H1JYq79ajA3VlFla1eiOLbN
-         YYYw==
-X-Gm-Message-State: AOAM533iLWovz/ReIquj7ZhDqusCEJnJQsJSf7d8vZQlt6YOpbhHJmP1
-        4Q6+Au8fGPDMToe0Ot+nFIQchjVDVe/I0Q==
-X-Google-Smtp-Source: ABdhPJzod3vRPg+VrX283hY7qVSvjbw2J2ekPbIMNf/7cB8pB4V76c6uMxu7YNV8l/kBB310v76UgQ==
-X-Received: by 2002:a2e:584e:: with SMTP id x14mr10279725ljd.335.1604512453695;
-        Wed, 04 Nov 2020 09:54:13 -0800 (PST)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id c1sm575344lji.101.2020.11.04.09.54.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 09:54:12 -0800 (PST)
-Received: by mail-lj1-f169.google.com with SMTP id 11so4366383ljf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 09:54:12 -0800 (PST)
-X-Received: by 2002:a2e:3e1a:: with SMTP id l26mr11736406lja.285.1604512452220;
- Wed, 04 Nov 2020 09:54:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
+ from : to : cc : subject : in-reply-to : references : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uoGKHjVI9qCmgMT7Z13+wCWlgoPk1FdTmCEv9WQfshk=;
+ b=aeEWS0hb1HQX8G0wD6qXlogTejASPSaHGEYeXKnii7xoNkWjNlXDIXRiqCvxxiS0mQ3F
+ lwoh/SjoFBfEXjGySionVF5nw7I0zJ5JLnFe1TsMbb44wWY8GQBc5Q1fFAlP630tya2X
+ S2vhuMKZwSOelDOU4e8OdJ7iYZiZ4arCegcl2uLy9G6Sr1SFVlEzYIiRHmSWWnfMUWZ5
+ TO+WuxZfSx/yFJKLiJ9TcfAvxWsmmnCB5CPEvuisU/gCpwBhKNtqMhg/sqzCWIvpbejP
+ ND1HO3uU+PY0D/DYeehu4sF3Ab5w7/HWuJJexawo8rf2wb7vefBYXx2rDCcl/jyCqF4w lA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34kxep5vcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 12:54:15 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A4HXxCZ019183;
+        Wed, 4 Nov 2020 12:54:15 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34kxep5vcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 12:54:15 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A4HppCV001558;
+        Wed, 4 Nov 2020 17:54:14 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04wdc.us.ibm.com with ESMTP id 34h0ej06xw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Nov 2020 17:54:14 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A4HsEkb4260454
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Nov 2020 17:54:14 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35A59124054;
+        Wed,  4 Nov 2020 17:54:14 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF419124052;
+        Wed,  4 Nov 2020 17:54:12 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.16.170.189])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  4 Nov 2020 17:54:12 +0000 (GMT)
 MIME-Version: 1.0
-References: <20201104082738.1054792-1-hch@lst.de>
-In-Reply-To: <20201104082738.1054792-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 4 Nov 2020 09:53:56 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whzWXASyyzs3veAUZznCT2+EeeBaX3o8w8NsKNL+woarQ@mail.gmail.com>
-Message-ID: <CAHk-=whzWXASyyzs3veAUZznCT2+EeeBaX3o8w8NsKNL+woarQ@mail.gmail.com>
-Subject: Re: support splice reads on seq_file based procfs files v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 04 Nov 2020 09:54:12 -0800
+From:   drt <drt@linux.vnet.ibm.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org, Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Santiago Leon <santi_leon@yahoo.com>,
+        John Allen <jallen@linux.vnet.ibm.com>, netdev@vger.kernel.org,
+        Lijun Pan <ljp@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dany Madden <drt@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 09/12] net: ethernet: ibm: ibmvnic: Fix some kernel-doc
+ misdemeanours
+In-Reply-To: <20201104133815.GC933237@lunn.ch>
+References: <20201104090610.1446616-1-lee.jones@linaro.org>
+ <20201104090610.1446616-10-lee.jones@linaro.org>
+ <20201104133815.GC933237@lunn.ch>
+Message-ID: <85bc60fb363b95bc87627607d20b3616@linux.vnet.ibm.com>
+X-Sender: drt@linux.vnet.ibm.com
+User-Agent: Roundcube Webmail/1.0.1
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_11:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0 clxscore=1011
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011040126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 12:29 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Greg reported a problem due to the fact that Android tests use procfs
-> files to test splice, which stopped working with 5.10-rc1.  This series
-> adds read_iter support for seq_file, and uses those for various seq_files
-> in procfs to restore splice read support.
+On 2020-11-04 05:38, Andrew Lunn wrote:
+> On Wed, Nov 04, 2020 at 09:06:07AM +0000, Lee Jones wrote:
+>> Fixes the following W=1 kernel build warning(s):
+>> 
+>>  from drivers/net/ethernet/ibm/ibmvnic.c:35:
+>>  inlined from ‘handle_vpd_rsp’ at 
+>> drivers/net/ethernet/ibm/ibmvnic.c:4124:3:
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
+>> or member 'hdr_field' not described in 'build_hdr_data'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
+>> or member 'skb' not described in 'build_hdr_data'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
+>> or member 'hdr_len' not described in 'build_hdr_data'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter 
+>> or member 'hdr_data' not described in 'build_hdr_data'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
+>> or member 'hdr_field' not described in 'create_hdr_descs'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
+>> or member 'hdr_data' not described in 'create_hdr_descs'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
+>> or member 'len' not described in 'create_hdr_descs'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
+>> or member 'hdr_len' not described in 'create_hdr_descs'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter 
+>> or member 'scrq_arr' not described in 'create_hdr_descs'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
+>> or member 'txbuff' not described in 'build_hdr_descs_arr'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
+>> or member 'num_entries' not described in 'build_hdr_descs_arr'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter 
+>> or member 'hdr_field' not described in 'build_hdr_descs_arr'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
+>> or member 'adapter' not described in 'do_change_param_reset'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
+>> or member 'rwi' not described in 'do_change_param_reset'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1832: warning: Function parameter 
+>> or member 'reset_state' not described in 'do_change_param_reset'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
+>> or member 'adapter' not described in 'do_reset'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
+>> or member 'rwi' not described in 'do_reset'
+>>  drivers/net/ethernet/ibm/ibmvnic.c:1911: warning: Function parameter 
+>> or member 'reset_state' not described in 'do_reset'
+>> 
+>> Cc: Dany Madden <drt@linux.ibm.com>
+>> Cc: Lijun Pan <ljp@linux.ibm.com>
+>> Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Santiago Leon <santi_leon@yahoo.com>
+>> Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
+>> Cc: John Allen <jallen@linux.vnet.ibm.com>
+>> Cc: netdev@vger.kernel.org
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Ack.
+Reviewed-by: Dany Madden <drt@linux.ibm.com>
 
-Al, do you want me to take these directly - we'll need this to avoid
-the regression in 5.10?  Or do you have other things pending and I'll
-see them in a pull request.
-
-             Linus
+Thanks, Lee.
+Dany
+> 
+>     Andrew
