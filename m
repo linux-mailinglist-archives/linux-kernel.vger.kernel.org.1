@@ -2,185 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC962A6752
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEA82A675E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730395AbgKDPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
+        id S1730603AbgKDPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730198AbgKDPT0 (ORCPT
+        with ESMTP id S1730564AbgKDPUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:19:26 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EBBC0613D3;
-        Wed,  4 Nov 2020 07:19:26 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 126so27588981lfi.8;
-        Wed, 04 Nov 2020 07:19:25 -0800 (PST)
+        Wed, 4 Nov 2020 10:20:21 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDFCC061A4A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:20:21 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id w1so21719959edv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:20:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IKIIpB9wqyidyjb1EI8WFpMa+/cnKeKADUKKGpWDv08=;
-        b=NptPlEGjmoYRgz9gbQS8+xuGz9yZ8ay7KQ+4RLy0Mi9mgRLXLF7eSZri//Wv+ozuMd
-         Za11jHGFTilOW2qjOreq4UpZUbqKBdoZtjPfrkHP1vxN+LpehgkkLLUYLQ/wH0RWeB0E
-         /lqqxJ4PWBA8iwO39iRsRwKTO9IHld8M2N848B5uF1c7JhloOl5YJaoZjXpW9YC+P5od
-         21A50Sqd7K1N7GuWHBbI4fFpUNKFGtX2LrSUcGUiki5jp3wLqtoCPlOeajTVMknzrxLv
-         HSkXI7714dQumN5Lp7mTEe0xTA+SLaSfod1Enr6YV38J8rzHmII/CTrnQV73l1i7dKui
-         dWAQ==
+        h=reply-to:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=9iHINUPztdXJT1/XCPbKjId6dxADhBL2QcIoiIOznIw=;
+        b=vSPFqA8r2PbLFpSFPOF0HHZS1aGu+jgHNhjs0zSutvtxG3TPtJv4tLouv7B417H7R5
+         6GFEaf12h5P+TJDjtKH0Pb+70xBpoKdYXLGU2KqpU4hv3lng0SivYVFvIqnhZLRbUrk4
+         tu89ZLgNieR04bW7rvse9oJVl+TphAdB7z/u2u99o6+jnbaV7evSzrjwBYWy+QQlIuwE
+         dkSff4xpYM6m27xQtEMrzOJU7bP6YfBQJ9Z2N/YwOP6EOyxi+1XUZJWrud74oHOGfA0B
+         ptRfjuOltZLtFOZAJFxrY3EArR+p0zaXWD3gboZ3ggCoZ6AjXQObi35Fpkkryu522wdO
+         hqcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IKIIpB9wqyidyjb1EI8WFpMa+/cnKeKADUKKGpWDv08=;
-        b=WYYAAYKdcsudkJNa9F+ijk0ONkBpqHys6G9G1Mgc7I6dOXO+yG0Ue2ymcuIZAD/aTJ
-         286Yj3p29L1I4Uf631IkOQ3N1bHyrRaoxHiPDSmvrqGU1jGu4fh8o8btgQbDNyB0TCVe
-         0RmRVNSbn10gUu6QpBkFqkCPAMPdipEbEWISPrleU5P0j6QcSWHLyo12RAToLM5RxBYA
-         gjXhNKKGwUECX55mvCksXNE+B6jnPtgqQBuzbpqiQdLVqXSxQ/LgVcta5mBmG6paCysX
-         80+azvO+fpD1KiC0yAleBSWROvDYAuiZA5zAOzzA3WGRpiGYwivepkPCK2fvHMhcHLKA
-         eI8w==
-X-Gm-Message-State: AOAM531qpLuMCqD4FqYJV1VmW5lnftEbmMUzaPapzt+wiULbZtbEKlxj
-        fhKOIjc0dB31n3Hw7/K1+rLY4UwNgWe7Sg==
-X-Google-Smtp-Source: ABdhPJxRsNTI+FRktRgXc8IKzV3bqj8ft1XhtV7Y1uPyzyr4gei7EPySND+E7YvldxtAg6TA6B1hkw==
-X-Received: by 2002:ac2:58f6:: with SMTP id v22mr10547760lfo.431.1604503163884;
-        Wed, 04 Nov 2020 07:19:23 -0800 (PST)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id f9sm542782ljg.53.2020.11.04.07.19.22
+        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9iHINUPztdXJT1/XCPbKjId6dxADhBL2QcIoiIOznIw=;
+        b=pL8ar4jPMTWATN6FbuEVU0LUG6QoLsyawSrLw83ThFug8TY1fwv3hNy0p1ONmANN7i
+         5VChpAmdm5UlmX5mdMTn2dxyTZqzEFhpFqGC8G+bhLYqgs+nzYf2mYJvXGRclMu72LSy
+         /IqiZ/Hn25G2sPOFySCAtrEQhlXgiooWWBVdqXdS0L2eG0vILj6vlC426ldRsFiHUlc+
+         vEz61Z4IJlyuqPS+8C3N4+I3WG2jIWlSYRODdekbjG5oIt0aLpHB/F9eeANVSYF8YFQB
+         rTc45Fao58MDXxjoRxRBsCmzI3+zy10rLSlyqJ0JgAH14eIZPfvbHtopMFFD00bo1auz
+         tDSw==
+X-Gm-Message-State: AOAM5308l4NyKVC3GF5B+sRfo6Ij3vMH59AFOnmn6xRC8/CeIUpxi/uz
+        Zltr7qPCtRVzrGSWTVuO6ZFokbma9iA=
+X-Google-Smtp-Source: ABdhPJy+J2KPbmkO9Ole5/OvXG6TfuEtPx1fnftkDEYDhniSshEU7K3eTaHLQE4Ue/qXqWGf0Ig+cg==
+X-Received: by 2002:a05:6402:3136:: with SMTP id dd22mr15592036edb.256.1604503220063;
+        Wed, 04 Nov 2020 07:20:20 -0800 (PST)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id 22sm1157421ejw.27.2020.11.04.07.20.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 07:19:23 -0800 (PST)
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Florian Weimer <fweimer@redhat.com>, Will Deacon <will@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        libc-alpha@sourceware.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <20201103173438.GD5545@sirena.org.uk>
- <20201104092012.GA6439@willie-the-truck>
- <87h7q54ghy.fsf@oldenburg2.str.redhat.com>
- <d2f51a90-c5d6-99bd-35b8-f4fded073f95@gmail.com>
- <20201104143500.GC28902@gaia>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <f595e572-40bc-a052-f3f2-763433d6762f@gmail.com>
-Date:   Wed, 4 Nov 2020 17:19:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 04 Nov 2020 07:20:19 -0800 (PST)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH] drm/amdgpu: replace idr_init() by idr_init_base()
+To:     Deepak R Varma <mh12gx2825@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201104151630.GA69221@localhost>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <765f1539-c657-ede4-96d6-586555f5e658@gmail.com>
+Date:   Wed, 4 Nov 2020 16:20:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201104143500.GC28902@gaia>
+In-Reply-To: <20201104151630.GA69221@localhost>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.11.2020 16.35, Catalin Marinas wrote:
-> On Wed, Nov 04, 2020 at 11:55:57AM +0200, Topi Miettinen wrote:
->> On 4.11.2020 11.29, Florian Weimer wrote:
->>> * Will Deacon:
->>>
->>>> Is there real value in this seccomp filter if it only looks at mprotect(),
->>>> or was it just implemented because it's easy to do and sounds like a good
->>>> idea?
->>>
->>> It seems bogus to me.  Everyone will just create alias mappings instead,
->>> just like they did for the similar SELinux feature.  See “Example code
->>> to avoid execmem violations” in:
->>>
->>>     <https://www.akkadia.org/drepper/selinux-mem.html>
-> [...]
->>> As you can see, this reference implementation creates a PROT_WRITE
->>> mapping aliased to a PROT_EXEC mapping, so it actually reduces security
->>> compared to something that generates the code in an anonymous mapping
->>> and calls mprotect to make it executable.
-> [...]
->> If a service legitimately needs executable and writable mappings (due to
->> JIT, trampolines etc), it's easy to disable the filter whenever really
->> needed with "MemoryDenyWriteExecute=no" (which is the default) in case of
->> systemd or a TE rule like "allow type_t self:process { execmem };" for
->> SELinux. But this shouldn't be the default case, since there are many
->> services which don't need W&X.
-> 
-> I think Drepper's point is that separate X and W mappings, with enough
-> randomisation, would be more secure than allowing W&X at the same
-> address (but, of course, less secure than not having W at all, though
-> that's not always possible).
-> 
->> I'd also question what is the value of BTI if it can be easily circumvented
->> by removing PROT_BTI with mprotect()?
-> 
-> Well, BTI is a protection against JOP attacks. The assumption here is
-> that an attacker cannot invoke mprotect() to disable PROT_BTI. If it
-> can, it's probably not worth bothering with a subsequent JOP attack, it
-> can already call functions directly.
+Am 04.11.20 um 16:16 schrieb Deepak R Varma:
+> idr_init() uses base 0 which is an invalid identifier. The new function
+> idr_init_base allows IDR to set the ID lookup from base 1. This avoids
+> all lookups that otherwise starts from 0 since 0 is always unused.
+>
+> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
+>
+> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
 
-I suppose that the target for the attacker is to eventually perform 
-system calls rather than looping forever in JOP/ROP gadgets.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-> I see MDWX not as a way of detecting attacks but rather plugging
-> inadvertent security holes in certain programs. On arm64, such hardening
-> currently gets in the way of another hardening feature, BTI.
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> index c80d8339f58c..b98ae173a9de 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> @@ -576,7 +576,7 @@ int amdgpu_ctx_wait_prev_fence(struct amdgpu_ctx *ctx,
+>   void amdgpu_ctx_mgr_init(struct amdgpu_ctx_mgr *mgr)
+>   {
+>   	mutex_init(&mgr->lock);
+> -	idr_init(&mgr->ctx_handles);
+> +	idr_init_base(&mgr->ctx_handles, 1);
+>   }
+>   
+>   long amdgpu_ctx_mgr_entity_flush(struct amdgpu_ctx_mgr *mgr, long timeout)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> index efda38349a03..d65a1888683b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> @@ -1052,7 +1052,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
+>   	}
+>   
+>   	mutex_init(&fpriv->bo_list_lock);
+> -	idr_init(&fpriv->bo_list_handles);
+> +	idr_init_base(&fpriv->bo_list_handles, 1);
+>   
+>   	amdgpu_ctx_mgr_init(&fpriv->ctx_mgr);
+>   
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> index df110afa97bf..0154282771c7 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> @@ -3199,7 +3199,7 @@ void amdgpu_vm_manager_init(struct amdgpu_device *adev)
+>   	adev->vm_manager.vm_update_mode = 0;
+>   #endif
+>   
+> -	idr_init(&adev->vm_manager.pasid_idr);
+> +	idr_init_base(&adev->vm_manager.pasid_idr, 1);
+>   	spin_lock_init(&adev->vm_manager.pasid_lock);
+>   }
+>   
 
-I don't think it has to get in the way at all. Why wouldn't something 
-simple like this work:
-
-diff --git a/elf/dl-load.c b/elf/dl-load.c
-index 646c5dca40..12a74d15e8 100644
---- a/elf/dl-load.c
-+++ b/elf/dl-load.c
-@@ -1170,8 +1170,13 @@ _dl_map_object_from_fd (const char *name, const 
-char *origname, int fd,
-             c->prot |= PROT_READ;
-           if (ph->p_flags & PF_W)
-             c->prot |= PROT_WRITE;
--         if (ph->p_flags & PF_X)
-+         if (ph->p_flags & PF_X) {
-             c->prot |= PROT_EXEC;
-+#ifdef PROT_BTI
-+           if (GLRO(dl_bti) & 1)
-+             c->prot |= PROT_BTI;
-+#endif
-+         }
-  #endif
-           break;
-
-diff --git a/elf/dl-support.c b/elf/dl-support.c
-index 7704c101c5..22c7cc7b81 100644
---- a/elf/dl-support.c
-+++ b/elf/dl-support.c
-@@ -222,7 +222,7 @@ __rtld_lock_define_initialized_recursive (, 
-_dl_load_write_lock)
-
-
-  #ifdef HAVE_AUX_VECTOR
--int _dl_clktck;
-+int _dl_clktck, _dl_bti;
-
-  void
-  _dl_aux_init (ElfW(auxv_t) *av)
-@@ -294,6 +294,11 @@ _dl_aux_init (ElfW(auxv_t) *av)
-        case AT_RANDOM:
-         _dl_random = (void *) av->a_un.a_val;
-         break;
-+#ifdef PROT_BTI
-+      case AT_BTI:
-+       _dl_bti = (void *) av->a_un.a_val;
-+       break;
-+#endif
-        DL_PLATFORM_AUXV
-        }
-    if (seen == 0xf)
-
-Kernel sets the aux vector to indicate that BTI should be enabled for 
-all segments and main exe is already protected.
-
--Topi
