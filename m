@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D1F2A6DED
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3A82A6DE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731654AbgKDTbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:31:16 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45268 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731561AbgKDTbH (ORCPT
+        id S1731160AbgKDTa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730788AbgKDTa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:31:07 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4J38xR010691;
-        Wed, 4 Nov 2020 14:30:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=kqKl/Fy8OlJQj/Gv88agH7/I5WU7KGmVdKg9ghw1xjE=;
- b=axlsn2DRWHDAS1wDGm5KQ2jnhCI2uU7k639SaPpAjB8Z+DVxulOkpAMQ1G/H5twIxT5e
- 9PRqMtQtX5M4rqSTIMf4U+Q+6c/JT/NjOBDbavk00Qie57PBy7U1zHmLj4cZpN+Ft2U4
- nALH8GWZpYxVp4pFTLOx7zMROTMMUEH18i1y6p7XpS+m8O9SWD0UG0ENIeFoy0oDa0x6
- xDuCD5bo1uJjojo5EpBeiCNMFVPdxV29En81C9QKwkGYZkWuqQHycGAGu47txBVnPT57
- Qj7WIg5ZLz8mRYWytWSsGErDtthbiBPn5q5xt5zEG2TlbvhScOmiLNOslB/C0MX+8s3Q DQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34m0qck9gv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 14:30:54 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0A4J3INU011124;
-        Wed, 4 Nov 2020 14:30:53 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34m0qck9ea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 14:30:53 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0A4JRnj4026068;
-        Wed, 4 Nov 2020 19:30:48 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 34j8rh9jk6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Nov 2020 19:30:47 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0A4JUjQb60424536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Nov 2020 19:30:45 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 544FF4C04A;
-        Wed,  4 Nov 2020 19:30:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4925A4C044;
-        Wed,  4 Nov 2020 19:30:44 +0000 (GMT)
-Received: from localhost (unknown [9.145.163.252])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  4 Nov 2020 19:30:44 +0000 (GMT)
-Date:   Wed, 4 Nov 2020 20:30:42 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 16/41] kasan: rename KASAN_SHADOW_* to KASAN_GRANULE_*
-Message-ID: <your-ad-here.call-01604518242-ext-7611@work.hours>
-References: <cover.1604333009.git.andreyknvl@google.com>
- <4dee872cf377e011290bbe2e90c7e7fd24e789dd.1604333009.git.andreyknvl@google.com>
- <your-ad-here.call-01604517065-ext-2603@work.hours>
- <CAAeHK+wuJ5HuGgyor903VcBJSx8sUewJqmhA_nsbVbw0h2UFXg@mail.gmail.com>
+        Wed, 4 Nov 2020 14:30:57 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C53C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:30:57 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id h62so3421006wme.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+B4nn+p6SZl8VwNKsIwWlOdD51ov0d76Utq0vxaU8M=;
+        b=vQ6r5NKUfUoH6zxRR/t4N8Ndt5Qt2rIQ4STPSFDtPuzui6ro3NzW2pe9Bc1vQFNzfV
+         TfHzVbLO9TIGAsQnKYlKIuSaMLvRXOtw2xLeFydPuoZfHxQ/Cp/WfA/sX+LMqXpoxDRe
+         S+sQ/QUtJLJIU8WK2MRwiUSfzZvSwX7kW3F9aHKU5/yl54G5IyxE6QuHi4YOEINMLoyf
+         i07fivKubVP7PqY710hdExXKheyV7mWBdLtzA1bixaCIZ8zOwcCQKZ3FmbUDJJm5NbRp
+         tqqmSROBrrx8h4pO4Ij+M7HSP8ZUWLxvwIxNCu3yUoC74krCppxZNozNpyiRYO9g+bvk
+         XcOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+B4nn+p6SZl8VwNKsIwWlOdD51ov0d76Utq0vxaU8M=;
+        b=LS3vU+/F5eiycKuoc2zd/C0m57oG9gkz4TPRVaW9uh96JXbXkynBul3ptXlHb4Tg7g
+         rcnvHUPZUq4GXdQcaV738i2Y+9cEc2ApwWIXGQOZ1EOp2TfYXJk7S2FSgaTPJX3qjit7
+         m7sLjJpyk2csPLj5EyrvSlFWj3Qio0E9dobyjLTipRsFk4YRrH5AASQK2Co0LB/YJSmH
+         gmESRH2FP3wOeE2INv1ApUAzQcCWzjeb7tks1Uu9OuBgjUgo4tVDcYuS+RLZClLwT5XK
+         L6LbLtq6hjO7T3AMLsuQbxMqrv9aNaNzA40KVLA3gKtS4jR3/uYw9xvqYY6XOIfWr3oo
+         6bLg==
+X-Gm-Message-State: AOAM533Yb/fnMSiMzXTypGCA9ndkMzapNU5sB6I9n3tAU+yZSJd7CYig
+        fk6C2/KVtPYmjk97jCFdonIhlw==
+X-Google-Smtp-Source: ABdhPJzHNVHbF+dAaencqhQbE8YKSuUJoCIc128keyMbqIKB5KKOffJsTQet890hcblRShwH+P4JCg==
+X-Received: by 2002:a1c:6843:: with SMTP id d64mr6465760wmc.131.1604518255891;
+        Wed, 04 Nov 2020 11:30:55 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id m12sm4051671wrs.92.2020.11.04.11.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 11:30:55 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 0/8] gpio: exar: refactor the driver
+Date:   Wed,  4 Nov 2020 20:30:43 +0100
+Message-Id: <20201104193051.32236-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+wuJ5HuGgyor903VcBJSx8sUewJqmhA_nsbVbw0h2UFXg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-04_12:2020-11-04,2020-11-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 clxscore=1015 mlxlogscore=999 impostorscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011040138
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 08:22:07PM +0100, Andrey Konovalov wrote:
-> On Wed, Nov 4, 2020 at 8:11 PM Vasily Gorbik <gor@linux.ibm.com> wrote:
-> >
-> > On Mon, Nov 02, 2020 at 05:03:56PM +0100, Andrey Konovalov wrote:
-> > > This is a preparatory commit for the upcoming addition of a new hardware
-> > > tag-based (MTE-based) KASAN mode.
-> > >
-> > > The new mode won't be using shadow memory, but will still use the concept
-> > > of memory granules. Each memory granule maps to a single metadata entry:
-> > > 8 bytes per one shadow byte for generic mode, 16 bytes per one shadow byte
-> > > for software tag-based mode, and 16 bytes per one allocation tag for
-> > > hardware tag-based mode.
-> > >
-> > > Rename KASAN_SHADOW_SCALE_SIZE to KASAN_GRANULE_SIZE, and KASAN_SHADOW_MASK
-> > > to KASAN_GRANULE_MASK.
-> > >
-> > > Also use MASK when used as a mask, otherwise use SIZE.
-> > >
-> > > No functional changes.
-> > >
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > Reviewed-by: Marco Elver <elver@google.com>
-> > > ---
-> > > Change-Id: Iac733e2248aa9d29f6fc425d8946ba07cca73ecf
-> > > ---
-> > >  Documentation/dev-tools/kasan.rst |  2 +-
-> > >  lib/test_kasan.c                  |  2 +-
-> > >  mm/kasan/common.c                 | 39 ++++++++++++++++---------------
-> > >  mm/kasan/generic.c                | 14 +++++------
-> > >  mm/kasan/generic_report.c         |  8 +++----
-> > >  mm/kasan/init.c                   |  8 +++----
-> > >  mm/kasan/kasan.h                  |  4 ++--
-> > >  mm/kasan/report.c                 | 10 ++++----
-> > >  mm/kasan/tags_report.c            |  2 +-
-> > >  9 files changed, 45 insertions(+), 44 deletions(-)
-> >
-> > hm, this one got escaped somehow
-> >
-> > lib/test_kasan_module.c:
-> > 18 #define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_SHADOW_SCALE_SIZE)
-> 
-> You mean it's not on the patch? It is, almost at the very top.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-lib/test_kasan_module.c != lib/test_kasan.c
+I just wanted to convert the driver to using simpler IDA API but ended up
+quickly converting it to using regmap. Unfortunately I don't have the HW
+to test it so marking the patches that introduce functional change as RFT
+and Cc'ing the original author.
 
-I fetched your branch. And I had to fix it up to build old good kasan
-test module CONFIG_TEST_KASAN_MODULE=m
+v1 -> v2:
+- add new regmap helper: regmap_assign_bits()
+- fix lvl vs sel register access
+- set value in direction_output callback
+
+Note: I didn't use the fancy method of offset calculation Andy and David
+suggested because this series broke the driver according to Jan - let's
+get it right before we modify it any more. I found a couple problems that
+could maybe cause the crash. Jan: could you give it another spin?
+
+Bartosz Golaszewski (8):
+  regmap: provide regmap_assign_bits()
+  gpio: exar: add a newline after the copyright notice
+  gpio: exar: include idr.h
+  gpio: exar: switch to a simpler IDA interface
+  gpio: exar: use a helper variable for &pdev->dev
+  gpio: exar: unduplicate address and offset computation
+  gpio: exar: switch to using regmap
+  gpio: exar: use devm action for freeing the IDA and drop remove()
+
+ drivers/gpio/Kconfig     |   1 +
+ drivers/gpio/gpio-exar.c | 151 +++++++++++++++++++--------------------
+ include/linux/regmap.h   |  16 +++++
+ 3 files changed, 90 insertions(+), 78 deletions(-)
+
+-- 
+2.29.1
+
