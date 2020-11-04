@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5032A6284
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273F32A6288
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgKDKvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:51:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46152 "EHLO mail.kernel.org"
+        id S1729198AbgKDKv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:51:28 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:41252 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgKDKvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:51:09 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74C3D21734;
-        Wed,  4 Nov 2020 10:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604487069;
-        bh=EL3MPPblpZETCN5CGBbpdx2wNFw2ehB7q+0vul79rOU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gnw8ix7jtk+FpSQ2JPIWzav2vH+eYG7WJxtrf3gv/xekAf36Ws7aUG0veeDYpGsdL
-         ZjtWjWdRkESnWPvGc+DUh/VM2bj8OT7CsSAU3S2NIC1qWVtX/2BmeZkbk7CC9Iar2b
-         vUlKB7Q91MQqaa5expOpYUMEFOz2ppmzbdDJ95Es=
-Date:   Wed, 4 Nov 2020 10:50:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>, libc-alpha@sourceware.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
- #26831]
-Message-ID: <20201104105058.GA4812@sirena.org.uk>
-References: <cover.1604393169.git.szabolcs.nagy@arm.com>
- <20201103173438.GD5545@sirena.org.uk>
- <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
+        id S1729089AbgKDKv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:51:28 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kaGNp-00054b-Sv; Wed, 04 Nov 2020 11:51:17 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linux-rockchip@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Markus Reichl <m.reichl@fivetechno.de>
+Cc:     Markus Reichl <m.reichl@fivetechno.de>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dianders@chromium.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399-roc-pc boards.
+Date:   Wed, 04 Nov 2020 11:51:17 +0100
+Message-ID: <4984701.vSXMUKeAfh@diego>
+In-Reply-To: <20201104094950.2096-1-m.reichl@fivetechno.de>
+References: <20201104094950.2096-1-m.reichl@fivetechno.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
-In-Reply-To: <8c99cc8e-41af-d066-b786-53ac13c2af8a@arm.com>
-X-Cookie: Take your Senator to lunch this week.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Markus,
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Am Mittwoch, 4. November 2020, 10:49:45 CET schrieb Markus Reichl:
+> Recently introduced async probe on mmc devices can shuffle block IDs.
+> Pin them to fixed values to ease booting in evironments where UUIDs
+> are not practical. Use newly introduced aliases for mmcblk devices from [1].
+> 
+> [1]
+> https://patchwork.kernel.org/patch/11747669/
+> 
+> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> index e7a459fa4322..bc9482b59428 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> @@ -13,6 +13,11 @@ / {
+>  	model = "Firefly ROC-RK3399-PC Board";
+>  	compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
+>  
+> +	aliases {
+> +		mmc0 = &sdmmc;
+> +		mmc1 = &sdhci;
+> +	};
+> +
 
-On Tue, Nov 03, 2020 at 11:41:42PM -0600, Jeremy Linton wrote:
-> On 11/3/20 11:34 AM, Mark Brown wrote:
+Any reason for this odering?
 
-> > Given that there were still some ongoing discussions on a more robust
-> > kernel interface here and there seem to be a few concerns with this
-> > series should we perhaps just take a step back and disable this seccomp
-> > filter in systemd on arm64, at least for the time being?  That seems
-> > safer than rolling out things that set ABI quickly, a big part of the
+I.e. some previous incarnations had it ordered as (emmc, mmc, sdio).
+This is also true for the ChromeOS out-of-tree usage of those, the
+rk3399 dts in the chromeos-4.4 tree also orders this as sdhci, sdmmc, sdio.
 
-> So, that's a bigger hammer than I think is needed and punishes !BTI
-> machines. I'm going to suggest that if we need to carry a temp patch its
-> more like the glibc patch I mentioned in the Fedora defect. That patch
-> simply logs a message, on the mprotect failures rather than aborting. Its
-> fairly non-intrusive.
+And I guess a further question would be when we're doing arbitary orderings
+anyway, why is this not in rk3399.dtsi ;-) ?
 
-> That leaves seccomp functional, and BTI generally functional except when
-> seccomp is restricting it. I've also been asked that if a patch like that is
-> needed, its (temporary?) merged to the glibc trunk, rather than just being
-> carried by the distro's.
 
-The effect on pre-BTI hardware is an issue, another option would be for
-systemd to disable this seccomp usage but only after checking for BTI
-support in the system rather than just doing so purely based on the
-architecture.
+Heiko
 
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+ih5EACgkQJNaLcl1U
-h9Dcpwf/XdKNaAx2fhe7pT7ULDO3eS7hkZsOWJAp/10DTzy4okkGEczgGoT+sN0F
-5SY0u/yy8VpiUyQbxawQcWMFX4F8mwiNq6SH4GOFGL+zE4BbLUWULZsszOc2d4oQ
-MmtZZPIE/+e8dNjvfe/rV+BEcKV4vTgVYHm/khWphDNYFymbinSrEkkCaTltcjdT
-zr85iYltlC5uVO+WxbNhSc4rXx63oWZV3XCpUpwHf6go8ke0LrWqVH7XbZzXqrDC
-h/c/vVfMESWXbxtPO46wo1g+KP+cL1ySrz2jK5LswI2aBDCyL3dWJSDaMeM7puX6
-K37KSG088x6Vh/z2Qv2bjUci04ePeA==
-=ta+U
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
