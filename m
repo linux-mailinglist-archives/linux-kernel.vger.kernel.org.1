@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F9A2A5EF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F4B2A5EE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 08:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgKDHvu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 4 Nov 2020 02:51:50 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:44494 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727110AbgKDHvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 02:51:50 -0500
-X-Greylist: delayed 530 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 02:51:49 EST
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id D296C604B1;
-        Wed,  4 Nov 2020 08:44:55 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     trivial@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: fix typos in "compress" variants
-Date:   Wed, 04 Nov 2020 08:44:55 +0100
-Message-ID: <1959691.vJJ4Jf3O8W@devpool47>
-Organization: emlix GmbH
+        id S1728827AbgKDHrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 02:47:15 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17978 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKDHrO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 02:47:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa25c810001>; Tue, 03 Nov 2020 23:47:13 -0800
+Received: from [10.40.203.207] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 07:47:02 +0000
+Subject: Re: [PATCH 0/3] Add support to handle prefetchable memory
+To:     Thierry Reding <treding@nvidia.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+References: <20201023195655.11242-1-vidyas@nvidia.com>
+ <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+ <20201026123012.GA356750@ulmo>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
+Date:   Wed, 4 Nov 2020 13:16:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201026123012.GA356750@ulmo>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604476033; bh=QeSqa6GvM+bf3uNLQi9VSfzj1po5EbjFmVrkNpp/7gA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Ifr6JUnC5B0NMRMUvYd+/WhhZXKPkWuzhCfs3e+itFu4MJSEU5ixIMKMSxduPdom6
+         iMu+6cSqqUssACAej8CuEl7tghcArGXURwtZSse9j4QNSAmOZRVtRyETY53B2FEpOQ
+         1oNnf1vdPWfzD/wXf1A5v/oLDuWaXhrBFa4cIglsmUXLarT4rFHiVb4nY3fkG0GYun
+         Odq3MJifchS403KcZ7QDrvv4qiwWn6dyitZ+ZG+e04Aqnh7PW2zT1hmFrMRSRJ0fq5
+         +xv+TGOjqKmKIvJkY2LQfAHQ2OYZfA/PLiPsRV5I29acgF1PSRbeumhQ5gxDQbvFKu
+         JWx8cuiOxBRWA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
----
- arch/x86/kernel/head64.c | 2 +-
- fs/f2fs/data.c           | 2 +-
- scripts/kallsyms.c       | 2 +-
- scripts/spelling.txt     | 3 +++
- 4 files changed, 6 insertions(+), 3 deletions(-)
+Lorenzo / Bjorn,
+Could you please review patches-1 & 2 in this series?
+For the third patch, we already went with Rob's patch @ 
+http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.221483-1-robh@kernel.org/
 
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 05e117137b45..a18a11acad92 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -105,7 +105,7 @@ static unsigned int __head *fixup_int(void *ptr, unsigned long physaddr)
- static bool __head check_la57_support(unsigned long physaddr)
- {
- 	/*
--	 * 5-level paging is detected and enabled at kernel decomression
-+	 * 5-level paging is detected and enabled at kernel decompression
- 	 * stage. Only check if it has been enabled there.
- 	 */
- 	if (!(native_read_cr4() & X86_CR4_LA57))
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index be4da52604ed..93c23ae5723d 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2377,7 +2377,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
- 
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 		if (f2fs_compressed_file(inode)) {
--			/* there are remained comressed pages, submit them */
-+			/* there are remained compressed pages, submit them */
- 			if (!f2fs_cluster_can_merge_page(&cc, page->index)) {
- 				ret = f2fs_read_multi_pages(&cc, &bio,
- 							max_nr_pages,
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 7ecd2ccba531..623dedecd8e3 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -12,7 +12,7 @@
-  *  map char code 0xF7 to represent "write_" and then in every symbol where
-  *  "write_" appears it can be replaced by 0xF7, saving 5 bytes.
-  *      The used codes themselves are also placed in the table so that the
-- *  decompresion can work without "special cases".
-+ *  decompression can work without "special cases".
-  *      Applied to kernel symbols, this usually produces a compression ratio
-  *  of about 50%.
-  *
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 953f4a2de1e5..061e15201739 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -338,6 +338,7 @@ compoment||component
- comppatible||compatible
- compres||compress
- compresion||compression
-+comressed||compressed
- comression||compression
- comunication||communication
- conbination||combination
-@@ -406,6 +407,8 @@ debouce||debounce
- decendant||descendant
- decendants||descendants
- decompres||decompress
-+decompresion||decompression
-+decomression||decompression
- decsribed||described
- decription||description
- dectected||detected
--- 
-2.29.1
+Thanks,
+Vidya Sagar
 
-
--- 
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 Göttingen, Germany
-Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
-
-emlix - smart embedded open source
-
-
-
+On 10/26/2020 6:02 PM, Thierry Reding wrote:
+> On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
+>> On 10/23/20, 3:57 PM, Vidya Sagar wrote:
+>>>
+>>> This patch series adds support for configuring the DesignWare IP's ATU
+>>> region for prefetchable memory translations.
+>>> It first starts by flagging a warning if the size of non-prefetchable
+>>> aperture goes beyond 32-bit as PCIe spec doesn't allow it.
+>>> And then adds required support for programming the ATU to handle higher
+>>> (i.e. >4GB) sizes and then finally adds support for differentiating
+>>> between prefetchable and non-prefetchable regions and configuring one of
+>>> the ATU regions for prefetchable memory translations purpose.
+>>>
+>>> Vidya Sagar (3):
+>>>    PCI: of: Warn if non-prefetchable memory aperture size is > 32-bit
+>>>    PCI: dwc: Add support to program ATU for >4GB memory aperture sizes
+>>>    PCI: dwc: Add support to handle prefetchable memory mapping
+>>
+>> For 2nd & 3rd,
+>> Acked-by: Jingoo <jingoohan1@gmail.com>
+>> But, I still want someone to ack 1st patch, not me.
+>>
+>> To Vidya,
+>> If possible, can you ask your coworker to give 'Tested-by'? It will be very helpful.
+>> Thank you.
+> 
+> On next-20201026 (but also going back quite a while) I'm seeing this
+> during boot on Jetson AGX Xavier (Tegra194):
+> 
+> [    3.493382] ahci 0001:01:00.0: version 3.0
+> [    3.493889] ahci 0001:01:00.0: SSS flag set, parallel bus scan disabled
+> [    4.497706] ahci 0001:01:00.0: controller reset failed (0xffffffff)
+> [    4.498114] ahci: probe of 0001:01:00.0 failed with error -5
+> 
+> After applying this series, AHCI over PCI is back to normal:
+> 
+> [    3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
+> [    3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf led only pmp fbs pio slum part sxs
+> [    3.559747] scsi host0: ahci
+> [    3.561998] ata1: SATA max UDMA/133 abar m512@0x1230010000 port 0x1230010100 irq 63
+> 
+> So for the series:
+> 
+> Tested-by: Thierry Reding <treding@nvidia.com>
+> 
