@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33732A6A36
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69A12A6A3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731400AbgKDQrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:47:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730973AbgKDQrA (ORCPT
+        id S1731415AbgKDQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:48:53 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:40711 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgKDQsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:47:00 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8096EC0613D3;
-        Wed,  4 Nov 2020 08:47:00 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 133so17738648pfx.11;
-        Wed, 04 Nov 2020 08:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4BiqyjCfkwLMqfM2F+PRcW4/yrG0vhDBPTZnaKc2B14=;
-        b=SpHPN5sxujb2Z5x4hetvs4nayl573NQgBTdNr2U8tpZ0Mki6koIEMJGduNq6IMBmZd
-         c0OepXoOYMaBEy6TDuWgk0truIygFka096WMYnPtaFMeXpDXz0LTRvtopH6iFigL5RvL
-         8GyJZwyqnqFhy29yX9/icgtj5B+oa1XjmMo+BnmkR4v/1Gv33HvzLEXOMr2+Ml17KcMU
-         ERjOsCTFeOlmDPWR+s4s+HDN7OW8M+nUd8M3VmLLxFb5w2WO84FaYZQt4Y5oTd08HNbD
-         8qaHA0ZigxHamHFLQA5fA8MMJbe+nqrJXFSjBoC5t+vFInUCAFKVAdfCovF7MYPSig4a
-         3lZQ==
+        Wed, 4 Nov 2020 11:48:53 -0500
+Received: by mail-lf1-f68.google.com with SMTP id e27so5157750lfn.7;
+        Wed, 04 Nov 2020 08:48:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4BiqyjCfkwLMqfM2F+PRcW4/yrG0vhDBPTZnaKc2B14=;
-        b=PcQy0ryeWQ7fSkc3liPx9GnbWbCeyensVhWluxgb5/fKCRpUa08ZiolSWD2sLBDzR4
-         JrcgiS3B6W+YmsbWY7g+M2c22r7/VDlSws4KAPajIgqVoGr587YltD+ymLdLJFFrSmcW
-         tl9OIcoYLoYwEpHQUJmB4QPspqno+uAETm567fm6zo+uCXLRWjnNTIkSlZPTDCX0J9dw
-         v0EuEjbU+Oadi+3arHi1KA0URcW19zPYGZChuk8IzETwpMP6s5cfwOYdeT3Yh9NDoNk6
-         GsaXdmK5+3b3DKt664xhLgkeDOilxjgAjX7Fi6l44ZM4yFbCoqcgYGEvBD9vAPAwSGih
-         ljVA==
-X-Gm-Message-State: AOAM532yAJZafTwsZaOY6hiDCf0ZVydQY6LGub4FEAS6kGqwFJN6NcKJ
-        HlLQr8kPlv1GcoWqw9zvP0M=
-X-Google-Smtp-Source: ABdhPJxtmfifAJ9/aztbiCudxhF8tpGMkXiLbaOvoqiYQjN7WgAdCnirOAPU73KB+jfaKkszFFzG8g==
-X-Received: by 2002:a63:4d0e:: with SMTP id a14mr11235349pgb.91.1604508420067;
-        Wed, 04 Nov 2020 08:47:00 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id k7sm2913535pfa.184.2020.11.04.08.46.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=re+vkNaV2IqjWLvWTPODjB+TaAeDQ2wT/vcW13BpaME=;
+        b=hZgf1e/JBLQ+7uV5maGFzSLIT+XSMPvNazHtC+O1xqTEk/IQmvbsz3rKJP2JaxYffU
+         EVrvigq7sHxZCvEBnJayW7UGHlr0IVoBGo3tLkMCZntgOZtPrDOZzY4OeD4RVQU2H12b
+         kHwpiXiBvzDgvl6eQIIUzHLLQASteX29wXy1iYsHuFPYIhmytFLizfnwllTUS27AyNX2
+         b+QiQhXRV8poTZMKhmqElW/JCbN6hKtNZvBPzALUfNQAeSd25sKbOqAoJK+8/gp+KMcB
+         UbbrwVSdsip2f438bDuKGB2VRPfrtrpqzwTcAIbl4NKPb1B1tqM7u/Pri15EGT6tuLko
+         9IzA==
+X-Gm-Message-State: AOAM533I9AJaTecfZjJWXkSZm1fCvA+6nXQsdWiR+7G6supFZo9xWGst
+        ocSe7SknoTqCKpNkZTmb/g05MC7yMOnYcA==
+X-Google-Smtp-Source: ABdhPJyFhRIgQ3n36N/ci6UZOj02hZ7KVRNUZCAsNwUfwnbWw2KB5ijNn73AuDv5Kvhn7VnHmrRucw==
+X-Received: by 2002:a19:c80a:: with SMTP id y10mr10860686lff.329.1604508530318;
+        Wed, 04 Nov 2020 08:48:50 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x4sm563021ljj.62.2020.11.04.08.48.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:46:59 -0800 (PST)
-Date:   Wed, 4 Nov 2020 08:46:57 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     min.li.xe@renesas.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/3] ptp: idt82p33: optimize _idt82p33_adjfine
-Message-ID: <20201104164657.GE16105@hoboy.vegasvil.org>
-References: <1604505709-5483-1-git-send-email-min.li.xe@renesas.com>
- <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
+        Wed, 04 Nov 2020 08:48:49 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1kaLxu-0006sC-BR; Wed, 04 Nov 2020 17:48:54 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Davidlohr Bueso <dave@stgolabs.net>, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH] USB: serial: mos7720: fix parallel-port state restore
+Date:   Wed,  4 Nov 2020 17:47:27 +0100
+Message-Id: <20201104164727.26351-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604505709-5483-3-git-send-email-min.li.xe@renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:01:49AM -0500, min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> Use div_s64 so that the neg_adj is not needed.
+The parallel-port restore operations is called when a driver claims the
+port and is supposed to restore the provided state (e.g. saved when
+releasing the port).
 
-Back in the day, I coded the neg_adj because there was some issue with
-signed 64 bit division that I can't recall now.  Either div_s64 didn't
-exist or it was buggy on some archs... there was _some_ reason.
+Fixes: b69578df7e98 ("USB: usbserial: mos7720: add support for parallel port on moschip 7715")
+Cc: stable <stable@vger.kernel.org>     # 2.6.35
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/serial/mos7720.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-So unless you are sure that this works on all platforms, I would leave
-it alone.
+diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
+index 5eed1078fac8..5a5d2a95070e 100644
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -639,6 +639,8 @@ static void parport_mos7715_restore_state(struct parport *pp,
+ 		spin_unlock(&release_lock);
+ 		return;
+ 	}
++	mos_parport->shadowDCR = s->u.pc.ctr;
++	mos_parport->shadowECR = s->u.pc.ecr;
+ 	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
+ 				   mos_parport->shadowDCR);
+ 	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
+-- 
+2.26.2
 
-Thanks,
-Richard
-
-
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
->  drivers/ptp/ptp_idt82p33.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-> index b1528a0..e970379d 100644
-> --- a/drivers/ptp/ptp_idt82p33.c
-> +++ b/drivers/ptp/ptp_idt82p33.c
-> @@ -320,7 +320,6 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
->  {
->  	struct idt82p33 *idt82p33 = channel->idt82p33;
->  	unsigned char buf[5] = {0};
-> -	int neg_adj = 0;
->  	int err, i;
->  	s64 fcw;
->  
-> @@ -340,16 +339,9 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
->  	 * FCW = -------------
->  	 *         168 * 2^4
->  	 */
-> -	if (scaled_ppm < 0) {
-> -		neg_adj = 1;
-> -		scaled_ppm = -scaled_ppm;
-> -	}
->  
->  	fcw = scaled_ppm * 244140625ULL;
-> -	fcw = div_u64(fcw, 2688);
-> -
-> -	if (neg_adj)
-> -		fcw = -fcw;
-> +	fcw = div_s64(fcw, 2688);
->  
->  	for (i = 0; i < 5; i++) {
->  		buf[i] = fcw & 0xff;
-> -- 
-> 2.7.4
-> 
