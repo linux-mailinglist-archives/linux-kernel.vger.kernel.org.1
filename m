@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63E42A69D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB662A69D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730831AbgKDQcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:32:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726944AbgKDQcE (ORCPT
+        id S1730895AbgKDQc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgKDQc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:32:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604507522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sYaj2UXtsTt0xHMWJvAK4qSBAxg5IaDjFNjZ783AMQs=;
-        b=hS5PzTx/qTiMzegT1no5+0zx7JIHm/E9O1i5+/F2GuLVp6NlSochRhb0yTMUKnlhWBkwwX
-        4JY7nAUnImzVH4FKDN5Ps8AJVv0ifTx8ckA24mVVI0siDEoTtfFu1EieD3Bwt/XLKUtRDM
-        U3M/e1Zb0faxfe1xOeNNv342GKWsBZg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-JbqCzlhHMgqZWGBdniYdUQ-1; Wed, 04 Nov 2020 11:32:01 -0500
-X-MC-Unique: JbqCzlhHMgqZWGBdniYdUQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 802551084C9E;
-        Wed,  4 Nov 2020 16:31:57 +0000 (UTC)
-Received: from ovpn-112-92.rdu2.redhat.com (ovpn-112-92.rdu2.redhat.com [10.10.112.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D2994DA35;
-        Wed,  4 Nov 2020 16:31:55 +0000 (UTC)
-Message-ID: <247d36e9a0f2b06c8a4008c634d008ef4403c579.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: use positive error values for msr emulation
- that causes #GP
-From:   Qian Cai <cai@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Wed, 04 Nov 2020 11:31:54 -0500
-In-Reply-To: <20201101115523.115780-1-mlevitsk@redhat.com>
-References: <20201101115523.115780-1-mlevitsk@redhat.com>
+        Wed, 4 Nov 2020 11:32:58 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44E7C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:32:57 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id m9so9142623iox.10
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:32:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W89f9FhGl3ZmVVNh0IHsLhIBpTCURVceMfMaDhwTtHw=;
+        b=wOXbh51kkIYJs16L1wH3zkeCtTYv8T3jVyI9PcksX4T2ZXuxqC5XvQwkRVBbymWcyG
+         TYU5UXvAznrnKFiD+OFfz9pYVb7HHC3ZPM/DWvFTIt6TSN6dEuGo4JkCT1eI10I4TxGm
+         fdN5ynsz/tQLW95cF1DdBCu/iV/HEMG4pwV4CcKwVe1+DYxQIJnZb63+MfhDX5n9Xt4J
+         jd4K66pXpTidg9covNMepxicSh9d7ohLlI/UlvSDxmsI5XwbnVhcJsfXZSYc29zSLfI0
+         BsExRvy8tvEYvHhJldBW/hCWGxlOwl2cUai165/ViBT29XXai5mqfZ00DdKAlaU5auwY
+         R4mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W89f9FhGl3ZmVVNh0IHsLhIBpTCURVceMfMaDhwTtHw=;
+        b=pJRhP3ZwS7vPB6ubAONPXgkUYAxkAg1QC5pdSBgPuXh+thoaF2FNS0PeETVHhvq70Z
+         L5HOa4+yjID8EnVOsw63jqOeCEbETIhkfRbdlCmmbBVjktef8YFFRQdfVAkJTLFRjQNn
+         yI/WO67kJnAH2z4FxADz49tUttlmSBPjKFEbI058cCzJRPYaWqIOyUhldgFKtStxROWB
+         +SO1CXbNYMcU4O9vYtgk3zs2eoZb+qpd7OIl94ozyhC0L0VIWjH57Q5lio1mu0X13hNg
+         OQxhurArKQqTd5e+5zCuVHZwUiPtk3FW3bhRQ/8S/0xFYdGC2avZrnLtfYJOYwHxWAVW
+         1AZw==
+X-Gm-Message-State: AOAM531kvwRJqu5J+grCRwQB5/2jGH7MqAsFmVa09Zs/KXTekK7yusFp
+        C8zL6olgmrWvbnEKHw5DMnPN3yzN0aGmeV5g2wIizw==
+X-Google-Smtp-Source: ABdhPJzI+uzUtU73vm0s4A7AvEp9YID3FbNdalzqjNgFJmq5wpaL01y5gHvbqYCy2dkgoW+bhhed0RJ5Umd2Q8NVm7A=
+X-Received: by 2002:a02:65cf:: with SMTP id u198mr20169169jab.24.1604507577178;
+ Wed, 04 Nov 2020 08:32:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-7-brgl@bgdev.pl>
+In-Reply-To: <20201026141839.28536-7-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 4 Nov 2020 17:32:46 +0100
+Message-ID: <CAMRc=Mfin3Rp9cFky4MKAc0cEtKU3LW3=R4nWE-Eeok7ypVVOQ@mail.gmail.com>
+Subject: Re: [RFT PATCH 6/7] gpio: exar: switch to using regmap
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-01 at 13:55 +0200, Maxim Levitsky wrote:
-> Recent introduction of the userspace msr filtering added code that uses
-> negative error codes for cases that result in either #GP delivery to
-> the guest, or handled by the userspace msr filtering.
-> 
-> This breaks an assumption that a negative error code returned from the
-> msr emulation code is a semi-fatal error which should be returned
-> to userspace via KVM_RUN ioctl and usually kill the guest.
-> 
-> Fix this by reusing the already existing KVM_MSR_RET_INVALID error code,
-> and by adding a new KVM_MSR_RET_FILTERED error code for the
-> userspace filtered msrs.
-> 
-> Fixes: 291f35fb2c1d1 ("KVM: x86: report negative values from wrmsr emulation
-> to userspace")
-> Reported-by: Qian Cai <cai@redhat.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Apparently, it does not apply cleanly on today's linux-next. Paolo, is it
-possible to toss this into -next soon, so our CI won't be blocked because of
-this bug?
+On Mon, Oct 26, 2020 at 3:18 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> We can simplify the code in gpio-exar by using regmap. This allows us to
+> drop the mutex (regmap provides its own locking) and we can also reuse
+> regmap's bit operations instead of implementing our own update function.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
+[snip]
+
+>
+>  static int exar_direction_output(struct gpio_chip *chip, unsigned int offset,
+>                                  int value)
+>  {
+> -       exar_set_value(chip, offset, value);
+> -       return exar_set_direction(chip, 0, offset);
+> +       struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
+> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
+> +
+> +       regmap_clear_bits(exar_gpio->regs, addr, BIT(bit));
+> +
+> +       return 0;
+>  }
+>
+
+Upon closer look I noticed this now ignores the value argument. I
+doubt however it's the culprit of the crash Jan reported.
+
+[snip]
+
+Bartosz
