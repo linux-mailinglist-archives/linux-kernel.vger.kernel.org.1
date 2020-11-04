@@ -2,138 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFE22A6E70
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E1D2A6E72
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 21:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbgKDUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 15:01:23 -0500
-Received: from mail-mw2nam12on2071.outbound.protection.outlook.com ([40.107.244.71]:53204
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727013AbgKDUBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 15:01:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W//rMV3xEIfylgw3YuG6H5NjKaXvYRu283cHFguibZv7EHi18UwJTO7gC73hbLBn1INguTUvrRTAhJKa+HzL02lKmWBWhREyWpxiddDZ+8jVHXVrwyCl8XmT5KwBVJOuu3DQ38DzdXzXOaymUnryQlhXVFGaymmeP39GsyqWs2ggYsAViEq0JknJFpeGnK+exjUWJ8eva3yD/wFq8x17iisahyA/57w24N3/LXnlDJRuedg7vWZDRFKiz0gycQHaZNLhGwZNET08SvxdPlSq5UCFhYfaYRkmN4aH20BLYZNVIG5PeE8pU2F3XjUtu6x3azjondRlva+i+eC6EisiSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4BeO/g2d2dsKbgp4a7ffnEyxGjaYJRjlPwHOCGkvVxM=;
- b=GhUmTCp4eq8OJ37zQklMMr4QqUcqr6a0cO+AfYZF5eW5/rA5jDzFso9sfhyoE3pz9PAioLwvHN3JoSsAyw3QoQ12X4MRQEYEwftxHV4hXED9J1AzBWTLGxiOUCKQoATPf/OSj9Nm9iGFxTu6nCXbza4fhu8jjEZLdxZZxtu9cy722M8GsaTSvWdPo0LFy7VS5X6mLY58eBDmLwZN6Pp8DZniW7dZNuwoHiEIrmv6xPAzOf+3LvLW54xfe9g89dI8XByBFMs/KcXDT7PrzSr71j+N1prVjKehO7EUoJrknxqzCsnzC8IxVEmoTUiHJWQVdp4XgmhjDBx7p07ImI8kjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1731226AbgKDUCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 15:02:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727013AbgKDUCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 15:02:00 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E36AC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 12:02:00 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x13so18201561pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 12:02:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4BeO/g2d2dsKbgp4a7ffnEyxGjaYJRjlPwHOCGkvVxM=;
- b=G9VORrLSNpv7bGmlz9GF8A4lolNVDyRRzwkd2Vcu/yjx0fserA907Tsyq+MFjO2a8LVUkAtmsVQwL7Z9p7+OtISQMYQ7zABKU4QZsnUCaE6uzYWnGBjAbmhWYc6s54sDEqbQT0zmcpHgBIL/gvsbbe5nW/N3ZW9pZfrG6KK18/g=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
- by MN2PR12MB3792.namprd12.prod.outlook.com (2603:10b6:208:16e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 4 Nov
- 2020 20:01:19 +0000
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::b07d:ede5:2f45:5de8]) by BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::b07d:ede5:2f45:5de8%9]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
- 20:01:19 +0000
-Subject: Re: [PATCH] drm/amdkfd: replace idr_init() by idr_init_base()
-To:     Deepak R Varma <mh12gx2825@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20201104151359.GA69034@localhost>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-Message-ID: <91ebae30-c75c-5485-8de5-36464e97ed7e@amd.com>
-Date:   Wed, 4 Nov 2020 15:01:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201104151359.GA69034@localhost>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [165.204.55.251]
-X-ClientProxiedBy: YTXPR0101CA0008.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::21) To BL0PR12MB4948.namprd12.prod.outlook.com
- (2603:10b6:208:1cc::20)
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=HHg6h1ERO0ScMr8situW2RPYUOFCcCJTf0E9ld3a4hM=;
+        b=xd2RynXfViVLdrYELeLgJAHfCDrUSWXuu2W2XQtxfKC+ssLRpixaQZ/Ubdkf8olmM9
+         7u5Im6pdBwwYBYFcOyDDBFn18wFyTodVl7YFM2EZ4DBFAHB0bjtYZBOW2gA7ZLRdP/gW
+         aYMHXS4MWhmRzGP5mAr6+rTBfdnlXnODocl6SkcSmzTwiHor+u5rPd0lacY6JNeRG+Cc
+         rIDdZ8LVeJPLz01wzadXXBu5fM/yACvTMxHgYdHizlp2nDM0CMwl5J8CToOc7I1q8MGm
+         k1QGTMNcR0WCdHI04z6Dw8mi7ZxOjrrMIuyhCUy/0IOXbxxebXejcBpcTfOS3kthDsPB
+         izlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=HHg6h1ERO0ScMr8situW2RPYUOFCcCJTf0E9ld3a4hM=;
+        b=iekDRcp9CRbDNQiBQuxxVCctGmSd+Zc6+jvFyAksbUTXsVodd84Ys16YCuY2sI9HsB
+         2soOl6qdg5N5SMlV8irr5+mEU1/y/6xfu4CmsXMBuoULO6Mimzi25FoOiBP2RROmLxJS
+         XRKfeuMLfJVTN7CozsWZjl4rYeg30nUxNgy2F/s1eGrVFCF1Epy0RXaF+0uhjdPvRfMk
+         4t3LkqDcatWBS0Kr6WLnMf6Ve4w69jJogMioNlrT8GWnExGvY0rVOXOdWgaALzCj7uTH
+         tV5ZMYbTUjCM+V22AbbyTRWoaL4fXzLT/fzQN35T4qOm77GeACnSuhnceb0+GE3IvZc7
+         tdSQ==
+X-Gm-Message-State: AOAM531lONZ39Qd5qPuqib/w+L5J+0PiqOCX2V68FEmBl7h8yHoBJQCr
+        iBjFUkgPmguDTE21TSbBuw/3HOGFXTl8Q6M+
+X-Google-Smtp-Source: ABdhPJwkU50qSyiBRlsGklQLZ1nWj9sW9Ne2CdsjCQFLHULeoJAmQzGXz22Pg2MPGxdc05stn8bsaQ==
+X-Received: by 2002:a63:1805:: with SMTP id y5mr22302367pgl.174.1604520120080;
+        Wed, 04 Nov 2020 12:02:00 -0800 (PST)
+Received: from debian ([171.61.236.158])
+        by smtp.gmail.com with ESMTPSA id k26sm3272276pfg.8.2020.11.04.12.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 12:01:59 -0800 (PST)
+Message-ID: <9669c90b893a548f4cdb0fd29f1385f20a488024.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 000/391] 5.9.4-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Date:   Thu, 05 Nov 2020 01:31:50 +0530
+In-Reply-To: <20201103203348.153465465@linuxfoundation.org>
+References: <20201103203348.153465465@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.226.80] (165.204.55.251) by YTXPR0101CA0008.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 20:01:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: efe50ebd-f241-43e1-4355-08d880fc6549
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3792:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB37922588A7CB655C8F57926192EF0@MN2PR12MB3792.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:332;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pA4ZJjxO2fROYYg9bI1Vsi3bvJUdsZFp5k5j6QPHEYVlXWoZvrxngdv6k+X744/6b6xVc/NXd9COhNZGLaK/d9kZHQbq8r5AM5ixHX9K82GDswqEeY6ppMlWqsUpuETtbRZ5wVbRxwqo7o3QfCzp3zUiJVfSi4wV0S6AYXg1Q9YoaYf1LjpJi2q+fAHC5f5DR0emN46pYA3Maq6+1akgDTC4n2mu0PBvBs6wHrXEmzBRqUk659WxcYnAUXy30dZRGg8NnXZOKF5yCvfBe7u4yIlR80D57qmljtQIf7PZQ1j2SQwm46xJI/3miNW30lIHL2uD3rQPdzd3NTid4B5mJg/2ekKQIC3XuiSqL1sp2R3nvw1YY0IIcQ9GbxF/fYI8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(52116002)(16576012)(110136005)(36916002)(2616005)(956004)(66946007)(36756003)(66476007)(66556008)(316002)(8936002)(6486002)(31696002)(83380400001)(53546011)(86362001)(186003)(8676002)(478600001)(44832011)(2906002)(31686004)(16526019)(26005)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: zbVlu4C4JMDFkMktNrB2IyPXxSVQj6MPmtYCu/BsEDY7z4e8kt7HUeEJRKMVam5XGGzCvqDRoUSsfVWAsSkAuBskOkfAU167kzICafO70+lORTECLyKnraXkBhnt38iYTJXhXn2R6nDsko+uf15q9rdvpDbYl6SYuYRXZSErLCDcxL3V4fkKNQdsHs1NMln/YGPLaR1YtfMxSZNlj4IQ3rmRCphtreThO48Zi0x/A81b8T3Qnzdx9M29yEX8FbuVs6tRot/rEuy1uCrDWESSkxvjIgmQsWspynFE68xboSn12oamcjNes1SVF9Jd7ewZPgWWdlZs8fECSaAER0dgZpqx/6u/ecMRILBi+HdKwTXz6Igd3h6ORPcMMzUW4Q+bDUdtQKWk8RgJLkJzVDIyDKX7KyWJ3A1Lcqj35sYUDoPUmooLzC+jKllBfbWVyb7jRq/52w7b0cgFtb6Wr8vW2TZbBrnj36li9SU5DLY6JyUQyTnEoiqAF7oGdOfqlgwlRmN4xgjeYHUH4kIJXAdc/T4V+V2XDn8Nb0hydR/a7+oZxx1FmD3g+vh7E4RrOzjAF4rl5wFY9qwVdv4yeNZJOXFSUUT6gyBJnkiU0NrX9IpjLqKo7cxKbm1+BmW14rXi5KyCpPobaujTyAN6mYvQCQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efe50ebd-f241-43e1-4355-08d880fc6549
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 20:01:19.4051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lvjlxftwG0BNedu8vUE/iZM0Ta6BCQcb1PjSNRtqAJW6IofFTKeh5OUQ3UF9+vGeXScuohOrCXtcLs1eiLdPQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3792
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 10:13 a.m., Deepak R Varma wrote:
-> idr_init() uses base 0 which is an invalid identifier. The new function
-> idr_init_base allows IDR to set the ID lookup from base 1. This avoids
-> all lookups that otherwise starts from 0 since 0 is always unused.
+On Tue, 2020-11-03 at 21:30 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.4 release.
+> There are 391 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
+> 
+> Responses should be made by Thu, 05 Nov 2020 20:29:58 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I disagree. We call idr_alloc with start=0 for both these IDRs. That 
-means 0 seems to be a valid handle.
-
-Regards,
-   Felix
+Compiled and booted 5.9.4-rc1+ . No typical dmesg regressions.
 
 
->
-> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
->
-> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> ---
->   drivers/gpu/drm/amd/amdkfd/kfd_events.c  | 2 +-
->   drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-> index ba2c2ce0c55a..b3339b53c8ad 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_events.c
-> @@ -230,7 +230,7 @@ static int create_other_event(struct kfd_process *p, struct kfd_event *ev)
->   void kfd_event_init_process(struct kfd_process *p)
->   {
->   	mutex_init(&p->event_mutex);
-> -	idr_init(&p->event_idr);
-> +	idr_init_base(&p->event_idr, 1);
->   	p->signal_page = NULL;
->   	p->signal_event_count = 0;
->   }
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> index 65803e153a22..022e61babe30 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> @@ -1289,7 +1289,7 @@ struct kfd_process_device *kfd_create_process_device_data(struct kfd_dev *dev,
->   	list_add(&pdd->per_device_list, &p->per_device_data);
->   
->   	/* Init idr used for memory handle translation */
-> -	idr_init(&pdd->alloc_idr);
-> +	idr_init_base(&pdd->alloc_idr, 1);
->   
->   	return pdd;
->   
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
+-- 
+software engineer
+rajagiri school of engineering and technology  - autonomous
+
+
