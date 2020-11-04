@@ -2,179 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CD62A6379
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696982A637E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgKDLji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgKDLjg (ORCPT
+        id S1729700AbgKDLk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:40:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59720 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728508AbgKDLkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:39:36 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156F4C0613D3;
-        Wed,  4 Nov 2020 03:39:36 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id i6so26734186lfd.1;
-        Wed, 04 Nov 2020 03:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jLMKc6I+EbQJCBgjBJI2KY+v34084Ns2D+3OvtBodnI=;
-        b=n8WEpwn/ilb+6F5Ph+Y3gmqJL6KdIMCgNC7YqRl6aaBVV0c8ZvQ0eg8MwC/HE50qhd
-         u4D3g5juoM/5//EZ8in3EC8pmjxScUnWZYsw4LvN+mf01KsAZHqZiqZC6fNhISN61gLF
-         lUQhDwv+KUoszKHXO0KC/W/PXA2t7JlA76wfDESPj/CXFYcpNjDcT2eK5JU31ErvvCq+
-         PSuBtNhcqNNkCXEFe1iWN1u6O1Hdl1zZrH94Qjj40Dp8xwU6RqKrc71DzC089iqlIMqG
-         UM+gpnYDIkUBRLsC50jgC+Bubb5va884SJEC9Y+/X2Sf+vVDunNyOIFLrDbka0JMRAkt
-         QNtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jLMKc6I+EbQJCBgjBJI2KY+v34084Ns2D+3OvtBodnI=;
-        b=rlYua7zRVJDUOmH4XlV9gWyJKtplNJfFgPejPpVDHFJIh+Pg+I9aojGQ75YFY2rB1w
-         u3Kv6Way+vbaVNdxmxeRo3vP5zoO+6B7bm2HCyBh8oF37H5iTRE1l2yzMgw3S+Yd28vb
-         CgqX5K7KzIkUjWQ4Qvb0DS112esMmTWcOqyXUSE93bPFKKvjDEXkvEC6v8QbLjtSmna/
-         WMxHNFPmmv8gJn/oiaYu9hI8U05d2opuhE2B+j441XxiQ6s5qPLS2rYRSbalQHVcs/vl
-         1yEu8IcbWVMnV/FOiiPrJuUVRPRGpD4PsVYPIUS3LMJA+8IMjkObrfbBWdkoNLaSN3wx
-         AJWg==
-X-Gm-Message-State: AOAM5305e7HrTBlXd38F7ziVEgrfX3cjZxRyboYgN4c0vnz+0ht/uyHq
-        YvkHCzN21OtQwZF1Q6oy98k=
-X-Google-Smtp-Source: ABdhPJxRAlqT2V2Jkkz44Cesa9bhxikRbK2ADSVQf9WHA6CiqKQgavoNueTH3Mh+MG2Tg/m559fzuA==
-X-Received: by 2002:a19:ef09:: with SMTP id n9mr10530507lfh.334.1604489974520;
-        Wed, 04 Nov 2020 03:39:34 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id j207sm381875lfj.122.2020.11.04.03.39.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 03:39:33 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 4 Nov 2020 12:39:31 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 15/16] rcu/tree: Allocate a page when caller is
- preemptible
-Message-ID: <20201104113931.GA17782@pc636>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201029165019.14218-15-urezki@gmail.com>
- <20201103180316.GC1310511@google.com>
+        Wed, 4 Nov 2020 06:40:17 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Be8gU113375;
+        Wed, 4 Nov 2020 05:40:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604490008;
+        bh=u+EmaCcZGZfOS7Kpjqe/4peuPvaBmXgfP0TZ1evlUoE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Req7LZhdNEp43QOcjZYef0Yu+acx212Z+Kn45iVwidd+0MzCYWYLM6+dM+Ui92/hk
+         24RJTiIs55B7EsvgzfNFvaOozfFteTXraupY4mQD4o/X/6PtP5ZMq7K4ahaIzd33oL
+         p9GQQL0flYKhR9ZjCMF1vW8LCoY5XSxqI51ey+iI=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A4Be8JW085269
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 4 Nov 2020 05:40:08 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 4 Nov
+ 2020 05:40:08 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 4 Nov 2020 05:40:08 -0600
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A4Be5sV097994;
+        Wed, 4 Nov 2020 05:40:06 -0600
+Subject: Re: [PATCH 0/3] Add gpio support for TI's J7200 platform
+To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <nm@ti.com>, <t-kristo@ti.com>, <robh+dt@kernel.org>
+References: <20201102191120.20380-1-faiz_abbas@ti.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <f6f7c9ee-46b6-e2f5-0762-0a264a3bb2e9@ti.com>
+Date:   Wed, 4 Nov 2020 17:10:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103180316.GC1310511@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201102191120.20380-1-faiz_abbas@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Joel.
 
-> 
-> On Thu, Oct 29, 2020 at 05:50:18PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Given that CONFIG_PREEMPT_COUNT is unconditionally enabled by the
-> > earlier commits in this series, the preemptible() macro now properly
-> > detects preempt-disable code regions even in kernels built with
-> > CONFIG_PREEMPT_NONE.
-> > 
-> > This commit therefore uses preemptible() to determine whether allocation
-> > is possible at all for double-argument kvfree_rcu().  If !preemptible(),
-> > then allocation is not possible, and kvfree_rcu() falls back to using
-> > the less cache-friendly rcu_head approach.  Even when preemptible(),
-> > the caller might be involved in reclaim, so the GFP_ flags used by
-> > double-argument kvfree_rcu() must avoid invoking reclaim processing.
-> > 
-> > Note that single-argument kvfree_rcu() must be invoked in sleepable
-> > contexts, and that its fallback is the relatively high latency
-> > synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
-> > GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
-> > memory allocator.
-> > 
-> > [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/tree.c | 48 ++++++++++++++++++++++++++++++-----------------
-> >  1 file changed, 31 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index f2da2a1cc716..3f9b016a44dc 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3406,37 +3406,55 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
-> >  	}
-> >  }
-> >  
-> > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> > +// state specified by flags.  If can_sleep is true, the caller must
-> > +// be schedulable and not be holding any locks or mutexes that might be
-> > +// acquired by the memory allocator or anything that it might invoke.
-> > +// If !can_sleep, then if !preemptible() no allocation will be undertaken,
-> > +// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
-> > +// the aforementioned deadlock possibilities.  Returns true if ptr was
-> > +// successfully recorded, else the caller must use a fallback.
-> >  static inline bool
-> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> > +	unsigned long *flags, void *ptr, bool can_sleep)
-> >  {
-> >  	struct kvfree_rcu_bulk_data *bnode;
-> > +	bool can_alloc_page = preemptible();
-> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL :
-> > +		GFP_ATOMIC) | __GFP_NOWARN;
-> >  	int idx;
-> >  
-> > -	if (unlikely(!krcp->initialized))
-> > +	*krcp = krc_this_cpu_lock(flags);
-> > +	if (unlikely(!(*krcp)->initialized))
-> >  		return false;
-> >  
-> > -	lockdep_assert_held(&krcp->lock);
-> >  	idx = !!is_vmalloc_addr(ptr);
-> >  
-> >  	/* Check if a new block is required. */
-> 
-> Maybe convert this comment also to //... like the new ones you added (and the
-> ones below).
-> 
-No, problem. I can convert it.
 
-> > -	if (!krcp->bkvhead[idx] ||
-> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > -		bnode = get_cached_bnode(krcp);
-> > -		/* Switch to emergency path. */
-> > +	if (!(*krcp)->bkvhead[idx] ||
-> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > +		bnode = get_cached_bnode(*krcp);
-> > +		if (!bnode && can_alloc_page) {
+On 03/11/20 12:41 am, Faiz Abbas wrote:
+> The following patches add gpio support for TI's J7200 platform.
 > 
-> I think you can directly put preemptible() here with a comment saying
-> allocate only if preemptible and get rid of can_alloc_page.
-> 
-Not really. We check preemtable() before acquiring the internal lock,
-otherwise it will always return "false". Thus, it is checked on the
-entry in the beginning.
+> These patches were posted as a part of an older series but have now
+> been split into three parts. The 3 parts add configs, gpios and MMC/SD
+> related dts patches respectively.
 
-> > +			krc_this_cpu_unlock(*krcp, *flags);
-> > +			bnode = (struct kvfree_rcu_bulk_data *)
-> > +				__get_free_page(gfp);
-> > +			*krcp = krc_this_cpu_lock(flags);
-> > +		}
-> > +
-> 
-> I think the "Switch to emergency path" comment should stay here before the
-> if().
-> 
-Right. We need to keep it. Will take it back.
+Series looks good to me.
 
---
-Vlad Rezki
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+
+Thanks and regards,
+Lokesh
