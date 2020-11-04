@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E826C2A71C6
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFBA2A71C4
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732872AbgKDX17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:27:59 -0500
-Received: from relay05.th.seeweb.it ([5.144.164.166]:52047 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732828AbgKDX1l (ORCPT
+        id S1732634AbgKDXWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730888AbgKDXWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:27:41 -0500
-Received: from localhost.localdomain (abag227.neoplus.adsl.tpnet.pl [83.6.170.227])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 2061640253;
-        Thu,  5 Nov 2020 00:22:29 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Scull <ascull@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] arm64: Add MIDR value for KRYO2XX gold/silver CPU cores
-Date:   Thu,  5 Nov 2020 00:22:10 +0100
-Message-Id: <20201104232218.198800-2-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201104232218.198800-1-konrad.dybcio@somainline.org>
-References: <20201104232218.198800-1-konrad.dybcio@somainline.org>
+        Wed, 4 Nov 2020 18:22:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2834FC0613CF;
+        Wed,  4 Nov 2020 15:22:32 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604532150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBjbPwkoZzQZHjlBJZXMKZQC7+j9Z1jjpOPhzPzBOz4=;
+        b=aEXqHgDKSYI/jSf7QUGF8FwFdVyFO2ODKDZwNvh3sSqfRarkbFeYePmaC3uCmY1cGhFGTK
+        nXN3f4O4TtWODbhWMDOycrjnaEeqisXqBtYFmUnTJN/pVbVfoQodZpa7jqUkwonW1KWQLV
+        X1Pl2Nlwob25n/tYJ4Q3UA+GtNpgXda4scAJWa77Za7d+zbg9Gm+8z4isOK6fooSILehA2
+        u830wn9MvJRLyy4G2nyk0m6ke+iGJvf8QBjadmF0Dhk8pfYF1i8mFAHm7phZzU6eNgsDKT
+        CTpHZkplCEZH2658win+A44REEu69DStTYxfTDGiO68QqAmVPF8xzO5ROI5gCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604532150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBjbPwkoZzQZHjlBJZXMKZQC7+j9Z1jjpOPhzPzBOz4=;
+        b=F3Okx9gCgBZcaKEu8c7K2GEmaOdNF+i1KUunvoTSdRmVZu+DHO7NbBNU7ECja+bQTLrQ2L
+        ALe06HvysKaaPGDQ==
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: RFC: default to spec_store_bypass_disable=prctl spectre_v2_user=prctl
+In-Reply-To: <20201104215702.GG24993@redhat.com>
+References: <20201104215702.GG24993@redhat.com>
+Date:   Thu, 05 Nov 2020 00:22:29 +0100
+Message-ID: <87eel8lnbe.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MIDR value for KRYO2XX gold (big) and silver (LITTLE)
-CPU cores which are used in Qualcomm Technologies, Inc.
-SoCs. This will be used to identify and apply errata
-which are applicable for these CPU cores.
+On Wed, Nov 04 2020 at 16:57, Andrea Arcangeli wrote:
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 5 ++---
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/include/asm/cputype.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Is Documentation/admin-guide/hw-vuln/* still correct? If not, please
+fix that as well.
 
-diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-index 9e2e9a63c7b6..ef5b040dee44 100644
---- a/arch/arm64/include/asm/cputype.h
-+++ b/arch/arm64/include/asm/cputype.h
-@@ -86,6 +86,8 @@
- #define QCOM_CPU_PART_FALKOR_V1		0x800
- #define QCOM_CPU_PART_FALKOR		0xC00
- #define QCOM_CPU_PART_KRYO		0x200
-+#define QCOM_CPU_PART_KRYO_2XX_GOLD	0x800
-+#define QCOM_CPU_PART_KRYO_2XX_SILVER	0x801
- #define QCOM_CPU_PART_KRYO_3XX_SILVER	0x803
- #define QCOM_CPU_PART_KRYO_4XX_GOLD	0x804
- #define QCOM_CPU_PART_KRYO_4XX_SILVER	0x805
-@@ -116,6 +118,8 @@
- #define MIDR_QCOM_FALKOR_V1 MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_FALKOR_V1)
- #define MIDR_QCOM_FALKOR MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_FALKOR)
- #define MIDR_QCOM_KRYO MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO)
-+#define MIDR_QCOM_KRYO_2XX_GOLD MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO_2XX_GOLD)
-+#define MIDR_QCOM_KRYO_2XX_SILVER MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO_2XX_SILVER)
- #define MIDR_QCOM_KRYO_3XX_SILVER MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO_3XX_SILVER)
- #define MIDR_QCOM_KRYO_4XX_GOLD MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO_4XX_GOLD)
- #define MIDR_QCOM_KRYO_4XX_SILVER MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM, QCOM_CPU_PART_KRYO_4XX_SILVER)
--- 
-2.29.2
+Aside of that please send patches in the proper format so they do not
+need manual interaction when picking them up.
 
+Thanks,
+
+        tglx
