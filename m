@@ -2,359 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CF82A6940
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5102A6950
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 17:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730710AbgKDQQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 11:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728841AbgKDQQe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:16:34 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5643BC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:16:34 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id j31so5834542qtb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 08:16:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7IXCmg9HoiI9TAtR6Ga7SM/mQcagKwuJn0wdRfAwxlw=;
-        b=VlvyOEuonTeG1afq/UKzXSLVccJrnyPFBuuC6qN7OxMGhJkyC96ud2qB45mJl+8MYP
-         MNLT3qwmRoN0YmFQdczC8HFW5ljazvNR5RuysLYt0qlFVKio9rgmDEgdVKKlumUgYD94
-         P7gY0zZsk+h0xjT/N6VItoY3W3ABLPuzKfoLSwmv3N5t770aagewVms8HN0GjMkqPn/X
-         2fzKghyme4wgmizWr4TN7AFQscEPeEm1eNLVyBIcqBO6k/8jKKn6gUGETDXeN7XYvq0A
-         YYoj7oEhr7JpuZrBCL23h0T9125Xsos4Nsg1dut5BwXxTShNbe13/ie/YsjuaapD5WxT
-         lP3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7IXCmg9HoiI9TAtR6Ga7SM/mQcagKwuJn0wdRfAwxlw=;
-        b=sXx94/e52L8QPfGOKwrojUyOdJtvI40VgREC2OSsXkyzU0UiPrRuggbqNt19XPS+1J
-         XXdr8iKIV/LfNCnU7NzpUhxCaqBeFZSAef1mGVBWUABl9R6BAEtvkciiHb5QaabaOvvX
-         dXCwQMOvzU/zx2kpibyuvWShUAKGhPT19HvdFPnIJVG/aEvByBV5gmz/YnX4w04KW/hY
-         6h0mffOT4KnafiZh6ytlVsWaVddJwudRsZzOmsp0klSQhuDuWKjO76DyBQPmScwNTpOX
-         A+USIJk+8R2IvwvmP5GAWxUeB/cN+ixHObdH8kkl4rPk7JtDgfUW7EzMLDfuflyuIpLv
-         saGA==
-X-Gm-Message-State: AOAM530p9uzdgF+zfw1fPGNSccu41FSmbqmSvnL14r07IT9lQxtj7UJZ
-        QSUu0m9enrU47pMpeLvrkS3/Xg==
-X-Google-Smtp-Source: ABdhPJy3MN7qvgRjjUOeoMN3/PA7qo3iiEWxuPZYp4fUjFMSwyPIDYlMn3HaIGEQPaxcC5LHFBqcmw==
-X-Received: by 2002:a05:622a:10b:: with SMTP id u11mr20779004qtw.235.1604506593385;
-        Wed, 04 Nov 2020 08:16:33 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id 137sm2863175qkk.63.2020.11.04.08.16.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 08:16:32 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v2 3/8] firmware: arm_scmi: introduce new protocol
- operations support
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20201028202914.43662-1-cristian.marussi@arm.com>
- <20201028202914.43662-4-cristian.marussi@arm.com>
-Message-ID: <2b09a607-6470-ad41-fd19-6a7a248237c5@linaro.org>
-Date:   Wed, 4 Nov 2020 11:16:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729179AbgKDQVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 11:21:11 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:42826 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726225AbgKDQVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:21:09 -0500
+Received: from comp-core-i7-2640m-0182e6 (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 22CC7209FA;
+        Wed,  4 Nov 2020 16:21:04 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 17:21:03 +0100
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: [RFC PATCH v1 4/4] Allow to change the user namespace in which
+ user rlimits are counted
+Message-ID: <20201104162103.ew22l6yhafowdxrf@comp-core-i7-2640m-0182e6>
+References: <cover.1604335819.git.gladkov.alexey@gmail.com>
+ <2718f7b13189dfd159414efb68e3533552593140.1604335819.git.gladkov.alexey@gmail.com>
+ <20201104100304.GA20449@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-In-Reply-To: <20201028202914.43662-4-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104100304.GA20449@ircssh-2.c.rugged-nimbus-611.internal>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Wed, 04 Nov 2020 16:21:06 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+On Wed, Nov 04, 2020 at 10:03:05AM +0000, Sargun Dhillon wrote:
+> On Mon, Nov 02, 2020 at 05:50:33PM +0100, Alexey Gladkov wrote:
+> > Add a new prctl to change the user namespace in which the process
+> > counter is located. A pointer to the user namespace is in cred struct
+> > to be inherited by all child processes.
+> > 
+> > Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+> > ---
+> >  fs/exec.c                  |  2 +-
+> >  fs/io-wq.c                 | 13 ++++++++-----
+> >  fs/io-wq.h                 |  1 +
+> >  fs/io_uring.c              |  1 +
+> >  include/linux/cred.h       |  8 ++++++++
+> >  include/uapi/linux/prctl.h |  5 +++++
+> >  kernel/cred.c              | 35 +++++++++++++++++++++++++++++------
+> >  kernel/exit.c              |  2 +-
+> >  kernel/fork.c              |  4 ++--
+> >  kernel/sys.c               | 22 +++++++++++++++++++++-
+> >  kernel/user_namespace.c    |  3 +++
+> >  11 files changed, 80 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index c45dfc716394..574b1381276c 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1837,7 +1837,7 @@ static int __do_execve_file(int fd, struct filename *filename,
+> >  		goto out_ret;
+> >  	}
+> >  
+> > -	processes = get_rlimit_counter(&init_user_ns, current_euid(), UCOUNT_RLIMIT_NPROC);
+> > +	processes = get_rlimit_counter(current_rlimit_ns(), current_euid(), UCOUNT_RLIMIT_NPROC);
+> >  
+> >  	/*
+> >  	 * We move the actual failure in case of RLIMIT_NPROC excess from
+> > diff --git a/fs/io-wq.c b/fs/io-wq.c
+> > index c3b0843abc9b..19e43ec115cb 100644
+> > --- a/fs/io-wq.c
+> > +++ b/fs/io-wq.c
+> > @@ -116,6 +116,7 @@ struct io_wq {
+> >  
+> >  	struct task_struct *manager;
+> >  	struct user_struct *user;
+> It seems like user would be unused here, and you could use creds->user?
 
-On 10/28/20 4:29 PM, Cristian Marussi wrote:
-> Expose a new generic get/put protocols API based on protocol handles;
-> provide also a devres managed version also for notifications.
+Yep. I think so.
 
-minor nit.. Maybe yous should reword this! Kind of confusing to understand!
+> > +	const struct cred *creds;
+> >  	refcount_t refs;
+> >  	struct completion done;
+> >  
+> > @@ -217,7 +218,7 @@ static void io_worker_exit(struct io_worker *worker)
+> >  	if (worker->flags & IO_WORKER_F_RUNNING)
+> >  		atomic_dec(&acct->nr_running);
+> >  	if (!(worker->flags & IO_WORKER_F_BOUND))
+> > -		dec_rlimit_counter(&init_user_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC);
+> > +		dec_rlimit_counter(wqe->wq->creds->rlimit_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC);
+> >  	worker->flags = 0;
+> >  	preempt_enable();
+> >  
+> > @@ -350,9 +351,9 @@ static void __io_worker_busy(struct io_wqe *wqe, struct io_worker *worker,
+> >  			worker->flags |= IO_WORKER_F_BOUND;
+> >  			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers--;
+> >  			wqe->acct[IO_WQ_ACCT_BOUND].nr_workers++;
+> > -			dec_rlimit_counter(&init_user_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC);
+> > +			dec_rlimit_counter(wqe->wq->creds->rlimit_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC);
+> >  		} else {
+> > -			if (!inc_rlimit_counter(&init_user_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC))
+> > +			if (!inc_rlimit_counter(wqe->wq->creds->rlimit_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC))
+> >  				return;
+> >  			worker->flags &= ~IO_WORKER_F_BOUND;
+> >  			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers++;
+> > @@ -662,7 +663,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
+> >  	}
+> >  
+> >  	if (index == IO_WQ_ACCT_UNBOUND &&
+> > -	    !inc_rlimit_counter(&init_user_ns, wq->user->uid, UCOUNT_RLIMIT_NPROC)) {
+> > +	    !inc_rlimit_counter(wq->creds->rlimit_ns, wq->user->uid, UCOUNT_RLIMIT_NPROC)) {
+> >  		kfree(worker);
+> >  		return false;
+> >  	}
+> > @@ -772,7 +773,8 @@ static bool io_wq_can_queue(struct io_wqe *wqe, struct io_wqe_acct *acct,
+> >  	if (free_worker)
+> >  		return true;
+> >  
+> > -	processes = get_rlimit_counter(&init_user_ns, wqe->wq->user->uid, UCOUNT_RLIMIT_NPROC);
+> > +	processes = get_rlimit_counter(wqe->wq->creds->rlimit_ns, wqe->wq->user->uid,
+> > +			UCOUNT_RLIMIT_NPROC);
+> >  
+> >  	if (processes >= acct->max_workers &&
+> >  	    !(capable(CAP_SYS_RESOURCE) || capable(CAP_SYS_ADMIN)))
+> > @@ -1049,6 +1051,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+> >  
+> >  	/* caller must already hold a reference to this */
+> >  	wq->user = data->user;
+> > +	wq->creds = data->creds;
+> >  
+> >  	for_each_node(node) {
+> >  		struct io_wqe *wqe;
+> > diff --git a/fs/io-wq.h b/fs/io-wq.h
+> > index 071f1a997800..6acc3a04c38f 100644
+> > --- a/fs/io-wq.h
+> > +++ b/fs/io-wq.h
+> > @@ -105,6 +105,7 @@ typedef void (io_wq_work_fn)(struct io_wq_work **);
+> >  
+> >  struct io_wq_data {
+> >  	struct user_struct *user;
+> > +	const struct cred *creds;
+> >  
+> >  	io_wq_work_fn *do_work;
+> >  	free_work_fn *free_work;
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index 493e5047e67c..e419923968b3 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -6933,6 +6933,7 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
+> >  	int ret = 0;
+> >  
+> >  	data.user = ctx->user;
+> > +	data.creds = ctx->creds;
+> >  	data.free_work = io_free_work;
+> >  	data.do_work = io_wq_submit_work;
+> >  
+> > diff --git a/include/linux/cred.h b/include/linux/cred.h
+> > index 18639c069263..43aee68d117f 100644
+> > --- a/include/linux/cred.h
+> > +++ b/include/linux/cred.h
+> > @@ -144,6 +144,7 @@ struct cred {
+> >  #endif
+> >  	struct user_struct *user;	/* real user ID subscription */
+> >  	struct user_namespace *user_ns; /* user_ns the caps and keyrings are relative to. */
+> > +	struct user_namespace *rlimit_ns; /* user_ns in which rlimits is tracked */
+> >  	struct group_info *group_info;	/* supplementary groups for euid/fsgid */
+> >  	/* RCU deletion */
+> >  	union {
+> > @@ -170,6 +171,7 @@ extern int set_security_override_from_ctx(struct cred *, const char *);
+> >  extern int set_create_files_as(struct cred *, struct inode *);
+> >  extern int cred_fscmp(const struct cred *, const struct cred *);
+> >  extern void __init cred_init(void);
+> > +extern int set_rlimit_ns(struct user_namespace *ns);
+> >  
+> >  /*
+> >   * check for validity of credentials
+> > @@ -370,6 +372,7 @@ static inline void put_cred(const struct cred *_cred)
+> >  
+> >  #define task_uid(task)		(task_cred_xxx((task), uid))
+> >  #define task_euid(task)		(task_cred_xxx((task), euid))
+> > +#define task_rlimit_ns(task)	(task_cred_xxx((task), rlimit_ns))
+> >  
+> >  #define current_cred_xxx(xxx)			\
+> >  ({						\
+> > @@ -390,11 +393,16 @@ static inline void put_cred(const struct cred *_cred)
+> >  extern struct user_namespace init_user_ns;
+> >  #ifdef CONFIG_USER_NS
+> >  #define current_user_ns()	(current_cred_xxx(user_ns))
+> > +#define current_rlimit_ns()	(current_cred_xxx(rlimit_ns))
+> >  #else
+> >  static inline struct user_namespace *current_user_ns(void)
+> >  {
+> >  	return &init_user_ns;
+> >  }
+> > +static inline struct user_namespace *current_rlimit_ns(void)
+> > +{
+> > +	return &init_user_ns;
+> > +}
+> >  #endif
+> >  
+> >  
+> > diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+> > index 07b4f8131e36..4f853f903415 100644
+> > --- a/include/uapi/linux/prctl.h
+> > +++ b/include/uapi/linux/prctl.h
+> > @@ -238,4 +238,9 @@ struct prctl_mm_map {
+> >  #define PR_SET_IO_FLUSHER		57
+> >  #define PR_GET_IO_FLUSHER		58
+> >  
+> > +#define PR_SET_RLIMIT_USER_NAMESPACE	59
+> > +#define PR_GET_RLIMIT_USER_NAMESPACE	60
+> > +# define PR_RLIMIT_BIND_GLOBAL_USERNS	(1UL << 0)
+> > +# define PR_RLIMIT_BIND_CURRENT_USERNS	(1UL << 1)
+> > +
+> >  #endif /* _LINUX_PRCTL_H */
+> > diff --git a/kernel/cred.c b/kernel/cred.c
+> > index 748704db1f6b..7b90e1ef9c9a 100644
+> > --- a/kernel/cred.c
+> > +++ b/kernel/cred.c
+> > @@ -59,6 +59,7 @@ struct cred init_cred = {
+> >  	.cap_bset		= CAP_FULL_SET,
+> >  	.user			= INIT_USER,
+> >  	.user_ns		= &init_user_ns,
+> > +	.rlimit_ns		= &init_user_ns,
+> >  	.group_info		= &init_groups,
+> >  };
+> >  
+> > @@ -120,6 +121,7 @@ static void put_cred_rcu(struct rcu_head *rcu)
+> >  		put_group_info(cred->group_info);
+> >  	free_uid(cred->user);
+> >  	put_user_ns(cred->user_ns);
+> > +	put_user_ns(cred->rlimit_ns);
+> >  	kmem_cache_free(cred_jar, cred);
+> >  }
+> >  
+> > @@ -270,6 +272,7 @@ struct cred *prepare_creds(void)
+> >  	get_group_info(new->group_info);
+> >  	get_uid(new->user);
+> >  	get_user_ns(new->user_ns);
+> > +	get_user_ns(new->rlimit_ns);
+> >  
+> >  #ifdef CONFIG_KEYS
+> >  	key_get(new->session_keyring);
+> > @@ -345,7 +348,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+> >  #endif
+> >  		clone_flags & CLONE_THREAD
+> >  	    ) {
+> > -		if (!inc_rlimit_counter(&init_user_ns, task_euid(p), UCOUNT_RLIMIT_NPROC))
+> > +		if (!inc_rlimit_counter(task_rlimit_ns(p), task_euid(p), UCOUNT_RLIMIT_NPROC))
+> >  			return -EACCES;
+> >  		p->real_cred = get_cred(p->cred);
+> >  		get_cred(p->cred);
+> > @@ -385,7 +388,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+> >  	}
+> >  #endif
+> >  
+> > -	if (!inc_rlimit_counter(&init_user_ns, new->euid, UCOUNT_RLIMIT_NPROC))
+> > +	if (!inc_rlimit_counter(new->rlimit_ns, new->euid, UCOUNT_RLIMIT_NPROC))
+> >  		return -EACCES;
+> >  	p->cred = p->real_cred = get_cred(new);
+> >  	alter_cred_subscribers(new, 2);
+> > @@ -487,13 +490,13 @@ int commit_creds(struct cred *new)
+> >  	 * perhaps this limit is exceeded in the parent user namespace.
+> >  	 */
+> >  	alter_cred_subscribers(new, 2);
+> > -	if (new->user != old->user &&
+> > -	    !inc_rlimit_counter(&init_user_ns, new->euid, UCOUNT_RLIMIT_NPROC))
+> > +	if ((new->user != old->user || new->rlimit_ns != old->rlimit_ns) &&
+> > +	    !inc_rlimit_counter(new->rlimit_ns, new->euid, UCOUNT_RLIMIT_NPROC))
+> >  		task->flags |= PF_NPROC_UNS_EXCEEDED;
+> >  	rcu_assign_pointer(task->real_cred, new);
+> >  	rcu_assign_pointer(task->cred, new);
+> > -	if (new->user != old->user)
+> > -		dec_rlimit_counter(&init_user_ns, old->euid, UCOUNT_RLIMIT_NPROC);
+> > +	if (new->user != old->user || new->rlimit_ns != old->rlimit_ns)
+> > +		dec_rlimit_counter(old->rlimit_ns, old->euid, UCOUNT_RLIMIT_NPROC);
+> >  	alter_cred_subscribers(old, -2);
+> >  
+> >  	/* send notifications */
+> > @@ -789,6 +792,26 @@ int set_create_files_as(struct cred *new, struct inode *inode)
+> >  }
+> >  EXPORT_SYMBOL(set_create_files_as);
+> >  
+> > +/*
+> > + * Change the rlimit user namespace of the current task, replacing the existing
+> > + * one. If the given namespace is NULL, then initial user namespace will be
+> > + * used.
+> > + *
+> > + * Return: 0 on success; -errno on failure.
+> > + */
+> > +int set_rlimit_ns(struct user_namespace *ns)
+> > +{
+> > +	struct cred *new;
+> > +
+> > +	new = prepare_creds();
+> > +	if (!new)
+> > +		return -ENOMEM;
+> > +
+> > +	new->rlimit_ns = ns ? ns : &init_user_ns;
+> > +
+> > +	return commit_creds(new);
+> > +}
+> > +
+> >  #ifdef CONFIG_DEBUG_CREDENTIALS
+> >  
+> >  bool creds_are_invalid(const struct cred *cred)
+> > diff --git a/kernel/exit.c b/kernel/exit.c
+> > index 5a0d7dd1ad64..998436d32373 100644
+> > --- a/kernel/exit.c
+> > +++ b/kernel/exit.c
+> > @@ -187,7 +187,7 @@ void release_task(struct task_struct *p)
+> >  	/* don't need to get the RCU readlock here - the process is dead and
+> >  	 * can't be modifying its own credentials. But shut RCU-lockdep up */
+> >  	rcu_read_lock();
+> > -	dec_rlimit_counter(&init_user_ns, task_euid(p), UCOUNT_RLIMIT_NPROC);
+> > +	dec_rlimit_counter(task_rlimit_ns(p), task_euid(p), UCOUNT_RLIMIT_NPROC);
+> >  	rcu_read_unlock();
+> >  
+> >  	cgroup_release(p);
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index d2b28634dc8f..43f3c54fe4c6 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -1963,7 +1963,7 @@ static __latent_entropy struct task_struct *copy_process(
+> >  		current->flags &= ~PF_NPROC_UNS_EXCEEDED;
+> >  		goto bad_fork_free;
+> >  	}
+> > -	processes = get_rlimit_counter(&init_user_ns, p->real_cred->euid,
+> > +	processes = get_rlimit_counter(task_rlimit_ns(p), task_euid(p),
+> >  			UCOUNT_RLIMIT_NPROC);
+> >  	if (processes >= task_rlimit(p, RLIMIT_NPROC)) {
+> >  		if (p->real_cred->user != INIT_USER &&
+> > @@ -2366,7 +2366,7 @@ static __latent_entropy struct task_struct *copy_process(
+> >  #endif
+> >  	delayacct_tsk_free(p);
+> >  bad_fork_cleanup_count:
+> > -	dec_rlimit_counter(&init_user_ns, p->cred->euid, UCOUNT_RLIMIT_NPROC);
+> > +	dec_rlimit_counter(task_rlimit_ns(p), task_euid(p), UCOUNT_RLIMIT_NPROC);
+> >  	exit_creds(p);
+> >  bad_fork_free:
+> >  	p->state = TASK_DEAD;
+> > diff --git a/kernel/sys.c b/kernel/sys.c
+> > index db780ec32d86..917cbd7fc674 100644
+> > --- a/kernel/sys.c
+> > +++ b/kernel/sys.c
+> > @@ -467,7 +467,7 @@ static int set_user(struct cred *new)
+> >  	if (!new_user)
+> >  		return -EAGAIN;
+> >  
+> > -	processes = get_rlimit_counter(&init_user_ns, new_user->uid, UCOUNT_RLIMIT_NPROC);
+> > +	processes = get_rlimit_counter(new->rlimit_ns, new_user->uid, UCOUNT_RLIMIT_NPROC);
+> >  
+> >  	/*
+> >  	 * We don't fail in case of NPROC limit excess here because too many
+> > @@ -2529,6 +2529,26 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+> >  
+> >  		error = (current->flags & PR_IO_FLUSHER) == PR_IO_FLUSHER;
+> >  		break;
+> > +	case PR_SET_RLIMIT_USER_NAMESPACE:
+> > +		if (!capable(CAP_SYS_RESOURCE))
+> > +			return -EPERM;
+> Can you have CAP_SYS_RESOURCE in the init user ns while you're in a non-init 
+> user ns? Shouldn't that only matter if you want to set yourself to 
+> PR_RLIMIT_BIND_GLOBAL_USERNS anyways and you just want to make sure they have 
+> CAP_SYS_RESOURCE in the current namespace for PR_RLIMIT_BIND_CURRENT_USERNS?
 
-Also, if it was me, I will separate the notifications and get/put hooks
-into two separate patches. Not an issue though if you want to keep it
-in the same patch.
+I think I was wrong to add the CAP_SYS_RESOURCE check because the user
+still won't be able to exceed his limit. So since setrlimit does not
+require CAP_SYS_RESOURCE, then it is not needed here either.
 
-> All SCMI drivers still keep using the old handle based interface.
+> > +
+> > +		switch (arg2) {
+> > +		case PR_RLIMIT_BIND_GLOBAL_USERNS:
+> > +			error = set_rlimit_ns(&init_user_ns);
+> > +			break;
+> > +		case PR_RLIMIT_BIND_CURRENT_USERNS:
+> > +			error = set_rlimit_ns(current_user_ns());
+> > +			break;
+> To some degree, this isn't so much "per user namespace rlimits", as much as it 
+> is hierarchical rlimits. I'm not going to nitpick about names, but it might be 
+> worth exploring. Especially because the way the patch is written, it would be 
+> easy to introduce a third user namespace for rlimits with different mappings.
+
+I agree that the naming is a bit confusing but I couldn't think of a
+better one. This is probably because the discussion started with the topic
+"per userns rlimits".
+
+This change is more about the rlimit counter but not the rlimit itself.
+
+> The downside I see with a sysctl is that changing it midway through the user 
+> namespaces lifetime could be confusing, and difficult to get right.
+
+sysctl requires procfs. I did prctl to avoid it.
+
+> > +		default:
+> > +			error = -EINVAL;
+> > +		}
+> > +		break;
+> > +	case PR_GET_RLIMIT_USER_NAMESPACE:
+> > +		error = current_rlimit_ns() == &init_user_ns
+> > +			? PR_RLIMIT_BIND_GLOBAL_USERNS
+> > +			: PR_RLIMIT_BIND_CURRENT_USERNS;
+> > +		break;
+> It would be nice to have this be a sysctl, so everyone who does
+> setns() would get the behaviour, and if a process wants to 
+
+What's so tricky about using prctl?
+
+> >  	default:
+> >  		error = -EINVAL;
+> >  		break;
+> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> > index 87804e0371fe..346df35ceba9 100644
+> > --- a/kernel/user_namespace.c
+> > +++ b/kernel/user_namespace.c
+> > @@ -56,6 +56,8 @@ static void set_cred_user_ns(struct cred *cred, struct user_namespace *user_ns)
+> >  #endif
+> >  	/* tgcred will be cleared in our caller bc CLONE_THREAD won't be set */
+> >  	cred->user_ns = user_ns;
+> > +
+> > +	cred->rlimit_ns = &init_user_ns;
+> >  }
+> >  
+> >  /*
+> > @@ -121,6 +123,7 @@ int create_user_ns(struct cred *new)
+> >  	for (i = 0; i < UCOUNT_COUNTS; i++) {
+> >  		ns->ucount_max[i] = INT_MAX;
+> >  	}
+> > +	ns->ucount_max[UCOUNT_RLIMIT_NPROC] = rlimit(RLIMIT_NPROC);
+> >  	ns->ucounts = ucounts;
+> >  
+> >  	/* Inherit USERNS_SETGROUPS_ALLOWED from our parent */
+> > -- 
+> > 2.25.4
+> > 
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
->   drivers/firmware/arm_scmi/driver.c | 126 +++++++++++++++++++++++++++++
->   drivers/firmware/arm_scmi/notify.c | 123 ++++++++++++++++++++++++++++
->   include/linux/scmi_protocol.h      |  34 +++++++-
->   3 files changed, 282 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 8ca04acb6abb..4d86aafbf465 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -15,6 +15,7 @@
->    */
->   
->   #include <linux/bitmap.h>
-> +#include <linux/device.h>
->   #include <linux/export.h>
->   #include <linux/idr.h>
->   #include <linux/io.h>
-> @@ -728,6 +729,38 @@ void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
->   	mutex_unlock(&info->protocols_mtx);
->   }
->   
-> +/**
-> + * scmi_get_protocol_operations  - Get protocol operations
-> + * @handle: A reference to the SCMI platform instance.
-> + * @protocol_id: The protocol being requested.
-> + * @ph: A pointer reference used to pass back the associated protocol handle.
-> + *
-> + * Get hold of a protocol accounting for its usage, eventually triggering its
-> + * initialization, and returning the protocol specific operations and related
-> + * protocol handle which will be used as first argument in most of the protocols
-> + * operations methods.
-> + *
-> + * Return: A reference to the requested protocol operations or error.
-> + *	   Must be checked for errors by caller.
-> + */
-> +static const void __must_check *
-> +scmi_get_protocol_operations(struct scmi_handle *handle, u8 protocol_id,
-> +			     struct scmi_protocol_handle **ph)
-> +{
-> +	struct scmi_protocol_instance *pi;
-> +
-> +	if (!ph)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	pi = scmi_get_protocol_instance(handle, protocol_id);
-> +	if (IS_ERR(pi))
-> +		return pi;
-> +
-> +	*ph = &pi->ph;
-> +
-> +	return pi->proto->ops;
-> +}
-> +
->   void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
->   				     u8 *prot_imp)
->   {
-> @@ -751,6 +784,95 @@ scmi_is_protocol_implemented(const struct scmi_handle *handle, u8 prot_id)
->   	return false;
->   }
->   
-> +struct scmi_protocol_devres {
-> +	struct scmi_handle *handle;
-> +	u8 protocol_id;
-> +};
-> +
-> +static void scmi_devm_release_protocol(struct device *dev, void *res)
-> +{
-> +	struct scmi_protocol_devres *dres = res;
-> +
-> +	scmi_release_protocol(dres->handle, dres->protocol_id);
-> +}
-> +
-> +/**
-> + * scmi_devm_get_protocol_ops  - Devres managed get protocol operations
-> + * @sdev: A reference to an scmi_device whose embedded struct device is to
-> + *	  be used for devres accounting.
-> + * @protocol_id: The protocol being requested.
-> + * @ph: A pointer reference used to pass back the associated protocol handle.
-> + *
-> + * Get hold of a protocol accounting for its usage, eventually triggering its
-> + * initialization, and returning the protocol specific operations and related
-> + * protocol handle which will be used as first argument in most of the
-> + * protocols operations methods.
-> + * Being a devres based managed method, protocol hold will be automatically
-> + * released, and possibly de-initialized on last user, once the SCMI driver
-> + * owning the scmi_device is unbound from it.
-> + *
-> + * Return: A reference to the requested protocol operations or error.
-> + *	   Must be checked for errors by caller.
-> + */
-> +static const void __must_check *
-> +scmi_devm_get_protocol_ops(struct scmi_device *sdev, u8 protocol_id,
-> +			   struct scmi_protocol_handle **ph)
-> +{
-> +	struct scmi_protocol_instance *pi;
-> +	struct scmi_protocol_devres *dres;
-> +	struct scmi_handle *handle = sdev->handle;
-> +
-> +	if (!ph)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	dres = devres_alloc(scmi_devm_release_protocol,
-> +			    sizeof(*dres), GFP_KERNEL);
-> +	if (!dres)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	pi = scmi_get_protocol_instance(handle, protocol_id);
-> +	if (IS_ERR(pi)) {
-> +		devres_free(dres);
-> +		return pi;
-> +	}
-> +
-> +	dres->handle = handle;
-> +	dres->protocol_id = protocol_id;
-> +	devres_add(&sdev->dev, dres);
-> +
-> +	*ph = &pi->ph;
-> +
-> +	return pi->proto->ops;
-> +}
-> +
-> +static int scmi_devm_protocol_match(struct device *dev, void *res, void *data)
-> +{
-> +	struct scmi_protocol_devres *dres = res;
-> +
-> +	if (WARN_ON(!dres || !data))
-> +		return 0;
-> +
-> +	return dres->protocol_id == *((u8 *)data);
-> +}
-> +
-> +/**
-> + * scmi_devm_put_protocol_ops  - Devres managed put protocol operations
-> + * @sdev: A reference to an scmi_device whose embedded struct device is to
-> + *	  be used for devres accounting.
-> + * @protocol_id: The protocol being requested.
-> + *
-> + * Explicitly release a protocol hold previously obtained calling the above
-> + * @scmi_devm_get_protocol_ops.
-> + */
-> +static void scmi_devm_put_protocol_ops(struct scmi_device *sdev, u8 protocol_id)
-> +{
-> +	int ret;
-> +
-> +	ret = devres_release(&sdev->dev, scmi_devm_release_protocol,
-> +			     scmi_devm_protocol_match, &protocol_id);
-> +	WARN_ON(ret);
-> +}
-> +
->   /**
->    * scmi_handle_get() - Get the SCMI handle for a device
->    *
-> @@ -1004,6 +1126,10 @@ static int scmi_probe(struct platform_device *pdev)
->   	handle = &info->handle;
->   	handle->dev = info->dev;
->   	handle->version = &info->version;
-> +	handle->devm_get_ops = scmi_devm_get_protocol_ops;
-> +	handle->devm_put_ops = scmi_devm_put_protocol_ops;
-> +	handle->get_ops = scmi_get_protocol_operations;
-> +	handle->put_ops = scmi_release_protocol;
-
-Why do you need a dev_res version and a non dev_res version? I checked
-patch 6 where you convert the drivers to use these hooks and all of them
-are using the dev res apis.
-
->   
->   	ret = scmi_txrx_setup(info, dev, SCMI_PROTOCOL_BASE);
->   	if (ret)
-> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-> index eae58b2a92cc..64d43e425644 100644
-> --- a/drivers/firmware/arm_scmi/notify.c
-> +++ b/drivers/firmware/arm_scmi/notify.c
-> @@ -1370,6 +1370,127 @@ static int scmi_unregister_notifier(const struct scmi_handle *handle,
->   	return 0;
->   }
->   
-> +struct scmi_notifier_devres {
-> +	const struct scmi_handle *handle;
-> +	u8 proto_id;
-> +	u8 evt_id;
-> +	u32 __src_id;
-> +	u32 *src_id;
-
-Instead of maintaining two separate pointers for src id,
-why not define a bool, something like is_src_id_valid?
-Should simply this a bit and also don't have to maintain two 32 bit 
-pointers. What do you think?
-
-> +	struct notifier_block *nb;
-> +};
-> +
-> +static void scmi_devm_release_notifier(struct device *dev, void *res)
-> +{
-> +	struct scmi_notifier_devres *dres = res;
-> +
-> +	scmi_unregister_notifier(dres->handle, dres->proto_id, dres->evt_id,
-> +				 dres->src_id, dres->nb);
-> +}
-> +
-> +/**
-> + * scmi_devm_register_notifier()  - Managed registration of a notifier_block
-> + * for an event
-> + * @sdev: A reference to an scmi_device whose embedded struct device is to
-> + *	  be used for devres accounting.
-> + * @proto_id: Protocol ID
-> + * @evt_id: Event ID
-> + * @src_id: Source ID, when NULL register for events coming form ALL possible
-> + *	    sources
-> + * @nb: A standard notifier block to register for the specified event
-> + *
-> + * Generic devres managed helper to register a notifier_block against a
-> + * protocol event.
-> + */
-> +static int scmi_devm_register_notifier(struct scmi_device *sdev,
-> +				       u8 proto_id, u8 evt_id, u32 *src_id,
-> +				       struct notifier_block *nb)
-> +{
-> +	int ret;
-> +	struct scmi_notifier_devres *dres;
-> +
-> +	dres = devres_alloc(scmi_devm_release_notifier,
-> +			    sizeof(*dres), GFP_KERNEL);
-> +	if (!dres)
-> +		return -ENOMEM;
-> +
-> +	ret = scmi_register_notifier(sdev->handle, proto_id,
-> +				     evt_id, src_id, nb);
-> +	if (ret) {
-> +		devres_free(dres);
-> +		return ret;
-> +	}
-> +
-> +	dres->handle = sdev->handle;
-> +	dres->proto_id = proto_id;
-> +	dres->evt_id = evt_id;
-> +	dres->nb = nb;
-> +	if (src_id) {
-> +		dres->__src_id = *src_id;
-> +		dres->src_id = &dres->__src_id;
-> +	} else {
-> +		dres->src_id = NULL;
-> +	}
-> +	devres_add(&sdev->dev, dres);
-> +
-> +	return ret;
-> +}
-> +
-> +static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
-> +{
-> +	struct scmi_notifier_devres *dres = res;
-> +	struct scmi_notifier_devres *xres = data;
-> +
-> +	if (WARN_ON(!dres || !xres))
-> +		return 0;
-> +
-> +	return dres->proto_id == xres->proto_id &&
-> +		dres->evt_id == xres->evt_id &&
-> +		dres->nb == xres->nb &&
-
-Does the nb have to be compared as well ?
-
-> +		((!dres->src_id && !xres->src_id) ||
-> +		  (dres->src_id && xres->src_id &&
-> +		   dres->__src_id == xres->__src_id));
-
 
 -- 
-Warm Regards
-Thara
+Rgrds, legion
+
