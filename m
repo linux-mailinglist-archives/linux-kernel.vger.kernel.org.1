@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4D42A6324
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0612A6329
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgKDLRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729589AbgKDLR1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:17:27 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158D2C061A4C
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 03:17:27 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id w14so21578832wrs.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 03:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QwJRAenGdZ42PlyVXV73a6SJR/jbxK4qTgDqEtZcRKI=;
-        b=ZwFav17UiX7OB2VG0aiFLtzFz3I529oV9cElzmWVaa4Fki3EDEYq0iPllVsQgQPmMw
-         aepxl/tm88EQ8J5edcxCC1EiBmzWci/DkiJhpUumCiIJq8R4DJGzQubVQBE3eH0oURE1
-         zfmemkUAL9P7oo4gnjl3/646srMNRa7nnbkInjO0TAi+FLDq5li9Sf3S+GTbrw4k/jJx
-         vNotE/y0ZNZZ6GlIjGOK/LVX0YRmu52LwKEErEcevsAMZRgmtN5JVvEeJU1I6VROaMwH
-         Yo9XFaAhz+Ja2x8ENv8aRDaUMCMuVExWvUdKRGk/ONxGSw6p4Z1qS8yrr5ucY+rci7xv
-         /rig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QwJRAenGdZ42PlyVXV73a6SJR/jbxK4qTgDqEtZcRKI=;
-        b=aMDevO5mKj2CAWGcSAkVXq/TLlF4gJz0BJFg1VU+QxzXKTFNTc/bOXpiC4n35sLGQH
-         feTXsbOT5ra5nu6YOsVdpinV/QtcMK5+ii/28l1cPwjDTlyVYwXuwcY1Vhj/QglAtzOJ
-         jyPRYewduM/1Hr7MQD1wcDK1ZUvYBdSyyH1Z/XX48sVWchIBXHLg5J7LkD93tbPy4AWx
-         UstFuUDtPsLCKhwyzB5WYX9leIeC+5lQ2Zflwn+C2aFaCz3+auNLAHLOAaD1dEvpwZXX
-         +FhfViLZwiTWRpZxxFF+4h7JuRlxTs4hiR3HSdB6BdAaLomy2txaDKr6bENkBV+ktuyK
-         5L4w==
-X-Gm-Message-State: AOAM533Ppls7rnMih2yEu5HHzwq2sutoE/gK9oFKluRDAxNnTSOIDBzx
-        4vQbttni1TKwt4KcP6UzvOwEkw==
-X-Google-Smtp-Source: ABdhPJylDyszvDYbcQVFZaKGr+c5qdRrKrG+v/xQYoBbfvNo7aVuD4qNL1hMyV3EIru6EViw62tYGQ==
-X-Received: by 2002:a05:6000:4c:: with SMTP id k12mr30555969wrx.278.1604488645803;
-        Wed, 04 Nov 2020 03:17:25 -0800 (PST)
-Received: from dell ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id m14sm2090453wro.43.2020.11.04.03.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 03:17:25 -0800 (PST)
-Date:   Wed, 4 Nov 2020 11:17:23 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com, bhelgaas@google.com,
-        alexey.budankov@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD and x86 due for the v5.11
- merge window
-Message-ID: <20201104111723.GC4488@dell>
-References: <20201029014449.14955-1-david.e.box@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201029014449.14955-1-david.e.box@linux.intel.com>
+        id S1729709AbgKDLRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:17:54 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:41620 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729605AbgKDLR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:17:28 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxStDDjaJfpqcFAA--.5755S2;
+        Wed, 04 Nov 2020 19:17:23 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: loongson64: Remove unnecessary external declaration
+Date:   Wed,  4 Nov 2020 19:17:23 +0800
+Message-Id: <1604488643-22014-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxStDDjaJfpqcFAA--.5755S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr48Cw4fJryrZFWDtF1UWrg_yoWDJFb_ua
+        42yw4rur1rWr13X3yUXr4fWrW2q3y8Can09F1UXwnYv3WqvFnxJaykCr17GF47Cr98Ar1r
+        WF4rKr18C3Z7KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0IdgJUUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
+prom_init_memory() unused in loongson64, only used in loongson2ef, and
+has been declared in arch/mips/include/asm/mach-loongson2ef/loongson.h,
+so remove the external declaration in loongson64.
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/include/asm/mach-loongson64/loongson.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-x86-v5.11
-
-for you to fetch changes up to 5ef9998c96b0c99c49c202054586967e609286d2:
-
-  platform/x86: Intel PMT Crashlog capability driver (2020-11-04 11:14:38 +0000)
-
-----------------------------------------------------------------
-Immutable branch between MFD and x86 due for the v5.11 merge window
-
-----------------------------------------------------------------
-Alexander Duyck (3):
-      platform/x86: Intel PMT class driver
-      platform/x86: Intel PMT Telemetry capability driver
-      platform/x86: Intel PMT Crashlog capability driver
-
-David E. Box (2):
-      PCI: Add defines for Designated Vendor-Specific Extended Capability
-      mfd: Intel Platform Monitoring Technology support
-
- Documentation/ABI/testing/sysfs-class-intel_pmt | 119 +++++++++
- MAINTAINERS                                     |   6 +
- drivers/mfd/Kconfig                             |  10 +
- drivers/mfd/Makefile                            |   1 +
- drivers/mfd/intel_pmt.c                         | 223 ++++++++++++++++
- drivers/platform/x86/Kconfig                    |  34 +++
- drivers/platform/x86/Makefile                   |   3 +
- drivers/platform/x86/intel_pmt_class.c          | 297 +++++++++++++++++++++
- drivers/platform/x86/intel_pmt_class.h          |  52 ++++
- drivers/platform/x86/intel_pmt_crashlog.c       | 328 ++++++++++++++++++++++++
- drivers/platform/x86/intel_pmt_telemetry.c      | 160 ++++++++++++
- include/uapi/linux/pci_regs.h                   |   5 +
- 12 files changed, 1238 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-intel_pmt
- create mode 100644 drivers/mfd/intel_pmt.c
- create mode 100644 drivers/platform/x86/intel_pmt_class.c
- create mode 100644 drivers/platform/x86/intel_pmt_class.h
- create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
- create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
-
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
+index fde1b75..8433501 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+@@ -23,7 +23,6 @@ extern u32 memsize, highmemsize;
+ extern const struct plat_smp_ops loongson3_smp_ops;
+ 
+ /* loongson-specific command line, env and memory initialization */
+-extern void __init prom_init_memory(void);
+ extern void __init prom_init_env(void);
+ extern void *loongson_fdt_blob;
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.1.0
+
