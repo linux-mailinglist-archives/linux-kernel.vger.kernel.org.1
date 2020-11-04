@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD1B2A7165
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8B12A71C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Nov 2020 00:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733001AbgKDXVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 18:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733003AbgKDXVg (ORCPT
+        id S1732942AbgKDX17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 18:27:59 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:42101 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732778AbgKDX1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:21:36 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9EAC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 15:21:35 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id cw8so264237ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 15:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IkxbaeAsRvfPNMaiW0gFtiCQOBmoS4GNd3nY4Wwz8Hk=;
-        b=nbBwJZMY+xrKg6w6NoyyZ8wH6PRrpWDJMwjQmqe2WQUKuJO5hUA4CVT37Q2bT3zk6M
-         XXGYTpqF1YDiy5XaStqn2/wwlKmEE4KiWnngd9Hg4pwEnL3nDkVgzYAWjotLvVSgC8RI
-         OHRURM5VZ+ERQIF6Zw6htdalcHKNqqZ5XS6xWz/S3YRSMU2iC+YP3iut1T2hy68jS+YE
-         L1nTzHri580AMi64MfXaRmO1YeFLTfHm4V1xZh5k6V5MQdopCu5nARpraa1dfQ7trQzf
-         +6RvDh4gvwQHvyG3b9jdZ9wWt+STGKccdgYSKelxfhKJOayGBw+tSbjtTiFw+2KIRg8M
-         qiEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IkxbaeAsRvfPNMaiW0gFtiCQOBmoS4GNd3nY4Wwz8Hk=;
-        b=N5VqjXE/Nt3G8yrKOqAYRN5hB091USN++hRloIrjqm+l4P/88e+w3F0A5f9+SLLdR8
-         HJabOUjWUt05XZM9KUCDKcoYhEay6HwUzaUCVmuM3hqTBuL49oheGKZL20r4BTEXOPEu
-         3c3lZmNu4qZLDI9KpdSvsBri2A27mRJXUrxLiT/DiO4GjKuAL14beKopZvTjZNUKuGDG
-         6jfR76YE+BTbzxY8vOg27Qy6/1uq9jG6qlGyyXthb08AcKo101hwtU2W7vo/lEqFZW43
-         tb4Wzr1beyGhCCc1ENAiL4gCLRpF8IbZ9TWVKbPf8JsiIilPLalkgDqmT0p5mSHrSbQQ
-         QZkg==
-X-Gm-Message-State: AOAM530yWH8YRcJIHa96N+O/wRDVEDTxpf1cGpA/Uy64yRhkcyk6Xd/e
-        HngUzq/NF+2mzWXQTBy+28h5CvjJfV6gNQpStGGzLQ==
-X-Google-Smtp-Source: ABdhPJxvb/hNG9Gu9hrl82xWn1tmJIgoueWGEVMCGBlWcYM3JxH/JkmRoeh47/b7BtcC3eHP9KumYl6m1HGAoVQj2Mk=
-X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr427071ejb.472.1604532094560;
- Wed, 04 Nov 2020 15:21:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201101201542.2027568-1-leon@kernel.org> <20201101201542.2027568-7-leon@kernel.org>
- <20201103154525.GO36674@ziepe.ca>
-In-Reply-To: <20201103154525.GO36674@ziepe.ca>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 4 Nov 2020 15:21:23 -0800
-Message-ID: <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
- auxiliary bus
-To:     gregkh <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Wed, 4 Nov 2020 18:27:41 -0500
+X-Greylist: delayed 308 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Nov 2020 18:27:39 EST
+Received: from localhost.localdomain (abag227.neoplus.adsl.tpnet.pl [83.6.170.227])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 31FD840229;
+        Thu,  5 Nov 2020 00:22:24 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Steven Price <steven.price@arm.com>,
         Mark Brown <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David M Ertman <david.m.ertman@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Scull <ascull@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Add KRYO2XX Errata / mitigations data
+Date:   Thu,  5 Nov 2020 00:22:09 +0100
+Message-Id: <20201104232218.198800-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-[..]
-> > +MODULE_DEVICE_TABLE(auxiliary, mlx5v_id_table);
-> > +
-> > +static struct auxiliary_driver mlx5v_driver = {
-> > +     .name = "vnet",
-> > +     .probe = mlx5v_probe,
-> > +     .remove = mlx5v_remove,
-> > +     .id_table = mlx5v_id_table,
-> > +};
->
-> It is hard to see from the diff, but when this patch is applied the
-> vdpa module looks like I imagined things would look with the auxiliary
-> bus. It is very similar in structure to a PCI driver with the probe()
-> function cleanly registering with its subsystem. This is what I'd like
-> to see from the new Intel RDMA driver.
->
-> Greg, I think this patch is the best clean usage example.
->
-> I've looked over this series and it has the right idea and
-> parts. There is definitely more that can be done to improve mlx5 in
-> this area, but this series is well scoped and cleans a good part of
-> it.
+This series adds Spectre mitigations and errata data for
+Qualcomm KRYO2XX Gold (big) and Silver (LITTLE) series of
+CPU cores, used for example in MSM8998 and SDM660-series SoCs.
 
-Greg?
+Konrad Dybcio (4):
+  arm64: Add MIDR value for KRYO2XX gold/silver CPU cores
+  arm64: kpti: Add KRYO2XX gold/silver CPU cores to kpti safelist
+  arm64: proton-pack: Add KRYO2XX silver CPUs to spectre-v2 safe-list
+  arm64: cpu_errata: Apply Erratum 845719 to KRYO2XX Silver
 
-I know you alluded to going your own way if the auxiliary bus patches
-did not shape up soon, but it seems they have and the stakeholders
-have reached this consensus point.
+ arch/arm64/include/asm/cputype.h | 4 ++++
+ arch/arm64/kernel/cpu_errata.c   | 2 ++
+ arch/arm64/kernel/cpufeature.c   | 2 ++
+ arch/arm64/kernel/proton-pack.c  | 1 +
+ 4 files changed, 9 insertions(+)
 
-Were there any additional changes you wanted to see happen? I'll go
-give the final set another once over, but David has been diligently
-fixing up all the declared major issues so I expect to find at most
-minor incremental fixups.
+-- 
+2.29.2
+
