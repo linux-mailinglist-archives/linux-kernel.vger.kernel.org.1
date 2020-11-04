@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715402A66F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153972A66F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 16:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730440AbgKDPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 10:00:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgKDPAN (ORCPT
+        id S1730486AbgKDPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 10:00:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730454AbgKDPAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:00:13 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86700C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 07:00:13 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id p15so23335264ljj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:00:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fdf584HMl6Mgyxg+hnbJRvbT3eFGadTv8eB6Pu20Wvo=;
-        b=vlpfwpnwi5k+74eiI2hHDewVZmlq4JFNJF3cKXCuLDMr/Sqg1rUwH5cR2V0Mv4R86F
-         ZGyWNhN2T7milG3RLT+U+rqU16kox9I3XTS2z/mYxSR/BMjREfchhnrWu9lFVe1MO+es
-         8RCh4fMleHla4fyygHCEAWU+N89OJxBhwqgFbjGSSAYUIuFIKqLS/XxKM9p6mpFaCimy
-         NpTQZ8BjPOeEh5HjgU5YDaL9opxQfLdwDoJTZ58WwfEeqQj9RtsaROIK1y9TvhXO+cIA
-         jUOPdRu8CNAGuXSaEi5A9r3npK91rm42lFMnVVnWoHevlCuvqnm4DUq6LLYLjF94ROHz
-         hXxQ==
+        Wed, 4 Nov 2020 10:00:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604502022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e6diWzy+RGM557EqcQ+SeKoKVh3DtYLPPbyK6Q8TIW0=;
+        b=RUP6H9OxV9hzZ9zIwZG9GKedC1rIBDfgRH0wnMiFjP7k5uUfW7/N1VrE0giq9bdgriPQGI
+        TqAKGUxKVc0sWveykkfmr6aWRJFbEaQbq8MB/CqRYgWsSTF0k7B1+rM6hfxTGaDRExPI7G
+        n9Mr+COMNV2Te8j3N5G4ARKOGbzxaIM=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-pKUn04bANHS_QXXtsXcvGQ-1; Wed, 04 Nov 2020 10:00:21 -0500
+X-MC-Unique: pKUn04bANHS_QXXtsXcvGQ-1
+Received: by mail-qv1-f71.google.com with SMTP id b13so12990544qvz.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 07:00:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fdf584HMl6Mgyxg+hnbJRvbT3eFGadTv8eB6Pu20Wvo=;
-        b=Jq0EZKoTeF0N0Gs5D9L5/6ZROB2pQqk1rv4tSYO+ERkENEJUhZ5WC3OCp+BkZQpi9C
-         StJnXhTfPasBgBrttc4RhR+zdODt1J+MXgHIit78QNG/3GIQ+Da7lUpY+n13o/utzrqc
-         cpRI7j9p68mb1OMprFN0TbvzXvkE2syvYME3I6pb/5ovi6aO0CV8CC03AFtT/o7Q8oty
-         TTIcy4G6dYj2+tbmbBJ+2QrJIv0PMCeWYdXy4YiyD2Fw/6xn4wTghXyaXzPfMeSe4pW9
-         3TWqkREtTJtmHnuOZxAIQ6uKnJJEqRi4C+/KBmUL/AlSgeCHjOtQD9vfMiiMUeXkhKfY
-         XgMw==
-X-Gm-Message-State: AOAM530Rt7weFesVHwZFaWIzsce1FarAuBbu2DqRAxzKzXtGFtOgSjcF
-        puB9m9GmDWzSVsHSVh81P9i1WEikj5Cu5sU0vrLnSA==
-X-Google-Smtp-Source: ABdhPJyQctvt8JjcQXFGdlO/aJWWoWcArbblEv0homEWqRSxyZdZK76efBccUYp+q+5o0pN/z+XnrxVrZlWXRvoBMyA=
-X-Received: by 2002:a2e:58a:: with SMTP id 132mr143854ljf.77.1604502011806;
- Wed, 04 Nov 2020 07:00:11 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e6diWzy+RGM557EqcQ+SeKoKVh3DtYLPPbyK6Q8TIW0=;
+        b=bk1pFsDI1V0v1DGz+vcQrfAwGldK1ggjVQaiKLwy3Q/q6DFY5lvkEJEsc7+s/jUUR9
+         O/5CrgE9NROy3hNhA4V6Lhopvlx3drcPdGtrPlBu+kScO6ogdhm2GJsYD3COue/F1D9s
+         wwodqinIkKfVRFm1sVPhgjp6cq7kKF42XwG+A9fNxE3Q7FC0sH2/u7cnLkYQicuqLMAf
+         q+wSU5VghOZRQkun4x4qSQ5hEQ/doYfziia/iDwQ1N2sqDRHJnW+otZIbV+HO3/AmhyD
+         hWOQuYSbRVjDyIPj+DN14l2iekKVWlYapolsLdoZUoyFGBkXed+U/Yvvb657bWYXmjvA
+         qtNA==
+X-Gm-Message-State: AOAM530l9E90VKiK+D676s7rtjkqZh5TyGNBx1S3LBoudlOaTYrsf99b
+        skufuURT2/2N0/nTAUd76qz3Fmaeo/7/UHSxZha0myCjBYblM3QmT7D3NiRvlnljyf/tIhTNxi+
+        wgtrgV7kFe0uJyL+/LULxOIOe
+X-Received: by 2002:a37:8107:: with SMTP id c7mr25368845qkd.361.1604502019954;
+        Wed, 04 Nov 2020 07:00:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy2eY3k9i5ObOPHDM5/bO3oV4U3c5htFt8p/dm3ffz6awRll55ijhfh7CVBUmgdIdzrQQk4og==
+X-Received: by 2002:a37:8107:: with SMTP id c7mr25368827qkd.361.1604502019710;
+        Wed, 04 Nov 2020 07:00:19 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-196.dsl.bell.ca. [174.93.89.196])
+        by smtp.gmail.com with ESMTPSA id g13sm266060qth.27.2020.11.04.07.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 07:00:18 -0800 (PST)
+Date:   Wed, 4 Nov 2020 10:00:17 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Subject: Re: [PATCH v2 2/5] KVM: selftests: Factor code out of
+ demand_paging_test
+Message-ID: <20201104150017.GN20600@xz-x1>
+References: <20201103234952.1626730-1-bgardon@google.com>
+ <20201103234952.1626730-3-bgardon@google.com>
+ <20201104121631.wvodsw7agsrdhje4@kamzik.brq.redhat.com>
 MIME-Version: 1.0
-References: <20201103212725.3716088-1-guro@fb.com> <20201103212725.3716088-3-guro@fb.com>
-In-Reply-To: <20201103212725.3716088-3-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 4 Nov 2020 07:00:00 -0800
-Message-ID: <CALvZod7-3VGVvBWfxzn_8acvqkGEoh7GruVKcPYDy1GoO74sRQ@mail.gmail.com>
-Subject: Re: [PATCH rfc 2/3] docs: cgroup-v1: reflect the deprecation of the
- non-hierarchical mode
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201104121631.wvodsw7agsrdhje4@kamzik.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:27 PM Roman Gushchin <guro@fb.com> wrote:
->
-> Update cgroup v1 docs after the deprecation of the non-hierarchical
-> mode of the memory controller.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On Wed, Nov 04, 2020 at 01:16:31PM +0100, Andrew Jones wrote:
+> If you don't mind I'd like to try and cleanup / generalize / refactor
+> demand_paging_test.c and dirty_log_test.c with a few patches first for
+> you to base this work on. I can probably get something posted today
+> or tomorrow.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Drew,
+
+Would you consider picking up the two patches below in the dirty ring series if
+you plan to rework the dirty log tests?  I got your r-b so I am making bold to
+think I'm ok to ask this; I just want to avoid another potential conflict
+within the series.
+
+Thanks!
+
+[1] https://lore.kernel.org/kvm/20201023183358.50607-11-peterx@redhat.com/
+[2] https://lore.kernel.org/kvm/20201023183358.50607-12-peterx@redhat.com/
+
+-- 
+Peter Xu
+
