@@ -2,204 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B5D2A7014
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CC12A701B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 23:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732175AbgKDWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 17:02:42 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:5083 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731198AbgKDWCf (ORCPT
+        id S1732225AbgKDWCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 17:02:48 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:42244 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728952AbgKDWCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:02:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604527354; x=1636063354;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GNGAiShu/8brycAcsYXEC6wJgzf/foiuvxYEUaQxlh8=;
-  b=DTJJb0ojDaPxeQPltrO4mgZlfyoprJQb/DLX/bJE9xn2nBawpH/nrE3y
-   Zm63/wQGkxgemst6yXdaut+/CaIhBSoyqz8DW0zVXIQKngGfwJd2wPC4y
-   6xLqvYm8odmj5yrKl7iyWNirniuZ/1J06JaEb3BPUsnvYmfaTeyCzhPdJ
-   khShK2Gf9rtF2CE0gZIig2KFgPRSrDCnshy8c897qJvISqs2RVH32uwkI
-   psrxTIVDLrgiblc8umgnBQSmpt6DoYGlkIww4oDfL8mXPsYYG9IUy4y9d
-   jNI+GAjiFTf2KX9CFtycLE5wCuq6LDPPk3NhmLJwxisugosASmpxY3YGr
-   A==;
-IronPort-SDR: S9qNVmM+hchmvZ+/mJO8y9EB+5GGlk2QLrVa7s3yygptQ1IskvsXHWJFN4k47pGysJYU2+UQqt
- 0dQsftMJbVKNW07z31zZsUGSxdAg9Y2yHFsqxbFGoef8/5/IHMgc/PNR4nPGaHH9OfRZ8Htjn3
- 1PQ6P7EDG7xErdrAICryC++FvgYNkkgBAVO5VfBqtZmaC4iphL06Cg9217kMMltVUBDozx9G18
- 4bgbjeleOnRC2IBDQYNDE+lgRYVnf/c2lwHT7DVmzo0UnsRCoE04BbcXp+MnCMXyQfN6NHVgYX
- wX4=
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="32465680"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Nov 2020 15:02:33 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 4 Nov 2020 15:02:33 -0700
-Received: from soft-dev10.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 4 Nov 2020 15:02:31 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Rishi Gupta <gupt21@gmail.com>, Jiri Kosina <jikos@kernel.org>,
-        "Benjamin Tissoires" <benjamin.tissoires@redhat.com>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        <linux-i2c@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] HID: mcp2221: Fix GPIO output handling
-Date:   Wed, 4 Nov 2020 23:02:23 +0100
-Message-ID: <20201104220223.293253-1-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 4 Nov 2020 17:02:44 -0500
+Received: by mail-oo1-f67.google.com with SMTP id l26so9504oop.9;
+        Wed, 04 Nov 2020 14:02:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VDlYs9n7jp3BkABO++FRUphY3QSzFMD8WBO0XVDWXfk=;
+        b=ucnx0akGyoPYU+vOtvCeI4x/RTyPzFnELdIchPkIBePBMmNyJyo0yU3xhfGZr9lxhf
+         orqlOVAKKaw5ovguwbCPM+zPjqmPmE3Cg/KqE1ukv6qDuAReApITgUSoNcnYQdTCtZHy
+         WK11HK+ER9ACyFIHaZM4MntUOUQTzPyghxH5Ye6wXFxzukT7zSjZWGgjcp1vq8sfPc8V
+         y9TsDFPyWWeacZjfOXBvdGackzbOZdIAJkdxbvSrVD0UrNrZcvNqq/XbmZGgGEkWSjfl
+         MTqeT4MqM68XBMs8hw4CdIr8LaXmcYhbmARQlBZsvTzSEU3D/cc4awZuXZnUqccvUpLK
+         5wbQ==
+X-Gm-Message-State: AOAM533zDKLxxABFQG3sehV+FrRe4L7WdPGk0zh0oIxF5SsKCKcWMoyT
+        5vEgh/hw9YvqmMg6tUr5IA==
+X-Google-Smtp-Source: ABdhPJw3lztNesCSTmOBj3NmKNBGvLCXlWnNHcO3ktPxftYN54oBueW17S3m8c54UDmKm7JdyPFDEQ==
+X-Received: by 2002:a4a:4203:: with SMTP id h3mr205139ooj.0.1604527363404;
+        Wed, 04 Nov 2020 14:02:43 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q7sm764304oig.42.2020.11.04.14.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 14:02:42 -0800 (PST)
+Received: (nullmailer pid 5906 invoked by uid 1000);
+        Wed, 04 Nov 2020 22:02:41 -0000
+Date:   Wed, 4 Nov 2020 16:02:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+Subject: Re: [PATCH v6 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20201104220241.GA4192737@bogus>
+References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201030053153.5319-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201030151837.GA3854035@bogus>
+ <a49505e9-500a-1c88-b5b5-1f6ea5e94c86@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a49505e9-500a-1c88-b5b5-1f6ea5e94c86@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mcp2221 driver GPIO output handling has has several issues.
+On Mon, Nov 02, 2020 at 01:59:41PM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> Hi Rob,
+> 
+> Thank you for the review comments...
+> 
+> On 30/10/2020 11:18 pm, Rob Herring wrote:
+> > On Fri, Oct 30, 2020 at 01:31:52PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> > > From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> > > 
+> > > Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+> > > remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+> > > 
+> > > Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> > > ---
+> > >   .../devicetree/bindings/spi/cadence-quadspi.txt    |  67 ---------
+> > >   .../devicetree/bindings/spi/cadence-quadspi.yaml   | 149 +++++++++++++++++++++
+> > >   2 files changed, 149 insertions(+), 67 deletions(-)
+> > >   delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+> > >   create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+> > > deleted file mode 100644
+> > > index 945be7d5b236..000000000000
+> > > --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+> > > +++ /dev/null
+> > > @@ -1,67 +0,0 @@
+> > > -* Cadence Quad SPI controller
+> > > -
+> > > -Required properties:
+> > > -- compatible : should be one of the following:
+> > > -	Generic default - "cdns,qspi-nor".
+> > > -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
+> > > -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
+> > > -- reg : Contains two entries, each of which is a tuple consisting of a
+> > > -	physical address and length. The first entry is the address and
+> > > -	length of the controller register set. The second entry is the
+> > > -	address and length of the QSPI Controller data area.
+> > > -- interrupts : Unit interrupt specifier for the controller interrupt.
+> > > -- clocks : phandle to the Quad SPI clock.
+> > > -- cdns,fifo-depth : Size of the data FIFO in words.
+> > > -- cdns,fifo-width : Bus width of the data FIFO in bytes.
+> > > -- cdns,trigger-address : 32-bit indirect AHB trigger address.
+> > > -
+> > > -Optional properties:
+> > > -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
+> > > -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
+> > > -  the read data rather than the QSPI clock. Make sure that QSPI return
+> > > -  clock is populated on the board before using this property.
+> > > -
+> > > -Optional subnodes:
+> > > -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
+> > > -custom properties:
+> > > -- cdns,read-delay : Delay for read capture logic, in clock cycles
+> > > -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
+> > > -                  mode chip select outputs are de-asserted between
+> > > -		  transactions.
+> > > -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
+> > > -                  de-activated and the activation of another.
+> > > -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
+> > > -                  transaction and deasserting the device chip select
+> > > -		  (qspi_n_ss_out).
+> > > -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
+> > > -                  and first bit transfer.
+> > > -- resets	: Must contain an entry for each entry in reset-names.
+> > > -		  See ../reset/reset.txt for details.
+> > > -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
+> > > -
+> > > -Example:
+> > > -
+> > > -	qspi: spi@ff705000 {
+> > > -		compatible = "cdns,qspi-nor";
+> > > -		#address-cells = <1>;
+> > > -		#size-cells = <0>;
+> > > -		reg = <0xff705000 0x1000>,
+> > > -		      <0xffa00000 0x1000>;
+> > > -		interrupts = <0 151 4>;
+> > > -		clocks = <&qspi_clk>;
+> > > -		cdns,is-decoded-cs;
+> > > -		cdns,fifo-depth = <128>;
+> > > -		cdns,fifo-width = <4>;
+> > > -		cdns,trigger-address = <0x00000000>;
+> > > -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
+> > > -		reset-names = "qspi", "qspi-ocp";
+> > > -
+> > > -		flash0: n25q00@0 {
+> > > -			...
+> > > -			cdns,read-delay = <4>;
+> > > -			cdns,tshsl-ns = <50>;
+> > > -			cdns,tsd2d-ns = <50>;
+> > > -			cdns,tchsh-ns = <4>;
+> > > -			cdns,tslch-ns = <4>;
+> > > -		};
+> > > -	};
+> > > diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> > > new file mode 100644
+> > > index 000000000000..ec22b040d804
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+> > > @@ -0,0 +1,149 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Cadence Quad SPI controller
+> > > +
+> > > +maintainers:
+> > > +  - Vadivel Murugan <vadivel.muruganx.ramuthevar@intel.com>
+> > > +
+> > > +allOf:
+> > > +  - $ref: "spi-controller.yaml#"
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - items:
+> > 
+> > You don't need 'oneOf' if there is only one entry...
+> > 
+> > So you've dropped 'cdns,qspi-nor' alone being valid. Granted, the txt
+> > file was fuzzy as to whether or not that was valid. So you have to look
+> > at all the dts files and see. I prefer we don't allow that and require a
+> > more specific compatible, but if there's a bunch then we should allow
+> > for it. The commit message should summarize what you decide.
+> we need bunch of compatibles as below, TI, Altera and Intel uses different
+> compatible's so we added 'oneOf'.
 
-* A wrong value is used for the GPIO direction.
+Then you add oneOf when you need it. You don't for what you wrote, 
+but once it is correct you will as Altera uses 'cdns,qspi-nor' alone. 
 
-* Wrong offsets are calculated for some GPIO set value/set direction
-  operations, when offset is larger than 0.
+> cdns,qspi-nor can be dropped instead I can add cadence,qspi ,because this
+> driver suuports qspi-nor and qspi-nand as well.
 
-This has been fixed by introducing proper manifest constants for the
-direction encoding, and using 'offsetof' when calculating GPIO
-register offsets.
+No, you can't change it because it is an ABI.
 
-The updated driver has been tested with the Sparx5 pcb134/pcb135
-board, which has the mcp2221 device with several (output) GPIO's.
+> 
+> Sure, let me go through other documentation files for reference.
+> 
+> > 
+> > > +          - enum:
+> > > +              - ti,k2g-qspi
+> > > +              - ti,am654-ospi
+> > > +          - const: cdns,qspi-nor
+> > 
+> > > +examples:
+> > > +  - |
+> > > +    qspi: spi@ff705000 {
+> > > +      compatible = "cadence,qspi","cdns,qpsi-nor";
+> > 
+> > And you missed fixing this.
+> Yes, fixed by "cadence,qspi" keeping alone, need to remove cdns,qspi-nor,
+> thanks!
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- drivers/hid/hid-mcp2221.c | 48 +++++++++++++++++++++++++++++++--------
- 1 file changed, 39 insertions(+), 9 deletions(-)
+Nope!
 
-diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
-index 0d27ccb55dd9..4211b9839209 100644
---- a/drivers/hid/hid-mcp2221.c
-+++ b/drivers/hid/hid-mcp2221.c
-@@ -49,6 +49,36 @@ enum {
- 	MCP2221_ALT_F_NOT_GPIOD = 0xEF,
- };
- 
-+/* MCP GPIO direction encoding */
-+enum {
-+	MCP2221_DIR_OUT = 0x00,
-+	MCP2221_DIR_IN = 0x01,
-+};
-+
-+#define MCP_NGPIO	4
-+
-+/* MCP GPIO set command layout */
-+struct mcp_set_gpio {
-+	u8 cmd;
-+	u8 dummy;
-+	struct {
-+		u8 change_value;
-+		u8 value;
-+		u8 change_direction;
-+		u8 direction;
-+	} gpio[MCP_NGPIO];
-+} __packed;
-+
-+/* MCP GPIO get command layout */
-+struct mcp_get_gpio {
-+	u8 cmd;
-+	u8 dummy;
-+	struct {
-+		u8 direction;
-+		u8 value;
-+	} gpio[MCP_NGPIO];
-+} __packed;
-+
- /*
-  * There is no way to distinguish responses. Therefore next command
-  * is sent only after response to previous has been received. Mutex
-@@ -542,7 +572,7 @@ static int mcp_gpio_get(struct gpio_chip *gc,
- 
- 	mcp->txbuf[0] = MCP2221_GPIO_GET;
- 
--	mcp->gp_idx = (offset + 1) * 2;
-+	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].value);
- 
- 	mutex_lock(&mcp->lock);
- 	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-@@ -559,7 +589,7 @@ static void mcp_gpio_set(struct gpio_chip *gc,
- 	memset(mcp->txbuf, 0, 18);
- 	mcp->txbuf[0] = MCP2221_GPIO_SET;
- 
--	mcp->gp_idx = ((offset + 1) * 4) - 1;
-+	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].value);
- 
- 	mcp->txbuf[mcp->gp_idx - 1] = 1;
- 	mcp->txbuf[mcp->gp_idx] = !!value;
-@@ -575,7 +605,7 @@ static int mcp_gpio_dir_set(struct mcp2221 *mcp,
- 	memset(mcp->txbuf, 0, 18);
- 	mcp->txbuf[0] = MCP2221_GPIO_SET;
- 
--	mcp->gp_idx = (offset + 1) * 5;
-+	mcp->gp_idx = offsetof(struct mcp_set_gpio, gpio[offset].direction);
- 
- 	mcp->txbuf[mcp->gp_idx - 1] = 1;
- 	mcp->txbuf[mcp->gp_idx] = val;
-@@ -590,7 +620,7 @@ static int mcp_gpio_direction_input(struct gpio_chip *gc,
- 	struct mcp2221 *mcp = gpiochip_get_data(gc);
- 
- 	mutex_lock(&mcp->lock);
--	ret = mcp_gpio_dir_set(mcp, offset, 0);
-+	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_IN);
- 	mutex_unlock(&mcp->lock);
- 
- 	return ret;
-@@ -603,7 +633,7 @@ static int mcp_gpio_direction_output(struct gpio_chip *gc,
- 	struct mcp2221 *mcp = gpiochip_get_data(gc);
- 
- 	mutex_lock(&mcp->lock);
--	ret = mcp_gpio_dir_set(mcp, offset, 1);
-+	ret = mcp_gpio_dir_set(mcp, offset, MCP2221_DIR_OUT);
- 	mutex_unlock(&mcp->lock);
- 
- 	/* Can't configure as output, bailout early */
-@@ -623,7 +653,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
- 
- 	mcp->txbuf[0] = MCP2221_GPIO_GET;
- 
--	mcp->gp_idx = (offset + 1) * 2;
-+	mcp->gp_idx = offsetof(struct mcp_get_gpio, gpio[offset].direction);
- 
- 	mutex_lock(&mcp->lock);
- 	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-@@ -632,7 +662,7 @@ static int mcp_gpio_get_direction(struct gpio_chip *gc,
- 	if (ret)
- 		return ret;
- 
--	if (mcp->gpio_dir)
-+	if (mcp->gpio_dir == MCP2221_DIR_IN)
- 		return GPIO_LINE_DIRECTION_IN;
- 
- 	return GPIO_LINE_DIRECTION_OUT;
-@@ -758,7 +788,7 @@ static int mcp2221_raw_event(struct hid_device *hdev,
- 				mcp->status = -ENOENT;
- 			} else {
- 				mcp->status = !!data[mcp->gp_idx];
--				mcp->gpio_dir = !!data[mcp->gp_idx + 1];
-+				mcp->gpio_dir = data[mcp->gp_idx + 1];
- 			}
- 			break;
- 		default:
-@@ -860,7 +890,7 @@ static int mcp2221_probe(struct hid_device *hdev,
- 	mcp->gc->get_direction = mcp_gpio_get_direction;
- 	mcp->gc->set = mcp_gpio_set;
- 	mcp->gc->get = mcp_gpio_get;
--	mcp->gc->ngpio = 4;
-+	mcp->gc->ngpio = MCP_NGPIO;
- 	mcp->gc->base = -1;
- 	mcp->gc->can_sleep = 1;
- 	mcp->gc->parent = &hdev->dev;
--- 
-2.25.1
-
+Rob
