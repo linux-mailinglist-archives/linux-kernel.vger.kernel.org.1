@@ -2,93 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3B42A63B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 12:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B5D2A63CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgKDL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 06:57:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728645AbgKDL5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:57:20 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2641220759;
-        Wed,  4 Nov 2020 11:57:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604491039;
-        bh=goCd/FsixsuhFDQdIYZUh9ms1ET37ZuEkEzXEWKQDgY=;
+        id S1729599AbgKDL7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 06:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728841AbgKDL7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:59:45 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD00C0613D3;
+        Wed,  4 Nov 2020 03:59:45 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B98C6563;
+        Wed,  4 Nov 2020 12:59:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1604491183;
+        bh=napnBHbJvahh4EiVh/EOWm2U/B7i8cAb3bUhpu2DqZo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gBW/wRXVSiC3ZN6j4jEa4wzxZdeawe1Jr5n7hg1AfVtBWXSQ4PgdUePxIxKaFFmqd
-         BYrL61Hsw718XoSK/cieL5MBCZzyqXcuaca9+r161xvqJwKKntBjZzedVzuSvsLGY8
-         K6Oc10fjc7M1RmAwTVBIbPB5loOBd47cQ4e5yzF8=
-Date:   Wed, 4 Nov 2020 12:58:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, cezary.rojewski@intel.com,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
- name
-Message-ID: <20201104115810.GA1694250@kroah.com>
-References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
- <20201103153541.GC3267686@kroah.com>
- <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+        b=WuONevM0iIoHk9U+RdmYR7+u32i0we6a2HDqI/na27adtchx+aThrEJOwHBxpGE1k
+         +kUQPeJyilntV7ByCavFum1FB28Fbx8tQPTq9AymFLP1KxeHzwIFpQ06qvPv4zhZGa
+         KY9ecd1aWSqf3si80hlWWwOgCKAgF6UUT8a3BSPU=
+Date:   Wed, 4 Nov 2020 13:58:56 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH 5/6] media: uvcvideo: Implement UVC_GPIO_UNIT
+Message-ID: <20201104115856.GK26171@pendragon.ideasonboard.com>
+References: <20201022133753.310506-1-ribalda@chromium.org>
+ <20201022133753.310506-6-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+In-Reply-To: <20201022133753.310506-6-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:46:36PM +0100, Gorski, Mateusz wrote:
-> 
-> > > [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
-> > > 
-> > > Add alternative topology binary file name based on used machine driver
-> > > and fallback to use this name after failed attempt to load topology file
-> > > with name based on NHLT.
-> > > This change addresses multiple issues with current mechanism, for
-> > > example - there are devices without NHLT table, and that currently
-> > > results in tplg_name being empty.
-> > > 
-> > > Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
-> > > Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Link: https://lore.kernel.org/r/20200427132727.24942-2-mateusz.gorski@linux.intel.com
-> > > Signed-off-by: Mark Brown <broonie@kernel.org>
-> > > ---
-> > > 
-> > > This functionality is merged on upstream kernel and widely used. Merging
-> > > it to LTS kernel would improve the user experience and resolve some of the
-> > > problems regarding topology naming that the users are facing.
-> > What problems are people facing, and what kernel(s) are you asking for
-> > this to be ported to, and why can't people just use 5.8 or newer if they
-> > have this new hardware?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> I forgot to add - I wanted this change to be merged to stable 5.4 kernel.
-> Please let me know if I should resend this patch with this information
-> included.
-> 
-> As for the user issues - topology binary file name is currently created
-> according to information from NHLT. The problem is, that some laptops (for
-> example Dell XPS 13) do not have NHLT at all. This results in topology
-> binary name being empty (" ").
-> This patch adds alternative name based on loaded machine driver.
-> 
-> It applies not only to new hardware, please note that the mentioned Dell XPS
-> 13 is based on Kabylake. This issue existed on upstream from the beginning
-> of Skylake driver and was only recently addressed.
+Hi Ricardo,
 
-When was that laptop released and is this the only change that is needed
-in order for the 5.4.y kernel to work properly on it?
+Thank you for the patch.
 
-thanks,
+On Thu, Oct 22, 2020 at 03:37:52PM +0200, Ricardo Ribalda wrote:
+> Some devices can implement a physical switch to disable the input of the
+> camera on demand. Think of it like an elegant privacy sticker.
+> 
+> The system can read the status of the privacy switch via a GPIO.
+> 
+> It is important to know the status of the switch, e.g. to notify the
+> user when the camera will produce black frames and a videochat
+> application is used.
+> 
+> Since the uvc device is not aware of this pin (and it should't), we need
 
-greg k-h
+I'd argue that it should, we wouldn't have to deal with all this if the
+switch was connected to the UVC device. This series is a hack to
+workaround a bad hardware design :-)
+
+> to implement a virtual entity that can interact with such pin.
+> 
+> The location of the GPIO is specified via acpi or DT. on the usb device Eg:
+
+How does it look like for DT-based systems ? Do we need to add DT
+bindings ?
+
+> 
+>     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+>     {
+>         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000, IoRestrictionOutputOnly,
+>             "\\_SB.PCI0.GPIO", 0x00, ResourceConsumer, ,
+>             )
+>             {   // Pin list
+>                 0x0064
+>             }
+>     })
+>     Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
+>     {
+>         ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301") /* Device Properties for _DSD */,
+>         Package (0x01)
+>         {
+>             Package (0x02)
+>             {
+>                 "privacy-gpio",
+>                 Package (0x04)
+>                 {
+>                     \_SB.PCI0.XHCI.RHUB.HS07,
+>                     Zero,
+>                     Zero,
+>                     One
+
+What do the last three values represent ?
+
+>                 }
+>             }
+>         }
+>     })
+
+Can you add a bit of context to show in which ACPI device object this is
+located (I assume \_SB.PCI0.XHCI.RHUB.HS07) ?
+
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c   |  3 ++
+>  drivers/media/usb/uvc/uvc_driver.c | 72 ++++++++++++++++++++++++++++++
+>  drivers/media/usb/uvc/uvcvideo.h   |  8 ++++
+>  3 files changed, 83 insertions(+)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 786498e66646..3a49a1326a90 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -2332,6 +2332,9 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+>  		} else if (UVC_ENTITY_TYPE(entity) == UVC_ITT_CAMERA) {
+>  			bmControls = entity->camera.bmControls;
+>  			bControlSize = entity->camera.bControlSize;
+> +		} else if (UVC_ENTITY_TYPE(entity) == UVC_GPIO_UNIT) {
+> +			bmControls = entity->gpio.bmControls;
+> +			bControlSize = entity->gpio.bControlSize;
+>  		}
+>  
+>  		/* Remove bogus/blacklisted controls */
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index ddb9eaa11be7..180e503e900f 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -7,6 +7,7 @@
+>   */
+>  
+>  #include <linux/atomic.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/kernel.h>
+>  #include <linux/list.h>
+>  #include <linux/module.h>
+> @@ -1440,6 +1441,58 @@ static int uvc_parse_control(struct uvc_device *dev)
+>  	return 0;
+>  }
+>  
+> +static int uvc_gpio_get_cur(struct uvc_entity *entity, u8 cs, void *data, u16 size)
+
+Line break at 80 columns please.
+
+> +{
+> +	if ((cs != UVC_CT_PRIVACY_CONTROL) || (size < 1))
+
+No need for the inner parentheses.
+
+> +		return -EINVAL;
+
+Should we mimick the error value returned when querying the device with
+an invalid control selector ? Same below.
+
+> +
+> +	*(uint8_t *)data = gpiod_get_value(entity->gpio.gpio_privacy);
+> +	return 0;
+> +}
+> +
+> +static int uvc_gpio_get_info(struct uvc_entity *entity, u8 cs, u8 *caps)
+> +{
+> +
+
+Extra blank line.
+
+> +	if (cs != UVC_CT_PRIVACY_CONTROL)
+> +		return -EINVAL;
+> +
+> +	*caps = UVC_CONTROL_CAP_GET | UVC_CONTROL_CAP_AUTOUPDATE;
+> +	return 0;
+> +}
+> +
+> +static int uvc_parse_gpio(struct uvc_device *dev)
+> +{
+> +	struct uvc_entity *unit;
+> +	struct gpio_desc *gpio_privacy;
+> +	int irq;
+> +	int ret;
+> +
+> +	gpio_privacy = devm_gpiod_get_optional(&dev->udev->dev, "privacy", GPIOD_IN);
+
+Line break at 80 columns please.
+
+> +
+> +	if (IS_ERR(gpio_privacy))
+> +		return PTR_ERR(gpio_privacy);
+> +
+> +	if (!gpio_privacy)
+> +		return 0;
+> +
+> +	unit = uvc_alloc_entity(UVC_GPIO_UNIT, 0xff, 1, 2);
+
+Isn't there a risk, at least in theory, that entity ID 255 would be used
+by a real UVC entity ? What are the implication of entity ID conflicts ?
+
+It doesn't seem like the entity will be linked, does it need any pad ?
+
+Why do you need two bytes of extra size, don't you use one only ?
+
+> +	if (!unit)
+> +		return -ENOMEM;
+> +
+> +	unit->gpio.gpio_privacy = gpio_privacy;
+> +	unit->gpio.bControlSize = 1;
+> +	unit->gpio.bmControls = (u8 *)unit + sizeof(*unit);
+> +	unit->gpio.bmControls[0] = 1;
+> +	unit->get_cur = uvc_gpio_get_cur;
+> +	unit->get_info = uvc_gpio_get_info;
+> +
+> +	sprintf(unit->name, "GPIO Unit");
+> +
+> +	list_add_tail(&unit->list, &dev->entities);
+> +
+> +	return 0;
+> +}
+> +
+>  /* ------------------------------------------------------------------------
+>   * UVC device scan
+>   */
+> @@ -1532,6 +1585,12 @@ static int uvc_scan_chain_entity(struct uvc_video_chain *chain,
+>  
+>  		break;
+>  
+> +	case UVC_GPIO_UNIT:
+> +		if (uvc_trace_param & UVC_TRACE_PROBE)
+> +			printk(KERN_CONT " GPIO %d", entity->id);
+> +
+> +		break;
+> +
+
+Let's move this after UVC_TT_STREAMING.
+
+>  	case UVC_TT_STREAMING:
+>  		if (UVC_ENTITY_IS_ITERM(entity)) {
+>  			if (uvc_trace_param & UVC_TRACE_PROBE)
+> @@ -1929,6 +1988,13 @@ static int uvc_scan_device(struct uvc_device *dev)
+>  		return -1;
+>  	}
+>  
+> +	/* Add GPIO entities to the first_chain */
+
+s/first_chain/first chain./
+
+This leads to an interesting question. What if we have a UVC device with
+two sensors ? There could be a different privacy GPIO for each of them
+in theory. This would need to be reflected in the ACPI and DT bindings,
+we would need to specify a GPIO per input terminal.
+
+> +	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
+> +	list_for_each_entry(term, &dev->entities, list) {
+> +		if (UVC_ENTITY_TYPE(term) == UVC_GPIO_UNIT)
+> +			list_add_tail(&term->chain, &chain->entities);
+> +	}
+
+As this is done after calling uvc_scan_chain(), and thus after
+uvc_scan_chain_entity(), do we need the previous hunk ?
+
+Alternatively, we could hook up with the existing chain scanning
+mechanism if the GPIO entity was linked to another entity. This may
+however be difficult to implement.
+
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2261,6 +2327,12 @@ static int uvc_probe(struct usb_interface *intf,
+>  		goto error;
+>  	}
+>  
+> +	/* Parse the associated GPIOs */
+> +	if (uvc_parse_gpio(dev) < 0) {
+> +		uvc_trace(UVC_TRACE_PROBE, "Unable to parse UVC GPIOs\n");
+> +		goto error;
+> +	}
+> +
+>  	uvc_printk(KERN_INFO, "Found UVC %u.%02x device %s (%04x:%04x)\n",
+>  		dev->uvc_version >> 8, dev->uvc_version & 0xff,
+>  		udev->product ? udev->product : "<unnamed>",
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index a493bc383d3e..7ca78005b6a9 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -6,6 +6,7 @@
+>  #error "The uvcvideo.h header is deprecated, use linux/uvcvideo.h instead."
+>  #endif /* __KERNEL__ */
+>  
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/kernel.h>
+>  #include <linux/poll.h>
+>  #include <linux/usb.h>
+> @@ -37,6 +38,7 @@
+>  	(UVC_ENTITY_IS_TERM(entity) && \
+>  	((entity)->type & 0x8000) == UVC_TERM_OUTPUT)
+>  
+> +#define UVC_GPIO_UNIT 0x7ffe
+
+I'd name this UVC_EXT_GPIO_UNIT.
+
+>  
+>  /* ------------------------------------------------------------------------
+>   * GUIDs
+> @@ -351,6 +353,12 @@ struct uvc_entity {
+>  			u8  *bmControls;
+>  			u8  *bmControlsType;
+>  		} extension;
+> +
+> +		struct {
+> +			u8  bControlSize;
+> +			u8  *bmControls;
+> +			struct gpio_desc *gpio_privacy;
+> +		} gpio;
+>  	};
+>  
+>  	u8 bNrInPins;
+
+-- 
+Regards,
+
+Laurent Pinchart
