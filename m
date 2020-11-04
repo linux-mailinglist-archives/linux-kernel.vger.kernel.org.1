@@ -2,712 +2,885 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B9A2A5D97
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F76E2A5DB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 06:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgKDFNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 00:13:07 -0500
-Received: from smtprelay0182.hostedemail.com ([216.40.44.182]:50732 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728415AbgKDFNH (ORCPT
+        id S1728759AbgKDFVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 00:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgKDFVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 00:13:07 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 6EF11180A813D;
-        Wed,  4 Nov 2020 05:13:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:327:355:379:599:960:966:967:968:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:2196:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2693:2828:2859:2896:2898:2902:2904:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4385:4470:4605:4823:5007:6119:7875:7974:8599:8784:8957:9010:9025:9121:10004:10848:11026:11232:11233:11473:11658:11914:12043:12257:12296:12297:12438:12555:12663:12683:12698:12737:12740:12760:12895:12986:13025:13439:13972:14096:14097:14659:21067:21080:21433:21451:21611:21627:21740:21773:21939:21990:30003:30045:30046:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: robin63_1109d44272be
-X-Filterd-Recvd-Size: 29569
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  4 Nov 2020 05:13:01 +0000 (UTC)
-Message-ID: <6e392d099bd8aaba14223aa770361dbdeeab271b.camel@perches.com>
-Subject: Re: [PATCH] ACPI: Remove trailing whitespace
-From:   Joe Perches <joe@perches.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 03 Nov 2020 21:13:00 -0800
-In-Reply-To: <c92703e3-c964-b4a6-e3df-c4c0c28b44c1@gmail.com>
-References: <20201103211259.GA265488@bjorn-Precision-5520>
-         <c92703e3-c964-b4a6-e3df-c4c0c28b44c1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 4 Nov 2020 00:21:08 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDA8C061A4D;
+        Tue,  3 Nov 2020 21:21:07 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id j41so4788940oof.12;
+        Tue, 03 Nov 2020 21:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9Pm8uoW8ZRCmYlrpP/TtoRx2wdIqISLQLAzmZnAvN/w=;
+        b=QTEnkwSid72Em3nlPd38RmI+NJHxnVpFtnxf3Ez8/MfVhLPidtREmIiCqFbjZUxuQT
+         2/BeECbtgW4gbPGnIzSxP6I5huyCAp890etBje8pOAh7rKSEK3urlGbBn9FdGpFu9rfq
+         zhTpyg/xMINQwK7nls9wKtebM/RPGIe0F3nbZ3TGwZ9kV6agKgHOHFrs9pkXXXmu2kpg
+         Kap6noJo/3E6TYZnGZdEURfjpiJIDtey8qk2O82jJeatfWr38aft/JwrwftBvwLQcLN3
+         ciB2gByW3LH6SYPCkROOnKN0exM3ipwLvkXhcNYx+vjau1sr80hhTvOxCXJPQNilfWQ6
+         XHSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9Pm8uoW8ZRCmYlrpP/TtoRx2wdIqISLQLAzmZnAvN/w=;
+        b=TVvwuCoAa7+Kdr9J9YEEklxeI2Nj18qbqzV/mKzVQv2XDPNC6nfpd1fQEgZ6/EVwHz
+         HmOPyQXhqTIW920R1037oNSxtk3CIDvetgJ0v3czZnjSLnycxAAJXp4ELUQtHpTgetir
+         wlBVF583MYaKLPjPW6G92DTgTqRhjQLL9m/4hqmvnpHwREcEQecat5Zg0seAhGKXwa0f
+         k3mCZoYNk1U7gB9VDyj40ZM/0MWrlapMff5VpqMsJJsc1OP74hpMMWy8DgKNJoXgf9ve
+         iCVqLeugReU/lk+SDRR4r5lu4C2EeH/NsWDEOh+hYT1qu0/4MsoiVln9r+0ULJ8N9YgY
+         iNzw==
+X-Gm-Message-State: AOAM532REeb6nNmaCkHAeVBKRzyNMtegBPmNBtcqCqiJItffsOipexF6
+        LEm/1terQrw3Er4HFeu1R+A=
+X-Google-Smtp-Source: ABdhPJxatYWRY7dAu4Lg12QXNC7UAze0hUBITDSym1fKhrR9ZVNkv729WxmeeRguMzDXTAMflR//Cw==
+X-Received: by 2002:a4a:9806:: with SMTP id y6mr17816970ooi.45.1604467266534;
+        Tue, 03 Nov 2020 21:21:06 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m11sm288050oop.6.2020.11.03.21.21.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 03 Nov 2020 21:21:06 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 3 Nov 2020 21:21:04 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v3] hwmon: add Corsair PSU HID controller driver
+Message-ID: <20201104052104.GA123916@roeck-us.net>
+References: <20201027131710.GA253280@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027131710.GA253280@monster.powergraphx.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-03 at 22:30 +0100, Maximilian Luz wrote:
-> On 11/3/20 10:12 PM, Bjorn Helgaas wrote:
-> > On Mon, Nov 02, 2020 at 02:36:41PM +0100, Maximilian Luz wrote:
-> > > Remove trailing whitespace and fix some whitespace inconsitencies while
-> > > at it.
-> > 
-> > I'm OK with this as long as somebody fixes the
-> > s/inconsitencies/inconsistencies/
+On Tue, Oct 27, 2020 at 02:17:10PM +0100, Wilken Gottwalt wrote:
+> The Corsair digital power supplies of the series RMi, HXi and AXi include
+> a small micro-controller with a lot of sensors attached. The sensors can
+> be accessed by an USB connector from the outside.
 > 
-> Sorry about that, I can resubmit if necessary.
+> This micro-controller provides the data by a simple proprietary USB HID
+> protocol. The data consist of temperatures, current and voltage levels,
+> power usage, uptimes, fan speed and some more. It is also possible to
+> configure the PSU (fan mode, mono/multi-rail, over current protection).
 > 
-> > above.  I assume you've scanned all of drivers/acpi/ for similar
-> > issues so they can all be fixed at once.
+> This driver provides access to the sensors/statistics of the RMi and HXi
+> series power supplies. It does not support configuring these devices,
+> because there would be many ways to misconfigure or even damage the PSU.
 > 
-> Yes. I scanned drivers/acpi for trailing whitespaces after I noticed a
-> couple of them. I did not explicitly scan for other stuff like spaces
-> where there should be tabs, mostly because I haven't found a quick and
-> reliable solution for that. I only noticed an inconsistent indentation
-> when committing, so I fixed that too.
+> This patch adds:
+> - hwmon driver corsair-psu
+> - hwmon documentation
+> - updates MAINTAINERS
+> 
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
 
-You could try:
+Applied.
 
-$ git ls-files -- 'drivers/acpi/*.[ch]' | \
-  xargs ./scripts/checkpatch.pl -f --fix-inplace --types=CODE_INDENT
+Thanks,
+Guenter
 
-Right now that produces:
----
- drivers/acpi/ac.c                   |  6 +++---
- drivers/acpi/acpi_processor.c       |  6 +++---
- drivers/acpi/acpi_video.c           |  6 +++---
- drivers/acpi/acpica/rslist.c        |  2 +-
- drivers/acpi/battery.c              |  6 +++---
- drivers/acpi/bus.c                  | 12 ++++++------
- drivers/acpi/button.c               |  4 ++--
- drivers/acpi/ec.c                   |  2 +-
- drivers/acpi/event.c                |  2 +-
- drivers/acpi/internal.h             | 16 ++++++++--------
- drivers/acpi/nfit/core.c            | 10 +++++-----
- drivers/acpi/pci_irq.c              |  4 ++--
- drivers/acpi/pci_link.c             |  6 +++---
- drivers/acpi/pci_mcfg.c             |  2 +-
- drivers/acpi/power.c                |  6 +++---
- drivers/acpi/processor_perflib.c    |  2 +-
- drivers/acpi/processor_throttling.c |  2 +-
- drivers/acpi/sbs.c                  |  6 +++---
- drivers/acpi/sbshc.c                |  2 +-
- drivers/acpi/sbshc.h                |  2 +-
- drivers/acpi/scan.c                 |  2 +-
- drivers/acpi/thermal.c              |  4 ++--
- drivers/acpi/utils.c                |  2 +-
- drivers/acpi/video_detect.c         | 16 ++++++++--------
- drivers/acpi/wakeup.c               |  4 ++--
- 25 files changed, 66 insertions(+), 66 deletions(-)
-
-diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-index 46a64e9fa716..46be80976a03 100644
---- a/drivers/acpi/ac.c
-+++ b/drivers/acpi/ac.c
-@@ -89,7 +89,7 @@ struct acpi_ac {
- #define to_acpi_ac(x) power_supply_get_drvdata(x)
- 
- /* --------------------------------------------------------------------------
--                               AC Adapter Management
-+			       AC Adapter Management
-    -------------------------------------------------------------------------- */
- 
- static int acpi_ac_get_state(struct acpi_ac *ac)
-@@ -112,7 +112,7 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
- }
- 
- /* --------------------------------------------------------------------------
--                            sysfs I/F
-+			    sysfs I/F
-    -------------------------------------------------------------------------- */
- static int get_ac_property(struct power_supply *psy,
- 			   enum power_supply_property psp,
-@@ -141,7 +141,7 @@ static enum power_supply_property ac_props[] = {
- };
- 
- /* --------------------------------------------------------------------------
--                                   Driver Model
-+				   Driver Model
-    -------------------------------------------------------------------------- */
- 
- static void acpi_ac_notify(struct acpi_device *device, u32 event)
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 2ee5e05a0d69..b45102e4fbfc 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -30,7 +30,7 @@ DEFINE_PER_CPU(struct acpi_processor *, processors);
- EXPORT_PER_CPU_SYMBOL(processors);
- 
- /* --------------------------------------------------------------------------
--                                Errata Handling
-+				Errata Handling
-    -------------------------------------------------------------------------- */
- 
- struct acpi_processor_errata errata __read_mostly;
-@@ -158,7 +158,7 @@ static int acpi_processor_errata(void)
- }
- 
- /* --------------------------------------------------------------------------
--                                Initialization
-+				Initialization
-    -------------------------------------------------------------------------- */
- 
- #ifdef CONFIG_ACPI_HOTPLUG_CPU
-@@ -441,7 +441,7 @@ static int acpi_processor_add(struct acpi_device *device,
- 
- #ifdef CONFIG_ACPI_HOTPLUG_CPU
- /* --------------------------------------------------------------------------
--                                    Removal
-+				    Removal
-    -------------------------------------------------------------------------- */
- 
- static void acpi_processor_remove(struct acpi_device *device)
-diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-index bc96457c9e25..a322a7bd286b 100644
---- a/drivers/acpi/acpi_video.c
-+++ b/drivers/acpi/acpi_video.c
-@@ -578,7 +578,7 @@ acpi_video_bqc_value_to_level(struct acpi_video_device *device,
- 				ACPI_VIDEO_FIRST_LEVEL - 1 - bqc_value;
- 
- 		level = device->brightness->levels[bqc_value +
--		                                   ACPI_VIDEO_FIRST_LEVEL];
-+						   ACPI_VIDEO_FIRST_LEVEL];
- 	} else {
- 		level = bqc_value;
- 	}
-@@ -990,8 +990,8 @@ acpi_video_init_brightness(struct acpi_video_device *device)
- 		goto out_free_levels;
- 
- 	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--	                  "found %d brightness levels\n",
--	                  br->count - ACPI_VIDEO_FIRST_LEVEL));
-+			  "found %d brightness levels\n",
-+			  br->count - ACPI_VIDEO_FIRST_LEVEL));
- 	return 0;
- 
- out_free_levels:
-diff --git a/drivers/acpi/acpica/rslist.c b/drivers/acpi/acpica/rslist.c
-index 0307675d37be..105739aebc39 100644
---- a/drivers/acpi/acpica/rslist.c
-+++ b/drivers/acpi/acpica/rslist.c
-@@ -177,7 +177,7 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
- 		}
- 
- 		status = acpi_rs_convert_resource_to_aml(resource,
--						         ACPI_CAST_PTR(union
-+							 ACPI_CAST_PTR(union
- 								       aml_resource,
- 								       aml),
- 							 conversion_table);
-diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-index cab4af532f36..d27448b3369b 100644
---- a/drivers/acpi/battery.c
-+++ b/drivers/acpi/battery.c
-@@ -378,7 +378,7 @@ static enum power_supply_property energy_battery_full_cap_broken_props[] = {
- };
- 
- /* --------------------------------------------------------------------------
--                               Battery Management
-+			       Battery Management
-    -------------------------------------------------------------------------- */
- struct acpi_offsets {
- 	size_t offset;		/* offset inside struct acpi_sbs_battery */
-@@ -987,7 +987,7 @@ static int acpi_battery_update(struct acpi_battery *battery, bool resume)
- 	 */
- 	if ((battery->state & ACPI_BATTERY_STATE_CRITICAL) ||
- 	    (test_bit(ACPI_BATTERY_ALARM_PRESENT, &battery->flags) &&
--            (battery->capacity_now <= battery->alarm)))
-+	    (battery->capacity_now <= battery->alarm)))
- 		acpi_pm_wakeup_event(&battery->device->dev);
- 
- 	return result;
-@@ -1013,7 +1013,7 @@ static void acpi_battery_refresh(struct acpi_battery *battery)
- }
- 
- /* --------------------------------------------------------------------------
--                                 Driver Interface
-+				 Driver Interface
-    -------------------------------------------------------------------------- */
- 
- static void acpi_battery_notify(struct acpi_device *device, u32 event)
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 1682f8b454a2..1d48e63cce49 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -72,7 +72,7 @@ static const struct dmi_system_id dsdt_dmi_table[] __initconst = {
- #endif
- 
- /* --------------------------------------------------------------------------
--                                Device Management
-+				Device Management
-    -------------------------------------------------------------------------- */
- 
- acpi_status acpi_bus_get_status_handle(acpi_handle handle,
-@@ -335,7 +335,7 @@ static void acpi_bus_osc_support(void)
- }
- 
- /* --------------------------------------------------------------------------
--                             Notification Handling
-+			     Notification Handling
-    -------------------------------------------------------------------------- */
- 
- /**
-@@ -527,7 +527,7 @@ static int __init acpi_setup_sb_notify_handler(void)
- }
- 
- /* --------------------------------------------------------------------------
--                             Device Matching
-+			     Device Matching
-    -------------------------------------------------------------------------- */
- 
- /**
-@@ -839,7 +839,7 @@ bool acpi_driver_match_device(struct device *dev,
- EXPORT_SYMBOL_GPL(acpi_driver_match_device);
- 
- /* --------------------------------------------------------------------------
--                              ACPI Driver Management
-+			      ACPI Driver Management
-    -------------------------------------------------------------------------- */
- 
- /**
-@@ -881,7 +881,7 @@ void acpi_bus_unregister_driver(struct acpi_driver *driver)
- EXPORT_SYMBOL(acpi_bus_unregister_driver);
- 
- /* --------------------------------------------------------------------------
--                              ACPI Bus operations
-+			      ACPI Bus operations
-    -------------------------------------------------------------------------- */
- 
- static int acpi_bus_match(struct device *dev, struct device_driver *drv)
-@@ -964,7 +964,7 @@ struct bus_type acpi_bus_type = {
- };
- 
- /* --------------------------------------------------------------------------
--                             Initialization/Cleanup
-+			     Initialization/Cleanup
-    -------------------------------------------------------------------------- */
- 
- static int __init acpi_bus_init_irq(void)
-diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-index 0761529cac05..746661794c51 100644
---- a/drivers/acpi/button.c
-+++ b/drivers/acpi/button.c
-@@ -151,7 +151,7 @@ module_param(lid_report_interval, ulong, 0644);
- MODULE_PARM_DESC(lid_report_interval, "Interval (ms) between lid key events");
- 
- /* --------------------------------------------------------------------------
--                              FS Interface (/proc)
-+			      FS Interface (/proc)
-    -------------------------------------------------------------------------- */
- 
- static struct proc_dir_entry *acpi_button_dir;
-@@ -343,7 +343,7 @@ static int acpi_button_remove_fs(struct acpi_device *device)
- }
- 
- /* --------------------------------------------------------------------------
--                                Driver Interface
-+				Driver Interface
-    -------------------------------------------------------------------------- */
- int acpi_lid_open(void)
- {
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index e0cb1bcfffb2..05c2f506fb09 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1037,7 +1037,7 @@ void acpi_ec_unblock_transactions(void)
- }
- 
- /* --------------------------------------------------------------------------
--                                Event Management
-+				Event Management
-    -------------------------------------------------------------------------- */
- static struct acpi_ec_query_handler *
- acpi_ec_get_query_handler_by_value(struct acpi_ec *ec, u8 value)
-diff --git a/drivers/acpi/event.c b/drivers/acpi/event.c
-index 170643927044..92e59f45329b 100644
---- a/drivers/acpi/event.c
-+++ b/drivers/acpi/event.c
-@@ -31,7 +31,7 @@ int acpi_notifier_call_chain(struct acpi_device *dev, u32 type, u32 data)
- 	event.type = type;
- 	event.data = data;
- 	return (blocking_notifier_call_chain(&acpi_chain_head, 0, (void *)&event)
--                        == NOTIFY_BAD) ? -EINVAL : 0;
-+			== NOTIFY_BAD) ? -EINVAL : 0;
- }
- EXPORT_SYMBOL(acpi_notifier_call_chain);
- 
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index 43411a7457cd..ac22802bf9b6 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -89,7 +89,7 @@ acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
- void acpi_scan_table_handler(u32 event, void *table, void *context);
- 
- /* --------------------------------------------------------------------------
--                     Device Node Initialization / Removal
-+		     Device Node Initialization / Removal
-    -------------------------------------------------------------------------- */
- #define ACPI_STA_DEFAULT (ACPI_STA_DEVICE_PRESENT | ACPI_STA_DEVICE_ENABLED | \
- 			  ACPI_STA_DEVICE_UI | ACPI_STA_DEVICE_FUNCTIONING)
-@@ -117,14 +117,14 @@ bool acpi_device_is_first_physical_node(struct acpi_device *adev,
- int acpi_bus_register_early_device(int type);
- 
- /* --------------------------------------------------------------------------
--                     Device Matching and Notification
-+		     Device Matching and Notification
-    -------------------------------------------------------------------------- */
- struct acpi_device *acpi_companion_match(const struct device *dev);
- int __acpi_device_uevent_modalias(struct acpi_device *adev,
- 				  struct kobj_uevent_env *env);
- 
- /* --------------------------------------------------------------------------
--                                  Power Resource
-+				  Power Resource
-    -------------------------------------------------------------------------- */
- int acpi_power_init(void);
- void acpi_power_resources_list_free(struct list_head *list);
-@@ -134,19 +134,19 @@ int acpi_add_power_resource(acpi_handle handle);
- void acpi_power_add_remove_device(struct acpi_device *adev, bool add);
- int acpi_power_wakeup_list_init(struct list_head *list, int *system_level);
- int acpi_device_sleep_wake(struct acpi_device *dev,
--                           int enable, int sleep_state, int dev_state);
-+			   int enable, int sleep_state, int dev_state);
- int acpi_power_get_inferred_state(struct acpi_device *device, int *state);
- int acpi_power_on_resources(struct acpi_device *device, int state);
- int acpi_power_transition(struct acpi_device *device, int state);
- 
- /* --------------------------------------------------------------------------
--                              Device Power Management
-+			      Device Power Management
-    -------------------------------------------------------------------------- */
- int acpi_device_get_power(struct acpi_device *device, int *state);
- int acpi_wakeup_device_init(void);
- 
- /* --------------------------------------------------------------------------
--                                  Processor
-+				  Processor
-    -------------------------------------------------------------------------- */
- #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
- void acpi_early_processor_set_pdc(void);
-@@ -161,7 +161,7 @@ static inline void acpi_early_processor_osc(void) {}
- #endif
- 
- /* --------------------------------------------------------------------------
--                                  Embedded Controller
-+				  Embedded Controller
-    -------------------------------------------------------------------------- */
- struct acpi_ec {
- 	acpi_handle handle;
-@@ -207,7 +207,7 @@ bool acpi_ec_dispatch_gpe(void);
- 
- 
- /*--------------------------------------------------------------------------
--                                  Suspend/Resume
-+				  Suspend/Resume
-   -------------------------------------------------------------------------- */
- #ifdef CONFIG_ACPI_SYSTEM_POWER_STATES_SUPPORT
- extern bool acpi_s2idle_wakeup(void);
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index 3a3c209ed3d3..442608220b5c 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -2175,10 +2175,10 @@ static int acpi_nfit_register_dimms(struct acpi_nfit_desc *acpi_desc)
-  * these commands.
-  */
- enum nfit_aux_cmds {
--        NFIT_CMD_TRANSLATE_SPA = 5,
--        NFIT_CMD_ARS_INJECT_SET = 7,
--        NFIT_CMD_ARS_INJECT_CLEAR = 8,
--        NFIT_CMD_ARS_INJECT_GET = 9,
-+	NFIT_CMD_TRANSLATE_SPA = 5,
-+	NFIT_CMD_ARS_INJECT_SET = 7,
-+	NFIT_CMD_ARS_INJECT_CLEAR = 8,
-+	NFIT_CMD_ARS_INJECT_GET = 9,
- };
- 
- static void acpi_nfit_init_dsms(struct acpi_nfit_desc *acpi_desc)
-@@ -2632,7 +2632,7 @@ static int acpi_nfit_blk_region_enable(struct nvdimm_bus *nvdimm_bus,
- 	nfit_blk->bdw_offset = nfit_mem->bdw->offset;
- 	mmio = &nfit_blk->mmio[BDW];
- 	mmio->addr.base = devm_nvdimm_memremap(dev, nfit_mem->spa_bdw->address,
--                        nfit_mem->spa_bdw->length, nd_blk_memremap_flags(ndbr));
-+			nfit_mem->spa_bdw->length, nd_blk_memremap_flags(ndbr));
- 	if (!mmio->addr.base) {
- 		dev_dbg(dev, "%s failed to map bdw\n",
- 				nvdimm_name(nvdimm));
-diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
-index dea8a60e18a4..42db76905178 100644
---- a/drivers/acpi/pci_irq.c
-+++ b/drivers/acpi/pci_irq.c
-@@ -40,7 +40,7 @@ static inline char pin_name(int pin)
- }
- 
- /* --------------------------------------------------------------------------
--                         PCI IRQ Routing Table (PRT) Support
-+			 PCI IRQ Routing Table (PRT) Support
-    -------------------------------------------------------------------------- */
- 
- /* http://bugzilla.kernel.org/show_bug.cgi?id=4773 */
-@@ -238,7 +238,7 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
- }
- 
- /* --------------------------------------------------------------------------
--                          PCI Interrupt Routing Support
-+			  PCI Interrupt Routing Support
-    -------------------------------------------------------------------------- */
- #ifdef CONFIG_X86_IO_APIC
- extern int noioapicquirk;
-diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
-index 606da5d77ad3..8a79b72f1928 100644
---- a/drivers/acpi/pci_link.c
-+++ b/drivers/acpi/pci_link.c
-@@ -75,7 +75,7 @@ static DEFINE_MUTEX(acpi_link_lock);
- static int sci_irq = -1, sci_penalty;
- 
- /* --------------------------------------------------------------------------
--                            PCI Link Device Management
-+			    PCI Link Device Management
-    -------------------------------------------------------------------------- */
- 
- /*
-@@ -390,7 +390,7 @@ static int acpi_pci_link_set(struct acpi_pci_link *link, int irq)
- }
- 
- /* --------------------------------------------------------------------------
--                            PCI Link IRQ Management
-+			    PCI Link IRQ Management
-    -------------------------------------------------------------------------- */
- 
- /*
-@@ -714,7 +714,7 @@ int acpi_pci_link_free_irq(acpi_handle handle)
- }
- 
- /* --------------------------------------------------------------------------
--                                 Driver Interface
-+				 Driver Interface
-    -------------------------------------------------------------------------- */
- 
- static int acpi_pci_link_add(struct acpi_device *device,
-diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index 7ddd57abadd1..95f23acd5b80 100644
---- a/drivers/acpi/pci_mcfg.c
-+++ b/drivers/acpi/pci_mcfg.c
-@@ -173,7 +173,7 @@ static int pci_mcfg_quirk_matches(struct mcfg_fixup *f, u16 segment,
- {
- 	if (!memcmp(f->oem_id, mcfg_oem_id, ACPI_OEM_ID_SIZE) &&
- 	    !memcmp(f->oem_table_id, mcfg_oem_table_id,
--	            ACPI_OEM_TABLE_ID_SIZE) &&
-+		    ACPI_OEM_TABLE_ID_SIZE) &&
- 	    f->oem_revision == mcfg_oem_revision &&
- 	    f->segment == segment &&
- 	    resource_contains(&f->bus_range, bus_range))
-diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-index 837b875d075e..0cb41bcda618 100644
---- a/drivers/acpi/power.c
-+++ b/drivers/acpi/power.c
-@@ -66,7 +66,7 @@ static LIST_HEAD(acpi_power_resource_list);
- static DEFINE_MUTEX(power_resource_list_lock);
- 
- /* --------------------------------------------------------------------------
--                             Power Resource Management
-+			     Power Resource Management
-    -------------------------------------------------------------------------- */
- 
- static inline
-@@ -624,7 +624,7 @@ int acpi_power_wakeup_list_init(struct list_head *list, int *system_level_p)
- }
- 
- /* --------------------------------------------------------------------------
--                             Device Power Management
-+			     Device Power Management
-    -------------------------------------------------------------------------- */
- 
- /**
-@@ -645,7 +645,7 @@ int acpi_power_wakeup_list_init(struct list_head *list, int *system_level_p)
-  * -ENODEV if the execution of either _DSW or _PSW has failed
-  */
- int acpi_device_sleep_wake(struct acpi_device *dev,
--                           int enable, int sleep_state, int dev_state)
-+			   int enable, int sleep_state, int dev_state)
- {
- 	union acpi_object in_arg[3];
- 	struct acpi_object_list arg_list = { 3, in_arg };
-diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_perflib.c
-index 5909e8fa4013..3b9c74498cd7 100644
---- a/drivers/acpi/processor_perflib.c
-+++ b/drivers/acpi/processor_perflib.c
-@@ -354,7 +354,7 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
- 				  (u32) px->control, (u32) px->status));
- 
- 		/*
-- 		 * Check that ACPI's u64 MHz will be valid as u32 KHz in cpufreq
-+		 * Check that ACPI's u64 MHz will be valid as u32 KHz in cpufreq
- 		 */
- 		if (!px->core_frequency ||
- 		    ((u32)(px->core_frequency * 1000) !=
-diff --git a/drivers/acpi/processor_throttling.c b/drivers/acpi/processor_throttling.c
-index a0bd56ece3ff..68b9c22133fe 100644
---- a/drivers/acpi/processor_throttling.c
-+++ b/drivers/acpi/processor_throttling.c
-@@ -649,7 +649,7 @@ static int acpi_processor_get_tsd(struct acpi_processor *pr)
- }
- 
- /* --------------------------------------------------------------------------
--                              Throttling Control
-+			      Throttling Control
-    -------------------------------------------------------------------------- */
- static int acpi_processor_get_throttling_fadt(struct acpi_processor *pr)
- {
-diff --git a/drivers/acpi/sbs.c b/drivers/acpi/sbs.c
-index f158b8c30113..437ff479c598 100644
---- a/drivers/acpi/sbs.c
-+++ b/drivers/acpi/sbs.c
-@@ -291,7 +291,7 @@ static const struct power_supply_desc acpi_sbs_charger_desc = {
- };
- 
- /* --------------------------------------------------------------------------
--                            Smart Battery System Management
-+			    Smart Battery System Management
-    -------------------------------------------------------------------------- */
- 
- struct acpi_battery_reader {
-@@ -366,7 +366,7 @@ static int acpi_battery_get_state(struct acpi_battery *battery)
- 					 state_readers[i].mode,
- 					 ACPI_SBS_BATTERY,
- 					 state_readers[i].command,
--				         (u8 *)battery +
-+					 (u8 *)battery +
- 						state_readers[i].offset);
- 		if (result)
- 			goto end;
-@@ -469,7 +469,7 @@ static const struct device_attribute alarm_attr = {
- };
- 
- /* --------------------------------------------------------------------------
--                                 Driver Interface
-+				 Driver Interface
-    -------------------------------------------------------------------------- */
- static int acpi_battery_read(struct acpi_battery *battery)
- {
-diff --git a/drivers/acpi/sbshc.c b/drivers/acpi/sbshc.c
-index 87b74e9015e5..53c2862c4c75 100644
---- a/drivers/acpi/sbshc.c
-+++ b/drivers/acpi/sbshc.c
-@@ -176,7 +176,7 @@ int acpi_smbus_write(struct acpi_smb_hc *hc, u8 protocol, u8 address,
- EXPORT_SYMBOL_GPL(acpi_smbus_write);
- 
- int acpi_smbus_register_callback(struct acpi_smb_hc *hc,
--			         smbus_alarm_callback callback, void *context)
-+				 smbus_alarm_callback callback, void *context)
- {
- 	mutex_lock(&hc->lock);
- 	hc->callback = callback;
-diff --git a/drivers/acpi/sbshc.h b/drivers/acpi/sbshc.h
-index c3522bb82792..06ea16914aed 100644
---- a/drivers/acpi/sbshc.h
-+++ b/drivers/acpi/sbshc.h
-@@ -28,5 +28,5 @@ extern int acpi_smbus_read(struct acpi_smb_hc *hc, u8 protocol, u8 address,
- extern int acpi_smbus_write(struct acpi_smb_hc *hc, u8 protocol, u8 slave_address,
- 		u8 command, u8 * data, u8 length);
- extern int acpi_smbus_register_callback(struct acpi_smb_hc *hc,
--			         smbus_alarm_callback callback, void *context);
-+				 smbus_alarm_callback callback, void *context);
- extern int acpi_smbus_unregister_callback(struct acpi_smb_hc *hc);
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index a896e5e87c93..45060915334d 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -717,7 +717,7 @@ int acpi_device_add(struct acpi_device *device,
- }
- 
- /* --------------------------------------------------------------------------
--                                 Device Enumeration
-+				 Device Enumeration
-    -------------------------------------------------------------------------- */
- static struct acpi_device *acpi_bus_get_parent(acpi_handle handle)
- {
-diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-index 12c0ece746f0..693547004035 100644
---- a/drivers/acpi/thermal.c
-+++ b/drivers/acpi/thermal.c
-@@ -177,7 +177,7 @@ struct acpi_thermal {
- };
- 
- /* --------------------------------------------------------------------------
--                             Thermal Zone Management
-+			     Thermal Zone Management
-    -------------------------------------------------------------------------- */
- 
- static int acpi_thermal_get_temperature(struct acpi_thermal *tz)
-@@ -897,7 +897,7 @@ static void acpi_thermal_unregister_thermal_zone(struct acpi_thermal *tz)
- 
- 
- /* --------------------------------------------------------------------------
--                                 Driver Interface
-+				 Driver Interface
-    -------------------------------------------------------------------------- */
- 
- static void acpi_thermal_notify(struct acpi_device *device, u32 event)
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index d5411a166685..d2f5d5048355 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -22,7 +22,7 @@
- ACPI_MODULE_NAME("utils");
- 
- /* --------------------------------------------------------------------------
--                            Object Evaluation Helpers
-+			    Object Evaluation Helpers
-    -------------------------------------------------------------------------- */
- static void
- acpi_util_eval_error(acpi_handle h, acpi_string p, acpi_status s)
-diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-index 3a032afd9d05..4f5463b2a217 100644
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -178,14 +178,14 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
- 		DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad X201s"),
- 		},
- 	},
--        {
--         .callback = video_detect_force_video,
--         .ident = "ThinkPad X201T",
--         .matches = {
--                DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--                DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad X201T"),
--                },
--        },
-+	{
-+	 .callback = video_detect_force_video,
-+	 .ident = "ThinkPad X201T",
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+		DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad X201T"),
-+		},
-+	},
- 
- 	/* The native backlight controls do not work on some older machines */
- 	{
-diff --git a/drivers/acpi/wakeup.c b/drivers/acpi/wakeup.c
-index f89dd9a99e6e..e8c59578598f 100644
---- a/drivers/acpi/wakeup.c
-+++ b/drivers/acpi/wakeup.c
-@@ -44,7 +44,7 @@ void acpi_enable_wakeup_devices(u8 sleep_state)
- 		if (!dev->wakeup.flags.valid
- 		    || sleep_state > (u32) dev->wakeup.sleep_state
- 		    || !(device_may_wakeup(&dev->dev)
--		        || dev->wakeup.prepare_count))
-+			|| dev->wakeup.prepare_count))
- 			continue;
- 
- 		if (device_may_wakeup(&dev->dev))
-@@ -69,7 +69,7 @@ void acpi_disable_wakeup_devices(u8 sleep_state)
- 		if (!dev->wakeup.flags.valid
- 		    || sleep_state > (u32) dev->wakeup.sleep_state
- 		    || !(device_may_wakeup(&dev->dev)
--		        || dev->wakeup.prepare_count))
-+			|| dev->wakeup.prepare_count))
- 			continue;
- 
- 		acpi_set_gpe_wake_mask(dev->wakeup.gpe_device, dev->wakeup.gpe_number,
-
-
+> ---
+> Changes in v3:
+>   - changed the email addresses because of serious email provider problems
+>   - fixed all multi-line comments
+>   - simplifiend some more switches
+>   - added more explanations about the values provied by the micro-controller
+>   - cached the raw value delivered by the usb_cmd function
+> Changes in v2:
+>   - changed comments to hwmon style comments
+>   - simplified some switches
+>   - removed redundant code
+>   - removed misuse of EIO
+>   - changed a todo to a proper explanation
+>   - changed debugfs init/remove code
+>   - added 2 more HXi/RMi devices
+>   - updated documentation
+> ---
+>  Documentation/hwmon/corsair-psu.rst |  82 ++++
+>  Documentation/hwmon/index.rst       |   1 +
+>  MAINTAINERS                         |   7 +
+>  drivers/hwmon/Kconfig               |  13 +
+>  drivers/hwmon/Makefile              |   1 +
+>  drivers/hwmon/corsair-psu.c         | 605 ++++++++++++++++++++++++++++
+>  6 files changed, 709 insertions(+)
+>  create mode 100644 Documentation/hwmon/corsair-psu.rst
+>  create mode 100644 drivers/hwmon/corsair-psu.c
+> 
+> diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/corsair-psu.rst
+> new file mode 100644
+> index 000000000000..396b95c9a76a
+> --- /dev/null
+> +++ b/Documentation/hwmon/corsair-psu.rst
+> @@ -0,0 +1,82 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver corsair-psu
+> +=========================
+> +
+> +Supported devices:
+> +
+> +* Corsair Power Supplies
+> +
+> +  Corsair HX550i
+> +
+> +  Corsair HX650i
+> +
+> +  Corsair HX750i
+> +
+> +  Corsair HX850i
+> +
+> +  Corsair HX1000i
+> +
+> +  Corsair HX1200i
+> +
+> +  Corsair RM550i
+> +
+> +  Corsair RM650i
+> +
+> +  Corsair RM750i
+> +
+> +  Corsair RM850i
+> +
+> +  Corsair RM1000i
+> +
+> +Author: Wilken Gottwalt
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements the sysfs interface for the Corsair PSUs with a HID protocol
+> +interface of the HXi and RMi series.
+> +These power supplies provide access to a micro-controller with 2 attached
+> +temperature sensors, 1 fan rpm sensor, 4 sensors for volt levels, 4 sensors for
+> +power usage and 4 sensors for current levels and addtional non-sensor information
+> +like uptimes.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +=======================	========================================================
+> +curr1_input		Total current usage
+> +curr2_input		Current on the 12v psu rail
+> +curr3_input		Current on the 5v psu rail
+> +curr4_input		Current on the 3.3v psu rail
+> +fan1_input		RPM of psu fan
+> +in0_input		Voltage of the psu ac input
+> +in1_input		Voltage of the 12v psu rail
+> +in2_input		Voltage of the 5v psu rail
+> +in3_input		Voltage of the 3.3 psu rail
+> +power1_input		Total power usage
+> +power2_input		Power usage of the 12v psu rail
+> +power3_input		Power usage of the 5v psu rail
+> +power4_input		Power usage of the 3.3v psu rail
+> +temp1_input		Temperature of the psu vrm component
+> +temp2_input		Temperature of the psu case
+> +=======================	========================================================
+> +
+> +Usage Notes
+> +-----------
+> +
+> +It is an USB HID device, so it is auto-detected and supports hot-swapping.
+> +
+> +Flickering values in the rail voltage levels can be an indicator for a failing
+> +PSU. The driver also provides some additional useful values via debugfs, which
+> +do not fit into the hwmon class.
+> +
+> +Debugfs entries
+> +---------------
+> +
+> +=======================	========================================================
+> +uptime			Current uptime of the psu
+> +uptime_total		Total uptime of the psu
+> +vendor			Vendor name of the psu
+> +product			Product name of the psu
+> +=======================	========================================================
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index e6b91ab12978..408760d13813 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -49,6 +49,7 @@ Hardware Monitoring Kernel Drivers
+>     bt1-pvt
+>     coretemp
+>     corsair-cpro
+> +   corsair-psu
+>     da9052
+>     da9055
+>     dell-smm-hwmon
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e73636b75f29..e1db1f6dd694 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4496,6 +4496,13 @@ L:	linux-hwmon@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/hwmon/corsair-cpro.c
+>  
+> +CORSAIR-PSU HARDWARE MONITOR DRIVER
+> +M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/corsair-psu.rst
+> +F:	drivers/hwmon/corsair-psu.c
+> +
+>  COSA/SRP SYNC SERIAL DRIVER
+>  M:	Jan "Yenya" Kasprzak <kas@fi.muni.cz>
+>  S:	Maintained
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index a850e4f0e0bd..9d600e0c5584 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -449,6 +449,19 @@ config SENSORS_CORSAIR_CPRO
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called corsair-cpro.
+>  
+> +config SENSORS_CORSAIR_PSU
+> +	tristate "Corsair PSU HID controller"
+> +	depends on HID
+> +	help
+> +	  If you say yes here you get support for Corsair PSUs with a HID
+> +	  interface.
+> +	  Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
+> +	  (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
+> +	  by Corsair.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called corsair-psu.
+> +
+>  config SENSORS_DRIVETEMP
+>  	tristate "Hard disk drives with temperature sensors"
+>  	depends on SCSI && ATA
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 9db2903b61e5..1083bbfac779 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -57,6 +57,7 @@ obj-$(CONFIG_SENSORS_AXI_FAN_CONTROL) += axi-fan-control.o
+>  obj-$(CONFIG_SENSORS_BT1_PVT)	+= bt1-pvt.o
+>  obj-$(CONFIG_SENSORS_CORETEMP)	+= coretemp.o
+>  obj-$(CONFIG_SENSORS_CORSAIR_CPRO) += corsair-cpro.o
+> +obj-$(CONFIG_SENSORS_CORSAIR_PSU) += corsair-psu.o
+>  obj-$(CONFIG_SENSORS_DA9052_ADC)+= da9052-hwmon.o
+>  obj-$(CONFIG_SENSORS_DA9055)+= da9055-hwmon.o
+>  obj-$(CONFIG_SENSORS_DELL_SMM)	+= dell-smm-hwmon.o
+> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> new file mode 100644
+> index 000000000000..e92d0376e7ac
+> --- /dev/null
+> +++ b/drivers/hwmon/corsair-psu.c
+> @@ -0,0 +1,605 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * corsair-psu.c - Linux driver for Corsair power supplies with HID sensors interface
+> + * Copyright (C) 2020 Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> + */
+> +
+> +#include <linux/completion.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/errno.h>
+> +#include <linux/hid.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +/*
+> + * Corsair protocol for PSUs
+> + *
+> + * message size = 64 bytes (request and response, little endian)
+> + * request:
+> + *	[length][command][param0][param1][paramX]...
+> + * reply:
+> + *	[echo of length][echo of command][data0][data1][dataX]...
+> + *
+> + *	- commands are byte sized opcodes
+> + *	- length is the sum of all bytes of the commands/params
+> + *	- the micro-controller of most of these PSUs support concatenation in the request and reply,
+> + *	  but it is better to not rely on this (it is also hard to parse)
+> + *	- the driver uses raw events to be accessible from userspace (though this is not really
+> + *	  supported, it is just there for convenience, may be removed in the future)
+> + *	- a reply always start with the length and command in the same order the request used it
+> + *	- length of the reply data is specific to the command used
+> + *	- some of the commands work on a rail and can be switched to a specific rail (0 = 12v,
+> + *	  1 = 5v, 2 = 3.3v)
+> + *	- the format of the init command 0xFE is swapped length/command bytes
+> + *	- parameter bytes amount and values are specific to the command (rail setting is the only
+> + *	  for now that uses non-zero values)
+> + *	- there are much more commands, especially for configuring the device, but they are not
+> + *	  supported because a wrong command/length can lockup the micro-controller
+> + *	- the driver supports debugfs for values not fitting into the hwmon class
+> + *	- not every device class (HXi, RMi or AXi) supports all commands
+> + *	- it is a pure sensors reading driver (will not support configuring)
+> + */
+> +
+> +#define DRIVER_NAME		"corsair-psu"
+> +
+> +#define REPLY_SIZE		16 /* max length of a reply to a single command */
+> +#define CMD_BUFFER_SIZE		64
+> +#define CMD_TIMEOUT_MS		250
+> +#define SECONDS_PER_HOUR	(60 * 60)
+> +#define SECONDS_PER_DAY		(SECONDS_PER_HOUR * 24)
+> +
+> +#define PSU_CMD_SELECT_RAIL	0x00 /* expects length 2 */
+> +#define PSU_CMD_IN_VOLTS	0x88 /* the rest of the commands expect length 3 */
+> +#define PSU_CMD_IN_AMPS		0x89
+> +#define PSU_CMD_RAIL_OUT_VOLTS	0x8B
+> +#define PSU_CMD_RAIL_AMPS	0x8C
+> +#define PSU_CMD_TEMP0		0x8D
+> +#define PSU_CMD_TEMP1		0x8E
+> +#define PSU_CMD_FAN		0x90
+> +#define PSU_CMD_RAIL_WATTS	0x96
+> +#define PSU_CMD_VEND_STR	0x99
+> +#define PSU_CMD_PROD_STR	0x9A
+> +#define PSU_CMD_TOTAL_WATTS	0xEE
+> +#define PSU_CMD_TOTAL_UPTIME	0xD1
+> +#define PSU_CMD_UPTIME		0xD2
+> +#define PSU_CMD_INIT		0xFE
+> +
+> +#define L_IN_VOLTS		"v_in"
+> +#define L_OUT_VOLTS_12V		"v_out +12v"
+> +#define L_OUT_VOLTS_5V		"v_out +5v"
+> +#define L_OUT_VOLTS_3_3V	"v_out +3.3v"
+> +#define L_IN_AMPS		"curr in"
+> +#define L_AMPS_12V		"curr +12v"
+> +#define L_AMPS_5V		"curr +5v"
+> +#define L_AMPS_3_3V		"curr +3.3v"
+> +#define L_FAN			"psu fan"
+> +#define L_TEMP0			"vrm temp"
+> +#define L_TEMP1			"case temp"
+> +#define L_WATTS			"power total"
+> +#define L_WATTS_12V		"power +12v"
+> +#define L_WATTS_5V		"power +5v"
+> +#define L_WATTS_3_3V		"power +3.3v"
+> +
+> +static const char *const label_watts[] = {
+> +	L_WATTS,
+> +	L_WATTS_12V,
+> +	L_WATTS_5V,
+> +	L_WATTS_3_3V
+> +};
+> +
+> +static const char *const label_volts[] = {
+> +	L_IN_VOLTS,
+> +	L_OUT_VOLTS_12V,
+> +	L_OUT_VOLTS_5V,
+> +	L_OUT_VOLTS_3_3V
+> +};
+> +
+> +static const char *const label_amps[] = {
+> +	L_IN_AMPS,
+> +	L_AMPS_12V,
+> +	L_AMPS_5V,
+> +	L_AMPS_3_3V
+> +};
+> +
+> +struct corsairpsu_data {
+> +	struct hid_device *hdev;
+> +	struct device *hwmon_dev;
+> +	struct dentry *debugfs;
+> +	struct completion wait_completion;
+> +	struct mutex lock; /* for locking access to cmd_buffer */
+> +	u8 *cmd_buffer;
+> +	char vendor[REPLY_SIZE];
+> +	char product[REPLY_SIZE];
+> +};
+> +
+> +/* some values are SMBus LINEAR11 data which need a conversion */
+> +static int corsairpsu_linear11_to_int(const int val)
+> +{
+> +	int exp = (val & 0xFFFF) >> 0x0B;
+> +	int mant = val & 0x7FF;
+> +	int i;
+> +
+> +	if (exp > 0x0F)
+> +		exp -= 0x20;
+> +	if (mant > 0x3FF)
+> +		mant -= 0x800;
+> +	if ((mant & 0x01) == 1)
+> +		++mant;
+> +	if (exp < 0) {
+> +		for (i = 0; i < -exp; ++i)
+> +			mant /= 2;
+> +	} else {
+> +		for (i = 0; i < exp; ++i)
+> +			mant *= 2;
+> +	}
+> +
+> +	return mant;
+> +}
+> +
+> +static int corsairpsu_usb_cmd(struct corsairpsu_data *priv, u8 p0, u8 p1, u8 p2, void *data)
+> +{
+> +	unsigned long time;
+> +	int ret;
+> +
+> +	memset(priv->cmd_buffer, 0, CMD_BUFFER_SIZE);
+> +	priv->cmd_buffer[0] = p0;
+> +	priv->cmd_buffer[1] = p1;
+> +	priv->cmd_buffer[2] = p2;
+> +
+> +	reinit_completion(&priv->wait_completion);
+> +
+> +	ret = hid_hw_output_report(priv->hdev, priv->cmd_buffer, CMD_BUFFER_SIZE);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	time = wait_for_completion_timeout(&priv->wait_completion,
+> +					   msecs_to_jiffies(CMD_TIMEOUT_MS));
+> +	if (!time)
+> +		return -ETIMEDOUT;
+> +
+> +	/*
+> +	 * at the start of the reply is an echo of the send command/length in the same order it
+> +	 * was send, not every command is supported on every device class, if a command is not
+> +	 * supported, the length value in the reply is okay, but the command value is set to 0
+> +	 */
+> +	if (p0 != priv->cmd_buffer[0] || p1 != priv->cmd_buffer[1])
+> +		return -EOPNOTSUPP;
+> +
+> +	if (data)
+> +		memcpy(data, priv->cmd_buffer + 2, REPLY_SIZE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int corsairpsu_init(struct corsairpsu_data *priv)
+> +{
+> +	/*
+> +	 * PSU_CMD_INIT uses swapped length/command and expects 2 parameter bytes, this command
+> +	 * actually generates a reply, but we don't need it
+> +	 */
+> +	return corsairpsu_usb_cmd(priv, PSU_CMD_INIT, 3, 0, NULL);
+> +}
+> +
+> +static int corsairpsu_fwinfo(struct corsairpsu_data *priv)
+> +{
+> +	int ret;
+> +
+> +	ret = corsairpsu_usb_cmd(priv, 3, PSU_CMD_VEND_STR, 0, priv->vendor);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = corsairpsu_usb_cmd(priv, 3, PSU_CMD_PROD_STR, 0, priv->product);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int corsairpsu_request(struct corsairpsu_data *priv, u8 cmd, u8 rail, void *data)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +	switch (cmd) {
+> +	case PSU_CMD_RAIL_OUT_VOLTS:
+> +	case PSU_CMD_RAIL_AMPS:
+> +	case PSU_CMD_RAIL_WATTS:
+> +		ret = corsairpsu_usb_cmd(priv, 2, PSU_CMD_SELECT_RAIL, rail, NULL);
+> +		if (ret < 0)
+> +			goto cmd_fail;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	ret = corsairpsu_usb_cmd(priv, 3, cmd, 0, data);
+> +
+> +cmd_fail:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8 rail, long *val)
+> +{
+> +	u8 data[REPLY_SIZE];
+> +	long tmp;
+> +	int ret;
+> +
+> +	ret = corsairpsu_request(priv, cmd, rail, data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/*
+> +	 * the biggest value here comes from the uptime command and to exceed MAXINT total uptime
+> +	 * needs to be about 68 years, the rest are u16 values and the biggest value coming out of
+> +	 * the LINEAR11 conversion are the watts values which are about 1200 for the strongest psu
+> +	 * supported (HX1200i)
+> +	 */
+> +	tmp = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+> +	switch (cmd) {
+> +	case PSU_CMD_IN_VOLTS:
+> +	case PSU_CMD_IN_AMPS:
+> +	case PSU_CMD_RAIL_OUT_VOLTS:
+> +	case PSU_CMD_RAIL_AMPS:
+> +	case PSU_CMD_TEMP0:
+> +	case PSU_CMD_TEMP1:
+> +		*val = corsairpsu_linear11_to_int(tmp & 0xFFFF) * 1000;
+> +		break;
+> +	case PSU_CMD_FAN:
+> +		/*
+> +		 * this value is best guess, so the calculated value could be wrong, it is hard
+> +		 * to ge the fan to spin in these semi-passive power supplies, which need a
+> +		 * quite high load to do so
+> +		 */
+> +		*val = ((tmp & 0xFF) << 8) + ((tmp >> 8) & 0xFF);
+> +		break;
+> +	case PSU_CMD_RAIL_WATTS:
+> +	case PSU_CMD_TOTAL_WATTS:
+> +		*val = corsairpsu_linear11_to_int(tmp & 0xFFFF) * 1000000;
+> +		break;
+> +	case PSU_CMD_TOTAL_UPTIME:
+> +	case PSU_CMD_UPTIME:
+> +		*val = tmp;
+> +		break;
+> +	default:
+> +		ret = -EOPNOTSUPP;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static umode_t corsairpsu_hwmon_ops_is_visible(const void *data, enum hwmon_sensor_types type,
+> +					       u32 attr, int channel)
+> +{
+> +	if (type == hwmon_temp && (attr == hwmon_temp_input || attr == hwmon_temp_label))
+> +		return 0444;
+> +	else if (type == hwmon_fan && (attr == hwmon_fan_input || attr == hwmon_fan_label))
+> +		return 0444;
+> +	else if (type == hwmon_power && (attr == hwmon_power_input || attr == hwmon_power_label))
+> +		return 0444;
+> +	else if (type == hwmon_in && (attr == hwmon_in_input || attr == hwmon_in_label))
+> +		return 0444;
+> +	else if (type == hwmon_curr && (attr == hwmon_curr_input || attr == hwmon_curr_label))
+> +		return 0444;
+> +
+> +	return 0;
+> +}
+> +
+> +static int corsairpsu_hwmon_ops_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+> +				     int channel, long *val)
+> +{
+> +	struct corsairpsu_data *priv = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	if (type == hwmon_temp && attr == hwmon_temp_input && channel < 2) {
+> +		ret = corsairpsu_get_value(priv, channel ? PSU_CMD_TEMP1 : PSU_CMD_TEMP0, channel,
+> +					   val);
+> +	} else if (type == hwmon_fan && attr == hwmon_fan_input) {
+> +		ret = corsairpsu_get_value(priv, PSU_CMD_FAN, 0, val);
+> +	} else if (type == hwmon_power && attr == hwmon_power_input) {
+> +		switch (channel) {
+> +		case 0:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_TOTAL_WATTS, 0, val);
+> +			break;
+> +		case 1 ... 3:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_WATTS, channel - 1, val);
+> +			break;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	} else if (type == hwmon_in && attr == hwmon_in_input) {
+> +		switch (channel) {
+> +		case 0:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_IN_VOLTS, 0, val);
+> +			break;
+> +		case 1 ... 3:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_OUT_VOLTS, channel - 1, val);
+> +			break;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	} else if (type == hwmon_curr && attr == hwmon_curr_input) {
+> +		switch (channel) {
+> +		case 0:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, val);
+> +			break;
+> +		case 1 ... 3:
+> +			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS, channel - 1, val);
+> +			break;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	} else {
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int corsairpsu_hwmon_ops_read_string(struct device *dev, enum hwmon_sensor_types type,
+> +					    u32 attr, int channel, const char **str)
+> +{
+> +	if (type == hwmon_temp && attr == hwmon_temp_label) {
+> +		*str = channel ? L_TEMP1 : L_TEMP0;
+> +		return 0;
+> +	} else if (type == hwmon_fan && attr == hwmon_fan_label) {
+> +		*str = L_FAN;
+> +		return 0;
+> +	} else if (type == hwmon_power && attr == hwmon_power_label && channel < 4) {
+> +		*str = label_watts[channel];
+> +		return 0;
+> +	} else if (type == hwmon_in && attr == hwmon_in_label && channel < 4) {
+> +		*str = label_volts[channel];
+> +		return 0;
+> +	} else if (type == hwmon_curr && attr == hwmon_curr_label && channel < 4) {
+> +		*str = label_amps[channel];
+> +		return 0;
+> +	}
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct hwmon_ops corsairpsu_hwmon_ops = {
+> +	.is_visible	= corsairpsu_hwmon_ops_is_visible,
+> +	.read		= corsairpsu_hwmon_ops_read,
+> +	.read_string	= corsairpsu_hwmon_ops_read_string,
+> +};
+> +
+> +static const struct hwmon_channel_info *corsairpsu_info[] = {
+> +	HWMON_CHANNEL_INFO(chip,
+> +			   HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(fan,
+> +			   HWMON_F_INPUT | HWMON_F_LABEL),
+> +	HWMON_CHANNEL_INFO(power,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL),
+> +	HWMON_CHANNEL_INFO(in,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+> +	HWMON_CHANNEL_INFO(curr,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info corsairpsu_chip_info = {
+> +	.ops	= &corsairpsu_hwmon_ops,
+> +	.info	= corsairpsu_info,
+> +};
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +
+> +static void print_uptime(struct seq_file *seqf, u8 cmd)
+> +{
+> +	struct corsairpsu_data *priv = seqf->private;
+> +	long val;
+> +	int ret;
+> +
+> +	ret = corsairpsu_get_value(priv, cmd, 0, &val);
+> +	if (ret < 0) {
+> +		seq_puts(seqf, "N/A\n");
+> +		return;
+> +	}
+> +
+> +	if (val > SECONDS_PER_DAY) {
+> +		seq_printf(seqf, "%ld day(s), %02ld:%02ld:%02ld\n", val / SECONDS_PER_DAY,
+> +			   val % SECONDS_PER_DAY / SECONDS_PER_HOUR, val % SECONDS_PER_HOUR / 60,
+> +			   val % 60);
+> +		return;
+> +	}
+> +
+> +	seq_printf(seqf, "%02ld:%02ld:%02ld\n", val % SECONDS_PER_DAY / SECONDS_PER_HOUR,
+> +		   val % SECONDS_PER_HOUR / 60, val % 60);
+> +}
+> +
+> +static int uptime_show(struct seq_file *seqf, void *unused)
+> +{
+> +	print_uptime(seqf, PSU_CMD_UPTIME);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(uptime);
+> +
+> +static int uptime_total_show(struct seq_file *seqf, void *unused)
+> +{
+> +	print_uptime(seqf, PSU_CMD_TOTAL_UPTIME);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(uptime_total);
+> +
+> +static int vendor_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct corsairpsu_data *priv = seqf->private;
+> +
+> +	seq_printf(seqf, "%s\n", priv->vendor);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(vendor);
+> +
+> +static int product_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct corsairpsu_data *priv = seqf->private;
+> +
+> +	seq_printf(seqf, "%s\n", priv->product);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(product);
+> +
+> +static void corsairpsu_debugfs_init(struct corsairpsu_data *priv)
+> +{
+> +	char name[32];
+> +
+> +	scnprintf(name, sizeof(name), "%s-%s", DRIVER_NAME, dev_name(&priv->hdev->dev));
+> +
+> +	priv->debugfs = debugfs_create_dir(name, NULL);
+> +	debugfs_create_file("uptime", 0444, priv->debugfs, priv, &uptime_fops);
+> +	debugfs_create_file("uptime_total", 0444, priv->debugfs, priv, &uptime_total_fops);
+> +	debugfs_create_file("vendor", 0444, priv->debugfs, priv, &vendor_fops);
+> +	debugfs_create_file("product", 0444, priv->debugfs, priv, &product_fops);
+> +}
+> +
+> +#else
+> +
+> +static void corsairpsu_debugfs_init(struct corsairpsu_data *priv)
+> +{
+> +}
+> +
+> +#endif
+> +
+> +static int corsairpsu_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	struct corsairpsu_data *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&hdev->dev, sizeof(struct corsairpsu_data), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->cmd_buffer = devm_kmalloc(&hdev->dev, CMD_BUFFER_SIZE, GFP_KERNEL);
+> +	if (!priv->cmd_buffer)
+> +		return -ENOMEM;
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret)
+> +		goto fail_and_stop;
+> +
+> +	priv->hdev = hdev;
+> +	hid_set_drvdata(hdev, priv);
+> +	mutex_init(&priv->lock);
+> +	init_completion(&priv->wait_completion);
+> +
+> +	hid_device_io_start(hdev);
+> +
+> +	ret = corsairpsu_init(priv);
+> +	if (ret < 0) {
+> +		dev_err(&hdev->dev, "unable to initialize device (%d)\n", ret);
+> +		goto fail_and_stop;
+> +	}
+> +
+> +	ret = corsairpsu_fwinfo(priv);
+> +	if (ret < 0) {
+> +		dev_err(&hdev->dev, "unable to query firmware (%d)\n", ret);
+> +		goto fail_and_stop;
+> +	}
+> +
+> +	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "corsairpsu", priv,
+> +							  &corsairpsu_chip_info, 0);
+> +
+> +	if (IS_ERR(priv->hwmon_dev)) {
+> +		ret = PTR_ERR(priv->hwmon_dev);
+> +		goto fail_and_close;
+> +	}
+> +
+> +	corsairpsu_debugfs_init(priv);
+> +
+> +	return 0;
+> +
+> +fail_and_close:
+> +	hid_hw_close(hdev);
+> +fail_and_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+> +
+> +static void corsairpsu_remove(struct hid_device *hdev)
+> +{
+> +	struct corsairpsu_data *priv = hid_get_drvdata(hdev);
+> +
+> +	debugfs_remove_recursive(priv->debugfs);
+> +	hwmon_device_unregister(priv->hwmon_dev);
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +}
+> +
+> +static int corsairpsu_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data,
+> +				int size)
+> +{
+> +	struct corsairpsu_data *priv = hid_get_drvdata(hdev);
+> +
+> +	if (completion_done(&priv->wait_completion))
+> +		return 0;
+> +
+> +	memcpy(priv->cmd_buffer, data, min(CMD_BUFFER_SIZE, size));
+> +	complete(&priv->wait_completion);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct hid_device_id corsairpsu_idtable[] = {
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
+> +	{ HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
+> +
+> +static struct hid_driver corsairpsu_driver = {
+> +	.name		= DRIVER_NAME,
+> +	.id_table	= corsairpsu_idtable,
+> +	.probe		= corsairpsu_probe,
+> +	.remove		= corsairpsu_remove,
+> +	.raw_event	= corsairpsu_raw_event,
+> +};
+> +module_hid_driver(corsairpsu_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
+> +MODULE_DESCRIPTION("Linux driver for Corsair power supplies with HID sensors interface");
