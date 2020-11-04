@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC472A5F0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CABA12A5F0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgKDICa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:02:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKDIC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:02:29 -0500
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A19F7223C6
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 08:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604476949;
-        bh=Gt+k50/uNJh3IRuDkRBTXYHIaTMgChYtN1A0cbfq2A8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UXBiPG1k6PvQRX6mWnTOQBH3OvkIMIrUZlL6KN+PI9jV5o0yAM8mbPtNGep+brWO+
-         6sdqGfChU6vKFPVyzg782wWmnF/4TYQaoaNW63nIrw1FA4GRHceDC9NajXWHPIw3TP
-         FAugtvjoItuZuydI71q7gavVyyL869TDDnalVXFI=
-Received: by mail-ej1-f44.google.com with SMTP id o9so26366716ejg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 00:02:28 -0800 (PST)
-X-Gm-Message-State: AOAM5300xQs8bQ9+jekOk9lJhogBIxYXEAa93QRqQZ8c1oI2hqn5sdYa
-        EUsozvh3iJBBYcSL33+mVGSl+KdWBCDcCG9sm6M=
-X-Google-Smtp-Source: ABdhPJyr26sB8ujN+LWDSItGcUtw4OL0QL8Rf+ZqlRId+h+uKCqcNp8LaIN/fARq1zSXVNdaydBWk1d7HrBPJwqJM7E=
-X-Received: by 2002:a17:906:5618:: with SMTP id f24mr1650845ejq.381.1604476947095;
- Wed, 04 Nov 2020 00:02:27 -0800 (PST)
+        id S1728045AbgKDIDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKDIDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:03:21 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AD2C061A4D;
+        Wed,  4 Nov 2020 00:03:20 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id k3so28387834ejj.10;
+        Wed, 04 Nov 2020 00:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=lSHGlcZONhf6qBQExAcS/zcrqWFtE8KDWWdwXpyQQ+o=;
+        b=JQRa+YZuAJZjt1g7TC9uAoHYTcFw/40zCiI/3Bz628T8dyzU/yCN5jgd/Etdq+GbEH
+         rvQ0wwkqSkrFz6SZ+s29kV53j3Ij6xInhh5wd2YonabzH3OIqagnV3Y/fwYlJGUIsbju
+         M6Pgp2sRf+Jk2ZRChyJYcGR/I0zh9K3Rl6el5aeVgdm0J8zJkqP5jgFK3OycNIjnoidP
+         GdBR+n1qZJtM6kAiVsUJ4iPzD4JNOEnxhbkijpte9JvvDa/5TM/FLLZ573iv+9j6gIM6
+         I7tnIrRTbVArZ2dr8ZpE/5Cpmo4V7ibsFSprrAEKDa5kJlkpzbHvcUOw6a6iEgUHUr/2
+         z5xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lSHGlcZONhf6qBQExAcS/zcrqWFtE8KDWWdwXpyQQ+o=;
+        b=uKtzNPKXuyB11kMa2pEQm5xkoSxtvZnofJG3l8rmSZ2WT9a+aszYl/zWH0O9+Qck7u
+         cS4CcRsXcBU3PUg7entZ8m43W3MpopSDElKjSWvuL3CnQUbs1UQ+j6q13A4VL2CqV+me
+         n9ODlnwz48c3NQ/VpnQNb0FYjnCtWrFxit5mYAp2pIKra5eH/JXK+U0U4OZfnYGYCbHv
+         rTG0VFAAr/cKFoO3ab0c+YW2RtNAtyclJr5CPpGITo86PehmbNd37mPBZVgI5zJBlARS
+         95iJjq+BiPus7KT+eITUz0M/A4DnutssrOmbDbNSwylKX21VOUxpRH+CsDAgLCLfAY3e
+         aQIg==
+X-Gm-Message-State: AOAM5315164I4SXRt204rVHBoWti3N+y7nZAHj3v+EafhdfSYarCxXmV
+        l75g4p24aZBgb/Lwc0vmKYx3ByqCbco=
+X-Google-Smtp-Source: ABdhPJyYf7wTm7PCR+aDC0KR0zCSeQg/FQpbVuARHDgbDgaGw2ovwStfe5mIvBm9OL1gpSoTMbbB9g==
+X-Received: by 2002:a17:906:c1d4:: with SMTP id bw20mr23369417ejb.91.1604476999489;
+        Wed, 04 Nov 2020 00:03:19 -0800 (PST)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id f25sm600558edr.53.2020.11.04.00.03.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 00:03:18 -0800 (PST)
+Subject: Re: [PATCH 1/2] mm: mmap: fix fput in error path v2
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        chris@chris-wilson.co.uk, airlied@redhat.com, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com,
+        jgg@ziepe.ca, linmiaohe@huawei.com
+References: <20201012085203.56119-1-christian.koenig@amd.com>
+Message-ID: <be6d248d-01d4-f2a3-5e33-7f311daef0b7@gmail.com>
+Date:   Wed, 4 Nov 2020 09:03:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201104030645.12931-1-alice.guo@nxp.com> <20201104030645.12931-2-alice.guo@nxp.com>
- <CAJKOXPd_sArJ5-Ka2btZNxn3aBGFioDGOmQKbqeVNgtpUZUw=A@mail.gmail.com>
-In-Reply-To: <CAJKOXPd_sArJ5-Ka2btZNxn3aBGFioDGOmQKbqeVNgtpUZUw=A@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 4 Nov 2020 09:02:15 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPewEVsPUoC4w_aku=pDG=FzyajwfK42yPQ15K-vA-brtw@mail.gmail.com>
-Message-ID: <CAJKOXPewEVsPUoC4w_aku=pDG=FzyajwfK42yPQ15K-vA-brtw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] LF-2571-1: dt-bindings: soc: imx8m: add DT Binding
- doc for soc unique ID
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, peng.fan@nxp.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201012085203.56119-1-christian.koenig@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Nov 2020 at 08:58, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Wed, 4 Nov 2020 at 04:09, Alice Guo <alice.guo@nxp.com> wrote:
-> >
-> > Add DT Binding doc for the Unique ID of i.MX 8M series.
-> >
-> > Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> > ---
-> >  .../bindings/soc/imx/imx8m-unique-id.yaml     | 32 +++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/imx/imx8m-unique-id.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/soc/imx/imx8m-unique-id.yaml b/Documentation/devicetree/bindings/soc/imx/imx8m-unique-id.yaml
-> > new file mode 100644
-> > index 000000000000..f1e45458cec7
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-unique-id.yaml
-> > @@ -0,0 +1,32 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/arm/nxp/imx8m-unique-id.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP i.MX8M Platforms Device Tree Bindings
->
-> This is not a title for these bindings. Please describe the bindings
-> for this device. Based on description, this might could go to
-> bindings/nvmem directory.
->
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
->
-> No need for oneOf.
->
-> > +      - items:
-> > +          - enum:
-> > +              - fsl,imx8mm-soc
-> > +              - fsl,imx8mn-soc
-> > +              - fsl,imx8mp-soc
-> > +              - fsl,imx8mq-soc
-> > +          - const: simple-bus
-> > +
-> > +  nvmem-cells:
-> > +    maxItems: 1
-> > +    description:
-> > +      Reference to an nvmem node for the SOC Unique ID.
->
-> Misleading description - nvmem-cells do not contain a reference. Just
-> skip it, nvmem-cells should be obvious from the nvmem provider
-> bindings.
->
-> > +
-> > +  nvmem-cells-names:
-> > +    const: soc_unique_id
->
-> additionalProperties: false
+If nobody comes up with an objections I'm going to merge that through 
+drm-misc-next.
 
-... or what looks more appropriate - you should include nvmem-consumer
-bindings and use unevaluatedProperties:false.
+Thanks,
+Christian.
 
-Best regards,
-Krzysztof
+Am 12.10.20 um 10:52 schrieb Christian König:
+> Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
+> adds a workaround for a bug in mmap_region.
+>
+> As the comment states ->mmap() callback can change
+> vma->vm_file and so we might call fput() on the wrong file.
+>
+> Revert the workaround and proper fix this in mmap_region.
+>
+> v2: drop the extra if in dma_buf_mmap as well
+>
+> Signed-off-by: Christian König <christian.koenig@amd.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   drivers/dma-buf/dma-buf.c | 20 +++-----------------
+>   mm/mmap.c                 |  2 +-
+>   2 files changed, 4 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index a6ba4d598f0e..08630d057cf2 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1143,9 +1143,6 @@ EXPORT_SYMBOL_GPL(dma_buf_end_cpu_access);
+>   int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>   		 unsigned long pgoff)
+>   {
+> -	struct file *oldfile;
+> -	int ret;
+> -
+>   	if (WARN_ON(!dmabuf || !vma))
+>   		return -EINVAL;
+>   
+> @@ -1163,22 +1160,11 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>   		return -EINVAL;
+>   
+>   	/* readjust the vma */
+> -	get_file(dmabuf->file);
+> -	oldfile = vma->vm_file;
+> -	vma->vm_file = dmabuf->file;
+> +	fput(vma->vm_file);
+> +	vma->vm_file = get_file(dmabuf->file);
+>   	vma->vm_pgoff = pgoff;
+>   
+> -	ret = dmabuf->ops->mmap(dmabuf, vma);
+> -	if (ret) {
+> -		/* restore old parameters on failure */
+> -		vma->vm_file = oldfile;
+> -		fput(dmabuf->file);
+> -	} else {
+> -		if (oldfile)
+> -			fput(oldfile);
+> -	}
+> -	return ret;
+> -
+> +	return dmabuf->ops->mmap(dmabuf, vma);
+>   }
+>   EXPORT_SYMBOL_GPL(dma_buf_mmap);
+>   
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 40248d84ad5f..3a2670d73355 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1852,8 +1852,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>   	return addr;
+>   
+>   unmap_and_free_vma:
+> +	fput(vma->vm_file);
+>   	vma->vm_file = NULL;
+> -	fput(file);
+>   
+>   	/* Undo any partial mapping done by a device driver. */
+>   	unmap_region(mm, vma, prev, vma->vm_start, vma->vm_end);
+
