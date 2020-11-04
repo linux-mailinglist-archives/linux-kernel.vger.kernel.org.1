@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6207D2A5D34
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42722A5D36
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgKDDud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 22:50:33 -0500
-Received: from mga02.intel.com ([134.134.136.20]:34726 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbgKDDud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 22:50:33 -0500
-IronPort-SDR: VJA2ECPWJDqCFgi5fB4xh2J725WZPHI+9TtJogWQw9NpZ6jSfbo4Ik5QJqgom6Wwmb++VJlA0H
- QYAw5lHrZyMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="156150906"
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="156150906"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 19:50:32 -0800
-IronPort-SDR: 7yLk8WgFV8IulWqBll0qQ6AUNBY5g7xGXO9konAWwj4X58tWoOMfV0V8tuiQEym4OjOKV17AWd
- aLJRalIs5AIg==
-X-IronPort-AV: E=Sophos;i="5.77,449,1596524400"; 
-   d="scan'208";a="538742905"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 19:50:29 -0800
-Date:   Wed, 4 Nov 2020 11:50:27 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v5 03/17] x86/acrn: Introduce an API to check if a VM is
- privileged
-Message-ID: <20201104035027.GA17702@shuo-intel.sh.intel.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-4-shuo.a.liu@intel.com>
- <20201102143707.GC15392@zn.tnic>
- <20201103062718.GD12408@shuo-intel.sh.intel.com>
- <20201103102538.GB6310@zn.tnic>
+        id S1728551AbgKDDvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 22:51:01 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:40318 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726008AbgKDDvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 22:51:01 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtEdJaJfkGIFAA--.15514S3;
+        Wed, 04 Nov 2020 11:50:54 +0800 (CST)
+Subject: Re: [PATCH v3 1/6] MIPS: Loongson64: Do not write the read only field
+ LPA of CP0_CONFIG3
+To:     Huacai Chen <chenhc@lemote.com>
+References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
+ <1604387525-23400-2-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <e999986a-8236-752a-8b17-353bb87fc521@loongson.cn>
+Date:   Wed, 4 Nov 2020 11:50:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201103102538.GB6310@zn.tnic>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+In-Reply-To: <CAAhV-H4WfaCLuCzvCJx-UriqgPAz2b0H6LGwMhyhRaxvuSAMwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxmtEdJaJfkGIFAA--.15514S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3Cry7Wr13ArWkCw4UArb_yoW5Jw1fpa
+        n5Aa1kGF4UXr1UuFnYy34DWrWrJ39xtrW2kanFqr95X3s3K3sFgr1fJ3W8JFyrZry8Ka10
+        qFyF9rWjvanrC3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JU-miiUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue  3.Nov'20 at 11:25:38 +0100, Borislav Petkov wrote:
->On Tue, Nov 03, 2020 at 02:27:18PM +0800, Shuo A Liu wrote:
->> The code just followed KVM style (see kvm_arch_para_features()).
+On 11/04/2020 10:00 AM, Huacai Chen wrote:
+> Hi, Tiezhu,
 >
->Do you see Documentation/virt/kvm/cpuid.rst?
+> On Tue, Nov 3, 2020 at 3:13 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>> The field LPA of CP0_CONFIG3 register is read only for Loongson64, so the
+>> write operations are meaningless, remove them.
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> v2: No changes
+>> v3: No changes
+>>
+>>   arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 --------
+>>   arch/mips/loongson64/numa.c                               | 3 ---
+>>   2 files changed, 11 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>> index 87a5bfb..e4d77f4 100644
+>> --- a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>> +++ b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+>> @@ -19,10 +19,6 @@
+>>          .macro  kernel_entry_setup
+>>          .set    push
+>>          .set    mips64
+>> -       /* Set LPA on LOONGSON3 config3 */
+>> -       mfc0    t0, CP0_CONFIG3
+>> -       or      t0, (0x1 << 7)
+>> -       mtc0    t0, CP0_CONFIG3
+> Sorry for the late response, I have the same worry as Jiaxun. As you
+> know, Loongson's user manuals are not always correct, but the original
+> code comes from Loongson are usually better. So, my opinion is "Don't
+> change it if it doesn't break anything".
 
-OK. It documents the leaf number.
+Hi Huacai,
 
->
->Now where is yours explaining what your hypervisor is doing?
+Thanks for your reply, I have confirmed by Loongson user manuals and
+hardware designers, CP0_CONFIG3 register is read only.
 
-Currently, it is in arch/x86/include/asm/acrn.h.
+Without this patch, the related kernel code is meaningless, with
+this patch, it can reflect the reality.
 
->
->> I can change to use
->> 	cpuid_eax(acrn_cpuid_base() + 1)...
->> If you prefer to.
->
->Yes please.
-
-Sure.
-
-If the leaf numbers be documented explicitly (like kvm), i think i can
-use them as eax of cpuid_eax() directly (back to your first comment).
-	cpuid_eax(ACRN_CPUID_FEATURES)...
-
-If you looking at implementation of acrn-hypervisor, you will found the
-leaf number is hardcoded in the hypervisor. So, they also can be
-documented explicitly.
-
->
->> hypervisor_cpuid_base() implies the base is variable, no? We use
->> this function to detect the base.
->
->Yes, but you need to document all that and make it clear and
->understandable. If Linux is supposed to run as an acrn guest, that
->interface better be documented just like KVM does.
-
-OK. I can add a similar cpuid.rst for acrn.
-
->
->Also, if there's a bug in the KVM guest/host interface, we might be able
->to fix it modulo ABI. Is that possible with acrn?
->
->I'm guessing the answer to that is yes if I'm looking at
->
->https://github.com/projectacrn/acrn-hypervisor
->
->?
-
-Yes. Fix patches are always welcome.
+Thanks,
+Tiezhu
 
 >
->> OK. Then i will define acrn_cpuid_base() as a static inline function
->> in asm/acrn.h for callers.
+> Huacai
 >
->Yah, that function is simple enough.
+>>          /* Set ELPA on LOONGSON3 pagegrain */
+>>          mfc0    t0, CP0_PAGEGRAIN
+>>          or      t0, (0x1 << 29)
+>> @@ -54,10 +50,6 @@
+>>          .macro  smp_slave_setup
+>>          .set    push
+>>          .set    mips64
+>> -       /* Set LPA on LOONGSON3 config3 */
+>> -       mfc0    t0, CP0_CONFIG3
+>> -       or      t0, (0x1 << 7)
+>> -       mtc0    t0, CP0_CONFIG3
+>>          /* Set ELPA on LOONGSON3 pagegrain */
+>>          mfc0    t0, CP0_PAGEGRAIN
+>>          or      t0, (0x1 << 29)
+>> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+>> index cf9459f..c7e3cced 100644
+>> --- a/arch/mips/loongson64/numa.c
+>> +++ b/arch/mips/loongson64/numa.c
+>> @@ -40,9 +40,6 @@ static void enable_lpa(void)
+>>          unsigned long value;
+>>
+>>          value = __read_32bit_c0_register($16, 3);
+>> -       value |= 0x00000080;
+>> -       __write_32bit_c0_register($16, 3, value);
+>> -       value = __read_32bit_c0_register($16, 3);
+>>          pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
+>>
+>>          value = __read_32bit_c0_register($5, 1);
+>> --
+>> 2.1.0
+>>
 
-
-Thanks
-shuo
