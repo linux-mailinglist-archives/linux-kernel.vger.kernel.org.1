@@ -2,215 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789072A5AE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8522A5AE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 01:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgKDAF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 19:05:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729836AbgKDAFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:05:55 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D483D223BD;
-        Wed,  4 Nov 2020 00:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604448354;
-        bh=KZ6By4TUfVUgQ/D4nmd6klO+Ho7DgbM92Y0TRb1lyGw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pl1XoOMkN8m5IwRwgIRc9JBtjNijN8KaAgcOw6gblZkJg6ARjKvVVNOrtxO+gqpLE
-         3GMaabVmFV5qQhJIfS/iM9/+SYUw9Ev9c3b7uIh4dAQfl38vpLL2BqwQSkxWpCw/Yp
-         ynPkxWU5PmOVNgFADfOBUnsO3YXMF2aT7Kqw8F2k=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9B3CF3522ABD; Tue,  3 Nov 2020 16:05:54 -0800 (PST)
-Date:   Tue, 3 Nov 2020 16:05:54 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 1/7] rcu/tree: Make rcu_do_batch count how many
- callbacks were executed
-Message-ID: <20201104000554.GF3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-2-joel@joelfernandes.org>
+        id S1729457AbgKDAJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 19:09:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728479AbgKDAJ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 19:09:56 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C11BC061A04
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Nov 2020 16:09:56 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id k9so17229349qki.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Nov 2020 16:09:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.unc.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYojc7vmSWu8GGbZzz8wSzFwi9UD9yKVFssMaSFOz4E=;
+        b=XoFqBsYAqL+CmBvKIOcJ8rojcXXEQbIr1wWWNyIDQDm+JCKm6rJxn1ViLr0pzjARCU
+         VTwB16zKG/j9yQ/O7zEm3bzjtG1ZUs/0mBfvdo37fxkYk/WaEia32OyQQwmkz4SeKOUD
+         eXGjqArvNdCliYvooX0ckqAHgbvA5gE0YZgNA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYojc7vmSWu8GGbZzz8wSzFwi9UD9yKVFssMaSFOz4E=;
+        b=E9r8sTamRMhRGqRS87Sl6jMB0Ldkch8qjOudwIdxVa+jwDhO8I7j07E2/zR6fWTzSd
+         ZUyUUtnxhTDH9rvfxNF4sMYBZYUV8GlFE0b9r1SS7EkmE9RLCIoWeD9dSgFjqH84CcO1
+         jSvmyYyK/yjgOWbQU+Rhb2EOtD/kxfN+ijdBS9YLS/OWKuTmiMDcbiV872mOGC5xgOWm
+         H96MpySjLT5gq9OX1rbO2Gh8UtISzK+t0LrrVPSoG3YDdo8ULexDysdLCfu8Sgo6pi35
+         PJ4CENL6CK43TXzngQ/O9kOUHvMmSBr7IAGvw4UdI1zJIpH36gVT0+AbSbl6xaSri9K/
+         7ZQA==
+X-Gm-Message-State: AOAM533SXkMoriiXwN7KVhPnlIU8TfQ7hmG/i2AsStGdhhBirjm4QJt7
+        ccmzXBM2H8nF/iboSL7wtrKd5g==
+X-Google-Smtp-Source: ABdhPJzsaO5Jjftr+mIe2epKX6LtZrXcLRkAX4K97vVHjm6AsPbKhuziuQZCn1q+0iw6Pon4kPu5bw==
+X-Received: by 2002:a37:b241:: with SMTP id b62mr12176047qkf.209.1604448595391;
+        Tue, 03 Nov 2020 16:09:55 -0800 (PST)
+Received: from yamaha.cs.unc.edu (yamaha.cs.unc.edu. [152.2.129.229])
+        by smtp.gmail.com with ESMTPSA id r190sm523861qkf.101.2020.11.03.16.09.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 16:09:54 -0800 (PST)
+From:   Joshua Bakita <jbakita@cs.unc.edu>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joshua Bakita <jbakita@cs.unc.edu>
+Subject: [PATCH] binfmt_elf: Fix regression limiting ELF program header size
+Date:   Tue,  3 Nov 2020 19:09:30 -0500
+Message-Id: <20201104000930.155577-1-jbakita@cs.unc.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103142603.1302207-2-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:25:57AM -0500, Joel Fernandes (Google) wrote:
-> Currently, rcu_do_batch() depends on the unsegmented callback list's len field
-> to know how many CBs are executed. This fields counts down from 0 as CBs are
-> dequeued.  It is possible that all CBs could not be run because of reaching
-> limits in which case the remaining unexecuted callbacks are requeued in the
-> CPU's segcblist.
-> 
-> The number of callbacks that were not requeued are then the negative count (how
-> many CBs were run) stored in the rcl->len which has been counting down on every
-> dequeue. This negative count is then added to the per-cpu segmented callback
-> list's to correct its count.
-> 
-> Such a design works against future efforts to track the length of each segment
-> of the segmented callback list. The reason is because
-> rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
-> list's length field (rcl->len) during extraction.
-> 
-> Also, the design of counting down from 0 is confusing and error-prone IMHO.
-> 
-> This commit therefore explicitly counts how many callbacks were executed in
-> rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
-> field, without relying on the negativity of rcl->len.
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Commit 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a
+function") merged load_elf_binary and load_elf_interp into
+load_elf_phdrs. This change imposed a limit that the program headers of
+all ELF binaries are smaller than ELF_MIN_ALIGN. This is a mistake for
+two reasons:
+1. load_elf_binary previously had no such constraint, meaning that
+   previously valid ELF program headers are now rejected by the kernel as
+   oversize and invalid.
+2. The ELF interpreter's program headers should never have been limited to
+   ELF_MIN_ALIGN (and previously PAGE_SIZE) in the first place. Commit
+   057f54fbba73 ("Import 1.1.54") introduced this limit to the ELF
+   interpreter alongside the initial ELF parsing support without any
+   explanation.
+This patch removes the ELF_MIN_ALIGN size constraint in favor of only
+relying on an earlier check that the allocation will be less than 64KiB.
+(It's worth mentioning that the 64KiB limit is also unnecessarily strict,
+but that's not addressed here for simplicity. The ELF manpage says that
+the program header size is supposed to have at most 64 thousand entries,
+not less than 64 thousand bytes.)
 
-Queued for testing and further review, thank you all!
+Fixes: 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a function")
+Signed-off-by: Joshua Bakita <jbakita@cs.unc.edu>
+---
+ fs/binfmt_elf.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-I will be pulling these in as I look them over, and running tests
-in between times, so this will take some time.
-
-As usual, I could not resist editing the commit log, so please
-see below to check whether I messed something up.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit d77ef2684cbff728c14b3c84a356139c52ca3a5e
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Tue Nov 3 09:25:57 2020 -0500
-
-    rcu/tree: Make rcu_do_batch count how many callbacks were executed
-    
-    The rcu_do_batch() function extracts the ready-to-invoke callbacks
-    from the rcu_segcblist located in the ->cblist field of the current
-    CPU's rcu_data structure.  These callbacks are first moved to a local
-    (unsegmented) rcu_cblist.  The rcu_do_batch() function then uses this
-    rcu_cblist's ->len field to count how many CBs it has invoked, but it
-    does so by counting that field down from zero.  Finally, this function
-    negates the value in this ->len field (resulting in a positive number)
-    and subtracts the result from the ->len field of the current CPU's
-    ->cblist field.
-    
-    Except that it is sometimes necessary for rcu_do_batch() to stop invoking
-    callbacks mid-stream, despite there being more ready to invoke, for
-    example, if a high-priority task wakes up.  In this case the remaining
-    not-yet-invoked callbacks are requeued back onto the CPU's ->cblist,
-    but remain in the ready-to-invoke segment of that list.  As above, the
-    negative of the local rcu_cblist's ->len field is still subtracted from
-    the ->len field of the current CPU's ->cblist field.
-    
-    The design of counting down from 0 is confusing and error-prone, plus
-    use of a positive count will make it easier to provide a uniform and
-    consistent API to deal with the per-segment counts that are added
-    later in this series.  For example, rcu_segcblist_extract_done_cbs()
-    can unconditionally populate the resulting unsegmented list's ->len
-    field during extraction.
-    
-    This commit therefore explicitly counts how many callbacks were executed
-    in rcu_do_batch() itself, counting up from zero, and then uses that
-    to update the per-CPU segcb list's ->len field, without relying on the
-    downcounting of rcl->len from zero.
-    
-    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-    Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 2d2a6b6b9..bb246d8 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -95,7 +95,7 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-  * This increase is fully ordered with respect to the callers accesses
-  * both before and after.
-  */
--static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	smp_mb__before_atomic(); /* Up to the caller! */
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 492262b..1d2d614 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -76,6 +76,7 @@ static inline bool rcu_segcblist_restempty(struct rcu_segcblist *rsclp, int seg)
- }
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 2472af2798c7..55162056590f 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -412,15 +412,11 @@ static struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex,
+ 	/* Sanity check the number of program headers... */
+ 	if (elf_ex->e_phnum < 1 ||
+ 		elf_ex->e_phnum > 65536U / sizeof(struct elf_phdr))
+ 		goto out;
  
- void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v);
- void rcu_segcblist_init(struct rcu_segcblist *rsclp);
- void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
- void rcu_segcblist_offload(struct rcu_segcblist *rsclp);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b6ec565..c4035e7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2436,7 +2436,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
--	long bl, count;
-+	long bl, count = 0;
- 	long pending, tlimit = 0;
+-	/* ...and their total size. */
+ 	size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
+-	if (size > ELF_MIN_ALIGN)
+-		goto out;
+-
+ 	elf_phdata = kmalloc(size, GFP_KERNEL);
+ 	if (!elf_phdata)
+ 		goto out;
  
- 	/* If no callbacks are ready, just return. */
-@@ -2481,6 +2481,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		rcu_callback_t f;
- 
-+		count++;
- 		debug_rcu_head_unqueue(rhp);
- 
- 		rcu_lock_acquire(&rcu_callback_map);
-@@ -2494,15 +2495,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 		/*
- 		 * Stop only if limit reached and CPU has something to do.
--		 * Note: The rcl structure counts down from zero.
- 		 */
--		if (-rcl.len >= bl && !offloaded &&
-+		if (count >= bl && !offloaded &&
- 		    (need_resched() ||
- 		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
- 			break;
- 		if (unlikely(tlimit)) {
- 			/* only call local_clock() every 32 callbacks */
--			if (likely((-rcl.len & 31) || local_clock() < tlimit))
-+			if (likely((count & 31) || local_clock() < tlimit))
- 				continue;
- 			/* Exceeded the time limit, so leave. */
- 			break;
-@@ -2519,7 +2519,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	local_irq_save(flags);
- 	rcu_nocb_lock(rdp);
--	count = -rcl.len;
- 	rdp->n_cbs_invoked += count;
- 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
- 			    is_idle_task(current), rcu_is_callbacks_kthread());
-@@ -2527,7 +2526,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Update counts and requeue any remaining callbacks. */
- 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
- 	smp_mb(); /* List handling before counting for rcu_barrier(). */
--	rcu_segcblist_insert_count(&rdp->cblist, &rcl);
-+	rcu_segcblist_add_len(&rdp->cblist, -count);
- 
- 	/* Reinstate batch limit if we have worked down the excess. */
- 	count = rcu_segcblist_n_cbs(&rdp->cblist);
+ 	/* Read in the program headers */
+-- 
+2.25.1
+
