@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653D32A60C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF65B2A60C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 10:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgKDJmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 04:42:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgKDJmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:42:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7126AB0E;
-        Wed,  4 Nov 2020 09:42:07 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 09:42:05 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1728287AbgKDJm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 04:42:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgKDJm5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:42:57 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB18CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 01:42:55 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id z24so16145830pgk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 01:42:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HvRxG2eqcF4ZzClNGGlcw7JZVv/slfldb08iGS22hzA=;
+        b=HHgLz+vkMCoQyO0Hx2pVgQasPa47vZzXKRdUzeqCruDMoTB47BynCJ5/UMM8TAJ6/k
+         2SeC5MQEVsxInM6S2SR7OmHaedRof6z61M9kZKjAKO1xRKbWyKIfFkX85EaIjfRWv+v9
+         5oB1AEFcnr4q+InKQjkyYlqkMnHuAIAHSX/C4KXOFaUKyWAPVXMllHu+iS5lr2/To9LU
+         UDJym21G2Njt26KAIVZaSkAWm2eo3x0CFj+jpe7Cb4GPOe/DhWK4agexjlTFxhvkydNX
+         h1Jm/Cc1OTpe3lWv+al8rVwh+NouL6lzRXjF5mVUtOpPVG+jj5rHN2qhlhyiI7yfMxlW
+         IjzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HvRxG2eqcF4ZzClNGGlcw7JZVv/slfldb08iGS22hzA=;
+        b=mjF3kibvvCvWf1V99Azorm6W+gAlMXCCZCZ08sy5RYsweOZe9KmouPuW/MlICGC3iW
+         h9plCRcUeqMZ3YESC5ys36uf4u5M2SJVr/LW40qpPk+zkeoL/96iJ3YjenGCrAycRxLc
+         nwJZh6VN3dF5fR6CYYWxemEuy005Gd8RspmnGJVZ9nTWfO/ZtyT9wenVwwN8Zl0KKmbD
+         I5d336hpfAUqxr2eqljaLb4tXl3N4IxzKaTMTCKHHsS+UsR6n0IoJG+Xx6n6+AIoUSPx
+         omYcMgSq9DOK4pSw9RMs58cFBsjUmVXCUhgXo7youOy2SQ03d6KoxdiSKtm6zw7B0yHC
+         hJhg==
+X-Gm-Message-State: AOAM532r1DS7mCr80md8n7itIjVkB3lAGDZTTposgBqM1XaocE9Tc3fl
+        u/NecqX1ey7Nj1iLX0/0MnD15Q==
+X-Google-Smtp-Source: ABdhPJyHB429obbDA//p9tMC9jNIf0hiwFPf4UIUDhn/cisjSO9oNyIBdR/jsoRivFcUls9NORJapQ==
+X-Received: by 2002:a65:6493:: with SMTP id e19mr20445729pgv.276.1604482975254;
+        Wed, 04 Nov 2020 01:42:55 -0800 (PST)
+Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id a22sm1830054pfk.29.2020.11.04.01.42.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Nov 2020 01:42:54 -0800 (PST)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-Message-ID: <20201104094205.GI3306@suse.de>
-References: <20200714125941.4174-1-peter.puhov@linaro.org>
- <20201102105043.GB3371@techsingularity.net>
- <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
- <20201102144418.GB154641@lorien.usersys.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201102144418.GB154641@lorien.usersys.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 1/2] perf lock: Correct field name "flags"
+Date:   Wed,  4 Nov 2020 17:42:28 +0800
+Message-Id: <20201104094229.17509-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 09:44:18AM -0500, Phil Auld wrote:
-> > > I have not investigated why because I do not have the bandwidth
-> > > to do a detailed study (I was off for a few days and my backlog is
-> > > severe). However, I recommend in before v5.10 this be reverted and retried.
-> > > If I'm cc'd on v2, I'll run the same tests through the grid and see what
-> > > falls out.
-> > 
-> > I'm going to have a look at the regressions and see if  patches that
-> > have been queued for v5.10 or even more recent patch can help or if
-> > the patch should be adjusted
-> >
-> 
-> Fwiw, we have pulled this in, along with some of the 5.10-rc1 fixes in this
-> area and in the load balancing code.
-> 
-> We found some load balancing improvements and some minor overall perf
-> gains in a few places, but generally did not see any difference from before
-> the commit mentioned here.
-> 
-> I'm wondering, Mel, if you have compared 5.10-rc1? 
-> 
+The tracepoint "lock:lock_acquire" contains field "flags" but not
+"flag".  Current code wrongly retrieves value from field "flag" and it
+always gets zero for the value, thus "perf lock" doesn't report the
+correct result.
 
-The results indicate that reverting on 5.9 would have been the right
-decision. It's less clear for 5.10-rc2 so I'm only showing the 5.10-rc2
-comparison. Bear in mind that this is one machine only so I'll be
-rerunning against all the affected machines according to the bisections
-run against 5.9.
+This patch replaces the field name "flag" with "flags", so can read out
+the correct flags for locking.
 
-aim9
-                                5.10.0-rc2             5.10.0-rc2
-                                   vanilla        5.10-rc2-revert
-Hmean     page_test   510863.13 (   0.00%)   517673.91 *   1.33%*
-Hmean     brk_test   1807400.76 (   0.00%)  1814815.29 *   0.41%*
-Hmean     exec_test      821.41 (   0.00%)      841.05 *   2.39%*
-Hmean     fork_test     4399.71 (   0.00%)     5124.86 *  16.48%*
+Fixes: e4cef1f65061 ("perf lock: Fix state machine to recognize lock sequence")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+---
+ tools/perf/builtin-lock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reverting shows a 16.48% gain for fork_test and minor gains for others.
-To be fair, I don't generally consider the fork_test to be particularly
-important because fork microbenchmarks that do no real work are rarely
-representative of anything useful. It tends to go up and down a lot and
-it's rare a regression in fork_test correlates to anything else.
-
-Hackbench failed to run because I typo'd the configuration. Kernel build
-benchmark and git test suite both were inconclusive for 5.10-rc2
-(neutral results) although the showed 10-20% gain for kernbench and 24%
-gain in git test suite by reverting in 5.9.
-
-The gitsource test was interesting for a few reasons. First, the big
-difference between 5.9 and 5.10 is that the workload is mostly concentrated
-on one NUMA node. mpstat shows that 5.10-rc2 uses all of the CPUs on one
-node lightly. Reverting the patch shows that far fewer CPUs are used at
-a higher utilisation -- not particularly high utilisation because of the
-nature of the workload but noticable. i.e.  gitsource with the revert
-packs the workload onto fewer CPUs. The same holds for fork_test --
-reverting packs the workload onto fewer CPUs with higher utilisation on
-each of them. Generally this plays well with cpufreq without schedutil
-using fewer CPUs means the CPU is likely to reach higher frequencies.
-
-While it's possible that some other factor masked the impact of the patch,
-the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
-indicates that if the patch was implemented against 5.10-rc2, it would
-likely not have been merged. I've queued the tests on the remaining
-machines to see if something more conclusive falls out.
-
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index f0a1dbacb46c..5cecc1ad78e1 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -406,7 +406,7 @@ static int report_lock_acquire_event(struct evsel *evsel,
+ 	struct lock_seq_stat *seq;
+ 	const char *name = evsel__strval(evsel, sample, "name");
+ 	u64 tmp	 = evsel__intval(evsel, sample, "lockdep_addr");
+-	int flag = evsel__intval(evsel, sample, "flag");
++	int flag = evsel__intval(evsel, sample, "flags");
+ 
+ 	memcpy(&addr, &tmp, sizeof(void *));
+ 
 -- 
-Mel Gorman
-SUSE Labs
+2.17.1
+
