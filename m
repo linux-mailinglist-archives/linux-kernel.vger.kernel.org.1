@@ -2,165 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8306C2A6496
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2882A649B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 13:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729804AbgKDMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 07:43:12 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:47509 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726527AbgKDMnM (ORCPT
+        id S1729843AbgKDMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 07:43:33 -0500
+Received: from wp126.webpack.hosteurope.de ([80.237.132.133]:56746 "EHLO
+        wp126.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726527AbgKDMnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:43:12 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 647E65801DA;
-        Wed,  4 Nov 2020 07:43:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 04 Nov 2020 07:43:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=78us+UUk6CoTQ5X7xHTMBAyQcMb
-        Qj2fZdOq2ZTDXDpY=; b=CZNLwHr9AhKYEnHR9t31QQ8i1RaRhgEQIdpd2hCbg9Z
-        4/pnVucDq400XCUFdjX4yWuFZUN8BVMpJs/qij3McBEEjiY/aFHrTdialvQdLt5v
-        ipALxcyYiZGwO/Zz6aixnh7IZUZyWTBnz/1eT3tNkO/QLYqDmQ6SbruYWdH4NVrb
-        NQ9ODZlz33xoQAXbSdppzraAsb0+p2smSx03nVImAlaniewi+Lpn0G+bcQFHb3Ay
-        SuyeW+toydHV9y8MtRyYc7I6YMKvN/pexLrD/Y/aGUN8LHNvv81PqfxN013Rb/PY
-        L4Wmigc7pmJij8LnJ9D/UbKtmbXZahecN264S/gDt5Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=78us+U
-        Uk6CoTQ5X7xHTMBAyQcMbQj2fZdOq2ZTDXDpY=; b=Sm6nVNrtTGHwIAW+nghCkj
-        r2SOmU8vnF5fX/jCYQ9aD7VEn9KOyzsp428iKtj0QcUPtCybAKMQQzP7EywZpypB
-        r41kiRLODFyFy8sVVvgrLEGi9Khm6xdAjPuBPGEbLT0w32rt410RpAOFaLkCllOd
-        f2DuhDi4p3NFGFSMP2i3x/iWvNgyuHFqJftBUUvSBtjaoQfmSLfJ35t6ywwp5jjP
-        2A4U5U7C6lwugnuvm1oSc22WumrjRaYYaC1ZLfkmEbGsunH/IsPCUgW0uy+n07dN
-        AUuhbk2GT6LWjehXmys199ah5ZrH/2Pou7wh8eLfNfHajfiqrP7UVeJEy7+V/NpQ
-        ==
-X-ME-Sender: <xms:3KGiX0RhVlYcUA_MON-70AweRLRUn9_drusdN9rVY4FlIEx9vEbndg>
-    <xme:3KGiXxye0Egu6ktFP_-mLb1B1zzcxdnR_u6KotVrT3vNw42eH0djyBrzcD3NP9YmB
-    2kx7QwQNHas9mLR63E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:3KGiXx3SEHC1svEduB3AoUiCdYqGEeKYPIX1nSfLYCQnCyrs2PuI9Q>
-    <xmx:3KGiX4DwjvHSkbarYcediCJRObamjLT8IQ1soBqbSrP2BrPVClfEfQ>
-    <xmx:3KGiX9gqMzjhsMaTcflcNeyeefsEAbYT7Ekid9AByeFjzpxhd_APnQ>
-    <xmx:3qGiX-V7vOKh6yQaqPRF_3vWnvBTyMT_0FDfo6z_quJFCtoI1vjXag>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 086473280390;
-        Wed,  4 Nov 2020 07:43:07 -0500 (EST)
-Date:   Wed, 4 Nov 2020 13:43:06 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>, iommu@lists.linux-foundation.org,
-        Yong Deng <yong.deng@magewell.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: use of dma_direct_set_offset in (allwinner) drivers
-Message-ID: <20201104124306.65nfvmr3ceggug4z@gilmour.lan>
-References: <20201103095538.GA19136@lst.de>
- <20201104081411.bnt5kixgunaczbzj@gilmour.lan>
- <9623c346-c86c-e3ce-332b-95492576a859@arm.com>
+        Wed, 4 Nov 2020 07:43:32 -0500
+Received: from [2003:a:659:3f00:1e6f:65ff:fe31:d1d5] (helo=hermes.fivetechno.de); authenticated
+        by wp126.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1kaI8P-0007os-6I; Wed, 04 Nov 2020 13:43:29 +0100
+X-Virus-Scanned: by amavisd-new 2.11.1 using newest ClamAV at
+        linuxbbg.five-lan.de
+Received: from [192.168.34.101] (p5098d998.dip0.t-ipconnect.de [80.152.217.152])
+        (authenticated bits=0)
+        by hermes.fivetechno.de (8.15.2/8.14.5/SuSE Linux 0.8) with ESMTPSA id 0A4ChSIl013261
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 4 Nov 2020 13:43:28 +0100
+Subject: Re: [PATCH] ARM: dts: exynos: Assign a fixed index to mmc devices on
+ exynos4412 based ODROID boards
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20201104102634eucas1p2ec7b705dd5092afa25d9877d1014f46a@eucas1p2.samsung.com>
+ <20201104102558.11070-1-m.reichl@fivetechno.de>
+ <efe8a911-6072-59fb-8a8e-d5cdb4352cab@samsung.com>
+From:   Markus Reichl <m.reichl@fivetechno.de>
+Organization: five technologies GmbH
+Message-ID: <eb699efe-8976-e697-8b69-0805aec058cc@fivetechno.de>
+Date:   Wed, 4 Nov 2020 13:43:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zhorkoablbmsvz4w"
-Content-Disposition: inline
-In-Reply-To: <9623c346-c86c-e3ce-332b-95492576a859@arm.com>
+In-Reply-To: <efe8a911-6072-59fb-8a8e-d5cdb4352cab@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;m.reichl@fivetechno.de;1604493811;d15a78fe;
+X-HE-SMSGID: 1kaI8P-0007os-6I
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marek,
 
---zhorkoablbmsvz4w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Am 04.11.20 um 13:25 schrieb Marek Szyprowski:
+> Hi Markus,
+> 
+> On 04.11.2020 11:25, Markus Reichl wrote:
+>> Recently introduced async probe on mmc devices can shuffle block IDs.
+>> Pin them to fixed values to ease booting in evironments where UUIDs ar not practical.
+>> Use newly introduced aliases for mmcblk devices from [1].
+>>
+>> [1]
+>> https://patchwork.kernel.org/patch/11747669/
+>>
+>> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+>> ---
+>>   arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>> index a5c1ce1e396c..aa10d5bc7e1c 100644
+>> --- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>> +++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+>> @@ -13,6 +13,11 @@
+>>   #include "exynos-mfc-reserved-memory.dtsi"
+>>   
+>>   / {
+>> +	aliases {
+>> +		mmc0 = &sdhci_2;
+>> +		mmc1 = &mshc_0;
+> 
+> Like in the OdroidXU3-family patch, I would use 0 for the eMMC (mshc_0)
+> and 2 for the SD-card (sdhci_2).
 
-On Wed, Nov 04, 2020 at 10:15:49AM +0000, Robin Murphy wrote:
-> On 2020-11-04 08:14, Maxime Ripard wrote:
-> > Hi Christoph,
-> >=20
-> > On Tue, Nov 03, 2020 at 10:55:38AM +0100, Christoph Hellwig wrote:
-> > > Linux 5.10-rc1 switched from having a single dma offset in struct dev=
-ice
-> > > to a set of DMA ranges, and introduced a new helper to set them,
-> > > dma_direct_set_offset.
-> > >=20
-> > > This in fact surfaced that a bunch of drivers that violate our layeri=
-ng
-> > > and set the offset from drivers, which meant we had to reluctantly
-> > > export the symbol to set up the DMA range.
-> > >=20
-> > > The drivers are:
-> > >=20
-> > > drivers/gpu/drm/sun4i/sun4i_backend.c
-> > >=20
-> > >    This just use dma_direct_set_offset as a fallback.  Is there any g=
-ood
-> > >    reason to not just kill off the fallback?
-> > >=20
-> > > drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c
-> > >=20
-> > >    Same as above.
-> >=20
-> > So, the history of this is:
-> >=20
-> >    - We initially introduced the support for those two controllers
-> >      assuming that there was a direct mapping between the physical and
-> >      DMA addresses. It turns out it didn't and the DMA accesses were
-> >      going through a secondary, dedicated, bus that didn't have the same
-> >      mapping of the RAM than the CPU.
-> >=20
-> >      4690803b09c6 ("drm/sun4i: backend: Offset layer buffer address by =
-DRAM starting address")
-> >=20
-> >    - This dedicated bus is undocumented and barely used in the vendor
-> >      kernel so this was overlooked, and it's fairly hard to get infos on
-> >      it for all the SoCs we support. We added the DT support for it
-> >      though on some SoCs we had enough infos to do so:
-> >=20
-> >      c43a4469402f ("dt-bindings: interconnect: Add a dma interconnect n=
-ame")
-> >      22f88e311399 ("ARM: dts: sun5i: Add the MBUS controller")
-> >=20
-> >      This explains the check on the interconnect property
-> >=20
-> >    - However, due to the stable DT rule, we still need to operate witho=
-ut
-> >      regressions on older DTs that wouldn't have that property (and for
-> >      SoCs we haven't figured out). Hence the fallback.
->=20
-> How about having something in the platform code that keys off the top-lev=
-el
-> SoC compatible and uses a bus notifier to create offsets for the relevant
-> devices if an MBUS description is missing? At least that way the workarou=
-nd
-> could be confined to a single dedicated place and look somewhat similar to
-> other special cases like sta2x11, rather than being duplicated all over t=
-he
-> place.
+This would break present and long standing  boot ordering in mainline, which is
+mmcblk0 = SD-card and
+mmcblk1 = eMMC
 
-I'll give it a try, thanks for the suggestion :)
+Still desired?
 
-Maxime
+> 
+>> +	};
+>> +
+>>   	chosen {
+>>   		stdout-path = &serial_1;
+>>   	};
+> 
+> Best regards
+> 
 
---zhorkoablbmsvz4w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6Kh2gAKCRDj7w1vZxhR
-xXUBAQCk9nFoP5/0upXw2XdZcSkENhaqLEYjyqa2eDCp2Rmb8QEApdDUSCwIotfs
-OBET+OLoM/9OhyjnL3e/+1Kb+EGvqA4=
-=D3ug
------END PGP SIGNATURE-----
-
---zhorkoablbmsvz4w--
+Gruß,
+-- 
+Markus Reichl
