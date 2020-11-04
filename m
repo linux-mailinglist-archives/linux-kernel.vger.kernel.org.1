@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19352A6E09
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB112A6E3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 20:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730708AbgKDTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 14:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        id S1732055AbgKDTiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 14:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730505AbgKDTgN (ORCPT
+        with ESMTP id S1730524AbgKDTgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:36:13 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79019C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:13 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 23so2545278wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:13 -0800 (PST)
+        Wed, 4 Nov 2020 14:36:15 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BBAC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Nov 2020 11:36:14 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b8so23340247wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Nov 2020 11:36:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wdlDuZxlieflLUlw5O6ewQ0F0d78ZenbIh62fAhvELg=;
-        b=rw86CYT54kSh10X4JKc+Q3rHjo19IplcHBIG2iw8uFXEVnrmYKuHR1A0pIBIy4MM0d
-         qpRNy6jEgxWsgGQPxYfryBxfHkic+3thVv5FfjE+k3YEwrReTFmbSlNMVaqov3zMb4Kb
-         KXHRgERWwLEqpHpkSq3pOaMvhPjg4HMDHktYUEwKLJrH2zxdrR1ccGUGcFnT3+Us0ifu
-         FtItGfBzlaBfqHYdxhOg3pOYMJE1CVp0hZ9DgqFp9/q9o706LR2XRyLV72NWS1fpMSYC
-         gEbhXLojN5GHClD6hpZyjwFkfdvZktm45reTxeIqD9JWnHwP6EkPRCOoPAeSF7ihfYAv
-         /yMA==
+        bh=tU1mUc4W5Lzy2WY9cL2mEm8m85V8Ux3xTQGFy/e/dKU=;
+        b=m0CSfPJtvCG6yqYBusiM7REUUMdj5ssB2WfDe5irz/FfpUzbCxmQTAx7J3pYH/Xf6G
+         zlKccO5dx4k3ucnV/UDMmdb/knh0hgH3IEiuD3uweglCeSCzL1HH1vE/qbCScp74k/vf
+         rnc8LUCTizSwGFL2CUZElMlqA9QORzemZDXk4YSx7F0UAb62xSrhqIlGA0z+tr+NlRos
+         bZmEno93PfsxgndnXyvvla76giYhv5JuquKidlqqj95cDwCGgGsUFBlJB0fcfq4XN7pC
+         +y3e81ojD5v6wLd83TmZD+rlMqgrP45u7kgyou39yrlnz4Axs5c6uqWebnKwfQtJaYK+
+         VYzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wdlDuZxlieflLUlw5O6ewQ0F0d78ZenbIh62fAhvELg=;
-        b=JpA2mIlJVY4mOYtrYjdJ79f5vsMO4q4Lm+zmV9Hc32MP8iQ2h88JgeHSYCeP6DlhNj
-         GyZdJyZKsRCRf0DWwwWw21Aps9FtlmIoJJ4l2HKkxJOZ6AafGpwRXlbM6ITjH5+oXjU7
-         msubCHQbIyXzdbPqhHG3Gop6zxuh1nlgraKjmtZdE1R/wBGm+Pjt9VVaHt3jTreJk4XT
-         aggyU3+yEg0Gh4p9rsFP82nowl2/nF+DZsMlRnRKQq23wjGehcu4ahrqH1pn+pwsE59F
-         gU18PlzfwIzHJY0TD+2wF8+9p6x2YLoLTdIVA2KrO+DMt3OufkRdmNpmHB8Z50wNrctv
-         aGpw==
-X-Gm-Message-State: AOAM533oZ8I4KyBzZFmzCFZP/MXyyG8YgZJHvspJa9HTphcL63RbJ9o/
-        lyrVCf9wycirttQv+eF8P3oTzQ==
-X-Google-Smtp-Source: ABdhPJweWd+P/yRhz7yh788oFLTqlgYUinWcpB45a5gnfGEaN4cl9Sr2VT++ASJ2qMggOyII05Ox+A==
-X-Received: by 2002:a1c:f312:: with SMTP id q18mr6304890wmq.30.1604518572200;
-        Wed, 04 Nov 2020 11:36:12 -0800 (PST)
+        bh=tU1mUc4W5Lzy2WY9cL2mEm8m85V8Ux3xTQGFy/e/dKU=;
+        b=aodab2vCpS0RajzVhWTGrgxVC2EdRNviAYZikRLW6VtccS1SCAbNRkK4EIkAptUJn6
+         FKY2X6uDIbudPOAT/EkneSYsS6SgNv8WHX5tiZc3MOqLGDFVZXZx7/HwYWEJsk8n5Luc
+         1m0lWB877NHGW+3n/wXKmde6o/mWEtlkoajAQbIJufJ0QAHnm58E5gB7RJgWyiArrjBP
+         rgi23DBzeITgT5ZwIuFBWi26XZKw4aI9gGeuaSWSDGSlKl/DkEsMtpNvZJtUAKTzeDTI
+         etx6pk4/TqaM17mc3XdouemeHLX7jv+HBC3y2Eq54eEi+niG+grs7iJfXvI3bWKBdENt
+         RsXg==
+X-Gm-Message-State: AOAM531SuH5ey1EXQOcyP3gpHLZLZmLnY7+8u1Nvv2at9UaOCPI9Vkik
+        5dY/kO7U5VwBT2LLjcAKrvOkTw==
+X-Google-Smtp-Source: ABdhPJxCiy/2tCu3X8ltb8i82Ja7gKVNmLhTQfCrZWJS+RnJWiNlaSIKalE2qhtiBYk4+OO+nGIuUw==
+X-Received: by 2002:adf:e681:: with SMTP id r1mr32889770wrm.181.1604518573581;
+        Wed, 04 Nov 2020 11:36:13 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.10
+        by smtp.gmail.com with ESMTPSA id x10sm4034444wrp.62.2020.11.04.11.36.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 11:36:11 -0800 (PST)
+        Wed, 04 Nov 2020 11:36:12 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
-        Jakub Jelinek <jj@ultra.linux.cz>,
-        Stanislav Voronyi <stas@cnti.uanet.kharkov.ua>
-Subject: [PATCH 09/36] tty: vt: consolemap: Demote weakly documented function header
-Date:   Wed,  4 Nov 2020 19:35:22 +0000
-Message-Id: <20201104193549.4026187-10-lee.jones@linaro.org>
+        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
+        processes-Sapan Bhatia <sapan@corewars.org>
+Subject: [PATCH 10/36] tty: n_tty: Add 2 missing parameter descriptions
+Date:   Wed,  4 Nov 2020 19:35:23 +0000
+Message-Id: <20201104193549.4026187-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201104193549.4026187-1-lee.jones@linaro.org>
 References: <20201104193549.4026187-1-lee.jones@linaro.org>
@@ -69,34 +69,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/vt/consolemap.c:739: warning: Function parameter or member 'ct' not described in 'con_get_unimap'
- drivers/tty/vt/consolemap.c:739: warning: Function parameter or member 'uct' not described in 'con_get_unimap'
- drivers/tty/vt/consolemap.c:739: warning: Function parameter or member 'list' not described in 'con_get_unimap'
+ drivers/tty/n_tty.c:405: warning: Function parameter or member 'tty' not described in 'is_continuation'
+ drivers/tty/n_tty.c:1701: warning: Function parameter or member 'flow' not described in 'n_tty_receive_buf_common'
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Jakub Jelinek <jj@ultra.linux.cz>
-Cc: Stanislav Voronyi <stas@cnti.uanet.kharkov.ua>
+Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
+Cc: processes-Sapan Bhatia <sapan@corewars.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/vt/consolemap.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/tty/n_tty.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
-index 5d778c0aa0091..f7d015c67963d 100644
---- a/drivers/tty/vt/consolemap.c
-+++ b/drivers/tty/vt/consolemap.c
-@@ -728,9 +728,8 @@ int con_copy_unimap(struct vc_data *dst_vc, struct vc_data *src_vc)
- }
- EXPORT_SYMBOL(con_copy_unimap);
- 
--/**
-+/*
-  *	con_get_unimap		-	get the unicode map
-- *	@vc: the console to read from
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index 7e5e363152607..319d68c8a5df3 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -396,6 +396,7 @@ static inline int is_utf8_continuation(unsigned char c)
+ /**
+  *	is_continuation		-	multibyte check
+  *	@c: byte to check
++ *	@tty: terminal device
   *
-  *	Read the console unicode data for this console. Called from the ioctl
-  *	handlers.
+  *	Returns true if the utf8 character 'c' is a multibyte continuation
+  *	character and the terminal is in unicode mode.
+@@ -1668,6 +1669,7 @@ static void __receive_buf(struct tty_struct *tty, const unsigned char *cp,
+  *	@cp: input chars
+  *	@fp: flags for each char (if NULL, all chars are TTY_NORMAL)
+  *	@count: number of input chars in @cp
++ *	@flow: enable flow control
+  *
+  *	Called by the terminal driver when a block of characters has
+  *	been received. This function must be called from soft contexts
 -- 
 2.25.1
 
