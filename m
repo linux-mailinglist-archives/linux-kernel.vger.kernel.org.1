@@ -2,160 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC84F2A61A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2AA2A61AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbgKDKcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:32:04 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:49768 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729301AbgKDKab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:30:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604485830; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=GsO/kwxUnYZ25pfIe9ieoDTOJZIDA3Es7kSsa/cs0s0=; b=IYCeT5jYbc5/05/6Dhhiz6C/g1AYQmlhnjm10wz6ABfRPdF5vk9JBUn4GJmc+bt/aqxGCEPW
- avoNWTxfD6+PmpLVNQqY/Kt2JBA0BR1G0eBNUy/yEINaxP/JOlsHDcV+cNeqiHyRWu7wJY9W
- zeOzZFxUW6FXdu8HsedeLttvFoQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fa2828b978460d05b7b58ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Nov 2020 10:29:31
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36540C433F0; Wed,  4 Nov 2020 10:29:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.104] (unknown [106.0.37.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49E2EC433C6;
-        Wed,  4 Nov 2020 10:29:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49E2EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Minchan Kim <minchan@kernel.org>, linux-mm <linux-mm@kvack.org>
-Cc:     glider@google.com, Dan Williams <dan.j.williams@intel.com>,
-        broonie@kernel.org, mhiramat@kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>
-References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
- <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-Message-ID: <282d7028-498d-50b3-37d4-2381571f9f9e@codeaurora.org>
-Date:   Wed, 4 Nov 2020 15:59:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1729159AbgKDKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728700AbgKDKcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:32:15 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46947C0613D3;
+        Wed,  4 Nov 2020 02:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rthagGeZr7BxtDl07Y9pYWCb/NLD6LNBksbUBb8wPnc=; b=rFnTYaktBfTd80yqUZq0DJTtQz
+        MqdGxzv6Ck0RSiaUAAzrF3B9DuVOP8wZaVO4A42Bf38vl35emnmIZJsVPasGqcjHP9iEKaTBubIdu
+        HoEv5qlZaXPlraYVML5pOW7nr1ZcKlOgHhERUqIMhz1jLMeWBvEy+r4nBP6E6mRRUV4vltiZz/Gsr
+        2cGkDBlgq0v4hhZSWl1jcMEY3WqL6SwNG4NUwQaq0BCXemQvScnpin5rSAQvXH2VpIdJasP5Fvhgk
+        H8i/oVjksrss9yPz8nsl2viGZTknHU3/v810WH6XokCkgfFoEIGz6ICMDX4eCcgSf2KdRYxRT4GkB
+        8kyETbxg==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <jarkko@kernel.org>)
+        id 1kaG5D-0005aU-3O; Wed, 04 Nov 2020 12:32:03 +0200
+Date:   Wed, 4 Nov 2020 12:32:00 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-integrity@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v4 3/3,RESEND 2] KEYS: trusted: Reserve TPM for seal and
+ unseal operations
+Message-ID: <20201104103200.GA203745@kapsi.fi>
+References: <20201013025156.111305-1-jarkko.sakkinen@linux.intel.com>
+ <20201104011909.GD20387@kernel.org>
+ <CAFA6WYO4HJThYHhBxbx0Tr97sF_JFvTBur9uTGSQTtyQaOKpig@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYO4HJThYHhBxbx0Tr97sF_JFvTBur9uTGSQTtyQaOKpig@mail.gmail.com>
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: jarkko@kernel.org
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 04, 2020 at 01:00:09PM +0530, Sumit Garg wrote:
+> Hi Jarkko,
+> 
+> On Wed, 4 Nov 2020 at 06:49, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > When TPM 2.0 trusted keys code was moved to the trusted keys subsystem,
+> > the operations were unwrapped from tpm_try_get_ops() and tpm_put_ops(),
+> > which are used to take temporarily the ownership of the TPM chip. The
+> > ownership is only taken inside tpm_send(), but this is not sufficient,
+> > as in the key load TPM2_CC_LOAD, TPM2_CC_UNSEAL and TPM2_FLUSH_CONTEXT
+> > need to be done as a one single atom.
+> >
+> > Fix this issue by introducting trusted_tpm_load() and trusted_tpm_new(),
+> > which wrap these operations, and take the TPM chip ownership before
+> > sending anything.
+> 
+> I am not sure if we really need these new APIs in order to fix this
+> issue, see below.
 
+They are not API, as they are static functions. Not necessarily
+disregarding the argument, just remarking a technical detail.
 
-On 11/4/2020 4:57 AM, Minchan Kim wrote:
-> Sorry if this mail corrupts the mail thread or had heavy mangling
-> since I lost this mail from my mailbox so I am sending this mail by
-> web gmail.
+> > Use tpm_transmit_cmd() to send TPM commands instead
+> > of tpm_send(), reverting back to the old behaviour.
+> >
+> > Fixes: 2e19e10131a0 ("KEYS: trusted: Move TPM2 trusted keys code")
+> > Reported-by: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> > Cc: stable@vger.kernel.org
+> > Cc: David Howells <dhowells@redhat.com>
+> > Cc: Mimi Zohar <zohar@linux.ibm.com>
+> > Cc: Sumit Garg <sumit.garg@linaro.org>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> >  drivers/char/tpm/tpm.h                    |  4 --
+> >  include/linux/tpm.h                       |  5 +-
+> >  security/keys/trusted-keys/trusted_tpm1.c | 78 +++++++++++++++--------
+> >  security/keys/trusted-keys/trusted_tpm2.c |  6 +-
+> >  4 files changed, 60 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+> > index 947d1db0a5cc..283f78211c3a 100644
+> > --- a/drivers/char/tpm/tpm.h
+> > +++ b/drivers/char/tpm/tpm.h
+> > @@ -164,8 +164,6 @@ extern const struct file_operations tpmrm_fops;
+> >  extern struct idr dev_nums_idr;
+> >
+> >  ssize_t tpm_transmit(struct tpm_chip *chip, u8 *buf, size_t bufsiz);
+> > -ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
+> > -                        size_t min_rsp_body_length, const char *desc);
+> >  int tpm_get_timeouts(struct tpm_chip *);
+> >  int tpm_auto_startup(struct tpm_chip *chip);
+> >
+> > @@ -194,8 +192,6 @@ static inline void tpm_msleep(unsigned int delay_msec)
+> >  int tpm_chip_start(struct tpm_chip *chip);
+> >  void tpm_chip_stop(struct tpm_chip *chip);
+> >  struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
+> > -__must_check int tpm_try_get_ops(struct tpm_chip *chip);
+> > -void tpm_put_ops(struct tpm_chip *chip);
+> >
+> >  struct tpm_chip *tpm_chip_alloc(struct device *dev,
+> >                                 const struct tpm_class_ops *ops);
+> > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> > index 8f4ff39f51e7..804a3f69bbd9 100644
+> > --- a/include/linux/tpm.h
+> > +++ b/include/linux/tpm.h
+> > @@ -397,6 +397,10 @@ static inline u32 tpm2_rc_value(u32 rc)
+> >  #if defined(CONFIG_TCG_TPM) || defined(CONFIG_TCG_TPM_MODULE)
+> >
+> >  extern int tpm_is_tpm2(struct tpm_chip *chip);
+> > +extern __must_check int tpm_try_get_ops(struct tpm_chip *chip);
+> > +extern void tpm_put_ops(struct tpm_chip *chip);
+> > +extern ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
+> > +                               size_t min_rsp_body_length, const char *desc);
+> >  extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
+> >                         struct tpm_digest *digest);
+> >  extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
+> > @@ -410,7 +414,6 @@ static inline int tpm_is_tpm2(struct tpm_chip *chip)
+> >  {
+> >         return -ENODEV;
+> >  }
+> > -
+> >  static inline int tpm_pcr_read(struct tpm_chip *chip, int pcr_idx,
+> >                                struct tpm_digest *digest)
+> >  {
+> > diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+> > index 7a937c3c5283..20ca18e17437 100644
+> > --- a/security/keys/trusted-keys/trusted_tpm1.c
+> > +++ b/security/keys/trusted-keys/trusted_tpm1.c
+> > @@ -950,6 +950,51 @@ static struct trusted_key_payload *trusted_payload_alloc(struct key *key)
+> >         return p;
+> >  }
+> >
+> > +static int trusted_tpm_load(struct tpm_chip *chip,
+> > +                           struct trusted_key_payload *payload,
+> > +                           struct trusted_key_options *options)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (tpm_is_tpm2(chip)) {
+> > +               ret = tpm_try_get_ops(chip);
 > 
-> On Thu, Oct 22, 2020 at 10:18 AM <vjitta@codeaurora.org> wrote:
->>
->> From: Yogesh Lal <ylal@codeaurora.org>
->>
->> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
->>
->> Aim is to have configurable value for  STACK_HASH_SIZE,
->> so depend on use case one can configure it.
->>
->> One example is of Page Owner, default value of
->> STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
->> Making it configurable and use lower value helps to enable features like
->> CONFIG_PAGE_OWNER without any significant overhead.
->>
->> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
->> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
->> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->> ---
->>  lib/Kconfig      | 9 +++++++++
->>  lib/stackdepot.c | 3 +--
->>  2 files changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/lib/Kconfig b/lib/Kconfig
->> index 18d76b6..b3f8259 100644
->> --- a/lib/Kconfig
->> +++ b/lib/Kconfig
->> @@ -651,6 +651,15 @@ config STACKDEPOT
->>         bool
->>         select STACKTRACE
->>
->> +config STACK_HASH_ORDER_SHIFT
->> +       int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
->> +       range 12 20
->> +       default 20
->> +       depends on STACKDEPOT
->> +       help
->> +        Select the hash size as a power of 2 for the stackdepot hash table.
->> +        Choose a lower value to reduce the memory impact.
->> +
->>  config SBITMAP
->>         bool
->>
->> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
->> index 2caffc6..413c20b 100644
->> --- a/lib/stackdepot.c
->> +++ b/lib/stackdepot.c
->> @@ -142,8 +142,7 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
->>         return stack;
->>  }
->>
->> -#define STACK_HASH_ORDER 20
->> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
->> +#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
->>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
->>  #define STACK_HASH_SEED 0x9747b28c
->>
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
->> 2.7.4
->>
+> Can't we move this TPM 2.0 specific operation within
+> tpm2_unseal_trusted() instead?
 > 
-> 1. When we don't use page_owner, we don't want to waste any memory for
-> stackdepot hash array.
-> 2. When we use page_owner, we want to have reasonable stackdeport hash array
+> > +               if (!ret) {
+> > +                       ret = tpm2_unseal_trusted(chip, payload, options);
+> > +                       tpm_put_ops(chip);
 > 
-> With this configuration, it couldn't meet since we always need to
-> reserve a reasonable size for the array.
-> Can't we make the hash size as a kernel parameter?
-> With it, we could use it like this.
+> Ditto.
 > 
-> 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
-> when we don't use page_owner
-> 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
-> when we use page_owner.
+> > +               }
+> > +       } else {
+> > +               ret = key_unseal(payload, options);
+> > +       }
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static int trusted_tpm_new(struct tpm_chip *chip,
+> > +                          struct trusted_key_payload *payload,
+> > +                          struct trusted_key_options *options)
+> > +{
+> > +       int ret;
+> > +
+> > +       ret = tpm_get_random(chip, payload->key, payload->key_len);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       if (ret != payload->key_len)
+> > +               return -EIO;
+> > +
+> > +       if (tpm_is_tpm2(chip)) {
+> > +               ret = tpm_try_get_ops(chip);
 > 
+> Same here, to move this within tpm2_seal_trusted() instead?
 > 
+> > +               if (!ret) {
+> > +                       ret = tpm2_seal_trusted(chip, payload, options);
+> > +                       tpm_put_ops(chip);
+> 
+> Ditto.
 
-This idea looks fine to me. Andrew and others would like to hear your
-comments as well on this before implementing.
+I think that would make sense anyhow, as not introducing new static
+functions means less potential merge conflicts when backporting. And
+yeah, also probably makes your life easier with the feature patch set
+under review.
 
-Thanks,
-Vijay
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+I can refine this.
+
+> -Sumit
+
+/Jarkko
