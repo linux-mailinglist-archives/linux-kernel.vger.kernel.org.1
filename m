@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9489D2A6154
+	by mail.lfdr.de (Postfix) with ESMTP id 011672A6153
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 11:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgKDKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 05:14:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
+        id S1729228AbgKDKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 05:14:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbgKDKOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 05:14:39 -0500
+        id S1729183AbgKDKOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 05:14:41 -0500
 Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17495223AB;
-        Wed,  4 Nov 2020 10:14:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C79E7223FD;
+        Wed,  4 Nov 2020 10:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604484878;
-        bh=bdR7Unn2X0qPJ7Hx3kL79kl7gPJZJ3F4d2NDBB7j+lw=;
+        s=default; t=1604484880;
+        bh=OtkGcExcBJiusw6T34uKjVJB03S9SBma1asnbE37PtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yzxfb16lybY0xGI/j7sqgVz62xTIiHy2KHL3hGZKO+YbRwb/QcT8gZ537q5qf90R9
-         KZcPikl6s+TtXJHPy633Qcjm95XfZNC7MSsk2FRqVNBsA6NtPEV/B9XPXgBPU8OqpU
-         9KhtW5m8dxqRYiloESPyCWi/ws8JufrEYfaliRLE=
+        b=Nt/FnxsFTNhqfN9grEGjIPaL/vboG9Z4lUafyenVVJ6O80O5Pl0UzSj4NcjOPb11O
+         ntK0MxXcU2KJlSf2Iy2sK6PtLta6JVp5gZGwQdY05S2swgFtpZWLyJcK3z5jluUJVt
+         ehlO978f2QLs8kbQofkww+OQlNZ8JTNJ1V4ciM8U=
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Moti Haimovski <mhaimovski@habana.ai>
-Subject: [PATCH] habanalabs: refactor MMU to support dual residency MMU
-Date:   Wed,  4 Nov 2020 12:14:28 +0200
-Message-Id: <20201104101429.15594-3-ogabbay@kernel.org>
+Cc:     SW_Drivers@habana.ai, Tomer Tayar <ttayar@habana.ai>
+Subject: [PATCH] habanalabs: Small refactoring of CS IOCTL handling
+Date:   Wed,  4 Nov 2020 12:14:29 +0200
+Message-Id: <20201104101429.15594-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201104101429.15594-1-ogabbay@kernel.org>
 References: <20201104101429.15594-1-ogabbay@kernel.org>
@@ -36,475 +36,520 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moti Haimovski <mhaimovski@habana.ai>
+From: Tomer Tayar <ttayar@habana.ai>
 
-This commit refactors the MMU code to support PCI MMU page tables
-residing on host and DCORE MMU residing on the device DRAM at the
-same time.
+Refactor the CS IOCTL handling by gathering common code into
+sub-functions, in order to ease future additions of new CS types.
 
-This is needed for future devices as on GAUDI and GOYA we have
-a single MMU where its page tables always reside on DRAM.
-
-Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
+Signed-off-by: Tomer Tayar <ttayar@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/habanalabs.h |  57 ++++++++++-
- drivers/misc/habanalabs/common/mmu.c        | 105 ++++++++++++++------
- drivers/misc/habanalabs/common/mmu_v1.c     |  28 +++---
- 3 files changed, 143 insertions(+), 47 deletions(-)
+ .../habanalabs/common/command_submission.c    | 419 ++++++++++--------
+ 1 file changed, 224 insertions(+), 195 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 54600443ebc7..fee68fc121d7 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -61,6 +61,18 @@
- /* MMU */
- #define MMU_HASH_TABLE_BITS		7 /* 1 << 7 buckets */
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index e9529f3efc1b..3e6f4e5ef7ec 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -11,8 +11,6 @@
+ #include <linux/uaccess.h>
+ #include <linux/slab.h>
  
-+/**
-+ * enum hl_mmu_page_table_locaion - mmu page table location
-+ * @MMU_DR_PGT: page-table is located on device DRAM.
-+ * @MMU_HR_PGT: page-table is located on host memory.
-+ * @MMU_NUM_PGT_LOCATIONS: number of page-table locations currently supported.
-+ */
-+enum hl_mmu_page_table_location {
-+	MMU_DR_PGT = 0,		/* device-dram-resident MMU PGT */
-+	MMU_HR_PGT,		/* host resident MMU PGT */
-+	MMU_NUM_PGT_LOCATIONS	/* num of PGT locations */
-+};
+-#define HL_CS_FLAGS_SIG_WAIT	(HL_CS_FLAGS_SIGNAL | HL_CS_FLAGS_WAIT)
+-
+ static void job_wq_completion(struct work_struct *work);
+ static long _hl_cs_wait_ioctl(struct hl_device *hdev,
+ 		struct hl_ctx *ctx, u64 timeout_us, u64 seq);
+@@ -660,44 +658,114 @@ struct hl_cs_job *hl_cs_allocate_job(struct hl_device *hdev,
+ 	return job;
+ }
+ 
+-static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+-				u32 num_chunks, u64 *cs_seq)
++static enum hl_cs_type hl_cs_get_cs_type(u32 cs_type_flags)
++{
++	if (cs_type_flags & HL_CS_FLAGS_SIGNAL)
++		return CS_TYPE_SIGNAL;
++	else if (cs_type_flags & HL_CS_FLAGS_WAIT)
++		return CS_TYPE_WAIT;
++	else if (cs_type_flags & HL_CS_FLAGS_COLLECTIVE_WAIT)
++		return CS_TYPE_COLLECTIVE_WAIT;
++	else
++		return CS_TYPE_DEFAULT;
++}
 +
- /*
-  * HL_RSVD_SOBS 'sync stream' reserved sync objects per QMAN stream
-  * HL_RSVD_MONS 'sync stream' reserved monitors per QMAN stream
-@@ -303,6 +315,8 @@ enum hl_device_hw_state {
-  * @hop5_mask: mask to get the PTE address in hop 5.
-  * @page_size: default page size used to allocate memory.
-  * @num_hops: The amount of hops supported by the translation table.
-+ * @host_resident: Should the MMU page table reside in host memory or in the
-+ *                 device DRAM.
-  */
- struct hl_mmu_properties {
- 	u64	start_addr;
-@@ -321,6 +335,7 @@ struct hl_mmu_properties {
- 	u64	hop5_mask;
- 	u32	page_size;
- 	u32	num_hops;
-+	u8	host_resident;
- };
- 
- /**
-@@ -1572,17 +1587,51 @@ struct hl_device_idle_busy_ts {
- 	ktime_t				busy_to_idle_ts;
- };
- 
-+/**
-+ * struct hr_mmu_hop_addrs - used for holding per-device host-resident mmu hop
-+ * information.
-+ * @virt_addr: the virtual address of the hop.
-+ * @phys-addr: the physical address of the hop (used by the device-mmu).
-+ * @shadow_addr: The shadow of the hop used by the driver for walking the hops.
-+ */
-+struct hr_mmu_hop_addrs {
-+	u64 virt_addr;
-+	u64 phys_addr;
-+	u64 shadow_addr;
-+};
- 
- /**
-- * struct hl_mmu_priv - used for holding per-device mmu internal information.
-+ * struct hl_mmu_hr_pgt_priv - used for holding per-device mmu host-resident
-+ * page-table internal information.
-  * @mmu_pgt_pool: pool of page tables used by MMU for allocating hops.
-  * @mmu_shadow_hop0: shadow array of hop0 tables.
-  */
--struct hl_mmu_priv {
-+struct hl_mmu_hr_priv {
-+	struct gen_pool *mmu_pgt_pool;
-+	struct hr_mmu_hop_addrs *mmu_shadow_hop0;
-+};
-+
-+/**
-+ * struct hl_mmu_dr_pgt_priv - used for holding per-device mmu device-resident
-+ * page-table internal information.
-+ * @mmu_pgt_pool: pool of page tables used by MMU for allocating hops.
-+ * @mmu_shadow_hop0: shadow array of hop0 tables.
-+ */
-+struct hl_mmu_dr_priv {
- 	struct gen_pool *mmu_pgt_pool;
- 	void *mmu_shadow_hop0;
- };
- 
-+/**
-+ * struct hl_mmu_priv - used for holding per-device mmu internal information.
-+ * @dr: information on the device-resident MMU, when exists.
-+ * @hr: information on the host-resident MMU, when exists.
-+ */
-+struct hl_mmu_priv {
-+	struct hl_mmu_dr_priv dr;
-+	struct hl_mmu_hr_priv hr;
-+};
-+
- /**
-  * struct hl_mmu_funcs - Device related MMU functions.
-  * @init: initialize the MMU module.
-@@ -1779,7 +1828,7 @@ struct hl_device {
- 	struct hl_cs_counters_atomic	aggregated_cs_counters;
- 
- 	struct hl_mmu_priv		mmu_priv;
--	struct hl_mmu_funcs		mmu_func;
-+	struct hl_mmu_funcs		mmu_func[MMU_NUM_PGT_LOCATIONS];
- 
- 	atomic64_t			dram_used_mem;
- 	u64				timeout_jiffies;
-@@ -2042,7 +2091,7 @@ int hl_mmu_unmap(struct hl_ctx *ctx, u64 virt_addr, u32 page_size,
- void hl_mmu_swap_out(struct hl_ctx *ctx);
- void hl_mmu_swap_in(struct hl_ctx *ctx);
- int hl_mmu_if_set_funcs(struct hl_device *hdev);
--void hl_mmu_v1_set_funcs(struct hl_device *hdev);
-+void hl_mmu_v1_set_funcs(struct hl_device *hdev, struct hl_mmu_funcs *mmu);
- 
- int hl_fw_load_fw_to_device(struct hl_device *hdev, const char *fw_name,
- 				void __iomem *dst, u32 src_offset, u32 size);
-diff --git a/drivers/misc/habanalabs/common/mmu.c b/drivers/misc/habanalabs/common/mmu.c
-index 451148959431..6f535c81478d 100644
---- a/drivers/misc/habanalabs/common/mmu.c
-+++ b/drivers/misc/habanalabs/common/mmu.c
-@@ -22,18 +22,25 @@ static bool is_dram_va(struct hl_device *hdev, u64 virt_addr)
-  * hl_mmu_init() - initialize the MMU module.
-  * @hdev: habanalabs device structure.
-  *
-- * This function does the following:
-- * - Create a pool of pages for pgt_infos.
-- * - Create a shadow table for pgt
-- *
-  * Return: 0 for success, non-zero for failure.
-  */
- int hl_mmu_init(struct hl_device *hdev)
++static int hl_cs_sanity_checks(struct hl_fpriv *hpriv, union hl_cs_args *args)
  {
--	if (hdev->mmu_enable)
--		return hdev->mmu_func.init(hdev);
-+	int rc = -EOPNOTSUPP;
+ 	struct hl_device *hdev = hpriv->hdev;
+-	struct hl_cs_chunk *cs_chunk_array;
+-	struct hl_cs_counters_atomic *cntr;
+-	struct hl_cs_job *job;
+-	struct hl_cs *cs;
+-	struct hl_cb *cb;
+-	bool int_queues_only = true;
+-	u32 size_to_copy;
+-	int rc, i;
++	struct hl_ctx *ctx = hpriv->ctx;
++	u32 cs_type_flags, num_chunks;
++	enum hl_cs_type cs_type;
  
--	return 0;
-+	if (!hdev->mmu_enable)
-+		return 0;
-+
-+	if (hdev->mmu_func[MMU_DR_PGT].init != NULL) {
-+		rc = hdev->mmu_func[MMU_DR_PGT].init(hdev);
-+		if (rc)
-+			return rc;
+-	cntr = &hdev->aggregated_cs_counters;
+-	*cs_seq = ULLONG_MAX;
++	if (hl_device_disabled_or_in_reset(hdev)) {
++		dev_warn_ratelimited(hdev->dev,
++			"Device is %s. Can't submit new CS\n",
++			atomic_read(&hdev->in_reset) ? "in_reset" : "disabled");
++		return -EBUSY;
 +	}
 +
-+	if (hdev->mmu_func[MMU_HR_PGT].init != NULL)
-+		rc = hdev->mmu_func[MMU_HR_PGT].init(hdev);
++	cs_type_flags = args->in.cs_flags & ~HL_CS_FLAGS_FORCE_RESTORE;
 +
-+	return rc;
- }
- 
- /**
-@@ -48,8 +55,14 @@ int hl_mmu_init(struct hl_device *hdev)
-  */
- void hl_mmu_fini(struct hl_device *hdev)
- {
--	if (hdev->mmu_enable)
--		hdev->mmu_func.fini(hdev);
-+	if (!hdev->mmu_enable)
-+		return;
-+
-+	if (hdev->mmu_func[MMU_DR_PGT].fini != NULL)
-+		hdev->mmu_func[MMU_DR_PGT].fini(hdev);
-+
-+	if (hdev->mmu_func[MMU_HR_PGT].fini != NULL)
-+		hdev->mmu_func[MMU_HR_PGT].fini(hdev);
- }
- 
- /**
-@@ -63,11 +76,21 @@ void hl_mmu_fini(struct hl_device *hdev)
- int hl_mmu_ctx_init(struct hl_ctx *ctx)
- {
- 	struct hl_device *hdev = ctx->hdev;
-+	int rc = -EOPNOTSUPP;
- 
--	if (hdev->mmu_enable)
--		return hdev->mmu_func.ctx_init(ctx);
-+	if (!hdev->mmu_enable)
-+		return 0;
- 
--	return 0;
-+	if (hdev->mmu_func[MMU_DR_PGT].ctx_init != NULL) {
-+		rc = hdev->mmu_func[MMU_DR_PGT].ctx_init(ctx);
-+		if (rc)
-+			return rc;
++	if (unlikely(cs_type_flags && !is_power_of_2(cs_type_flags))) {
++		dev_err(hdev->dev,
++			"CS type flags are mutually exclusive, context %d\n",
++			ctx->asid);
++		return -EINVAL;
 +	}
 +
-+	if (hdev->mmu_func[MMU_HR_PGT].ctx_init != NULL)
-+		rc = hdev->mmu_func[MMU_HR_PGT].ctx_init(ctx);
++	cs_type = hl_cs_get_cs_type(cs_type_flags);
++	num_chunks = args->in.num_chunks_execute;
++
++	if (unlikely((cs_type != CS_TYPE_DEFAULT) &&
++					!hdev->supports_sync_stream)) {
++		dev_err(hdev->dev, "Sync stream CS is not supported\n");
++		return -EINVAL;
++	}
++
++	if (cs_type == CS_TYPE_DEFAULT) {
++		if (!num_chunks) {
++			dev_err(hdev->dev,
++				"Got execute CS with 0 chunks, context %d\n",
++				ctx->asid);
++			return -EINVAL;
++		}
++	} else if (num_chunks != 1) {
++		dev_err(hdev->dev,
++			"Sync stream CS mandates one chunk only, context %d\n",
++			ctx->asid);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int hl_cs_copy_chunk_array(struct hl_device *hdev,
++					struct hl_cs_chunk **cs_chunk_array,
++					void __user *chunks, u32 num_chunks)
++{
++	u32 size_to_copy;
+ 
+ 	if (num_chunks > HL_MAX_JOBS_PER_CS) {
+ 		dev_err(hdev->dev,
+ 			"Number of chunks can NOT be larger than %d\n",
+ 			HL_MAX_JOBS_PER_CS);
+-		rc = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+-	cs_chunk_array = kmalloc_array(num_chunks, sizeof(*cs_chunk_array),
++	*cs_chunk_array = kmalloc_array(num_chunks, sizeof(**cs_chunk_array),
+ 					GFP_ATOMIC);
+-	if (!cs_chunk_array) {
+-		rc = -ENOMEM;
+-		goto out;
+-	}
++	if (!*cs_chunk_array)
++		return -ENOMEM;
+ 
+ 	size_to_copy = num_chunks * sizeof(struct hl_cs_chunk);
+-	if (copy_from_user(cs_chunk_array, chunks, size_to_copy)) {
++	if (copy_from_user(*cs_chunk_array, chunks, size_to_copy)) {
+ 		dev_err(hdev->dev, "Failed to copy cs chunk array from user\n");
+-		rc = -EFAULT;
+-		goto free_cs_chunk_array;
++		kfree(*cs_chunk_array);
++		return -EFAULT;
+ 	}
+ 
++	return 0;
++}
++
++static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
++				u32 num_chunks, u64 *cs_seq)
++{
++	bool int_queues_only = true;
++	struct hl_device *hdev = hpriv->hdev;
++	struct hl_cs_chunk *cs_chunk_array;
++	struct hl_cs_counters_atomic *cntr;
++	struct hl_cs_job *job;
++	struct hl_cs *cs;
++	struct hl_cb *cb;
++	int rc, i;
++
++	cntr = &hdev->aggregated_cs_counters;
++	*cs_seq = ULLONG_MAX;
++
++	rc = hl_cs_copy_chunk_array(hdev, &cs_chunk_array, chunks, num_chunks);
++	if (rc)
++		goto out;
++
+ 	/* increment refcnt for context */
+ 	hl_ctx_get(hdev, hpriv->ctx);
+ 
+@@ -828,6 +896,108 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 	return rc;
+ }
+ 
++static int hl_cs_ctx_switch(struct hl_fpriv *hpriv, union hl_cs_args *args,
++				u64 *cs_seq)
++{
++	struct hl_device *hdev = hpriv->hdev;
++	struct hl_ctx *ctx = hpriv->ctx;
++	bool need_soft_reset = false;
++	int rc = 0, do_ctx_switch;
++	void __user *chunks;
++	u32 num_chunks, tmp;
++	long ret;
++
++	do_ctx_switch = atomic_cmpxchg(&ctx->thread_ctx_switch_token, 1, 0);
++
++	if (do_ctx_switch || (args->in.cs_flags & HL_CS_FLAGS_FORCE_RESTORE)) {
++		mutex_lock(&hpriv->restore_phase_mutex);
++
++		if (do_ctx_switch) {
++			rc = hdev->asic_funcs->context_switch(hdev, ctx->asid);
++			if (rc) {
++				dev_err_ratelimited(hdev->dev,
++					"Failed to switch to context %d, rejecting CS! %d\n",
++					ctx->asid, rc);
++				/*
++				 * If we timedout, or if the device is not IDLE
++				 * while we want to do context-switch (-EBUSY),
++				 * we need to soft-reset because QMAN is
++				 * probably stuck. However, we can't call to
++				 * reset here directly because of deadlock, so
++				 * need to do it at the very end of this
++				 * function
++				 */
++				if ((rc == -ETIMEDOUT) || (rc == -EBUSY))
++					need_soft_reset = true;
++				mutex_unlock(&hpriv->restore_phase_mutex);
++				goto out;
++			}
++		}
++
++		hdev->asic_funcs->restore_phase_topology(hdev);
++
++		chunks = (void __user *) (uintptr_t) args->in.chunks_restore;
++		num_chunks = args->in.num_chunks_restore;
++
++		if (!num_chunks) {
++			dev_dbg(hdev->dev,
++				"Need to run restore phase but restore CS is empty\n");
++			rc = 0;
++		} else {
++			rc = cs_ioctl_default(hpriv, chunks, num_chunks,
++						cs_seq);
++		}
++
++		mutex_unlock(&hpriv->restore_phase_mutex);
++
++		if (rc) {
++			dev_err(hdev->dev,
++				"Failed to submit restore CS for context %d (%d)\n",
++				ctx->asid, rc);
++			goto out;
++		}
++
++		/* Need to wait for restore completion before execution phase */
++		if (num_chunks) {
++wait_again:
++			ret = _hl_cs_wait_ioctl(hdev, ctx,
++					jiffies_to_usecs(hdev->timeout_jiffies),
++					*cs_seq);
++			if (ret <= 0) {
++				if (ret == -ERESTARTSYS) {
++					usleep_range(100, 200);
++					goto wait_again;
++				}
++
++				dev_err(hdev->dev,
++					"Restore CS for context %d failed to complete %ld\n",
++					ctx->asid, ret);
++				rc = -ENOEXEC;
++				goto out;
++			}
++		}
++
++		ctx->thread_ctx_switch_wait_token = 1;
++
++	} else if (!ctx->thread_ctx_switch_wait_token) {
++		rc = hl_poll_timeout_memory(hdev,
++			&ctx->thread_ctx_switch_wait_token, tmp, (tmp == 1),
++			100, jiffies_to_usecs(hdev->timeout_jiffies), false);
++
++		if (rc == -ETIMEDOUT) {
++			dev_err(hdev->dev,
++				"context switch phase timeout (%d)\n", tmp);
++			goto out;
++		}
++	}
++
++out:
++	if ((rc == -ETIMEDOUT || rc == -EBUSY) && (need_soft_reset))
++		hl_device_reset(hdev, false, false);
 +
 +	return rc;
- }
- 
- /*
-@@ -84,8 +107,14 @@ void hl_mmu_ctx_fini(struct hl_ctx *ctx)
++}
++
+ static int cs_ioctl_extract_signal_seq(struct hl_device *hdev,
+ 		struct hl_cs_chunk *chunk, u64 *signal_seq)
  {
- 	struct hl_device *hdev = ctx->hdev;
- 
--	if (hdev->mmu_enable)
--		hdev->mmu_func.ctx_fini(ctx);
-+	if (!hdev->mmu_enable)
-+		return;
-+
-+	if (hdev->mmu_func[MMU_DR_PGT].ctx_fini != NULL)
-+		hdev->mmu_func[MMU_DR_PGT].ctx_fini(ctx);
-+
-+	if (hdev->mmu_func[MMU_HR_PGT].ctx_fini != NULL)
-+		hdev->mmu_func[MMU_HR_PGT].ctx_fini(ctx);
- }
- 
- /*
-@@ -117,7 +146,7 @@ int hl_mmu_unmap(struct hl_ctx *ctx, u64 virt_addr, u32 page_size,
- 	struct hl_mmu_properties *mmu_prop;
- 	u64 real_virt_addr;
- 	u32 real_page_size, npages;
--	int i, rc = 0;
-+	int i, rc = 0, pgt_residency;
- 	bool is_dram_addr;
- 
- 	if (!hdev->mmu_enable)
-@@ -132,6 +161,8 @@ int hl_mmu_unmap(struct hl_ctx *ctx, u64 virt_addr, u32 page_size,
- 	else
- 		mmu_prop = &prop->pmmu;
- 
-+	pgt_residency = mmu_prop->host_resident ? MMU_HR_PGT : MMU_DR_PGT;
-+
- 	/*
- 	 * The H/W handles mapping of specific page sizes. Hence if the page
- 	 * size is bigger, we break it to sub-pages and unmap them separately.
-@@ -150,7 +181,8 @@ int hl_mmu_unmap(struct hl_ctx *ctx, u64 virt_addr, u32 page_size,
- 	real_virt_addr = virt_addr;
- 
- 	for (i = 0 ; i < npages ; i++) {
--		rc = hdev->mmu_func.unmap(ctx, real_virt_addr, is_dram_addr);
-+		rc = hdev->mmu_func[pgt_residency].unmap(ctx,
-+						real_virt_addr, is_dram_addr);
- 		if (rc)
- 			break;
- 
-@@ -158,7 +190,7 @@ int hl_mmu_unmap(struct hl_ctx *ctx, u64 virt_addr, u32 page_size,
- 	}
- 
- 	if (flush_pte)
--		hdev->mmu_func.flush(ctx);
-+		hdev->mmu_func[pgt_residency].flush(ctx);
- 
- 	return rc;
- }
-@@ -193,9 +225,10 @@ int hl_mmu_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr, u32 page_size,
- 	struct hl_mmu_properties *mmu_prop;
- 	u64 real_virt_addr, real_phys_addr;
- 	u32 real_page_size, npages;
--	int i, rc, mapped_cnt = 0;
-+	int i, rc, pgt_residency, mapped_cnt = 0;
- 	bool is_dram_addr;
- 
-+
- 	if (!hdev->mmu_enable)
- 		return 0;
- 
-@@ -208,6 +241,8 @@ int hl_mmu_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr, u32 page_size,
- 	else
- 		mmu_prop = &prop->pmmu;
- 
-+	pgt_residency = mmu_prop->host_resident ? MMU_HR_PGT : MMU_DR_PGT;
-+
- 	/*
- 	 * The H/W handles mapping of specific page sizes. Hence if the page
- 	 * size is bigger, we break it to sub-pages and map them separately.
-@@ -231,8 +266,9 @@ int hl_mmu_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr, u32 page_size,
- 	real_phys_addr = phys_addr;
- 
- 	for (i = 0 ; i < npages ; i++) {
--		rc = hdev->mmu_func.map(ctx, real_virt_addr, real_phys_addr,
--				real_page_size, is_dram_addr);
-+		rc = hdev->mmu_func[pgt_residency].map(ctx,
-+						real_virt_addr, real_phys_addr,
-+						real_page_size, is_dram_addr);
- 		if (rc)
- 			goto err;
- 
-@@ -242,21 +278,22 @@ int hl_mmu_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr, u32 page_size,
- 	}
- 
- 	if (flush_pte)
--		hdev->mmu_func.flush(ctx);
-+		hdev->mmu_func[pgt_residency].flush(ctx);
- 
- 	return 0;
- 
- err:
- 	real_virt_addr = virt_addr;
- 	for (i = 0 ; i < mapped_cnt ; i++) {
--		if (hdev->mmu_func.unmap(ctx, real_virt_addr, is_dram_addr))
-+		if (hdev->mmu_func[pgt_residency].unmap(ctx,
-+						real_virt_addr, is_dram_addr))
- 			dev_warn_ratelimited(hdev->dev,
- 				"failed to unmap va: 0x%llx\n", real_virt_addr);
- 
- 		real_virt_addr += real_page_size;
- 	}
- 
--	hdev->mmu_func.flush(ctx);
-+	hdev->mmu_func[pgt_residency].flush(ctx);
- 
- 	return rc;
- }
-@@ -271,8 +308,14 @@ void hl_mmu_swap_out(struct hl_ctx *ctx)
+@@ -935,43 +1105,25 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 				void __user *chunks, u32 num_chunks,
+ 				u64 *cs_seq)
  {
- 	struct hl_device *hdev = ctx->hdev;
- 
--	if (hdev->mmu_enable)
--		hdev->mmu_func.swap_out(ctx);
-+	if (!hdev->mmu_enable)
-+		return;
-+
-+	if (hdev->mmu_func[MMU_DR_PGT].swap_out != NULL)
-+		hdev->mmu_func[MMU_DR_PGT].swap_out(ctx);
-+
-+	if (hdev->mmu_func[MMU_HR_PGT].swap_out != NULL)
-+		hdev->mmu_func[MMU_HR_PGT].swap_out(ctx);
- }
- 
- /*
-@@ -285,8 +328,14 @@ void hl_mmu_swap_in(struct hl_ctx *ctx)
- {
- 	struct hl_device *hdev = ctx->hdev;
- 
--	if (hdev->mmu_enable)
--		hdev->mmu_func.swap_in(ctx);
-+	if (!hdev->mmu_enable)
-+		return;
-+
-+	if (hdev->mmu_func[MMU_DR_PGT].swap_in != NULL)
-+		hdev->mmu_func[MMU_DR_PGT].swap_in(ctx);
-+
-+	if (hdev->mmu_func[MMU_HR_PGT].swap_in != NULL)
-+		hdev->mmu_func[MMU_HR_PGT].swap_in(ctx);
- }
- 
- int hl_mmu_if_set_funcs(struct hl_device *hdev)
-@@ -297,7 +346,7 @@ int hl_mmu_if_set_funcs(struct hl_device *hdev)
- 	switch (hdev->asic_type) {
- 	case ASIC_GOYA:
- 	case ASIC_GAUDI:
--		hl_mmu_v1_set_funcs(hdev);
-+		hl_mmu_v1_set_funcs(hdev, &hdev->mmu_func[MMU_DR_PGT]);
- 		break;
- 	default:
- 		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
-diff --git a/drivers/misc/habanalabs/common/mmu_v1.c b/drivers/misc/habanalabs/common/mmu_v1.c
-index 8d1eb5265419..ec7e8a3c37b8 100644
---- a/drivers/misc/habanalabs/common/mmu_v1.c
-+++ b/drivers/misc/habanalabs/common/mmu_v1.c
-@@ -29,7 +29,7 @@ static void _free_hop(struct hl_ctx *ctx, struct pgt_info *pgt_info)
- {
- 	struct hl_device *hdev = ctx->hdev;
- 
--	gen_pool_free(hdev->mmu_priv.mmu_pgt_pool, pgt_info->phys_addr,
-+	gen_pool_free(hdev->mmu_priv.dr.mmu_pgt_pool, pgt_info->phys_addr,
- 			hdev->asic_prop.mmu_hop_table_size);
- 	hash_del(&pgt_info->node);
- 	kfree((u64 *) (uintptr_t) pgt_info->shadow_addr);
-@@ -54,7 +54,7 @@ static u64 alloc_hop(struct hl_ctx *ctx)
- 	if (!pgt_info)
- 		return ULLONG_MAX;
- 
--	phys_addr = (u64) gen_pool_alloc(hdev->mmu_priv.mmu_pgt_pool,
-+	phys_addr = (u64) gen_pool_alloc(hdev->mmu_priv.dr.mmu_pgt_pool,
- 					prop->mmu_hop_table_size);
- 	if (!phys_addr) {
- 		dev_err(hdev->dev, "failed to allocate page\n");
-@@ -75,7 +75,7 @@ static u64 alloc_hop(struct hl_ctx *ctx)
- 	return shadow_addr;
- 
- shadow_err:
--	gen_pool_free(hdev->mmu_priv.mmu_pgt_pool, phys_addr,
-+	gen_pool_free(hdev->mmu_priv.dr.mmu_pgt_pool, phys_addr,
- 			prop->mmu_hop_table_size);
- pool_add_err:
- 	kfree(pgt_info);
-@@ -91,7 +91,7 @@ static inline u64 get_phys_hop0_addr(struct hl_ctx *ctx)
- 
- static inline u64 get_hop0_addr(struct hl_ctx *ctx)
- {
--	return (u64) (uintptr_t) ctx->hdev->mmu_priv.mmu_shadow_hop0 +
-+	return (u64) (uintptr_t) ctx->hdev->mmu_priv.dr.mmu_shadow_hop0 +
- 			(ctx->asid * ctx->hdev->asic_prop.mmu_hop_table_size);
- }
- 
-@@ -419,15 +419,15 @@ static int hl_mmu_v1_init(struct hl_device *hdev)
- 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+-	struct hl_device *hdev = hpriv->hdev;
+-	struct hl_ctx *ctx = hpriv->ctx;
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
+ 	struct hw_queue_properties *hw_queue_prop;
+-	struct hl_fence *sig_fence = NULL;
+-	struct hl_cs_counters_atomic *cntr;
++	struct hl_device *hdev = hpriv->hdev;
+ 	struct hl_cs_compl *sig_waitcs_cmpl;
+-	struct hl_cs *cs;
++	u32 q_idx, collective_engine_id = 0;
++	struct hl_cs_counters_atomic *cntr;
++	struct hl_fence *sig_fence = NULL;
++	struct hl_ctx *ctx = hpriv->ctx;
+ 	enum hl_queue_type q_type;
+-	u32 size_to_copy, q_idx, collective_engine_id = 0;
++	struct hl_cs *cs;
+ 	u64 signal_seq;
  	int rc;
  
--	hdev->mmu_priv.mmu_pgt_pool =
-+	hdev->mmu_priv.dr.mmu_pgt_pool =
- 			gen_pool_create(__ffs(prop->mmu_hop_table_size), -1);
+ 	*cs_seq = ULLONG_MAX;
+ 	cntr = &hdev->aggregated_cs_counters;
  
--	if (!hdev->mmu_priv.mmu_pgt_pool) {
-+	if (!hdev->mmu_priv.dr.mmu_pgt_pool) {
- 		dev_err(hdev->dev, "Failed to create page gen pool\n");
- 		return -ENOMEM;
+-	if (num_chunks > HL_MAX_JOBS_PER_CS) {
+-		dev_err(hdev->dev,
+-			"Number of chunks can NOT be larger than %d\n",
+-			HL_MAX_JOBS_PER_CS);
+-		rc = -EINVAL;
+-		goto out;
+-	}
+-
+-	cs_chunk_array = kmalloc_array(num_chunks, sizeof(*cs_chunk_array),
+-					GFP_ATOMIC);
+-	if (!cs_chunk_array) {
+-		rc = -ENOMEM;
++	rc = hl_cs_copy_chunk_array(hdev, &cs_chunk_array, chunks, num_chunks);
++	if (rc)
+ 		goto out;
+-	}
+-
+-	size_to_copy = num_chunks * sizeof(struct hl_cs_chunk);
+-	if (copy_from_user(cs_chunk_array, chunks, size_to_copy)) {
+-		dev_err(hdev->dev, "Failed to copy cs chunk array from user\n");
+-		rc = -EFAULT;
+-		goto free_cs_chunk_array;
+-	}
+ 
+ 	/* currently it is guaranteed to have only one chunk */
+ 	chunk = &cs_chunk_array[0];
+@@ -1108,158 +1260,38 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 
+ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ {
+-	struct hl_device *hdev = hpriv->hdev;
+ 	union hl_cs_args *args = data;
+-	struct hl_ctx *ctx = hpriv->ctx;
+-	void __user *chunks_execute, *chunks_restore;
+ 	enum hl_cs_type cs_type;
+-	u32 num_chunks_execute, num_chunks_restore, sig_wait_flags;
+ 	u64 cs_seq = ULONG_MAX;
+-	int rc, do_ctx_switch;
+-	bool need_soft_reset = false;
+-
+-	if (hl_device_disabled_or_in_reset(hdev)) {
+-		dev_warn_ratelimited(hdev->dev,
+-			"Device is %s. Can't submit new CS\n",
+-			atomic_read(&hdev->in_reset) ? "in_reset" : "disabled");
+-		rc = -EBUSY;
+-		goto out;
+-	}
+-
+-	sig_wait_flags = args->in.cs_flags & HL_CS_FLAGS_SIG_WAIT;
+-
+-	if (unlikely(sig_wait_flags == HL_CS_FLAGS_SIG_WAIT)) {
+-		dev_err(hdev->dev,
+-			"Signal and wait CS flags are mutually exclusive, context %d\n",
+-		ctx->asid);
+-		rc = -EINVAL;
+-		goto out;
+-	}
++	void __user *chunks;
++	u32 num_chunks;
++	int rc;
+ 
+-	if (unlikely((sig_wait_flags & HL_CS_FLAGS_SIG_WAIT) &&
+-			(!hdev->supports_sync_stream))) {
+-		dev_err(hdev->dev, "Sync stream CS is not supported\n");
+-		rc = -EINVAL;
++	rc = hl_cs_sanity_checks(hpriv, args);
++	if (rc)
+ 		goto out;
+-	}
+-
+-	if (args->in.cs_flags & HL_CS_FLAGS_SIGNAL)
+-		cs_type = CS_TYPE_SIGNAL;
+-	else if (args->in.cs_flags & HL_CS_FLAGS_WAIT)
+-		cs_type = CS_TYPE_WAIT;
+-	else if (args->in.cs_flags & HL_CS_FLAGS_COLLECTIVE_WAIT)
+-		cs_type = CS_TYPE_COLLECTIVE_WAIT;
+-	else
+-		cs_type = CS_TYPE_DEFAULT;
+ 
+-	chunks_execute = (void __user *) (uintptr_t) args->in.chunks_execute;
+-	num_chunks_execute = args->in.num_chunks_execute;
+-
+-	if (cs_type == CS_TYPE_DEFAULT) {
+-		if (!num_chunks_execute) {
+-			dev_err(hdev->dev,
+-				"Got execute CS with 0 chunks, context %d\n",
+-				ctx->asid);
+-			rc = -EINVAL;
+-			goto out;
+-		}
+-	} else if (num_chunks_execute != 1) {
+-		dev_err(hdev->dev,
+-			"Sync stream CS mandates one chunk only, context %d\n",
+-			ctx->asid);
+-		rc = -EINVAL;
++	rc = hl_cs_ctx_switch(hpriv, args, &cs_seq);
++	if (rc)
+ 		goto out;
+-	}
+-
+-	do_ctx_switch = atomic_cmpxchg(&ctx->thread_ctx_switch_token, 1, 0);
+-
+-	if (do_ctx_switch || (args->in.cs_flags & HL_CS_FLAGS_FORCE_RESTORE)) {
+-		long ret;
+-
+-		chunks_restore =
+-			(void __user *) (uintptr_t) args->in.chunks_restore;
+-		num_chunks_restore = args->in.num_chunks_restore;
+-
+-		mutex_lock(&hpriv->restore_phase_mutex);
+-
+-		if (do_ctx_switch) {
+-			rc = hdev->asic_funcs->context_switch(hdev, ctx->asid);
+-			if (rc) {
+-				dev_err_ratelimited(hdev->dev,
+-					"Failed to switch to context %d, rejecting CS! %d\n",
+-					ctx->asid, rc);
+-				/*
+-				 * If we timedout, or if the device is not IDLE
+-				 * while we want to do context-switch (-EBUSY),
+-				 * we need to soft-reset because QMAN is
+-				 * probably stuck. However, we can't call to
+-				 * reset here directly because of deadlock, so
+-				 * need to do it at the very end of this
+-				 * function
+-				 */
+-				if ((rc == -ETIMEDOUT) || (rc == -EBUSY))
+-					need_soft_reset = true;
+-				mutex_unlock(&hpriv->restore_phase_mutex);
+-				goto out;
+-			}
+-		}
+-
+-		hdev->asic_funcs->restore_phase_topology(hdev);
+-
+-		if (!num_chunks_restore) {
+-			dev_dbg(hdev->dev,
+-			"Need to run restore phase but restore CS is empty\n");
+-			rc = 0;
+-		} else {
+-			rc = cs_ioctl_default(hpriv, chunks_restore,
+-						num_chunks_restore, &cs_seq);
+-		}
+-
+-		mutex_unlock(&hpriv->restore_phase_mutex);
+-
+-		if (rc) {
+-			dev_err(hdev->dev,
+-				"Failed to submit restore CS for context %d (%d)\n",
+-				ctx->asid, rc);
+-			goto out;
+-		}
+-
+-		/* Need to wait for restore completion before execution phase */
+-		if (num_chunks_restore) {
+-			ret = _hl_cs_wait_ioctl(hdev, ctx,
+-					jiffies_to_usecs(hdev->timeout_jiffies),
+-					cs_seq);
+-			if (ret <= 0) {
+-				dev_err(hdev->dev,
+-					"Restore CS for context %d failed to complete %ld\n",
+-					ctx->asid, ret);
+-				rc = -ENOEXEC;
+-				goto out;
+-			}
+-		}
+-
+-		ctx->thread_ctx_switch_wait_token = 1;
+-	} else if (!ctx->thread_ctx_switch_wait_token) {
+-		u32 tmp;
+-
+-		rc = hl_poll_timeout_memory(hdev,
+-			&ctx->thread_ctx_switch_wait_token, tmp, (tmp == 1),
+-			100, jiffies_to_usecs(hdev->timeout_jiffies), false);
+ 
+-		if (rc == -ETIMEDOUT) {
+-			dev_err(hdev->dev,
+-				"context switch phase timeout (%d)\n", tmp);
+-			goto out;
+-		}
++	cs_type = hl_cs_get_cs_type(args->in.cs_flags &
++					~HL_CS_FLAGS_FORCE_RESTORE);
++	chunks = (void __user *) (uintptr_t) args->in.chunks_execute;
++	num_chunks = args->in.num_chunks_execute;
++
++	switch (cs_type) {
++	case CS_TYPE_SIGNAL:
++	case CS_TYPE_WAIT:
++	case CS_TYPE_COLLECTIVE_WAIT:
++		rc = cs_ioctl_signal_wait(hpriv, cs_type, chunks, num_chunks,
++						&cs_seq);
++		break;
++	default:
++		rc = cs_ioctl_default(hpriv, chunks, num_chunks, &cs_seq);
++		break;
  	}
  
--	rc = gen_pool_add(hdev->mmu_priv.mmu_pgt_pool, prop->mmu_pgt_addr +
-+	rc = gen_pool_add(hdev->mmu_priv.dr.mmu_pgt_pool, prop->mmu_pgt_addr +
- 			prop->mmu_hop0_tables_total_size,
- 			prop->mmu_pgt_size - prop->mmu_hop0_tables_total_size,
- 			-1);
-@@ -436,10 +436,10 @@ static int hl_mmu_v1_init(struct hl_device *hdev)
- 		goto err_pool_add;
+-	if (cs_type == CS_TYPE_DEFAULT)
+-		rc = cs_ioctl_default(hpriv, chunks_execute, num_chunks_execute,
+-					&cs_seq);
+-	else
+-		rc = cs_ioctl_signal_wait(hpriv, cs_type, chunks_execute,
+-						num_chunks_execute, &cs_seq);
+-
+ out:
+ 	if (rc != -EAGAIN) {
+ 		memset(args, 0, sizeof(*args));
+@@ -1267,9 +1299,6 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ 		args->out.seq = cs_seq;
  	}
  
--	hdev->mmu_priv.mmu_shadow_hop0 = kvmalloc_array(prop->max_asid,
-+	hdev->mmu_priv.dr.mmu_shadow_hop0 = kvmalloc_array(prop->max_asid,
- 						prop->mmu_hop_table_size,
- 						GFP_KERNEL | __GFP_ZERO);
--	if (ZERO_OR_NULL_PTR(hdev->mmu_priv.mmu_shadow_hop0)) {
-+	if (ZERO_OR_NULL_PTR(hdev->mmu_priv.dr.mmu_shadow_hop0)) {
- 		rc = -ENOMEM;
- 		goto err_pool_add;
- 	}
-@@ -449,7 +449,7 @@ static int hl_mmu_v1_init(struct hl_device *hdev)
- 	return 0;
- 
- err_pool_add:
--	gen_pool_destroy(hdev->mmu_priv.mmu_pgt_pool);
-+	gen_pool_destroy(hdev->mmu_priv.dr.mmu_pgt_pool);
- 
+-	if (((rc == -ETIMEDOUT) || (rc == -EBUSY)) && (need_soft_reset))
+-		hl_device_reset(hdev, false, false);
+-
  	return rc;
  }
-@@ -468,8 +468,8 @@ static void hl_mmu_v1_fini(struct hl_device *hdev)
- {
- 	/* MMU H/W fini was already done in device hw_fini() */
  
--	kvfree(hdev->mmu_priv.mmu_shadow_hop0);
--	gen_pool_destroy(hdev->mmu_priv.mmu_pgt_pool);
-+	kvfree(hdev->mmu_priv.dr.mmu_shadow_hop0);
-+	gen_pool_destroy(hdev->mmu_priv.dr.mmu_pgt_pool);
- }
- 
- /**
-@@ -847,10 +847,8 @@ static void hl_mmu_v1_swap_in(struct hl_ctx *ctx)
-  *
-  * @hdev: pointer to the device structure
-  */
--void hl_mmu_v1_set_funcs(struct hl_device *hdev)
-+void hl_mmu_v1_set_funcs(struct hl_device *hdev, struct hl_mmu_funcs *mmu)
- {
--	struct hl_mmu_funcs *mmu = &hdev->mmu_func;
--
- 	mmu->init = hl_mmu_v1_init;
- 	mmu->fini = hl_mmu_v1_fini;
- 	mmu->ctx_init = hl_mmu_v1_ctx_init;
 -- 
 2.17.1
 
