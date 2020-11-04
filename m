@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C122A5FC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD8D2A5FC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgKDIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:39:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36704 "EHLO mx2.suse.de"
+        id S1728494AbgKDIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:40:25 -0500
+Received: from mga04.intel.com ([192.55.52.120]:52516 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgKDIj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:39:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604479194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=syUOeZVis/mCwu8fd3UHVg+xOCzGMKG+bwd8HAGySfQ=;
-        b=m0Cd64umG8ekm2e4xzXb1VdFG7hZa8TCyBpftGpns6wGN0PMRrsJ0NBX4AmlpaVZLIv3OH
-        NLIWU7sciCIMKrmJWSv+rlmbktjWLPEYtEkk6UYrfeOIuk2qNdziQdGRnGZBx/bzp48hD+
-        EYx+lARTS7an1MOFV//1Hfuy5GjM76g=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AAEA3AC2E;
-        Wed,  4 Nov 2020 08:39:54 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 09:39:53 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
+        id S1725812AbgKDIkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:40:24 -0500
+IronPort-SDR: 4Hz9iT3/DgHjUU5mRfwF2wk2WvZvRmNMoESdfcLOS3v+ipRBW/WYSC8vWToVZQOH+P3s2EIfa0
+ 8Ww4imFKg5XA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="166595546"
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="166595546"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 00:40:24 -0800
+IronPort-SDR: 1yqp2FoU4soRwC8zdeWoBQmLGPxpmPWAvYZG7Bs0yMWSWtekt/wPQ7d8ZxoU/TeW5HfQ3654bN
+ uOiBlrM9daeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,450,1596524400"; 
+   d="scan'208";a="528851047"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Nov 2020 00:40:22 -0800
+Date:   Wed, 4 Nov 2020 16:40:21 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH rfc 2/3] docs: cgroup-v1: reflect the deprecation of the
- non-hierarchical mode
-Message-ID: <20201104083953.GD10052@dhcp22.suse.cz>
-References: <20201103212725.3716088-1-guro@fb.com>
- <20201103212725.3716088-3-guro@fb.com>
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, dave.hansen@intel.com,
+        ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] mm: fix OOMs for binding workloads to movable
+ zone only node
+Message-ID: <20201104084021.GB15700@shbuild999.sh.intel.com>
+References: <1604470210-124827-1-git-send-email-feng.tang@intel.com>
+ <20201104071308.GN21990@dhcp22.suse.cz>
+ <20201104073826.GA15700@shbuild999.sh.intel.com>
+ <20201104075819.GA10052@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103212725.3716088-3-guro@fb.com>
+In-Reply-To: <20201104075819.GA10052@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03-11-20 13:27:24, Roman Gushchin wrote:
-> Update cgroup v1 docs after the deprecation of the non-hierarchical
-> mode of the memory controller.
+On Wed, Nov 04, 2020 at 08:58:19AM +0100, Michal Hocko wrote:
+> On Wed 04-11-20 15:38:26, Feng Tang wrote:
+> [...]
+> > > Could you be more specific about the usecase here? Why do you need a
+> > > binding to a pure movable node? 
+> > 
+> > One common configuration for a platform is small size of DRAM plus huge
+> > size of PMEM (which is slower but cheaper), and my guess of their use
+> > is to try to lead the bulk of user space allocation (GFP_HIGHUSER_MOVABLE)
+> > to PMEM node, and only let DRAM be used as less as possible. 
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> While this is possible, it is a tricky configuration. It is essentially 
+> get us back to 32b and highmem...
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+:) Another possible case is similar binding on a memory hotplugable
+platform, which has one unplugable node and several other nodes configured
+as movable only to be hot removable when needed
 
-> ---
->  .../admin-guide/cgroup-v1/memcg_test.rst      |  8 ++--
->  .../admin-guide/cgroup-v1/memory.rst          | 40 ++++++-------------
->  2 files changed, 16 insertions(+), 32 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v1/memcg_test.rst b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-> index 3f7115e07b5d..4f83de2dab6e 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-> @@ -219,13 +219,11 @@ Under below explanation, we assume CONFIG_MEM_RES_CTRL_SWAP=y.
->  
->  	This is an easy way to test page migration, too.
->  
-> -9.5 mkdir/rmdir
-> ----------------
-> +9.5 nested cgroups
-> +------------------
->  
-> -	When using hierarchy, mkdir/rmdir test should be done.
-> -	Use tests like the following::
-> +	Use tests like the following for testing nested cgroups::
->  
-> -		echo 1 >/opt/cgroup/01/memory/use_hierarchy
->  		mkdir /opt/cgroup/01/child_a
->  		mkdir /opt/cgroup/01/child_b
->  
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> index 12757e63b26c..a44cd467d218 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -77,6 +77,8 @@ Brief summary of control files.
->   memory.soft_limit_in_bytes	     set/show soft limit of memory usage
->   memory.stat			     show various statistics
->   memory.use_hierarchy		     set/show hierarchical account enabled
-> +                                     This knob is deprecated and shouldn't be
-> +                                     used.
->   memory.force_empty		     trigger forced page reclaim
->   memory.pressure_level		     set memory pressure notifications
->   memory.swappiness		     set/show swappiness parameter of vmscan
-> @@ -495,16 +497,13 @@ cgroup might have some charge associated with it, even though all
->  tasks have migrated away from it. (because we charge against pages, not
->  against tasks.)
->  
-> -We move the stats to root (if use_hierarchy==0) or parent (if
-> -use_hierarchy==1), and no change on the charge except uncharging
-> +We move the stats to parent, and no change on the charge except uncharging
->  from the child.
->  
->  Charges recorded in swap information is not updated at removal of cgroup.
->  Recorded information is discarded and a cgroup which uses swap (swapcache)
->  will be charged as a new owner of it.
->  
-> -About use_hierarchy, see Section 6.
-> -
->  5. Misc. interfaces
->  ===================
->  
-> @@ -527,8 +526,6 @@ About use_hierarchy, see Section 6.
->    write will still return success. In this case, it is expected that
->    memory.kmem.usage_in_bytes == memory.usage_in_bytes.
->  
-> -  About use_hierarchy, see Section 6.
-> -
->  5.2 stat file
->  -------------
->  
-> @@ -675,31 +672,20 @@ hierarchy::
->  		      d   e
->  
->  In the diagram above, with hierarchical accounting enabled, all memory
-> -usage of e, is accounted to its ancestors up until the root (i.e, c and root),
-> -that has memory.use_hierarchy enabled. If one of the ancestors goes over its
-> -limit, the reclaim algorithm reclaims from the tasks in the ancestor and the
-> -children of the ancestor.
-> -
-> -6.1 Enabling hierarchical accounting and reclaim
-> -------------------------------------------------
-> -
-> -A memory cgroup by default disables the hierarchy feature. Support
-> -can be enabled by writing 1 to memory.use_hierarchy file of the root cgroup::
-> +usage of e, is accounted to its ancestors up until the root (i.e, c and root).
-> +If one of the ancestors goes over its limit, the reclaim algorithm reclaims
-> +from the tasks in the ancestor and the children of the ancestor.
->  
-> -	# echo 1 > memory.use_hierarchy
-> -
-> -The feature can be disabled by::
-> +6.1 Hierarchical accounting and reclaim
-> +---------------------------------------
->  
-> -	# echo 0 > memory.use_hierarchy
-> +Hierarchical accounting is enabled by default. Disabling the hierarchical
-> +accounting is deprecated. An attempt to do it will result in a failure
-> +and a warning printed to dmesg.
->  
-> -NOTE1:
-> -       Enabling/disabling will fail if either the cgroup already has other
-> -       cgroups created below it, or if the parent cgroup has use_hierarchy
-> -       enabled.
-> +For compatibility reasons writing 1 to memory.use_hierarchy will always pass::
->  
-> -NOTE2:
-> -       When panic_on_oom is set to "2", the whole system will panic in
-> -       case of an OOM event in any cgroup.
-> +	# echo 1 > memory.use_hierarchy
->  
->  7. Soft limits
->  ==============
+> As I've said in reply to your second patch. I think we can make the oom
+> killer behavior more sensible in this misconfigured cases but I do not
+> think we want break the cpuset isolation for such a configuration.
+
+Do you mean we skip the killing and just let the allocation fail? We've
+checked the oom killer code first, when the oom happens, both DRAM
+node and unmovable node have lots of free memory, and killing process
+won't improve the situation.
+
+(Folloing is copied from your comments for 2/2) 
+> This allows to spill memory allocations over to any other node which
+> has Normal (or other lower) zones and as such it breaks cpuset isolation.
+> As I've pointed out in the reply to your cover letter it seems that
+> this is more of a misconfiguration than a bug.
+
+For the usage case (docker container running), the spilling is already
+happening, I traced its memory allocation requests, many of them are
+movable, and got fallback to the normal node naturally with current
+code, only a few got blocked, as many of __alloc_pages_nodemask are
+called witih 'NULL' nodemask parameter.
+
+And I made this RFC patch inspired by code in __alloc_pages_may_oom():
+
+	if (gfp_mask & __GFP_NOFAIL)
+		page = __alloc_pages_cpuset_fallback(gfp_mask, order,
+				ALLOC_NO_WATERMARKS, ac);
+
+Thanks,
+Feng
+
 > -- 
-> 2.26.2
-
--- 
-Michal Hocko
-SUSE Labs
+> Michal Hocko
+> SUSE Labs
