@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFCB2A5FDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866042A5FE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 09:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgKDIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 03:49:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgKDIt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:49:26 -0500
-Received: from kernel.org (unknown [87.71.17.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8205B206DB;
-        Wed,  4 Nov 2020 08:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604479766;
-        bh=YjV8drwtbCKLQgPVP1Fm9MmP9SfbtUGj8UOQKGuV/As=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mdof30MlU5fx/72EQbF4RNf0tmeF2AD2NHfeqJj1/kb3FjG8AGj3Alsl0kyWzErVk
-         VUyuY2siPE+szmVdAyUsMhQHM4cmlSIzzUudLJrWB3DR1osf5izmwIFPe82DDRQ/7t
-         qnjBxvWsmLD8wTGTx/vkTv5VNxiN6N7PiADDeio4=
-Date:   Wed, 4 Nov 2020 10:49:19 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Max Filippov <jcmvbkbc@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM, xtensa: highmem: avoid clobbering non-page aligned
- memory reservations
-Message-ID: <20201104084919.GM4879@kernel.org>
-References: <20201031094345.6984-1-rppt@kernel.org>
- <CAMo8BfLCfpZcQC3oqEvExSqZ+dT2sVDjcXoaO_XKALn4rGjoog@mail.gmail.com>
- <20201031171608.GB14628@kernel.org>
- <CAMo8BfJ4ai4UHD36JZb2ETiFe9SeqpVQw5tsNLrSF8sUx11ccQ@mail.gmail.com>
- <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
+        id S1728405AbgKDIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 03:52:13 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5975 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgKDIwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 03:52:13 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa26bbb0000>; Wed, 04 Nov 2020 00:52:11 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 08:52:10 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 4 Nov 2020 08:52:05 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
+        <dinghao.liu@zju.edu.cn>, <kw@linux.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V3 0/5] Enhancements to Tegra194 PCIe driver
+Date:   Wed, 4 Nov 2020 14:20:13 +0530
+Message-ID: <20201104085018.13021-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFmi4+1FmLk-0kSL8sSMDgftLTArwf_6hONLkyMJk+srg@mail.gmail.com>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604479931; bh=4gQ5tWn0Fs6MivWfKflLTNgLOSsVUn4p6ZgXMZgzNKw=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=OPTuhg9gdUUJLZYqI2M/ho6/nCVpxEQTUaOdAceYIVpruqyxVDWZWGvkN86hzVtzs
+         EAy/KR3UbDTUmcd1BhaueP/6VCscRzwQEwgeDXRvBqYBzJ0wKzov48JJgbJqHCHitC
+         vIrfwGobW8L7vP4WQo8UMWRTKVb1BYZT6Ac23CANtwO+tPn/oh4b94EQgenl9pge/T
+         uOXXgPRT/bl9VKg6RoxwtqWPtyWqQPGBqL4ScayDiYqLsoIDqJOIN7wjwmJ1iHKg1N
+         uaG7DijGekckAGeFTNUdwK1Emx0QctrUqcbZG6kIniRZ1dAppVkLGxhdwajYKcLqJY
+         dQ9YieeO89Ewg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:35:14AM +0100, Ard Biesheuvel wrote:
-> On Sat, 31 Oct 2020 at 18:44, Max Filippov <jcmvbkbc@gmail.com> wrote:
-> >
-> > On Sat, Oct 31, 2020 at 10:16 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > On Sat, Oct 31, 2020 at 09:37:09AM -0700, Max Filippov wrote:
-> > > > On Sat, Oct 31, 2020 at 2:43 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > > > Please let me know how do you prefer to take it upstream.
-> > > > > If needed this can go via memblock tree.
-> > > >
-> > > > Going through the memblock tree sounds right to me.
-> > >
-> > > Can I treat this as Ack?
-> >
-> > Sure, for the xtensa part:
-> > Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-> >
-> 
-> Could we get this queued up please?
+This series of patches do some enhancements and some bug fixes to the
+Tegra194 PCIe platform driver like
+- Fix Vendor-ID corruption
+- Map DBI space correctly
+- Update DWC IP version
+- Continue with uninitialization sequence even if parts fail
+- Check return value of tegra_pcie_init_controller()
 
-It's in memblock/fixes now, I'd like to have it in next for day or two.
+V3:
+* Addressed Bjorn's review comments
+* Split earlier patch-4 into two
+  - Continue with the uninitialization sequence even if some parts fail
+  - Check return value of tegra_pcie_init_controller() and exit accordingly
+
+V2:
+* Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
+
+Vidya Sagar (5):
+  PCI: tegra: Fix ASPM-L1SS advertisement disable code
+  PCI: tegra: Map configuration space as nGnRnE
+  PCI: tegra: Set DesignWare IP version
+  PCI: tegra: Continue unconfig sequence even if parts fail
+  PCI: tegra: Check return value of tegra_pcie_init_controller()
+
+ drivers/pci/controller/dwc/pcie-tegra194.c | 62 +++++++++++-----------
+ 1 file changed, 30 insertions(+), 32 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.17.1
+
