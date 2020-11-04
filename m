@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28942A6569
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6662A656A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 14:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbgKDNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Nov 2020 08:43:27 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:34962 "EHLO vps0.lunn.ch"
+        id S1730146AbgKDNn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Nov 2020 08:43:58 -0500
+Received: from mout.gmx.net ([212.227.17.22]:40043 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbgKDNn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Nov 2020 08:43:26 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kaJ4J-005DJC-9K; Wed, 04 Nov 2020 14:43:19 +0100
-Date:   Wed, 4 Nov 2020 14:43:19 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
-Subject: Re: [PATCH 11/12] net: ethernet: toshiba: spider_net: Document a
- whole bunch of function parameters
-Message-ID: <20201104134319.GE933237@lunn.ch>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-12-lee.jones@linaro.org>
+        id S1726608AbgKDNn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:43:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604497426;
+        bh=ZE5ZUrz+eX6JUUIXYlmohOjZHy554fCZe+KD4mKq4xw=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=AsgEp9Vfer2g4DcB8vChLXFbR1k/LE3P8PcXVnUeNqii1Eq61HBOa8WndSxaQc1kB
+         /6Lit2G5cmDzsyKjy2dtyU485BaA+tzrIY2CImnYMMUjdSwnQptmBUbSV5sqsAkwoz
+         tEG5P3h/qbIylZUevFnuVSYcktddqbaXuvqz4vVs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.80]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7R1J-1kHmGN2xfp-017qKb; Wed, 04
+ Nov 2020 14:43:46 +0100
+Message-ID: <a9e88887c027b11596cd7fb96c425011c36e5d29.camel@gmx.de>
+Subject: Re: BUG_ON(!newowner) in fixup_pi_state_owner()
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Gratian Crisan <gratian.crisan@ni.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Brandon Streiff <brandon.streiff@ni.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        James Minor <james.minor@ni.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Wed, 04 Nov 2020 14:43:45 +0100
+In-Reply-To: <87v9ell0cn.fsf@nanos.tec.linutronix.de>
+References: <87a6w6x7bb.fsf@ni.com> <878sbixbk4.fsf@ni.com>
+         <2376f4e71c638aee215a4911e5efed14c5adf56e.camel@gmx.de>
+         <5f536491708682fc3b86cb5b7bc1e05ffa3521e7.camel@gmx.de>
+         <874km5mnbf.fsf@nanos.tec.linutronix.de>
+         <871rh9mkvr.fsf@nanos.tec.linutronix.de>
+         <87v9ell0cn.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104090610.1446616-12-lee.jones@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1KBT2LI65IuXMXwAZatbzWllDiPxEaD71wwzDGPRUU0jLD6H8tb
+ nIig2MJ/Ty/XbQ4CmTs+spo2l4WWXSdWw2MUDZLVOkvy/MuzUHdDFRmh/9I/EugfET//Lsv
+ ll+zQtFWfDeX4u2rXxHSpaOk8sWWmjjO61d9ZL6WRT2N/9UCZ1yV0Y6o2vfEuTDzU71rHnM
+ 8/FJ75I+rMmfm3CIH8qhw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lqj8mH/0E/4=:1HbYdIVEdTTdwtxi4IgKB2
+ 6AsgF3edf0Xc/nXC0hATTWqkWBRTQkhhlivO5s5B8Drjj/EyWXr0/O9G/9FLKXHlyczKp6wu2
+ LByyxIxgGk5edSxIs4xL65wPJLzItMJJLQJxlYP80FhgQ2WEJwJGwT9SikPMtKfKT+XsJXwQ0
+ lc8WZDOr/CyzpDXOAIDzKkMMxkBTYnkGOK47+5k5t38WkfP92YLVFwocl783YKjP9BOYPw/EA
+ s6qfeyku4UJjqdEYR9CdB8CL8jfwI/9TVeCH3FhmhbnoygSC85IMHQqQoUE0BrT6HCRoeJNpY
+ VA7NrMX/ddrP6x52VUGGaXJFR6g42Ej8X1enG+v4P9W2NioQEaUqgWq8oqpBfIFYOav7A9MJI
+ uaFGXhp2tHJ8QLJW9TO7Yt88uR5JJi54HbzFe8xwectdpiI3I22bV7ljewekSnqH6VAJO0rws
+ hjdtxduSvAKyqVWXVqiCvFC7j0hRjt50p/YLXWYch+BDbX78YCXsGlngQKarH9fWWwVU+q7pH
+ hby6/PP0Lf3ZZL66VqvCYwy7SxyGhkwvwXsISnAz/npT7BaJyleiELmhU1PnoXSb4N3dugbC4
+ 9H73OzfJCShRGi+EC05KIzvdjZ3GknmhtlzKu7ixpRM1N2SCVPY+xIYq2fuhgR+J6fk1xkzcE
+ lickej3BmdoK/sOUKYpA5+ZfH82mideJBn6BYLOd2jYr1JTLenmKsnBDjvX/c8WP1rqU3UAsN
+ rZDrlt1LRssy4tCb5Qb1n1LBruHpVqujU1H/9yD5/6CDp2jWxXSdymbc73YuwXjIsL6JFmBvs
+ +mAPIYhQi35jNm1YlqFlxcijweBe0XkZ/f2ijcY6TDab60oMji4nrN9Pe3CqvTML1q+hUmJQg
+ ZQjL4rVlp4xxZgLRwFwA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:06:09AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/net/ethernet/toshiba/spider_net.c:263: warning: Function parameter or member 'hwdescr' not described in 'spider_net_get_descr_status'
->  drivers/net/ethernet/toshiba/spider_net.c:263: warning: Excess function parameter 'descr' description in 'spider_net_get_descr_status'
->  drivers/net/ethernet/toshiba/spider_net.c:554: warning: Function parameter or member 'netdev' not described in 'spider_net_get_multicast_hash'
->  drivers/net/ethernet/toshiba/spider_net.c:902: warning: Function parameter or member 't' not described in 'spider_net_cleanup_tx_ring'
->  drivers/net/ethernet/toshiba/spider_net.c:902: warning: Excess function parameter 'card' description in 'spider_net_cleanup_tx_ring'
->  drivers/net/ethernet/toshiba/spider_net.c:1074: warning: Function parameter or member 'card' not described in 'spider_net_resync_head_ptr'
->  drivers/net/ethernet/toshiba/spider_net.c:1234: warning: Function parameter or member 'napi' not described in 'spider_net_poll'
->  drivers/net/ethernet/toshiba/spider_net.c:1234: warning: Excess function parameter 'netdev' description in 'spider_net_poll'
->  drivers/net/ethernet/toshiba/spider_net.c:1278: warning: Function parameter or member 'p' not described in 'spider_net_set_mac'
->  drivers/net/ethernet/toshiba/spider_net.c:1278: warning: Excess function parameter 'ptr' description in 'spider_net_set_mac'
->  drivers/net/ethernet/toshiba/spider_net.c:1350: warning: Function parameter or member 'error_reg1' not described in 'spider_net_handle_error_irq'
->  drivers/net/ethernet/toshiba/spider_net.c:1350: warning: Function parameter or member 'error_reg2' not described in 'spider_net_handle_error_irq'
->  drivers/net/ethernet/toshiba/spider_net.c:1968: warning: Function parameter or member 't' not described in 'spider_net_link_phy'
->  drivers/net/ethernet/toshiba/spider_net.c:1968: warning: Excess function parameter 'data' description in 'spider_net_link_phy'
->  drivers/net/ethernet/toshiba/spider_net.c:2149: warning: Function parameter or member 'work' not described in 'spider_net_tx_timeout_task'
->  drivers/net/ethernet/toshiba/spider_net.c:2149: warning: Excess function parameter 'data' description in 'spider_net_tx_timeout_task'
->  drivers/net/ethernet/toshiba/spider_net.c:2182: warning: Function parameter or member 'txqueue' not described in 'spider_net_tx_timeout'
-> 
-> Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Utz Bacher <utz.bacher@de.ibm.com>
-> Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Wed, 2020-11-04 at 14:26 +0100, Thomas Gleixner wrote:
+>
+> I'll post that with a proper comment and changelog. Mike, can I add your
+> Signed-off-by to the thing?
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I suppose.
 
-    Andrew
+	-Mike
+
